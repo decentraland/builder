@@ -22,11 +22,6 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
   }
 
-  handleToggleSelection = () => {
-    const { item, selected, onSelect } = this.props
-    onSelect(item, !selected)
-  }
-
   handleCheckboxChange = (_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) => {
     const { item, onSelect } = this.props
     onSelect(item, data.checked!)
@@ -48,7 +43,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
     const data = item.data as WearableData
 
     return (
-      <Grid className={`CollectionItem ${styles.grid}`} columns="equal" onClick={this.handleToggleSelection}>
+      <Grid className={`CollectionItem ${styles.grid}`} columns="equal">
         <Grid.Row className={styles.row}>
           <Grid.Column className={`${styles.column} ${styles.avatarColumn}`} width={5}>
             <Checkbox checked={selected} onClick={this.handleCheckboxChange} />
