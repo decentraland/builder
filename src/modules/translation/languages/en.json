@@ -205,8 +205,11 @@
   },
   "edit_collection_name_modal": {
     "title": "Edit Collection Name",
-    "subtitle": "Set a new name for this collection",
-    "submit": "Save"
+    "subtitle": "Set a new name for this collection"
+  },
+  "edit_urn_modal": {
+    "title": "Edit URN",
+    "subtitle": "Update the URN for {name}"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -487,6 +490,7 @@
     "publish": "Publish",
     "published": "Published",
     "description": "Description",
+    "urn": "URN",
     "order": {
       "newest": "Newest",
       "name_asc": "Name ↑",
@@ -1025,7 +1029,6 @@
     "beneficiary": "Beneficiary",
     "supply": "Supply",
     "collection": "Collection",
-    "urn": "URN",
     "edit_urn": "Edit URN",
     "copy_urn": "Copy URN",
     "type": {

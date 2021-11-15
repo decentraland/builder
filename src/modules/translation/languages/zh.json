@@ -202,6 +202,10 @@
     "subtitle": "为此收藏集设置一个新名称",
     "submit": "救"
   },
+  "edit_urn_modal": {
+    "title": "编辑 URN",
+    "subtitle": "更新 {name} 的 URN"
+  },
   "custom_layout_modal": {
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
@@ -478,6 +482,7 @@
     "publish": "发布",
     "published": "已发表",
     "description": "描述",
+    "urn": "URN",
     "order": {
       "newest": "最新",
       "name_asc": "名称↑",

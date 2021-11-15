@@ -39,7 +39,7 @@ export default class EditCollectionNameModal extends React.PureComponent<Props, 
           </ModalContent>
           <ModalActions>
             <Button primary loading={isLoading} disabled={!name}>
-              {t('edit_collection_name_modal.submit')}
+              {t('global.save')}
             </Button>
           </ModalActions>
         </Form>

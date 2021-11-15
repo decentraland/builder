@@ -43,7 +43,8 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   }
 
   handleEditURN = () => {
-    // this.props.onOpenModal('EditURNModal')
+    const { item, onOpenModal } = this.props
+    onOpenModal('EditURNModal', { id: item!.id, urn: item!.urn })
   }
 
   hasAccess() {
@@ -177,7 +178,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
               )}
               {item.urn ? (
                 <Section>
-                  <div className="subtitle">{t('item.urn')}</div>
+                  <div className="subtitle">{t('global.urn')}</div>
                   <div className="value urn">
                     {item.urn}
 
