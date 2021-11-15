@@ -125,9 +125,9 @@ export default class CurationPage extends React.PureComponent<Props, State> {
               <Column>
                 <Row className="text-filter-row">
                   <TextFilter
+                    placeholder={t('curation_page.search_placeholder', { count: collections.length })}
                     value={searchText}
                     onChange={this.handleSearchChange}
-                    placeholder={t('curation_page.search_placeholder', { count: collections.length })}
                   />
                 </Row>
               </Column>

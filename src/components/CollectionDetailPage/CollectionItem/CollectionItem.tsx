@@ -13,8 +13,7 @@ import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
-
-import './CollectionItem.css'
+import * as styles from './CollectionItem.module.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
   handleEditPriceAndBeneficiary = () => {
@@ -37,25 +36,28 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onRemoveFromCollection(item!, null)
   }
 
-  hasActions() {
-    const { item } = this.props
-    return item.isPublished || isComplete(item)
-  }
-
   renderPrice() {
     const { item } = this.props
 
     return item.price ? (
       <>
-        <div>{isFree(item) ? t('global.free') : <Mana network={Network.MATIC}>{fromWei(item.price, 'ether')}</Mana>}</div>
-        <div className="subtitle">{t('item.price')}</div>
+        <div>
+          {isFree(item) ? (
+            t('global.free')
+          ) : (
+            <Mana className={styles.mana} network={Network.MATIC}>
+              {fromWei(item.price, 'ether')}
+            </Mana>
+          )}
+        </div>
+        <div className={styles.subtitle}>{t('item.price')}</div>
       </>
     ) : (
       <>
-        <div className="link" onClick={preventDefault(this.handleEditPriceAndBeneficiary)}>
+        <div className={`link ${styles.linkAction}`} onClick={preventDefault(this.handleEditPriceAndBeneficiary)}>
           {t('collection_item.set_price')}
         </div>
-        <div className="subtitle">{t('item.price')}</div>
+        <div className={styles.subtitle}>{t('item.price')}</div>
       </>
     )
   }
@@ -66,59 +68,59 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return (
       <Link to={locations.itemDetail(item.id)} className="CollectionItem">
-        <Grid columns="equal">
-          <Grid.Row>
-            <Grid.Column className="avatar-column" width={5}>
-              <ItemImage item={item} hasBadge badgeSize="small" />
-              <div className="info">
-                <div className="name-wrapper">
-                  <div className="name" title={item.name}>
-                    <ItemStatus item={item} />
+        <Grid className={styles.grid} columns="equal">
+          <Grid.Row className={styles.row}>
+            <Grid.Column className={`${styles.column} ${styles.avatarColumn}`} width={5}>
+              <ItemImage className={styles.itemImage} item={item} hasBadge badgeSize="small" />
+              <div className={styles.info}>
+                <div className={styles.nameWrapper}>
+                  <div className={styles.name} title={item.name}>
+                    <ItemStatus className={styles.itemStatus} item={item} />
                     {item.name}
                   </div>
                 </div>
-                <div className="subtitle">{item.type}</div>
+                <div className={styles.subtitle}>{item.type}</div>
               </div>
             </Grid.Column>
-            <Grid.Column>
+            <Grid.Column className={styles.column}>
               {data.category ? (
                 <>
                   <div>{t(`wearable.category.${data.category}`)}</div>
-                  <div className="subtitle">{t('item.category')}</div>
+                  <div className={styles.subtitle}>{t('item.category')}</div>
                 </>
               ) : null}
             </Grid.Column>
-            <Grid.Column>
+            <Grid.Column className={styles.column}>
               {item.rarity ? (
                 <>
                   <div>{t(`wearable.rarity.${item.rarity}`)}</div>
-                  <div className="subtitle">{t('item.rarity')}</div>
+                  <div className={styles.subtitle}>{t('item.rarity')}</div>
                 </>
               ) : null}
             </Grid.Column>
-            <Grid.Column>{this.renderPrice()}</Grid.Column>
+            <Grid.Column className={styles.column}>{this.renderPrice()}</Grid.Column>
             {item.isPublished ? (
-              <Grid.Column>
+              <Grid.Column className={styles.column}>
                 <>
                   <div>
                     {item.totalSupply}/{getMaxSupply(item)}
                   </div>
-                  <div className="subtitle">{t('item.supply')}</div>
+                  <div className={styles.subtitle}>{t('item.supply')}</div>
                 </>
               </Grid.Column>
             ) : null}
-            <Grid.Column>
-              <div className="item-actions">
+            <Grid.Column className={styles.column}>
+              <div className={styles.itemActions}>
                 {canMintItem(collection, item, ethAddress) ? (
-                  <span onClick={preventDefault(this.handleMintItem)} className="link action">
+                  <span onClick={preventDefault(this.handleMintItem)} className={`link ${styles.linkAction} ${styles.action}`}>
                     {t('collection_item.mint_item')}
                   </span>
                 ) : isComplete(item) ? (
-                  <div className="done action">
-                    {t('collection_item.done')} <Icon name="check" />
+                  <div className={`${styles.done} ${styles.action}`}>
+                    {t('collection_item.done')} <Icon className={styles.check} name="check" />
                   </div>
                 ) : (
-                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link action">
+                  <span onClick={preventDefault(this.handleNavigateToEditor)} className={`link ${styles.linkAction} ${styles.action}`}>
                     {t('collection_item.edit_item')}
                   </span>
                 )}
@@ -130,11 +132,12 @@ export default class CollectionItem extends React.PureComponent<Props> {
                   }
                   inline
                   direction="left"
-                  className="action"
+                  className={styles.action}
                   onClick={preventDefault()}
                 >
                   <Dropdown.Menu>
-                    <Dropdown.Item text={t('collection_item.open_in_editor')} onClick={this.handleNavigateToEditor} />
+                    <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
+                    <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
                     {canManageItem(collection, item, ethAddress) && !isLocked(collection) ? (
                       <>
                         {item.price ? (

@@ -93,7 +93,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
             {!isUploading && hasError ? <div className="error-indicator" /> : null}
           </div>
           <div className="description" title={project.description}>
-            {getProjectDimensions(project)} {items > 0 && `- ${items} ${t('global.items')}`}
+            {getProjectDimensions(project)} {items > 0 && `- ${items} ${t('project_card.items')}`}
           </div>
         </div>
       </>

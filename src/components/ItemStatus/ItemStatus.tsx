@@ -7,14 +7,18 @@ import { Props } from './ItemStatus.types'
 import './ItemStatus.css'
 
 export default class ItemStatus extends React.PureComponent<Props> {
+  static defaultProps = {
+    className: ''
+  }
+
   render() {
-    const { status } = this.props
+    const { status, className } = this.props
     return status && status !== SyncStatus.UNPUBLISHED ? (
       <Popup
         className="ItemStatus popup"
         position="top center"
         content={t(`status.${status}`)}
-        trigger={<div className={`ItemStatus orb ${status}`} title={t(`status.${status}`)} />}
+        trigger={<div className={`ItemStatus orb ${status} ${className}`} title={t(`status.${status}`)} />}
         hideOnScroll={true}
         on="hover"
       />
