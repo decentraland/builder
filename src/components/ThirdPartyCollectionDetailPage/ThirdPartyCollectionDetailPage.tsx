@@ -1,9 +1,11 @@
 import * as React from 'react'
+import BN from 'bn.js'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Section, Row, Narrow, Column, Header, Icon, Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { canSeeCollection } from 'modules/collection/utils'
+import { getAvailableSlots, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
@@ -26,7 +28,10 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   handleBuySlot = () => {
-    // onOpenModal('BuySlotModal', {})
+    const { onOpenModal, thirdParty } = this.props
+    onOpenModal('BuyItemSlotsModal', {
+      thirdParty
+    })
   }
 
   handleGoBack = () => {
@@ -39,14 +44,15 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   hasAccess() {
-    const { wallet, collection } = this.props
-    return collection !== null && canSeeCollection(collection, wallet.address)
+    const { wallet, collection, thirdParty } = this.props
+    return collection && thirdParty && isUserManagerOfThirdParty(wallet.address, thirdParty)
   }
 
   renderPage() {
-    const { wallet, items } = this.props
+    const { wallet, items, thirdParty } = this.props
     const collection = this.props.collection!
-    const slots = 0
+    const slots = thirdParty ? getAvailableSlots(thirdParty) : new BN(0)
+    const areSlotsEmpty = slots.lte(new BN(0))
 
     return (
       <>
@@ -75,9 +81,9 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 </Column>
                 <Column align="right" shrink={false}>
                   <Row className="actions">
-                    <Button secondary compact className={`${slots <= 0 ? 'empty' : ''} slots`} onClick={this.handleBuySlot}>
-                      {t('third_party_collection_detail_page.slots', { amount: slots })}
-                      {slots <= 0 ? (
+                    <Button secondary compact className={`${areSlotsEmpty ? 'empty' : ''} slots`} onClick={this.handleBuySlot}>
+                      {t('third_party_collection_detail_page.slots', { amount: slots.toNumber() })}
+                      {areSlotsEmpty ? (
                         <span className="buy-slots link" onClick={this.handleBuySlot}>
                           {t('global.buy')}
                         </span>

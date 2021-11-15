@@ -4,7 +4,7 @@ import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
-import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
+import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
@@ -25,7 +25,7 @@ const CollectionPublishButton = (props: Props) => {
     return !env.get('REACT_APP_FF_WEARABLES_PUBLISH') || items.length === 0 || !items.every(isComplete)
   }
 
-  const getAuthorization = () => {
+  const getAuthorization = (): Authorization => {
     const chainId = wallet.networks.MATIC.chainId
     const contractAddress = getContract(ContractName.MANAToken, chainId).address
     const authorizedAddress = getContract(ContractName.CollectionManager, chainId).address

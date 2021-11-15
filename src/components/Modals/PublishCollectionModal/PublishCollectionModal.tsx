@@ -112,7 +112,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               {hasInsufficientMANA ? (
                 <small className="not-enough-mana-notice">
                   <T
-                    id="publish_collection_modal.not_enogh_mana"
+                    id="publish_collection_modal.not_enough_mana"
                     values={{
                       symbol: (
                         <span>

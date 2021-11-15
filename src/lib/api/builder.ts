@@ -19,6 +19,7 @@ import { PreviewType } from 'modules/editor/types'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
 import { Curation, CurationStatus } from 'modules/curation/types'
+import { ThirdPartyItemTier } from 'modules/tiers/types'
 import { Authorization } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
@@ -703,6 +704,10 @@ export class BuilderAPI extends BaseAPI {
 
   updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
+  }
+
+  fetchThirdPartyItemTiers = (): Promise<ThirdPartyItemTier[]> => {
+    return this.request('get', '/tiers/thirdParty')
   }
 
   isAxiosError(error: any): error is AxiosError {

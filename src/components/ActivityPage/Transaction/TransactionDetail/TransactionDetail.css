@@ -110,3 +110,12 @@
     display: none;
   }
 }
+
+.TransactionDetail .tier-image {
+  background-image: url('../../../../images/empty-slots.svg');
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30px 30px;
+}

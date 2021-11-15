@@ -204,6 +204,15 @@
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
   },
+  "buy_item_slots_modal": {
+    "title": "插槽",
+    "description_line_one": "购买插槽以发布您的物品！",
+    "description_line_two": "请选择您要购买的数量。",
+    "not_enough_mana": "您没有足够的 {symbol} 购买此层级。",
+    "get_mana": "您可以使用 {link} 去中心化应用程序获得更多。",
+    "tier_value": "{value}个插槽",
+    "buy_slots": "买插槽"
+  },
   "share_modal": {
     "title": "分享您的场景",
     "description": "让你的朋友和合作者欣赏您的作品",
@@ -835,7 +844,8 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
+    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合",
+    "buy_third_party_item_tiers": "为第三方 {name} 购买了 {count}个插槽"
   },
   "transfer_page": {
     "title": "转移",
@@ -1028,7 +1038,7 @@
     "content_policy": "内容政策",
     "accept_by_publishing": "通过点击发表您接受我们的条件",
     "publish": "发布",
-    "not_enogh_mana": "您没有足够的{symbol} 来发布此收藏集。",
+    "not_enough_mana": "您没有足够的{symbol} 来发布此收藏集。",
     "get_mana": "您可以使用{link} dapp获得更多信息。"
   },
   "sell_collection_modal": {

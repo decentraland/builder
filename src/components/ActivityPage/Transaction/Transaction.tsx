@@ -29,6 +29,7 @@ import {
   REJECT_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
 import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
+import { BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS } from 'modules/tiers/actions'
 import { getSaleAddress, getTotalAmountOfMintedItems } from 'modules/collection/utils'
 import { isEnoughClaimMana } from 'modules/ens/utils'
 import { includes } from 'lib/address'
@@ -371,6 +372,17 @@ const Transaction = (props: Props) => {
         />
       )
     }
+
+    case BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS: {
+      const { thirdParty, tier } = tx.payload
+      return (
+        <TransactionDetail
+          tier={tier}
+          tx={tx}
+          text={t('transaction.buy_third_party_item_tiers', { count: tier.value, name: thirdParty.name })}
+        />
+      )
+    }
     case RESCUE_ITEMS_SUCCESS: {
       const { count, collectionId, collectionName } = tx.payload
       return (
@@ -383,7 +395,7 @@ const Transaction = (props: Props) => {
               values={{ count, collectionName: <Link to={locations.collectionDetail(collectionId)}>{collectionName}</Link> }}
             />
           }
-        ></TransactionDetail>
+        />
       )
     }
     default:

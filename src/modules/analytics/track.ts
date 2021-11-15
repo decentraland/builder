@@ -87,6 +87,8 @@ import {
   REJECT_CURATION_SUCCESS
 } from 'modules/curation/actions'
 import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
+import { BUY_THIRD_PARTY_ITEM_TIERS_FAILURE, BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS } from 'modules/tiers/actions'
+import { BuyThirdPartyItemTiersFailureAction, BuyThirdPartyItemTiersSuccessAction } from 'modules/tiers/types'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -278,6 +280,23 @@ add(PUBLISH_COLLECTION_FAILURE, 'Publish collection error', action => {
   const { payload } = action as PublishCollectionFailureAction
   return {
     collection: payload.collection,
+    error: payload.error
+  }
+})
+
+add(BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS, 'Buy third party item tiers success', action => {
+  const { payload } = action as BuyThirdPartyItemTiersSuccessAction
+  return {
+    thirdPartyId: payload.thirdParty.id,
+    tier: payload.tier
+  }
+})
+
+add(BUY_THIRD_PARTY_ITEM_TIERS_FAILURE, 'Buy third party item tiers error', action => {
+  const { payload } = action as BuyThirdPartyItemTiersFailureAction
+  return {
+    thirdPartyId: payload.thirdPartyId,
+    tier: payload.tier,
     error: payload.error
   }
 })

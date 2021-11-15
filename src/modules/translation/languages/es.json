@@ -212,6 +212,15 @@
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
+  "buy_item_slots_modal": {
+    "title": "Slots",
+    "description_line_one": "Compra slots para publicar tus items!",
+    "description_line_two": "Por favor selecciona cuántos quieres comprar.",
+    "not_enough_mana": "No tienes suficiente {symbol} para comprar este nivel.",
+    "get_mana": "Puedes conseguir más utilizando la {link} dapp.",
+    "tier_value": "{value} {value, plural, one {Slot} other {Slots}}",
+    "buy_slots": "Comprar slots"
+  },
   "share_modal": {
     "title": "Comparte tu Escena",
     "description": "Deja que tus amigos y co-creadores vean tu trabajo",
@@ -851,7 +860,8 @@
     "allowed_claim_mana": "Permitió el uso de MANA para reclamar un nuevo nombre",
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
-    "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}"
+    "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}",
+    "buy_third_party_item_tiers": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\""
   },
   "transfer_page": {
     "title": "Transferir",
@@ -1047,7 +1057,7 @@
     "terms_of_use": "Términos de uso",
     "content_policy": "Política de contenido",
     "accept_by_publishing": "Al presionar Publish estás aceptando nuestros términos y condiciones",
-    "not_enogh_mana": "No tienes suficiente {symbol} para publicar la collección.",
+    "not_enough_mana": "No tienes suficiente {symbol} para publicar la collección.",
     "get_mana": "Puedes obtener más usando la {link} dapp."
   },
   "sell_collection_modal": {
