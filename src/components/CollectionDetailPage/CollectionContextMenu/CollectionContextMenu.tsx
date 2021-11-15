@@ -84,6 +84,9 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
               <>
                 <Dropdown.Item text={t('collection_context_menu.managers')} onClick={this.handleUpdateManagers} />
                 <Dropdown.Item text={t('collection_context_menu.minters')} onClick={this.handleUpdateMinters} />
+                <CopyToClipboard text={collection.urn!}>
+                  <Dropdown.Item text={t('collection_context_menu.copy_urn')} />
+                </CopyToClipboard>
               </>
             ) : null
           ) : !isLocked(collection) ? (
