@@ -33,7 +33,7 @@ export const getWalletCollections = createSelector<RootState, Collection[], stri
 export const getAuthorizedCollections = createSelector<RootState, Collection[], string | undefined, Collection[]>(
   getCollections,
   getAddress,
-  (collections, address) => collections.filter(collection => address && (canSeeCollection(collection, address) || collection.urn))
+  (collections, address) => collections.filter(collection => address && canSeeCollection(collection, address))
 )
 
 export const getCollection = (state: RootState, collectionId: string) => {
