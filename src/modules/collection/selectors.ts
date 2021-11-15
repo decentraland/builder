@@ -5,13 +5,17 @@ import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getItems, getStatusByItemId } from 'modules/item/selectors'
 import { Item, SyncStatus } from 'modules/item/types'
+import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { getData as getThirdParties } from 'modules/thirdParty/selectors'
+import { getThirdPartyOfCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
+import { ThirdParty } from 'modules/thirdParty/types'
+import { Curation } from 'modules/curation/types'
 import { isEqual } from 'lib/address'
+import { decodeURN, URNType } from 'lib/urn'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
 import { Collection } from './types'
 import { CollectionState } from './reducer'
 import { canSeeCollection, getMostRelevantStatus } from './utils'
-import { getCurationsByCollectionId } from 'modules/curation/selectors'
-import { Curation } from 'modules/curation/types'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -30,10 +34,20 @@ export const getWalletCollections = createSelector<RootState, Collection[], stri
   (collections, address) => collections.filter(collection => address && isEqual(collection.owner, address))
 )
 
-export const getAuthorizedCollections = createSelector<RootState, Collection[], string | undefined, Collection[]>(
-  getCollections,
-  getAddress,
-  (collections, address) => collections.filter(collection => address && (canSeeCollection(collection, address) || collection.urn))
+export const getAuthorizedCollections = createSelector<
+  RootState,
+  Collection[],
+  string | undefined,
+  Record<string, ThirdParty>,
+  Collection[]
+>(getCollections, getAddress, getThirdParties, (collections, address, thirdParties) =>
+  collections.filter(collection => {
+    if (decodeURN(collection.urn!).type === URNType.COLLECTIONS_THIRDPARTY) {
+      return address && isUserManagerOfThirdParty(address, getThirdPartyOfCollection(thirdParties, collection))
+    } else {
+      return address && canSeeCollection(collection, address)
+    }
+  })
 )
 
 export const getCollection = (state: RootState, collectionId: string) => {
