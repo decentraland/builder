@@ -12,11 +12,8 @@ import { Props, State } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
 
 export default class BuyItemSlotsModal extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      selectedTierId: undefined
-    }
+  state = {
+    selectedTierId: undefined
   }
 
   handleTierChange = (_: React.FormEvent<HTMLInputElement>, data: CheckboxProps): void => {
@@ -41,7 +38,8 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   }
 
   handleItemSlotsBuy = (): void => {
-    const { onBuyItemSlots, thirdParty } = this.props
+    const { onBuyItemSlots, metadata } = this.props
+    const { thirdParty } = metadata
     const { selectedTierId } = this.state
 
     const selectedTier = this.getSelectedTier()
