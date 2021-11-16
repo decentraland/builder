@@ -198,7 +198,9 @@
       "file_too_big": "The file is too big to be uploaded. The max size is {size}.",
       "wrong_extension": "The file has an invalid extension.",
       "invalid_files": "Files seem to be invalid or broken, please review them and try again.",
-      "missing_model_file": "Couldn't find a valid model file."
+      "missing_model_file": "Couldn't find a valid model file.",
+      "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
+      "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}."
     }
   },
   "edit_collection_name_modal": {

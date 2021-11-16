@@ -1,4 +1,5 @@
 import { ThumbnailType } from 'lib/getModelData'
+import { InvalidContentPath, InvalidEnumValue } from 'modules/item/errors'
 import { WearableCategory } from 'modules/item/types'
 import { ItemAssetJson } from './CreateItemModal.types'
 
@@ -16,12 +17,13 @@ export const getThumbnailType = (category: WearableCategory) => {
 
 export function validatePath(path: keyof ItemAssetJson, assetJson: ItemAssetJson, contents: Record<string, Blob>) {
   if (assetJson[path] && !(assetJson[path]! in contents)) {
-    throw new Error(`Invalid path "${assetJson[path]}" for property "${path}", file not found.`)
+    throw new InvalidContentPath(assetJson[path]!, path)
   }
 }
 
-export function validateEnum<T>(value?: T, values: T[] = []) {
+export function validateEnum(name: keyof ItemAssetJson, assetJson: ItemAssetJson, values: string[] = []) {
+  const value = assetJson[name]
   if (value && !values.includes(value)) {
-    throw new Error(`Invalid value "${value}", possible values: ${values.map(v => `"${v}"`).join(', ')}.`)
+    throw new InvalidEnumValue(value!, values, name)
   }
 }

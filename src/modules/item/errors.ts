@@ -31,3 +31,15 @@ export class MissingModelFileError extends Error {
     super(t('create_item_modal.error.missing_model_file'))
   }
 }
+
+export class InvalidContentPath extends Error {
+  constructor(path: string, name: string) {
+    super(t('create_item_modal.error.invalid_content_path', { path, name }))
+  }
+}
+
+export class InvalidEnumValue<T> extends Error {
+  constructor(value: T, values: T[], name: string) {
+    super(t('create_item_modal.error.invalid_enum_value', { value, values: values.map(v => `"${v}"`).join(', '), name }))
+  }
+}

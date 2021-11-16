@@ -200,7 +200,9 @@
       "file_too_big": "El archivo es demasiado grande para cargarlo. El tamaño máximo es {size}.",
       "wrong_extension": "El archivo tiene una extensión inválida.",
       "invalid_files": "Los archivos parecen no ser válidos o estar dañados. Por favor revíselos y vuelva a intentarlo.",
-      "missing_model_file": "No se pudo encontrar un archivo de modelo válido."
+      "missing_model_file": "No se pudo encontrar un archivo de modelo válido.",
+      "invalid_content_path": "La ruta \"{path}\" es inválida para la propiedad \"{name}\", el archivo no existe.",
+      "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}."
     }
   },
   "edit_collection_name_modal": {

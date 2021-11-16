@@ -398,9 +398,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     // sanizite
     validatePath('thumbnail', assetJson, contents)
     validatePath('model', assetJson, contents)
-    validateEnum(assetJson.rarity, Object.values(ItemRarity))
-    validateEnum(assetJson.category, Object.values(WearableCategory))
-    validateEnum(assetJson.bodyShape, Object.values(BodyShapeType))
+    validateEnum('rarity', assetJson, Object.values(ItemRarity))
+    validateEnum('category', assetJson, Object.values(WearableCategory))
+    validateEnum('bodyShape', assetJson, Object.values(BodyShapeType))
 
     if (thumbnail && thumbnail in contents) {
       return {
