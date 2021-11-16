@@ -1089,6 +1089,7 @@
   "collection_card": {
     "third_party_collection": "Colección Externa",
     "collection": "Colección",
+    "item_count": "{count} {count, plural, one {item} other {items}}",
     "subtitle": "{count} {count, plural, one {item} other {items}}",
     "confirm_delete_content": "¿Seguro que quieres borrar tu colección \"{name}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{name}\""
