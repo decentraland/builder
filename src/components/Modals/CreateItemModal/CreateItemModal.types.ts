@@ -20,6 +20,7 @@ export type Props = ModalProps & {
 export type StateData = {
   id: string
   name: string
+  description: string
   category: WearableCategory
   rarity: ItemRarity
   bodyShape: BodyShapeType
@@ -42,15 +43,7 @@ export type CreateItemModalMetadata = {
   changeItemFile?: boolean
 }
 
-export type ItemAssetJson = {
-  name?: string
-  description?: string
-  category?: WearableCategory
-  rarity?: ItemRarity
-  thumbnail?: string
-  model?: string
-  bodyShape?: BodyShapeType
-}
+export type ItemAssetJson = Pick<State, 'name' | 'description' | 'category' | 'rarity' | 'thumbnail' | 'model' | 'bodyShape'>
 
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 

@@ -79,6 +79,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (item) {
       state.id = item.id
       state.name = item.name
+      state.description = item.description
       state.item = item
       state.collectionId = item.collectionId
       state.bodyShape = getBodyShapeType(item)
@@ -162,6 +163,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (id && this.isValid()) {
       const {
         name,
+        description,
         model,
         thumbnail,
         bodyShape,
@@ -242,7 +244,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item = {
           id,
           name,
-          description: '',
+          description: description || '',
           thumbnail: THUMBNAIL_PATH,
           type: ItemType.WEARABLE,
           collectionId,
