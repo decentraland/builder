@@ -14,7 +14,7 @@ import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Mod
 import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
 import { Item, WearableCategory } from 'modules/item/types'
-import { openModal } from 'modules/modal/actions'
+import { openModal, closeModal } from 'modules/modal/actions'
 import { fetchItemsRequest, fetchItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
 import { approveCurationFailure, approveCurationRequest, approveCurationSuccess } from 'modules/curation/actions'
@@ -694,6 +694,33 @@ describe('when executing the approval flow', () => {
           .provide([[call(t, 'sagas.collection.collection_locked'), errorMessage]])
           .put(saveCollectionFailure(lockedCollection, errorMessage))
           .dispatch(saveCollectionRequest(lockedCollection))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe("when it's a third party collection", () => {
+      let thirdPartyCollection: Collection
+      let remoteCollection: Collection
+
+      beforeEach(() => {
+        thirdPartyCollection = {
+          name: 'some name',
+          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:tercer-fiesta-2'
+        } as Collection
+        remoteCollection = {
+          contractAddress: '0xdeadbeef'
+        } as Collection
+      })
+
+      it('should save the collection without data', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([[call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]])
+          .put(saveCollectionSuccess({ ...thirdPartyCollection, contractAddress: remoteCollection.contractAddress }))
+          .dispatch(saveCollectionRequest(thirdPartyCollection))
+          .dispatch(closeModal('CreateCollectionModal'))
+          .dispatch(closeModal('CreateThirdPartyCollectionModal'))
+          .dispatch(closeModal('EditCollectionURNModal'))
+          .dispatch(closeModal('EditCollectionNameModal'))
           .run({ silenceTimeout: true })
       })
     })

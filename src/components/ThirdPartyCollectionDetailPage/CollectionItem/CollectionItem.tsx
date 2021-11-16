@@ -14,11 +14,12 @@ import * as styles from './CollectionItem.module.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
   handleEditURN = () => {
-    // this.props.onOpenModal('EditURNModal')
+    const { item, onOpenModal } = this.props
+    onOpenModal('EditItemURNModal', { item })
   }
 
   handleNavigateToEditor = () => {
-    const { onNavigate, item } = this.props
+    const { item, onNavigate } = this.props
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
   }
 

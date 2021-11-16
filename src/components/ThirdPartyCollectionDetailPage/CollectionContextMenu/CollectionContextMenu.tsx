@@ -23,7 +23,8 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
   }
 
   handleEditURN = () => {
-    // this.props.onOpenModal('EditURNModal')
+    const { collection, onOpenModal } = this.props
+    onOpenModal('EditCollectionURNModal', { collection })
   }
 
   navigateTo = (url: string, target: string = '') => {

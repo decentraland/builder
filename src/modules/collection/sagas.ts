@@ -110,14 +110,15 @@ import {
 } from 'modules/entity/actions'
 import { getCollection, getWalletCollections } from './selectors'
 import { Collection } from './types'
-import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked } from './utils'
+import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked, isThirdParty } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
-  yield takeLatest(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SAVE_COLLECTION_REQUEST, handleSaveCollectionRequest)
+  yield takeLatest(SAVE_COLLECTION_SUCCESS, handleSaveCollectionSuccess)
+  yield takeLatest(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(DELETE_COLLECTION_REQUEST, handleDeleteCollectionRequest)
   yield takeEvery(PUBLISH_COLLECTION_REQUEST, handlePublishCollectionRequest)
   yield takeEvery(SET_COLLECTION_MINTERS_REQUEST, handleSetCollectionMintersRequest)
@@ -134,7 +135,6 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     try {
       const collections: Collection[] = yield call(() => builder.fetchCollections(address))
       yield put(fetchCollectionsSuccess(collections))
-      yield put(closeModal('CreateCollectionModal'))
     } catch (error) {
       yield put(fetchCollectionsFailure(error.message))
     }
@@ -148,6 +148,13 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     } catch (error) {
       yield put(fetchCollectionFailure(id, error.message))
     }
+  }
+
+  function* handleSaveCollectionSuccess() {
+    yield put(closeModal('CreateCollectionModal'))
+    yield put(closeModal('CreateThirdPartyCollectionModal'))
+    yield put(closeModal('EditCollectionURNModal'))
+    yield put(closeModal('EditCollectionNameModal'))
   }
 
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
@@ -168,37 +175,40 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         throw new Error(yield call(t, 'sagas.collection.collection_locked'))
       }
 
-      const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
-      const maticChainId = getChainIdByNetwork(Network.MATIC)
-      const rarities = getContract(ContractName.Rarities, maticChainId)
-      const from: string = yield select(getAddress)
-      const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
-      const provider: Provider = yield call(getNetworkProvider, maticChainId)
-      const collectionV2 = new Contract(
-        constants.AddressZero, // using zero address here since we just want the implementation of the ERC721CollectionV2 to generate the `data` of the initialize method
-        abi,
-        new providers.Web3Provider(provider)
-      )
-      const data = yield call(
-        getMethodData,
-        collectionV2.populateTransaction.initialize(
-          collection.name,
-          getCollectionSymbol(collection),
-          getCollectionBaseURI(),
-          from,
-          true, // should complete
-          false, // is approved
-          rarities.address,
-          toInitializeItems(items)
+      let data: string = ''
+
+      if (!isThirdParty(collection)) {
+        const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
+        const from: string = yield select(getAddress)
+        const maticChainId = getChainIdByNetwork(Network.MATIC)
+        const rarities = getContract(ContractName.Rarities, maticChainId)
+        const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
+
+        const provider: Provider = yield call(getNetworkProvider, maticChainId)
+        const collectionV2 = new Contract(
+          constants.AddressZero, // using zero address here since we just want the implementation of the ERC721CollectionV2 to generate the `data` of the initialize method
+          abi,
+          new providers.Web3Provider(provider)
         )
-      )
-      const remoteCollection: Collection = yield call(() => builder.saveCollection(collection, data))
+        data = yield call(
+          getMethodData,
+          collectionV2.populateTransaction.initialize(
+            collection.name,
+            getCollectionSymbol(collection),
+            getCollectionBaseURI(),
+            from,
+            true, // should complete
+            false, // is approved
+            rarities.address,
+            toInitializeItems(items)
+          )
+        )
+      }
+
+      const remoteCollection: Collection = yield call([builder, 'saveCollection'], collection, data)
       const newCollection = { ...collection, ...remoteCollection }
 
       yield put(saveCollectionSuccess(newCollection))
-      yield put(closeModal('CreateCollectionModal'))
-      yield put(closeModal('CreateThirdPartyCollectionModal'))
-      yield put(closeModal('EditCollectionNameModal'))
     } catch (error) {
       yield put(saveCollectionFailure(collection, error.message))
     }

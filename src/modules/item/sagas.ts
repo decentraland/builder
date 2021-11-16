@@ -86,6 +86,7 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
+  yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
@@ -165,6 +166,10 @@ export function* itemSaga(builder: BuilderAPI) {
     } catch (error) {
       yield put(saveItemFailure(actionItem, contents, error.message))
     }
+  }
+
+  function* handleSaveItemSuccess() {
+    yield put(closeModal('EditItemURNModal'))
   }
 
   function* handleSetPriceAndBeneficiaryRequest(action: SetPriceAndBeneficiaryRequestAction) {

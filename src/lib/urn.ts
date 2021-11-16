@@ -60,18 +60,22 @@ type BaseDecodedURN = {
   protocol: URNProtocol
   suffix: string
 }
-
-export type DecodedURN = BaseDecodedURN &
-  (
-    | { type: URNType.BASE_AVATARS }
-    | { type: URNType.COLLECTIONS_V2 }
-    | {
-        type: URNType.COLLECTIONS_THIRDPARTY
-        thirdPartyName: string
-        thirdPartyCollectionId?: string
-        thirdPartyTokenId?: string
-      }
-  )
+type BaseAvatarURN = { type: URNType.BASE_AVATARS }
+type CollectionsV2URN = { type: URNType.COLLECTIONS_V2 }
+type CollectionThirdPartyURN = {
+  type: URNType.COLLECTIONS_THIRDPARTY
+  thirdPartyName: string
+  thirdPartyCollectionId?: string
+  thirdPartyTokenId?: string
+}
+export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
+  (T extends URNType.BASE_AVATARS
+    ? BaseAvatarURN
+    : T extends URNType.COLLECTIONS_V2
+    ? CollectionsV2URN
+    : T extends URNType.COLLECTIONS_THIRDPARTY
+    ? CollectionThirdPartyURN
+    : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN)
 
 export function buildItemURN(type: string, name: string, description: string, category: string, bodyShapeTypes: string): URN {
   return `${VERSION}:${type[0]}:${name}:${description}:${category}:${bodyShapeTypes}`

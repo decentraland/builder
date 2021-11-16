@@ -210,6 +210,10 @@
     "subtitle": "Escribe un nuevo nombre para esta colección",
     "submit": "Guardar"
   },
+  "edit_urn_modal": {
+    "title": "Editar URN",
+    "subtitle": "Actualizar el URN para {name}"
+  },
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
@@ -487,6 +491,7 @@
     "publish": "Publicar",
     "published": "Publicado",
     "description": "Descripción",
+    "urn": "URN",
     "order": {
       "newest": "Reciente",
       "name_asc": "Nombre ↑",
