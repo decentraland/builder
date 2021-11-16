@@ -126,16 +126,6 @@ describe('Third Party selectors', () => {
         }
       })
 
-      describe("and the collection doesn't have a URN", () => {
-        beforeEach(() => {
-          collection = {
-            urn: undefined
-          } as Collection
-        })
-
-        it('should return null', () => {})
-      })
-
       describe("and the collection doesn't have a valid third party URN", () => {
         beforeEach(() => {
           collection = {
