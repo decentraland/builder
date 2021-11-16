@@ -712,7 +712,7 @@ describe('when executing the approval flow', () => {
         } as Collection
       })
 
-      it('should save the collection without a data', () => {
+      it('should save the collection without data', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
           .provide([[call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]])
           .put(saveCollectionSuccess({ ...thirdPartyCollection, contractAddress: remoteCollection.contractAddress }))
