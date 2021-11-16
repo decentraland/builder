@@ -217,7 +217,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
     const { collection } = action.payload
     try {
-      yield call(() => builder.deleteCollection(collection))
+      yield call(() => builder.deleteCollection(collection.id))
       yield put(deleteCollectionSuccess(collection))
       const collectionIdInUriParam: string = yield select(getCollectionId)
       if (collectionIdInUriParam === collection.id) {

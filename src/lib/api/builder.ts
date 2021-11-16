@@ -621,8 +621,8 @@ export class BuilderAPI extends BaseAPI {
     }
   }
 
-  async deleteItem(item: Item) {
-    await this.request('delete', `/items/${item.id}`, {})
+  async deleteItem(id: string) {
+    await this.request('delete', `/items/${id}`, {})
   }
 
   async fetchCollections(address?: string) {
@@ -665,8 +665,8 @@ export class BuilderAPI extends BaseAPI {
     return this.request('post', `/collections/${collection.id}/lock`, { collection_address: collection.id })
   }
 
-  async deleteCollection(collection: Collection) {
-    await this.request('delete', `/collections/${collection.id}`, {})
+  async deleteCollection(id: string) {
+    await this.request('delete', `/collections/${id}`, {})
   }
 
   async fetchCurations(): Promise<Curation[]> {

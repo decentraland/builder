@@ -11,8 +11,14 @@ import { getBodyShapeType } from 'modules/item/utils'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import * as styles from './CollectionItem.module.css'
+import ConfirmDelete from 'components/ConfirmDelete'
 
 export default class CollectionItem extends React.PureComponent<Props> {
+  handleCheckboxChange = (_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) => {
+    const { item, onSelect } = this.props
+    onSelect(item, data.checked!)
+  }
+
   handleEditURN = () => {
     const { item, onOpenModal } = this.props
     onOpenModal('EditItemURNModal', { item })
@@ -23,9 +29,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
   }
 
-  handleCheckboxChange = (_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) => {
-    const { item, onSelect } = this.props
-    onSelect(item, data.checked!)
+  handleDelete = () => {
+    const { item, onDelete } = this.props
+    onDelete(item)
   }
 
   getTokenId() {
@@ -82,6 +88,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
                   <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
                   <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
                   <Dropdown.Item text={t('collection_item.edit_urn')} onClick={this.handleEditURN} />
+                  {!item.isPublished && (
+                    <ConfirmDelete name={item.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
+                  )}
                 </Dropdown.Menu>
               </Dropdown>
             </div>

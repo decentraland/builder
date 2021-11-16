@@ -206,13 +206,14 @@ export function* itemSaga(builder: BuilderAPI) {
   function* handleDeleteItemRequest(action: DeleteItemRequestAction) {
     const { item } = action.payload
     try {
-      yield call(() => builder.deleteItem(item))
+      yield call(() => builder.deleteItem(item.id))
       yield put(deleteItemSuccess(item))
       const itemIdInUriParam: string = yield select(getItemId)
       if (itemIdInUriParam === item.id) {
         yield put(replace(locations.collections()))
       }
     } catch (error) {
+      console.log(error)
       yield put(deleteItemFailure(item, error.message))
     }
   }
