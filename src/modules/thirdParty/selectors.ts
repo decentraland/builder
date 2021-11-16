@@ -24,5 +24,5 @@ export const getWalletThirdParties = createSelector<RootState, ThirdPartyState['
 )
 
 export const getCollectionThirdParty = (state: RootState, collection: Collection): ThirdParty | null => {
-  return collection.urn ? getThirdPartyOfCollection(getData(state), collection) : null
+  return getThirdPartyOfCollection(getData(state), collection)
 }

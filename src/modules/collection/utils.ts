@@ -98,9 +98,6 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
 }
 
 export function isThirdParty(collection: Collection) {
-  if (!collection.urn) {
-    return false
-  }
   const decodedURN = decodeURN(collection.urn)
   return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
 }

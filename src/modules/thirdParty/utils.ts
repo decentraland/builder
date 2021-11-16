@@ -10,4 +10,4 @@ export function isUserManagerOfThirdParty(address: string, thirdParty: ThirdPart
 export const getAvailableSlots = (thirdParty: ThirdParty): BN => new BN(thirdParty.maxItems).sub(new BN(thirdParty.totalItems))
 
 export const getThirdPartyOfCollection = (thirdParties: Record<string, ThirdParty>, collection: Collection) =>
-  thirdParties[extractThirdPartyId(collection.urn!)]
+  thirdParties[extractThirdPartyId(collection.urn)]

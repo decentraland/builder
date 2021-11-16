@@ -59,7 +59,7 @@ export type RemoteCollection = {
   eth_address: string
   salt: string | null
   contract_address: string | null
-  urn: string | null
+  urn: string
   is_published: boolean
   is_approved: boolean
   minters: string[]
@@ -349,7 +349,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     eth_address: collection.owner,
     salt: collection.salt || null,
     contract_address: collection.contractAddress || null,
-    urn: collection.urn || null,
+    urn: collection.urn,
     is_published: false,
     is_approved: false,
     minters: collection.minters,
@@ -369,6 +369,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     id: remoteCollection.id,
     name: remoteCollection.name,
     owner: remoteCollection.eth_address,
+    urn: remoteCollection.urn,
     isPublished: remoteCollection.is_published,
     isApproved: remoteCollection.is_approved,
     minters: remoteCollection.minters || [],
@@ -381,7 +382,6 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   }
 
   if (remoteCollection.salt) collection.salt = remoteCollection.salt
-  if (remoteCollection.urn) collection.urn = remoteCollection.urn
   if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
 
   return collection
