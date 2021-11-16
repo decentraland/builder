@@ -57,7 +57,7 @@ import {
 } from 'modules/item/utils'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
-import { getThumbnailType } from './utils'
+import { getThumbnailType, validateEnum, validatePath } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData, SortedContent, ItemAssetJson } from './CreateItemModal.types'
 import './CreateItemModal.css'
 
@@ -394,12 +394,21 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   async getAssetJsonProps(assetJson: ItemAssetJson = {}, contents: Record<string, Blob> = {}): Promise<ItemAssetJson> {
     const { thumbnail, ...props } = assetJson
+
+    // sanizite
+    validatePath('thumbnail', assetJson, contents)
+    validatePath('model', assetJson, contents)
+    validateEnum(assetJson.rarity, Object.values(ItemRarity))
+    validateEnum(assetJson.category, Object.values(WearableCategory))
+    validateEnum(assetJson.bodyShape, Object.values(BodyShapeType))
+
     if (thumbnail && thumbnail in contents) {
       return {
         ...props,
         thumbnail: await blobToDataURL(contents[thumbnail])
       }
     }
+
     return props
   }
 
