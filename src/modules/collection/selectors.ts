@@ -43,7 +43,8 @@ export const getAuthorizedCollections = createSelector<
 >(getCollections, getAddress, getThirdParties, (collections, address, thirdParties) =>
   collections.filter(collection => {
     if (decodeURN(collection.urn!).type === URNType.COLLECTIONS_THIRDPARTY) {
-      return address && isUserManagerOfThirdParty(address, getThirdPartyOfCollection(thirdParties, collection))
+      const thirdParty = getThirdPartyOfCollection(thirdParties, collection)
+      return address && thirdParty && isUserManagerOfThirdParty(address, thirdParty)
     } else {
       return address && canSeeCollection(collection, address)
     }

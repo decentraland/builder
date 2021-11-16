@@ -9,6 +9,7 @@ import './components/Grid.css'
 import './components/Dropdown.css'
 import './components/Field.css'
 import './components/Popup.css'
+import './components/Checkbox.css'
 
 // Custom theme
 import './theme.css'

@@ -9,14 +9,20 @@ import { ThirdParty } from 'modules/thirdParty/types'
 export type Props = {
   wallet: Wallet
   collection: Collection | null
+  thirdParty: ThirdParty | null
   items: Item[]
   isOnSaleLoading: boolean
   isLoading: boolean
-  thirdParty: ThirdParty | null
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'items' | 'isLoading' | 'thirdParty'>
+export type State = {
+  itemSelectionState: Record<string, boolean>
+  searchText: string
+  page: number
+}
+
+export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'items' | 'thirdParty' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>
