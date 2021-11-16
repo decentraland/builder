@@ -42,7 +42,7 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
                 <Column className="actions" align="right">
                   <Row>
                     <Button basic onClick={() => onNavigate(locations.sceneEditor(project.id))}>
-                      {t('scene_detail_page.actions.open_in_editor')}
+                      {t('global.open_in_editor')}
                     </Button>
                     <Dropdown
                       trigger={

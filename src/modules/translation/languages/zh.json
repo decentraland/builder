@@ -206,6 +206,15 @@
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
   },
+  "buy_item_slots_modal": {
+    "title": "插槽",
+    "description_line_one": "购买插槽以发布您的物品！",
+    "description_line_two": "请选择您要购买的数量。",
+    "not_enough_mana": "您没有足够的 {symbol} 购买此层级。",
+    "get_mana": "您可以使用 {link} 去中心化应用程序获得更多。",
+    "tier_value": "{value}个插槽",
+    "buy_slots": "买插槽"
+  },
   "share_modal": {
     "title": "分享您的场景",
     "description": "让你的朋友和合作者欣赏您的作品",
@@ -412,6 +421,8 @@
     "blog_post": "博客",
     "cancel": "取消",
     "confirm": "确认",
+    "add": "添加",
+    "buy": "买",
     "continue": "继续",
     "create": "创建",
     "dismiss": "解散",
@@ -422,7 +433,7 @@
     "finish": "完",
     "free": "自由",
     "here": "这里",
-    "items": "模型",
+    "item": "物品",
     "learn_more": "更多",
     "loading": "装载",
     "mint": "铸币",
@@ -448,6 +459,7 @@
     "view_more": "查看更多",
     "click_here": "点击这里",
     "proceed": "继续",
+    "open_in_editor": "在编辑器中打开",
     "address": "地址",
     "balance": "余额",
     "balances": "天平",
@@ -459,9 +471,11 @@
     "name": "名称",
     "category": "类别",
     "rarity": "稀有度",
+    "body_shape": "身材",
     "body_shape_plural": "机构",
     "size": "大小",
     "hash": "散 列",
+    "publish": "发布",
     "published": "已发表",
     "description": "描述",
     "order": {
@@ -689,6 +703,7 @@
     "shortcuts_help": "在此查看快捷键"
   },
   "project_card": {
+    "items": "模型",
     "confirm_delete_content": "您确认删除场景 \"{title}\"? 此操作不能回退！",
     "confirm_delete_header": "删除 \"{title}\""
   },
@@ -718,7 +733,6 @@
   },
   "scene_detail_page": {
     "actions": {
-      "open_in_editor": "在编辑器中打开",
       "duplicate": "重复",
       "download": "下载",
       "delete": "删除",
@@ -834,7 +848,8 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
+    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合",
+    "buy_third_party_item_tiers": "为第三方 {name} 购买了 {count}个插槽"
   },
   "transfer_page": {
     "title": "转移",
@@ -940,6 +955,17 @@
     "add_representation": "添加{bodyShape}",
     "change_item_file": "编辑制图表达"
   },
+  "third_party_collection_detail_page": {
+    "notice": "每个发布的项目需要 1 个插槽。 {buy_link} 购买老虎机包并开始发布您的作品！",
+    "search_placeholder": "搜索 {count} {count, plural, one {物品} other {项目}}...",
+    "search_info": "{page}-{pageTotal} 个，共 {total} 个",
+    "clear_selection": "清空选项",
+    "selection": "{count, plural, one {# 物品} other {# 项目}} 选中.",
+    "max_select_count": "您一次最多可以发布 {count} 个项目",
+    "slots": "{amount, plural, =0 {没有插槽} one {# 个插槽} other {# 个插槽}}",
+    "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
+    "cant_remove": "发布项目后，您将无法添加或删除项目。"
+  },
   "collection_detail_page": {
     "new_item": "新物品",
     "mint_items": "薄荷项目",
@@ -948,7 +974,6 @@
     "unset_on_sale_popup": "该系列在 Decentraland 市场上有售。",
     "publish": "发布",
     "notice": "凉爽的！ 现在，您可以开始处理项目了。 {editor_link}打开编辑器，或在任何项目上单击“编辑”按钮。",
-    "click_here": "点击这里",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
@@ -958,18 +983,18 @@
     "cant_operate": "此合集仍处于锁定状态，一旦发布结束您将可以再次操作",
     "locked": "锁定"
   },
-  "collection_menu": {
+  "collection_context_menu": {
     "add_existing_item": "添加现有项目",
     "forum_post": "论坛帖子",
     "copy_address": "复制地址",
+    "edit_urn": "编辑 URN",
     "see_in_world": "见世面",
     "unpublished": "此合集尚未发布",
     "managers": "合作者",
     "minters": "铸币厂",
     "post_to_forum": "发布到论坛",
     "posting": "过帐",
-    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试",
-    "open_in_editor": "在编辑器中打开"
+    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试"
   },
   "collection_item": {
     "set_price": "设定价格",
@@ -978,7 +1003,8 @@
     "mint_item": "铸币",
     "remove_from_collection": "从收藏中删除",
     "edit_price": "修改价格",
-    "open_in_editor": "在编辑器中打开",
+    "see_details": "查看详细信息",
+    "edit_urn": "编辑 URN",
     "reset_item": "撤消"
   },
   "item": {
@@ -1021,7 +1047,7 @@
     "content_policy": "内容政策",
     "accept_by_publishing": "通过点击发表您接受我们的条件",
     "publish": "发布",
-    "not_enogh_mana": "您没有足够的{symbol} 来发布此收藏集。",
+    "not_enough_mana": "您没有足够的{symbol} 来发布此收藏集。",
     "get_mana": "您可以使用{link} dapp获得更多信息。"
   },
   "sell_collection_modal": {

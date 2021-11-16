@@ -60,9 +60,11 @@ type BaseDecodedURN = {
   protocol: URNProtocol
   suffix: string
 }
+
 export type DecodedURN = BaseDecodedURN &
   (
-    | { type: URNType.BASE_AVATARS | URNType.COLLECTIONS_V2 }
+    | { type: URNType.BASE_AVATARS }
+    | { type: URNType.COLLECTIONS_V2 }
     | {
         type: URNType.COLLECTIONS_THIRDPARTY
         thirdPartyName: string
@@ -89,6 +91,15 @@ export function buildCatalystItemURN(contractAddress: string, tokenId: string): 
 
 export function toLegacyURN(urn: URN): URN {
   return urn.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')
+}
+
+export function extractThirdPartyId(urn: URN): string {
+  const decodedURN = decodeURN(urn)
+  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+    throw new Error('URN is not a third party URN')
+  }
+
+  return `urn:decentraland:${decodedURN.protocol}:collections-thirdparty:${decodedURN.thirdPartyName}`
 }
 
 export function decodeURN(urn: URN): DecodedURN {

@@ -3,4 +3,6 @@ export type ThirdParty = {
   managers: string[]
   name: string
   description: string
+  maxItems: string
+  totalItems: string
 }

@@ -50,8 +50,8 @@ describe('when fetching third parties', () => {
 
     beforeEach(() => {
       thirdParties = [
-        { id: '1', name: 'a third party', description: 'some desc', managers: ['0x1', '0x2'] },
-        { id: '2', name: 'a third party', description: 'some desc', managers: ['0x3'] }
+        { id: '1', name: 'a third party', description: 'some desc', managers: ['0x1', '0x2'], maxItems: '0', totalItems: '0' },
+        { id: '2', name: 'a third party', description: 'some desc', managers: ['0x3'], maxItems: '0', totalItems: '0' }
       ]
     })
 

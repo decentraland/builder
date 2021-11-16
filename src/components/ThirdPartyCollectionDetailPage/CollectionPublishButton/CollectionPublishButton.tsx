@@ -10,10 +10,13 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
 import { isComplete } from 'modules/item/utils'
 import { SyncStatus } from 'modules/item/types'
-import { Props } from './CollectionAction.types'
+import { Props } from './CollectionPublishButton.types'
 import UnderReview from './UnderReview'
 
-const CollectionAction = ({ wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit }: Props) => {
+// TODO: Review this file, if little to no changes are required to make it work with third party collections
+// we should merge it with CollectionDetailPage/CollectionPublishButton
+const CollectionPublishButton = (props: Props) => {
+  const { wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit } = props
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   useEffect(() => {
@@ -74,7 +77,7 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, h
   } else {
     button = (
       <NetworkButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} network={Network.MATIC}>
-        {t('collection_detail_page.publish')}
+        {t('global.publish')}
       </NetworkButton>
     )
   }
@@ -92,4 +95,4 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, h
   )
 }
 
-export default React.memo(CollectionAction)
+export default React.memo(CollectionPublishButton)

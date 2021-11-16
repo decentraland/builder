@@ -1,0 +1,3 @@
+import ThirdPartyCollectionDetailPage from './ThirdPartyCollectionDetailPage.container'
+
+export default ThirdPartyCollectionDetailPage

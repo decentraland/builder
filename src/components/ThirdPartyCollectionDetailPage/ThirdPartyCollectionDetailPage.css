@@ -1,0 +1,164 @@
+.ThirdPartyCollectionDetailPage .header-column {
+  flex: none;
+  width: calc(100% - 300px);
+}
+
+.ThirdPartyCollectionDetailPage .header-row {
+  width: 100%;
+}
+
+.ThirdPartyCollectionDetailPage .urn {
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: 8px;
+  color: var(--secondary-text);
+}
+
+.ThirdPartyCollectionDetailPage .header-row .ui.header.name {
+  max-width: calc(100% - 40px);
+  font-size: 28px;
+  line-height: 29px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ThirdPartyCollectionDetailPage .edit-collection-name {
+  display: none;
+  margin-left: 16px;
+  margin-bottom: 2px;
+}
+
+.ThirdPartyCollectionDetailPage .copy {
+  display: none;
+  margin-left: 5px;
+}
+
+.ThirdPartyCollectionDetailPage .section .header-row:hover .edit-collection-name,
+.ThirdPartyCollectionDetailPage .urn:hover .copy {
+  display: inline-block;
+}
+
+.ThirdPartyCollectionDetailPage .section .header-row:hover {
+  cursor: pointer;
+}
+
+.ThirdPartyCollectionDetailPage .dcl.row.actions > .ui.button.action-button {
+  margin-left: 24px;
+  border: 1px solid var(--gray);
+  padding: 8px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  white-space: nowrap;
+}
+
+.ThirdPartyCollectionDetailPage .actions .ui.button.action-button + .ui.dropdown {
+  margin-left: 0;
+}
+
+.ThirdPartyCollectionDetailPage .actions .ui.button.action-button > .text {
+  color: var(--text);
+}
+
+.ThirdPartyCollectionDetailPage .actions .ui.button.compact {
+  padding: 10px;
+}
+
+.ThirdPartyCollectionDetailPage .Notice {
+  margin-bottom: 32px;
+}
+
+.ThirdPartyCollectionDetailPage .button.slots.empty {
+  color: var(--secondary-text);
+}
+
+.ThirdPartyCollectionDetailPage .button.slots:before {
+  content: '';
+  display: inline-block;
+  background-image: url('../../images/slots.svg');
+  width: 16px;
+  height: 16px;
+  top: 3px;
+  position: relative;
+  margin-right: 8px;
+}
+
+.ThirdPartyCollectionDetailPage .button.slots .buy-slots {
+  margin-left: 10px;
+}
+
+.ThirdPartyCollectionDetailPage .button.slots.empty:before {
+  background-image: url('../../images/empty-slots.svg');
+}
+
+.ThirdPartyCollectionDetailPage .search-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.ThirdPartyCollectionDetailPage .search-container .dcl.text-filter {
+  flex: 1;
+}
+
+.ThirdPartyCollectionDetailPage .search-container .search-info .select-all {
+  margin-left: 24px;
+  text-transform: uppercase;
+}
+
+.ThirdPartyCollectionDetailPage .selection-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border: 1px solid var(--secondary-text);
+  border-radius: 4px;
+}
+
+.ThirdPartyCollectionDetailPage .ui.grid.equal.width > .row > .column {
+  padding-left: 0;
+}
+
+.ThirdPartyCollectionDetailPage .ui.grid.grid-header > .row > .column:first-child {
+  padding-left: 10px;
+}
+
+.ThirdPartyCollectionDetailPage .ui.grid.grid-header {
+  border-bottom: 1px solid var(--divider);
+  padding-bottom: 10px;
+}
+
+.ThirdPartyCollectionDetailPage .ui.grid.grid-header > .row > .column.item-column {
+  display: flex;
+  align-items: center;
+}
+
+.ThirdPartyCollectionDetailPage .column.item-column .item-checkbox {
+  margin-right: 10px;
+}
+
+.ThirdPartyCollectionDetailPage .dcl.narrow > .empty {
+  padding: 200px 0;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  justify-content: center;
+  color: var(--secondary-text);
+  text-align: center;
+  line-height: 22px;
+  font-size: 15px;
+}
+
+.ThirdPartyCollectionDetailPage .sparkles {
+  width: 54px;
+  height: 56px;
+  background-image: url('../../images/sparkles.svg');
+  background-repeat: no-repeat;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.ThirdPartyCollectionDetailPage .ui.pagination.menu {
+  margin-top: 32px;
+}

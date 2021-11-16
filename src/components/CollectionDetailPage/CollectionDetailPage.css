@@ -29,10 +29,6 @@
   cursor: pointer;
 }
 
-.CollectionDetailPage .is-published .edit-collection-name {
-  display: none;
-}
-
 .CollectionDetailPage .ui.toggle.on-sale {
   text-transform: uppercase;
 }
@@ -74,6 +70,10 @@
 
 .CollectionDetailPage .Notice {
   margin-bottom: 32px;
+}
+
+.CollectionDetailPage .ui.grid.equal.width > .row > .column {
+  padding-left: 0;
 }
 
 .CollectionDetailPage .dcl.narrow > .empty {
