@@ -719,7 +719,7 @@ describe('when executing the approval flow', () => {
           .dispatch(saveCollectionRequest(thirdPartyCollection))
           .dispatch(closeModal('CreateCollectionModal'))
           .dispatch(closeModal('CreateThirdPartyCollectionModal'))
-          .dispatch(closeModal('EditURNModal'))
+          .dispatch(closeModal('EditCollectionURNModal'))
           .dispatch(closeModal('EditCollectionNameModal'))
           .run({ silenceTimeout: true })
       })

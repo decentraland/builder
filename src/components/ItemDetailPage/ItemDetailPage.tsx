@@ -44,7 +44,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
 
   handleEditURN = () => {
     const { item, onOpenModal } = this.props
-    onOpenModal('EditURNModal', { id: item!.id, urn: item!.urn })
+    onOpenModal('EditItemURNModal', { item })
   }
 
   hasAccess() {

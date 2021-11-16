@@ -153,7 +153,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleSaveCollectionSuccess() {
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('CreateThirdPartyCollectionModal'))
-    yield put(closeModal('EditURNModal'))
+    yield put(closeModal('EditCollectionURNModal'))
     yield put(closeModal('EditCollectionNameModal'))
   }
 

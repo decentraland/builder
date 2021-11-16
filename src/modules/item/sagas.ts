@@ -169,7 +169,7 @@ export function* itemSaga(builder: BuilderAPI) {
   }
 
   function* handleSaveItemSuccess() {
-    yield put(closeModal('EditURNModal'))
+    yield put(closeModal('EditItemURNModal'))
   }
 
   function* handleSetPriceAndBeneficiaryRequest(action: SetPriceAndBeneficiaryRequestAction) {
