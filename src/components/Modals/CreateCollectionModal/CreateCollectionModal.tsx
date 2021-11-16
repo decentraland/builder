@@ -4,6 +4,7 @@ import { ModalNavigation, Button, Form, Field, ModalContent, ModalActions, Input
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Collection, COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
+import { buildDefaultCatalystCollectionURN } from 'lib/urn'
 import { Props, State } from './CreateCollectionModal.types'
 
 export default class CreateCollectionModal extends React.PureComponent<Props, State> {
@@ -19,6 +20,7 @@ export default class CreateCollectionModal extends React.PureComponent<Props, St
       const collection: Collection = {
         id: uuid.v4(),
         name: collectionName,
+        urn: buildDefaultCatalystCollectionURN(),
         owner: address!,
         isPublished: false,
         isApproved: false,
