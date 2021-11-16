@@ -89,6 +89,10 @@ export function buildCatalystItemURN(contractAddress: string, tokenId: string): 
   return `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-v2:${contractAddress}:${tokenId}`
 }
 
+export function buildDefaultCatalystCollectionURN() {
+  return `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-v2:0x0000000000000000000000000000000000000000`
+}
+
 export function toLegacyURN(urn: URN): URN {
   return urn.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')
 }

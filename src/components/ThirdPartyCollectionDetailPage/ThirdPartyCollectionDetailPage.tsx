@@ -169,7 +169,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                   </Row>
                   <Row>
                     <small className="urn">
-                      <CopyToClipboard text={collection.urn!}>
+                      <CopyToClipboard text={collection.urn}>
                         <div>
                           {collection.urn}
                           <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
