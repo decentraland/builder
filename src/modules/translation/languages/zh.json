@@ -192,7 +192,9 @@
       "file_too_big": "该文件太大，无法上传。 最大尺寸为 {size}。",
       "wrong_extension": "该文件的扩展名无效。",
       "invalid_files": "文件似乎无效或损坏，请检查并重试。",
-      "missing_model_file": "找不到有效的模型文件。"
+      "missing_model_file": "找不到有效的模型文件。",
+      "invalid_content_path": "属性 \"{name}\" 的无效路径 \"{path}\"，找不到文件。",
+      "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。"
     }
   },
   "edit_collection_name_modal": {
@@ -1093,6 +1095,7 @@
   "collection_card": {
     "third_party_collection": "第三方收藏",
     "collection": "采集",
+    "item_count": "{count} {count, plural, one {物品} other {项目}}",
     "subtitle": "{count} {count, plural, one {项目} other {项目}}",
     "confirm_delete_content": "您确定要删除您的收藏集 \"{name}\" 吗？ 此操作不可逆！",
     "confirm_delete_header": "删除收藏"
