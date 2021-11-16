@@ -17,7 +17,6 @@ import {
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { canSeeCollection } from 'modules/collection/utils'
 import { getAvailableSlots, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -189,7 +188,9 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                       ) : null}
                     </Button>
                     <CollectionPublishButton collection={collection} />
-                    {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
+                    {thirdParty && isUserManagerOfThirdParty(wallet.address, thirdParty) ? (
+                      <CollectionContextMenu collection={collection} />
+                    ) : null}
                   </Row>
                 </Column>
               </Row>
