@@ -7,15 +7,14 @@ import { getItems, getStatusByItemId } from 'modules/item/selectors'
 import { Item, SyncStatus } from 'modules/item/types'
 import { getCurationsByCollectionId } from 'modules/curation/selectors'
 import { getData as getThirdParties } from 'modules/thirdParty/selectors'
-import { getThirdPartyOfCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
+import { getThirdPartyForCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { Curation } from 'modules/curation/types'
 import { isEqual } from 'lib/address'
-import { decodeURN, URNType } from 'lib/urn'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
 import { Collection } from './types'
 import { CollectionState } from './reducer'
-import { canSeeCollection, getMostRelevantStatus } from './utils'
+import { canSeeCollection, getMostRelevantStatus, isThirdParty } from './utils'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -42,8 +41,8 @@ export const getAuthorizedCollections = createSelector<
   Collection[]
 >(getCollections, getAddress, getThirdParties, (collections, address, thirdParties) =>
   collections.filter(collection => {
-    if (decodeURN(collection.urn).type === URNType.COLLECTIONS_THIRDPARTY) {
-      const thirdParty = getThirdPartyOfCollection(thirdParties, collection)
+    if (isThirdParty(collection)) {
+      const thirdParty = getThirdPartyForCollection(thirdParties, collection)
       return address && thirdParty && isUserManagerOfThirdParty(address, thirdParty)
     } else {
       return address && canSeeCollection(collection, address)

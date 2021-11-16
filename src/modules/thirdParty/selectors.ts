@@ -4,7 +4,7 @@ import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
 import { ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
-import { getThirdPartyOfCollection, isUserManagerOfThirdParty } from './utils'
+import { getThirdPartyForCollection, isUserManagerOfThirdParty } from './utils'
 
 export const getState = (state: RootState) => state.thirdParty
 export const getData = (state: RootState) => getState(state).data
@@ -24,5 +24,5 @@ export const getWalletThirdParties = createSelector<RootState, ThirdPartyState['
 )
 
 export const getCollectionThirdParty = (state: RootState, collection: Collection): ThirdParty | null => {
-  return getThirdPartyOfCollection(getData(state), collection)
+  return getThirdPartyForCollection(getData(state), collection)
 }
