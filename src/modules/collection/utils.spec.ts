@@ -92,16 +92,6 @@ describe('when checking collection locks', () => {
 describe('when checking if a collection is a third party', () => {
   let collection: Collection
 
-  describe('when the collection lacks a URN', () => {
-    beforeEach(() => {
-      collection = { id: 'aCollection' } as Collection
-    })
-
-    it('should return false', () => {
-      expect(isThirdParty(collection)).toBe(false)
-    })
-  })
-
   describe('when the collection has a base avatar URN', () => {
     beforeEach(() => {
       collection = { id: 'aCollection', urn: WearableBodyShape.FEMALE.toString() } as Collection
