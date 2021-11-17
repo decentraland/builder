@@ -213,7 +213,6 @@ export function* itemSaga(builder: BuilderAPI) {
         yield put(replace(locations.collections()))
       }
     } catch (error) {
-      console.log(error)
       yield put(deleteItemFailure(item, error.message))
     }
   }

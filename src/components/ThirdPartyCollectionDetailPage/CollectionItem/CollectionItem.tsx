@@ -8,10 +8,10 @@ import { decodeURN, URNType } from 'lib/urn'
 import ItemStatus from 'components/ItemStatus'
 import { WearableData } from 'modules/item/types'
 import { getBodyShapeType } from 'modules/item/utils'
+import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import * as styles from './CollectionItem.module.css'
-import ConfirmDelete from 'components/ConfirmDelete'
 
 export default class CollectionItem extends React.PureComponent<Props> {
   handleCheckboxChange = (_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) => {
