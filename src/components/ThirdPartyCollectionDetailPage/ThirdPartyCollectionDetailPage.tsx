@@ -188,9 +188,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                       ) : null}
                     </Button>
                     <CollectionPublishButton collection={collection} />
-                    {thirdParty && isUserManagerOfThirdParty(wallet.address, thirdParty) ? (
-                      <CollectionContextMenu collection={collection} />
-                    ) : null}
+                    <CollectionContextMenu collection={collection} />
                   </Row>
                 </Column>
               </Row>
