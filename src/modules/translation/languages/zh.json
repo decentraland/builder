@@ -1011,7 +1011,6 @@
     "edit_price": "修改价格",
     "see_details": "查看详细信息",
     "edit_urn": "编辑 URN",
-    "copy_urn": "复制 URN",
     "reset_item": "撤消"
   },
   "item": {
@@ -1024,6 +1023,7 @@
     "supply": "供应",
     "collection": "采集",
     "edit_urn": "编辑 URN",
+    "copy_urn": "Copy URN",
     "type": {
       "wearable": "可穿戴"
     }
