@@ -137,7 +137,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   renderPage() {
-    const { wallet, thirdParty } = this.props
+    const { thirdParty } = this.props
     const { page, searchText, itemSelectionState } = this.state
     const collection = this.props.collection!
     const slots = thirdParty ? getAvailableSlots(thirdParty) : new BN(0)
