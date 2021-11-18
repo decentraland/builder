@@ -97,6 +97,25 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
             </>
           ) : null}
 
+          <CopyToClipboard text={collection.urn!}>
+            <Dropdown.Item text={t('collection_context_menu.copy_urn')} />
+          </CopyToClipboard>
+
+          <Popup
+            content={t('collection_context_menu.unpublished')}
+            position="right center"
+            disabled={collection.isPublished}
+            trigger={
+              <CopyToClipboard text={collection.contractAddress!}>
+                <Dropdown.Item disabled={!collection.isPublished} text={t('collection_context_menu.copy_address')} />
+              </CopyToClipboard>
+            }
+            hideOnScroll={true}
+            on="hover"
+            inverted
+            flowing
+          />
+
           <Popup
             content={
               !collection.isPublished
@@ -126,21 +145,6 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
                   )}
                 </Dropdown.Item>
               ) : null
-            }
-            hideOnScroll={true}
-            on="hover"
-            inverted
-            flowing
-          />
-
-          <Popup
-            content={t('collection_context_menu.unpublished')}
-            position="right center"
-            disabled={collection.isPublished}
-            trigger={
-              <CopyToClipboard text={collection.contractAddress!}>
-                <Dropdown.Item disabled={!collection.isPublished} text={t('collection_context_menu.copy_address')} />
-              </CopyToClipboard>
             }
             hideOnScroll={true}
             on="hover"
