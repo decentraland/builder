@@ -56,6 +56,7 @@ function* handleRedirectTo() {
   if (redirectToEncoded) {
     try {
       const redirectTo: RedirectTo = JSON.parse(decodeURIComponent(redirectToEncoded))
+      
       switch (redirectTo.type) {
         case RedirectToTypes.COLLECTION_DETAIL_BY_CONTRACT_ADDRESS:
           const { success }: { success?: FetchCollectionsSuccessAction; failure?: FetchCollectionsFailureAction } = yield race({
