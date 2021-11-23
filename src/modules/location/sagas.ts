@@ -1,10 +1,5 @@
 import { all, takeLatest, put, select, take, race } from 'redux-saga/effects'
-import {
-  getLocation,
-  LOCATION_CHANGE,
-  push,
-  replace
-} from 'connected-react-router'
+import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { CLAIM_NAME_SUCCESS, SetENSContentSuccessAction, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
@@ -56,7 +51,7 @@ function* handleRedirectTo() {
   if (redirectToEncoded) {
     try {
       const redirectTo: RedirectTo = JSON.parse(decodeURIComponent(redirectToEncoded))
-      
+
       switch (redirectTo.type) {
         case RedirectToTypes.COLLECTION_DETAIL_BY_CONTRACT_ADDRESS:
           const { success }: { success?: FetchCollectionsSuccessAction; failure?: FetchCollectionsFailureAction } = yield race({
