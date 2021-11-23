@@ -37,9 +37,9 @@ export function getCollectionEditorURL(collection: Collection, items: Item[]): s
 }
 
 export function getExplorerURL(collection: Collection) {
-  // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars. Also, we use `ropsten` for the NETWORK because it is the only working network for .zone
-  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '').replace('.org', '.zone')
-  return `${EXPLORER_URL}?WITH_COLLECTIONS=${collection.id}&NETWORK=ropsten`
+  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '')
+  const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
+  return `${EXPLORER_URL}?WITH_COLLECTIONS=${collection.id}&BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=ropsten&DEBUG_MODE=true`
 }
 
 export function getCollectionBaseURI() {
