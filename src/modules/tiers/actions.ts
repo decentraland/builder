@@ -14,6 +14,10 @@ export const fetchThirdPartyItemTiersRequest = () => action(FETCH_THIRD_PARTY_IT
 export const fetchThirdPartyItemTiersSuccess = (tiers: ThirdPartyItemTier[]) => action(FETCH_THIRD_PARTY_ITEM_TIERS_SUCCESS, { tiers })
 export const fetchThirdPartyItemTiersFailure = (error: string) => action(FETCH_THIRD_PARTY_ITEM_TIERS_FAILURE, { error })
 
+export type FetchThirdPartyItemTiersRequestAction = ReturnType<typeof fetchThirdPartyItemTiersRequest>
+export type FetchThirdPartyItemTiersSuccessAction = ReturnType<typeof fetchThirdPartyItemTiersSuccess>
+export type FetchThirdPartyItemTiersFailureAction = ReturnType<typeof fetchThirdPartyItemTiersFailure>
+
 // Buy a third party tier
 
 export const BUY_THIRD_PARTY_ITEM_TIERS_REQUEST = '[Request] Buy a third party item tier'
@@ -27,8 +31,14 @@ export const buyThirdPartyItemTiersSuccess = (txHash: string, chainId: ChainId, 
 export const buyThirdPartyItemTiersFailure = (error: string, thirdPartyId: string, tier: ThirdPartyItemTier) =>
   action(BUY_THIRD_PARTY_ITEM_TIERS_FAILURE, { error, thirdPartyId, tier })
 
+export type BuyThirdPartyItemTiersRequestAction = ReturnType<typeof buyThirdPartyItemTiersRequest>
+export type BuyThirdPartyItemTiersSuccessAction = ReturnType<typeof buyThirdPartyItemTiersSuccess>
+export type BuyThirdPartyItemTiersFailureAction = ReturnType<typeof buyThirdPartyItemTiersFailure>
+
 // Clear tiers error
 
 export const CLEAR_TIERS_ERROR = 'Clear tiers error'
 
 export const clearTiersError = () => action(CLEAR_TIERS_ERROR)
+
+export type ClearTiersErrorAction = ReturnType<typeof clearTiersError>
