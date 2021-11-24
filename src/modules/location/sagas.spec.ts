@@ -1,5 +1,5 @@
 import { race, select, take } from '@redux-saga/core/effects'
-import { LOCATION_CHANGE, push } from 'connected-react-router'
+import { getLocation, push } from 'connected-react-router'
 import { expectSaga } from 'redux-saga-test-plan'
 import {
   fetchCollectionsFailure,
@@ -16,11 +16,9 @@ describe('when handling location change', () => {
   describe('when redirectTo is present in the query', () => {
     it('should put a redirect to request action', () => {
       const redirectTo = 'redirect to'
-      
-      return expectSaga(handleLocationChange, {
-        type: LOCATION_CHANGE,
-        payload: { location: { query: { redirectTo } } }
-      } as any)
+
+      return expectSaga(handleLocationChange)
+        .provide([[select(getLocation), { query: { redirectTo } }]])
         .put(redirectToRequest(redirectTo))
         .silentRun()
     })

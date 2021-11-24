@@ -1,5 +1,5 @@
 import { all, takeLatest, put, select, take, race } from 'redux-saga/effects'
-import { getLocation, LocationChangeAction, LOCATION_CHANGE, push, replace } from 'connected-react-router'
+import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { CLAIM_NAME_SUCCESS, SetENSContentSuccessAction, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
@@ -41,12 +41,10 @@ function* goToActivity() {
   yield put(replace(locations.activity()))
 }
 
-export function* handleLocationChange(action: LocationChangeAction) {
+export function* handleLocationChange() {
   const {
-    location: {
-      query: { redirectTo }
-    }
-  } = action.payload
+    query: { redirectTo }
+  } = yield select(getLocation)
 
   if (redirectTo) {
     yield put(redirectToRequest(redirectTo))
