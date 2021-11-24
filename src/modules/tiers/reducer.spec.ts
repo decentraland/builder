@@ -8,8 +8,8 @@ import {
   fetchThirdPartyItemTiersRequest,
   fetchThirdPartyItemTiersSuccess
 } from './actions'
-import { tiersReducer } from './reducer'
-import { ThirdPartyItemTier, TiersState } from './types'
+import { tiersReducer, TiersState } from './reducer'
+import { ThirdPartyItemTier } from './types'
 
 let state: TiersState
 let thirdParty: ThirdParty
