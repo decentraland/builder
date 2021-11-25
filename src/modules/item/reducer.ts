@@ -80,7 +80,6 @@ import {
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
-import { extractThirdPartyTokenId } from 'lib/urn'
 
 export type ItemState = {
   data: Record<string, Item>
