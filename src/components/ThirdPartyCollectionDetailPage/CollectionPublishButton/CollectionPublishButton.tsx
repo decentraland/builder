@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useMemo, useState } from 'react'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -7,26 +7,20 @@ import { env } from 'decentraland-commons'
 import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { MAX_PUBLISH_ITEM_COUNT } from 'modules/thirdParty/utils'
 import { AuthorizationModal } from 'components/AuthorizationModal'
-import { isComplete } from 'modules/item/utils'
-import { SyncStatus } from 'modules/item/types'
-import { Props } from './CollectionPublishButton.types'
 import UnderReview from './UnderReview'
+import { Props } from './CollectionPublishButton.types'
 
-// TODO: Review this file, if little to no changes are required to make it work with third party collections
-// we should merge it with CollectionDetailPage/CollectionPublishButton
 const CollectionPublishButton = (props: Props) => {
-  const { wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit } = props
+  const { wallet, collection, items, slots, authorizations, onPublish } = props
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
-  useEffect(() => {
-    onInit()
-  }, [])
+  const isPublishDisabled = useMemo(() => {
+    return !env.get('REACT_APP_FF_WEARABLES_PUBLISH') || slots === 0 || items.length === 0 || items.length > MAX_PUBLISH_ITEM_COUNT
+  }, [items])
 
-  const isPublishDisabled = () => {
-    return !env.get('REACT_APP_FF_WEARABLES_PUBLISH') || items.length === 0 || !items.every(isComplete)
-  }
-
+  // TODO: Is this necessary??
   const getAuthorization = () => {
     const chainId = wallet.networks.MATIC.chainId
     const contractAddress = getContract(ContractName.MANAToken, chainId).address
@@ -44,7 +38,9 @@ const CollectionPublishButton = (props: Props) => {
 
   const handlePublish = () => {
     const hasAuth = hasAuthorization(authorizations, getAuthorization())
-    if (hasAuth) onPublish()
+    if (hasAuth) {
+      onPublish()
+    }
     setIsAuthModalOpen(!hasAuth)
   }
 
@@ -56,28 +52,18 @@ const CollectionPublishButton = (props: Props) => {
 
   if (collection.isPublished) {
     if (collection.isApproved) {
-      if (hasPendingCuration) {
-        button = <UnderReview type="push" />
-      } else if (status === SyncStatus.UNSYNCED) {
-        button = (
-          <Button primary compact onClick={onPush}>
-            {t('collection_detail_page.push_changes')}
-          </Button>
-        )
-      } else {
-        button = (
-          <Button secondary compact disabled={true}>
-            {t('global.published')}
-          </Button>
-        )
-      }
+      button = (
+        <Button secondary compact disabled={true}>
+          {t('global.published')}
+        </Button>
+      )
     } else {
       button = <UnderReview type="publish" />
     }
   } else {
     button = (
-      <NetworkButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} network={Network.MATIC}>
-        {t('global.publish')}
+      <NetworkButton disabled={isPublishDisabled} primary compact onClick={handlePublish} network={Network.MATIC}>
+        {t('third_party_collection_detail_page.publish_items', { count: items.length })}
       </NetworkButton>
     )
   }

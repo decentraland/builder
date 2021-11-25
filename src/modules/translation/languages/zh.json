@@ -853,8 +853,9 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合",
-    "buy_third_party_item_tiers": "为第三方 {name} 购买了 {count}个插槽"
+    "buy_third_party_item_tiers": "为第三方 {name} 购买了 {count}个插槽",
+    "publish_third_party_items": "为 {collectionName} 发布了 {count, plural, one {# 个项目} other {# 个项目}}",
+    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
   },
   "transfer_page": {
     "title": "转移",
@@ -969,7 +970,8 @@
     "max_select_count": "您一次最多可以发布 {count} 个项目",
     "slots": "{amount, plural, =0 {没有插槽} one {# 个插槽} other {# 个插槽}}",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
-    "cant_remove": "发布项目后，您将无法添加或删除项目。"
+    "cant_remove": "发布项目后，您将无法添加或删除项目。",
+    "publish_items": "发布 {count, plural, =0 {} one {# 项} other {# 项}}"
   },
   "collection_detail_page": {
     "new_item": "新物品",
@@ -1085,6 +1087,10 @@
   "push_collection_changes_modal": {
     "title": "上传更改",
     "description": "自上次策展人审查藏品或其中包含的文章以来，对收藏品或其中包含的文章进行了更改。{br}要使这些变化反映在市场和游戏中，必须再次得到委员会的审查和批准。{br}您确定要推动更改以供审核吗？"
+  },
+  "publish_third_party_collection_modal": {
+    "title": "发布第三方项目",
+    "description": "即将使用来自 {availableSlots} 的 {slotsToUse, plural, one {# slot} other {# slots}} 个插槽来发布 \"{collectionName}\""
   },
   "mint_items_modal": {
     "title": "薄荷项目",

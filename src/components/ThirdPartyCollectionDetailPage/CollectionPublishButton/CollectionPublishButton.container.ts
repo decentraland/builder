@@ -2,34 +2,23 @@ import { connect } from 'react-redux'
 import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/authorization/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { fetchCurationRequest } from 'modules/curation/actions'
-import { getHasPendingCuration } from 'modules/curation/selectors'
-import { getStatusByCollectionId } from 'modules/collection/selectors'
-import { getCollectionItems } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionPublishButton.types'
 import CollectionPublishButton from './CollectionPublishButton'
 
-const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const { id: collectionId } = ownProps.collection
-  const statusByCollectionId = getStatusByCollectionId(state)
-
+const mapState = (state: RootState): MapStateProps => {
   return {
     wallet: getWallet(state)!,
-    items: getCollectionItems(state, collectionId),
-    authorizations: getAuthorizations(state),
-    status: statusByCollectionId[collectionId],
-    hasPendingCuration: getHasPendingCuration(state, collectionId)
+    authorizations: getAuthorizations(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProps => {
-  const { id: collectionId } = ownProps.collection
-
+  const { collection, items } = ownProps
+  const collectionId = collection.id
+  const itemIds = items.map(item => item.id)
   return {
-    onPublish: () => dispatch(openModal('PublishCollectionModal', { collectionId })),
-    onPush: () => dispatch(openModal('PushCollectionChangesModal', { collectionId })),
-    onInit: () => dispatch(fetchCurationRequest(collectionId))
+    onPublish: () => dispatch(openModal('PublishThirdPartyCollectionModal', { collectionId, itemIds }))
   }
 }
 

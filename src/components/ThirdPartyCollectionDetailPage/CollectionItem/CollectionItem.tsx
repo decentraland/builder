@@ -53,7 +53,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
       <Grid className={`CollectionItem ${styles.grid}`} columns="equal">
         <Grid.Row className={styles.row}>
           <Grid.Column className={`${styles.column} ${styles.avatarColumn}`} width={5}>
-            <Checkbox checked={selected} onClick={this.handleCheckboxChange} />
+            <Checkbox checked={selected || item.isPublished} disabled={item.isPublished} onClick={this.handleCheckboxChange} />
             <ItemImage className={styles.itemImage} item={item} hasBadge badgeSize="small" />
             <div className={styles.info}>
               <div className={styles.nameWrapper}>

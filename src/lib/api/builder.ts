@@ -339,6 +339,16 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
 
+  if (remoteItem.id === '9fd447e8-2d75-4ef4-bb46-8ebcdb70383d') {
+    item.urn = 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:no:1'
+    item.isPublished = true
+  }
+
+  if (remoteItem.id === 'fd5b7309-4b6c-46c9-8e8c-ea65097619ed') {
+    item.urn = 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:no:2'
+    item.isPublished = true
+  }
+
   return item
 }
 

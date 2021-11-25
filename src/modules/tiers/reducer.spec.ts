@@ -57,7 +57,7 @@ describe('when reducing the action that signals a failing purchase of tiers', ()
     expect(
       tiersReducer(
         { ...state, loading: [buyThirdPartyItemTiersRequest(thirdParty, tier)] },
-        buyThirdPartyItemTiersFailure(defaultError, thirdParty.id, tier)
+        buyThirdPartyItemTiersFailure(thirdParty.id, tier, defaultError)
       )
     ).toEqual({
       ...state,

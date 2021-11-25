@@ -1,6 +1,6 @@
 import { BuilderAPI } from 'lib/api/builder'
 import { call, put, takeEvery } from 'redux-saga/effects'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -36,13 +36,13 @@ export function* tiersSaga(builder: BuilderAPI) {
     const { thirdParty, tier } = action.payload
     try {
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const thirdPartyContract = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-      const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContractContract =>
-        instantiatedThirdPartyContractContract.buyItemSlots(thirdParty.id, tier.id, tier.price)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+      const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
+        instantiatedThirdPartyContract.buyItemSlots(thirdParty.id, tier.id, tier.price)
       )
       yield put(buyThirdPartyItemTiersSuccess(txHash, maticChainId, thirdParty, tier))
     } catch (error) {
-      yield put(buyThirdPartyItemTiersFailure(error.message, thirdParty.id, tier))
+      yield put(buyThirdPartyItemTiersFailure(thirdParty.id, tier, error.message))
     }
   }
 

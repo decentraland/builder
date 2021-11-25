@@ -147,6 +147,7 @@ export type Rarity = {
   maxSupply: string
 }
 
+export type ThirdPartyContractItem = [string, string]
 export type InitializeItem = [string, string, string, string]
 
 export const THUMBNAIL_PATH = 'thumbnail.png'

@@ -17,7 +17,7 @@ import {
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { getAvailableSlots, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
+import { getAvailableSlots, isUserManagerOfThirdParty, MAX_PUBLISH_ITEM_COUNT } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
@@ -33,8 +33,7 @@ import { Props, State } from './ThirdPartyCollectionDetailPage.types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
-const MAX_ITEM_COUNT = 20
-const PAGE_SIZE = 20
+const PAGE_SIZE = MAX_PUBLISH_ITEM_COUNT
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -113,9 +112,10 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return items.every(item => itemSelectionState[item.id])
   }
 
-  getSelectedItemsCount() {
+  getSelectedItems() {
+    const { items } = this.props
     const { itemSelectionState } = this.state
-    return Object.values(itemSelectionState).filter(isSelected => isSelected).length
+    return items.filter(item => itemSelectionState[item.id])
   }
 
   isSearching() {
@@ -143,7 +143,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     const slots = thirdParty ? getAvailableSlots(thirdParty) : new BN(0)
     const areSlotsEmpty = slots.lte(new BN(0))
 
-    const selectedItemsCount = this.getSelectedItemsCount()
+    const selectedItems = this.getSelectedItems()
+    const selectedItemsCount = selectedItems.length
 
     const items = this.filterItemsBySearchText()
     const paginatedItems = this.paginate(items)
@@ -187,7 +188,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                         </span>
                       ) : null}
                     </Button>
-                    <CollectionPublishButton collection={collection} />
+                    <CollectionPublishButton collection={collection} items={selectedItems} slots={slots.toNumber()} />
                     <CollectionContextMenu collection={collection} />
                   </Row>
                 </Column>
@@ -231,7 +232,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     {t('third_party_collection_detail_page.clear_selection')}
                   </span>
                   &nbsp;
-                  <Info content={t('third_party_collection_detail_page.max_select_count', { count: MAX_ITEM_COUNT })} />
+                  <Info content={t('third_party_collection_detail_page.max_select_count', { count: MAX_PUBLISH_ITEM_COUNT })} />
                 </div>
               ) : null}
 

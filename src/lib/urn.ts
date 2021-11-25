@@ -106,6 +106,16 @@ export function extractThirdPartyId(urn: URN): string {
   return `urn:decentraland:${decodedURN.protocol}:collections-thirdparty:${decodedURN.thirdPartyName}`
 }
 
+export function extractThirdPartyTokenId(urn: URN) {
+  const decodedURN = decodeURN(urn)
+  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+    throw new Error(`Tried to build a third party token for a non trird party URN "${urn}"`)
+  }
+
+  const { thirdPartyCollectionId, thirdPartyTokenId } = decodedURN
+  return `${thirdPartyCollectionId}:${thirdPartyTokenId}`
+}
+
 export function decodeURN(urn: URN): DecodedURN {
   const matches = urnRegExp.exec(urn)
 
