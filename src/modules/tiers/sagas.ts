@@ -10,11 +10,13 @@ import {
   buyThirdPartyItemTiersSuccess,
   BUY_THIRD_PARTY_ITEM_TIERS_REQUEST,
   BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS,
+  FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST,
   fetchThirdPartyItemTiersFailure,
   fetchThirdPartyItemTiersSuccess,
-  FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST
+  FetchThirdPartyItemTiersRequestAction,
+  BuyThirdPartyItemTiersRequestAction
 } from './actions'
-import { ThirdPartyItemTier, FetchThirdPartyItemTiersRequestAction, BuyThirdPartyItemTiersRequestAction } from './types'
+import { ThirdPartyItemTier } from './types'
 
 export function* tiersSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST, handleFetchThirdPartyItemTiersRequest)

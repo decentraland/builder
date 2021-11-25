@@ -1,12 +1,14 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { buyThirdPartyItemTiersRequest, clearTiersError, fetchThirdPartyItemTiersRequest } from 'modules/tiers/actions'
 import {
-  ThirdPartyItemTier,
+  buyThirdPartyItemTiersRequest,
   BuyThirdPartyItemTiersRequestAction,
-  FetchThirdPartyItemTiersRequestAction,
-  ClearTiersErrorAction
-} from 'modules/tiers/types'
+  clearTiersError,
+  ClearTiersErrorAction,
+  fetchThirdPartyItemTiersRequest,
+  FetchThirdPartyItemTiersRequestAction
+} from 'modules/tiers/actions'
+import { ThirdPartyItemTier } from 'modules/tiers/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 
 export type Props = ModalProps & {

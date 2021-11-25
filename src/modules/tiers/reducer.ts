@@ -1,23 +1,29 @@
-import { loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
+  BuyThirdPartyItemTiersFailureAction,
+  BuyThirdPartyItemTiersRequestAction,
+  BuyThirdPartyItemTiersSuccessAction,
   BUY_THIRD_PARTY_ITEM_TIERS_FAILURE,
   BUY_THIRD_PARTY_ITEM_TIERS_REQUEST,
   BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS,
+  ClearTiersErrorAction,
   CLEAR_TIERS_ERROR,
+  FetchThirdPartyItemTiersFailureAction,
+  FetchThirdPartyItemTiersRequestAction,
+  FetchThirdPartyItemTiersSuccessAction,
   FETCH_THIRD_PARTY_ITEM_TIERS_FAILURE,
   FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST,
   FETCH_THIRD_PARTY_ITEM_TIERS_SUCCESS
 } from './actions'
-import {
-  TiersState,
-  BuyThirdPartyItemTiersFailureAction,
-  BuyThirdPartyItemTiersRequestAction,
-  BuyThirdPartyItemTiersSuccessAction,
-  FetchThirdPartyItemTiersFailureAction,
-  FetchThirdPartyItemTiersRequestAction,
-  FetchThirdPartyItemTiersSuccessAction,
-  ClearTiersErrorAction
-} from './types'
+import { ThirdPartyItemTier } from './types'
+
+export type TiersState = {
+  data: {
+    thirdPartyItems: ThirdPartyItemTier[]
+  }
+  loading: LoadingState
+  error: string | null
+}
 
 const INITIAL_STATE: TiersState = {
   data: {
