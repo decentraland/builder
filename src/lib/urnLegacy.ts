@@ -4,4 +4,4 @@
  */
 export function toLegacyURN(urn: string): string {
   return urn.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')
-} 
+}
