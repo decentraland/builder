@@ -6,7 +6,8 @@ import {
   PUBLISH_COLLECTION_SUCCESS,
   MINT_COLLECTION_ITEMS_SUCCESS,
   APPROVE_COLLECTION_SUCCESS,
-  REJECT_COLLECTION_SUCCESS
+  REJECT_COLLECTION_SUCCESS,
+  SAVE_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
 import {
   FetchItemsRequestAction,
@@ -74,6 +75,7 @@ import {
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
+import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
 
 export type ItemState = {
   data: Record<string, Item>
@@ -305,6 +307,39 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             }
           }
         }
+        case SAVE_COLLECTION_SUCCESS: {
+          const collectionURN = decodeURN(transaction.payload.collection.urn)
+
+          collectionURN.suffix
+          return {
+            ...state,
+            data: Object.keys(state.data).reduce((accum, itemId) => {
+              const item = state.data[itemId]
+              if (item.collectionId === transaction.payload.collection.id && item.urn) {
+                let newItemURN: string
+                const itemURN = decodeURN(item.urn)
+                if (collectionURN.type === URNType.COLLECTIONS_THIRDPARTY) {
+                  if (itemURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+                    throw new Error(`The item ${item.id} is not part of a third-party collection but it should be`) // ???
+                  }
+                  newItemURN = buildThirdPartyURN(collectionURN.thirdPartyName, collectionURN.suffix, itemURN.thirdPartyTokenId)
+                } else if (collectionURN.type === URNType.COLLECTIONS_V2) {
+                  if (itemURN.type !== URNType.COLLECTIONS_V2) {
+                    throw new Error(`The item ${item.id} is not part of a decentraland collection but it should be`) // ???
+                  }
+                  newItemURN = buildCatalystItemURN(collectionURN.suffix, itemURN.suffix) // ??? contract address? token id?
+                } else {
+                  throw new Error(`Incorrect type...`) // ???
+                }
+                accum[item.id] = { ...state.data[item.id], urn: newItemURN }
+              } else {
+                accum[item.id] = item
+              }
+              return accum
+            }, {} as ItemState['data'])
+          }
+        }
+
         default:
           return state
       }
