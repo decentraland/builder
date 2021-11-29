@@ -1,7 +1,7 @@
 import BN from 'bn.js'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS } from 'modules/tiers/actions'
-import { BuyThirdPartyItemTiersSuccessAction } from 'modules/tiers/types'
+import { BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS, BuyThirdPartyItemTiersSuccessAction } from 'modules/tiers/actions'
+import {} from 'modules/tiers/types'
 import {
   FetchThirdPartiesRequestAction,
   FetchThirdPartiesSuccessAction,
