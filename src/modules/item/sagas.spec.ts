@@ -564,33 +564,4 @@ describe('when publishing third party items', () => {
       })
     })
   })
-
-  describe('and the item is not published', () => {
-    it('should put a setPriceAndBeneficiaryFailure action with a sagas.item.not_published error message', () => {
-      const collection = {
-        id: 'aCollection'
-      } as Collection
-
-      const item = {
-        id: 'anItem',
-        name: 'valid name',
-        description: 'valid description',
-        collectionId: collection.id,
-        updatedAt,
-        isPublished: false
-      } as Item
-
-      const errorMessage = 'Error message'
-
-      return expectSaga(itemSaga, builderAPI)
-        .provide([
-          [select(getItems), [item]],
-          [select(getCollections), [collection]],
-          [call(t, 'sagas.item.not_published'), errorMessage]
-        ])
-        .put(setPriceAndBeneficiaryFailure(item.id, '10000', '0xpepe', errorMessage))
-        .dispatch(setPriceAndBeneficiaryRequest(item.id, '10000', '0xpepe'))
-        .run({ silenceTimeout: true })
-    })
-  })
 })

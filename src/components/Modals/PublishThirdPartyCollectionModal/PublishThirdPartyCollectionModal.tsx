@@ -4,7 +4,6 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAvailableSlots } from 'modules/thirdParty/utils'
 import { Props } from './PublishThirdPartyCollectionModal.types'
-import './PublishThirdPartyCollectionModal.css'
 
 export default class PublishThirdPartyCollectionModal extends React.PureComponent<Props> {
   handlePublish = () => {
