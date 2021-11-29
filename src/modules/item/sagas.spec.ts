@@ -483,7 +483,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
   })
 })
 
-describe.only('when publishing third party items', () => {
+describe('when publishing third party items', () => {
   describe('and the transaction is sent correctly', () => {
     let collection: Collection
     let items: Item[]

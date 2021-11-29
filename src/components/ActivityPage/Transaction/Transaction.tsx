@@ -381,7 +381,7 @@ const Transaction = (props: Props) => {
           collectionId={collectionId}
           text={
             <T
-              id="transaction.rescue_items"
+              id="transaction.publish_third_party_items"
               values={{
                 count: items.length,
                 collectionName: <Link to={locations.thirdPartyCollectionDetail(collectionId)}>{collectionName}</Link>

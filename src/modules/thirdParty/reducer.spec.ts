@@ -81,7 +81,7 @@ describe('when reducing the action that signals the success of the purchase of a
   })
 })
 
-describe.only('when reducing the action that signals the success the transaction that publishes third party items', () => {
+describe('when reducing the action that signals the success of the transaction that publishes third party items', () => {
   let collection: Collection
   let items: Item[]
   let thirdParty: ThirdParty

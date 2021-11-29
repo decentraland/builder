@@ -141,11 +141,11 @@ describe('when decoding an URN', () => {
 
 describe('when extracting the third party item token id from an URN', () => {
   describe('when the URN is not a valid third party URN', () => {
-    it('should throw an error', () => {
+    it("should throw an error signaling that the URN doesn't belong to a third party", () => {
       expect(() =>
         extractThirdPartyTokenId('urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
       ).toThrowError(
-        'Tried to build a third party token for a non trird party URN "urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8"'
+        'Tried to build a third party token for a non third party URN "urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8"'
       )
     })
   })

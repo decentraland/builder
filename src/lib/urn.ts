@@ -109,7 +109,7 @@ export function extractThirdPartyId(urn: URN): string {
 export function extractThirdPartyTokenId(urn: URN) {
   const decodedURN = decodeURN(urn)
   if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
-    throw new Error(`Tried to build a third party token for a non trird party URN "${urn}"`)
+    throw new Error(`Tried to build a third party token for a non third party URN "${urn}"`)
   }
 
   const { thirdPartyCollectionId, thirdPartyTokenId } = decodedURN
