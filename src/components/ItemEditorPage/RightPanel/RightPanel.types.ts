@@ -21,6 +21,7 @@ export type Props = {
   error: string | null
   isConnected: boolean
   isDownloading: boolean
+  isCommitteeMember: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
@@ -41,7 +42,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'address' | 'collection' | 'selectedItem' | 'selectedItemId' | 'error' | 'isConnected' | 'isDownloading'
+  'address' | 'collection' | 'selectedItem' | 'selectedItemId' | 'error' | 'isConnected' | 'isDownloading' | 'isCommitteeMember'
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>
 export type MapDispatch = Dispatch<
