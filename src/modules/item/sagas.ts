@@ -80,7 +80,7 @@ import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { calculateFinalSize } from './export'
-import { Item, Rarity, CatalystItem } from './types'
+import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
@@ -355,20 +355,61 @@ export function* itemSaga(builder: BuilderAPI) {
       // create zip
       let zip = new JSZip()
 
+      // record of files to include
+      const files: Record<string, Blob> = {}
+
+      // keep track of hashes already added and skip them, this is for wearables with "both" representations, with the same files
+      const hashes = new Set<string>()
+
+      // keep track of what hashes belong to each representation, if both are exactly the same, we can remove the /male and /female sub directories
+      const maleHashes: string[] = []
+      const femaleHashes: string[] = []
+
       // download blobs and add them to zip
       for (const path of Object.keys(item.contents)) {
-        const url = getContentsStorageUrl(item.contents[path])
-        const resp: Response = yield call(fetch, url)
-        if (!resp.ok) {
-          const message = yield call([resp, 'text'])
-          throw new Error(message)
+        const hash = item.contents[path]
+        // skip downloading already donwloaded hashes
+        if (!hashes.has(hash)) {
+          const url = getContentsStorageUrl(hash)
+          const resp: Response = yield call(fetch, url)
+          if (!resp.ok) {
+            const message = yield call([resp, 'text'])
+            throw new Error(message)
+          }
+          const blob = yield call([resp, 'blob'])
+          files[path] = blob
+
+          // track hashes
+          hashes.add(hash)
         }
-        const blob = yield call([resp, 'blob'])
-        zip.file(path, blob)
+
+        // track hashes per representation
+        if (path.startsWith(BodyShapeType.MALE)) {
+          maleHashes.push(hash)
+        } else if (path.startsWith(BodyShapeType.FEMALE)) {
+          femaleHashes.push(hash)
+        }
+      }
+
+      // check if representations are equal
+      const areRepresentationsEqual = maleHashes.length === femaleHashes.length && maleHashes.every(hash => femaleHashes.includes(hash))
+
+      // if both are the same, we can remove the /male and /female subdirectories
+      if (areRepresentationsEqual) {
+        const paths = Object.keys(files)
+        for (const path of paths) {
+          const newPath = path.replace(BodyShapeType.MALE + '/', '').replace(BodyShapeType.FEMALE + '/', '')
+          files[newPath] = files[path]
+          delete files[path]
+        }
       }
 
       // generate zip file
       const sanitizedName = item.name.replace(/\s/g, '_')
+      for (const path in files) {
+        const blob = files[path]
+        zip.file(path, blob)
+      }
       const artifact: Blob = yield call([zip, 'generateAsync'], { type: 'blob' })
 
       // download zip file (aka artifact)
