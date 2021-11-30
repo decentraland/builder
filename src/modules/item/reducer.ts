@@ -81,7 +81,8 @@ import {
   DownloadItemSuccessAction,
   DownloadItemFailureAction,
   DOWNLOAD_ITEM_REQUEST,
-  DOWNLOAD_ITEM_FAILURE
+  DOWNLOAD_ITEM_FAILURE,
+  DOWNLOAD_ITEM_SUCCESS
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
@@ -259,7 +260,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
 
-    case DOWNLOAD_ITEM_REQUEST: {
+    case DOWNLOAD_ITEM_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
