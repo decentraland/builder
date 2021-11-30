@@ -210,6 +210,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
+  handleDownloadItem = () => {
+    const { selectedItemId, onDownload } = this.props
+    selectedItemId && onDownload(selectedItemId)
+  }
+
   canEditItemMetadata(item: Item | null) {
     const { collection, address = '' } = this.props
     if (!item) {
@@ -248,7 +253,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, error } = this.props
+    const { selectedItemId, address, isConnected, isDownloading, error } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
 
@@ -310,6 +315,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         {canEditItemMetadata ? (
                           <>
                             <Icon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />
+                            {isDownloading ? (
+                              <Loader active size="tiny" className="donwload-item-loader" />
+                            ) : (
+                              <Icon name="export" className={`download-item-button`} onClick={this.handleDownloadItem} />
+                            )}
                             <div className="thumbnail-container">
                               <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
                               <div className="thumbnail-edit-container">

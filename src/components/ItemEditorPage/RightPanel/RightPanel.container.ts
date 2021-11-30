@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { getItem, getError as getItemError } from 'modules/item/selectors'
-import { deleteItemRequest, saveItemRequest, setCollection } from 'modules/item/actions'
+import { getItem, getError as getItemError, isDownloading } from 'modules/item/selectors'
+import { deleteItemRequest, downloadItemRequest, saveItemRequest, setCollection } from 'modules/item/actions'
 import { openModal } from 'modules/modal/actions'
 import { getSelectedItemId } from 'modules/location/selectors'
 import { getCollection } from 'modules/collection/selectors'
@@ -20,7 +20,8 @@ const mapState = (state: RootState): MapStateProps => {
     selectedItem,
     selectedItemId,
     error: getItemError(state),
-    isConnected: isConnected(state)
+    isConnected: isConnected(state),
+    isDownloading: isDownloading(state)
   }
 }
 
@@ -28,7 +29,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSaveItem: (item, contents) => dispatch(saveItemRequest(item, contents)),
   onDeleteItem: item => dispatch(deleteItemRequest(item)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onSetCollection: (item, collectionId) => dispatch(setCollection(item, collectionId))
+  onSetCollection: (item, collectionId) => dispatch(setCollection(item, collectionId)),
+  onDownload: itemId => dispatch(downloadItemRequest(itemId))
 })
 
 export default connect(mapState, mapDispatch)(RightPanel)
