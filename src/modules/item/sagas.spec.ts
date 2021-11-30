@@ -3,6 +3,7 @@ import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { call, select, take, race } from 'redux-saga/effects'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -536,6 +537,57 @@ describe('when publishing third party items', () => {
         .put(publishThirdPartyItemsSuccess(txHash, ChainId.MATIC_MUMBAI, thirdParty, collection, items))
         .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
         .run({ silenceTimeout: true })
+    })
+
+    describe('and getting the chain id fails', () => {
+      let collection: Collection
+      let items: Item[]
+      let thirdParty: ThirdParty
+      let errorMessage: string
+
+      beforeEach(() => {
+        collection = { id: 'aCollection' } as Collection
+        items = [{ collectionId: collection.id }] as Item[]
+        thirdParty = { id: 'aCollection' } as ThirdParty
+        errorMessage = 'Cannot get a valid chain id for network'
+      })
+
+      it('should put a publish third party failure action', () => {
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [select(getCollection, collection.id), collection],
+            [call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(errorMessage))]
+          ])
+          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
+          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and getting the contract fails', () => {
+      let collection: Collection
+      let items: Item[]
+      let thirdParty: ThirdParty
+      let errorMessage: string
+
+      beforeEach(() => {
+        collection = { id: 'aCollection' } as Collection
+        items = [{ collectionId: collection.id }] as Item[]
+        thirdParty = { id: 'aCollection' } as ThirdParty
+        errorMessage = 'Cannot get a valid contract for chain id'
+      })
+
+      it('should put a publish third party failure action', () => {
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [select(getCollection, collection.id), collection],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+            [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MAINNET), Promise.reject(new Error(errorMessage))]
+          ])
+          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
+          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+          .run({ silenceTimeout: true })
+      })
     })
 
     describe('and sending the transaction fails', () => {
