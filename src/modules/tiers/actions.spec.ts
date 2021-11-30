@@ -90,8 +90,8 @@ describe('when creating the action that signals the successful purchase of a ite
 })
 
 describe('when creating the action that signals the unsuccessful purchase of a item slots tier', () => {
-  it('should return an action signaling the failure of an item tier slots purchase', () => {
-    expect(buyThirdPartyItemTiersFailure(defaultError, thirdParty.id, thirdPartyItemTier)).toEqual({
+  it('should return an action ', () => {
+    expect(buyThirdPartyItemTiersFailure(thirdParty.id, thirdPartyItemTier, defaultError)).toEqual({
       type: BUY_THIRD_PARTY_ITEM_TIERS_FAILURE,
       payload: { error: defaultError, thirdPartyId: thirdParty.id, tier: thirdPartyItemTier }
     })

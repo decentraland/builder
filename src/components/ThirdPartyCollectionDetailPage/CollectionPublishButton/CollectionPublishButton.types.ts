@@ -1,24 +1,15 @@
-import { Dispatch } from 'react'
-import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
-import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { Dispatch } from 'redux'
 import { OpenModalAction } from 'modules/modal/actions'
 import { Collection } from 'modules/collection/types'
-import { Item, SyncStatus } from 'modules/item/types'
-import { FetchCurationRequestAction } from 'modules/curation/actions'
+import { Item } from 'modules/item/types'
 
 export type Props = {
-  wallet: Wallet
   collection: Collection
   items: Item[]
-  authorizations: Authorization[]
-  status: SyncStatus
-  hasPendingCuration: boolean
-  onPublish: () => void
-  onPush: () => void
-  onInit: () => void
+  slots: number
+  onPublish: (collectionId: string, itemIds: string[]) => void
 }
 
-export type OwnProps = Pick<Props, 'collection'>
-export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'authorizations' | 'status' | 'hasPendingCuration'>
-export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPush' | 'onInit'>
-export type MapDispatch = Dispatch<OpenModalAction | FetchCurationRequestAction>
+export type MapStateProps = {}
+export type MapDispatchProps = Pick<Props, 'onPublish'>
+export type MapDispatch = Dispatch<OpenModalAction>

@@ -47,24 +47,30 @@ import {
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FETCH_COLLECTION_ITEMS_REQUEST,
   FETCH_COLLECTION_ITEMS_FAILURE,
-  FETCH_RARITIES_REQUEST,
   FetchRaritiesRequestAction,
-  FETCH_RARITIES_SUCCESS,
   FetchRaritiesSuccessAction,
   FetchRaritiesFailureAction,
+  FETCH_RARITIES_REQUEST,
+  FETCH_RARITIES_SUCCESS,
   FETCH_RARITIES_FAILURE,
-  RESCUE_ITEMS_REQUEST,
+  PublishThirdPartyItemsRequestAction,
+  PublishThirdPartyItemsSuccessAction,
+  PublishThirdPartyItemsFailureAction,
+  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
+  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
+  PUBLISH_THIRD_PARTY_ITEMS_FAILURE,
   RescueItemsRequestAction,
   RescueItemsFailureAction,
   RescueItemsSuccessAction,
+  RESCUE_ITEMS_REQUEST,
   RESCUE_ITEMS_FAILURE,
   RESCUE_ITEMS_SUCCESS,
-  RESET_ITEM_REQUEST,
-  RESET_ITEM_SUCCESS,
-  RESET_ITEM_FAILURE,
   ResetItemRequestAction,
   ResetItemSuccessAction,
   ResetItemFailureAction,
+  RESET_ITEM_REQUEST,
+  RESET_ITEM_SUCCESS,
+  RESET_ITEM_FAILURE,
   SetPriceAndBeneficiaryFailureAction,
   SetPriceAndBeneficiaryRequestAction,
   SetPriceAndBeneficiarySuccessAction,
@@ -117,6 +123,9 @@ type ItemReducerAction =
   | FetchRaritiesRequestAction
   | FetchRaritiesSuccessAction
   | FetchRaritiesFailureAction
+  | PublishThirdPartyItemsRequestAction
+  | PublishThirdPartyItemsSuccessAction
+  | PublishThirdPartyItemsFailureAction
   | RescueItemsRequestAction
   | RescueItemsSuccessAction
   | RescueItemsFailureAction
@@ -140,6 +149,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SET_PRICE_AND_BENEFICIARY_REQUEST:
     case SAVE_ITEM_REQUEST:
     case DELETE_ITEM_REQUEST:
+    case PUBLISH_THIRD_PARTY_ITEMS_REQUEST:
     case RESET_ITEM_REQUEST:
     case RESCUE_ITEMS_REQUEST: {
       return {
@@ -179,6 +189,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SAVE_ITEM_FAILURE:
     case FETCH_RARITIES_FAILURE:
     case DELETE_ITEM_FAILURE:
+    case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case RESET_ITEM_FAILURE:
     case RESCUE_ITEMS_FAILURE: {
       return {
@@ -276,7 +287,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             }
           }
         }
-        case PUBLISH_COLLECTION_SUCCESS: {
+        case PUBLISH_COLLECTION_SUCCESS:
+        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
           const items: Item[] = transaction.payload.items
           return {
             ...state,

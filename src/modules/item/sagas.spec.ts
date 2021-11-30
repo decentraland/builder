@@ -3,6 +3,7 @@ import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { call, select, take, race } from 'redux-saga/effects'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -21,13 +22,17 @@ import {
   setPriceAndBeneficiarySuccess,
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
-  setPriceAndBeneficiaryFailure
+  setPriceAndBeneficiaryFailure,
+  publishThirdPartyItemsFailure,
+  publishThirdPartyItemsRequest,
+  publishThirdPartyItemsSuccess
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
 import { Item, ItemType, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
 import { MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
+import { ThirdParty } from 'modules/thirdParty/types'
 
 let blob: Blob = new Blob()
 const contents: Record<string, Blob> = { path: blob }
@@ -188,6 +193,7 @@ describe('when handling the save item request action', () => {
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
     util.inspect.defaultOptions.depth = 7
+
     it('should put a setPriceAndBeneficiarySuccess action', () => {
       const collection = {
         id: 'aCollection'
@@ -229,6 +235,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
         .dispatch(setPriceAndBeneficiaryRequest(item.id, price, beneficiary))
         .run({ silenceTimeout: true })
     })
+
     describe("and the itemId doesn't match any existing item", () => {
       it('should put a setPriceAndBeneficiaryFailure action with a sagas.item.not_found error message', () => {
         const collection = {
@@ -473,6 +480,140 @@ describe('when reseting an item to the state found in the catalyst', () => {
         ])
         .put(resetItemFailure(itemId, 'Entity does not have content'))
         .silentRun()
+    })
+  })
+})
+
+describe('when publishing third party items', () => {
+  describe('and the transaction is sent correctly', () => {
+    let collection: Collection
+    let items: Item[]
+    let thirdParty: ThirdParty
+    let txHash: string
+
+    beforeEach(() => {
+      collection = {
+        id: 'aCollection',
+        name: 'collection name'
+      } as Collection
+
+      items = [
+        {
+          id: 'anItem',
+          name: 'valid name',
+          description: 'valid description',
+          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id:token-id',
+          collectionId: collection.id,
+          data: {
+            category: WearableCategory.HAT,
+            representations: [
+              {
+                bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE],
+                contents: ['model.glb', 'texture.png'],
+                mainFile: 'model.glb',
+                overrideHides: [],
+                overrideReplaces: []
+              }
+            ] as WearableRepresentation[]
+          }
+        }
+      ] as Item[]
+
+      thirdParty = {
+        id: 'aCollection',
+        name: 'tp name'
+      } as ThirdParty
+
+      txHash = '0xdeadbeef'
+    })
+
+    it('should put a publish thrid party items success action and go to activity', () => {
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getCollection, collection.id), collection],
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+          [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
+        ])
+        .put(publishThirdPartyItemsSuccess(txHash, ChainId.MATIC_MUMBAI, thirdParty, collection, items))
+        .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+        .run({ silenceTimeout: true })
+    })
+
+    describe('and getting the chain id fails', () => {
+      let collection: Collection
+      let items: Item[]
+      let thirdParty: ThirdParty
+      let errorMessage: string
+
+      beforeEach(() => {
+        collection = { id: 'aCollection' } as Collection
+        items = [{ collectionId: collection.id }] as Item[]
+        thirdParty = { id: 'aCollection' } as ThirdParty
+        errorMessage = 'Cannot get a valid chain id for network'
+      })
+
+      it('should put a publish third party failure action', () => {
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [select(getCollection, collection.id), collection],
+            [call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(errorMessage))]
+          ])
+          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
+          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and getting the contract fails', () => {
+      let collection: Collection
+      let items: Item[]
+      let thirdParty: ThirdParty
+      let errorMessage: string
+
+      beforeEach(() => {
+        collection = { id: 'aCollection' } as Collection
+        items = [{ collectionId: collection.id }] as Item[]
+        thirdParty = { id: 'aCollection' } as ThirdParty
+        errorMessage = 'Cannot get a valid contract for chain id'
+      })
+
+      it('should put a publish third party failure action', () => {
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [select(getCollection, collection.id), collection],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+            [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MAINNET), Promise.reject(new Error(errorMessage))]
+          ])
+          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
+          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and sending the transaction fails', () => {
+      let collection: Collection
+      let items: Item[]
+      let thirdParty: ThirdParty
+      let errorMessage: string
+
+      beforeEach(() => {
+        collection = { id: 'aCollection' } as Collection
+        items = [{ collectionId: collection.id }] as Item[]
+        thirdParty = { id: 'aCollection' } as ThirdParty
+        errorMessage = 'Rejected trasaction'
+      })
+
+      it('should put a publish third party failure action', () => {
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [select(getCollection, collection.id), collection],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+            [matchers.call.fn(sendTransaction), Promise.reject(new Error(errorMessage))]
+          ])
+          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
+          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })

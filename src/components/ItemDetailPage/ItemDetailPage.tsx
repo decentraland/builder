@@ -194,7 +194,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   </div>
                 </Section>
               ) : null}
-              {item.isPublished ? (
+              {item.isPublished && item.rarity ? (
                 <Section>
                   <div className="subtitle">{t('item.supply')}</div>
                   <div className="value">

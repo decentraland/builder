@@ -65,7 +65,7 @@ describe('when handling the request to buy a third party item tier', () => {
     it('should put the action signaling the failure of the purchase of an item slots tier with the tier and the third party id', () => {
       return expectSaga(tiersSaga, mockedBuilderApi)
         .provide([[call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(defaultError))]])
-        .put(buyThirdPartyItemTiersFailure(defaultError, thirdParty.id, thirdPartyItemTier))
+        .put(buyThirdPartyItemTiersFailure(thirdParty.id, thirdPartyItemTier, defaultError))
         .dispatch(buyThirdPartyItemTiersRequest(thirdParty, thirdPartyItemTier))
         .run({ silenceTimeout: true })
     })
@@ -78,7 +78,7 @@ describe('when handling the request to buy a third party item tier', () => {
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [matchers.call.fn(sendTransaction), Promise.reject(new Error(defaultError))]
         ])
-        .put(buyThirdPartyItemTiersFailure(defaultError, thirdParty.id, thirdPartyItemTier))
+        .put(buyThirdPartyItemTiersFailure(thirdParty.id, thirdPartyItemTier, defaultError))
         .dispatch(buyThirdPartyItemTiersRequest(thirdParty, thirdPartyItemTier))
         .run({ silenceTimeout: true })
     })

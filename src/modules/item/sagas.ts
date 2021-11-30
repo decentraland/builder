@@ -1,8 +1,8 @@
 import { Contract } from 'ethers'
-import { replace } from 'connected-react-router'
+import { replace, push } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, all, race } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
@@ -60,7 +60,11 @@ import {
   resetItemFailure,
   SAVE_ITEM_FAILURE,
   SaveItemSuccessAction,
-  SaveItemFailureAction
+  SaveItemFailureAction,
+  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
+  PublishThirdPartyItemsRequestAction,
+  publishThirdPartyItemsSuccess,
+  publishThirdPartyItemsFailure
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { isLocked } from 'modules/collection/utils'
@@ -75,7 +79,7 @@ import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { getMetadata, isValidText, MAX_FILE_SIZE } from './utils'
+import { getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
 import { buildCatalystItemURN } from '../../lib/urn'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
@@ -88,6 +92,7 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
   yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
+  yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
@@ -193,13 +198,32 @@ export function* itemSaga(builder: BuilderAPI) {
       const metadata = getMetadata(newItem)
       const chainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
       const contract = { ...getContract(ContractName.ERC721CollectionV2, chainId), address: collection.contractAddress! }
-      const txHash = yield call(sendTransaction, contract, collection =>
+      const txHash: string = yield call(sendTransaction, contract, collection =>
         collection.editItemsData([newItem.tokenId!], [newItem.price!], [newItem.beneficiary!], [metadata])
       )
 
       yield put(setPriceAndBeneficiarySuccess(newItem, chainId, txHash))
     } catch (error) {
       yield put(setPriceAndBeneficiaryFailure(itemId, price, beneficiary, error.message))
+    }
+  }
+
+  function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
+    const { thirdParty, items } = action.payload
+    try {
+      const collectionId = items[0].collectionId!
+      const collection: Collection = yield select(getCollection, collectionId)
+
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+      const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
+        instantiatedThirdPartyContract.addItems(thirdParty.id, toThirdPartyContractItems(items))
+      )
+
+      yield put(publishThirdPartyItemsSuccess(txHash, maticChainId, thirdParty, collection, items))
+      yield put(push(locations.activity()))
+    } catch (error) {
+      yield put(publishThirdPartyItemsFailure(thirdParty, items, error.message))
     }
   }
 

@@ -28,8 +28,8 @@ export const buyThirdPartyItemTiersRequest = (thirdParty: ThirdParty, tier: Thir
   action(BUY_THIRD_PARTY_ITEM_TIERS_REQUEST, { thirdParty, tier })
 export const buyThirdPartyItemTiersSuccess = (txHash: string, chainId: ChainId, thirdParty: ThirdParty, tier: ThirdPartyItemTier) =>
   action(BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS, { thirdParty, tier, ...buildTransactionPayload(chainId, txHash, { tier, thirdParty }) })
-export const buyThirdPartyItemTiersFailure = (error: string, thirdPartyId: string, tier: ThirdPartyItemTier) =>
-  action(BUY_THIRD_PARTY_ITEM_TIERS_FAILURE, { error, thirdPartyId, tier })
+export const buyThirdPartyItemTiersFailure = (thirdPartyId: string, tier: ThirdPartyItemTier, error: string) =>
+  action(BUY_THIRD_PARTY_ITEM_TIERS_FAILURE, { thirdPartyId, tier, error })
 
 export type BuyThirdPartyItemTiersRequestAction = ReturnType<typeof buyThirdPartyItemTiersRequest>
 export type BuyThirdPartyItemTiersSuccessAction = ReturnType<typeof buyThirdPartyItemTiersSuccess>

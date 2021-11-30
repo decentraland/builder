@@ -8,7 +8,7 @@ import { Collection } from 'modules/collection/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
-import { buildItemURN, decodeURN } from 'lib/urn'
+import { buildItemURN, extractThirdPartyTokenId, decodeURN } from 'lib/urn'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import {
   Item,
@@ -26,7 +26,8 @@ import {
   THUMBNAIL_PATH,
   InitializeItem,
   CatalystItem,
-  SyncStatus
+  SyncStatus,
+  ThirdPartyContractItem
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -289,6 +290,10 @@ export function isValidText(text: string) {
 
 export function isItemSizeError(error: string) {
   return error.search('The deployment is too big. The maximum allowed size per pointer is') !== -1
+}
+
+export function toThirdPartyContractItems(items: Item[]): ThirdPartyContractItem[] {
+  return items.sort(sortByCreatedAt).map(item => [extractThirdPartyTokenId(item.urn!), getMetadata(item)])
 }
 
 export function toInitializeItems(items: Item[]): InitializeItem[] {
