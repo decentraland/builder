@@ -13,6 +13,8 @@ import { areSynced, canSeeItem } from './utils'
 import { buildCatalystItemURN } from '../../lib/urn'
 import { Curation, CurationStatus } from 'modules/curation/types'
 import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { DOWNLOAD_ITEM_REQUEST } from './actions'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -127,3 +129,5 @@ export const getStatusByItemId = createSelector<
     return statusByItemId
   }
 )
+
+export const isDownloading = (state: RootState) => isLoadingType(getLoading(state), DOWNLOAD_ITEM_REQUEST)

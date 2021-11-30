@@ -206,3 +206,17 @@ export const publishThirdPartyItemsFailure = (thirdParty: ThirdParty, items: Ite
 export type PublishThirdPartyItemsRequestAction = ReturnType<typeof publishThirdPartyItemsRequest>
 export type PublishThirdPartyItemsSuccessAction = ReturnType<typeof publishThirdPartyItemsSuccess>
 export type PublishThirdPartyItemsFailureAction = ReturnType<typeof publishThirdPartyItemsFailure>
+
+// Download Item
+
+export const DOWNLOAD_ITEM_REQUEST = '[Request] Download item'
+export const DOWNLOAD_ITEM_SUCCESS = '[Success] Download item'
+export const DOWNLOAD_ITEM_FAILURE = '[Failure] Download item'
+
+export const downloadItemRequest = (itemId: string) => action(DOWNLOAD_ITEM_REQUEST, { itemId })
+export const downloadItemSuccess = (itemId: string) => action(DOWNLOAD_ITEM_SUCCESS, { itemId })
+export const downloadItemFailure = (itemId: string, error: string) => action(DOWNLOAD_ITEM_FAILURE, { itemId, error })
+
+export type DownloadItemRequestAction = ReturnType<typeof downloadItemRequest>
+export type DownloadItemSuccessAction = ReturnType<typeof downloadItemSuccess>
+export type DownloadItemFailureAction = ReturnType<typeof downloadItemFailure>

@@ -76,7 +76,12 @@ import {
   SetPriceAndBeneficiarySuccessAction,
   SET_PRICE_AND_BENEFICIARY_REQUEST,
   SET_PRICE_AND_BENEFICIARY_FAILURE,
-  SET_PRICE_AND_BENEFICIARY_SUCCESS
+  SET_PRICE_AND_BENEFICIARY_SUCCESS,
+  DownloadItemRequestAction,
+  DownloadItemSuccessAction,
+  DownloadItemFailureAction,
+  DOWNLOAD_ITEM_REQUEST,
+  DOWNLOAD_ITEM_FAILURE
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
@@ -132,6 +137,9 @@ type ItemReducerAction =
   | ResetItemRequestAction
   | ResetItemSuccessAction
   | ResetItemFailureAction
+  | DownloadItemRequestAction
+  | DownloadItemSuccessAction
+  | DownloadItemFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -151,7 +159,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case DELETE_ITEM_REQUEST:
     case PUBLISH_THIRD_PARTY_ITEMS_REQUEST:
     case RESET_ITEM_REQUEST:
-    case RESCUE_ITEMS_REQUEST: {
+    case RESCUE_ITEMS_REQUEST:
+    case DOWNLOAD_ITEM_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -191,7 +200,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case DELETE_ITEM_FAILURE:
     case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case RESET_ITEM_FAILURE:
-    case RESCUE_ITEMS_FAILURE: {
+    case RESCUE_ITEMS_FAILURE:
+    case DOWNLOAD_ITEM_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -246,6 +256,14 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
           ...state.data,
           [newItem.id]: newItem
         }
+      }
+    }
+
+    case DOWNLOAD_ITEM_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null
       }
     }
 

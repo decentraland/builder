@@ -64,12 +64,16 @@ import {
   PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
   PublishThirdPartyItemsRequestAction,
   publishThirdPartyItemsSuccess,
-  publishThirdPartyItemsFailure
+  publishThirdPartyItemsFailure,
+  DOWNLOAD_ITEM_REQUEST,
+  DownloadItemRequestAction,
+  downloadItemFailure,
+  downloadItemSuccess
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
-import { BuilderAPI } from 'lib/api/builder'
+import { BuilderAPI, getContentsStorageUrl } from 'lib/api/builder'
 import { getCollection, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
@@ -84,6 +88,7 @@ import { buildCatalystItemURN } from '../../lib/urn'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
+import JSZip from 'jszip'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -102,6 +107,7 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
   yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
+  yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
   yield fork(fetchItemEntities)
 
   function* handleFetchRaritiesRequest() {
@@ -332,6 +338,46 @@ export function* itemSaga(builder: BuilderAPI) {
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
     } catch (error) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
+    }
+  }
+
+  function* handleDownloadItemRequest(action: DownloadItemRequestAction) {
+    const { itemId } = action.payload
+
+    try {
+      // find item
+      const items: ReturnType<typeof getItemsById> = yield select(getItemsById)
+      const item = items[itemId]
+      if (!item) {
+        throw new Error(`Item not found for itemId="${itemId}"`)
+      }
+
+      // create zip
+      let zip = new JSZip()
+
+      // download blobs and add them to zip
+      for (const path of Object.keys(item.contents)) {
+        const url = getContentsStorageUrl(item.contents[path])
+        const resp: Response = yield call(fetch, url)
+        if (!resp.ok) {
+          const message = yield call([resp, 'text'])
+          throw new Error(message)
+        }
+        const blob = yield call([resp, 'blob'])
+        zip.file(path, blob)
+      }
+
+      // generate zip file
+      const sanitizedName = item.name.replace(/\s/g, '_')
+      const artifact: Blob = yield call([zip, 'generateAsync'], { type: 'blob' })
+
+      // download zip file (aka artifact)
+      yield call(saveAs, artifact, `${sanitizedName}.zip`)
+
+      // success 🎉
+      yield put(downloadItemSuccess(itemId))
+    } catch (error) {
+      yield put(downloadItemFailure(itemId, error.message))
     }
   }
 }
