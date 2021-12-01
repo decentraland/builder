@@ -2,8 +2,6 @@ import uuidv4 from 'uuid/v4'
 import { push } from 'connected-react-router'
 import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
-import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -61,6 +59,7 @@ import { locations } from 'routing/locations'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
+import { downloadZip } from 'lib/zip'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -189,8 +188,6 @@ export function* projectSaga(builder: BuilderAPI) {
     const { project } = action.payload
     const scene: Scene = yield getSceneByProjectId(project.id)
 
-    let zip = new JSZip()
-    let sanitizedName = project.title.replace(/\s/g, '_')
     yield put(setExportProgress({ loaded: 0, total: 0 }))
     const author: string = yield select(getName)
     const files: Record<string, Blob | string> = yield call(() =>
@@ -205,12 +202,10 @@ export function* projectSaga(builder: BuilderAPI) {
         onProgress: progress => store.dispatch(setExportProgress(progress))
       })
     )
-    for (const filename of Object.keys(files)) {
-      zip.file(filename, files[filename])
-    }
 
-    const artifact: Blob = yield call([zip, 'generateAsync'], { type: 'blob' })
-    yield call(saveAs, artifact, `${sanitizedName}.zip`)
+    // download zip
+    const name = project.title.replace(/\s/g, '_')
+    yield call(downloadZip, name, files)
 
     yield put(closeModal('ExportModal'))
     yield put(exportProjectSuccess())

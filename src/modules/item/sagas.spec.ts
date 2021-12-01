@@ -25,7 +25,10 @@ import {
   setPriceAndBeneficiaryFailure,
   publishThirdPartyItemsFailure,
   publishThirdPartyItemsRequest,
-  publishThirdPartyItemsSuccess
+  publishThirdPartyItemsSuccess,
+  downloadItemFailure,
+  downloadItemRequest,
+  downloadItemSuccess
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
 import { Item, ItemType, WearableRepresentation } from './types'
@@ -33,13 +36,15 @@ import { calculateFinalSize } from './export'
 import { MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { downloadZip } from 'lib/zip'
 
 let blob: Blob = new Blob()
 const contents: Record<string, Blob> = { path: blob }
 
 const builderAPI = ({
   saveItem: jest.fn(),
-  saveItemContents: jest.fn()
+  saveItemContents: jest.fn(),
+  fetchBlob: jest.fn()
 } as unknown) as BuilderAPI
 
 let dateNowSpy: jest.SpyInstance
@@ -614,6 +619,86 @@ describe('when publishing third party items', () => {
           .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
           .run({ silenceTimeout: true })
       })
+    })
+  })
+})
+
+describe('when handling the downloadItemRequest action', () => {
+  ;(global as any).saveAs = jest.fn()
+  let itemsById: Record<string, Item>
+
+  beforeEach(() => {
+    itemsById = {
+      male: { id: 'male', name: 'male', contents: { 'male/model.glb': 'Qmhash' } as Record<string, string> } as Item,
+      maleAndFemale: {
+        id: 'maleAndFemale',
+        name: 'male and female',
+        contents: { 'male/model_male.glb': 'QmhashMale', 'female/model_female.glb': 'QmhashFemale' } as Record<string, string>
+      } as Item,
+      both: {
+        id: 'both',
+        name: 'both',
+        contents: { 'male/model.glb': 'Qmhash', 'female/model.glb': 'Qmhash' } as Record<string, string>
+      } as Item
+    }
+  })
+
+  describe('when id is not found', () => {
+    const itemId = 'invalid'
+    it('should throw an error with a message that says the item was not found', () => {
+      return expectSaga(itemSaga, builderAPI)
+        .provide([[select(getItemsById), itemsById]])
+        .put(downloadItemFailure(itemId, `Item not found for itemId="invalid"`))
+        .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when an item has only one "male" representation', () => {
+    const itemId = 'male'
+    it('should download a zip file with all the contents under a /male directory', () => {
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getItemsById), itemsById],
+          [call([builderAPI, 'fetchBlob'], 'Qmhash'), new Blob()],
+          [call(downloadZip, 'male', { 'male/model.glb': 'Qmhash' }), undefined]
+        ])
+        .put(downloadItemSuccess(itemId))
+        .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when an item has two different representations for male and female', () => {
+    const itemId = 'maleAndFemale'
+    it('should download a zip file with both /male and /female directories', () => {
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getItemsById), itemsById],
+          [call([builderAPI, 'fetchBlob'], 'Qmhash'), new Blob()],
+          [
+            call(downloadZip, 'male_and_female', { 'male/model_male.glb': 'QmhashMale', 'female/model_female.glb': 'QmhashFemale' }),
+            undefined
+          ]
+        ])
+        .put(downloadItemSuccess(itemId))
+        .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when an item has two representations that are the same', () => {
+    const itemId = 'both'
+    it('should download a zip file with no /male or /female directories', () => {
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getItemsById), itemsById],
+          [call([builderAPI, 'fetchBlob'], 'Qmhash'), new Blob()],
+          [call(downloadZip, 'both', { 'model.glb': 'Qmhash' }), undefined]
+        ])
+        .put(downloadItemSuccess(itemId))
+        .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
     })
   })
 })

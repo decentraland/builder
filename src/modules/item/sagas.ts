@@ -73,22 +73,22 @@ import {
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
-import { BuilderAPI, getContentsStorageUrl } from 'lib/api/builder'
+import { BuilderAPI } from 'lib/api/builder'
 import { getCollection, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
+import { fetchEntitiesRequest } from 'modules/entity/actions'
+import { getMethodData } from 'modules/wallet/utils'
+import { getCatalystContentUrl } from 'lib/api/peer'
+import { downloadZip } from 'lib/zip'
+import { buildCatalystItemURN } from '../../lib/urn'
 import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
-import { buildCatalystItemURN } from '../../lib/urn'
-import { fetchEntitiesRequest } from 'modules/entity/actions'
-import { getMethodData } from 'modules/wallet/utils'
-import { getCatalystContentUrl } from 'lib/api/peer'
-import JSZip from 'jszip'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -352,9 +352,6 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error(`Item not found for itemId="${itemId}"`)
       }
 
-      // create zip
-      let zip = new JSZip()
-
       // record of files to include
       const files: Record<string, Blob> = {}
 
@@ -370,13 +367,7 @@ export function* itemSaga(builder: BuilderAPI) {
         const hash = item.contents[path]
         // skip downloading already donwloaded hashes
         if (!hashes.has(hash)) {
-          const url = getContentsStorageUrl(hash)
-          const resp: Response = yield call(fetch, url)
-          if (!resp.ok) {
-            const message = yield call([resp, 'text'])
-            throw new Error(message)
-          }
-          const blob = yield call([resp, 'blob'])
+          const blob = yield call([builder, 'fetchBlob'], hash)
           files[path] = blob
 
           // track hashes
@@ -404,16 +395,9 @@ export function* itemSaga(builder: BuilderAPI) {
         }
       }
 
-      // generate zip file
-      const sanitizedName = item.name.replace(/\s/g, '_')
-      for (const path in files) {
-        const blob = files[path]
-        zip.file(path, blob)
-      }
-      const artifact: Blob = yield call([zip, 'generateAsync'], { type: 'blob' })
-
-      // download zip file (aka artifact)
-      yield call(saveAs, artifact, `${sanitizedName}.zip`)
+      // download zip
+      const name = item.name.replace(/\s/g, '_')
+      yield call(downloadZip, name, files)
 
       // success 🎉
       yield put(downloadItemSuccess(itemId))

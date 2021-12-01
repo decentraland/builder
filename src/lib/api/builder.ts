@@ -716,4 +716,15 @@ export class BuilderAPI extends BaseAPI {
   isAxiosError(error: any): error is AxiosError {
     return error.isAxiosError
   }
+
+  async fetchBlob(hash: string) {
+    const url = getContentsStorageUrl(hash)
+    const resp = await fetch(url)
+    if (!resp.ok) {
+      const message = await resp.text()
+      throw new Error(message)
+    }
+    const blob = await resp.blob()
+    return blob
+  }
 }
