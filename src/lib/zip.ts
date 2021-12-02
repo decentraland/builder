@@ -1,4 +1,5 @@
 import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 
 export async function downloadZip(name: string, files: Record<string, Blob | string>) {
   const zip = new JSZip()
