@@ -33,7 +33,7 @@ import {
 import { itemSaga, handleResetItemRequest } from './sagas'
 import { Item, ItemType, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
-import { MAX_FILE_SIZE } from './utils'
+import { buildZipFiles, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { downloadZip } from 'lib/zip'
@@ -44,7 +44,7 @@ const contents: Record<string, Blob> = { path: blob }
 const builderAPI = ({
   saveItem: jest.fn(),
   saveItemContents: jest.fn(),
-  fetchBlob: jest.fn()
+  fetchContent: jest.fn()
 } as unknown) as BuilderAPI
 
 let dateNowSpy: jest.SpyInstance
@@ -624,7 +624,6 @@ describe('when publishing third party items', () => {
 })
 
 describe('when handling the downloadItemRequest action', () => {
-  ;(global as any).saveAs = jest.fn()
   let itemsById: Record<string, Item>
 
   beforeEach(() => {
@@ -655,13 +654,15 @@ describe('when handling the downloadItemRequest action', () => {
   })
 
   describe('when an item has only one "male" representation', () => {
-    const itemId = 'male'
     it('should download a zip file with all the contents under a /male directory', () => {
+      const itemId = 'male'
+      const files = { 'male/model.glb': 'Qmhash' }
       return expectSaga(itemSaga, builderAPI)
         .provide([
           [select(getItemsById), itemsById],
-          [call([builderAPI, 'fetchBlob'], 'Qmhash'), new Blob()],
-          [call(downloadZip, 'male', { 'male/model.glb': 'Qmhash' }), undefined]
+          [call([builderAPI, 'fetchContent'], 'Qmhash'), new Blob()],
+          [matchers.call.fn(buildZipFiles), files],
+          [call(downloadZip, 'male', files), undefined]
         ])
         .put(downloadItemSuccess(itemId))
         .dispatch(downloadItemRequest(itemId))
@@ -670,16 +671,15 @@ describe('when handling the downloadItemRequest action', () => {
   })
 
   describe('when an item has two different representations for male and female', () => {
-    const itemId = 'maleAndFemale'
     it('should download a zip file with both /male and /female directories', () => {
+      const itemId = 'maleAndFemale'
+      const files = { 'male/model_male.glb': 'QmhashMale', 'female/model_female.glb': 'QmhashFemale' }
       return expectSaga(itemSaga, builderAPI)
         .provide([
           [select(getItemsById), itemsById],
-          [call([builderAPI, 'fetchBlob'], 'Qmhash'), new Blob()],
-          [
-            call(downloadZip, 'male_and_female', { 'male/model_male.glb': 'QmhashMale', 'female/model_female.glb': 'QmhashFemale' }),
-            undefined
-          ]
+          [call([builderAPI, 'fetchContent'], 'Qmhash'), new Blob()],
+          [matchers.call.fn(buildZipFiles), files],
+          [call(downloadZip, 'male_and_female', files), undefined]
         ])
         .put(downloadItemSuccess(itemId))
         .dispatch(downloadItemRequest(itemId))
@@ -688,13 +688,15 @@ describe('when handling the downloadItemRequest action', () => {
   })
 
   describe('when an item has two representations that are the same', () => {
-    const itemId = 'both'
     it('should download a zip file with no /male or /female directories', () => {
+      const itemId = 'both'
+      const files = { 'model.glb': 'Qmhash' }
       return expectSaga(itemSaga, builderAPI)
         .provide([
           [select(getItemsById), itemsById],
-          [call([builderAPI, 'fetchBlob'], 'Qmhash'), new Blob()],
-          [call(downloadZip, 'both', { 'model.glb': 'Qmhash' }), undefined]
+          [call([builderAPI, 'fetchContent'], 'Qmhash'), new Blob()],
+          [matchers.call.fn(buildZipFiles), files],
+          [call(downloadZip, 'both', files), undefined]
         ])
         .put(downloadItemSuccess(itemId))
         .dispatch(downloadItemRequest(itemId))

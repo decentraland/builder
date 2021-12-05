@@ -88,7 +88,7 @@ import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
+import { buildZipFiles, getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -367,7 +367,7 @@ export function* itemSaga(builder: BuilderAPI) {
         const hash = item.contents[path]
         // skip downloading already donwloaded hashes
         if (!hashes.has(hash)) {
-          const blob = yield call([builder, 'fetchBlob'], hash)
+          const blob = yield call([builder, 'fetchContent'], hash)
           files[path] = blob
 
           // track hashes
@@ -382,22 +382,13 @@ export function* itemSaga(builder: BuilderAPI) {
         }
       }
 
-      // check if representations are equal
+      // build zip files, if both representations are equal, the /male and /female directories can be merged
       const areRepresentationsEqual = maleHashes.length === femaleHashes.length && maleHashes.every(hash => femaleHashes.includes(hash))
-
-      // if both are the same, we can remove the /male and /female subdirectories
-      if (areRepresentationsEqual) {
-        const paths = Object.keys(files)
-        for (const path of paths) {
-          const newPath = path.replace(BodyShapeType.MALE + '/', '').replace(BodyShapeType.FEMALE + '/', '')
-          files[newPath] = files[path]
-          delete files[path]
-        }
-      }
+      const zipFiles = yield call(buildZipFiles, files, areRepresentationsEqual)
 
       // download zip
       const name = item.name.replace(/\s/g, '_')
-      yield call(downloadZip, name, files)
+      yield call(downloadZip, name, zipFiles)
 
       // success 🎉
       yield put(downloadItemSuccess(itemId))

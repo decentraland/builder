@@ -45,7 +45,6 @@ import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene, setGizmo } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
-import { closeModal } from 'modules/modal/actions'
 import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { BuilderAPI } from 'lib/api/builder'
@@ -190,24 +189,20 @@ export function* projectSaga(builder: BuilderAPI) {
 
     yield put(setExportProgress({ loaded: 0, total: 0 }))
     const author: string = yield select(getName)
-    const files: Record<string, Blob | string> = yield call(() =>
-      createFiles({
-        project,
-        scene,
-        point: { x: 0, y: 0 },
-        rotation: 'east',
-        isDeploy: false,
-        thumbnail: null,
-        author,
-        onProgress: progress => store.dispatch(setExportProgress(progress))
-      })
-    )
+    const files: Record<string, Blob | string> = yield call(createFiles, {
+      project,
+      scene,
+      point: { x: 0, y: 0 },
+      rotation: 'east',
+      isDeploy: false,
+      thumbnail: null,
+      author,
+      onProgress: progress => store.dispatch(setExportProgress(progress))
+    })
 
     // download zip
     const name = project.title.replace(/\s/g, '_')
     yield call(downloadZip, name, files)
-
-    yield put(closeModal('ExportModal'))
     yield put(exportProjectSuccess())
   }
 
