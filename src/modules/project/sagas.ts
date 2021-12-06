@@ -54,11 +54,11 @@ import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
-import { locations } from 'routing/locations'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
+import { locations } from 'routing/locations'
+import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
-import { downloadZip } from 'lib/zip'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
