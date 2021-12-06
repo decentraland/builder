@@ -88,7 +88,7 @@ import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { buildZipFiles, getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
+import { buildZipContents, getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -352,43 +352,28 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error(`Item not found for itemId="${itemId}"`)
       }
 
-      // record of files to include
-      const files: Record<string, Blob> = {}
+      // download blobs
+      const files: Record<string, Blob> = yield call([builder, 'fetchContents'], item.contents)
 
-      // keep track of hashes already added and skip them, this is for wearables with "both" representations, with the same files
-      const hashes = new Set<string>()
-
-      // keep track of what hashes belong to each representation, if both are exactly the same, we can remove the /male and /female sub directories
+      // check if both representations are equal
       const maleHashes: string[] = []
       const femaleHashes: string[] = []
-
-      // download blobs and add them to zip
       for (const path of Object.keys(item.contents)) {
         const hash = item.contents[path]
-        // skip downloading already donwloaded hashes
-        if (!hashes.has(hash)) {
-          const blob = yield call([builder, 'fetchContent'], hash)
-          files[path] = blob
-
-          // track hashes
-          hashes.add(hash)
-        }
-
-        // track hashes per representation
         if (path.startsWith(BodyShapeType.MALE)) {
           maleHashes.push(hash)
         } else if (path.startsWith(BodyShapeType.FEMALE)) {
           femaleHashes.push(hash)
         }
       }
+      const areRepresentationsEqual = maleHashes.length === femaleHashes.length && maleHashes.every(hash => femaleHashes.includes(hash))
 
       // build zip files, if both representations are equal, the /male and /female directories can be merged
-      const areRepresentationsEqual = maleHashes.length === femaleHashes.length && maleHashes.every(hash => femaleHashes.includes(hash))
-      const zipFiles = yield call(buildZipFiles, files, areRepresentationsEqual)
+      const zip: Record<string, Blob> = yield call(buildZipContents, files, areRepresentationsEqual)
 
       // download zip
       const name = item.name.replace(/\s/g, '_')
-      yield call(downloadZip, name, zipFiles)
+      yield call(downloadZip, name, zip)
 
       // success 🎉
       yield put(downloadItemSuccess(itemId))

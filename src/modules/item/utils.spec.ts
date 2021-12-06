@@ -1,5 +1,5 @@
 import { Item, ItemType, WearableBodyShape, WearableCategory } from './types'
-import { buildZipFiles, toThirdPartyContractItems } from './utils'
+import { buildZipContents, toThirdPartyContractItems } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
   let items: Item[]
@@ -53,13 +53,13 @@ describe('when transforming third party items to be sent to a contract method', 
 
 describe('when building building zip files and representations are equal', () => {
   it('should remove the /male and /female directories', () => {
-    expect(buildZipFiles({ 'male/model.glb': 'Qmhash', 'female/model.glb': 'Qmhash' }, true)).toEqual({ 'model.glb': 'Qmhash' })
+    expect(buildZipContents({ 'male/model.glb': 'Qmhash', 'female/model.glb': 'Qmhash' }, true)).toEqual({ 'model.glb': 'Qmhash' })
   })
 })
 
 describe('when building building zip files and representations are NOT equal', () => {
   it('should keep the /male and /female directories', () => {
-    expect(buildZipFiles({ 'male/model.glb': 'QmhashA', 'female/model.glb': 'QmhashB' }, false)).toEqual({
+    expect(buildZipContents({ 'male/model.glb': 'QmhashA', 'female/model.glb': 'QmhashB' }, false)).toEqual({
       'male/model.glb': 'QmhashA',
       'female/model.glb': 'QmhashB'
     })

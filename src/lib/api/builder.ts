@@ -727,4 +727,21 @@ export class BuilderAPI extends BaseAPI {
     const blob = await resp.blob()
     return blob
   }
+
+  async fetchContents(contents: Record<string, string>) {
+    const blobs = new Map<string, Promise<Blob>>()
+    const mappings: Promise<[string, Blob]>[] = []
+    for (const path in contents) {
+      const hash = contents[path]
+      // avoid fetching the same hash more than once
+      const blob = blobs.has(hash) ? blobs.get(hash)! : this.fetchContent(hash)
+      mappings.push(blob.then(blob => [path, blob]))
+    }
+    return Promise.all(mappings).then(results =>
+      results.reduce<Record<string, Blob>>((obj, [path, blob]) => {
+        obj[path] = blob
+        return obj
+      }, {})
+    )
+  }
 }

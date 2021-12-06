@@ -329,12 +329,12 @@ export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPo
   return true
 }
 
-export function buildZipFiles(files: Record<string, Blob | string>, areEqual: boolean) {
-  const newFiles: Record<string, Blob | string> = {}
-  const paths = Object.keys(files)
+export function buildZipContents(contents: Record<string, Blob | string>, areEqual: boolean) {
+  const newContents: Record<string, Blob | string> = {}
+  const paths = Object.keys(contents)
   for (const path of paths) {
     const newPath = areEqual ? path.replace(BodyShapeType.FEMALE + '/', '').replace(BodyShapeType.MALE + '/', '') : path
-    newFiles[newPath] = files[path]
+    newContents[newPath] = contents[path]
   }
-  return newFiles
+  return newContents
 }
