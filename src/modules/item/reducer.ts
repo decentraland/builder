@@ -94,7 +94,7 @@ export type ItemState = {
   error: string | null
 }
 
-const INITIAL_STATE: ItemState = {
+export const INITIAL_STATE: ItemState = {
   data: {},
   rarities: [],
   loading: [],
