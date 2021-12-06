@@ -734,7 +734,10 @@ export class BuilderAPI extends BaseAPI {
     for (const path in contents) {
       const hash = contents[path]
       // avoid fetching the same hash more than once
-      const blob = blobs.has(hash) ? blobs.get(hash)! : this.fetchContent(hash)
+      if (!blobs.has(hash)) {
+        blobs.set(hash, this.fetchContent(hash))
+      }
+      const blob = blobs.get(hash)!
       mappings.push(blob.then(blob => [path, blob]))
     }
     return Promise.all(mappings).then(results =>
