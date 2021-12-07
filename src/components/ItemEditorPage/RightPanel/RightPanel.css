@@ -140,3 +140,16 @@
 .RightPanel .danger-text {
   word-break: break-word;
 }
+
+.RightPanel .details .download-item-button {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+}
+
+.RightPanel .details .ui.tiny.active.loader.donwload-item-loader {
+  right: 1px;
+  bottom: 0px;
+  top: auto;
+  left: auto;
+}

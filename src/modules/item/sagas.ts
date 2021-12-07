@@ -64,7 +64,11 @@ import {
   PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
   PublishThirdPartyItemsRequestAction,
   publishThirdPartyItemsSuccess,
-  publishThirdPartyItemsFailure
+  publishThirdPartyItemsFailure,
+  DOWNLOAD_ITEM_REQUEST,
+  DownloadItemRequestAction,
+  downloadItemFailure,
+  downloadItemSuccess
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { isLocked } from 'modules/collection/utils'
@@ -75,15 +79,16 @@ import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { calculateFinalSize } from './export'
-import { Item, Rarity, CatalystItem } from './types'
-import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
-import { ItemTooBigError } from './errors'
-import { getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
-import { buildCatalystItemURN } from '../../lib/urn'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
+import { downloadZip } from 'lib/zip'
+import { buildCatalystItemURN } from '../../lib/urn'
+import { calculateFinalSize } from './export'
+import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
+import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
+import { ItemTooBigError } from './errors'
+import { buildZipContents, getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -102,6 +107,7 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
   yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
+  yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
   yield fork(fetchItemEntities)
 
   function* handleFetchRaritiesRequest() {
@@ -332,6 +338,47 @@ export function* itemSaga(builder: BuilderAPI) {
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
     } catch (error) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
+    }
+  }
+
+  function* handleDownloadItemRequest(action: DownloadItemRequestAction) {
+    const { itemId } = action.payload
+
+    try {
+      // find item
+      const items: ReturnType<typeof getItemsById> = yield select(getItemsById)
+      const item = items[itemId]
+      if (!item) {
+        throw new Error(`Item not found for itemId="${itemId}"`)
+      }
+
+      // download blobs
+      const files: Record<string, Blob> = yield call([builder, 'fetchContents'], item.contents)
+
+      // check if both representations are equal
+      const maleHashes: string[] = []
+      const femaleHashes: string[] = []
+      for (const path of Object.keys(item.contents)) {
+        const hash = item.contents[path]
+        if (path.startsWith(BodyShapeType.MALE)) {
+          maleHashes.push(hash)
+        } else if (path.startsWith(BodyShapeType.FEMALE)) {
+          femaleHashes.push(hash)
+        }
+      }
+      const areRepresentationsEqual = maleHashes.length === femaleHashes.length && maleHashes.every(hash => femaleHashes.includes(hash))
+
+      // build zip files, if both representations are equal, the /male and /female directories can be merged
+      const zip: Record<string, Blob> = yield call(buildZipContents, files, areRepresentationsEqual)
+
+      // download zip
+      const name = item.name.replace(/\s/g, '_')
+      yield call(downloadZip, name, zip)
+
+      // success 🎉
+      yield put(downloadItemSuccess(itemId))
+    } catch (error) {
+      yield put(downloadItemFailure(itemId, error.message))
     }
   }
 }

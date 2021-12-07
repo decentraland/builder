@@ -25,21 +25,26 @@ import {
   setPriceAndBeneficiaryFailure,
   publishThirdPartyItemsFailure,
   publishThirdPartyItemsRequest,
-  publishThirdPartyItemsSuccess
+  publishThirdPartyItemsSuccess,
+  downloadItemFailure,
+  downloadItemRequest,
+  downloadItemSuccess
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
 import { Item, ItemType, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
-import { MAX_FILE_SIZE } from './utils'
+import { buildZipContents, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { downloadZip } from 'lib/zip'
 
 let blob: Blob = new Blob()
 const contents: Record<string, Blob> = { path: blob }
 
 const builderAPI = ({
   saveItem: jest.fn(),
-  saveItemContents: jest.fn()
+  saveItemContents: jest.fn(),
+  fetchContents: jest.fn()
 } as unknown) as BuilderAPI
 
 let dateNowSpy: jest.SpyInstance
@@ -614,6 +619,98 @@ describe('when publishing third party items', () => {
           .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
           .run({ silenceTimeout: true })
       })
+    })
+  })
+})
+
+describe('when handling the downloadItemRequest action', () => {
+  let itemsById: Record<string, Item>
+
+  beforeEach(() => {
+    itemsById = {
+      male: { id: 'male', name: 'male', contents: { 'male/model.glb': 'Qmhash' } as Record<string, string> } as Item,
+      maleAndFemale: {
+        id: 'maleAndFemale',
+        name: 'male and female',
+        contents: { 'male/model.glb': 'QmhashMale', 'female/model.glb': 'QmhashFemale' } as Record<string, string>
+      } as Item,
+      both: {
+        id: 'both',
+        name: 'both',
+        contents: { 'male/model.glb': 'Qmhash', 'female/model.glb': 'Qmhash' } as Record<string, string>
+      } as Item
+    }
+  })
+
+  describe('when id is not found', () => {
+    const itemId = 'invalid'
+    it('should throw an error with a message that says the item was not found', () => {
+      return expectSaga(itemSaga, builderAPI)
+        .provide([[select(getItemsById), itemsById]])
+        .put(downloadItemFailure(itemId, `Item not found for itemId="invalid"`))
+        .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when an item has only one "male" representation', () => {
+    it('should download a zip file with all the contents under a /male directory', () => {
+      const itemId = 'male'
+      const item = itemsById[itemId]
+      const model = new Blob()
+      const files: Record<string, Blob> = { 'male/model.glb': model }
+      const zip: Record<string, Blob> = { 'male/model.glb': model }
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getItemsById), itemsById],
+          [call([builderAPI, 'fetchContents'], item.contents), files],
+          [call(buildZipContents, files, false), zip],
+          [call(downloadZip, 'male', zip), undefined]
+        ])
+        .put(downloadItemSuccess(itemId))
+        .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when an item has two different representations for male and female', () => {
+    it('should download a zip file with both /male and /female directories', () => {
+      const itemId = 'maleAndFemale'
+      const item = itemsById[itemId]
+      const maleModel = new Blob()
+      const femaleModel = new Blob()
+      const files: Record<string, Blob> = { 'male/model.glb': maleModel, 'female/model.glb': femaleModel }
+      const zip: Record<string, Blob> = { 'male/model.glb': maleModel, 'female/model.glb': femaleModel }
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getItemsById), itemsById],
+          [call([builderAPI, 'fetchContents'], item.contents), files],
+          [call(buildZipContents, files, false), zip],
+          [call(downloadZip, 'male_and_female', zip), undefined]
+        ])
+        .put(downloadItemSuccess(itemId))
+        .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when an item has two representations that are the same', () => {
+    it('should download a zip file with no /male or /female directories', () => {
+      const itemId = 'both'
+      const item = itemsById[itemId]
+      const model = new Blob()
+      const files: Record<string, Blob> = { 'male/model.glb': model, 'female/model.glb': model }
+      const zip: Record<string, Blob> = { 'model.glb': model }
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getItemsById), itemsById],
+          [call([builderAPI, 'fetchContents'], item.contents), files],
+          [call(buildZipContents, files, true), zip],
+          [call(downloadZip, 'both', zip), undefined]
+        ])
+        .put(downloadItemSuccess(itemId))
+        .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
     })
   })
 })

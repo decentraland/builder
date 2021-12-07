@@ -2,8 +2,6 @@ import uuidv4 from 'uuid/v4'
 import { push } from 'connected-react-router'
 import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
-import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -47,7 +45,6 @@ import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene, setGizmo } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
-import { closeModal } from 'modules/modal/actions'
 import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { BuilderAPI } from 'lib/api/builder'
@@ -57,8 +54,9 @@ import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
-import { locations } from 'routing/locations'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
+import { locations } from 'routing/locations'
+import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
 
@@ -189,30 +187,22 @@ export function* projectSaga(builder: BuilderAPI) {
     const { project } = action.payload
     const scene: Scene = yield getSceneByProjectId(project.id)
 
-    let zip = new JSZip()
-    let sanitizedName = project.title.replace(/\s/g, '_')
     yield put(setExportProgress({ loaded: 0, total: 0 }))
     const author: string = yield select(getName)
-    const files: Record<string, Blob | string> = yield call(() =>
-      createFiles({
-        project,
-        scene,
-        point: { x: 0, y: 0 },
-        rotation: 'east',
-        isDeploy: false,
-        thumbnail: null,
-        author,
-        onProgress: progress => store.dispatch(setExportProgress(progress))
-      })
-    )
-    for (const filename of Object.keys(files)) {
-      zip.file(filename, files[filename])
-    }
+    const files: Record<string, Blob | string> = yield call(createFiles, {
+      project,
+      scene,
+      point: { x: 0, y: 0 },
+      rotation: 'east',
+      isDeploy: false,
+      thumbnail: null,
+      author,
+      onProgress: progress => store.dispatch(setExportProgress(progress))
+    })
 
-    const artifact: Blob = yield call([zip, 'generateAsync'], { type: 'blob' })
-    yield call(saveAs, artifact, `${sanitizedName}.zip`)
-
-    yield put(closeModal('ExportModal'))
+    // download zip
+    const name = project.title.replace(/\s/g, '_')
+    yield call(downloadZip, name, files)
     yield put(exportProjectSuccess())
   }
 
