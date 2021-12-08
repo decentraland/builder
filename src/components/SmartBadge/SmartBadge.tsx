@@ -1,5 +1,6 @@
-import { SmartIcon } from 'components/SmartIcon'
 import React from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { SmartIcon } from 'components/SmartIcon'
 import './SmartBadge.css'
 
 export type SmartBadgeProps = {
@@ -16,7 +17,7 @@ export default class SmartBadge extends React.PureComponent<SmartBadgeProps> {
   render() {
     const { className, size } = this.props
     return (
-      <div title="Smart Wearable" className={`SmartBadge ${className} ${size}`.trim()}>
+      <div title={t('item_types.smart_wearable')} className={`SmartBadge ${className} ${size}`.trim()}>
         <SmartIcon />
       </div>
     )

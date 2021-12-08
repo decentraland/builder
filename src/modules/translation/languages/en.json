@@ -125,6 +125,10 @@
     "female": "Female",
     "null": "None"
   },
+  "item_types": {
+    "wearable": "Wearable",
+    "smart_wearable": "Smart Wearable"
+  },
   "avatar_animations": {
     "idle": "Idle",
     "wave": "Wave",

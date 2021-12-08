@@ -120,6 +120,10 @@
     "female": "女",
     "null": "没有任何"
   },
+  "item_types": {
+    "wearable": "可穿戴",
+    "smart_wearable": "智能穿戴"
+  },
   "avatar_animations": {
     "idle": "闲",
     "wave": "挥手",
