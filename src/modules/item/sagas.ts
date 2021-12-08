@@ -114,7 +114,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const rarities: Rarity[] = yield call([builder, 'fetchRarities'])
       yield put(fetchRaritiesSuccess(rarities))
-    } catch (error) {
+    } catch (error: any) {
       yield put(fetchRaritiesFailure(error.message))
     }
   }
@@ -124,7 +124,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const items: Item[] = yield call(() => builder.fetchItems(address))
       yield put(fetchItemsSuccess(items))
-    } catch (error) {
+    } catch (error: any) {
       yield put(fetchItemsFailure(error.message))
     }
   }
@@ -134,7 +134,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const item: Item = yield call(() => builder.fetchItem(id))
       yield put(fetchItemSuccess(id, item))
-    } catch (error) {
+    } catch (error: any) {
       yield put(fetchItemFailure(id, error.message))
     }
   }
@@ -144,7 +144,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const items: Item[] = yield call(() => builder.fetchCollectionItems(collectionId))
       yield put(fetchCollectionItemsSuccess(collectionId, items))
-    } catch (error) {
+    } catch (error: any) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
     }
   }
@@ -174,7 +174,7 @@ export function* itemSaga(builder: BuilderAPI) {
       yield call([builder, 'saveItem'], item, contents)
 
       yield put(saveItemSuccess(item, contents))
-    } catch (error) {
+    } catch (error: any) {
       yield put(saveItemFailure(actionItem, contents, error.message))
     }
   }
@@ -209,7 +209,7 @@ export function* itemSaga(builder: BuilderAPI) {
       )
 
       yield put(setPriceAndBeneficiarySuccess(newItem, chainId, txHash))
-    } catch (error) {
+    } catch (error: any) {
       yield put(setPriceAndBeneficiaryFailure(itemId, price, beneficiary, error.message))
     }
   }
@@ -228,7 +228,7 @@ export function* itemSaga(builder: BuilderAPI) {
 
       yield put(publishThirdPartyItemsSuccess(txHash, maticChainId, thirdParty, collection, items))
       yield put(push(locations.activity()))
-    } catch (error) {
+    } catch (error: any) {
       yield put(publishThirdPartyItemsFailure(thirdParty, items, error.message))
     }
   }
@@ -242,7 +242,7 @@ export function* itemSaga(builder: BuilderAPI) {
       if (itemIdInUriParam === item.id) {
         yield put(replace(locations.collections()))
       }
-    } catch (error) {
+    } catch (error: any) {
       yield put(deleteItemFailure(item, error.message))
     }
   }
@@ -271,7 +271,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const { items: newItems }: { items: Item[] } = yield call(() => builder.publishCollection(collection.id))
       yield put(setItemsTokenIdSuccess(newItems))
-    } catch (error) {
+    } catch (error: any) {
       yield put(setItemsTokenIdFailure(collection, items, error.message))
     }
   }
@@ -336,7 +336,7 @@ export function* itemSaga(builder: BuilderAPI) {
 
       const newItems = items.map<Item>((item, index) => ({ ...item, contentHash: contentHashes[index] }))
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
-    } catch (error) {
+    } catch (error: any) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
     }
   }
@@ -377,7 +377,7 @@ export function* itemSaga(builder: BuilderAPI) {
 
       // success 🎉
       yield put(downloadItemSuccess(itemId))
-    } catch (error) {
+    } catch (error: any) {
       yield put(downloadItemFailure(itemId, error.message))
     }
   }
@@ -440,7 +440,7 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
     } else if (saveItemResult.failure) {
       yield put(resetItemFailure(itemId, saveItemResult.failure.payload.error))
     }
-  } catch (error) {
+  } catch (error: any) {
     yield put(resetItemFailure(itemId, error.message))
   }
 }

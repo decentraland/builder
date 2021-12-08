@@ -148,7 +148,7 @@ export function getMetadata(item: Item) {
       if (!data.category) {
         throw new Error(`Unknown item category "${item.data}"`)
       }
-      return buildItemMetadata(0, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
+      return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
     default:
       throw new Error(`Unknown item.type "${item.type}"`)
