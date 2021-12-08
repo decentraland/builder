@@ -8,7 +8,7 @@ import { Collection } from 'modules/collection/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
-import { buildItemURN, extractThirdPartyTokenId, decodeURN } from 'lib/urn'
+import { extractThirdPartyTokenId, decodeURN } from 'lib/urn'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import {
   Item,
@@ -27,7 +27,8 @@ import {
   InitializeItem,
   CatalystItem,
   SyncStatus,
-  ThirdPartyContractItem
+  ThirdPartyContractItem,
+  ItemMetadataType
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -115,6 +116,24 @@ export function getBackgroundStyle(rarity?: ItemRarity) {
     : { backgroundColor: 'var(--secondary)' }
 }
 
+export function getItemMetadataType(item: Item) {
+  if (Object.keys(item.contents).some(path => path.endsWith('.js'))) {
+    return ItemMetadataType.SMART_WEARABLE
+  }
+  return ItemMetadataType.WEARABLE
+}
+
+export function buildItemMetadata(
+  version: number,
+  type: ItemMetadataType,
+  name: string,
+  description: string,
+  category: string,
+  bodyShapeTypes: string
+): string {
+  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}`
+}
+
 // Metadata looks like this:
 // - Common: version:item_type:representation_id
 // - Wearables: version:item_type:representation_id:category:bodyshapes
@@ -129,7 +148,7 @@ export function getMetadata(item: Item) {
       if (!data.category) {
         throw new Error(`Unknown item category "${item.data}"`)
       }
-      return buildItemURN(item.type, item.name, item.description, data.category, bodyShapeTypes)
+      return buildItemMetadata(0, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
     default:
       throw new Error(`Unknown item.type "${item.type}"`)

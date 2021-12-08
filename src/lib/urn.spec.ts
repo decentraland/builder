@@ -1,6 +1,14 @@
 import { ChainId, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { buildItemURN, buildThirdPartyURN, buildCatalystItemURN, decodeURN, URNType, URNProtocol, extractThirdPartyTokenId } from './urn'
+import {
+  buildItemMetadata,
+  buildThirdPartyURN,
+  buildCatalystItemURN,
+  decodeURN,
+  URNType,
+  URNProtocol,
+  extractThirdPartyTokenId
+} from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 
@@ -8,7 +16,7 @@ afterEach(() => jest.resetAllMocks())
 
 describe('when building the item URN', () => {
   it('should build a valid URN with the item data', () => {
-    expect(buildItemURN('wearable', 'my-name', 'my-desc', 'great-category', 'baseMale,baseFemale')).toBe(
+    expect(buildItemMetadata('wearable', 'my-name', 'my-desc', 'great-category', 'baseMale,baseFemale')).toBe(
       '1:w:my-name:my-desc:great-category:baseMale,baseFemale'
     )
   })

@@ -1,8 +1,6 @@
 import { getURNProtocol, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
-const VERSION = 1
-
 /**
  * urn:decentraland:
  *   (?<protocol>
@@ -76,10 +74,6 @@ export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
     : T extends URNType.COLLECTIONS_THIRDPARTY
     ? CollectionThirdPartyURN
     : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN)
-
-export function buildItemURN(type: string, name: string, description: string, category: string, bodyShapeTypes: string): URN {
-  return `${VERSION}:${type[0]}:${name}:${description}:${category}:${bodyShapeTypes}`
-}
 
 export function buildThirdPartyURN(thirdPartyName: string, collectionId: string, tokenId?: string) {
   let urn = `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-thirdparty:${thirdPartyName}:${collectionId}`
