@@ -79,7 +79,7 @@ describe('when building the item URN', () => {
 
 describe('when comparing two arrays', () => {
   it('should return true when the elements are the same in the same order', () => {
-    expect(areEqualArrays(['a', 'b', 'c', 'd'], ['c', 'a', 'b', 'd'])).toBe(true)
+    expect(areEqualArrays(['a', 'b', 'c', 'd'], ['a', 'b', 'c', 'd'])).toBe(true)
   })
   it('should return true when the elements are the same in different order', () => {
     expect(areEqualArrays(['a', 'b', 'c', 'd'], ['c', 'a', 'b', 'd'])).toBe(true)
