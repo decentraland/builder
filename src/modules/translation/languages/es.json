@@ -128,6 +128,10 @@
     "male": "Hombre",
     "female": "Mujer"
   },
+  "item_types": {
+    "wearable": "Vestimenta",
+    "smart_wearable": "Vestimenta Interactiva"
+  },
   "avatar_animations": {
     "idle": "Nada",
     "wave": "Saludar",

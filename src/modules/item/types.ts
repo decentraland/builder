@@ -41,6 +41,11 @@ export enum WearableCategory {
   TOP_HEAD = 'top_head'
 }
 
+export enum ItemMetadataType {
+  WEARABLE = 'w',
+  SMART_WEARABLE = 'sw'
+}
+
 export const BODY_SHAPE_CATEGORY = 'body_shape'
 
 export enum BodyShapeType {

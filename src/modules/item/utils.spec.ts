@@ -1,5 +1,5 @@
-import { Item, ItemType, WearableBodyShape, WearableCategory } from './types'
-import { buildZipContents, toThirdPartyContractItems } from './utils'
+import { Item, ItemMetadataType, ItemType, WearableBodyShape, WearableCategory } from './types'
+import { buildItemMetadata, buildZipContents, toThirdPartyContractItems } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
   let items: Item[]
@@ -16,7 +16,8 @@ describe('when transforming third party items to be sent to a contract method', 
           category: WearableCategory.EARRING,
           representations: [{ bodyShapes: [WearableBodyShape.MALE] }]
         },
-        urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id1:token-id2'
+        urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id1:token-id2',
+        contents: {}
       },
       {
         createdAt: now - 1000,
@@ -27,7 +28,8 @@ describe('when transforming third party items to be sent to a contract method', 
           category: WearableCategory.EYEBROWS,
           representations: [{ bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE] }]
         },
-        urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id2:token-idb'
+        urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id2:token-idb',
+        contents: {}
       },
       {
         createdAt: now - 3000,
@@ -38,7 +40,8 @@ describe('when transforming third party items to be sent to a contract method', 
           category: WearableCategory.FEET,
           representations: [{ bodyShapes: [WearableBodyShape.FEMALE] }]
         },
-        urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id1:token-id1'
+        urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id1:token-id1',
+        contents: {}
       }
     ] as Item[]
   })
@@ -63,5 +66,13 @@ describe('when building zip files and representations are NOT equal', () => {
       'male/model.glb': 'QmhashA',
       'female/model.glb': 'QmhashB'
     })
+  })
+})
+
+describe('when building the item URN', () => {
+  it('should build valid item metadata', () => {
+    expect(buildItemMetadata(1, ItemMetadataType.WEARABLE, 'my-name', 'my-desc', 'great-category', 'baseMale,baseFemale')).toBe(
+      '1:w:my-name:my-desc:great-category:baseMale,baseFemale'
+    )
   })
 })

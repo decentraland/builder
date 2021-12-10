@@ -223,7 +223,8 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
               overrideReplaces: []
             }
           ] as WearableRepresentation[]
-        }
+        },
+        contents: {}
       } as Item
 
       const price = '1000'
@@ -253,7 +254,8 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
           description: 'valid description',
           collectionId: collection.id,
           updatedAt,
-          isPublished: false
+          isPublished: false,
+          contents: {}
         } as Item
 
         const nonExistentItemId = 'non-existent-id'
