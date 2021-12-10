@@ -1,5 +1,5 @@
-import { Item, ItemMetadataType, ItemType, WearableBodyShape, WearableCategory } from './types'
-import { buildItemMetadata, buildZipContents, toThirdPartyContractItems } from './utils'
+import { Item, ItemMetadataType, ItemType, WearableBodyShape, WearableCategory, WearableRepresentation } from './types'
+import { buildItemMetadata, buildZipContents, toThirdPartyContractItems, areEqualArrays, areEqualRepresentations } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
   let items: Item[]
@@ -74,5 +74,63 @@ describe('when building the item URN', () => {
     expect(buildItemMetadata(1, ItemMetadataType.WEARABLE, 'my-name', 'my-desc', 'great-category', 'baseMale,baseFemale')).toBe(
       '1:w:my-name:my-desc:great-category:baseMale,baseFemale'
     )
+  })
+})
+
+describe('when comparing two arrays', () => {
+  it('should return true when the elements are the same in the same order', () => {
+    expect(areEqualArrays(['a', 'b', 'c', 'd'], ['c', 'a', 'b', 'd'])).toBe(true)
+  })
+  it('should return true when the elements are the same in different order', () => {
+    expect(areEqualArrays(['a', 'b', 'c', 'd'], ['c', 'a', 'b', 'd'])).toBe(true)
+  })
+  it('should return false when the first array has an extra element', () => {
+    expect(areEqualArrays(['a', 'b', 'c', 'd'], ['a', 'b', 'c'])).toBe(false)
+  })
+  it('should return false when the second array has an extra element', () => {
+    expect(areEqualArrays(['a', 'b', 'c'], ['a', 'b', 'c', 'd'])).toBe(false)
+  })
+  it('should return false when the elements are different', () => {
+    expect(areEqualArrays(['a', 'b', 'c'], ['x', 'y', 'z'])).toBe(false)
+  })
+})
+
+describe('when comparing two representations', () => {
+  const male: WearableRepresentation = {
+    bodyShapes: [WearableBodyShape.MALE],
+    contents: ['male.glb'],
+    mainFile: 'male.glb',
+    overrideHides: [],
+    overrideReplaces: []
+  }
+
+  const female: WearableRepresentation = {
+    bodyShapes: [WearableBodyShape.FEMALE],
+    contents: ['female.glb'],
+    mainFile: 'female.glb',
+    overrideHides: [],
+    overrideReplaces: []
+  }
+
+  it('should return true when both representations are male', () => {
+    expect(areEqualRepresentations([male], [male])).toBe(true)
+  })
+  it('should return true when both representations are female', () => {
+    expect(areEqualRepresentations([female], [female])).toBe(true)
+  })
+  it('should return true when both representations are male and female', () => {
+    expect(areEqualRepresentations([male, female], [male, female])).toBe(true)
+  })
+  it('should return false when the first representation is male and female and the second one is male', () => {
+    expect(areEqualRepresentations([male, female], [male])).toBe(false)
+  })
+  it('should return false when the first representation is male and female and the second one is female', () => {
+    expect(areEqualRepresentations([male, female], [female])).toBe(false)
+  })
+  it('should return false when the first representation is male and the second one is male and female', () => {
+    expect(areEqualRepresentations([male], [male, female])).toBe(false)
+  })
+  it('should return false when the first representation is female and the second one is male and female', () => {
+    expect(areEqualRepresentations([female], [male, female])).toBe(false)
   })
 })
