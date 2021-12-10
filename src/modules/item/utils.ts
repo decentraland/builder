@@ -28,7 +28,8 @@ import {
   CatalystItem,
   SyncStatus,
   ThirdPartyContractItem,
-  ItemMetadataType
+  ItemMetadataType,
+  WearableRepresentation
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -323,6 +324,32 @@ export function toInitializeItem(item: Item): InitializeItem {
   return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
 }
 
+export function areEqualArrays<T>(a: T[], b: T[]) {
+  const setA = new Set(a)
+  const setB = new Set(b)
+  return setA.size === setB.size && a.every(elemA => setB.has(elemA)) && b.every(elemB => setA.has(elemB))
+}
+
+export function areEqualRepresentations(a: WearableRepresentation[], b: WearableRepresentation[]) {
+  if (a.length !== b.length) {
+    return false
+  }
+  for (let i = 0; i < a.length; i++) {
+    const repA = a[i]
+    const repB = b[i]
+    const areEqual =
+      areEqualArrays(repA.bodyShapes, repB.bodyShapes) &&
+      areEqualArrays(repA.contents, repB.contents) &&
+      repA.mainFile === repB.mainFile &&
+      areEqualArrays(repA.overrideHides, repB.overrideHides) &&
+      areEqualArrays(repA.overrideReplaces, repB.overrideReplaces)
+    if (!areEqual) {
+      return false
+    }
+  }
+  return true
+}
+
 export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPointers) {
   // check if metadata is synced
   const catalystItem = entity.metadata! as CatalystItem
@@ -334,6 +361,11 @@ export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPo
     item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
     item.data.tags.toString() !== catalystItem.data.tags.toString()
   if (hasMetadataChanged) {
+    return false
+  }
+
+  // check if representations are synced
+  if (!areEqualRepresentations(item.data.representations, catalystItem.data.representations)) {
     return false
   }
 
