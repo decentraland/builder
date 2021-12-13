@@ -3,6 +3,8 @@ import { extractThirdPartyId } from 'lib/urn'
 import { Collection } from 'modules/collection/types'
 import { ThirdParty } from './types'
 
+export const MAX_PUBLISH_ITEM_COUNT = 20
+
 export function isUserManagerOfThirdParty(address: string, thirdParty: ThirdParty): boolean {
   return thirdParty.managers.map(manager => manager.toLowerCase()).includes(address.toLowerCase())
 }

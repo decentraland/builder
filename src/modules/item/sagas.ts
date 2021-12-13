@@ -1,8 +1,8 @@
 import { Contract } from 'ethers'
-import { replace } from 'connected-react-router'
+import { replace, push } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, all, race } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
@@ -60,7 +60,15 @@ import {
   resetItemFailure,
   SAVE_ITEM_FAILURE,
   SaveItemSuccessAction,
-  SaveItemFailureAction
+  SaveItemFailureAction,
+  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
+  PublishThirdPartyItemsRequestAction,
+  publishThirdPartyItemsSuccess,
+  publishThirdPartyItemsFailure,
+  DOWNLOAD_ITEM_REQUEST,
+  DownloadItemRequestAction,
+  downloadItemFailure,
+  downloadItemSuccess
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { isLocked } from 'modules/collection/utils'
@@ -71,15 +79,16 @@ import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { calculateFinalSize } from './export'
-import { Item, Rarity, CatalystItem } from './types'
-import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
-import { ItemTooBigError } from './errors'
-import { getMetadata, isValidText, MAX_FILE_SIZE } from './utils'
-import { buildCatalystItemURN } from '../../lib/urn'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
+import { downloadZip } from 'lib/zip'
+import { buildCatalystItemURN } from '../../lib/urn'
+import { calculateFinalSize } from './export'
+import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
+import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
+import { ItemTooBigError } from './errors'
+import { buildZipContents, getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -88,6 +97,7 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
   yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
+  yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
@@ -97,13 +107,14 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
   yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
+  yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
   yield fork(fetchItemEntities)
 
   function* handleFetchRaritiesRequest() {
     try {
       const rarities: Rarity[] = yield call([builder, 'fetchRarities'])
       yield put(fetchRaritiesSuccess(rarities))
-    } catch (error) {
+    } catch (error: any) {
       yield put(fetchRaritiesFailure(error.message))
     }
   }
@@ -113,7 +124,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const items: Item[] = yield call(() => builder.fetchItems(address))
       yield put(fetchItemsSuccess(items))
-    } catch (error) {
+    } catch (error: any) {
       yield put(fetchItemsFailure(error.message))
     }
   }
@@ -123,7 +134,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const item: Item = yield call(() => builder.fetchItem(id))
       yield put(fetchItemSuccess(id, item))
-    } catch (error) {
+    } catch (error: any) {
       yield put(fetchItemFailure(id, error.message))
     }
   }
@@ -133,7 +144,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const items: Item[] = yield call(() => builder.fetchCollectionItems(collectionId))
       yield put(fetchCollectionItemsSuccess(collectionId, items))
-    } catch (error) {
+    } catch (error: any) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
     }
   }
@@ -163,7 +174,7 @@ export function* itemSaga(builder: BuilderAPI) {
       yield call([builder, 'saveItem'], item, contents)
 
       yield put(saveItemSuccess(item, contents))
-    } catch (error) {
+    } catch (error: any) {
       yield put(saveItemFailure(actionItem, contents, error.message))
     }
   }
@@ -193,13 +204,32 @@ export function* itemSaga(builder: BuilderAPI) {
       const metadata = getMetadata(newItem)
       const chainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
       const contract = { ...getContract(ContractName.ERC721CollectionV2, chainId), address: collection.contractAddress! }
-      const txHash = yield call(sendTransaction, contract, collection =>
+      const txHash: string = yield call(sendTransaction, contract, collection =>
         collection.editItemsData([newItem.tokenId!], [newItem.price!], [newItem.beneficiary!], [metadata])
       )
 
       yield put(setPriceAndBeneficiarySuccess(newItem, chainId, txHash))
-    } catch (error) {
+    } catch (error: any) {
       yield put(setPriceAndBeneficiaryFailure(itemId, price, beneficiary, error.message))
+    }
+  }
+
+  function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
+    const { thirdParty, items } = action.payload
+    try {
+      const collectionId = items[0].collectionId!
+      const collection: Collection = yield select(getCollection, collectionId)
+
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+      const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
+        instantiatedThirdPartyContract.addItems(thirdParty.id, toThirdPartyContractItems(items))
+      )
+
+      yield put(publishThirdPartyItemsSuccess(txHash, maticChainId, thirdParty, collection, items))
+      yield put(push(locations.activity()))
+    } catch (error: any) {
+      yield put(publishThirdPartyItemsFailure(thirdParty, items, error.message))
     }
   }
 
@@ -212,7 +242,7 @@ export function* itemSaga(builder: BuilderAPI) {
       if (itemIdInUriParam === item.id) {
         yield put(replace(locations.collections()))
       }
-    } catch (error) {
+    } catch (error: any) {
       yield put(deleteItemFailure(item, error.message))
     }
   }
@@ -241,7 +271,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const { items: newItems }: { items: Item[] } = yield call(() => builder.publishCollection(collection.id))
       yield put(setItemsTokenIdSuccess(newItems))
-    } catch (error) {
+    } catch (error: any) {
       yield put(setItemsTokenIdFailure(collection, items, error.message))
     }
   }
@@ -306,8 +336,49 @@ export function* itemSaga(builder: BuilderAPI) {
 
       const newItems = items.map<Item>((item, index) => ({ ...item, contentHash: contentHashes[index] }))
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
-    } catch (error) {
+    } catch (error: any) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
+    }
+  }
+
+  function* handleDownloadItemRequest(action: DownloadItemRequestAction) {
+    const { itemId } = action.payload
+
+    try {
+      // find item
+      const items: ReturnType<typeof getItemsById> = yield select(getItemsById)
+      const item = items[itemId]
+      if (!item) {
+        throw new Error(`Item not found for itemId="${itemId}"`)
+      }
+
+      // download blobs
+      const files: Record<string, Blob> = yield call([builder, 'fetchContents'], item.contents)
+
+      // check if both representations are equal
+      const maleHashes: string[] = []
+      const femaleHashes: string[] = []
+      for (const path of Object.keys(item.contents)) {
+        const hash = item.contents[path]
+        if (path.startsWith(BodyShapeType.MALE)) {
+          maleHashes.push(hash)
+        } else if (path.startsWith(BodyShapeType.FEMALE)) {
+          femaleHashes.push(hash)
+        }
+      }
+      const areRepresentationsEqual = maleHashes.length === femaleHashes.length && maleHashes.every(hash => femaleHashes.includes(hash))
+
+      // build zip files, if both representations are equal, the /male and /female directories can be merged
+      const zip: Record<string, Blob> = yield call(buildZipContents, files, areRepresentationsEqual)
+
+      // download zip
+      const name = item.name.replace(/\s/g, '_')
+      yield call(downloadZip, name, zip)
+
+      // success 🎉
+      yield put(downloadItemSuccess(itemId))
+    } catch (error: any) {
+      yield put(downloadItemFailure(itemId, error.message))
     }
   }
 }
@@ -369,7 +440,7 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
     } else if (saveItemResult.failure) {
       yield put(resetItemFailure(itemId, saveItemResult.failure.payload.error))
     }
-  } catch (error) {
+  } catch (error: any) {
     yield put(resetItemFailure(itemId, error.message))
   }
 }

@@ -100,7 +100,7 @@ import { getItems } from 'modules/item/selectors'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
 import { getContentsStorageUrl } from 'lib/api/builder'
-import { toLegacyURN } from 'lib/urn'
+import { toLegacyURN } from 'lib/urnLegacy'
 import {
   getGizmo,
   getSelectedEntityIds,

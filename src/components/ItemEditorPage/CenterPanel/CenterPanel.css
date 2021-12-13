@@ -1,6 +1,6 @@
 .CenterPanel {
   position: relative;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   background-color: var(--preview-background);
 }
 

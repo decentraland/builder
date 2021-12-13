@@ -8,7 +8,7 @@ import { Collection } from 'modules/collection/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
-import { buildItemURN, decodeURN } from 'lib/urn'
+import { extractThirdPartyTokenId, decodeURN } from 'lib/urn'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import {
   Item,
@@ -26,7 +26,10 @@ import {
   THUMBNAIL_PATH,
   InitializeItem,
   CatalystItem,
-  SyncStatus
+  SyncStatus,
+  ThirdPartyContractItem,
+  ItemMetadataType,
+  WearableRepresentation
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -114,6 +117,24 @@ export function getBackgroundStyle(rarity?: ItemRarity) {
     : { backgroundColor: 'var(--secondary)' }
 }
 
+export function getItemMetadataType(item: Item) {
+  if (Object.keys(item.contents).some(path => path.endsWith('.js'))) {
+    return ItemMetadataType.SMART_WEARABLE
+  }
+  return ItemMetadataType.WEARABLE
+}
+
+export function buildItemMetadata(
+  version: number,
+  type: ItemMetadataType,
+  name: string,
+  description: string,
+  category: string,
+  bodyShapeTypes: string
+): string {
+  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}`
+}
+
 // Metadata looks like this:
 // - Common: version:item_type:representation_id
 // - Wearables: version:item_type:representation_id:category:bodyshapes
@@ -128,7 +149,7 @@ export function getMetadata(item: Item) {
       if (!data.category) {
         throw new Error(`Unknown item category "${item.data}"`)
       }
-      return buildItemURN(item.type, item.name, item.description, data.category, bodyShapeTypes)
+      return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
     default:
       throw new Error(`Unknown item.type "${item.type}"`)
@@ -291,12 +312,42 @@ export function isItemSizeError(error: string) {
   return error.search('The deployment is too big. The maximum allowed size per pointer is') !== -1
 }
 
+export function toThirdPartyContractItems(items: Item[]): ThirdPartyContractItem[] {
+  return items.sort(sortByCreatedAt).map(item => [extractThirdPartyTokenId(item.urn!), getMetadata(item)])
+}
+
 export function toInitializeItems(items: Item[]): InitializeItem[] {
   return items.sort(sortByCreatedAt).map(toInitializeItem)
 }
 
 export function toInitializeItem(item: Item): InitializeItem {
   return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
+}
+
+export function areEqualArrays<T>(a: T[], b: T[]) {
+  const setA = new Set(a)
+  const setB = new Set(b)
+  return setA.size === setB.size && a.every(elemA => setB.has(elemA)) && b.every(elemB => setA.has(elemB))
+}
+
+export function areEqualRepresentations(a: WearableRepresentation[], b: WearableRepresentation[]) {
+  if (a.length !== b.length) {
+    return false
+  }
+  for (let i = 0; i < a.length; i++) {
+    const repA = a[i]
+    const repB = b[i]
+    const areEqual =
+      areEqualArrays(repA.bodyShapes, repB.bodyShapes) &&
+      areEqualArrays(repA.contents, repB.contents) &&
+      repA.mainFile === repB.mainFile &&
+      areEqualArrays(repA.overrideHides, repB.overrideHides) &&
+      areEqualArrays(repA.overrideReplaces, repB.overrideReplaces)
+    if (!areEqual) {
+      return false
+    }
+  }
+  return true
 }
 
 export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPointers) {
@@ -313,6 +364,11 @@ export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPo
     return false
   }
 
+  // check if representations are synced
+  if (!areEqualRepresentations(item.data.representations, catalystItem.data.representations)) {
+    return false
+  }
+
   // check if contents are synced
   const contents = entity.content!.reduce((map, entry) => map.set(entry.key, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
@@ -322,4 +378,14 @@ export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPo
     }
   }
   return true
+}
+
+export function buildZipContents(contents: Record<string, Blob | string>, areEqual: boolean) {
+  const newContents: Record<string, Blob | string> = {}
+  const paths = Object.keys(contents)
+  for (const path of paths) {
+    const newPath = areEqual ? path.replace(BodyShapeType.FEMALE + '/', '').replace(BodyShapeType.MALE + '/', '') : path
+    newContents[newPath] = contents[path]
+  }
+  return newContents
 }

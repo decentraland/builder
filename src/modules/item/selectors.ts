@@ -1,18 +1,20 @@
 import { createSelector } from 'reselect'
 import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
-import { RootState } from 'modules/common/types'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
 import { getAuthorizedCollections, getData as getCollectionData } from 'modules/collection/selectors'
 import { getEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
+import { Curation, CurationStatus } from 'modules/curation/types'
+import { getCurationsByCollectionId } from 'modules/curation/selectors'
 import { isEqual } from 'lib/address'
+import { buildCatalystItemURN } from '../../lib/urn'
+import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
 import { Item, SyncStatus, Rarity, CatalystItem } from './types'
 import { areSynced, canSeeItem } from './utils'
-import { buildCatalystItemURN } from '../../lib/urn'
-import { Curation, CurationStatus } from 'modules/curation/types'
-import { getCurationsByCollectionId } from 'modules/curation/selectors'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -127,3 +129,5 @@ export const getStatusByItemId = createSelector<
     return statusByItemId
   }
 )
+
+export const isDownloading = (state: RootState) => isLoadingType(getLoading(state), DOWNLOAD_ITEM_REQUEST)

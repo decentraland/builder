@@ -40,12 +40,11 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   handleItemSlotsBuy = (): void => {
     const { onBuyItemSlots, metadata } = this.props
     const { thirdParty } = metadata
-    const { selectedTierId } = this.state
 
     const selectedTier = this.getSelectedTier()
 
     if (selectedTier) {
-      onBuyItemSlots(thirdParty, selectedTier as ThirdPartyItemTier), [selectedTierId, onBuyItemSlots]
+      onBuyItemSlots(thirdParty, selectedTier as ThirdPartyItemTier)
     }
   }
 

@@ -125,6 +125,10 @@
     "female": "Female",
     "null": "None"
   },
+  "item_types": {
+    "wearable": "Wearable",
+    "smart_wearable": "Smart Wearable"
+  },
   "avatar_animations": {
     "idle": "Idle",
     "wave": "Wave",
@@ -860,8 +864,9 @@
     "allowed_claim_mana": "Allowed MANA to claim a new name",
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
-    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}",
-    "buy_third_party_item_tiers": "Bought {count} {count, plural, one {slot} other {slots}} for the third party \"{name}\""
+    "publish_third_party_items": "Published {count, plural, one {# item} other {# items}} for {collectionName}",
+    "buy_third_party_item_tiers": "Bought {count} {count, plural, one {slot} other {slots}} for the third party \"{name}\"",
+    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
   },
   "transfer_page": {
     "title": "Transfer",
@@ -978,7 +983,8 @@
     "max_select_count": "You can publish up to {count} items at a time",
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
-    "cant_remove": "You will not be able to add or remove items after publishing them."
+    "cant_remove": "You will not be able to add or remove items after publishing them.",
+    "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}"
   },
   "collection_detail_page": {
     "new_item": "New Item",
@@ -1064,6 +1070,10 @@
     "accept_by_publishing": "By clicking Publish you are accepting our terms",
     "not_enough_mana": "You don't have enough {symbol} to publish this collection.",
     "get_mana": "You can get more using the {link} dapp."
+  },
+  "publish_third_party_collection_modal": {
+    "title": "Publish Third Party Items",
+    "description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} slots from {availableSlots} to publish \"{collectionName}\""
   },
   "mint_items_modal": {
     "title": "Mint Items",

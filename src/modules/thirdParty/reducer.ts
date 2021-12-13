@@ -1,7 +1,8 @@
 import BN from 'bn.js'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS } from 'modules/tiers/actions'
-import { BuyThirdPartyItemTiersSuccessAction } from 'modules/tiers/types'
+import { BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS, BuyThirdPartyItemTiersSuccessAction } from 'modules/tiers/actions'
+import { PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/item/actions'
 import {
   FetchThirdPartiesRequestAction,
   FetchThirdPartiesSuccessAction,
@@ -29,6 +30,7 @@ type ThirdPartyReducerAction =
   | FetchThirdPartiesSuccessAction
   | FetchThirdPartiesFailureAction
   | BuyThirdPartyItemTiersSuccessAction
+  | FetchTransactionSuccessAction
 
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
@@ -60,7 +62,6 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: action.payload.error
       }
     }
-
     case BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS: {
       const { thirdParty, tier } = action.payload
       return {
@@ -74,7 +75,27 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         }
       }
     }
+    case FETCH_TRANSACTION_SUCCESS: {
+      const transaction = action.payload.transaction
 
+      switch (transaction.actionType) {
+        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
+          const { thirdPartyId, items } = transaction.payload
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              [thirdPartyId]: {
+                ...state.data[thirdPartyId],
+                totalItems: new BN(state.data[thirdPartyId].totalItems).add(new BN(items.length)).toString()
+              }
+            }
+          }
+        }
+        default:
+          return state
+      }
+    }
     default:
       return state
   }

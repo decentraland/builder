@@ -1,8 +1,6 @@
 import { getURNProtocol, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
-const VERSION = 1
-
 /**
  * urn:decentraland:
  *   (?<protocol>
@@ -77,10 +75,6 @@ export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
     ? CollectionThirdPartyURN
     : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN)
 
-export function buildItemURN(type: string, name: string, description: string, category: string, bodyShapeTypes: string): URN {
-  return `${VERSION}:${type[0]}:${name}:${description}:${category}:${bodyShapeTypes}`
-}
-
 export function buildThirdPartyURN(thirdPartyName: string, collectionId: string, tokenId?: string) {
   let urn = `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-thirdparty:${thirdPartyName}:${collectionId}`
   if (tokenId) {
@@ -97,10 +91,6 @@ export function buildDefaultCatalystCollectionURN() {
   return `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-v2:0x0000000000000000000000000000000000000000`
 }
 
-export function toLegacyURN(urn: URN): URN {
-  return urn.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')
-}
-
 export function extractThirdPartyId(urn: URN): string {
   const decodedURN = decodeURN(urn)
   if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
@@ -108,6 +98,16 @@ export function extractThirdPartyId(urn: URN): string {
   }
 
   return `urn:decentraland:${decodedURN.protocol}:collections-thirdparty:${decodedURN.thirdPartyName}`
+}
+
+export function extractThirdPartyTokenId(urn: URN) {
+  const decodedURN = decodeURN(urn)
+  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+    throw new Error(`Tried to build a third party token for a non third party URN "${urn}"`)
+  }
+
+  const { thirdPartyCollectionId, thirdPartyTokenId } = decodedURN
+  return `${thirdPartyCollectionId}:${thirdPartyTokenId}`
 }
 
 export function decodeURN(urn: URN): DecodedURN {

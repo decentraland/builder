@@ -716,4 +716,35 @@ export class BuilderAPI extends BaseAPI {
   isAxiosError(error: any): error is AxiosError {
     return error.isAxiosError
   }
+
+  async fetchContent(hash: string) {
+    const url = getContentsStorageUrl(hash)
+    const resp = await fetch(url)
+    if (!resp.ok) {
+      const message = await resp.text()
+      throw new Error(message)
+    }
+    const blob = await resp.blob()
+    return blob
+  }
+
+  async fetchContents(contents: Record<string, string>) {
+    const blobs = new Map<string, Promise<Blob>>()
+    const mappings: Promise<[string, Blob]>[] = []
+    for (const path in contents) {
+      const hash = contents[path]
+      // avoid fetching the same hash more than once
+      if (!blobs.has(hash)) {
+        blobs.set(hash, this.fetchContent(hash))
+      }
+      const blob = blobs.get(hash)!
+      mappings.push(blob.then(blob => [path, blob]))
+    }
+    return Promise.all(mappings).then(results =>
+      results.reduce<Record<string, Blob>>((obj, [path, blob]) => {
+        obj[path] = blob
+        return obj
+      }, {})
+    )
+  }
 }

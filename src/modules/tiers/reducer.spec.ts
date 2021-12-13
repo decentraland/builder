@@ -8,8 +8,8 @@ import {
   fetchThirdPartyItemTiersRequest,
   fetchThirdPartyItemTiersSuccess
 } from './actions'
-import { tiersReducer } from './reducer'
-import { ThirdPartyItemTier, TiersState } from './types'
+import { tiersReducer, TiersState } from './reducer'
+import { ThirdPartyItemTier } from './types'
 
 let state: TiersState
 let thirdParty: ThirdParty
@@ -57,7 +57,7 @@ describe('when reducing the action that signals a failing purchase of tiers', ()
     expect(
       tiersReducer(
         { ...state, loading: [buyThirdPartyItemTiersRequest(thirdParty, tier)] },
-        buyThirdPartyItemTiersFailure(defaultError, thirdParty.id, tier)
+        buyThirdPartyItemTiersFailure(thirdParty.id, tier, defaultError)
       )
     ).toEqual({
       ...state,

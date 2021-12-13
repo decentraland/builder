@@ -55,6 +55,18 @@ export const getCollection = (state: RootState, collectionId: string) => {
   return collections.find(collection => collection.id === collectionId) || null
 }
 
+export const getCollectionsByContractAddress = createSelector<RootState, ReturnType<typeof getData>, Record<string, Collection>>(
+  state => getData(state),
+  collectionsById =>
+    Object.values(collectionsById).reduce((acc, collection) => {
+      const { contractAddress } = collection
+      if (contractAddress) {
+        acc[contractAddress] = collection
+      }
+      return acc
+    }, {} as Record<string, Collection>)
+)
+
 export const isOnSaleLoading = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
   transactions.some(transaction => transaction.actionType === SET_COLLECTION_MINTERS_SUCCESS)
 )

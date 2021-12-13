@@ -87,8 +87,12 @@ import {
   REJECT_CURATION_SUCCESS
 } from 'modules/curation/actions'
 import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
-import { BUY_THIRD_PARTY_ITEM_TIERS_FAILURE, BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS } from 'modules/tiers/actions'
-import { BuyThirdPartyItemTiersFailureAction, BuyThirdPartyItemTiersSuccessAction } from 'modules/tiers/types'
+import {
+  BUY_THIRD_PARTY_ITEM_TIERS_FAILURE,
+  BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS,
+  BuyThirdPartyItemTiersFailureAction,
+  BuyThirdPartyItemTiersSuccessAction
+} from 'modules/tiers/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)

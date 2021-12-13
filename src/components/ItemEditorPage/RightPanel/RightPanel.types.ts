@@ -5,7 +5,9 @@ import {
   saveItemRequest,
   SaveItemRequestAction,
   setCollection,
-  SetCollectionAction
+  SetCollectionAction,
+  downloadItemRequest,
+  DownloadItemRequestAction
 } from 'modules/item/actions'
 import { Item, ItemRarity, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
@@ -18,10 +20,13 @@ export type Props = {
   selectedItemId: string | null
   error: string | null
   isConnected: boolean
+  isDownloading: boolean
+  isCommitteeMember: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
   onSetCollection: typeof setCollection
+  onDownload: typeof downloadItemRequest
 }
 
 export type State = {
@@ -35,6 +40,11 @@ export type State = {
   isDirty: boolean
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'collection' | 'selectedItem' | 'selectedItemId' | 'error' | 'isConnected'>
-export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection'>
-export type MapDispatch = Dispatch<SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction | SetCollectionAction>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'collection' | 'selectedItem' | 'selectedItemId' | 'error' | 'isConnected' | 'isDownloading' | 'isCommitteeMember'
+>
+export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>
+export type MapDispatch = Dispatch<
+  SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction | SetCollectionAction | DownloadItemRequestAction
+>
