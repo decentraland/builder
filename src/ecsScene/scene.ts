@@ -68,18 +68,26 @@ gizmo.cycle = false
 const smartItemComponent = new SmartItem()
 
 function getComponentById(id: string) {
+  console.log('Getting component by id', id)
   if (id in editorComponents) {
+    console.log('Component found', id)
     return editorComponents[id]
   }
+  console.log('Component not found', id)
   return null
 }
 
 function getScriptInstance(assetId: string) {
+  console.log('Getting script instance for assetId: ' + assetId)
   const instance = scriptInstances.get(assetId)
   return instance
     ? Promise.resolve(instance)
     : scriptPromises
         .get(assetId)!
+        .then(code => {
+          console.log('Loaded script for assetId: ' + assetId)
+          return code
+        })
         .then(code => eval(code))
         .then(
           // if this asset has a legacy id, use that one instead to load the AMD module
@@ -87,11 +95,12 @@ function getScriptInstance(assetId: string) {
         )
         .then(Item => {
           const instance = new Item()
+          console.log('Loaded item', instance)
           scriptInstances.set(assetId, instance)
           return instance
         })
         .catch(error => {
-          console.error(error.message)
+          console.error('Failed to load script for the asset id', error.message)
           // if something fails, return a dummy script
           console.warn(`Failed to load script for asset id ${assetId}`)
           return {
@@ -104,67 +113,91 @@ function getScriptInstance(assetId: string) {
 // avatar
 let avatar: Entity | null = null
 function getAvatar(): Entity {
+  console.log('Getting avatar')
   if (!avatar) {
     // create avatar
+    console.log('Creating avatar')
     avatar = new Entity()
     avatar.addComponent(new Transform({ position: new Vector3(8, 0, 8), scale: new Vector3(1, 1, 1) }))
     const avatarShape = new AvatarShape()
     // @TODO: Remove toLegacyURN when unity accepts urn
     avatarShape.bodyShape = toLegacyURN(WearableBodyShape.MALE.toString())
+    console.log('Avatar shape: ' + avatarShape.bodyShape)
     avatarShape.skinColor = getSkinColors()[0]
+    console.log('Avatar skinColor', avatarShape.skinColor)
     avatarShape.hairColor = getHairColors()[0]
+    console.log('Avatar skinColor', avatarShape.hairColor)
     avatarShape.eyeColor = getEyeColors()[0]
+    console.log('Avatar skinColor', avatarShape.eyeColor)
     avatarShape.name = 'Builder Avatar'
     avatarShape.wearables = []
     avatar.addComponent(avatarShape)
+  } else {
+    console.log('Avatar already exists')
   }
 
   return avatar
 }
 
 async function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
+  console.log('Handling external action')
   switch (message.type) {
     case 'Set script url': {
       const { url } = message.payload
+      console.log('Setting script url', url)
       scriptBaseUrl = url
       break
     }
     case 'Update editor': {
+      console.log('Updating editor')
       const { scene } = message.payload
       const { components, entities } = scene
 
       for (let id in components) {
         createComponent(components[id], scene)
         updateComponent(components[id])
+        console.log('Updated component', id)
       }
 
       createEntities(entities)
+      console.log('Created entities')
       removeUnusedEntities(entities)
+      console.log('Removed unused entities')
       removeUnusedComponents(components)
-
+      console.log('Removed unused components')
       break
     }
     case 'Toggle preview': {
+      console.log('Toggle preview')
       if (message.payload.isEnabled) {
+        console.log('Preview enabled', message.payload.isEnabled)
         // init scripts
         const scriptGroup = engine.getComponentGroup(Script)
         const assetIds = scriptGroup.entities.reduce((ids, entity) => {
           const script = entity.getComponent(Script)
           return ids.add(script.assetId)
         }, new Set<string>())
+        console.log('About to wait for all the scripts')
         const scripts = await Promise.all(Array.from(assetIds).map(getScriptInstance))
+        console.log('Waited for all the scripts')
         scripts.forEach(script => script.init({ inventory }))
+        console.log('All scripts up')
 
         for (const entityId in engine.entities) {
+          console.log('For the entity', entityId)
           const entity = engine.entities[entityId]
 
           // remove gizmos
           if (entity.hasComponent(gizmo)) {
+            console.log('Removing entity components', entityId)
             entity.removeComponent(gizmo)
+          } else {
+            console.log("The entity doesn't have components", entityId)
           }
 
           // if entity has script...
           if (scriptGroup.hasEntity(entity)) {
+            console.log('The entity has scripts', entityId)
             // ...remove the placeholder
             entity.removeComponent(GLTFShape)
             // ...create the host entity
@@ -189,6 +222,7 @@ async function handleExternalAction(message: { type: string; payload: Record<str
           }
         }
       } else {
+        console.log('Preview disabled', message.payload.isEnabled)
         for (const entityId in engine.entities) {
           const entity = engine.entities[entityId]
           const staticEntities = engine.getComponentGroup(StaticEntity)
@@ -201,32 +235,48 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       break
     }
     case 'Close editor': {
+      console.log('Closing editor')
       for (const componentId in editorComponents) {
+        console.log('Removing component', componentId)
         removeComponent(componentId)
       }
       for (const entityId in engine.entities) {
+        console.log('Removing entity', entityId)
         engine.removeEntity(engine.entities[entityId])
       }
       break
     }
 
     case 'Update avatar': {
+      console.log('Updating avatar')
       const wearables: Wearable[] = message.payload.wearables
       const avatar = getAvatar()
+      console.log('Got the avatar')
       const avatarShape = avatar.getComponent(AvatarShape)
+      console.log('Got the avatar shape')
       const bodyShape = wearables.find(wearable => wearable.category === BODY_SHAPE_CATEGORY)
+      console.log('Got the avatar body shape', bodyShape)
       const otherWearables = wearables.filter(wearable => wearable.category !== BODY_SHAPE_CATEGORY)
+      console.log('Got other wearables', otherWearables)
 
       avatarShape.bodyShape = bodyShape ? bodyShape.id : WearableBodyShape.MALE
+      console.log('Avatar shape', avatarShape.bodyShape)
       avatarShape.wearables = otherWearables.map(wearable => wearable.id)
+      console.log('Avatar wearables', avatarShape.wearables)
       avatarShape.expressionTriggerId = message.payload.animation === 'idle' ? 'Idle' : message.payload.animation // the 'idle' animation is the only one that is capitalized :shrug:
+      console.log('Avatar expression trigger id', avatarShape.expressionTriggerId)
       avatarShape.expressionTriggerTimestamp = Date.now()
       avatarShape.hairColor = message.payload.hairColor
+      console.log('Avatar hair color', avatarShape.hairColor)
       avatarShape.eyeColor = message.payload.eyeColor
+      console.log('Avatar eye color', avatarShape.eyeColor)
       avatarShape.skinColor = message.payload.skinColor
+      console.log('Avatar skin color', avatarShape.skinColor)
 
       if (!avatar.isAddedToEngine()) {
+        console.log('Avatar not present in the engine, adding it')
         engine.addEntity(avatar)
+        console.log('Added avatar')
       }
       break
     }
@@ -236,36 +286,50 @@ async function handleExternalAction(message: { type: string; payload: Record<str
 function createComponent(component: AnyComponent, scene: Scene) {
   const { id, type, data } = component
 
+  console.log('Creating component', id)
   if (!getComponentById(id)) {
+    console.log('Component not found', id)
     switch (type) {
       case ComponentType.GLTFShape: {
+        console.log('The component is a GLTF', id)
         const { assetId } = data as ComponentData[ComponentType.GLTFShape]
         const asset = scene.assets[assetId]
         const url = `${assetId}/${asset.model}`
+        console.log('Building component with url', url)
         editorComponents[id] = new GLTFShape(url)
         editorComponents[id].isPickable = true
         break
       }
       case ComponentType.Transform:
+        console.log('The component is a Transform', id)
         editorComponents[id] = new Transform()
         break
       case ComponentType.NFTShape:
+        console.log('The component is an NFT Shape', id)
         editorComponents[id] = new NFTShape((data as ComponentData[ComponentType.NFTShape]).url)
+        console.log('Built the NFT Shape with URL', (data as ComponentData[ComponentType.NFTShape]).url)
         editorComponents[id].isPickable = true
         break
       case ComponentType.Script: {
         const { assetId, values } = data as ComponentData[ComponentType.Script]
+        console.log('The component is a Script', assetId)
         const asset = scene.assets[assetId]
         const src = asset.contents[asset.script!]
         editorComponents[id] = new Script(assetId, src, values)
+        console.log('Instantiated new script', assetId)
         if (!scriptPromises.has(assetId)) {
+          console.log('The script was not loaded', assetId)
           const url = scriptBaseUrl + src
+          console.log('Building it with URL', url)
           const promise = fetch(url).then(resp => resp.text())
           scriptPromises.set(assetId, promise)
           // store the legacy id so we can retrieve it when loading the AMD module
           if (asset.legacyId) {
+            console.log('The asset is a legacy asset', assetId)
             legacyIds.set(assetId, asset.legacyId)
           }
+        } else {
+          console.log('The script was loaded', id)
         }
         break
       }
