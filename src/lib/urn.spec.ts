@@ -189,7 +189,9 @@ describe('when checking if a collection is a third party', () => {
         urn = buildThirdPartyURN('thirdpartyname', 'collection-id')
       })
 
-      expect(isThirdParty(urn)).toBe(true)
+      it('should return true', () => {
+        expect(isThirdParty(urn)).toBe(true)
+      })
     })
 
     describe("when it's an item", () => {
@@ -198,7 +200,9 @@ describe('when checking if a collection is a third party', () => {
         urn = buildThirdPartyURN('thirdpartyname', 'collection-id', '22')
       })
 
-      expect(isThirdParty(urn)).toBe(true)
+      it('should return true', () => {
+        expect(isThirdParty(urn)).toBe(true)
+      })
     })
   })
 })
