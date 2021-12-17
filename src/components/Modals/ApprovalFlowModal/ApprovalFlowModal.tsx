@@ -15,6 +15,13 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     didRescue: false
   }
 
+  handleConfirm = () => {
+    const { metadata, onRescueItems } = this.props
+    const { collection, items, contentHashes } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE>
+    this.setState({ didRescue: true })
+    onRescueItems(collection, items, contentHashes)
+  }
+
   renderHash(hash: string) {
     return hash.slice(0, 6) + '...' + hash.slice(-6)
   }
@@ -33,13 +40,10 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
   }
 
   renderRescueView() {
-    const { onClose, metadata, onRescueItems, isConfirmingRescueTx } = this.props
-    const { collection, items, contentHashes } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE>
+    const { onClose, metadata, isConfirmingRescueTx } = this.props
+    const { items, contentHashes } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE>
     const { didRescue } = this.state
-    const onConfirm = () => {
-      this.setState({ didRescue: true })
-      onRescueItems(collection, items, contentHashes)
-    }
+
     return (
       <>
         <ModalNavigation title={t('approval_flow.rescue.title')} subtitle={t('approval_flow.rescue.subtitle')} onClose={onClose} />
@@ -73,7 +77,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
           </Table>
         </ModalContent>
         <ModalActions>
-          <Button primary disabled={didRescue || isConfirmingRescueTx} loading={didRescue} onClick={onConfirm}>
+          <Button primary disabled={didRescue || isConfirmingRescueTx} loading={didRescue} onClick={this.handleConfirm}>
             {t('approval_flow.rescue.confirm')}
           </Button>
           <Button secondary onClick={onClose}>

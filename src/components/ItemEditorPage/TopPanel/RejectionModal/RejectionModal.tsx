@@ -47,9 +47,9 @@ const RejectionModal = ({
   }
 
   const shouldShowVeredict =
+    (type === RejectionType.DISABLE_COLLECTION && !collection.isApproved) ||
     (type === RejectionType.REJECT_COLLECTION && !collection.isApproved) ||
-    (type === RejectionType.REJECT_CURATION && curation?.status === CurationStatus.REJECTED) ||
-    (type === RejectionType.DISABLE_COLLECTION && !collection.isApproved)
+    (type === RejectionType.REJECT_CURATION && curation?.status === CurationStatus.REJECTED)
 
   return (
     <Modal size="tiny" className="RejectionModal" open={open}>

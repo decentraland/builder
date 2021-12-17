@@ -1019,6 +1019,12 @@
     "edit_urn": "编辑 URN",
     "reset_item": "撤消"
   },
+  "collection": {
+    "type": {
+      "decentraland": "采集",
+      "third_party": "第三方收藏"
+    }
+  },
   "item": {
     "blockchain_id": "区块链ID",
     "category": "类别",
@@ -1111,8 +1117,6 @@
     "no_items": "没有项目"
   },
   "collection_card": {
-    "third_party_collection": "第三方收藏",
-    "collection": "采集",
     "item_count": "{count} {count, plural, one {物品} other {项目}}",
     "subtitle": "{count} {count, plural, one {项目} other {项目}}",
     "confirm_delete_content": "您确定要删除您的收藏集 \"{name}\" 吗？ 此操作不可逆！",

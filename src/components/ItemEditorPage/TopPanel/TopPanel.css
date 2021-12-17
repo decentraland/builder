@@ -23,15 +23,12 @@
 .TopPanel .title {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex: 1 auto;
-  text-align: center;
+  flex: 1;
   font-weight: 600;
   font-size: 15px;
 }
 
 .TopPanel .actions {
-  width: var(--item-editor-panel-width);
   text-align: right;
 }
 

@@ -2,9 +2,9 @@ import { ChainId } from '@dcl/schemas'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item, WearableBodyShape } from 'modules/item/types'
-import { Collection } from 'modules/collection/types'
+import { Collection, CollectionType } from 'modules/collection/types'
 import { Mint } from './types'
-import { getTotalAmountOfMintedItems, isLocked, isThirdParty } from './utils'
+import { getTotalAmountOfMintedItems, isLocked, getCollectionType } from './utils'
 
 describe('when counting the amount of minted items', () => {
   let mints: Mint[]
@@ -89,7 +89,7 @@ describe('when checking collection locks', () => {
   })
 })
 
-describe('when checking if a collection is a third party', () => {
+describe('when getting the collection type', () => {
   let collection: Collection
 
   describe('when the collection has a base avatar URN', () => {
@@ -98,7 +98,7 @@ describe('when checking if a collection is a third party', () => {
     })
 
     it('should return false', () => {
-      expect(isThirdParty(collection)).toBe(false)
+      expect(getCollectionType(collection)).toBe(CollectionType.DECENTRALAND)
     })
   })
 
@@ -109,7 +109,7 @@ describe('when checking if a collection is a third party', () => {
     })
 
     it('should return false', () => {
-      expect(isThirdParty(collection)).toBe(false)
+      expect(getCollectionType(collection)).toBe(CollectionType.DECENTRALAND)
     })
   })
 
@@ -120,7 +120,7 @@ describe('when checking if a collection is a third party', () => {
     })
 
     it('should return true', () => {
-      expect(isThirdParty(collection)).toBe(true)
+      expect(getCollectionType(collection)).toBe(CollectionType.THIRD_PARTY)
     })
   })
 })

@@ -109,8 +109,8 @@ import {
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
 import { getCollection, getWalletCollections } from './selectors'
-import { Collection } from './types'
-import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked, isThirdParty } from './utils'
+import { Collection, CollectionType } from './types'
+import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked, getCollectionType } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -177,7 +177,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       let data: string = ''
 
-      if (!isThirdParty(collection)) {
+      if (getCollectionType(collection) === CollectionType.DECENTRALAND) {
         const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
         const from: string = yield select(getAddress)
         const maticChainId = getChainIdByNetwork(Network.MATIC)

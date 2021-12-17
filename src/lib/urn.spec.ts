@@ -1,13 +1,7 @@
-import { ChainId, Network } from '@dcl/schemas'
+import { ChainId, Network, WearableBodyShape } from '@dcl/schemas'
+import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import {
-  buildThirdPartyURN,
-  buildCatalystItemURN,
-  decodeURN,
-  URNType,
-  URNProtocol,
-  extractThirdPartyTokenId
-} from './urn'
+import { buildThirdPartyURN, buildCatalystItemURN, decodeURN, URNType, URNProtocol, extractThirdPartyTokenId, isThirdParty } from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 
@@ -67,6 +61,12 @@ describe('when building the third party URN', () => {
 })
 
 describe('when decoding an URN', () => {
+  describe('when the urn is empty', () => {
+    it('should return false', () => {
+      expect(isThirdParty()).toBe(false)
+    })
+  })
+
   describe('when the URN is invalid', () => {
     it('should throw an error', () => {
       let urn = 'invalid things here'
@@ -154,6 +154,51 @@ describe('when extracting the third party item token id from an URN', () => {
       expect(extractThirdPartyTokenId('urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id:token-id')).toBe(
         'collection-id:token-id'
       )
+    })
+  })
+})
+
+describe('when checking if a collection is a third party', () => {
+  let urn: string
+
+  describe('when checking a base avatar URN', () => {
+    beforeEach(() => {
+      urn = WearableBodyShape.FEMALE.toString()
+    })
+
+    it('should return false', () => {
+      expect(isThirdParty(urn)).toBe(false)
+    })
+  })
+
+  describe('when checking a collections v2 URN', () => {
+    beforeEach(() => {
+      jest.spyOn(dappsEth, 'getChainIdByNetwork').mockReturnValueOnce(ChainId.MATIC_MAINNET)
+      urn = buildCatalystItemURN('0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8', '22')
+    })
+
+    it('should return false', () => {
+      expect(isThirdParty(urn)).toBe(false)
+    })
+  })
+
+  describe('when checking a third party URN', () => {
+    describe("when it's a collection", () => {
+      beforeEach(() => {
+        jest.spyOn(dappsEth, 'getChainIdByNetwork').mockReturnValueOnce(ChainId.MATIC_MAINNET)
+        urn = buildThirdPartyURN('thirdpartyname', 'collection-id')
+      })
+
+      expect(isThirdParty(urn)).toBe(true)
+    })
+
+    describe("when it's an item", () => {
+      beforeEach(() => {
+        jest.spyOn(dappsEth, 'getChainIdByNetwork').mockReturnValueOnce(ChainId.MATIC_MAINNET)
+        urn = buildThirdPartyURN('thirdpartyname', 'collection-id', '22')
+      })
+
+      expect(isThirdParty(urn)).toBe(true)
     })
   })
 })

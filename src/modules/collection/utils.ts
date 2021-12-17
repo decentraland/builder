@@ -2,11 +2,11 @@ import { env, utils } from 'decentraland-commons'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { Item, SyncStatus } from 'modules/item/types'
+import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, URNType } from 'lib/urn'
-import { Collection, Access, Mint } from './types'
-import { locations } from 'routing/locations'
+import { Item, SyncStatus } from 'modules/item/types'
+import { Collection, Access, Mint, CollectionType } from './types'
 
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
   const address = getSaleAddress(wallet.networks.MATIC.chainId)
@@ -44,6 +44,20 @@ export function getExplorerURL(collection: Collection) {
 
 export function getCollectionBaseURI() {
   return env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
+}
+
+export function getCollectionType(collection: Collection) {
+  const { type } = decodeURN(collection.urn)
+
+  switch (type) {
+    case URNType.COLLECTIONS_THIRDPARTY:
+      return CollectionType.THIRD_PARTY
+    case URNType.COLLECTIONS_V2:
+    case URNType.BASE_AVATARS:
+      return CollectionType.DECENTRALAND
+    default:
+      throw new Error(`Tried to get a collection type from an invalid URN: ${collection.urn}`)
+  }
 }
 
 export function getCollectionSymbol(collection: Collection) {
@@ -95,9 +109,4 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
   const indexA = sorted.indexOf(statusA)
   const indexB = sorted.indexOf(statusB)
   return indexA < indexB ? statusA : statusB
-}
-
-export function isThirdParty(collection: Collection) {
-  const decodedURN = decodeURN(collection.urn)
-  return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
 }

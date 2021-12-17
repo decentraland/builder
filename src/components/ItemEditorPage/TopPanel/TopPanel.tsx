@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Collection } from 'modules/collection/types'
 import { Curation, CurationStatus } from 'modules/curation/types'
-import { hasReviews } from 'modules/collection/utils'
+import { getCollectionType, hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
 import RejectionModal from './RejectionModal'
@@ -28,6 +28,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   renderPage = (collection: Collection, curation: Curation | null) => {
     const { showRejectionModal } = this.state
     const { chainId } = this.props
+    const type = getCollectionType(collection)
 
     return (
       <>
@@ -36,6 +37,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         </div>
         <div className="title">
           {collection.name}
+          &nbsp;·&nbsp;
+          {t(`collection.type.${type}`)}
           <JumpIn size="small" collection={collection} chainId={chainId} />
         </div>
         <div className="actions">
@@ -55,7 +58,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderButton = (type: ButtonType, collection: Collection, curation: Curation | null) => {
-    const { onInitiateApprovalFlow } = this.props
+    const { selectedThirdPartyItemIds, onInitiateApprovalFlow } = this.props
+    const thirdPartyItemsCount = selectedThirdPartyItemIds.length
 
     const onClickMap = {
       [ButtonType.APPROVE]: () => onInitiateApprovalFlow(collection),
@@ -81,7 +85,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
     return (
       <Button primary={isPrimary} onClick={() => onClickMap[type]()}>
-        {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)}
+        {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)} {thirdPartyItemsCount > 0 ? `(${selectedThirdPartyItemIds.length})` : ''}
       </Button>
     )
   }
@@ -103,11 +107,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     }
 
     if (hasReviews(collection)) {
-      if (collection.isApproved) {
-        return this.renderButton(ButtonType.DISABLE, collection, curation)
-      } else {
-        return this.renderButton(ButtonType.ENABLE, collection, curation)
-      }
+      return this.renderButton(ButtonType.ENABLE, collection, curation)
     }
 
     return (

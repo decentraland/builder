@@ -18,6 +18,11 @@ export type Collection = {
   updatedAt: number
 }
 
+export enum CollectionType {
+  DECENTRALAND = 'decentraland',
+  THIRD_PARTY = 'third_party'
+}
+
 export enum RoleType {
   MANAGER = 'manager',
   MINTER = 'minter'

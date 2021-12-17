@@ -4,16 +4,18 @@ import { getChainId, isConnected } from 'decentraland-dapps/dist/modules/wallet/
 import { RootState } from 'modules/common/types'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
+import { initiateApprovalFlow } from 'modules/collection/actions'
+import { getSelectedThirdPartyItemIds } from 'modules/ui/itemEditor/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopPanel.types'
 import TopPanel from './TopPanel'
-import { initiateApprovalFlow } from 'modules/collection/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   chainId: getChainId(state),
   isConnected: isConnected(state),
   isReviewing: isReviewing(state),
   isCommitteeMember: isWalletCommitteeMember(state),
-  selectedCollectionId: getSelectedCollectionId(state)
+  selectedCollectionId: getSelectedCollectionId(state),
+  selectedThirdPartyItemIds: getSelectedThirdPartyItemIds(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
