@@ -91,8 +91,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderButtons = (collection: Collection, curation: Curation | null) => {
-    if (collection.isApproved) {
-      switch (curation?.status) {
+    if (curation && collection.isApproved) {
+      switch (curation.status) {
         case 'pending':
           return (
             <>
@@ -107,7 +107,11 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     }
 
     if (hasReviews(collection)) {
-      return this.renderButton(ButtonType.ENABLE, collection, curation)
+      if (collection.isApproved) {
+        return this.renderButton(ButtonType.DISABLE, collection, curation)
+      } else {
+        return this.renderButton(ButtonType.ENABLE, collection, curation)
+      }
     }
 
     return (
