@@ -1,8 +1,14 @@
+import { env } from 'decentraland-commons'
 import { Color4, Wearable } from 'decentraland-ecs'
 import { WearableBodyShape } from 'modules/item/types'
 import { WearableCategory } from '../item/types'
 import _allWearables from './wearables/all.json'
-export const allWearables = _allWearables as Wearable[]
+export const PEER_URL = env.get('REACT_APP_PEER_URL', '')
+
+export const allWearables: Wearable[] = (_allWearables as Wearable[]).map((wearable: Wearable) => ({
+  ...wearable,
+  baseUrl: wearable.baseUrl.replace('{peer-url}', PEER_URL)
+}))
 
 export function getSkinColors() {
   return [

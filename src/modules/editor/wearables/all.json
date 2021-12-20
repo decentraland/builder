@@ -3,9 +3,7 @@
     "id": "urn:decentraland:off-chain:base-avatars:baggy_pullover",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_SolidPullover.glb",
         "contents": [
           {
@@ -25,21 +23,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:balbo_beard",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_FacialHair_BalboBeard.glb",
         "contents": [
           {
@@ -57,9 +48,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_FacialHair_BalboBeard.glb",
         "contents": [
           {
@@ -79,20 +68,14 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": [
-      "face",
-      "facial_hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["face", "facial_hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:basketball_shorts",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_BasketballShorts.glb",
         "contents": [
           {
@@ -112,21 +95,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:beard",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Beard.glb",
         "contents": [
           {
@@ -144,9 +120,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Beard.glb",
         "contents": [
           {
@@ -166,20 +140,14 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": [
-      "face",
-      "facial_hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["face", "facial_hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:bee_t_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_BeeTShirt.glb",
         "contents": [
           {
@@ -199,21 +167,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:black_top",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_BlackTop.glb",
         "contents": [
           {
@@ -233,21 +194,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:blue_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_BlueTShirt.glb",
         "contents": [
           {
@@ -267,21 +221,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:brown_pants",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_LongPants_01.glb",
         "contents": [
           {
@@ -301,21 +248,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:brown_pants_02",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_BrownPants.glb",
         "contents": [
           {
@@ -331,21 +271,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:brown_sleveless_dress",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_BrownSlevelessDress.glb",
         "contents": [
           {
@@ -365,21 +298,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:cargo_shorts",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_CargoShorts.glb",
         "contents": [
           {
@@ -399,21 +325,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:chin_beard",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_FacialHair_ChinBeard.glb",
         "contents": [
           {
@@ -431,9 +350,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_FacialHair_ChinBeard.glb",
         "contents": [
           {
@@ -453,20 +370,14 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": [
-      "face",
-      "facial_hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["face", "facial_hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:cool_hair",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_Cool.glb",
         "contents": [
           {
@@ -484,9 +395,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_Cool.glb",
         "contents": [
           {
@@ -506,19 +415,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:cornrows",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_Cornrows.glb",
         "contents": [
           {
@@ -536,9 +440,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_Cornrows.glb",
         "contents": [
           {
@@ -558,19 +460,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:croupier_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_CasinoShirt.glb",
         "contents": [
           {
@@ -590,21 +487,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:curly_hair",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_ShoulderCurlyHair.glb",
         "contents": [
           {
@@ -622,9 +512,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_ShoulderCurlyHair.glb",
         "contents": [
           {
@@ -644,19 +532,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:curtained_hair",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_BookStyle.glb",
         "contents": [
           {
@@ -674,9 +557,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_BookStyle.glb",
         "contents": [
           {
@@ -696,19 +577,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:distressed_black_Jeans",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_DistressedBlackJeans.glb",
         "contents": [
           {
@@ -728,21 +604,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:elegant_blue_trousers",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_ElegantBlueTrousers.glb",
         "contents": [
           {
@@ -758,21 +627,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:elegant_striped_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_ElegantStripeShirt.glb",
         "contents": [
           {
@@ -792,21 +654,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:elegant_sweater",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_ElegantSweater.glb",
         "contents": [
           {
@@ -826,21 +681,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_african_leggins",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_AfricanLeggings.glb",
         "contents": [
           {
@@ -856,21 +704,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_blue_elegant_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_BlueElegantShirt.glb",
         "contents": [
           {
@@ -890,21 +731,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_blue_jacket",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_BlueJacket.glb",
         "contents": [
           {
@@ -924,21 +758,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_body_swimsuit",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_Swimsuit_01.glb",
         "contents": [
           {
@@ -958,21 +785,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_brown_skirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_BrownSkirtDress.glb",
         "contents": [
           {
@@ -992,21 +812,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_brown_trousers",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_BrownTrousers.glb",
         "contents": [
           {
@@ -1022,21 +835,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_capris",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_BrownKneesTrousers.glb",
         "contents": [
           {
@@ -1056,21 +862,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_country_pants",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_CountryPant.glb",
         "contents": [
           {
@@ -1086,21 +885,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_diamond_leggings",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_DiamondLeggings.glb",
         "contents": [
           {
@@ -1116,21 +908,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_jeans",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_Jeans_01.glb",
         "contents": [
           {
@@ -1146,21 +931,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_pride_t_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_PrideTShirt.glb",
         "contents": [
           {
@@ -1180,21 +958,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_red_comfy_pants",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_RedComfortPants.glb",
         "contents": [
           {
@@ -1214,21 +985,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_red_elegant_jacket",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_RedElgantJacket.glb",
         "contents": [
           {
@@ -1248,21 +1012,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_red_modern_pants",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_RedModernPant.glb",
         "contents": [
           {
@@ -1278,21 +1035,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_red_simple_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_RedBasicTShirt.glb",
         "contents": [
           {
@@ -1312,21 +1062,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_roller_leggings",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_RollerLeggings.glb",
         "contents": [
           {
@@ -1342,21 +1085,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_school_skirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_SchoolSkirt.glb",
         "contents": [
           {
@@ -1376,21 +1112,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_short_blue_jeans",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_ShortBlueJeans.glb",
         "contents": [
           {
@@ -1410,21 +1139,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_short_colored_leggins",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_ShortColoredLeggings.glb",
         "contents": [
           {
@@ -1444,21 +1166,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_simple_yellow_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_YellowBasicTShirt.glb",
         "contents": [
           {
@@ -1478,21 +1193,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_sport_purple_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_SportPurpleTShirt.glb",
         "contents": [
           {
@@ -1512,21 +1220,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_sport_shorts",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_SportShorts.glb",
         "contents": [
           {
@@ -1546,21 +1247,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_stripe_white_pants",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_StripeWhitePant.glb",
         "contents": [
           {
@@ -1576,21 +1270,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_sweater",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_Sweater_01.glb",
         "contents": [
           {
@@ -1610,21 +1297,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_white_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_WhiteShirt.glb",
         "contents": [
           {
@@ -1644,21 +1324,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:f_yoga_trousers",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_lBody_YogaTrousers.glb",
         "contents": [
           {
@@ -1674,21 +1347,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:goatee_beard",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_FacialHair_Goatee.glb",
         "contents": [
           {
@@ -1706,9 +1372,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_FacialHair_Goatee.glb",
         "contents": [
           {
@@ -1728,20 +1392,14 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": [
-      "face",
-      "facial_hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["face", "facial_hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:granpa_beard",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_FacialHair_GrandPaMoustache.glb",
         "contents": [
           {
@@ -1759,9 +1417,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_FacialHair_GrandPaMoustache.glb",
         "contents": [
           {
@@ -1781,20 +1437,14 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": [
-      "face",
-      "facial_hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["face", "facial_hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:green_hoodie",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_Hoodie_01.glb",
         "contents": [
           {
@@ -1814,21 +1464,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:green_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_GreenTShirt.glb",
         "contents": [
           {
@@ -1848,21 +1491,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:grey_joggers",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_GreyJoggers.glb",
         "contents": [
           {
@@ -1878,21 +1514,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hair_anime_01",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "Hair_Anime_Fringe.glb",
         "contents": [
           {
@@ -1906,9 +1535,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "Hair_Anime_Fringe.glb",
         "contents": [
           {
@@ -1924,21 +1551,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "anime",
-      "idol",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "anime", "idol", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hair_bun",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_Bun.glb",
         "contents": [
           {
@@ -1956,9 +1576,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_Bun.glb",
         "contents": [
           {
@@ -1978,19 +1596,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hair_coolshortstyle",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_CoolShortStyle.glb",
         "contents": [
           {
@@ -2008,9 +1621,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_CoolShortStyle.glb",
         "contents": [
           {
@@ -2030,19 +1641,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hair_f_oldie",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_Oldie_01.glb",
         "contents": [
           {
@@ -2060,9 +1666,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_Oldie_01.glb",
         "contents": [
           {
@@ -2082,19 +1686,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hair_f_oldie_02",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_Oldie_02.glb",
         "contents": [
           {
@@ -2112,9 +1711,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_Oldie_02.glb",
         "contents": [
           {
@@ -2134,19 +1731,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hair_oldie",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_Oldie_01.glb",
         "contents": [
           {
@@ -2164,9 +1756,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_Oldie_01.glb",
         "contents": [
           {
@@ -2186,19 +1776,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hair_punk",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "Hair_Punk.glb",
         "contents": [
           {
@@ -2212,9 +1797,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "Hair_Punk.glb",
         "contents": [
           {
@@ -2230,19 +1813,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hair_stylish_hair",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_StylishHair.glb",
         "contents": [
           {
@@ -2260,9 +1838,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_StylishHair.glb",
         "contents": [
           {
@@ -2282,19 +1858,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:hip_hop_joggers",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_HipHopJoggers.glb",
         "contents": [
           {
@@ -2310,21 +1881,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:jean_shorts",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_ShortPants_01.glb",
         "contents": [
           {
@@ -2344,21 +1908,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:kilt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_Kilt.glb",
         "contents": [
           {
@@ -2378,21 +1935,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:light_green_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_LightGreenShirt.glb",
         "contents": [
           {
@@ -2412,21 +1962,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:lincoln_beard",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_FacialHair_BeardGoatee.glb",
         "contents": [
           {
@@ -2444,9 +1987,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_FacialHair_BeardGoatee.glb",
         "contents": [
           {
@@ -2466,20 +2007,14 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": [
-      "face",
-      "facial_hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["face", "facial_hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:lovely_yellow_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_YellowLovelyTShirt.glb",
         "contents": [
           {
@@ -2499,21 +2034,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:m_sweater_02",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_Sweater_02.glb",
         "contents": [
           {
@@ -2533,21 +2061,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:moptop",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "Hair_Beatle.glb",
         "contents": [
           {
@@ -2561,9 +2082,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "Hair_Beatle.glb",
         "contents": [
           {
@@ -2579,19 +2098,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:Mustache_Short_Beard",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_FacialHair_MoustacheShortBeard.glb",
         "contents": [
           {
@@ -2609,9 +2123,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_FacialHair_MoustacheShortBeard.glb",
         "contents": [
           {
@@ -2631,20 +2143,14 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": [
-      "face",
-      "facial_hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["face", "facial_hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:old_mustache_beard",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_FacialHair_OldMoustache.glb",
         "contents": [
           {
@@ -2662,9 +2168,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_FacialHair_OldMoustache.glb",
         "contents": [
           {
@@ -2684,20 +2188,14 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": [
-      "face",
-      "facial_hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["face", "facial_hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:oxford_pants",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_OxfordPants.glb",
         "contents": [
           {
@@ -2713,21 +2211,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:pijama_pants",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_StripePijama_01.glb",
         "contents": [
           {
@@ -2743,21 +2234,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "Male",
-      "Man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "Male", "Man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:pompous",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_PompousHair.glb",
         "contents": [
           {
@@ -2775,9 +2259,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_PompousHair.glb",
         "contents": [
           {
@@ -2797,19 +2279,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:pony_tail",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_PonyTail.glb",
         "contents": [
           {
@@ -2827,9 +2304,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_PonyTail.glb",
         "contents": [
           {
@@ -2849,19 +2324,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:pride_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_PrideTshirt_01.glb",
         "contents": [
           {
@@ -2881,21 +2351,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:puffer_jacket",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_PuffJacket_01.glb",
         "contents": [
           {
@@ -2915,21 +2378,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:puffer_jacket_hoodie",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_PuffJacketHoodie_01.glb",
         "contents": [
           {
@@ -2949,21 +2405,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:punk",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "Mohawk.glb",
         "contents": [
           {
@@ -2977,9 +2426,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "Mohawk.glb",
         "contents": [
           {
@@ -2995,19 +2442,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:rasta",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_Rasta_01.glb",
         "contents": [
           {
@@ -3025,9 +2467,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_Rasta_01.glb",
         "contents": [
           {
@@ -3047,19 +2487,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:red_square_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_RedSquareShirt.glb",
         "contents": [
           {
@@ -3079,21 +2514,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:Red_topcoat",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_RedJacket.glb",
         "contents": [
           {
@@ -3113,21 +2541,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:red_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_RedTShirt.glb",
         "contents": [
           {
@@ -3147,21 +2568,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:roller_outfit",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_RollerOutfit.glb",
         "contents": [
           {
@@ -3181,21 +2595,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:safari_pants",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_SafariPants_01.glb",
         "contents": [
           {
@@ -3211,21 +2618,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:safari_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_SafaraiShirt_01.glb",
         "contents": [
           {
@@ -3245,21 +2645,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:school_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_SchoolShirt.glb",
         "contents": [
           {
@@ -3279,21 +2672,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:semi_afro",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_SemiAfro_01.glb",
         "contents": [
           {
@@ -3311,9 +2697,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_SemiAfro_01.glb",
         "contents": [
           {
@@ -3333,19 +2717,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:semi_bold",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_SemiBald_01.glb",
         "contents": [
           {
@@ -3363,9 +2742,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_SemiBald_01.glb",
         "contents": [
           {
@@ -3385,19 +2762,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:short_hair",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_ShortHair_01.glb",
         "contents": [
           {
@@ -3415,9 +2787,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_ShortHair_01.glb",
         "contents": [
           {
@@ -3437,19 +2807,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:shoulder_bob_hair",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_ShoulderBobHair.glb",
         "contents": [
           {
@@ -3467,9 +2832,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_ShoulderBobHair.glb",
         "contents": [
           {
@@ -3489,19 +2852,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:shoulder_hair",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_ShoulderHair.glb",
         "contents": [
           {
@@ -3519,9 +2877,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_ShoulderHair.glb",
         "contents": [
           {
@@ -3541,19 +2897,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:simple_blue_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_BlueBasicTShirt.glb",
         "contents": [
           {
@@ -3573,21 +2924,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:sleeveless_punk_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_SleevelessPunkShirt_01.glb",
         "contents": [
           {
@@ -3607,21 +2951,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:slicked_hair",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_Lamas.glb",
         "contents": [
           {
@@ -3639,9 +2976,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_Lamas.glb",
         "contents": [
           {
@@ -3661,19 +2996,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:soccer_shirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_SoccerTshirt.glb",
         "contents": [
           {
@@ -3693,21 +3023,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:sport_jacket",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_SportJacket.glb",
         "contents": [
           {
@@ -3727,21 +3050,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:striped_pijama",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_StripePijama_01.glb",
         "contents": [
           {
@@ -3761,21 +3077,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:striped_shirt_01",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_StripedShirt_01.glb",
         "contents": [
           {
@@ -3795,21 +3104,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:striped_swim_suit",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_StripeSwimSuit.glb",
         "contents": [
           {
@@ -3829,21 +3131,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "Male",
-      "Man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "Male", "Man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:striped_top",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_StripeTop.glb",
         "contents": [
           {
@@ -3863,21 +3158,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:swim_short",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_lBody_SwimShort.glb",
         "contents": [
           {
@@ -3897,21 +3185,14 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": [
-      "bottom",
-      "Male",
-      "Man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["bottom", "Male", "Man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:tall_front_01",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_TallFront.glb",
         "contents": [
           {
@@ -3929,9 +3210,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_TallFront.glb",
         "contents": [
           {
@@ -3951,19 +3230,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:turtle_neck_sweater",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_TurtleNeckSweater.glb",
         "contents": [
           {
@@ -3983,21 +3257,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:two_tails",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_Hair_TwoTails.glb",
         "contents": [
           {
@@ -4015,9 +3282,7 @@
         ]
       },
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_Hair_TwoTails.glb",
         "contents": [
           {
@@ -4037,19 +3302,14 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": [
-      "hair",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["hair", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:white_top",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseFemale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
         "mainFile": "F_uBody_WhiteTop.glb",
         "contents": [
           {
@@ -4069,21 +3329,14 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "female",
-      "woman",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "female", "woman", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   },
   {
     "id": "urn:decentraland:off-chain:base-avatars:yellow_tshirt",
     "representations": [
       {
-        "bodyShapes": [
-          "urn:decentraland:off-chain:base-avatars:BaseMale"
-        ],
+        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
         "mainFile": "M_uBody_YellowTShirt.glb",
         "contents": [
           {
@@ -4103,12 +3356,7 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": [
-      "top",
-      "male",
-      "man",
-      "base-wearable"
-    ],
-    "baseUrl": "https://peer-lb.decentraland.org/content/contents/"
+    "tags": ["top", "male", "man", "base-wearable"],
+    "baseUrl": "{peer-url}/content/contents/"
   }
 ]
