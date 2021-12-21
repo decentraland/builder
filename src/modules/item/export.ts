@@ -10,8 +10,6 @@ import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
 
-export const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 * 1000 // We use 5 seconds before to let the subgraph index the collection creation
-
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
   const client = new CatalystClient(PEER_URL, 'Builder')
   const entity = await buildItemEntity(client, collection, item)
@@ -132,22 +130,16 @@ export async function buildItemEntityBlobs(item: Item) {
   return blobs
 }
 
-export async function buildItemEntity(
-  client: CatalystClient,
-  collection: Collection,
-  item: Item,
-  deltaTimestamp = ITEM_DEPLOYMENT_DELTA_TIMESTAMP
-) {
+export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item) {
   const blobs = await buildItemEntityBlobs(item)
   const files = await makeContentFiles(blobs)
   const metadata = await buildItemEntityMetadata(collection, item)
-  const status = await client.fetchContentStatus()
   return client.buildEntity({
     type: EntityType.WEARABLE,
     pointers: [metadata.id],
     metadata,
     files,
-    timestamp: status.currentTime + deltaTimestamp
+    timestamp: Date.now()
   })
 }
 
