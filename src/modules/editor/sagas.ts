@@ -146,10 +146,7 @@ import {
   ROTATION_GRID_RESOLUTION,
   fromCatalystWearableToWearable
 } from './utils'
-import { getEyeColors, getHairColors, getSkinColors } from './avatar'
-
-import maleAvatar from './wearables/male.json'
-import femaleAvatar from './wearables/female.json'
+import { extraAvatarWearablesIds, getEyeColors, getHairColors, getSkinColors } from './avatar'
 
 const editorWindow = window as EditorWindow
 
@@ -663,18 +660,18 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
 
 function* getDefaultWearables() {
   const bodyShape: WearableBodyShape = yield select(getBodyShape)
+  const baseWearables: Wearable[] = yield select(getBaseWearables)
+
   const selectedBaseWearables: ReturnType<typeof getSelectedBaseWearables> = yield select(getSelectedBaseWearables)
   if (!selectedBaseWearables) {
     throw new Error('No base wearables selected')
   }
 
-  const wearables = Object.values(selectedBaseWearables[bodyShape]).filter(wearable => wearable !== null) as Wearable[]
-  const extras = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
-  for (const extra of extras) {
-    if (!wearables.some(wearable => wearable.category === extra.category)) {
-      wearables.push(extra)
-    }
-  }
+  let wearables = Object.values(selectedBaseWearables[bodyShape]).filter(wearable => wearable !== null) as Wearable[]
+  const extras = baseWearables
+    .filter(wearable => extraAvatarWearablesIds[bodyShape].includes(wearable.id))
+    .filter(extraWearable => !wearables.some(wearable => wearable.category === extraWearable.category))
+  wearables = wearables.concat(extras)
 
   // @TODO: remove this when unity build accepts urn
   return wearables.map(w => ({
