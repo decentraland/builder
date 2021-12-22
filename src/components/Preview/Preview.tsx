@@ -3,14 +3,14 @@ import { DropTarget } from 'react-dnd'
 import Lottie from 'react-lottie'
 import { env } from 'decentraland-commons'
 
-import animationData from './loader.json'
-
+import { PreviewType } from 'modules/editor/types'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
 import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props, State } from './Preview.types'
+import animationData from './loader.json'
 import './Preview.css'
-import { PreviewType } from 'modules/editor/types'
 
 const editorWindow = window as EditorWindow
 const unityDebugParams = env.get('REACT_APP_UNITY_DEBUG_PARAMS')
@@ -94,11 +94,11 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   getLoadingText(): string {
     const { isLoadingEditor, isLoadingBaseWearables } = this.props
     if (isLoadingBaseWearables && isLoadingEditor) {
-      return 'Loading Unity & Base Wearables...'
+      return t('editor_preview.loading_unity_and_base_wearables')
     } else if (isLoadingBaseWearables && !isLoadingEditor) {
-      return 'Loading Base Wearables...'
+      return t('editor_preview.loading_base_wearables')
     } else {
-      return 'Loading Unity...'
+      return t('editor_preview.loading_unity')
     }
   }
 

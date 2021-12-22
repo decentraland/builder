@@ -1272,6 +1272,11 @@
     "synced": "同步",
     "unsynced": "未同步"
   },
+  "editor_preview": {
+    "loading_unity_and_base_wearables": "正在加载 Unity 和基础可穿戴设备...",
+    "loading_base_wearables": "正在加载基础可穿戴设备...",
+    "loading_unity": "正在加载统一..."
+  },
   "approval_flow": {
     "loading": {
       "title": "加载中...",
