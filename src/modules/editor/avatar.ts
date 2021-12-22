@@ -1,6 +1,4 @@
-import { Color4, Wearable } from 'decentraland-ecs'
-import { WearableBodyShape } from 'modules/item/types'
-import { WearableCategory } from '../item/types'
+import { Color4 } from 'decentraland-ecs'
 
 export function getSkinColors() {
   return [
