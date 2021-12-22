@@ -76,7 +76,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { bodyShape, skinColor, eyeColor, hairColor, avatarAnimation, baseWearables } = this.props
+    const { bodyShape, skinColor, eyeColor, hairColor, avatarAnimation, bodyShapeBaseWearables } = this.props
     const { isShowingAvatarAttributes } = this.state
 
     return (
@@ -146,42 +146,50 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               />
             </div>
             <div className="dropdown-container">
-              <AvatarWearableDropdown
-                wearable={baseWearables[WearableCategory.HAIR]}
-                category={WearableCategory.HAIR}
-                bodyShape={bodyShape}
-                label={t('wearable.category.hair')}
-                onChange={this.handleWearableChange}
-                isNullable
-              />
+              {bodyShapeBaseWearables && (
+                <AvatarWearableDropdown
+                  wearable={bodyShapeBaseWearables[WearableCategory.HAIR]}
+                  category={WearableCategory.HAIR}
+                  bodyShape={bodyShape}
+                  label={t('wearable.category.hair')}
+                  onChange={this.handleWearableChange}
+                  isNullable
+                />
+              )}
             </div>
             <div className="dropdown-container">
-              <AvatarWearableDropdown
-                wearable={baseWearables[WearableCategory.FACIAL_HAIR]}
-                category={WearableCategory.FACIAL_HAIR}
-                bodyShape={bodyShape}
-                label={t('wearable.category.facial_hair')}
-                onChange={this.handleWearableChange}
-                isNullable
-              />
+              {bodyShapeBaseWearables && (
+                <AvatarWearableDropdown
+                  wearable={bodyShapeBaseWearables[WearableCategory.FACIAL_HAIR]}
+                  category={WearableCategory.FACIAL_HAIR}
+                  bodyShape={bodyShape}
+                  label={t('wearable.category.facial_hair')}
+                  onChange={this.handleWearableChange}
+                  isNullable
+                />
+              )}
             </div>
             <div className="dropdown-container">
-              <AvatarWearableDropdown
-                wearable={baseWearables[WearableCategory.UPPER_BODY]}
-                category={WearableCategory.UPPER_BODY}
-                bodyShape={bodyShape}
-                label={t('wearable.category.upper_body')}
-                onChange={this.handleWearableChange}
-              />
+              {bodyShapeBaseWearables && (
+                <AvatarWearableDropdown
+                  wearable={bodyShapeBaseWearables[WearableCategory.UPPER_BODY]}
+                  category={WearableCategory.UPPER_BODY}
+                  bodyShape={bodyShape}
+                  label={t('wearable.category.upper_body')}
+                  onChange={this.handleWearableChange}
+                />
+              )}
             </div>
             <div className="dropdown-container">
-              <AvatarWearableDropdown
-                wearable={baseWearables[WearableCategory.LOWER_BODY]}
-                category={WearableCategory.LOWER_BODY}
-                bodyShape={bodyShape}
-                label={t('wearable.category.lower_body')}
-                onChange={this.handleWearableChange}
-              />
+              {bodyShapeBaseWearables && (
+                <AvatarWearableDropdown
+                  wearable={bodyShapeBaseWearables[WearableCategory.LOWER_BODY]}
+                  category={WearableCategory.LOWER_BODY}
+                  bodyShape={bodyShape}
+                  label={t('wearable.category.lower_body')}
+                  onChange={this.handleWearableChange}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -8,4 +8,7 @@ export type Props = {
   label: string
   isNullable?: boolean
   onChange: (category: WearableCategory, bodyShape: WearableBodyShape, wearable: Wearable | null) => void
+  baseWearables: Wearable[]
 }
+
+export type MapStateProps = Pick<Props, 'baseWearables'>

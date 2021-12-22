@@ -1,4 +1,5 @@
 import { Color4, Wearable } from 'decentraland-ecs'
+import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
@@ -11,7 +12,7 @@ import {
 import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
 import { hasBodyShape } from 'modules/item/utils'
-import { getEyeColors, getHairColors, getWearables, getSkinColors } from 'modules/editor/avatar'
+import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
 import {
   SetGizmoAction,
   TogglePreviewAction,
@@ -52,10 +53,16 @@ import {
   SetHairColorAction,
   SET_HAIR_COLOR,
   SetBaseWearableAction,
-  SET_BASE_WEARABLE
+  SET_BASE_WEARABLE,
+  FETCH_BASE_WEARABLES_SUCCESS,
+  FetchBaseWearablesSuccessAction,
+  FETCH_BASE_WEARABLES_FAILURE,
+  FETCH_BASE_WEARABLES_REQUEST,
+  FetchBaseWearablesRequestAction,
+  FetchBaseWearablesFailureAction
 } from './actions'
 import { AvatarAnimation, Gizmo } from './types'
-import { pickRandom } from './utils'
+import { pickRandom, getWearables } from './utils'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -80,8 +87,11 @@ export type EditorState = {
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4
-  baseWearables: Record<WearableBodyShape, Record<string, Wearable | null>>
+  baseWearables: Wearable[]
+  selectedBaseWearables: Record<WearableBodyShape, Record<string, Wearable | null>> | null
   visibleItemIds: string[]
+  loading: LoadingState
+  fetchingBaseWearablesError: string | null
 }
 
 const INITIAL_STATE: EditorState = {
@@ -107,21 +117,11 @@ const INITIAL_STATE: EditorState = {
   skinColor: pickRandom(getSkinColors()),
   eyeColor: pickRandom(getEyeColors()),
   hairColor: pickRandom(getHairColors()),
-  baseWearables: {
-    [WearableBodyShape.FEMALE]: {
-      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.FEMALE)),
-      [WearableCategory.FACIAL_HAIR]: null,
-      [WearableCategory.UPPER_BODY]: pickRandom(getWearables(WearableCategory.UPPER_BODY, WearableBodyShape.FEMALE)),
-      [WearableCategory.LOWER_BODY]: pickRandom(getWearables(WearableCategory.LOWER_BODY, WearableBodyShape.FEMALE))
-    },
-    [WearableBodyShape.MALE]: {
-      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.MALE)),
-      [WearableCategory.FACIAL_HAIR]: pickRandom(getWearables(WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE)),
-      [WearableCategory.UPPER_BODY]: pickRandom(getWearables(WearableCategory.UPPER_BODY, WearableBodyShape.MALE)),
-      [WearableCategory.LOWER_BODY]: pickRandom(getWearables(WearableCategory.LOWER_BODY, WearableBodyShape.MALE))
-    }
-  },
-  visibleItemIds: []
+  baseWearables: [],
+  selectedBaseWearables: null,
+  visibleItemIds: [],
+  loading: [],
+  fetchingBaseWearablesError: null
 }
 
 export type EditorReducerAction =
@@ -150,6 +150,9 @@ export type EditorReducerAction =
   | SetEyeColorAction
   | SetHairColorAction
   | SetBaseWearableAction
+  | FetchBaseWearablesRequestAction
+  | FetchBaseWearablesSuccessAction
+  | FetchBaseWearablesFailureAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -307,11 +310,49 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       const { category, bodyShape, wearable } = action.payload
       return {
         ...state,
-        baseWearables: {
-          ...state.baseWearables,
+        selectedBaseWearables: {
+          ...(state.selectedBaseWearables ?? ({} as Record<WearableBodyShape, Record<string, Wearable | null>>)),
           [bodyShape]: {
-            ...state.baseWearables[bodyShape],
+            ...state.selectedBaseWearables![bodyShape],
             [category]: wearable
+          }
+        }
+      }
+    }
+    case FETCH_BASE_WEARABLES_REQUEST: {
+      return {
+        ...state,
+        fetchingBaseWearablesError: null,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case FETCH_BASE_WEARABLES_FAILURE: {
+      return {
+        ...state,
+        fetchingBaseWearablesError: action.payload.error,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case FETCH_BASE_WEARABLES_SUCCESS: {
+      const { wearables } = action.payload
+      return {
+        ...state,
+        baseWearables: wearables,
+        fetchingBaseWearablesError: null,
+        loading: loadingReducer(state.loading, action),
+        // Initialize the selectedBaseWearables randomly
+        selectedBaseWearables: {
+          [WearableBodyShape.FEMALE]: {
+            [WearableCategory.HAIR]: pickRandom(getWearables(wearables, WearableCategory.HAIR, WearableBodyShape.FEMALE)),
+            [WearableCategory.FACIAL_HAIR]: null,
+            [WearableCategory.UPPER_BODY]: pickRandom(getWearables(wearables, WearableCategory.UPPER_BODY, WearableBodyShape.FEMALE)),
+            [WearableCategory.LOWER_BODY]: pickRandom(getWearables(wearables, WearableCategory.LOWER_BODY, WearableBodyShape.FEMALE))
+          },
+          [WearableBodyShape.MALE]: {
+            [WearableCategory.HAIR]: pickRandom(getWearables(wearables, WearableCategory.HAIR, WearableBodyShape.MALE)),
+            [WearableCategory.FACIAL_HAIR]: pickRandom(getWearables(wearables, WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE)),
+            [WearableCategory.UPPER_BODY]: pickRandom(getWearables(wearables, WearableCategory.UPPER_BODY, WearableBodyShape.MALE)),
+            [WearableCategory.LOWER_BODY]: pickRandom(getWearables(wearables, WearableCategory.LOWER_BODY, WearableBodyShape.MALE))
           }
         }
       }

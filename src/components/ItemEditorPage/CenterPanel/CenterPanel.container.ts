@@ -11,7 +11,7 @@ import {
 } from 'modules/editor/actions'
 import {
   getAvatarAnimation,
-  getBaseWearables,
+  getSelectedBaseWearables,
   getBodyShape,
   getEyeColor,
   getHairColor,
@@ -23,10 +23,10 @@ import CenterPanel from './CenterPanel'
 
 const mapState = (state: RootState): MapStateProps => {
   const bodyShape = getBodyShape(state)
-  const baseWearables = getBaseWearables(state)
+  const selectedBaseWearables = getSelectedBaseWearables(state)
   return {
     bodyShape,
-    baseWearables: baseWearables[bodyShape],
+    bodyShapeBaseWearables: selectedBaseWearables ? selectedBaseWearables[bodyShape] : null,
     skinColor: getSkinColor(state),
     eyeColor: getEyeColor(state),
     hairColor: getHairColor(state),

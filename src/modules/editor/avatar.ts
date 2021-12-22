@@ -1,8 +1,6 @@
 import { Color4, Wearable } from 'decentraland-ecs'
 import { WearableBodyShape } from 'modules/item/types'
 import { WearableCategory } from '../item/types'
-import _allWearables from './wearables/all.json'
-export const allWearables = _allWearables as Wearable[]
 
 export function getSkinColors() {
   return [
@@ -45,16 +43,4 @@ export function getEyeColors() {
     new Color4(0.282353, 0.8627451, 0.4588235, 1),
     new Color4(0.2313726, 0.6235294, 0.3137255, 1)
   ]
-}
-
-export function getWearables(category: WearableCategory, bodyShape: WearableBodyShape) {
-  return allWearables.filter(
-    wearable =>
-      wearable.category === category &&
-      wearable.representations.some(representation => representation.bodyShapes.some(_bodyShape => _bodyShape === bodyShape))
-  )
-}
-
-export function findWearable(id: string) {
-  return allWearables.find(wearable => wearable.id === id)
 }
