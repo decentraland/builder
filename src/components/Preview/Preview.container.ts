@@ -11,7 +11,7 @@ import Preview from './Preview'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return {
-    isLoading: !isReady(state),
+    isLoadingEditor: !isReady(state),
     isLoadingBaseWearables: ownProps.type === PreviewType.WEARABLE && isLoadingBaseWearables(state),
     project: getCurrentProject(state)!
   }

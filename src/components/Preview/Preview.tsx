@@ -92,10 +92,10 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   }
 
   getLoadingText(): string {
-    const { isLoading, isLoadingBaseWearables } = this.props
-    if (isLoadingBaseWearables && isLoading) {
+    const { isLoadingEditor, isLoadingBaseWearables } = this.props
+    if (isLoadingBaseWearables && isLoadingEditor) {
       return 'Loading Unity & Base Wearables...'
-    } else if (isLoadingBaseWearables && !isLoading) {
+    } else if (isLoadingBaseWearables && !isLoadingEditor) {
       return 'Loading Base Wearables...'
     } else {
       return 'Loading Unity...'
@@ -103,8 +103,8 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   }
 
   render() {
-    const { isLoading, connectDropTarget, isLoadingBaseWearables } = this.props
-    const isLoadingResources = isLoading || isLoadingBaseWearables
+    const { isLoadingEditor, connectDropTarget, isLoadingBaseWearables } = this.props
+    const isLoadingResources = isLoadingEditor || isLoadingBaseWearables
 
     return connectDropTarget(
       <div className="Preview-wrapper">

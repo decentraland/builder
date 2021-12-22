@@ -61,7 +61,7 @@ export type EditorWindow = typeof window & {
 }
 
 export type Props = Partial<OpenEditorOptions> & {
-  isLoading: boolean
+  isLoadingEditor: boolean
   onOpenEditor: typeof openEditor
   onDropItem: typeof dropItem
   project: Project
@@ -70,7 +70,7 @@ export type Props = Partial<OpenEditorOptions> & {
 
 export type State = {}
 
-export type MapStateProps = Pick<Props, 'isLoading' | 'project' | 'isLoadingBaseWearables'>
+export type MapStateProps = Pick<Props, 'isLoadingEditor' | 'project' | 'isLoadingBaseWearables'>
 export type MapDispatchProps = Pick<Props, 'onOpenEditor' | 'onDropItem'>
 export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction | DropItemAction | FetchBaseWearablesRequestAction>
 export type OwnProps = Pick<Props, 'type'>
