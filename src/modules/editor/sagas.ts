@@ -723,7 +723,10 @@ function* handleSetAvatarAnimation(_action: SetAvatarAnimationAction) {
 
 function* handleFetchBaseWearables() {
   try {
-    const response: Response = yield fetch(`${PEER_URL}/lambdas/collections/wearables?collectionId=urn:decentraland:off-chain:base-avatars`)
+    const response: Response = yield call(
+      fetch,
+      `${PEER_URL}/lambdas/collections/wearables?collectionId=urn:decentraland:off-chain:base-avatars`
+    )
     if (!response.ok) {
       throw new Error('Failed to fetch base wearables')
     }
