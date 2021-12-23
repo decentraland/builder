@@ -295,7 +295,14 @@ export function fromCatalystWearableToWearable(catalystWearable: CatalystWearabl
   }
 }
 
-export function getWearables(wearables: Wearable[], category: WearableCategory, bodyShape: WearableBodyShape) {
+/**
+ * Given a list of wearables, return those which category and body shape are the ones specified in the parameters.
+ *
+ * @param wearables - The catalyst wearable to convert.
+ * @param category - The category to filter by.
+ * @param bodyShape - The body shape to filter by.
+ */
+export function filterWearables(wearables: Wearable[], category: WearableCategory, bodyShape: WearableBodyShape): Wearable[] {
   return wearables.filter(
     wearable =>
       wearable.category === category &&

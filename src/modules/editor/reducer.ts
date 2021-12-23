@@ -62,7 +62,7 @@ import {
   FetchBaseWearablesFailureAction
 } from './actions'
 import { AvatarAnimation, Gizmo } from './types'
-import { pickRandom, getWearables } from './utils'
+import { pickRandom, filterWearables } from './utils'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -94,7 +94,7 @@ export type EditorState = {
   fetchingBaseWearablesError: string | null
 }
 
-const INITIAL_STATE: EditorState = {
+export const INITIAL_STATE: EditorState = {
   gizmo: Gizmo.NONE,
   preview: false,
   sidebar: true,
@@ -343,16 +343,16 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         // Initialize the selectedBaseWearables randomly
         selectedBaseWearables: {
           [WearableBodyShape.FEMALE]: {
-            [WearableCategory.HAIR]: pickRandom(getWearables(wearables, WearableCategory.HAIR, WearableBodyShape.FEMALE)),
+            [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, WearableBodyShape.FEMALE)),
             [WearableCategory.FACIAL_HAIR]: null,
-            [WearableCategory.UPPER_BODY]: pickRandom(getWearables(wearables, WearableCategory.UPPER_BODY, WearableBodyShape.FEMALE)),
-            [WearableCategory.LOWER_BODY]: pickRandom(getWearables(wearables, WearableCategory.LOWER_BODY, WearableBodyShape.FEMALE))
+            [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, WearableBodyShape.FEMALE)),
+            [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, WearableBodyShape.FEMALE))
           },
           [WearableBodyShape.MALE]: {
-            [WearableCategory.HAIR]: pickRandom(getWearables(wearables, WearableCategory.HAIR, WearableBodyShape.MALE)),
-            [WearableCategory.FACIAL_HAIR]: pickRandom(getWearables(wearables, WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE)),
-            [WearableCategory.UPPER_BODY]: pickRandom(getWearables(wearables, WearableCategory.UPPER_BODY, WearableBodyShape.MALE)),
-            [WearableCategory.LOWER_BODY]: pickRandom(getWearables(wearables, WearableCategory.LOWER_BODY, WearableBodyShape.MALE))
+            [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, WearableBodyShape.MALE)),
+            [WearableCategory.FACIAL_HAIR]: pickRandom(filterWearables(wearables, WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE)),
+            [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, WearableBodyShape.MALE)),
+            [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, WearableBodyShape.MALE))
           }
         }
       }

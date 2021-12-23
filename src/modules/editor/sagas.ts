@@ -57,7 +57,7 @@ import {
   SET_EYE_COLOR,
   SET_HAIR_COLOR,
   SET_BASE_WEARABLE,
-  fetchBaseWearables,
+  fetchBaseWearablesRequest,
   FETCH_BASE_WEARABLES_SUCCESS,
   FETCH_BASE_WEARABLES_FAILURE,
   FetchBaseWearablesSuccessAction,
@@ -379,7 +379,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
     const baseWearables = yield select(getBaseWearables)
     // Only fetch the base wearables if there's none set
     if (baseWearables.length === 0) {
-      yield put(fetchBaseWearables())
+      yield put(fetchBaseWearablesRequest())
       const { failure }: { success: FetchBaseWearablesSuccessAction; failure: FetchBaseWearablesFailureAction } = yield race({
         success: take(FETCH_BASE_WEARABLES_SUCCESS),
         failure: take(FETCH_BASE_WEARABLES_FAILURE)

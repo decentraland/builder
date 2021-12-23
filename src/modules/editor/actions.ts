@@ -271,10 +271,10 @@ export const FETCH_BASE_WEARABLES_REQUEST = '[Request] Fetch base wearables'
 export const FETCH_BASE_WEARABLES_SUCCESS = '[Success] Fetch base wearables'
 export const FETCH_BASE_WEARABLES_FAILURE = '[Failure] Fetch base wearables'
 
-export const fetchBaseWearables = () => action(FETCH_BASE_WEARABLES_REQUEST)
+export const fetchBaseWearablesRequest = () => action(FETCH_BASE_WEARABLES_REQUEST)
 export const fetchBaseWearablesSuccess = (wearables: Wearable[]) => action(FETCH_BASE_WEARABLES_SUCCESS, { wearables })
 export const fetchBaseWearablesFailure = (error: string) => action(FETCH_BASE_WEARABLES_FAILURE, { error })
 
-export type FetchBaseWearablesRequestAction = ReturnType<typeof fetchBaseWearables>
+export type FetchBaseWearablesRequestAction = ReturnType<typeof fetchBaseWearablesRequest>
 export type FetchBaseWearablesSuccessAction = ReturnType<typeof fetchBaseWearablesSuccess>
 export type FetchBaseWearablesFailureAction = ReturnType<typeof fetchBaseWearablesFailure>

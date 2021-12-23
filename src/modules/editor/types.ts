@@ -78,10 +78,15 @@ export type CatalystWearable = {
     representations: {
       bodyShapes: WearableBodyShape[]
       mainFile: string
+      overrideReplaces: []
+      overrideHides: []
       contents: {
         key: string
         url: string
       }[]
     }[]
   }
+  i18n: { code: string; text: string }[]
+  createdAt: number
+  updatedAt: number
 }

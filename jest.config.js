@@ -5,7 +5,9 @@ module.exports = {
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
-    '^!?raw-loader!.*$': 'identity-obj-proxy'
+    '^!?raw-loader!.*$': 'identity-obj-proxy',
+    '^three/.*$': 'identity-obj-proxy',
+    '^@babylonjs.*$': 'identity-obj-proxy'
   },
   modulePaths: ['<rootDir>/src/'],
   setupFiles: ['<rootDir>/src/setupTests.ts']

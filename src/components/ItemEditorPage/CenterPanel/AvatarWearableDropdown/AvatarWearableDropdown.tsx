@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dropdown, DropdownItemProps, DropdownProps } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getName, getWearables } from 'modules/editor/utils'
+import { getName, filterWearables } from 'modules/editor/utils'
 import { Props } from './AvatarWearableDropdown.types'
 
 export default class AvatarWearableDropdown extends React.PureComponent<Props> {
@@ -15,7 +15,7 @@ export default class AvatarWearableDropdown extends React.PureComponent<Props> {
 
   render() {
     const { wearable, bodyShape, category, label, isNullable, baseWearables } = this.props
-    const options: DropdownItemProps[] = getWearables(baseWearables, category, bodyShape).map(wearable => ({
+    const options: DropdownItemProps[] = filterWearables(baseWearables, category, bodyShape).map(wearable => ({
       value: wearable.id,
       text: getName(wearable)
     }))
