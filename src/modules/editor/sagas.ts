@@ -226,7 +226,7 @@ function* createNewEditorScene(project: Project) {
   }
 
   // @ts-ignore: Client api
-  yield call(() => editorWindow.editor.handleMessage(msg))
+  yield call([editorWindow.editor, 'handleMessage'], msg)
   yield handleResetCamera()
 }
 
@@ -338,7 +338,6 @@ function handleEditorReadyChange() {
   store.dispatch(setEditorReady(true))
 }
 
-// TODO: This might be the correct place to do the call we want, but we need to be sure that it won't break anything
 function* handleOpenEditor(action: OpenEditorAction) {
   const { isReadOnly, type } = action.payload
   // Handles subscriptions to metrics
@@ -363,18 +362,16 @@ function* handleOpenEditor(action: OpenEditorAction) {
     const item = items.find(item => item.id === itemId)
 
     yield put(setEditorReadOnly(true))
-    yield createNewEditorScene(createAvatarProject())
+    yield call(createNewEditorScene, createAvatarProject())
 
     // set camera
-    yield call(async () => {
-      editorWindow.editor.setBuilderConfiguration({
-        camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
-        environment: { disableFloor: true }
-      })
-      editorWindow.editor.resetCameraZoom()
-      editorWindow.editor.setCameraPosition({ x: 8, y: 1, z: 8 })
-      editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
+    yield call([editorWindow.editor, 'setBuilderConfiguration'], {
+      camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
+      environment: { disableFloor: true }
     })
+    yield call([editorWindow.editor, 'resetCameraZoom'])
+    yield call([editorWindow.editor, 'setCameraPosition'], { x: 8, y: 1, z: 8 })
+    yield call([editorWindow.editor, 'setCameraRotation'], Math.PI, Math.PI / 16)
 
     const baseWearables = yield select(getBaseWearables)
     // Only fetch the base wearables if there's none set
