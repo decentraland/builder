@@ -1,3 +1,7 @@
+import { WearableBodyShape } from 'modules/item/types'
+import { Wearable } from 'decentraland-ecs'
+import { WearableCategory } from 'modules/item/types'
+
 export enum Gizmo {
   MOVE = 'MOVE',
   ROTATE = 'ROTATE',
@@ -59,4 +63,30 @@ export enum AvatarAnimation {
   CLAP = 'clap',
   MONEY = 'money',
   KISS = 'kiss'
+}
+
+export type SelectedBaseWearables = Record<WearableBodyShape, Record<string, Wearable | null>>
+
+export type CatalystWearable = {
+  id: string
+  description: string
+  thumbnail: string
+  rarity: ''
+  data: {
+    tags: string[]
+    category: WearableCategory
+    representations: {
+      bodyShapes: WearableBodyShape[]
+      mainFile: string
+      overrideReplaces: []
+      overrideHides: []
+      contents: {
+        key: string
+        url: string
+      }[]
+    }[]
+  }
+  i18n: { code: string; text: string }[]
+  createdAt: number
+  updatedAt: number
 }

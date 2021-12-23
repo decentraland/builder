@@ -1,5 +1,5 @@
 import { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
-import { EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
+import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -9,7 +9,7 @@ import { TRANSPARENT_PIXEL } from 'lib/getModelData'
 import { toLegacyURN } from 'lib/urnLegacy'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { getMetrics } from 'components/AssetImporter/utils'
-import { Item } from 'modules/item/types'
+import { Item, WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { base64ArrayBuffer } from './base64'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
@@ -242,4 +242,70 @@ export const getName = (wearable: Wearable) => {
     .filter(part => part != null) // Filter out ignored parts
     .map(part => capitalize(part!))
     .join(' ')
+}
+
+/**
+ * Extracts the base URL from the catalyst items' URL.
+ *
+ * @param url - The catalyst wearable's URL.
+ */
+export function extractBaseUrl(url: string): string {
+  const baseURLRegex = /(http[s]?:\/\/.+\/content\/contents\/).+/
+  const matches = baseURLRegex.exec(url)
+  if (matches && matches[1]) {
+    return matches[1]
+  }
+  throw new Error('No base URL found in th URL: ' + url)
+}
+
+/**
+ * Extracts the wearable's hash from a catalyst wearable's URL.
+ *
+ * @param url - The catalyst item's URL.
+ */
+export function extractHash(url: string): string {
+  const hashRegex = /http[s]?:\/\/.+\/content\/contents\/([a-zA-Z0-9]+)/
+  const matches = hashRegex.exec(url)
+  if (matches && matches[1]) {
+    return matches[1]
+  }
+  throw new Error('No hash found in the URL: ' + url)
+}
+
+/**
+ * Converts a Catalyst's wearable into a Wearable.
+ *
+ * @param catalystWearable - The catalyst wearable to convert.
+ */
+export function fromCatalystWearableToWearable(catalystWearable: CatalystWearable): Wearable {
+  return {
+    id: catalystWearable.id,
+    type: 'wearable',
+    category: catalystWearable.data.category,
+    baseUrl: extractBaseUrl(catalystWearable.thumbnail),
+    tags: catalystWearable.data.tags,
+    representations: catalystWearable.data.representations.map(representation => ({
+      bodyShapes: representation.bodyShapes,
+      mainFile: representation.mainFile,
+      contents: representation.contents.map(content => ({
+        file: content.key,
+        hash: extractHash(content.url)
+      }))
+    }))
+  }
+}
+
+/**
+ * Given a list of wearables, return those which category and body shape are the ones specified in the parameters.
+ *
+ * @param wearables - The catalyst wearable to convert.
+ * @param category - The category to filter by.
+ * @param bodyShape - The body shape to filter by.
+ */
+export function filterWearables(wearables: Wearable[], category: WearableCategory, bodyShape: WearableBodyShape): Wearable[] {
+  return wearables.filter(
+    wearable =>
+      wearable.category === category &&
+      wearable.representations.some(representation => representation.bodyShapes.some(_bodyShape => _bodyShape === bodyShape))
+  )
 }

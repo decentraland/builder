@@ -1,3 +1,4 @@
+import { Wearable } from 'decentraland-ecs'
 import { createSelector } from 'reselect'
 
 import { RootState } from 'modules/common/types'
@@ -14,7 +15,10 @@ import { Asset } from 'modules/asset/types'
 import { ItemState } from 'modules/item/reducer'
 import { getData } from 'modules/item/selectors'
 import { Item } from 'modules/item/types'
+import { SelectedBaseWearables } from './types'
+import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 
+const getLoading = (state: RootState) => getState(state).loading
 export const getState = (state: RootState) => state.editor
 export const getGizmo = (state: RootState) => getState(state).gizmo
 export const isSidebarOpen = (state: RootState) => getState(state).sidebar
@@ -34,7 +38,12 @@ export const getAvatarAnimation = (state: RootState) => getState(state).avatarAn
 export const getSkinColor = (state: RootState) => getState(state).skinColor
 export const getEyeColor = (state: RootState) => getState(state).eyeColor
 export const getHairColor = (state: RootState) => getState(state).hairColor
-export const getBaseWearables = (state: RootState) => getState(state).baseWearables
+export const getBaseWearables = (state: RootState): Wearable[] => getState(state).baseWearables
+export const getSelectedBaseWearables = (state: RootState): SelectedBaseWearables | null => getState(state).selectedBaseWearables
+export const getFetchingBaseWearablesError = (state: RootState) => getState(state).fetchingBaseWearablesError
+export const isLoadingBaseWearables = (state: RootState): boolean =>
+  isLoadingType(getLoading(state), FETCH_BASE_WEARABLES_REQUEST) ||
+  (getBaseWearables(state).length === 0 && getFetchingBaseWearablesError(state) === null)
 
 export const getVisibleItemIds = (state: RootState) => getState(state).visibleItemIds
 export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(getAssets, assets => {

@@ -1,5 +1,5 @@
 import { Color4, Wearable } from 'decentraland-ecs'
-import { takeLatest, select, put, call, delay, take } from 'redux-saga/effects'
+import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
 import { getSearch } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import {
@@ -56,7 +56,15 @@ import {
   SET_SKIN_COLOR,
   SET_EYE_COLOR,
   SET_HAIR_COLOR,
-  SET_BASE_WEARABLE
+  SET_BASE_WEARABLE,
+  fetchBaseWearablesRequest,
+  FETCH_BASE_WEARABLES_SUCCESS,
+  FETCH_BASE_WEARABLES_FAILURE,
+  FetchBaseWearablesSuccessAction,
+  FetchBaseWearablesFailureAction,
+  FETCH_BASE_WEARABLES_REQUEST,
+  fetchBaseWearablesSuccess,
+  fetchBaseWearablesFailure
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -81,7 +89,7 @@ import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, ComponentType, ComponentDefinition, ComponentData } from 'modules/scene/types'
 import { ModelMetrics, Vector3, Quaternion } from 'modules/models/types'
 import { Project } from 'modules/project/types'
-import { AvatarAnimation, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
+import { AvatarAnimation, CatalystWearable, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
 import { getLoading } from 'modules/assetPack/selectors'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState } from 'modules/common/types'
@@ -100,6 +108,7 @@ import { getItems } from 'modules/item/selectors'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
 import { getContentsStorageUrl } from 'lib/api/builder'
+import { PEER_URL } from 'lib/api/peer'
 import { toLegacyURN } from 'lib/urnLegacy'
 import {
   getGizmo,
@@ -118,6 +127,7 @@ import {
   getSkinColor,
   getEyeColor,
   getHairColor,
+  getSelectedBaseWearables,
   getBaseWearables
 } from './selectors'
 import {
@@ -133,12 +143,10 @@ import {
   THUMBNAIL_HEIGHT,
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
-  ROTATION_GRID_RESOLUTION
+  ROTATION_GRID_RESOLUTION,
+  fromCatalystWearableToWearable
 } from './utils'
-import { getEyeColors, getHairColors, getSkinColors } from './avatar'
-
-import maleAvatar from './wearables/male.json'
-import femaleAvatar from './wearables/female.json'
+import { extraAvatarWearablesIds, getEyeColors, getHairColors, getSkinColors } from './avatar'
 
 const editorWindow = window as EditorWindow
 
@@ -170,6 +178,7 @@ export function* editorSaga() {
   yield takeLatest(SET_EYE_COLOR, renderAvatar)
   yield takeLatest(SET_HAIR_COLOR, renderAvatar)
   yield takeLatest(SET_BASE_WEARABLE, renderAvatar)
+  yield takeLatest(FETCH_BASE_WEARABLES_REQUEST, handleFetchBaseWearables)
 }
 
 function* pollEditor(scene: Scene) {
@@ -217,7 +226,7 @@ function* createNewEditorScene(project: Project) {
   }
 
   // @ts-ignore: Client api
-  yield call(() => editorWindow.editor.handleMessage(msg))
+  yield call([editorWindow.editor, 'handleMessage'], msg)
   yield handleResetCamera()
 }
 
@@ -332,19 +341,19 @@ function handleEditorReadyChange() {
 function* handleOpenEditor(action: OpenEditorAction) {
   const { isReadOnly, type } = action.payload
   // Handles subscriptions to metrics
-  yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
+  yield call([editorWindow.editor, 'on'], 'metrics', handleMetricsChange)
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
-  yield call(() => editorWindow.editor.on('transform', handleTransformChange))
+  yield call([editorWindow.editor, 'on'], 'transform', handleTransformChange)
 
   // The client will report when the internal api is ready
-  yield call(() => editorWindow.editor.on('ready', handleEditorReadyChange))
+  yield call([editorWindow.editor, 'on'], 'ready', handleEditorReadyChange)
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
-  yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
+  yield call([editorWindow.editor, 'on'], 'gizmoSelected', handleGizmoSelected)
 
   // The client will report when an entity goes out of bounds
-  yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
+  yield call([editorWindow.editor, 'on'], 'entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries)
 
   if (type === PreviewType.WEARABLE) {
     const search: ReturnType<typeof getSearch> = yield select(getSearch)
@@ -353,18 +362,31 @@ function* handleOpenEditor(action: OpenEditorAction) {
     const item = items.find(item => item.id === itemId)
 
     yield put(setEditorReadOnly(true))
-    yield createNewEditorScene(createAvatarProject())
+    yield call(createNewEditorScene, createAvatarProject())
 
     // set camera
-    yield call(async () => {
-      editorWindow.editor.setBuilderConfiguration({
-        camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
-        environment: { disableFloor: true }
-      })
-      editorWindow.editor.resetCameraZoom()
-      editorWindow.editor.setCameraPosition({ x: 8, y: 1, z: 8 })
-      editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
+    yield call([editorWindow.editor, 'setBuilderConfiguration'], {
+      camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
+      environment: { disableFloor: true }
     })
+    yield call([editorWindow.editor, 'resetCameraZoom'])
+    yield call([editorWindow.editor, 'setCameraPosition'], { x: 8, y: 1, z: 8 })
+    yield call([editorWindow.editor, 'setCameraRotation'], Math.PI, Math.PI / 16)
+
+    const baseWearables = yield select(getBaseWearables)
+    // Only fetch the base wearables if there's none set
+    if (baseWearables.length === 0) {
+      yield put(fetchBaseWearablesRequest())
+      const { failure }: { success: FetchBaseWearablesSuccessAction; failure: FetchBaseWearablesFailureAction } = yield race({
+        success: take(FETCH_BASE_WEARABLES_SUCCESS),
+        failure: take(FETCH_BASE_WEARABLES_FAILURE)
+      })
+
+      if (failure) {
+        console.error('Failed to load the base wearables', failure)
+        throw new Error(failure.payload.error)
+      }
+    }
 
     if (item) {
       // select a valid body shape for the selected item
@@ -635,14 +657,18 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
 
 function* getDefaultWearables() {
   const bodyShape: WearableBodyShape = yield select(getBodyShape)
-  const baseWearables: ReturnType<typeof getBaseWearables> = yield select(getBaseWearables)
-  const wearables = Object.values(baseWearables[bodyShape]).filter(wearable => wearable !== null) as Wearable[]
-  const extras = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
-  for (const extra of extras) {
-    if (!wearables.some(wearable => wearable.category === extra.category)) {
-      wearables.push(extra)
-    }
+  const baseWearables: Wearable[] = yield select(getBaseWearables)
+
+  const selectedBaseWearables: ReturnType<typeof getSelectedBaseWearables> = yield select(getSelectedBaseWearables)
+  if (!selectedBaseWearables) {
+    throw new Error('No base wearables selected')
   }
+
+  let wearables = Object.values(selectedBaseWearables[bodyShape]).filter(wearable => wearable !== null) as Wearable[]
+  const extras = baseWearables
+    .filter(wearable => extraAvatarWearablesIds[bodyShape].includes(wearable.id))
+    .filter(extraWearable => !wearables.some(wearable => wearable.category === extraWearable.category))
+  wearables = wearables.concat(extras)
 
   // @TODO: remove this when unity build accepts urn
   return wearables.map(w => ({
@@ -693,4 +719,20 @@ function* handleSetBodyShape(_action: SetBodyShapeAction) {
 
 function* handleSetAvatarAnimation(_action: SetAvatarAnimationAction) {
   yield renderAvatar()
+}
+
+function* handleFetchBaseWearables() {
+  try {
+    const response: Response = yield call(
+      fetch,
+      `${PEER_URL}/lambdas/collections/wearables?collectionId=urn:decentraland:off-chain:base-avatars`
+    )
+    if (!response.ok) {
+      throw new Error('Failed to fetch base wearables')
+    }
+    const json: { wearables: CatalystWearable[] } = yield response.json()
+    yield put(fetchBaseWearablesSuccess(json.wearables.map(fromCatalystWearableToWearable)))
+  } catch (e) {
+    yield put(fetchBaseWearablesFailure(e.message))
+  }
 }

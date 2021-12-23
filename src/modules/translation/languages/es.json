@@ -1289,6 +1289,11 @@
     "synced": "Sincronizado",
     "unsynced": "Desincronizado"
   },
+  "editor_preview": {
+    "loading_unity_and_base_wearables": "Cargando Unity y Wearables base...",
+    "loading_base_wearables": "Cargando Wearables base...",
+    "loading_unity": "Cargando Unity..."
+  },
   "approval_flow": {
     "loading": {
       "title": "Cargando...",

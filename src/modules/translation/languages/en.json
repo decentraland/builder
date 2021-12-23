@@ -1274,6 +1274,11 @@
     "synced": "Synced",
     "unsynced": "Unsynced"
   },
+  "editor_preview": {
+    "loading_unity_and_base_wearables": "Loading Unity and base Wearables...",
+    "loading_base_wearables": "Loading base Wearables...",
+    "loading_unity": "Loading Unity..."
+  },
   "approval_flow": {
     "loading": {
       "title": "Loading...",

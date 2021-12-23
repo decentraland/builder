@@ -9,7 +9,8 @@ import {
   TogglePreviewAction,
   CloseEditorAction,
   SetScriptUrlAction,
-  UpdateAvatarAction
+  UpdateAvatarAction,
+  FetchBaseWearablesRequestAction
 } from 'modules/editor/actions'
 import { UnityKeyboardEvent, OpenEditorOptions } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
@@ -60,14 +61,16 @@ export type EditorWindow = typeof window & {
 }
 
 export type Props = Partial<OpenEditorOptions> & {
-  isLoading: boolean
+  isLoadingEditor: boolean
   onOpenEditor: typeof openEditor
   onDropItem: typeof dropItem
   project: Project
+  isLoadingBaseWearables: boolean
 }
 
 export type State = {}
 
-export type MapStateProps = Pick<Props, 'isLoading' | 'project'>
+export type MapStateProps = Pick<Props, 'isLoadingEditor' | 'project' | 'isLoadingBaseWearables'>
 export type MapDispatchProps = Pick<Props, 'onOpenEditor' | 'onDropItem'>
-export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction | DropItemAction>
+export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction | DropItemAction | FetchBaseWearablesRequestAction>
+export type OwnProps = Pick<Props, 'type'>
