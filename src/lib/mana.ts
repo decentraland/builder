@@ -9,11 +9,8 @@ export function addSymbol(num: string | number) {
 }
 
 export function buildManaAuthorization(address: string, chainId: ChainId, contractName: ContractName): Authorization {
-  // const { wallet } = this.props
-  // const chainId = wallet.networks.MATIC.chainId
   const manaContractAddress = getContract(ContractName.MANAToken, chainId).address
   const toAuthorizeContractAdresss = getContract(contractName, chainId).address
-  // const authorizedAddress = getContract(ContractName.CollectionManager, chainId).address
 
   return {
     type: AuthorizationType.ALLOWANCE,
