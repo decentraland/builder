@@ -731,7 +731,15 @@ function* handleFetchBaseWearables() {
       throw new Error('Failed to fetch base wearables')
     }
     const json: { wearables: CatalystWearable[] } = yield response.json()
-    yield put(fetchBaseWearablesSuccess(json.wearables.map(fromCatalystWearableToWearable)))
+    // Filter wearables that hide or replace others, preventing issues with the previewed
+    const wearables: Wearable[] = json.wearables
+      .filter(wearable => {
+        const hidesWearables = wearable.data.hides && wearable.data.hides.length > 0
+        const replacesWearables = wearable.data.replaces && wearable.data.replaces.length > 0
+        return !hidesWearables && !replacesWearables
+      })
+      .map(fromCatalystWearableToWearable)
+    yield put(fetchBaseWearablesSuccess(wearables))
   } catch (e) {
     yield put(fetchBaseWearablesFailure(e.message))
   }
