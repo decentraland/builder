@@ -22,6 +22,7 @@ export type Props = ModalProps & {
   onBuyItemSlots: typeof buyThirdPartyItemTiersRequest
   onFetchThirdPartyItemSlots: typeof fetchThirdPartyItemTiersRequest
   onTierSelected: typeof clearTiersError
+  onBeforeClose: typeof clearTiersError
 }
 
 export type State = {
@@ -33,5 +34,5 @@ export type BuyItemSlotsModalMetadata = {
 }
 
 export type MapStateProps = Pick<Props, 'isBuyingItemSlots' | 'isFetchingTiers' | 'manaBalance' | 'tiers' | 'error'>
-export type MapDispatchProps = Pick<Props, 'onBuyItemSlots' | 'onFetchThirdPartyItemSlots' | 'onTierSelected'>
+export type MapDispatchProps = Pick<Props, 'onBuyItemSlots' | 'onFetchThirdPartyItemSlots' | 'onTierSelected' | 'onBeforeClose'>
 export type MapDispatch = Dispatch<FetchThirdPartyItemTiersRequestAction | BuyThirdPartyItemTiersRequestAction | ClearTiersErrorAction>
