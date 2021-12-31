@@ -48,7 +48,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
 
   getManaAuthorization = () => {
     const { wallet } = this.props
-    return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.Tiers)
+    return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.ThirdPartyRegistry)
   }
 
   handleEditName = () => {
@@ -65,8 +65,6 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   handleBuySlot = () => {
     const { onOpenModal, thirdParty, authorizations } = this.props
     const manaAuthorization = this.getManaAuthorization()
-    console.log('Authorizations', authorizations)
-    console.log('ManaAuthorization', manaAuthorization)
     if (hasAuthorization(authorizations, manaAuthorization)) {
       this.setState({ isAuthModalOpen: false })
       onOpenModal('BuyItemSlotsModal', {
