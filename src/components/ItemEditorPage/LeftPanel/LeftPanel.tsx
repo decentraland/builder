@@ -13,7 +13,8 @@ import { getCollectionType } from 'modules/collection/utils'
 
 export default class LeftPanel extends React.PureComponent<Props> {
   componentDidMount() {
-    this.props.onResetThirdPartyItems()
+    const { onResetThirdPartyItems } = this.props
+    onResetThirdPartyItems()
   }
 
   getItems(collection: Collection, collectionItems: Item[]) {
