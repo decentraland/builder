@@ -4,7 +4,7 @@ export type ItemEditorState = {
   selectedThirdPartyItemIds: string[]
 }
 
-const INITIAL_STATE: ItemEditorState = {
+export const INITIAL_STATE: ItemEditorState = {
   selectedThirdPartyItemIds: []
 }
 
