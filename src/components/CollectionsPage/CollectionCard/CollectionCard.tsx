@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom'
 import { Button, Card, Confirm } from 'decentraland-ui'
 import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { isThirdParty } from 'modules/collection/utils'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import { locations } from 'routing/locations'
+import { getCollectionType } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 import { OptionsDropdown } from '../../OptionsDropdown'
 import { ITEM_DASHBOARD_CARD_SOURCE } from '../ItemCard/ItemCard.dnd'
 import { collect, CollectedProps, collectionTarget } from './CollectionCard.dnd'
@@ -25,7 +26,8 @@ const CollectionCard = (props: Props & CollectedProps) => {
     onDeleteCollection()
   }, [setIsDeleting, onDeleteCollection])
 
-  const isThirdPartyCollection = isThirdParty(collection)
+  const type = getCollectionType(collection)
+  const isThirdParty = type === CollectionType.THIRD_PARTY
 
   return (
     <>
@@ -37,16 +39,14 @@ const CollectionCard = (props: Props & CollectedProps) => {
               options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]}
             />
           )}
-          <Link
-            to={isThirdPartyCollection ? locations.thirdPartyCollectionDetail(collection.id) : locations.collectionDetail(collection.id)}
-          >
+          <Link to={isThirdParty ? locations.thirdPartyCollectionDetail(collection.id) : locations.collectionDetail(collection.id)}>
             <CollectionImage collectionId={collection.id} />
             <Card.Content>
               <div className="text" title={collection.name}>
                 {collection.name} <CollectionStatus collection={collection} />
               </div>
               <div className="subtitle">
-                {isThirdPartyCollection ? t('collection_card.third_party_collection') : t('collection_card.collection')}&nbsp;·&nbsp;
+                {t(`collection.type.${type}`)}&nbsp;·&nbsp;
                 {t('collection_card.item_count', { count: items.length })}
               </div>
             </Card.Content>

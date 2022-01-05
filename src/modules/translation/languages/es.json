@@ -1038,6 +1038,12 @@
     "edit_urn": "Editar URN",
     "reset_item": "Deshacer cambios"
   },
+  "collection": {
+    "type": {
+      "decentraland": "Colección",
+      "third_party": "Colección Externa"
+    }
+  },
   "item": {
     "blockchain_id": "Blockchain ID",
     "category": "Categoría",
@@ -1128,8 +1134,6 @@
     "no_items": "No Items"
   },
   "collection_card": {
-    "third_party_collection": "Colección Externa",
-    "collection": "Colección",
     "item_count": "{count} {count, plural, one {item} other {items}}",
     "subtitle": "{count} {count, plural, one {item} other {items}}",
     "confirm_delete_content": "¿Seguro que quieres borrar tu colección \"{name}\"? Esta operación es ireversible",

@@ -110,6 +110,17 @@ export function extractThirdPartyTokenId(urn: URN) {
   return `${thirdPartyCollectionId}:${thirdPartyTokenId}`
 }
 
+// TODO: This logic is repeated in collection/util's `getCollectionType`, but being used only for items (item.urn).
+// It should probably be replaced by a getItemType or we should see if it's better to only keep one way of doing this
+export function isThirdParty(urn?: string) {
+  if (!urn) {
+    return false
+  }
+
+  const decodedURN = decodeURN(urn)
+  return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
+}
+
 export function decodeURN(urn: URN): DecodedURN {
   const matches = urnRegExp.exec(urn)
 

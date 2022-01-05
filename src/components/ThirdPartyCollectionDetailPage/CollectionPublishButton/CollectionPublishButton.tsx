@@ -28,7 +28,7 @@ const CollectionPublishButton = (props: Props) => {
 
   let button: ReactNode
 
-  // TODO: Update this logic once Reviewing TPW is implemented
+  // TODO: @TPW Update this logic once Reviewing TPW is implemented. Use the selected items to render this button
   if (collection.isPublished) {
     if (collection.isApproved) {
       button = (

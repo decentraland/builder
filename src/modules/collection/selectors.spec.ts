@@ -64,7 +64,8 @@ describe('when getting status by item id', () => {
           },
           '2': {
             id: '2',
-            collectionId: '1'
+            collectionId: '1',
+            isPublished: true
           }
         }
       },
