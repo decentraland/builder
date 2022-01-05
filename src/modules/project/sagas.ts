@@ -124,7 +124,7 @@ export function* projectSaga(builder: BuilderAPI) {
     let thumbnail = project.thumbnail
 
     if (thumbnail && isRemoteURL(thumbnail)) {
-      thumbnail = yield call(() => getImageAsDataUrl(project.thumbnail))
+      thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
     }
 
     const newScene = { ...scene, id: uuidv4() }
