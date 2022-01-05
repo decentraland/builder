@@ -10,9 +10,9 @@ import { ContractName } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
 import { isComplete } from 'modules/item/utils'
 import { SyncStatus } from 'modules/item/types'
+import { buildManaAuthorization } from 'lib/mana'
 import { Props } from './CollectionPublishButton.types'
 import UnderReview from './UnderReview'
-import { buildManaAuthorization } from 'lib/mana'
 
 const CollectionPublishButton = (props: Props) => {
   const { wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit } = props
