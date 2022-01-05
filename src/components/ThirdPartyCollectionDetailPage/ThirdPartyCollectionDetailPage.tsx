@@ -16,6 +16,8 @@ import {
   Checkbox
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
+import { ContractName } from 'decentraland-transactions'
 import { locations } from 'routing/locations'
 import { getAvailableSlots, isUserManagerOfThirdParty, MAX_PUBLISH_ITEM_COUNT } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
@@ -25,11 +27,12 @@ import NotFound from 'components/NotFound'
 import Info from 'components/Info'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
+import { AuthorizationModal } from 'components/AuthorizationModal'
+import { buildManaAuthorization } from 'lib/mana'
 import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './ThirdPartyCollectionDetailPage.types'
-
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
@@ -39,7 +42,13 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   state: State = {
     itemSelectionState: {},
     searchText: '',
-    page: 1
+    page: 1,
+    isAuthModalOpen: false
+  }
+
+  getManaAuthorization = () => {
+    const { wallet } = this.props
+    return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.ThirdPartyRegistry)
   }
 
   handleEditName = () => {
@@ -49,11 +58,21 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     }
   }
 
+  handleAuthModalClose = () => {
+    this.setState({ isAuthModalOpen: false })
+  }
+
   handleBuySlot = () => {
-    const { onOpenModal, thirdParty } = this.props
-    onOpenModal('BuyItemSlotsModal', {
-      thirdParty
-    })
+    const { onOpenModal, thirdParty, authorizations } = this.props
+    const manaAuthorization = this.getManaAuthorization()
+    if (hasAuthorization(authorizations, manaAuthorization)) {
+      this.setState({ isAuthModalOpen: false })
+      onOpenModal('BuyItemSlotsModal', {
+        thirdParty
+      })
+    } else {
+      this.setState({ isAuthModalOpen: true })
+    }
   }
 
   handleGoBack = () => {
@@ -138,7 +157,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
 
   renderPage() {
     const { thirdParty } = this.props
-    const { page, searchText, itemSelectionState } = this.state
+    const { page, searchText, itemSelectionState, isAuthModalOpen } = this.state
     const collection = this.props.collection!
     const slots = thirdParty ? getAvailableSlots(thirdParty) : new BN(0)
     const areSlotsEmpty = slots.lte(new BN(0))
@@ -287,6 +306,12 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
             </div>
           )}
         </Narrow>
+        <AuthorizationModal
+          open={isAuthModalOpen}
+          authorization={this.getManaAuthorization()}
+          onProceed={this.handleBuySlot}
+          onCancel={this.handleAuthModalClose}
+        />
       </>
     )
   }

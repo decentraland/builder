@@ -16,6 +16,12 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
     selectedTierId: undefined
   }
 
+  handleCloseModal = (): void => {
+    const { onClose, onBeforeClose } = this.props
+    onBeforeClose()
+    onClose()
+  }
+
   handleTierChange = (_: React.FormEvent<HTMLInputElement>, data: CheckboxProps): void => {
     const { onTierSelected } = this.props
 
@@ -32,9 +38,8 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
 
   hasInsufficientMana = (): boolean => {
     const { manaBalance } = this.props
-
     const selectedTier = this.getSelectedTier()
-    return selectedTier ? new BN(selectedTier.price).gt(new BN(manaBalance)) : false
+    return selectedTier ? fromWei(new BN(selectedTier.price), 'ether').gt(new BN(manaBalance)) : false
   }
 
   handleItemSlotsBuy = (): void => {
@@ -57,13 +62,13 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { onClose, isFetchingTiers, name, isBuyingItemSlots, tiers, error } = this.props
+    const { isFetchingTiers, name, isBuyingItemSlots, tiers, error } = this.props
     const { selectedTierId } = this.state
 
     const hasInsufficientMANA = this.hasInsufficientMana()
 
     return (
-      <Modal size="tiny" onClose={onClose} name={name} closeIcon>
+      <Modal size="tiny" onClose={this.handleCloseModal} name={name} closeIcon>
         <ModalHeader className={styles.header}>{t('buy_item_slots_modal.title')}</ModalHeader>
         <ModalDescription className={styles.description}>
           <span>{t('buy_item_slots_modal.description_line_one')}</span>
@@ -95,7 +100,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
               </div>
             ))}
           </div>
-          {error && <Message error visible content={error} header={t('global.error_ocurred')} />}
+          {error !== null && <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} />}
           {hasInsufficientMANA && (
             <div className={styles.notEnoughMana}>
               <small>
@@ -135,7 +140,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           >
             {t('buy_item_slots_modal.buy_slots')}
           </NetworkButton>
-          <Button secondary className={styles.cancelButton} onClick={onClose}>
+          <Button secondary className={styles.cancelButton} onClick={this.handleCloseModal}>
             {t('global.cancel')}
           </Button>
         </div>
