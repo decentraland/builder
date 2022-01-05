@@ -75,6 +75,8 @@ export type CatalystWearable = {
   data: {
     tags: string[]
     category: WearableCategory
+    replaces?: WearableCategory[]
+    hides?: WearableCategory[]
     representations: {
       bodyShapes: WearableBodyShape[]
       mainFile: string
