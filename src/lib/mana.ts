@@ -10,14 +10,14 @@ export function addSymbol(num: string | number) {
 
 export function buildManaAuthorization(address: string, chainId: ChainId, contractName: ContractName): Authorization {
   const manaContractAddress = getContract(ContractName.MANAToken, chainId).address
-  const toAuthorizeContractAdresss = getContract(contractName, chainId).address
+  const toAuthorizeContractAddress = getContract(contractName, chainId).address
 
   return {
     type: AuthorizationType.ALLOWANCE,
     address: address,
     contractName: ContractName.MANAToken,
     contractAddress: manaContractAddress,
-    authorizedAddress: toAuthorizeContractAdresss,
+    authorizedAddress: toAuthorizeContractAddress,
     chainId
   }
 }
