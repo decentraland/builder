@@ -16,7 +16,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
     selectedTierId: undefined
   }
 
-  onCloseModal = (): void => {
+  handleCloseModal = (): void => {
     const { onClose, onBeforeClose } = this.props
     onBeforeClose()
     onClose()
@@ -68,7 +68,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
     const hasInsufficientMANA = this.hasInsufficientMana()
 
     return (
-      <Modal size="tiny" onClose={this.onCloseModal} name={name} closeIcon>
+      <Modal size="tiny" onClose={this.handleCloseModal} name={name} closeIcon>
         <ModalHeader className={styles.header}>{t('buy_item_slots_modal.title')}</ModalHeader>
         <ModalDescription className={styles.description}>
           <span>{t('buy_item_slots_modal.description_line_one')}</span>
@@ -140,7 +140,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           >
             {t('buy_item_slots_modal.buy_slots')}
           </NetworkButton>
-          <Button secondary className={styles.cancelButton} onClick={this.onCloseModal}>
+          <Button secondary className={styles.cancelButton} onClick={this.handleCloseModal}>
             {t('global.cancel')}
           </Button>
         </div>
