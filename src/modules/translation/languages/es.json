@@ -1065,7 +1065,7 @@
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
     "beneficiary_label": "Beneficiario",
-    "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item. Puede establecer una dirección de beneficiario diferente para cada item de una colección."
+    "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección."
   },
   "confirm_delete": {
     "content": "¿Estás seguro que quieres eliminar \"{name}\"?"
