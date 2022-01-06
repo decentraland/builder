@@ -44,7 +44,6 @@ function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountA
     }
 
     if (env.get('REACT_APP_FF_THIRD_PARTY_WEARABLES')) {
-      console.log('Pushing TP auth')
       authorizations.push(buildManaAuthorization(wallet.address, chainId, ContractName.ThirdPartyRegistry))
     }
 
