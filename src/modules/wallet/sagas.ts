@@ -36,11 +36,16 @@ function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountA
   const { wallet } = action.payload
   const chainId = wallet.networks.MATIC.chainId
   // All authorizations to be fetched must be added to the following list
-  const authorizations: Authorization[] = [buildManaAuthorization(wallet.address, chainId, ContractName.ThirdPartyRegistry)]
+  const authorizations: Authorization[] = []
 
   try {
     if (env.get('REACT_APP_FF_WEARABLES')) {
       authorizations.push(buildManaAuthorization(wallet.address, chainId, ContractName.CollectionManager))
+    }
+
+    if (env.get('REACT_APP_FF_THIRD_PARTY_WEARABLES')) {
+      console.log('Pushing TP auth')
+      authorizations.push(buildManaAuthorization(wallet.address, chainId, ContractName.ThirdPartyRegistry))
     }
 
     yield put(fetchAuthorizationsRequest(authorizations))

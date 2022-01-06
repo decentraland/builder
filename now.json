@@ -36,6 +36,7 @@
       "REACT_APP_BUILDER_SERVER_URL": "https://builder-api.decentraland.io/v1",
       "REACT_APP_FF_WEARABLES": "1",
       "REACT_APP_FF_WEARABLES_PUBLISH": "1",
+      "REACT_APP_FF_THIRD_PARTY_WEARABLES": "1",
       "REACT_APP_FF_ENS": "1",
       "REACT_APP_EXPLORER_URL": "https://play.decentraland.org",
       "REACT_APP_TRANSACTIONS_API_URL": "https://transactions-api.decentraland.io/v1",
