@@ -7,7 +7,7 @@ import { fromWei } from 'web3x/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
-import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, canSeeItem, isOwner, isFree } from 'modules/item/utils'
+import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, isFree } from 'modules/item/utils'
 import { isLocked as isCollectionLocked } from 'modules/collection/utils'
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -45,14 +45,6 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   handleEditURN = () => {
     const { item, onOpenModal } = this.props
     onOpenModal('EditItemURNModal', { item })
-  }
-
-  hasAccess() {
-    const { wallet, collection, item } = this.props
-    if (item === null) {
-      return false
-    }
-    return collection ? canSeeItem(collection, item, wallet.address) : isOwner(item, wallet.address)
   }
 
   renderPage() {
@@ -218,8 +210,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isLoading } = this.props
-    const hasAccess = this.hasAccess()
+    const { isLoading, hasAccess } = this.props
     return (
       <LoggedInDetailPage className="ItemDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
         {hasAccess ? this.renderPage() : <NotFound />}
