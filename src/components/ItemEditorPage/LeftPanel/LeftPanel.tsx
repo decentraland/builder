@@ -17,10 +17,10 @@ export default class LeftPanel extends React.PureComponent<Props> {
     onResetThirdPartyItems()
   }
 
-  getItems(collection: Collection, collectionItems: Item[]) {
+  getItems(collection: Collection | null, collectionItems: Item[]) {
     const { selectedCollectionId, orphanItems } = this.props
 
-    if (selectedCollectionId) {
+    if (selectedCollectionId && collection) {
       return getCollectionType(collection) === CollectionType.THIRD_PARTY
         ? collectionItems.filter(item => item.isPublished)
         : collectionItems
@@ -52,7 +52,8 @@ export default class LeftPanel extends React.PureComponent<Props> {
                 return <Loader size="massive" active />
               }
 
-              const items = collection ? this.getItems(collection, collectionItems) : []
+              const items = this.getItems(collection, collectionItems)
+
               return items.length === 0 && collections.length === 0 ? (
                 <>
                   <Header />
