@@ -1,6 +1,6 @@
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { isThirdPartyManager, getWalletThirdParties, getCollectionThirdParty } from './selectors'
+import { isThirdPartyManager, getWalletThirdParties, getCollectionThirdParty, getItemThirdParty } from './selectors'
 import { ThirdParty } from './types'
 
 describe('Third Party selectors', () => {
@@ -83,71 +83,126 @@ describe('Third Party selectors', () => {
         expect(isThirdPartyManager(state)).toBe(false)
       })
     })
+  })
 
-    describe('when getting the wallet third parties', () => {
-      let state: RootState
-      let thirdParties: ThirdParty[]
+  describe('when getting the wallet third parties', () => {
+    let state: RootState
+    let thirdParties: ThirdParty[]
 
-      beforeEach(() => {
-        thirdParties = [thirdParty1, thirdParty2]
+    beforeEach(() => {
+      thirdParties = [thirdParty1, thirdParty2]
 
-        state = {
-          ...baseState,
-          thirdParty: {
-            data: {
-              [thirdParty1.id]: thirdParty1,
-              [thirdParty2.id]: thirdParty2,
-              [thirdParty3.id]: thirdParty3
-            }
+      state = {
+        ...baseState,
+        thirdParty: {
+          data: {
+            [thirdParty1.id]: thirdParty1,
+            [thirdParty2.id]: thirdParty2,
+            [thirdParty3.id]: thirdParty3
           }
-        } as any
+        }
+      } as any
+    })
+
+    it('should return all third parties where the address belongs to the manager list', () => {
+      expect(getWalletThirdParties(state)).toEqual(thirdParties)
+    })
+  })
+
+  describe('when getting the third party of a collection', () => {
+    let state: RootState
+    let collection: Collection
+
+    beforeEach(() => {
+      state = {
+        ...baseState,
+        thirdParty: {
+          ...baseState.thirdParty,
+          data: {
+            [thirdParty1.id]: thirdParty1,
+            [thirdParty2.id]: thirdParty2,
+            [thirdParty3.id]: thirdParty3
+          }
+        }
+      }
+    })
+
+    describe("and the collection doesn't have a valid third party URN", () => {
+      beforeEach(() => {
+        collection = {
+          urn: 'urn:decentraland:ropsten:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+        } as Collection
       })
 
-      it('should return all third parties where the address belongs to the manager list', () => {
-        expect(getWalletThirdParties(state)).toEqual(thirdParties)
+      it('should throw with an error signaling that the URN is not valid', () => {
+        expect(() => getCollectionThirdParty(state, collection)).toThrowError('URN is not a third party URN')
       })
     })
 
-    describe('when getting the third party of a collection', () => {
-      let state: RootState
-      let collection: Collection
-
+    describe('and the collection has a valid URN', () => {
       beforeEach(() => {
-        state = {
-          ...baseState,
-          thirdParty: {
-            ...baseState.thirdParty,
-            data: {
-              [thirdParty1.id]: thirdParty1,
-              [thirdParty2.id]: thirdParty2,
-              [thirdParty3.id]: thirdParty3
-            }
+        collection = {
+          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection'
+        } as Collection
+      })
+
+      it('should return the third party that matches the given id', () => {
+        expect(getCollectionThirdParty(state, collection)).toEqual(thirdParty2)
+      })
+    })
+  })
+
+  describe('when getting the third party of an item', () => {
+    let state: RootState
+    let item: any
+
+    beforeEach(() => {
+      state = {
+        ...baseState,
+        thirdParty: {
+          ...baseState.thirdParty,
+          data: {
+            [thirdParty1.id]: thirdParty1,
+            [thirdParty2.id]: thirdParty2,
+            [thirdParty3.id]: thirdParty3
           }
         }
+      }
+    })
+
+    describe("and the item doesn't have a valid third party URN", () => {
+      beforeEach(() => {
+        item = {
+          urn: 'urn:decentraland:ropsten:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+        } as any
       })
 
-      describe("and the collection doesn't have a valid third party URN", () => {
-        beforeEach(() => {
-          collection = {
-            urn: 'urn:decentraland:ropsten:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
-          } as Collection
-        })
+      it('should throw with an error signaling that the URN is not valid', () => {
+        expect(() => getItemThirdParty(state, item)).toThrowError('URN is not a third party URN')
+      })
+    })
 
-        it('should throw with an error signaling that the URN is not valid', () => {
-          expect(() => getCollectionThirdParty(state, collection)).toThrowError('URN is not a third party URN')
-        })
+    describe("and the item doesn't have an URN", () => {
+      beforeEach(() => {
+        item = {
+          urn: null
+        } as any
       })
 
-      describe('and the collection has a valid URN', () => {
-        beforeEach(() => {
-          collection = {
-            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection'
-          } as Collection
-        })
+      it('should return a nulled third party', () => {
+        expect(getItemThirdParty(state, item)).toEqual(null)
+      })
+    })
 
-        it('should return the third party that matches the given id', () => {
-          expect(getCollectionThirdParty(state, collection)).toEqual(thirdParty2)
-        })
+    describe('and the item has a valid URN', () => {
+      beforeEach(() => {
+        item = {
+          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection'
+        } as any
+      })
+
+      it('should return the third party that matches the given id', () => {
+        expect(getItemThirdParty(state, item)).toEqual(thirdParty2)
       })
     })
   })

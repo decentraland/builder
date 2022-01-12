@@ -5,10 +5,9 @@ import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/sel
 import { RootState } from 'modules/common/types'
 import { getItemId } from 'modules/location/selectors'
 import { getCollection } from 'modules/collection/selectors'
-import { getAuthorizedItems, getLoading } from 'modules/item/selectors'
+import { getAuthorizedItems, getLoading, hasViewAndEditRights } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_ITEMS_REQUEST, DELETE_ITEM_REQUEST, deleteItemRequest } from 'modules/item/actions'
-import { hasViewAndEditRights } from 'modules/item/itemsAndCollectionsSelectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDetailPage.types'
 import ItemDetailPage from './ItemDetailPage'
 
@@ -25,7 +24,7 @@ const mapState = (state: RootState): MapStateProps => {
     item,
     collection,
     isLoading: isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) || isLoadingType(getLoading(state), DELETE_ITEM_REQUEST),
-    hasAccess: hasViewAndEditRights(state, wallet.address, collection, item)
+    hasAccess: item !== null && hasViewAndEditRights(state, wallet.address, collection, item)
   }
 }
 
