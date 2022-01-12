@@ -25,7 +25,7 @@ const mapState = (state: RootState): MapStateProps => {
     isLoggedIn: isLoggedIn(state),
     isReviewing: isReviewing(state),
     collection,
-    hasEditRights: collection !== undefined && address != undefined && hasViewAndEditRights(state, address, collection)
+    hasEditRights: collection !== undefined && address !== undefined && hasViewAndEditRights(state, address, collection)
   }
 }
 
