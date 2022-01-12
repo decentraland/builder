@@ -1,5 +1,5 @@
+import { Entity } from 'dcl-catalyst-commons'
 import { createSelector } from 'reselect'
-import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
@@ -79,12 +79,7 @@ export const getItemsByURN = createSelector<RootState, Item[], Record<string, Co
   }
 )
 
-export const getEntityByItemId = createSelector<
-  RootState,
-  DeploymentWithMetadataContentAndPointers[],
-  Record<string, Item>,
-  Record<string, DeploymentWithMetadataContentAndPointers>
->(
+export const getEntityByItemId = createSelector<RootState, Entity[], Record<string, Item>, Record<string, Entity>>(
   state => getEntities(state),
   state => getItemsByURN(state),
   (entities, itemsByURN) =>
@@ -95,7 +90,7 @@ export const getEntityByItemId = createSelector<
         obj[item.id] = entity
       }
       return obj
-    }, {} as Record<string, DeploymentWithMetadataContentAndPointers>)
+    }, {} as Record<string, Entity>)
 )
 
 export const getStatusByItemId = createSelector<
