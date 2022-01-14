@@ -3,7 +3,7 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { RootState } from 'modules/common/types'
 import { SyncStatus } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
-import { getAuthorizedCollections, getStatusByCollectionId } from './selectors'
+import { getAuthorizedCollections, getStatusByCollectionId, hasViewAndEditRights } from './selectors'
 import { Collection } from './types'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
@@ -259,6 +259,66 @@ describe('when getting the authorized collections', () => {
 
       it('should not return the collection', () => {
         expect(getAuthorizedCollections.resultFunc(collections, address, thirdParties)).toEqual([])
+      })
+    })
+  })
+})
+
+describe('when getting if the user has view or edit rights over a collection', () => {
+  let state: RootState
+  let address: string
+  let collection: Collection
+  const thirdPartyId = 'urn:decentraland:matic:collections-thirdparty:some-tp-name'
+
+  beforeEach(() => {
+    address = '0x0'
+    state = {
+      thirdParty: {
+        data: {
+          [thirdPartyId]: {
+            managers: [address]
+          } as ThirdParty
+        },
+        loading: [],
+        error: null
+      }
+    } as any
+    collection = {} as Collection
+  })
+
+  describe('and the user is a manager of the third party of the collection', () => {
+    beforeEach(() => {
+      collection = { owner: 'some-other-owner', urn: `${thirdPartyId}:some-collection-id` } as Collection
+    })
+
+    it('should return true', () => {
+      expect(hasViewAndEditRights(state, address, collection)).toBe(true)
+    })
+  })
+
+  describe('and the collection is a regular collection', () => {
+    beforeEach(() => {
+      address = 'anotherAddress'
+      collection = { urn: 'urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8' } as Collection
+    })
+
+    describe('and the user owns the collection', () => {
+      beforeEach(() => {
+        collection = { ...collection, owner: address }
+      })
+
+      it('should return true', () => {
+        expect(hasViewAndEditRights(state, address, collection)).toBe(true)
+      })
+    })
+
+    describe("and the user doesn't own the collection", () => {
+      beforeEach(() => {
+        collection = { ...collection, owner: 'some-other-owner' }
+      })
+
+      it('should return false', () => {
+        expect(hasViewAndEditRights(state, address, collection)).toBe(false)
       })
     })
   })
