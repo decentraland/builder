@@ -6,15 +6,16 @@ import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getItems, getStatusByItemId } from 'modules/item/selectors'
 import { Item, SyncStatus } from 'modules/item/types'
 import { getCurationsByCollectionId } from 'modules/curation/selectors'
-import { getData as getThirdParties } from 'modules/thirdParty/selectors'
+import { getCollectionThirdParty, getData as getThirdParties } from 'modules/thirdParty/selectors'
 import { getThirdPartyForCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { Curation } from 'modules/curation/types'
 import { isEqual } from 'lib/address'
+import { isThirdParty } from 'lib/urn'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
 import { Collection, CollectionType } from './types'
 import { CollectionState } from './reducer'
-import { canSeeCollection, getCollectionType, getMostRelevantStatus } from './utils'
+import { canSeeCollection, getCollectionType, getMostRelevantStatus, isOwner } from './utils'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -107,3 +108,9 @@ export const getStatusByCollectionId = createSelector<
     return statusByCollectionId
   }
 )
+
+export const hasViewAndEditRights = (state: RootState, address: string, collection: Collection): boolean => {
+  const thirdParty = isThirdParty(collection.urn) ? getCollectionThirdParty(state, collection) : null
+  const isTPManager = thirdParty && isUserManagerOfThirdParty(address, thirdParty)
+  return isTPManager || isOwner(collection, address)
+}

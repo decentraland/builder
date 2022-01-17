@@ -2,7 +2,17 @@ import { ChainId, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { getAuthorizedItems, getItem, getItems, getRarities, getStatusByItemId, getWalletItems, getWalletOrphanItems } from './selectors'
+import { ThirdParty } from 'modules/thirdParty/types'
+import {
+  getAuthorizedItems,
+  getItem,
+  getItems,
+  getRarities,
+  getStatusByItemId,
+  getWalletItems,
+  getWalletOrphanItems,
+  hasViewAndEditRights
+} from './selectors'
 import { Item, ItemRarity, SyncStatus } from './types'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
@@ -298,6 +308,173 @@ describe('Item selectors', () => {
         '1': SyncStatus.SYNCED,
         '2': SyncStatus.UNSYNCED,
         '3': SyncStatus.UNDER_REVIEW
+      })
+    })
+  })
+
+  describe('when getting if the item has view and edit rights', () => {
+    let address: string
+    let thirdPartyId: string
+    let collection: Collection | null
+
+    describe('when the item has a third party and the user is manager of that third party', () => {
+      beforeEach(() => {
+        address = '0x0'
+        thirdPartyId = 'urn:decentraland:matic:collections-thirdparty:some-tp-name'
+        item.urn = `${thirdPartyId}:the-collection-id:a-wonderful-token-id`
+
+        state = {
+          ...state,
+          thirdParty: {
+            data: {
+              [thirdPartyId]: {
+                managers: [address]
+              } as ThirdParty
+            }
+          }
+        } as RootState
+      })
+
+      it('should return true', () => {
+        expect(hasViewAndEditRights(state, address, null, item)).toBe(true)
+      })
+    })
+
+    describe('when the item has a third party and the user is not manger of that third party', () => {
+      beforeEach(() => {
+        address = '0x0'
+        thirdPartyId = 'urn:decentraland:matic:collections-thirdparty:some-tp-name'
+        item.urn = `${thirdPartyId}:the-collection-id:a-wonderful-token-id`
+
+        state = {
+          ...state,
+          thirdParty: {
+            data: {
+              [thirdPartyId]: {
+                managers: ['anotherAddress']
+              } as ThirdParty
+            }
+          }
+        } as RootState
+      })
+
+      describe('and the item has a collection', () => {
+        describe('and the user can see the item', () => {
+          beforeEach(() => {
+            collection = ({
+              owner: address,
+              minters: [],
+              managers: []
+            } as any) as Collection
+          })
+
+          it('should return true', () => {
+            expect(hasViewAndEditRights(state, address, collection, item)).toBe(true)
+          })
+        })
+
+        describe("and the user can't see the item", () => {
+          beforeEach(() => {
+            collection = ({
+              owner: 'some-other-address',
+              minters: [],
+              managers: []
+            } as any) as Collection
+          })
+
+          it('should return false', () => {
+            expect(hasViewAndEditRights(state, address, collection, item)).toBe(false)
+          })
+        })
+      })
+
+      describe("and the item doesn't have a collection", () => {
+        beforeEach(() => {
+          collection = null
+        })
+
+        describe('and the user owns the item', () => {
+          beforeEach(() => {
+            item.owner = address
+          })
+
+          it('should return true', () => {
+            expect(hasViewAndEditRights(state, address, collection, item)).toBe(true)
+          })
+        })
+
+        describe("and the user doesn't own the item", () => {
+          beforeEach(() => {
+            item.owner = 'some-other-address'
+          })
+
+          it('should return false', () => {
+            expect(hasViewAndEditRights(state, address, collection, item)).toBe(false)
+          })
+        })
+      })
+    })
+
+    describe("when the item doesn't belong to a third party", () => {
+      beforeEach(() => {
+        address = '0x0'
+        item.urn = 'urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8:0'
+      })
+
+      describe('and the item has a collection', () => {
+        describe('and the user can see the item', () => {
+          beforeEach(() => {
+            collection = ({
+              owner: address,
+              minters: [],
+              managers: []
+            } as any) as Collection
+          })
+
+          it('should return true', () => {
+            expect(hasViewAndEditRights(state, address, collection, item)).toBe(true)
+          })
+        })
+
+        describe("and the user can't see the item", () => {
+          beforeEach(() => {
+            collection = ({
+              owner: 'some-other-address',
+              minters: [],
+              managers: []
+            } as any) as Collection
+          })
+
+          it('should return false', () => {
+            expect(hasViewAndEditRights(state, address, collection, item)).toBe(false)
+          })
+        })
+      })
+
+      describe("and the item doesn't have a collection", () => {
+        beforeEach(() => {
+          collection = null
+        })
+
+        describe('and the user owns the item', () => {
+          beforeEach(() => {
+            item.owner = address
+          })
+
+          it('should return true', () => {
+            expect(hasViewAndEditRights(state, address, collection, item)).toBe(true)
+          })
+        })
+
+        describe("and the user doesn't own the item", () => {
+          beforeEach(() => {
+            item.owner = 'some-other-address'
+          })
+
+          it('should return false', () => {
+            expect(hasViewAndEditRights(state, address, collection, item)).toBe(false)
+          })
+        })
       })
     })
   })
