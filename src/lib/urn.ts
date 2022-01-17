@@ -34,7 +34,7 @@ const protocolMatcher = '(?<protocol>mainnet|ropsten|matic|mumbai|off-chain)'
 const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty)'
 
 const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
-const collectionsSuffixMatcher = '((?<=collections-v2:)(?<collectionAddress>0x[a-fA-F0-9]{40}))?(:(?<tokenId>[^:|\\s]+))'
+const collectionsSuffixMatcher = '((?<=collections-v2:)(?<collectionAddress>0x[a-fA-F0-9]{40}))(:(?<tokenId>[^:|\\s]+))?'
 const thirdPartySuffixMatcher =
   '((?<=collections-thirdparty:)(?<thirdPartyName>[^:|\\s]+)(:(?<thirdPartyCollectionId>[^:|\\s]+))?(:(?<thirdPartyTokenId>[^:|\\s]+))?)'
 
