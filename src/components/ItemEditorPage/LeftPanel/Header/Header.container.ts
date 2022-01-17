@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getCollections } from 'modules/collection/selectors'
+import { getCollections, hasViewAndEditRights } from 'modules/collection/selectors'
 import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
@@ -19,11 +19,13 @@ const mapState = (state: RootState): MapStateProps => {
     const collections = getCollections(state)
     collection = collections.find(collection => collection.id === collectionId)
   }
+  const address = getAddress(state)
   return {
-    address: getAddress(state),
+    address,
     isLoggedIn: isLoggedIn(state),
     isReviewing: isReviewing(state),
-    collection
+    collection,
+    hasEditRights: collection !== undefined && address !== undefined && hasViewAndEditRights(state, address, collection)
   }
 }
 
