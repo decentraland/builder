@@ -43,7 +43,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
             <CollectionImage collectionId={collection.id} />
             <Card.Content>
               <div className="text" title={collection.name}>
-                {collection.name} <CollectionStatus collection={collection} />
+                <CollectionStatus collection={collection} /> {collection.name}
               </div>
               <div className="subtitle">
                 {t(`collection.type.${type}`)}&nbsp;·&nbsp;
