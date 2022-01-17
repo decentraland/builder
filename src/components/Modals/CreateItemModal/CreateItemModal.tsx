@@ -3,6 +3,7 @@ import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
 import future from 'fp-future'
+import { loadFile, ItemFactory, LocalItem } from '@dcl/builder-client'
 import {
   ModalNavigation,
   Loader,
@@ -351,7 +352,73 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return this.processModel(modelPath, contents)
   }
 
+  handleUploadMultipleFiles = async () => {
+    this.state}
+  }
+
+  handleMultipleFiles = async (acceptedFiles: File[]) => {
+    if (acceptedFiles.some(file => !file.name.endsWith('.zip'))) {
+      throw new Error('Multiple files must be zipped files')
+    }
+
+    this.setState({
+      loadingFilesState: LoadingFilesState.LOADING_FILES
+    })
+
+    const loadedFiles = await Promise.all(
+      acceptedFiles.map(async file => {
+        const fileArrayBuffer = await file.arrayBuffer()
+        const loadedFile = await loadFile(file.name, new Uint8Array(fileArrayBuffer))
+
+        // Multiple files must contain an asset file
+        if (!loadedFile.asset) {
+          throw new Error(`Asset file not found in file ${file.name}`)
+        }
+
+        if (!loadedFile.content[THUMBNAIL_PATH]) {
+          throw new Error('Bulk files must contain a content')
+        }
+
+        this.setState({
+          loadingFileProgress: this.state.loadingFileProgress + (100 / acceptedFiles.length / 2)
+        })
+
+        return loadedFile
+      })
+    )
+    
+    this.setState({
+      loadingFilesState: LoadingFilesState.CREATING_ITEMS
+    })
+
+
+    const loadedItems = loadedFiles.map(loadedFile => {
+      loadingFilesProgress += 100 / acceptedFiles.length / 2
+      return new ItemFactory().fromAsset(loadedFile.asset!, loadedFile.content).build()
+    })
+
+    this.setState({
+      loadingFilesState: LoadingFilesState.ENDED,
+    })
+
+  }
+
   handleDropAccepted = async (acceptedFiles: File[]) => {
+    this.setState({
+      loadingFilesProgress: 0
+    })
+
+    // This should check the types of the representations.
+    if (acceptedFiles.length === 1) {
+      const singleFile = this.handleSingleFile(acceptedFiles[0])
+      this.setState({
+        loadingFilesState: LoadingFilesState.ENDED,
+      })
+    } else {
+    }
+  }
+
+  handleSingleFile = async (file: File) => {
     const { metadata } = this.props
     const { isRepresentation, category } = this.state
 
@@ -363,7 +430,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       item = metadata.item
     }
 
-    const file = acceptedFiles[0]
     const extension = getExtension(file.name)
 
     try {
