@@ -32,7 +32,7 @@ const protocolMatcher = '(?<protocol>mainnet|ropsten|matic|mumbai|off-chain)'
 const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty)'
 
 const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
-const collectionsSuffixMatcher = '((?<=collections-v2:)0x[a-fA-F0-9]{40})'
+const collectionsSuffixMatcher = '((?<=collections-v2:)(?<collectionAddress>0x[a-fA-F0-9]{40}))(:(?<tokenId>[^:|\\s]+))?'
 const thirdPartySuffixMatcher =
   '((?<=collections-thirdparty:)(?<thirdPartyName>[^:|\\s]+)(:(?<thirdPartyCollectionId>[^:|\\s]+))?(:(?<thirdPartyTokenId>[^:|\\s]+))?)'
 
@@ -59,7 +59,7 @@ type BaseDecodedURN = {
   suffix: string
 }
 type BaseAvatarURN = { type: URNType.BASE_AVATARS }
-type CollectionsV2URN = { type: URNType.COLLECTIONS_V2 }
+type CollectionsV2URN = { type: URNType.COLLECTIONS_V2; collectionAddress: string; tokenId?: string }
 type CollectionThirdPartyURN = {
   type: URNType.COLLECTIONS_THIRDPARTY
   thirdPartyName: string
