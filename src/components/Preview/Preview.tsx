@@ -3,14 +3,14 @@ import { DropTarget } from 'react-dnd'
 import Lottie from 'react-lottie'
 import { env } from 'decentraland-commons'
 
-import animationData from './loader.json'
-
+import { PreviewType } from 'modules/editor/types'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
 import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props, State } from './Preview.types'
+import animationData from './loader.json'
 import './Preview.css'
-import { PreviewType } from 'modules/editor/types'
 
 const editorWindow = window as EditorWindow
 const unityDebugParams = env.get('REACT_APP_UNITY_DEBUG_PARAMS')
@@ -74,7 +74,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     }
     try {
       isDCLInitialized = true
-        ; (window as any).devicePixelRatio = 1 // without this unity blows up majestically 💥🌈🦄🔥🤷🏼‍♂️
+      ;(window as any).devicePixelRatio = 1 // without this unity blows up majestically 💥🌈🦄🔥🤷🏼‍♂️
       await editorWindow.editor.initEngine(this.canvasContainer.current, '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()
@@ -91,12 +91,24 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     }
   }
 
+  getLoadingText(): string {
+    const { isLoadingEditor, isLoadingBaseWearables } = this.props
+    if (isLoadingBaseWearables && isLoadingEditor) {
+      return t('editor_preview.loading_unity_and_base_wearables')
+    } else if (isLoadingBaseWearables && !isLoadingEditor) {
+      return t('editor_preview.loading_base_wearables')
+    } else {
+      return t('editor_preview.loading_unity')
+    }
+  }
+
   render() {
-    const { isLoading, connectDropTarget } = this.props
+    const { isLoadingEditor, connectDropTarget, isLoadingBaseWearables } = this.props
+    const isLoadingResources = isLoadingEditor || isLoadingBaseWearables
 
     return connectDropTarget(
       <div className="Preview-wrapper">
-        {isLoading && (
+        {isLoadingResources && (
           <div className="overlay">
             <Lottie
               height={100}
@@ -113,9 +125,10 @@ class Preview extends React.Component<Props & CollectedProps, State> {
             <div id="progress-bar" className="progress ingame">
               <div className="full"></div>
             </div>
+            <div className="loading-text">{this.getLoadingText()}</div>
           </div>
         )}
-        <div className={`Preview ${isLoading ? 'loading' : ''}`} id="preview-viewport" ref={this.canvasContainer} />
+        <div className={`Preview ${isLoadingResources ? 'loading' : ''}`} id="preview-viewport" ref={this.canvasContainer} />
       </div>
     )
   }

@@ -1,18 +1,22 @@
 import { createSelector } from 'reselect'
 import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
-import { RootState } from 'modules/common/types'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
 import { getAuthorizedCollections, getData as getCollectionData } from 'modules/collection/selectors'
 import { getEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
-import { isEqual } from 'lib/address'
-import { ItemState } from './reducer'
-import { Item, SyncStatus, Rarity, CatalystItem } from './types'
-import { areSynced, canSeeItem } from './utils'
-import { buildCatalystItemURN } from '../../lib/urn'
 import { Curation, CurationStatus } from 'modules/curation/types'
 import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { getItemThirdParty } from 'modules/thirdParty/selectors'
+import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
+import { isEqual } from 'lib/address'
+import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
+import { DOWNLOAD_ITEM_REQUEST } from './actions'
+import { ItemState } from './reducer'
+import { Item, SyncStatus, Rarity, CatalystItem } from './types'
+import { areSynced, canSeeItem, isOwner } from './utils'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -127,3 +131,14 @@ export const getStatusByItemId = createSelector<
     return statusByItemId
   }
 )
+
+export const isDownloading = (state: RootState) => isLoadingType(getLoading(state), DOWNLOAD_ITEM_REQUEST)
+
+export const hasViewAndEditRights = (state: RootState, address: string, collection: Collection | null, item: Item): boolean => {
+  const itemThirdParty = isThirdParty(item.urn) ? getItemThirdParty(state, item) : null
+
+  return (
+    (itemThirdParty !== null && isUserManagerOfThirdParty(address, itemThirdParty)) ||
+    (collection !== null ? canSeeItem(collection, item, address) : isOwner(item, address))
+  )
+}

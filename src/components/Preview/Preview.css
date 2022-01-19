@@ -22,6 +22,10 @@
   flex-direction: column;
 }
 
+.Preview-wrapper .loading-text {
+  margin-top: 20px;
+}
+
 .Preview {
   flex: 1;
   height: 100%;

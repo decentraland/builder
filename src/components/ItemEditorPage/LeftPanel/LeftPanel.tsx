@@ -1,66 +1,94 @@
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Collection, CollectionType } from 'modules/collection/types'
+import { Item } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
 import Collections from './Collections'
 import { Props } from './LeftPanel.types'
 import './LeftPanel.css'
+import { getCollectionType } from 'modules/collection/utils'
 
 export default class LeftPanel extends React.PureComponent<Props> {
+  componentDidMount() {
+    const { onResetThirdPartyItems } = this.props
+    onResetThirdPartyItems()
+  }
+
+  getItems(collection: Collection | null, collectionItems: Item[]) {
+    const { selectedCollectionId, orphanItems } = this.props
+
+    if (selectedCollectionId && collection) {
+      return getCollectionType(collection) === CollectionType.THIRD_PARTY
+        ? collectionItems.filter(item => item.isPublished)
+        : collectionItems
+    }
+    return orphanItems
+  }
+
   render() {
     const {
-      items,
-      orphanItems,
+      items: allItems,
       collections,
       selectedItemId,
       selectedCollectionId,
+      selectedThirdPartyItemIds,
       visibleItems,
-      onSetItems,
       bodyShape,
-      onSetCollection,
-      isConnected
+      isConnected,
+      onSetItems,
+      onToggleThirdPartyItem,
+      onSetCollection
     } = this.props
+
     return (
       <div className="LeftPanel">
-        { isConnected ? <CollectionProvider id={selectedCollectionId}>
-          {(collection, collectionItems, _, isLoading) => {
-            const listItems = selectedCollectionId ? collectionItems : orphanItems
-            return !collection && isLoading ? (
-              <Loader size="massive" active />
-            ) : listItems.length === 0 && collections.length === 0 ? (
-              <>
-                <Header />
-                <div className="empty">
-                  <div className="subtitle">{t('collections_page.empty_description')}</div>
-                </div>
-              </>
-            ) : (
-              <>
-                <Header />
-                <Items
-                  items={listItems}
-                  hasHeader={!selectedCollectionId && collections.length > 0}
-                  selectedItemId={selectedItemId}
-                  selectedCollectionId={selectedCollectionId}
-                  visibleItems={visibleItems}
-                  onSetItems={onSetItems}
-                  bodyShape={bodyShape}
-                />
-                {selectedCollectionId ? null : (
-                  <Collections
-                    collections={collections}
+        {isConnected ? (
+          <CollectionProvider id={selectedCollectionId}>
+            {(collection, collectionItems, _, isLoading) => {
+              if (collection && isLoading) {
+                return <Loader size="massive" active />
+              }
+
+              const items = this.getItems(collection, collectionItems)
+
+              return items.length === 0 && collections.length === 0 ? (
+                <>
+                  <Header />
+                  <div className="empty">
+                    <div className="subtitle">{t('collections_page.empty_description')}</div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Header />
+                  <Items
                     items={items}
-                    hasHeader={listItems.length > 0}
+                    hasHeader={!selectedCollectionId && collections.length > 0}
+                    selectedItemId={selectedItemId}
                     selectedCollectionId={selectedCollectionId}
-                    onSetCollection={onSetCollection}
+                    selectedThirdPartyItemIds={selectedThirdPartyItemIds}
+                    visibleItems={visibleItems}
+                    bodyShape={bodyShape}
+                    onSetItems={onSetItems}
+                    onToggleThirdPartyItem={onToggleThirdPartyItem}
                   />
-                )}
-              </>
-            )
-          }}
-        </CollectionProvider> : null }
+                  {selectedCollectionId ? null : (
+                    <Collections
+                      collections={collections}
+                      items={allItems}
+                      hasHeader={items.length > 0}
+                      selectedCollectionId={selectedCollectionId}
+                      onSetCollection={onSetCollection}
+                    />
+                  )}
+                </>
+              )
+            }}
+          </CollectionProvider>
+        ) : null}
       </div>
     )
   }

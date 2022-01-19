@@ -10,6 +10,7 @@ export type Props = {
   isReviewing: boolean
   isCommitteeMember: boolean
   selectedCollectionId: string | null
+  selectedThirdPartyItemIds: string[]
   onNavigate: (path: string) => void
   onInitiateApprovalFlow: typeof initiateApprovalFlow
 }
@@ -26,6 +27,9 @@ export enum ButtonType {
   DISABLE
 }
 
-export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId' | 'chainId' | 'isConnected'>
+export type MapStateProps = Pick<
+  Props,
+  'chainId' | 'isConnected' | 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId' | 'selectedThirdPartyItemIds'
+>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | InitiateApprovalFlowAction>

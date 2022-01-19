@@ -1,11 +1,10 @@
 import React from 'react'
 import { format } from 'date-fns'
-import { Grid, Icon as UIIcon } from 'decentraland-ui'
+import { Grid, Icon } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { hasReviews } from 'modules/collection/utils'
-import Icon from 'components/Icon'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
@@ -28,7 +27,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
       if (!curation || curation.status === 'approved') {
         return (
           <div className="approved action">
-            <span className="action-text">{t('collection_row.approved')}</span> <UIIcon name="check" />
+            <span className="action-text">{t('collection_row.approved')}</span> <Icon name="check" />
           </div>
         )
       } else if (curation.status === 'rejected') {
@@ -42,7 +41,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
       if (!curation && hasReviews(collection)) {
         return (
           <div className="disabled action">
-            <span className="action-text">{t('collection_row.disabled')}</span> <UIIcon name="close" />
+            <span className="action-text">{t('collection_row.disabled')}</span> <Icon name="close" />
           </div>
         )
       } else if (curation && curation.status === 'rejected') {
@@ -91,8 +90,8 @@ export default class CollectionRow extends React.PureComponent<Props> {
                     {t('collection_row.visit')}
                   </span>
                 ) : (
-                    t('collection_row.no_forum_post')
-                  )}
+                  t('collection_row.no_forum_post')
+                )}
               </div>
             </Grid.Column>
             <Grid.Column width={3}>

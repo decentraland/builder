@@ -4,12 +4,13 @@ import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
-import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
+import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { ContractName } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
 import { isComplete } from 'modules/item/utils'
 import { SyncStatus } from 'modules/item/types'
+import { buildManaAuthorization } from 'lib/mana'
 import { Props } from './CollectionPublishButton.types'
 import UnderReview from './UnderReview'
 
@@ -26,18 +27,7 @@ const CollectionPublishButton = (props: Props) => {
   }
 
   const getAuthorization = (): Authorization => {
-    const chainId = wallet.networks.MATIC.chainId
-    const contractAddress = getContract(ContractName.MANAToken, chainId).address
-    const authorizedAddress = getContract(ContractName.CollectionManager, chainId).address
-
-    return {
-      type: AuthorizationType.ALLOWANCE,
-      address: wallet.address,
-      contractName: ContractName.MANAToken,
-      contractAddress,
-      authorizedAddress,
-      chainId
-    }
+    return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
   }
 
   const handlePublish = () => {

@@ -1,8 +1,6 @@
 import { getURNProtocol, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
-const VERSION = 1
-
 /**
  * urn:decentraland:
  *   (?<protocol>
@@ -77,10 +75,6 @@ export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
     ? CollectionThirdPartyURN
     : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN)
 
-export function buildItemURN(type: string, name: string, description: string, category: string, bodyShapeTypes: string): URN {
-  return `${VERSION}:${type[0]}:${name}:${description}:${category}:${bodyShapeTypes}`
-}
-
 export function buildThirdPartyURN(thirdPartyName: string, collectionId: string, tokenId?: string) {
   let urn = `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-thirdparty:${thirdPartyName}:${collectionId}`
   if (tokenId) {
@@ -104,6 +98,27 @@ export function extractThirdPartyId(urn: URN): string {
   }
 
   return `urn:decentraland:${decodedURN.protocol}:collections-thirdparty:${decodedURN.thirdPartyName}`
+}
+
+export function extractThirdPartyTokenId(urn: URN) {
+  const decodedURN = decodeURN(urn)
+  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+    throw new Error(`Tried to build a third party token for a non third party URN "${urn}"`)
+  }
+
+  const { thirdPartyCollectionId, thirdPartyTokenId } = decodedURN
+  return `${thirdPartyCollectionId}:${thirdPartyTokenId}`
+}
+
+// TODO: This logic is repeated in collection/util's `getCollectionType`, but being used only for items (item.urn).
+// It should probably be replaced by a getItemType or we should see if it's better to only keep one way of doing this
+export function isThirdParty(urn?: string) {
+  if (!urn) {
+    return false
+  }
+
+  const decodedURN = decodeURN(urn)
+  return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
 }
 
 export function decodeURN(urn: URN): DecodedURN {

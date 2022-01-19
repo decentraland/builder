@@ -1,6 +1,6 @@
 import { all, takeEvery, put } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { ContractName } from 'decentraland-transactions'
 import { env } from 'decentraland-commons'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import {
@@ -12,7 +12,8 @@ import {
   ConnectWalletSuccessAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { fetchAuthorizationsRequest } from 'decentraland-dapps/dist/modules/authorization/actions'
-import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
+import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
+import { buildManaAuthorization } from 'lib/mana'
 import { TRANSACTIONS_API_URL } from './utils'
 
 const baseWalletSaga = createWalletSaga({
@@ -34,18 +35,16 @@ function* customWalletSaga() {
 function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountAction | ChangeNetworkAction) {
   const { wallet } = action.payload
   const chainId = wallet.networks.MATIC.chainId
+  // All authorizations to be fetched must be added to the following list
   const authorizations: Authorization[] = []
 
   try {
     if (env.get('REACT_APP_FF_WEARABLES')) {
-      authorizations.push({
-        type: AuthorizationType.ALLOWANCE,
-        address: wallet.address,
-        contractAddress: getContract(ContractName.MANAToken, chainId).address,
-        contractName: ContractName.MANAToken,
-        authorizedAddress: getContract(ContractName.CollectionManager, chainId).address,
-        chainId
-      })
+      authorizations.push(buildManaAuthorization(wallet.address, chainId, ContractName.CollectionManager))
+    }
+
+    if (env.get('REACT_APP_FF_THIRD_PARTY_WEARABLES')) {
+      authorizations.push(buildManaAuthorization(wallet.address, chainId, ContractName.ThirdPartyRegistry))
     }
 
     yield put(fetchAuthorizationsRequest(authorizations))

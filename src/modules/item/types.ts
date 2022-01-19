@@ -41,6 +41,11 @@ export enum WearableCategory {
   TOP_HEAD = 'top_head'
 }
 
+export enum ItemMetadataType {
+  WEARABLE = 'w',
+  SMART_WEARABLE = 'sw'
+}
+
 export const BODY_SHAPE_CATEGORY = 'body_shape'
 
 export enum BodyShapeType {
@@ -147,6 +152,7 @@ export type Rarity = {
   maxSupply: string
 }
 
+export type ThirdPartyContractItem = [string, string]
 export type InitializeItem = [string, string, string, string]
 
 export const THUMBNAIL_PATH = 'thumbnail.png'

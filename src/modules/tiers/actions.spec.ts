@@ -57,7 +57,7 @@ describe('when creating the action that signals the unsuccessful fetch of tiers'
   })
 })
 
-describe('when creating the action that signals the start of a item slots tier purchase', () => {
+describe('when creating the action that signals the start of an item slots tier purchase', () => {
   it('should return an action signaling the start of the item tier slots purchase', () => {
     expect(buyThirdPartyItemTiersRequest(thirdParty, thirdPartyItemTier)).toEqual({
       type: BUY_THIRD_PARTY_ITEM_TIERS_REQUEST,
@@ -71,7 +71,7 @@ describe('when creating the action that signals the start of a item slots tier p
   })
 })
 
-describe('when creating the action that signals the successful purchase of a item slots tier', () => {
+describe('when creating the action that signals the successful purchase of an item slots tier', () => {
   const txHash = '0x123'
   const chainId = ChainId.MATIC_MUMBAI
 
@@ -89,9 +89,9 @@ describe('when creating the action that signals the successful purchase of a ite
   })
 })
 
-describe('when creating the action that signals the unsuccessful purchase of a item slots tier', () => {
-  it('should return an action signaling the failure of an item tier slots purchase', () => {
-    expect(buyThirdPartyItemTiersFailure(defaultError, thirdParty.id, thirdPartyItemTier)).toEqual({
+describe('when creating the action that signals the unsuccessful purchase of an item slots tier', () => {
+  it('should return an action signaling the unsuccessful purchase of an item slots tier', () => {
+    expect(buyThirdPartyItemTiersFailure(thirdParty.id, thirdPartyItemTier, defaultError)).toEqual({
       type: BUY_THIRD_PARTY_ITEM_TIERS_FAILURE,
       payload: { error: defaultError, thirdPartyId: thirdParty.id, tier: thirdPartyItemTier }
     })

@@ -16,3 +16,13 @@
   bottom: 9px;
   left: 9px;
 }
+
+.ItemImage .SmartBadge {
+  position: absolute;
+  bottom: 9px;
+  left: 50px;
+}
+
+.ItemImage .SmartBadge.small {
+  left: 32px;
+}

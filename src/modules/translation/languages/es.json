@@ -128,6 +128,10 @@
     "male": "Hombre",
     "female": "Mujer"
   },
+  "item_types": {
+    "wearable": "Vestimenta",
+    "smart_wearable": "Vestimenta Interactiva"
+  },
   "avatar_animations": {
     "idle": "Nada",
     "wave": "Saludar",
@@ -869,8 +873,9 @@
     "allowed_claim_mana": "Permitió el uso de MANA para reclamar un nuevo nombre",
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
-    "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}",
-    "buy_third_party_item_tiers": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\""
+    "publish_third_party_items": "Has publicado {count, plural, one {# item} other {# items}} para {collectionName}",
+    "buy_third_party_item_tiers": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\"",
+    "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}"
   },
   "transfer_page": {
     "title": "Transferir",
@@ -989,7 +994,8 @@
     "max_select_count": "Puedes publicar un máximo de {count} items a la vez",
     "slots": "{amount, plural, =0 {Sin Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
-    "cant_remove": "No podrás agregar o remover items una vez que estén publicados."
+    "cant_remove": "No podrás agregar o remover items una vez que estén publicados.",
+    "publish_items": "Publicar {count, plural, =0 {} one {# item} other {# items}}"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
@@ -1032,6 +1038,12 @@
     "edit_urn": "Editar URN",
     "reset_item": "Deshacer cambios"
   },
+  "collection": {
+    "type": {
+      "decentraland": "Colección",
+      "third_party": "Colección Externa"
+    }
+  },
   "item": {
     "blockchain_id": "Blockchain ID",
     "category": "Categoría",
@@ -1053,7 +1065,7 @@
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
     "beneficiary_label": "Beneficiario",
-    "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item. Puede establecer una dirección de beneficiario diferente para cada item de una colección."
+    "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección."
   },
   "confirm_delete": {
     "content": "¿Estás seguro que quieres eliminar \"{name}\"?"
@@ -1077,12 +1089,16 @@
     "get_mana": "Puedes obtener más usando la {link} dapp."
   },
   "sell_collection_modal": {
-    "title": "Quieres vender tus items?",
+    "title": "¿Quieres vender tus items?",
     "turn_on_description": "Al activar esta opción tu colección estará en venta en el mercado de Decentraland.",
     "turn_on": "Activar",
     "turn_off_description": "Al desactivar esta opción tu colección ya no estará en venta.",
     "turn_off": "Desactivar",
     "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
+  },
+  "publish_third_party_collection_modal": {
+    "title": "Publicar Items externos",
+    "description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} de {availableSlots} disponibles para publicar \"{collectionName}\""
   },
   "mint_items_modal": {
     "title": "Crear Items",
@@ -1118,8 +1134,6 @@
     "no_items": "No Items"
   },
   "collection_card": {
-    "third_party_collection": "Colección Externa",
-    "collection": "Colección",
     "item_count": "{count} {count, plural, one {item} other {items}}",
     "subtitle": "{count} {count, plural, one {item} other {items}}",
     "confirm_delete_content": "¿Seguro que quieres borrar tu colección \"{name}\"? Esta operación es ireversible",
@@ -1278,6 +1292,11 @@
     "loading": "Cargando...",
     "synced": "Sincronizado",
     "unsynced": "Desincronizado"
+  },
+  "editor_preview": {
+    "loading_unity_and_base_wearables": "Cargando Unity y Wearables base...",
+    "loading_base_wearables": "Cargando Wearables base...",
+    "loading_unity": "Cargando Unity..."
   },
   "approval_flow": {
     "loading": {

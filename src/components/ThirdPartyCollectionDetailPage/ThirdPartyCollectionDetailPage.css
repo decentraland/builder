@@ -43,21 +43,8 @@
   cursor: pointer;
 }
 
-.ThirdPartyCollectionDetailPage .dcl.row.actions > .ui.button.action-button {
-  margin-left: 24px;
-  border: 1px solid var(--gray);
-  padding: 8px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  white-space: nowrap;
-}
-
-.ThirdPartyCollectionDetailPage .actions .ui.button.action-button + .ui.dropdown {
-  margin-left: 0;
-}
-
-.ThirdPartyCollectionDetailPage .actions .ui.button.action-button > .text {
-  color: var(--text);
+.ThirdPartyCollectionDetailPage .actions > div {
+  margin-left: 16px;
 }
 
 .ThirdPartyCollectionDetailPage .actions .ui.button.compact {

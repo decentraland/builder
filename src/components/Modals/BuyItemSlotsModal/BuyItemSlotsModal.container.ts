@@ -22,6 +22,7 @@ const mapState = (state: RootState): MapStateProps => {
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onFetchThirdPartyItemSlots: () => dispatch(fetchThirdPartyItemTiersRequest()),
   onTierSelected: () => dispatch(clearTiersError()),
+  onBeforeClose: () => dispatch(clearTiersError()),
   onBuyItemSlots: (thirdParty: ThirdParty, tier: ThirdPartyItemTier) => dispatch(buyThirdPartyItemTiersRequest(thirdParty, tier))
 })
 

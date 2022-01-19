@@ -1,8 +1,5 @@
-import { Color4, Wearable } from 'decentraland-ecs'
+import { Color4 } from 'decentraland-ecs'
 import { WearableBodyShape } from 'modules/item/types'
-import { WearableCategory } from '../item/types'
-import _allWearables from './wearables/all.json'
-export const allWearables = _allWearables as Wearable[]
 
 export function getSkinColors() {
   return [
@@ -47,14 +44,23 @@ export function getEyeColors() {
   ]
 }
 
-export function getWearables(category: WearableCategory, bodyShape: WearableBodyShape) {
-  return allWearables.filter(
-    wearable =>
-      wearable.category === category &&
-      wearable.representations.some(representation => representation.bodyShapes.some(_bodyShape => _bodyShape === bodyShape))
-  )
-}
-
-export function findWearable(id: string) {
-  return allWearables.find(wearable => wearable.id === id)
+export const extraAvatarWearablesIds = {
+  [WearableBodyShape.MALE]: [
+    'urn:decentraland:off-chain:base-avatars:BaseMale',
+    'urn:decentraland:off-chain:base-avatars:eyebrows_00',
+    'urn:decentraland:off-chain:base-avatars:eyes_00',
+    'urn:decentraland:off-chain:base-avatars:sneakers',
+    'urn:decentraland:off-chain:base-avatars:brown_pants',
+    'urn:decentraland:off-chain:base-avatars:mouth_00',
+    'urn:decentraland:off-chain:base-avatars:green_hoodie'
+  ],
+  [WearableBodyShape.FEMALE]: [
+    'urn:decentraland:off-chain:base-avatars:BaseFemale',
+    'urn:decentraland:off-chain:base-avatars:f_eyebrows_00',
+    'urn:decentraland:off-chain:base-avatars:f_eyes_00',
+    'urn:decentraland:off-chain:base-avatars:bun_shoes',
+    'urn:decentraland:off-chain:base-avatars:f_jeans',
+    'urn:decentraland:off-chain:base-avatars:f_mouth_00',
+    'urn:decentraland:off-chain:base-avatars:f_sweater'
+  ]
 }

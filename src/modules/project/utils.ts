@@ -1,5 +1,6 @@
 import { Project, Layout } from 'modules/project/types'
 import { Coordinate, Rotation } from 'modules/deployment/types'
+import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getDimensions } from 'lib/layout'
 
 export function getProjectDimensions(project: Project): string {
@@ -68,7 +69,7 @@ export function getParcelOrientation(layout: Layout, point: Coordinate, rotation
 
 export async function getImageAsDataUrl(url: string): Promise<string> {
   const reader = new FileReader()
-  const res = await fetch(url)
+  const res = await fetch(url, { headers: NO_CACHE_HEADERS })
   const blob = await res.blob()
 
   const out = new Promise<string>((resolve, reject) => {

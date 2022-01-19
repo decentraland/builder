@@ -1,18 +1,11 @@
-import { ChainId, Network } from '@dcl/schemas'
+import { ChainId, Network, WearableBodyShape } from '@dcl/schemas'
+import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { buildItemURN, buildThirdPartyURN, buildCatalystItemURN, decodeURN, URNType, URNProtocol } from './urn'
+import { buildThirdPartyURN, buildCatalystItemURN, decodeURN, URNType, URNProtocol, extractThirdPartyTokenId, isThirdParty } from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 
 afterEach(() => jest.resetAllMocks())
-
-describe('when building the item URN', () => {
-  it('should build a valid URN with the item data', () => {
-    expect(buildItemURN('wearable', 'my-name', 'my-desc', 'great-category', 'baseMale,baseFemale')).toBe(
-      '1:w:my-name:my-desc:great-category:baseMale,baseFemale'
-    )
-  })
-})
 
 describe('when getting the catalyst item URN', () => {
   let contractAddress = '0x123123'
@@ -68,6 +61,12 @@ describe('when building the third party URN', () => {
 })
 
 describe('when decoding an URN', () => {
+  describe('when the urn is empty', () => {
+    it('should return false', () => {
+      expect(isThirdParty()).toBe(false)
+    })
+  })
+
   describe('when the URN is invalid', () => {
     it('should throw an error', () => {
       let urn = 'invalid things here'
@@ -149,6 +148,75 @@ describe('when decoding an URN', () => {
           thirdPartyCollectionId: 'another-tp-collection-id',
           thirdPartyTokenId: 'better-token-id'
         })
+      })
+    })
+  })
+})
+
+describe('when extracting the third party item token id from an URN', () => {
+  describe('when the URN is not a valid third party URN', () => {
+    it("should throw an error signaling that the URN doesn't belong to a third party", () => {
+      expect(() =>
+        extractThirdPartyTokenId('urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+      ).toThrowError(
+        'Tried to build a third party token for a non third party URN "urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8"'
+      )
+    })
+  })
+
+  describe('when the URN is a valid third party URN', () => {
+    it('should extract the collection and token ids', () => {
+      expect(extractThirdPartyTokenId('urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id:token-id')).toBe(
+        'collection-id:token-id'
+      )
+    })
+  })
+})
+
+describe('when checking if a collection is a third party', () => {
+  let urn: string
+
+  describe('when checking a base avatar URN', () => {
+    beforeEach(() => {
+      urn = WearableBodyShape.FEMALE.toString()
+    })
+
+    it('should return false', () => {
+      expect(isThirdParty(urn)).toBe(false)
+    })
+  })
+
+  describe('when checking a collections v2 URN', () => {
+    beforeEach(() => {
+      jest.spyOn(dappsEth, 'getChainIdByNetwork').mockReturnValueOnce(ChainId.MATIC_MAINNET)
+      urn = buildCatalystItemURN('0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8', '22')
+    })
+
+    it('should return false', () => {
+      expect(isThirdParty(urn)).toBe(false)
+    })
+  })
+
+  describe('when checking a third party URN', () => {
+    describe("when it's a collection", () => {
+      beforeEach(() => {
+        jest.spyOn(dappsEth, 'getChainIdByNetwork').mockReturnValueOnce(ChainId.MATIC_MAINNET)
+        urn = buildThirdPartyURN('thirdpartyname', 'collection-id')
+      })
+
+      it('should return true', () => {
+        expect(isThirdParty(urn)).toBe(true)
+      })
+    })
+
+    describe("when it's an item", () => {
+      beforeEach(() => {
+        jest.spyOn(dappsEth, 'getChainIdByNetwork').mockReturnValueOnce(ChainId.MATIC_MAINNET)
+        urn = buildThirdPartyURN('thirdpartyname', 'collection-id', '22')
+      })
+
+      it('should return true', () => {
+        expect(isThirdParty(urn)).toBe(true)
       })
     })
   })

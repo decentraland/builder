@@ -120,6 +120,10 @@
     "female": "女",
     "null": "没有任何"
   },
+  "item_types": {
+    "wearable": "可穿戴",
+    "smart_wearable": "智能穿戴"
+  },
   "avatar_animations": {
     "idle": "闲",
     "wave": "挥手",
@@ -853,8 +857,9 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合",
-    "buy_third_party_item_tiers": "为第三方 {name} 购买了 {count}个插槽"
+    "buy_third_party_item_tiers": "为第三方 {name} 购买了 {count}个插槽",
+    "publish_third_party_items": "为 {collectionName} 发布了 {count} 个项目",
+    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
   },
   "transfer_page": {
     "title": "转移",
@@ -967,9 +972,10 @@
     "clear_selection": "清空选项",
     "selection": "{count, plural, one {# 物品} other {# 项目}} 选中.",
     "max_select_count": "您一次最多可以发布 {count} 个项目",
-    "slots": "{amount, plural, =0 {没有插槽} one {# 个插槽} other {# 个插槽}}",
+    "slots": "{amount, plural, =0 {没有插槽} other {# 个插槽}}",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
-    "cant_remove": "发布项目后，您将无法添加或删除项目。"
+    "cant_remove": "发布项目后，您将无法添加或删除项目。",
+    "publish_items": "发布 {count, plural, =0 {} other {# 项}}"
   },
   "collection_detail_page": {
     "new_item": "新物品",
@@ -1013,6 +1019,12 @@
     "edit_urn": "编辑 URN",
     "reset_item": "撤消"
   },
+  "collection": {
+    "type": {
+      "decentraland": "采集",
+      "third_party": "第三方收藏"
+    }
+  },
   "item": {
     "blockchain_id": "区块链ID",
     "category": "类别",
@@ -1034,7 +1046,7 @@
     "free": "免费",
     "price_label": "价格",
     "beneficiary_label": "受益人",
-    "beneficiary_popup": "这是出售该物品时将获得MANA的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
+    "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
   },
   "confirm_delete": {
     "content": "您确定要删除\"{name}\"吗?"
@@ -1086,6 +1098,10 @@
     "title": "上传更改",
     "description": "自上次策展人审查藏品或其中包含的文章以来，对收藏品或其中包含的文章进行了更改。{br}要使这些变化反映在市场和游戏中，必须再次得到委员会的审查和批准。{br}您确定要推动更改以供审核吗？"
   },
+  "publish_third_party_collection_modal": {
+    "title": "发布第三方项目",
+    "description": "即将使用来自 {availableSlots} 的 {slotsToUse, plural, one {# 投币口} other {# 插槽}} 个插槽来发布 \"{collectionName}\""
+  },
   "mint_items_modal": {
     "title": "薄荷项目",
     "add_item": "新增项目",
@@ -1101,8 +1117,6 @@
     "no_items": "没有项目"
   },
   "collection_card": {
-    "third_party_collection": "第三方收藏",
-    "collection": "采集",
     "item_count": "{count} {count, plural, one {物品} other {项目}}",
     "subtitle": "{count} {count, plural, one {项目} other {项目}}",
     "confirm_delete_content": "您确定要删除您的收藏集 \"{name}\" 吗？ 此操作不可逆！",
@@ -1261,6 +1275,11 @@
     "loading": "加载中...",
     "synced": "同步",
     "unsynced": "未同步"
+  },
+  "editor_preview": {
+    "loading_unity_and_base_wearables": "正在加载 Unity 和基础可穿戴设备...",
+    "loading_base_wearables": "正在加载基础可穿戴设备...",
+    "loading_unity": "正在加载统一..."
   },
   "approval_flow": {
     "loading": {

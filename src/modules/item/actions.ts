@@ -3,6 +3,7 @@ import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Collection } from 'modules/collection/types'
 import { Item, Rarity } from './types'
+import { ThirdParty } from 'modules/thirdParty/types'
 
 // Fetch items
 
@@ -172,3 +173,50 @@ export const resetItemFailure = (itemId: string, error: string) => action(RESET_
 export type ResetItemRequestAction = ReturnType<typeof resetItemRequest>
 export type ResetItemSuccessAction = ReturnType<typeof resetItemSuccess>
 export type ResetItemFailureAction = ReturnType<typeof resetItemFailure>
+
+// Publish Third Party Item
+
+export const PUBLISH_THIRD_PARTY_ITEMS_REQUEST = '[Request] Publish third party items'
+export const PUBLISH_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Publish third party items'
+export const PUBLISH_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish third party items'
+
+export const publishThirdPartyItemsRequest = (thirdParty: ThirdParty, items: Item[]) =>
+  action(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, items })
+export const publishThirdPartyItemsSuccess = (
+  txHash: string,
+  chainId: ChainId,
+  thirdParty: ThirdParty,
+  collection: Collection,
+  items: Item[]
+) =>
+  action(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, {
+    thirdParty,
+    collection,
+    items,
+    ...buildTransactionPayload(chainId, txHash, {
+      thirdPartyId: thirdParty.id,
+      collectionId: collection.id,
+      collectionName: collection.name,
+      items
+    })
+  })
+export const publishThirdPartyItemsFailure = (thirdParty: ThirdParty, items: Item[], error: string) =>
+  action(PUBLISH_THIRD_PARTY_ITEMS_FAILURE, { thirdParty, items, error })
+
+export type PublishThirdPartyItemsRequestAction = ReturnType<typeof publishThirdPartyItemsRequest>
+export type PublishThirdPartyItemsSuccessAction = ReturnType<typeof publishThirdPartyItemsSuccess>
+export type PublishThirdPartyItemsFailureAction = ReturnType<typeof publishThirdPartyItemsFailure>
+
+// Download Item
+
+export const DOWNLOAD_ITEM_REQUEST = '[Request] Download item'
+export const DOWNLOAD_ITEM_SUCCESS = '[Success] Download item'
+export const DOWNLOAD_ITEM_FAILURE = '[Failure] Download item'
+
+export const downloadItemRequest = (itemId: string) => action(DOWNLOAD_ITEM_REQUEST, { itemId })
+export const downloadItemSuccess = (itemId: string) => action(DOWNLOAD_ITEM_SUCCESS, { itemId })
+export const downloadItemFailure = (itemId: string, error: string) => action(DOWNLOAD_ITEM_FAILURE, { itemId, error })
+
+export type DownloadItemRequestAction = ReturnType<typeof downloadItemRequest>
+export type DownloadItemSuccessAction = ReturnType<typeof downloadItemSuccess>
+export type DownloadItemFailureAction = ReturnType<typeof downloadItemFailure>

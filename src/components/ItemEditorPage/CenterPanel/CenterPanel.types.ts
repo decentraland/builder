@@ -25,7 +25,7 @@ export type Props = {
   eyeColor: Color4
   hairColor: Color4
   avatarAnimation: AvatarAnimation
-  baseWearables: Record<WearableCategory, Wearable | null>
+  bodyShapeBaseWearables: Record<WearableCategory, Wearable | null> | null
   visibleItems: Item[]
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setAvatarAnimation
@@ -42,7 +42,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'avatarAnimation' | 'visibleItems' | 'baseWearables'
+  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'avatarAnimation' | 'visibleItems' | 'bodyShapeBaseWearables'
 >
 export type MapDispatchProps = Pick<
   Props,
