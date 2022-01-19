@@ -19,6 +19,7 @@
     "resolveJsonModule": true,
     "noUnusedParameters": true,
     "downlevelIteration": true,
+    "useUnknownInCatchVariables": false,
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,

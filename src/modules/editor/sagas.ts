@@ -373,7 +373,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
     yield call([editorWindow.editor, 'setCameraPosition'], { x: 8, y: 1, z: 8 })
     yield call([editorWindow.editor, 'setCameraRotation'], Math.PI, Math.PI / 16)
 
-    const baseWearables = yield select(getBaseWearables)
+    const baseWearables: ReturnType<typeof getBaseWearables> = yield select(getBaseWearables)
     // Only fetch the base wearables if there's none set
     if (baseWearables.length === 0) {
       yield put(fetchBaseWearablesRequest())
