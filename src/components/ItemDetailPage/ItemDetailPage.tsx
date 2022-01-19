@@ -7,7 +7,7 @@ import { fromWei } from 'web3x/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
-import { decodeURN, URNType } from 'lib/urn'
+import { isThirdParty } from 'lib/urn'
 import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, isFree } from 'modules/item/utils'
 import { isLocked as isCollectionLocked } from 'modules/collection/utils'
 import Notice from 'components/Notice'
@@ -176,7 +176,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                     {item.urn}
 
                     <div className="urn-actions">
-                      {decodeURN(item.urn).type === URNType.COLLECTIONS_THIRDPARTY ? (
+                      {isThirdParty(item.urn) ? (
                         <span className="link" onClick={this.handleEditURN}>
                           {t('item.edit_urn')}
                         </span>
