@@ -6,7 +6,9 @@ import {
   PUBLISH_COLLECTION_SUCCESS,
   MINT_COLLECTION_ITEMS_SUCCESS,
   APPROVE_COLLECTION_SUCCESS,
-  REJECT_COLLECTION_SUCCESS
+  REJECT_COLLECTION_SUCCESS,
+  SAVE_COLLECTION_SUCCESS,
+  SaveCollectionSuccessAction
 } from 'modules/collection/actions'
 import {
   FetchItemsRequestAction,
@@ -86,6 +88,7 @@ import {
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
+import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
 
 export type ItemState = {
   data: Record<string, Item>
@@ -138,6 +141,7 @@ type ItemReducerAction =
   | ResetItemRequestAction
   | ResetItemSuccessAction
   | ResetItemFailureAction
+  | SaveCollectionSuccessAction
   | DownloadItemRequestAction
   | DownloadItemSuccessAction
   | DownloadItemFailureAction
@@ -340,6 +344,43 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
           return state
       }
     }
+    case SAVE_COLLECTION_SUCCESS: {
+      const { collection } = action.payload
+      const collectionURN = decodeURN(collection.urn)
+
+      return {
+        ...state,
+        data: Object.keys(state.data).reduce((accum, itemId) => {
+          const item = state.data[itemId]
+          if (item.collectionId === collection.id && item.urn) {
+            let newItemURN: string
+            const itemURN = decodeURN(item.urn)
+            if (collectionURN.type === URNType.COLLECTIONS_THIRDPARTY) {
+              if (itemURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+                throw new Error(`The item ${item.id} is not part of a third-party collection but it should be`)
+              }
+              newItemURN = buildThirdPartyURN(
+                collectionURN.thirdPartyName,
+                collectionURN.thirdPartyCollectionId!,
+                itemURN.thirdPartyTokenId
+              )
+            } else if (collectionURN.type === URNType.COLLECTIONS_V2) {
+              if (itemURN.type !== URNType.COLLECTIONS_V2) {
+                throw new Error(`The item ${item.id} is not part of a decentraland collection but it should be`)
+              }
+              newItemURN = buildCatalystItemURN(collectionURN.collectionAddress, itemURN.tokenId!)
+            } else {
+              throw new Error(`The item ${item.id} has an incorrect URN type`)
+            }
+            accum[item.id] = { ...state.data[item.id], urn: newItemURN }
+          } else {
+            accum[item.id] = item
+          }
+          return accum
+        }, {} as ItemState['data'])
+      }
+    }
+
     default:
       return state
   }
