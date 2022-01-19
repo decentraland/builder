@@ -279,9 +279,8 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         )
       )
 
-      // TODO: uncomment this and add feature flag once we have support for them
-      // const lock: string = yield retry(10, 500, builder.lockCollection, collection)
-      // collection = { ...collection, lock: +new Date(lock) }
+      const lock: string = yield retry(10, 500, builder.lockCollection, collection)
+      collection = { ...collection, lock: +new Date(lock) }
 
       yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
       yield put(replace(locations.activity()))
