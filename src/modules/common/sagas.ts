@@ -3,8 +3,9 @@ import { CatalystClient } from 'dcl-catalyst-client'
 
 import { createProfileSaga } from 'decentraland-dapps/dist/modules/profile/sagas'
 import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
-
 import { authorizationSaga } from 'decentraland-dapps/dist/modules/authorization/sagas'
+import { toastSaga } from 'decentraland-dapps/dist/modules/toast/sagas'
+
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
 import { assetSaga } from 'modules/asset/sagas'
@@ -29,7 +30,6 @@ import { statsSaga } from 'modules/stats/sagas'
 import { syncSaga } from 'modules/sync/sagas'
 import { thirdPartySaga } from 'modules/thirdParty/sagas'
 import { tileSaga } from 'modules/tile/sagas'
-import { toastSaga } from 'modules/toast/sagas'
 import { translationSaga } from 'modules/translation/sagas'
 import { uiSaga } from 'modules/ui/sagas'
 import { walletSaga } from 'modules/wallet/sagas'
