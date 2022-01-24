@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { AuthIdentity } from 'dcl-crypto'
-import { ProviderType } from 'decentraland-connect'
+import { ProviderType } from '@dcl/schemas'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 
 // Login
