@@ -64,7 +64,7 @@
     "interface-datastore": "^0.7.0",
     "ipfs-unixfs-engine": "^0.35.4",
     "ismobilejs": "^1.0.3",
-    "jszip": "^3.2.1",
+    "jszip": "^3.7.0",
     "mini-css-extract-plugin": "0.4.3",
     "mousetrap": "^1.6.2",
     "multihashing-async": "^0.8.0",
