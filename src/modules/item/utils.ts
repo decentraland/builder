@@ -269,9 +269,13 @@ export function isModelCategory(category: WearableCategory) {
   return !isImageCategory(category)
 }
 
+export function getModelCategories() {
+  return Object.values(WearableCategory).filter(category => isModelCategory(category))
+}
+
 function getCategories(contents: Record<string, any> | undefined = {}) {
   const fileNames = Object.keys(contents)
-  return fileNames.some(isModelFile) ? Object.values(WearableCategory).filter(category => isModelCategory(category)) : IMAGE_CATEGORIES
+  return fileNames.some(isModelFile) ? getModelCategories() : IMAGE_CATEGORIES
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
