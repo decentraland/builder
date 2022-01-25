@@ -50,7 +50,7 @@ describe('when reducing the FETCH_ENTITIES_BY_POINTERS_SUCCESS action', () => {
 
     const action = fetchEntitiesByPointersSuccess(EntityType.WEARABLE, entity.pointers, [entity])
     const newState = entityReducer(state, action)
-    expect(newState.data[entity.id]).toEqual(entity)
+    expect(newState.data).toEqual({ [entity.id]: entity })
     expect(newState.loading).toHaveLength(0)
   })
 })
@@ -93,7 +93,7 @@ describe('when reducing the FETCH_ENTITIES_BY_IDS_SUCCESS action', () => {
 
     const action = fetchEntitiesByIdsSuccess(EntityType.WEARABLE, [entity.id], [entity])
     const newState = entityReducer(state, action)
-    expect(newState.data[entity.id]).toEqual(entity)
+    expect(newState.data).toEqual({ [entity.id]: entity })
     expect(newState.loading).toHaveLength(0)
   })
 })
