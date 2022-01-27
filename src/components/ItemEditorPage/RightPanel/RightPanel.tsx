@@ -125,7 +125,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
     // when changing the category to SKIN we hide everything else
     if (category === WearableCategory.SKIN) {
-      const otherCategories = getModelCategories().filter(category => category !== WearableCategory.SKIN)
+      const otherCategories = getModelCategories().filter(
+        category => ![WearableCategory.SKIN, WearableCategory.TOP_HEAD].includes(category)
+      )
       data = this.setReplaces(data, [])
       data = this.setHides(data, otherCategories)
     } else if (previousCategory === WearableCategory.SKIN) {
