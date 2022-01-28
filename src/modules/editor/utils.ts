@@ -5,6 +5,7 @@ import { getSceneDefinition } from 'modules/project/export'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { capitalize } from 'lib/text'
 import { Vector3 } from 'modules/models/types'
+import { getSkinHiddenCategories } from 'modules/item/utils'
 import { TRANSPARENT_PIXEL } from 'lib/getModelData'
 import { toLegacyURN } from 'lib/urnLegacy'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
@@ -211,6 +212,29 @@ export function mergeWearables(avatar: Wearable[], apply: Wearable[]) {
     wearables[wearable.category || wearable.id] = wearable
   }
   return Object.values(wearables)
+}
+
+export function patchWearables(wearables: Wearable[]) {
+  // makes changes to wearables needed to make them work with the outdated version of client
+
+  return wearables.map(wearable => {
+    // 1. if the category is "skin" we need to hide all the other categories
+    if (wearable.category === 'skin') {
+      const alreadyHidden: string[] = [...((wearable as any).hides || [])] // The typing from decentraland-ecs is wrong and it misses the hides list
+      const hides = Array.from(
+        new Set<string>([...alreadyHidden, ...getSkinHiddenCategories()])
+      )
+      return {
+        ...wearable,
+        hides,
+        representations: wearable.representations.map(representation => ({
+          ...representation,
+          overrideHides: hides
+        }))
+      }
+    }
+    return wearable
+  })
 }
 
 export const pickRandom = <T>(array: T[]): T => {

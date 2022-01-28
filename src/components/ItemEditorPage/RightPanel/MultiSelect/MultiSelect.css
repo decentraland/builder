@@ -82,3 +82,8 @@
   padding: 0;
   margin-bottom: 0;
 }
+
+.MultiSelect.ui.dropdown.inline .menu {
+  max-height: 50vh;
+  overflow: auto;
+}

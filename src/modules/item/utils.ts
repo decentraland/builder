@@ -273,6 +273,20 @@ export function getModelCategories() {
   return Object.values(WearableCategory).filter(category => isModelCategory(category))
 }
 
+export function getSkinHiddenCategories() {
+  return [
+    WearableCategory.HEAD,
+    WearableCategory.HAIR,
+    WearableCategory.FACIAL_HAIR,
+    WearableCategory.MOUTH,
+    WearableCategory.EYEBROWS,
+    WearableCategory.EYES,
+    WearableCategory.UPPER_BODY,
+    WearableCategory.LOWER_BODY,
+    WearableCategory.FEET
+  ]
+}
+
 function getCategories(contents: Record<string, any> | undefined = {}) {
   const fileNames = Object.keys(contents)
   return fileNames.some(isModelFile) ? getModelCategories() : IMAGE_CATEGORIES
