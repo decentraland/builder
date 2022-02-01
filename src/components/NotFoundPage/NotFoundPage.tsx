@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Page } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -7,58 +7,55 @@ import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 
-import { Props, State } from './NotFoundPage.types'
+import { Props } from './NotFoundPage.types'
 import './NotFoundPage.css'
 
 const LOADING_TIMEOUT = 2000
 
-export default class NotFoundPage extends React.PureComponent<Props, State> {
-  state = {
-    isLoading: true
-  }
+export default function NotFoundPage(props: Props) {
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
 
-  mounted = false
+  let mounted = false
 
-  analytics = getAnalytics()
+  useEffect(() => {
+    const analytics = getAnalytics()
 
-  componentWillMount() {
     document.body.classList.add('notfound-body')
-    this.analytics.track('Not found page', {})
-    this.mounted = true
-    this.setState({ isLoading: true })
+    analytics.track('Not found page', {})
+    mounted = true
+    setIsLoading(true);
     setTimeout(() => {
-      if (this.mounted) {
-        this.setState({ isLoading: false })
+      if (mounted) {
+        setIsLoading(false)
       }
     }, LOADING_TIMEOUT)
-  }
 
-  componentWillUnmount() {
-    document.body.classList.remove('notfound-body')
-    this.mounted = false
-  }
-
-  handleOnClick = () => {
-    this.props.onNavigate(locations.root())
-  }
-
-  render() {
-    if (this.state.isLoading) {
-      return <LoadingPage />
-    }
     return (
-      <>
-        <Navbar isFullscreen />
-        <Page isFullscreen />
-        <div className="NotFoundPage">
-          <h1 className="title">{t('not_found_page.title')}</h1>
-          <p className="subtitle">{t('not_found_page.subtitle')}</p>
-          <Button className="back" onClick={this.handleOnClick} primary>
-            {t('not_found_page.back')}
-          </Button>
-        </div>
-        <Footer isFullscreen />
-      </>
+      document.body.classList.remove('notfound-body')
     )
+  }, [])
+
+  function handleClick() {
+    props.onNavigate(locations.root())
   }
+
+
+  if (isLoading) {
+    return <LoadingPage />
+  }
+
+  return (
+    <>
+      <Navbar isFullscreen />
+      <Page isFullscreen />
+      <div className="NotFoundPage">
+        <h1 className="title">{t('not_found_page.title')}</h1>
+        <p className="subtitle">{t('not_found_page.subtitle')}</p>
+        <Button className="back" onClick={handleClick} primary>
+          {t('not_found_page.back')}
+        </Button>
+      </div>
+      <Footer isFullscreen />
+    </>
+  )
 }
