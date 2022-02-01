@@ -713,8 +713,9 @@ export class BuilderAPI extends BaseAPI {
     return this.request('get', '/tiers/thirdParty')
   }
 
-  isAxiosError(error: any): error is AxiosError {
-    return error.isAxiosError
+  fetchApprovalData = (collectionId: string): Promise<{ urn: string; contentHash: string }[]> => {
+    console.log('FETCHING', `/collections/${collectionId}/approvalData`)
+    return this.request('get', `/collections/${collectionId}/approvalData`)
   }
 
   async fetchContent(hash: string) {
@@ -746,5 +747,9 @@ export class BuilderAPI extends BaseAPI {
         return obj
       }, {})
     )
+  }
+
+  isAxiosError(error: any): error is AxiosError {
+    return error.isAxiosError
   }
 }

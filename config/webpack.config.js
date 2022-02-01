@@ -265,25 +265,35 @@ module.exports = function(webpackEnv) {
     module: {
       strictExportPresence: true,
       rules: [
+        {
+          test: /\.worker\.(c|m)?js$/i,
+          loader: "worker-loader",
+          options: {
+            esModule: false,
+          },
+        },
+        
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
 
+
         // First, run the linter.
         // It's important to do this before Babel processes the JS.
-        {
-          test: /\.(js|mjs|jsx)$/,
-          enforce: 'pre',
-          use: [
-            {
-              options: {
-                formatter: require.resolve('react-dev-utils/eslintFormatter'),
-                eslintPath: require.resolve('eslint')
-              },
-              loader: require.resolve('eslint-loader')
-            }
-          ],
-          include: paths.appSrc
-        },
+        // {
+        //   test: /\.(js|mjs|jsx)$/,
+        //   enforce: 'pre',
+        //   use: [
+        //     {
+        //       options: {
+        //         formatter: require.resolve('react-dev-utils/eslintFormatter'),
+        //         eslintPath: require.resolve('eslint')
+        //       },
+        //       loader: require.resolve('eslint-loader')
+        //     }
+        //   ],
+        //   include: paths.appSrc
+        // },
+
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall

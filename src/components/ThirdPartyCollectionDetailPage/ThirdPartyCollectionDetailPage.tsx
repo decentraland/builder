@@ -35,8 +35,25 @@ import CollectionItem from './CollectionItem'
 import { Props, State } from './ThirdPartyCollectionDetailPage.types'
 import './ThirdPartyCollectionDetailPage.css'
 
+import { builderAPI } from 'modules/common/store'
+// import { generateTree } from '@dcl/content-hash-tree'
+
+import Worker from 'worker-loader!./worker'
+
+// @ts-ignore
+// import Worker from './worker'
+
+// const Worker = require('./worker')
+
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
 const PAGE_SIZE = MAX_PUBLISH_ITEM_COUNT
+
+let running = false
+
+const worker: Worker = new Worker()
+// const worker: Worker = new Worker('./worker.js')
+// const worker: Worker = new Worker('../../../public/worker')
+// const worker: any = { onmessage: () => {}, postMessage: () => {} }
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -44,6 +61,15 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     searchText: '',
     page: 1,
     isAuthModalOpen: false
+  }
+
+  componentDidMount() {
+    console.log('[COMPONENT] Setting worker onmessage')
+    worker.onmessage = (event: MessageEvent) => {
+      console.log('[COMPONENT] GOT DATA FROM WORKER', event.data)
+    }
+
+    this.generateTree()
   }
 
   getManaAuthorization = () => {
@@ -153,6 +179,33 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   paginate(items: Item[]) {
     const { page } = this.state
     return items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  }
+
+  async generateTree() {
+    const { collection } = this.props
+
+    if (!running) {
+      console.log('GENERATE TREE START')
+
+      running = true
+
+      console.time('GET Approval data')
+      const approvalData = await builderAPI.fetchApprovalData(collection ? collection.id : '6bd98391-5680-4848-8ac9-59736be284ab')
+      console.timeEnd('GET Approval data')
+
+      console.log('GOT', approvalData.length, 'items. First', approvalData[0])
+
+      // console.time('GENERATE tree')
+      // console.log('GENERATING TREE')
+      // const result = generateTree(approvalData)
+      // console.timeEnd('GENERATE tree')
+
+      // console.log('TREE RESULT', result)
+
+      console.log('POSTING TREE GENERATION')
+
+      worker.postMessage(approvalData)
+    }
   }
 
   renderPage() {
@@ -319,6 +372,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   render() {
     const { isLoading } = this.props
     const hasAccess = this.hasAccess()
+
     return (
       <LoggedInDetailPage className="ThirdPartyCollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
         {hasAccess ? this.renderPage() : <NotFound />}

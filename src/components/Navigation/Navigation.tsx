@@ -24,7 +24,10 @@ export default class Navigation extends React.PureComponent<Props> {
         ) : null}
         {env.get('REACT_APP_FF_WEARABLES') ? (
           <>
-            <Tabs.Tab active={activeTab === NavigationTab.COLLECTIONS} onClick={() => onNavigate(locations.collections())}>
+            <Tabs.Tab
+              active={activeTab === NavigationTab.COLLECTIONS}
+              onClick={() => onNavigate('/thirdPartyCollections/6bd98391-5680-4848-8ac9-59736be284ab' || locations.collections())}
+            >
               {t('navigation.collections')}
             </Tabs.Tab>
             {isCommitteeMember ? (

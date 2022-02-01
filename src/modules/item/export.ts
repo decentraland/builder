@@ -133,7 +133,7 @@ export async function buildItemEntityBlobs(item: Item) {
 export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item) {
   const blobs = await buildItemEntityBlobs(item)
   const files = await makeContentFiles(blobs)
-  const metadata = await buildItemEntityMetadata(collection, item)
+  const metadata = buildItemEntityMetadata(collection, item)
   return client.buildEntity({
     type: EntityType.WEARABLE,
     pointers: [metadata.id],
@@ -152,7 +152,7 @@ export async function buildItemContentHash(collection: Collection, item: Item) {
   const blobs = await buildItemEntityBlobs(item)
   const hashes = await computeHashes(blobs)
   const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
-  const metadata = await buildItemEntityMetadata(collection, item)
+  const metadata = buildItemEntityMetadata(collection, item)
   return calculateContentHash(content, metadata)
 }
 

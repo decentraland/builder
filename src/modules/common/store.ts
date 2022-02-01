@@ -60,7 +60,7 @@ const rootReducer = createRootReducer(history)
 const historyMiddleware = routerMiddleware(history)
 const sagasMiddleware = createSagasMiddleware()
 const loggerMiddleware = createLogger({
-  predicate: () => isDevelopment,
+  predicate: () => false,
   collapsed: () => true
 })
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
@@ -139,7 +139,7 @@ const middleware = applyMiddleware(...middlewares)
 const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer) as RootStore
 
-const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
+export const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
 const catalystClient = new CatalystClient(PEER_URL, 'Builder')
 
 sagasMiddleware.run(rootSaga, builderAPI, catalystClient)
