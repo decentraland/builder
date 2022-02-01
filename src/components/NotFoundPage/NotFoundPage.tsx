@@ -10,42 +10,26 @@ import LoadingPage from 'components/LoadingPage'
 import { Props } from './NotFoundPage.types'
 import './NotFoundPage.css'
 
-const LOADING_TIMEOUT = 2000
-
 export default function NotFoundPage(props: Props) {
   const [isLoading, setIsLoading] = useState<Boolean>(true);
 
-  let mounted = false
-
   useEffect(() => {
     const analytics = getAnalytics()
-
-    document.body.classList.add('notfound-body')
     analytics.track('Not found page', {})
-    mounted = true
-    setIsLoading(true);
-    setTimeout(() => {
-      if (mounted) {
-        setIsLoading(false)
-      }
-    }, LOADING_TIMEOUT)
 
-    return (
-      document.body.classList.remove('notfound-body')
-    )
+    setIsLoading(false);
   }, [])
 
   function handleClick() {
     props.onNavigate(locations.root())
   }
 
-
   if (isLoading) {
     return <LoadingPage />
   }
 
   return (
-    <>
+    <div className="notfound-body">
       <Navbar isFullscreen />
       <Page isFullscreen />
       <div className="NotFoundPage">
@@ -56,6 +40,6 @@ export default function NotFoundPage(props: Props) {
         </Button>
       </div>
       <Footer isFullscreen />
-    </>
+    </div>
   )
 }
