@@ -190,7 +190,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
       running = true
 
       console.time('GET Approval data')
-      const approvalData = await builderAPI.fetchApprovalData(collection ? collection.id : '6bd98391-5680-4848-8ac9-59736be284ab')
+      const approvalData = await builderAPI.fetchApprovalData(collection ? collection.id : '1ae3a4c5-e905-4db1-b370-f484d7eb8297')
       console.timeEnd('GET Approval data')
 
       console.log('GOT', approvalData.length, 'items. First', approvalData[0])

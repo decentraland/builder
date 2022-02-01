@@ -1,4 +1,4 @@
-const contenthashtree = require('@dcl/content-hash-tree')
+const { generateTree } = require('@dcl/content-hash-tree')
 
 self.onmessage = async (event) => {
   if (event && event.data) {
@@ -6,7 +6,7 @@ self.onmessage = async (event) => {
 
     new Promise(resolve => {
       console.time('generateTree')
-      contenthashtree.generateTree(event.data)
+      generateTree(event.data)
       console.timeEnd('generateTree')
       resolve()
     }).then(_result => 
