@@ -293,7 +293,11 @@ function getCategories(contents: Record<string, any> | undefined = {}) {
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
-  return getCategories(contents).filter(category => category !== WearableCategory.HEAD)
+  let categories = getCategories(contents).filter(category => category !== WearableCategory.HEAD)
+  if (!process.env.REACT_APP_FF_SKINS) {
+    categories = categories.filter(category => category !== WearableCategory.SKIN)
+  }
+  return categories
 }
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}) {
