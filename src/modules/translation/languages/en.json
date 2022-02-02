@@ -211,7 +211,7 @@
     "title": "Create multiple items",
     "successful_title": "Items created",
     "cancelled_title": "Cancelled multiple items creation",
-    "failed_title": "Failed multiple items failure",
+    "failed_title": "Failed multiple items creation",
     "wrong_file_extension": "File extension is not correct.",
     "asset_file_not_found": "The asset.json file was not found.",
     "thumbnail_file_not_found": "Bulk files must contain a thumbnail.png file in their content.",
