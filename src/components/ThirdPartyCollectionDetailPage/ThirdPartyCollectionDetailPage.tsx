@@ -15,6 +15,7 @@ import {
   PaginationProps,
   Checkbox
 } from 'decentraland-ui'
+import { decodeURN, URNType } from 'lib/urn'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
@@ -317,11 +318,12 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   render() {
-    const { isLoading } = this.props
+    const { isLoading, collection } = this.props
     const hasAccess = this.hasAccess()
+    const decodedURN = collection && decodeURN(collection.urn)
     return (
       <LoggedInDetailPage className="ThirdPartyCollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
-        {hasAccess ? this.renderPage() : <NotFound />}
+        {hasAccess && decodedURN?.type === URNType.COLLECTIONS_THIRDPARTY ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )
   }
