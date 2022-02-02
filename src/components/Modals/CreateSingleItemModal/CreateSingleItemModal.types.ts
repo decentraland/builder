@@ -11,7 +11,7 @@ export enum CreateItemView {
 
 export type Props = ModalProps & {
   address?: string
-  metadata: CreateItemModalMetadata
+  metadata: CreateSingleItemModalMetadata
   error: string | null
   isLoading: boolean
   onSave: typeof saveItemRequest
@@ -36,7 +36,7 @@ export type StateData = {
 }
 export type State = { view: CreateItemView } & Partial<StateData>
 
-export type CreateItemModalMetadata = {
+export type CreateSingleItemModalMetadata = {
   collectionId?: string
   item?: Item
   addRepresentation?: boolean

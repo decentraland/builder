@@ -184,7 +184,7 @@
     "mana_not_allowed": "You need to authorize enough MANA to claim a new name",
     "not_enough_mana": "You don't have enough MANA to claim a new name"
   },
-  "create_item_modal": {
+  "create_single_item_modal": {
     "title": "New Item",
     "add_representation": "Add {bodyShape} Repesentation",
     "name_label": "Enter a name for your item",

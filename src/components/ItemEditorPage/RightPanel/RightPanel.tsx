@@ -88,12 +88,12 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   handleAddRepresentationToItem = () => {
     const { selectedItem, onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { item: selectedItem, addRepresentation: true })
+    onOpenModal('CreateSingleItemModal', { item: selectedItem, addRepresentation: true })
   }
 
   handleChangeItemFile = () => {
     const { selectedItem, onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { item: selectedItem, changeItemFile: true })
+    onOpenModal('CreateSingleItemModal', { item: selectedItem, changeItemFile: true })
   }
 
   handleChangeName = (name: string) => {

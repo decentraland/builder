@@ -178,7 +178,7 @@
     "mana_not_allowed": "您需要授权足够的MANA才能申请新名称",
     "not_enough_mana": "您没有足够的MANA来申请新名称"
   },
-  "create_item_modal": {
+  "create_single_item_modal": {
     "title": "新物品",
     "add_representation": "添加{bodyShape}",
     "name_label": "给您的新商品起个名字",
