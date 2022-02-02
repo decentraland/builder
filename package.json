@@ -6,7 +6,7 @@
     "@babel/core": "^7.15.0",
     "@babylonjs/core": "^4.2.0",
     "@babylonjs/loaders": "^4.2.0",
-    "@dcl/builder-client": "^1.1.2",
+    "@dcl/builder-client": "^1.2.0",
     "@dcl/schemas": "^1.7.0",
     "@svgr/webpack": "2.4.1",
     "@types/react-copy-to-clipboard": "^4.3.0",

@@ -187,8 +187,8 @@
     "not_enough_mana": "No tienes suficiente MANA para reclamar un nuevo nombre"
   },
   "create_single_item_modal": {
-    "title": "Nuevo Item",
-    "add_representation": "Agregar Representación De {bodyShape}",
+    "title": "Nuevo item",
+    "add_representation": "Agregar representación de {bodyShape}",
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
@@ -208,6 +208,36 @@
       "invalid_content_path": "La ruta \"{path}\" es inválida para la propiedad \"{name}\", el archivo no existe.",
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}."
     }
+  },
+  "create_multiple_items_modal": {
+    "title": "Crea multiples items",
+    "successful_title": "Items creados",
+    "cancelled_title": "Creación de múltiples items cancelada",
+    "failed_title": "Creación de múltiples items fallida",
+    "wrong_file_extension": "La extensión del artchivo no es correcta.",
+    "asset_file_not_found": "El archivo asset.json no se encontró.",
+    "thumbnail_file_not_found": "Los ZIPs en la creación múltiple deben contener un archivo thumbnail.png.",
+    "saved_items_table_title": "Items salvados",
+    "invalid_title": "INVALIDOS",
+    "valid_title": "VALIDOS",
+    "add_more_button": "Agregar más",
+    "upload_items_button": "Subir items",
+    "only_valid_items_info": "Sólo los items válidos serán subidos",
+    "done_button": "Listo",
+    "finished_successfully_subtitle": "Excelente! Agregaste {number_of_items} items",
+    "finished_unsuccessfully_subtitle": "La creación de items fue interrumpida, igualmente {number_of_items} items fueron agregados en el proceso.",
+    "importing_files_progress_label": "Procesando items",
+    "uploading_items_progress_label": "Subiendo {number_of_items} items",
+    "import_information_link_label": "haz click aquí",
+    "import_information": "Para más información sobre la estructura del ZIP {link}"
+  },
+  "create_items_modal": {
+    "title": "Nuevo item",
+    "subtitle": "Selecciona el mecanismo para crear tus items.",
+    "single_item_button_name": "Un solo item",
+    "single_item_button_description": "Sube archivos GLTF, GLB, PNG o ZIP con el contenido del item.",
+    "multiple_items_button_name": "Múltiples items",
+    "multiple_items_button_description": "Sube múltiples archivos ZIP con el contenido de los items."
   },
   "edit_collection_name_modal": {
     "title": "Editar Nombre",

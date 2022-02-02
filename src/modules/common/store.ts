@@ -3,6 +3,7 @@ import { routerMiddleware } from 'connected-react-router'
 import createSagasMiddleware from 'redux-saga'
 import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
+import { BuilderClient } from '@dcl/builder-client'
 
 import { CatalystClient } from 'dcl-catalyst-client'
 import { env } from 'decentraland-commons'
@@ -33,6 +34,9 @@ import { isDevelopment } from 'lib/environment'
 import { BuilderAPI, BUILDER_SERVER_URL } from 'lib/api/builder'
 import { Authorization } from 'lib/api/auth'
 import { PEER_URL } from 'lib/api/peer'
+
+import { getData } from 'modules/identity/selectors'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 const builderVersion = require('../../../package.json').version
 
@@ -142,7 +146,13 @@ const store = createStore(rootReducer, enhancer) as RootStore
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
 const catalystClient = new CatalystClient(PEER_URL, 'Builder')
 
-sagasMiddleware.run(rootSaga, builderAPI, catalystClient)
+const auths = getData(store.getState())
+const address = getAddress(store.getState())
+
+// TODO: check about AuthIdentity instantiation
+const newBuilderClient = new BuilderClient(BUILDER_SERVER_URL, auths[address!], address!, fetch)
+
+sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {

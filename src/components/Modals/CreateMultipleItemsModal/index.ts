@@ -1,3 +1,2 @@
-import CreateMultipleItemsModal from './CreateMultipleItemsModal'
-export * from './CreateMultipleItemsModal.types'
+import CreateMultipleItemsModal from './CreateMultipleItemsModal.container'
 export default CreateMultipleItemsModal

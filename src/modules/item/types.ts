@@ -1,4 +1,7 @@
+import { BuiltItem, Content } from '@dcl/builder-client'
 import { ModelMetrics } from 'modules/models/types'
+
+export type BuiltFile<T extends Content> = BuiltItem<T> & { fileName: string }
 
 export enum ItemType {
   WEARABLE = 'wearable'

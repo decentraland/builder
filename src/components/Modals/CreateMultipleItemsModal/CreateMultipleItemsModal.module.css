@@ -1,3 +1,88 @@
+.createdItems {
+  text-align: center;
+}
+
+/* Review table */
+
+.tablesContainer {
+  border-radius: 8px;
+  background-color: rgba(var(--dark-raw), 0.48);
+  padding: 20px;
+}
+
+.rejectedFileReason {
+  color: var(--secondary);
+}
+
+.trashIcon {
+  cursor: pointer;
+}
+
+.trashIcon:hover {
+  color: var(--light-gray);
+}
+
+.rejectedFilesInfo {
+  width: 100%;
+  background-color: #37333d;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infoIcon {
+  filter: brightness(3);
+  margin-right: 8px;
+}
+
+/* Progress bar */
+
+.modalContent {
+  height: 500px;
+  border-radius: 8px !important;
+  background-color: rgba(var(--dark-raw), 0.48) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 .progressBarLabel {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.progressBar:global(.ui.progress) :global(.label) {
   color: white;
+}
+
+.progressBar:global(.ui.progress) :global(.bar) {
+  background-color: var(--primary);
+  border-radius: 10px;
+}
+
+.progressBar:global(.ui.progress) {
+  border-radius: 10px;
+  background-color: #37333d;
+}
+
+.progressBarContainer {
+  padding-left: 100px;
+  padding-right: 100px;
+  width: 100%;
+}
+
+.progressBarCancel {
+  margin-top: 20px;
+  color: var(--primary);
+  cursor: pointer;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.saveItemsError {
+  color: var(--primary);
 }
