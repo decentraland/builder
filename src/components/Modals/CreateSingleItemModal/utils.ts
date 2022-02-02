@@ -1,7 +1,7 @@
 import { ThumbnailType } from 'lib/getModelData'
 import { InvalidContentPath, InvalidEnumValue } from 'modules/item/errors'
 import { WearableCategory } from 'modules/item/types'
-import { ItemAssetJson } from './CreateItemModal.types'
+import { ItemAssetJson } from './CreateSingleItemModal.types'
 
 export const getThumbnailType = (category: WearableCategory) => {
   switch (category) {

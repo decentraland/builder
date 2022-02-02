@@ -35,12 +35,12 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
 
   handleChangeItemFile = () => {
     const { item, onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { item, changeItemFile: true })
+    onOpenModal('CreateSingleItemModal', { item, changeItemFile: true })
   }
 
   handleAddRepresentationToItem = () => {
     const { item, onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { item, addRepresentation: true })
+    onOpenModal('CreateSingleItemModal', { item, addRepresentation: true })
   }
 
   handleEditURN = () => {

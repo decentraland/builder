@@ -186,7 +186,7 @@
     "mana_not_allowed": "Debes autorizar suficiente MANA para reclamar un nuevo nombre",
     "not_enough_mana": "No tienes suficiente MANA para reclamar un nuevo nombre"
   },
-  "create_item_modal": {
+  "create_single_item_modal": {
     "title": "Nuevo Item",
     "add_representation": "Agregar Representación De {bodyShape}",
     "name_label": "Ponle un nombre a tu item",

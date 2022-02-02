@@ -13,7 +13,7 @@ import './CollectionsPage.css'
 
 export default class CollectionsPage extends React.PureComponent<Props> {
   handleNewItem = () => {
-    this.props.onOpenModal('CreateItemModal', {})
+    this.props.onOpenModal('CreateSingleItemModal', {})
   }
 
   handleNewCollection = () => {
