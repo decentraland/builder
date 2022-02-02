@@ -1,23 +1,37 @@
-import { DeploymentOptions, DeploymentPreparationData, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import { action } from 'typesafe-actions'
+import { DeploymentPreparationData } from 'dcl-catalyst-client'
+import { Entity, EntityType } from 'dcl-catalyst-commons'
 
-// Fetch Item Entity
-export const FETCH_ENTITIES_REQUEST = '[Request] Fetch Entities'
-export const FETCH_ENTITIES_SUCCESS = '[Success] Fetch Entities'
-export const FETCH_ENTITIES_FAILURE = '[Failure] Fetch Entities'
+// Fetch Entities By Pointers
+export const FETCH_ENTITIES_BY_POINTERS_REQUEST = '[Request] Fetch Entities By Pointers'
+export const FETCH_ENTITIES_BY_POINTERS_SUCCESS = '[Success] Fetch Entities By Pointers'
+export const FETCH_ENTITIES_BY_POINTERS_FAILURE = '[Failure] Fetch Entities By Pointers'
 
-export const fetchEntitiesRequest = (options: DeploymentOptions<DeploymentWithMetadataContentAndPointers>) =>
-  action(FETCH_ENTITIES_REQUEST, { options })
-export const fetchEntitiesSuccess = (
-  entities: DeploymentWithMetadataContentAndPointers[],
-  options: DeploymentOptions<DeploymentWithMetadataContentAndPointers>
-) => action(FETCH_ENTITIES_SUCCESS, { entities, options })
-export const fetchEntitiesFailure = (error: string, options: DeploymentOptions<DeploymentWithMetadataContentAndPointers>) =>
-  action(FETCH_ENTITIES_FAILURE, { error, options })
+export const fetchEntitiesByPointersRequest = (type: EntityType, pointers: string[]) =>
+  action(FETCH_ENTITIES_BY_POINTERS_REQUEST, { type, pointers })
+export const fetchEntitiesByPointersSuccess = (type: EntityType, pointers: string[], entities: Entity[]) =>
+  action(FETCH_ENTITIES_BY_POINTERS_SUCCESS, { entities, type, pointers })
+export const fetchEntitiesByPointersFailure = (type: EntityType, pointers: string[], error: string) =>
+  action(FETCH_ENTITIES_BY_POINTERS_FAILURE, { error, type, pointers })
 
-export type FetchEntitiesRequestAction = ReturnType<typeof fetchEntitiesRequest>
-export type FetchEntitiesSuccessAction = ReturnType<typeof fetchEntitiesSuccess>
-export type FetchEntitiesFailureAction = ReturnType<typeof fetchEntitiesFailure>
+export type FetchEntitiesByPointersRequestAction = ReturnType<typeof fetchEntitiesByPointersRequest>
+export type FetchEntitiesByPointersSuccessAction = ReturnType<typeof fetchEntitiesByPointersSuccess>
+export type FetchEntitiesByPointersFailureAction = ReturnType<typeof fetchEntitiesByPointersFailure>
+
+// Fetch Entities By Hash
+export const FETCH_ENTITIES_BY_IDS_REQUEST = '[Request] Fetch Entities By Ids'
+export const FETCH_ENTITIES_BY_IDS_SUCCESS = '[Success] Fetch Entities By Ids'
+export const FETCH_ENTITIES_BY_IDS_FAILURE = '[Failure] Fetch Entities By Ids'
+
+export const fetchEntitiesByIdsRequest = (type: EntityType, ids: string[]) => action(FETCH_ENTITIES_BY_IDS_REQUEST, { type, ids })
+export const fetchEntitiesByIdsSuccess = (type: EntityType, ids: string[], entities: Entity[]) =>
+  action(FETCH_ENTITIES_BY_IDS_SUCCESS, { type, ids, entities })
+export const fetchEntitiesByIdsFailure = (type: EntityType, ids: string[], error: string) =>
+  action(FETCH_ENTITIES_BY_IDS_FAILURE, { type, ids, error })
+
+export type FetchEntitiesByIdsRequestAction = ReturnType<typeof fetchEntitiesByIdsRequest>
+export type FetchEntitiesByIdsSuccessAction = ReturnType<typeof fetchEntitiesByIdsSuccess>
+export type FetchEntitiesByIdsFailureAction = ReturnType<typeof fetchEntitiesByIdsFailure>
 
 // Deploy entities
 

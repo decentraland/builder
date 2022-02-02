@@ -1,5 +1,6 @@
 import { all, call, put, takeEvery } from 'redux-saga/effects'
-import { CatalystClient, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { CatalystClient } from 'dcl-catalyst-client'
+import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { getIdentity } from 'modules/identity/utils'
 import {
@@ -9,27 +10,42 @@ import {
   DeployEntitiesSuccessAction,
   DEPLOY_ENTITIES_REQUEST,
   DEPLOY_ENTITIES_SUCCESS,
-  fetchEntitiesFailure,
-  fetchEntitiesRequest,
-  FetchEntitiesRequestAction,
-  fetchEntitiesSuccess,
-  FETCH_ENTITIES_REQUEST
+  fetchEntitiesByIdsFailure,
+  fetchEntitiesByIdsRequest,
+  FetchEntitiesByIdsRequestAction,
+  fetchEntitiesByIdsSuccess,
+  fetchEntitiesByPointersFailure,
+  FetchEntitiesByPointersRequestAction,
+  fetchEntitiesByPointersSuccess,
+  FETCH_ENTITIES_BY_IDS_REQUEST,
+  FETCH_ENTITIES_BY_POINTERS_REQUEST
 } from './actions'
 
 export function* entitySaga(catalyst: CatalystClient) {
   // takes
-  yield takeEvery(FETCH_ENTITIES_REQUEST, handleFetchEntitiesRequest)
+  yield takeEvery(FETCH_ENTITIES_BY_POINTERS_REQUEST, handleFetchEntitiesByPointersRequest)
+  yield takeEvery(FETCH_ENTITIES_BY_IDS_REQUEST, handleFetchEntitiesByIdsRequest)
   yield takeEvery(DEPLOY_ENTITIES_REQUEST, handleDeployEntitiesRequest)
   yield takeEvery(DEPLOY_ENTITIES_SUCCESS, handleDeployEntitiesSuccess)
 
   // handlers
-  function* handleFetchEntitiesRequest(action: FetchEntitiesRequestAction) {
-    const { options } = action.payload
+  function* handleFetchEntitiesByPointersRequest(action: FetchEntitiesByPointersRequestAction) {
+    const { type, pointers } = action.payload
     try {
-      const entities: DeploymentWithMetadataContentAndPointers[] = yield call([catalyst, 'fetchAllDeployments'], options)
-      yield put(fetchEntitiesSuccess(entities, options))
+      const entities: Entity[] = yield call([catalyst, 'fetchEntitiesByPointers'], type, pointers)
+      yield put(fetchEntitiesByPointersSuccess(type, pointers, entities))
     } catch (error) {
-      yield put(fetchEntitiesFailure(error.message, options))
+      yield put(fetchEntitiesByPointersFailure(type, pointers, error.message))
+    }
+  }
+
+  function* handleFetchEntitiesByIdsRequest(action: FetchEntitiesByIdsRequestAction) {
+    const { type, ids } = action.payload
+    try {
+      const entities: Entity[] = yield call([catalyst, 'fetchEntitiesByIds'], type, ids)
+      yield put(fetchEntitiesByIdsSuccess(type, ids, entities))
+    } catch (error) {
+      yield put(fetchEntitiesByIdsFailure(type, ids, error.message))
     }
   }
 
@@ -55,9 +71,9 @@ export function* entitySaga(catalyst: CatalystClient) {
   }
 
   function* handleDeployEntitiesSuccess(action: DeployEntitiesSuccessAction) {
-    const entityIds = action.payload.entities.map(entity => entity.entityId)
-    if (entityIds.length > 0) {
-      yield put(fetchEntitiesRequest({ filters: { entityIds } }))
+    const ids = action.payload.entities.map(entity => entity.entityId)
+    if (ids.length > 0) {
+      yield put(fetchEntitiesByIdsRequest(EntityType.WEARABLE, ids))
     }
   }
 }

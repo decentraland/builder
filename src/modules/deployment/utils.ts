@@ -1,6 +1,6 @@
 import path from 'path'
 import uuid from 'uuid'
-import { DeploymentContent } from 'dcl-catalyst-commons'
+import { EntityContentItemReference } from 'dcl-catalyst-commons'
 const CID = require('cids')
 const MemoryDatastore = require('interface-datastore').MemoryDatastore
 const pull = require('pull-stream')
@@ -214,13 +214,13 @@ function isUrl(maybeUrl: string) {
   return true
 }
 
-export function getThumbnail(definition?: SceneDefinition | null, content?: DeploymentContent[]): string | null {
+export function getThumbnail(definition?: SceneDefinition | null, content?: EntityContentItemReference[]): string | null {
   if (!definition || !definition.display || !definition.display.navmapThumbnail) {
     return null
   }
   let thumbnail = definition.display.navmapThumbnail
   if (!isUrl(thumbnail) && content) {
-    const file = content.find(file => file.key === thumbnail)
+    const file = content.find(reference => reference.file === thumbnail)
     if (file) {
       thumbnail = getCatalystContentUrl(file.hash)
     }

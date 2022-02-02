@@ -1076,7 +1076,7 @@
     "free": "免费",
     "price_label": "价格",
     "beneficiary_label": "受益人",
-    "beneficiary_popup": "这是出售该物品时将获得MANA的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
+    "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
   },
   "confirm_delete": {
     "content": "您确定要删除\"{name}\"吗?"

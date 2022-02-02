@@ -2,6 +2,6 @@
   z-index: 3001; /* Over modals, which have a z-index of 3000 */
 }
 
-.infoIcon {
+.info-icon {
   cursor: pointer;
 }

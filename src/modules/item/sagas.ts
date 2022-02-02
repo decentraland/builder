@@ -24,8 +24,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
+import { Entity, EntityType } from 'dcl-catalyst-commons'
 import {
   FetchItemsRequestAction,
   fetchItemsRequest,
@@ -105,7 +105,7 @@ import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { fetchEntitiesRequest } from 'modules/entity/actions'
+import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
@@ -408,11 +408,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
       const items: Item[] = yield select(getItems)
       const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
-      const urns = items
+      const pointers = items
         .filter(item => item.isPublished)
         .map(item => buildCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
-      if (urns.length > 0) {
-        yield put(fetchEntitiesRequest({ filters: { pointers: urns, onlyCurrentlyPointed: true } }))
+      if (pointers.length > 0) {
+        yield put(fetchEntitiesByPointersRequest(EntityType.WEARABLE, pointers))
       }
     }
   }
@@ -489,7 +489,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 export function* handleResetItemRequest(action: ResetItemRequestAction) {
   const { itemId } = action.payload
   const itemsById: Record<string, Item> = yield select(getItemsById)
-  const entitiesByItemId: Record<string, DeploymentWithMetadataContentAndPointers> = yield select(getEntityByItemId)
+  const entitiesByItemId: Record<string, Entity> = yield select(getEntityByItemId)
 
   const item = itemsById[itemId]
   const entity = entitiesByItemId[itemId]
@@ -501,8 +501,8 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
       throw new Error('Entity does not have content')
     }
 
-    const entityContentsAsMap = entity.content.reduce<Record<string, string>>((contents, { key, hash }) => {
-      contents[key] = hash
+    const entityContentsAsMap = entity.content.reduce<Record<string, string>>((contents, { file, hash }) => {
+      contents[file] = hash
       return contents
     }, {})
 

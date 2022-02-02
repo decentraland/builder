@@ -244,7 +244,7 @@ describe('Item selectors', () => {
               content: [
                 {
                   hash: 'QmA',
-                  key: 'file.ext'
+                  file: 'file.ext'
                 }
               ],
               metadata: {
@@ -264,7 +264,7 @@ describe('Item selectors', () => {
               content: [
                 {
                   hash: 'QmB',
-                  key: 'file.ext'
+                  file: 'file.ext'
                 }
               ],
               metadata: {
@@ -284,7 +284,7 @@ describe('Item selectors', () => {
               content: [
                 {
                   hash: 'QmC',
-                  key: 'file.ext'
+                  file: 'file.ext'
                 }
               ],
               metadata: {

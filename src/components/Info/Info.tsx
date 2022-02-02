@@ -13,7 +13,7 @@ export default class Info extends React.PureComponent<Props> {
         className="info-popup"
         content={content}
         position="top center"
-        trigger={<InfoIcon className={classNames(className, 'infoIcon')} />}
+        trigger={<InfoIcon className={classNames(className, 'info-icon')} />}
         on="hover"
         inverted
       />

@@ -1,7 +1,7 @@
 import { Address } from 'web3x/address'
 import { constants } from 'ethers'
-import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import { utils } from 'decentraland-commons'
+import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
@@ -350,7 +350,7 @@ export function areEqualRepresentations(a: WearableRepresentation[], b: Wearable
   return true
 }
 
-export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPointers) {
+export function areSynced(item: Item, entity: Entity) {
   // check if metadata is synced
   const catalystItem = entity.metadata! as CatalystItem
   const hasMetadataChanged =
@@ -370,7 +370,7 @@ export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPo
   }
 
   // check if contents are synced
-  const contents = entity.content!.reduce((map, entry) => map.set(entry.key, entry.hash), new Map<string, string>())
+  const contents = entity.content!.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
     const hash = item.contents[path]
     if (contents.get(path) !== hash) {

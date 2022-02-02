@@ -44,10 +44,22 @@
 }
 
 .ClaimENSPage .ui.button.primary .dcl.mana {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 0;
 }
 
+.ClaimENSPage .content .dcl.mana {
+  font-size: 14px;
+}
+
+.ClaimENSPage .content .dcl.mana .symbol {
+  transform: translateY(-0.1em);
+}
+
 .ClaimENSPage .ui.button.primary:not(.loading) .dcl.mana .symbol {
+  filter: brightness(100);
   color: var(--text);
+  padding-right: 0.1em;
+  padding-left: 0.2em;
+  transform: translateY(-0.03em);
 }
