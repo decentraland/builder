@@ -1,42 +1,42 @@
-.ui.modal.CreateItemModal > .content {
+.ui.modal.CreateSingleItemModal > .content {
   margin-bottom: 32px;
 }
 
-.CreateItemModal .details {
+.CreateSingleItemModal .details {
   background-color: rgba(var(--dark-raw), 0.48);
   border-radius: 8px;
   width: 100%;
 }
 
-.CreateItemModal .preview {
+.CreateSingleItemModal .preview {
   padding: 24px;
 }
 
-.CreateItemModal .preview .thumbnail-container {
+.CreateSingleItemModal .preview .thumbnail-container {
   position: relative;
 }
 
-.CreateItemModal .preview .thumbnail-container .thumbnail {
+.CreateSingleItemModal .preview .thumbnail-container .thumbnail {
   width: 100%;
   background-color: var(--modal);
   border-radius: 8px;
 }
 
-.CreateItemModal .preview .thumbnail-container .Icon.camera {
+.CreateSingleItemModal .preview .thumbnail-container .Icon.camera {
   position: absolute;
   bottom: 16px;
   right: 12px;
 }
 
-.CreateItemModal .preview .thumbnail-container input[type='file'] {
+.CreateSingleItemModal .preview .thumbnail-container input[type='file'] {
   display: none;
 }
 
-.CreateItemModal .preview .metrics {
+.CreateSingleItemModal .preview .metrics {
   margin-top: 24px;
 }
 
-.CreateItemModal .preview .metric {
+.CreateSingleItemModal .preview .metric {
   color: var(--secondary-text);
   font-size: 13px;
   line-height: 18px;
@@ -46,36 +46,36 @@
   background-position-y: center;
 }
 
-.CreateItemModal .preview .metric.triangles {
+.CreateSingleItemModal .preview .metric.triangles {
   background-image: url(../../../images/triangles.svg);
 }
 
-.CreateItemModal .preview .metric.materials {
+.CreateSingleItemModal .preview .metric.materials {
   background-image: url(../../../images/materials.svg);
 }
 
-.CreateItemModal .preview .metric.textures {
+.CreateSingleItemModal .preview .metric.textures {
   background-image: url(../../../images/textures.svg);
 }
 
-.CreateItemModal .actions {
+.CreateSingleItemModal .actions {
   margin-top: 24px;
   width: 100%;
 }
 
-.CreateItemModal .dcl.row.details {
+.CreateSingleItemModal .dcl.row.details {
   align-items: flex-start;
 }
 
-.CreateItemModal .data {
+.CreateSingleItemModal .data {
   padding-top: 24px;
 }
 
-.CreateItemModal .data .ui.header.sub {
+.CreateSingleItemModal .data .ui.header.sub {
   text-transform: none;
 }
 
-.CreateItemModal .option {
+.CreateSingleItemModal .option {
   font-size: 13px;
   line-height: 18px;
   border-radius: 5px;
@@ -87,7 +87,7 @@
   text-transform: capitalize;
 }
 
-.CreateItemModal .option.has-icon {
+.CreateSingleItemModal .option.has-icon {
   padding-left: 32px;
   background-size: 16px;
   background-repeat: no-repeat;
@@ -95,46 +95,46 @@
   background-position-x: 8px;
 }
 
-.CreateItemModal .option + .option {
+.CreateSingleItemModal .option + .option {
   margin-left: 16px;
 }
 
-.CreateItemModal .option:hover {
+.CreateSingleItemModal .option:hover {
   border-color: white;
   color: white;
   cursor: pointer;
 }
 
-.CreateItemModal .option.active {
+.CreateSingleItemModal .option.active {
   border-color: var(--primary);
   color: white;
   background-color: var(--primary);
 }
 
-.CreateItemModal .option.has-icon.both {
+.CreateSingleItemModal .option.has-icon.both {
   background-image: url(../../../images/unisex.svg);
 }
 
-.CreateItemModal .option.has-icon.male {
+.CreateSingleItemModal .option.has-icon.male {
   background-image: url(../../../images/male.svg);
 }
 
-.CreateItemModal .option.has-icon.female {
+.CreateSingleItemModal .option.has-icon.female {
   background-image: url(../../../images/female.svg);
   background-size: 12px;
   background-position-x: 12px;
 }
 
-.CreateItemModal .dcl.field {
+.CreateSingleItemModal .dcl.field {
   margin: 0;
 }
 
-.CreateItemModal .error {
+.CreateSingleItemModal .error {
   margin-top: 15px;
   width: 100%;
 }
 
-.CreateItemModal .ui.dropdown .menu > .item > .ui.label {
+.CreateSingleItemModal .ui.dropdown .menu > .item > .ui.label {
   float: right;
   color: var(--text-on-secondary);
   background-color: var(--secondary-text);
