@@ -1,0 +1,9 @@
+.info {
+  width: 16px;
+  height: 16px;
+  background-image: url(../../images/info.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  display: inline-block;
+}
