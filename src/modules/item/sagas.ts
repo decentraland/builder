@@ -212,22 +212,14 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     console.log('Items to upload', builtItems.length)
 
     // Upload files sequentially to avoid DoSing the server
-    let index = 0
     try {
-      while (index < builtItems.length) {
-        if (index === 2) {
-          throw new Error('La pinga error')
-        }
-        // for (let i = 0; i < builtItems.length; i++) {
-        // for (const builtItem of builtItems) {
-        yield delay(5000)
-        // const remoteItem: RemoteItem = yield call([builder, 'upsertItem'], builtItems[index].item, builtItems[index].newContent)
-        // remoteItems.push({} as RemoteItem)
-        // remoteItems.push(remoteItem)
-        fileNames.push(builtItems[index].fileName)
+      for (const [index, builtItem] of builtItems.entries()) {
+        const remoteItem: RemoteItem = yield call([builder, 'upsertItem'], builtItems[index].item, builtItems[index].newContent)
+        remoteItems.push({} as RemoteItem)
+        remoteItems.push(remoteItem)
+        fileNames.push(builtItem.fileName)
         yield put(updateProgressSaveMultipleItems(Math.round(((index + 1) / builtItems.length) * 100)))
-        console.log('Uploaded item number', index)
-        index++
+        console.log('Uploaded item number', index + 1)
       }
 
       console.log('Finishing successfully')
