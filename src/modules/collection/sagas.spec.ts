@@ -3,8 +3,8 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { replace } from 'connected-react-router'
 import { ChainId, Network, WearableRepresentation } from '@dcl/schemas'
-import { EntityType } from 'dcl-catalyst-commons'
-import { CatalystClient, DeploymentPreparationData, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
+import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -61,22 +61,19 @@ const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
     ...props
   } as Item)
 
-const getEntity = (
-  item: Item,
-  props: Partial<DeploymentWithMetadataContentAndPointers> = {}
-): DeploymentWithMetadataContentAndPointers => ({
-  entityId: 'anEntity',
-  content: Object.keys(item.contents).map(key => ({ key, hash: item.contents[key] })),
+const getEntity = (item: Item, props: Partial<Entity> = {}): Entity => ({
+  id: 'anEntity',
+  content: Object.keys(item.contents).map(file => ({ file, hash: item.contents[file] })),
   metadata: {
     urn: 'urn:decentraland:collections-v2:aCollection:anItem',
     name: item.name,
     description: item.description,
     data: item.data
   },
-  deployedBy: '0xcafebabe',
-  entityTimestamp: 0,
-  entityType: EntityType.WEARABLE,
+  timestamp: 0,
+  type: EntityType.WEARABLE,
   pointers: ['urn:decentraland:collections-v2:aCollection:anItem'],
+  version: EntityVersion.V3,
   ...props
 })
 
@@ -120,7 +117,7 @@ describe('when executing the approval flow', () => {
       contentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ key: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
     it('should complete the flow doing the rescue, deploy and approve collection steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
@@ -190,7 +187,7 @@ describe('when executing the approval flow', () => {
       contentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ key: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
     const curation = getCuration(collection)
     it('should complete the flow doing a rescue, deploy and approve curation steps', () => {
@@ -342,7 +339,7 @@ describe('when executing the approval flow', () => {
       contentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ key: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
     const deployError = 'Deployment Error'
     it('should open the modal in an error state', () => {
@@ -407,7 +404,7 @@ describe('when executing the approval flow', () => {
       contentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ key: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
     const approveError = 'Approve Collection Transaction Error'
     it('should open the modal in an error state', () => {
@@ -479,7 +476,7 @@ describe('when executing the approval flow', () => {
       contentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ key: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
     const curation = getCuration(collection)
     const curationError = 'Curation Error'

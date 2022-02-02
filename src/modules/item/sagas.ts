@@ -7,7 +7,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { Entity, EntityType } from 'dcl-catalyst-commons'
 import {
   FetchItemsRequestAction,
   fetchItemsRequest,
@@ -79,7 +79,7 @@ import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { fetchEntitiesRequest } from 'modules/entity/actions'
+import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
@@ -114,7 +114,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const rarities: Rarity[] = yield call([builder, 'fetchRarities'])
       yield put(fetchRaritiesSuccess(rarities))
-    } catch (error: any) {
+    } catch (error) {
       yield put(fetchRaritiesFailure(error.message))
     }
   }
@@ -124,7 +124,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const items: Item[] = yield call(() => builder.fetchItems(address))
       yield put(fetchItemsSuccess(items))
-    } catch (error: any) {
+    } catch (error) {
       yield put(fetchItemsFailure(error.message))
     }
   }
@@ -134,7 +134,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const item: Item = yield call(() => builder.fetchItem(id))
       yield put(fetchItemSuccess(id, item))
-    } catch (error: any) {
+    } catch (error) {
       yield put(fetchItemFailure(id, error.message))
     }
   }
@@ -144,7 +144,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const items: Item[] = yield call(() => builder.fetchCollectionItems(collectionId))
       yield put(fetchCollectionItemsSuccess(collectionId, items))
-    } catch (error: any) {
+    } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
     }
   }
@@ -174,7 +174,7 @@ export function* itemSaga(builder: BuilderAPI) {
       yield call([builder, 'saveItem'], item, contents)
 
       yield put(saveItemSuccess(item, contents))
-    } catch (error: any) {
+    } catch (error) {
       yield put(saveItemFailure(actionItem, contents, error.message))
     }
   }
@@ -209,7 +209,7 @@ export function* itemSaga(builder: BuilderAPI) {
       )
 
       yield put(setPriceAndBeneficiarySuccess(newItem, chainId, txHash))
-    } catch (error: any) {
+    } catch (error) {
       yield put(setPriceAndBeneficiaryFailure(itemId, price, beneficiary, error.message))
     }
   }
@@ -228,7 +228,7 @@ export function* itemSaga(builder: BuilderAPI) {
 
       yield put(publishThirdPartyItemsSuccess(txHash, maticChainId, thirdParty, collection, items))
       yield put(push(locations.activity()))
-    } catch (error: any) {
+    } catch (error) {
       yield put(publishThirdPartyItemsFailure(thirdParty, items, error.message))
     }
   }
@@ -242,7 +242,7 @@ export function* itemSaga(builder: BuilderAPI) {
       if (itemIdInUriParam === item.id) {
         yield put(replace(locations.collections()))
       }
-    } catch (error: any) {
+    } catch (error) {
       yield put(deleteItemFailure(item, error.message))
     }
   }
@@ -271,7 +271,7 @@ export function* itemSaga(builder: BuilderAPI) {
     try {
       const { items: newItems }: { items: Item[] } = yield call(() => builder.publishCollection(collection.id))
       yield put(setItemsTokenIdSuccess(newItems))
-    } catch (error: any) {
+    } catch (error) {
       yield put(setItemsTokenIdFailure(collection, items, error.message))
     }
   }
@@ -305,11 +305,11 @@ export function* itemSaga(builder: BuilderAPI) {
       }
       const items: Item[] = yield select(getItems)
       const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
-      const urns = items
+      const pointers = items
         .filter(item => item.isPublished)
         .map(item => buildCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
-      if (urns.length > 0) {
-        yield put(fetchEntitiesRequest({ filters: { pointers: urns, onlyCurrentlyPointed: true } }))
+      if (pointers.length > 0) {
+        yield put(fetchEntitiesByPointersRequest(EntityType.WEARABLE, pointers))
       }
     }
   }
@@ -336,7 +336,7 @@ export function* itemSaga(builder: BuilderAPI) {
 
       const newItems = items.map<Item>((item, index) => ({ ...item, contentHash: contentHashes[index] }))
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
-    } catch (error: any) {
+    } catch (error) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
     }
   }
@@ -377,7 +377,7 @@ export function* itemSaga(builder: BuilderAPI) {
 
       // success 🎉
       yield put(downloadItemSuccess(itemId))
-    } catch (error: any) {
+    } catch (error) {
       yield put(downloadItemFailure(itemId, error.message))
     }
   }
@@ -386,7 +386,7 @@ export function* itemSaga(builder: BuilderAPI) {
 export function* handleResetItemRequest(action: ResetItemRequestAction) {
   const { itemId } = action.payload
   const itemsById: Record<string, Item> = yield select(getItemsById)
-  const entitiesByItemId: Record<string, DeploymentWithMetadataContentAndPointers> = yield select(getEntityByItemId)
+  const entitiesByItemId: Record<string, Entity> = yield select(getEntityByItemId)
 
   const item = itemsById[itemId]
   const entity = entitiesByItemId[itemId]
@@ -398,8 +398,8 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
       throw new Error('Entity does not have content')
     }
 
-    const entityContentsAsMap = entity.content.reduce<Record<string, string>>((contents, { key, hash }) => {
-      contents[key] = hash
+    const entityContentsAsMap = entity.content.reduce<Record<string, string>>((contents, { file, hash }) => {
+      contents[file] = hash
       return contents
     }, {})
 
@@ -440,7 +440,7 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
     } else if (saveItemResult.failure) {
       yield put(resetItemFailure(itemId, saveItemResult.failure.payload.error))
     }
-  } catch (error: any) {
+  } catch (error) {
     yield put(resetItemFailure(itemId, error.message))
   }
 }

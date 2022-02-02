@@ -1,6 +1,6 @@
-import { CatalystClient, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { CatalystClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
-import { EntityType } from 'dcl-catalyst-commons'
+import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -274,13 +274,14 @@ export function* deploymentSaga(builder: BuilderAPI) {
     try {
       const catalyst = new CatalystClient(PEER_URL, 'builder')
 
-      const entities: DeploymentWithMetadataContentAndPointers[] = yield call(() =>
-        coords.length > 0 ? catalyst.fetchAllDeployments({ filters: { pointers: coords, onlyCurrentlyPointed: true } }) : []
-      )
+      let entities: Entity[] = []
+
+      if (coords.length > 0) {
+        entities = yield call([catalyst, 'fetchEntitiesByPointers'], EntityType.SCENE, coords)
+      }
+
       const deployments = new Map<string, Deployment>()
-      for (const entity of entities
-        .filter(entity => entity.entityType === 'scene')
-        .sort((a, b) => (a.entityTimestamp > b.entityTimestamp ? 1 : -1))) {
+      for (const entity of entities.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))) {
         const id = entity.pointers[0]
         if (id) {
           const [x, y] = idToCoords(id)
@@ -295,20 +296,19 @@ export function* deploymentSaga(builder: BuilderAPI) {
             point: { x, y },
             rotation: (definition && definition.source && definition.source.rotation) || 'north'
           }
-          const owner = entity.deployedBy
           const projectId = (definition && definition.source && definition.source.projectId) || null
           const layout = (definition && definition.source && definition.source.layout) || null
           const { base, parcels } = definition.scene
           const isEmpty = !!(definition && definition.source && definition.source.isEmpty)
           if (!isEmpty) {
             deployments.set(id, {
-              id: entity.entityId,
-              timestamp: entity.entityTimestamp,
+              id: entity.id,
+              timestamp: entity.timestamp,
               projectId,
               name,
               thumbnail,
               placement,
-              owner,
+              owner: definition.owner,
               layout,
               base,
               parcels

@@ -37,6 +37,7 @@ import { buildZipContents, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { downloadZip } from 'lib/zip'
+import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 
 let blob: Blob = new Blob()
 const contents: Record<string, Blob> = { path: blob }
@@ -313,7 +314,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
   const itemId = 'itemId'
 
   let itemsById: any
-  let entitiesByItemId: any
+  let entitiesByItemId: Record<string, Entity>
   let replacedItem: any
   let replacedContents: any
 
@@ -343,7 +344,12 @@ describe('when reseting an item to the state found in the catalyst', () => {
 
     entitiesByItemId = {
       [itemId]: {
-        content: [{ key: 'key', hash: 'hash' }],
+        id: 'anEntity',
+        version: EntityVersion.V3,
+        type: EntityType.WEARABLE,
+        timestamp: Date.now(),
+        pointers: [],
+        content: [{ file: 'key', hash: 'hash' }],
         metadata: {
           name: 'name',
           description: 'description',
