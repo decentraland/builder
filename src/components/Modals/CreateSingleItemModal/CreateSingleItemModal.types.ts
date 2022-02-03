@@ -14,6 +14,7 @@ export type Props = ModalProps & {
   metadata: CreateSingleItemModalMetadata
   error: string | null
   isLoading: boolean
+  collectionUrn: string | null
   onSave: typeof saveItemRequest
 }
 
@@ -47,6 +48,7 @@ export type ItemAssetJson = Pick<State, 'name' | 'description' | 'category' | 'r
 
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading'>
+export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
+export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collectionUrn'>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

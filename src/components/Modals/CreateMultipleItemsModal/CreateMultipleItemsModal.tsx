@@ -10,6 +10,8 @@ import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { ImportedFile, ImportedFileType, ItemCreationView, Props, RejectedFile, State } from './CreateMultipleItemsModal.types'
 import styles from './CreateMultipleItemsModal.module.css'
+import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
+import uuid from 'uuid'
 
 export default class CreateMultipleItemsModal extends React.PureComponent<Props, State> {
   state = {
@@ -71,7 +73,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
   }
 
   private handleFilesImport = async (acceptedFiles: File[]): Promise<void> => {
-    const { metadata } = this.props
+    const { metadata, collectionUrn } = this.props
     this.setState({
       view: ItemCreationView.IMPORTING
     })
@@ -103,6 +105,30 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
           // Override collection id if specified in the modal's metadata
           if (metadata.collectionId) {
             itemFactory.withCollectionId(metadata.collectionId)
+          }
+
+          // Generate or set the correct URN for the items taking into consideration the selected collection
+          let decodedCollectionUrn: DecodedURN<any> | null = collectionUrn ? decodeURN(collectionUrn) : null
+
+          if (
+            decodedCollectionUrn &&
+            decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
+            decodedCollectionUrn.thirdPartyCollectionId
+          ) {
+            let decodedUrn = loadedFile.asset.urn ? decodeURN(loadedFile.asset.urn) : null
+            if (loadedFile.asset.urn && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY && decodedUrn.thirdPartyTokenId) {
+              itemFactory.withUrn(
+                buildThirdPartyURN(
+                  decodedCollectionUrn.thirdPartyName,
+                  decodedCollectionUrn.thirdPartyCollectionId,
+                  decodedUrn.thirdPartyTokenId
+                )
+              )
+            } else {
+              itemFactory.withUrn(
+                buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+              )
+            }
           }
 
           const builtItem = await itemFactory.build()

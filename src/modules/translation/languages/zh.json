@@ -1005,7 +1005,8 @@
     "slots": "{amount, plural, =0 {没有插槽} other {# 个插槽}}",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "发布项目后，您将无法添加或删除项目。",
-    "publish_items": "发布 {count, plural, =0 {} other {# 项}}"
+    "publish_items": "发布 {count, plural, =0 {} other {# 项}}",
+    "new_items": "新的可穿戴物品"
   },
   "collection_detail_page": {
     "new_item": "新物品",

@@ -51,6 +51,11 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.ThirdPartyRegistry)
   }
 
+  handleNewItems = () => {
+    const { collection, onOpenModal } = this.props
+    onOpenModal('CreateItemsModal', { collectionId: collection!.id })
+  }
+
   handleEditName = () => {
     const { collection, onOpenModal } = this.props
     if (collection) {
@@ -206,6 +211,9 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                           {t('global.buy')}
                         </span>
                       ) : null}
+                    </Button>
+                    <Button secondary compact className={'add-items'} onClick={this.handleNewItems}>
+                      {t('third_party_collection_detail_page.new_items')}
                     </Button>
                     <CollectionPublishButton collection={collection} items={selectedItems} slots={slots.toNumber()} />
                     <CollectionContextMenu collection={collection} />

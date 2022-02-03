@@ -1014,7 +1014,8 @@
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them.",
-    "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}"
+    "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}",
+    "new_items": "New Items"
   },
   "collection_detail_page": {
     "new_item": "New Item",

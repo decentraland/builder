@@ -39,6 +39,7 @@ import { computeHashes } from 'modules/deployment/contentUtils'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
+import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
 import { ModelMetrics } from 'modules/models/types'
 import {
   getBodyShapeType,
@@ -53,6 +54,7 @@ import {
   isImageCategory,
   getMaxSupplyForRarity
 } from 'modules/item/utils'
+import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { getThumbnailType, validateEnum, validatePath } from './utils'
@@ -66,7 +68,6 @@ import {
   ItemAssetJson
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
-import ItemImport from 'components/ItemImport'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -154,7 +155,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleSubmit = async () => {
-    const { address, metadata, onSave } = this.props
+    const { address, metadata, collectionUrn, onSave } = this.props
     const { id } = this.state
 
     let changeItemFile = false
@@ -247,10 +248,22 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           item.data.representations[representationIndex] = representations[0]
         }
       } else {
+        // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
+        let decodedCollectionUrn: DecodedURN<any> | null = collectionUrn ? decodeURN(collectionUrn) : null
+        let urn: string | undefined
+        if (
+          decodedCollectionUrn &&
+          decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
+          decodedCollectionUrn.thirdPartyCollectionId
+        ) {
+          urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+        }
+
         // create item to save
         item = {
           id,
           name,
+          urn,
           description: description || '',
           thumbnail: THUMBNAIL_PATH,
           type: ItemType.WEARABLE,
@@ -281,7 +294,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   /**
-   * Unzip files and procceses the model files.
+   * Unzip files and processes the model files.
    * One of the models will be taken into consideration if multiple models are uploaded.
    *
    * @param file - The ZIP file.

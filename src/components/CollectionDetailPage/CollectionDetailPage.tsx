@@ -36,7 +36,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
 
   handleNewItem = () => {
     const { collection, onOpenModal } = this.props
-    onOpenModal('CreateItemsModal', { collectionId: collection!.id })
+    onOpenModal('CreateSingleItemModal', { collectionId: collection!.id })
   }
 
   handleEditName = () => {
