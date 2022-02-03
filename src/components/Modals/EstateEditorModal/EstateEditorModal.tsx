@@ -226,7 +226,7 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
             ) : null}
             {needsTwoTxs ? (
               <div className="message info">
-                <Info />
+                <Info className="info" />
                 {t('estate_editor.needs_two_txs', { toAdd: coordsToAdd.length, toRemove: coordsToRemove.length })}
               </div>
             ) : null}
