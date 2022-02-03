@@ -1,8 +1,9 @@
 import { Wearable } from 'decentraland-ecs'
 import { WearableBodyShape, WearableCategory } from 'modules/item/types'
+import { getSkinHiddenCategories } from 'modules/item/utils'
 import { convertWearable, wearable, catalystWearable } from 'specs/editor'
-import { CatalystWearable } from './types'
-import { extractBaseUrl, extractHash, filterWearables, fromCatalystWearableToWearable } from './utils'
+import { CatalystWearable, PatchedWearable } from './types'
+import { extractBaseUrl, extractHash, filterWearables, fromCatalystWearableToWearable, patchWearables } from './utils'
 
 describe('when extracting the base URL of a wearable', () => {
   describe("and the URL doesn't contain the /content/content path with a hash", () => {
@@ -86,5 +87,68 @@ describe('when converting a catalyst wearable to a wearable', () => {
 
   it('should return a wearable', () => {
     expect(fromCatalystWearableToWearable(aCatalystWearable)).toEqual(aWearable)
+  })
+})
+
+describe('when patching wearables', () => {
+  describe("and the category of the wearable is 'skin'", () => {
+    it('should add the categories that are hidden by skin wearables to the hides list', () => {
+      const hiddenCategories = getSkinHiddenCategories()
+      const wearables: Wearable[] = [
+        {
+          id: 'aWearable',
+          category: WearableCategory.SKIN,
+          baseUrl: '',
+          tags: [],
+          type: 'wearable',
+          representations: [
+            {
+              bodyShapes: [],
+              contents: [
+                {
+                  file: 'model.glb',
+                  hash: 'Qmhash'
+                }
+              ],
+              mainFile: 'model.glb'
+            }
+          ]
+        } as Wearable
+      ]
+      const patchedWearables = patchWearables(wearables)
+      const patchedWearable = patchedWearables[0] as PatchedWearable
+      expect(patchedWearable.hides).toEqual(hiddenCategories)
+      expect(patchedWearable.representations[0].overrideHides).toEqual(hiddenCategories)
+    })
+    it('should not remove the categories in the hides list added by the creator', () => {
+      const wearables: Wearable[] = [
+        {
+          id: 'aWearable',
+          category: WearableCategory.SKIN,
+          baseUrl: '',
+          tags: [],
+          type: 'wearable',
+          hides: [WearableCategory.HAT, WearableCategory.EYEWEAR],
+          representations: [
+            {
+              bodyShapes: [],
+              contents: [
+                {
+                  file: 'model.glb',
+                  hash: 'Qmhash'
+                }
+              ],
+              mainFile: 'model.glb'
+            }
+          ]
+        } as Wearable
+      ]
+      const patchedWearables = patchWearables(wearables)
+      const patchedWearable = patchedWearables[0] as PatchedWearable
+      expect(patchedWearable.hides).toContain(WearableCategory.HAT)
+      expect(patchedWearable.hides).toContain(WearableCategory.EYEWEAR)
+      expect(patchedWearable.representations[0].overrideHides).toContain(WearableCategory.HAT)
+      expect(patchedWearable.representations[0].overrideHides).toContain(WearableCategory.EYEWEAR)
+    })
   })
 })
