@@ -15,7 +15,6 @@ import {
   PaginationProps,
   Checkbox
 } from 'decentraland-ui'
-import { decodeURN, URNType } from 'lib/urn'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
@@ -34,6 +33,8 @@ import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './ThirdPartyCollectionDetailPage.types'
+import { getCollectionType } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
@@ -320,10 +321,10 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   render() {
     const { isLoading, collection } = this.props
     const hasAccess = this.hasAccess()
-    const decodedURN = collection && decodeURN(collection.urn)
+    const shouldRender = hasAccess && collection && getCollectionType(collection) === CollectionType.THIRD_PARTY
     return (
       <LoggedInDetailPage className="ThirdPartyCollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
-        {hasAccess && decodedURN?.type === URNType.COLLECTIONS_THIRDPARTY ? this.renderPage() : <NotFound />}
+        {shouldRender ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )
   }
