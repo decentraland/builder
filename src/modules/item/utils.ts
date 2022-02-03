@@ -300,8 +300,14 @@ export function getWearableCategories(contents: Record<string, any> | undefined 
   return categories
 }
 
-export function getOverridesCategories(contents: Record<string, any> | undefined = {}) {
-  return getCategories(contents)
+export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
+  const overrideCategories = getCategories(contents)
+  if (category === WearableCategory.SKIN) {
+    return overrideCategories.filter(
+      overrideCategory => !getSkinHiddenCategories().includes(overrideCategory) && overrideCategory !== WearableCategory.SKIN
+    )
+  }
+  return overrideCategories
 }
 
 export function isFree(item: Item) {

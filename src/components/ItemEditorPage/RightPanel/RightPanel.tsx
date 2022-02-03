@@ -16,8 +16,7 @@ import {
   getWearableCategories,
   getOverridesCategories,
   isOwner,
-  resizeImage,
-  getSkinHiddenCategories
+  resizeImage
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -290,14 +289,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
-              let actionableCategories = item ? getOverridesCategories(item.contents) : []
+              let actionableCategories = item ? getOverridesCategories(item.contents, data?.category) : []
               const wearableCategories = item ? getWearableCategories(item.contents) : []
-
-              if (data?.category === WearableCategory.SKIN) {
-                actionableCategories = actionableCategories.filter(actionableCategory =>
-                  !getSkinHiddenCategories().includes(actionableCategory) && actionableCategory !== WearableCategory.SKIN
-                )
-              }
 
               let overrideCategories: WearableCategory[] = []
               let hidesCategories: WearableCategory[] = []
