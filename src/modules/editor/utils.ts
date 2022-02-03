@@ -214,9 +214,12 @@ export function mergeWearables(avatar: Wearable[], apply: Wearable[]) {
   return Object.values(wearables)
 }
 
+/**
+ * Makes runtime changes to wearable objects before sending them to the ECS scene. This is because we are using an outdated version of the ECS,
+ * and certain tweaks need to be made in order to make the up-to-date wearables work on it.
+ * @param wearables
+ */
 export function patchWearables(wearables: Wearable[]) {
-  // makes changes to wearables needed to make them work with the outdated version of client
-
   return wearables.map(wearable => {
     // 1. if the category is "skin" we need to hide all the other categories
     if (wearable.category === 'skin') {
