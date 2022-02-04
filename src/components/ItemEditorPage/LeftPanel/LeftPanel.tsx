@@ -12,11 +12,6 @@ import './LeftPanel.css'
 import { getCollectionType } from 'modules/collection/utils'
 
 export default class LeftPanel extends React.PureComponent<Props> {
-  componentDidMount() {
-    const { onResetThirdPartyItems } = this.props
-    onResetThirdPartyItems()
-  }
-
   getItems(collection: Collection | null, collectionItems: Item[]) {
     const { selectedCollectionId, orphanItems } = this.props
 
@@ -34,12 +29,10 @@ export default class LeftPanel extends React.PureComponent<Props> {
       collections,
       selectedItemId,
       selectedCollectionId,
-      selectedThirdPartyItemIds,
       visibleItems,
       bodyShape,
       isConnected,
       onSetItems,
-      onToggleThirdPartyItem,
       onSetCollection
     } = this.props
 
@@ -69,11 +62,9 @@ export default class LeftPanel extends React.PureComponent<Props> {
                     hasHeader={!selectedCollectionId && collections.length > 0}
                     selectedItemId={selectedItemId}
                     selectedCollectionId={selectedCollectionId}
-                    selectedThirdPartyItemIds={selectedThirdPartyItemIds}
                     visibleItems={visibleItems}
                     bodyShape={bodyShape}
                     onSetItems={onSetItems}
-                    onToggleThirdPartyItem={onToggleThirdPartyItem}
                   />
                   {selectedCollectionId ? null : (
                     <Collections
