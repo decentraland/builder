@@ -91,6 +91,33 @@ describe('when converting a catalyst wearable to a wearable', () => {
 })
 
 describe('when patching wearables', () => {
+  describe("and the category of the wearable is not 'skin'", () => {
+    it('should not make changes to the wearable', () => {
+      const wearables: Wearable[] = [
+        {
+          id: 'aWearable',
+          category: WearableCategory.LOWER_BODY,
+          baseUrl: '',
+          tags: [],
+          type: 'wearable',
+          representations: [
+            {
+              bodyShapes: [],
+              contents: [
+                {
+                  file: 'model.glb',
+                  hash: 'Qmhash'
+                }
+              ],
+              mainFile: 'model.glb'
+            }
+          ]
+        } as Wearable
+      ]
+      const patchedWearables = patchWearables(wearables)
+      expect(patchedWearables).toEqual(wearables)
+    })
+  })
   describe("and the category of the wearable is 'skin'", () => {
     it('should add the categories that are hidden by skin wearables to the hides list', () => {
       const hiddenCategories = getSkinHiddenCategories()
