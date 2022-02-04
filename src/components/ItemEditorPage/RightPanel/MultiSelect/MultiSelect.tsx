@@ -58,7 +58,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
       <>
         <div className="label">
           {label}
-          {info ? <Info content={info} /> : null}
+          {info ? <Info content={info} className="info" /> : null}
         </div>
         <div className="values">
           {value.length > 0 ? (
