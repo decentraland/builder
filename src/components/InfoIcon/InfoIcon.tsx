@@ -6,6 +6,6 @@ import { Props } from './InfoIcon.types'
 export default class InfoIcon extends React.PureComponent<Props> {
   render() {
     const { className } = this.props
-    return <i className={classnames(styles.info, className)} />
+    return <i {...this.props} className={classnames(styles.info, className)} />
   }
 }

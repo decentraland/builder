@@ -138,7 +138,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                 (
                   <>
                     {t('edit_price_and_beneficiary_modal.beneficiary_label')}
-                    <Info content={t('edit_price_and_beneficiary_modal.beneficiary_popup')} />
+                    <Info content={t('edit_price_and_beneficiary_modal.beneficiary_popup')} className="info" />
                   </>
                 ) as FieldProps['label']
               }
