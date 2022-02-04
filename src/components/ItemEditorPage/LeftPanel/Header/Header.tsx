@@ -21,7 +21,7 @@ export default class Header extends React.PureComponent<Props> {
 
   handleNewItem = () => {
     const { onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { changeItemFile: false })
+    onOpenModal('CreateSingleItemModal', { changeItemFile: false })
   }
 
   handleNewCollection = () => {
@@ -31,7 +31,7 @@ export default class Header extends React.PureComponent<Props> {
 
   handleAddNewItem = () => {
     const { collection, onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { collectionId: collection!.id })
+    onOpenModal('CreateSingleItemModal', { collectionId: collection!.id })
   }
 
   handleAddExistingItem = () => {
@@ -86,8 +86,8 @@ export default class Header extends React.PureComponent<Props> {
             </Dropdown.Menu>
           </Dropdown>
         ) : (
-            <div className="block" />
-          )}
+          <div className="block" />
+        )}
       </>
     )
   }

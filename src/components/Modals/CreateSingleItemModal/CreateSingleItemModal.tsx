@@ -5,7 +5,6 @@ import JSZip from 'jszip'
 import future from 'fp-future'
 import {
   ModalNavigation,
-  Loader,
   Row,
   Column,
   Button,
@@ -17,7 +16,7 @@ import {
   SelectField,
   DropdownProps
 } from 'decentraland-ui'
-import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName } from 'modules/asset/utils'
 import { blobToDataURL, dataURLToBlob } from 'modules/media/utils'
@@ -37,7 +36,6 @@ import {
 } from 'modules/item/types'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
-import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
@@ -58,10 +56,19 @@ import {
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { getThumbnailType, validateEnum, validatePath } from './utils'
-import { Props, State, CreateItemView, CreateItemModalMetadata, StateData, SortedContent, ItemAssetJson } from './CreateItemModal.types'
-import './CreateItemModal.css'
+import {
+  Props,
+  State,
+  CreateItemView,
+  CreateSingleItemModalMetadata,
+  StateData,
+  SortedContent,
+  ItemAssetJson
+} from './CreateSingleItemModal.types'
+import './CreateSingleItemModal.css'
+import ItemImport from 'components/ItemImport'
 
-export default class CreateItemModal extends React.PureComponent<Props, State> {
+export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
 
@@ -73,7 +80,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       return state
     }
 
-    const { collectionId, item, addRepresentation } = metadata as CreateItemModalMetadata
+    const { collectionId, item, addRepresentation } = metadata as CreateSingleItemModalMetadata
     state.collectionId = collectionId
 
     if (item) {
@@ -615,59 +622,24 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return representations
   }
 
-  renderDropzoneCTA = (open: () => void) => {
-    const { metadata } = this.props
-    const { changeItemFile } = metadata as CreateItemModalMetadata
-    const { error, isLoading, isRepresentation, category } = this.state
-    return (
-      <>
-        {isLoading ? (
-          <div className="overlay">
-            <Loader active size="big" />
-          </div>
-        ) : null}
-        <T
-          id="asset_pack.import.cta"
-          values={{
-            models_link: (
-              <span className="link" onClick={this.handleOpenDocs}>
-                {isRepresentation || changeItemFile ? (isImageCategory(category!) ? 'PNG, ZIP' : 'GLB, GLTF, ZIP') : 'GLB, GLTF, PNG, ZIP'}
-              </span>
-            ),
-            action: (
-              <span className="action" onClick={open}>
-                {t('import_modal.upload_manually')}
-              </span>
-            )
-          }}
-        />
-        {error ? (
-          <Row className="error" align="center">
-            <p className="danger-text">{error}</p>
-          </Row>
-        ) : null}
-      </>
-    )
-  }
-
   renderModalTitle = () => {
     const isAddingRepresentation = this.isAddingRepresentation()
     const { bodyShape } = this.state
     const { metadata } = this.props
     if (isAddingRepresentation) {
-      return t('create_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+      return t('create_single_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
     }
 
     if (metadata && metadata.changeItemFile) {
-      return t('create_item_modal.change_item_file')
+      return t('create_single_item_modal.change_item_file')
     }
 
-    return t('create_item_modal.title')
+    return t('create_single_item_modal.title')
   }
 
   renderImportView() {
-    const { onClose, metadata } = this.props
-    const { changeItemFile } = metadata as CreateItemModalMetadata
+    const { onClose, metadata, error } = this.props
+    const { changeItemFile } = metadata as CreateSingleItemModalMetadata
     const { isRepresentation, category } = this.state
     const title = this.renderModalTitle()
 
@@ -675,13 +647,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
-          <FileImport
-            accept={
+          <ItemImport
+            error={error}
+            acceptedExtensions={
               isRepresentation || changeItemFile ? (isImageCategory(category!) ? IMAGE_EXTENSIONS : MODEL_EXTENSIONS) : ITEM_EXTENSIONS
             }
-            onAcceptedFiles={this.handleDropAccepted}
-            onRejectedFiles={this.handleDropRejected}
-            renderAction={this.renderDropzoneCTA}
+            onDropAccepted={this.handleDropAccepted}
+            onDropRejected={this.handleDropRejected}
           />
         </Modal.Content>
       </>
@@ -696,11 +668,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
     return (
       <>
-        <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
+        <Field className="name" label={t('create_single_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
         {!item || !item.isPublished ? (
           <SelectField
-            label={t('create_item_modal.rarity_label')}
-            placeholder={t('create_item_modal.rarity_placeholder')}
+            label={t('create_single_item_modal.rarity_label')}
+            placeholder={t('create_single_item_modal.rarity_placeholder')}
             value={rarity}
             options={rarities.map(value => ({
               value,
@@ -715,8 +687,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         ) : null}
         <SelectField
           required
-          label={t('create_item_modal.category_label')}
-          placeholder={t('create_item_modal.category_placeholder')}
+          label={t('create_single_item_modal.category_label')}
+          placeholder={t('create_single_item_modal.category_placeholder')}
           value={categories.includes(category!) ? category : undefined}
           options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
           onChange={this.handleCategoryChange}
@@ -777,7 +749,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                 <Column className="data" grow={true}>
                   {isAddingRepresentation ? null : (
                     <Section>
-                      <Header sub>{t('create_item_modal.representation_label')}</Header>
+                      <Header sub>{t('create_single_item_modal.representation_label')}</Header>
                       <Row>
                         {this.renderRepresentation(BodyShapeType.BOTH)}
                         {this.renderRepresentation(BodyShapeType.MALE)}
@@ -793,7 +765,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                         <>
                           {isAddingRepresentation ? null : (
                             <Section>
-                              <Header sub>{t('create_item_modal.existing_item')}</Header>
+                              <Header sub>{t('create_single_item_modal.existing_item')}</Header>
                               <Row>
                                 <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
                                   {t('global.yes')}
@@ -808,8 +780,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                             <Section>
                               <Header sub>
                                 {isAddingRepresentation
-                                  ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-                                  : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
+                                  ? t('create_single_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+                                  : t('create_single_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
                               </Header>
                               <ItemDropdown
                                 value={item}
