@@ -1,6 +1,8 @@
 import * as React from 'react'
+import uuid from 'uuid'
 import { FileTooBigError, ItemFactory, loadFile, MAX_FILE_SIZE, THUMBNAIL_PATH } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
+import { env } from 'decentraland-commons'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -8,11 +10,11 @@ import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile } from 'modules/item/types'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
+import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
 import { ImportedFile, ImportedFileType, ItemCreationView, Props, RejectedFile, State } from './CreateMultipleItemsModal.types'
 import styles from './CreateMultipleItemsModal.module.css'
-import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
-import uuid from 'uuid'
 
+const REACT_APP_WEARABLES_ZIP_INFRA_URL = env.get('REACT_APP_WEARABLES_ZIP_INFRA_URL', '')
 export default class CreateMultipleItemsModal extends React.PureComponent<Props, State> {
   state = {
     view: ItemCreationView.IMPORT,
@@ -284,14 +286,18 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
             onDropRejected={this.handleRejectedFiles}
             acceptedExtensions={['.zip']}
             moreInformation={
-              <span>
-                <T
-                  id="create_multiple_items_modal.import_information"
-                  values={{
-                    link: <a href="http://google.com">{t('create_multiple_items_modal.import_information_link_label')}</a>
-                  }}
-                />
-              </span>
+              REACT_APP_WEARABLES_ZIP_INFRA_URL ? (
+                <span>
+                  <T
+                    id="create_multiple_items_modal.import_information"
+                    values={{
+                      link: <a href={REACT_APP_WEARABLES_ZIP_INFRA_URL}>{t('create_multiple_items_modal.import_information_link_label')}</a>
+                    }}
+                  />
+                </span>
+              ) : (
+                undefined
+              )
             }
           />
         </Modal.Content>
@@ -346,16 +352,22 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
           {hasFailed ? <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} /> : null}
           {hasFinishedUnsuccessfully && savedItemsFiles.length > 0 ? (
             <>
-              <p>{t('create_multiple_items_modal.saved_items_table_title')}</p>
-              <Table basic="very" compact="very">
-                <Table.Body>
-                  {savedItemsFiles.map((item, index) => (
-                    <Table.Row key={index}>
-                      <Table.Cell>{item}</Table.Cell>
+              <div className={styles.tablesContainer}>
+                <Table basic="very" compact="very">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell>{t('create_multiple_items_modal.saved_items_table_title')}</Table.HeaderCell>
                     </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
+                  </Table.Header>
+                  <Table.Body>
+                    {savedItemsFiles.map((item, index) => (
+                      <Table.Row key={index}>
+                        <Table.Cell>{item}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table>
+              </div>
             </>
           ) : null}
         </Modal.Content>
