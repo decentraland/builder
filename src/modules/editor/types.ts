@@ -1,5 +1,5 @@
 import { WearableBodyShape } from 'modules/item/types'
-import { Wearable } from 'decentraland-ecs'
+import { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
 import { WearableCategory } from 'modules/item/types'
 
 export enum Gizmo {
@@ -91,4 +91,9 @@ export type CatalystWearable = {
   i18n: { code: string; text: string }[]
   createdAt: number
   updatedAt: number
+}
+
+export type PatchedWearable = Wearable & {
+  hides: string[]
+  representations: BodyShapeRespresentation & { overrideReplaces: string[]; overrideHides: string[] }[]
 }

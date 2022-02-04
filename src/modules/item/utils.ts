@@ -269,17 +269,45 @@ export function isModelCategory(category: WearableCategory) {
   return !isImageCategory(category)
 }
 
+export function getModelCategories() {
+  return Object.values(WearableCategory).filter(category => isModelCategory(category))
+}
+
+export function getSkinHiddenCategories() {
+  return [
+    WearableCategory.HEAD,
+    WearableCategory.HAIR,
+    WearableCategory.FACIAL_HAIR,
+    WearableCategory.MOUTH,
+    WearableCategory.EYEBROWS,
+    WearableCategory.EYES,
+    WearableCategory.UPPER_BODY,
+    WearableCategory.LOWER_BODY,
+    WearableCategory.FEET
+  ]
+}
+
 function getCategories(contents: Record<string, any> | undefined = {}) {
   const fileNames = Object.keys(contents)
-  return fileNames.some(isModelFile) ? Object.values(WearableCategory).filter(category => isModelCategory(category)) : IMAGE_CATEGORIES
+  return fileNames.some(isModelFile) ? getModelCategories() : IMAGE_CATEGORIES
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
-  return getCategories(contents).filter(category => category !== WearableCategory.HEAD)
+  let categories = getCategories(contents).filter(category => category !== WearableCategory.HEAD)
+  if (!process.env.REACT_APP_FF_SKINS) {
+    categories = categories.filter(category => category !== WearableCategory.SKIN)
+  }
+  return categories
 }
 
-export function getOverridesCategories(contents: Record<string, any> | undefined = {}) {
-  return getCategories(contents)
+export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
+  const overrideCategories = getCategories(contents)
+  if (category === WearableCategory.SKIN) {
+    return overrideCategories.filter(
+      overrideCategory => !getSkinHiddenCategories().includes(overrideCategory) && overrideCategory !== WearableCategory.SKIN
+    )
+  }
+  return overrideCategories
 }
 
 export function isFree(item: Item) {
