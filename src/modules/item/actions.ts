@@ -73,7 +73,7 @@ export const SAVE_MULTIPLE_ITEMS_CANCELLED = '[Cancelled] Save Multiple Items'
 export const SAVE_MULTIPLE_ITEMS_CANCEL = '[Cancel] Save Multiple Items'
 export const SAVE_MULTIPLE_ITEMS_CLEAR_STATE = '[Clear State] Save Multiple Items'
 
-export const saveMultipleItemsRequest = (builtItems: BuiltFile<Blob>[]) => action(SAVE_MULTIPLE_ITEMS_REQUEST, { builtItems })
+export const saveMultipleItemsRequest = (builtFiles: BuiltFile<Blob>[]) => action(SAVE_MULTIPLE_ITEMS_REQUEST, { builtFiles })
 export const saveMultipleItemsFailure = (error: string, items: Item[], fileNames: string[]) =>
   action(SAVE_MULTIPLE_ITEMS_FAILURE, { error, items, fileNames })
 export const saveMultipleItemsCancelled = (items: Item[], fileNames: string[]) =>

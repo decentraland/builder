@@ -199,18 +199,17 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleSaveMultipleItemsRequest(action: SaveMultipleItemsRequestAction) {
-    const { builtItems } = action.payload
+    const { builtFiles } = action.payload
     const remoteItems: RemoteItem[] = []
     const fileNames: string[] = []
 
     // Upload files sequentially to avoid DoSing the server
     try {
-      for (const [index, builtItem] of builtItems.entries()) {
-        const remoteItem: RemoteItem = yield call([builder, 'upsertItem'], builtItems[index].item, builtItems[index].newContent)
-        remoteItems.push({} as RemoteItem)
+      for (const [index, builtFile] of builtFiles.entries()) {
+        const remoteItem: RemoteItem = yield call([builder, 'upsertItem'], builtFile.item, builtFile.newContent)
         remoteItems.push(remoteItem)
-        fileNames.push(builtItem.fileName)
-        yield put(updateProgressSaveMultipleItems(Math.round(((index + 1) / builtItems.length) * 100)))
+        fileNames.push(builtFile.fileName)
+        yield put(updateProgressSaveMultipleItems(Math.round(((index + 1) / builtFiles.length) * 100)))
       }
 
       yield put(

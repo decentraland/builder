@@ -15,18 +15,18 @@ beforeEach(() => {
 
 describe('when getting the save progress', () => {
   it('should return the progress', () => {
-    expect(getProgress(state)).toEqual(INITIAL_STATE.progress)
+    expect(getProgress(state)).toEqual(state.ui.createMultipleItems.progress)
   })
 })
 
 describe('when getting the saved files', () => {
   it('should return the saved files', () => {
-    expect(getSavedItemsFiles(state)).toEqual(INITIAL_STATE.savedItemsFiles)
+    expect(getSavedItemsFiles(state)).toEqual(state.ui.createMultipleItems.savedItemsFiles)
   })
 })
 
 describe('when getting the multiple items save state', () => {
   it('should return the multiple items save state', () => {
-    expect(getMultipleItemsSaveState(state)).toEqual(INITIAL_STATE.state)
+    expect(getMultipleItemsSaveState(state)).toEqual(state.ui.createMultipleItems.state)
   })
 })
