@@ -39,7 +39,7 @@ import { computeHashes } from 'modules/deployment/contentUtils'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
-import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
+import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { ModelMetrics } from 'modules/models/types'
 import {
   getBodyShapeType,
@@ -186,6 +186,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
       let item: Item | undefined
 
+      const belongsToAThirdPartyCollection = collectionUrn && isThirdParty(collectionUrn)
       const blob = dataURLToBlob(thumbnail)
       const hasCustomThumbnail = THUMBNAIL_PATH in contents
       if (blob && !hasCustomThumbnail) {
@@ -273,7 +274,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           isApproved: false,
           inCatalyst: false,
           contentHash: null,
-          rarity,
+          rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
           data: {
             category,
             replaces: [],
@@ -445,7 +446,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) =>
     this.setState({ name: props.value.slice(0, ITEM_NAME_MAX_LENGTH) })
 
-  handleItemChange = (item: Item) => this.setState({ item: item, category: item.data.category, rarity: item.rarity })
+  handleItemChange = (item: Item) => {
+    this.setState({ item: item, category: item.data.category, rarity: item.rarity })
+  }
 
   handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
@@ -496,7 +499,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   filterItemsByBodyShape = (item: Item) => {
     const { bodyShape } = this.state
-    return getMissingBodyShapeType(item) === bodyShape
+    const { metadata } = this.props
+    return getMissingBodyShapeType(item) === bodyShape && metadata.collectionId === item.collectionId
   }
 
   async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
@@ -674,15 +678,17 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
+    const { collectionUrn } = this.props
     const { name, category, rarity, contents, item } = this.state
 
+    const belongsToAThirdPartyCollection = collectionUrn && isThirdParty(collectionUrn)
     const rarities = getRarities()
     const categories = getWearableCategories(contents)
 
     return (
       <>
         <Field className="name" label={t('create_single_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
-        {!item || !item.isPublished ? (
+        {(!item || !item.isPublished) && !belongsToAThirdPartyCollection ? (
           <SelectField
             label={t('create_single_item_modal.rarity_label')}
             placeholder={t('create_single_item_modal.rarity_placeholder')}
@@ -712,15 +718,24 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   isDisabled(): boolean {
     const { isLoading } = this.props
+
     return !this.isValid() || isLoading
   }
 
   isValid(): boolean {
     const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation } = this.state
+    const { collectionUrn } = this.props
+    const belongsToAThirdPartyCollection = collectionUrn && isThirdParty(collectionUrn)
 
-    const required: (string | ModelMetrics | Item | undefined)[] = isRepresentation
-      ? [item]
-      : [name, thumbnail, metrics, bodyShape, category, rarity]
+    let required: (string | ModelMetrics | Item | undefined)[]
+
+    if (isRepresentation) {
+      required = [item]
+    } else if (belongsToAThirdPartyCollection) {
+      required = [name, thumbnail, metrics, bodyShape, category]
+    } else {
+      required = [name, thumbnail, metrics, bodyShape, category, rarity]
+    }
 
     return required.every(prop => prop !== undefined)
   }
@@ -816,7 +831,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               </Row>
               <Row className="actions" align="right">
                 <Button primary disabled={isDisabled} loading={isLoading}>
-                  {metadata && metadata.changeItemFile ? t('global.save') : t('global.create')}
+                  {(metadata && metadata.changeItemFile) || isRepresentation ? t('global.save') : t('global.create')}
                 </Button>
               </Row>
               {error ? (

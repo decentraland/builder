@@ -118,30 +118,24 @@ import { buildZipContents, getMetadata, isValidText, MAX_FILE_SIZE, toThirdParty
 
 const takeLatestCancellable = <A extends Action>(
   { initializer, cancellable }: { initializer: ActionPattern<A>; cancellable: ActionPattern<A> },
-  // TODO: type the saga correctly
-  saga: any,
+  saga: (...args: any[]) => any,
   ...args: any[]
 ): ForkEffect<never> =>
   fork(function*() {
     let lastTask: Task | undefined
     while (true) {
-      const action: ActionPattern<A> = yield take([initializer, cancellable] as ActionPattern<Action<A>>)
-      console.log('Action taken', action)
+      const action: A = yield take([initializer, cancellable] as ActionPattern<Action<A>>)
       if (lastTask) {
-        console.log('Cancelling last task')
         yield cancel(lastTask) // cancel is no-op if the task has already terminated
       }
 
-      // TODO action type
-      if ((action as any).type === initializer) {
-        console.log('Running the initializer again')
+      if (action.type === initializer) {
         lastTask = yield fork(saga, ...args.concat(action))
       }
     }
   })
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
-  builder
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
@@ -159,7 +153,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
   yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
   yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
-  yield takeLatest(SAVE_MULTIPLE_ITEMS_REQUEST, handleSaveMultipleItemsRequest)
   yield takeLatestCancellable(
     { initializer: SAVE_MULTIPLE_ITEMS_REQUEST, cancellable: SAVE_MULTIPLE_ITEMS_CANCEL },
     handleSaveMultipleItemsRequest
@@ -209,7 +202,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { builtItems } = action.payload
     const remoteItems: RemoteItem[] = []
     const fileNames: string[] = []
-    console.log('Items to upload', builtItems.length)
 
     // Upload files sequentially to avoid DoSing the server
     try {
@@ -219,10 +211,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         remoteItems.push(remoteItem)
         fileNames.push(builtItem.fileName)
         yield put(updateProgressSaveMultipleItems(Math.round(((index + 1) / builtItems.length) * 100)))
-        console.log('Uploaded item number', index + 1)
       }
 
-      console.log('Finishing successfully')
       yield put(
         saveMultipleItemsSuccess(
           remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
@@ -230,7 +220,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         )
       )
     } catch (error) {
-      console.log('Error uploading items', error)
       yield put(
         saveMultipleItemsFailure(
           error.message,
@@ -241,7 +230,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     } finally {
       const wasCancelled: boolean = yield cancelled()
       if (wasCancelled) {
-        console.log('The task was cancelled')
         yield put(
           saveMultipleItemsCancelled(
             remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),

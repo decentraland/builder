@@ -146,11 +146,16 @@ const store = createStore(rootReducer, enhancer) as RootStore
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
 const catalystClient = new CatalystClient(PEER_URL, 'Builder')
 
-const auths = getData(store.getState())
-const address = getAddress(store.getState())
+const getClientAddress = () => getAddress(store.getState())!
+const getClientAuthAuthority = () => {
+  const auths = getData(store.getState())
+  const address = getAddress(store.getState())
+  return auths[address!]
+}
 
-// TODO: check about AuthIdentity instantiation
-const newBuilderClient = new BuilderClient(BUILDER_SERVER_URL, auths[address!], address!, fetch)
+const builderClientUrl: string = BUILDER_SERVER_URL.replace('/v1', '')
+
+const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, fetch)
 
 sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient)
 loadStorageMiddleware(store)

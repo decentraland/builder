@@ -2,7 +2,15 @@ import { ChainId } from '@dcl/schemas'
 import { saveCollectionSuccess } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { downloadItemFailure, downloadItemRequest, downloadItemSuccess } from './actions'
+import {
+  clearStateSaveMultipleItems,
+  downloadItemFailure,
+  downloadItemRequest,
+  downloadItemSuccess,
+  saveMultipleItemsCancelled,
+  saveMultipleItemsSuccess,
+  saveMultipleItemsFailure
+} from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
 
@@ -12,9 +20,19 @@ const getChainIdByNetworkMock: jest.Mock<typeof getChainIdByNetwork> = (getChain
 >
 
 let state: ItemState
+let items: Item[]
+let itemsMap: Record<string, Item>
+let fileNames: string[]
+const error = 'someError'
 
 beforeEach(() => {
   state = { ...INITIAL_STATE }
+  items = [{ id: 'anItemId' } as Item, { id: 'anotherItemId' } as Item]
+  itemsMap = {
+    [items[0].id]: items[0],
+    [items[1].id]: items[1]
+  }
+  fileNames = ['file1', 'file2']
 })
 
 describe('when reducing the save collection success action', () => {
@@ -160,6 +178,56 @@ describe('when an action of type DOWNLOAD_ITEM_FAILURE is called', () => {
       ...INITIAL_STATE,
       loading: [],
       error
+    })
+  })
+})
+
+describe('when reducing the successful save multiple items action', () => {
+  it('should return a state with the saved items', () => {
+    expect(itemReducer(state, saveMultipleItemsSuccess(items, fileNames))).toEqual({
+      ...INITIAL_STATE,
+      data: { ...state.data, ...itemsMap }
+    })
+  })
+})
+
+describe('when reducing the failing save multiple items action', () => {
+  it('should return a state with the saved items added and the error set', () => {
+    expect(itemReducer(state, saveMultipleItemsFailure(error, items, fileNames))).toEqual({
+      ...INITIAL_STATE,
+      error,
+      data: {
+        ...state.data,
+        ...itemsMap
+      }
+    })
+  })
+})
+
+describe('when reducing the save cancelling save multiple items action', () => {
+  it('should return a state with the saved items added', () => {
+    expect(itemReducer(state, saveMultipleItemsCancelled(items, fileNames))).toEqual({
+      ...INITIAL_STATE,
+      data: {
+        ...state.data,
+        ...itemsMap
+      }
+    })
+  })
+})
+
+describe('when reducing the clearing save multiple items action', () => {
+  beforeEach(() => {
+    state = {
+      ...state,
+      error
+    }
+  })
+
+  it('should return a state with the error cleared', () => {
+    expect(itemReducer(state, clearStateSaveMultipleItems())).toEqual({
+      ...state,
+      error: null
     })
   })
 })
