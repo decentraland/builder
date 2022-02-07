@@ -9,6 +9,7 @@ export const getThumbnailType = (category: WearableCategory) => {
     case WearableCategory.EYES:
     case WearableCategory.MASK:
     case WearableCategory.MOUTH:
+    case WearableCategory.SKIN:
       return ThumbnailType.FRONT
     default:
       return ThumbnailType.DEFAULT

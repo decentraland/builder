@@ -41,7 +41,8 @@ export enum WearableCategory {
   MOUTH = 'mouth',
   UPPER_BODY = 'upper_body',
   TIARA = 'tiara',
-  TOP_HEAD = 'top_head'
+  TOP_HEAD = 'top_head',
+  SKIN = 'skin'
 }
 
 export enum ItemMetadataType {

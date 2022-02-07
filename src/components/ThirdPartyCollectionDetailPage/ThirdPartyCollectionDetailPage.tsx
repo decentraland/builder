@@ -33,6 +33,8 @@ import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './ThirdPartyCollectionDetailPage.types'
+import { getCollectionType } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
@@ -325,11 +327,12 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   render() {
-    const { isLoading } = this.props
+    const { isLoading, collection } = this.props
     const hasAccess = this.hasAccess()
+    const shouldRender = hasAccess && collection && getCollectionType(collection) === CollectionType.THIRD_PARTY
     return (
       <LoggedInDetailPage className="ThirdPartyCollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
-        {hasAccess ? this.renderPage() : <NotFound />}
+        {shouldRender ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )
   }
