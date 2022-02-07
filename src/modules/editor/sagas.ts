@@ -144,7 +144,8 @@ import {
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION,
-  fromCatalystWearableToWearable
+  fromCatalystWearableToWearable,
+  patchWearables
 } from './utils'
 import { extraAvatarWearablesIds, getEyeColors, getHairColors, getSkinColors } from './avatar'
 
@@ -692,9 +693,11 @@ function* renderAvatar() {
     const eyeColor: Color4 = yield select(getEyeColor)
     const hairColor: Color4 = yield select(getHairColor)
 
+    const patchedWearables = patchWearables(wearables)
+
     yield call(async () => {
-      editorWindow.editor.addWearablesToCatalog(wearables)
-      editorWindow.editor.sendExternalAction(updateAvatar(wearables, skinColor, eyeColor, hairColor, animation))
+      editorWindow.editor.addWearablesToCatalog(patchedWearables)
+      editorWindow.editor.sendExternalAction(updateAvatar(patchedWearables, skinColor, eyeColor, hairColor, animation))
     })
   }
 }

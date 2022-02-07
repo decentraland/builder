@@ -20,7 +20,15 @@ import {
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
-import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, THUMBNAIL_PATH, WearableCategory } from 'modules/item/types'
+import {
+  Item,
+  ItemRarity,
+  ITEM_DESCRIPTION_MAX_LENGTH,
+  ITEM_NAME_MAX_LENGTH,
+  THUMBNAIL_PATH,
+  WearableCategory,
+  WearableData
+} from 'modules/item/types'
 import Collapsable from './Collapsable'
 import Input from './Input'
 import Select from './Select'
@@ -109,36 +117,47 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleChangeCategory = (category: WearableCategory) => {
-    const data = {
+    let data: WearableData = {
       ...this.state.data!,
       category
+    }
+    // when changing the category to SKIN we hide everything else
+    if (category === WearableCategory.SKIN) {
+      data = this.setReplaces(data, [])
+      data = this.setHides(data, [])
     }
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
-  handleChangeReplaces = (replaces: WearableCategory[]) => {
-    const data = {
-      ...this.state.data!,
+  setReplaces(data: WearableData, replaces: WearableCategory[]) {
+    return {
+      ...data,
       replaces,
-      representations: this.state.data!.representations.map(representation => ({
+      representations: data.representations.map(representation => ({
         ...representation,
         overrideReplaces: replaces
       }))
     }
+  }
 
+  handleChangeReplaces = (replaces: WearableCategory[]) => {
+    const data = this.setReplaces(this.state.data!, replaces)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
-  handleChangeHides = (hides: WearableCategory[]) => {
-    const data = {
-      ...this.state.data!,
+  setHides(data: WearableData, hides: WearableCategory[]) {
+    return {
+      ...data,
       hides,
-      representations: this.state.data!.representations.map(representation => ({
+      representations: data.representations.map(representation => ({
         ...representation,
         overrideHides: hides
       }))
     }
+  }
 
+  handleChangeHides = (hides: WearableCategory[]) => {
+    const data = this.setHides(this.state.data!, hides)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
@@ -226,6 +245,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return collection ? canManageItem(collection, item, address) : isOwner(item, address)
   }
 
+  isSkin() {
+    const { data } = this.state
+    return data?.category === WearableCategory.SKIN
+  }
+
   isDirty(newState: Partial<State> = {}) {
     const { selectedItem } = this.props
     const { hasItem } = this.state
@@ -265,7 +289,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
-              const actionableCategories = item ? getOverridesCategories(item.contents) : []
+              let actionableCategories = item ? getOverridesCategories(item.contents, data?.category) : []
               const wearableCategories = item ? getWearableCategories(item.contents) : []
 
               let overrideCategories: WearableCategory[] = []
@@ -397,7 +421,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           info={t('item_editor.right_panel.replaces_info')}
                           value={replaces}
                           options={this.asCategorySelect(overrideCategories)}
-                          disabled={!canEditItemMetadata}
+                          disabled={!canEditItemMetadata || this.isSkin()}
                           onChange={this.handleChangeReplaces}
                         />
                         <MultiSelect<WearableCategory>
