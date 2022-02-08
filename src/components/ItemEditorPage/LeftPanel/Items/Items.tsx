@@ -25,13 +25,8 @@ export default class Items extends React.PureComponent<Props> {
     onSetItems(newVisibleItemIds)
   }
 
-  handleToggle = (item: Item, isSelected: boolean) => {
-    const { onToggleThirdPartyItem } = this.props
-    onToggleThirdPartyItem(item.id, isSelected)
-  }
-
   render() {
-    const { items, selectedItemId, selectedCollectionId, selectedThirdPartyItemIds, hasHeader, bodyShape } = this.props
+    const { items, selectedItemId, selectedCollectionId, hasHeader, bodyShape } = this.props
     if (items.length === 0) return null
 
     return (
@@ -43,11 +38,9 @@ export default class Items extends React.PureComponent<Props> {
             item={item}
             isSelected={selectedItemId === item.id}
             isVisible={this.isVisible(item)}
-            isChecked={selectedThirdPartyItemIds.includes(item.id)}
             selectedCollectionId={selectedCollectionId}
             bodyShape={bodyShape}
             onClick={this.handleClick}
-            onToggle={this.handleToggle}
           />
         ))}
       </Section>
