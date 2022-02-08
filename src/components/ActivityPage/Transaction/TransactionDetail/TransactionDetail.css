@@ -111,7 +111,7 @@
   }
 }
 
-.TransactionDetail .tier-image {
+.TransactionDetail .slot-image {
   background-image: url('../../../../images/empty-slots.svg');
   height: 100%;
   width: 100%;

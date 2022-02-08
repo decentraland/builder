@@ -3,67 +3,55 @@ import BN from 'bn.js'
 import { env } from 'decentraland-commons'
 import { fromWei } from 'web3x/utils'
 import { Network } from '@dcl/schemas'
-import { Button, ModalDescription, ModalHeader, CheckboxProps, Radio, Mana, Loader, Message } from 'decentraland-ui'
+import { Button, ModalDescription, ModalHeader, CheckboxProps, Mana, Loader, Message, Field, Radio } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Modal, NetworkButton } from 'decentraland-dapps/dist/containers'
-import { ThirdPartyItemTier } from 'modules/tiers/types'
-import { sortTiers } from 'modules/tiers/utils'
 import { Props, State } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
 
 export default class BuyItemSlotsModal extends React.PureComponent<Props, State> {
-  state = {
-    selectedTierId: undefined
+  state: State = {
+    slotsToBuy: undefined
   }
 
   handleCloseModal = (): void => {
-    const { onClose, onBeforeClose } = this.props
-    onBeforeClose()
+    const { onClose } = this.props
     onClose()
   }
 
-  handleTierChange = (_: React.FormEvent<HTMLInputElement>, data: CheckboxProps): void => {
-    const { onTierSelected } = this.props
-
-    this.setState({ selectedTierId: data.value as string })
-    onTierSelected()
-  }
-
-  getSelectedTier = (): ThirdPartyItemTier | undefined => {
-    const { tiers } = this.props
-    const { selectedTierId } = this.state
-
-    return tiers && selectedTierId ? tiers.find(tier => tier.id === selectedTierId) : undefined
-  }
-
   hasInsufficientMana = (): boolean => {
-    const { manaBalance } = this.props
-    const selectedTier = this.getSelectedTier()
-    return selectedTier ? fromWei(new BN(selectedTier.price), 'ether').gt(new BN(manaBalance)) : false
+    const { manaBalance, slotPrice } = this.props
+    const { slotsToBuy } = this.state
+    return slotsToBuy && slotPrice ? +slotsToBuy * slotPrice > manaBalance : false
   }
 
   handleItemSlotsBuy = (): void => {
     const { onBuyItemSlots, metadata } = this.props
     const { thirdParty } = metadata
+    const { slotsToBuy } = this.state
 
-    const selectedTier = this.getSelectedTier()
-
-    if (selectedTier) {
-      onBuyItemSlots(thirdParty, selectedTier as ThirdPartyItemTier)
+    if (slotsToBuy) {
+      onBuyItemSlots(thirdParty, Number(slotsToBuy))
     }
   }
 
   componentDidMount(): void {
-    const { tiers, isFetchingTiers, onFetchThirdPartyItemSlots } = this.props
+    const { slotPrice, isFetchingSlotPrice, onFetchThirdPartyItemSlotPrice } = this.props
 
-    if (tiers && tiers.length === 0 && !isFetchingTiers) {
-      onFetchThirdPartyItemSlots()
+    if (!slotPrice && !isFetchingSlotPrice) {
+      onFetchThirdPartyItemSlotPrice()
     }
   }
 
+  handleSlotToBuyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      slotsToBuy: event.target.value
+    })
+  }
+
   render() {
-    const { isFetchingTiers, name, isBuyingItemSlots, tiers, error } = this.props
-    const { selectedTierId } = this.state
+    const { name, isBuyingItemSlots, error, isFetchingSlotPrice, slotPrice } = this.props
+    const { slotsToBuy } = this.state
 
     const hasInsufficientMANA = this.hasInsufficientMana()
 
@@ -76,32 +64,29 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           <span>{t('buy_item_slots_modal.description_line_two')}</span>
         </ModalDescription>
         <Modal.Content className={styles.content}>
-          {(isFetchingTiers || tiers === undefined) && (
-            <div className={styles.loader}>
-              <Loader active size="large" />
-            </div>
-          )}
-          <div>
-            {tiers.sort(sortTiers).map(tier => (
-              <div className={styles.tier} key={tier.id}>
-                <div className={styles.tierType}>
-                  <Radio
-                    name="tier-radio"
-                    disabled={isBuyingItemSlots}
-                    value={tier.id}
-                    checked={tier.id === selectedTierId}
-                    onChange={this.handleTierChange}
-                  />
-                  <span>{t('buy_item_slots_modal.tier_value', { value: Number(tier.value).toLocaleString() })}</span>
+          <div className={styles.slotsPriceContainer}>
+            {isFetchingSlotPrice ? (
+              <Loader active size="tiny" />
+            ) : (
+              <>
+                <Field
+                  label={t('buy_item_slots_modal.how_many_slots_title')}
+                  message={t('buy_item_slots_modal.slots_value', {
+                    symbol: <Mana network={Network.MATIC} size="small" />,
+                    slot_cost: slotPrice
+                  })}
+                  placeholder="1"
+                  onChange={this.handleSlotToBuyChange}
+                />
+                <div className={styles.slotsTotalPrice}>
+                  <Mana network={Network.MATIC} inline />
+                  {slotPrice && slotsToBuy ? slotPrice * +slotsToBuy : 0}
                 </div>
-                <div className={styles.tierValue}>
-                  <Mana network={Network.MATIC} inline /> {Number(fromWei(tier.price, 'ether')).toLocaleString()}
-                </div>
-              </div>
-            ))}
+              </>
+            )}
           </div>
           {error !== null && <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} />}
-          {hasInsufficientMANA && (
+          {!isFetchingSlotPrice && hasInsufficientMANA && (
             <div className={styles.notEnoughMana}>
               <small>
                 <T
@@ -133,7 +118,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           <NetworkButton
             className={styles.acceptButton}
             primary
-            disabled={hasInsufficientMANA || isBuyingItemSlots || selectedTierId === undefined}
+            disabled={hasInsufficientMANA || isBuyingItemSlots || slotsToBuy === undefined}
             loading={isBuyingItemSlots}
             network={Network.MATIC}
             onClick={this.handleItemSlotsBuy}

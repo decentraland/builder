@@ -226,10 +226,11 @@
     "title": "Slots",
     "description_line_one": "Compra slots para publicar tus items!",
     "description_line_two": "Por favor selecciona cuántos quieres comprar.",
-    "not_enough_mana": "No tienes suficiente {symbol} para comprar este nivel.",
+    "not_enough_mana": "No tienes suficiente {symbol} para comprar esa cantidad de espacios.",
     "get_mana": "Puedes conseguir más utilizando la {link} dapp.",
-    "tier_value": "{value} {value, plural, one {Slot} other {Slots}}",
-    "buy_slots": "Comprar slots"
+    "buy_slots": "Comprar espacio",
+    "how_many_slots_title": "Cuantos espacio?",
+    "slots_value": "El costo de cada espacio es {symbol}{slot_cost}"
   },
   "share_modal": {
     "title": "Comparte tu Escena",
@@ -874,7 +875,7 @@
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
     "publish_third_party_items": "Has publicado {count, plural, one {# item} other {# items}} para {collectionName}",
-    "buy_third_party_item_tiers": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\"",
+    "buy_third_party_item_slots": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\"",
     "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}"
   },
   "transfer_page": {

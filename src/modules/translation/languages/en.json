@@ -223,10 +223,11 @@
     "title": "Slots",
     "description_line_one": "Buy slots to publish your items!",
     "description_line_two": "Please select how many you want to buy.",
-    "not_enough_mana": "You don't have enough {symbol} to buy this tier.",
+    "not_enough_mana": "You don't have enough {symbol} to buy that amount of slots.",
     "get_mana": "You can get more using the {link} dapp.",
-    "tier_value": "{value} {value, plural, one {Slot} other {Slots}}",
-    "buy_slots": "Buy slots"
+    "buy_slots": "Buy slots",
+    "how_many_slots_title": "How many slots?",
+    "slots_value": "The cost of each slot is {symbol}{slot_cost}"
   },
   "share_modal": {
     "title": "Share your Scene",
@@ -865,7 +866,7 @@
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
     "publish_third_party_items": "Published {count, plural, one {# item} other {# items}} for {collectionName}",
-    "buy_third_party_item_tiers": "Bought {count} {count, plural, one {slot} other {slots}} for the third party \"{name}\"",
+    "buy_third_party_item_slots": "Bought {count} {count, plural, one {slot} other {slots}} for the third party \"{name}\"",
     "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
   },
   "transfer_page": {
