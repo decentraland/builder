@@ -25,7 +25,9 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
-  renderPage = (collection: Collection, curation: Curation | null, itemsCuration: any[]) => {
+  // There will be an ItemCuration interface introduced later on a follow-up PR.
+  // For now let's use the current `Curation` interface for the itemCurations array.
+  renderPage = (collection: Collection, curation: Curation | null, itemsCuration: Curation[]) => {
     const { showRejectionModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -94,15 +96,14 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  // There will be an ItemCuration interface introduced later on a follow-up PR.
-  // For now let's use the current `Curation` interface for the itemCurations array.
   renderTPButtons = (collection: Collection, collectionCuration: Curation | null, itemCurations: Curation[] | null) => {
     const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
     return (
       <>
         {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration) : null}
         {this.renderButton(ButtonType.REJECT, collection, collectionCuration)}
-        {this.renderButton(ButtonType.DISABLE, collection, collectionCuration)}
+        {/* TODO: the disable button from below is not the same as the original disable one, it will be implemented once the sagas are ready */}
+        {/* {this.renderButton(ButtonType.DISABLE, collection, collectionCuration)} */}
       </>
     )
   }
