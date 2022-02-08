@@ -64,8 +64,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderButton = (type: ButtonType, collection: Collection, curation: Curation | null) => {
-    const { selectedThirdPartyItemIds, onInitiateApprovalFlow } = this.props
-    const thirdPartyItemsCount = selectedThirdPartyItemIds.length
+    const { onInitiateApprovalFlow } = this.props
 
     const onClickMap = {
       [ButtonType.APPROVE]: () => onInitiateApprovalFlow(collection),
@@ -91,7 +90,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
     return (
       <Button primary={isPrimary} onClick={() => onClickMap[type]()}>
-        {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)} {thirdPartyItemsCount > 0 ? `(${selectedThirdPartyItemIds.length})` : ''}
+        {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)}
       </Button>
     )
   }
