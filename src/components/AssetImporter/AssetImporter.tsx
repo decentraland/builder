@@ -168,15 +168,8 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     let id: string
     if (manifestParsed && manifestParsed.id) {
       id = manifestParsed.id
-    } else if (script) {
-      id = uuidv4()
     } else {
-      this.analytics.track('Asset Importer Error Missing Model')
-      throw new Error(
-        t('asset_pack.import.errors.missing_model', {
-          name: truncateFileName(file.name)
-        })
-      )
+      id = uuidv4()
     }
 
     if (script) {
