@@ -68,7 +68,8 @@ import {
   DOWNLOAD_ITEM_REQUEST,
   DownloadItemRequestAction,
   downloadItemFailure,
-  downloadItemSuccess
+  downloadItemSuccess,
+  rescueItemsChunkSuccess
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { isLocked } from 'modules/collection/utils'
@@ -77,6 +78,7 @@ import { BuilderAPI } from 'lib/api/builder'
 import { getCollection, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
+import { MAX_ITEMS } from 'modules/collection/constants'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
@@ -88,7 +90,9 @@ import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { buildZipContents, getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
+import { buildZipContents, getMetadata, groupsOf, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
+import { UpdateTransactionStatusAction, UPDATE_TRANSACTION_STATUS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -328,14 +332,37 @@ export function* itemSaga(builder: BuilderAPI) {
 
       const manager = getContract(ContractName.CollectionManager, chainId)
       const forwarder = getContract(ContractName.Forwarder, chainId)
-      const data: string = yield call(getMethodData, implementation.populateTransaction.rescueItems(tokenIds, contentHashes, metadatas))
 
-      const txHash: string = yield call(sendTransaction, contract, committee =>
-        committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, [data])
-      )
+      const tokenIdsChunks = groupsOf(tokenIds, MAX_ITEMS)
+      const itemsChunks = groupsOf(items, MAX_ITEMS)
+      const metadatasChunks = groupsOf(metadatas, MAX_ITEMS)
+      const contentHashesChunks = groupsOf(contentHashes, MAX_ITEMS)
+      const txHashes: string[] = []
+
+      for (let i = 0; i < tokenIdsChunks.length; i++) {
+        const data: string = yield call(
+          getMethodData,
+          implementation.populateTransaction.rescueItems(tokenIdsChunks[i], contentHashesChunks[i], metadatasChunks[i])
+        )
+
+        const txHash: string = yield call(sendTransaction, contract, committee =>
+          committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, [data])
+        )
+
+        // Wait for transaction to finish
+        while (true) {
+          const action: UpdateTransactionStatusAction = yield take(UPDATE_TRANSACTION_STATUS)
+          if (action.payload.hash === txHash && action.payload.status === TransactionStatus.CONFIRMED) {
+            break
+          }
+        }
+
+        txHashes.push(txHash)
+        yield put(rescueItemsChunkSuccess(collection, itemsChunks[i], contentHashes, chainId, txHash))
+      }
 
       const newItems = items.map<Item>((item, index) => ({ ...item, contentHash: contentHashes[index] }))
-      yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
+      yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHashes))
     } catch (error) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
     }
