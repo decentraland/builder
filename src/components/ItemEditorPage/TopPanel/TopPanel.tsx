@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { Collection } from 'modules/collection/types'
+import { Collection, CollectionType } from 'modules/collection/types'
 import { Curation, CurationStatus } from 'modules/curation/types'
 import { getCollectionType, hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
@@ -25,7 +25,9 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
-  renderPage = (collection: Collection, curation: Curation | null) => {
+  // There will be an ItemCuration interface introduced later on a follow-up PR.
+  // For now let's use the current `Curation` interface for the itemCurations array.
+  renderPage = (collection: Collection, curation: Curation | null, itemsCuration: Curation[]) => {
     const { showRejectionModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -42,7 +44,11 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           <JumpIn size="small" collection={collection} chainId={chainId} />
         </div>
         <div className="actions">
-          <span className="button-container">{this.renderButtons(collection, curation)}</span>
+          <span className="button-container">
+            {type === CollectionType.THIRD_PARTY
+              ? this.renderTPButtons(collection, curation, itemsCuration)
+              : this.renderButtons(collection, curation)}
+          </span>
         </div>
         {showRejectionModal && (
           <RejectionModal
@@ -58,8 +64,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderButton = (type: ButtonType, collection: Collection, curation: Curation | null) => {
-    const { selectedThirdPartyItemIds, onInitiateApprovalFlow } = this.props
-    const thirdPartyItemsCount = selectedThirdPartyItemIds.length
+    const { onInitiateApprovalFlow } = this.props
 
     const onClickMap = {
       [ButtonType.APPROVE]: () => onInitiateApprovalFlow(collection),
@@ -85,8 +90,20 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
     return (
       <Button primary={isPrimary} onClick={() => onClickMap[type]()}>
-        {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)} {thirdPartyItemsCount > 0 ? `(${selectedThirdPartyItemIds.length})` : ''}
+        {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)}
       </Button>
+    )
+  }
+
+  renderTPButtons = (collection: Collection, collectionCuration: Curation | null, itemCurations: Curation[] | null) => {
+    const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
+    return (
+      <>
+        {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration) : null}
+        {this.renderButton(ButtonType.REJECT, collection, collectionCuration)}
+        {/* TODO: the disable button from below is not the same as the original disable one, it will be implemented once the sagas are ready */}
+        {/* {this.renderButton(ButtonType.DISABLE, collection, collectionCuration)} */}
+      </>
     )
   }
 
@@ -129,7 +146,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
       <div className="TopPanel">
         <CollectionProvider id={selectedCollectionId}>
           {(collection, _items, curation, isLoading) =>
-            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, curation)
+            //TODO: Add logic to fetch the `itemCurations` array for the collection and pass it down to the `renderPage` call
+            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, curation, [])
           }
         </CollectionProvider>
       </div>
