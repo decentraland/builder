@@ -47,16 +47,17 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     return (
       <>
         <ModalNavigation title={t('approval_flow.rescue.title')} subtitle={t('approval_flow.rescue.subtitle')} onClose={onClose} />
+        {items.length > MAX_ITEMS ? (
+          <Message
+            warning
+            size="tiny"
+            visible
+            className="warning-rescue-message"
+            content={t('approval_flow.rescue.items_exceed_limit.content')}
+            header={t('approval_flow.rescue.items_exceed_limit.title')}
+          />
+        ) : null}
         <ModalContent>
-          {items.length > MAX_ITEMS ? (
-            <Message
-              warning
-              size="tiny"
-              visible
-              content={t('approval_flow.rescue.items_exceed_limit.content')}
-              header={t('approval_flow.rescue.items_exceed_limit.title')}
-            />
-          ) : null}
           <Table basic="very">
             <Table.Header>
               <Table.Row>
