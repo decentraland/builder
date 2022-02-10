@@ -424,6 +424,10 @@ export function buildZipContents(contents: Record<string, Blob | string>, areEqu
  * @param size - The size of the groups of the array.
  */
 export function groupsOf<T>(array: T[], size: number): Array<Array<T>> {
+  if (size === 0) {
+    throw new Error('The groups size must be greater than 0')
+  }
+
   const arrays = []
   for (let i = 0; i < array.length; i += size) {
     arrays.push(array.slice(i, i + size))

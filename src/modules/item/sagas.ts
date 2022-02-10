@@ -349,9 +349,9 @@ export function* itemSaga(builder: BuilderAPI) {
         )
 
         txHashes.push(txHash)
-        yield put(rescueItemsChunkSuccess(collection, itemsChunks[i], contentHashes, chainId, txHash))
+        yield put(rescueItemsChunkSuccess(collection, itemsChunks[i], contentHashesChunks[i], chainId, txHash))
 
-        // Wait for transaction to finish
+        // Wait for the transaction to finish
         while (true) {
           const action: FetchTransactionSuccessAction = yield take(FETCH_TRANSACTION_SUCCESS)
           if (action.payload.transaction.hash === txHash) {
