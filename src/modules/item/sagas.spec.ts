@@ -1,14 +1,20 @@
 import uuidv4 from 'uuid/v4'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
+import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { call, select, take, race } from 'redux-saga/effects'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
+import { ThirdParty } from 'modules/thirdParty/types'
+import { MAX_ITEMS } from 'modules/collection/constants'
+import { getMethodData } from 'modules/wallet/utils'
 import { getCollections, getCollection } from 'modules/collection/selectors'
+import { downloadZip } from 'lib/zip'
 import { BuilderAPI } from 'lib/api/builder'
 import util from 'util'
 import {
@@ -39,12 +45,6 @@ import { Item, ItemType, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
 import { buildZipContents, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
-import { ThirdParty } from 'modules/thirdParty/types'
-import { downloadZip } from 'lib/zip'
-import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
-import { getMethodData } from 'modules/wallet/utils'
-import { FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { MAX_ITEMS } from 'modules/collection/constants'
 
 let blob: Blob = new Blob()
 const contents: Record<string, Blob> = { path: blob }
@@ -765,7 +765,7 @@ describe('when handling the rescue items request action', () => {
     groupsOfContentHashes = groupsOf(contentHashes, MAX_ITEMS)
   })
 
-  describe('and the transactions are successful', () => {
+  describe('and the meta transactions are successful', () => {
     it('should dispatch a rescueItemsChunkSuccess per chunk and the rescueItemsSuccess once the transactions finish', () => {
       return expectSaga(itemSaga, builderAPI)
         .provide([
@@ -782,17 +782,34 @@ describe('when handling the rescue items request action', () => {
     })
   })
 
-  describe('and the transactions are unsuccessful', () => {
-    it('should dispatch a rescueItemsChunkSuccess per chunk and the rescueItemsSuccess once the transactions finish', () => {
-      return expectSaga(itemSaga, builderAPI)
-        .provide([
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-          [matchers.call.fn(getMethodData), transactionData],
-          [matchers.call.fn(sendTransaction), Promise.reject(new Error('some-error'))]
-        ])
-        .put(rescueItemsFailure(collection, items, contentHashes, 'some-error'))
-        .dispatch(rescueItemsRequest(collection, items, contentHashes))
-        .run({ silenceTimeout: true })
+  describe('and the meta transactions are unsuccessful', () => {
+    describe('and the transaction fails to get mined', () => {
+      it('should dispatch the rescueItemsFailure with the information about the error', () => {
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+            [matchers.call.fn(getMethodData), transactionData],
+            [matchers.call.fn(sendTransaction), Promise.reject(new Error('some-error'))]
+          ])
+          .put(rescueItemsFailure(collection, items, contentHashes, 'some-error'))
+          .dispatch(rescueItemsRequest(collection, items, contentHashes))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the call to the transaction service fails', () => {
+      it('should dispatch the rescueItemsFailure with the information about the error', () => {
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+            [matchers.call.fn(getMethodData), transactionData],
+            [matchers.call.fn(sendTransaction), txHash],
+            [take(FETCH_TRANSACTION_FAILURE), { payload: { transaction: { hash: txHash } } }]
+          ])
+          .put(rescueItemsFailure(collection, items, contentHashes, `The transaction ${txHash} failed to be mined.`))
+          .dispatch(rescueItemsRequest(collection, items, contentHashes))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })

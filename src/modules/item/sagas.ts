@@ -91,7 +91,12 @@ import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
-import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import {
+  FetchTransactionFailureAction,
+  FetchTransactionSuccessAction,
+  FETCH_TRANSACTION_FAILURE,
+  FETCH_TRANSACTION_SUCCESS
+} from 'decentraland-dapps/dist/modules/transaction/actions'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -353,9 +358,18 @@ export function* itemSaga(builder: BuilderAPI) {
 
         // Wait for the transaction to finish
         while (true) {
-          const action: FetchTransactionSuccessAction = yield take(FETCH_TRANSACTION_SUCCESS)
-          if (action.payload.transaction.hash === txHash) {
+          const {
+            success,
+            failure
+          }: { success: FetchTransactionSuccessAction | undefined; failure: FetchTransactionFailureAction | undefined } = yield race({
+            success: take(FETCH_TRANSACTION_SUCCESS),
+            failure: take(FETCH_TRANSACTION_FAILURE)
+          })
+
+          if (success?.payload.transaction.hash === txHash) {
             break
+          } else if (failure?.payload.transaction.hash === txHash) {
+            throw new Error(`The transaction ${txHash} failed to be mined.`)
           }
         }
       }
