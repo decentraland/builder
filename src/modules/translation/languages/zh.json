@@ -992,7 +992,10 @@
     "push_changes": "上传更改",
     "under_review": "审核中",
     "cant_operate": "此合集仍处于锁定状态，一旦发布结束您将可以再次操作",
-    "locked": "锁定"
+    "locked": "锁定",
+    "publish_reason_max_items": "可以发布包含最多 {maxItems} 个项目的集合。",
+    "publish_reason_no_items": "您需要添加至少一项才能发布您的收藏。",
+    "publish_reason_items_not_complete": "所有项目必须完整才能发布您的收藏，检查是否设置了所有属性。"
   },
   "collection_context_menu": {
     "add_existing_item": "添加现有项目",
@@ -1290,7 +1293,11 @@
     "rescue": {
       "title": "救援物品",
       "subtitle": "请批准项目及其哈希值",
-      "confirm": "确认"
+      "confirm": "确认",
+      "items_exceed_limit": {
+        "title": "集合超过最大项目数",
+        "content": "将进行多笔交易。 请注意，您将被要求签署它们。"
+      }
     },
     "上传": {
       "title": "上传文件",
