@@ -22,7 +22,11 @@ import {
   BUY_THIRD_PARTY_ITEM_SLOT_REQUEST,
   buyThirdPartyItemSlotSuccess,
   buyThirdPartyItemSlotFailure,
-  BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS
+  BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS,
+  FetchThirdPartyAvailableSlotsRequestAction,
+  fetchThirdPartyAvailableSlotsSuccess,
+  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
+  fetchThirdPartyAvailableSlotsFailure
 } from './actions'
 import { ThirdParty } from './types'
 import { getItemSlotPrice } from './selectors'
@@ -45,6 +49,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST, handleFetchThirdPartyItemSlotPriceRequest)
   yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, handleBuyThirdPartyItemSlotRequest)
   yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, handleBuyThirdPartyItemSlotSuccess)
+  yield takeEvery(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, handleFetchThirdPartyAvailableSlots)
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -58,6 +63,16 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       yield put(fetchThirdPartiesSuccess(thirdParties))
     } catch (error) {
       yield put(fetchThirdPartiesFailure(error.message))
+    }
+  }
+
+  function* handleFetchThirdPartyAvailableSlots(action: FetchThirdPartyAvailableSlotsRequestAction) {
+    const { thirdPartyId } = action.payload
+    try {
+      const availableSlots: number = yield call([builder, 'fetchThirdPartyAvailableSlots'], thirdPartyId)
+      yield put(fetchThirdPartyAvailableSlotsSuccess(thirdPartyId, availableSlots))
+    } catch (error) {
+      yield put(fetchThirdPartyAvailableSlotsFailure(error.message))
     }
   }
 

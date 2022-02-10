@@ -16,7 +16,13 @@ import {
   FetchThirdPartyItemSlotPriceFailureAction,
   BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS,
   FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_SUCCESS,
-  FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE
+  FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE,
+  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
+  FetchThirdPartyAvailableSlotsRequestAction,
+  FetchThirdPartyAvailableSlotsSuccessAction,
+  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_SUCCESS,
+  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE,
+  FetchThirdPartyAvailableSlotsFailureAction
 } from './actions'
 import { ThirdParty } from './types'
 
@@ -42,10 +48,14 @@ type ThirdPartyReducerAction =
   | FetchThirdPartyItemSlotPriceRequestAction
   | FetchThirdPartyItemSlotPriceSuccessAction
   | FetchThirdPartyItemSlotPriceFailureAction
+  | FetchThirdPartyAvailableSlotsRequestAction
+  | FetchThirdPartyAvailableSlotsSuccessAction
+  | FetchThirdPartyAvailableSlotsFailureAction
   | BuyThirdPartyItemSlotSuccessAction
 
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
+    case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST:
     case FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST:
     case FETCH_THIRD_PARTIES_REQUEST: {
       return {
@@ -68,6 +78,21 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: null
       }
     }
+    case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_SUCCESS: {
+      const { thirdPartyId, availableSlots } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [thirdPartyId]: {
+            ...state.data[thirdPartyId],
+            availableSlots
+          }
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
     case FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_SUCCESS: {
       const { value } = action.payload
       return {
@@ -78,6 +103,7 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
       }
     }
 
+    case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE:
     case FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE:
     case FETCH_THIRD_PARTIES_FAILURE: {
       return {

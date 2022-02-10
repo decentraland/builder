@@ -51,3 +51,19 @@ export const buyThirdPartyItemSlotFailure = (thirdPartyId: string, slotsToBuy: n
 export type BuyThirdPartyItemSlotRequestAction = ReturnType<typeof buyThirdPartyItemSlotRequest>
 export type BuyThirdPartyItemSlotSuccessAction = ReturnType<typeof buyThirdPartyItemSlotSuccess>
 export type BuyThirdPartyItemSlotFailureAction = ReturnType<typeof buyThirdPartyItemSlotFailure>
+
+// Fetch Third Party Available Slots
+
+export const FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST = '[Request] Fetch Third Party Available Slots'
+export const FETCH_THIRD_PARTY_AVAILABLE_SLOTS_SUCCESS = '[Success] Fetch Third Party Available Slots'
+export const FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE = '[Failure] Fetch Third Party Available Slots'
+
+export const fetchThirdPartyAvailableSlotsRequest = (thirdPartyId: ThirdParty['id']) =>
+  action(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, { thirdPartyId })
+export const fetchThirdPartyAvailableSlotsSuccess = (thirdPartyId: ThirdParty['id'], availableSlots: number) =>
+  action(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_SUCCESS, { thirdPartyId, availableSlots })
+export const fetchThirdPartyAvailableSlotsFailure = (error: string) => action(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE, { error })
+
+export type FetchThirdPartyAvailableSlotsRequestAction = ReturnType<typeof fetchThirdPartyAvailableSlotsRequest>
+export type FetchThirdPartyAvailableSlotsSuccessAction = ReturnType<typeof fetchThirdPartyAvailableSlotsSuccess>
+export type FetchThirdPartyAvailableSlotsFailureAction = ReturnType<typeof fetchThirdPartyAvailableSlotsFailure>

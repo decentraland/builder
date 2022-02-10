@@ -1,5 +1,5 @@
 import * as React from 'react'
-import BN from 'bn.js'
+import classNames from 'classnames'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
   Grid,
@@ -46,6 +46,13 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     searchText: '',
     page: 1,
     isAuthModalOpen: false
+  }
+
+  componentDidUpdate() {
+    const { thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots } = this.props
+    if (thirdParty && !thirdParty?.availableSlots && !isLoadingAvailableSlots) {
+      onFetchAvailableSlots(thirdParty.id)
+    }
   }
 
   getManaAuthorization = () => {
@@ -158,11 +165,10 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   renderPage() {
-    const { thirdParty } = this.props
+    const { thirdParty, isLoadingAvailableSlots } = this.props
     const { page, searchText, itemSelectionState, isAuthModalOpen } = this.state
     const collection = this.props.collection!
-    const slots = thirdParty ? getAvailableSlots(thirdParty) : new BN(0)
-    const areSlotsEmpty = slots.lte(new BN(0))
+    const areSlotsEmpty = thirdParty?.availableSlots && thirdParty.availableSlots <= 0
 
     const selectedItems = this.getSelectedItems()
     const selectedItemsCount = selectedItems.length
@@ -201,15 +207,19 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 </Column>
                 <Column align="right" shrink={false}>
                   <Row className="actions">
-                    <Button secondary compact className={`${areSlotsEmpty ? 'empty' : ''} slots`} onClick={this.handleBuySlot}>
-                      {t('third_party_collection_detail_page.slots', { amount: slots.toNumber() })}
-                      {areSlotsEmpty ? (
-                        <span className="buy-slots link" onClick={this.handleBuySlot}>
-                          {t('global.buy')}
-                        </span>
-                      ) : null}
+                    <Button
+                      loading={isLoadingAvailableSlots}
+                      secondary
+                      compact
+                      className={classNames({ empty: areSlotsEmpty && !isLoadingAvailableSlots, slots: !isLoadingAvailableSlots })}
+                      onClick={this.handleBuySlot}
+                    >
+                      <>
+                        {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
+                        {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
+                      </>
                     </Button>
-                    <CollectionPublishButton collection={collection} items={selectedItems} slots={slots.toNumber()} />
+                    <CollectionPublishButton collection={collection} items={selectedItems} slots={thirdParty?.availableSlots || 0} />
                     <CollectionContextMenu collection={collection} />
                   </Row>
                 </Column>
