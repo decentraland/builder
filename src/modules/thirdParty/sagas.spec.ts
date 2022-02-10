@@ -148,10 +148,7 @@ describe('when handling the request to fetch the third party item slot price', (
       const mockedOracleContract = {
         getRate: () => mockedOracleRate
       }
-      const mockedProvider = {
-        context: () => {},
-        fn: () => {}
-      }
+      const mockedProvider = {}
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
@@ -198,7 +195,6 @@ describe('when handling the request to buy third party item slots', () => {
         .provide([
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [select(getItemSlotPrice), mockedSlotPriceInMANA],
-          // [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MUMBAI), contract],
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .put(buyThirdPartyItemSlotSuccess(txHash, ChainId.MATIC_MUMBAI, thirdParty, mockedSlotsToBuy))
