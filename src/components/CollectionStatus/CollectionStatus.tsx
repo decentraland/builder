@@ -4,12 +4,15 @@ import { Popup } from 'decentraland-ui'
 
 import { SyncStatus } from 'modules/item/types'
 import { Props } from './CollectionStatus.types'
+import { getCollectionType } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 import './CollectionStatus.css'
 
 export default class CollectionStatus extends React.PureComponent<Props> {
   render() {
-    const { status } = this.props
-    return status && status !== SyncStatus.UNPUBLISHED ? (
+    const { status, collection } = this.props
+    const shouldRenderStatus = status && status !== SyncStatus.UNPUBLISHED && getCollectionType(collection) !== CollectionType.THIRD_PARTY
+    return shouldRenderStatus ? (
       <Popup
         position="top center"
         content={t(`status.${status}`)}
