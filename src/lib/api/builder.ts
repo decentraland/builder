@@ -18,9 +18,10 @@ import { ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
-import { CollectionCuration, CurationStatus, ItemCuration } from 'modules/collectionCuration/types'
+import { CollectionCuration, CurationStatus } from 'modules/collectionCuration/types'
 import { ThirdPartyItemTier } from 'modules/tiers/types'
 import { Authorization } from './auth'
+import { ItemCuration } from 'modules/itemCuration/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 

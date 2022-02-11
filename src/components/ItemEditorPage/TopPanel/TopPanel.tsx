@@ -10,6 +10,7 @@ import JumpIn from 'components/JumpIn'
 import RejectionModal from './RejectionModal'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
 import { ButtonType, Props, State } from './TopPanel.types'
+import { ItemCuration } from 'modules/itemCuration/types'
 
 import './TopPanel.css'
 
@@ -25,9 +26,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
-  // There will be an ItemCuration interface introduced later on a follow-up PR.
-  // For now let's use the current `CollectionCuration` interface for the itemCurations array.
-  renderPage = (collection: Collection, curation: CollectionCuration | null, itemsCuration: CollectionCuration[]) => {
+  renderPage = (collection: Collection, curation: CollectionCuration | null, itemsCuration: ItemCuration[]) => {
     const { showRejectionModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -95,7 +94,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderTPButtons = (collection: Collection, collectionCuration: CollectionCuration | null, itemCurations: CollectionCuration[] | null) => {
+  renderTPButtons = (collection: Collection, collectionCuration: CollectionCuration | null, itemCurations: ItemCuration[] | null) => {
     const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
     return (
       <>

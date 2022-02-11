@@ -48,6 +48,7 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
         updatedAt: now
       }
       onSubmit(collection)
+      // TODO: add analytics
     }
   }
 

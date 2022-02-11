@@ -14,7 +14,3 @@ export type BaseCuration = {
 export type CollectionCuration = {
   collectionId: string
 } & BaseCuration
-
-export type ItemCuration = {
-  itemId: string
-} & BaseCuration

@@ -7,10 +7,7 @@ import { ThirdParty } from './types'
 export const MAX_PUBLISH_ITEM_COUNT = 20
 
 export function isUserManagerOfThirdParty(address: string, thirdParty: ThirdParty): boolean {
-  console.log('thirdParty: ', thirdParty);
-  console.log('address: ', address);
-  return true
-  // return thirdParty.managers.map(manager => manager.toLowerCase()).includes(address.toLowerCase())
+  return thirdParty.managers.map(manager => manager.toLowerCase()).includes(address.toLowerCase())
 }
 
 export const getAvailableSlots = (thirdParty: ThirdParty): BN => new BN(thirdParty.maxItems).sub(new BN(thirdParty.totalItems))
