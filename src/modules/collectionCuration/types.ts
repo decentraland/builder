@@ -4,10 +4,17 @@ export enum CurationStatus {
   REJECTED = 'rejected'
 }
 
-export type Curation = {
+export type BaseCuration = {
   id: string
-  collectionId: string
   status: CurationStatus
   createdAt: number
   updatedAt: number
 }
+
+export type CollectionCuration = {
+  collectionId: string
+} & BaseCuration
+
+export type ItemCuration = {
+  itemId: string
+} & BaseCuration

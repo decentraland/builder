@@ -1,9 +1,9 @@
 import { getCurationsByCollectionId, getState, getLoading, getError, getCuration, getCurations, getHasPendingCuration } from './selectors'
 import { INITIAL_STATE } from './reducer'
-import { FETCH_CURATION_REQUEST } from './actions'
-import { Curation, CurationStatus } from './types'
+import { FETCH_COLLECTION_CURATION_REQUEST } from './actions'
+import { CollectionCuration, CurationStatus } from './types'
 
-const getMockCuration = (props: Partial<Curation> = {}): Curation => ({
+const getMockCuration = (props: Partial<CollectionCuration> = {}): CollectionCuration => ({
   id: 'id',
   collectionId: 'collectionId',
   createdAt: 0,
@@ -42,7 +42,7 @@ describe('when calling getLoading', () => {
     const state = {
       curation: {
         ...INITIAL_STATE,
-        loading: [FETCH_CURATION_REQUEST]
+        loading: [FETCH_COLLECTION_CURATION_REQUEST]
       }
     } as any
 

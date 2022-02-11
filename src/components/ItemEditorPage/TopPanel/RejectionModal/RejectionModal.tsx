@@ -5,7 +5,7 @@ import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Loader, Modal } from 'decentraland-ui'
 import { locations } from 'routing/locations'
-import { CurationStatus } from 'modules/curation/types'
+import { CurationStatus } from 'modules/collectionCuration/types'
 import { Props, RejectionType } from './RejectionModal.types'
 
 import './RejectionModal.css'

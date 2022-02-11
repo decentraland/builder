@@ -7,7 +7,7 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import CollectionRow from './CollectionRow'
 import { Props, State, SortBy, FilterBy } from './CurationPage.types'
-import { CurationStatus } from 'modules/curation/types'
+import { CurationStatus } from 'modules/collectionCuration/types'
 
 import './CurationPage.css'
 

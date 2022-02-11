@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux'
 import { InitiateApprovalFlowAction, rejectCollectionRequest, RejectCollectionRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
-import { rejectCurationRequest, RejectCurationRequestAction } from 'modules/curation/actions'
-import { Curation } from 'modules/curation/types'
+import { rejectCollectionCurationRequest, RejectCollectionCurationRequestAction } from 'modules/collectionCuration/actions'
+import { CollectionCuration } from 'modules/collectionCuration/types'
 
 export enum RejectionType {
   REJECT_COLLECTION = 'REJECT_COLLECTION',
@@ -16,13 +16,13 @@ export type Props = {
   isLoading: boolean
   hasPendingTransaction: boolean
   collection: Collection
-  curation: Curation | null
+  curation: CollectionCuration | null
   onReject: typeof rejectCollectionRequest
-  onRejectCuration: typeof rejectCurationRequest
+  onRejectCuration: typeof rejectCollectionCurationRequest
   onClose: () => void
 }
 
 export type MapStateProps = Pick<Props, 'isLoading' | 'hasPendingTransaction'>
 export type MapDispatchProps = Pick<Props, 'onReject' | 'onRejectCuration'>
-export type MapDispatch = Dispatch<RejectCollectionRequestAction | RejectCurationRequestAction | InitiateApprovalFlowAction>
+export type MapDispatch = Dispatch<RejectCollectionRequestAction | RejectCollectionCurationRequestAction | InitiateApprovalFlowAction>
 export type OwnProps = Pick<Props, 'open' | 'type' | 'collection' | 'curation'>

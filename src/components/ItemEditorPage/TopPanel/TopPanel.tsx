@@ -3,7 +3,7 @@ import { Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Collection, CollectionType } from 'modules/collection/types'
-import { Curation, CurationStatus } from 'modules/curation/types'
+import { CollectionCuration, CurationStatus } from 'modules/collectionCuration/types'
 import { getCollectionType, hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
@@ -26,8 +26,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
   // There will be an ItemCuration interface introduced later on a follow-up PR.
-  // For now let's use the current `Curation` interface for the itemCurations array.
-  renderPage = (collection: Collection, curation: Curation | null, itemsCuration: Curation[]) => {
+  // For now let's use the current `CollectionCuration` interface for the itemCurations array.
+  renderPage = (collection: Collection, curation: CollectionCuration | null, itemsCuration: CollectionCuration[]) => {
     const { showRejectionModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -63,7 +63,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderButton = (type: ButtonType, collection: Collection, curation: Curation | null) => {
+  renderButton = (type: ButtonType, collection: Collection, curation: CollectionCuration | null) => {
     const { onInitiateApprovalFlow } = this.props
 
     const onClickMap = {
@@ -95,7 +95,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderTPButtons = (collection: Collection, collectionCuration: Curation | null, itemCurations: Curation[] | null) => {
+  renderTPButtons = (collection: Collection, collectionCuration: CollectionCuration | null, itemCurations: CollectionCuration[] | null) => {
     const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
     return (
       <>
@@ -107,7 +107,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderButtons = (collection: Collection, curation: Curation | null) => {
+  renderButtons = (collection: Collection, curation: CollectionCuration | null) => {
     if (curation && collection.isApproved) {
       switch (curation.status) {
         case 'pending':

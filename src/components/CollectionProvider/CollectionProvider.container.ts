@@ -9,7 +9,7 @@ import { getLoading, getCollection } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_REQUEST, fetchCollectionRequest } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionProvider.types'
 import CollectionProvider from './CollectionProvider'
-import { getCuration } from 'modules/curation/selectors'
+import { getCuration } from 'modules/collectionCuration/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const id = ownProps.id || getCollectionId(state)

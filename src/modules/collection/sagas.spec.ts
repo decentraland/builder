@@ -17,9 +17,9 @@ import { Item, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
 import { fetchItemsRequest, fetchItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
-import { approveCurationFailure, approveCurationRequest, approveCurationSuccess } from 'modules/curation/actions'
-import { getCurationsByCollectionId } from 'modules/curation/selectors'
-import { Curation, CurationStatus } from 'modules/curation/types'
+import { approveCollectionCurationFailure, approveCollectionCurationRequest, approveCollectionCurationSuccess } from 'modules/collectionCuration/actions'
+import { getCurationsByCollectionId } from 'modules/collectionCuration/selectors'
+import { CollectionCuration, CurationStatus } from 'modules/collectionCuration/types'
 import { BuilderAPI } from 'lib/api/builder'
 import {
   approveCollectionFailure,
@@ -79,13 +79,13 @@ const getEntity = (item: Item, props: Partial<Entity> = {}): Entity => ({
 
 const getDeployData = (): DeploymentPreparationData => ({ entityId: 'QmNewEntityId', files: new Map() })
 
-const getCuration = (collection: Collection, props: Partial<Curation> = {}): Curation =>
+const getCuration = (collection: Collection, props: Partial<CollectionCuration> = {}): CollectionCuration =>
   ({
     id: 'aCuration',
     collectionId: collection.id,
     status: CurationStatus.PENDING,
     ...props
-  } as Curation)
+  } as CollectionCuration)
 
 describe('when executing the approval flow', () => {
   describe('when a collection is not published', () => {
@@ -229,8 +229,8 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(deployEntitiesSuccess([deployData]))
-        .put(approveCurationRequest(collection.id))
-        .dispatch(approveCurationSuccess(collection.id))
+        .put(approveCollectionCurationRequest(collection.id))
+        .dispatch(approveCollectionCurationSuccess(collection.id))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.SUCCESS,
@@ -479,7 +479,7 @@ describe('when executing the approval flow', () => {
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
     const curation = getCuration(collection)
-    const curationError = 'Curation Error'
+    const curationError = 'CollectionCuration Error'
     it('should open the modal in an error state', () => {
       const approvedCollection = { ...collection, isApproved: true }
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
@@ -520,8 +520,8 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(deployEntitiesSuccess([deployData]))
-        .put(approveCurationRequest(collection.id))
-        .dispatch(approveCurationFailure(approvedCollection.id, curationError))
+        .put(approveCollectionCurationRequest(collection.id))
+        .dispatch(approveCollectionCurationFailure(approvedCollection.id, curationError))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.ERROR,

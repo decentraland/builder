@@ -79,13 +79,13 @@ import {
 } from 'modules/ens/actions'
 import { CREATE_COLLECTION_FORUM_POST_FAILURE, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
 import {
-  APPROVE_CURATION_FAILURE,
-  APPROVE_CURATION_SUCCESS,
-  PUSH_CURATION_FAILURE,
-  PUSH_CURATION_SUCCESS,
-  REJECT_CURATION_FAILURE,
-  REJECT_CURATION_SUCCESS
-} from 'modules/curation/actions'
+  APPROVE_COLLECTION_CURATION_FAILURE,
+  APPROVE_COLLECTION_CURATION_SUCCESS,
+  PUSH_COLLECTION_CURATION_FAILURE,
+  PUSH_COLLECTION_CURATION_SUCCESS,
+  REJECT_COLLECTION_CURATION_FAILURE,
+  REJECT_COLLECTION_CURATION_SUCCESS
+} from 'modules/collectionCuration/actions'
 import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
 import {
   BUY_THIRD_PARTY_ITEM_TIERS_FAILURE,
@@ -323,8 +323,8 @@ addPayload(REJECT_COLLECTION_FAILURE, 'Reject collection error')
 addPayload(CREATE_COLLECTION_FORUM_POST_SUCCESS, 'Create forum post')
 addPayload(CREATE_COLLECTION_FORUM_POST_FAILURE, 'Create forum post error')
 
-addPayload(PUSH_CURATION_SUCCESS, 'Push curation')
-addPayload(PUSH_CURATION_FAILURE, 'Push curation error')
+addPayload(PUSH_COLLECTION_CURATION_SUCCESS, 'Push curation')
+addPayload(PUSH_COLLECTION_CURATION_FAILURE, 'Push curation error')
 
 addPayload(RESCUE_ITEMS_SUCCESS, 'Rescue items')
 addPayload(RESCUE_ITEMS_FAILURE, 'Rescue items error')
@@ -332,11 +332,11 @@ addPayload(RESCUE_ITEMS_FAILURE, 'Rescue items error')
 addPayload(DEPLOY_ENTITIES_SUCCESS, 'Deploy entities')
 addPayload(DEPLOY_ENTITIES_FAILURE, 'Deploy entities failure')
 
-addPayload(APPROVE_CURATION_SUCCESS, 'Approve curation')
-addPayload(APPROVE_CURATION_FAILURE, 'Approve curation error')
+addPayload(APPROVE_COLLECTION_CURATION_SUCCESS, 'Approve curation')
+addPayload(APPROVE_COLLECTION_CURATION_FAILURE, 'Approve curation error')
 
-addPayload(REJECT_CURATION_SUCCESS, 'Reject curation')
-addPayload(REJECT_CURATION_FAILURE, 'Reject curation error')
+addPayload(REJECT_COLLECTION_CURATION_SUCCESS, 'Reject curation')
+addPayload(REJECT_COLLECTION_CURATION_FAILURE, 'Reject curation error')
 
 addPayload(RESET_ITEM_SUCCESS, 'Reset changes')
 addPayload(RESET_ITEM_FAILURE, 'Reset changes error')

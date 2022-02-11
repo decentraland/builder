@@ -1,17 +1,17 @@
 import { connect } from 'react-redux'
-import { pushCurationRequest, PUSH_CURATION_REQUEST } from 'modules/curation/actions'
+import { pushCollectionCurationRequest, PUSH_COLLECTION_CURATION_REQUEST } from 'modules/collectionCuration/actions'
 import { OwnProps, MapDispatchProps, MapDispatch, MapStateProps } from './PushCollectionChangesModal.types'
 import PushCollectionChangesModal from './PushCollectionChangesModal'
 import { RootState } from 'modules/common/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { getLoading } from 'modules/curation/selectors'
+import { getLoading } from 'modules/collectionCuration/selectors'
 
 const mapState = (store: RootState): MapStateProps => ({
-  isLoading: isLoadingType(getLoading(store), PUSH_CURATION_REQUEST)
+  isLoading: isLoadingType(getLoading(store), PUSH_COLLECTION_CURATION_REQUEST)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onProceed: (collectionId: string) => dispatch(pushCurationRequest(collectionId))
+  onProceed: (collectionId: string) => dispatch(pushCollectionCurationRequest(collectionId))
 })
 
 const merge = (stateProps: any, dispatchProps: MapDispatchProps, ownProps: OwnProps) => ({
