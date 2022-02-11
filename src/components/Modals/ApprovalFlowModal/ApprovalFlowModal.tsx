@@ -15,6 +15,11 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     didRescue: false
   }
 
+  canCloseModal() {
+    const { isConfirmingRescueTx, isDeployingItems, isConfirmingApproveTx, isAwaitingApproveTx } = this.props
+    return !isConfirmingRescueTx && !isDeployingItems && !isConfirmingApproveTx && !isAwaitingApproveTx
+  }
+
   handleConfirm = () => {
     const { metadata, onRescueItems } = this.props
     const { collection, items, contentHashes } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE>
@@ -46,7 +51,11 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
 
     return (
       <>
-        <ModalNavigation title={t('approval_flow.rescue.title')} subtitle={t('approval_flow.rescue.subtitle')} onClose={onClose} />
+        <ModalNavigation
+          title={t('approval_flow.rescue.title')}
+          subtitle={t('approval_flow.rescue.subtitle')}
+          onClose={this.canCloseModal() ? onClose : undefined}
+        />
         {items.length > MAX_ITEMS ? (
           <Message
             warning
@@ -90,7 +99,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
           <Button primary disabled={didRescue || isConfirmingRescueTx} loading={didRescue} onClick={this.handleConfirm}>
             {t('approval_flow.rescue.confirm')}
           </Button>
-          <Button secondary onClick={onClose}>
+          <Button secondary onClick={onClose} disabled={!this.canCloseModal()}>
             {t('global.cancel')}
           </Button>
         </ModalActions>
@@ -103,7 +112,11 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     const { items, entities } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY>
     return (
       <>
-        <ModalNavigation title={t('approval_flow.upload.title')} subtitle={t('approval_flow.upload.subtitle')} onClose={onClose} />
+        <ModalNavigation
+          title={t('approval_flow.upload.title')}
+          subtitle={t('approval_flow.upload.subtitle')}
+          onClose={this.canCloseModal() ? onClose : undefined}
+        />
         <ModalContent>
           <Table basic="very">
             <Table.Header>
@@ -131,7 +144,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
           <Button primary disabled={isDeployingItems} loading={isDeployingItems} onClick={() => onDeployItems(entities)}>
             {t('approval_flow.upload.confirm')}
           </Button>
-          <Button secondary onClick={onClose}>
+          <Button secondary onClick={onClose} disabled={!this.canCloseModal()}>
             {t('global.cancel')}
           </Button>
         </ModalActions>
@@ -144,7 +157,11 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     const { collection } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.APPROVE>
     return (
       <>
-        <ModalNavigation title={t('approval_flow.approve.title')} subtitle={t('approval_flow.approve.subtitle')} onClose={onClose} />
+        <ModalNavigation
+          title={t('approval_flow.approve.title')}
+          subtitle={t('approval_flow.approve.subtitle')}
+          onClose={this.canCloseModal() ? onClose : undefined}
+        />
         <ModalActions>
           <Button
             primary
@@ -154,7 +171,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
           >
             {t('approval_flow.approve.confirm')}
           </Button>
-          <Button secondary onClick={onClose}>
+          <Button secondary onClick={onClose} disabled={!this.canCloseModal()}>
             {t('global.cancel')}
           </Button>
         </ModalActions>
@@ -221,7 +238,14 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         break
     }
     return (
-      <Modal name={name} onClose={onClose} className="ApprovalFlowModal" size={size}>
+      <Modal
+        name={name}
+        onClose={this.canCloseModal() ? onClose : undefined}
+        className="ApprovalFlowModal"
+        size={size}
+        closeOnEscape={this.canCloseModal()}
+        closeOnDimmerClick={this.canCloseModal()}
+      >
         {content}
       </Modal>
     )
