@@ -33,8 +33,7 @@ import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './ThirdPartyCollectionDetailPage.types'
-import { getCollectionType } from 'modules/collection/utils'
-import { CollectionType } from 'modules/collection/types'
+import { ThirdParty } from 'modules/thirdParty/types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
@@ -164,8 +163,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   }
 
-  renderPage() {
-    const { thirdParty, isLoadingAvailableSlots } = this.props
+  renderPage(thirdParty: ThirdParty) {
+    const { isLoadingAvailableSlots } = this.props
     const { page, searchText, itemSelectionState, isAuthModalOpen } = this.state
     const collection = this.props.collection!
     const areSlotsEmpty = thirdParty?.availableSlots && thirdParty.availableSlots <= 0
@@ -219,7 +218,9 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                         {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
                       </>
                     </Button>
-                    <CollectionPublishButton collection={collection} items={selectedItems} slots={thirdParty?.availableSlots || 0} />
+                    {thirdParty.availableSlots !== undefined ? (
+                      <CollectionPublishButton collection={collection} items={selectedItems} slots={thirdParty.availableSlots} />
+                    ) : null}
                     <CollectionContextMenu collection={collection} />
                   </Row>
                 </Column>
@@ -329,12 +330,12 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   render() {
-    const { isLoading, collection } = this.props
+    const { isLoading, collection, thirdParty } = this.props
     const hasAccess = this.hasAccess()
-    const shouldRender = hasAccess && collection && getCollectionType(collection) === CollectionType.THIRD_PARTY
+    const shouldRender = hasAccess && collection
     return (
       <LoggedInDetailPage className="ThirdPartyCollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
-        {shouldRender ? this.renderPage() : <NotFound />}
+        {shouldRender && thirdParty ? this.renderPage(thirdParty) : <NotFound />}
       </LoggedInDetailPage>
     )
   }

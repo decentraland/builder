@@ -14,6 +14,8 @@ import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/third
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
 import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
+import { getCollectionType } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 
 const mapState = (state: RootState): MapStateProps => {
   const collectionId = getThirdPartyCollectionId(state) || ''
@@ -28,7 +30,8 @@ const mapState = (state: RootState): MapStateProps => {
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItem(state), FETCH_ITEMS_REQUEST),
     isLoadingAvailableSlots: isFetchingAvailableSlots(state),
-    thirdParty: collection ? getCollectionThirdParty(state, collection) : null
+    thirdParty:
+      collection && getCollectionType(collection) === CollectionType.THIRD_PARTY ? getCollectionThirdParty(state, collection) : null
   }
 }
 
