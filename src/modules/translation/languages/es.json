@@ -1011,7 +1011,10 @@
     "push_changes": "Subir Cambios",
     "under_review": "No verificada",
     "cant_operate": "Esta colección está bloqueada, una vez que la publicación termine serás capaz de utilizarla nuevamente",
-    "locked": "Bloqueada"
+    "locked": "Bloqueada",
+    "publish_reason_max_items": "Las colecciones pueden publicarse con un máximo de  {maxItems} items.",
+    "publish_reason_no_items": "Debes agregar al menos un item para publicar tu colección.",
+    "publish_reason_items_not_complete": "Todos los items deben estar completos para publicar tu colección, comprueba que todas sus propiedades estén establecidas."
   },
   "collection_context_menu": {
     "add_existing_item": "Agregar item existente",
@@ -1307,7 +1310,11 @@
     "rescue": {
       "title": "Aprobar Items",
       "subtitle": "Por favor aprueba los items y sus hashes",
-      "confirm": "Confirmar"
+      "confirm": "Confirmar",
+      "items_exceed_limit": {
+        "title": "La colección excede el máximo número de items",
+        "content": "Se realizarán múltiples transacciones. Ten en cuenta que se te pedirá que las firmes."
+      }
     },
     "upload": {
       "title": "Subir Archivos",

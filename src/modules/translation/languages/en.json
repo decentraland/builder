@@ -1000,7 +1000,10 @@
     "under_review": "Under Review",
     "push_changes": "Push Changes",
     "cant_operate": "This collection is still locked, once publication ends you'll be able to operate again",
-    "locked": "Locked"
+    "locked": "Locked",
+    "publish_reason_max_items": "A collection can be published with a max amount of {maxItems} items.",
+    "publish_reason_no_items": "You need to add at least one item to publish your collection.",
+    "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set."
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
@@ -1292,7 +1295,11 @@
     "rescue": {
       "title": "Approve Items",
       "subtitle": "Please approve the items and their hashes",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "items_exceed_limit": {
+        "title": "Collection exceeds the maximum number of items",
+        "content": "Multiple transactions will be made. Be aware that you'll be asked to sign them."
+      }
     },
     "upload": {
       "title": "Upload Files",

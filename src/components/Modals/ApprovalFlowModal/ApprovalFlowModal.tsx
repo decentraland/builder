@@ -2,12 +2,12 @@ import * as React from 'react'
 
 import { Modal } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Center, Loader, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
+import { Button, Center, Loader, Message, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
 import ItemImage from 'components/ItemImage'
 import { formatBytes } from 'lib/number'
+import { MAX_ITEMS } from 'modules/collection/constants'
 import { getBodyShapes, toBodyShapeType } from 'modules/item/utils'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView, Props, State } from './ApprovalFlowModal.types'
-
 import './ApprovalFlowModal.css'
 
 export default class ApprovalFlowModal extends React.PureComponent<Props> {
@@ -47,6 +47,16 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     return (
       <>
         <ModalNavigation title={t('approval_flow.rescue.title')} subtitle={t('approval_flow.rescue.subtitle')} onClose={onClose} />
+        {items.length > MAX_ITEMS ? (
+          <Message
+            warning
+            size="tiny"
+            visible
+            className="warning-rescue-message"
+            content={t('approval_flow.rescue.items_exceed_limit.content')}
+            header={t('approval_flow.rescue.items_exceed_limit.title')}
+          />
+        ) : null}
         <ModalContent>
           <Table basic="very">
             <Table.Header>

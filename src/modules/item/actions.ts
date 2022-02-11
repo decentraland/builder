@@ -137,27 +137,37 @@ export type FetchRaritiesFailureAction = ReturnType<typeof fetchRaritiesFailure>
 
 export const RESCUE_ITEMS_REQUEST = '[Request] Rescue items'
 export const RESCUE_ITEMS_SUCCESS = '[Success] Rescue items'
+export const RESCUE_ITEMS_CHUNK_SUCCESS = '[Chunk] Rescue items'
 export const RESCUE_ITEMS_FAILURE = '[Failure] Rescue items'
 
 export const rescueItemsRequest = (collection: Collection, items: Item[], contentHashes: string[]) =>
   action(RESCUE_ITEMS_REQUEST, { collection, items, contentHashes })
-export const rescueItemsSuccess = (collection: Collection, items: Item[], contentHashes: string[], chainId: ChainId, txHash: string) =>
+export const rescueItemsChunkSuccess = (collection: Collection, items: Item[], contentHashes: string[], chainId: ChainId, txHash: string) =>
+  action(RESCUE_ITEMS_CHUNK_SUCCESS, {
+    collection,
+    contentHashes,
+    txHash,
+    items,
+    ...buildTransactionPayload(chainId, txHash, {
+      count: items.length,
+      collectionId: collection.id,
+      collectionName: collection.name
+    })
+  })
+export const rescueItemsSuccess = (collection: Collection, items: Item[], contentHashes: string[], chainId: ChainId, txHashes: string[]) =>
   action(RESCUE_ITEMS_SUCCESS, {
     collection,
     items,
     contentHashes,
-    txHash,
-    ...buildTransactionPayload(chainId, txHash, {
-      count: items.length,
-      collectionId: items[0].collectionId!,
-      collectionName: collection.name
-    })
+    txHashes,
+    chainId
   })
 export const rescueItemsFailure = (collection: Collection, items: Item[], contentHashes: string[], error: string) =>
   action(RESCUE_ITEMS_FAILURE, { collection, items, contentHashes, error })
 
 export type RescueItemsRequestAction = ReturnType<typeof rescueItemsRequest>
 export type RescueItemsSuccessAction = ReturnType<typeof rescueItemsSuccess>
+export type RescueItemsChunkSuccessAction = ReturnType<typeof rescueItemsChunkSuccess>
 export type RescueItemsFailureAction = ReturnType<typeof rescueItemsFailure>
 
 // Reset Item

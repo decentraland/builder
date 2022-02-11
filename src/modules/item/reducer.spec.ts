@@ -2,7 +2,14 @@ import { ChainId } from '@dcl/schemas'
 import { saveCollectionSuccess } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { downloadItemFailure, downloadItemRequest, downloadItemSuccess } from './actions'
+import {
+  downloadItemFailure,
+  downloadItemRequest,
+  downloadItemSuccess,
+  rescueItemsChunkSuccess,
+  rescueItemsRequest,
+  rescueItemsSuccess
+} from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
 
@@ -11,6 +18,7 @@ const getChainIdByNetworkMock: jest.Mock<typeof getChainIdByNetwork> = (getChain
   typeof getChainIdByNetwork
 >
 
+const error = 'something went wrong'
 let state: ItemState
 
 beforeEach(() => {
@@ -125,7 +133,7 @@ describe('when an action of type DOWNLOAD_ITEM_REQUEST is called', () => {
 
 describe('when an action of type DOWNLOAD_ITEM_SUCCESS is called', () => {
   const itemId = 'anItem'
-  const error = 'something went wrong'
+
   it('should remove a downloadItemRequest from the loading array and null the error', () => {
     expect(
       itemReducer(
@@ -160,6 +168,63 @@ describe('when an action of type DOWNLOAD_ITEM_FAILURE is called', () => {
       ...INITIAL_STATE,
       loading: [],
       error
+    })
+  })
+})
+
+describe('when reducing an action of a successful rescue items', () => {
+  let collection: Collection
+  let items: Item[]
+  let contentHashes: string[]
+
+  beforeEach(() => {
+    collection = { id: 'some-id' } as Collection
+    items = [{ id: 'some-id' } as Item]
+    contentHashes = ['some-hash']
+
+    state = {
+      ...state,
+      loading: [rescueItemsRequest(collection, items, contentHashes)],
+      error
+    }
+  })
+
+  it('should remove the rescue items request action from the loading array and null the error', () => {
+    expect(itemReducer(state, rescueItemsSuccess(collection, items, contentHashes, ChainId.MATIC_MUMBAI, ['hashes']))).toEqual({
+      ...state,
+      loading: [],
+      error: null
+    })
+  })
+})
+
+describe('when reducing an action of a successful chunk of rescued items', () => {
+  let collection: Collection
+  let items: Item[]
+  let contentHashes: string[]
+
+  beforeEach(() => {
+    collection = { id: 'some-id' } as Collection
+    items = [{ id: 'some-id' } as Item]
+    contentHashes = ['some-hash']
+
+    state = {
+      ...state,
+      data: {
+        anItemId: {
+          id: 'anItemId'
+        } as Item
+      }
+    }
+  })
+
+  it('should add the items to the state', () => {
+    expect(itemReducer(state, rescueItemsChunkSuccess(collection, items, contentHashes, ChainId.MATIC_MUMBAI, 'hash'))).toEqual({
+      ...state,
+      data: {
+        ...state.data,
+        [items[0].id]: items[0]
+      }
     })
   })
 })
