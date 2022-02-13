@@ -7,10 +7,11 @@ import {
   ClearStateSaveMultipleItemsAction,
   cancelSaveMultipleItems,
   saveMultipleItemsRequest,
-  clearStateSaveMultipleItems
+  clearSaveMultipleItems
 } from 'modules/item/actions'
 import { getSavedItemsFiles, getMultipleItemsSaveState } from 'modules/ui/createMultipleItems/selectors'
 import { BuiltFile } from 'modules/item/types'
+import { Collection } from 'modules/collection/types'
 
 export enum LoadingFilesState {
   LOADING_FILES,
@@ -41,17 +42,17 @@ export type State = {
 }
 
 export type Props = ModalProps & {
-  collectionUrn: string | null
+  collection: Collection
   error: string | null
   onSaveMultipleItems: typeof saveMultipleItemsRequest
   onCancelSaveMultipleItems: typeof cancelSaveMultipleItems
-  onModalUnmount: typeof clearStateSaveMultipleItems
+  onModalUnmount: typeof clearSaveMultipleItems
   savedItemsFiles: ReturnType<typeof getSavedItemsFiles>
   saveMultipleItemsState: ReturnType<typeof getMultipleItemsSaveState>
   saveItemsProgress: number
 }
 
 export type OwnProps = Pick<Props, 'name' | 'metadata' | 'onClose'>
-export type MapStateProps = Pick<Props, 'savedItemsFiles' | 'error' | 'saveMultipleItemsState' | 'saveItemsProgress' | 'collectionUrn'>
+export type MapStateProps = Pick<Props, 'savedItemsFiles' | 'error' | 'saveMultipleItemsState' | 'saveItemsProgress' | 'collection'>
 export type MapDispatchProps = Pick<Props, 'onSaveMultipleItems' | 'onCancelSaveMultipleItems' | 'onModalUnmount'>
 export type MapDispatch = Dispatch<SaveMultipleItemsRequestAction | CancelSaveMultipleItemsAction | ClearStateSaveMultipleItemsAction>

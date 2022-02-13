@@ -9,9 +9,9 @@ import {
   SAVE_MULTIPLE_ITEMS_FAILURE,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
   cancelSaveMultipleItems,
-  SAVE_MULTIPLE_ITEMS_CANCEL,
-  SAVE_MULTIPLE_ITEMS_CLEAR_STATE,
-  clearStateSaveMultipleItems
+  CANCEL_SAVE_MULTIPLE_ITEMS,
+  CLEAR_SAVE_MULTIPLE_ITEMS,
+  clearSaveMultipleItems
 } from './actions'
 import { BuiltFile, Item } from './types'
 
@@ -93,7 +93,7 @@ describe('when creating the action to cancel the saving of multiple items', () =
     expect(cancelSaveMultipleItems()).toEqual({
       error: undefined,
       meta: undefined,
-      type: SAVE_MULTIPLE_ITEMS_CANCEL,
+      type: CANCEL_SAVE_MULTIPLE_ITEMS,
       payload: undefined
     })
   })
@@ -101,10 +101,10 @@ describe('when creating the action to cancel the saving of multiple items', () =
 
 describe('when creating the action to clear the saving multiple items state', () => {
   it('should return an action to clear the saving multiple items', () => {
-    expect(clearStateSaveMultipleItems()).toEqual({
+    expect(clearSaveMultipleItems()).toEqual({
       error: undefined,
       meta: undefined,
-      type: SAVE_MULTIPLE_ITEMS_CLEAR_STATE,
+      type: CLEAR_SAVE_MULTIPLE_ITEMS,
       payload: undefined
     })
   })

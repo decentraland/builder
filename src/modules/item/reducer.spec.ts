@@ -3,7 +3,7 @@ import { saveCollectionSuccess } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import {
-  clearStateSaveMultipleItems,
+  clearSaveMultipleItems,
   downloadItemFailure,
   downloadItemRequest,
   downloadItemSuccess,
@@ -225,7 +225,7 @@ describe('when reducing the clearing save multiple items action', () => {
   })
 
   it('should return a state with the error cleared', () => {
-    expect(itemReducer(state, clearStateSaveMultipleItems())).toEqual({
+    expect(itemReducer(state, clearSaveMultipleItems())).toEqual({
       ...state,
       error: null
     })

@@ -6,7 +6,7 @@ import {
   SaveMultipleItemsRequestAction,
   SaveMultipleItemsSuccessAction,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
-  SAVE_MULTIPLE_ITEMS_CLEAR_STATE,
+  CLEAR_SAVE_MULTIPLE_ITEMS,
   SAVE_MULTIPLE_ITEMS_FAILURE,
   SAVE_MULTIPLE_ITEMS_REQUEST,
   SAVE_MULTIPLE_ITEMS_SUCCESS
@@ -44,7 +44,7 @@ type CreateMultipleItemsReducerAction =
 
 export const createMultipleItemsReducer = (state = INITIAL_STATE, action: CreateMultipleItemsReducerAction): CreateMultipleItemsState => {
   switch (action.type) {
-    case SAVE_MULTIPLE_ITEMS_CLEAR_STATE: {
+    case CLEAR_SAVE_MULTIPLE_ITEMS: {
       return INITIAL_STATE
     }
     case SAVE_MULTIPLE_ITEMS_CANCELLED: {

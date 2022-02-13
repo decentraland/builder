@@ -1,5 +1,5 @@
 import {
-  clearStateSaveMultipleItems,
+  clearSaveMultipleItems,
   saveMultipleItemsCancelled,
   saveMultipleItemsFailure,
   saveMultipleItemsRequest,
@@ -23,7 +23,7 @@ describe('when reducing the action to clear the state', () => {
           progress: 50,
           savedItemsFiles: ['file1', 'file2']
         },
-        clearStateSaveMultipleItems()
+        clearSaveMultipleItems()
       )
     ).toEqual(INITIAL_STATE)
   })

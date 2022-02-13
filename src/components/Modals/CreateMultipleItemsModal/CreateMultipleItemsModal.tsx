@@ -31,6 +31,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
     const { importedFiles } = this.state
     return Object.values(importedFiles).filter(file => file.type === ImportedFileType.ACCEPTED) as BuiltFile<Blob>[]
   }
+
   private getRejectedFiles = (): RejectedFile[] => {
     const { importedFiles } = this.state
     return Object.values(importedFiles).filter(file => file.type === ImportedFileType.REJECTED) as RejectedFile[]
@@ -291,7 +292,11 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
                   <T
                     id="create_multiple_items_modal.import_information"
                     values={{
-                      link: <a href={REACT_APP_WEARABLES_ZIP_INFRA_URL}>{t('create_multiple_items_modal.import_information_link_label')}</a>
+                      link: (
+                        <a rel="noopener noreferrer" target="_blank" href={REACT_APP_WEARABLES_ZIP_INFRA_URL}>
+                          {t('create_multiple_items_modal.import_information_link_label')}
+                        </a>
+                      )
                     }}
                   />
                 </span>

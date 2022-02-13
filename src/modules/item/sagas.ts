@@ -1,23 +1,6 @@
 import { Contract } from 'ethers'
 import { replace, push } from 'connected-react-router'
-import {
-  takeEvery,
-  call,
-  put,
-  takeLatest,
-  select,
-  take,
-  delay,
-  fork,
-  all,
-  race,
-  ActionPattern,
-  ForkEffect,
-  cancelled,
-  cancel
-} from 'redux-saga/effects'
-import { Task } from 'redux-saga'
-import { Action } from 'redux'
+import { takeEvery, call, put, takeLatest, select, take, delay, fork, all, race, cancelled } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -90,12 +73,12 @@ import {
   SaveMultipleItemsRequestAction,
   SAVE_MULTIPLE_ITEMS_REQUEST,
   saveMultipleItemsSuccess,
-  SAVE_MULTIPLE_ITEMS_CANCEL,
+  CANCEL_SAVE_MULTIPLE_ITEMS,
   saveMultipleItemsCancelled,
   saveMultipleItemsFailure
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
-import { fromRemoteItem } from 'lib/api/conversions'
+import { fromRemoteItem } from 'lib/api/transformations'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
@@ -106,6 +89,7 @@ import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
+import { takeLatestCancellable } from 'modules/common/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
@@ -115,25 +99,6 @@ import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
-
-const takeLatestCancellable = <A extends Action>(
-  { initializer, cancellable }: { initializer: ActionPattern<A>; cancellable: ActionPattern<A> },
-  saga: (...args: any[]) => any,
-  ...args: any[]
-): ForkEffect<never> =>
-  fork(function*() {
-    let lastTask: Task | undefined
-    while (true) {
-      const action: A = yield take([initializer, cancellable] as ActionPattern<Action<A>>)
-      if (lastTask) {
-        yield cancel(lastTask) // cancel is no-op if the task has already terminated
-      }
-
-      if (action.type === initializer) {
-        lastTask = yield fork(saga, ...args.concat(action))
-      }
-    }
-  })
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -154,7 +119,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
   yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
   yield takeLatestCancellable(
-    { initializer: SAVE_MULTIPLE_ITEMS_REQUEST, cancellable: SAVE_MULTIPLE_ITEMS_CANCEL },
+    { initializer: SAVE_MULTIPLE_ITEMS_REQUEST, cancellable: CANCEL_SAVE_MULTIPLE_ITEMS },
     handleSaveMultipleItemsRequest
   )
   yield fork(fetchItemEntities)

@@ -6,7 +6,15 @@ import { Props } from './CreateItemsModal.types'
 import styles from './CreateItemsModal.module.css'
 
 export default class CreateItemsModal extends React.PureComponent<Props> {
-  handleOpenModal = (name: string) => {
+  private handleOpenSingleItemModal = () => {
+    this.handleOpenModal('CreateSingleItemModal')
+  }
+
+  private handleOpenMultipleItemsModal = () => {
+    this.handleOpenModal('CreateMultipleItemsModal')
+  }
+
+  private handleOpenModal = (name: string) => {
     const { onClose, onOpenModal, metadata } = this.props
     onOpenModal(name, metadata)
     onClose()
@@ -22,7 +30,7 @@ export default class CreateItemsModal extends React.PureComponent<Props> {
           <p className={styles.modalSubtitle}>{t('create_items_modal.subtitle')}</p>
 
           <div className={styles.modalButtons}>
-            <div className={styles.itemSelectionButton} onClick={() => this.handleOpenModal('CreateSingleItemModal')} role="button">
+            <div className={styles.itemSelectionButton} onClick={this.handleOpenSingleItemModal} role="button">
               <div className={styles.icon}>
                 <div className={styles.sparkle}></div>
               </div>
@@ -32,7 +40,7 @@ export default class CreateItemsModal extends React.PureComponent<Props> {
               </div>
             </div>
 
-            <div className={styles.itemSelectionButton} onClick={() => this.handleOpenModal('CreateMultipleItemsModal')} role="button">
+            <div className={styles.itemSelectionButton} onClick={this.handleOpenMultipleItemsModal} role="button">
               <div className={styles.icon}>
                 <div className={styles.sparkles}></div>
               </div>

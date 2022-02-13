@@ -91,7 +91,7 @@ import {
   ClearStateSaveMultipleItemsAction,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SAVE_MULTIPLE_ITEMS_FAILURE,
-  SAVE_MULTIPLE_ITEMS_CLEAR_STATE,
+  CLEAR_SAVE_MULTIPLE_ITEMS,
   SAVE_MULTIPLE_ITEMS_CANCELLED
 } from './actions'
 import { toItemObject } from './utils'
@@ -250,7 +250,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error
       }
     }
-    case SAVE_MULTIPLE_ITEMS_CLEAR_STATE: {
+    case CLEAR_SAVE_MULTIPLE_ITEMS: {
       return {
         ...state,
         error: null
