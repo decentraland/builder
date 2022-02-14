@@ -72,7 +72,7 @@ export function* assetPackSaga(builder: BuilderAPI) {
 
       const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
       const onProgress: void = yield handleAssetContentsUploadProgress(updatableAssets.length)
-      // TODO: there's a bug here
+      // TODO: there's a bug here (Issue #1792)
       const uploadEffects = updatableAssets.map(asset => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress as any))
 
       if (uploadEffects.length > 0) {
