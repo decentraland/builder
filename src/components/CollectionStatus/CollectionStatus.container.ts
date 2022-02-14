@@ -6,9 +6,9 @@ import CollectionStatus from './CollectionStatus'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionStatus.types'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const statusByCollectionId = getStatusByCollectionId(state)
+  const status = getStatusByCollectionId(state, ownProps.collection.id)
   return {
-    status: statusByCollectionId[ownProps.collection.id]
+    status
   }
 }
 

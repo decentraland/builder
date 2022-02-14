@@ -34,6 +34,7 @@ import { UIState } from 'modules/ui/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCurationState } from 'modules/curations/collectionCuration/reducer'
+import { ItemCurationState } from 'modules/curations/itemCuration/reducer'
 import { TiersState } from 'modules/tiers/reducer'
 
 const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
@@ -72,6 +73,7 @@ export type RootState = {
   ui: UIState
   wallet: WalletState
   collectionCuration: CollectionCurationState
+  itemCuration: ItemCurationState
   tiers: TiersState
 }
 

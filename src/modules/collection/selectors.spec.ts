@@ -22,6 +22,27 @@ describe('when getting status by item id', () => {
           }
         }
       },
+      itemCuration: {
+        data: {
+          '0': [
+            {
+              id: '0',
+              itemId: '0',
+              status: 'approved'
+            },
+            {
+              id: '1',
+              itemId: '1',
+              status: 'rejected'
+            },
+            {
+              id: '3',
+              itemId: '3',
+              status: 'pending'
+            }
+          ]
+        }
+      },
       item: {
         data: {
           '0': {
@@ -126,9 +147,11 @@ describe('when getting status by item id', () => {
         }
       }
     }
-    expect(getStatusByCollectionId((mockState as unknown) as RootState)).toEqual({
-      '0': SyncStatus.UNSYNCED,
-      '1': SyncStatus.UNDER_REVIEW
+    ;[
+      ['0', SyncStatus.UNSYNCED],
+      ['1', SyncStatus.UNDER_REVIEW]
+    ].forEach(([collectionId, expectedStatus]) => {
+      expect(getStatusByCollectionId((mockState as unknown) as RootState, collectionId)).toEqual(expectedStatus)
     })
   })
 })

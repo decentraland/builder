@@ -16,6 +16,7 @@ import { assetReducer as asset } from 'modules/asset/reducer'
 import { collectionReducer as collection } from 'modules/collection/reducer'
 import { committeeReducer as committee } from 'modules/committee/reducer'
 import { collectionCurationReducer as collectionCuration } from 'modules/curations/collectionCuration/reducer'
+import { itemCurationReducer as itemCuration } from 'modules/curations/itemCuration/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { editorReducer as editor } from 'modules/editor/reducer'
 import { ensReducer as ens } from 'modules/ens/reducer'
@@ -45,6 +46,7 @@ export function createRootReducer(history: History) {
       collection,
       committee,
       collectionCuration,
+      itemCuration,
       deployment,
       editor,
       ens,

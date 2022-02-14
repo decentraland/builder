@@ -82,15 +82,18 @@ export const hasPendingCurationTransaction = createSelector<RootState, Transacti
 
 export const getStatusByCollectionId = createSelector<
   RootState,
+  Collection['id'],
   Item[],
+  Collection['id'],
   Record<string, SyncStatus>,
   Record<string, CollectionCuration>,
-  Record<string, SyncStatus>
+  SyncStatus
 >(
   state => getItems(state),
-  state => getStatusByItemId(state),
-  state => getCurationsByCollectionId(state),
-  (items, itemStatusByItemId, curationsByCollectionId) => {
+  (_: RootState, collectionId: Collection['id']) => collectionId,
+  (state: RootState, collectionId: Collection['id']) => getStatusByItemId(state, collectionId),
+  getCurationsByCollectionId,
+  (items, collectionId, itemStatusByItemId, curationsByCollectionId) => {
     const statusByCollectionId: Record<string, SyncStatus> = {}
     for (const item of items) {
       const { collectionId } = item
@@ -105,8 +108,20 @@ export const getStatusByCollectionId = createSelector<
         }
       }
     }
-    return statusByCollectionId
+    return statusByCollectionId[collectionId]
   }
+)
+
+export const isThirdPartyCollection = createSelector<
+  RootState,
+  Collection['id'] | undefined,
+  CollectionState['data'],
+  Collection['id'] | undefined,
+  boolean
+>(
+  getData,
+  (_: RootState, collectionId?: string) => collectionId,
+  (data, collectionId?: Collection['id']) => !!collectionId && !!isThirdParty(data[collectionId]?.urn)
 )
 
 export const hasViewAndEditRights = (state: RootState, address: string, collection: Collection): boolean => {

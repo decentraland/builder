@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { getStatusByItemId } from 'modules/item/selectors'
+import { getItem, getStatusByItemId } from 'modules/item/selectors'
 import { SyncStatus } from 'modules/item/types'
 import { openModal } from 'modules/modal/actions'
 import ResetItemButton from './ResetItemButton'
@@ -8,9 +8,10 @@ import { MapStateProps, OwnProps, MapDispatch, MapDispatchProps } from './ResetI
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { itemId } = ownProps
+  const item = getItem(state, itemId)
 
   return {
-    isEnabled: getStatusByItemId(state)[itemId] === SyncStatus.UNSYNCED
+    isEnabled: getStatusByItemId(state, item?.collectionId)[itemId] === SyncStatus.UNSYNCED
   }
 }
 

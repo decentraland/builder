@@ -4,11 +4,13 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
-import { getAuthorizedCollections, getData as getCollectionData } from 'modules/collection/selectors'
+import { getAuthorizedCollections, getData as getCollectionData, isThirdPartyCollection } from 'modules/collection/selectors'
 import { getEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { getItemCurationsByItemId } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
 import { getItemThirdParty } from 'modules/thirdParty/selectors'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
@@ -96,18 +98,23 @@ export const getEntityByItemId = createSelector<RootState, Entity[], Record<stri
 
 export const getStatusByItemId = createSelector<
   RootState,
+  Collection['id'] | undefined,
+  boolean,
   Item[],
   EntityState['data'],
   Record<string, CollectionCuration>,
+  Record<string, ItemCuration>,
   Record<string, SyncStatus>
 >(
+  (state, collectionId) => isThirdPartyCollection(state, collectionId),
   state => getItems(state),
   state => getEntityByItemId(state),
   state => getCurationsByCollectionId(state),
-  (items, entitiesByItemId, curationsByCollectionId) => {
+  getItemCurationsByItemId,
+  (isTPW, items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
-      if (!item.isPublished) {
+      if (!isTPW && !item.isPublished) {
         statusByItemId[item.id] = SyncStatus.UNPUBLISHED
       } else if (!item.isApproved) {
         statusByItemId[item.id] = SyncStatus.UNDER_REVIEW
@@ -117,7 +124,10 @@ export const getStatusByItemId = createSelector<
           statusByItemId[item.id] = SyncStatus.LOADING
         } else if (areSynced(item, entity)) {
           statusByItemId[item.id] = SyncStatus.SYNCED
-        } else if (item.collectionId && curationsByCollectionId[item.collectionId]?.status === CurationStatus.PENDING) {
+        } else if (
+          (!isTPW && item.collectionId && curationsByCollectionId[item.collectionId]?.status === CurationStatus.PENDING) ||
+          (isTPW && itemCurationByItemId[item.id]?.status === CurationStatus.PENDING)
+        ) {
           statusByItemId[item.id] = SyncStatus.UNDER_REVIEW
         } else {
           statusByItemId[item.id] = SyncStatus.UNSYNCED

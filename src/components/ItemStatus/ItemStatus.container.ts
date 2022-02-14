@@ -6,7 +6,7 @@ import { getStatusByItemId } from 'modules/item/selectors'
 import ItemStatus from './ItemStatus'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const statusByItemId = getStatusByItemId(state)
+  const statusByItemId = getStatusByItemId(state, ownProps.item.collectionId)
   return {
     status: statusByItemId[ownProps.item.id]
   }

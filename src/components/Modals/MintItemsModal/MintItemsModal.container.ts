@@ -36,7 +36,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
   collection = getCollection(state, collectionId)!
 
-  const hasUnsyncedItems = (items: Item[]) => items.some(item => UNSYNCED_STATES.has(getStatusByItemId(state)[item.id]))
+  const hasUnsyncedItems = (items: Item[]) => items.some(item => UNSYNCED_STATES.has(getStatusByItemId(state, item.collectionId)[item.id]))
 
   return {
     items: items.filter(item => canMintItem(collection, item, ethAddress)),
