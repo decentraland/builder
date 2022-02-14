@@ -1,9 +1,10 @@
 import { getCurationsByCollectionId, getState, getLoading, getError, getCuration, getCurations, getHasPendingCuration } from './selectors'
 import { INITIAL_STATE } from './reducer'
-import { FETCH_CURATION_REQUEST } from './actions'
-import { Curation, CurationStatus } from './types'
+import { FETCH_COLLECTION_CURATION_REQUEST } from './actions'
+import { CollectionCuration } from './types'
+import { CurationStatus } from '../types'
 
-const getMockCuration = (props: Partial<Curation> = {}): Curation => ({
+const getMockCuration = (props: Partial<CollectionCuration> = {}): CollectionCuration => ({
   id: 'id',
   collectionId: 'collectionId',
   createdAt: 0,
@@ -15,7 +16,7 @@ const getMockCuration = (props: Partial<Curation> = {}): Curation => ({
 describe('when calling getState', () => {
   it('should return the current state', () => {
     const state = {
-      curation: INITIAL_STATE
+      collectionCuration: INITIAL_STATE
     } as any
 
     expect(getState(state)).toBe(INITIAL_STATE)
@@ -25,7 +26,7 @@ describe('when calling getState', () => {
 describe('when calling getCurationsByCollectionId', () => {
   it('should return a record of curations by collection id as index', () => {
     const state = {
-      curation: {
+      collectionCuration: {
         ...INITIAL_STATE,
         data: {
           collectionId: getMockCuration()
@@ -33,33 +34,33 @@ describe('when calling getCurationsByCollectionId', () => {
       }
     } as any
 
-    expect(getCurationsByCollectionId(state)).toBe(state.curation.data)
+    expect(getCurationsByCollectionId(state)).toBe(state.collectionCuration.data)
   })
 })
 
 describe('when calling getLoading', () => {
   it('should return list of actions being loaded', () => {
     const state = {
-      curation: {
+      collectionCuration: {
         ...INITIAL_STATE,
-        loading: [FETCH_CURATION_REQUEST]
+        loading: [FETCH_COLLECTION_CURATION_REQUEST]
       }
     } as any
 
-    expect(getLoading(state)).toBe(state.curation.loading)
+    expect(getLoading(state)).toBe(state.collectionCuration.loading)
   })
 })
 
 describe('when calling getError', () => {
   it('should return the current curation error', () => {
     const state = {
-      curation: {
+      collectionCuration: {
         ...INITIAL_STATE,
         error: 'Some Error'
       }
     } as any
 
-    expect(getError(state)).toBe(state.curation.error)
+    expect(getError(state)).toBe(state.collectionCuration.error)
   })
 })
 
@@ -67,7 +68,7 @@ describe('when calling getCuration', () => {
   describe('when the collection for the collectionId provided does not exist', () => {
     it('should return undefined', () => {
       const state = {
-        curation: INITIAL_STATE
+        collectionCuration: INITIAL_STATE
       } as any
 
       expect(getCuration(state, 'collectionId')).toBeUndefined()
@@ -77,7 +78,7 @@ describe('when calling getCuration', () => {
   describe('when the collection for the collectionId provided exists', () => {
     it('should return a curation', () => {
       const state = {
-        curation: {
+        collectionCuration: {
           ...INITIAL_STATE,
           data: {
             collectionId: getMockCuration()
@@ -85,7 +86,7 @@ describe('when calling getCuration', () => {
         }
       } as any
 
-      expect(getCuration(state, 'collectionId')).toBe(state.curation.data.collectionId)
+      expect(getCuration(state, 'collectionId')).toBe(state.collectionCuration.data.collectionId)
     })
   })
 })
@@ -93,7 +94,7 @@ describe('when calling getCuration', () => {
 describe('when calling getCurations', () => {
   it('should return a collection of curations', () => {
     const state = {
-      curation: {
+      collectionCuration: {
         ...INITIAL_STATE,
         data: {
           collectionId: getMockCuration()
@@ -101,14 +102,14 @@ describe('when calling getCurations', () => {
       }
     } as any
 
-    expect(getCurations(state)).toStrictEqual([state.curation.data.collectionId])
+    expect(getCurations(state)).toStrictEqual([state.collectionCuration.data.collectionId])
   })
 })
 
 describe('when calling getHasPendingCuration', () => {
   it('should return a collection of curations', () => {
     const state = {
-      curation: {
+      collectionCuration: {
         ...INITIAL_STATE,
         data: {
           collectionId1: getMockCuration({ collectionId: 'collectionId1', status: CurationStatus.PENDING }),

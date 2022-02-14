@@ -37,7 +37,7 @@ import { walletSaga } from 'modules/wallet/sagas'
 import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
 import { entitySaga } from 'modules/entity/sagas'
-import { curationSaga } from 'modules/curation/sagas'
+import { collectionCurationSaga } from 'modules/curations/collectionCuration/sagas'
 import { tiersSaga } from 'modules/tiers/sagas'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL })
@@ -76,7 +76,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     translationSaga(),
     uiSaga(),
     walletSaga(),
-    curationSaga(builderAPI),
+    collectionCurationSaga(builderAPI),
     tiersSaga(builderAPI)
   ])
 }

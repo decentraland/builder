@@ -13,7 +13,7 @@ describe('when getting status by item id', () => {
   it('should return the status for each published item', () => {
     mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
     const mockState = {
-      curation: {
+      collectionCuration: {
         data: {
           '1': {
             id: '1',
