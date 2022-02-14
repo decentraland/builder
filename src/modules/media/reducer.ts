@@ -32,7 +32,6 @@ export const mediaReducer = (state = INITIAL_STATE, action: MediaReducerAction):
       return {
         ...state,
         media: {
-          // TODO: is this null?
           north: window.URL.createObjectURL(north!),
           east: window.URL.createObjectURL(east!),
           south: window.URL.createObjectURL(south!),
