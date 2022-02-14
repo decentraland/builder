@@ -5,11 +5,11 @@ import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getItems, getStatusByItemId } from 'modules/item/selectors'
 import { Item, SyncStatus } from 'modules/item/types'
-import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCollectionThirdParty, getData as getThirdParties } from 'modules/thirdParty/selectors'
 import { getThirdPartyForCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { ThirdParty } from 'modules/thirdParty/types'
-import { Curation } from 'modules/curation/types'
 import { isEqual } from 'lib/address'
 import { isThirdParty } from 'lib/urn'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
@@ -84,7 +84,7 @@ export const getStatusByCollectionId = createSelector<
   RootState,
   Item[],
   Record<string, SyncStatus>,
-  Record<string, Curation>,
+  Record<string, CollectionCuration>,
   Record<string, SyncStatus>
 >(
   state => getItems(state),

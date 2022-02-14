@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { PushCurationRequestAction } from 'modules/curation/actions'
+import { PushCollectionCurationRequestAction } from 'modules/curations/collectionCuration/actions'
 
 export type Props = ModalProps & {
   metadata: PushCollectionChangesModalMetadata
@@ -14,5 +14,5 @@ export type PushCollectionChangesModalMetadata = {
 
 export type MapStateProps = Pick<Props, 'isLoading'>
 export type MapDispatchProps = { onProceed: (collectionId: string) => void }
-export type MapDispatch = Dispatch<PushCurationRequestAction>
+export type MapDispatch = Dispatch<PushCollectionCurationRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>
