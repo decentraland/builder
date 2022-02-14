@@ -1,18 +1,22 @@
 import uuidv4 from 'uuid/v4'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
-import { call, select, take, race } from 'redux-saga/effects'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
+import { call, select, take, race } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { MAX_ITEMS } from 'modules/collection/constants'
+import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
+import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { downloadZip } from 'lib/zip'
 import { BuilderAPI } from 'lib/api/builder'
 import util from 'util'
@@ -38,14 +42,17 @@ import {
   saveMultipleItemsSuccess,
   saveMultipleItemsFailure,
   saveMultipleItemsCancelled,
-  cancelSaveMultipleItems
+  cancelSaveMultipleItems,
+  rescueItemsRequest,
+  rescueItemsChunkSuccess,
+  rescueItemsSuccess,
+  rescueItemsFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
 import { BuiltFile, Item, ItemType, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
-import { buildZipContents, MAX_FILE_SIZE } from './utils'
+import { buildZipContents, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
-import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 
 let blob: Blob = new Blob()
 const contents: Record<string, Blob> = { path: blob }
@@ -803,6 +810,90 @@ describe('when handling the save multiple items requests action', () => {
         .dispatch(saveMultipleItemsRequest(builtFiles))
         .dispatch(cancelSaveMultipleItems())
         .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the rescue items request action', () => {
+  const txHash = '0x12345'
+  const transactionData = 'some-data'
+  let collection: Collection
+  let items: Item[]
+  let resultItems: Item[]
+  let contentHashes: string[]
+  let groupsOfItems: Item[][]
+  let groupsOfContentHashes: string[][]
+
+  beforeEach(() => {
+    const item = {
+      type: ItemType.WEARABLE,
+      name: 'aName',
+      description: 'someDescription',
+      data: {
+        category: WearableCategory.EARRING,
+        representations: [
+          {
+            bodyShapes: [WearableBodyShape.MALE]
+          }
+        ]
+      },
+      contents: {}
+    } as Item
+
+    items = Array.from({ length: 55 }, (_, i) => ({ ...item, id: `item-${i}`, tokenId: `${i}` })) as Item[]
+    contentHashes = Array.from({ length: items.length }, (_, i) => `content-hash-${i}`)
+    collection = { id: 'aCollection', contractAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' } as Collection
+
+    resultItems = items.map((item, index) => ({ ...item, contentHash: contentHashes[index] }))
+    groupsOfItems = groupsOf(items, MAX_ITEMS)
+    groupsOfContentHashes = groupsOf(contentHashes, MAX_ITEMS)
+  })
+
+  describe('and the meta transactions are successful', () => {
+    it('should dispatch a rescueItemsChunkSuccess per chunk and the rescueItemsSuccess once the transactions finish', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+          [matchers.call.fn(getMethodData), transactionData],
+          [matchers.call.fn(sendTransaction), txHash],
+          [take(FETCH_TRANSACTION_SUCCESS), { payload: { transaction: { hash: txHash } } }]
+        ])
+        .put(rescueItemsChunkSuccess(collection, groupsOfItems[0], groupsOfContentHashes[0], ChainId.MATIC_MUMBAI, txHash))
+        .put(rescueItemsChunkSuccess(collection, groupsOfItems[1], groupsOfContentHashes[1], ChainId.MATIC_MUMBAI, txHash))
+        .put(rescueItemsSuccess(collection, resultItems, contentHashes, ChainId.MATIC_MUMBAI, [txHash, txHash]))
+        .dispatch(rescueItemsRequest(collection, items, contentHashes))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the meta transactions are unsuccessful', () => {
+    describe('and the transaction fails to get mined', () => {
+      it('should dispatch the rescueItemsFailure with the information about the error', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+            [matchers.call.fn(getMethodData), transactionData],
+            [matchers.call.fn(sendTransaction), Promise.reject(new Error('some-error'))]
+          ])
+          .put(rescueItemsFailure(collection, items, contentHashes, 'some-error'))
+          .dispatch(rescueItemsRequest(collection, items, contentHashes))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the call to the transaction service fails', () => {
+      it('should dispatch the rescueItemsFailure with the information about the error', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+            [matchers.call.fn(getMethodData), transactionData],
+            [matchers.call.fn(sendTransaction), txHash],
+            [take(FETCH_TRANSACTION_FAILURE), { payload: { transaction: { hash: txHash } } }]
+          ])
+          .put(rescueItemsFailure(collection, items, contentHashes, `The transaction ${txHash} failed to be mined.`))
+          .dispatch(rescueItemsRequest(collection, items, contentHashes))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })

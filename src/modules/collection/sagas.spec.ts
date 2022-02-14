@@ -145,7 +145,7 @@ describe('when executing the approval flow', () => {
             contentHashes: [updatedItem.contentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, '0xhash'))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(
@@ -217,7 +217,7 @@ describe('when executing the approval flow', () => {
             contentHashes: [updatedItem.contentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, '0xhash'))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(
@@ -368,7 +368,7 @@ describe('when executing the approval flow', () => {
             contentHashes: [updatedItem.contentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, '0xhash'))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(
@@ -433,7 +433,7 @@ describe('when executing the approval flow', () => {
             contentHashes: [updatedItem.contentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, '0xhash'))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(
@@ -508,7 +508,7 @@ describe('when executing the approval flow', () => {
             contentHashes: [updatedItem.contentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, '0xhash'))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(

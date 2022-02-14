@@ -67,6 +67,7 @@ import {
   RESCUE_ITEMS_REQUEST,
   RESCUE_ITEMS_FAILURE,
   RESCUE_ITEMS_SUCCESS,
+  RESCUE_ITEMS_CHUNK_SUCCESS,
   ResetItemRequestAction,
   ResetItemSuccessAction,
   ResetItemFailureAction,
@@ -92,7 +93,8 @@ import {
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SAVE_MULTIPLE_ITEMS_FAILURE,
   CLEAR_SAVE_MULTIPLE_ITEMS,
-  SAVE_MULTIPLE_ITEMS_CANCELLED
+  SAVE_MULTIPLE_ITEMS_CANCELLED,
+  RescueItemsChunkSuccessAction
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
@@ -145,6 +147,7 @@ type ItemReducerAction =
   | PublishThirdPartyItemsFailureAction
   | RescueItemsRequestAction
   | RescueItemsSuccessAction
+  | RescueItemsChunkSuccessAction
   | RescueItemsFailureAction
   | ResetItemRequestAction
   | ResetItemSuccessAction
@@ -185,8 +188,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_COLLECTION_ITEMS_SUCCESS:
     case FETCH_ITEMS_SUCCESS:
-    case SET_ITEMS_TOKEN_ID_SUCCESS:
-    case RESCUE_ITEMS_SUCCESS: {
+    case SET_ITEMS_TOKEN_ID_SUCCESS: {
       const { items } = action.payload
       return {
         ...state,
@@ -196,6 +198,23 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         },
         loading: loadingReducer(state.loading, action),
         error: null
+      }
+    }
+    case RESCUE_ITEMS_SUCCESS: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
+    case RESCUE_ITEMS_CHUNK_SUCCESS: {
+      const { items } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        }
       }
     }
     case FETCH_RARITIES_SUCCESS: {

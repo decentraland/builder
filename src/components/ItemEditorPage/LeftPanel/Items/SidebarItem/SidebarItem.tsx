@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { DragSource } from 'react-dnd'
-import { Popup, Checkbox, CheckboxProps } from 'decentraland-ui'
+import { Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { isThirdParty } from 'lib/urn'
 import ItemImage from 'components/ItemImage'
 import ItemStatus from 'components/ItemStatus'
 import { getMissingBodyShapeType, hasBodyShape } from 'modules/item/utils'
@@ -13,21 +12,15 @@ import { Props } from './SidebarItem.types'
 import './SidebarItem.css'
 
 class SidebarItem extends React.PureComponent<Props & CollectedProps> {
-  handleCheckboxChange = (_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) => {
-    const { item, onToggle } = this.props
-    onToggle(item, data.checked!)
-  }
-
   handleClick = () => {
     const { item, onClick } = this.props
     onClick(item)
   }
 
   render() {
-    const { item, isSelected, isVisible, isChecked, selectedCollectionId, bodyShape, connectDragSource, isDragging } = this.props
+    const { item, isSelected, isVisible, selectedCollectionId, bodyShape, connectDragSource, isDragging } = this.props
     return connectDragSource(
       <div className={`SidebarItem ${isSelected ? 'is-selected' : ''} ${isDragging ? 'is-dragging' : ''}`}>
-        {selectedCollectionId && isThirdParty(item.urn) ? <Checkbox checked={isChecked} onClick={this.handleCheckboxChange} /> : null}
         <Link to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined })}>
           <ItemImage item={item} />
           <div className="name">
