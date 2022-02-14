@@ -1,11 +1,11 @@
 import { Dispatch } from 'redux'
 import { Item } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { Curation } from 'modules/curation/types'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 
 export type Props = {
   collection: Collection
-  curation: Curation | null
+  curation: CollectionCuration | null
   items: Item[]
 }
 
