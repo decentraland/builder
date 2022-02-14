@@ -1,4 +1,5 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { CurationStatus } from '../types'
 import {
   ApproveCollectionCurationFailureAction,
   ApproveCollectionCurationRequestAction,
@@ -31,15 +32,15 @@ import {
   REJECT_COLLECTION_CURATION_REQUEST,
   REJECT_COLLECTION_CURATION_SUCCESS
 } from './actions'
-import { CollectionCuration, CurationStatus } from './types'
+import { CollectionCuration } from './types'
 
-export type CurationState = {
+export type CollectionCurationState = {
   data: Record<string, CollectionCuration>
   loading: LoadingState
   error: string | null
 }
 
-export const INITIAL_STATE: CurationState = {
+export const INITIAL_STATE: CollectionCurationState = {
   data: {},
   loading: [],
   error: null
@@ -62,7 +63,10 @@ type CurationReducerAction =
   | RejectCollectionCurationSuccessAction
   | RejectCollectionFailureSuccessAction
 
-export function curationReducer(state: CurationState = INITIAL_STATE, action: CurationReducerAction): CurationState {
+export function collectionCurationReducer(
+  state: CollectionCurationState = INITIAL_STATE,
+  action: CurationReducerAction
+): CollectionCurationState {
   switch (action.type) {
     case FETCH_COLLECTION_CURATIONS_REQUEST:
     case FETCH_COLLECTION_CURATION_REQUEST:

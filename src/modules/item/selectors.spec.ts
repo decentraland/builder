@@ -131,7 +131,7 @@ describe('Item selectors', () => {
     it('should return the status for each published item', () => {
       mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
       const mockState = {
-        curation: {
+        collectionCuration: {
           data: {
             '0': {
               id: '0',

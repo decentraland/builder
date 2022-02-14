@@ -33,7 +33,7 @@ import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/re
 import { UIState } from 'modules/ui/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 import { EntityState } from 'modules/entity/reducer'
-import { CurationState } from 'modules/collectionCuration/reducer'
+import { CollectionCurationState } from 'modules/curations/collectionCuration/reducer'
 import { TiersState } from 'modules/tiers/reducer'
 
 const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
@@ -71,7 +71,7 @@ export type RootState = {
   translation: TranslationState
   ui: UIState
   wallet: WalletState
-  curation: CurationState
+  collectionCuration: CollectionCurationState
   tiers: TiersState
 }
 

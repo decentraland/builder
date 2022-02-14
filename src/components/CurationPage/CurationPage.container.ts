@@ -4,11 +4,11 @@ import { getData as getWallet, isConnecting } from 'decentraland-dapps/dist/modu
 import { RootState } from 'modules/common/types'
 import { getCollections, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getLoading as getLoadingItem } from 'modules/item/selectors'
-import { getCurationsByCollectionId, getLoading as getLoadingCuration } from 'modules/collectionCuration/selectors'
+import { getCurationsByCollectionId, getLoading as getLoadingCuration } from 'modules/curations/collectionCuration/selectors'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
-import { FETCH_COLLECTION_CURATION_REQUEST } from 'modules/collectionCuration/actions'
+import { FETCH_COLLECTION_CURATION_REQUEST } from 'modules/curations/collectionCuration/actions'
 import { MapStateProps } from './CurationPage.types'
 import CurationPage from './CurationPage'
 

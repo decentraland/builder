@@ -17,9 +17,10 @@ import { Item, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
 import { fetchItemsRequest, fetchItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
-import { approveCollectionCurationFailure, approveCollectionCurationRequest, approveCollectionCurationSuccess } from 'modules/collectionCuration/actions'
-import { getCurationsByCollectionId } from 'modules/collectionCuration/selectors'
-import { CollectionCuration, CurationStatus } from 'modules/collectionCuration/types'
+import { approveCollectionCurationFailure, approveCollectionCurationRequest, approveCollectionCurationSuccess } from 'modules/curations/collectionCuration/actions'
+import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { CurationStatus } from 'modules/curations/types'
 import { BuilderAPI } from 'lib/api/builder'
 import {
   approveCollectionFailure,

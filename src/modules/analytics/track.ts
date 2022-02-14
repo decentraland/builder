@@ -85,7 +85,7 @@ import {
   PUSH_COLLECTION_CURATION_SUCCESS,
   REJECT_COLLECTION_CURATION_FAILURE,
   REJECT_COLLECTION_CURATION_SUCCESS
-} from 'modules/collectionCuration/actions'
+} from 'modules/curations/collectionCuration/actions'
 import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
 import {
   BUY_THIRD_PARTY_ITEM_TIERS_FAILURE,

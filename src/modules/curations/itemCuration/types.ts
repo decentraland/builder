@@ -1,4 +1,4 @@
-import { BaseCuration } from 'modules/collectionCuration/types'
+import { BaseCuration } from '../types'
 
 export type ItemCuration = {
   itemId: string

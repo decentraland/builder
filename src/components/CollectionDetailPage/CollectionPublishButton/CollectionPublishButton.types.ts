@@ -4,7 +4,7 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { OpenModalAction } from 'modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'
-import { FetchCollectionCurationRequestAction } from 'modules/collectionCuration/actions'
+import { FetchCollectionCurationRequestAction } from 'modules/curations/collectionCuration/actions'
 
 export type Props = {
   wallet: Wallet

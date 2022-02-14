@@ -3,15 +3,15 @@ import { Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Collection, CollectionType } from 'modules/collection/types'
-import { CollectionCuration, CurationStatus } from 'modules/collectionCuration/types'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { CurationStatus } from 'modules/curations/types'
 import { getCollectionType, hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
 import RejectionModal from './RejectionModal'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
 import { ButtonType, Props, State } from './TopPanel.types'
-import { ItemCuration } from 'modules/itemCuration/types'
-
 import './TopPanel.css'
 
 export default class TopPanel extends React.PureComponent<Props, State> {

@@ -2,7 +2,7 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Collection } from 'modules/collection/types'
 import { fetchCollectionsRequest } from 'modules/collection/actions'
 import { fetchItemsRequest } from 'modules/item/actions'
-import { CollectionCuration } from 'modules/collectionCuration/types'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 
 export enum SortBy {
   NEWEST = 'NEWEST',

@@ -93,15 +93,16 @@ import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
-import { getCurationsByCollectionId } from 'modules/collectionCuration/selectors'
+import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
   approveCollectionCurationRequest,
   ApproveCollectionCurationSuccessAction,
   APPROVE_COLLECTION_CURATION_FAILURE,
   APPROVE_COLLECTION_CURATION_SUCCESS
-} from 'modules/collectionCuration/actions'
-import { CollectionCuration, CurationStatus } from 'modules/collectionCuration/types'
+} from 'modules/curations/collectionCuration/actions'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { CurationStatus } from 'modules/curations/types'
 import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
@@ -639,7 +640,9 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
           yield put(approveCollectionCurationRequest(curation.collectionId))
 
           // wait for actions
-          const { failure }: { success: ApproveCollectionCurationSuccessAction; failure: ApproveCollectionCurationFailureAction } = yield race({
+          const {
+            failure
+          }: { success: ApproveCollectionCurationSuccessAction; failure: ApproveCollectionCurationFailureAction } = yield race({
             success: take(APPROVE_COLLECTION_CURATION_SUCCESS),
             failure: take(APPROVE_COLLECTION_CURATION_FAILURE)
           })

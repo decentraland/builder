@@ -10,7 +10,3 @@ export type BaseCuration = {
   createdAt: number
   updatedAt: number
 }
-
-export type CollectionCuration = {
-  collectionId: string
-} & BaseCuration

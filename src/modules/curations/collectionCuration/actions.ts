@@ -8,14 +8,15 @@ export const FETCH_COLLECTION_CURATIONS_SUCCESS = '[Success] Fetch Collection Cu
 export const FETCH_COLLECTION_CURATIONS_FAILURE = '[Failure] Fetch Collection Curations'
 
 export const fetchCollectionCurationsRequest = () => action(FETCH_COLLECTION_CURATIONS_REQUEST)
-export const fetchCollectionCurationsSuccess = (curations: CollectionCuration[]) => action(FETCH_COLLECTION_CURATIONS_SUCCESS, { curations })
+export const fetchCollectionCurationsSuccess = (curations: CollectionCuration[]) =>
+  action(FETCH_COLLECTION_CURATIONS_SUCCESS, { curations })
 export const fetchCollectionCurationsFailure = (error: string) => action(FETCH_COLLECTION_CURATIONS_FAILURE, { error })
 
 export type FetchCollectionCurationsRequestAction = ReturnType<typeof fetchCollectionCurationsRequest>
 export type FetchCollectionCurationsSuccessAction = ReturnType<typeof fetchCollectionCurationsSuccess>
 export type FetchCollectionCurationsFailureAction = ReturnType<typeof fetchCollectionCurationsFailure>
 
-// Fetch Collection CollectionCuration
+// Fetch Collection Curation
 
 export const FETCH_COLLECTION_CURATION_REQUEST = '[Request] Fetch Collection CollectionCuration'
 export const FETCH_COLLECTION_CURATION_SUCCESS = '[Success] Fetch Collection CollectionCuration'
@@ -30,7 +31,7 @@ export type FetchCollectionCurationRequestAction = ReturnType<typeof fetchCollec
 export type FetchCollectionCurationSuccessAction = ReturnType<typeof fetchCollectionCurationSuccess>
 export type FetchCollectionCurationFailureAction = ReturnType<typeof fetchCollectionCurationFailure>
 
-// Push Collection CollectionCuration
+// Push Collection Curation
 
 export const PUSH_COLLECTION_CURATION_REQUEST = '[Request] Push Collection CollectionCuration'
 export const PUSH_COLLECTION_CURATION_SUCCESS = '[Success] Push Collection CollectionCuration'
@@ -44,29 +45,31 @@ export type PushCollectionCurationRequestAction = ReturnType<typeof pushCollecti
 export type PushCollectionCurationSuccessAction = ReturnType<typeof pushCollectionCurationSuccess>
 export type PushCollectionCurationFailureAction = ReturnType<typeof pushCollectionCurationFailure>
 
-// Approve Collection CollectionCuration
+// Approve Collection Curation
 
-export const APPROVE_COLLECTION_CURATION_REQUEST = '[Request] Approve Collection CollectionCuration'
-export const APPROVE_COLLECTION_CURATION_SUCCESS = '[Success] Approve Collection CollectionCuration'
-export const APPROVE_COLLECTION_CURATION_FAILURE = '[Failure] Approve Collection CollectionCuration'
+export const APPROVE_COLLECTION_CURATION_REQUEST = '[Request] Approve Collection Curation'
+export const APPROVE_COLLECTION_CURATION_SUCCESS = '[Success] Approve Collection Curation'
+export const APPROVE_COLLECTION_CURATION_FAILURE = '[Failure] Approve Collection Curation'
 
 export const approveCollectionCurationRequest = (collectionId: string) => action(APPROVE_COLLECTION_CURATION_REQUEST, { collectionId })
 export const approveCollectionCurationSuccess = (collectionId: string) => action(APPROVE_COLLECTION_CURATION_SUCCESS, { collectionId })
-export const approveCollectionCurationFailure = (collectionId: string, error: string) => action(APPROVE_COLLECTION_CURATION_FAILURE, { collectionId, error })
+export const approveCollectionCurationFailure = (collectionId: string, error: string) =>
+  action(APPROVE_COLLECTION_CURATION_FAILURE, { collectionId, error })
 
 export type ApproveCollectionCurationRequestAction = ReturnType<typeof approveCollectionCurationRequest>
 export type ApproveCollectionCurationSuccessAction = ReturnType<typeof approveCollectionCurationSuccess>
 export type ApproveCollectionCurationFailureAction = ReturnType<typeof approveCollectionCurationFailure>
 
-// Reject Collection CollectionCuration
+// Reject Collection Curation
 
-export const REJECT_COLLECTION_CURATION_REQUEST = '[Request] Reject Collection CollectionCuration'
-export const REJECT_COLLECTION_CURATION_SUCCESS = '[Success] Reject Collection CollectionCuration'
-export const REJECT_COLLECTION_CURATION_FAILURE = '[Failure] Reject Collection CollectionCuration'
+export const REJECT_COLLECTION_CURATION_REQUEST = '[Request] Reject Collection Curation'
+export const REJECT_COLLECTION_CURATION_SUCCESS = '[Success] Reject Collection Curation'
+export const REJECT_COLLECTION_CURATION_FAILURE = '[Failure] Reject Collection Curation'
 
 export const rejectCollectionCurationRequest = (collectionId: string) => action(REJECT_COLLECTION_CURATION_REQUEST, { collectionId })
 export const rejectCollectionCurationSuccess = (collectionId: string) => action(REJECT_COLLECTION_CURATION_SUCCESS, { collectionId })
-export const rejectCollectionCurationFailure = (collectionId: string, error: string) => action(REJECT_COLLECTION_CURATION_FAILURE, { collectionId, error })
+export const rejectCollectionCurationFailure = (collectionId: string, error: string) =>
+  action(REJECT_COLLECTION_CURATION_FAILURE, { collectionId, error })
 
 export type RejectCollectionCurationRequestAction = ReturnType<typeof rejectCollectionCurationRequest>
 export type RejectCollectionCurationSuccessAction = ReturnType<typeof rejectCollectionCurationSuccess>

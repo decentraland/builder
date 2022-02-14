@@ -4,7 +4,7 @@ import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { RESET_ITEM_SUCCESS, SAVE_ITEM_SUCCESS, SET_PRICE_AND_BENEFICIARY_SUCCESS } from 'modules/item/actions'
 import { closeAllModals } from './actions'
-import { PUSH_COLLECTION_CURATION_SUCCESS } from 'modules/collectionCuration/actions'
+import { PUSH_COLLECTION_CURATION_SUCCESS } from 'modules/curations/collectionCuration/actions'
 import { EXPORT_PROJECT_SUCCESS } from 'modules/project/actions'
 
 export function* modalSaga() {

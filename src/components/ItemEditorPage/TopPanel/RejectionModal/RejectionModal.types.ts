@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux'
 import { InitiateApprovalFlowAction, rejectCollectionRequest, RejectCollectionRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
-import { rejectCollectionCurationRequest, RejectCollectionCurationRequestAction } from 'modules/collectionCuration/actions'
-import { CollectionCuration } from 'modules/collectionCuration/types'
+import { rejectCollectionCurationRequest, RejectCollectionCurationRequestAction } from 'modules/curations/collectionCuration/actions'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 
 export enum RejectionType {
   REJECT_COLLECTION = 'REJECT_COLLECTION',
