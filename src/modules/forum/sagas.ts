@@ -1,5 +1,6 @@
 import { takeEvery, call, put, delay } from 'redux-saga/effects'
 import { BuilderAPI } from 'lib/api/builder'
+import { shorten } from '../../lib/address'
 import {
   createCollectionForumPostFailure,
   CreateCollectionForumPostFailureAction,
@@ -20,17 +21,31 @@ export function* forumSaga(builder: BuilderAPI) {
     const { collection, forumPost } = action.payload
     try {
       const forumLink: string = yield call([builder, 'createCollectionForumPost'], collection, forumPost)
-      return put(createCollectionForumPostSuccess(collection, forumLink))
+      yield put(createCollectionForumPostSuccess(collection, forumLink))
     } catch (error) {
       if (builder.isAxiosError(error) && error.response) {
         const forumPostAlreadyExists = error.response.status === 409
         const forumLink = error.response.data?.data?.forum_link
+
         if (forumPostAlreadyExists && forumLink) {
-          return put(createCollectionForumPostSuccess(collection, forumLink))
+          yield put(createCollectionForumPostSuccess(collection, forumLink))
+          return
+        }
+
+        const duplicatedTitle = error.response.status === 500 && error.response.data?.data?.errors?.includes('Title has already been used')
+
+        if (duplicatedTitle) {
+          yield put(
+            createCollectionForumPostRequest(collection, {
+              ...forumPost,
+              title: `${forumPost.title} ${shorten(collection.contractAddress!)}`
+            })
+          )
+          return
         }
       }
 
-      return put(createCollectionForumPostFailure(collection, forumPost, error.message))
+      yield put(createCollectionForumPostFailure(collection, forumPost, error.message))
     }
   }
 }
