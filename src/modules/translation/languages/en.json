@@ -207,6 +207,36 @@
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}."
     }
   },
+  "create_multiple_items_modal": {
+    "title": "Create multiple items",
+    "successful_title": "Items created",
+    "cancelled_title": "Cancelled multiple items creation",
+    "failed_title": "Failed multiple items creation",
+    "wrong_file_extension": "File extension is not correct.",
+    "asset_file_not_found": "The asset.json file was not found.",
+    "thumbnail_file_not_found": "Bulk files must contain a thumbnail.png file in their content.",
+    "saved_items_table_title": "Saved items",
+    "invalid_title": "INVALID",
+    "valid_title": "VALID",
+    "add_more_button": "Add more",
+    "upload_items_button": "Upload items",
+    "only_valid_items_info": "Only valid items will be uploaded",
+    "done_button": "Done",
+    "finished_successfully_subtitle": "Great! You've added {number_of_items} items",
+    "finished_unsuccessfully_subtitle": "The creation of items was interrupted, but {number_of_items} items were added.",
+    "importing_files_progress_label": "Processing items",
+    "uploading_items_progress_label": "Uploading {number_of_items} items",
+    "import_information_link_label": "click here",
+    "import_information": "For more information on the ZIP's structure {link}"
+  },
+  "create_items_modal": {
+    "title": "New Item",
+    "subtitle": "Select the method for uploading your item.",
+    "single_item_button_name": "Single item",
+    "single_item_button_description": "Upload GLTF, GLB or PNG files.",
+    "multiple_items_button_name": "Multiple items",
+    "multiple_items_button_description": "Upload a ZIP file with all the files."
+  },
   "edit_collection_name_modal": {
     "title": "Edit Collection Name",
     "subtitle": "Set a new name for this collection"
@@ -984,7 +1014,8 @@
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them.",
-    "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}"
+    "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}",
+    "new_items": "New Items"
   },
   "collection_detail_page": {
     "new_item": "New Item",

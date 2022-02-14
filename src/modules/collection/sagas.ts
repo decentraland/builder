@@ -522,7 +522,8 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // 2. Find items that need to be rescued (their content hash needs to be updated)
       const itemsToRescue: Item[] = []
       const contentHashes: string[] = []
-      for (const item of yield getItemsFromCollection(collection)) {
+      const items: Item[] = yield getItemsFromCollection(collection)
+      for (const item of items) {
         const contentHash: string = yield call(buildItemContentHash, collection, item)
         if (item.contentHash !== contentHash) {
           itemsToRescue.push(item)
@@ -570,7 +571,8 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const itemsToDeploy: Item[] = []
       const entitiesToDeploy: DeploymentPreparationData[] = []
       const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
-      for (const item of yield getItemsFromCollection(collection)) {
+      const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+      for (const item of itemsOfCollection) {
         const deployedEntity = entitiesByItemId[item.id]
         if (!deployedEntity || !areSynced(item, deployedEntity)) {
           const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)

@@ -50,7 +50,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
   }
 
   handleMouseWheel = (e: Event) => {
-    if ((e as MouseWheelEvent)['ctrlKey']) {
+    if ((e as WheelEvent)['ctrlKey']) {
       e.preventDefault()
       e.stopImmediatePropagation()
     }
