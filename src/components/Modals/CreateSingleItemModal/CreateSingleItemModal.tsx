@@ -155,7 +155,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleSubmit = async () => {
-    const { address, metadata, collectionUrn, onSave } = this.props
+    const { address, metadata, collection, onSave } = this.props
     const { id } = this.state
 
     let changeItemFile = false
@@ -186,7 +186,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
       let item: Item | undefined
 
-      const belongsToAThirdPartyCollection = collectionUrn && isThirdParty(collectionUrn)
+      const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
       const blob = dataURLToBlob(thumbnail)
       const hasCustomThumbnail = THUMBNAIL_PATH in contents
       if (blob && !hasCustomThumbnail) {
@@ -250,7 +250,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         }
       } else {
         // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
-        let decodedCollectionUrn: DecodedURN<any> | null = collectionUrn ? decodeURN(collectionUrn) : null
+        let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
         let urn: string | undefined
         if (
           decodedCollectionUrn &&
@@ -678,10 +678,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
-    const { collectionUrn } = this.props
+    const { collection } = this.props
     const { name, category, rarity, contents, item } = this.state
 
-    const belongsToAThirdPartyCollection = collectionUrn && isThirdParty(collectionUrn)
+    const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const rarities = getRarities()
     const categories = getWearableCategories(contents)
 
@@ -724,8 +724,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   isValid(): boolean {
     const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation } = this.state
-    const { collectionUrn } = this.props
-    const belongsToAThirdPartyCollection = collectionUrn && isThirdParty(collectionUrn)
+    const { collection } = this.props
+    const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
 
     let required: (string | ModelMetrics | Item | undefined)[]
 

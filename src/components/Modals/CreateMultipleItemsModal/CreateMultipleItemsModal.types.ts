@@ -42,7 +42,7 @@ export type State = {
 }
 
 export type Props = ModalProps & {
-  collection: Collection
+  collection: Collection | null
   error: string | null
   onSaveMultipleItems: typeof saveMultipleItemsRequest
   onCancelSaveMultipleItems: typeof cancelSaveMultipleItems

@@ -76,7 +76,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
   }
 
   private handleFilesImport = async (acceptedFiles: File[]): Promise<void> => {
-    const { metadata, collectionUrn } = this.props
+    const { metadata, collection } = this.props
     this.setState({
       view: ItemCreationView.IMPORTING
     })
@@ -111,7 +111,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
           }
 
           // Generate or set the correct URN for the items taking into consideration the selected collection
-          let decodedCollectionUrn: DecodedURN<any> | null = collectionUrn ? decodeURN(collectionUrn) : null
+          let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
 
           if (
             decodedCollectionUrn &&

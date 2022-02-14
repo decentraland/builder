@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { ModelMetrics } from 'modules/models/types'
+import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 import { BodyShapeType, Item, ItemRarity, WearableCategory } from 'modules/item/types'
 
@@ -14,7 +15,7 @@ export type Props = ModalProps & {
   metadata: CreateSingleItemModalMetadata
   error: string | null
   isLoading: boolean
-  collectionUrn: string | null
+  collection: Collection | null
   onSave: typeof saveItemRequest
 }
 
@@ -49,6 +50,6 @@ export type ItemAssetJson = Pick<State, 'name' | 'description' | 'category' | 'r
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collectionUrn'>
+export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection'>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>
