@@ -6,17 +6,23 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { fetchItemCurationsRequest, FetchItemCurationsRequestAction } from 'modules/itemCuration/actions'
+import { ItemCuration } from 'modules/itemCuration/types'
 
 export type Props = {
   wallet: Wallet
   collection: Collection | null
   thirdParty: ThirdParty | null
   items: Item[]
+  itemCurations: ItemCuration[]
   isOnSaleLoading: boolean
   authorizations: Authorization[]
   isLoading: boolean
+  isLoadingItemCurations: boolean
+  itemCurationsError: string | null
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
+  onFetchItemCurations: typeof fetchItemCurationsRequest
 }
 
 export type State = {
@@ -26,6 +32,17 @@ export type State = {
   isAuthModalOpen: boolean
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'items' | 'thirdParty' | 'isLoading' | 'authorizations'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>
+export type MapStateProps = Pick<
+  Props,
+  | 'wallet'
+  | 'collection'
+  | 'items'
+  | 'itemCurations'
+  | 'thirdParty'
+  | 'isLoading'
+  | 'isLoadingItemCurations'
+  | 'authorizations'
+  | 'itemCurationsError'
+>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onFetchItemCurations'>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | FetchItemCurationsRequestAction>

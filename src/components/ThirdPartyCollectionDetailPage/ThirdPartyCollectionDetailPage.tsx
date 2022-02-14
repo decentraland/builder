@@ -48,6 +48,19 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     isAuthModalOpen: false
   }
 
+  componentDidUpdate() {
+    const { collection, itemCurations, onFetchItemCurations, isLoadingItemCurations, itemCurationsError } = this.props
+    if (
+      collection &&
+      getCollectionType(collection) === CollectionType.THIRD_PARTY &&
+      !itemCurations &&
+      !isLoadingItemCurations &&
+      !itemCurationsError
+    ) {
+      onFetchItemCurations(collection.id)
+    }
+  }
+
   getManaAuthorization = () => {
     const { wallet } = this.props
     return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.ThirdPartyRegistry)

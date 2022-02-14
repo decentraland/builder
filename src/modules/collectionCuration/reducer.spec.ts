@@ -12,7 +12,7 @@ import {
   approveCollectionCurationRequest,
   approveCollectionCurationFailure
 } from './actions'
-import { INITIAL_STATE, curationReducer, CurationState } from './reducer'
+import { INITIAL_STATE, curationReducer, CollectionCurationState } from './reducer'
 import { CollectionCuration, CurationStatus } from './types'
 
 const getMockCuration = (props: Partial<CollectionCuration> = {}): CollectionCuration => ({
@@ -53,7 +53,7 @@ describe('when an action of type PUSH_COLLECTION_CURATION_REQUEST is called', ()
 
 describe('when an action of type FETCH_COLLECTION_CURATIONS_SUCCESS is called', () => {
   it('should add the collections to the data, remove the action from loading and set the error to null', () => {
-    const state: CurationState = {
+    const state: CollectionCurationState = {
       data: {},
       loading: [fetchCollectionCurationsRequest()],
       error: 'Some Error'
@@ -72,7 +72,7 @@ describe('when an action of type FETCH_COLLECTION_CURATIONS_SUCCESS is called', 
 describe('when an action of type FETCH_COLLECTION_CURATION_SUCCESS is called', () => {
   describe('when the curation does not already exist in the state', () => {
     it('should add the curation to the data, remove the request from loading and set the error to null', () => {
-      const state: CurationState = {
+      const state: CollectionCurationState = {
         data: {},
         loading: [fetchCollectionCurationRequest('collectionId')],
         error: 'Some Error'
@@ -88,7 +88,7 @@ describe('when an action of type FETCH_COLLECTION_CURATION_SUCCESS is called', (
 
   describe('when the curation already exists in data', () => {
     it('should replace it', () => {
-      const state: CurationState = {
+      const state: CollectionCurationState = {
         data: {
           collectionId: getMockCuration()
         },
@@ -108,7 +108,7 @@ describe('when an action of type FETCH_COLLECTION_CURATION_SUCCESS is called', (
 
   describe('when the curation already exists in data but undefined is provided in the payload', () => {
     it('should remove the curation from data', () => {
-      const state: CurationState = {
+      const state: CollectionCurationState = {
         data: {
           collectionId: getMockCuration()
         },

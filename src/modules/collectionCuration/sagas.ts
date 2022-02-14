@@ -27,7 +27,7 @@ import {
 } from './actions'
 import { CollectionCuration, CurationStatus } from './types'
 
-export function* curationSaga(builder: BuilderAPI) {
+export function* collectionCurationSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_COLLECTION_CURATIONS_REQUEST, handleFetchCurationsRequest)
   yield takeEvery(PUSH_COLLECTION_CURATION_REQUEST, handlePushCurationRequest)
   yield takeEvery(FETCH_COLLECTION_CURATION_REQUEST, handleFetchCurationRequest)

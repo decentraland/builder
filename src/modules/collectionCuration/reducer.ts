@@ -33,13 +33,13 @@ import {
 } from './actions'
 import { CollectionCuration, CurationStatus } from './types'
 
-export type CurationState = {
+export type CollectionCurationState = {
   data: Record<string, CollectionCuration>
   loading: LoadingState
   error: string | null
 }
 
-export const INITIAL_STATE: CurationState = {
+export const INITIAL_STATE: CollectionCurationState = {
   data: {},
   loading: [],
   error: null
@@ -62,7 +62,7 @@ type CurationReducerAction =
   | RejectCollectionCurationSuccessAction
   | RejectCollectionFailureSuccessAction
 
-export function curationReducer(state: CurationState = INITIAL_STATE, action: CurationReducerAction): CurationState {
+export function curationReducer(state: CollectionCurationState = INITIAL_STATE, action: CurationReducerAction): CollectionCurationState {
   switch (action.type) {
     case FETCH_COLLECTION_CURATIONS_REQUEST:
     case FETCH_COLLECTION_CURATION_REQUEST:
