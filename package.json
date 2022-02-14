@@ -6,6 +6,7 @@
     "@babel/core": "^7.15.0",
     "@babylonjs/core": "^4.2.0",
     "@babylonjs/loaders": "^4.2.0",
+    "@dcl/builder-client": "^1.4.1",
     "@dcl/schemas": "^3.1.1",
     "@svgr/webpack": "2.4.1",
     "@types/react-copy-to-clipboard": "^4.3.0",
@@ -170,7 +171,7 @@
     "ts-loader": "^6.2.1",
     "tslib": "^2.0.1",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^4.0.2"
+    "typescript": "^4.5.4"
   },
   "babel": {
     "presets": [

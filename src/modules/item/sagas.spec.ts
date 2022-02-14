@@ -3,6 +3,7 @@ import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { call, select, take, race } from 'redux-saga/effects'
+import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -13,7 +14,9 @@ import { Collection } from 'modules/collection/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
+import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
+import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { downloadZip } from 'lib/zip'
 import { BuilderAPI } from 'lib/api/builder'
 import util from 'util'
@@ -35,13 +38,18 @@ import {
   downloadItemFailure,
   downloadItemRequest,
   downloadItemSuccess,
+  saveMultipleItemsRequest,
+  saveMultipleItemsSuccess,
+  saveMultipleItemsFailure,
+  saveMultipleItemsCancelled,
+  cancelSaveMultipleItems,
   rescueItemsRequest,
   rescueItemsChunkSuccess,
   rescueItemsSuccess,
   rescueItemsFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
-import { Item, ItemType, WearableRepresentation } from './types'
+import { BuiltFile, Item, ItemType, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
 import { buildZipContents, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
@@ -55,11 +63,17 @@ const builderAPI = ({
   fetchContents: jest.fn()
 } as unknown) as BuilderAPI
 
+let builderClient: BuilderClient
+
 let dateNowSpy: jest.SpyInstance
 const updatedAt = Date.now()
 
 beforeEach(() => {
   dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => updatedAt)
+  builderClient = ({
+    upsertItem: jest.fn(),
+    getContentSize: jest.fn()
+  } as unknown) as BuilderClient
 })
 
 afterEach(() => {
@@ -72,7 +86,7 @@ describe('when handling the save item request action', () => {
       const item = {
         name: 'invalid:name'
       } as Item
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -85,7 +99,7 @@ describe('when handling the save item request action', () => {
         name: 'valid name',
         description: 'invalid:description'
       } as Item
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -99,7 +113,7 @@ describe('when handling the save item request action', () => {
         description: 'valid description',
         updatedAt
       } as Item
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[call(calculateFinalSize, item, contents), Promise.resolve(MAX_FILE_SIZE + 1)]])
         .put(
           saveItemFailure(
@@ -135,7 +149,7 @@ describe('when handling the save item request action', () => {
     })
 
     it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getCollection, collection.id), collection],
           [call(calculateFinalSize, item, contents), Promise.resolve(1)]
@@ -155,7 +169,7 @@ describe('when handling the save item request action', () => {
           updatedAt
         } as Item
 
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
@@ -174,7 +188,7 @@ describe('when handling the save item request action', () => {
           updatedAt,
           isPublished: true
         } as Item
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
@@ -193,7 +207,7 @@ describe('when handling the save item request action', () => {
           updatedAt
         } as Item
 
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([[call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]])
           .put(saveItemSuccess(item, {}))
           .dispatch(saveItemRequest(item, {}))
@@ -238,7 +252,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       const price = '1000'
       const beneficiary = '0xpepe'
 
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
@@ -269,7 +283,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
         const nonExistentItemId = 'non-existent-id'
         const errorMessage = 'Error message'
 
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getItems), [item]],
             [select(getCollections), [collection]],
@@ -298,7 +312,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
 
       const errorMessage = 'Error message'
 
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
@@ -311,7 +325,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   })
 })
 
-describe('when reseting an item to the state found in the catalyst', () => {
+describe('when resetting an item to the state found in the catalyst', () => {
   const originalFetch = window.fetch
 
   window.fetch = jest.fn().mockResolvedValue({
@@ -447,7 +461,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
     })
 
     it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getCollection, collection.id), collection],
           [call(calculateFinalSize, item, contents), Promise.resolve(1)]
@@ -548,7 +562,7 @@ describe('when publishing third party items', () => {
     })
 
     it('should put a publish thrid party items success action and go to activity', () => {
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getCollection, collection.id), collection],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
@@ -573,7 +587,7 @@ describe('when publishing third party items', () => {
       })
 
       it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getCollection, collection.id), collection],
             [call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(errorMessage))]
@@ -598,7 +612,7 @@ describe('when publishing third party items', () => {
       })
 
       it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getCollection, collection.id), collection],
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
@@ -624,7 +638,7 @@ describe('when publishing third party items', () => {
       })
 
       it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getCollection, collection.id), collection],
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
@@ -660,7 +674,7 @@ describe('when handling the downloadItemRequest action', () => {
   describe('when id is not found', () => {
     const itemId = 'invalid'
     it('should throw an error with a message that says the item was not found', () => {
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(getItemsById), itemsById]])
         .put(downloadItemFailure(itemId, `Item not found for itemId="invalid"`))
         .dispatch(downloadItemRequest(itemId))
@@ -675,7 +689,7 @@ describe('when handling the downloadItemRequest action', () => {
       const model = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': model }
       const zip: Record<string, Blob> = { 'male/model.glb': model }
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -696,7 +710,7 @@ describe('when handling the downloadItemRequest action', () => {
       const femaleModel = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': maleModel, 'female/model.glb': femaleModel }
       const zip: Record<string, Blob> = { 'male/model.glb': maleModel, 'female/model.glb': femaleModel }
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -716,7 +730,7 @@ describe('when handling the downloadItemRequest action', () => {
       const model = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': model, 'female/model.glb': model }
       const zip: Record<string, Blob> = { 'model.glb': model }
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -725,6 +739,76 @@ describe('when handling the downloadItemRequest action', () => {
         ])
         .put(downloadItemSuccess(itemId))
         .dispatch(downloadItemRequest(itemId))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the save multiple items requests action', () => {
+  let items: Item[]
+  let builtFiles: BuiltFile<Blob>[]
+  let remoteItems: RemoteItem[]
+  let savedFiles: string[]
+  const error = 'anError'
+
+  beforeEach(() => {
+    items = [{ ...mockedItem }, { ...mockedItem, id: 'anotherItemId' }]
+    remoteItems = [{ ...mockedRemoteItem }, { ...mockedRemoteItem, id: 'anotherItemId' }]
+    savedFiles = ['aFile.zip', 'anotherFile.zip']
+    builtFiles = [
+      {
+        item: { ...mockedLocalItem },
+        newContent: { ...mockedItemContents },
+        fileName: 'aFile.zip'
+      },
+      {
+        item: { ...mockedLocalItem, id: 'anotherItemId' },
+        newContent: { ...mockedItemContents },
+        fileName: 'anotherFile.zip'
+      }
+    ]
+  })
+
+  describe('and all of the upsert requests succeed', () => {
+    it('should dispatch the update progress action for each uploaded item and the success action with the upserted items and the name of the files of the upserted items', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [call([builderClient, 'upsertItem'], builtFiles[0].item, builtFiles[0].newContent), Promise.resolve(remoteItems[0])],
+          [call([builderClient, 'upsertItem'], builtFiles[1].item, builtFiles[1].newContent), Promise.resolve(remoteItems[1])]
+        ])
+        .put(updateProgressSaveMultipleItems(50))
+        .put(updateProgressSaveMultipleItems(100))
+        .put(saveMultipleItemsSuccess(items, savedFiles))
+        .dispatch(saveMultipleItemsRequest(builtFiles))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and one of the upsert requests fails', () => {
+    it('should dispatch the update progress action for the non-failing item upload and the failing action with the error, the upserted items and the name of the files of the upserted items', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [call([builderClient, 'upsertItem'], builtFiles[0].item, builtFiles[0].newContent), Promise.resolve(remoteItems[0])],
+          [call([builderClient, 'upsertItem'], builtFiles[1].item, builtFiles[1].newContent), Promise.reject(new Error(error))]
+        ])
+        .put(updateProgressSaveMultipleItems(50))
+        .put(saveMultipleItemsFailure(error, [items[0]], [savedFiles[0]]))
+        .dispatch(saveMultipleItemsRequest(builtFiles))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the operation gets cancelled', () => {
+    it('should dispatch the update progress action for the first non-cancelled upsert and the cancelling action with the upserted items and the name of the files of the upserted items', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [call([builderClient, 'upsertItem'], builtFiles[0].item, builtFiles[0].newContent), Promise.resolve(remoteItems[0])],
+          [call([builderClient, 'upsertItem'], builtFiles[1].item, builtFiles[1].newContent), Promise.reject(new Error(error))]
+        ])
+        .put(updateProgressSaveMultipleItems(50))
+        .put(saveMultipleItemsCancelled([items[0]], [savedFiles[0]]))
+        .dispatch(saveMultipleItemsRequest(builtFiles))
+        .dispatch(cancelSaveMultipleItems())
         .run({ silenceTimeout: true })
     })
   })
@@ -767,7 +851,7 @@ describe('when handling the rescue items request action', () => {
 
   describe('and the meta transactions are successful', () => {
     it('should dispatch a rescueItemsChunkSuccess per chunk and the rescueItemsSuccess once the transactions finish', () => {
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [matchers.call.fn(getMethodData), transactionData],
@@ -785,7 +869,7 @@ describe('when handling the rescue items request action', () => {
   describe('and the meta transactions are unsuccessful', () => {
     describe('and the transaction fails to get mined', () => {
       it('should dispatch the rescueItemsFailure with the information about the error', () => {
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
             [matchers.call.fn(getMethodData), transactionData],
@@ -799,7 +883,7 @@ describe('when handling the rescue items request action', () => {
 
     describe('and the call to the transaction service fails', () => {
       it('should dispatch the rescueItemsFailure with the information about the error', () => {
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
             [matchers.call.fn(getMethodData), transactionData],

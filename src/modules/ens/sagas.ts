@@ -275,7 +275,7 @@ function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestA
     const from: string = yield select(getAddress)
     const chainId = getChainIdByNetwork(Network.ETHEREUM)
     const contract = getContract(ContractName.MANAToken, chainId)
-    const provider = yield call(getNetworkProvider, chainId)
+    const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
     const mana = new Contract(contract.address, contract.abi, new providers.Web3Provider(provider))
     const allowance: string = yield call(mana.allowance, from, CONTROLLER_ADDRESS)
     const authorization: Authorization = { allowance }
