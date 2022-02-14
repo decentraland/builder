@@ -29,7 +29,7 @@ export const debounceByKey = <T extends (...args: any[]) => any>(fn: T, ms: numb
           await fn(...args)
           promise.resolve()
         } catch (e) {
-          promise.reject((e as any).message)
+          promise.reject(e as Error)
         }
         delete futures[key]
       }
