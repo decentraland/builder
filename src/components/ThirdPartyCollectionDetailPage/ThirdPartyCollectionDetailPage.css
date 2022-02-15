@@ -149,3 +149,8 @@
 .ThirdPartyCollectionDetailPage .ui.pagination.menu {
   margin-top: 32px;
 }
+
+.ThirdPartyCollectionDetailPage .dcl.row.actions .ui.button.add-items {
+  color: var(--text);
+  padding: 12px;
+}

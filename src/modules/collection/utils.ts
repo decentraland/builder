@@ -46,7 +46,7 @@ export function getCollectionBaseURI() {
   return env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
 }
 
-export function getCollectionType(collection: Collection) {
+export function getCollectionType(collection: Collection): CollectionType {
   const { type } = decodeURN(collection.urn)
 
   switch (type) {

@@ -1,0 +1,65 @@
+.modalSubtitle {
+  text-align: center;
+}
+
+.modalButtons {
+  margin-top: 32px;
+}
+
+.modalButtons .itemSelectionButton:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.itemSelectionButton {
+  background: rgba(115, 110, 125, 0.24);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.itemSelectionButton:hover {
+  background: rgba(115, 110, 125, 0.15);
+}
+
+.itemSelectionButton .info {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+}
+
+.itemSelectionButton .icon {
+  height: 48px;
+  width: 48px;
+  background-color: #16141a;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemSelectionButton .icon .sparkles {
+  background-image: url('../../../images/sparkles_red.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 35px;
+  width: 35px;
+}
+
+.itemSelectionButton .icon .sparkle {
+  padding: 9px;
+  background-image: url('../../../images/sparkle_red.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 20px;
+  width: 20px;
+}
+
+.itemSelectionButton .info .name {
+  color: white;
+}
+
+.itemSelectionButton .info .description {
+  color: var(--light-gray);
+}

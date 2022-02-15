@@ -39,3 +39,8 @@
   border-radius: 8px;
   font-size: 16px;
 }
+
+.ui.tiny.visible.warning.message.warning-rescue-message {
+  margin-left: 32px;
+  margin-right: 32px;
+}

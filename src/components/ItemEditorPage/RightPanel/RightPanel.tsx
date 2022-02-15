@@ -5,6 +5,7 @@ import { Loader, Dropdown, Button } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { isThirdParty } from 'lib/urn'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -401,14 +402,17 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeCategory}
                         />
-                        <Select<ItemRarity>
-                          itemId={item.id}
-                          label={t('global.rarity')}
-                          value={rarity}
-                          options={this.asRaritySelect(rarities)}
-                          disabled={item.isPublished || !canEditItemMetadata}
-                          onChange={this.handleChangeRarity}
-                        />
+                        {!item.urn ||
+                          (!isThirdParty(item.urn) && (
+                            <Select<ItemRarity>
+                              itemId={item.id}
+                              label={t('global.rarity')}
+                              value={rarity}
+                              options={this.asRaritySelect(rarities)}
+                              disabled={item.isPublished || !canEditItemMetadata}
+                              onChange={this.handleChangeRarity}
+                            />
+                          ))}
                       </>
                     )}
                   </Collapsable>

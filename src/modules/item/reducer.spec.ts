@@ -2,7 +2,18 @@ import { ChainId } from '@dcl/schemas'
 import { saveCollectionSuccess } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { downloadItemFailure, downloadItemRequest, downloadItemSuccess } from './actions'
+import {
+  clearSaveMultipleItems,
+  downloadItemFailure,
+  downloadItemRequest,
+  downloadItemSuccess,
+  saveMultipleItemsCancelled,
+  saveMultipleItemsSuccess,
+  saveMultipleItemsFailure,
+  rescueItemsChunkSuccess,
+  rescueItemsRequest,
+  rescueItemsSuccess
+} from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
 
@@ -11,10 +22,20 @@ const getChainIdByNetworkMock: jest.Mock<typeof getChainIdByNetwork> = (getChain
   typeof getChainIdByNetwork
 >
 
+const error = 'something went wrong'
 let state: ItemState
+let items: Item[]
+let itemsMap: Record<string, Item>
+let fileNames: string[]
 
 beforeEach(() => {
   state = { ...INITIAL_STATE }
+  items = [{ id: 'anItemId' } as Item, { id: 'anotherItemId' } as Item]
+  itemsMap = {
+    [items[0].id]: items[0],
+    [items[1].id]: items[1]
+  }
+  fileNames = ['file1', 'file2']
 })
 
 describe('when reducing the save collection success action', () => {
@@ -125,7 +146,7 @@ describe('when an action of type DOWNLOAD_ITEM_REQUEST is called', () => {
 
 describe('when an action of type DOWNLOAD_ITEM_SUCCESS is called', () => {
   const itemId = 'anItem'
-  const error = 'something went wrong'
+
   it('should remove a downloadItemRequest from the loading array and null the error', () => {
     expect(
       itemReducer(
@@ -146,7 +167,6 @@ describe('when an action of type DOWNLOAD_ITEM_SUCCESS is called', () => {
 
 describe('when an action of type DOWNLOAD_ITEM_FAILURE is called', () => {
   const itemId = 'anItem'
-  const error = 'something went wrong'
   it('should remove a downloadItemRequest from the loading array and set the error', () => {
     expect(
       itemReducer(
@@ -160,6 +180,112 @@ describe('when an action of type DOWNLOAD_ITEM_FAILURE is called', () => {
       ...INITIAL_STATE,
       loading: [],
       error
+    })
+  })
+})
+
+describe('when reducing the successful save multiple items action', () => {
+  it('should return a state with the saved items', () => {
+    expect(itemReducer(state, saveMultipleItemsSuccess(items, fileNames))).toEqual({
+      ...INITIAL_STATE,
+      data: { ...state.data, ...itemsMap }
+    })
+  })
+})
+
+describe('when reducing the failing save multiple items action', () => {
+  it('should return a state with the saved items added and the error set', () => {
+    expect(itemReducer(state, saveMultipleItemsFailure(error, items, fileNames))).toEqual({
+      ...INITIAL_STATE,
+      error,
+      data: {
+        ...state.data,
+        ...itemsMap
+      }
+    })
+  })
+})
+
+describe('when reducing the save cancelling save multiple items action', () => {
+  it('should return a state with the saved items added', () => {
+    expect(itemReducer(state, saveMultipleItemsCancelled(items, fileNames))).toEqual({
+      ...INITIAL_STATE,
+      data: {
+        ...state.data,
+        ...itemsMap
+      }
+    })
+  })
+})
+
+describe('when reducing the clearing save multiple items action', () => {
+  beforeEach(() => {
+    state = {
+      ...state,
+      error
+    }
+  })
+
+  it('should return a state with the error cleared', () => {
+    expect(itemReducer(state, clearSaveMultipleItems())).toEqual({
+      ...state,
+      error: null
+    })
+  })
+})
+
+describe('when reducing an action of a successful rescue items', () => {
+  let collection: Collection
+  let items: Item[]
+  let contentHashes: string[]
+
+  beforeEach(() => {
+    collection = { id: 'some-id' } as Collection
+    items = [{ id: 'some-id' } as Item]
+    contentHashes = ['some-hash']
+
+    state = {
+      ...state,
+      loading: [rescueItemsRequest(collection, items, contentHashes)],
+      error
+    }
+  })
+  it('should remove the rescue items request action from the loading array and null the error', () => {
+    expect(itemReducer(state, rescueItemsSuccess(collection, items, contentHashes, ChainId.MATIC_MUMBAI, ['hashes']))).toEqual({
+      ...state,
+      loading: [],
+      error: null
+    })
+  })
+})
+
+describe('when reducing an action of a successful chunk of rescued items', () => {
+  let collection: Collection
+  let items: Item[]
+  let contentHashes: string[]
+
+  beforeEach(() => {
+    collection = { id: 'some-id' } as Collection
+    items = [{ id: 'some-id' } as Item]
+    contentHashes = ['some-hash']
+
+    state = {
+      ...state,
+      data: {
+        anItemId: {
+          id: 'anItemId'
+        } as Item
+      }
+    }
+  })
+
+  it('should add the items to the state', () => {
+    expect(itemReducer(state, rescueItemsChunkSuccess(collection, items, contentHashes, ChainId.MATIC_MUMBAI, 'hash'))).toEqual({
+      ...state,
+      data: {
+        ...state.data,
+        [items[0].id]: items[0]
+      }
     })
   })
 })

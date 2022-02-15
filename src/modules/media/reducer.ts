@@ -32,11 +32,11 @@ export const mediaReducer = (state = INITIAL_STATE, action: MediaReducerAction):
       return {
         ...state,
         media: {
-          north: window.URL.createObjectURL(north),
-          east: window.URL.createObjectURL(east),
-          south: window.URL.createObjectURL(south),
-          west: window.URL.createObjectURL(west),
-          preview: window.URL.createObjectURL(preview)
+          north: window.URL.createObjectURL(north!),
+          east: window.URL.createObjectURL(east!),
+          south: window.URL.createObjectURL(south!),
+          west: window.URL.createObjectURL(west!),
+          preview: window.URL.createObjectURL(preview!)
         },
         progress: 0
       }

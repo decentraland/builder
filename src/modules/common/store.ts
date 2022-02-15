@@ -3,6 +3,7 @@ import { routerMiddleware } from 'connected-react-router'
 import createSagasMiddleware from 'redux-saga'
 import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
+import { BuilderClient } from '@dcl/builder-client'
 
 import { CatalystClient } from 'dcl-catalyst-client'
 import { env } from 'decentraland-commons'
@@ -13,6 +14,7 @@ import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analy
 import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
@@ -21,9 +23,7 @@ import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { Project } from 'modules/project/types'
 import { migrations } from 'modules/migrations/store'
-import { createRootReducer } from './reducer'
-import { rootSaga } from './sagas'
-import { RootState, RootStore } from './types'
+import { getData } from 'modules/identity/selectors'
 import { Scene } from 'modules/scene/types'
 import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
@@ -33,6 +33,9 @@ import { isDevelopment } from 'lib/environment'
 import { BuilderAPI, BUILDER_SERVER_URL } from 'lib/api/builder'
 import { Authorization } from 'lib/api/auth'
 import { PEER_URL } from 'lib/api/peer'
+import { createRootReducer } from './reducer'
+import { rootSaga } from './sagas'
+import { RootState, RootStore } from './types'
 
 const builderVersion = require('../../../package.json').version
 
@@ -142,7 +145,20 @@ const store = createStore(rootReducer, enhancer) as RootStore
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
 const catalystClient = new CatalystClient(PEER_URL, 'Builder')
 
-sagasMiddleware.run(rootSaga, builderAPI, catalystClient)
+const getClientAddress = () => getAddress(store.getState())!
+const getClientAuthAuthority = () => {
+  const auths = getData(store.getState())
+  const address = getAddress(store.getState())
+  return auths[address!]
+}
+
+// As the builder client manages by itself the version of the API, we need to remove it from
+// the environment variable that we're using to with the older client.
+const builderClientUrl: string = BUILDER_SERVER_URL.replace('/v1', '')
+
+const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, fetch)
+
+sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {
