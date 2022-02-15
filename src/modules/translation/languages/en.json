@@ -257,7 +257,7 @@
     "get_mana": "You can get more using the {link} dapp.",
     "buy_slots": "Buy slots",
     "how_many_slots_title": "How many slots?",
-    "slots_value": "The cost of each slot is {symbol}{slot_cost}"
+    "slots_value": "The approximate cost of each slot is {symbol}{slot_cost}"
   },
   "share_modal": {
     "title": "Share your Scene",
