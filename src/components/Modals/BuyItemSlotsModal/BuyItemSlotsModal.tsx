@@ -20,23 +20,23 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   hasInsufficientMana = (): boolean => {
     const { manaBalance, slotPrice } = this.props
     const { slotsToBuy } = this.state
-    return slotsToBuy && slotPrice ? +slotsToBuy * slotPrice > manaBalance : false
+    return slotsToBuy && slotPrice ? Number(slotsToBuy) * slotPrice > manaBalance : false
   }
 
   handleItemSlotsBuy = (): void => {
-    const { onBuyItemSlots, metadata } = this.props
+    const { slotPrice, onBuyItemSlots, metadata } = this.props
     const { thirdParty } = metadata
     const { slotsToBuy } = this.state
 
     if (slotsToBuy) {
-      onBuyItemSlots(thirdParty, Number(slotsToBuy))
+      onBuyItemSlots(thirdParty, Number(slotsToBuy), Number(slotPrice))
     }
   }
 
   componentDidMount(): void {
-    const { slotPrice, isFetchingSlotPrice, onFetchThirdPartyItemSlotPrice } = this.props
+    const { isFetchingSlotPrice, onFetchThirdPartyItemSlotPrice } = this.props
 
-    if (!slotPrice && !isFetchingSlotPrice) {
+    if (!isFetchingSlotPrice) {
       onFetchThirdPartyItemSlotPrice()
     }
   }
@@ -67,18 +67,19 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
               <Loader active size="tiny" />
             ) : (
               <>
-                <Field
-                  label={t('buy_item_slots_modal.how_many_slots_title')}
-                  message={t('buy_item_slots_modal.slots_value', {
+                <Field label={t('buy_item_slots_modal.how_many_slots_title')} placeholder="1" onChange={this.handleSlotToBuyChange} />
+                <div className={styles.slotValue}>
+                  {t('buy_item_slots_modal.slots_value', {
                     symbol: <Mana network={Network.MATIC} size="small" />,
-                    slot_cost: slotPrice
+                    slot_cost: slotPrice,
+                    total_cost: slotPrice && slotsToBuy ? slotPrice * Number(slotsToBuy) : 0
                   })}
-                  placeholder="1"
-                  onChange={this.handleSlotToBuyChange}
-                />
-                <div className={styles.slotsTotalPrice}>
-                  <Mana network={Network.MATIC} inline />
-                  {slotPrice && slotsToBuy ? slotPrice * +slotsToBuy : 0}
+                </div>
+                <div className={styles.slotValue}>
+                  {t('buy_item_slots_modal.total_cost', {
+                    symbol: <Mana network={Network.MATIC} size="small" />,
+                    total_cost: slotPrice && slotsToBuy ? slotPrice * Number(slotsToBuy) : 0
+                  })}
                 </div>
               </>
             )}
@@ -116,14 +117,19 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           <NetworkButton
             className={styles.acceptButton}
             primary
-            disabled={hasInsufficientMANA || isBuyingItemSlots || slotsToBuy === undefined}
+            disabled={hasInsufficientMANA || isBuyingItemSlots || slotsToBuy === undefined || isFetchingSlotPrice}
             loading={isBuyingItemSlots}
             network={Network.MATIC}
             onClick={this.handleItemSlotsBuy}
           >
             {t('buy_item_slots_modal.buy_slots')}
           </NetworkButton>
-          <Button secondary className={styles.cancelButton} onClick={this.handleCloseModal}>
+          <Button
+            secondary
+            className={styles.cancelButton}
+            onClick={this.handleCloseModal}
+            disabled={isFetchingSlotPrice || isBuyingItemSlots}
+          >
             {t('global.cancel')}
           </Button>
         </div>

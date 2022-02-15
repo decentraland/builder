@@ -32,7 +32,7 @@ export function* assetPackSaga(builder: BuilderAPI) {
     // Calculate the increment step, it will be truncated
     const increment = ((1 / total) * 100) | 0
     // Get the existing progress
-    const existingProgress = yield select(getProgress)
+    const existingProgress: ReturnType<typeof getProgress> = yield select(getProgress)
     // Calculate the current file based on the existing progress
     const currentFile = existingProgress.value / increment + 1
     // Calculate the new value based on the existing progress and the increment
@@ -71,8 +71,9 @@ export function* assetPackSaga(builder: BuilderAPI) {
       yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
 
       const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
-      const onProgress = yield handleAssetContentsUploadProgress(updatableAssets.length)
-      const uploadEffects = updatableAssets.map(asset => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress))
+      const onProgress: void = yield handleAssetContentsUploadProgress(updatableAssets.length)
+      // TODO: there's a bug here (Issue #1792)
+      const uploadEffects = updatableAssets.map(asset => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress as any))
 
       if (uploadEffects.length > 0) {
         yield all(uploadEffects)

@@ -93,15 +93,16 @@ import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
-import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
-  ApproveCurationFailureAction,
-  approveCurationRequest,
-  ApproveCurationSuccessAction,
-  APPROVE_CURATION_FAILURE,
-  APPROVE_CURATION_SUCCESS
-} from 'modules/curation/actions'
-import { Curation, CurationStatus } from 'modules/curation/types'
+  ApproveCollectionCurationFailureAction,
+  approveCollectionCurationRequest,
+  ApproveCollectionCurationSuccessAction,
+  APPROVE_COLLECTION_CURATION_FAILURE,
+  APPROVE_COLLECTION_CURATION_SUCCESS
+} from 'modules/curations/collectionCuration/actions'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { CurationStatus } from 'modules/curations/types'
 import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
@@ -521,7 +522,8 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // 2. Find items that need to be rescued (their content hash needs to be updated)
       const itemsToRescue: Item[] = []
       const contentHashes: string[] = []
-      for (const item of yield getItemsFromCollection(collection)) {
+      const items: Item[] = yield getItemsFromCollection(collection)
+      for (const item of items) {
         const contentHash: string = yield call(buildItemContentHash, collection, item)
         if (item.contentHash !== contentHash) {
           itemsToRescue.push(item)
@@ -569,7 +571,8 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const itemsToDeploy: Item[] = []
       const entitiesToDeploy: DeploymentPreparationData[] = []
       const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
-      for (const item of yield getItemsFromCollection(collection)) {
+      const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+      for (const item of itemsOfCollection) {
         const deployedEntity = entitiesByItemId[item.id]
         if (!deployedEntity || !areSynced(item, deployedEntity)) {
           const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
@@ -633,15 +636,17 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         }
       } else {
         // 7. If the collection was approved but it had a pending curation, approve the curation
-        const curationsByCollectionId: Record<string, Curation> = yield select(getCurationsByCollectionId)
+        const curationsByCollectionId: Record<string, CollectionCuration> = yield select(getCurationsByCollectionId)
         const curation = curationsByCollectionId[collection.id]
         if (curation && curation.status === CurationStatus.PENDING) {
-          yield put(approveCurationRequest(curation.collectionId))
+          yield put(approveCollectionCurationRequest(curation.collectionId))
 
           // wait for actions
-          const { failure }: { success: ApproveCurationSuccessAction; failure: ApproveCurationFailureAction } = yield race({
-            success: take(APPROVE_CURATION_SUCCESS),
-            failure: take(APPROVE_CURATION_FAILURE)
+          const {
+            failure
+          }: { success: ApproveCollectionCurationSuccessAction; failure: ApproveCollectionCurationFailureAction } = yield race({
+            success: take(APPROVE_COLLECTION_CURATION_SUCCESS),
+            failure: take(APPROVE_COLLECTION_CURATION_FAILURE)
           })
 
           // if failure show error

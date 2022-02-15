@@ -7,8 +7,9 @@ import { Collection } from 'modules/collection/types'
 import { getAuthorizedCollections, getData as getCollectionData } from 'modules/collection/selectors'
 import { getEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
-import { Curation, CurationStatus } from 'modules/curation/types'
-import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
+import { CurationStatus } from 'modules/curations/types'
 import { getItemThirdParty } from 'modules/thirdParty/selectors'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { isEqual } from 'lib/address'
@@ -97,7 +98,7 @@ export const getStatusByItemId = createSelector<
   RootState,
   Item[],
   EntityState['data'],
-  Record<string, Curation>,
+  Record<string, CollectionCuration>,
   Record<string, SyncStatus>
 >(
   state => getItems(state),

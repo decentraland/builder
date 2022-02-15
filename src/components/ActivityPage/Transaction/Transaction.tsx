@@ -19,7 +19,7 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
-import { PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, RESCUE_ITEMS_SUCCESS, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
+import { PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, RESCUE_ITEMS_CHUNK_SUCCESS, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
 import {
   MINT_COLLECTION_ITEMS_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
@@ -401,7 +401,7 @@ const Transaction = (props: Props) => {
         />
       )
     }
-    case RESCUE_ITEMS_SUCCESS: {
+    case RESCUE_ITEMS_CHUNK_SUCCESS: {
       const { count, collectionId, collectionName } = tx.payload
       return (
         <TransactionDetail

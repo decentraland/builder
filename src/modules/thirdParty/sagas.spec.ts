@@ -25,7 +25,7 @@ import {
   fetchThirdPartyAvailableSlotsRequest,
   fetchThirdPartyAvailableSlotsSuccess
 } from './actions'
-import { thirdPartySaga, getChainlinkOracleContract, getThirdPartyContract } from './sagas'
+import { thirdPartySaga, getContractInstance } from './sagas'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getItemSlotPrice } from './selectors'
 import { select } from 'redux-saga-test-plan/matchers'
@@ -142,27 +142,37 @@ describe('when handling the request to fetch the third party item slot price', (
   })
 
   describe('and the request succeeds', () => {
-    it('should put the action signaling the successful fetch with the retrieved item slot price', () => {
-      const mockedSlotPrice = BigNumber.from('1000000000000000000')
-      const mockedOracleRate = BigNumber.from('1000000000000000000')
-      const mockedTPContract = {
+    let mockedSlotPrice: BigNumber
+    let mockedOracleRate: BigNumber
+    let mockedTPContract: { itemSlotPrice: () => BigNumber }
+    let mockedOracleContract: { getRate: () => BigNumber }
+
+    beforeEach(() => {
+      mockedSlotPrice = BigNumber.from('1000000000000000000')
+      mockedOracleRate = BigNumber.from('1000000000000000000')
+      mockedTPContract = {
         itemSlotPrice: () => mockedSlotPrice
       }
-      const mockedOracleContract = {
+      mockedOracleContract = {
         getRate: () => mockedOracleRate
       }
-      const mockedProvider = {
-        context: () => {},
-        fn: () => {}
-      }
+    })
+    it('should put the action signaling the successful fetch with the retrieved item slot price', () => {
+      const mockedProvider = {}
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [call(getNetworkProvider, ChainId.MATIC_MUMBAI), mockedProvider],
-          [call(getThirdPartyContract, ChainId.MATIC_MUMBAI, (mockedProvider as unknown) as Provider), mockedTPContract],
-          [call(getChainlinkOracleContract, ChainId.MATIC_MUMBAI, (mockedProvider as unknown) as Provider), mockedOracleContract]
+          [
+            call(getContractInstance, ContractName.ThirdPartyRegistry, ChainId.MATIC_MUMBAI, (mockedProvider as unknown) as Provider),
+            mockedTPContract
+          ],
+          [
+            call(getContractInstance, ContractName.ChainlinkOracle, ChainId.MATIC_MUMBAI, (mockedProvider as unknown) as Provider),
+            mockedOracleContract
+          ]
         ])
-        .put(fetchThirdPartyItemSlotPriceSuccess(+mockedSlotPrice.div(mockedOracleRate)))
+        .put(fetchThirdPartyItemSlotPriceSuccess(Number(mockedSlotPrice.div(mockedOracleRate))))
         .dispatch(fetchThirdPartyItemSlotPriceRequest())
         .run({ silenceTimeout: true })
     })
@@ -176,36 +186,35 @@ describe('when handling the request to buy third party item slots', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([[call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(defaultError))]])
         .put(buyThirdPartyItemSlotFailure(thirdParty.id, 10, defaultError))
-        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, 10))
+        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, 10, 10))
         .run({ silenceTimeout: true })
     })
   })
 
   describe('and sending the transaction fails', () => {
-    it('should put the action signaling the failure of the purchase of an item slots with the slot amount and the third party id', () => {
+    it('should put the action signaling the failure of the purchase of item slots with the slot amount and the third party id', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [select(getItemSlotPrice), mockedSlotPriceInMANA],
           [matchers.call.fn(sendTransaction), Promise.reject(new Error(defaultError))]
         ])
-        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, mockedSlotPriceInMANA))
+        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, mockedSlotsToBuy, mockedSlotPriceInMANA))
         .put(buyThirdPartyItemSlotFailure(thirdParty.id, mockedSlotPriceInMANA, defaultError))
         .run({ silenceTimeout: true })
     })
   })
 
   describe('and sending the transaction succeeds', () => {
-    it('should put the action signaling the successful purchase of an item slots with the slot amount, the third party and the transaction details', async () => {
+    it('should put the action signaling the successful purchase of item slots with the slot amount, the third party and the transaction details', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [select(getItemSlotPrice), mockedSlotPriceInMANA],
-          // [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MUMBAI), contract],
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .put(buyThirdPartyItemSlotSuccess(txHash, ChainId.MATIC_MUMBAI, thirdParty, mockedSlotsToBuy))
-        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, mockedSlotsToBuy))
+        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, mockedSlotsToBuy, mockedSlotPriceInMANA))
         .run({ silenceTimeout: true })
     })
   })

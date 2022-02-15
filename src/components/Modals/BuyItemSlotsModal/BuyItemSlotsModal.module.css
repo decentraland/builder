@@ -13,12 +13,13 @@
 .slotValue {
   color: var(--light-gray);
   font-size: 13px;
+  margin-bottom: 6px;
 }
 
 .modalActions {
   display: flex;
   flex-direction: column;
-  margin-top: 56px;
+  margin-top: 48px;
   margin-bottom: 32px;
   margin-left: 32px;
   margin-right: 32px;
@@ -27,12 +28,6 @@
 .slotsPriceContainer {
   position: relative;
   min-height: 70px;
-}
-
-.slotsPriceContainer .slotsTotalPrice {
-  position: absolute;
-  top: 26px;
-  right: 0;
 }
 
 .slotsPriceContainer .dcl.mana.inline {

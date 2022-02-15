@@ -18,8 +18,10 @@ import { ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
-import { Curation, CurationStatus } from 'modules/curation/types'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { CurationStatus } from 'modules/curations/types'
 import { Authorization } from './auth'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -147,13 +149,20 @@ export type RemoteWeeklyStats = {
   max_concurrent_users_time: string
 }
 
-export type RemoteCuration = {
+type BaseCuration = {
   id: string
-  collection_id: string
-  status: Curation['status']
+  status: CollectionCuration['status']
   created_at: Date
   updated_at: Date
 }
+
+export type RemoteCollectionCuration = {
+  collection_id: string
+} & BaseCuration
+
+export type RemoteItemCuration = {
+  item_id: string
+} & BaseCuration
 
 /**
  * Transforms a Project into a RemoteProject for saving purposes only.
@@ -386,13 +395,26 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   return collection
 }
 
-function fromRemoteCuration(remoteCuration: RemoteCuration): Curation {
+function getBaseCurationFields(remoteCuration: RemoteCollectionCuration | RemoteItemCuration) {
   return {
     id: remoteCuration.id,
-    collectionId: remoteCuration.collection_id,
     status: remoteCuration.status,
     createdAt: +new Date(remoteCuration.created_at),
     updatedAt: +new Date(remoteCuration.updated_at)
+  }
+}
+
+function fromRemoteCollectionCuration(remoteCuration: RemoteCollectionCuration): CollectionCuration {
+  return {
+    ...getBaseCurationFields(remoteCuration),
+    collectionId: remoteCuration.collection_id
+  }
+}
+
+function fromRemoteItemCuration(remoteCuration: RemoteItemCuration): ItemCuration {
+  return {
+    ...getBaseCurationFields(remoteCuration),
+    itemId: remoteCuration.item_id
   }
 }
 
@@ -668,20 +690,26 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/collections/${id}`, {})
   }
 
-  async fetchCurations(): Promise<Curation[]> {
-    const curations: RemoteCuration[] = await this.request('get', `/curations`)
+  async fetchCurations(): Promise<CollectionCuration[]> {
+    const curations: RemoteCollectionCuration[] = await this.request('get', `/curations`)
 
-    return curations.map(fromRemoteCuration)
+    return curations.map(fromRemoteCollectionCuration)
   }
 
-  async fetchCuration(collectionId: string): Promise<Curation | undefined> {
-    const curation: RemoteCuration | undefined = await this.request('get', `/collections/${collectionId}/curation`)
+  async fetchItemCurations(collection: Collection): Promise<ItemCuration[]> {
+    const curations: RemoteItemCuration[] = await this.request('get', `/collections/${collection.id}/itemCurations`)
+
+    return curations.map(fromRemoteItemCuration)
+  }
+
+  async fetchCuration(collectionId: string): Promise<CollectionCuration | undefined> {
+    const curation: RemoteCollectionCuration | undefined = await this.request('get', `/collections/${collectionId}/curation`)
 
     if (!curation) {
       return
     }
 
-    return fromRemoteCuration(curation)
+    return fromRemoteCollectionCuration(curation)
   }
 
   pushCuration(collectionId: string): Promise<void> {

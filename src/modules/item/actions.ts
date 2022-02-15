@@ -2,7 +2,7 @@ import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Collection } from 'modules/collection/types'
-import { Item, Rarity } from './types'
+import { BuiltFile, Item, Rarity } from './types'
 import { ThirdParty } from 'modules/thirdParty/types'
 
 // Fetch items
@@ -63,6 +63,32 @@ export const saveItemFailure = (item: Item, contents: Record<string, Blob>, erro
 export type SaveItemRequestAction = ReturnType<typeof saveItemRequest>
 export type SaveItemSuccessAction = ReturnType<typeof saveItemSuccess>
 export type SaveItemFailureAction = ReturnType<typeof saveItemFailure>
+
+// Save multiple items
+
+export const SAVE_MULTIPLE_ITEMS_REQUEST = '[Request] Save Multiple Items'
+export const SAVE_MULTIPLE_ITEMS_SUCCESS = '[Success] Save Multiple Items'
+export const SAVE_MULTIPLE_ITEMS_FAILURE = '[Failure] Save Multiple Items'
+export const SAVE_MULTIPLE_ITEMS_CANCELLED = '[Cancelled] Save Multiple Items'
+export const CANCEL_SAVE_MULTIPLE_ITEMS = '[Cancel] Save Multiple Items'
+export const CLEAR_SAVE_MULTIPLE_ITEMS = '[Clear] Save Multiple Items'
+
+export const saveMultipleItemsRequest = (builtFiles: BuiltFile<Blob>[]) => action(SAVE_MULTIPLE_ITEMS_REQUEST, { builtFiles })
+export const saveMultipleItemsFailure = (error: string, items: Item[], fileNames: string[]) =>
+  action(SAVE_MULTIPLE_ITEMS_FAILURE, { error, items, fileNames })
+export const saveMultipleItemsCancelled = (items: Item[], fileNames: string[]) =>
+  action(SAVE_MULTIPLE_ITEMS_CANCELLED, { items, fileNames })
+export const saveMultipleItemsSuccess = (items: Item[], fileNames: string[]) => action(SAVE_MULTIPLE_ITEMS_SUCCESS, { items, fileNames })
+
+export const cancelSaveMultipleItems = () => action(CANCEL_SAVE_MULTIPLE_ITEMS)
+export const clearSaveMultipleItems = () => action(CLEAR_SAVE_MULTIPLE_ITEMS)
+
+export type SaveMultipleItemsRequestAction = ReturnType<typeof saveMultipleItemsRequest>
+export type SaveMultipleItemsSuccessAction = ReturnType<typeof saveMultipleItemsSuccess>
+export type SaveMultipleItemsFailureAction = ReturnType<typeof saveMultipleItemsFailure>
+export type SaveMultipleItemsCancelledAction = ReturnType<typeof saveMultipleItemsCancelled>
+export type CancelSaveMultipleItemsAction = ReturnType<typeof cancelSaveMultipleItems>
+export type ClearStateSaveMultipleItemsAction = ReturnType<typeof clearSaveMultipleItems>
 
 // Edit On Chain Sale Data
 
@@ -137,27 +163,37 @@ export type FetchRaritiesFailureAction = ReturnType<typeof fetchRaritiesFailure>
 
 export const RESCUE_ITEMS_REQUEST = '[Request] Rescue items'
 export const RESCUE_ITEMS_SUCCESS = '[Success] Rescue items'
+export const RESCUE_ITEMS_CHUNK_SUCCESS = '[Chunk] Rescue items'
 export const RESCUE_ITEMS_FAILURE = '[Failure] Rescue items'
 
 export const rescueItemsRequest = (collection: Collection, items: Item[], contentHashes: string[]) =>
   action(RESCUE_ITEMS_REQUEST, { collection, items, contentHashes })
-export const rescueItemsSuccess = (collection: Collection, items: Item[], contentHashes: string[], chainId: ChainId, txHash: string) =>
+export const rescueItemsChunkSuccess = (collection: Collection, items: Item[], contentHashes: string[], chainId: ChainId, txHash: string) =>
+  action(RESCUE_ITEMS_CHUNK_SUCCESS, {
+    collection,
+    contentHashes,
+    txHash,
+    items,
+    ...buildTransactionPayload(chainId, txHash, {
+      count: items.length,
+      collectionId: collection.id,
+      collectionName: collection.name
+    })
+  })
+export const rescueItemsSuccess = (collection: Collection, items: Item[], contentHashes: string[], chainId: ChainId, txHashes: string[]) =>
   action(RESCUE_ITEMS_SUCCESS, {
     collection,
     items,
     contentHashes,
-    txHash,
-    ...buildTransactionPayload(chainId, txHash, {
-      count: items.length,
-      collectionId: items[0].collectionId!,
-      collectionName: collection.name
-    })
+    txHashes,
+    chainId
   })
 export const rescueItemsFailure = (collection: Collection, items: Item[], contentHashes: string[], error: string) =>
   action(RESCUE_ITEMS_FAILURE, { collection, items, contentHashes, error })
 
 export type RescueItemsRequestAction = ReturnType<typeof rescueItemsRequest>
 export type RescueItemsSuccessAction = ReturnType<typeof rescueItemsSuccess>
+export type RescueItemsChunkSuccessAction = ReturnType<typeof rescueItemsChunkSuccess>
 export type RescueItemsFailureAction = ReturnType<typeof rescueItemsFailure>
 
 // Reset Item
