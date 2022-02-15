@@ -123,7 +123,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           >
             {t('buy_item_slots_modal.buy_slots')}
           </NetworkButton>
-          <Button secondary className={styles.cancelButton} onClick={this.handleCloseModal} disabled={isBuyingItemSlots}>
+          <Button secondary className={styles.cancelButton} onClick={this.handleCloseModal} disabled={isFetchingSlotPrice || isBuyingItemSlots}>
             {t('global.cancel')}
           </Button>
         </div>
