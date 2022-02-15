@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { BigNumber } from '@ethersproject/bignumber'
 import { env } from 'decentraland-commons'
 import { Network } from '@dcl/schemas'
 import { Button, ModalDescription, ModalHeader, Mana, Loader, Message, Field } from 'decentraland-ui'
@@ -78,7 +79,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
                 <div className={styles.slotValue}>
                   {t('buy_item_slots_modal.total_cost', {
                     symbol: <Mana network={Network.MATIC} size="small" />,
-                    total_cost: slotPrice && slotsToBuy ? slotPrice * Number(slotsToBuy) : 0
+                    total_cost: slotPrice && slotsToBuy ? BigNumber.from(slotPrice).mul(slotsToBuy).toString() : 0
                   })}
                 </div>
               </>
