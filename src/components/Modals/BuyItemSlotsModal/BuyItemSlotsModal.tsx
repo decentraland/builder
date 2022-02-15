@@ -7,6 +7,7 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Modal, NetworkButton } from 'decentraland-dapps/dist/containers'
 import { Props, State } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
+import { applySlotBuySlippage } from 'modules/thirdParty/utils'
 
 export default class BuyItemSlotsModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -79,7 +80,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
                 <div className={styles.slotValue}>
                   {t('buy_item_slots_modal.total_cost', {
                     symbol: <Mana network={Network.MATIC} size="small" />,
-                    total_cost: slotPrice && slotsToBuy ? BigNumber.from(slotPrice).mul(slotsToBuy).toString() : 0
+                    total_cost: slotPrice && slotsToBuy ? applySlotBuySlippage(BigNumber.from(slotPrice).mul(slotsToBuy)).toString() : 0
                   })}
                 </div>
               </>
