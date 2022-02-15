@@ -223,7 +223,7 @@
     "title": "Slots",
     "description_line_one": "Buy slots to publish your items!",
     "description_line_two": "Please select how many you want to buy.",
-    "not_enough_mana": "You don't have enough {symbol} to buy that amount of slots.",
+    "not_enough_mana": "You don't have enough {symbol} to buy this amount of slots.",
     "get_mana": "You can get more using the {link} dapp.",
     "buy_slots": "Buy slots",
     "how_many_slots_title": "How many slots?",

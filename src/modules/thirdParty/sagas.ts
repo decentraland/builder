@@ -1,4 +1,4 @@
-import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
+import { takeLatest, takeEvery, call, put } from 'redux-saga/effects'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract, providers, utils } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
@@ -25,18 +25,15 @@ import {
   BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS
 } from './actions'
 import { ThirdParty } from './types'
-import { getItemSlotPrice } from './selectors'
 
-export function* getThirdPartyContract(chainId: ChainId, provider: providers.ExternalProvider) {
-  const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, chainId)
-  const thirdPartyContractInstance = new Contract(thirdPartyContract.address, thirdPartyContract.abi, new providers.Web3Provider(provider))
-  return thirdPartyContractInstance
-}
-
-export function* getChainlinkOracleContract(chainId: ChainId, provider: providers.ExternalProvider) {
-  const chainlinkOracle: ContractData = yield call(getContract, ContractName.ChainlinkOracle, chainId)
-  const chainlinkOracleContract = new Contract(chainlinkOracle.address, chainlinkOracle.abi, new providers.Web3Provider(provider))
-  return chainlinkOracleContract
+export function* getContractInstance(
+  contract: ContractName.ThirdPartyRegistry | ContractName.ChainlinkOracle,
+  chainId: ChainId,
+  provider: providers.ExternalProvider
+) {
+  const contractData: ContractData = yield call(getContract, contract, chainId)
+  const contractInstance = new Contract(contractData.address, contractData.abi, new providers.Web3Provider(provider))
+  return contractInstance
 }
 
 export function* thirdPartySaga(builder: BuilderAPI) {
@@ -66,26 +63,24 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
       const provider: Provider = yield call(getNetworkProvider, maticChainId)
 
-      const thirdPartyContractInstance: Contract = yield call(getThirdPartyContract, maticChainId, provider)
+      const thirdPartyContractInstance: Contract = yield call(getContractInstance, ContractName.ThirdPartyRegistry, maticChainId, provider)
       const itemSlotPrice: BigNumber = yield call(thirdPartyContractInstance.itemSlotPrice) // USD
 
-      const chainlinkOracleInstance: Contract = yield call(getChainlinkOracleContract, maticChainId, provider)
+      const chainlinkOracleInstance: Contract = yield call(getContractInstance, ContractName.ChainlinkOracle, maticChainId, provider)
       const rate: BigNumber = yield call(chainlinkOracleInstance.getRate) // USD/MANA
       const slotPriceInMANA = itemSlotPrice.div(rate) // USD*MANA/USD
-      yield put(fetchThirdPartyItemSlotPriceSuccess(+slotPriceInMANA))
+      yield put(fetchThirdPartyItemSlotPriceSuccess(Number(slotPriceInMANA)))
     } catch (error) {
       yield put(fetchThirdPartyItemSlotPriceFailure(error.message))
     }
   }
 
   function* handleBuyThirdPartyItemSlotRequest(action: BuyThirdPartyItemSlotRequestAction) {
-    const { slotsToBuy, thirdParty } = action.payload
+    const { slotsToBuy, thirdParty, priceToPay } = action.payload
     try {
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
       const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-      const itemSlotPriceInMANA: number = yield select(getItemSlotPrice)
-      const maxPriceToPay = slotsToBuy * itemSlotPriceInMANA // slot * MANA/slot
-      const maxPriceInWei = utils.parseEther(maxPriceToPay.toString())
+      const maxPriceInWei = utils.parseEther((priceToPay * slotsToBuy).toString())
       const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
         instantiatedThirdPartyContract.buyItemSlots(thirdParty.id, slotsToBuy, maxPriceInWei)
       )

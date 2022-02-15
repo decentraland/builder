@@ -20,23 +20,23 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   hasInsufficientMana = (): boolean => {
     const { manaBalance, slotPrice } = this.props
     const { slotsToBuy } = this.state
-    return slotsToBuy && slotPrice ? +slotsToBuy * slotPrice > manaBalance : false
+    return slotsToBuy && slotPrice ? Number(slotsToBuy) * slotPrice > manaBalance : false
   }
 
   handleItemSlotsBuy = (): void => {
-    const { onBuyItemSlots, metadata } = this.props
+    const { slotPrice, onBuyItemSlots, metadata } = this.props
     const { thirdParty } = metadata
     const { slotsToBuy } = this.state
 
     if (slotsToBuy) {
-      onBuyItemSlots(thirdParty, Number(slotsToBuy))
+      onBuyItemSlots(thirdParty, Number(slotsToBuy), Number(slotPrice))
     }
   }
 
   componentDidMount(): void {
-    const { slotPrice, isFetchingSlotPrice, onFetchThirdPartyItemSlotPrice } = this.props
+    const { isFetchingSlotPrice, onFetchThirdPartyItemSlotPrice } = this.props
 
-    if (!slotPrice && !isFetchingSlotPrice) {
+    if (!isFetchingSlotPrice) {
       onFetchThirdPartyItemSlotPrice()
     }
   }
@@ -78,7 +78,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
                 />
                 <div className={styles.slotsTotalPrice}>
                   <Mana network={Network.MATIC} inline />
-                  {slotPrice && slotsToBuy ? slotPrice * +slotsToBuy : 0}
+                  {slotPrice && slotsToBuy ? slotPrice * Number(slotsToBuy) : 0}
                 </div>
               </>
             )}
@@ -116,14 +116,14 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           <NetworkButton
             className={styles.acceptButton}
             primary
-            disabled={hasInsufficientMANA || isBuyingItemSlots || slotsToBuy === undefined}
+            disabled={hasInsufficientMANA || isBuyingItemSlots || slotsToBuy === undefined || isFetchingSlotPrice}
             loading={isBuyingItemSlots}
             network={Network.MATIC}
             onClick={this.handleItemSlotsBuy}
           >
             {t('buy_item_slots_modal.buy_slots')}
           </NetworkButton>
-          <Button secondary className={styles.cancelButton} onClick={this.handleCloseModal}>
+          <Button secondary className={styles.cancelButton} onClick={this.handleCloseModal} disabled={isBuyingItemSlots}>
             {t('global.cancel')}
           </Button>
         </div>

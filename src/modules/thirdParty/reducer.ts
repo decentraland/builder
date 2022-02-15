@@ -16,7 +16,11 @@ import {
   FetchThirdPartyItemSlotPriceFailureAction,
   BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS,
   FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_SUCCESS,
-  FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE
+  FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE,
+  BUY_THIRD_PARTY_ITEM_SLOT_REQUEST,
+  BuyThirdPartyItemSlotRequestAction,
+  BuyThirdPartyItemSlotFailureAction,
+  BUY_THIRD_PARTY_ITEM_SLOT_FAILURE
 } from './actions'
 import { ThirdParty } from './types'
 
@@ -42,10 +46,13 @@ type ThirdPartyReducerAction =
   | FetchThirdPartyItemSlotPriceRequestAction
   | FetchThirdPartyItemSlotPriceSuccessAction
   | FetchThirdPartyItemSlotPriceFailureAction
+  | BuyThirdPartyItemSlotRequestAction
   | BuyThirdPartyItemSlotSuccessAction
+  | BuyThirdPartyItemSlotFailureAction
 
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
+    case BUY_THIRD_PARTY_ITEM_SLOT_REQUEST:
     case FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST:
     case FETCH_THIRD_PARTIES_REQUEST: {
       return {
@@ -78,6 +85,7 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
       }
     }
 
+    case BUY_THIRD_PARTY_ITEM_SLOT_FAILURE:
     case FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE:
     case FETCH_THIRD_PARTIES_FAILURE: {
       return {

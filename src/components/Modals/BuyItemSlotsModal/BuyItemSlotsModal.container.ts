@@ -20,7 +20,8 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onFetchThirdPartyItemSlotPrice: () => dispatch(fetchThirdPartyItemSlotPriceRequest()),
-  onBuyItemSlots: (thirdParty: ThirdParty, slotsToBuy: number) => dispatch(buyThirdPartyItemSlotRequest(thirdParty, slotsToBuy))
+  onBuyItemSlots: (thirdParty: ThirdParty, slotsToBuy: number, priceToPay: number) =>
+    dispatch(buyThirdPartyItemSlotRequest(thirdParty, slotsToBuy, priceToPay))
 })
 
 export default connect(mapState, mapDispatch)(BuyItemSlotsModal)

@@ -37,8 +37,8 @@ export const BUY_THIRD_PARTY_ITEM_SLOT_REQUEST = '[Request] Buy a third party it
 export const BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS = '[Success] Buy a third party item slot'
 export const BUY_THIRD_PARTY_ITEM_SLOT_FAILURE = '[Failure] Buy a third party item slot'
 
-export const buyThirdPartyItemSlotRequest = (thirdParty: ThirdParty, slotsToBuy: number) =>
-  action(BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, { thirdParty, slotsToBuy })
+export const buyThirdPartyItemSlotRequest = (thirdParty: ThirdParty, slotsToBuy: number, priceToPay: number) =>
+  action(BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, { thirdParty, slotsToBuy, priceToPay })
 export const buyThirdPartyItemSlotSuccess = (txHash: string, chainId: ChainId, thirdParty: ThirdParty, slotsToBuy: number) =>
   action(BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, {
     thirdParty,
