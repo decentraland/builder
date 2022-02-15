@@ -82,18 +82,15 @@ export const hasPendingCurationTransaction = createSelector<RootState, Transacti
 
 export const getStatusByCollectionId = createSelector<
   RootState,
-  Collection['id'],
   Item[],
-  Collection['id'],
   Record<string, SyncStatus>,
   Record<string, CollectionCuration>,
-  SyncStatus
+  Record<string, SyncStatus>
 >(
   state => getItems(state),
-  (_: RootState, collectionId: Collection['id']) => collectionId,
-  (state: RootState, collectionId: Collection['id']) => getStatusByItemId(state, collectionId),
+  (state: RootState) => getStatusByItemId(state),
   getCurationsByCollectionId,
-  (items, collectionId, itemStatusByItemId, curationsByCollectionId) => {
+  (items, itemStatusByItemId, curationsByCollectionId) => {
     const statusByCollectionId: Record<string, SyncStatus> = {}
     for (const item of items) {
       const { collectionId } = item
@@ -108,7 +105,7 @@ export const getStatusByCollectionId = createSelector<
         }
       }
     }
-    return statusByCollectionId[collectionId]
+    return statusByCollectionId
   }
 )
 

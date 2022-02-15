@@ -4,7 +4,7 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
-import { getAuthorizedCollections, getData as getCollectionData, isThirdPartyCollection } from 'modules/collection/selectors'
+import { getAuthorizedCollections, getData as getCollectionData } from 'modules/collection/selectors'
 import { getEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
@@ -98,22 +98,20 @@ export const getEntityByItemId = createSelector<RootState, Entity[], Record<stri
 
 export const getStatusByItemId = createSelector<
   RootState,
-  Collection['id'] | undefined,
-  boolean,
   Item[],
   EntityState['data'],
   Record<string, CollectionCuration>,
   Record<string, ItemCuration>,
   Record<string, SyncStatus>
 >(
-  (state, collectionId) => isThirdPartyCollection(state, collectionId),
   state => getItems(state),
   state => getEntityByItemId(state),
   state => getCurationsByCollectionId(state),
   getItemCurationsByItemId,
-  (isTPW, items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
+  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
+      const isTPW = isThirdParty(item.urn)
       if (!isTPW && !item.isPublished) {
         statusByItemId[item.id] = SyncStatus.UNPUBLISHED
       } else if (!item.isApproved) {

@@ -12,13 +12,13 @@ import CollectionPublishButton from './CollectionPublishButton'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { id: collectionId } = ownProps.collection
-  const status = getStatusByCollectionId(state, collectionId)
+  const statusByCollectionId = getStatusByCollectionId(state)
 
   return {
     wallet: getWallet(state)!,
     items: getCollectionItems(state, collectionId),
     authorizations: getAuthorizations(state),
-    status,
+    status: statusByCollectionId[collectionId],
     hasPendingCuration: getHasPendingCollectionCuration(state, collectionId)
   }
 }

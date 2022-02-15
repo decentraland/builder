@@ -15,7 +15,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     collection: getCollection(state, collectionId)!,
     wallet: getWallet(state)!,
     isLoading: isLoadingType(getLoading(state), SET_COLLECTION_MINTERS_REQUEST),
-    hasUnsyncedItems: UNSYNCED_STATES.has(getStatusByCollectionId(state, collectionId))
+    hasUnsyncedItems: UNSYNCED_STATES.has(getStatusByCollectionId(state)[collectionId])
   }
 }
 
