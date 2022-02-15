@@ -147,11 +147,9 @@ describe('when getting status by item id', () => {
         }
       }
     }
-    ;[
-      ['0', SyncStatus.UNSYNCED],
-      ['1', SyncStatus.UNDER_REVIEW]
-    ].forEach(([collectionId, expectedStatus]) => {
-      expect(getStatusByCollectionId((mockState as unknown) as RootState, collectionId)).toEqual(expectedStatus)
+    expect(getStatusByCollectionId((mockState as unknown) as RootState)).toEqual({
+      '0': SyncStatus.UNSYNCED,
+      '1': SyncStatus.UNDER_REVIEW
     })
   })
 })

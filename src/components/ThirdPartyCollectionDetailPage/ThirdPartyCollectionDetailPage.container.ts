@@ -10,7 +10,7 @@ import { getCollectionItems, getLoading as getLoadingItem } from 'modules/item/s
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import { fetchItemCurationsRequest, FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
-import { getItemCurationsByCollectionId, getLoading as getLoadingItemCurations, getError } from 'modules/curations/itemCuration/selectors'
+import { getItemCurations, getLoading as getLoadingItemCurations, getError } from 'modules/curations/itemCuration/selectors'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { getCollectionThirdParty } from 'modules/thirdParty/selectors'
@@ -25,7 +25,7 @@ const mapState = (state: RootState): MapStateProps => {
     collection,
     authorizations: getAuthorizations(state),
     items: getCollectionItems(state, collectionId),
-    itemCurations: getItemCurationsByCollectionId(state, collectionId),
+    itemCurations: getItemCurations(state, collectionId),
     isLoading:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||

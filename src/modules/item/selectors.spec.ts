@@ -324,7 +324,7 @@ describe('Item selectors', () => {
           }
         }
       }
-      expect(getStatusByItemId((mockState as unknown) as RootState, 'aCollectionId')).toEqual({
+      expect(getStatusByItemId((mockState as unknown) as RootState)).toEqual({
         '0': SyncStatus.UNDER_REVIEW,
         '1': SyncStatus.SYNCED,
         '2': SyncStatus.UNSYNCED,

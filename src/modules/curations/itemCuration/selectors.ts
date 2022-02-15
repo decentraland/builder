@@ -9,7 +9,7 @@ export const getState = (state: RootState) => state.itemCuration
 export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
-export const getItemCurationsByCollectionId = (state: RootState, collectionId: Collection['id']) => getState(state).data[collectionId]
+export const getItemCurations = (state: RootState, collectionId: Collection['id']) => getState(state).data[collectionId]
 
 export const getItemCurationsByItemId = createSelector<RootState, ItemCurationState['data'], Record<string, ItemCuration>>(getData, data =>
   Object.values(data).reduce((acc, curr) => {
