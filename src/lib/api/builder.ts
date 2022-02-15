@@ -20,7 +20,6 @@ import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
-import { ThirdPartyItemTier } from 'modules/tiers/types'
 import { Authorization } from './auth'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 
@@ -735,10 +734,6 @@ export class BuilderAPI extends BaseAPI {
 
   updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
-  }
-
-  fetchThirdPartyItemTiers = (): Promise<ThirdPartyItemTier[]> => {
-    return this.request('get', '/tiers/thirdParty')
   }
 
   isAxiosError(error: any): error is AxiosError {

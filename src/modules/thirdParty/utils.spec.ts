@@ -7,7 +7,14 @@ describe('when getting the available slots of a third party', () => {
 
   describe('when the max items are greater (100) than the total items (50)', () => {
     beforeEach(() => {
-      thirdParty = { id: '1', name: 'a third party', description: 'some desc', maxItems: '100', totalItems: '50', managers: ['0xa'] }
+      thirdParty = {
+        id: '1',
+        name: 'a third party',
+        description: 'some desc',
+        maxItems: '100',
+        totalItems: '50',
+        managers: ['0xa']
+      }
     })
 
     it('should return the subtraction of max items with total items (50)', () => {
@@ -17,7 +24,14 @@ describe('when getting the available slots of a third party', () => {
 
   describe('when the max items are equal (100) than the total items (100)', () => {
     beforeEach(() => {
-      thirdParty = { id: '1', name: 'a third party', description: 'some desc', maxItems: '100', totalItems: '100', managers: ['0xa'] }
+      thirdParty = {
+        id: '1',
+        name: 'a third party',
+        description: 'some desc',
+        maxItems: '100',
+        totalItems: '100',
+        managers: ['0xa']
+      }
     })
 
     it('should return the subtraction of max items with total items (0)', () => {
@@ -27,7 +41,14 @@ describe('when getting the available slots of a third party', () => {
 
   describe('when the max items are lower (50) than the total items (100)', () => {
     beforeEach(() => {
-      thirdParty = { id: '1', name: 'a third party', description: 'some desc', maxItems: '50', totalItems: '100', managers: ['0xa'] }
+      thirdParty = {
+        id: '1',
+        name: 'a third party',
+        description: 'some desc',
+        maxItems: '50',
+        totalItems: '100',
+        managers: ['0xa']
+      }
     })
 
     it('should return the subtraction of max items with total items (-50)', () => {

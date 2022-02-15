@@ -248,10 +248,12 @@
     "title": "插槽",
     "description_line_one": "购买插槽以发布您的物品！",
     "description_line_two": "请选择您要购买的数量。",
-    "not_enough_mana": "您没有足够的 {symbol} 购买此层级。",
+    "not_enough_mana": "您没有足够的 {symbol} 购买该数量的插槽。",
     "get_mana": "您可以使用 {link} 去中心化应用程序获得更多。",
-    "tier_value": "{value}个插槽",
-    "buy_slots": "买插槽"
+    "buy_slots": "买插槽",
+    "how_many_slots_title": "多少个插槽？",
+    "slots_value": "每个插槽的近似成本是 {symbol}{slot_cost}",
+    "total_cost": "总成本为 {symbol}{total_cost}。它有 3% 的滑点来弥补市场价格的变化。"
   },
   "share_modal": {
     "title": "分享您的场景",
@@ -887,7 +889,7 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "buy_third_party_item_tiers": "为第三方 {name} 购买了 {count}个插槽",
+    "buy_third_party_item_slots": "为第三方 {name} 购买了 {count}个插槽",
     "publish_third_party_items": "为 {collectionName} 发布了 {count} 个项目",
     "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
   },

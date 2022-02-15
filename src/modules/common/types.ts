@@ -34,7 +34,6 @@ import { UIState } from 'modules/ui/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCurationState } from 'modules/curations/collectionCuration/reducer'
-import { TiersState } from 'modules/tiers/reducer'
 
 const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
 export type StorageLoadAction = ReturnType<typeof storageLoad>
@@ -72,7 +71,6 @@ export type RootState = {
   ui: UIState
   wallet: WalletState
   collectionCuration: CollectionCurationState
-  tiers: TiersState
 }
 
 export type RootStore = Store<RootState>
