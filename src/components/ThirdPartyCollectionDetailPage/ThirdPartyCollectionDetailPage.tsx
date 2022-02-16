@@ -66,11 +66,13 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
       onFetchAvailableSlots
     } = this.props
 
-    if (collection && thirdParty && !itemCurations && !isLoadingItemCurations && !itemCurationsError) {
+    const shouldFetchItemCurations = collection && thirdParty && !itemCurations && !isLoadingItemCurations && !itemCurationsError
+    if (shouldFetchItemCurations) {
       onFetchItemCurations(collection.id)
     }
 
-    if (thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots) {
+    const shouldFetchAvailbleSlots = thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots
+    if (shouldFetchAvailbleSlots) {
       onFetchAvailableSlots(thirdParty.id)
     }
   }
