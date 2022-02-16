@@ -47,6 +47,13 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     isAuthModalOpen: false
   }
 
+  componentDidMount() {
+    const { thirdParty, onFetchAvailableSlots, isLoadingAvailableSlots } = this.props
+    if (thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots) {
+      onFetchAvailableSlots(thirdParty.id)
+    }
+  }
+
   componentDidUpdate() {
     const {
       thirdParty,
@@ -63,7 +70,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
       onFetchItemCurations(collection.id)
     }
 
-    if (thirdParty && !thirdParty?.availableSlots && !isLoadingAvailableSlots) {
+    if (thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots) {
       onFetchAvailableSlots(thirdParty.id)
     }
   }
