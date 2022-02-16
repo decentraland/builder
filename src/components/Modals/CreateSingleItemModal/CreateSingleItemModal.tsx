@@ -655,9 +655,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderImportView() {
-    const { onClose, metadata, error } = this.props
+    const { onClose, metadata } = this.props
     const { changeItemFile } = metadata as CreateSingleItemModalMetadata
-    const { isRepresentation, category } = this.state
+    const { isRepresentation, category, error } = this.state
     const title = this.renderModalTitle()
 
     return (
