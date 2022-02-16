@@ -261,7 +261,7 @@ describe('Third Party selectors', () => {
   })
 
   describe('when getting if the user is buying slots', () => {
-    describe('and the buying request is still on ongoing ', () => {
+    describe('and the buying request is still on ongoing', () => {
       let state: RootState
 
       beforeEach(() => {
