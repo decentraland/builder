@@ -732,6 +732,10 @@ export class BuilderAPI extends BaseAPI {
     return this.request('get', '/thirdParties', { manager })
   }
 
+  fetchThirdPartyAvailableSlots(thirdPartyId: string): Promise<number> {
+    return this.request('get', `/thirdParties/${thirdPartyId}/slots`)
+  }
+
   updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
   }

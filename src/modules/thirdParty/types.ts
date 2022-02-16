@@ -5,4 +5,5 @@ export type ThirdParty = {
   description: string
   maxItems: string
   totalItems: string
+  availableSlots?: number
 }

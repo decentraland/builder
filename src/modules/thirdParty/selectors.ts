@@ -7,7 +7,12 @@ import { Item } from 'modules/item/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
-import { BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST } from './actions'
+import {
+  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
+  FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST,
+  BUY_THIRD_PARTY_ITEM_SLOT_REQUEST,
+  BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS
+} from './actions'
 import { getThirdPartyForCollection, getThirdPartyForItem, isUserManagerOfThirdParty } from './utils'
 
 export const getState = (state: RootState) => state.thirdParty
@@ -35,6 +40,9 @@ export const getItemThirdParty = (state: RootState, item: Item): ThirdParty | nu
 
 export const isFetchingSlotPrice = (state: RootState): boolean =>
   isLoadingType(getLoading(state), FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST)
+
+export const isFetchingAvailableSlots = (state: RootState): boolean =>
+  isLoadingType(getLoading(state), FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST)
 
 export const isBuyingItemSlots = (state: RootState): boolean =>
   isLoadingType(getLoading(state), BUY_THIRD_PARTY_ITEM_SLOT_REQUEST) ||
