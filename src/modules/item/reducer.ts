@@ -86,6 +86,14 @@ import {
   DOWNLOAD_ITEM_REQUEST,
   DOWNLOAD_ITEM_FAILURE,
   DOWNLOAD_ITEM_SUCCESS,
+  SaveMultipleItemsSuccessAction,
+  SaveMultipleItemsFailureAction,
+  SaveMultipleItemsCancelledAction,
+  ClearStateSaveMultipleItemsAction,
+  SAVE_MULTIPLE_ITEMS_SUCCESS,
+  SAVE_MULTIPLE_ITEMS_FAILURE,
+  CLEAR_SAVE_MULTIPLE_ITEMS,
+  SAVE_MULTIPLE_ITEMS_CANCELLED,
   RescueItemsChunkSuccessAction
 } from './actions'
 import { toItemObject } from './utils'
@@ -148,6 +156,10 @@ type ItemReducerAction =
   | DownloadItemRequestAction
   | DownloadItemSuccessAction
   | DownloadItemFailureAction
+  | SaveMultipleItemsSuccessAction
+  | SaveMultipleItemsFailureAction
+  | SaveMultipleItemsCancelledAction
+  | ClearStateSaveMultipleItemsAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -244,6 +256,34 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         },
         loading: loadingReducer(state.loading, action),
         error: null
+      }
+    }
+    case SAVE_MULTIPLE_ITEMS_FAILURE: {
+      const { items, error } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        error
+      }
+    }
+    case CLEAR_SAVE_MULTIPLE_ITEMS: {
+      return {
+        ...state,
+        error: null
+      }
+    }
+    case SAVE_MULTIPLE_ITEMS_CANCELLED:
+    case SAVE_MULTIPLE_ITEMS_SUCCESS: {
+      const { items } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        }
       }
     }
     case RESET_ITEM_SUCCESS: {

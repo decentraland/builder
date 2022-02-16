@@ -13,9 +13,12 @@ import { fetchItemCurationsRequest, FETCH_ITEM_CURATIONS_REQUEST } from 'modules
 import { getItemCurations, getLoading as getLoadingItemCurations, getError } from 'modules/curations/itemCuration/selectors'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
-import { getCollectionThirdParty } from 'modules/thirdParty/selectors'
+import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
+import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
+import { getCollectionType } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 
 const mapState = (state: RootState): MapStateProps => {
   const collectionId = getThirdPartyCollectionId(state) || ''
@@ -23,6 +26,8 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     wallet: getWallet(state)!,
     collection,
+    thirdParty:
+      collection && getCollectionType(collection) === CollectionType.THIRD_PARTY ? getCollectionThirdParty(state, collection) : null,
     authorizations: getAuthorizations(state),
     items: getCollectionItems(state, collectionId),
     itemCurations: getItemCurations(state, collectionId),
@@ -31,15 +36,16 @@ const mapState = (state: RootState): MapStateProps => {
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItem(state), FETCH_ITEMS_REQUEST),
     isLoadingItemCurations: isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST),
-    itemCurationsError: getError(state),
-    thirdParty: collection ? getCollectionThirdParty(state, collection) : null
+    isLoadingAvailableSlots: isFetchingAvailableSlots(state),
+    itemCurationsError: getError(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onFetchItemCurations: (collectionId: Collection['id']) => dispatch(fetchItemCurationsRequest(collectionId))
+  onFetchItemCurations: (collectionId: Collection['id']) => dispatch(fetchItemCurationsRequest(collectionId)),
+  onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId))
 })
 
 export default connect(mapState, mapDispatch)(CollectionDetailPage)

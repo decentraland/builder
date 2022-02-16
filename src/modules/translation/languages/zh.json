@@ -201,6 +201,36 @@
       "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。"
     }
   },
+  "create_multiple_items_modal": {
+    "title": "创建多个可穿戴设备",
+    "successful_title": "创建的可穿戴物品",
+    "cancelled_title": "取消了多个可穿戴项目的创建",
+    "failed_title": "多个可穿戴项目创建失败",
+    "wrong_file_extension": "文件扩展名不正确。",
+    "asset_file_not_found": "找不到asset.json 文件。",
+    "thumbnail_file_not_found": "批量文件必须在其内容中包含 thumbnail.png 文件。",
+    "saved_items_table_title": "保存的可穿戴物品",
+    "invalid_title": "无效的",
+    "valid_title": "有效的档案",
+    "add_more_button": "添加更多",
+    "upload_items_button": "上传可穿戴物品",
+    "only_valid_items_info": "只会上传有效的项目",
+    "done_button": "完成",
+    "finished_successfully_subtitle": "伟大的！ 您已添加 {number_of_items} 项",
+    "finished_unsuccessfully_subtitle": "可穿戴物品的创建被打断，但增加了 {number_of_items} 件物品。",
+    "importing_files_progress_label": "加工项目",
+    "uploading_items_progress_label": "上传 {number_of_items} 个项目",
+    "import_information_link_label": "点击这里",
+    "import_information": "有关 ZIP 结构的更多信息 {link}"
+  },
+  "create_items_modal": {
+    "title": "New Item",
+    "subtitle": "Select the method for uploading your item.",
+    "single_item_button_name": "Single item",
+    "single_item_button_description": "Upload GLTF, GLB or PNG files.",
+    "multiple_items_button_name": "Multiple items",
+    "multiple_items_button_description": "Upload a ZIP file with all the files."
+  },
   "edit_collection_name_modal": {
     "title": "编辑集合名称",
     "subtitle": "为此收藏集设置一个新名称",
@@ -218,10 +248,12 @@
     "title": "插槽",
     "description_line_one": "购买插槽以发布您的物品！",
     "description_line_two": "请选择您要购买的数量。",
-    "not_enough_mana": "您没有足够的 {symbol} 购买此层级。",
+    "not_enough_mana": "您没有足够的 {symbol} 购买该数量的插槽。",
     "get_mana": "您可以使用 {link} 去中心化应用程序获得更多。",
-    "tier_value": "{value}个插槽",
-    "buy_slots": "买插槽"
+    "buy_slots": "买插槽",
+    "how_many_slots_title": "多少个插槽？",
+    "slots_value": "每个插槽的近似成本是 {symbol}{slot_cost}",
+    "total_cost": "总成本为 {symbol}{total_cost}。它有 3% 的滑点来弥补市场价格的变化。"
   },
   "share_modal": {
     "title": "分享您的场景",
@@ -857,7 +889,7 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "buy_third_party_item_tiers": "为第三方 {name} 购买了 {count}个插槽",
+    "buy_third_party_item_slots": "为第三方 {name} 购买了 {count}个插槽",
     "publish_third_party_items": "为 {collectionName} 发布了 {count} 个项目",
     "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
   },
@@ -975,7 +1007,8 @@
     "slots": "{amount, plural, =0 {没有插槽} other {# 个插槽}}",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "发布项目后，您将无法添加或删除项目。",
-    "publish_items": "发布 {count, plural, =0 {} other {# 项}}"
+    "publish_items": "发布 {count, plural, =0 {} other {# 项}}",
+    "new_items": "新的可穿戴物品"
   },
   "collection_detail_page": {
     "new_item": "新物品",
