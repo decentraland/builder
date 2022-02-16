@@ -2,7 +2,6 @@ import * as React from 'react'
 import { ModalNavigation, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getAvailableSlots } from 'modules/thirdParty/utils'
 import { Props } from './PublishThirdPartyCollectionModal.types'
 
 export default class PublishThirdPartyCollectionModal extends React.PureComponent<Props> {
@@ -21,7 +20,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
           <div>
             {t('publish_third_party_collection_modal.description', {
               slotsToUse: items.length,
-              availableSlots: getAvailableSlots(thirdParty!).toNumber(),
+              availableSlots: thirdParty?.availableSlots,
               collectionName: collection!.name
             })}
           </div>
