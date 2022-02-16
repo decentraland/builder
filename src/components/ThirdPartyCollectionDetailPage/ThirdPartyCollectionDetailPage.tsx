@@ -1,5 +1,5 @@
 import * as React from 'react'
-import BN from 'bn.js'
+import classNames from 'classnames'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
   Grid,
@@ -19,7 +19,7 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
 import { locations } from 'routing/locations'
-import { getAvailableSlots, isUserManagerOfThirdParty, MAX_PUBLISH_ITEM_COUNT } from 'modules/thirdParty/utils'
+import { isUserManagerOfThirdParty, MAX_PUBLISH_ITEM_COUNT } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
@@ -33,8 +33,7 @@ import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './ThirdPartyCollectionDetailPage.types'
-import { getCollectionType } from 'modules/collection/utils'
-import { CollectionType } from 'modules/collection/types'
+import { ThirdParty } from 'modules/thirdParty/types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
@@ -46,6 +45,13 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     searchText: '',
     page: 1,
     isAuthModalOpen: false
+  }
+
+  componentDidUpdate() {
+    const { thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots } = this.props
+    if (thirdParty && !thirdParty?.availableSlots && !isLoadingAvailableSlots) {
+      onFetchAvailableSlots(thirdParty.id)
+    }
   }
 
   getManaAuthorization = () => {
@@ -162,12 +168,11 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   }
 
-  renderPage() {
-    const { thirdParty } = this.props
+  renderPage(thirdParty: ThirdParty) {
+    const { isLoadingAvailableSlots } = this.props
     const { page, searchText, itemSelectionState, isAuthModalOpen } = this.state
     const collection = this.props.collection!
-    const slots = thirdParty ? getAvailableSlots(thirdParty) : new BN(0)
-    const areSlotsEmpty = slots.lte(new BN(0))
+    const areSlotsEmpty = thirdParty?.availableSlots && thirdParty.availableSlots <= 0
 
     const selectedItems = this.getSelectedItems()
     const selectedItemsCount = selectedItems.length
@@ -206,18 +211,24 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 </Column>
                 <Column align="right" shrink={false}>
                   <Row className="actions">
-                    <Button secondary compact className={`${areSlotsEmpty ? 'empty' : ''} slots`} onClick={this.handleBuySlot}>
-                      {t('third_party_collection_detail_page.slots', { amount: slots.toNumber() })}
-                      {areSlotsEmpty ? (
-                        <span className="buy-slots link" onClick={this.handleBuySlot}>
-                          {t('global.buy')}
-                        </span>
-                      ) : null}
+                    <Button
+                      loading={isLoadingAvailableSlots}
+                      secondary
+                      compact
+                      className={classNames({ empty: areSlotsEmpty && !isLoadingAvailableSlots, slots: !isLoadingAvailableSlots })}
+                      onClick={this.handleBuySlot}
+                    >
+                      <>
+                        {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
+                        {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
+                      </>
                     </Button>
                     <Button secondary compact className={'add-items'} onClick={this.handleNewItems}>
                       {t('third_party_collection_detail_page.new_items')}
                     </Button>
-                    <CollectionPublishButton collection={collection} items={selectedItems} slots={slots.toNumber()} />
+                    {thirdParty.availableSlots !== undefined ? (
+                      <CollectionPublishButton collection={collection} items={selectedItems} slots={thirdParty.availableSlots} />
+                    ) : null}
                     <CollectionContextMenu collection={collection} />
                   </Row>
                 </Column>
@@ -327,12 +338,12 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   render() {
-    const { isLoading, collection } = this.props
+    const { isLoading, collection, thirdParty } = this.props
     const hasAccess = this.hasAccess()
-    const shouldRender = hasAccess && collection && getCollectionType(collection) === CollectionType.THIRD_PARTY
+    const shouldRender = hasAccess && collection
     return (
       <LoggedInDetailPage className="ThirdPartyCollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
-        {shouldRender ? this.renderPage() : <NotFound />}
+        {shouldRender && thirdParty ? this.renderPage(thirdParty) : <NotFound />}
       </LoggedInDetailPage>
     )
   }

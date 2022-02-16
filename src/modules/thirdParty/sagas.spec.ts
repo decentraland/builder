@@ -20,7 +20,10 @@ import {
   fetchThirdPartyItemSlotPriceSuccess,
   buyThirdPartyItemSlotFailure,
   buyThirdPartyItemSlotRequest,
-  buyThirdPartyItemSlotSuccess
+  buyThirdPartyItemSlotSuccess,
+  fetchThirdPartyAvailableSlotsFailure,
+  fetchThirdPartyAvailableSlotsRequest,
+  fetchThirdPartyAvailableSlotsSuccess
 } from './actions'
 import { thirdPartySaga, getContractInstance } from './sagas'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
@@ -28,7 +31,7 @@ import { getItemSlotPrice } from './selectors'
 import { select } from 'redux-saga-test-plan/matchers'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
-const mockBuilder = ({ fetchThirdParties: jest.fn() } as any) as BuilderAPI
+const mockBuilder = ({ fetchThirdParties: jest.fn(), fetchThirdPartyAvailableSlots: jest.fn() } as any) as BuilderAPI
 
 let thirdParty: ThirdParty
 const defaultError = 'error'
@@ -223,5 +226,33 @@ describe('when handling the successful purchase of a third party item slot', () 
       .put(closeModal('BuyItemSlotsModal'))
       .dispatch(buyThirdPartyItemSlotSuccess('aTxHash', ChainId.ETHEREUM_GOERLI, thirdParty, 10))
       .run({ silenceTimeout: true })
+  })
+})
+
+describe('when fetching third party available slots', () => {
+  describe('when the api request fails', () => {
+    let errorMessage: string
+    beforeEach(() => {
+      errorMessage = 'Some Error Message'
+    })
+
+    it('should put the fetch third party available slots fail action with an error', () => {
+      return expectSaga(thirdPartySaga, mockBuilder)
+        .provide([[matchers.call.fn(mockBuilder.fetchThirdPartyAvailableSlots), throwError(new Error(errorMessage))]])
+        .put(fetchThirdPartyAvailableSlotsFailure(errorMessage))
+        .dispatch(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when the api request succeeds', () => {
+    it('should put the fetch third party success action the response', () => {
+      const mockedAvaibleSlots = 20
+      return expectSaga(thirdPartySaga, mockBuilder)
+        .provide([[call([mockBuilder, 'fetchThirdPartyAvailableSlots'], thirdParty.id), mockedAvaibleSlots]])
+        .put(fetchThirdPartyAvailableSlotsSuccess(thirdParty.id, mockedAvaibleSlots))
+        .dispatch(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
+        .run({ silenceTimeout: true })
+    })
   })
 })
