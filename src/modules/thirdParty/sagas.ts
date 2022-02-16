@@ -28,6 +28,7 @@ import {
   FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
   fetchThirdPartyAvailableSlotsFailure
 } from './actions'
+import { applySlotBuySlippage } from './utils'
 import { ThirdParty } from './types'
 
 export function* getContractInstance(
@@ -95,8 +96,8 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     try {
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
       const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-      const SLOTS_BUY_PRICE_SLIPPAGE = 1.03
-      const maxPriceInWei = utils.parseEther((priceToPay * slotsToBuy * SLOTS_BUY_PRICE_SLIPPAGE).toString())
+      const costWithSlippage = applySlotBuySlippage(BigNumber.from(priceToPay).mul(BigNumber.from(slotsToBuy)))
+      const maxPriceInWei = utils.parseEther(costWithSlippage.toString())
       const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
         instantiatedThirdPartyContract.buyItemSlots(thirdParty.id, slotsToBuy, maxPriceInWei)
       )

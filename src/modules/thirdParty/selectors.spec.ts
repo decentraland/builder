@@ -2,7 +2,12 @@ import { ChainId } from '@dcl/schemas'
 import { TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { buyThirdPartyItemSlotRequest, BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, fetchThirdPartyItemSlotPriceRequest } from './actions'
+import {
+  buyThirdPartyItemSlotRequest,
+  BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS,
+  fetchThirdPartyItemSlotPriceRequest,
+  fetchThirdPartyItemSlotPriceSuccess
+} from './actions'
 import {
   isThirdPartyManager,
   getWalletThirdParties,
@@ -235,6 +240,24 @@ describe('Third Party selectors', () => {
         expect(isFetchingSlotPrice(state)).toEqual(true)
       })
     })
+
+    describe('and the request is done', () => {
+      let state: RootState
+
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [fetchThirdPartyItemSlotPriceSuccess(10)]
+          }
+        }
+      })
+
+      it('should return false', () => {
+        expect(isFetchingSlotPrice(state)).toEqual(false)
+      })
+    })
   })
 
   describe('when getting if the user is buying slots', () => {
@@ -287,6 +310,40 @@ describe('Third Party selectors', () => {
 
       it('should return true', () => {
         expect(isBuyingItemSlots(state)).toEqual(true)
+      })
+    })
+
+    describe('and the buying request success transaction is done', () => {
+      let state: RootState
+
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          transaction: {
+            ...baseState.transaction,
+            data: [
+              {
+                actionType: BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS,
+                chainId: ChainId.MATIC_MUMBAI,
+                hash: '0xhash',
+                events: [],
+                from: address,
+                nonce: 1,
+                replacedBy: '',
+                timestamp: 1,
+                status: TransactionStatus.CONFIRMED
+              }
+            ]
+          },
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: []
+          }
+        }
+      })
+
+      it('should return false', () => {
+        expect(isBuyingItemSlots(state)).toEqual(false)
       })
     })
   })

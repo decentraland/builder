@@ -5,7 +5,12 @@ import { getTransactionFromAction } from 'decentraland-dapps/dist/modules/transa
 import { Collection } from 'modules/collection/types'
 import { publishThirdPartyItemsSuccess } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
-import { buyThirdPartyItemSlotSuccess } from 'modules/thirdParty/actions'
+import {
+  buyThirdPartyItemSlotSuccess,
+  fetchThirdPartyItemSlotPriceFailure,
+  fetchThirdPartyItemSlotPriceRequest,
+  fetchThirdPartyItemSlotPriceSuccess
+} from 'modules/thirdParty/actions'
 import { fetchThirdPartiesRequest, fetchThirdPartiesSuccess, fetchThirdPartiesFailure } from './actions'
 import { INITIAL_STATE, thirdPartyReducer, ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
@@ -129,6 +134,52 @@ describe('when reducing the action that signals the success of the transaction t
           totalItems: items.length.toString()
         }
       }
+    })
+  })
+})
+
+describe('when an action of type FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST is called', () => {
+  it('should add a fetchThirdPartyItemSlotPriceRequest to the loading array', () => {
+    expect(thirdPartyReducer(INITIAL_STATE, fetchThirdPartyItemSlotPriceRequest())).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [fetchThirdPartyItemSlotPriceRequest()]
+    })
+  })
+})
+
+describe('when an action of type FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_SUCCESS is called', () => {
+  let mockedSlotPrice: number
+  beforeEach(() => {
+    mockedSlotPrice = 10
+  })
+
+  it('should add the slot price to the data, remove the action from loading and set the error to null', () => {
+    const state: ThirdPartyState = {
+      data: {},
+      loading: [fetchThirdPartyItemSlotPriceRequest()],
+      error: 'Some Error',
+      itemSlotPrice: 1
+    }
+
+    expect(thirdPartyReducer(state, fetchThirdPartyItemSlotPriceSuccess(mockedSlotPrice))).toStrictEqual({
+      data: {},
+      loading: [],
+      error: null,
+      itemSlotPrice: mockedSlotPrice
+    })
+  })
+})
+
+describe('when an action of type FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE is called', () => {
+  it('should remove the corresponding request action, and set the error', () => {
+    expect(
+      thirdPartyReducer(
+        { ...INITIAL_STATE, loading: [fetchThirdPartyItemSlotPriceRequest()] },
+        fetchThirdPartyItemSlotPriceFailure('Some Error')
+      )
+    ).toStrictEqual({
+      ...INITIAL_STATE,
+      error: 'Some Error'
     })
   })
 })

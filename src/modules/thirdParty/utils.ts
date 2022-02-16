@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber'
 import { extractThirdPartyId } from 'lib/urn'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
@@ -14,3 +15,7 @@ export const getThirdPartyForCollection = (thirdParties: Record<string, ThirdPar
 
 export const getThirdPartyForItem = (thirdParties: Record<string, ThirdParty>, item: Item): ThirdParty | undefined =>
   item.urn ? thirdParties[extractThirdPartyId(item.urn)] : undefined
+
+export function applySlotBuySlippage(cost: BigNumber) {
+  return cost.mul(103).div(100)
+}
