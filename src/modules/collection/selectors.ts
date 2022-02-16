@@ -109,18 +109,6 @@ export const getStatusByCollectionId = createSelector<
   }
 )
 
-export const isThirdPartyCollection = createSelector<
-  RootState,
-  Collection['id'] | undefined,
-  CollectionState['data'],
-  Collection['id'] | undefined,
-  boolean
->(
-  getData,
-  (_: RootState, collectionId?: string) => collectionId,
-  (data, collectionId?: Collection['id']) => !!collectionId && !!isThirdParty(data[collectionId]?.urn)
-)
-
 export const hasViewAndEditRights = (state: RootState, address: string, collection: Collection): boolean => {
   const thirdParty = isThirdParty(collection.urn) ? getCollectionThirdParty(state, collection) : null
   const isTPManager = thirdParty && isUserManagerOfThirdParty(address, thirdParty)
