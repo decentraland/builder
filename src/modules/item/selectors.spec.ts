@@ -270,7 +270,7 @@ describe('Item selectors', () => {
               },
               name: 'pepito',
               description: 'pepito hat very nice',
-              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TPW
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
               data: {
                 category: WearableCategory.HAT,
                 replaces: [],
@@ -290,7 +290,7 @@ describe('Item selectors', () => {
               },
               name: 'pepito',
               description: 'pepito hat very nice',
-              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TPW
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
               data: {
                 category: WearableCategory.HAT,
                 replaces: [],
@@ -310,7 +310,7 @@ describe('Item selectors', () => {
               },
               name: 'pepito',
               description: 'pepito hat very nice',
-              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TPW
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
               data: {
                 category: WearableCategory.HAT,
                 replaces: [],
@@ -330,7 +330,7 @@ describe('Item selectors', () => {
               },
               name: 'pepito',
               description: 'pepito hat very nice',
-              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TPW
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
               data: {
                 category: WearableCategory.HAT,
                 replaces: [],
@@ -350,7 +350,7 @@ describe('Item selectors', () => {
               },
               name: 'pepito',
               description: 'pepito hat very nice',
-              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TPW
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
               data: {
                 category: WearableCategory.HAT,
                 replaces: [],
@@ -495,11 +495,11 @@ describe('Item selectors', () => {
         '1': SyncStatus.SYNCED,
         '2': SyncStatus.UNSYNCED,
         '3': SyncStatus.UNDER_REVIEW,
-        '4': SyncStatus.UNPUBLISHED, // TPW with no item curation
-        '5': SyncStatus.UNDER_REVIEW, // TPW with item curation in PENDING
-        '6': SyncStatus.LOADING, // TPW with item curation in APPROVED and no Entity,
-        '7': SyncStatus.UNSYNCED, // TPW with item curation in APPROVED with entity but NOT synced,
-        '8': SyncStatus.SYNCED // TPW with item curation in APPROVED with entity and synced,
+        '4': SyncStatus.UNPUBLISHED, // TP with no item curation
+        '5': SyncStatus.UNDER_REVIEW, // TP with item curation in PENDING
+        '6': SyncStatus.LOADING, // TP with item curation in APPROVED and no Entity,
+        '7': SyncStatus.UNSYNCED, // TP with item curation in APPROVED with entity but NOT synced,
+        '8': SyncStatus.SYNCED // TP with item curation in APPROVED with entity and synced,
       })
     })
   })

@@ -106,12 +106,13 @@ const getItemSyncedStatus = (item: Item, entity: Entity | null) => {
   return status
 }
 
-const getStatusForTPW = (item: Item, itemCuration: ItemCuration | null, entity: Entity): SyncStatus => {
+const getStatusForTP = (item: Item, itemCuration: ItemCuration | null, entity: Entity): SyncStatus => {
   let status: SyncStatus
   if (!itemCuration) {
     status = SyncStatus.UNPUBLISHED
-  } else if (itemCuration.status === CurationStatus.PENDING) return SyncStatus.UNDER_REVIEW
-  else {
+  } else if (itemCuration.status === CurationStatus.PENDING) {
+    return SyncStatus.UNDER_REVIEW
+  } else {
     status = getItemSyncedStatus(item, entity)
   }
   return status
@@ -145,7 +146,7 @@ export const getStatusByItemId = createSelector<
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
       statusByItemId[item.id] = isThirdParty(item.urn)
-        ? getStatusForTPW(item, itemCurationByItemId[item.id], entitiesByItemId[item.id])
+        ? getStatusForTP(item, itemCurationByItemId[item.id], entitiesByItemId[item.id])
         : getStatusForDCL(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
     }
     return statusByItemId
