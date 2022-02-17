@@ -5,6 +5,12 @@ import { ThirdParty } from 'modules/thirdParty/types'
 import { Item } from 'modules/item/types'
 import { publishThirdPartyItemsRequest, PublishThirdPartyItemsRequestAction } from 'modules/item/actions'
 
+export type PublishThirdPartyCollectionModalMetadata = {
+  collectionId: string
+  itemIds: string[]
+  willPushChanges: boolean
+}
+
 export type Props = ModalProps & {
   metadata: PublishThirdPartyCollectionModalMetadata
   collection: Collection | null
@@ -12,11 +18,7 @@ export type Props = ModalProps & {
   items: Item[]
   isPublishLoading: boolean
   onPublish: typeof publishThirdPartyItemsRequest
-}
-
-export type PublishThirdPartyCollectionModalMetadata = {
-  collectionId: string
-  itemIds: string[]
+  onPushChanges: typeof publishThirdPartyItemsRequest // TODO: pushChangesType of action
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
