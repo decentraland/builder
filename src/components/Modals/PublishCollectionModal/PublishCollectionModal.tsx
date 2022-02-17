@@ -152,7 +152,9 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           <div className="divider"></div>
           {t('publish_collection_modal.second_paragraph')}
           <div className="divider"></div>
-          {t('publish_collection_modal.third_paragraph')}{' '}
+          {t('publish_collection_modal.third_paragraph')}
+          <div className="divider"></div>
+          {t('publish_collection_modal.fourth_paragraph')}{' '}
           <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
             {t('global.learn_more')}
           </a>
