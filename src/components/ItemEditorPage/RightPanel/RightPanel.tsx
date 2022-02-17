@@ -402,17 +402,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeCategory}
                         />
-                        {!item.urn ||
-                          (!isThirdParty(item.urn) && (
-                            <Select<ItemRarity>
-                              itemId={item.id}
-                              label={t('global.rarity')}
-                              value={rarity}
-                              options={this.asRaritySelect(rarities)}
-                              disabled={item.isPublished || !canEditItemMetadata}
-                              onChange={this.handleChangeRarity}
-                            />
-                          ))}
+                        {!(item.urn && isThirdParty(item.urn)) && (
+                          <Select<ItemRarity>
+                            itemId={item.id}
+                            label={t('global.rarity')}
+                            value={rarity}
+                            options={this.asRaritySelect(rarities)}
+                            disabled={item.isPublished || !canEditItemMetadata}
+                            onChange={this.handleChangeRarity}
+                          />
+                        )}
                       </>
                     )}
                   </Collapsable>
