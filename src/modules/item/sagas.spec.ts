@@ -569,7 +569,7 @@ describe('when publishing third party items', () => {
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .put(publishThirdPartyItemsSuccess(txHash, ChainId.MATIC_MUMBAI, thirdParty, collection, items))
-        .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+        .dispatch(publishThirdPartyItemsRequest(thirdParty, items, false))
         .run({ silenceTimeout: true })
     })
 
@@ -593,7 +593,7 @@ describe('when publishing third party items', () => {
             [call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(errorMessage))]
           ])
           .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+          .dispatch(publishThirdPartyItemsRequest(thirdParty, items, false))
           .run({ silenceTimeout: true })
       })
     })
@@ -619,7 +619,7 @@ describe('when publishing third party items', () => {
             [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MAINNET), Promise.reject(new Error(errorMessage))]
           ])
           .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+          .dispatch(publishThirdPartyItemsRequest(thirdParty, items, false))
           .run({ silenceTimeout: true })
       })
     })
@@ -645,7 +645,7 @@ describe('when publishing third party items', () => {
             [matchers.call.fn(sendTransaction), Promise.reject(new Error(errorMessage))]
           ])
           .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+          .dispatch(publishThirdPartyItemsRequest(thirdParty, items, false))
           .run({ silenceTimeout: true })
       })
     })
