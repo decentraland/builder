@@ -6,8 +6,13 @@ import { Props } from './PublishThirdPartyCollectionModal.types'
 
 export default class PublishThirdPartyCollectionModal extends React.PureComponent<Props> {
   handlePublish = () => {
-    const { thirdParty, items, onPublish } = this.props
-    onPublish(thirdParty!, items!)
+    const {
+      thirdParty,
+      items,
+      onPublish,
+      metadata: { willPushChanges }
+    } = this.props
+    onPublish(thirdParty!, items!, willPushChanges)
   }
 
   render() {

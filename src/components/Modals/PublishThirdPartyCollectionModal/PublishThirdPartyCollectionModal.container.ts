@@ -23,7 +23,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onPublish: (thirdParty, items) => dispatch(publishThirdPartyItemsRequest(thirdParty, items))
+  onPublish: (thirdParty, items, willPushChanges) => dispatch(publishThirdPartyItemsRequest(thirdParty, items, willPushChanges)) // TODO: @TP Should call the pushChanges action
 })
 
 export default connect(mapState, mapDispatch)(PublishCollectionModal)

@@ -279,6 +279,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
     const { thirdParty, items } = action.payload
+    // TODO: @TP based on action.payload.willPushChanges put pushChanges actions once implemented
     try {
       const collectionId = items[0].collectionId!
       const collection: Collection = yield select(getCollection, collectionId)

@@ -1027,7 +1027,10 @@
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items una vez que estén publicados.",
     "publish_items": "Publicar {count, plural, =0 {} one {# item} other {# items}}",
-    "new_items": "Nuevos items"
+    "new_items": "Nuevos items",
+    "publish": "Publicar",
+    "push_changes": "Subir Cambios",
+    "publish_and_push_changes": "Publicar y subir cambios"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",

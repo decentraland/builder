@@ -1008,7 +1008,10 @@
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "发布项目后，您将无法添加或删除项目。",
     "publish_items": "发布 {count, plural, =0 {} other {# 项}}",
-    "new_items": "新的可穿戴物品"
+    "new_items": "新的可穿戴物品",
+    "publish": "发布",
+    "push_changes": "推送更改",
+    "publish_and_push_changes": "发布和推送更改"
   },
   "collection_detail_page": {
     "new_item": "新物品",
