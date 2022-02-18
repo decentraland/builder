@@ -15,7 +15,7 @@ import { isThirdParty } from 'lib/urn'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
 import { Collection, CollectionType } from './types'
 import { CollectionState } from './reducer'
-import { canSeeCollection, getCollectionType, getMostRelevantStatus, isOwner } from './utils'
+import { canSeeCollection, getCollectionType, getMostRelevantStatus, isOwner, sortCollectionByCreatedAt } from './utils'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -25,7 +25,7 @@ export const getError = (state: RootState) => getState(state).error
 export const getCollections = createSelector<RootState, CollectionState['data'], string | undefined, Collection[]>(
   getData,
   getAddress,
-  collectionData => Object.values(collectionData)
+  collectionData => Object.values(collectionData).sort(sortCollectionByCreatedAt)
 )
 
 export const getWalletCollections = createSelector<RootState, Collection[], string | undefined, Collection[]>(
