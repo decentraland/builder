@@ -67,3 +67,11 @@
 .action {
   display: none !important;
 }
+
+:global(.ui.dropdown).action :global(.menu > .disabled.item) {
+  pointer-events: auto;
+}
+
+:global(.ui.dropdown).action :global(.menu > .disabled.item a) {
+  cursor: default;
+}

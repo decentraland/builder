@@ -1042,7 +1042,8 @@
     "minters": "铸币厂",
     "post_to_forum": "发布到论坛",
     "posting": "过帐",
-    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试"
+    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试",
+    "change_published_urn": "集合发布后，您将无法更改 URN"
   },
   "collection_item": {
     "set_price": "设定价格",
@@ -1053,6 +1054,7 @@
     "edit_price": "修改价格",
     "see_details": "查看详细信息",
     "edit_urn": "编辑 URN",
+    "cannot_edit_urn": "项目发布后您无法编辑 URN",
     "reset_item": "撤消"
   },
   "collection": {

@@ -6,3 +6,11 @@
 .ellipsis {
   margin: auto !important;
 }
+
+:global(.ui.dropdown).dropdown :global(.menu > .disabled.item) {
+  pointer-events: auto;
+}
+
+:global(.ui.dropdown).dropdown :global(.menu > .disabled.item a) {
+  cursor: default;
+}
