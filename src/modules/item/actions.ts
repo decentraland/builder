@@ -216,8 +216,8 @@ export const PUBLISH_THIRD_PARTY_ITEMS_REQUEST = '[Request] Publish third party 
 export const PUBLISH_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Publish third party items'
 export const PUBLISH_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish third party items'
 
-export const publishThirdPartyItemsRequest = (thirdParty: ThirdParty, items: Item[], willPushChanges: boolean) =>
-  action(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, items, willPushChanges })
+export const publishThirdPartyItemsRequest = (thirdParty: ThirdParty, items: Item[]) =>
+  action(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, items })
 export const publishThirdPartyItemsSuccess = (
   txHash: string,
   chainId: ChainId,

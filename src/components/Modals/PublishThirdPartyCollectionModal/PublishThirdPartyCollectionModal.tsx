@@ -10,9 +10,12 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
       thirdParty,
       items,
       onPublish,
+      onPublishAndPushChanges,
       metadata: { willPushChanges }
     } = this.props
-    onPublish(thirdParty!, items!, willPushChanges)
+
+    const fn = willPushChanges ? onPublishAndPushChanges : onPublish
+    fn(thirdParty!, items!)
   }
 
   render() {

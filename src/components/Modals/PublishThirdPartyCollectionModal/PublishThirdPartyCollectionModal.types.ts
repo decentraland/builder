@@ -18,10 +18,11 @@ export type Props = ModalProps & {
   items: Item[]
   isPublishLoading: boolean
   onPublish: typeof publishThirdPartyItemsRequest
-  onPushChanges: typeof publishThirdPartyItemsRequest // TODO: pushChangesType of action
+  onPushChanges: typeof publishThirdPartyItemsRequest // TODO: @TP pushChangesType of action
+  onPublishAndPushChanges: typeof publishThirdPartyItemsRequest // TODO: @TP publishAndPushChanges of action
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = Pick<Props, 'collection' | 'items' | 'thirdParty' | 'isPublishLoading'>
-export type MapDispatchProps = Pick<Props, 'onPublish'>
+export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPublishAndPushChanges'>
 export type MapDispatch = Dispatch<PublishThirdPartyItemsRequestAction>
