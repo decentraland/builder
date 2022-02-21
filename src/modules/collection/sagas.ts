@@ -500,8 +500,16 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   }
 
   function* getItemsFromCollection(collection: Collection) {
-    const allItems: Item[] = yield select(getItems)
-    return allItems.filter(item => item.collectionId === collection.id)
+    let items: Item[] = yield select(getItems)
+    items = items.filter(
+      item =>
+        item.collectionId === collection.id &&
+        // Quick fix for https://github.com/decentraland/builder/issues/1805
+        // Checking that the item is published Will allow the curator to approve items that have not been published with the collection.
+        // It will show a "You need a collection and item to be published" error.
+        item.isPublished
+    )
+    return items
   }
 
   function* handleInitiateApprovalFlow(action: InitiateApprovalFlowAction) {

@@ -17,7 +17,11 @@ import { Item, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
 import { fetchItemsRequest, fetchItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
-import { approveCollectionCurationFailure, approveCollectionCurationRequest, approveCollectionCurationSuccess } from 'modules/curations/collectionCuration/actions'
+import {
+  approveCollectionCurationFailure,
+  approveCollectionCurationRequest,
+  approveCollectionCurationSuccess
+} from 'modules/curations/collectionCuration/actions'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
@@ -52,6 +56,7 @@ const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
     description: 'This is an item',
     contentHash: 'QmSynced',
     contents: { 'thumbnail.png': 'QmThumbnailHash' } as Record<string, string>,
+    isPublished: true,
     data: {
       category: WearableCategory.HAT,
       hides: [] as WearableCategory[],
@@ -111,11 +116,13 @@ describe('when executing the approval flow', () => {
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
       contentHash: 'QmOldContentHash',
-      contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
+      contents: { 'thumbnail.png': 'QmNewThumbnailHash' },
+      isPublished: true
     })
     const updatedItem = {
       ...unsyncedItem,
-      contentHash: 'QmNewContentHash'
+      contentHash: 'QmNewContentHash',
+      isPublished: true
     }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
@@ -181,11 +188,13 @@ describe('when executing the approval flow', () => {
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
       contentHash: 'QmOldContentHash',
-      contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
+      contents: { 'thumbnail.png': 'QmNewThumbnailHash' },
+      isPublished: true
     })
     const updatedItem = {
       ...unsyncedItem,
-      contentHash: 'QmNewContentHash'
+      contentHash: 'QmNewContentHash',
+      isPublished: true
     }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
