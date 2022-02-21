@@ -1029,7 +1029,7 @@
     "publish_items": "Publicar {count, plural, =0 {} one {# item} other {# items}}",
     "new_items": "Nuevos items",
     "publish": "Publicar",
-    "push_changes": "Subir Cambios",
+    "push_changes": "Subir cambios",
     "publish_and_push_changes": "Publicar y subir cambios"
   },
   "collection_detail_page": {

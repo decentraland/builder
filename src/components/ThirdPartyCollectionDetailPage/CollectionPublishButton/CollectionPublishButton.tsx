@@ -86,7 +86,7 @@ const CollectionPublishButton = (props: Props) => {
   let button: ReactNode
 
   // TODO: @TPW Update this logic once Reviewing TPW is implemented. Use the selected items to render this button
-  if (collection.isPublished) {
+  if (!isTP && collection.isPublished) {
     if (collection.isApproved) {
       button = (
         <Button secondary compact disabled={true}>
