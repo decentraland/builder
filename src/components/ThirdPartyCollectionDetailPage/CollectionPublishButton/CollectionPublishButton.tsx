@@ -9,16 +9,23 @@ import { getCollectionType } from 'modules/collection/utils'
 import { CollectionType } from 'modules/collection/types'
 import { SyncStatus } from 'modules/item/types'
 import UnderReview from './UnderReview'
-import { Props } from './CollectionPublishButton.types'
+import { Props, PublishButtonAction } from './CollectionPublishButton.types'
 
-enum ButtonAction {
-  PUBLISH,
-  PUSH_CHANGES,
-  PUBLISH_AND_PUSH_CHANGES
+export const getTPButtonActionLabel = (buttonAction: PublishButtonAction) => {
+  let label
+  switch (buttonAction) {
+    case PublishButtonAction.PUSH_CHANGES:
+      label = t('third_party_collection_detail_page.push_changes')
+    case PublishButtonAction.PUBLISH_AND_PUSH_CHANGES:
+      label = t('third_party_collection_detail_page.publish_and_push_changes')
+    default:
+      label = t('third_party_collection_detail_page.publish')
+  }
+  return label
 }
 
 const CollectionPublishButton = (props: Props) => {
-  const { collection, items, slots, onPublish, onPushChanges, itemsStatus } = props
+  const { collection, items, slots, onClick, itemsStatus } = props
   const isTP = getCollectionType(collection) === CollectionType.THIRD_PARTY
 
   const isPublishDisabled = useMemo(() => {
@@ -32,7 +39,7 @@ const CollectionPublishButton = (props: Props) => {
   }, [items, slots, collection])
 
   const buttonAction = useMemo(() => {
-    let action = ButtonAction.PUBLISH
+    let action = PublishButtonAction.PUBLISH
     const { willPublish, willPushChanges } = Object.values(itemsStatus).reduce(
       (acc, status) => {
         if (status === SyncStatus.UNPUBLISHED) {
@@ -48,37 +55,16 @@ const CollectionPublishButton = (props: Props) => {
       }
     )
     if (willPushChanges && !willPublish) {
-      action = ButtonAction.PUSH_CHANGES
+      action = PublishButtonAction.PUSH_CHANGES
     } else if (willPushChanges && willPublish) {
-      action = ButtonAction.PUBLISH_AND_PUSH_CHANGES
+      action = PublishButtonAction.PUBLISH_AND_PUSH_CHANGES
     }
     return action
   }, [itemsStatus])
 
-  const TPCollectionButtonText = useMemo(() => {
-    switch (buttonAction) {
-      case ButtonAction.PUBLISH:
-        return t('third_party_collection_detail_page.publish')
-      case ButtonAction.PUSH_CHANGES:
-        return t('third_party_collection_detail_page.push_changes')
-      case ButtonAction.PUBLISH_AND_PUSH_CHANGES:
-        return t('third_party_collection_detail_page.publish_and_push_changes')
-    }
-  }, [buttonAction])
-
   const handlePublish = useCallback(() => {
     const itemIds = items.map(item => item.id)
-    switch (buttonAction) {
-      case ButtonAction.PUBLISH:
-        onPublish(collection.id, itemIds)
-        return
-      case ButtonAction.PUBLISH_AND_PUSH_CHANGES:
-        onPublish(collection.id, itemIds, true)
-        return
-      case ButtonAction.PUSH_CHANGES:
-        onPushChanges(collection.id, itemIds)
-        return
-    }
+    onClick(collection.id, itemIds, buttonAction)
   }, [collection, items, buttonAction])
 
   const DCLCollectionButtonText = t('third_party_collection_detail_page.publish_items', { count: items.length })
@@ -99,7 +85,7 @@ const CollectionPublishButton = (props: Props) => {
   } else {
     button = (
       <NetworkButton disabled={isPublishDisabled} primary compact onClick={handlePublish} network={Network.MATIC}>
-        {isTP ? TPCollectionButtonText : DCLCollectionButtonText}
+        {isTP ? getTPButtonActionLabel(buttonAction) : DCLCollectionButtonText}
       </NetworkButton>
     )
   }

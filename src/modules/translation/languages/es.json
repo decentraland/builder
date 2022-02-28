@@ -1136,7 +1136,9 @@
   },
   "publish_third_party_collection_modal": {
     "title": "Publicar Items externos",
-    "description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} de {availableSlots} disponibles para publicar \"{collectionName}\""
+    "publish_description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} de {availableSlots} disponibles para publicar \"{collectionName}\"",
+    "push_changes_description": "Está por subir cambios a {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
+    "publish_and_push_changes_description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} slots de {availableSlots} para publicar \"{collectionName}\" y subir cambios a {itemsWithChanges, plural, one {# item} other {# items}}."
   },
   "mint_items_modal": {
     "title": "Crear Items",

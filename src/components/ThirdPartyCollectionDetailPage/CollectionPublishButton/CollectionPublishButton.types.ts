@@ -3,16 +3,21 @@ import { OpenModalAction } from 'modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'
 
+export enum PublishButtonAction {
+  PUBLISH,
+  PUSH_CHANGES,
+  PUBLISH_AND_PUSH_CHANGES
+}
+
 export type Props = {
   collection: Collection
   items: Item[]
   itemsStatus: Record<string, SyncStatus>
   slots: number
-  onPublish: (collectionId: string, itemIds: string[], willPushChanges?: boolean) => void
-  onPushChanges: (collectionId: string, itemIds: string[]) => void
+  onClick: (collectionId: string, itemIds: string[], action: PublishButtonAction) => void
 }
 
 export type OwnProps = Pick<Props, 'items'>
 export type MapStateProps = Pick<Props, 'itemsStatus'>
-export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPushChanges'>
+export type MapDispatchProps = Pick<Props, 'onClick'>
 export type MapDispatch = Dispatch<OpenModalAction>

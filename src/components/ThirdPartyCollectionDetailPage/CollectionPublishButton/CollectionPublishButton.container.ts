@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { getStatusForItemIds } from 'modules/item/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionPublishButton.types'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps, PublishButtonAction } from './CollectionPublishButton.types'
 import CollectionPublishButton from './CollectionPublishButton'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
@@ -15,10 +15,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onPublish: (collectionId: string, itemIds: string[], shouldPushChanges = false) =>
-    dispatch(openModal('PublishThirdPartyCollectionModal', { collectionId, itemIds, shouldPushChanges })),
-  onPushChanges: (collectionId: string, itemIds: string[]) =>
-    dispatch(openModal('PublishThirdPartyCollectionModal', { collectionId, itemIds })) // TODO: Implement the push changes logic
+  onClick: (collectionId: string, itemIds: string[], action: PublishButtonAction) =>
+    dispatch(openModal('PublishThirdPartyCollectionModal', { collectionId, itemIds, action }))
 })
 
 export default connect(mapState, mapDispatch)(CollectionPublishButton)
