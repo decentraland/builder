@@ -21,7 +21,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
   handleEditURN = () => {
     const { item, onOpenModal } = this.props
-    if (!item.isPublished) onOpenModal('EditItemURNModal', { item })
+    if (!item.isPublished) {
+      onOpenModal('EditItemURNModal', { item })
+    }
   }
 
   handleNavigateToEditor = () => {
