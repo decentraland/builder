@@ -256,10 +256,10 @@
     "title": "Slots",
     "description_line_one": "Compra slots para publicar tus items!",
     "description_line_two": "Por favor selecciona cuántos quieres comprar.",
-    "not_enough_mana": "No tienes suficiente {symbol} para comprar esa cantidad de espacios.",
+    "not_enough_mana": "No tienes suficiente {symbol} para comprar esa cantidad de slots.",
     "get_mana": "Puedes conseguir más utilizando la {link} dapp.",
     "buy_slots": "Comprar espacio",
-    "how_many_slots_title": "Cuántos espacios?",
+    "how_many_slots_title": "Cuántos slots?",
     "slots_value": "El costo aproximado de cada espacio es {symbol}{slot_cost}"
   },
   "share_modal": {
@@ -905,7 +905,7 @@
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
     "publish_third_party_items": "Has publicado {count, plural, one {# item} other {# items}} para {collectionName}",
-    "buy_third_party_item_slots": "Has comprado {count} {count, plural, one {espacio} other {espacios}} para el registro externo \"{name}\"",
+    "buy_third_party_item_slots": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\"",
     "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}"
   },
   "transfer_page": {
@@ -1033,7 +1033,10 @@
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items una vez que estén publicados.",
     "publish_items": "Publicar {count, plural, =0 {} one {# item} other {# items}}",
-    "new_items": "Nuevos items"
+    "new_items": "Nuevos items",
+    "publish": "Publicar",
+    "push_changes": "Subir cambios",
+    "publish_and_push_changes": "Publicar y subir cambios"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
@@ -1142,7 +1145,9 @@
   },
   "publish_third_party_collection_modal": {
     "title": "Publicar Items externos",
-    "description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} de {availableSlots} disponibles para publicar \"{collectionName}\""
+    "publish_description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} de {availableSlots} slots disponibles para publicar \"{collectionName}\"",
+    "push_changes_description": "Está por subir cambios a {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
+    "publish_and_push_changes_description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} slots de {availableSlots} disponibles para publicar \"{collectionName}\" y subir cambios a {itemsWithChanges, plural, one {# item} other {# items}}."
   },
   "mint_items_modal": {
     "title": "Crear Items",
