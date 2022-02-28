@@ -6,6 +6,8 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { fetchItemCurationsRequest, FetchItemCurationsRequestAction } from 'modules/curations/itemCuration/actions'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { fetchThirdPartyAvailableSlotsRequest, FetchThirdPartyAvailableSlotsRequestAction } from 'modules/thirdParty/actions'
 
 export type Props = {
@@ -13,12 +15,16 @@ export type Props = {
   collection: Collection | null
   thirdParty: ThirdParty | null
   items: Item[]
+  itemCurations: ItemCuration[]
   isOnSaleLoading: boolean
   authorizations: Authorization[]
   isLoading: boolean
+  isLoadingItemCurations: boolean
   isLoadingAvailableSlots: boolean
+  itemCurationsError: string | null
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
+  onFetchItemCurations: typeof fetchItemCurationsRequest
   onFetchAvailableSlots: typeof fetchThirdPartyAvailableSlotsRequest
 }
 
@@ -31,7 +37,18 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'wallet' | 'collection' | 'items' | 'thirdParty' | 'isLoading' | 'isLoadingAvailableSlots' | 'authorizations'
+  | 'wallet'
+  | 'collection'
+  | 'items'
+  | 'itemCurations'
+  | 'thirdParty'
+  | 'isLoading'
+  | 'isLoadingItemCurations'
+  | 'isLoadingAvailableSlots'
+  | 'authorizations'
+  | 'itemCurationsError'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onFetchAvailableSlots'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | FetchThirdPartyAvailableSlotsRequestAction>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onFetchItemCurations' | 'onFetchAvailableSlots'>
+export type MapDispatch = Dispatch<
+  CallHistoryMethodAction | OpenModalAction | FetchItemCurationsRequestAction | FetchThirdPartyAvailableSlotsRequestAction
+>

@@ -88,8 +88,8 @@ export const getStatusByCollectionId = createSelector<
   Record<string, SyncStatus>
 >(
   state => getItems(state),
-  state => getStatusByItemId(state),
-  state => getCurationsByCollectionId(state),
+  (state: RootState) => getStatusByItemId(state),
+  getCurationsByCollectionId,
   (items, itemStatusByItemId, curationsByCollectionId) => {
     const statusByCollectionId: Record<string, SyncStatus> = {}
     for (const item of items) {

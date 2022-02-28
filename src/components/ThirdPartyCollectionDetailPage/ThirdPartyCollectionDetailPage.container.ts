@@ -8,6 +8,9 @@ import { getThirdPartyCollectionId } from 'modules/location/selectors'
 import { getCollection, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getCollectionItems, getLoading as getLoadingItem } from 'modules/item/selectors'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { Collection } from 'modules/collection/types'
+import { fetchItemCurationsRequest, FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
+import { getItemCurations, getLoading as getLoadingItemCurations, getError } from 'modules/curations/itemCuration/selectors'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
@@ -23,21 +26,25 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     wallet: getWallet(state)!,
     collection,
+    thirdParty:
+      collection && getCollectionType(collection) === CollectionType.THIRD_PARTY ? getCollectionThirdParty(state, collection) : null,
     authorizations: getAuthorizations(state),
     items: getCollectionItems(state, collectionId),
+    itemCurations: getItemCurations(state, collectionId),
     isLoading:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItem(state), FETCH_ITEMS_REQUEST),
+    isLoadingItemCurations: isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST),
     isLoadingAvailableSlots: isFetchingAvailableSlots(state),
-    thirdParty:
-      collection && getCollectionType(collection) === CollectionType.THIRD_PARTY ? getCollectionThirdParty(state, collection) : null
+    itemCurationsError: getError(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
+  onFetchItemCurations: (collectionId: Collection['id']) => dispatch(fetchItemCurationsRequest(collectionId)),
   onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId))
 })
 
