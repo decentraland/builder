@@ -2,10 +2,10 @@ import * as React from 'react'
 import { ModalNavigation, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { SyncStatus } from 'modules/item/types'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import { getTPButtonActionLabel } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton'
 import { Props } from './PublishThirdPartyCollectionModal.types'
-import { SyncStatus } from 'modules/item/types'
 
 export default class PublishThirdPartyCollectionModal extends React.PureComponent<Props> {
   handleSubmit = () => {
