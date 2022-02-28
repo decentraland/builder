@@ -1056,7 +1056,8 @@
     "minters": "Minters",
     "post_to_forum": "Post to forum",
     "posting": "Posting",
-    "not_posted": "The collection wasn't posted to the forum. You can retry here"
+    "not_posted": "The collection wasn't posted to the forum. You can retry here",
+    "change_published_urn": "You can't change the URN once the collection is published"
   },
   "collection_item": {
     "set_price": "set price",
@@ -1067,6 +1068,7 @@
     "edit_price": "Edit price",
     "see_details": "See details",
     "edit_urn": "Edit URN",
+    "cannot_edit_urn": "You can't edit the URN once the item is published",
     "reset_item": "Reset changes"
   },
   "collection": {
