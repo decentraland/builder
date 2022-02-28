@@ -84,7 +84,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
           <div>
             {getCollectionType(collection) === CollectionType.THIRD_PARTY
               ? t('collection_row.type_third_party')
-              : t('collection_row.type_decentraland')}
+              : t('collection_row.type_standard')}
           </div>
         </Table.Cell>
         <Table.Cell width={3}>

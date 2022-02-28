@@ -999,7 +999,7 @@
     "link": "Link",
     "type": "Type",
     "type_third_party": "Third Party",
-    "type_decentraland": "Standard",
+    "type_standard": "Standard",
     "review_request": "Review request",
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",
