@@ -47,9 +47,32 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     isAuthModalOpen: false
   }
 
+  componentDidMount() {
+    const { thirdParty, onFetchAvailableSlots, isLoadingAvailableSlots } = this.props
+    if (thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots) {
+      onFetchAvailableSlots(thirdParty.id)
+    }
+  }
+
   componentDidUpdate() {
-    const { thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots } = this.props
-    if (thirdParty && !thirdParty?.availableSlots && !isLoadingAvailableSlots) {
+    const {
+      thirdParty,
+      collection,
+      itemCurations,
+      itemCurationsError,
+      isLoadingAvailableSlots,
+      isLoadingItemCurations,
+      onFetchItemCurations,
+      onFetchAvailableSlots
+    } = this.props
+
+    const shouldFetchItemCurations = collection && thirdParty && !itemCurations && !isLoadingItemCurations && !itemCurationsError
+    if (shouldFetchItemCurations) {
+      onFetchItemCurations(collection.id)
+    }
+
+    const shouldFetchAvailbleSlots = thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots
+    if (shouldFetchAvailbleSlots) {
       onFetchAvailableSlots(thirdParty.id)
     }
   }

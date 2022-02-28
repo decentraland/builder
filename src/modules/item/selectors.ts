@@ -9,6 +9,8 @@ import { getEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { getItemCurationsByItemId } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
 import { getItemThirdParty } from 'modules/thirdParty/selectors'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
@@ -94,35 +96,58 @@ export const getEntityByItemId = createSelector<RootState, Entity[], Record<stri
     }, {} as Record<string, Entity>)
 )
 
+const getItemSyncedStatus = (item: Item, entity: Entity | null) => {
+  let status = SyncStatus.UNSYNCED
+  if (!entity) {
+    status = SyncStatus.LOADING
+  } else if (areSynced(item, entity)) {
+    status = SyncStatus.SYNCED
+  }
+  return status
+}
+
+const getStatusForTP = (item: Item, itemCuration: ItemCuration | null, entity: Entity): SyncStatus => {
+  let status: SyncStatus
+  if (!itemCuration) {
+    status = SyncStatus.UNPUBLISHED
+  } else if (itemCuration.status === CurationStatus.PENDING) {
+    return SyncStatus.UNDER_REVIEW
+  } else {
+    status = getItemSyncedStatus(item, entity)
+  }
+  return status
+}
+
+const getStatusForDCL = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
+  let status: SyncStatus
+  if (!item.isPublished) {
+    status = SyncStatus.UNPUBLISHED
+  } else if (!item.isApproved || (collectionCuration && collectionCuration.status === CurationStatus.PENDING)) {
+    status = SyncStatus.UNDER_REVIEW
+  } else {
+    status = getItemSyncedStatus(item, entity)
+  }
+  return status
+}
+
 export const getStatusByItemId = createSelector<
   RootState,
   Item[],
   EntityState['data'],
   Record<string, CollectionCuration>,
+  Record<string, ItemCuration>,
   Record<string, SyncStatus>
 >(
   state => getItems(state),
   state => getEntityByItemId(state),
   state => getCurationsByCollectionId(state),
-  (items, entitiesByItemId, curationsByCollectionId) => {
+  getItemCurationsByItemId,
+  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
-      if (!item.isPublished) {
-        statusByItemId[item.id] = SyncStatus.UNPUBLISHED
-      } else if (!item.isApproved) {
-        statusByItemId[item.id] = SyncStatus.UNDER_REVIEW
-      } else {
-        const entity = entitiesByItemId[item.id]
-        if (!entity) {
-          statusByItemId[item.id] = SyncStatus.LOADING
-        } else if (areSynced(item, entity)) {
-          statusByItemId[item.id] = SyncStatus.SYNCED
-        } else if (item.collectionId && curationsByCollectionId[item.collectionId]?.status === CurationStatus.PENDING) {
-          statusByItemId[item.id] = SyncStatus.UNDER_REVIEW
-        } else {
-          statusByItemId[item.id] = SyncStatus.UNSYNCED
-        }
-      }
+      statusByItemId[item.id] = isThirdParty(item.urn)
+        ? getStatusForTP(item, itemCurationByItemId[item.id], entitiesByItemId[item.id])
+        : getStatusForDCL(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
     }
     return statusByItemId
   }

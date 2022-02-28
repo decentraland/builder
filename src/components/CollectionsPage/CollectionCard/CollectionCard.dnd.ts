@@ -1,5 +1,7 @@
-import { ItemCardDragObject } from '../ItemCard/ItemCard.dnd'
 import { ConnectDropTarget, DropTargetSpec } from 'react-dnd'
+import { CollectionType } from 'modules/collection/types'
+import { getCollectionType } from 'modules/collection/utils'
+import { ItemCardDragObject } from '../ItemCard/ItemCard.dnd'
 import { Props } from './CollectionCard.types'
 
 export type CollectedProps = {
@@ -14,7 +16,8 @@ export const collectionTarget: DropTargetSpec<Props> = {
     props.onSetCollection(item, props.collection.id)
   },
   canDrop(props) {
-    return !props.collection.isPublished
+    const isThirdParty = getCollectionType(props.collection) === CollectionType.THIRD_PARTY
+    return !props.collection.isPublished && !isThirdParty
   }
 }
 

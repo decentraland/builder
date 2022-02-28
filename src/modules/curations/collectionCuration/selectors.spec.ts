@@ -1,4 +1,4 @@
-import { getCurationsByCollectionId, getState, getLoading, getError, getCuration, getCurations, getHasPendingCuration } from './selectors'
+import { getCurationsByCollectionId, getState, getLoading, getError, getCuration, getCurations, getHasPendingCollectionCuration } from './selectors'
 import { INITIAL_STATE } from './reducer'
 import { FETCH_COLLECTION_CURATION_REQUEST } from './actions'
 import { CollectionCuration } from './types'
@@ -106,7 +106,7 @@ describe('when calling getCurations', () => {
   })
 })
 
-describe('when calling getHasPendingCuration', () => {
+describe('when calling getHasPendingCollectionCuration', () => {
   it('should return a collection of curations', () => {
     const state = {
       collectionCuration: {
@@ -119,9 +119,9 @@ describe('when calling getHasPendingCuration', () => {
       }
     } as any
 
-    expect(getHasPendingCuration(state, 'collectionId1')).toBeTruthy()
-    expect(getHasPendingCuration(state, 'collectionId2')).toBeFalsy()
-    expect(getHasPendingCuration(state, 'collectionId3')).toBeFalsy()
-    expect(getHasPendingCuration(state, 'collectionId4')).toBeFalsy()
+    expect(getHasPendingCollectionCuration(state, 'collectionId1')).toBeTruthy()
+    expect(getHasPendingCollectionCuration(state, 'collectionId2')).toBeFalsy()
+    expect(getHasPendingCollectionCuration(state, 'collectionId3')).toBeFalsy()
+    expect(getHasPendingCollectionCuration(state, 'collectionId4')).toBeFalsy()
   })
 })
