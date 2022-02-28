@@ -14,5 +14,5 @@ export const getCurations = createSelector<RootState, CollectionCurationState['d
   data => Object.values(data)
 )
 
-export const getHasPendingCuration = (state: RootState, collectionId: string) =>
+export const getHasPendingCollectionCuration = (state: RootState, collectionId: string) =>
   getCurationsByCollectionId(state)[collectionId]?.status === 'pending'

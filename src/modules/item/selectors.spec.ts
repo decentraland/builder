@@ -150,6 +150,49 @@ describe('Item selectors', () => {
             }
           }
         },
+        itemCuration: {
+          data: {
+            '0': [
+              {
+                id: '0',
+                itemId: '0',
+                status: 'approved'
+              },
+              {
+                id: '1',
+                itemId: '1',
+                status: 'rejected'
+              },
+              {
+                id: '3',
+                itemId: '3',
+                status: 'pending'
+              }
+            ],
+            '4': [
+              {
+                id: '4',
+                itemId: '5',
+                status: 'pending'
+              },
+              {
+                id: '5',
+                itemId: '6',
+                status: 'approved'
+              },
+              {
+                id: '6',
+                itemId: '7',
+                status: 'approved'
+              },
+              {
+                id: '7',
+                itemId: '8',
+                status: 'approved'
+              }
+            ]
+          }
+        },
         item: {
           data: {
             '0': {
@@ -215,6 +258,106 @@ describe('Item selectors', () => {
                 representations: [],
                 tags: []
               }
+            },
+            '4': {
+              id: '4',
+              collectionId: '4',
+              tokenId: 'yetAnotherDifferentTokenId',
+              isPublished: false,
+              isApproved: false,
+              contents: {
+                'file.ext': 'QmC_new'
+              },
+              name: 'pepito',
+              description: 'pepito hat very nice',
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
+            },
+            '5': {
+              id: '5',
+              collectionId: '4',
+              tokenId: 'yetAnotherDifferentTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'file.ext': 'QmC_new'
+              },
+              name: 'pepito',
+              description: 'pepito hat very nice',
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
+            },
+            '6': {
+              id: '6',
+              collectionId: '4',
+              tokenId: 'TPTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'file.ext': 'QmC_new'
+              },
+              name: 'pepito',
+              description: 'pepito hat very nice',
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
+            },
+            '7': {
+              id: '7',
+              collectionId: '4',
+              tokenId: 'anotherDifferentTPTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'file.ext': 'QmC_new'
+              },
+              name: 'pepito',
+              description: 'pepito hat very nice',
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
+            },
+            '8': {
+              id: '8',
+              collectionId: '4',
+              tokenId: 'yetAnotherDifferentTPTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'file.ext': 'QmC_new'
+              },
+              name: 'pepito',
+              description: 'pepito hat very nice',
+              urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
             }
           }
         },
@@ -235,6 +378,10 @@ describe('Item selectors', () => {
             '3': {
               id: '3',
               contractAddress: 'yetAnotherDifferentAddress'
+            },
+            '4': {
+              id: '4',
+              contractAddress: 'TPAddress'
             }
           }
         },
@@ -299,6 +446,46 @@ describe('Item selectors', () => {
                   tags: []
                 }
               }
+            },
+            Qm4: {
+              content: [
+                {
+                  hash: 'QmC',
+                  file: 'file.ext'
+                }
+              ],
+              metadata: {
+                id: 'urn:decentraland:matic:collections-v2:TPAddress:anotherDifferentTPTokenId',
+                name: 'pepito',
+                description: 'pepito hat very nice',
+                data: {
+                  category: WearableCategory.HAT,
+                  replaces: [],
+                  hides: [],
+                  representations: [],
+                  tags: []
+                }
+              }
+            },
+            Qm5: {
+              content: [
+                {
+                  hash: 'QmC_new',
+                  file: 'file.ext'
+                }
+              ],
+              metadata: {
+                id: 'urn:decentraland:matic:collections-v2:TPAddress:yetAnotherDifferentTPTokenId',
+                name: 'pepito',
+                description: 'pepito hat very nice',
+                data: {
+                  category: WearableCategory.HAT,
+                  replaces: [],
+                  hides: [],
+                  representations: [],
+                  tags: []
+                }
+              }
             }
           }
         }
@@ -307,7 +494,12 @@ describe('Item selectors', () => {
         '0': SyncStatus.UNDER_REVIEW,
         '1': SyncStatus.SYNCED,
         '2': SyncStatus.UNSYNCED,
-        '3': SyncStatus.UNDER_REVIEW
+        '3': SyncStatus.UNDER_REVIEW,
+        '4': SyncStatus.UNPUBLISHED, // TP with no item curation
+        '5': SyncStatus.UNDER_REVIEW, // TP with item curation in PENDING
+        '6': SyncStatus.LOADING, // TP with item curation in APPROVED and no Entity,
+        '7': SyncStatus.UNSYNCED, // TP with item curation in APPROVED with entity but NOT synced,
+        '8': SyncStatus.SYNCED // TP with item curation in APPROVED with entity and synced,
       })
     })
   })
