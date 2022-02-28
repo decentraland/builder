@@ -1008,7 +1008,10 @@
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "发布项目后，您将无法添加或删除项目。",
     "publish_items": "发布 {count, plural, =0 {} other {# 项}}",
-    "new_items": "新的可穿戴物品"
+    "new_items": "新的可穿戴物品",
+    "publish": "发布",
+    "push_changes": "推送更改",
+    "publish_and_push_changes": "发布和推送更改"
   },
   "collection_detail_page": {
     "new_item": "新物品",
@@ -1137,7 +1140,9 @@
   },
   "publish_third_party_collection_modal": {
     "title": "发布第三方项目",
-    "description": "即将使用来自 {availableSlots} 的 {slotsToUse, plural, one {# 投币口} other {# 插槽}} 个插槽来发布 \"{collectionName}\""
+    "publish_description": "即将使用 {availableSlots} 个可用插槽中的 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来发布 \"{collectionName}\"。",
+    "push_changes_description": "即将对 \"{collectionName}\" 推送对 {itemsWithChanges, 复数，一个 {# item} 其他 {# items}} 的更改。",
+    "publish_and_push_changes_description": "即将使用 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来自 {availableSlots} 可用插槽来发布 \"{collectionName}\"，并且更改将被推送到 {itemsWithChanges，复数，一个 {# item}其他项目}}。"
   },
   "mint_items_modal": {
     "title": "薄荷项目",

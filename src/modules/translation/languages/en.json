@@ -1017,7 +1017,10 @@
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them.",
     "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}",
-    "new_items": "New Items"
+    "new_items": "New Items",
+    "publish": "Publish",
+    "push_changes": "Push changes",
+    "publish_and_push_changes": "Publish & push changes"
   },
   "collection_detail_page": {
     "new_item": "New Item",
@@ -1116,7 +1119,9 @@
   },
   "publish_third_party_collection_modal": {
     "title": "Publish Third Party Items",
-    "description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} slots from {availableSlots} to publish \"{collectionName}\""
+    "publish_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\".",
+    "push_changes_description": "About to push changes to {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
+    "publish_and_push_changes_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\" and changes will be pushed to {itemsWithChanges, plural, one {# item} other {# items}}."
   },
   "mint_items_modal": {
     "title": "Mint Items",

@@ -1,13 +1,22 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionPublishButton.types'
+import { getStatusForItemIds } from 'modules/item/selectors'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps, PublishButtonAction } from './CollectionPublishButton.types'
 import CollectionPublishButton from './CollectionPublishButton'
 
-const mapState = (_state: RootState): MapStateProps => ({})
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
+  return {
+    itemsStatus: getStatusForItemIds(
+      state,
+      ownProps.items.map(i => i.id)
+    )
+  }
+}
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onPublish: (collectionId: string, itemIds: string[]) => dispatch(openModal('PublishThirdPartyCollectionModal', { collectionId, itemIds }))
+  onClick: (collectionId: string, itemIds: string[], action: PublishButtonAction) =>
+    dispatch(openModal('PublishThirdPartyCollectionModal', { collectionId, itemIds, action }))
 })
 
 export default connect(mapState, mapDispatch)(CollectionPublishButton)
