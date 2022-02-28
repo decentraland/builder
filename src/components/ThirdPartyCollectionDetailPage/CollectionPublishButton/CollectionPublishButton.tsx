@@ -3,19 +3,18 @@ import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SyncStatus } from 'modules/item/types'
+import { isStatusAllowedToPushChanges } from 'modules/item/utils'
 import { Props, PublishButtonAction } from './CollectionPublishButton.types'
 
 export const getTPButtonActionLabel = (buttonAction: PublishButtonAction) => {
-  let label
   switch (buttonAction) {
     case PublishButtonAction.PUSH_CHANGES:
-      label = t('third_party_collection_detail_page.push_changes')
+      return t('third_party_collection_detail_page.push_changes')
     case PublishButtonAction.PUBLISH_AND_PUSH_CHANGES:
-      label = t('third_party_collection_detail_page.publish_and_push_changes')
+      return t('third_party_collection_detail_page.publish_and_push_changes')
     default:
-      label = t('third_party_collection_detail_page.publish')
+      return t('third_party_collection_detail_page.publish')
   }
-  return label
 }
 
 const CollectionPublishButton = (props: Props) => {
@@ -27,7 +26,7 @@ const CollectionPublishButton = (props: Props) => {
       (acc, status) => {
         if (status === SyncStatus.UNPUBLISHED) {
           acc.willPublish = true
-        } else if (status === SyncStatus.UNDER_REVIEW) {
+        } else if (isStatusAllowedToPushChanges(status)) {
           acc.willPushChanges = true
         }
         return acc

@@ -3,6 +3,7 @@ import { ModalNavigation, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SyncStatus } from 'modules/item/types'
+import { isStatusAllowedToPushChanges } from 'modules/item/utils'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import { getTPButtonActionLabel } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton'
 import { Props } from './PublishThirdPartyCollectionModal.types'
@@ -35,7 +36,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
     const { items, thirdParty, collection, itemsStatus } = this.props
 
     const itemsToPublish = Object.values(itemsStatus).filter(status => status === SyncStatus.UNPUBLISHED).length
-    const itemsToPushChanges = Object.values(itemsStatus).filter(status => status === SyncStatus.UNDER_REVIEW).length
+    const itemsToPushChanges = Object.values(itemsStatus).filter(isStatusAllowedToPushChanges).length
 
     const isPublishingAndPushingChanges = itemsToPushChanges > 0 && itemsToPublish > 0
     const isJustPushingChanges = itemsToPushChanges > 0 && !itemsToPublish
