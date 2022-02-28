@@ -88,9 +88,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
           </div>
         </Table.Cell>
         <Table.Cell width={3}>
-          <div>
-            <Profile textOnly address={collection.owner} />
-          </div>
+          <div>{getCollectionType(collection) === CollectionType.THIRD_PARTY ? '-' : <Profile textOnly address={collection.owner} />}</div>
         </Table.Cell>
         <Table.Cell width={3}>
           <div title={format(createdAtDate, 'd MMMM yyyy HH:mm')}>
