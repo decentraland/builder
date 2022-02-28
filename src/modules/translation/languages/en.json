@@ -1120,7 +1120,7 @@
     "title": "Publish Third Party Items",
     "publish_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} to publish \"{collectionName}\".",
     "push_changes_description": "About to push changes to {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
-    "publish_and_push_changes_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} slots from {availableSlots} to publish \"{collectionName}\" and changes will be pushed to {itemsWithChanges, plural, one {# item} other {# items}}."
+    "publish_and_push_changes_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} to publish \"{collectionName}\" and changes will be pushed to {itemsWithChanges, plural, one {# item} other {# items}}."
   },
   "mint_items_modal": {
     "title": "Mint Items",
