@@ -408,6 +408,10 @@ export function areSynced(item: Item, entity: Entity) {
   return true
 }
 
+export function isStatusAllowedToPushChanges(status: SyncStatus) {
+  return [SyncStatus.UNDER_REVIEW, SyncStatus.UNSYNCED, SyncStatus.SYNCED].includes(status)
+}
+
 export function buildZipContents(contents: Record<string, Blob | string>, areEqual: boolean) {
   const newContents: Record<string, Blob | string> = {}
   const paths = Object.keys(contents)
