@@ -153,6 +153,23 @@ export const getStatusByItemId = createSelector<
   }
 )
 
+export const getStatusForItemIds = createSelector<
+  RootState,
+  Item['id'][],
+  Item['id'][],
+  Record<string, SyncStatus>,
+  Record<string, SyncStatus>
+>(
+  (_state: RootState, itemIds: Item['id'][]) => itemIds,
+  getStatusByItemId,
+  (itemIds, statusByItemId) => {
+    return itemIds.reduce((acc, currItemId) => {
+      acc[currItemId] = statusByItemId[currItemId]
+      return acc
+    }, {} as Record<string, SyncStatus>)
+  }
+)
+
 export const isDownloading = (state: RootState) => isLoadingType(getLoading(state), DOWNLOAD_ITEM_REQUEST)
 
 export const hasViewAndEditRights = (state: RootState, address: string, collection: Collection | null, item: Item): boolean => {
