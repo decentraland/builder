@@ -9,9 +9,10 @@ import Navbar from 'components/Navbar'
 import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 import Back from 'components/Back'
-import { Props, State } from './SceneViewPage.types'
-import './SceneViewPage.css'
 import { PreviewType } from 'modules/editor/types'
+import { Props, State } from './SceneViewPage.types'
+
+import './SceneViewPage.css'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -174,7 +175,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
                 {t('public_page.made_by')}
                 <span className="author-name"> {author.avatars.length > 0 ? author.avatars[0].name : t('user_menu.guest')}</span>
                 <div className="avatar">
-                  <img width="24" height="24" src={author.avatars.length > 0 ? author.avatars[0].avatar.snapshots.face : ''} />
+                  <img width="24" height="24" src={author.avatars.length > 0 ? author.avatars[0].avatar.snapshots.face256 : ''} />
                 </div>
               </div>
             )}
