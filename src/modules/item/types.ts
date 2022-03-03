@@ -146,6 +146,7 @@ export type Item = BaseItem & {
   inCatalyst: boolean
   contents: Record<string, string>
   contentHash: string | null
+  serverContentHash: string | null
   data: WearableData
 }
 
@@ -158,6 +159,8 @@ export type Rarity = {
 
 export type ThirdPartyContractItem = [string, string]
 export type InitializeItem = [string, string, string, string]
+
+export type GenerateImageOptions = { width?: number; height?: number; thumbnail?: Blob }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
 export const IMAGE_PATH = 'image.png'

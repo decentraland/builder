@@ -1,10 +1,12 @@
 import { Address } from 'web3x/address'
 import { constants } from 'ethers'
+import { LocalItem } from '@dcl/builder-client'
 import { utils } from 'decentraland-commons'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
+import { computeHashOfContent } from 'modules/deployment/contentUtils'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
@@ -29,7 +31,8 @@ import {
   SyncStatus,
   ThirdPartyContractItem,
   ItemMetadataType,
-  WearableRepresentation
+  WearableRepresentation,
+  GenerateImageOptions
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -163,12 +166,31 @@ export function toItemObject(items: Item[]) {
   }, {} as Record<string, Item>)
 }
 
-export async function generateImage(item: Item, width = 256, height = 256) {
-  // fetch thumbnail
-  const response = await fetch(getContentsStorageUrl(item.contents[item.thumbnail]), { headers: NO_CACHE_HEADERS })
-  if (!response.ok) throw new Error(`Error generating the image: ${response.statusText}`)
+export async function generateCatalystImage(item: Item | LocalItem, options?: GenerateImageOptions) {
+  const catalystImage = await generateImage(item, options)
+  const catalystImageHash = await computeHashOfContent(catalystImage)
+  return {
+    content: catalystImage,
+    hash: catalystImageHash
+  }
+}
 
-  const thumbnail = await response.blob()
+export async function generateImage(item: Item | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
+  // Set default width and height
+  const width: number = options?.width ?? 256
+  const height: number = options?.height ?? 256
+
+  let thumbnail: Blob
+
+  if (options?.thumbnail) {
+    thumbnail = options.thumbnail
+  } else {
+    // fetch thumbnail
+    const response = await fetch(getContentsStorageUrl(item.contents[item.thumbnail]), { headers: NO_CACHE_HEADERS })
+    if (!response.ok) throw new Error(`Error generating the image: ${response.statusText}`)
+
+    thumbnail = await response.blob()
+  }
 
   // create canvas
   const canvas = document.createElement('canvas')
@@ -376,6 +398,10 @@ export function areEqualRepresentations(a: WearableRepresentation[], b: Wearable
     }
   }
   return true
+}
+
+export function areSyncedByHash(item: Item): boolean {
+  return Boolean(item.serverContentHash) && item.contentHash === item.serverContentHash
 }
 
 export function areSynced(item: Item, entity: Entity) {

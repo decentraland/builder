@@ -32,7 +32,8 @@ import {
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
   MODEL_EXTENSIONS,
-  IMAGE_EXTENSIONS
+  IMAGE_EXTENSIONS,
+  IMAGE_PATH
 } from 'modules/item/types'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -52,7 +53,8 @@ import {
   MAX_FILE_SIZE,
   resizeImage,
   isImageCategory,
-  getMaxSupplyForRarity
+  getMaxSupplyForRarity,
+  generateCatalystImage
 } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
@@ -184,7 +186,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         rarity
       } = this.state as StateData
 
-      let item: Item | undefined
+      let item: Item
 
       const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
       const blob = dataURLToBlob(thumbnail)
@@ -286,9 +288,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           metrics,
           contents: await computeHashes(sortedContents.all),
           createdAt: +new Date(),
-          updatedAt: +new Date()
+          updatedAt: +new Date(),
+          serverContentHash: null
         }
       }
+
+      // Add the catalyst image to the item
+      const catalystImage = await generateCatalystImage(item, { thumbnail: sortedContents.all[THUMBNAIL_PATH] })
+      sortedContents.all[IMAGE_PATH] = catalystImage.content
+      item.contents[IMAGE_PATH] = catalystImage.hash
 
       onSave(item, sortedContents.all)
     }

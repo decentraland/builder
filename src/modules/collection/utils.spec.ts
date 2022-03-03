@@ -3,8 +3,17 @@ import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { Collection, CollectionType } from 'modules/collection/types'
+import { buildItemContentHash } from 'modules/item/export'
 import { Mint } from './types'
-import { getTotalAmountOfMintedItems, isLocked, getCollectionType } from './utils'
+import { getTotalAmountOfMintedItems, isLocked, getCollectionType, getLatestItemHash } from './utils'
+
+jest.mock('modules/item/export')
+
+const buildItemContentHashMock = buildItemContentHash as jest.Mock
+
+beforeEach(() => {
+  jest.clearAllMocks()
+})
 
 describe('when counting the amount of minted items', () => {
   let mints: Mint[]
@@ -121,6 +130,39 @@ describe('when getting the collection type', () => {
 
     it('should return true', () => {
       expect(getCollectionType(collection)).toBe(CollectionType.THIRD_PARTY)
+    })
+  })
+})
+
+describe('when getting the latest item hash', () => {
+  let item: Item
+  let resultHash: string
+  let collection: Collection
+
+  beforeEach(() => {
+    collection = { id: 'aCollection' } as Collection
+  })
+
+  describe('and the item has a hash coming from the server', () => {
+    beforeEach(() => {
+      resultHash = 'aHash'
+      item = { id: 'anId', serverContentHash: resultHash } as Item
+    })
+
+    it('should return the hash coming from the server', () => {
+      return expect(getLatestItemHash(collection, item)).resolves.toEqual(resultHash)
+    })
+  })
+
+  describe("and the item doesn't have a hash coming from the server", () => {
+    beforeEach(() => {
+      resultHash = 'aHash'
+      buildItemContentHashMock.mockResolvedValueOnce(resultHash)
+      item = { id: 'anId', serverContentHash: null } as Item
+    })
+
+    it("should return the computed hash of the item's entity", () => {
+      return expect(getLatestItemHash(collection, item)).resolves.toEqual(resultHash)
     })
   })
 })

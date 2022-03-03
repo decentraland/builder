@@ -11,13 +11,17 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
-import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
+import { buildItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
 import { Item, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
 import { fetchItemsRequest, fetchItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
-import { approveCollectionCurationFailure, approveCollectionCurationRequest, approveCollectionCurationSuccess } from 'modules/curations/collectionCuration/actions'
+import {
+  approveCollectionCurationFailure,
+  approveCollectionCurationRequest,
+  approveCollectionCurationSuccess
+} from 'modules/curations/collectionCuration/actions'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
@@ -37,6 +41,7 @@ import {
 } from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
+import { getLatestItemHash } from './utils'
 
 const mockBuilder = ({ saveCollection: jest.fn(), lockCollection: jest.fn(), saveTOS: jest.fn() } as unknown) as BuilderAPI
 const mockCatalyst = ({} as unknown) as CatalystClient
@@ -124,8 +129,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -195,8 +200,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -251,8 +256,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), items],
-          [call(buildItemContentHash, collection, items[0]), items[0].contentHash],
-          [call(buildItemContentHash, collection, items[1]), items[1].contentHash],
+          [call(getLatestItemHash, collection, items[0]), items[0].contentHash],
+          [call(getLatestItemHash, collection, items[1]), items[1].contentHash],
           [select(getItems), items],
           [
             select(getEntityByItemId),
@@ -297,8 +302,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash]
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -347,8 +352,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -412,8 +417,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -486,8 +491,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],

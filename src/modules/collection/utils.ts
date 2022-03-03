@@ -6,6 +6,7 @@ import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
+import { buildItemContentHash } from 'modules/item/export'
 import { Collection, Access, Mint, CollectionType } from './types'
 
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
@@ -109,4 +110,13 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
   const indexA = sorted.indexOf(statusA)
   const indexB = sorted.indexOf(statusB)
   return indexA < indexB ? statusA : statusB
+}
+
+export function getLatestItemHash(collection: Collection, item: Item): Promise<string> {
+  // Only old un-updated items don't have a serverContentHash
+  if (item.serverContentHash) {
+    return Promise.resolve(item.serverContentHash)
+  }
+
+  return buildItemContentHash(collection, item)
 }

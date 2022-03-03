@@ -215,6 +215,48 @@ describe('Item selectors', () => {
                 representations: [],
                 tags: []
               }
+            },
+            '4': {
+              id: '4',
+              collectionId: '3',
+              tokenId: 'otherTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'anotherFile.ext': 'anotherFileHash'
+              },
+              name: 'Item with same content hash and local content hash',
+              description: 'pepito hat very nice',
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              },
+              contentHash: 'aContentHash',
+              serverContentHash: 'aContentHash'
+            },
+            '5': {
+              id: '5',
+              collectionId: '3',
+              tokenId: 'theTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'someFile.ext': 'aFileHash'
+              },
+              name: 'Item with different content hash and local content hash',
+              description: 'pepito hat very nice',
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              },
+              contentHash: 'aContentHash',
+              serverContentHash: 'someOtherContentHash'
             }
           }
         },
@@ -307,7 +349,9 @@ describe('Item selectors', () => {
         '0': SyncStatus.UNDER_REVIEW,
         '1': SyncStatus.SYNCED,
         '2': SyncStatus.UNSYNCED,
-        '3': SyncStatus.UNDER_REVIEW
+        '3': SyncStatus.UNDER_REVIEW,
+        '4': SyncStatus.SYNCED,
+        '5': SyncStatus.UNSYNCED
       })
     })
   })

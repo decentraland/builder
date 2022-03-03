@@ -7,11 +7,14 @@ export async function computeHashes(contents: Record<string, Blob>): Promise<Rec
   const contentsAsHashes: Record<string, string> = {}
   for (const path in contents) {
     const blob = contents[path]
-    const file = await makeContentFile(path, blob)
-    const cid = await calculateBufferHash(file.content)
-    contentsAsHashes[path] = cid
+    contentsAsHashes[path] = await computeHashOfContent(blob)
   }
   return contentsAsHashes
+}
+
+export async function computeHashOfContent(content: Blob): Promise<string> {
+  const file = await makeContentFile('', content)
+  return calculateBufferHash(file.content)
 }
 
 export async function calculateBufferHash(buffer: Buffer): Promise<string> {
@@ -19,13 +22,13 @@ export async function calculateBufferHash(buffer: Buffer): Promise<string> {
 }
 
 export async function makeContentFiles(files: Record<string, string | Blob>): Promise<Map<string, Buffer>> {
-  const makeRequests = []
+  const makeRequests: Promise<{ name: string; content: Buffer }>[] = []
   for (const fileName of Object.keys(files)) {
     if (FILE_NAME_BLACKLIST.includes(fileName)) continue
     makeRequests.push(makeContentFile(fileName, files[fileName]))
   }
 
-  const contentFiles = await Promise.all(makeRequests)
+  const contentFiles: { name: string; content: Buffer }[] = await Promise.all(makeRequests)
   return new Map(contentFiles.map(({ name, content }) => [name, content]))
 }
 

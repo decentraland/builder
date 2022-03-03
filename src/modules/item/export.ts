@@ -1,5 +1,5 @@
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
-import { CatalystClient } from 'dcl-catalyst-client'
+import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
@@ -8,7 +8,7 @@ import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
-import { generateImage } from './utils'
+import { generateCatalystImage, generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
   const client = new CatalystClient(PEER_URL, 'Builder')
@@ -62,7 +62,7 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
  * Calculates the final size (with the already stored content and the new one) of the contents of an item.
  * All the files in newContents must also be in the item's contents in both name and hash.
  *
- * @param item - An item that contains the old and the new hahsed content.
+ * @param item - An item that contains the old and the new hashed content.
  * @param newContents - The new content that is going to be added to the item.
  */
 export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>): Promise<number> {
@@ -75,14 +75,19 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   }
 
   const blobs = await getFiles(filesToDownload)
+  const allBlobs = { ...newContents, ...blobs }
+  const allHashes = { ...newHashes, ...filesToDownload }
 
   let imageSize = 0
-  try {
-    const image = await generateImage(item)
-    imageSize = image.size
-  } catch (error) {}
+  // Only generate the catalyst image if there isn't one already
+  if (!allBlobs[IMAGE_PATH]) {
+    try {
+      const image = await generateImage(item, { thumbnail: allBlobs[THUMBNAIL_PATH] })
+      imageSize = image.size
+    } catch (error) {}
+  }
 
-  const uniqueFiles = getUniqueFiles({ ...newHashes, ...filesToDownload }, { ...newContents, ...blobs })
+  const uniqueFiles = getUniqueFiles(allHashes, allBlobs)
   return imageSize + calculateFilesSize(uniqueFiles)
 }
 
@@ -95,12 +100,7 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-export function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem {
-  // We strip the thumbnail from the representations contents as they're not being used by the Catalyst and just occupy extra space
-  const representations = item.data.representations.map(representation => ({
-    ...representation,
-    contents: representation.contents.filter(fileName => fileName !== THUMBNAIL_PATH)
-  }))
+function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published')
   }
@@ -111,29 +111,33 @@ export function buildItemEntityMetadata(collection: Collection, item: Item): Cat
     collectionAddress: collection.contractAddress!,
     rarity: item.rarity,
     i18n: [{ code: 'en', text: item.name }],
-    data: {
-      replaces: item.data.replaces,
-      hides: item.data.hides,
-      tags: item.data.tags,
-      category: item.data.category,
-      representations
-    },
+    data: item.data,
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
     metrics: item.metrics
   }
 }
 
-export async function buildItemEntityBlobs(item: Item) {
-  const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
-  const blobs: Record<string, Blob> = { ...files, [IMAGE_PATH]: image }
-  return blobs
+async function buildItemEntityContent(item: Item): Promise<Record<string, string>> {
+  const contents = { ...item.contents }
+  if (!item.contents[IMAGE_PATH]) {
+    const catalystItem = await generateCatalystImage(item)
+    contents[IMAGE_PATH] = catalystItem.hash
+  }
+
+  return contents
 }
 
-export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item) {
+async function buildItemEntityBlobs(item: Item): Promise<Record<string, Blob>> {
+  const [files, image] = await Promise.all([getFiles(item.contents), !item.contents[IMAGE_PATH] ? generateImage(item) : null])
+  files[IMAGE_PATH] = image !== null ? image : files[IMAGE_PATH]
+  return files
+}
+
+export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item)
   const files = await makeContentFiles(blobs)
-  const metadata = await buildItemEntityMetadata(collection, item)
+  const metadata = buildItemEntityMetadata(collection, item)
   return client.buildEntity({
     type: EntityType.WEARABLE,
     pointers: [metadata.id],
@@ -143,20 +147,14 @@ export async function buildItemEntity(client: CatalystClient, collection: Collec
   })
 }
 
-export async function buildItemEntityContent(item: Item) {
-  const blobs = await buildItemEntityBlobs(item)
-  return computeHashes(blobs)
-}
-
-export async function buildItemContentHash(collection: Collection, item: Item) {
-  const blobs = await buildItemEntityBlobs(item)
-  const hashes = await computeHashes(blobs)
+export async function buildItemContentHash(collection: Collection, item: Item): Promise<string> {
+  const hashes = await buildItemEntityContent(item)
   const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
-  const metadata = await buildItemEntityMetadata(collection, item)
+  const metadata = buildItemEntityMetadata(collection, item)
   return calculateContentHash(content, metadata)
 }
 
-export async function calculateContentHash(content: EntityContentItemReference[], metadata: EntityMetadata) {
+async function calculateContentHash(content: EntityContentItemReference[], metadata: EntityMetadata) {
   const data = JSON.stringify({
     content: content
       .sort((a: EntityContentItemReference, b: EntityContentItemReference) => {

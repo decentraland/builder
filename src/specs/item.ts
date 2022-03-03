@@ -38,7 +38,8 @@ export const mockedItem: Item = {
     replaces: [WearableCategory.HELMET],
     hides: [WearableCategory.HAIR],
     tags: ['aHat']
-  }
+  },
+  serverContentHash: null
 }
 
 export const mockedLocalItem: LocalItem = {
@@ -120,7 +121,8 @@ export const mockedRemoteItem: RemoteItem = {
   is_approved: false,
   in_catalyst: false,
   created_at: 0,
-  updated_at: 0
+  updated_at: 0,
+  local_content_hash: 'someHash'
 }
 
 export const mockedItemContents = { 'anItemContent.glb': new Blob(), 'thumbnail.png': new Blob() }

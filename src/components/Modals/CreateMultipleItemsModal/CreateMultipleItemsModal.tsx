@@ -7,7 +7,8 @@ import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentr
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
-import { BuiltFile } from 'modules/item/types'
+import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
+import { generateCatalystImage } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
@@ -135,6 +136,11 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
           }
 
           const builtItem = await itemFactory.build()
+
+          // Generate catalyst image as part of the item
+          const catalystImage = await generateCatalystImage(builtItem.item, { thumbnail: builtItem.newContent[THUMBNAIL_PATH] })
+          builtItem.newContent[IMAGE_PATH] = catalystImage.content
+          builtItem.item.contents[IMAGE_PATH] = catalystImage.hash
 
           return { type: ImportedFileType.ACCEPTED, ...builtItem, fileName: file.name }
         } catch (error) {
