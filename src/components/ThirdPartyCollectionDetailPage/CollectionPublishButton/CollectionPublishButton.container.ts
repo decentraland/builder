@@ -1,15 +1,21 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getItemCurations, getLoading as getLoadingItemCurations } from 'modules/curations/itemCuration/selectors'
+import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
 import { getStatusForItemIds } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps, PublishButtonAction } from './CollectionPublishButton.types'
 import CollectionPublishButton from './CollectionPublishButton'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
+  const { collection, items } = ownProps
   return {
+    itemCurations: getItemCurations(state, collection.id),
+    isLoadingItemCurations: isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST),
     itemsStatus: getStatusForItemIds(
       state,
-      ownProps.items.map(i => i.id)
+      items.map(i => i.id)
     )
   }
 }
