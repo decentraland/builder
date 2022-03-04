@@ -981,11 +981,17 @@
     "empty_collections": "尚无要审查的收藏集。"
   },
   "collection_row": {
+    "collection": "收藏",
+    "published": "发表",
+    "date": "日期",
+    "discussion": "讨论",
     "items": "{count} 项",
     "owner": "所有者",
-    "visit": "访问",
-    "review_request_date": "审核请求日期",
-    "publication_date": "出版日期",
+    "link": "关联",
+    "type": "类型",
+    "type_third_party": "第三者",
+    "type_standard": "标准",
+    "review_request": "审查请求",
     "forum_post": "论坛帖子",
     "no_forum_post": "尚未发布到论坛",
     "approved": "已批准",
@@ -1008,7 +1014,10 @@
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "发布项目后，您将无法添加或删除项目。",
     "publish_items": "发布 {count, plural, =0 {} other {# 项}}",
-    "new_items": "新的可穿戴物品"
+    "new_items": "新的可穿戴物品",
+    "publish": "发布",
+    "push_changes": "推送更改",
+    "publish_and_push_changes": "发布和推送更改"
   },
   "collection_detail_page": {
     "new_item": "新物品",
@@ -1042,7 +1051,8 @@
     "minters": "铸币厂",
     "post_to_forum": "发布到论坛",
     "posting": "过帐",
-    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试"
+    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试",
+    "change_published_urn": "集合发布后，您将无法更改 URN"
   },
   "collection_item": {
     "set_price": "设定价格",
@@ -1053,6 +1063,7 @@
     "edit_price": "修改价格",
     "see_details": "查看详细信息",
     "edit_urn": "编辑 URN",
+    "cannot_edit_urn": "项目发布后您无法编辑 URN",
     "reset_item": "撤消"
   },
   "collection": {
@@ -1092,7 +1103,8 @@
     "title_tos": "内容政策",
     "first_paragraph": "您将要发布您的收藏集，请注意以下几点：",
     "second_paragraph": "发布收藏集后，您将无法添加或删除项目",
-    "third_paragraph": "您收藏中的物品将出现在市场中，但只有获得批准，才能出售。",
+    "third_paragraph": "您将无法更改集合的名称。请确保拼写正确且不侵犯知识产权。",
+    "fourth_paragraph": "您收藏中的物品将出现在市场中，但只有获得批准，才能出售。",
     "items_breakdown_title": "“您即将发布{count} {count, 复数，一个{item} 其他{items}}。您需要Polygon MANA 来支付交易费用，所有这些费用都交给Decentraland DAO。DAO 使用这个MANA 来支付 用于对您提交的内容进行技术审查，并通过赠款、活动和奖品支持社区的发展”",
     "tos_title": "我在此声明并保证：",
     "tos_first_condition": "1：提交穿戴式是完全符合{TERMS_OF_USE}和{} content_policy，我承认并接受。",
@@ -1136,7 +1148,9 @@
   },
   "publish_third_party_collection_modal": {
     "title": "发布第三方项目",
-    "description": "即将使用来自 {availableSlots} 的 {slotsToUse, plural, one {# 投币口} other {# 插槽}} 个插槽来发布 \"{collectionName}\""
+    "publish_description": "即将使用 {availableSlots} 个可用插槽中的 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来发布 \"{collectionName}\"。",
+    "push_changes_description": "即将对 \"{collectionName}\" 推送对 {itemsWithChanges, 复数，一个 {# item} 其他 {# items}} 的更改。",
+    "publish_and_push_changes_description": "即将使用 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来自 {availableSlots} 可用插槽来发布 \"{collectionName}\"，并且更改将被推送到 {itemsWithChanges，复数，一个 {# item}其他项目}}。"
   },
   "mint_items_modal": {
     "title": "薄荷项目",

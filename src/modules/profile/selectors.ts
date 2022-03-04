@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { Avatar } from 'decentraland-ui'
+import { Avatar } from '@dcl/schemas'
 import { ProfileState } from 'decentraland-dapps/dist/modules/profile/reducer'
 import { getData } from 'decentraland-dapps/dist/modules/profile/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'

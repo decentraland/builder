@@ -22,6 +22,27 @@ describe('when getting status by item id', () => {
           }
         }
       },
+      itemCuration: {
+        data: {
+          '0': [
+            {
+              id: '0',
+              itemId: '0',
+              status: 'approved'
+            },
+            {
+              id: '1',
+              itemId: '1',
+              status: 'rejected'
+            },
+            {
+              id: '3',
+              itemId: '3',
+              status: 'pending'
+            }
+          ]
+        }
+      },
       item: {
         data: {
           '0': {

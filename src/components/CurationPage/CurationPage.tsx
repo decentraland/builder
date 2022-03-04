@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Column, Section, Container, Dropdown, Pagination, Empty, TextFilter } from 'decentraland-ui'
+import { Row, Column, Section, Container, Dropdown, Pagination, Empty, TextFilter, Table } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasReviews } from 'modules/collection/utils'
 import NotFound from 'components/NotFound'
@@ -144,17 +144,32 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         </div>
         <Container>
           <Section>
-            {collections.length > 0 ? (
-              paginatedCollections.map((collection, index) => (
-                <CollectionRow key={index} collection={collection} curation={curationsByCollectionId[collection.id] || null} />
-              ))
-            ) : (
-              <Empty height={200}>
-                <div>
-                  <T id="curation_page.empty_collections" />
-                </div>
-              </Empty>
-            )}
+            <Table basic="very">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>{t('collection_row.collection')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('collection_row.type')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('collection_row.owner')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('collection_row.date')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('collection_row.discussion')}</Table.HeaderCell>
+                  <Table.HeaderCell></Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+
+              <Table.Body>
+                {collections.length > 0 ? (
+                  paginatedCollections.map((collection, index) => (
+                    <CollectionRow key={index} collection={collection} curation={curationsByCollectionId[collection.id] || null} />
+                  ))
+                ) : (
+                  <Empty height={200}>
+                    <div>
+                      <T id="curation_page.empty_collections" />
+                    </div>
+                  </Empty>
+                )}
+              </Table.Body>
+            </Table>
           </Section>
           {totalPages > 1 && (
             <Pagination

@@ -77,6 +77,10 @@ export function canSeeCollection(collection: Collection, address: string) {
   return !!collection && [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
 }
 
+export function sortCollectionByCreatedAt(collectionA: Collection, collectionB: Collection) {
+  return collectionB.createdAt - collectionA.createdAt
+}
+
 export function isOwner(collection: Collection, address?: string) {
   return !!address && isEqual(collection.owner, address)
 }

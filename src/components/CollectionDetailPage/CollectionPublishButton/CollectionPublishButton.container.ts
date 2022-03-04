@@ -3,8 +3,8 @@ import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/au
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { fetchCollectionCurationRequest } from 'modules/curations/collectionCuration/actions'
-import { getHasPendingCuration } from 'modules/curations/collectionCuration/selectors'
 import { getStatusByCollectionId } from 'modules/collection/selectors'
+import { getHasPendingCollectionCuration } from 'modules/curations/collectionCuration/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionPublishButton.types'
@@ -19,7 +19,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     items: getCollectionItems(state, collectionId),
     authorizations: getAuthorizations(state),
     status: statusByCollectionId[collectionId],
-    hasPendingCuration: getHasPendingCuration(state, collectionId)
+    hasPendingCuration: getHasPendingCollectionCuration(state, collectionId)
   }
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Dropdown, Button, Icon } from 'decentraland-ui'
+import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getCollectionEditorURL, getExplorerURL, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -24,7 +24,9 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
 
   handleEditURN = () => {
     const { collection, onOpenModal } = this.props
-    onOpenModal('EditCollectionURNModal', { collection })
+    if (!collection.isPublished) {
+      onOpenModal('EditCollectionURNModal', { collection })
+    }
   }
 
   navigateTo = (url: string, target: string = '') => {
@@ -61,8 +63,23 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
               />
             </>
           ) : null}
-
-          <Dropdown.Item text={t('collection_context_menu.edit_urn')} onClick={this.handleEditURN} />
+          <Popup
+            content={t('collection_context_menu.change_published_urn')}
+            position="right center"
+            disabled={!collection.isPublished}
+            trigger={
+              <Dropdown.Item
+                text={t('collection_context_menu.edit_urn')}
+                onClick={this.handleEditURN}
+                disabled={collection.isPublished}
+                className={styles.disabledItem}
+              />
+            }
+            hideOnScroll={true}
+            on="hover"
+            inverted
+            flowing
+          />
         </Dropdown.Menu>
       </Dropdown>
     )

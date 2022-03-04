@@ -990,11 +990,17 @@
     "empty_collections": "There are no collections to review yet."
   },
   "collection_row": {
+    "collection": "Collection",
+    "published": "Published",
+    "date": "Date",
+    "discussion": "Discussion",
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Owner",
-    "visit": "Visit",
-    "review_request_date": "Review request date",
-    "publication_date": "Publication date",
+    "link": "Link",
+    "type": "Type",
+    "type_third_party": "Third Party",
+    "type_standard": "Standard",
+    "review_request": "Review request",
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",
     "approved": "Approved",
@@ -1017,7 +1023,10 @@
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them.",
     "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}",
-    "new_items": "New Items"
+    "new_items": "New Items",
+    "publish": "Publish",
+    "push_changes": "Push changes",
+    "publish_and_push_changes": "Publish & push changes"
   },
   "collection_detail_page": {
     "new_item": "New Item",
@@ -1050,7 +1059,8 @@
     "minters": "Minters",
     "post_to_forum": "Post to forum",
     "posting": "Posting",
-    "not_posted": "The collection wasn't posted to the forum. You can retry here"
+    "not_posted": "The collection wasn't posted to the forum. You can retry here",
+    "change_published_urn": "You can't change the URN once the collection is published"
   },
   "collection_item": {
     "set_price": "set price",
@@ -1061,6 +1071,7 @@
     "edit_price": "Edit price",
     "see_details": "See details",
     "edit_urn": "Edit URN",
+    "cannot_edit_urn": "You can't edit the URN once the item is published",
     "reset_item": "Reset changes"
   },
   "collection": {
@@ -1100,7 +1111,8 @@
     "title_tos": "Content Policy",
     "first_paragraph": "You are about to publish your collection, keep in mind the following things:",
     "second_paragraph": "You will not be able to add or delete items after you publish your collection.",
-    "third_paragraph": "You will be able to see your items in the marketplace but they will be available for sale once the collection is validated by the DAO.",
+    "third_paragraph": "You won’t be able to change the name of the collection. Please ensure it’s spelled correctly and doesn’t violate intellectual property rights.",
+    "fourth_paragraph": "You will be able to see your items in the marketplace but they will be available for sale once the collection is validated by the DAO.",
     "items_breakdown_title": "You are about to publish {count} {count, plural, one {item} other {items}}. The MANA fee for each collection goes to the Decentraland DAO, where it is used to support the growth of the community through grants, events, and prizes.",
     "tos_title": "I hereby represent and warrant that:",
     "tos_first_condition": "1: The submitted Wearable/s is in full compliance with the {terms_of_use} and {content_policy}, which I acknowledge and accept.",
@@ -1115,7 +1127,9 @@
   },
   "publish_third_party_collection_modal": {
     "title": "Publish Third Party Items",
-    "description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} slots from {availableSlots} to publish \"{collectionName}\""
+    "publish_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\".",
+    "push_changes_description": "About to push changes to {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
+    "publish_and_push_changes_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\" and changes will be pushed to {itemsWithChanges, plural, one {# item} other {# items}}."
   },
   "mint_items_modal": {
     "title": "Mint Items",

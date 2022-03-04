@@ -9,6 +9,7 @@ import {
   getItems,
   getRarities,
   getStatusByItemId,
+  getStatusForItemIds,
   getWalletItems,
   getWalletOrphanItems,
   hasViewAndEditRights
@@ -127,47 +128,370 @@ describe('Item selectors', () => {
     })
   })
 
-  describe('when getting status by item id', () => {
-    it('should return the status for each published item', () => {
-      mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
-      const mockState = {
-        collectionCuration: {
-          data: {
-            '0': {
+  describe('when getting status', () => {
+    mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
+    const mockState = {
+      collectionCuration: {
+        data: {
+          '0': {
+            id: '0',
+            collectionId: '0',
+            status: 'approved'
+          },
+          '1': {
+            id: '1',
+            collectionId: '1',
+            status: 'rejected'
+          },
+          '3': {
+            id: '3',
+            collectionId: '3',
+            status: 'pending'
+          }
+        }
+      },
+      itemCuration: {
+        data: {
+          '0': [
+            {
               id: '0',
-              collectionId: '0',
+              itemId: '0',
               status: 'approved'
             },
-            '1': {
+            {
               id: '1',
-              collectionId: '1',
+              itemId: '1',
               status: 'rejected'
             },
-            '3': {
+            {
               id: '3',
-              collectionId: '3',
+              itemId: '3',
               status: 'pending'
-            }
-          }
-        },
-        item: {
-          data: {
-            '0': {
-              id: '0',
-              collectionId: '0',
-              tokenId: 'aTokenId',
-              isPublished: true,
-              isApproved: false
             },
-            '1': {
-              id: '1',
-              collectionId: '1',
-              tokenId: 'anotherTokenId',
-              isPublished: true,
-              isApproved: true,
-              contents: {
-                'file.ext': 'QmA'
-              },
+            {
+              id: '11',
+              itemId: '11',
+              status: 'approved'
+            },
+            {
+              id: '12',
+              itemId: '12',
+              status: 'approved'
+            }
+          ],
+          '4': [
+            {
+              id: '4',
+              itemId: '5',
+              status: 'pending'
+            },
+            {
+              id: '5',
+              itemId: '6',
+              status: 'approved'
+            },
+            {
+              id: '6',
+              itemId: '7',
+              status: 'approved'
+            },
+            {
+              id: '7',
+              itemId: '8',
+              status: 'approved'
+            }
+          ]
+        }
+      },
+      item: {
+        data: {
+          '0': {
+            id: '0',
+            collectionId: '0',
+            tokenId: 'aTokenId',
+            isPublished: true,
+            isApproved: false
+          },
+          '1': {
+            id: '1',
+            collectionId: '1',
+            tokenId: 'anotherTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'file.ext': 'QmA'
+            },
+            name: 'pepito',
+            description: 'yes it is a pepito',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            }
+          },
+          '2': {
+            id: '2',
+            collectionId: '2',
+            tokenId: 'yetAnotherTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'file.ext': 'QmB_new'
+            },
+            name: 'pepito',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            }
+          },
+          '3': {
+            id: '3',
+            collectionId: '3',
+            tokenId: 'yetAnotherDifferentTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'file.ext': 'QmC_new'
+            },
+            name: 'pepito',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            }
+          },
+          '4': {
+            id: '4',
+            collectionId: '4',
+            tokenId: 'yetAnotherDifferentTokenId',
+            isPublished: false,
+            isApproved: false,
+            contents: {
+              'file.ext': 'QmC_new'
+            },
+            name: 'pepito',
+            description: 'pepito hat very nice',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            }
+          },
+          '5': {
+            id: '5',
+            collectionId: '4',
+            tokenId: 'yetAnotherDifferentTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'file.ext': 'QmC_new'
+            },
+            name: 'pepito',
+            description: 'pepito hat very nice',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            }
+          },
+          '6': {
+            id: '6',
+            collectionId: '4',
+            tokenId: 'TPTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'file.ext': 'QmC_new'
+            },
+            name: 'pepito',
+            description: 'pepito hat very nice',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            }
+          },
+          '7': {
+            id: '7',
+            collectionId: '4',
+            tokenId: 'anotherDifferentTPTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'file.ext': 'QmC_new'
+            },
+            name: 'pepito',
+            description: 'pepito hat very nice',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            }
+          },
+          '8': {
+            id: '8',
+            collectionId: '4',
+            tokenId: 'yetAnotherDifferentTPTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'file.ext': 'QmC_new'
+            },
+            name: 'pepito',
+            description: 'pepito hat very nice',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal', // TP
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            }
+          },
+          '9': {
+            id: '9',
+            collectionId: '0',
+            tokenId: 'otherTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'anotherFile.ext': 'anotherFileHash'
+            },
+            name: 'Item with same content hash and local content hash',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            },
+            contentHash: 'aContentHash',
+            serverContentHash: 'aContentHash'
+          },
+          '10': {
+            id: '10',
+            collectionId: '0',
+            tokenId: 'theTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'someFile.ext': 'aFileHash'
+            },
+            name: 'Item with different content hash and local content hash',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            },
+            contentHash: 'aContentHash',
+            serverContentHash: 'someOtherContentHash'
+          },
+          '11': {
+            id: '11',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal:11', // TP
+            collectionId: '3',
+            tokenId: 'theTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'someFile.ext': 'aFileHash'
+            },
+            name: 'Item with different content hash and local content hash',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            },
+            contentHash: 'aContentHash',
+            serverContentHash: 'aContentHash'
+          },
+          '12': {
+            id: '12',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal:12', // TP
+            collectionId: '3',
+            tokenId: 'theTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'someFile.ext': 'aFileHash'
+            },
+            name: 'Item with different content hash and local content hash',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            },
+            contentHash: 'aContentHash',
+            serverContentHash: 'someOtherContentHash'
+          }
+        }
+      },
+      collection: {
+        data: {
+          '0': {
+            id: '0',
+            contractAddress: 'anAddress'
+          },
+          '1': {
+            id: '1',
+            contractAddress: 'anotherAddress'
+          },
+          '2': {
+            id: '2',
+            contractAddress: 'yetAnotherAddress'
+          },
+          '3': {
+            id: '3',
+            contractAddress: 'yetAnotherDifferentAddress'
+          },
+          '4': {
+            id: '4',
+            contractAddress: 'TPAddress'
+          }
+        }
+      },
+      entity: {
+        data: {
+          Qm1: {
+            content: [
+              {
+                hash: 'QmA',
+                file: 'file.ext'
+              }
+            ],
+            metadata: {
+              id: 'urn:decentraland:matic:collections-v2:anotherAddress:anotherTokenId',
               name: 'pepito',
               description: 'yes it is a pepito',
               data: {
@@ -177,16 +501,17 @@ describe('Item selectors', () => {
                 representations: [],
                 tags: []
               }
-            },
-            '2': {
-              id: '2',
-              collectionId: '2',
-              tokenId: 'yetAnotherTokenId',
-              isPublished: true,
-              isApproved: true,
-              contents: {
-                'file.ext': 'QmB_new'
-              },
+            }
+          },
+          Qm2: {
+            content: [
+              {
+                hash: 'QmB',
+                file: 'file.ext'
+              }
+            ],
+            metadata: {
+              id: 'urn:decentraland:matic:collections-v2:yetAnotherAddress:yetAnotherTokenId',
               name: 'pepito',
               description: 'pepito hat very nice',
               data: {
@@ -196,16 +521,17 @@ describe('Item selectors', () => {
                 representations: [],
                 tags: []
               }
-            },
-            '3': {
-              id: '3',
-              collectionId: '3',
-              tokenId: 'yetAnotherDifferentTokenId',
-              isPublished: true,
-              isApproved: true,
-              contents: {
-                'file.ext': 'QmC_new'
-              },
+            }
+          },
+          Qm3: {
+            content: [
+              {
+                hash: 'QmC',
+                file: 'file.ext'
+              }
+            ],
+            metadata: {
+              id: 'urn:decentraland:matic:collections-v2:yetAnotherDifferentAddress:yetAnotherDifferentTokenId',
               name: 'pepito',
               description: 'pepito hat very nice',
               data: {
@@ -215,17 +541,18 @@ describe('Item selectors', () => {
                 representations: [],
                 tags: []
               }
-            },
-            '4': {
-              id: '4',
-              collectionId: '3',
-              tokenId: 'otherTokenId',
-              isPublished: true,
-              isApproved: true,
-              contents: {
-                'anotherFile.ext': 'anotherFileHash'
-              },
-              name: 'Item with same content hash and local content hash',
+            }
+          },
+          Qm4: {
+            content: [
+              {
+                hash: 'QmC',
+                file: 'file.ext'
+              }
+            ],
+            metadata: {
+              id: 'urn:decentraland:matic:collections-v2:TPAddress:anotherDifferentTPTokenId',
+              name: 'pepito',
               description: 'pepito hat very nice',
               data: {
                 category: WearableCategory.HAT,
@@ -233,20 +560,19 @@ describe('Item selectors', () => {
                 hides: [],
                 representations: [],
                 tags: []
-              },
-              contentHash: 'aContentHash',
-              serverContentHash: 'aContentHash'
-            },
-            '5': {
-              id: '5',
-              collectionId: '3',
-              tokenId: 'theTokenId',
-              isPublished: true,
-              isApproved: true,
-              contents: {
-                'someFile.ext': 'aFileHash'
-              },
-              name: 'Item with different content hash and local content hash',
+              }
+            }
+          },
+          Qm5: {
+            content: [
+              {
+                hash: 'QmC_new',
+                file: 'file.ext'
+              }
+            ],
+            metadata: {
+              id: 'urn:decentraland:matic:collections-v2:TPAddress:yetAnotherDifferentTPTokenId',
+              name: 'pepito',
               description: 'pepito hat very nice',
               data: {
                 category: WearableCategory.HAT,
@@ -254,104 +580,37 @@ describe('Item selectors', () => {
                 hides: [],
                 representations: [],
                 tags: []
-              },
-              contentHash: 'aContentHash',
-              serverContentHash: 'someOtherContentHash'
-            }
-          }
-        },
-        collection: {
-          data: {
-            '0': {
-              id: '0',
-              contractAddress: 'anAddress'
-            },
-            '1': {
-              id: '1',
-              contractAddress: 'anotherAddress'
-            },
-            '2': {
-              id: '2',
-              contractAddress: 'yetAnotherAddress'
-            },
-            '3': {
-              id: '3',
-              contractAddress: 'yetAnotherDifferentAddress'
-            }
-          }
-        },
-        entity: {
-          data: {
-            Qm1: {
-              content: [
-                {
-                  hash: 'QmA',
-                  file: 'file.ext'
-                }
-              ],
-              metadata: {
-                id: 'urn:decentraland:matic:collections-v2:anotherAddress:anotherTokenId',
-                name: 'pepito',
-                description: 'yes it is a pepito',
-                data: {
-                  category: WearableCategory.HAT,
-                  replaces: [],
-                  hides: [],
-                  representations: [],
-                  tags: []
-                }
-              }
-            },
-            Qm2: {
-              content: [
-                {
-                  hash: 'QmB',
-                  file: 'file.ext'
-                }
-              ],
-              metadata: {
-                id: 'urn:decentraland:matic:collections-v2:yetAnotherAddress:yetAnotherTokenId',
-                name: 'pepito',
-                description: 'pepito hat very nice',
-                data: {
-                  category: WearableCategory.HAT,
-                  replaces: [],
-                  hides: [],
-                  representations: [],
-                  tags: []
-                }
-              }
-            },
-            Qm3: {
-              content: [
-                {
-                  hash: 'QmC',
-                  file: 'file.ext'
-                }
-              ],
-              metadata: {
-                id: 'urn:decentraland:matic:collections-v2:yetAnotherDifferentAddress:yetAnotherDifferentTokenId',
-                name: 'pepito',
-                description: 'pepito hat very nice',
-                data: {
-                  category: WearableCategory.HAT,
-                  replaces: [],
-                  hides: [],
-                  representations: [],
-                  tags: []
-                }
               }
             }
           }
         }
       }
+    }
+
+    it('should return the status by id for each published item', () => {
       expect(getStatusByItemId((mockState as unknown) as RootState)).toEqual({
         '0': SyncStatus.UNDER_REVIEW,
         '1': SyncStatus.SYNCED,
         '2': SyncStatus.UNSYNCED,
         '3': SyncStatus.UNDER_REVIEW,
-        '4': SyncStatus.SYNCED,
-        '5': SyncStatus.UNSYNCED
+        '4': SyncStatus.UNPUBLISHED, // TP with no item curation
+        '5': SyncStatus.UNDER_REVIEW, // TP with item curation in PENDING
+        '6': SyncStatus.LOADING, // TP with item curation in APPROVED and no Entity,
+        '7': SyncStatus.UNSYNCED, // TP with item curation in APPROVED with entity but NOT synced,
+        '8': SyncStatus.SYNCED, // TP with item curation in APPROVED with entity and synced,
+        '9': SyncStatus.SYNCED, // Standard item with content hash equal to serverContentHash
+        '10': SyncStatus.UNSYNCED, // Standard item with content hash not equal to serverContentHash
+        '11': SyncStatus.SYNCED, // TP item with content hash not equal to serverContentHash
+        '12': SyncStatus.UNSYNCED // TP item with content hash not equal to serverContentHash
+      })
+    })
+
+    it('should return the status by id for a list of item Ids', () => {
+      expect(getStatusForItemIds((mockState as unknown) as RootState, ['2', '4', '6', '7'])).toEqual({
+        '2': SyncStatus.UNSYNCED,
+        '4': SyncStatus.UNPUBLISHED,
+        '6': SyncStatus.LOADING,
+        '7': SyncStatus.UNSYNCED
       })
     })
   })
