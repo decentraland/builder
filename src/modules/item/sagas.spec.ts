@@ -752,7 +752,10 @@ describe('when handling the save multiple items requests action', () => {
   const error = 'anError'
 
   beforeEach(() => {
-    items = [{ ...mockedItem }, { ...mockedItem, id: 'anotherItemId' }]
+    items = [
+      { ...mockedItem, serverContentHash: mockedRemoteItem.local_content_hash },
+      { ...mockedItem, id: 'anotherItemId', serverContentHash: mockedRemoteItem.local_content_hash }
+    ]
     remoteItems = [{ ...mockedRemoteItem }, { ...mockedRemoteItem, id: 'anotherItemId' }]
     savedFiles = ['aFile.zip', 'anotherFile.zip']
     builtFiles = [
