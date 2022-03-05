@@ -36,7 +36,7 @@ import { ThirdParty } from 'modules/thirdParty/types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
-const PAGE_SIZE = 15
+const PAGE_SIZE = 20
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
