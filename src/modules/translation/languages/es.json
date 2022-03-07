@@ -1133,7 +1133,8 @@
     "content_policy": "Política de contenido",
     "accept_by_publishing": "Al presionar Publish estás aceptando nuestros términos y condiciones",
     "not_enough_mana": "No tienes suficiente {symbol} para publicar la collección.",
-    "get_mana": "Puedes obtener más usando la {link} dapp."
+    "get_mana": "Puedes obtener más usando la {link} dapp.",
+    "unsynced_collection": "La colección que está intentando publicar tiene diferencias con la que hay en el servidor. Por favor, refresque el navegador e intente de nuevo."
   },
   "sell_collection_modal": {
     "title": "¿Quieres vender tus items?",

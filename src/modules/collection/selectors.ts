@@ -22,6 +22,14 @@ export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
 
+export const getUnsyncedCollectionError = (state: RootState) => {
+  const error = getError(state)
+  if (!error || !error.startsWith('UnsyncedCollection:')) {
+    return null
+  }
+  return error
+}
+
 export const getCollections = createSelector<RootState, CollectionState['data'], string | undefined, Collection[]>(
   getData,
   getAddress,

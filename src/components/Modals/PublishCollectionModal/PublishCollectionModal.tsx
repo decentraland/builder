@@ -167,7 +167,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderThirdStep = () => {
-    const { isPublishLoading, onClose } = this.props
+    const { isPublishLoading, unsyncedCollectionError, onClose } = this.props
     const { email, emailFocus } = this.state
     const hasValidEmail = emailRegex.test(email ?? '')
     const showEmailError = !hasValidEmail && !emailFocus && email !== undefined && email !== ''
@@ -214,6 +214,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
             {t('global.publish')}
           </Button>
           <p>{t('publish_collection_modal.accept_by_publishing')}</p>
+          {unsyncedCollectionError && <p className='error'>{t('publish_collection_modal.unsynced_collection')}</p>}
         </Modal.Actions>
       </Form>
     )
