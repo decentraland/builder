@@ -17,7 +17,11 @@ import { Item, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
 import { fetchItemsRequest, fetchItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
-import { approveCollectionCurationFailure, approveCollectionCurationRequest, approveCollectionCurationSuccess } from 'modules/curations/collectionCuration/actions'
+import {
+  approveCollectionCurationFailure,
+  approveCollectionCurationRequest,
+  approveCollectionCurationSuccess
+} from 'modules/curations/collectionCuration/actions'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
@@ -37,9 +41,7 @@ import {
 } from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
-
-const mockBuilder = ({ saveCollection: jest.fn(), lockCollection: jest.fn(), saveTOS: jest.fn() } as unknown) as BuilderAPI
-const mockCatalyst = ({} as unknown) as CatalystClient
+import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 const getCollection = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
@@ -87,6 +89,19 @@ const getCuration = (collection: Collection, props: Partial<CollectionCuration> 
     status: CurationStatus.PENDING,
     ...props
   } as CollectionCuration)
+
+let mockBuilder: BuilderAPI
+let mockCatalyst: CatalystClient
+
+beforeEach(() => {
+  mockBuilder = ({
+    saveCollection: jest.fn(),
+    lockCollection: jest.fn(),
+    saveTOS: jest.fn(),
+    fetchCollectionItems: jest.fn().mockResolvedValueOnce([])
+  } as unknown) as BuilderAPI
+  mockCatalyst = ({} as unknown) as CatalystClient
+})
 
 describe('when executing the approval flow', () => {
   describe('when a collection is not published', () => {
@@ -556,7 +571,7 @@ describe('when executing the approval flow', () => {
         finalCollection = { ...collection, lock: now }
       })
 
-      it.skip('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
+      it('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
           .provide([
             [put(saveCollectionRequest(collection)), true],
@@ -578,6 +593,43 @@ describe('when executing the approval flow', () => {
       })
     })
 
+    describe('when the the provided items length does not match the length of server items', () => {
+      let finalCollection: Collection
+      beforeEach(() => {
+        finalCollection = { ...collection, id: 'collection-id', lock: Date.now() + 1000 /* Will be locked */ }
+      })
+
+      it('should signal with a publish collection failure action with an unsynced collection error', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([[call([mockBuilder, mockBuilder.fetchCollectionItems], finalCollection.id), [{}]]])
+          .put(publishCollectionFailure(finalCollection, items, `${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`))
+          .dispatch(publishCollectionRequest(finalCollection, items, email))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('when the the provided items do not match the items found in the server', () => {
+      let finalCollection: Collection
+      beforeEach(() => {
+        finalCollection = { ...collection, id: 'collection-id', lock: Date.now() + 1000 /* Will be locked */ }
+        items = [{ id: 'item-id' }] as Item[]
+      })
+
+      it('should signal with a publish collection failure action with an unsynced collection error', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([[call([mockBuilder, mockBuilder.fetchCollectionItems], finalCollection.id), [{ id: 'other-item-id' }]]])
+          .put(
+            publishCollectionFailure(
+              finalCollection,
+              items,
+              `${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`
+            )
+          )
+          .dispatch(publishCollectionRequest(finalCollection, items, email))
+          .run({ silenceTimeout: true })
+      })
+    })
+
     describe('when the collection is locked', () => {
       let lockedCollection: Collection
       let finalCollection: Collection
@@ -593,7 +645,7 @@ describe('when executing the approval flow', () => {
         finalCollection = { ...collection, lock: now }
       })
 
-      it.skip('should skip saving the collection', () => {
+      it('should skip saving the collection', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
           .provide([
             [select(getAddress), [address]],
