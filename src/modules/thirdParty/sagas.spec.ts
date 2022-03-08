@@ -325,7 +325,7 @@ describe('when publishing third party items', () => {
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
           [matchers.call.fn(mockBuilder.publishCollection), { items: [], itemCurations }]
         ])
-        .put(publishThirdPartyItemsSuccess(collection, [], itemCurations))
+        .put(publishThirdPartyItemsSuccess(mockedItem.collectionId!, [], itemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .dispatch(publishThirdPartyItemsRequest(thirdParty, [mockedItem]))
         .run({ silenceTimeout: true })

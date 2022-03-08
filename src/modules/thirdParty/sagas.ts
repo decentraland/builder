@@ -9,8 +9,6 @@ import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { BuilderAPI } from 'lib/api/builder'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { Collection } from 'modules/collection/types'
-import { getCollection } from 'modules/collection/selectors'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
@@ -167,7 +165,6 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     const { thirdParty, items } = action.payload
     try {
       const collectionId = items[0].collectionId!
-      const collection: Collection = yield select(getCollection, collectionId)
 
       const { signature, signedMessage, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
 
@@ -181,7 +178,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
         salt
       )
 
-      yield put(publishThirdPartyItemsSuccess(collection, newItems, newItemCurations))
+      yield put(publishThirdPartyItemsSuccess(collectionId, newItems, newItemCurations))
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
       yield put(publishThirdPartyItemsFailure(error.message))

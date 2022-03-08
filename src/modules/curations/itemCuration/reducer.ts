@@ -1,10 +1,7 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
-  PublishAndPushChangesThirdPartyItemsFailureAction,
-  PublishAndPushChangesThirdPartyItemsSuccessAction,
   PublishThirdPartyItemsFailureAction,
   PublishThirdPartyItemsSuccessAction,
-  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
   PUBLISH_THIRD_PARTY_ITEMS_FAILURE,
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
   PushChangesThirdPartyItemsFailureAction,
@@ -42,8 +39,6 @@ type CurationReducerAction =
   | PublishThirdPartyItemsFailureAction
   | PushChangesThirdPartyItemsSuccessAction
   | PushChangesThirdPartyItemsFailureAction
-  | PublishAndPushChangesThirdPartyItemsSuccessAction
-  | PublishAndPushChangesThirdPartyItemsFailureAction
 
 export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, action: CurationReducerAction): ItemCurationState {
   switch (action.type) {
@@ -69,14 +64,14 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
 
     case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
       const { itemCurations } = action.payload
-      const oldItemCurations = state.data[action.payload.collection.id]
+      const oldItemCurations = state.data[action.payload.collectionId]
       const mergedItemCurations = oldItemCurations ? [...oldItemCurations, ...itemCurations] : itemCurations
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [action.payload.collection.id]: mergedItemCurations
+          [action.payload.collectionId]: mergedItemCurations
         },
         error: null
       }
@@ -106,7 +101,6 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
 
     case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
-    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_ITEM_CURATIONS_FAILURE:
       const { error } = action.payload
 

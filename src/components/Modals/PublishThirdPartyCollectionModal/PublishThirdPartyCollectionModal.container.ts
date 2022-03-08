@@ -6,7 +6,8 @@ import {
   publishAndPushChangesThirdPartyItemsRequest,
   publishThirdPartyItemsRequest,
   PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
-  pushChangesThirdPartyItemsRequest
+  pushChangesThirdPartyItemsRequest,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST
 } from 'modules/thirdParty/actions'
 import { getCollection } from 'modules/collection/selectors'
 import { getLoading, getCollectionItems, getStatusForItemIds } from 'modules/item/selectors'
@@ -23,7 +24,9 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     collection,
     items,
     thirdParty: collection ? getCollectionThirdParty(state, collection) : null,
-    isPublishLoading: isLoadingType(getLoading(state), PUBLISH_THIRD_PARTY_ITEMS_REQUEST),
+    isPublishLoading:
+      isLoadingType(getLoading(state), PUBLISH_THIRD_PARTY_ITEMS_REQUEST) ||
+      isLoadingType(getLoading(state), PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST),
     itemsStatus: getStatusForItemIds(
       state,
       items.map(i => i.id)

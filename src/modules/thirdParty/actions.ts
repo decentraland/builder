@@ -79,9 +79,9 @@ export const PUBLISH_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish third party 
 
 export const publishThirdPartyItemsRequest = (thirdParty: ThirdParty, items: Item[]) =>
   action(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, items })
-export const publishThirdPartyItemsSuccess = (collection: Collection, items: Item[], itemCurations: ItemCuration[]) =>
+export const publishThirdPartyItemsSuccess = (collectionId: Collection['id'], items: Item[], itemCurations: ItemCuration[]) =>
   action(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, {
-    collection,
+    collectionId,
     items,
     itemCurations
   })
@@ -112,20 +112,8 @@ export type PushChangesThirdPartyItemsFailureAction = ReturnType<typeof pushChan
 // Publish & Push changes Third Party Item
 
 export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST = '[Request] Publish & Push third party items changes'
-export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Publish & Push third party items changes'
-export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish & Push third party items changes'
 
 export const publishAndPushChangesThirdPartyItemsRequest = (thirdParty: ThirdParty, itemsToPublish: Item[], itemsWithChanges: Item[]) =>
   action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, itemsToPublish, itemsWithChanges })
-export const publishAndPushChangesThirdPartyItemsSuccess = (thirdParty: ThirdParty, collection: Collection, items: Item[]) =>
-  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, {
-    thirdParty,
-    collection,
-    items
-  })
-export const publishAndPushChangesThirdPartyItemsFailure = (thirdParty: ThirdParty, items: Item[], error: string) =>
-  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE, { thirdParty, items, error })
 
 export type PublishAndPushChangesThirdPartyItemsRequestAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsRequest>
-export type PublishAndPushChangesThirdPartyItemsSuccessAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsSuccess>
-export type PublishAndPushChangesThirdPartyItemsFailureAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsFailure>
