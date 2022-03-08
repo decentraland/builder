@@ -111,7 +111,7 @@ import {
 } from 'modules/entity/actions'
 import { getCollection, getWalletCollections } from './selectors'
 import { Collection, CollectionType } from './types'
-import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked, getCollectionType } from './utils'
+import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked, getCollectionType, UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -263,7 +263,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const serverItems: Item[] = yield call([builder, builder.fetchCollectionItems], collection.id)
 
       if (serverItems.length !== items.length) {
-        throw new Error(`UnsyncedCollection: Different items length`)
+        throw new Error(`${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`)
       }
 
       // TODO: Deeper comparison of browser and server items. Compare metadata for example.
@@ -271,7 +271,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         const browserItem = items.find(item => item.id === serverItem.id)
 
         if (!browserItem) {
-          throw new Error(`UnsyncedCollection: Item found in the server but not in the browser`)
+          throw new Error(`${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`)
         }
       })
 

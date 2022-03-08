@@ -3,11 +3,46 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { RootState } from 'modules/common/types'
 import { SyncStatus } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
-import { getAuthorizedCollections, getStatusByCollectionId, hasViewAndEditRights } from './selectors'
+import { getAuthorizedCollections, getStatusByCollectionId, getUnsyncedCollectionError, hasViewAndEditRights } from './selectors'
 import { Collection } from './types'
+import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
+
+describe('when getting the unsynced error message', () => {
+  it('should return null if the base error is null', () => {
+    const result = getUnsyncedCollectionError({
+      collection: {
+        error: null
+      }
+    } as any)
+
+    expect(result).toBeNull()
+  })
+
+  it('should return null if the base error does not match the unsynced collection error', () => {
+    const result = getUnsyncedCollectionError({
+      collection: {
+        error: 'Not an unsynced error'
+      }
+    } as any)
+
+    expect(result).toBeNull()
+  })
+
+  it('should return the error message if the base error is an unsynced collection error', () => {
+    const error = UNSYNCED_COLLECTION_ERROR_PREFIX + 'some error'
+    
+    const result = getUnsyncedCollectionError({
+      collection: {
+        error
+      }
+    } as any)
+
+    expect(result).toBe(error)
+  })
+})
 
 describe('when getting status by item id', () => {
   it('should return the status for each published item', () => {
