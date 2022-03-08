@@ -16,7 +16,7 @@ describe('when getting the unsynced error message', () => {
   beforeEach(() => {
     state = {
       collection: {}
-    } as any
+    } as RootState
   })
 
   describe('when the base error is null', () => {
