@@ -55,12 +55,6 @@ import {
   FETCH_RARITIES_REQUEST,
   FETCH_RARITIES_SUCCESS,
   FETCH_RARITIES_FAILURE,
-  PublishThirdPartyItemsRequestAction,
-  PublishThirdPartyItemsSuccessAction,
-  PublishThirdPartyItemsFailureAction,
-  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
-  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
-  PUBLISH_THIRD_PARTY_ITEMS_FAILURE,
   RescueItemsRequestAction,
   RescueItemsFailureAction,
   RescueItemsSuccessAction,
@@ -96,6 +90,7 @@ import {
   SAVE_MULTIPLE_ITEMS_CANCELLED,
   RescueItemsChunkSuccessAction
 } from './actions'
+import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
@@ -142,9 +137,7 @@ type ItemReducerAction =
   | FetchRaritiesRequestAction
   | FetchRaritiesSuccessAction
   | FetchRaritiesFailureAction
-  | PublishThirdPartyItemsRequestAction
   | PublishThirdPartyItemsSuccessAction
-  | PublishThirdPartyItemsFailureAction
   | RescueItemsRequestAction
   | RescueItemsSuccessAction
   | RescueItemsChunkSuccessAction
@@ -177,7 +170,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SET_PRICE_AND_BENEFICIARY_REQUEST:
     case SAVE_ITEM_REQUEST:
     case DELETE_ITEM_REQUEST:
-    case PUBLISH_THIRD_PARTY_ITEMS_REQUEST:
     case RESET_ITEM_REQUEST:
     case RESCUE_ITEMS_REQUEST:
     case DOWNLOAD_ITEM_REQUEST: {
@@ -234,7 +226,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SAVE_ITEM_FAILURE:
     case FETCH_RARITIES_FAILURE:
     case DELETE_ITEM_FAILURE:
-    case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case RESET_ITEM_FAILURE:
     case RESCUE_ITEMS_FAILURE:
     case DOWNLOAD_ITEM_FAILURE: {
@@ -369,8 +360,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             }
           }
         }
-        case PUBLISH_COLLECTION_SUCCESS:
-        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
+        case PUBLISH_COLLECTION_SUCCESS: {
           const items: Item[] = transaction.payload.items
           return {
             ...state,
@@ -378,6 +368,19 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               ...state.data,
               ...items.reduce((accum, item) => {
                 accum[item.id] = { ...state.data[item.id], ...item, isPublished: true }
+                return accum
+              }, {} as ItemState['data'])
+            }
+          }
+        }
+        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
+          const items: Item[] = transaction.payload.items
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              ...items.reduce((accum, item) => {
+                accum[item.id] = item
                 return accum
               }, {} as ItemState['data'])
             }

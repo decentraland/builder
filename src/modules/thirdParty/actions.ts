@@ -1,5 +1,8 @@
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { Collection } from 'modules/collection/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { Item } from 'modules/item/types'
 import { action } from 'typesafe-actions'
 import { ThirdParty } from './types'
 
@@ -67,3 +70,62 @@ export const buyThirdPartyItemSlotFailure = (thirdPartyId: string, slotsToBuy: n
 export type BuyThirdPartyItemSlotRequestAction = ReturnType<typeof buyThirdPartyItemSlotRequest>
 export type BuyThirdPartyItemSlotSuccessAction = ReturnType<typeof buyThirdPartyItemSlotSuccess>
 export type BuyThirdPartyItemSlotFailureAction = ReturnType<typeof buyThirdPartyItemSlotFailure>
+
+// Publish Third Party Item
+
+export const PUBLISH_THIRD_PARTY_ITEMS_REQUEST = '[Request] Publish third party items'
+export const PUBLISH_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Publish third party items'
+export const PUBLISH_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish third party items'
+
+export const publishThirdPartyItemsRequest = (thirdParty: ThirdParty, items: Item[]) =>
+  action(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, items })
+export const publishThirdPartyItemsSuccess = (collection: Collection, items: Item[], itemCurations: ItemCuration[]) =>
+  action(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, {
+    collection,
+    items,
+    itemCurations
+  })
+export const publishThirdPartyItemsFailure = (error: string) => action(PUBLISH_THIRD_PARTY_ITEMS_FAILURE, { error })
+
+export type PublishThirdPartyItemsRequestAction = ReturnType<typeof publishThirdPartyItemsRequest>
+export type PublishThirdPartyItemsSuccessAction = ReturnType<typeof publishThirdPartyItemsSuccess>
+export type PublishThirdPartyItemsFailureAction = ReturnType<typeof publishThirdPartyItemsFailure>
+
+// Push changes Third Party Item
+
+export const PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST = '[Request] Push third party items changes'
+export const PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Push third party items changes'
+export const PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Push third party items changes'
+
+export const pushChangesThirdPartyItemsRequest = (items: Item[]) => action(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, { items })
+export const pushChangesThirdPartyItemsSuccess = (collectionId: Collection['id'], itemCurations: ItemCuration[]) =>
+  action(PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, {
+    collectionId,
+    itemCurations
+  })
+export const pushChangesThirdPartyItemsFailure = (error: string) => action(PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE, { error })
+
+export type PushChangesThirdPartyItemsRequestAction = ReturnType<typeof pushChangesThirdPartyItemsRequest>
+export type PushChangesThirdPartyItemsSuccessAction = ReturnType<typeof pushChangesThirdPartyItemsSuccess>
+export type PushChangesThirdPartyItemsFailureAction = ReturnType<typeof pushChangesThirdPartyItemsFailure>
+
+// Publish & Push changes Third Party Item
+
+export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST = '[Request] Publish & Push third party items changes'
+export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Publish & Push third party items changes'
+export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish & Push third party items changes'
+
+export const publishAndPushChangesThirdPartyItemsRequest = (thirdParty: ThirdParty, itemsToPublish: Item[], itemsWithChanges: Item[]) =>
+  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, itemsToPublish, itemsWithChanges })
+export const publishAndPushChangesThirdPartyItemsSuccess = (thirdParty: ThirdParty, collection: Collection, items: Item[]) =>
+  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, {
+    thirdParty,
+    collection,
+    items
+  })
+export const publishAndPushChangesThirdPartyItemsFailure = (thirdParty: ThirdParty, items: Item[], error: string) =>
+  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE, { thirdParty, items, error })
+
+export type PublishAndPushChangesThirdPartyItemsRequestAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsRequest>
+export type PublishAndPushChangesThirdPartyItemsSuccessAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsSuccess>
+export type PublishAndPushChangesThirdPartyItemsFailureAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsFailure>

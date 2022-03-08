@@ -12,6 +12,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
   handleSubmit = () => {
     const {
       items,
+      itemsStatus,
       thirdParty,
       onPublish,
       onPushChanges,
@@ -19,17 +20,23 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
       metadata: { action }
     } = this.props
 
-    let fn
+    if (!thirdParty) return
+
     switch (action) {
       case PublishButtonAction.PUSH_CHANGES:
-        fn = onPushChanges
+        onPushChanges(items)
+        break
       case PublishButtonAction.PUBLISH_AND_PUSH_CHANGES:
-        fn = onPublishAndPushChanges
+        onPublishAndPushChanges(
+          thirdParty,
+          items.filter(item => itemsStatus[item.id] === SyncStatus.UNPUBLISHED), // the ones to publish
+          items.filter(item => isStatusAllowedToPushChanges(itemsStatus[item.id])) // the ones with changes
+        )
+        break
       default:
-        fn = onPublish
+        onPublish(thirdParty, items)
+        break
     }
-
-    fn(thirdParty!, items!)
   }
 
   getModalDescriptionText = () => {

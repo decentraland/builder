@@ -1,7 +1,6 @@
 import BN from 'bn.js'
-import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/item/actions'
 import {
   FetchThirdPartiesRequestAction,
   FetchThirdPartiesSuccessAction,
@@ -131,27 +130,6 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
             maxItems: new BN(state.data[thirdParty.id].maxItems).add(new BN(slotsToBuy)).toString()
           }
         }
-      }
-    }
-    case FETCH_TRANSACTION_SUCCESS: {
-      const transaction = action.payload.transaction
-
-      switch (transaction.actionType) {
-        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
-          const { thirdPartyId, items } = transaction.payload
-          return {
-            ...state,
-            data: {
-              ...state.data,
-              [thirdPartyId]: {
-                ...state.data[thirdPartyId],
-                totalItems: new BN(state.data[thirdPartyId].totalItems).add(new BN(items.length)).toString()
-              }
-            }
-          }
-        }
-        default:
-          return state
       }
     }
     default:

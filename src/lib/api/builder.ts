@@ -659,7 +659,7 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollection(remoteCollection)
   }
 
-  async publishCollection(collectionId: string) {
+  async publishDCLCollection(collectionId: string) {
     const { collection, items }: { collection: RemoteCollection; items: RemoteItem[] } = await this.request(
       'post',
       `/collections/${collectionId}/publish`
@@ -667,6 +667,29 @@ export class BuilderAPI extends BaseAPI {
     return {
       collection: fromRemoteCollection(collection),
       items: items.map(fromRemoteItem)
+    }
+  }
+
+  async publishCollection(collectionId: string, itemIds: string[], signedMessage: string, signature: string, qty: number, salt: string) {
+    const {
+      collection,
+      items,
+      itemCurations
+    }: { collection: RemoteCollection; items: RemoteItem[]; itemCurations: RemoteItemCuration[] } = await this.request(
+      'post',
+      `/collections/${collectionId}/publish`,
+      {
+        itemIds,
+        signedMessage,
+        signature,
+        qty,
+        salt
+      }
+    )
+    return {
+      collection: fromRemoteCollection(collection),
+      items: items.map(fromRemoteItem),
+      itemCurations: itemCurations.map(fromRemoteItemCuration)
     }
   }
 
@@ -716,6 +739,10 @@ export class BuilderAPI extends BaseAPI {
     return this.request('post', `/collections/${collectionId}/curation`)
   }
 
+  pushItemCuration(itemId: string): Promise<void> {
+    return this.request('post', `/items/${itemId}/curation`)
+  }
+
   fetchCommittee(): Promise<string[]> {
     return this.request('get', '/committee')
   }
@@ -738,6 +765,10 @@ export class BuilderAPI extends BaseAPI {
 
   updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
+  }
+
+  updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<void> {
+    return this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
   }
 
   isAxiosError(error: any): error is AxiosError {

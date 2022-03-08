@@ -1,11 +1,14 @@
+import uuidv4 from 'uuid/v4'
 import { call } from '@redux-saga/core/effects'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { throwError } from 'redux-saga-test-plan/providers'
+import { select } from 'redux-saga-test-plan/matchers'
 import { BigNumber } from '@ethersproject/bignumber'
+import { ChainId, Network } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { ChainId, Network } from '@dcl/schemas'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { loginSuccess } from 'modules/identity/actions'
@@ -23,15 +26,33 @@ import {
   buyThirdPartyItemSlotSuccess,
   fetchThirdPartyAvailableSlotsFailure,
   fetchThirdPartyAvailableSlotsRequest,
-  fetchThirdPartyAvailableSlotsSuccess
+  fetchThirdPartyAvailableSlotsSuccess,
+  publishThirdPartyItemsRequest,
+  publishThirdPartyItemsFailure,
+  publishThirdPartyItemsSuccess,
+  pushChangesThirdPartyItemsFailure,
+  pushChangesThirdPartyItemsRequest,
+  pushChangesThirdPartyItemsSuccess,
+  publishAndPushChangesThirdPartyItemsRequest
 } from './actions'
-import { thirdPartySaga, getContractInstance } from './sagas'
+import { mockedItem } from 'specs/item'
+import { getCollection } from 'modules/collection/selectors'
+import { Collection } from 'modules/collection/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { CurationStatus } from 'modules/curations/types'
+import { getItemCurations } from 'modules/curations/itemCuration/selectors'
+import { Item } from 'modules/item/types'
+import { thirdPartySaga, getContractInstance, getPublishItemsSignature } from './sagas'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getItemSlotPrice } from './selectors'
-import { select } from 'redux-saga-test-plan/matchers'
-import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
-const mockBuilder = ({ fetchThirdParties: jest.fn(), fetchThirdPartyAvailableSlots: jest.fn() } as any) as BuilderAPI
+const mockBuilder = ({
+  fetchThirdParties: jest.fn(),
+  fetchThirdPartyAvailableSlots: jest.fn(),
+  publishCollection: jest.fn(),
+  pushItemCuration: jest.fn(),
+  updateItemCurationStatus: jest.fn()
+} as any) as BuilderAPI
 
 let thirdParty: ThirdParty
 const defaultError = 'error'
@@ -254,5 +275,174 @@ describe('when fetching third party available slots', () => {
         .dispatch(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
         .run({ silenceTimeout: true })
     })
+  })
+})
+
+describe('when publishing third party items', () => {
+  let collection: Collection
+  beforeEach(() => {
+    collection = { name: 'valid collection name' } as Collection
+  })
+  describe('when the api request fails', () => {
+    let errorMessage: string
+
+    beforeEach(() => {
+      errorMessage = 'Some Error Message'
+    })
+
+    it('should put the publish third party items fail action with an error', () => {
+      return expectSaga(thirdPartySaga, mockBuilder)
+        .provide([
+          [select(getCollection, mockedItem.collectionId), collection],
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
+          [matchers.call.fn(mockBuilder.publishCollection), throwError(new Error(errorMessage))]
+        ])
+        .put(publishThirdPartyItemsFailure(errorMessage))
+        .dispatch(publishThirdPartyItemsRequest(thirdParty, [mockedItem]))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when the api request succeeds', () => {
+    let itemCurations: ItemCuration[]
+    beforeEach(() => {
+      collection = { name: 'valid collection name', id: uuidv4() } as Collection
+      itemCurations = [
+        {
+          id: 'id',
+          itemId: 'itemId',
+          createdAt: 0,
+          status: CurationStatus.PENDING,
+          updatedAt: 0
+        }
+      ]
+    })
+
+    it('should put the fetch third party success action the response with the new itemCurations and close the PublishThirdPartyCollectionModal modal', () => {
+      return expectSaga(thirdPartySaga, mockBuilder)
+        .provide([
+          [select(getCollection, mockedItem.collectionId), collection],
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
+          [matchers.call.fn(mockBuilder.publishCollection), { items: [], itemCurations }]
+        ])
+        .put(publishThirdPartyItemsSuccess(collection, [], itemCurations))
+        .put(closeModal('PublishThirdPartyCollectionModal'))
+        .dispatch(publishThirdPartyItemsRequest(thirdParty, [mockedItem]))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when pushing changes to third party items', () => {
+  let collection: Collection
+  let item: Item
+  let itemCurations: ItemCuration[]
+  beforeEach(() => {
+    collection = { name: 'valid collection name', id: uuidv4() } as Collection
+    item = {
+      ...mockedItem,
+      collectionId: collection.id
+    }
+  })
+
+  describe('when one of the api requests fails', () => {
+    let errorMessage: string
+
+    beforeEach(() => {
+      errorMessage = 'Some Error Message'
+      itemCurations = [
+        {
+          id: 'id',
+          itemId: mockedItem.id,
+          createdAt: 0,
+          status: CurationStatus.PENDING,
+          updatedAt: 0
+        }
+      ]
+    })
+
+    it('should put the push changes third party items fail action with an error', () => {
+      return expectSaga(thirdPartySaga, mockBuilder)
+        .provide([
+          [select(getItemCurations, item.collectionId), itemCurations],
+          [matchers.call.fn(mockBuilder.updateItemCurationStatus), throwError(new Error(errorMessage))]
+        ])
+        .put(pushChangesThirdPartyItemsFailure(errorMessage))
+        .dispatch(pushChangesThirdPartyItemsRequest([item]))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when both api requests succeed', () => {
+    let updatedItemCurations: ItemCuration[]
+    beforeEach(() => {
+      collection = { name: 'valid collection name', id: uuidv4() } as Collection
+      itemCurations = [
+        {
+          id: 'id',
+          itemId: mockedItem.id,
+          createdAt: 0,
+          status: CurationStatus.PENDING,
+          updatedAt: 0
+        },
+        {
+          id: 'id',
+          itemId: 'anotherItemId',
+          createdAt: 0,
+          status: CurationStatus.APPROVED,
+          updatedAt: 0
+        }
+      ]
+      updatedItemCurations = [
+        {
+          id: 'id',
+          itemId: mockedItem.id,
+          createdAt: 0,
+          status: CurationStatus.PENDING,
+          updatedAt: 0
+        },
+        {
+          id: 'id',
+          itemId: 'anotherItemId',
+          createdAt: 0,
+          status: CurationStatus.PENDING,
+          updatedAt: 0
+        }
+      ]
+    })
+
+    it('should put the fetch third party success action the response with the new itemCurations and close the PublishThirdPartyCollectionModal modal', () => {
+      return expectSaga(thirdPartySaga, mockBuilder)
+        .provide([
+          [select(getItemCurations, item.collectionId), itemCurations],
+          [matchers.call.fn(mockBuilder.updateItemCurationStatus), updatedItemCurations[0]],
+          [matchers.call.fn(mockBuilder.pushItemCuration), updatedItemCurations[1]]
+        ])
+        .put(pushChangesThirdPartyItemsSuccess(item.collectionId!, updatedItemCurations))
+        .put(closeModal('PublishThirdPartyCollectionModal'))
+        .dispatch(pushChangesThirdPartyItemsRequest([item, { ...mockedItem, id: 'anotherItemId' }]))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when publishing & pushing changes to third party items', () => {
+  let collection: Collection
+  let item: Item
+  beforeEach(() => {
+    collection = { name: 'valid collection name', id: uuidv4() } as Collection
+    item = {
+      ...mockedItem,
+      collectionId: collection.id
+    }
+  })
+
+  it('should put both publishThirdPartyItemsRequest and pushChangesThirdPartyItemsRequest actions', () => {
+    const itemsToPublish = [item]
+    const itemsToPushChanges = [mockedItem]
+    return expectSaga(thirdPartySaga, mockBuilder)
+      .put(publishThirdPartyItemsRequest(thirdParty, itemsToPublish))
+      .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, itemsToPushChanges))
+      .run({ silenceTimeout: true })
   })
 })

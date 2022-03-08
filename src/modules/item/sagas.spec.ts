@@ -5,13 +5,11 @@ import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { call, select, take, race } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
-import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
-import { ThirdParty } from 'modules/thirdParty/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
@@ -32,9 +30,6 @@ import {
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
   setPriceAndBeneficiaryFailure,
-  publishThirdPartyItemsFailure,
-  publishThirdPartyItemsRequest,
-  publishThirdPartyItemsSuccess,
   downloadItemFailure,
   downloadItemRequest,
   downloadItemSuccess,
@@ -514,140 +509,6 @@ describe('when resetting an item to the state found in the catalyst', () => {
         ])
         .put(resetItemFailure(itemId, 'Entity does not have content'))
         .silentRun()
-    })
-  })
-})
-
-describe('when publishing third party items', () => {
-  describe('and the transaction is sent correctly', () => {
-    let collection: Collection
-    let items: Item[]
-    let thirdParty: ThirdParty
-    let txHash: string
-
-    beforeEach(() => {
-      collection = {
-        id: 'aCollection',
-        name: 'collection name'
-      } as Collection
-
-      items = [
-        {
-          id: 'anItem',
-          name: 'valid name',
-          description: 'valid description',
-          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id:token-id',
-          collectionId: collection.id,
-          data: {
-            category: WearableCategory.HAT,
-            representations: [
-              {
-                bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE],
-                contents: ['model.glb', 'texture.png'],
-                mainFile: 'model.glb',
-                overrideHides: [],
-                overrideReplaces: []
-              }
-            ] as WearableRepresentation[]
-          }
-        }
-      ] as Item[]
-
-      thirdParty = {
-        id: 'aCollection',
-        name: 'tp name'
-      } as ThirdParty
-
-      txHash = '0xdeadbeef'
-    })
-
-    it('should put a publish thrid party items success action and go to activity', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([
-          [select(getCollection, collection.id), collection],
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-          [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
-        ])
-        .put(publishThirdPartyItemsSuccess(txHash, ChainId.MATIC_MUMBAI, thirdParty, collection, items))
-        .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
-        .run({ silenceTimeout: true })
-    })
-
-    describe('and getting the chain id fails', () => {
-      let collection: Collection
-      let items: Item[]
-      let thirdParty: ThirdParty
-      let errorMessage: string
-
-      beforeEach(() => {
-        collection = { id: 'aCollection' } as Collection
-        items = [{ collectionId: collection.id }] as Item[]
-        thirdParty = { id: 'aCollection' } as ThirdParty
-        errorMessage = 'Cannot get a valid chain id for network'
-      })
-
-      it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
-          .provide([
-            [select(getCollection, collection.id), collection],
-            [call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(errorMessage))]
-          ])
-          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
-          .run({ silenceTimeout: true })
-      })
-    })
-
-    describe('and getting the contract fails', () => {
-      let collection: Collection
-      let items: Item[]
-      let thirdParty: ThirdParty
-      let errorMessage: string
-
-      beforeEach(() => {
-        collection = { id: 'aCollection' } as Collection
-        items = [{ collectionId: collection.id }] as Item[]
-        thirdParty = { id: 'aCollection' } as ThirdParty
-        errorMessage = 'Cannot get a valid contract for chain id'
-      })
-
-      it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
-          .provide([
-            [select(getCollection, collection.id), collection],
-            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
-            [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MAINNET), Promise.reject(new Error(errorMessage))]
-          ])
-          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
-          .run({ silenceTimeout: true })
-      })
-    })
-
-    describe('and sending the transaction fails', () => {
-      let collection: Collection
-      let items: Item[]
-      let thirdParty: ThirdParty
-      let errorMessage: string
-
-      beforeEach(() => {
-        collection = { id: 'aCollection' } as Collection
-        items = [{ collectionId: collection.id }] as Item[]
-        thirdParty = { id: 'aCollection' } as ThirdParty
-        errorMessage = 'Rejected trasaction'
-      })
-
-      it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
-          .provide([
-            [select(getCollection, collection.id), collection],
-            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-            [matchers.call.fn(sendTransaction), Promise.reject(new Error(errorMessage))]
-          ])
-          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
-          .run({ silenceTimeout: true })
-      })
     })
   })
 })

@@ -4,7 +4,14 @@ import { Collection } from 'modules/collection/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { Item, SyncStatus } from 'modules/item/types'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
-import { publishThirdPartyItemsRequest, PublishThirdPartyItemsRequestAction } from 'modules/item/actions'
+import {
+  publishAndPushChangesThirdPartyItemsRequest,
+  PublishAndPushChangesThirdPartyItemsRequestAction,
+  publishThirdPartyItemsRequest,
+  PublishThirdPartyItemsRequestAction,
+  pushChangesThirdPartyItemsRequest,
+  PushChangesThirdPartyItemsRequestAction
+} from 'modules/thirdParty/actions'
 
 export type PublishThirdPartyCollectionModalMetadata = {
   collectionId: string
@@ -20,11 +27,13 @@ export type Props = ModalProps & {
   itemsStatus: Record<string, SyncStatus>
   isPublishLoading: boolean
   onPublish: typeof publishThirdPartyItemsRequest
-  onPushChanges: typeof publishThirdPartyItemsRequest // TODO: @TP pushChangesType of action
-  onPublishAndPushChanges: typeof publishThirdPartyItemsRequest // TODO: @TP publishAndPushChanges of action
+  onPushChanges: typeof pushChangesThirdPartyItemsRequest
+  onPublishAndPushChanges: typeof publishAndPushChangesThirdPartyItemsRequest
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = Pick<Props, 'collection' | 'items' | 'thirdParty' | 'isPublishLoading' | 'itemsStatus'>
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPushChanges' | 'onPublishAndPushChanges'>
-export type MapDispatch = Dispatch<PublishThirdPartyItemsRequestAction>
+export type MapDispatch = Dispatch<
+  PublishThirdPartyItemsRequestAction | PushChangesThirdPartyItemsRequestAction | PublishAndPushChangesThirdPartyItemsRequestAction
+>

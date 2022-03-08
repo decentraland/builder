@@ -66,7 +66,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
       onFetchAvailableSlots
     } = this.props
 
-    const shouldFetchItemCurations = collection && thirdParty && !itemCurations && !isLoadingItemCurations && !itemCurationsError
+    const shouldFetchItemCurations =
+      collection && collection.isPublished && thirdParty && !itemCurations && !isLoadingItemCurations && !itemCurationsError
     if (shouldFetchItemCurations) {
       onFetchItemCurations(collection.id)
     }

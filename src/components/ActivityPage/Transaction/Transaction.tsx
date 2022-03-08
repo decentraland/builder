@@ -19,7 +19,7 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
-import { PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, RESCUE_ITEMS_CHUNK_SUCCESS, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
+import { RESCUE_ITEMS_CHUNK_SUCCESS, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
 import {
   MINT_COLLECTION_ITEMS_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
@@ -373,24 +373,6 @@ const Transaction = (props: Props) => {
       )
     }
 
-    case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
-      const { collectionId, collectionName, items } = tx.payload
-      return (
-        <TransactionDetail
-          tx={tx}
-          collectionId={collectionId}
-          text={
-            <T
-              id="transaction.publish_third_party_items"
-              values={{
-                count: items.length,
-                collectionName: <Link to={locations.thirdPartyCollectionDetail(collectionId)}>{collectionName}</Link>
-              }}
-            />
-          }
-        />
-      )
-    }
     case BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS: {
       const { thirdParty, slotsToyBuy } = tx.payload
       return (

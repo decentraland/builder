@@ -1,5 +1,18 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
+  PublishAndPushChangesThirdPartyItemsFailureAction,
+  PublishAndPushChangesThirdPartyItemsSuccessAction,
+  PublishThirdPartyItemsFailureAction,
+  PublishThirdPartyItemsSuccessAction,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
+  PushChangesThirdPartyItemsFailureAction,
+  PushChangesThirdPartyItemsSuccessAction,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
+} from 'modules/thirdParty/actions'
+import {
   FETCH_ITEM_CURATIONS_REQUEST,
   FETCH_ITEM_CURATIONS_SUCCESS,
   FETCH_ITEM_CURATIONS_FAILURE,
@@ -21,7 +34,16 @@ export const INITIAL_STATE: ItemCurationState = {
   error: null
 }
 
-type CurationReducerAction = FetchItemCurationsRequestAction | FetchItemCurationsSuccessAction | FetchItemCurationsFailureAction
+type CurationReducerAction =
+  | FetchItemCurationsRequestAction
+  | FetchItemCurationsSuccessAction
+  | FetchItemCurationsFailureAction
+  | PublishThirdPartyItemsSuccessAction
+  | PublishThirdPartyItemsFailureAction
+  | PushChangesThirdPartyItemsSuccessAction
+  | PushChangesThirdPartyItemsFailureAction
+  | PublishAndPushChangesThirdPartyItemsSuccessAction
+  | PublishAndPushChangesThirdPartyItemsFailureAction
 
 export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, action: CurationReducerAction): ItemCurationState {
   switch (action.type) {
@@ -31,7 +53,7 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         loading: loadingReducer(state.loading, action)
       }
 
-    case FETCH_ITEM_CURATIONS_SUCCESS:
+    case FETCH_ITEM_CURATIONS_SUCCESS: {
       const { itemCurations, collectionId } = action.payload
 
       return {
@@ -43,7 +65,48 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         },
         error: null
       }
+    }
 
+    case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
+      const { itemCurations } = action.payload
+      const oldItemCurations = state.data[action.payload.collection.id]
+      const mergedItemCurations = oldItemCurations ? [...oldItemCurations, ...itemCurations] : itemCurations
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        data: {
+          ...state.data,
+          [action.payload.collection.id]: mergedItemCurations
+        },
+        error: null
+      }
+    }
+
+    case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
+      const { itemCurations } = action.payload
+      const oldItemCurations = state.data[action.payload.collectionId]
+      const mergedItemCurations = oldItemCurations.map(ic => {
+        const newCuration = itemCurations.find(newItemCuration => newItemCuration.itemId === ic.itemId)
+        if (newCuration) {
+          return newCuration
+        }
+        return ic
+      })
+
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        data: {
+          ...state.data,
+          [action.payload.collectionId]: mergedItemCurations
+        },
+        error: null
+      }
+    }
+
+    case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
+    case PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_ITEM_CURATIONS_FAILURE:
       const { error } = action.payload
 

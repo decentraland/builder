@@ -1,6 +1,6 @@
-import { takeLatest, takeEvery, call, put } from 'redux-saga/effects'
+import { takeLatest, takeEvery, call, put, select, all, CallEffect } from 'redux-saga/effects'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract, providers, utils } from 'ethers'
+import { Contract, ethers, providers, utils } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -9,6 +9,12 @@ import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { BuilderAPI } from 'lib/api/builder'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
+import { Collection } from 'modules/collection/types'
+import { getCollection } from 'modules/collection/selectors'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { Item } from 'modules/item/types'
+import { getItemCurations } from 'modules/curations/itemCuration/selectors'
+import { CurationStatus } from 'modules/curations/types'
 import {
   FETCH_THIRD_PARTIES_REQUEST,
   fetchThirdPartiesRequest,
@@ -26,7 +32,19 @@ import {
   FetchThirdPartyAvailableSlotsRequestAction,
   fetchThirdPartyAvailableSlotsSuccess,
   FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
-  fetchThirdPartyAvailableSlotsFailure
+  fetchThirdPartyAvailableSlotsFailure,
+  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
+  PublishThirdPartyItemsRequestAction,
+  publishThirdPartyItemsSuccess,
+  publishThirdPartyItemsFailure,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  PushChangesThirdPartyItemsRequestAction,
+  PublishAndPushChangesThirdPartyItemsRequestAction,
+  publishThirdPartyItemsRequest,
+  pushChangesThirdPartyItemsRequest,
+  pushChangesThirdPartyItemsSuccess,
+  pushChangesThirdPartyItemsFailure
 } from './actions'
 import { applySlotBuySlippage } from './utils'
 import { ThirdParty } from './types'
@@ -41,6 +59,37 @@ export function* getContractInstance(
   return contractInstance
 }
 
+export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
+  const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+  const provider = new ethers.providers.Web3Provider((window as any).ethereum)
+  const signer = provider.getSigner()
+  const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+  const salt = utils.hexlify(utils.randomBytes(32))
+  const domain = {
+    name: thirdPartyContract.name,
+    verifyingContract: thirdPartyContract.address,
+    version: thirdPartyContract.version,
+    salt
+  }
+  const dataToSign = {
+    thirdPartyId,
+    qty,
+    salt
+  }
+  const domainTypes = {
+    ConsumeSlots: [
+      { name: 'thirdPartyId', type: 'string' },
+      { name: 'qty', type: 'uint256' },
+      { name: 'salt', type: 'bytes32' }
+    ]
+  }
+  const signature: string = yield call([signer, '_signTypedData'], domain, domainTypes, dataToSign)
+  const AbiCoderInstance = new utils.AbiCoder()
+  const signedMessage = AbiCoderInstance.encode(['string', 'uint256', 'bytes32'], Object.values(dataToSign))
+
+  return { signature, signedMessage, salt }
+}
+
 export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeEvery(FETCH_THIRD_PARTIES_REQUEST, handleFetchThirdPartiesRequest)
@@ -48,6 +97,9 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, handleBuyThirdPartyItemSlotRequest)
   yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, handleBuyThirdPartyItemSlotSuccess)
   yield takeEvery(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, handleFetchThirdPartyAvailableSlots)
+  yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
+  yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
+  yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -109,5 +161,58 @@ export function* thirdPartySaga(builder: BuilderAPI) {
 
   function* handleBuyThirdPartyItemSlotSuccess() {
     yield put(closeModal('BuyItemSlotsModal'))
+  }
+
+  function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
+    const { thirdParty, items } = action.payload
+    try {
+      const collectionId = items[0].collectionId!
+      const collection: Collection = yield select(getCollection, collectionId)
+
+      const { signature, signedMessage, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
+
+      const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield call(
+        [builder, 'publishCollection'],
+        collectionId,
+        items.map(i => i.id),
+        signedMessage,
+        signature,
+        items.length, // qty
+        salt
+      )
+
+      yield put(publishThirdPartyItemsSuccess(collection, newItems, newItemCurations))
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
+    } catch (error) {
+      yield put(publishThirdPartyItemsFailure(error.message))
+    }
+  }
+
+  function* handlePushChangesThirdPartyItemRequest(action: PushChangesThirdPartyItemsRequestAction) {
+    try {
+      const { items } = action.payload
+      const collectionId = items[0].collectionId
+      if (!collectionId) return
+
+      const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId!)
+      const effects: CallEffect<void>[] = items.map(item => {
+        const curation = itemCurations.find(ic => ic.itemId === item.id)
+        if (curation?.status === CurationStatus.PENDING) {
+          return call([builder, 'updateItemCurationStatus'], item.id, CurationStatus.PENDING)
+        }
+        return call([builder, 'pushItemCuration'], item.id) // FOR CURATIONS REJECTED/APPROVED
+      })
+
+      const newItemsCurations: ItemCuration[] = yield all(effects)
+      yield put(pushChangesThirdPartyItemsSuccess(collectionId, newItemsCurations))
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
+    } catch (error) {
+      yield put(pushChangesThirdPartyItemsFailure(error.message))
+    }
+  }
+
+  function* handlePublishAndPushChangesThirdPartyItemRequest(action: PublishAndPushChangesThirdPartyItemsRequestAction) {
+    const { thirdParty, itemsToPublish, itemsWithChanges } = action.payload
+    yield all([put(publishThirdPartyItemsRequest(thirdParty, itemsToPublish)), put(pushChangesThirdPartyItemsRequest(itemsWithChanges))])
   }
 }
