@@ -271,7 +271,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         const browserItem = items.find(item => item.id === serverItem.id)
 
         if (!browserItem) {
-          throw new Error(`UnsyncedCollection: No matching item in browser`)
+          throw new Error(`UnsyncedCollection: Item found in the server but not in the browser`)
         }
       })
 
