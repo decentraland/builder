@@ -19,12 +19,11 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
 import { locations } from 'routing/locations'
-import { isUserManagerOfThirdParty, MAX_PUBLISH_ITEM_COUNT } from 'modules/thirdParty/utils'
+import { isUserManagerOfThirdParty} from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
-import Info from 'components/Info'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import { AuthorizationModal } from 'components/AuthorizationModal'
@@ -37,7 +36,7 @@ import { ThirdParty } from 'modules/thirdParty/types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
-const PAGE_SIZE = MAX_PUBLISH_ITEM_COUNT
+const PAGE_SIZE = 20
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -295,7 +294,6 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     {t('third_party_collection_detail_page.clear_selection')}
                   </span>
                   &nbsp;
-                  <Info content={t('third_party_collection_detail_page.max_select_count', { count: MAX_PUBLISH_ITEM_COUNT })} />
                 </div>
               ) : null}
 
