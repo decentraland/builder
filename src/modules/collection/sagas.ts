@@ -111,7 +111,7 @@ import {
 } from 'modules/entity/actions'
 import { getCollection, getWalletCollections } from './selectors'
 import { Collection, CollectionType } from './types'
-import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked, getCollectionType } from './utils'
+import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked, getCollectionType, UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -256,6 +256,24 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       if (!collection.salt) {
         throw new Error(yield call(t, 'sagas.item.missing_salt'))
       }
+
+      // Check that items currently in the builder match the items the user wants to publish
+      // This will solve the issue were users could add items in different tabs and not see them in the tab
+      // were the publish is being made, leaving the collection in a corrupted state.
+      const serverItems: Item[] = yield call([builder, builder.fetchCollectionItems], collection.id)
+
+      if (serverItems.length !== items.length) {
+        throw new Error(`${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`)
+      }
+
+      // TODO: Deeper comparison of browser and server items. Compare metadata for example.
+      serverItems.forEach(serverItem => {
+        const browserItem = items.find(item => item.id === serverItem.id)
+
+        if (!browserItem) {
+          throw new Error(`${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`)
+        }
+      })
 
       const from: string = yield select(getAddress)
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
