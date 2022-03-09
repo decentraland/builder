@@ -1123,7 +1123,8 @@
     "content_policy": "Content Policy",
     "accept_by_publishing": "By clicking Publish you are accepting our terms",
     "not_enough_mana": "You don't have enough {symbol} to publish this collection.",
-    "get_mana": "You can get more using the {link} dapp."
+    "get_mana": "You can get more using the {link} dapp.",
+    "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again."
   },
   "publish_third_party_collection_modal": {
     "title": "Publish Third Party Items",

@@ -314,9 +314,9 @@ function toRemoteItem(item: Item): RemoteItem {
     metrics: item.metrics,
     contents: item.contents,
     content_hash: item.contentHash,
+    local_content_hash: item.serverContentHash,
     created_at: new Date(item.createdAt),
-    updated_at: new Date(item.updatedAt),
-    local_content_hash: item.serverContentHash
+    updated_at: new Date(item.updatedAt)
   }
 
   return remoteItem

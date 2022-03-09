@@ -6,7 +6,7 @@ import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
-import { computeHashOfContent } from 'modules/deployment/contentUtils'
+import { computeHashFromContent } from 'modules/deployment/contentUtils'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
@@ -168,7 +168,7 @@ export function toItemObject(items: Item[]) {
 
 export async function generateCatalystImage(item: Item | LocalItem, options?: GenerateImageOptions) {
   const catalystImage = await generateImage(item, options)
-  const catalystImageHash = await computeHashOfContent(catalystImage)
+  const catalystImageHash = await computeHashFromContent(catalystImage)
   return {
     content: catalystImage,
     hash: catalystImageHash
@@ -401,7 +401,7 @@ export function areEqualRepresentations(a: WearableRepresentation[], b: Wearable
 }
 
 export function areSyncedByHash(item: Item): boolean {
-  return Boolean(item.serverContentHash) && item.contentHash === item.serverContentHash
+  return !!item.serverContentHash && item.contentHash === item.serverContentHash
 }
 
 export function areSynced(item: Item, entity: Entity) {

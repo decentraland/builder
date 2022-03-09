@@ -7,12 +7,12 @@ export async function computeHashes(contents: Record<string, Blob>): Promise<Rec
   const contentsAsHashes: Record<string, string> = {}
   for (const path in contents) {
     const blob = contents[path]
-    contentsAsHashes[path] = await computeHashOfContent(blob)
+    contentsAsHashes[path] = await computeHashFromContent(blob)
   }
   return contentsAsHashes
 }
 
-export async function computeHashOfContent(content: Blob): Promise<string> {
+export async function computeHashFromContent(content: Blob): Promise<string> {
   const file = await makeContentFile('', content)
   return calculateBufferHash(file.content)
 }

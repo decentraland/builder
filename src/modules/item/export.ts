@@ -130,7 +130,7 @@ async function buildItemEntityContent(item: Item): Promise<Record<string, string
 
 async function buildItemEntityBlobs(item: Item): Promise<Record<string, Blob>> {
   const [files, image] = await Promise.all([getFiles(item.contents), !item.contents[IMAGE_PATH] ? generateImage(item) : null])
-  files[IMAGE_PATH] = image !== null ? image : files[IMAGE_PATH]
+  files[IMAGE_PATH] = image ?? files[IMAGE_PATH]
   return files
 }
 

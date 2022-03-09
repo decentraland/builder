@@ -9,6 +9,8 @@ import { Item, SyncStatus } from 'modules/item/types'
 import { buildItemContentHash } from 'modules/item/export'
 import { Collection, Access, Mint, CollectionType } from './types'
 
+export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
+
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
   const address = getSaleAddress(wallet.networks.MATIC.chainId)
   return [{ address, hasAccess: isOnSale, collection }]
