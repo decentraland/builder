@@ -49,7 +49,7 @@ import { getItemSlotPrice } from './selectors'
 const mockBuilder = ({
   fetchThirdParties: jest.fn(),
   fetchThirdPartyAvailableSlots: jest.fn(),
-  publishCollection: jest.fn(),
+  publishTPCollection: jest.fn(),
   pushItemCuration: jest.fn(),
   updateItemCurationStatus: jest.fn()
 } as any) as BuilderAPI
