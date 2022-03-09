@@ -39,10 +39,11 @@ import {
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
   PushChangesThirdPartyItemsRequestAction,
   PublishAndPushChangesThirdPartyItemsRequestAction,
-  publishThirdPartyItemsRequest,
-  pushChangesThirdPartyItemsRequest,
   pushChangesThirdPartyItemsSuccess,
-  pushChangesThirdPartyItemsFailure
+  pushChangesThirdPartyItemsFailure,
+  fetchThirdPartyAvailableSlotsRequest,
+  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
+  PublishThirdPartyItemsSuccessAction
 } from './actions'
 import { applySlotBuySlippage } from './utils'
 import { ThirdParty } from './types'
@@ -98,6 +99,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
+  yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -161,21 +163,43 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     yield put(closeModal('BuyItemSlotsModal'))
   }
 
+  function* handlePublishThirdPartyItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
+    const { collectionId } = action.payload
+    yield put(fetchThirdPartyAvailableSlotsRequest(collectionId))
+  }
+
+  function getCollectionId(items: Item[]): string {
+    const collectionId = items[0].collectionId
+    if (!collectionId) {
+      throw new Error('The item does not have a collection associated')
+    }
+    return collectionId
+  }
+
+  function* publishChangesToThirdPartyItems(thirdParty: ThirdParty, items: Item[]) {
+    const collectionId = getCollectionId(items)
+    const { signature, signedMessage, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
+
+    const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield call(
+      [builder, 'publishTPCollection'],
+      collectionId,
+      items.map(i => i.id),
+      signedMessage,
+      signature,
+      items.length, // qty
+      salt
+    )
+    return { newItems, newItemCurations }
+  }
+
   function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
     const { thirdParty, items } = action.payload
     try {
-      const collectionId = items[0].collectionId!
-
-      const { signature, signedMessage, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
-
-      const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield call(
-        [builder, 'publishTPCollection'],
-        collectionId,
-        items.map(i => i.id),
-        signedMessage,
-        signature,
-        items.length, // qty
-        salt
+      const collectionId = getCollectionId(items)
+      const { newItems, newItemCurations }: { newItems: Item[]; newItemCurations: ItemCuration[] } = yield call(
+        publishChangesToThirdPartyItems,
+        thirdParty,
+        items
       )
 
       yield put(publishThirdPartyItemsSuccess(collectionId, newItems, newItemCurations))
@@ -185,24 +209,27 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     }
   }
 
-  function* handlePushChangesThirdPartyItemRequest(action: PushChangesThirdPartyItemsRequestAction) {
-    try {
-      const { items } = action.payload
-      const collectionId = items[0].collectionId
-      if (!collectionId) {
-        throw new Error('The item does not have a collection associated')
+  function* pushChangesToThirdPartyItems(items: Item[]) {
+    const collectionId = getCollectionId(items)
+
+    const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId!)
+    const effects: CallEffect<ItemCuration>[] = items.map(item => {
+      const curation = itemCurations.find(itemCuration => itemCuration.itemId === item.id)
+      if (curation?.status === CurationStatus.PENDING) {
+        return call([builder, 'updateItemCurationStatus'], item.id, CurationStatus.PENDING)
       }
+      return call([builder, 'pushItemCuration'], item.id) // FOR CURATIONS REJECTED/APPROVED
+    })
 
-      const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId!)
-      const effects: CallEffect<void>[] = items.map(item => {
-        const curation = itemCurations.find(itemCuration => itemCuration.itemId === item.id)
-        if (curation?.status === CurationStatus.PENDING) {
-          return call([builder, 'updateItemCurationStatus'], item.id, CurationStatus.PENDING)
-        }
-        return call([builder, 'pushItemCuration'], item.id) // FOR CURATIONS REJECTED/APPROVED
-      })
+    const newItemsCurations: ItemCuration[] = yield all(effects)
+    return newItemsCurations
+  }
 
-      const newItemsCurations: ItemCuration[] = yield all(effects)
+  function* handlePushChangesThirdPartyItemRequest(action: PushChangesThirdPartyItemsRequestAction) {
+    const { items } = action.payload
+    try {
+      const collectionId = getCollectionId(items)
+      const newItemsCurations: ItemCuration[] = yield call(pushChangesToThirdPartyItems, items)
       yield put(pushChangesThirdPartyItemsSuccess(collectionId, newItemsCurations))
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
@@ -212,6 +239,29 @@ export function* thirdPartySaga(builder: BuilderAPI) {
 
   function* handlePublishAndPushChangesThirdPartyItemRequest(action: PublishAndPushChangesThirdPartyItemsRequestAction) {
     const { thirdParty, itemsToPublish, itemsWithChanges } = action.payload
-    yield all([put(publishThirdPartyItemsRequest(thirdParty, itemsToPublish)), put(pushChangesThirdPartyItemsRequest(itemsWithChanges))])
+    const collectionId = getCollectionId(itemsToPublish)
+    // We need to execute this two in secuence, because the push changes will create a new curation if there was one approved.
+    // It will create it with status PENDING, so the publish will fail if it's executed after that event.
+    // Publish items
+    try {
+      const resultFromPublish: { newItems: Item[]; newItemCurations: ItemCuration[] } = yield call(
+        publishChangesToThirdPartyItems,
+        thirdParty,
+        itemsToPublish
+      )
+      yield put(publishThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, resultFromPublish.newItemCurations))
+    } catch (error) {
+      yield put(publishThirdPartyItemsFailure(error.message))
+    }
+
+    // Push changes to items
+    try {
+      const resultFromPush: ItemCuration[] = yield call(pushChangesToThirdPartyItems, itemsWithChanges)
+      yield put(pushChangesThirdPartyItemsSuccess(collectionId, resultFromPush))
+    } catch (error) {
+      yield put(pushChangesThirdPartyItemsFailure(error.message))
+    }
+
+    yield put(closeModal('PublishThirdPartyCollectionModal'))
   }
 }

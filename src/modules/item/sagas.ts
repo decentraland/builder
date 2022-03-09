@@ -308,7 +308,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { collection, items } = action.payload
 
     try {
-      const { items: newItems }: { items: Item[] } = yield call(() => legacyBuilder.publishDCLCollection(collection.id))
+      const { items: newItems }: { items: Item[] } = yield call(() => legacyBuilder.publishStandardCollection(collection.id))
       yield put(setItemsTokenIdSuccess(newItems))
     } catch (error) {
       yield put(setItemsTokenIdFailure(collection, items, error.message))

@@ -659,7 +659,7 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollection(remoteCollection)
   }
 
-  async publishDCLCollection(collectionId: string) {
+  async publishStandardCollection(collectionId: string) {
     const { collection, items }: { collection: RemoteCollection; items: RemoteItem[] } = await this.request(
       'post',
       `/collections/${collectionId}/publish`
@@ -741,7 +741,7 @@ export class BuilderAPI extends BaseAPI {
     return this.request('post', `/collections/${collectionId}/curation`)
   }
 
-  pushItemCuration(itemId: string): Promise<void> {
+  pushItemCuration(itemId: string): Promise<ItemCuration> {
     return this.request('post', `/items/${itemId}/curation`)
   }
 
@@ -769,7 +769,7 @@ export class BuilderAPI extends BaseAPI {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
   }
 
-  updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<void> {
+  updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {
     return this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
   }
 
