@@ -387,8 +387,8 @@ describe('Item selectors', () => {
               representations: [],
               tags: []
             },
-            contentHash: 'aContentHash',
-            serverContentHash: 'aContentHash'
+            blockchainContentHash: 'aContentHash',
+            currentContentHash: 'aContentHash'
           },
           '10': {
             id: '10',
@@ -408,8 +408,8 @@ describe('Item selectors', () => {
               representations: [],
               tags: []
             },
-            contentHash: 'aContentHash',
-            serverContentHash: 'someOtherContentHash'
+            blockchainContentHash: 'aContentHash',
+            currentContentHash: 'someOtherContentHash'
           },
           '11': {
             id: '11',
@@ -430,8 +430,8 @@ describe('Item selectors', () => {
               representations: [],
               tags: []
             },
-            contentHash: 'aContentHash',
-            serverContentHash: 'aContentHash'
+            blockchainContentHash: 'aContentHash',
+            currentContentHash: 'aContentHash'
           },
           '12': {
             id: '12',
@@ -452,8 +452,8 @@ describe('Item selectors', () => {
               representations: [],
               tags: []
             },
-            contentHash: 'aContentHash',
-            serverContentHash: 'someOtherContentHash'
+            blockchainContentHash: 'aContentHash',
+            currentContentHash: 'someOtherContentHash'
           }
         }
       },

@@ -847,7 +847,7 @@ describe('when handling the rescue items request action', () => {
     contentHashes = Array.from({ length: items.length }, (_, i) => `content-hash-${i}`)
     collection = { id: 'aCollection', contractAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' } as Collection
 
-    resultItems = items.map((item, index) => ({ ...item, contentHash: contentHashes[index] }))
+    resultItems = items.map((item, index) => ({ ...item, blockchainContentHash: contentHashes[index] }))
     groupsOfItems = groupsOf(items, MAX_ITEMS)
     groupsOfContentHashes = groupsOf(contentHashes, MAX_ITEMS)
   })
