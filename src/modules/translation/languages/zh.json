@@ -1115,7 +1115,8 @@
     "accept_by_publishing": "通过点击发表您接受我们的条件",
     "publish": "发布",
     "not_enough_mana": "您没有足够的{symbol} 来发布此收藏集。",
-    "get_mana": "您可以使用{link} dapp获得更多信息。"
+    "get_mana": "您可以使用{link} dapp获得更多信息。",
+    "unsynced_collection": "您尝试发布的集合中的项与服务器上的项存在差异。请刷新浏览器，然后重试。"
   },
   "sell_collection_modal": {
     "title": "您想出售您的物品吗？",
