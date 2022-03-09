@@ -145,8 +145,8 @@ export type Item = BaseItem & {
   isApproved: boolean
   inCatalyst: boolean
   contents: Record<string, string>
-  contentHash: string | null
-  serverContentHash: string | null
+  blockchainContentHash: string | null
+  currentContentHash: string | null
   data: WearableData
 }
 

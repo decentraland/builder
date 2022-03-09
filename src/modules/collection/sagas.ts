@@ -551,7 +551,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const items: Item[] = yield getItemsFromCollection(collection)
       for (const item of items) {
         const latestContentHash: string = yield call(getLatestItemHash, collection, item)
-        if (latestContentHash !== item.contentHash) {
+        if (latestContentHash !== item.blockchainContentHash) {
           itemsToRescue.push(item)
           contentHashes.push(latestContentHash)
         }
@@ -723,7 +723,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // use items from state (updated after the fetchItemsSuccess)
       const itemsById: ReturnType<typeof getItemsById> = yield select(getItemsById)
       isIndexed = itemIds.every(id => {
-        const indexedContentHash = itemsById[id].contentHash
+        const indexedContentHash = itemsById[id].blockchainContentHash
         const expectedContentHash = contentHashByItemId.get(id)
         return indexedContentHash === expectedContentHash
       })

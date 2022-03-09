@@ -753,8 +753,8 @@ describe('when handling the save multiple items requests action', () => {
 
   beforeEach(() => {
     items = [
-      { ...mockedItem, serverContentHash: mockedRemoteItem.local_content_hash },
-      { ...mockedItem, id: 'anotherItemId', serverContentHash: mockedRemoteItem.local_content_hash }
+      { ...mockedItem, currentContentHash: mockedRemoteItem.local_content_hash },
+      { ...mockedItem, id: 'anotherItemId', currentContentHash: mockedRemoteItem.local_content_hash }
     ]
     remoteItems = [{ ...mockedRemoteItem }, { ...mockedRemoteItem, id: 'anotherItemId' }]
     savedFiles = ['aFile.zip', 'anotherFile.zip']

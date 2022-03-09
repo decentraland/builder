@@ -15,8 +15,8 @@ export function fromRemoteItem(remoteItem: RemoteItem): Item {
     type: remoteItem.type,
     data: remoteItem.data,
     contents: remoteItem.contents,
-    contentHash: remoteItem.content_hash,
-    serverContentHash: remoteItem.local_content_hash,
+    blockchainContentHash: remoteItem.content_hash,
+    currentContentHash: remoteItem.local_content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)

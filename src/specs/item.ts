@@ -23,7 +23,8 @@ export const mockedItem: Item = {
   isApproved: false,
   inCatalyst: false,
   contents: { 'anItemContent.glb': 'theFileHash', 'thumbnail.png': 'theThumbnailHash' },
-  contentHash: null,
+  blockchainContentHash: null,
+  currentContentHash: null,
   data: {
     category: WearableCategory.HAT,
     representations: [
@@ -38,8 +39,7 @@ export const mockedItem: Item = {
     replaces: [WearableCategory.HELMET],
     hides: [WearableCategory.HAIR],
     tags: ['aHat']
-  },
-  serverContentHash: null
+  }
 }
 
 export const mockedLocalItem: LocalItem = {

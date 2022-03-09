@@ -183,8 +183,8 @@ describe('when checking if an item is synced by hash', () => {
     beforeEach(() => {
       item = {
         ...item,
-        serverContentHash: null,
-        contentHash: 'someHash'
+        currentContentHash: null,
+        blockchainContentHash: 'someHash'
       }
     })
 
@@ -197,7 +197,7 @@ describe('when checking if an item is synced by hash', () => {
     beforeEach(() => {
       item = {
         ...item,
-        serverContentHash: 'someContentHash'
+        currentContentHash: 'someContentHash'
       }
     })
 
@@ -210,8 +210,8 @@ describe('when checking if an item is synced by hash', () => {
     beforeEach(() => {
       item = {
         ...item,
-        serverContentHash: 'someHash',
-        contentHash: 'someHash'
+        currentContentHash: 'someHash',
+        blockchainContentHash: 'someHash'
       }
     })
 

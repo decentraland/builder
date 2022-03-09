@@ -146,7 +146,7 @@ describe('when getting the latest item hash', () => {
   describe('and the item has a hash coming from the server', () => {
     beforeEach(() => {
       resultHash = 'aHash'
-      item = { id: 'anId', serverContentHash: resultHash } as Item
+      item = { id: 'anId', currentContentHash: resultHash } as Item
     })
 
     it('should return the hash coming from the server', () => {
@@ -158,7 +158,7 @@ describe('when getting the latest item hash', () => {
     beforeEach(() => {
       resultHash = 'aHash'
       buildItemContentHashMock.mockResolvedValueOnce(resultHash)
-      item = { id: 'anId', serverContentHash: null } as Item
+      item = { id: 'anId', currentContentHash: null } as Item
     })
 
     it("should return the computed hash of the item's entity", () => {

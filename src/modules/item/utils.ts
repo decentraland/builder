@@ -401,7 +401,7 @@ export function areEqualRepresentations(a: WearableRepresentation[], b: Wearable
 }
 
 export function areSyncedByHash(item: Item): boolean {
-  return !!item.serverContentHash && item.contentHash === item.serverContentHash
+  return !!item.currentContentHash && item.blockchainContentHash === item.currentContentHash
 }
 
 export function areSynced(item: Item, entity: Entity) {

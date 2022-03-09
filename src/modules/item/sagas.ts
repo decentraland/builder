@@ -428,7 +428,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         }
       }
-      const newItems = items.map<Item>((item, index) => ({ ...item, contentHash: contentHashes[index] }))
+      const newItems = items.map<Item>((item, index) => ({ ...item, blockchainContentHash: contentHashes[index] }))
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHashes))
     } catch (error) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))

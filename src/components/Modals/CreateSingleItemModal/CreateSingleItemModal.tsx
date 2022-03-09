@@ -275,7 +275,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           isPublished: false,
           isApproved: false,
           inCatalyst: false,
-          contentHash: null,
+          blockchainContentHash: null,
+          currentContentHash: null,
           rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
           data: {
             category,
@@ -288,8 +289,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           metrics,
           contents: await computeHashes(sortedContents.all),
           createdAt: +new Date(),
-          updatedAt: +new Date(),
-          serverContentHash: null
+          updatedAt: +new Date()
         }
       }
 

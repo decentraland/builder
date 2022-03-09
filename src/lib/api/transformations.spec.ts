@@ -90,8 +90,8 @@ describe('when converting a RemoteItem into an Item', () => {
         textures: 0
       },
       contents: {},
-      contentHash: 'someHash',
-      serverContentHash: 'someOtherHash',
+      blockchainContentHash: 'someHash',
+      currentContentHash: 'someOtherHash',
       isPublished: false,
       isApproved: true,
       inCatalyst: true,

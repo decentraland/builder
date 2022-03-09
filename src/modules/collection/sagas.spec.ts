@@ -52,7 +52,7 @@ const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
     collectionId: collection.id,
     name: 'An Item',
     description: 'This is an item',
-    contentHash: 'QmSynced',
+    blockchainContentHash: 'QmSynced',
     contents: { 'thumbnail.png': 'QmThumbnailHash' } as Record<string, string>,
     data: {
       category: WearableCategory.HAT,
@@ -125,7 +125,7 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
     const updatedItem = {
@@ -139,7 +139,7 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
           [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
@@ -195,7 +195,7 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
     const updatedItem = {
@@ -210,7 +210,7 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
           [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
@@ -266,8 +266,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), items],
-          [call(getLatestItemHash, collection, items[0]), items[0].contentHash],
-          [call(getLatestItemHash, collection, items[1]), items[1].contentHash],
+          [call(getLatestItemHash, collection, items[0]), items[0].blockchainContentHash],
+          [call(getLatestItemHash, collection, items[1]), items[1].blockchainContentHash],
           [select(getItems), items],
           [
             select(getEntityByItemId),
@@ -300,7 +300,7 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
     const updatedItem = {
@@ -312,7 +312,7 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
           [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash]
         ])
         .dispatch(initiateApprovalFlow(collection))
@@ -347,7 +347,7 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
     const updatedItem = {
@@ -362,7 +362,7 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
           [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
@@ -412,7 +412,7 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
     const updatedItem = {
@@ -427,7 +427,7 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
           [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
@@ -484,7 +484,7 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
     const updatedItem = {
@@ -501,7 +501,7 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
           [call(getLatestItemHash, collection, unsyncedItem), updatedItem.contentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
