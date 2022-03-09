@@ -670,7 +670,7 @@ export class BuilderAPI extends BaseAPI {
     }
   }
 
-  async publishCollection(collectionId: string, itemIds: string[], signedMessage: string, signature: string, qty: number, salt: string) {
+  async publishTPCollection(collectionId: string, itemIds: string[], signedMessage: string, signature: string, qty: number, salt: string) {
     const {
       collection,
       items,

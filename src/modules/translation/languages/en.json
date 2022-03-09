@@ -896,7 +896,6 @@
     "allowed_claim_mana": "Allowed MANA to claim a new name",
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
-    "publish_third_party_items": "Published {count, plural, one {# item} other {# items}} for {collectionName}",
     "buy_third_party_item_slots": "Bought {count} {count, plural, one {slot} other {slots}} for the third party \"{name}\"",
     "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
   },

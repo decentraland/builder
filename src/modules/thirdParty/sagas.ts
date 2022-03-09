@@ -169,7 +169,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       const { signature, signedMessage, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
 
       const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield call(
-        [builder, 'publishCollection'],
+        [builder, 'publishTPCollection'],
         collectionId,
         items.map(i => i.id),
         signedMessage,
@@ -189,11 +189,13 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     try {
       const { items } = action.payload
       const collectionId = items[0].collectionId
-      if (!collectionId) return
+      if (!collectionId) {
+        throw new Error('The item does not have a collection associated')
+      }
 
       const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId!)
       const effects: CallEffect<void>[] = items.map(item => {
-        const curation = itemCurations.find(ic => ic.itemId === item.id)
+        const curation = itemCurations.find(itemCuration => itemCuration.itemId === item.id)
         if (curation?.status === CurationStatus.PENDING) {
           return call([builder, 'updateItemCurationStatus'], item.id, CurationStatus.PENDING)
         }

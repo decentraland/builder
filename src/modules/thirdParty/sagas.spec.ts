@@ -295,7 +295,7 @@ describe('when publishing third party items', () => {
         .provide([
           [select(getCollection, mockedItem.collectionId), collection],
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
-          [matchers.call.fn(mockBuilder.publishCollection), throwError(new Error(errorMessage))]
+          [matchers.call.fn(mockBuilder.publishTPCollection), throwError(new Error(errorMessage))]
         ])
         .put(publishThirdPartyItemsFailure(errorMessage))
         .dispatch(publishThirdPartyItemsRequest(thirdParty, [mockedItem]))
@@ -323,7 +323,7 @@ describe('when publishing third party items', () => {
         .provide([
           [select(getCollection, mockedItem.collectionId), collection],
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
-          [matchers.call.fn(mockBuilder.publishCollection), { items: [], itemCurations }]
+          [matchers.call.fn(mockBuilder.publishTPCollection), { items: [], itemCurations }]
         ])
         .put(publishThirdPartyItemsSuccess(mockedItem.collectionId!, [], itemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))

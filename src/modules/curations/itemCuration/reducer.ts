@@ -63,9 +63,9 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
     }
 
     case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
-      const { itemCurations } = action.payload
-      const oldItemCurations = state.data[action.payload.collectionId]
-      const mergedItemCurations = oldItemCurations ? [...oldItemCurations, ...itemCurations] : itemCurations
+      const { itemCurations, collectionId } = action.payload
+      const oldItemCurations = state.data[collectionId]
+      const mergedItemCurations = oldItemCurations ? [...oldItemCurations, ...itemCurations] : [...itemCurations]
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -78,14 +78,10 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
     }
 
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
-      const { itemCurations } = action.payload
-      const oldItemCurations = state.data[action.payload.collectionId]
-      const mergedItemCurations = oldItemCurations.map(ic => {
-        const newCuration = itemCurations.find(newItemCuration => newItemCuration.itemId === ic.itemId)
-        if (newCuration) {
-          return newCuration
-        }
-        return ic
+      const { itemCurations, collectionId } = action.payload
+      const oldItemCurations = state.data[collectionId]
+      const mergedItemCurations = oldItemCurations.map(itemCuration => {
+        return itemCurations.find(newItemCuration => newItemCuration.itemId === itemCuration.itemId) || itemCuration
       })
 
       return {
