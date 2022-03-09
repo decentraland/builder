@@ -158,8 +158,8 @@ export default class CurationPage extends React.PureComponent<Props, State> {
 
               <Table.Body>
                 {collections.length > 0 ? (
-                  paginatedCollections.map((collection, index) => (
-                    <CollectionRow key={index} collection={collection} curation={curationsByCollectionId[collection.id] || null} />
+                  paginatedCollections.map((collection) => (
+                    <CollectionRow key={collection.id} collection={collection} curation={curationsByCollectionId[collection.id] || null} />
                   ))
                 ) : (
                   <Empty height={200}>

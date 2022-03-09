@@ -715,7 +715,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const itemIds = items.map(item => item.id)
     while (!isIndexed) {
       yield delay(1000)
-      yield put(fetchItemsRequest())
+      yield put(fetchItemsRequest({ itemIds: items.map(i => i.id) }))
       yield race({
         success: take(FETCH_ITEMS_SUCCESS),
         failure: take(FETCH_ITEMS_FAILURE)

@@ -137,9 +137,16 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
-    const { address } = action.payload
+    const { address, itemIds } = action.payload
     try {
-      const items: Item[] = yield call(() => legacyBuilder.fetchItems(address))
+      let items: Item[]
+
+      if (itemIds) {
+        items = yield call([Promise, 'all'], [itemIds.map(id => legacyBuilder.fetchItem(id))])
+      } else {
+        items = yield call([legacyBuilder, 'fetchItems'], address)
+      }
+
       yield put(fetchItemsSuccess(items))
     } catch (error) {
       yield put(fetchItemsFailure(error.message))
@@ -288,7 +295,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
-    yield put(fetchItemsRequest(wallet.address))
+    yield put(fetchItemsRequest({ address: wallet.address }))
   }
 
   function* handleSetCollection(action: SetCollectionAction) {

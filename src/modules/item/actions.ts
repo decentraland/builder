@@ -10,7 +10,8 @@ export const FETCH_ITEMS_REQUEST = '[Request] Fetch Items'
 export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
 export const FETCH_ITEMS_FAILURE = '[Failure] Fetch Items'
 
-export const fetchItemsRequest = (address?: string) => action(FETCH_ITEMS_REQUEST, { address })
+export const fetchItemsRequest = ({ address, itemIds }: { address?: string; itemIds?: string[] } = {}) =>
+  action(FETCH_ITEMS_REQUEST, { address, itemIds })
 export const fetchItemsSuccess = (items: Item[]) => action(FETCH_ITEMS_SUCCESS, { items })
 export const fetchItemsFailure = (error: string) => action(FETCH_ITEMS_FAILURE, { error })
 

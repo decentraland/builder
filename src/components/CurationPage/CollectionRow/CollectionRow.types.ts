@@ -8,9 +8,10 @@ export type Props = {
   curation: CollectionCuration | null
   items: Item[]
   onNavigate: (path: string) => void
+  onFetchCollectionItems: (collectionId: string) => void
 }
 
 export type MapStateProps = Pick<Props, 'items'>
-export type MapDispatchProps = Pick<Props, 'onNavigate'>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onFetchCollectionItems'>
 export type MapDispatch = Dispatch
 export type OwnProps = Pick<Props, 'collection' | 'curation'>

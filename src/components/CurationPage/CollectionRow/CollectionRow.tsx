@@ -14,6 +14,11 @@ import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
 
 export default class CollectionRow extends React.PureComponent<Props> {
+  componentDidMount = () => {
+    const { collection, onFetchCollectionItems } = this.props
+    onFetchCollectionItems(collection.id)
+  }
+
   handleNavigateToForum = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     const { collection } = this.props
     window.open(collection.forumLink!, '_blank')
