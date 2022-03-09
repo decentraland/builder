@@ -680,10 +680,12 @@ export class BuilderAPI extends BaseAPI {
       `/collections/${collectionId}/publish`,
       {
         itemIds,
-        signedMessage,
-        signature,
-        qty,
-        salt
+        cheque: {
+          signedMessage,
+          signature,
+          qty,
+          salt
+        }
       }
     )
     return {
