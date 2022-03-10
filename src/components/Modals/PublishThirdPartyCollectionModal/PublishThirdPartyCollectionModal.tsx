@@ -3,16 +3,31 @@ import { ModalNavigation, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SyncStatus } from 'modules/item/types'
-import { isStatusAllowedToPushChanges } from 'modules/item/utils'
+import { isAllowedToPushChanges } from 'modules/item/utils'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import { getTPButtonActionLabel } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton'
 import { Props } from './PublishThirdPartyCollectionModal.types'
 
 export default class PublishThirdPartyCollectionModal extends React.PureComponent<Props> {
+  getItemsToPublish = () => {
+    const { items, itemsStatus } = this.props
+    return items.filter(item => itemsStatus[item.id] === SyncStatus.UNPUBLISHED)
+  }
+
+  getItemsWithChanges = () => {
+    const { items, itemsStatus, itemCurations } = this.props
+    return items.filter(item =>
+      isAllowedToPushChanges(
+        item,
+        itemsStatus[item.id],
+        itemCurations.find(itemCuration => itemCuration.itemId === item.id)
+      )
+    )
+  }
+
   handleSubmit = () => {
     const {
       items,
-      itemsStatus,
       thirdParty,
       onPublish,
       onPushChanges,
@@ -27,11 +42,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
         onPushChanges(items)
         break
       case PublishButtonAction.PUBLISH_AND_PUSH_CHANGES:
-        onPublishAndPushChanges(
-          thirdParty,
-          items.filter(item => itemsStatus[item.id] === SyncStatus.UNPUBLISHED), // the ones to publish
-          items.filter(item => isStatusAllowedToPushChanges(itemsStatus[item.id])) // the ones with changes
-        )
+        onPublishAndPushChanges(thirdParty, this.getItemsToPublish(), this.getItemsWithChanges())
         break
       default:
         onPublish(thirdParty, items)
@@ -40,24 +51,24 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
   }
 
   getModalDescriptionText = () => {
-    const { items, thirdParty, collection, itemsStatus } = this.props
+    const { items, thirdParty, collection } = this.props
 
-    const itemsToPublish = Object.values(itemsStatus).filter(status => status === SyncStatus.UNPUBLISHED).length
-    const itemsToPushChanges = Object.values(itemsStatus).filter(isStatusAllowedToPushChanges).length
+    const itemsToPublishLength = this.getItemsToPublish().length
+    const itemsToPushChangesLength = this.getItemsWithChanges().length
 
-    const isPublishingAndPushingChanges = itemsToPushChanges > 0 && itemsToPublish > 0
-    const isJustPushingChanges = itemsToPushChanges > 0 && !itemsToPublish
+    const isPublishingAndPushingChanges = itemsToPushChangesLength > 0 && itemsToPublishLength > 0
+    const isJustPushingChanges = itemsToPushChangesLength > 0 && !itemsToPublishLength
 
     if (isPublishingAndPushingChanges) {
       return t('publish_third_party_collection_modal.publish_and_push_changes_description', {
-        slotsToUse: itemsToPublish,
-        itemsWithChanges: itemsToPushChanges,
+        slotsToUse: itemsToPublishLength,
+        itemsWithChanges: itemsToPushChangesLength,
         availableSlots: thirdParty?.availableSlots,
         collectionName: collection!.name
       })
     } else if (isJustPushingChanges) {
       return t('publish_third_party_collection_modal.push_changes_description', {
-        itemsWithChanges: itemsToPushChanges,
+        itemsWithChanges: itemsToPushChangesLength,
         collectionName: collection!.name
       })
     }

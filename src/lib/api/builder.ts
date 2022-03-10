@@ -163,6 +163,7 @@ export type RemoteCollectionCuration = {
 
 export type RemoteItemCuration = {
   item_id: string
+  content_hash: string
 } & BaseCuration
 
 /**
@@ -417,7 +418,8 @@ function fromRemoteCollectionCuration(remoteCuration: RemoteCollectionCuration):
 function fromRemoteItemCuration(remoteCuration: RemoteItemCuration): ItemCuration {
   return {
     ...getBaseCurationFields(remoteCuration),
-    itemId: remoteCuration.item_id
+    itemId: remoteCuration.item_id,
+    contentHash: remoteCuration.content_hash
   }
 }
 
