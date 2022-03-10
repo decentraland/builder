@@ -21,7 +21,9 @@ export default class CollectionImage extends React.PureComponent<Props> {
     return (
       <div className="CollectionImage is-image">
         {isLoading ? (
-          <Loader active size="tiny" />
+          <div className='item-row loading'>
+            <Loader active size="tiny" inline />
+          </div>
         ) : items.length === 0 ? (
           <div className="item-row empty">
             <div className="sparkles" />
