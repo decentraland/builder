@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { getCollection, getLoading as getCollectionLoading } from 'modules/collection/selectors'
+import { getCollection, getLoading as getCollectionLoading, getUnsyncedCollectionError } from 'modules/collection/selectors'
 import { getLoading as getItemLoading, getCollectionItems } from 'modules/item/selectors'
 import { publishCollectionRequest, PUBLISH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
@@ -18,6 +18,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     collection: getCollection(state, collectionId),
     items: getCollectionItems(state, collectionId),
     rarities: getRarities(state),
+    unsyncedCollectionError: getUnsyncedCollectionError(state),
     isPublishLoading: isLoadingType(getCollectionLoading(state), PUBLISH_COLLECTION_REQUEST),
     isFetchingItems: isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST),
     isFetchingRarities: isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST)

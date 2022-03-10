@@ -117,6 +117,10 @@
   text-align: center;
 }
 
+.PublishCollectionModal .error {
+  color: var(--error) !important;
+}
+
 .PublishCollectionModal.ui.modal .actions.third-step-footer > button {
   margin-left: 40px;
   margin-right: 40px;
