@@ -271,10 +271,9 @@ export function* thirdPartySaga(builder: BuilderAPI) {
 
       yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
       yield put(fetchThirdPartyAvailableSlotsRequest(collectionId)) // re-fetch available slots after publishing
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
       yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
     }
-
-    yield put(closeModal('PublishThirdPartyCollectionModal'))
   }
 }
