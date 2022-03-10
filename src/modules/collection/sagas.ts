@@ -92,7 +92,7 @@ import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getDat
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
-import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
+import { buildItemEntity } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
@@ -111,7 +111,15 @@ import {
 } from 'modules/entity/actions'
 import { getCollection, getWalletCollections } from './selectors'
 import { Collection, CollectionType } from './types'
-import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked, getCollectionType, UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
+import {
+  isOwner,
+  getCollectionBaseURI,
+  getCollectionSymbol,
+  isLocked,
+  getCollectionType,
+  getLatestItemHash,
+  UNSYNCED_COLLECTION_ERROR_PREFIX
+} from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -542,10 +550,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const contentHashes: string[] = []
       const items: Item[] = yield getItemsFromCollection(collection)
       for (const item of items) {
-        const contentHash: string = yield call(buildItemContentHash, collection, item)
-        if (item.contentHash !== contentHash) {
+        const latestContentHash: string = yield call(getLatestItemHash, collection, item)
+        if (latestContentHash !== item.blockchainContentHash) {
           itemsToRescue.push(item)
-          contentHashes.push(contentHash)
+          contentHashes.push(latestContentHash)
         }
       }
 
@@ -715,7 +723,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // use items from state (updated after the fetchItemsSuccess)
       const itemsById: ReturnType<typeof getItemsById> = yield select(getItemsById)
       isIndexed = itemIds.every(id => {
-        const indexedContentHash = itemsById[id].contentHash
+        const indexedContentHash = itemsById[id].blockchainContentHash
         const expectedContentHash = contentHashByItemId.get(id)
         return indexedContentHash === expectedContentHash
       })

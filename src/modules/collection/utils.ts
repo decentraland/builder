@@ -6,6 +6,7 @@ import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
+import { buildItemContentHash } from 'modules/item/export'
 import { Collection, Access, Mint, CollectionType } from './types'
 
 export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
@@ -115,4 +116,13 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
   const indexA = sorted.indexOf(statusA)
   const indexB = sorted.indexOf(statusB)
   return indexA < indexB ? statusA : statusB
+}
+
+export function getLatestItemHash(collection: Collection, item: Item): Promise<string> {
+  // Only old un-updated items don't have a content hash in the server
+  if (item.currentContentHash) {
+    return Promise.resolve(item.currentContentHash)
+  }
+
+  return buildItemContentHash(collection, item)
 }

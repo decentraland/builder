@@ -11,7 +11,7 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
-import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
+import { buildItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
 import { Item, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
@@ -41,7 +41,7 @@ import {
 } from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
-import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
+import { getLatestItemHash, UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 const getCollection = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
@@ -52,7 +52,7 @@ const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
     collectionId: collection.id,
     name: 'An Item',
     description: 'This is an item',
-    contentHash: 'QmSynced',
+    blockchainContentHash: 'QmSynced',
     contents: { 'thumbnail.png': 'QmThumbnailHash' } as Record<string, string>,
     data: {
       category: WearableCategory.HAT,
@@ -125,12 +125,12 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
-    const updatedItem = {
+    const updatedItem: Item = {
       ...unsyncedItem,
-      contentHash: 'QmNewContentHash'
+      blockchainContentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
@@ -139,8 +139,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -158,10 +158,10 @@ describe('when executing the approval flow', () => {
             view: ApprovalFlowModalView.RESCUE,
             collection,
             items: [unsyncedItem],
-            contentHashes: [updatedItem.contentHash]
+            contentHashes: [updatedItem.blockchainContentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(
@@ -195,12 +195,12 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
-    const updatedItem = {
+    const updatedItem: Item = {
       ...unsyncedItem,
-      contentHash: 'QmNewContentHash'
+      blockchainContentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
@@ -210,8 +210,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -230,10 +230,10 @@ describe('when executing the approval flow', () => {
             view: ApprovalFlowModalView.RESCUE,
             collection,
             items: [unsyncedItem],
-            contentHashes: [updatedItem.contentHash]
+            contentHashes: [updatedItem.blockchainContentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(
@@ -266,8 +266,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), items],
-          [call(buildItemContentHash, collection, items[0]), items[0].contentHash],
-          [call(buildItemContentHash, collection, items[1]), items[1].contentHash],
+          [call(getLatestItemHash, collection, items[0]), items[0].blockchainContentHash],
+          [call(getLatestItemHash, collection, items[1]), items[1].blockchainContentHash],
           [select(getItems), items],
           [
             select(getEntityByItemId),
@@ -300,20 +300,20 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
-    const updatedItem = {
+    const updatedItem: Item = {
       ...unsyncedItem,
-      contentHash: 'QmNewContentHash'
+      blockchainContentHash: 'QmNewContentHash'
     }
     const rescueError = 'Rescue Transaction Error'
     it('should open the modal in an error state', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash]
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -327,10 +327,10 @@ describe('when executing the approval flow', () => {
             view: ApprovalFlowModalView.RESCUE,
             collection,
             items: [unsyncedItem],
-            contentHashes: [updatedItem.contentHash]
+            contentHashes: [updatedItem.blockchainContentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsFailure(collection, [unsyncedItem], [updatedItem.contentHash], rescueError))
+        .dispatch(rescueItemsFailure(collection, [unsyncedItem], [updatedItem.blockchainContentHash!], rescueError))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.ERROR,
@@ -347,12 +347,12 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
-    const updatedItem = {
+    const updatedItem: Item = {
       ...unsyncedItem,
-      contentHash: 'QmNewContentHash'
+      blockchainContentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
@@ -362,8 +362,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -381,10 +381,10 @@ describe('when executing the approval flow', () => {
             view: ApprovalFlowModalView.RESCUE,
             collection,
             items: [unsyncedItem],
-            contentHashes: [updatedItem.contentHash]
+            contentHashes: [updatedItem.blockchainContentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(
@@ -412,12 +412,12 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
-    const updatedItem = {
+    const updatedItem: Item = {
       ...unsyncedItem,
-      contentHash: 'QmNewContentHash'
+      blockchainContentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
@@ -427,8 +427,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -446,10 +446,10 @@ describe('when executing the approval flow', () => {
             view: ApprovalFlowModalView.RESCUE,
             collection,
             items: [unsyncedItem],
-            contentHashes: [updatedItem.contentHash]
+            contentHashes: [updatedItem.blockchainContentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(
@@ -484,12 +484,12 @@ describe('when executing the approval flow', () => {
     const syncedItem = getItem(collection)
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
-      contentHash: 'QmOldContentHash',
+      blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
-    const updatedItem = {
+    const updatedItem: Item = {
       ...unsyncedItem,
-      contentHash: 'QmNewContentHash'
+      blockchainContentHash: 'QmNewContentHash'
     }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
@@ -501,8 +501,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(buildItemContentHash, collection, syncedItem), syncedItem.contentHash],
-          [call(buildItemContentHash, collection, unsyncedItem), updatedItem.contentHash],
+          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
+          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -521,10 +521,10 @@ describe('when executing the approval flow', () => {
             view: ApprovalFlowModalView.RESCUE,
             collection,
             items: [unsyncedItem],
-            contentHashes: [updatedItem.contentHash]
+            contentHashes: [updatedItem.blockchainContentHash]
           } as ApprovalFlowModalMetadata)
         )
-        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.contentHash], ChainId.MATIC_MAINNET, ['0xhash']))
+        .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchItemsRequest())
         .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
         .put(

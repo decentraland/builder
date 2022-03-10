@@ -19,7 +19,7 @@ import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
 import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
 import { Item, SyncStatus, Rarity, CatalystItem } from './types'
-import { areSynced, canSeeItem, isOwner } from './utils'
+import { areSynced, areSyncedByHash, canSeeItem, isOwner } from './utils'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -98,7 +98,14 @@ export const getEntityByItemId = createSelector<RootState, Entity[], Record<stri
 
 const getItemSyncedStatus = (item: Item, entity: Entity | null) => {
   let status = SyncStatus.UNSYNCED
-  if (!entity) {
+  const hasHashes = item.blockchainContentHash && item.currentContentHash
+  if (hasHashes) {
+    if (areSyncedByHash(item)) {
+      status = SyncStatus.SYNCED
+    } else {
+      status = SyncStatus.UNSYNCED
+    }
+  } else if (!entity) {
     status = SyncStatus.LOADING
   } else if (areSynced(item, entity)) {
     status = SyncStatus.SYNCED

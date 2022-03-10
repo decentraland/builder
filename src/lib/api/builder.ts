@@ -52,6 +52,7 @@ export type RemoteItem = {
   content_hash: string | null
   created_at: Date
   updated_at: Date
+  local_content_hash: string | null
 }
 
 export type RemoteCollection = {
@@ -312,7 +313,8 @@ function toRemoteItem(item: Item): RemoteItem {
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
-    content_hash: item.contentHash,
+    content_hash: item.blockchainContentHash,
+    local_content_hash: item.currentContentHash,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
@@ -333,7 +335,8 @@ function fromRemoteItem(remoteItem: RemoteItem) {
     type: remoteItem.type,
     data: remoteItem.data,
     contents: remoteItem.contents,
-    contentHash: remoteItem.content_hash,
+    currentContentHash: remoteItem.local_content_hash,
+    blockchainContentHash: remoteItem.content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)
