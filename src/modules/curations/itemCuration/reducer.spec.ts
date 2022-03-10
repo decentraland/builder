@@ -6,13 +6,17 @@ import {
   publishThirdPartyItemsFailure,
   publishThirdPartyItemsRequest,
   publishThirdPartyItemsSuccess,
+  publishAndPushChangesThirdPartyItemsRequest,
   pushChangesThirdPartyItemsFailure,
   pushChangesThirdPartyItemsRequest,
-  pushChangesThirdPartyItemsSuccess
+  pushChangesThirdPartyItemsSuccess,
+  publishAndPushChangesThirdPartyItemsFailure,
+  publishAndPushChangesThirdPartyItemsSuccess
 } from 'modules/thirdParty/actions'
 import { CurationStatus } from '../types'
 import { ItemCuration } from './types'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { mockedItem } from 'specs/item'
 
 const getMockItemCuration = (props: Partial<ItemCuration> = {}): ItemCuration => ({
   id: 'id',
@@ -21,6 +25,57 @@ const getMockItemCuration = (props: Partial<ItemCuration> = {}): ItemCuration =>
   createdAt: 0,
   updatedAt: 0,
   ...props
+})
+
+describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_REQUEST is called', () => {
+  let thirdParty: ThirdParty
+  beforeEach(() => {
+    thirdParty = {
+      id: '1',
+      name: 'a third party',
+      description: 'some desc',
+      managers: ['0x1', '0x2'],
+      maxItems: '0',
+      totalItems: '0'
+    }
+  })
+  it('should add a publishThirdPartyItemsRequest to the loading array', () => {
+    expect(itemCurationReducer(INITIAL_STATE, publishThirdPartyItemsRequest(thirdParty, []))).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [publishThirdPartyItemsRequest(thirdParty, [])]
+    })
+  })
+})
+
+describe('when an action of type PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST is called', () => {
+  it('should add a pushChangesThirdPartyItemsRequest to the loading array', () => {
+    expect(itemCurationReducer(INITIAL_STATE, pushChangesThirdPartyItemsRequest([]))).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [pushChangesThirdPartyItemsRequest([])]
+    })
+  })
+})
+
+describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST is called', () => {
+  let thirdParty: ThirdParty
+  beforeEach(() => {
+    thirdParty = {
+      id: '1',
+      name: 'a third party',
+      description: 'some desc',
+      managers: ['0x1', '0x2'],
+      maxItems: '0',
+      totalItems: '0'
+    }
+  })
+  it('should add a publishAndPushChangesThirdPartyItemsRequest to the loading array', () => {
+    expect(
+      itemCurationReducer(INITIAL_STATE, publishAndPushChangesThirdPartyItemsRequest(thirdParty, [mockedItem], [mockedItem]))
+    ).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty, [mockedItem], [mockedItem])]
+    })
+  })
 })
 
 describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', () => {
@@ -70,6 +125,36 @@ describe('when an action of type PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS is calle
   })
 })
 
+describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS is called', () => {
+  let collection: Collection
+  let itemCurationsFromPush: ItemCuration[]
+  let itemCurationsFromPublish: ItemCuration[]
+  beforeEach(() => {
+    collection = { id: 'collectionId' } as Collection
+    itemCurationsFromPush = [getMockItemCuration({ createdAt: 2 })] // push returns a new curation for the mockItem
+    itemCurationsFromPublish = [getMockItemCuration({ createdAt: 3, itemId: 'another itemId' })] // publish returns a new curation for a different item
+  })
+  it('should replace the old curation for the new ones returned by the publish & push', () => {
+    const state = {
+      ...INITIAL_STATE,
+      data: {
+        collectionId: [getMockItemCuration({ createdAt: 1 })]
+      }
+    }
+    expect(
+      itemCurationReducer(
+        state,
+        publishAndPushChangesThirdPartyItemsSuccess(collection.id, [], [...itemCurationsFromPublish, ...itemCurationsFromPush])
+      )
+    ).toStrictEqual({
+      ...state,
+      data: {
+        collectionId: [getMockItemCuration({ createdAt: 3, itemId: 'another itemId' }), getMockItemCuration({ createdAt: 2 })]
+      }
+    })
+  })
+})
+
 describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_FAILURE is called', () => {
   let thirdParty: ThirdParty
   beforeEach(() => {
@@ -87,6 +172,31 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_FAILURE is called', (
       itemCurationReducer(
         { ...INITIAL_STATE, loading: [publishThirdPartyItemsRequest(thirdParty, [])] },
         publishThirdPartyItemsFailure('Some Error')
+      )
+    ).toStrictEqual({
+      ...INITIAL_STATE,
+      error: 'Some Error'
+    })
+  })
+})
+
+describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE is called', () => {
+  let thirdParty: ThirdParty
+  beforeEach(() => {
+    thirdParty = {
+      id: '1',
+      name: 'a third party',
+      description: 'some desc',
+      managers: ['0x1', '0x2'],
+      maxItems: '0',
+      totalItems: '0'
+    }
+  })
+  it('should remove the corresponding request action, and set the error', () => {
+    expect(
+      itemCurationReducer(
+        { ...INITIAL_STATE, loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty, [], [])] },
+        publishAndPushChangesThirdPartyItemsFailure('Some Error')
       )
     ).toStrictEqual({
       ...INITIAL_STATE,

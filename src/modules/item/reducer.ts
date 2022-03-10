@@ -90,7 +90,12 @@ import {
   SAVE_MULTIPLE_ITEMS_CANCELLED,
   RescueItemsChunkSuccessAction
 } from './actions'
-import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
+import {
+  PublishThirdPartyItemsSuccessAction,
+  PublishAndPushChangesThirdPartyItemsSuccessAction,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS
+} from 'modules/thirdParty/actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
@@ -138,6 +143,7 @@ type ItemReducerAction =
   | FetchRaritiesSuccessAction
   | FetchRaritiesFailureAction
   | PublishThirdPartyItemsSuccessAction
+  | PublishAndPushChangesThirdPartyItemsSuccessAction
   | RescueItemsRequestAction
   | RescueItemsSuccessAction
   | RescueItemsChunkSuccessAction
@@ -360,6 +366,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             }
           }
         }
+        case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
+        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS:
         case PUBLISH_COLLECTION_SUCCESS: {
           const items: Item[] = transaction.payload.items
           return {
@@ -368,19 +376,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               ...state.data,
               ...items.reduce((accum, item) => {
                 accum[item.id] = { ...state.data[item.id], ...item, isPublished: true }
-                return accum
-              }, {} as ItemState['data'])
-            }
-          }
-        }
-        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
-          const items: Item[] = transaction.payload.items
-          return {
-            ...state,
-            data: {
-              ...state.data,
-              ...items.reduce((accum, item) => {
-                accum[item.id] = item
                 return accum
               }, {} as ItemState['data'])
             }

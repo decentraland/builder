@@ -33,7 +33,9 @@ import {
   pushChangesThirdPartyItemsFailure,
   pushChangesThirdPartyItemsRequest,
   pushChangesThirdPartyItemsSuccess,
-  publishAndPushChangesThirdPartyItemsRequest
+  publishAndPushChangesThirdPartyItemsRequest,
+  publishAndPushChangesThirdPartyItemsFailure,
+  publishAndPushChangesThirdPartyItemsSuccess
 } from './actions'
 import { mockedItem } from 'specs/item'
 import { getCollection } from 'modules/collection/selectors'
@@ -281,9 +283,17 @@ describe('when fetching third party available slots', () => {
 describe('when publishing third party items', () => {
   let collection: Collection
   let item: Item
+  let signature: string
+  let signedMessage: string
+  let salt: string
+  let qty: number
   beforeEach(() => {
     collection = { name: 'valid collection name' } as Collection
     item = { ...mockedItem, collectionId: 'a valid collectionId' }
+    signature = 'a signature'
+    signedMessage = 'a signed message'
+    salt = '0xsalt'
+    qty = 1
   })
 
   describe('when the api request fails', () => {
@@ -297,8 +307,11 @@ describe('when publishing third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [select(getCollection, item.collectionId), collection],
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
-          [matchers.call.fn(mockBuilder.publishTPCollection), throwError(new Error(errorMessage))]
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
+          [
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            throwError(new Error(errorMessage))
+          ]
         ])
         .put(publishThirdPartyItemsFailure(errorMessage))
         .dispatch(publishThirdPartyItemsRequest(thirdParty, [item]))
@@ -326,8 +339,11 @@ describe('when publishing third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [select(getCollection, item.collectionId), collection],
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
-          [matchers.call.fn(mockBuilder.publishTPCollection), { items: [mockedItemReturnedByServer], itemCurations }]
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
+          [
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            { collection, items: [mockedItemReturnedByServer], itemCurations }
+          ]
         ])
         .put(publishThirdPartyItemsSuccess(item.collectionId!, [mockedItemReturnedByServer], itemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
@@ -377,7 +393,7 @@ describe('when pushing changes to third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [select(getItemCurations, item.collectionId), itemCurations],
-          [matchers.call.fn(mockBuilder.updateItemCurationStatus), throwError(new Error(errorMessage))]
+          [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), throwError(new Error(errorMessage))]
         ])
         .put(pushChangesThirdPartyItemsFailure(errorMessage))
         .dispatch(pushChangesThirdPartyItemsRequest([item]))
@@ -424,15 +440,16 @@ describe('when pushing changes to third party items', () => {
     })
 
     it('should put the push changes success action with the updated item curations and close the PublishThirdPartyCollectionModal modal', () => {
+      const anotherItem = { ...mockedItem, id: 'anotherItemId' }
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [select(getItemCurations, item.collectionId), itemCurations],
-          [matchers.call.fn(mockBuilder.updateItemCurationStatus), updatedItemCurations[0]],
-          [matchers.call.fn(mockBuilder.pushItemCuration), updatedItemCurations[1]]
+          [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), updatedItemCurations[0]],
+          [call([mockBuilder, mockBuilder.pushItemCuration], anotherItem.id), updatedItemCurations[1]]
         ])
         .put(pushChangesThirdPartyItemsSuccess(item.collectionId!, updatedItemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
-        .dispatch(pushChangesThirdPartyItemsRequest([item, { ...mockedItem, id: 'anotherItemId' }]))
+        .dispatch(pushChangesThirdPartyItemsRequest([item, anotherItem]))
         .run({ silenceTimeout: true })
     })
   })
@@ -446,6 +463,10 @@ describe('when publishing & pushing changes to third party items', () => {
   let itemCurations: ItemCuration[]
   let publishResponse: Item[]
   let itemsToPublish: Item[]
+  let signature: string
+  let signedMessage: string
+  let salt: string
+  let qty: number
   beforeEach(() => {
     collection = { name: 'valid collection name', id: uuidv4() } as Collection
     item = {
@@ -469,32 +490,41 @@ describe('when publishing & pushing changes to third party items', () => {
     ]
     publishResponse = [{ ...item, id: uuidv4() }]
     itemsToPublish = [item]
+    signature = 'a signature'
+    signedMessage = 'a signed message'
+    salt = '0xsalt'
+    qty = 1
   })
 
   describe('when the publish items fails', () => {
-    it('should put publishThirdPartyItemsFailure action', () => {
+    it('should put the publish & push changes failure action action', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
-          [matchers.call.fn(mockBuilder.publishTPCollection), throwError(new Error(errorMessage))]
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
+          [
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            throwError(new Error(errorMessage))
+          ]
         ])
-        .put(publishThirdPartyItemsFailure(errorMessage))
+        .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem]))
         .run({ silenceTimeout: true })
     })
   })
 
   describe('when the publish works fine but push items fails', () => {
-    it('should put publishThirdPartyItemsFailure action', () => {
+    it('should put the publish & push changes failure action', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
           [select(getItemCurations, item.collectionId), itemCurations],
-          [matchers.call.fn(mockBuilder.publishTPCollection), { items: publishResponse, itemCurations }],
-          [matchers.call.fn(mockBuilder.pushItemCuration), throwError(new Error(errorMessage))]
+          [
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            { items: publishResponse, itemCurations }
+          ],
+          [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), throwError(new Error(errorMessage))]
         ])
-        .put(pushChangesThirdPartyItemsFailure(errorMessage))
-        .put(publishThirdPartyItemsSuccess(item.collectionId!, publishResponse, itemCurations))
+        .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
         .run({ silenceTimeout: true })
     })
@@ -514,16 +544,18 @@ describe('when publishing & pushing changes to third party items', () => {
       ]
     })
 
-    it('should put publishThirdPartyItemsFailure action', () => {
+    it('should put the publish & push changes success action and the fetch available slots request', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature: '', signedMessage: '', salt: '' }],
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
           [select(getItemCurations, item.collectionId), itemCurations],
-          [matchers.call.fn(mockBuilder.publishTPCollection), { items: publishResponse, itemCurations }],
-          [matchers.call.fn(mockBuilder.pushItemCuration), updatedItemCurations[0]]
+          [
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            { items: publishResponse, itemCurations }
+          ],
+          [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), updatedItemCurations[0]]
         ])
-        .put(pushChangesThirdPartyItemsSuccess(item.collectionId!, updatedItemCurations))
-        .put(publishThirdPartyItemsSuccess(item.collectionId!, publishResponse, itemCurations))
+        .put(publishAndPushChangesThirdPartyItemsSuccess(item.collectionId!, publishResponse, [...itemCurations, updatedItemCurations[0]]))
         .put(fetchThirdPartyAvailableSlotsRequest(item.collectionId!))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
         .run({ silenceTimeout: true })

@@ -1,12 +1,22 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
+  PublishAndPushChangesThirdPartyItemsFailureAction,
+  PublishAndPushChangesThirdPartyItemsRequestAction,
+  PublishAndPushChangesThirdPartyItemsSuccessAction,
   PublishThirdPartyItemsFailureAction,
+  PublishThirdPartyItemsRequestAction,
   PublishThirdPartyItemsSuccessAction,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PUBLISH_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
   PushChangesThirdPartyItemsFailureAction,
+  PushChangesThirdPartyItemsRequestAction,
   PushChangesThirdPartyItemsSuccessAction,
   PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
   PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
 } from 'modules/thirdParty/actions'
 import {
@@ -35,13 +45,21 @@ type CurationReducerAction =
   | FetchItemCurationsRequestAction
   | FetchItemCurationsSuccessAction
   | FetchItemCurationsFailureAction
+  | PublishThirdPartyItemsRequestAction
   | PublishThirdPartyItemsSuccessAction
   | PublishThirdPartyItemsFailureAction
+  | PushChangesThirdPartyItemsRequestAction
   | PushChangesThirdPartyItemsSuccessAction
   | PushChangesThirdPartyItemsFailureAction
+  | PublishAndPushChangesThirdPartyItemsRequestAction
+  | PublishAndPushChangesThirdPartyItemsSuccessAction
+  | PublishAndPushChangesThirdPartyItemsFailureAction
 
 export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, action: CurationReducerAction): ItemCurationState {
   switch (action.type) {
+    case PUBLISH_THIRD_PARTY_ITEMS_REQUEST:
+    case PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST:
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST:
     case FETCH_ITEM_CURATIONS_REQUEST:
       return {
         ...state,
@@ -71,7 +89,7 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [action.payload.collectionId]: mergedItemCurations
+          [collectionId]: mergedItemCurations
         },
         error: null
       }
@@ -80,21 +98,41 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
       const { itemCurations, collectionId } = action.payload
       const oldItemCurations = state.data[collectionId]
-      const mergedItemCurations = oldItemCurations.map(itemCuration => {
-        return itemCurations.find(newItemCuration => newItemCuration.itemId === itemCuration.itemId) || itemCuration
-      })
+      const mergedItemCurations = oldItemCurations.map(
+        itemCuration => itemCurations.find(newItemCuration => newItemCuration.itemId === itemCuration.itemId) || itemCuration
+      )
 
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [action.payload.collectionId]: mergedItemCurations
+          [collectionId]: mergedItemCurations
         },
         error: null
       }
     }
 
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
+      const { itemCurations: newItemCurations, collectionId } = action.payload
+      const oldItemCurations = state.data[collectionId]
+      const newCurationsItemIds = newItemCurations.map(newItemCuration => newItemCuration.itemId)
+      const oldCurationsNotIncludedInNewOnes = oldItemCurations.filter(
+        oldItemCuration => !newCurationsItemIds.includes(oldItemCuration.itemId)
+      )
+
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        data: {
+          ...state.data,
+          [collectionId]: [...oldCurationsNotIncludedInNewOnes, ...newItemCurations]
+        },
+        error: null
+      }
+    }
+
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_ITEM_CURATIONS_FAILURE:

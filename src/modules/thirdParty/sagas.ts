@@ -1,8 +1,8 @@
 import { takeLatest, takeEvery, call, put, select, all, CallEffect } from 'redux-saga/effects'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract, ethers, providers, utils } from 'ethers'
+import { Contract, providers, utils } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
-import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { getChainIdByNetwork, getConnectedProvider, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -43,7 +43,9 @@ import {
   pushChangesThirdPartyItemsFailure,
   fetchThirdPartyAvailableSlotsRequest,
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
-  PublishThirdPartyItemsSuccessAction
+  PublishThirdPartyItemsSuccessAction,
+  publishAndPushChangesThirdPartyItemsSuccess,
+  publishAndPushChangesThirdPartyItemsFailure
 } from './actions'
 import { applySlotBuySlippage } from './utils'
 import { ThirdParty } from './types'
@@ -60,8 +62,10 @@ export function* getContractInstance(
 
 export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
   const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-  const provider = new ethers.providers.Web3Provider((window as any).ethereum)
-  const signer = provider.getSigner()
+  const provider: Provider | null = yield call(getConnectedProvider)
+  if (!provider) {
+    throw new Error('Could not get a valid connected Wallet')
+  }
   const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
   const salt = utils.hexlify(utils.randomBytes(32))
   const domain = {
@@ -82,7 +86,19 @@ export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
       { name: 'salt', type: 'bytes32' }
     ]
   }
-  const signature: string = yield call([signer, '_signTypedData'], domain, domainTypes, dataToSign)
+
+  // TODO: expose this as a function in decentraland-transactions
+  const msgString = JSON.stringify({ domain, message: dataToSign, types: domainTypes, primaryType: 'ConsumeSlots' })
+
+  const accounts: string[] = yield call([provider, 'request'], { method: 'eth_requestAccounts', params: [], jsonrpc: '2.0' })
+  const from = accounts[0]
+
+  const signature: string = yield call([provider, 'request'], {
+    method: 'eth_signTypedData_v4',
+    params: [from, msgString],
+    jsonrpc: '2.0'
+  })
+
   const AbiCoderInstance = new utils.AbiCoder()
   const signedMessage = AbiCoderInstance.encode(['string', 'uint256', 'bytes32'], Object.values(dataToSign))
 
@@ -240,8 +256,8 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   function* handlePublishAndPushChangesThirdPartyItemRequest(action: PublishAndPushChangesThirdPartyItemsRequestAction) {
     const { thirdParty, itemsToPublish, itemsWithChanges } = action.payload
     const collectionId = getCollectionId(itemsToPublish)
-    // We need to execute this two in secuence, because the push changes will create a new curation if there was one approved.
-    // It will create it with status PENDING, so the publish will fail if it's executed after that event.
+    // We need to execute these two methods in sequence, because the push changes will create a new curation if there was one already approved.
+    // It will create them with status PENDING, so the publish will fail if it's executed after that event.
     // Publish items
     try {
       const resultFromPublish: { newItems: Item[]; newItemCurations: ItemCuration[] } = yield call(
@@ -249,17 +265,14 @@ export function* thirdPartySaga(builder: BuilderAPI) {
         thirdParty,
         itemsToPublish
       )
-      yield put(publishThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, resultFromPublish.newItemCurations))
-    } catch (error) {
-      yield put(publishThirdPartyItemsFailure(error.message))
-    }
 
-    // Push changes to items
-    try {
-      const resultFromPush: ItemCuration[] = yield call(pushChangesToThirdPartyItems, itemsWithChanges)
-      yield put(pushChangesThirdPartyItemsSuccess(collectionId, resultFromPush))
+      const resultFromPushChanges: ItemCuration[] = yield call(pushChangesToThirdPartyItems, itemsWithChanges)
+      const newItemCurations = [...resultFromPublish.newItemCurations, ...resultFromPushChanges]
+
+      yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
+      yield put(fetchThirdPartyAvailableSlotsRequest(collectionId)) // re-fetch available slots after publishing
     } catch (error) {
-      yield put(pushChangesThirdPartyItemsFailure(error.message))
+      yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
     }
 
     yield put(closeModal('PublishThirdPartyCollectionModal'))
