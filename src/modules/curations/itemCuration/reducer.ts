@@ -95,30 +95,13 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
       }
     }
 
-    case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
-      const { itemCurations, collectionId } = action.payload
-      const oldItemCurations = state.data[collectionId]
-      const mergedItemCurations = oldItemCurations.map(
-        itemCuration => itemCurations.find(newItemCuration => newItemCuration.itemId === itemCuration.itemId) || itemCuration
-      )
-
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        data: {
-          ...state.data,
-          [collectionId]: mergedItemCurations
-        },
-        error: null
-      }
-    }
-
+    case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
     case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
       const { itemCurations: newItemCurations, collectionId } = action.payload
       const oldItemCurations = state.data[collectionId]
       const newCurationsItemIds = newItemCurations.map(newItemCuration => newItemCuration.itemId)
-      const oldCurationsNotIncludedInNewOnes = oldItemCurations.filter(
-        oldItemCuration => !newCurationsItemIds.includes(oldItemCuration.itemId)
+      const oldCurationsNotIncludedInNewOnes = oldItemCurations.filter(oldItemCuration =>
+        !newCurationsItemIds.includes(oldItemCuration.itemId)
       )
 
       return {

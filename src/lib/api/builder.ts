@@ -744,8 +744,10 @@ export class BuilderAPI extends BaseAPI {
     return this.request('post', `/collections/${collectionId}/curation`)
   }
 
-  pushItemCuration(itemId: string): Promise<ItemCuration> {
-    return this.request('post', `/items/${itemId}/curation`)
+  async pushItemCuration(itemId: string): Promise<ItemCuration> {
+    const curation: RemoteItemCuration = await this.request('post', `/items/${itemId}/curation`)
+
+    return fromRemoteItemCuration(curation)
   }
 
   fetchCommittee(): Promise<string[]> {
@@ -772,8 +774,9 @@ export class BuilderAPI extends BaseAPI {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
   }
 
-  updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {
-    return this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
+  async updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {
+    const curation: RemoteItemCuration = await this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
+    return fromRemoteItemCuration(curation)
   }
 
   isAxiosError(error: any): error is AxiosError {
