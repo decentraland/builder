@@ -20,7 +20,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
       isAllowedToPushChanges(
         item,
         itemsStatus[item.id],
-        itemCurations.find(itemCuration => itemCuration.itemId === item.id)
+        itemCurations?.find(itemCuration => itemCuration.itemId === item.id)
       )
     )
   }
