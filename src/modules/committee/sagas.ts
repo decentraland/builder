@@ -2,7 +2,6 @@ import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { BuilderAPI } from 'lib/api/builder'
 import { fetchCollectionsRequest } from 'modules/collection/actions'
-import { fetchItemsRequest } from 'modules/item/actions'
 import {
   fetchCommitteeMembersRequest,
   fetchCommitteeMembersFailure,
@@ -33,7 +32,6 @@ function* handleFetchCommitteeMembersSuccess() {
   const isCommitteeMember: boolean = yield select(isWalletCommitteeMember)
   if (isCommitteeMember) {
     yield put(fetchCollectionsRequest())
-    yield put(fetchItemsRequest())
   }
 }
 

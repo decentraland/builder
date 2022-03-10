@@ -15,7 +15,12 @@ import { buildItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
 import { Item, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
-import { fetchItemsRequest, fetchItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
+import {
+  fetchCollectionItemsRequest,
+  fetchCollectionItemsSuccess,
+  rescueItemsFailure,
+  rescueItemsSuccess
+} from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
 import {
   approveCollectionCurationFailure,
@@ -162,8 +167,8 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
-        .put(fetchItemsRequest())
-        .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
+        .put(fetchCollectionItemsRequest(collection.id))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -234,8 +239,8 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
-        .put(fetchItemsRequest())
-        .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
+        .put(fetchCollectionItemsRequest(collection.id))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -385,8 +390,8 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
-        .put(fetchItemsRequest())
-        .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
+        .put(fetchCollectionItemsRequest(collection.id))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -450,8 +455,8 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
-        .put(fetchItemsRequest())
-        .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
+        .put(fetchCollectionItemsRequest(collection.id))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -525,8 +530,8 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
-        .put(fetchItemsRequest())
-        .dispatch(fetchItemsSuccess([syncedItem, updatedItem]))
+        .put(fetchCollectionItemsRequest(collection.id))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
