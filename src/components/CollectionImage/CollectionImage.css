@@ -4,6 +4,13 @@
   align-items: center;
 }
 
+.CollectionImage .item-row.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
 .CollectionImage .item-row.empty {
   display: flex;
   flex-direction: column;

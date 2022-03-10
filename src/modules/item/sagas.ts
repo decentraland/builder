@@ -1,6 +1,6 @@
 import { Contract } from 'ethers'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, delay, fork, all, race, cancelled } from 'redux-saga/effects'
+import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -11,7 +11,6 @@ import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import {
   FetchItemsRequestAction,
-  fetchItemsRequest,
   fetchItemsSuccess,
   fetchItemsFailure,
   FETCH_ITEMS_REQUEST,
@@ -72,26 +71,27 @@ import {
   CANCEL_SAVE_MULTIPLE_ITEMS,
   saveMultipleItemsCancelled,
   saveMultipleItemsFailure,
-  rescueItemsChunkSuccess
+  rescueItemsChunkSuccess,
+  FETCH_COLLECTION_ITEMS_SUCCESS,
+  FetchItemsSuccessAction,
+  FetchCollectionItemsSuccessAction,
+  fetchItemsRequest
 } from './actions'
-import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI } from 'lib/api/builder'
-import { getCollection, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
+import { getCollection, getCollections } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
-import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
-import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
-import { buildCatalystItemURN } from '../../lib/urn'
 import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
@@ -103,6 +103,7 @@ import {
   FETCH_TRANSACTION_FAILURE,
   FETCH_TRANSACTION_SUCCESS
 } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -139,7 +140,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
     const { address } = action.payload
     try {
-      const items: Item[] = yield call(() => legacyBuilder.fetchItems(address))
+      const items: Item[] = yield call([legacyBuilder, 'fetchItems'], address)
       yield put(fetchItemsSuccess(items))
     } catch (error) {
       yield put(fetchItemsFailure(error.message))
@@ -333,20 +334,14 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* fetchItemEntities() {
     while (true) {
-      // TODO: once URN comes within Item remove all this in favor of yield take(FETCH_ITEMS_SUCCESS)
-      // wait for at least 1 fetchItemsSuccess and 1 fetchCollectionsSuccess
-      yield all([take(FETCH_ITEMS_SUCCESS), take(FETCH_COLLECTIONS_SUCCESS)])
-      // wait for remaining itemItemRequests
-      let loadingItemActions: ReturnType<typeof getLoadingItemAction> = yield select(getLoadingItemAction)
-      while (loadingItemActions.some(action => action.type === FETCH_ITEMS_REQUEST)) {
-        yield take(FETCH_ITEMS_SUCCESS)
-        loadingItemActions = yield select(getLoadingItemAction)
-      }
-      const items: Item[] = yield select(getItems)
-      const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
-      const pointers = items
-        .filter(item => item.isPublished)
-        .map(item => buildCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
+      const result: FetchItemsSuccessAction | FetchCollectionItemsSuccessAction = yield take([
+        FETCH_ITEMS_SUCCESS,
+        FETCH_COLLECTION_ITEMS_SUCCESS
+      ])
+
+      const { items } = result.payload
+      const pointers = items.filter(item => item.isPublished).map(item => item.urn!)
+
       if (pointers.length > 0) {
         yield put(fetchEntitiesByPointersRequest(EntityType.WEARABLE, pointers))
       }
