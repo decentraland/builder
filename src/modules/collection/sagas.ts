@@ -79,8 +79,9 @@ import {
   RESCUE_ITEMS_FAILURE,
   RescueItemsSuccessAction,
   RescueItemsFailureAction,
-  fetchItemsRequest,
-  FETCH_ITEMS_FAILURE
+  fetchCollectionItemsRequest,
+  FETCH_COLLECTION_ITEMS_SUCCESS,
+  FETCH_COLLECTION_ITEMS_FAILURE
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
@@ -581,7 +582,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         // If success wait for tx to be mined
         if (success) {
           // Wait for contentHashes to be indexed
-          yield waitForIndexer(itemsToRescue, contentHashes)
+          yield waitForIndexer(itemsToRescue, contentHashes, collection.id)
 
           // If failure show error and exit flow
         } else if (failure) {
@@ -706,7 +707,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     }
   }
 
-  function* waitForIndexer(items: Item[], contentHashes: string[]) {
+  function* waitForIndexer(items: Item[], contentHashes: string[], collectionId: string) {
     const contentHashByItemId = new Map<string, string>()
     for (let i = 0; i < items.length; i++) {
       contentHashByItemId.set(items[i].id, contentHashes[i])
@@ -715,10 +716,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const itemIds = items.map(item => item.id)
     while (!isIndexed) {
       yield delay(1000)
-      yield put(fetchItemsRequest({ itemIds: items.map(i => i.id) }))
+      yield put(fetchCollectionItemsRequest(collectionId))
       yield race({
-        success: take(FETCH_ITEMS_SUCCESS),
-        failure: take(FETCH_ITEMS_FAILURE)
+        success: take(FETCH_COLLECTION_ITEMS_SUCCESS),
+        failure: take(FETCH_COLLECTION_ITEMS_FAILURE)
       })
       // use items from state (updated after the fetchItemsSuccess)
       const itemsById: ReturnType<typeof getItemsById> = yield select(getItemsById)
