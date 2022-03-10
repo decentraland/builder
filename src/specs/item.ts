@@ -23,7 +23,8 @@ export const mockedItem: Item = {
   isApproved: false,
   inCatalyst: false,
   contents: { 'anItemContent.glb': 'theFileHash', 'thumbnail.png': 'theThumbnailHash' },
-  contentHash: null,
+  blockchainContentHash: null,
+  currentContentHash: null,
   data: {
     category: WearableCategory.HAT,
     representations: [
@@ -120,7 +121,8 @@ export const mockedRemoteItem: RemoteItem = {
   is_approved: false,
   in_catalyst: false,
   created_at: 0,
-  updated_at: 0
+  updated_at: 0,
+  local_content_hash: 'someHash'
 }
 
 export const mockedItemContents = { 'anItemContent.glb': new Blob(), 'thumbnail.png': new Blob() }

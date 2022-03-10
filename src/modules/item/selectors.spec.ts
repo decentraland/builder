@@ -167,6 +167,16 @@ describe('Item selectors', () => {
               id: '3',
               itemId: '3',
               status: 'pending'
+            },
+            {
+              id: '11',
+              itemId: '11',
+              status: 'approved'
+            },
+            {
+              id: '12',
+              itemId: '12',
+              status: 'approved'
             }
           ],
           '4': [
@@ -358,6 +368,92 @@ describe('Item selectors', () => {
               representations: [],
               tags: []
             }
+          },
+          '9': {
+            id: '9',
+            collectionId: '0',
+            tokenId: 'otherTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'anotherFile.ext': 'anotherFileHash'
+            },
+            name: 'Item with same content hash and local content hash',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            },
+            blockchainContentHash: 'aContentHash',
+            currentContentHash: 'aContentHash'
+          },
+          '10': {
+            id: '10',
+            collectionId: '0',
+            tokenId: 'theTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'someFile.ext': 'aFileHash'
+            },
+            name: 'Item with different content hash and local content hash',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            },
+            blockchainContentHash: 'aContentHash',
+            currentContentHash: 'someOtherContentHash'
+          },
+          '11': {
+            id: '11',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal:11', // TP
+            collectionId: '3',
+            tokenId: 'theTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'someFile.ext': 'aFileHash'
+            },
+            name: 'Item with different content hash and local content hash',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            },
+            blockchainContentHash: 'aContentHash',
+            currentContentHash: 'aContentHash'
+          },
+          '12': {
+            id: '12',
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:the-real-deal:12', // TP
+            collectionId: '3',
+            tokenId: 'theTokenId',
+            isPublished: true,
+            isApproved: true,
+            contents: {
+              'someFile.ext': 'aFileHash'
+            },
+            name: 'Item with different content hash and local content hash',
+            description: 'pepito hat very nice',
+            data: {
+              category: WearableCategory.HAT,
+              replaces: [],
+              hides: [],
+              representations: [],
+              tags: []
+            },
+            blockchainContentHash: 'aContentHash',
+            currentContentHash: 'someOtherContentHash'
           }
         }
       },
@@ -490,6 +586,7 @@ describe('Item selectors', () => {
         }
       }
     }
+
     it('should return the status by id for each published item', () => {
       expect(getStatusByItemId((mockState as unknown) as RootState)).toEqual({
         '0': SyncStatus.UNDER_REVIEW,
@@ -500,9 +597,14 @@ describe('Item selectors', () => {
         '5': SyncStatus.UNDER_REVIEW, // TP with item curation in PENDING
         '6': SyncStatus.LOADING, // TP with item curation in APPROVED and no Entity,
         '7': SyncStatus.UNSYNCED, // TP with item curation in APPROVED with entity but NOT synced,
-        '8': SyncStatus.SYNCED // TP with item curation in APPROVED with entity and synced,
+        '8': SyncStatus.SYNCED, // TP with item curation in APPROVED with entity and synced,
+        '9': SyncStatus.SYNCED, // Standard item with content hash equal to serverContentHash
+        '10': SyncStatus.UNSYNCED, // Standard item with content hash not equal to serverContentHash
+        '11': SyncStatus.SYNCED, // TP item with content hash not equal to serverContentHash
+        '12': SyncStatus.UNSYNCED // TP item with content hash not equal to serverContentHash
       })
     })
+
     it('should return the status by id for a list of item Ids', () => {
       expect(getStatusForItemIds((mockState as unknown) as RootState, ['2', '4', '6', '7'])).toEqual({
         '2': SyncStatus.UNSYNCED,
