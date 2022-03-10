@@ -11,7 +11,6 @@ import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import {
   FetchItemsRequestAction,
-  fetchItemsRequest,
   fetchItemsSuccess,
   fetchItemsFailure,
   FETCH_ITEMS_REQUEST,
@@ -75,7 +74,8 @@ import {
   rescueItemsChunkSuccess,
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FetchItemsSuccessAction,
-  FetchCollectionItemsSuccessAction
+  FetchCollectionItemsSuccessAction,
+  fetchItemsRequest
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { fromRemoteItem } from 'lib/api/transformations'
@@ -87,7 +87,6 @@ import { getCollection, getCollections } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
-import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
 import { getMethodData } from 'modules/wallet/utils'
@@ -104,6 +103,7 @@ import {
   FETCH_TRANSACTION_FAILURE,
   FETCH_TRANSACTION_SUCCESS
 } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -138,16 +138,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
-    const { address, itemIds } = action.payload
+    const { address } = action.payload
     try {
-      let items: Item[]
-
-      if (itemIds) {
-        items = yield call([Promise, 'all'], [itemIds.map(id => legacyBuilder.fetchItem(id))])
-      } else {
-        items = yield call([legacyBuilder, 'fetchItems'], address)
-      }
-
+      const items: Item[] = yield call([legacyBuilder, 'fetchItems'], address)
       yield put(fetchItemsSuccess(items))
     } catch (error) {
       yield put(fetchItemsFailure(error.message))
@@ -296,7 +289,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
-    yield put(fetchItemsRequest({ address: wallet.address }))
+    yield put(fetchItemsRequest(wallet.address))
   }
 
   function* handleSetCollection(action: SetCollectionAction) {
