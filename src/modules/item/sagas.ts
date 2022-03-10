@@ -1,8 +1,8 @@
 import { Contract } from 'ethers'
-import { replace, push } from 'connected-react-router'
+import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, all, race, cancelled } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
-import { ContractData, ContractName, getContract } from 'decentraland-transactions'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
@@ -62,10 +62,6 @@ import {
   SAVE_ITEM_FAILURE,
   SaveItemSuccessAction,
   SaveItemFailureAction,
-  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
-  PublishThirdPartyItemsRequestAction,
-  publishThirdPartyItemsSuccess,
-  publishThirdPartyItemsFailure,
   DOWNLOAD_ITEM_REQUEST,
   DownloadItemRequestAction,
   downloadItemFailure,
@@ -100,7 +96,7 @@ import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { buildZipContents, getMetadata, groupsOf, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
+import { buildZipContents, getMetadata, groupsOf, isValidText, MAX_FILE_SIZE } from './utils'
 import {
   FetchTransactionFailureAction,
   FetchTransactionSuccessAction,
@@ -115,7 +111,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
   yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
-  yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
@@ -277,25 +272,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
-  function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
-    const { thirdParty, items } = action.payload
-    try {
-      const collectionId = items[0].collectionId!
-      const collection: Collection = yield select(getCollection, collectionId)
-
-      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-      const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
-        instantiatedThirdPartyContract.addItems(thirdParty.id, toThirdPartyContractItems(items))
-      )
-
-      yield put(publishThirdPartyItemsSuccess(txHash, maticChainId, thirdParty, collection, items))
-      yield put(push(locations.activity()))
-    } catch (error) {
-      yield put(publishThirdPartyItemsFailure(thirdParty, items, error.message))
-    }
-  }
-
   function* handleDeleteItemRequest(action: DeleteItemRequestAction) {
     const { item } = action.payload
     try {
@@ -332,7 +308,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { collection, items } = action.payload
 
     try {
-      const { items: newItems }: { items: Item[] } = yield call(() => legacyBuilder.publishCollection(collection.id))
+      const { items: newItems }: { items: Item[] } = yield call(() => legacyBuilder.publishStandardCollection(collection.id))
       yield put(setItemsTokenIdSuccess(newItems))
     } catch (error) {
       yield put(setItemsTokenIdFailure(collection, items, error.message))

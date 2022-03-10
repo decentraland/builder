@@ -890,7 +890,6 @@
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
     "buy_third_party_item_slots": "为第三方 {name} 购买了 {count}个插槽",
-    "publish_third_party_items": "为 {collectionName} 发布了 {count} 个项目",
     "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
   },
   "transfer_page": {

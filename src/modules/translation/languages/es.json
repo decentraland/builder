@@ -904,7 +904,6 @@
     "allowed_claim_mana": "Permitió el uso de MANA para reclamar un nuevo nombre",
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
-    "publish_third_party_items": "Has publicado {count, plural, one {# item} other {# items}} para {collectionName}",
     "buy_third_party_item_slots": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\"",
     "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}"
   },

@@ -662,7 +662,7 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollection(remoteCollection)
   }
 
-  async publishCollection(collectionId: string) {
+  async publishStandardCollection(collectionId: string) {
     const { collection, items }: { collection: RemoteCollection; items: RemoteItem[] } = await this.request(
       'post',
       `/collections/${collectionId}/publish`
@@ -670,6 +670,31 @@ export class BuilderAPI extends BaseAPI {
     return {
       collection: fromRemoteCollection(collection),
       items: items.map(fromRemoteItem)
+    }
+  }
+
+  async publishTPCollection(collectionId: string, itemIds: string[], signedMessage: string, signature: string, qty: number, salt: string) {
+    const {
+      collection,
+      items,
+      itemCurations
+    }: { collection: RemoteCollection; items: RemoteItem[]; itemCurations: RemoteItemCuration[] } = await this.request(
+      'post',
+      `/collections/${collectionId}/publish`,
+      {
+        itemIds,
+        cheque: {
+          signedMessage,
+          signature,
+          qty,
+          salt
+        }
+      }
+    )
+    return {
+      collection: fromRemoteCollection(collection),
+      items: items.map(fromRemoteItem),
+      itemCurations: itemCurations.map(fromRemoteItemCuration)
     }
   }
 
@@ -719,6 +744,12 @@ export class BuilderAPI extends BaseAPI {
     return this.request('post', `/collections/${collectionId}/curation`)
   }
 
+  async pushItemCuration(itemId: string): Promise<ItemCuration> {
+    const curation: RemoteItemCuration = await this.request('post', `/items/${itemId}/curation`)
+
+    return fromRemoteItemCuration(curation)
+  }
+
   fetchCommittee(): Promise<string[]> {
     return this.request('get', '/committee')
   }
@@ -741,6 +772,11 @@ export class BuilderAPI extends BaseAPI {
 
   updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
+  }
+
+  async updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {
+    const curation: RemoteItemCuration = await this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
+    return fromRemoteItemCuration(curation)
   }
 
   isAxiosError(error: any): error is AxiosError {
