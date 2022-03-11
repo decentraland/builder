@@ -40,7 +40,7 @@ export default class LeftPanel extends React.PureComponent<Props> {
       <div className="LeftPanel">
         {isConnected ? (
           <CollectionProvider id={selectedCollectionId}>
-            {(collection, collectionItems, _, isLoading) => {
+            {({ collection, items: collectionItems, isLoading }) => {
               if (collection && isLoading) {
                 return <Loader size="massive" active />
               }

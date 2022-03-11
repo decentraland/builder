@@ -103,6 +103,7 @@ import {
   APPROVE_COLLECTION_CURATION_SUCCESS
 } from 'modules/curations/collectionCuration/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { fetchItemCurationsRequest } from 'modules/curations/itemCuration/actions'
 import { CurationStatus } from 'modules/curations/types'
 import {
   DeployEntitiesFailureAction,
@@ -155,6 +156,9 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     try {
       const collection: Collection = yield call(() => builder.fetchCollection(id))
       yield put(fetchCollectionSuccess(id, collection))
+      if (getCollectionType(collection) === CollectionType.THIRD_PARTY) {
+        yield put(fetchItemCurationsRequest(collection.id))
+      }
     } catch (error) {
       yield put(fetchCollectionFailure(id, error.message))
     }
