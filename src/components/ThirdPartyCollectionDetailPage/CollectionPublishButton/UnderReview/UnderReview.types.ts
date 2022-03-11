@@ -1,3 +1,3 @@
 export type Props = {
-  type: 'publish' | 'push'
+  content: string
 }

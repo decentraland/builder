@@ -53,11 +53,30 @@ const CollectionPublishButton = (props: Props) => {
     onClick(collection.id, itemIds, buttonAction)
   }, [collection, items, buttonAction])
 
+  const itemsTryingToPublish = useMemo(
+    () => items.filter(item => !itemCurations.find(itemCuration => itemCuration.itemId === item.id)).length,
+    [items, itemCurations]
+  )
+
+  const underReviewButtonLabel = useMemo(() => {
+    switch (buttonAction) {
+      case PublishButtonAction.PUBLISH:
+        if (itemsTryingToPublish) {
+          return t('third_party_collection_detail_page.cant_publish_items', { count: itemsTryingToPublish })
+        }
+        return t('third_party_collection_detail_page.cant_publish')
+      case PublishButtonAction.PUBLISH_AND_PUSH_CHANGES:
+        return t('third_party_collection_detail_page.cant_publish_and_push_changes', { count: itemsTryingToPublish })
+      default:
+        return t('third_party_collection_detail_page.cant_publish')
+    }
+  }, [buttonAction, itemsTryingToPublish])
+
   const hasPendingItemCurations = itemCurations && !!itemCurations.find(ic => ic.status === CurationStatus.PENDING)
   const isTryingToPublish = [PublishButtonAction.PUBLISH, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(buttonAction)
 
   return !isLoadingItemCurations && isTryingToPublish && hasPendingItemCurations ? (
-    <UnderReview type="publish" />
+    <UnderReview content={underReviewButtonLabel} />
   ) : (
     <NetworkButton
       loading={isLoadingItemCurations}

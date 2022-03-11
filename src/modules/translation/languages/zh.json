@@ -1016,7 +1016,10 @@
     "new_items": "新的可穿戴物品",
     "publish": "发布",
     "push_changes": "推送更改",
-    "publish_and_push_changes": "发布和推送更改"
+    "publish_and_push_changes": "发布和推送更改",
+    "cant_publish": "此集合仍在审核中，一旦该过程结束，您将能够发布更多项目",
+    "cant_publish_items": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}}。目前还有其他人正在审查中",
+    "cant_publish_and_push_changes": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}} 并同时推送更改。取消选择要发布的项目以推送更改"
   },
   "collection_detail_page": {
     "new_item": "新物品",

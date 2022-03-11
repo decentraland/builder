@@ -3,10 +3,10 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Popup } from 'decentraland-ui'
 import { Props } from './UnderReview.types'
 
-const UnderReview = ({ type }: Props) => (
+const UnderReview = ({ content }: Props) => (
   <Popup
-    content={t(type === 'publish' ? 'collection_detail_page.cant_mint' : 'collection_detail_page.cant_push')}
-    position="top center"
+    content={content}
+    position="bottom center"
     trigger={
       <div className="popup-button">
         <Button secondary compact disabled={true}>
@@ -17,7 +17,6 @@ const UnderReview = ({ type }: Props) => (
     hideOnScroll={true}
     on="hover"
     inverted
-    flowing={type === 'publish'}
   />
 )
 
