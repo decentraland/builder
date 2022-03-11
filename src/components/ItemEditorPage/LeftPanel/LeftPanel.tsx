@@ -9,18 +9,11 @@ import Items from './Items'
 import Collections from './Collections'
 import { Props } from './LeftPanel.types'
 import './LeftPanel.css'
-import { getCollectionType } from 'modules/collection/utils'
 
 export default class LeftPanel extends React.PureComponent<Props> {
   getItems(collection: Collection | null, collectionItems: Item[]) {
     const { selectedCollectionId, orphanItems } = this.props
-
-    if (selectedCollectionId && collection) {
-      return getCollectionType(collection) === CollectionType.THIRD_PARTY
-        ? collectionItems.filter(item => item.isPublished)
-        : collectionItems
-    }
-    return orphanItems
+    return selectedCollectionId && collection ? collectionItems : orphanItems
   }
 
   render() {
