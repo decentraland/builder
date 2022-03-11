@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Collection, CollectionType } from 'modules/collection/types'
+import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
