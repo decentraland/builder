@@ -150,12 +150,11 @@
     },
     "name_field": {
       "label": "姓名",
-      "placeholder": "我的收藏",
       "message": "名称最多可以是 {maxLength} 个字符"
     },
     "urn_suffix_field": {
       "label": "Id",
-      "placeholder": "我的收藏"
+      "message": "我们建议将收款合约地址作为 id 的一部分。只允许使用字母和破折号 (-)"
     }
   },
   "model_metrics": {
