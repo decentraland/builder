@@ -4,12 +4,14 @@ import { env } from 'decentraland-commons'
 import { Network } from '@dcl/schemas'
 import { Button, ModalDescription, ModalHeader, Mana, Loader, Message, Field } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { Modal, NetworkButton } from 'decentraland-dapps/dist/containers'
 import { Props, State } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
 import { applySlotBuySlippage } from 'modules/thirdParty/utils'
 
 export default class BuyItemSlotsModal extends React.PureComponent<Props, State> {
+  analytics = getAnalytics()
   state: State = {
     slotsToBuy: undefined
   }
@@ -31,6 +33,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
     const { slotsToBuy } = this.state
 
     if (slotsToBuy) {
+      this.analytics.track('Buy item slots', { thirdParty: thirdParty.id, slots: slotsToBuy })
       onBuyItemSlots(thirdParty, Number(slotsToBuy), Number(slotPrice))
     }
   }

@@ -1,14 +1,17 @@
 import * as React from 'react'
 import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getCollectionEditorURL, getExplorerURL, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
 import styles from './CollectionContextMenu.module.css'
 
 export default class CollectionContextMenu extends React.PureComponent<Props> {
+  analytics = getAnalytics()
   handleNavigateToExplorer = () => {
     const { collection } = this.props
+    this.analytics.track('See in world')
     this.navigateTo(getExplorerURL(collection), '_blank')
   }
 

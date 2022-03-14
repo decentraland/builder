@@ -5,6 +5,7 @@ import { Loader, Dropdown, Button } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { isThirdParty } from 'lib/urn'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
@@ -39,6 +40,7 @@ import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
 export default class RightPanel extends React.PureComponent<Props, State> {
+  analytics = getAnalytics()
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
 
@@ -189,6 +191,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         contents: itemContents
       }
       onSaveItem(item, contents)
+      if (isThirdParty(item.urn)) {
+        this.analytics.track('Edit Item', { contents })
+      }
       this.setState({ isDirty: false })
       this.handleOnResetItem()
     }

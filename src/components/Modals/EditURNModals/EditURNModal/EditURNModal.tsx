@@ -1,12 +1,14 @@
 import * as React from 'react'
 import { ModalNavigation, ModalContent, ModalActions, Button, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { DecodedURN, decodeURN, URNType } from 'lib/urn'
+import { DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Props, State } from './EditURNModal.types'
 
 export default class EditURNModal extends React.PureComponent<Props, State> {
   decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY> = this.decodeURN()
+  analytics = getAnalytics()
 
   state: State = {
     newURNSection: ''
@@ -17,8 +19,12 @@ export default class EditURNModal extends React.PureComponent<Props, State> {
   }
 
   handleSubmit = () => {
-    const { onSave } = this.props
+    const { onSave, urn: oldURN } = this.props
     const urn = this.getUpdatedURN()
+    if (isThirdParty(urn)) {
+      const metric = this.decodedURN.thirdPartyCollectionId ? 'Change TPI URN' : 'Change TPC URN'
+      this.analytics.track(metric, { oldURN, newURN: urn })
+    }
 
     onSave(urn)
   }
