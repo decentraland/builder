@@ -159,7 +159,7 @@
     },
     "urn_suffix_field": {
       "label": "Id",
-      "message": "We recommend including the collection contract address as part of the id. Only letters and dashes (-) are allowed"
+      "message": "We recommend including the collection contract address as part of the id. Only letters, numbers and dashes (-) are allowed"
     }
   },
   "model_metrics": {

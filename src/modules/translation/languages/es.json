@@ -162,7 +162,7 @@
     },
     "urn_suffix_field": {
       "label": "Id",
-      "message": "Recomendamos incluir la dirección del contrato de la colección como parte del id. Solo puede usar letras y guiones (-)"
+      "message": "Recomendamos incluir la dirección del contrato de la colección como parte del id. Solo puede usar letras, números y guiones (-)"
     }
   },
   "model_metrics": {

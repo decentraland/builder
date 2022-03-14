@@ -154,7 +154,7 @@
     },
     "urn_suffix_field": {
       "label": "Id",
-      "message": "我们建议将收款合约地址作为 id 的一部分。只允许使用字母和破折号 (-)"
+      "message": "我们建议将收款合约地址作为 id 的一部分。只允许使用字母、数字和破折号 (-)"
     }
   },
   "model_metrics": {
