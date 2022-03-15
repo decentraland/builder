@@ -156,9 +156,6 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     try {
       const collection: Collection = yield call([builder, 'fetchCollection'], id)
       yield put(fetchCollectionSuccess(id, collection))
-      if (getCollectionType(collection) === CollectionType.THIRD_PARTY) {
-        yield put(fetchItemCurationsRequest(collection.id))
-      }
     } catch (error) {
       yield put(fetchCollectionFailure(id, error.message))
     }

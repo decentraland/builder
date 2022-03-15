@@ -1,5 +1,7 @@
 import { call } from '@redux-saga/core/effects'
 import { BuilderAPI } from 'lib/api/builder'
+import { fetchCollectionSuccess } from 'modules/collection/actions'
+import { Collection } from 'modules/collection/types'
 import { expectSaga } from 'redux-saga-test-plan'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { fetchItemCurationsRequest, fetchItemCurationsSuccess, fetchItemCurationsFailure } from './actions'
@@ -35,5 +37,23 @@ describe('when fetching item curations', () => {
         .dispatch(fetchItemCurationsRequest(mockCollectionId))
         .run({ silenceTimeout: true })
     })
+  })
+})
+
+describe('when a third party collection is fetched', () => {
+  let thirdPartyCollection: Collection
+
+  beforeEach(() => {
+    thirdPartyCollection = {
+      id: 'aCollection',
+      urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:tercer-fiesta-2'
+    } as Collection
+  })
+
+  it('should put the success action and fetch the item curations for the collection', () => {
+    return expectSaga(itemCurationSaga, mockBuilder)
+      .put(fetchItemCurationsRequest(thirdPartyCollection.id))
+      .dispatch(fetchCollectionSuccess(thirdPartyCollection.id, thirdPartyCollection))
+      .run({ silenceTimeout: true })
   })
 })

@@ -3,8 +3,8 @@ import { Props } from './CollectionProvider.types'
 
 export default class CollectionProvider extends React.PureComponent<Props> {
   componentDidMount() {
-    const { id, collection, onFetchCollection, isConnecting } = this.props
-    if (id && !collection && !isConnecting) {
+    const { id, onFetchCollection, isConnecting } = this.props
+    if (id && !isConnecting) {
       onFetchCollection(id)
     }
   }

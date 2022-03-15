@@ -37,14 +37,11 @@ import {
   publishCollectionSuccess,
   publishCollectionFailure,
   SAVE_COLLECTION_SUCCESS,
-  SAVE_COLLECTION_FAILURE,
-  fetchCollectionRequest,
-  fetchCollectionSuccess
+  SAVE_COLLECTION_FAILURE
 } from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
 import { getLatestItemHash, UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
-import { fetchItemCurationsRequest } from 'modules/curations/itemCuration/actions'
 
 const getCollection = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
@@ -101,8 +98,7 @@ beforeEach(() => {
     saveCollection: jest.fn(),
     lockCollection: jest.fn(),
     saveTOS: jest.fn(),
-    fetchCollectionItems: jest.fn().mockResolvedValueOnce([]),
-    fetchCollection: jest.fn()
+    fetchCollectionItems: jest.fn().mockResolvedValueOnce([])
   } as unknown) as BuilderAPI
   mockCatalyst = ({} as unknown) as CatalystClient
 })
@@ -778,25 +774,5 @@ describe('when executing the approval flow', () => {
           .run({ silenceTimeout: true })
       })
     })
-  })
-})
-
-fdescribe('whn fetching a third party collection', () => {
-  let thirdPartyCollection: Collection
-
-  beforeEach(() => {
-    thirdPartyCollection = {
-      id: 'aCollection',
-      urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:tercer-fiesta-2'
-    } as Collection
-  })
-
-  it('should put the success action and fetch the item curations for the collection', () => {
-    return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
-      .provide([[call([mockBuilder, 'fetchCollection'], thirdPartyCollection.id), thirdPartyCollection]])
-      .put(fetchCollectionSuccess(thirdPartyCollection.id, thirdPartyCollection))
-      .put(fetchItemCurationsRequest(thirdPartyCollection.id))
-      .dispatch(fetchCollectionRequest(thirdPartyCollection.id))
-      .run({ silenceTimeout: true })
   })
 })
