@@ -1,6 +1,6 @@
 import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, CallEffect, all } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -123,6 +123,8 @@ import {
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -534,6 +536,14 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return allItems.filter(item => item.collectionId === collection.id)
   }
 
+  function* updateItemCurationsStatus(itemCurations: ItemCuration[], status: CurationStatus) {
+    const effects: CallEffect<ItemCuration>[] = itemCurations.map(curation => {
+      return call([builder, 'updateItemCurationStatus'], curation.itemId, status)
+    })
+    const newItemCuration: ItemCuration[] = yield all(effects)
+    return newItemCuration
+  }
+
   function* handleInitiateTPItemsApprovalFlow(action: InitiateTPApprovalFlowAction) {
     const { collection } = action.payload
 
@@ -556,6 +566,11 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // 5. If any, open the modal in the DEPLOY step and wait for actions
 
       // 6. If the collection was approved but it had a pending curation, approve the curation
+
+      const itemCurations: ItemCuration[] = yield select(getItemCurations, collection.id)
+
+      const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemCurations, CurationStatus.APPROVED)
+      console.log('newItemsCurations: ', newItemsCurations) // TODO: Add this to the success action that will override the curations in the state
 
       // 7. Success 🎉
     } catch (error) {
