@@ -309,7 +309,7 @@ describe('when publishing third party items', () => {
           [select(getCollection, item.collectionId), collection],
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signedMessage, signature, qty, salt }),
             throwError(new Error(errorMessage))
           ]
         ])
@@ -341,7 +341,7 @@ describe('when publishing third party items', () => {
           [select(getCollection, item.collectionId), collection],
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signedMessage, signature, qty, salt }),
             { collection, items: [mockedItemReturnedByServer], itemCurations }
           ]
         ])
@@ -502,7 +502,7 @@ describe('when publishing & pushing changes to third party items', () => {
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signedMessage, signature, qty, salt }),
             throwError(new Error(errorMessage))
           ]
         ])
@@ -519,7 +519,7 @@ describe('when publishing & pushing changes to third party items', () => {
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
           [select(getItemCurations, item.collectionId), itemCurations],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signedMessage, signature, qty, salt }),
             { items: publishResponse, itemCurations }
           ],
           [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), throwError(new Error(errorMessage))]
@@ -550,7 +550,7 @@ describe('when publishing & pushing changes to third party items', () => {
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
           [select(getItemCurations, item.collectionId), itemCurations],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signedMessage, signature, qty, salt }),
             { items: publishResponse, itemCurations }
           ],
           [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), updatedItemCurations[0]]
