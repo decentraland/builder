@@ -65,7 +65,9 @@ import {
   APPROVE_COLLECTION_SUCCESS,
   APPROVE_COLLECTION_FAILURE,
   ApproveCollectionSuccessAction,
-  ApproveCollectionFailureAction
+  ApproveCollectionFailureAction,
+  InitiateTPApprovalFlowAction,
+  INITIATE_TP_APPROVAL_FLOW
 } from './actions'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
@@ -139,6 +141,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeLatest(INITIATE_APPROVAL_FLOW, handleInitiateApprovalFlow)
+  yield takeLatest(INITIATE_TP_APPROVAL_FLOW, handleInitiateTPItemsApprovalFlow)
 
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
     const { address } = action.payload
@@ -529,6 +532,41 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* getItemsFromCollection(collection: Collection) {
     const allItems: Item[] = yield select(getItems)
     return allItems.filter(item => item.collectionId === collection.id)
+  }
+
+  function* handleInitiateTPItemsApprovalFlow(action: InitiateTPApprovalFlowAction) {
+    const { collection } = action.payload
+
+    try {
+      // Check if this makes sense or add a check to see if the items to be published are correct.
+      if (!collection.isPublished) {
+        throw new Error(`The collection can't be approved because it's not published`)
+      }
+
+      // 1. Open modal
+
+      // 2. Get the approval data from the server (using the builder client)
+
+      // 3. Compute the merkle tree root
+
+      // Open the ApprovalFlowModal with the items to be approved
+
+      // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
+
+      // 5. If any, open the modal in the DEPLOY step and wait for actions
+
+      // 6. If the collection was approved but it had a pending curation, approve the curation
+
+      // 7. Success 🎉
+    } catch (error) {
+      // Handle error at any point in the flow and show them
+      const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
+        view: ApprovalFlowModalView.ERROR,
+        collection,
+        error: error.message
+      }
+      yield put(openModal('ApprovalFlowModal', modalMetadata))
+    }
   }
 
   function* handleInitiateApprovalFlow(action: InitiateApprovalFlowAction) {
