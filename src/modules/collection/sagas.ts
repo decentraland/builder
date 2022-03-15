@@ -103,7 +103,6 @@ import {
   APPROVE_COLLECTION_CURATION_SUCCESS
 } from 'modules/curations/collectionCuration/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
-import { fetchItemCurationsRequest } from 'modules/curations/itemCuration/actions'
 import { CurationStatus } from 'modules/curations/types'
 import {
   DeployEntitiesFailureAction,
