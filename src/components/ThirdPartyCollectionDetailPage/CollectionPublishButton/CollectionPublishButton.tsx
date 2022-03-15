@@ -1,11 +1,11 @@
 import React, { useMemo, useCallback } from 'react'
+import { Button, Popup } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SyncStatus } from 'modules/item/types'
 import { isStatusAllowedToPushChanges } from 'modules/item/utils'
 import { CurationStatus } from 'modules/curations/types'
-import UnderReview from './UnderReview'
 import { Props, PublishButtonAction } from './CollectionPublishButton.types'
 
 export const getTPButtonActionLabel = (buttonAction: PublishButtonAction) => {
@@ -76,7 +76,20 @@ const CollectionPublishButton = (props: Props) => {
   const isTryingToPublish = [PublishButtonAction.PUBLISH, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(buttonAction)
 
   return !isLoadingItemCurations && isTryingToPublish && hasPendingItemCurations ? (
-    <UnderReview content={underReviewButtonLabel} />
+    <Popup
+      content={underReviewButtonLabel}
+      position="bottom center"
+      trigger={
+        <div className="popup-button">
+          <Button secondary compact disabled={true}>
+            {t('collection_detail_page.under_review')}
+          </Button>
+        </div>
+      }
+      hideOnScroll={true}
+      on="hover"
+      inverted
+    />
   ) : (
     <NetworkButton
       loading={isLoadingItemCurations}
