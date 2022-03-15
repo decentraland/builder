@@ -132,6 +132,8 @@ export type CatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt'> & {
   collectionAddress: string
 }
 
+export type CatalystTPItem = Omit<CatalystItem, 'rarity' | 'collectionAddress'> & {}
+
 export type Item = BaseItem & {
   type: ItemType
   owner: string

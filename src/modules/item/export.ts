@@ -4,10 +4,11 @@ import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { NO_CACHE_HEADERS } from 'lib/headers'
-import { buildCatalystItemURN } from 'lib/urn'
+import { buildCatalystItemURN, buildThirdPartyURN, extractThirdPartyId } from 'lib/urn'
+import { isTPCollection } from 'modules/collection/utils'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
+import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH, CatalystTPItem } from './types'
 import { generateCatalystImage, generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
@@ -100,22 +101,30 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem {
-  if (!collection.contractAddress || !item.tokenId) {
+function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem | CatalystTPItem {
+  const isTP = isTPCollection(collection)
+  if (isTP && (!collection.contractAddress || !item.tokenId)) {
     throw new Error('You need the collection and item to be published')
   }
-  return {
-    id: buildCatalystItemURN(collection.contractAddress, item.tokenId),
+
+  const baseEntityProps = {
     name: item.name,
     description: item.description,
-    collectionAddress: collection.contractAddress!,
-    rarity: item.rarity,
     i18n: [{ code: 'en', text: item.name }],
     data: item.data,
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
     metrics: item.metrics
   }
+
+  return isTP
+    ? { ...baseEntityProps, id: buildThirdPartyURN(extractThirdPartyId(collection.urn), collection.id, item.id) }
+    : {
+        id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
+        rarity: item.rarity,
+        collectionAddress: collection.contractAddress!,
+        ...baseEntityProps
+      }
 }
 
 async function buildItemEntityContent(item: Item): Promise<Record<string, string>> {
