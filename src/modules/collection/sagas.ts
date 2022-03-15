@@ -106,6 +106,8 @@ import {
 } from 'modules/curations/collectionCuration/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
@@ -123,8 +125,6 @@ import {
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
-import { ItemCuration } from 'modules/curations/itemCuration/types'
-import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -544,6 +544,22 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return newItemCuration
   }
 
+  function* getItemsAndEntitiesToDeploy(collection: Collection) {
+    const itemsToDeploy: Item[] = []
+    const entitiesToDeploy: DeploymentPreparationData[] = []
+    const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
+    const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+    for (const item of itemsOfCollection) {
+      const deployedEntity = entitiesByItemId[item.id]
+      if (!deployedEntity || !areSynced(item, deployedEntity)) {
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
+        itemsToDeploy.push(item)
+        entitiesToDeploy.push(entity)
+      }
+    }
+    return { itemsToDeploy, entitiesToDeploy }
+  }
+
   function* handleInitiateTPItemsApprovalFlow(action: InitiateTPApprovalFlowAction) {
     const { collection } = action.payload
 
@@ -564,6 +580,41 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
+
+      const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
+        getItemsAndEntitiesToDeploy,
+        collection
+      )
+
+      // 5. If any, open the modal in the DEPLOY step and wait for actions
+      if (itemsToDeploy.length > 0) {
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
+          view: ApprovalFlowModalView.DEPLOY,
+          collection,
+          items: itemsToDeploy,
+          entities: entitiesToDeploy
+        }
+        yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+        // Wait for actions...
+        const {
+          failure,
+          cancel
+        }: { success: DeployEntitiesSuccessAction; failure: DeployEntitiesFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(DEPLOY_ENTITIES_SUCCESS),
+          failure: take(DEPLOY_ENTITIES_FAILURE),
+          cancel: take(CLOSE_MODAL)
+        })
+
+        // If failure show error and exit flow
+        if (failure) {
+          throw new Error(failure.payload.error)
+
+          // If cancel exit flow
+        } else if (cancel) {
+          return
+        }
+      }
 
       // 6. If the collection was approved but it had a pending curation, approve the curation
 
@@ -648,18 +699,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       // 4. Find items that need to be deployed (the content in the catalyst doesn't match their content hash in the blockchain)
-      const itemsToDeploy: Item[] = []
-      const entitiesToDeploy: DeploymentPreparationData[] = []
-      const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
-      const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
-      for (const item of itemsOfCollection) {
-        const deployedEntity = entitiesByItemId[item.id]
-        if (!deployedEntity || !areSynced(item, deployedEntity)) {
-          const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
-          itemsToDeploy.push(item)
-          entitiesToDeploy.push(entity)
-        }
-      }
+      const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
+        getItemsAndEntitiesToDeploy,
+        collection
+      )
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
       if (itemsToDeploy.length > 0) {
