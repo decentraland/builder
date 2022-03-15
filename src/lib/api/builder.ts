@@ -12,9 +12,9 @@ import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
-import { Item, ItemType, ItemRarity, WearableData, Rarity } from 'modules/item/types'
+import { Item, ItemType, ItemRarity, WearableData, Rarity, ItemApprovalData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { ThirdParty } from 'modules/thirdParty/types'
+import { Cheque, ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
@@ -675,7 +675,7 @@ export class BuilderAPI extends BaseAPI {
     }
   }
 
-  async publishTPCollection(collectionId: string, itemIds: string[], signedMessage: string, signature: string, qty: number, salt: string) {
+  async publishTPCollection(collectionId: string, itemIds: string[], cheque: Cheque) {
     const {
       collection,
       items,
@@ -685,12 +685,7 @@ export class BuilderAPI extends BaseAPI {
       `/collections/${collectionId}/publish`,
       {
         itemIds,
-        cheque: {
-          signedMessage,
-          signature,
-          qty,
-          salt
-        }
+        cheque
       }
     )
     return {
@@ -772,6 +767,10 @@ export class BuilderAPI extends BaseAPI {
     return this.request('get', `/thirdParties/${thirdPartyId}/slots`)
   }
 
+  fetchApprovalData = (collectionId: string): Promise<ItemApprovalData> => {
+    return this.request('get', `/collections/${collectionId}/approvalData`)
+  }
+
   updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
   }
@@ -779,10 +778,6 @@ export class BuilderAPI extends BaseAPI {
   async updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {
     const curation: RemoteItemCuration = await this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
     return fromRemoteItemCuration(curation)
-  }
-
-  isAxiosError(error: any): error is AxiosError {
-    return error.isAxiosError
   }
 
   async fetchContent(hash: string) {
@@ -814,5 +809,9 @@ export class BuilderAPI extends BaseAPI {
         return obj
       }, {})
     )
+  }
+
+  isAxiosError(error: any): error is AxiosError {
+    return error.isAxiosError
   }
 }
