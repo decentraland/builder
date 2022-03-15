@@ -103,7 +103,7 @@ function calculateFilesSize(files: Array<Blob>) {
 
 function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem | CatalystTPItem {
   const isTP = isTPCollection(collection)
-  if (isTP && (!collection.contractAddress || !item.tokenId)) {
+  if (!isTP && (!collection.contractAddress || !item.tokenId)) {
     throw new Error('You need the collection and item to be published')
   }
 
