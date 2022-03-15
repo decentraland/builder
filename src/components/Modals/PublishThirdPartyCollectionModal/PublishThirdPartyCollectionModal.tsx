@@ -2,32 +2,17 @@ import * as React from 'react'
 import { ModalNavigation, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { SyncStatus } from 'modules/item/types'
-import { isAllowedToPushChanges } from 'modules/item/utils'
+import { getItemsToPublish, getItemsWithChanges } from 'modules/item/utils'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import { getTPButtonActionLabel } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton'
 import { Props } from './PublishThirdPartyCollectionModal.types'
 
 export default class PublishThirdPartyCollectionModal extends React.PureComponent<Props> {
-  getItemsToPublish = () => {
-    const { items, itemsStatus } = this.props
-    return items.filter(item => itemsStatus[item.id] === SyncStatus.UNPUBLISHED)
-  }
-
-  getItemsWithChanges = () => {
-    const { items, itemsStatus, itemCurations } = this.props
-    return items.filter(item =>
-      isAllowedToPushChanges(
-        item,
-        itemsStatus[item.id],
-        itemCurations?.find(itemCuration => itemCuration.itemId === item.id)
-      )
-    )
-  }
-
   handleSubmit = () => {
     const {
       items,
+      itemsStatus,
+      itemCurations,
       thirdParty,
       onPublish,
       onPushChanges,
@@ -42,7 +27,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
         onPushChanges(items)
         break
       case PublishButtonAction.PUBLISH_AND_PUSH_CHANGES:
-        onPublishAndPushChanges(thirdParty, this.getItemsToPublish(), this.getItemsWithChanges())
+        onPublishAndPushChanges(thirdParty, getItemsToPublish(items, itemsStatus), getItemsWithChanges(items, itemsStatus, itemCurations))
         break
       default:
         onPublish(thirdParty, items)
@@ -51,10 +36,10 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
   }
 
   getModalDescriptionText = () => {
-    const { items, thirdParty, collection } = this.props
+    const { items, itemsStatus, itemCurations, thirdParty, collection } = this.props
 
-    const itemsToPublishLength = this.getItemsToPublish().length
-    const itemsToPushChangesLength = this.getItemsWithChanges().length
+    const itemsToPublishLength = getItemsToPublish(items, itemsStatus).length
+    const itemsToPushChangesLength = getItemsWithChanges(items, itemsStatus, itemCurations).length
 
     const isPublishingAndPushingChanges = itemsToPushChangesLength > 0 && itemsToPublishLength > 0
     const isJustPushingChanges = itemsToPushChangesLength > 0 && !itemsToPublishLength

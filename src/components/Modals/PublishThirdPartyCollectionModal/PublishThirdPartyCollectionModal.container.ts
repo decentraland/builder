@@ -11,9 +11,9 @@ import {
 } from 'modules/thirdParty/actions'
 import { getCollection } from 'modules/collection/selectors'
 import { getLoading, getCollectionItems, getStatusForItemIds } from 'modules/item/selectors'
+import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './PublishThirdPartyCollectionModal.types'
 import PublishCollectionModal from './PublishThirdPartyCollectionModal'
-import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { collectionId, itemIds } = ownProps.metadata

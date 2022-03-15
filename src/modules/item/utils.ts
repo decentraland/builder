@@ -438,7 +438,7 @@ export function areSynced(item: Item, entity: Entity) {
 export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {
   const isUnsynced = status === SyncStatus.UNSYNCED
   const curationHasAnotherContentHash = itemCuration && itemCuration.contentHash !== item.currentContentHash
-  return isUnsynced || ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED) && curationHasAnotherContentHash)
+  return isUnsynced || ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED || status === SyncStatus.LOADING) && curationHasAnotherContentHash)
 }
 
 export function buildZipContents(contents: Record<string, Blob | string>, areEqual: boolean) {
@@ -466,4 +466,18 @@ export function groupsOf<T>(array: T[], size: number): Array<Array<T>> {
     arrays.push(array.slice(i, i + size))
   }
   return arrays
+}
+
+export const getItemsToPublish = (items: Item[], itemsStatus: Record<string, SyncStatus>) => {
+  return items.filter(item => itemsStatus[item.id] === SyncStatus.UNPUBLISHED)
+}
+
+export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, SyncStatus>, itemCurations: ItemCuration[]) => {
+  return items.filter(item =>
+    isAllowedToPushChanges(
+      item,
+      itemsStatus[item.id],
+      itemCurations?.find(itemCuration => itemCuration.itemId === item.id)
+    )
+  )
 }
