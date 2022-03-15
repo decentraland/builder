@@ -142,7 +142,7 @@ function buildTPItemEntityMetadata(
   }
 }
 
-function buildItemEntityMetadata(collection: Collection, item: Item, tree?: MerkleDistributorInfo): CatalystItem | CatalystTPItem {
+function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem | CatalystTPItem {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published')
   }

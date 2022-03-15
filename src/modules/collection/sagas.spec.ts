@@ -144,7 +144,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData]
+          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem, undefined, undefined), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -215,7 +215,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData],
+          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem, undefined, undefined), deployData],
           [select(getCurationsByCollectionId), { [collection.id]: curation }]
         ])
         .dispatch(initiateApprovalFlow(collection))
@@ -367,7 +367,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData]
+          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem, undefined, undefined), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -432,7 +432,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData]
+          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem, undefined, undefined), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -506,7 +506,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData],
+          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem, undefined, undefined), deployData],
           [select(getCurationsByCollectionId), { [collection.id]: curation }]
         ])
         .dispatch(initiateApprovalFlow(collection))

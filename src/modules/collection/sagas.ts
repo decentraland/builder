@@ -127,8 +127,7 @@ import {
   isLocked,
   getCollectionType,
   getLatestItemHash,
-  UNSYNCED_COLLECTION_ERROR_PREFIX,
-  isTPCollection
+  UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
