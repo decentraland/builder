@@ -1,5 +1,6 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
 import { ModelMetrics } from 'modules/models/types'
+import { Cheque } from 'modules/thirdParty/types'
 
 export type BuiltFile<T extends Content> = BuiltItem<T> & { fileName: string }
 
@@ -133,11 +134,7 @@ export type CatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt'> & {
 }
 
 export type ItemApprovalData = {
-  cheque: {
-    qty: number
-    salt: string
-    signature: string
-  }
+  cheque: Omit<Cheque, 'signedMessage'>
   content_hashes: string[]
 }
 
