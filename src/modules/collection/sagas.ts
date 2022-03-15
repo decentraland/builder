@@ -126,6 +126,7 @@ import {
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
+import { Slot } from 'modules/thirdParty/types'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -275,7 +276,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // Check that items currently in the builder match the items the user wants to publish
       // This will solve the issue were users could add items in different tabs and not see them in the tab
       // were the publish is being made, leaving the collection in a corrupted state.
-      const serverItems: Item[] = yield call([builder, builder.fetchCollectionItems], collection.id)
+      const serverItems: Item[] = yield call([builder, 'fetchCollectionItems'], collection.id)
 
       if (serverItems.length !== items.length) {
         throw new Error(`${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`)
@@ -345,7 +346,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
-      const txHash: string = yield sendTransaction(contract, collection => collection.setMinters(addresses, values))
+      const txHash: string = yield call(sendTransaction, contract, collection => collection.setMinters(addresses, values))
 
       yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), maticChainId, txHash))
       yield put(replace(locations.activity()))
@@ -559,13 +560,19 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+
       const thirdPartyId = extractThirdPartyId(collection.urn)
       const root = tree.merkleRoot
       const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
-      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-      const txHash: string = yield call(sendTransaction, thirdPartyContract, contract =>
-        contract.reviewThirdPartyWithRoot(thirdPartyId, root, { r, s, v })
-      )
+      const slot: Slot = {
+        qty: cheque.qty,
+        salt: cheque.salt,
+        sigR: r,
+        sigS: s,
+        sigV: v
+      }
+      const txHash: string = yield call(sendTransaction as any, thirdPartyContract, 'reviewThirdPartyWithRoot', thirdPartyId, root, [slot])
 
       console.log(txHash)
 

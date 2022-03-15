@@ -14,7 +14,7 @@ import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Item, ItemType, ItemRarity, WearableData, Rarity, ItemApprovalData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { ThirdParty } from 'modules/thirdParty/types'
+import { Cheque, ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
@@ -673,7 +673,7 @@ export class BuilderAPI extends BaseAPI {
     }
   }
 
-  async publishTPCollection(collectionId: string, itemIds: string[], signedMessage: string, signature: string, qty: number, salt: string) {
+  async publishTPCollection(collectionId: string, itemIds: string[], cheque: Cheque) {
     const {
       collection,
       items,
@@ -683,12 +683,7 @@ export class BuilderAPI extends BaseAPI {
       `/collections/${collectionId}/publish`,
       {
         itemIds,
-        cheque: {
-          signedMessage,
-          signature,
-          qty,
-          salt
-        }
+        cheque
       }
     )
     return {

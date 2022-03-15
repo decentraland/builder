@@ -200,10 +200,12 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       [builder, 'publishTPCollection'],
       collectionId,
       items.map(i => i.id),
-      signedMessage,
-      signature,
-      items.length, // qty
-      salt
+      {
+        signedMessage,
+        signature,
+        qty: items.length,
+        salt
+      }
     )
     return { newItems, newItemCurations }
   }
