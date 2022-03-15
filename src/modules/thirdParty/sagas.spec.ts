@@ -329,7 +329,8 @@ describe('when publishing third party items', () => {
           itemId: 'itemId',
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         }
       ]
     })
@@ -384,7 +385,8 @@ describe('when pushing changes to third party items', () => {
           itemId: mockedItem.id,
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         }
       ]
     })
@@ -411,14 +413,16 @@ describe('when pushing changes to third party items', () => {
           itemId: mockedItem.id,
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         },
         {
           id: 'id',
           itemId: 'anotherItemId',
           createdAt: 0,
           status: CurationStatus.APPROVED,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'anotherHash'
         }
       ]
       updatedItemCurations = [
@@ -427,14 +431,16 @@ describe('when pushing changes to third party items', () => {
           itemId: mockedItem.id,
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         },
         {
           id: 'id',
           itemId: 'anotherItemId',
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'anotherHash'
         }
       ]
     })
@@ -485,7 +491,8 @@ describe('when publishing & pushing changes to third party items', () => {
         itemId: mockedItem.id,
         createdAt: 0,
         status: CurationStatus.PENDING,
-        updatedAt: 0
+        updatedAt: 0,
+        contentHash: 'aHash'
       }
     ]
     publishResponse = [{ ...item, id: uuidv4() }]
@@ -539,7 +546,8 @@ describe('when publishing & pushing changes to third party items', () => {
           itemId: mockedItem.id,
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         }
       ]
     })
