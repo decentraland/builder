@@ -135,16 +135,16 @@ export type CatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt'> & {
 
 export type ItemApprovalData = {
   cheque: Omit<Cheque, 'signedMessage'>
-  content_hashes: string[]
+  content_hashes: Record<string, string>
 }
-export type TPItemMerkleRoot = {
+export type TPItemMerkleProof = {
   index: number
   proof: string[]
   hashingKeys: string[]
   entityHash: string
 }
 
-export type CatalystTPItem = Omit<CatalystItem, 'rarity' | 'collectionAddress'> & { merkleRoot: TPItemMerkleRoot }
+export type CatalystTPItem = Omit<CatalystItem, 'rarity' | 'collectionAddress'> & { merkleProof: TPItemMerkleProof }
 
 export type Item = BaseItem & {
   type: ItemType

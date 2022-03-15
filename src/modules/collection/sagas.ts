@@ -4,7 +4,7 @@ import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, Cal
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
-
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -127,7 +127,8 @@ import {
   isLocked,
   getCollectionType,
   getLatestItemHash,
-  UNSYNCED_COLLECTION_ERROR_PREFIX
+  UNSYNCED_COLLECTION_ERROR_PREFIX,
+  isTPCollection
 } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
@@ -548,7 +549,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return newItemCuration
   }
 
-  function* getItemsAndEntitiesToDeploy(collection: Collection) {
+  function* getItemsAndEntitiesToDeploy(collection: Collection, tree?: MerkleDistributorInfo, hashes?: Record<string, string>) {
     const itemsToDeploy: Item[] = []
     const entitiesToDeploy: DeploymentPreparationData[] = []
     const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
@@ -556,7 +557,8 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
-        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item, tree, hashes?.[item.id])
+
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }
@@ -580,7 +582,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const { cheque, content_hashes }: ItemApprovalData = yield call([builder, 'fetchApprovalData'], collection.id)
 
       // 3. Compute the merkle tree root
-      const tree = generateTree(content_hashes)
+      const tree = generateTree(Object.values(content_hashes))
 
       // Open the ApprovalFlowModal with the items to be approved
 
@@ -607,7 +609,9 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
         getItemsAndEntitiesToDeploy,
-        collection
+        collection,
+        tree,
+        content_hashes
       )
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions

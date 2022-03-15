@@ -1,11 +1,12 @@
+import { utils } from 'ethers'
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { buildCatalystItemURN, buildThirdPartyURN, extractThirdPartyId } from 'lib/urn'
-import { isTPCollection } from 'modules/collection/utils'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH, CatalystTPItem } from './types'
@@ -101,13 +102,20 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem | CatalystTPItem {
-  const isTP = isTPCollection(collection)
-  if (!isTP && (!collection.contractAddress || !item.tokenId)) {
-    throw new Error('You need the collection and item to be published')
+function getMerkleProof(tree: MerkleDistributorInfo, itemHash: string, entityValues: Partial<CatalystTPItem>) {
+  const keys = Object.keys(entityValues)
+  const entityHash = utils.keccak256(JSON.stringify(entityValues, keys))
+  const { index, proof } = tree.proofs[itemHash]
+  return {
+    index,
+    proof,
+    hashingKeys: keys,
+    entityHash
   }
+}
 
-  const baseEntityProps = {
+function getBaseEntityMetadata(item: Item) {
+  return {
     name: item.name,
     description: item.description,
     i18n: [{ code: 'en', text: item.name }],
@@ -116,15 +124,35 @@ function buildItemEntityMetadata(collection: Collection, item: Item): CatalystIt
     thumbnail: THUMBNAIL_PATH,
     metrics: item.metrics
   }
+}
 
-  return isTP
-    ? { ...baseEntityProps, id: buildThirdPartyURN(extractThirdPartyId(collection.urn), collection.id, item.id) }
-    : {
-        id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
-        rarity: item.rarity,
-        collectionAddress: collection.contractAddress!,
-        ...baseEntityProps
-      }
+function buildTPItemEntityMetadata(
+  collection: Collection,
+  item: Item,
+  itemHash: string,
+  tree: MerkleDistributorInfo
+): CatalystItem | CatalystTPItem {
+  const baseEntityData = {
+    id: buildThirdPartyURN(extractThirdPartyId(collection.urn), collection.id, item.id),
+    ...getBaseEntityMetadata(item)
+  }
+  return {
+    merkleProof: getMerkleProof(tree, itemHash, baseEntityData),
+    ...baseEntityData
+  }
+}
+
+function buildItemEntityMetadata(collection: Collection, item: Item, tree?: MerkleDistributorInfo): CatalystItem | CatalystTPItem {
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published')
+  }
+
+  return {
+    id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
+    rarity: item.rarity,
+    collectionAddress: collection.contractAddress!,
+    ...getBaseEntityMetadata(item)
+  }
 }
 
 async function buildItemEntityContent(item: Item): Promise<Record<string, string>> {
@@ -143,10 +171,17 @@ async function buildItemEntityBlobs(item: Item): Promise<Record<string, Blob>> {
   return files
 }
 
-export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item): Promise<DeploymentPreparationData> {
+export async function buildItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item,
+  tree?: MerkleDistributorInfo,
+  itemHash?: string
+): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item)
   const files = await makeContentFiles(blobs)
-  const metadata = buildItemEntityMetadata(collection, item)
+  const metadata =
+    tree && itemHash ? buildTPItemEntityMetadata(collection, item, itemHash, tree) : buildItemEntityMetadata(collection, item)
   return client.buildEntity({
     type: EntityType.WEARABLE,
     pointers: [metadata.id],
