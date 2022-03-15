@@ -1,9 +1,11 @@
-import { Contract, providers, constants } from 'ethers'
+import { Contract, providers, constants, ethers } from 'ethers'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { generateTree } from '@dcl/content-hash-tree'
+
+import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -90,7 +92,7 @@ import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
-import { Item } from 'modules/item/types'
+import { Item, ItemApprovalData } from 'modules/item/types'
 import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -123,6 +125,7 @@ import {
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
+import { extractThirdPartyId } from 'lib/urn'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -545,13 +548,26 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       // 1. Open modal
 
-      // 2. Get the approval data from the server (using the builder client)
+      // 2. Get the approval data from the server
+      // TODO: Use the builder client. Tracked here: https://github.com/decentraland/builder/issues/1855
+      const { cheque, content_hashes }: ItemApprovalData = yield call([builder, 'fetchApprovalData'], collection.id)
 
       // 3. Compute the merkle tree root
+      const tree = generateTree(content_hashes)
 
       // Open the ApprovalFlowModal with the items to be approved
 
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const thirdPartyId = extractThirdPartyId(collection.urn)
+      const root = tree.merkleRoot
+      const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+      const txHash: string = yield call(sendTransaction, thirdPartyContract, contract =>
+        contract.reviewThirdPartyWithRoot(thirdPartyId, root, { r, s, v })
+      )
+
+      console.log(txHash)
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
 

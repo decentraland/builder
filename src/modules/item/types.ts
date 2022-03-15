@@ -132,6 +132,15 @@ export type CatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt'> & {
   collectionAddress: string
 }
 
+export type ItemApprovalData = {
+  cheque: {
+    qty: number
+    salt: string
+    signature: string
+  }
+  content_hashes: string[]
+}
+
 export type Item = BaseItem & {
   type: ItemType
   owner: string
