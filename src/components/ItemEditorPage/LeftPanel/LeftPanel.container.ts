@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
+import { getSelectedCollectionId, getSelectedItemId, isReviewing } from 'modules/location/selectors'
 import { getBodyShape, getVisibleItems } from 'modules/editor/selectors'
 import { getItems, getWalletOrphanItems } from 'modules/item/selectors'
 import { getAuthorizedCollections } from 'modules/collection/selectors'
@@ -18,7 +18,8 @@ const mapState = (state: RootState): MapStateProps => ({
   selectedItemId: getSelectedItemId(state),
   selectedCollectionId: getSelectedCollectionId(state),
   visibleItems: getVisibleItems(state),
-  bodyShape: getBodyShape(state)
+  bodyShape: getBodyShape(state),
+  isReviewing: isReviewing(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
