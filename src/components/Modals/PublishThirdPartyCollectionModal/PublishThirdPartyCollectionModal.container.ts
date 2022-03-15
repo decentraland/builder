@@ -11,6 +11,7 @@ import {
 } from 'modules/thirdParty/actions'
 import { getCollection } from 'modules/collection/selectors'
 import { getLoading, getCollectionItems, getStatusForItemIds } from 'modules/item/selectors'
+import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './PublishThirdPartyCollectionModal.types'
 import PublishCollectionModal from './PublishThirdPartyCollectionModal'
 
@@ -19,10 +20,12 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
   const collection = getCollection(state, collectionId)
   const items = getCollectionItems(state, collectionId).filter(item => itemIds.includes(item.id))
+  const itemCurations = getItemCurations(state, collectionId)
 
   return {
     collection,
     items,
+    itemCurations,
     thirdParty: collection ? getCollectionThirdParty(state, collection) : null,
     isPublishLoading:
       isLoadingType(getLoading(state), PUBLISH_THIRD_PARTY_ITEMS_REQUEST) ||
