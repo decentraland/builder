@@ -71,6 +71,7 @@ import {
   InitiateTPApprovalFlowAction,
   INITIATE_TP_APPROVAL_FLOW
 } from './actions'
+import { extractThirdPartyId } from 'lib/urn'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
 import { createCollectionForumPostRequest } from 'modules/forum/actions'
@@ -125,7 +126,6 @@ import {
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
-import { extractThirdPartyId } from 'lib/urn'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
