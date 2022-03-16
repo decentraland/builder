@@ -1,5 +1,6 @@
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
@@ -7,7 +8,7 @@ import { NO_CACHE_HEADERS } from 'lib/headers'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem } from './types'
 import { generateCatalystImage, generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
@@ -100,21 +101,54 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem {
-  if (!collection.contractAddress || !item.tokenId) {
-    throw new Error('You need the collection and item to be published')
-  }
+function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityValues: Omit<TPCatalystItem, 'merkleProof'>) {
+  const hashingKeys = Object.keys(entityValues)
+  const { index, proof } = tree.proofs[entityHash]
   return {
-    id: buildCatalystItemURN(collection.contractAddress, item.tokenId),
+    index,
+    proof,
+    hashingKeys,
+    entityHash
+  }
+}
+
+function getBaseEntityMetadata(item: Item) {
+  return {
     name: item.name,
     description: item.description,
-    collectionAddress: collection.contractAddress!,
-    rarity: item.rarity,
     i18n: [{ code: 'en', text: item.name }],
     data: item.data,
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
     metrics: item.metrics
+  }
+}
+
+function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): TPCatalystItem {
+  if (!item.urn) {
+    throw new Error('Item does not have URN')
+  }
+  const baseEntityData = {
+    id: item.urn,
+    ...getBaseEntityMetadata(item),
+    content: item.contents
+  }
+  return {
+    ...baseEntityData,
+    merkleProof: getMerkleProof(tree, itemHash, baseEntityData)
+  }
+}
+
+function buildItemEntityMetadata(collection: Collection, item: Item): StandardCatalystItem {
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published')
+  }
+
+  return {
+    id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
+    rarity: item.rarity,
+    collectionAddress: collection.contractAddress!,
+    ...getBaseEntityMetadata(item)
   }
 }
 
@@ -134,10 +168,16 @@ async function buildItemEntityBlobs(item: Item): Promise<Record<string, Blob>> {
   return files
 }
 
-export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item): Promise<DeploymentPreparationData> {
+export async function buildItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item,
+  tree?: MerkleDistributorInfo,
+  itemHash?: string
+): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item)
   const files = await makeContentFiles(blobs)
-  const metadata = buildItemEntityMetadata(collection, item)
+  const metadata = tree && itemHash ? buildTPItemEntityMetadata(item, itemHash, tree) : buildItemEntityMetadata(collection, item)
   return client.buildEntity({
     type: EntityType.WEARABLE,
     pointers: [metadata.id],
@@ -145,6 +185,24 @@ export async function buildItemEntity(client: CatalystClient, collection: Collec
     files,
     timestamp: Date.now()
   })
+}
+
+export async function buildStandardItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item
+): Promise<DeploymentPreparationData> {
+  return buildItemEntity(client, collection, item)
+}
+
+export async function buildTPItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item,
+  tree: MerkleDistributorInfo,
+  itemHash: string
+): Promise<DeploymentPreparationData> {
+  return buildItemEntity(client, collection, item, tree, itemHash)
 }
 
 export async function buildItemContentHash(collection: Collection, item: Item): Promise<string> {

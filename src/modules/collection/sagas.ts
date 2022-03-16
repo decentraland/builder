@@ -1,10 +1,10 @@
 import { Contract, providers, constants, ethers } from 'ethers'
 import { replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, CallEffect, all } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
-
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -98,7 +98,7 @@ import { Slot } from 'modules/thirdParty/types'
 import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { buildItemEntity } from 'modules/item/export'
+import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
@@ -109,6 +109,7 @@ import {
 } from 'modules/curations/collectionCuration/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
@@ -538,8 +539,45 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return allItems.filter(item => item.collectionId === collection.id)
   }
 
+  function* updateItemCurationsStatus(items: Item[], status: CurationStatus) {
+    const effects: CallEffect<ItemCuration>[] = items.map(item => call([builder, 'updateItemCurationStatus'], item.id, status))
+    const newItemCuration: ItemCuration[] = yield all(effects)
+    return newItemCuration
+  }
+
+  function* getStandardItemsAndEntitiesToDeploy(collection: Collection) {
+    const itemsToDeploy: Item[] = []
+    const entitiesToDeploy: DeploymentPreparationData[] = []
+    const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
+    const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+    for (const item of itemsOfCollection) {
+      const deployedEntity = entitiesByItemId[item.id]
+      if (!deployedEntity || !areSynced(item, deployedEntity)) {
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
+
+        itemsToDeploy.push(item)
+        entitiesToDeploy.push(entity)
+      }
+    }
+    return { itemsToDeploy, entitiesToDeploy }
+  }
+
+  function* getTPItemsAndEntitiesToDeploy(collection: Collection, tree: MerkleDistributorInfo, hashes: Record<string, string>) {
+    const itemsToDeploy: Item[] = []
+    const entitiesToDeploy: DeploymentPreparationData[] = []
+    const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+    for (const item of itemsOfCollection) {
+      if (item.blockchainContentHash !== item.currentContentHash) {
+        const entity: DeploymentPreparationData = yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
+        itemsToDeploy.push(item)
+        entitiesToDeploy.push(entity)
+      }
+    }
+    return { itemsToDeploy, entitiesToDeploy }
+  }
+
   function* handleInitiateTPItemsApprovalFlow(action: InitiateTPApprovalFlowAction) {
-    const { collection } = action.payload
+    const { collection, itemsToApprove } = action.payload
 
     try {
       // Check if this makes sense or add a check to see if the items to be published are correct.
@@ -554,11 +592,12 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const { cheque, content_hashes }: ItemApprovalData = yield call([builder, 'fetchApprovalData'], collection.id)
 
       // 3. Compute the merkle tree root
-      const tree = generateTree(content_hashes)
+      const tree = generateTree(Object.values(content_hashes))
 
       // Open the ApprovalFlowModal with the items to be approved
 
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
+
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
       const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
 
@@ -578,7 +617,47 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
 
+      const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
+        getTPItemsAndEntitiesToDeploy,
+        collection,
+        tree,
+        content_hashes
+      )
+
+      // 5. If any, open the modal in the DEPLOY step and wait for actions
+      if (itemsToDeploy.length > 0) {
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
+          view: ApprovalFlowModalView.DEPLOY,
+          collection,
+          items: itemsToDeploy,
+          entities: entitiesToDeploy
+        }
+        yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+        // Wait for actions...
+        const {
+          failure,
+          cancel
+        }: { success: DeployEntitiesSuccessAction; failure: DeployEntitiesFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(DEPLOY_ENTITIES_SUCCESS),
+          failure: take(DEPLOY_ENTITIES_FAILURE),
+          cancel: take(CLOSE_MODAL)
+        })
+
+        // If failure show error and exit flow
+        if (failure) {
+          throw new Error(failure.payload.error)
+
+          // If cancel exit flow
+        } else if (cancel) {
+          return
+        }
+      }
+
       // 6. If the collection was approved but it had a pending curation, approve the curation
+
+      const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemsToApprove, CurationStatus.APPROVED)
+      console.log('newItemsCurations: ', newItemsCurations) // TODO: Add this to the success action that will override the curations in the state
 
       // 7. Success 🎉
     } catch (error) {
@@ -656,18 +735,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       // 4. Find items that need to be deployed (the content in the catalyst doesn't match their content hash in the blockchain)
-      const itemsToDeploy: Item[] = []
-      const entitiesToDeploy: DeploymentPreparationData[] = []
-      const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
-      const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
-      for (const item of itemsOfCollection) {
-        const deployedEntity = entitiesByItemId[item.id]
-        if (!deployedEntity || !areSynced(item, deployedEntity)) {
-          const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
-          itemsToDeploy.push(item)
-          entitiesToDeploy.push(entity)
-        }
-      }
+      const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
+        getStandardItemsAndEntitiesToDeploy,
+        collection
+      )
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
       if (itemsToDeploy.length > 0) {
