@@ -98,7 +98,7 @@ import { Slot } from 'modules/thirdParty/types'
 import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { buildItemEntity } from 'modules/item/export'
+import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
@@ -556,12 +556,25 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
-        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item, tree, hashes?.[item.id])
+        const entity: DeploymentPreparationData =
+          tree && hashes
+            ? yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
+            : yield call(buildItemEntity, catalyst, collection, item)
 
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }
     }
+    return { itemsToDeploy, entitiesToDeploy }
+  }
+
+  function* getTPItemsAndEntitiesToDeploy(collection: Collection, tree: MerkleDistributorInfo, hashes: Record<string, string>) {
+    const { itemsToDeploy, entitiesToDeploy } = yield call(getItemsAndEntitiesToDeploy, collection, tree, hashes)
+    return { itemsToDeploy, entitiesToDeploy }
+  }
+
+  function* getStandardItemsAndEntitiesToDeploy(collection: Collection) {
+    const { itemsToDeploy, entitiesToDeploy } = yield call(getItemsAndEntitiesToDeploy, collection)
     return { itemsToDeploy, entitiesToDeploy }
   }
 
@@ -607,7 +620,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // 5. If any, open the modal in the DEPLOY step and wait for actions
 
       const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
-        getItemsAndEntitiesToDeploy,
+        getTPItemsAndEntitiesToDeploy,
         collection,
         tree,
         content_hashes
@@ -727,7 +740,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       // 4. Find items that need to be deployed (the content in the catalyst doesn't match their content hash in the blockchain)
       const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
-        getItemsAndEntitiesToDeploy,
+        getStandardItemsAndEntitiesToDeploy,
         collection
       )
 

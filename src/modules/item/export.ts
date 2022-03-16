@@ -6,10 +6,10 @@ import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { NO_CACHE_HEADERS } from 'lib/headers'
-import { buildCatalystItemURN, buildThirdPartyURN, extractThirdPartyId } from 'lib/urn'
+import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH, CatalystTPItem } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem } from './types'
 import { generateCatalystImage, generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
@@ -102,7 +102,7 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-function getMerkleProof(tree: MerkleDistributorInfo, itemHash: string, entityValues: Partial<CatalystTPItem>) {
+function getMerkleProof(tree: MerkleDistributorInfo, itemHash: string, entityValues: Omit<TPCatalystItem, 'merkleProof'>) {
   const keys = Object.keys(entityValues)
   const entityHash = utils.keccak256(JSON.stringify(entityValues, keys))
   const { index, proof } = tree.proofs[itemHash]
@@ -126,14 +126,14 @@ function getBaseEntityMetadata(item: Item) {
   }
 }
 
-function buildTPItemEntityMetadata(
-  collection: Collection,
-  item: Item,
-  itemHash: string,
-  tree: MerkleDistributorInfo
-): CatalystItem | CatalystTPItem {
+function buildTPItemEntityMetadata(collection: Collection, item: Item, itemHash: string, tree: MerkleDistributorInfo): TPCatalystItem {
+  const decodedURN = decodeURN(collection.urn)
+  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+    throw new Error('URN is not a third party URN')
+  }
+  const { thirdPartyCollectionId, thirdPartyName } = decodedURN
   const baseEntityData = {
-    id: buildThirdPartyURN(extractThirdPartyId(collection.urn), collection.id, item.id),
+    id: buildThirdPartyURN(thirdPartyName, thirdPartyCollectionId!, item.id),
     ...getBaseEntityMetadata(item)
   }
   return {
@@ -142,7 +142,7 @@ function buildTPItemEntityMetadata(
   }
 }
 
-function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem | CatalystTPItem {
+function buildItemEntityMetadata(collection: Collection, item: Item): StandardCatalystItem {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published')
   }
@@ -189,6 +189,24 @@ export async function buildItemEntity(
     files,
     timestamp: Date.now()
   })
+}
+
+export async function buildStandardItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item
+): Promise<DeploymentPreparationData> {
+  return buildItemEntity(client, collection, item)
+}
+
+export async function buildTPItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item,
+  tree: MerkleDistributorInfo,
+  itemHash: string
+): Promise<DeploymentPreparationData> {
+  return buildItemEntity(client, collection, item, tree, itemHash)
 }
 
 export async function buildItemContentHash(collection: Collection, item: Item): Promise<string> {

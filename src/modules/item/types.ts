@@ -126,12 +126,20 @@ type BaseItem = {
   updatedAt: number
 }
 
-export type CatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt'> & {
+export type BaseCatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt' | 'rarity' | 'collectionAddress'> & {
   i18n: { code: string; text: string }[]
   data: WearableData
   image: string
-  collectionAddress: string
 }
+
+export type StandardCatalystItem = BaseCatalystItem &
+  Pick<BaseItem, 'rarity'> & {
+    collectionAddress: string
+  }
+
+export type TPCatalystItem = BaseCatalystItem & { merkleProof: TPItemMerkleProof }
+
+export type CatalystItem = StandardCatalystItem | TPCatalystItem
 
 export type ItemApprovalData = {
   cheque: Omit<Cheque, 'signedMessage'>
@@ -143,8 +151,6 @@ export type TPItemMerkleProof = {
   hashingKeys: string[]
   entityHash: string
 }
-
-export type CatalystTPItem = Omit<CatalystItem, 'rarity' | 'collectionAddress'> & { merkleProof: TPItemMerkleProof }
 
 export type Item = BaseItem & {
   type: ItemType
