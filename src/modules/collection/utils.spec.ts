@@ -5,7 +5,7 @@ import { Item, WearableBodyShape } from 'modules/item/types'
 import { Collection, CollectionType } from 'modules/collection/types'
 import { buildItemContentHash } from 'modules/item/export'
 import { Mint } from './types'
-import { getTotalAmountOfMintedItems, isLocked, getCollectionType, getLatestItemHash } from './utils'
+import { getTotalAmountOfMintedItems, isLocked, getCollectionType, getLatestItemHash, isTPCollection } from './utils'
 
 jest.mock('modules/item/export')
 
@@ -163,6 +163,36 @@ describe('when getting the latest item hash', () => {
 
     it("should return the computed hash of the item's entity", () => {
       return expect(getLatestItemHash(collection, item)).resolves.toEqual(resultHash)
+    })
+  })
+})
+
+describe('when checking if a collection is of type third party', () => {
+  let collection: Collection
+
+  describe('and the collection is not a third party collection', () => {
+    beforeEach(() => {
+      collection = {
+        id: 'aCollection',
+        urn: 'urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8'
+      } as Collection
+    })
+
+    it('should return false', () => {
+      expect(isTPCollection(collection)).toBe(false)
+    })
+  })
+
+  describe('and the collection is a third party collection', () => {
+    beforeEach(() => {
+      collection = {
+        id: 'aCollection',
+        urn: 'urn:decentraland:matic:collections-thirdparty:some-tp-name:the-collection-id:a-wonderful-token-id'
+      } as Collection
+    })
+
+    it('should return true', () => {
+      expect(isTPCollection(collection)).toBe(true)
     })
   })
 })

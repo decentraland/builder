@@ -1,6 +1,7 @@
 .ThirdPartyCollectionDetailPage .header-column {
   flex: none;
   width: calc(100% - 300px);
+  min-width: 0;
 }
 
 .ThirdPartyCollectionDetailPage .header-row {

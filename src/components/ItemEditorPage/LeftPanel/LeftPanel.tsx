@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection, CollectionType } from 'modules/collection/types'
+import { getCollectionType } from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
@@ -9,14 +10,12 @@ import Items from './Items'
 import Collections from './Collections'
 import { Props } from './LeftPanel.types'
 import './LeftPanel.css'
-import { getCollectionType } from 'modules/collection/utils'
 
 export default class LeftPanel extends React.PureComponent<Props> {
   getItems(collection: Collection | null, collectionItems: Item[]) {
-    const { selectedCollectionId, orphanItems } = this.props
-
+    const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
-      return getCollectionType(collection) === CollectionType.THIRD_PARTY
+      return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing
         ? collectionItems.filter(item => item.isPublished)
         : collectionItems
     }

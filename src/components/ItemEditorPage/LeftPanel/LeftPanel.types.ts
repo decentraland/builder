@@ -12,6 +12,7 @@ export type Props = {
   selectedItemId: string | null
   selectedCollectionId: string | null
   visibleItems: Item[]
+  isReviewing: boolean
   bodyShape: WearableBodyShape
   onSetItems: typeof setItems
   onSetCollection: typeof setCollection
@@ -19,7 +20,15 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'items' | 'orphanItems' | 'collections' | 'selectedItemId' | 'selectedCollectionId' | 'visibleItems' | 'bodyShape' | 'isConnected'
+  | 'items'
+  | 'orphanItems'
+  | 'collections'
+  | 'selectedItemId'
+  | 'selectedCollectionId'
+  | 'visibleItems'
+  | 'bodyShape'
+  | 'isConnected'
+  | 'isReviewing'
 >
 export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onSetCollection'>
 export type MapDispatch = Dispatch<SetItemsAction | SetCollectionAction>

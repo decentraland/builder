@@ -1,7 +1,12 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { ChainId } from '@dcl/schemas'
-import { initiateApprovalFlow, InitiateApprovalFlowAction } from 'modules/collection/actions'
+import {
+  initiateApprovalFlow,
+  InitiateApprovalFlowAction,
+  initiateTPApprovalFlow,
+  InitiateTPApprovalFlowAction
+} from 'modules/collection/actions'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
 
 export type Props = {
@@ -12,6 +17,7 @@ export type Props = {
   selectedCollectionId: string | null
   onNavigate: (path: string) => void
   onInitiateApprovalFlow: typeof initiateApprovalFlow
+  onInitiateTPApprovalFlow: typeof initiateTPApprovalFlow
 }
 
 export type State = {
@@ -27,5 +33,5 @@ export enum ButtonType {
 }
 
 export type MapStateProps = Pick<Props, 'chainId' | 'isConnected' | 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | InitiateApprovalFlowAction>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow'>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | InitiateApprovalFlowAction | InitiateTPApprovalFlowAction>

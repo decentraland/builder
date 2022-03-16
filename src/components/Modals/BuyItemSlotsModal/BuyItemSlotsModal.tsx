@@ -5,9 +5,9 @@ import { Network } from '@dcl/schemas'
 import { Button, ModalDescription, ModalHeader, Mana, Loader, Message, Field } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Modal, NetworkButton } from 'decentraland-dapps/dist/containers'
+import { applySlotBuySlippage } from 'modules/thirdParty/utils'
 import { Props, State } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
-import { applySlotBuySlippage } from 'modules/thirdParty/utils'
 
 export default class BuyItemSlotsModal extends React.PureComponent<Props, State> {
   state: State = {
