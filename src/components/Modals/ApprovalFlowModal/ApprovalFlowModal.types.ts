@@ -6,10 +6,14 @@ import { Collection } from 'modules/collection/types'
 import { rescueItemsRequest, RescueItemsRequestAction } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 import { deployEntitiesRequest, DeployEntitiesRequestAction } from 'modules/entity/actions'
+import { consumeThirdPartyItemSlotsRequest, ConsumeThirdPartyItemSlotsRequestAction } from 'modules/thirdParty/actions'
+import { Slot } from 'modules/thirdParty/types'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 
 export enum ApprovalFlowModalView {
   LOADING = 'loading',
   RESCUE = 'rescue',
+  CONSUME_TP_SLOTS = 'consume_tp_slots',
   DEPLOY = 'deploy',
   APPROVE = 'approve',
   SUCCESS = 'success',
@@ -23,6 +27,8 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
   ? { items: Item[]; contentHashes: string[] }
   : V extends ApprovalFlowModalView.DEPLOY
   ? { items: Item[]; entities: DeploymentPreparationData[] }
+  : V extends ApprovalFlowModalView.CONSUME_TP_SLOTS
+  ? { slots: Slot[]; merkleTreeRoot: MerkleDistributorInfo['merkleRoot']; items: Item[] }
   : V extends ApprovalFlowModalView.ERROR
   ? { error: string }
   : {})
@@ -31,7 +37,9 @@ export type Props = ModalProps & {
   onRescueItems: typeof rescueItemsRequest
   onDeployItems: typeof deployEntitiesRequest
   onApproveCollection: typeof approveCollectionRequest
+  onConsumeTPSlots: typeof consumeThirdPartyItemSlotsRequest
   isConfirmingRescueTx: boolean
+  isConfirmingConsumeSlotsTx: boolean
   isDeployingItems: boolean
   isConfirmingApproveTx: boolean
   isAwaitingApproveTx: boolean
@@ -39,8 +47,14 @@ export type Props = ModalProps & {
 
 export type State = {
   didRescue: boolean
+  didApproveConsumeSlots: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isConfirmingRescueTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'>
-export type MapDispatchProps = Pick<Props, 'onRescueItems' | 'onDeployItems' | 'onApproveCollection'>
-export type MapDispatch = Dispatch<RescueItemsRequestAction | DeployEntitiesRequestAction | ApproveCollectionRequestAction>
+export type MapStateProps = Pick<
+  Props,
+  'isConfirmingRescueTx' | 'isConfirmingConsumeSlotsTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'
+>
+export type MapDispatchProps = Pick<Props, 'onRescueItems' | 'onDeployItems' | 'onApproveCollection' | 'onConsumeTPSlots'>
+export type MapDispatch = Dispatch<
+  RescueItemsRequestAction | DeployEntitiesRequestAction | ApproveCollectionRequestAction | ConsumeThirdPartyItemSlotsRequestAction
+>

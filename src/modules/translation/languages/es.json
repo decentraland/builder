@@ -1364,6 +1364,12 @@
         "content": "Se realizarán múltiples transacciones. Ten en cuenta que se te pedirá que las firmes."
       }
     },
+    "consume_slots": {
+      "title": "Aprobar Items",
+      "subtitle": "Por favor aprueba los items y sus hashes. {br}La collección entera tiene el siguiente hash: {hash}",
+      "more_items": "Y {count} otros {count, plural, one {item} other {items}}",
+      "confirm": "Confirmar"
+    },
     "upload": {
       "title": "Subir Archivos",
       "subtitle": "Por favor sube los archivos de los items",

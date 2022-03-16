@@ -27,7 +27,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
-  renderPage = (collection: Collection, collectionItems: Item[], curation: CollectionCuration | null, itemsCuration: ItemCuration[]) => {
+  renderPage = (
+    collection: Collection,
+    collectionItems: Item[],
+    curation: CollectionCuration | null,
+    itemsCuration: ItemCuration[] | null
+  ) => {
     const { showRejectionModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -151,9 +156,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     return isCommitteeMember && isReviewing && isConnected ? (
       <div className="TopPanel">
         <CollectionProvider id={selectedCollectionId}>
-          {({ collection, items: collectionItems, curation, isLoading }) =>
-            //TODO: Add logic to fetch the `itemCurations` array for the collection and pass it down to the `renderPage` call
-            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, collectionItems, curation, [])
+          {({ collection, items: collectionItems, itemCurations, curation, isLoading }) =>
+            !collection || isLoading ? (
+              <Loader size="small" active />
+            ) : (
+              this.renderPage(collection, collectionItems, curation, itemCurations)
+            )
           }
         </CollectionProvider>
       </div>

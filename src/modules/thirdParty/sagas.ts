@@ -45,10 +45,15 @@ import {
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
   PublishThirdPartyItemsSuccessAction,
   publishAndPushChangesThirdPartyItemsSuccess,
-  publishAndPushChangesThirdPartyItemsFailure
+  publishAndPushChangesThirdPartyItemsFailure,
+  ConsumeThirdPartyItemSlotsRequestAction,
+  consumeThirdPartyItemSlotsSuccess,
+  consumeThirdPartyItemSlotsFailure,
+  CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST
 } from './actions'
 import { applySlotBuySlippage } from './utils'
 import { ThirdParty } from './types'
+import { waitForTx } from 'modules/transaction/utils'
 
 export function* getContractInstance(
   contract: ContractName.ThirdPartyRegistry | ContractName.ChainlinkOracle,
@@ -116,6 +121,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
+  yield takeLatest(CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST, handleConsumeSlotsRequest)
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -276,6 +282,27 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
       yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
+    }
+  }
+
+  function* handleConsumeSlotsRequest(action: ConsumeThirdPartyItemSlotsRequestAction) {
+    const { thirdPartyId, slots, merkleTreeRoot } = action.payload
+    try {
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+      const txHash: string = yield call(
+        sendTransaction as any,
+        thirdPartyContract,
+        'reviewThirdPartyWithRoot',
+        thirdPartyId,
+        merkleTreeRoot,
+        slots
+      )
+      // wait for the tx to be mined
+      waitForTx(txHash)
+      yield put(consumeThirdPartyItemSlotsSuccess(txHash, maticChainId))
+    } catch (error) {
+      yield put(consumeThirdPartyItemSlotsFailure(error))
     }
   }
 }
