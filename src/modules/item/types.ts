@@ -137,7 +137,7 @@ export type StandardCatalystItem = BaseCatalystItem &
     collectionAddress: string
   }
 
-export type TPCatalystItem = BaseCatalystItem & { merkleProof: TPItemMerkleProof }
+export type TPCatalystItem = BaseCatalystItem & { merkleProof: TPItemMerkleProof; content: Record<string, string> }
 
 export type CatalystItem = StandardCatalystItem | TPCatalystItem
 

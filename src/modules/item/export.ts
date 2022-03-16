@@ -132,6 +132,7 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
   }
   const baseEntityData = {
     id: item.urn,
+    content: item.contents,
     ...getBaseEntityMetadata(item)
   }
   return {
