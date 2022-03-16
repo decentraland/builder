@@ -158,12 +158,11 @@
     },
     "name_field": {
       "label": "Nombre",
-      "placeholder": "Mi colección",
       "message": "El nombre puede tener un máximo de {maxLength} caracteres"
     },
     "urn_suffix_field": {
       "label": "Id",
-      "placeholder": "mi-colección"
+      "message": "Recomendamos incluir la dirección del contrato de la colección como parte del id. Solo puede usar letras, números y guiones (-)"
     }
   },
   "model_metrics": {

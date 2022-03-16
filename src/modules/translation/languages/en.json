@@ -155,13 +155,11 @@
     },
     "name_field": {
       "label": "Name",
-      "placeholder": "My collection",
       "message": "The name can be {maxLength} characters at most"
     },
     "urn_suffix_field": {
       "label": "Id",
-      "placeholder": "my-collection",
-      "message": "Only letters and dashes (-) are allowed"
+      "message": "We recommend including the collection contract address as part of the id. Only letters, numbers and dashes (-) are allowed"
     }
   },
   "model_metrics": {
