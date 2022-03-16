@@ -3,6 +3,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { Collection } from 'modules/collection/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { Item, SyncStatus } from 'modules/item/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import {
   publishAndPushChangesThirdPartyItemsRequest,
@@ -24,6 +25,7 @@ export type Props = ModalProps & {
   collection: Collection | null
   thirdParty: ThirdParty | null
   items: Item[]
+  itemCurations: ItemCuration[]
   itemsStatus: Record<string, SyncStatus>
   isPublishLoading: boolean
   onPublish: typeof publishThirdPartyItemsRequest
@@ -32,7 +34,7 @@ export type Props = ModalProps & {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'collection' | 'items' | 'thirdParty' | 'isPublishLoading' | 'itemsStatus'>
+export type MapStateProps = Pick<Props, 'collection' | 'items' | 'thirdParty' | 'isPublishLoading' | 'itemsStatus' | 'itemCurations'>
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPushChanges' | 'onPublishAndPushChanges'>
 export type MapDispatch = Dispatch<
   PublishThirdPartyItemsRequestAction | PushChangesThirdPartyItemsRequestAction | PublishAndPushChangesThirdPartyItemsRequestAction

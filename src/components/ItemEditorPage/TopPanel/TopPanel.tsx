@@ -6,7 +6,8 @@ import { Collection, CollectionType } from 'modules/collection/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
-import { getCollectionType, hasReviews } from 'modules/collection/utils'
+import { Item } from 'modules/item/types'
+import { getCollectionType, hasReviews, isTPCollection } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
 import RejectionModal from './RejectionModal'
@@ -26,7 +27,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
-  renderPage = (collection: Collection, curation: CollectionCuration | null, itemsCuration: ItemCuration[]) => {
+  renderPage = (collection: Collection, collectionItems: Item[], curation: CollectionCuration | null, itemsCuration: ItemCuration[]) => {
     const { showRejectionModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -45,7 +46,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         <div className="actions">
           <span className="button-container">
             {type === CollectionType.THIRD_PARTY
-              ? this.renderTPButtons(collection, curation, itemsCuration)
+              ? this.renderTPButtons(collection, collectionItems, curation, itemsCuration)
               : this.renderButtons(collection, curation)}
           </span>
         </div>
@@ -62,11 +63,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderButton = (type: ButtonType, collection: Collection, curation: CollectionCuration | null) => {
-    const { onInitiateApprovalFlow } = this.props
+  renderButton = (type: ButtonType, collection: Collection, curation: CollectionCuration | null, collectionItems?: Item[]) => {
+    const { onInitiateApprovalFlow, onInitiateTPApprovalFlow } = this.props
 
     const onClickMap = {
-      [ButtonType.APPROVE]: () => onInitiateApprovalFlow(collection),
+      [ButtonType.APPROVE]: () =>
+        isTPCollection(collection) ? onInitiateTPApprovalFlow(collection, collectionItems!) : onInitiateApprovalFlow(collection),
       [ButtonType.ENABLE]: () => onInitiateApprovalFlow(collection),
       [ButtonType.DISABLE]: () => this.setShowRejectionModal(RejectionType.DISABLE_COLLECTION),
       [ButtonType.REJECT]: () => {
@@ -94,11 +96,16 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderTPButtons = (collection: Collection, collectionCuration: CollectionCuration | null, itemCurations: ItemCuration[] | null) => {
+  renderTPButtons = (
+    collection: Collection,
+    collectionItems: Item[],
+    collectionCuration: CollectionCuration | null,
+    itemCurations: ItemCuration[] | null
+  ) => {
     const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
     return (
       <>
-        {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration) : null}
+        {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration, collectionItems) : null}
         {this.renderButton(ButtonType.REJECT, collection, collectionCuration)}
         {/* TODO: the disable button from below is not the same as the original disable one, it will be implemented once the sagas are ready */}
         {/* {this.renderButton(ButtonType.DISABLE, collection, collectionCuration)} */}
@@ -144,9 +151,9 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     return isCommitteeMember && isReviewing && isConnected ? (
       <div className="TopPanel">
         <CollectionProvider id={selectedCollectionId}>
-          {(collection, _items, curation, isLoading) =>
+          {(collection, collectionItems, curation, isLoading) =>
             //TODO: Add logic to fetch the `itemCurations` array for the collection and pass it down to the `renderPage` call
-            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, curation, [])
+            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, collectionItems, curation, [])
           }
         </CollectionProvider>
       </div>
