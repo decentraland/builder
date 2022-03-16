@@ -7,11 +7,11 @@ import { isLoggingIn } from 'modules/identity/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
 import { getLoading, getCollection } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_REQUEST, fetchCollectionRequest } from 'modules/collection/actions'
+import { getItemCurations, getLoading as getLoadingItemCurations } from 'modules/curations/itemCuration/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionProvider.types'
 import CollectionProvider from './CollectionProvider'
 import { getCuration } from 'modules/curations/collectionCuration/selectors'
 import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
-import { getItemCurations, getLoading as getLoadingItemCurations } from 'modules/curations/itemCuration/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const id = ownProps.id || getCollectionId(state)
