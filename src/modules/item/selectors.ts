@@ -115,9 +115,9 @@ const getItemSyncedStatus = (item: Item, entity: Entity | null) => {
 
 const getStatusForTP = (item: Item, itemCuration: ItemCuration | null, entity: Entity): SyncStatus => {
   let status: SyncStatus
-  if (!itemCuration) {
+  if (!item.isPublished && !itemCuration) {
     status = SyncStatus.UNPUBLISHED
-  } else if (itemCuration.status === CurationStatus.PENDING) {
+  } else if (itemCuration && itemCuration.status === CurationStatus.PENDING) {
     return SyncStatus.UNDER_REVIEW
   } else {
     status = getItemSyncedStatus(item, entity)
@@ -150,6 +150,7 @@ export const getStatusByItemId = createSelector<
   state => getCurationsByCollectionId(state),
   getItemCurationsByItemId,
   (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
+    console.log('itemCurationByItemId: ', itemCurationByItemId)
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
       statusByItemId[item.id] = isThirdParty(item.urn)
@@ -180,10 +181,10 @@ export const getStatusForItemIds = createSelector<
 export const isDownloading = (state: RootState) => isLoadingType(getLoading(state), DOWNLOAD_ITEM_REQUEST)
 
 export const hasViewAndEditRights = (state: RootState, address: string, collection: Collection | null, item: Item): boolean => {
-  const itemThirdParty = isThirdParty(item.urn) ? getItemThirdParty(state, item) : null
+  const thirdPartyItem = isThirdParty(item.urn) ? getItemThirdParty(state, item) : null
 
   return (
-    (itemThirdParty !== null && isUserManagerOfThirdParty(address, itemThirdParty)) ||
+    (thirdPartyItem !== null && isUserManagerOfThirdParty(address, thirdPartyItem)) ||
     (collection !== null ? canSeeItem(collection, item, address) : isOwner(item, address))
   )
 }

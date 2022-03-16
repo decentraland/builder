@@ -24,6 +24,7 @@ const getMockItemCuration = (props: Partial<ItemCuration> = {}): ItemCuration =>
   status: CurationStatus.PENDING,
   createdAt: 0,
   updatedAt: 0,
+  contentHash: 'aHash',
   ...props
 })
 
