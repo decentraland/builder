@@ -19,9 +19,10 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
 import { locations } from 'routing/locations'
-import { isUserManagerOfThirdParty} from 'modules/thirdParty/utils'
+import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import CollectionProvider from 'components/CollectionProvider'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
@@ -54,22 +55,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   componentDidUpdate() {
-    const {
-      thirdParty,
-      collection,
-      itemCurations,
-      itemCurationsError,
-      isLoadingAvailableSlots,
-      isLoadingItemCurations,
-      onFetchItemCurations,
-      onFetchAvailableSlots
-    } = this.props
-
-    const shouldFetchItemCurations =
-      collection && collection.isPublished && thirdParty && !itemCurations && !isLoadingItemCurations && !itemCurationsError
-    if (shouldFetchItemCurations) {
-      onFetchItemCurations(collection.id)
-    }
+    const { thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots } = this.props
 
     const shouldFetchAvailbleSlots = thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots
     if (shouldFetchAvailbleSlots) {
@@ -208,154 +194,158 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     const totalPages = Math.ceil(total / PAGE_SIZE)
 
     return (
-      <>
-        <Section>
-          <Row>
-            <Back absolute onClick={this.handleGoBack} />
-            <Narrow>
+      <CollectionProvider id={collection.id}>
+        {() => (
+          <>
+            <Section>
               <Row>
-                <Column className="header-column">
-                  <Row className="header-row" onClick={this.handleEditName}>
-                    <Header size="huge" className="name">
-                      {collection.name}
-                    </Header>
-                    <BuilderIcon name="edit" className="edit-collection-name" />
-                  </Row>
+                <Back absolute onClick={this.handleGoBack} />
+                <Narrow>
                   <Row>
-                    <small className="urn">
-                      <CopyToClipboard text={collection.urn}>
-                        <div>
-                          {collection.urn}
-                          <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
-                        </div>
-                      </CopyToClipboard>
-                    </small>
+                    <Column className="header-column">
+                      <Row className="header-row" onClick={this.handleEditName}>
+                        <Header size="huge" className="name">
+                          {collection.name}
+                        </Header>
+                        <BuilderIcon name="edit" className="edit-collection-name" />
+                      </Row>
+                      <Row>
+                        <small className="urn">
+                          <CopyToClipboard text={collection.urn}>
+                            <div>
+                              {collection.urn}
+                              <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
+                            </div>
+                          </CopyToClipboard>
+                        </small>
+                      </Row>
+                    </Column>
+                    <Column align="right" shrink={false}>
+                      <Row className="actions">
+                        <Button
+                          loading={isLoadingAvailableSlots}
+                          secondary
+                          compact
+                          className={classNames({ empty: areSlotsEmpty && !isLoadingAvailableSlots, slots: !isLoadingAvailableSlots })}
+                          onClick={this.handleBuySlot}
+                        >
+                          <>
+                            {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
+                            {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
+                          </>
+                        </Button>
+                        <Button secondary compact className={'add-items'} onClick={this.handleNewItems}>
+                          {t('third_party_collection_detail_page.new_items')}
+                        </Button>
+                        {thirdParty.availableSlots !== undefined ? (
+                          <CollectionPublishButton collection={collection} items={selectedItems} slots={thirdParty.availableSlots} />
+                        ) : null}
+                        <CollectionContextMenu collection={collection} />
+                      </Row>
+                    </Column>
                   </Row>
-                </Column>
-                <Column align="right" shrink={false}>
-                  <Row className="actions">
-                    <Button
-                      loading={isLoadingAvailableSlots}
-                      secondary
-                      compact
-                      className={classNames({ empty: areSlotsEmpty && !isLoadingAvailableSlots, slots: !isLoadingAvailableSlots })}
-                      onClick={this.handleBuySlot}
-                    >
-                      <>
-                        {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
-                        {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
-                      </>
-                    </Button>
-                    <Button secondary compact className={'add-items'} onClick={this.handleNewItems}>
-                      {t('third_party_collection_detail_page.new_items')}
-                    </Button>
-                    {thirdParty.availableSlots !== undefined ? (
-                      <CollectionPublishButton collection={collection} items={selectedItems} slots={thirdParty.availableSlots} />
-                    ) : null}
-                    <CollectionContextMenu collection={collection} />
-                  </Row>
-                </Column>
+                </Narrow>
               </Row>
-            </Narrow>
-          </Row>
-        </Section>
-        <Narrow>
-          <Notice storageKey={STORAGE_KEY}>
-            <T
-              id="third_party_collection_detail_page.notice"
-              values={{
-                buy_link: (
-                  <span className="link" onClick={this.handleBuySlot}>
-                    {t('global.click_here')}
-                  </span>
-                )
-              }}
-            />
-          </Notice>
-
-          {this.hasItems() ? (
-            <>
-              <div className="search-container">
-                <TextFilter
-                  placeholder={t('third_party_collection_detail_page.search_placeholder', { count: total })}
-                  value={searchText}
-                  onChange={this.handeSearchChange}
+            </Section>
+            <Narrow>
+              <Notice storageKey={STORAGE_KEY}>
+                <T
+                  id="third_party_collection_detail_page.notice"
+                  values={{
+                    buy_link: (
+                      <span className="link" onClick={this.handleBuySlot}>
+                        {t('global.click_here')}
+                      </span>
+                    )
+                  }}
                 />
+              </Notice>
 
-                <div className="search-info secondary-text">
-                  {t('third_party_collection_detail_page.search_info', { page, pageTotal, total })}
-                </div>
-              </div>
+              {this.hasItems() ? (
+                <>
+                  <div className="search-container">
+                    <TextFilter
+                      placeholder={t('third_party_collection_detail_page.search_placeholder', { count: total })}
+                      value={searchText}
+                      onChange={this.handeSearchChange}
+                    />
 
-              {selectedItemsCount > 0 ? (
-                <div className="selection-info">
-                  {t('third_party_collection_detail_page.selection', { count: selectedItemsCount })}
-                  &nbsp;
-                  <span className="link" onClick={this.handleClearSelection}>
-                    {t('third_party_collection_detail_page.clear_selection')}
-                  </span>
-                  &nbsp;
-                </div>
-              ) : null}
+                    <div className="search-info secondary-text">
+                      {t('third_party_collection_detail_page.search_info', { page, pageTotal, total })}
+                    </div>
+                  </div>
 
-              <div className="collection-items">
-                <Grid columns="equal" className="grid-header secondary-text">
-                  <Grid.Row>
-                    <Grid.Column width={5} className="item-column">
-                      <Checkbox
-                        className="item-checkbox"
-                        checked={this.areAllSelected(paginatedItems)}
-                        onClick={this.handleSelectPageChange}
-                      />
+                  {selectedItemsCount > 0 ? (
+                    <div className="selection-info">
+                      {t('third_party_collection_detail_page.selection', { count: selectedItemsCount })}
                       &nbsp;
-                      {t('global.item')}
-                    </Grid.Column>
-                    <Grid.Column>{t('global.category')}</Grid.Column>
-                    <Grid.Column>{t('global.body_shape')}</Grid.Column>
-                    <Grid.Column>URN ID</Grid.Column>
-                    <Grid.Column></Grid.Column>
-                  </Grid.Row>
-                </Grid>
+                      <span className="link" onClick={this.handleClearSelection}>
+                        {t('third_party_collection_detail_page.clear_selection')}
+                      </span>
+                      &nbsp;
+                    </div>
+                  ) : null}
 
-                {paginatedItems.map(item => (
-                  <CollectionItem
-                    key={item.id}
-                    collection={collection}
-                    item={item}
-                    selected={!!itemSelectionState[item.id]}
-                    onSelect={this.handleSelectItemChange}
-                  />
-                ))}
+                  <div className="collection-items">
+                    <Grid columns="equal" className="grid-header secondary-text">
+                      <Grid.Row>
+                        <Grid.Column width={5} className="item-column">
+                          <Checkbox
+                            className="item-checkbox"
+                            checked={this.areAllSelected(paginatedItems)}
+                            onClick={this.handleSelectPageChange}
+                          />
+                          &nbsp;
+                          {t('global.item')}
+                        </Grid.Column>
+                        <Grid.Column>{t('global.category')}</Grid.Column>
+                        <Grid.Column>{t('global.body_shape')}</Grid.Column>
+                        <Grid.Column>URN ID</Grid.Column>
+                        <Grid.Column></Grid.Column>
+                      </Grid.Row>
+                    </Grid>
 
-                {totalPages > 1 ? (
-                  <Pagination
-                    firstItem={null}
-                    lastItem={null}
-                    totalPages={totalPages}
-                    activePage={page}
-                    onPageChange={this.handlePageChange}
-                  />
-                ) : null}
-              </div>
-            </>
-          ) : (
-            <div className="empty">
-              <div className="sparkles" />
-              <div>
-                {t('third_party_collection_detail_page.start_adding_items')}
-                <br />
-                {t('third_party_collection_detail_page.cant_remove')}
-              </div>
-            </div>
-          )}
-        </Narrow>
-        <AuthorizationModal
-          open={isAuthModalOpen}
-          authorization={this.getManaAuthorization()}
-          onProceed={this.handleBuySlot}
-          onCancel={this.handleAuthModalClose}
-        />
-      </>
+                    {paginatedItems.map(item => (
+                      <CollectionItem
+                        key={item.id}
+                        collection={collection}
+                        item={item}
+                        selected={!!itemSelectionState[item.id]}
+                        onSelect={this.handleSelectItemChange}
+                      />
+                    ))}
+
+                    {totalPages > 1 ? (
+                      <Pagination
+                        firstItem={null}
+                        lastItem={null}
+                        totalPages={totalPages}
+                        activePage={page}
+                        onPageChange={this.handlePageChange}
+                      />
+                    ) : null}
+                  </div>
+                </>
+              ) : (
+                <div className="empty">
+                  <div className="sparkles" />
+                  <div>
+                    {t('third_party_collection_detail_page.start_adding_items')}
+                    <br />
+                    {t('third_party_collection_detail_page.cant_remove')}
+                  </div>
+                </div>
+              )}
+            </Narrow>
+            <AuthorizationModal
+              open={isAuthModalOpen}
+              authorization={this.getManaAuthorization()}
+              onProceed={this.handleBuySlot}
+              onCancel={this.handleAuthModalClose}
+            />
+          </>
+        )}
+      </CollectionProvider>
     )
   }
 

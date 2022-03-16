@@ -160,7 +160,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
     const { id } = action.payload
     try {
-      const collection: Collection = yield call(() => builder.fetchCollection(id))
+      const collection: Collection = yield call([builder, 'fetchCollection'], id)
       yield put(fetchCollectionSuccess(id, collection))
     } catch (error) {
       yield put(fetchCollectionFailure(id, error.message))
