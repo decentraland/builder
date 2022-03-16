@@ -1,4 +1,3 @@
-import { utils } from 'ethers'
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
@@ -102,14 +101,13 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-function getMerkleProof(tree: MerkleDistributorInfo, itemHash: string, entityValues: Omit<TPCatalystItem, 'merkleProof'>) {
-  const keys = Object.keys(entityValues)
-  const entityHash = utils.keccak256(JSON.stringify(entityValues, keys))
-  const { index, proof } = tree.proofs[itemHash]
+function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityValues: Omit<TPCatalystItem, 'merkleProof'>) {
+  const hashingKeys = Object.keys(entityValues)
+  const { index, proof } = tree.proofs[entityHash]
   return {
     index,
     proof,
-    hashingKeys: keys,
+    hashingKeys,
     entityHash
   }
 }
@@ -132,12 +130,12 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
   }
   const baseEntityData = {
     id: item.urn,
-    content: item.contents,
-    ...getBaseEntityMetadata(item)
+    ...getBaseEntityMetadata(item),
+    content: item.contents
   }
   return {
-    merkleProof: getMerkleProof(tree, itemHash, baseEntityData),
-    ...baseEntityData
+    ...baseEntityData,
+    merkleProof: getMerkleProof(tree, itemHash, baseEntityData)
   }
 }
 
