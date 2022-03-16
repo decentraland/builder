@@ -4,7 +4,7 @@ import { getChainId, isConnected } from 'decentraland-dapps/dist/modules/wallet/
 import { RootState } from 'modules/common/types'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
-import { initiateApprovalFlow } from 'modules/collection/actions'
+import { initiateApprovalFlow, initiateTPApprovalFlow } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopPanel.types'
 import TopPanel from './TopPanel'
 
@@ -18,6 +18,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
+  onInitiateTPApprovalFlow: (collection, itemsToApprove) => dispatch(initiateTPApprovalFlow(collection, itemsToApprove)),
   onInitiateApprovalFlow: collection => dispatch(initiateApprovalFlow(collection))
 })
 

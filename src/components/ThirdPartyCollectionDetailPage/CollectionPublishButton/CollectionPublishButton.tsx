@@ -4,7 +4,7 @@ import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SyncStatus } from 'modules/item/types'
-import { isStatusAllowedToPushChanges } from 'modules/item/utils'
+import { isAllowedToPushChanges } from 'modules/item/utils'
 import { CurationStatus } from 'modules/curations/types'
 import { Props, PublishButtonAction } from './CollectionPublishButton.types'
 
@@ -24,11 +24,18 @@ const CollectionPublishButton = (props: Props) => {
 
   const buttonAction = useMemo(() => {
     let action = PublishButtonAction.PUBLISH
-    const { willPublish, willPushChanges } = Object.values(itemsStatus).reduce(
-      (acc, status) => {
+    const { willPublish, willPushChanges } = items.reduce(
+      (acc, item) => {
+        const status = itemsStatus[item.id]
         if (status === SyncStatus.UNPUBLISHED) {
           acc.willPublish = true
-        } else if (isStatusAllowedToPushChanges(status)) {
+        } else if (
+          isAllowedToPushChanges(
+            item,
+            status,
+            itemCurations.find(itemCuration => itemCuration.itemId === item.id)
+          )
+        ) {
           acc.willPushChanges = true
         }
         return acc

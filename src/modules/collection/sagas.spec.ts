@@ -15,12 +15,7 @@ import { buildItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
 import { Item, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
-import {
-  fetchCollectionItemsRequest,
-  fetchCollectionItemsSuccess,
-  rescueItemsFailure,
-  rescueItemsSuccess
-} from 'modules/item/actions'
+import { fetchCollectionItemsRequest, fetchCollectionItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
 import {
   approveCollectionCurationFailure,
@@ -606,7 +601,7 @@ describe('when executing the approval flow', () => {
 
       it('should signal with a publish collection failure action with an unsynced collection error', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
-          .provide([[call([mockBuilder, mockBuilder.fetchCollectionItems], finalCollection.id), [{}]]])
+          .provide([[call([mockBuilder, 'fetchCollectionItems'], finalCollection.id), [{}]]])
           .put(publishCollectionFailure(finalCollection, items, `${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`))
           .dispatch(publishCollectionRequest(finalCollection, items, email))
           .run({ silenceTimeout: true })
@@ -622,7 +617,7 @@ describe('when executing the approval flow', () => {
 
       it('should signal with a publish collection failure action with an unsynced collection error', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
-          .provide([[call([mockBuilder, mockBuilder.fetchCollectionItems], finalCollection.id), [{ id: 'other-item-id' }]]])
+          .provide([[call([mockBuilder, 'fetchCollectionItems'], finalCollection.id), [{ id: 'other-item-id' }]]])
           .put(
             publishCollectionFailure(
               finalCollection,

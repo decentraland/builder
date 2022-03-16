@@ -2,8 +2,7 @@ import * as React from 'react'
 import { ModalNavigation, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { SyncStatus } from 'modules/item/types'
-import { isStatusAllowedToPushChanges } from 'modules/item/utils'
+import { getItemsToPublish, getItemsWithChanges } from 'modules/item/utils'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import { getTPButtonActionLabel } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton'
 import { Props } from './PublishThirdPartyCollectionModal.types'
@@ -13,6 +12,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
     const {
       items,
       itemsStatus,
+      itemCurations,
       thirdParty,
       onPublish,
       onPushChanges,
@@ -27,11 +27,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
         onPushChanges(items)
         break
       case PublishButtonAction.PUBLISH_AND_PUSH_CHANGES:
-        onPublishAndPushChanges(
-          thirdParty,
-          items.filter(item => itemsStatus[item.id] === SyncStatus.UNPUBLISHED), // the ones to publish
-          items.filter(item => isStatusAllowedToPushChanges(itemsStatus[item.id])) // the ones with changes
-        )
+        onPublishAndPushChanges(thirdParty, getItemsToPublish(items, itemsStatus), getItemsWithChanges(items, itemsStatus, itemCurations))
         break
       default:
         onPublish(thirdParty, items)
@@ -40,24 +36,24 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
   }
 
   getModalDescriptionText = () => {
-    const { items, thirdParty, collection, itemsStatus } = this.props
+    const { items, itemsStatus, itemCurations, thirdParty, collection } = this.props
 
-    const itemsToPublish = Object.values(itemsStatus).filter(status => status === SyncStatus.UNPUBLISHED).length
-    const itemsToPushChanges = Object.values(itemsStatus).filter(isStatusAllowedToPushChanges).length
+    const itemsToPublishLength = getItemsToPublish(items, itemsStatus).length
+    const itemsToPushChangesLength = getItemsWithChanges(items, itemsStatus, itemCurations).length
 
-    const isPublishingAndPushingChanges = itemsToPushChanges > 0 && itemsToPublish > 0
-    const isJustPushingChanges = itemsToPushChanges > 0 && !itemsToPublish
+    const isPublishingAndPushingChanges = itemsToPushChangesLength > 0 && itemsToPublishLength > 0
+    const isJustPushingChanges = itemsToPushChangesLength > 0 && !itemsToPublishLength
 
     if (isPublishingAndPushingChanges) {
       return t('publish_third_party_collection_modal.publish_and_push_changes_description', {
-        slotsToUse: itemsToPublish,
-        itemsWithChanges: itemsToPushChanges,
+        slotsToUse: itemsToPublishLength,
+        itemsWithChanges: itemsToPushChangesLength,
         availableSlots: thirdParty?.availableSlots,
         collectionName: collection!.name
       })
     } else if (isJustPushingChanges) {
       return t('publish_third_party_collection_modal.push_changes_description', {
-        itemsWithChanges: itemsToPushChanges,
+        itemsWithChanges: itemsToPushChangesLength,
         collectionName: collection!.name
       })
     }
