@@ -110,7 +110,6 @@ import {
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
-import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
@@ -540,15 +539,13 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return allItems.filter(item => item.collectionId === collection.id)
   }
 
-  function* updateItemCurationsStatus(itemCurations: ItemCuration[], status: CurationStatus) {
-    const effects: CallEffect<ItemCuration>[] = itemCurations.map(curation => {
-      return call([builder, 'updateItemCurationStatus'], curation.itemId, status)
-    })
+  function* updateItemCurationsStatus(items: Item[], status: CurationStatus) {
+    const effects: CallEffect<ItemCuration>[] = items.map(item => call([builder, 'updateItemCurationStatus'], item.id, status))
     const newItemCuration: ItemCuration[] = yield all(effects)
     return newItemCuration
   }
 
-  function* getItemsAndEntitiesToDeploy(collection: Collection, tree?: MerkleDistributorInfo, hashes?: Record<string, string>) {
+  function* getStandardItemsAndEntitiesToDeploy(collection: Collection) {
     const itemsToDeploy: Item[] = []
     const entitiesToDeploy: DeploymentPreparationData[] = []
     const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
@@ -556,10 +553,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
-        const entity: DeploymentPreparationData =
-          tree && hashes
-            ? yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
-            : yield call(buildItemEntity, catalyst, collection, item)
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
 
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
@@ -569,17 +563,21 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   }
 
   function* getTPItemsAndEntitiesToDeploy(collection: Collection, tree: MerkleDistributorInfo, hashes: Record<string, string>) {
-    const { itemsToDeploy, entitiesToDeploy } = yield call(getItemsAndEntitiesToDeploy, collection, tree, hashes)
-    return { itemsToDeploy, entitiesToDeploy }
-  }
-
-  function* getStandardItemsAndEntitiesToDeploy(collection: Collection) {
-    const { itemsToDeploy, entitiesToDeploy } = yield call(getItemsAndEntitiesToDeploy, collection)
+    const itemsToDeploy: Item[] = []
+    const entitiesToDeploy: DeploymentPreparationData[] = []
+    const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+    for (const item of itemsOfCollection) {
+      if (item.blockchainContentHash !== item.currentContentHash) {
+        const entity: DeploymentPreparationData = yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
+        itemsToDeploy.push(item)
+        entitiesToDeploy.push(entity)
+      }
+    }
     return { itemsToDeploy, entitiesToDeploy }
   }
 
   function* handleInitiateTPItemsApprovalFlow(action: InitiateTPApprovalFlowAction) {
-    const { collection } = action.payload
+    const { collection, itemsToApprove } = action.payload
 
     try {
       // Check if this makes sense or add a check to see if the items to be published are correct.
@@ -658,9 +656,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       // 6. If the collection was approved but it had a pending curation, approve the curation
 
-      const itemCurations: ItemCuration[] = yield select(getItemCurations, collection.id)
-
-      const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemCurations, CurationStatus.APPROVED)
+      const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemsToApprove, CurationStatus.APPROVED)
       console.log('newItemsCurations: ', newItemsCurations) // TODO: Add this to the success action that will override the curations in the state
 
       // 7. Success 🎉

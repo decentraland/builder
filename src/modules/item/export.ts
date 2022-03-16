@@ -126,14 +126,12 @@ function getBaseEntityMetadata(item: Item) {
   }
 }
 
-function buildTPItemEntityMetadata(collection: Collection, item: Item, itemHash: string, tree: MerkleDistributorInfo): TPCatalystItem {
-  const decodedURN = decodeURN(collection.urn)
-  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
-    throw new Error('URN is not a third party URN')
+function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): TPCatalystItem {
+  if (!item.urn) {
+    throw new Error('Item does not have URN')
   }
-  const { thirdPartyCollectionId, thirdPartyName } = decodedURN
   const baseEntityData = {
-    id: buildThirdPartyURN(thirdPartyName, thirdPartyCollectionId!, item.id),
+    id: item.urn,
     ...getBaseEntityMetadata(item)
   }
   return {
