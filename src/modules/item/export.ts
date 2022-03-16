@@ -6,7 +6,7 @@ import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { NO_CACHE_HEADERS } from 'lib/headers'
-import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
+import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem } from './types'
@@ -178,8 +178,7 @@ export async function buildItemEntity(
 ): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item)
   const files = await makeContentFiles(blobs)
-  const metadata =
-    tree && itemHash ? buildTPItemEntityMetadata(collection, item, itemHash, tree) : buildItemEntityMetadata(collection, item)
+  const metadata = tree && itemHash ? buildTPItemEntityMetadata(item, itemHash, tree) : buildItemEntityMetadata(collection, item)
   return client.buildEntity({
     type: EntityType.WEARABLE,
     pointers: [metadata.id],
