@@ -1025,7 +1025,10 @@
     "new_items": "New Items",
     "publish": "Publish",
     "push_changes": "Push changes",
-    "publish_and_push_changes": "Publish & push changes"
+    "publish_and_push_changes": "Publish & push changes",
+    "cant_publish": "This collection is still under review, once that process ends you'll be able to publish more items",
+    "cant_publish_items": "You're trying to publish {count} {count, plural, one {item} other {items}}. There are others under review right now",
+    "cant_publish_and_push_changes": "You're trying to publish {count} {count, plural, one {item} other {items}} and push changes at the same time. Unselect the items to publish to able to push changes"
   },
   "collection_detail_page": {
     "new_item": "New Item",
