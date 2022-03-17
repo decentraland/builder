@@ -13,6 +13,7 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
+import { waitForTx } from 'modules/transaction/utils'
 import {
   FETCH_THIRD_PARTIES_REQUEST,
   fetchThirdPartiesRequest,
@@ -53,7 +54,6 @@ import {
 } from './actions'
 import { applySlotBuySlippage } from './utils'
 import { ThirdParty } from './types'
-import { waitForTx } from 'modules/transaction/utils'
 
 export function* getContractInstance(
   contract: ContractName.ThirdPartyRegistry | ContractName.ChainlinkOracle,
@@ -298,8 +298,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
         merkleTreeRoot,
         slots
       )
-      // wait for the tx to be mined
-      waitForTx(txHash)
+      yield call(waitForTx, txHash)
       yield put(consumeThirdPartyItemSlotsSuccess(txHash, maticChainId))
     } catch (error) {
       yield put(consumeThirdPartyItemSlotsFailure(error))

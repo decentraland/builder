@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { approveCollectionRequest, ApproveCollectionRequestAction } from 'modules/collection/actions'
@@ -8,7 +9,6 @@ import { Item } from 'modules/item/types'
 import { deployEntitiesRequest, DeployEntitiesRequestAction } from 'modules/entity/actions'
 import { consumeThirdPartyItemSlotsRequest, ConsumeThirdPartyItemSlotsRequestAction } from 'modules/thirdParty/actions'
 import { Slot } from 'modules/thirdParty/types'
-import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 
 export enum ApprovalFlowModalView {
   LOADING = 'loading',

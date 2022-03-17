@@ -6,7 +6,7 @@ import { Button, Center, Icon, Loader, Message, ModalActions, ModalContent, Moda
 import ItemImage from 'components/ItemImage'
 import { formatBytes } from 'lib/number'
 import { extractThirdPartyId } from 'lib/urn'
-import { MAX_ITEMS, MAX_TP_ITEMS_TO_SHOW } from 'modules/collection/constants'
+import { MAX_ITEMS, MAX_TP_ITEMS } from 'modules/collection/constants'
 import { getBodyShapes, toBodyShapeType } from 'modules/item/utils'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView, Props, State } from './ApprovalFlowModal.types'
 import './ApprovalFlowModal.css'
@@ -156,7 +156,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {items.slice(0, MAX_TP_ITEMS_TO_SHOW).map(item => (
+              {items.slice(0, MAX_TP_ITEMS).map(item => (
                 <Table.Row key={item.id} className="item">
                   <Table.Cell className="name">
                     <ItemImage item={item} />
@@ -172,8 +172,8 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
               ))}
             </Table.Body>
           </Table>
-          {items.length > MAX_TP_ITEMS_TO_SHOW ? (
-            <span>{t('approval_flow.consume_slots.more_items', { count: items.length - MAX_TP_ITEMS_TO_SHOW })}</span>
+          {items.length > MAX_TP_ITEMS ? (
+            <span>{t('approval_flow.consume_slots.more_items', { count: items.length - MAX_TP_ITEMS })}</span>
           ) : null}
         </ModalContent>
         <ModalActions>
