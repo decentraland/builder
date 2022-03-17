@@ -2,7 +2,7 @@ import { takeLatest, takeEvery, call, put, select, all, CallEffect } from 'redux
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract, providers, utils } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
-import { getChainIdByNetwork, getConnectedProvider, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -50,9 +50,10 @@ import {
   ConsumeThirdPartyItemSlotsRequestAction,
   consumeThirdPartyItemSlotsSuccess,
   consumeThirdPartyItemSlotsFailure,
-  CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST
+  CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST,
+  consumeThirdPartyItemSlotsTxSuccess
 } from './actions'
-import { applySlotBuySlippage } from './utils'
+import { applySlotBuySlippage, getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
 
 export function* getContractInstance(
@@ -63,51 +64,6 @@ export function* getContractInstance(
   const contractData: ContractData = yield call(getContract, contract, chainId)
   const contractInstance = new Contract(contractData.address, contractData.abi, new providers.Web3Provider(provider))
   return contractInstance
-}
-
-export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
-  const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-  const provider: Provider | null = yield call(getConnectedProvider)
-  if (!provider) {
-    throw new Error('Could not get a valid connected Wallet')
-  }
-  const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-  const salt = utils.hexlify(utils.randomBytes(32))
-  const domain = {
-    name: thirdPartyContract.name,
-    verifyingContract: thirdPartyContract.address,
-    version: thirdPartyContract.version,
-    salt
-  }
-  const dataToSign = {
-    thirdPartyId,
-    qty,
-    salt
-  }
-  const domainTypes = {
-    ConsumeSlots: [
-      { name: 'thirdPartyId', type: 'string' },
-      { name: 'qty', type: 'uint256' },
-      { name: 'salt', type: 'bytes32' }
-    ]
-  }
-
-  // TODO: expose this as a function in decentraland-transactions
-  const msgString = JSON.stringify({ domain, message: dataToSign, types: domainTypes, primaryType: 'ConsumeSlots' })
-
-  const accounts: string[] = yield call([provider, 'request'], { method: 'eth_requestAccounts', params: [], jsonrpc: '2.0' })
-  const from = accounts[0]
-
-  const signature: string = yield call([provider, 'request'], {
-    method: 'eth_signTypedData_v4',
-    params: [from, msgString],
-    jsonrpc: '2.0'
-  })
-
-  const AbiCoderInstance = new utils.AbiCoder()
-  const signedMessage = AbiCoderInstance.encode(['string', 'uint256', 'bytes32'], Object.values(dataToSign))
-
-  return { signature, signedMessage, salt }
 }
 
 export function* thirdPartySaga(builder: BuilderAPI) {
@@ -296,10 +252,11 @@ export function* thirdPartySaga(builder: BuilderAPI) {
         'reviewThirdPartyWithRoot',
         thirdPartyId,
         merkleTreeRoot,
-        slots
+        slots.map(slot => [slot.qty, slot.salt, slot.sigR, slot.sigS, slot.sigV])
       )
+      yield put(consumeThirdPartyItemSlotsTxSuccess(txHash, maticChainId))
       yield call(waitForTx, txHash)
-      yield put(consumeThirdPartyItemSlotsSuccess(txHash, maticChainId))
+      yield put(consumeThirdPartyItemSlotsSuccess())
     } catch (error) {
       yield put(consumeThirdPartyItemSlotsFailure(error))
     }

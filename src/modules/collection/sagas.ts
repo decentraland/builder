@@ -130,7 +130,8 @@ import {
   isLocked,
   getCollectionType,
   getLatestItemHash,
-  UNSYNCED_COLLECTION_ERROR_PREFIX
+  UNSYNCED_COLLECTION_ERROR_PREFIX,
+  isTPDeployEnabled
 } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
@@ -566,11 +567,15 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return { itemsToDeploy, entitiesToDeploy }
   }
 
-  function* getTPItemsAndEntitiesToDeploy(collection: Collection, tree: MerkleDistributorInfo, hashes: Record<string, string>) {
+  function* getTPItemsAndEntitiesToDeploy(
+    collection: Collection,
+    items: Item[],
+    tree: MerkleDistributorInfo,
+    hashes: Record<string, string>
+  ) {
     const itemsToDeploy: Item[] = []
     const entitiesToDeploy: DeploymentPreparationData[] = []
-    const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
-    for (const item of itemsOfCollection) {
+    for (const item of items) {
       if (item.blockchainContentHash !== item.currentContentHash) {
         const entity: DeploymentPreparationData = yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
         itemsToDeploy.push(item)
@@ -604,6 +609,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       // 3. Compute the merkle tree root & create slot to consume
       const tree = generateTree(Object.values(contentHashes))
+
+      if (cheque.qty < itemsToApprove.length) {
+        throw Error('Invalid qty of items to approve in the cheque')
+      }
 
       const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
       const slot: Slot = {
@@ -647,14 +656,13 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
         getTPItemsAndEntitiesToDeploy,
         collection,
+        itemsToApprove,
         tree,
         contentHashes
       )
 
-      const DEPLOY_TP_ITEMS = false // TODO: Remove this variable once platform supports the TP items deploy
-
       // 5. If any, open the modal in the DEPLOY step and wait for actions
-      if (itemsToDeploy.length > 0 && DEPLOY_TP_ITEMS) {
+      if (itemsToDeploy.length > 0 && isTPDeployEnabled()) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
           view: ApprovalFlowModalView.DEPLOY,
           collection,

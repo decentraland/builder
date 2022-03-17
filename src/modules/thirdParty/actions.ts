@@ -77,6 +77,7 @@ export type BuyThirdPartyItemSlotFailureAction = ReturnType<typeof buyThirdParty
 export const CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST = '[Request] Consume a third party item slots'
 export const CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS = '[Success] Consume a third party item slots'
 export const CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE = '[Failure] Consume a third party item slots'
+export const CONSUME_THIRD_PARTY_ITEM_SLOTS_TX_SUCCESS = '[Tx Success] Consume a third party item slots'
 
 export const consumeThirdPartyItemSlotsRequest = (
   thirdPartyId: ThirdParty['id'],
@@ -84,14 +85,17 @@ export const consumeThirdPartyItemSlotsRequest = (
   merkleTreeRoot: MerkleDistributorInfo['merkleRoot']
 ) => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST, { thirdPartyId, slots, merkleTreeRoot })
 
-export const consumeThirdPartyItemSlotsSuccess = (txHash: string, chainId: ChainId) =>
-  action(CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS, {
+export const consumeThirdPartyItemSlotsTxSuccess = (txHash: string, chainId: ChainId) =>
+  action(CONSUME_THIRD_PARTY_ITEM_SLOTS_TX_SUCCESS, {
     ...buildTransactionPayload(chainId, txHash)
   })
+
+export const consumeThirdPartyItemSlotsSuccess = () => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS)
 export const consumeThirdPartyItemSlotsFailure = (error: string) => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE, { error })
 
 export type ConsumeThirdPartyItemSlotsRequestAction = ReturnType<typeof consumeThirdPartyItemSlotsRequest>
 export type ConsumeThirdPartyItemSlotsSuccessAction = ReturnType<typeof consumeThirdPartyItemSlotsSuccess>
+export type ConsumeThirdPartyItemSlotsTxSuccessAction = ReturnType<typeof consumeThirdPartyItemSlotsTxSuccess>
 export type ConsumeThirdPartyItemSlotsFailureAction = ReturnType<typeof consumeThirdPartyItemSlotsFailure>
 
 // Publish Third Party Item
