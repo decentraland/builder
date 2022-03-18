@@ -66,7 +66,7 @@ export function* assetSaga(client: BuilderClient) {
 
     if (response.next) {
       await sleep(400)
-      return [...response.nfts, client.getNFTs({ owner, cursor: response.next })]
+      return [...response.nfts, await client.getNFTs({ owner, cursor: response.next })]
     }
 
     return response.nfts
