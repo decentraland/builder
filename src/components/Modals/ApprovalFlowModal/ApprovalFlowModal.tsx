@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Modal } from 'decentraland-dapps/dist/containers'
-import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Center, Icon, Loader, Message, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Button, Center, Loader, Message, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
 import ItemImage from 'components/ItemImage'
 import { formatBytes } from 'lib/number'
 import { extractThirdPartyId } from 'lib/urn'
@@ -118,7 +118,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
 
   renderConsumeTPSlotsView() {
     const { onClose, metadata, isConfirmingConsumeSlotsTx } = this.props
-    const { items, merkleTreeRoot } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>
+    const { items } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>
     const { didApproveConsumeSlots } = this.state
 
     return (
