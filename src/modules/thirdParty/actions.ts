@@ -79,8 +79,14 @@ export const PUBLISH_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish third party 
 
 export const publishThirdPartyItemsRequest = (thirdParty: ThirdParty, items: Item[]) =>
   action(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, items })
-export const publishThirdPartyItemsSuccess = (collectionId: Collection['id'], items: Item[], itemCurations: ItemCuration[]) =>
+export const publishThirdPartyItemsSuccess = (
+  thirdPartyId: ThirdParty['id'],
+  collectionId: Collection['id'],
+  items: Item[],
+  itemCurations: ItemCuration[]
+) =>
   action(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, {
+    thirdPartyId,
     collectionId,
     items,
     itemCurations

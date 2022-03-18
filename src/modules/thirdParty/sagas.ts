@@ -180,8 +180,8 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   }
 
   function* handlePublishThirdPartyItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
-    const { collectionId } = action.payload
-    yield put(fetchThirdPartyAvailableSlotsRequest(collectionId))
+    const { thirdPartyId } = action.payload
+    yield put(fetchThirdPartyAvailableSlotsRequest(thirdPartyId))
   }
 
   function getCollectionId(items: Item[]): string {
@@ -220,7 +220,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
         items
       )
 
-      yield put(publishThirdPartyItemsSuccess(collectionId, newItems, newItemCurations))
+      yield put(publishThirdPartyItemsSuccess(thirdParty.id, collectionId, newItems, newItemCurations))
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
       yield put(publishThirdPartyItemsFailure(error.message))
@@ -272,7 +272,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       const newItemCurations = [...resultFromPublish.newItemCurations, ...resultFromPushChanges]
 
       yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
-      yield put(fetchThirdPartyAvailableSlotsRequest(collectionId)) // re-fetch available slots after publishing
+      yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
       yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
