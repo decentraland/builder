@@ -80,11 +80,20 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQU
 })
 
 describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', () => {
+  let thirdParty: ThirdParty
   let collection: Collection
   let items: Item[]
   let itemCurations: ItemCuration[]
   beforeEach(() => {
     collection = { id: 'collectionId' } as Collection
+    thirdParty = {
+      id: '1',
+      name: 'a third party',
+      description: 'some desc',
+      managers: ['0x1', '0x2'],
+      maxItems: '0',
+      totalItems: '0'
+    }
     itemCurations = [getMockItemCuration()]
   })
   it('should merge the old item curations with the new ones', () => {
@@ -94,7 +103,7 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', (
         collectionId: [getMockItemCuration({ id: 'originalItemCuration' })]
       }
     }
-    expect(itemCurationReducer(state, publishThirdPartyItemsSuccess(collection.id, items, itemCurations))).toStrictEqual({
+    expect(itemCurationReducer(state, publishThirdPartyItemsSuccess(thirdParty.id, collection.id, items, itemCurations))).toStrictEqual({
       ...state,
       data: {
         collectionId: [getMockItemCuration({ id: 'originalItemCuration' }), getMockItemCuration()]

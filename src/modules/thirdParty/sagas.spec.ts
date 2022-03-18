@@ -347,7 +347,7 @@ describe('when publishing third party items', () => {
             { collection, items: [mockedItemReturnedByServer], itemCurations }
           ]
         ])
-        .put(publishThirdPartyItemsSuccess(item.collectionId!, [mockedItemReturnedByServer], itemCurations))
+        .put(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .dispatch(publishThirdPartyItemsRequest(thirdParty, [item]))
         .run({ silenceTimeout: true })
@@ -356,8 +356,8 @@ describe('when publishing third party items', () => {
     it('should put the fetch available slots action when the push finishes successfully', () => {
       const mockedItemReturnedByServer = { ...mockedItem, id: 'a new id' }
       return expectSaga(thirdPartySaga, mockBuilder)
-        .put(fetchThirdPartyAvailableSlotsRequest(item.collectionId!))
-        .dispatch(publishThirdPartyItemsSuccess(item.collectionId!, [mockedItemReturnedByServer], itemCurations))
+        .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
+        .dispatch(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations))
         .run({ silenceTimeout: true })
     })
   })
@@ -565,7 +565,7 @@ describe('when publishing & pushing changes to third party items', () => {
           [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), updatedItemCurations[0]]
         ])
         .put(publishAndPushChangesThirdPartyItemsSuccess(item.collectionId!, publishResponse, [...itemCurations, updatedItemCurations[0]]))
-        .put(fetchThirdPartyAvailableSlotsRequest(item.collectionId!))
+        .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
         .run({ silenceTimeout: true })
     })
