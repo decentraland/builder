@@ -1349,6 +1349,12 @@
         "content": "Multiple transactions will be made. Be aware that you'll be asked to sign them."
       }
     },
+    "consume_slots": {
+      "title": "Approve Items",
+      "subtitle": "Please approve the following items",
+      "more_items": "And {count} other {count, plural, one {item} other {items}}",
+      "confirm": "Confirm"
+    },
     "upload": {
       "title": "Upload Files",
       "subtitle": "Please upload the content of the items",

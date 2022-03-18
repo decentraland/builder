@@ -1,10 +1,11 @@
+import { action } from 'typesafe-actions'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
-import { action } from 'typesafe-actions'
-import { ThirdParty } from './types'
+import { Slot, ThirdParty } from './types'
 
 // Fetch Third Party Records
 
@@ -70,6 +71,32 @@ export const buyThirdPartyItemSlotFailure = (thirdPartyId: string, slotsToBuy: n
 export type BuyThirdPartyItemSlotRequestAction = ReturnType<typeof buyThirdPartyItemSlotRequest>
 export type BuyThirdPartyItemSlotSuccessAction = ReturnType<typeof buyThirdPartyItemSlotSuccess>
 export type BuyThirdPartyItemSlotFailureAction = ReturnType<typeof buyThirdPartyItemSlotFailure>
+
+// Consume a third party slots
+
+export const CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST = '[Request] Consume a third party item slots'
+export const CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS = '[Success] Consume a third party item slots'
+export const CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE = '[Failure] Consume a third party item slots'
+export const CONSUME_THIRD_PARTY_ITEM_SLOTS_TX_SUCCESS = '[Tx Success] Consume a third party item slots'
+
+export const consumeThirdPartyItemSlotsRequest = (
+  thirdPartyId: ThirdParty['id'],
+  slots: Slot[],
+  merkleTreeRoot: MerkleDistributorInfo['merkleRoot']
+) => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST, { thirdPartyId, slots, merkleTreeRoot })
+
+export const consumeThirdPartyItemSlotsTxSuccess = (txHash: string, chainId: ChainId) =>
+  action(CONSUME_THIRD_PARTY_ITEM_SLOTS_TX_SUCCESS, {
+    ...buildTransactionPayload(chainId, txHash)
+  })
+
+export const consumeThirdPartyItemSlotsSuccess = () => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS)
+export const consumeThirdPartyItemSlotsFailure = (error: string) => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE, { error })
+
+export type ConsumeThirdPartyItemSlotsRequestAction = ReturnType<typeof consumeThirdPartyItemSlotsRequest>
+export type ConsumeThirdPartyItemSlotsSuccessAction = ReturnType<typeof consumeThirdPartyItemSlotsSuccess>
+export type ConsumeThirdPartyItemSlotsTxSuccessAction = ReturnType<typeof consumeThirdPartyItemSlotsTxSuccess>
+export type ConsumeThirdPartyItemSlotsFailureAction = ReturnType<typeof consumeThirdPartyItemSlotsFailure>
 
 // Publish Third Party Item
 

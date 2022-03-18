@@ -89,6 +89,7 @@ import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
+import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
@@ -97,12 +98,7 @@ import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, MAX_FILE_SIZE } from './utils'
-import {
-  FetchTransactionFailureAction,
-  FetchTransactionSuccessAction,
-  FETCH_TRANSACTION_FAILURE,
-  FETCH_TRANSACTION_SUCCESS
-} from 'decentraland-dapps/dist/modules/transaction/actions'
+
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
@@ -382,22 +378,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         txHashes.push(txHash)
         yield put(rescueItemsChunkSuccess(collection, itemsChunks[i], contentHashesChunks[i], chainId, txHash))
 
-        // Wait for the transaction to finish
-        while (true) {
-          const {
-            success,
-            failure
-          }: { success: FetchTransactionSuccessAction | undefined; failure: FetchTransactionFailureAction | undefined } = yield race({
-            success: take(FETCH_TRANSACTION_SUCCESS),
-            failure: take(FETCH_TRANSACTION_FAILURE)
-          })
-
-          if (success?.payload.transaction.hash === txHash) {
-            break
-          } else if (failure?.payload.transaction.hash === txHash) {
-            throw new Error(`The transaction ${txHash} failed to be mined.`)
-          }
-        }
+        yield call(waitForTx, txHash)
       }
       const newItems = items.map<Item>((item, index) => ({ ...item, blockchainContentHash: contentHashes[index] }))
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHashes))

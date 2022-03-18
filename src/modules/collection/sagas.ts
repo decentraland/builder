@@ -5,7 +5,7 @@ import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
-import { ContractData, ContractName, getContract } from 'decentraland-transactions'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -71,7 +71,6 @@ import {
   InitiateTPApprovalFlowAction,
   INITIATE_TP_APPROVAL_FLOW
 } from './actions'
-import { extractThirdPartyId } from 'lib/urn'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
 import { createCollectionForumPostRequest } from 'modules/forum/actions'
@@ -111,6 +110,11 @@ import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import {
+  ConsumeThirdPartyItemSlotsFailureAction,
+  CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE,
+  CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS
+} from 'modules/thirdParty/actions'
+import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
   DEPLOY_ENTITIES_FAILURE,
@@ -126,7 +130,8 @@ import {
   isLocked,
   getCollectionType,
   getLatestItemHash,
-  UNSYNCED_COLLECTION_ERROR_PREFIX
+  UNSYNCED_COLLECTION_ERROR_PREFIX,
+  isTPDeployEnabled
 } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
@@ -562,11 +567,15 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return { itemsToDeploy, entitiesToDeploy }
   }
 
-  function* getTPItemsAndEntitiesToDeploy(collection: Collection, tree: MerkleDistributorInfo, hashes: Record<string, string>) {
+  function* getTPItemsAndEntitiesToDeploy(
+    collection: Collection,
+    items: Item[],
+    tree: MerkleDistributorInfo,
+    hashes: Record<string, string>
+  ) {
     const itemsToDeploy: Item[] = []
     const entitiesToDeploy: DeploymentPreparationData[] = []
-    const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
-    for (const item of itemsOfCollection) {
+    for (const item of items) {
       if (item.blockchainContentHash !== item.currentContentHash) {
         const entity: DeploymentPreparationData = yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
         itemsToDeploy.push(item)
@@ -587,22 +596,24 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       // 1. Open modal
 
+      yield put(
+        openModal('ApprovalFlowModal', {
+          view: ApprovalFlowModalView.LOADING,
+          collection
+        })
+      )
+
       // 2. Get the approval data from the server
       // TODO: Use the builder client. Tracked here: https://github.com/decentraland/builder/issues/1855
-      const { cheque, content_hashes }: ItemApprovalData = yield call([builder, 'fetchApprovalData'], collection.id)
+      const { cheque, content_hashes: contentHashes }: ItemApprovalData = yield call([builder, 'fetchApprovalData'], collection.id)
 
-      // 3. Compute the merkle tree root
-      const tree = generateTree(Object.values(content_hashes))
+      // 3. Compute the merkle tree root & create slot to consume
+      const tree = generateTree(Object.values(contentHashes))
 
-      // Open the ApprovalFlowModal with the items to be approved
+      if (cheque.qty < itemsToApprove.length) {
+        throw Error('Invalid qty of items to approve in the cheque')
+      }
 
-      // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
-
-      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-
-      const thirdPartyId = extractThirdPartyId(collection.urn)
-      const root = tree.merkleRoot
       const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
       const slot: Slot = {
         qty: cheque.qty,
@@ -611,21 +622,47 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         sigS: s,
         sigV: v
       }
-      const txHash: string = yield call(sendTransaction as any, thirdPartyContract, 'reviewThirdPartyWithRoot', thirdPartyId, root, [slot])
+      // Open the ApprovalFlowModal with the items to be approved
+      // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
 
-      console.log(txHash)
+      if (itemsToApprove.length > 0) {
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS> = {
+          view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+          items: itemsToApprove,
+          collection,
+          merkleTreeRoot: tree.merkleRoot,
+          slots: [slot]
+        }
+        yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+        // Wait for actions...
+        const { failure, cancel }: { failure: ConsumeThirdPartyItemSlotsFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS),
+          failure: take(CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE),
+          cancel: take(CLOSE_MODAL)
+        })
+
+        // If success wait for tx to be mined
+        if (failure) {
+          throw new Error(failure.payload.error)
+        } else if (cancel) {
+          // If cancel exit flow
+          return
+        }
+      }
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
 
       const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
         getTPItemsAndEntitiesToDeploy,
         collection,
+        itemsToApprove,
         tree,
-        content_hashes
+        contentHashes
       )
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
-      if (itemsToDeploy.length > 0) {
+      if (itemsToDeploy.length > 0 && isTPDeployEnabled()) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
           view: ApprovalFlowModalView.DEPLOY,
           collection,
@@ -660,6 +697,12 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       console.log('newItemsCurations: ', newItemsCurations) // TODO: Add this to the success action that will override the curations in the state
 
       // 7. Success 🎉
+      yield put(
+        openModal('ApprovalFlowModal', {
+          view: ApprovalFlowModalView.SUCCESS,
+          collection
+        })
+      )
     } catch (error) {
       // Handle error at any point in the flow and show them
       const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {

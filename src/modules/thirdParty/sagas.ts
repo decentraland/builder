@@ -2,7 +2,7 @@ import { takeLatest, takeEvery, call, put, select, all, CallEffect } from 'redux
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract, providers, utils } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
-import { getChainIdByNetwork, getConnectedProvider, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -13,6 +13,7 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
+import { waitForTx } from 'modules/transaction/utils'
 import {
   FETCH_THIRD_PARTIES_REQUEST,
   fetchThirdPartiesRequest,
@@ -45,9 +46,14 @@ import {
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
   PublishThirdPartyItemsSuccessAction,
   publishAndPushChangesThirdPartyItemsSuccess,
-  publishAndPushChangesThirdPartyItemsFailure
+  publishAndPushChangesThirdPartyItemsFailure,
+  ConsumeThirdPartyItemSlotsRequestAction,
+  consumeThirdPartyItemSlotsSuccess,
+  consumeThirdPartyItemSlotsFailure,
+  CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST,
+  consumeThirdPartyItemSlotsTxSuccess
 } from './actions'
-import { applySlotBuySlippage } from './utils'
+import { applySlotBuySlippage, getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
 
 export function* getContractInstance(
@@ -58,51 +64,6 @@ export function* getContractInstance(
   const contractData: ContractData = yield call(getContract, contract, chainId)
   const contractInstance = new Contract(contractData.address, contractData.abi, new providers.Web3Provider(provider))
   return contractInstance
-}
-
-export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
-  const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-  const provider: Provider | null = yield call(getConnectedProvider)
-  if (!provider) {
-    throw new Error('Could not get a valid connected Wallet')
-  }
-  const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-  const salt = utils.hexlify(utils.randomBytes(32))
-  const domain = {
-    name: thirdPartyContract.name,
-    verifyingContract: thirdPartyContract.address,
-    version: thirdPartyContract.version,
-    salt
-  }
-  const dataToSign = {
-    thirdPartyId,
-    qty,
-    salt
-  }
-  const domainTypes = {
-    ConsumeSlots: [
-      { name: 'thirdPartyId', type: 'string' },
-      { name: 'qty', type: 'uint256' },
-      { name: 'salt', type: 'bytes32' }
-    ]
-  }
-
-  // TODO: expose this as a function in decentraland-transactions
-  const msgString = JSON.stringify({ domain, message: dataToSign, types: domainTypes, primaryType: 'ConsumeSlots' })
-
-  const accounts: string[] = yield call([provider, 'request'], { method: 'eth_requestAccounts', params: [], jsonrpc: '2.0' })
-  const from = accounts[0]
-
-  const signature: string = yield call([provider, 'request'], {
-    method: 'eth_signTypedData_v4',
-    params: [from, msgString],
-    jsonrpc: '2.0'
-  })
-
-  const AbiCoderInstance = new utils.AbiCoder()
-  const signedMessage = AbiCoderInstance.encode(['string', 'uint256', 'bytes32'], Object.values(dataToSign))
-
-  return { signature, signedMessage, salt }
 }
 
 export function* thirdPartySaga(builder: BuilderAPI) {
@@ -116,6 +77,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
+  yield takeLatest(CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST, handleConsumeSlotsRequest)
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -276,6 +238,27 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
       yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
+    }
+  }
+
+  function* handleConsumeSlotsRequest(action: ConsumeThirdPartyItemSlotsRequestAction) {
+    const { thirdPartyId, slots, merkleTreeRoot } = action.payload
+    try {
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+      const txHash: string = yield call(
+        sendTransaction as any,
+        thirdPartyContract,
+        'reviewThirdPartyWithRoot',
+        thirdPartyId,
+        merkleTreeRoot,
+        slots.map(slot => [slot.qty, slot.salt, slot.sigR, slot.sigS, slot.sigV])
+      )
+      yield put(consumeThirdPartyItemSlotsTxSuccess(txHash, maticChainId))
+      yield call(waitForTx, txHash)
+      yield put(consumeThirdPartyItemSlotsSuccess())
+    } catch (error) {
+      yield put(consumeThirdPartyItemSlotsFailure(error))
     }
   }
 }

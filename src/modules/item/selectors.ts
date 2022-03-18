@@ -150,7 +150,6 @@ export const getStatusByItemId = createSelector<
   state => getCurationsByCollectionId(state),
   getItemCurationsByItemId,
   (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
-    console.log('itemCurationByItemId: ', itemCurationByItemId)
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
       statusByItemId[item.id] = isThirdParty(item.urn)

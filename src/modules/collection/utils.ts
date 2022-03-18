@@ -130,3 +130,8 @@ export function getLatestItemHash(collection: Collection, item: Item): Promise<s
 export function isTPCollection(collection: Collection): boolean {
   return isThirdParty(collection.urn)
 }
+
+// TODO: Remove this variable once platform supports the TP items deploy
+export function isTPDeployEnabled() {
+  return false
+}

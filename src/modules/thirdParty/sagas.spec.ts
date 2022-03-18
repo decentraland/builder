@@ -44,9 +44,10 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { Item } from 'modules/item/types'
-import { thirdPartySaga, getContractInstance, getPublishItemsSignature } from './sagas'
+import { thirdPartySaga, getContractInstance } from './sagas'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getItemSlotPrice } from './selectors'
+import { getPublishItemsSignature } from './utils'
 
 const mockBuilder = ({
   fetchThirdParties: jest.fn(),

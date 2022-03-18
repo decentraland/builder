@@ -1348,6 +1348,12 @@
         "content": "将进行多笔交易。 请注意，您将被要求签署它们。"
       }
     },
+    "consume_slots": {
+      "title": "批准项目",
+      "subtitle": "请批准以下项目",
+      "more_items": "还有 {count} 个其他 {count，复数，一个 {item} 其他 {items}}",
+      "confirm": "确认"
+    },
     "上传": {
       "title": "上传文件",
       "subtitle": "请上传项目内容",

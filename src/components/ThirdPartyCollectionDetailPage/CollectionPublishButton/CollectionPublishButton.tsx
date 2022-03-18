@@ -61,7 +61,7 @@ const CollectionPublishButton = (props: Props) => {
   }, [collection, items, buttonAction])
 
   const itemsTryingToPublish = useMemo(
-    () => items.filter(item => !itemCurations.find(itemCuration => itemCuration.itemId === item.id)).length,
+    () => items.filter(item => !itemCurations?.find(itemCuration => itemCuration.itemId === item.id)).length,
     [items, itemCurations]
   )
 
