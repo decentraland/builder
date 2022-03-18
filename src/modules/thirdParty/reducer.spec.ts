@@ -77,14 +77,15 @@ describe('when reducing the action that signals the success of the purchase of i
     initialState = { ...INITIAL_STATE, data: { '1': thirdParty } }
   })
 
-  it('should update the maximum amount of items that a third party can contain', () => {
+  it('should update the maximum amount of items that a third party can contain and update the availableSlots', () => {
     expect(thirdPartyReducer(initialState, buyThirdPartyItemSlotSuccess('aTxHash', ChainId.MATIC_MUMBAI, thirdParty, 100))).toStrictEqual({
       ...initialState,
       data: {
         ...initialState.data,
         '1': {
           ...initialState.data['1'],
-          maxItems: '100'
+          maxItems: '100',
+          availableSlots: 100
         }
       }
     })
