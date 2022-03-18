@@ -1350,7 +1350,7 @@
     },
     "consume_slots": {
       "title": "批准项目",
-      "subtitle": "请批准这些项目及其哈希值。{br}整个集合具有以下哈希值：{hash}",
+      "subtitle": "请批准以下项目",
       "more_items": "还有 {count} 个其他 {count，复数，一个 {item} 其他 {items}}",
       "confirm": "确认"
     },

@@ -1366,7 +1366,7 @@
     },
     "consume_slots": {
       "title": "Aprobar Items",
-      "subtitle": "Por favor aprueba los items y sus hashes. {br}La collección entera tiene el siguiente hash: {hash}",
+      "subtitle": "Por favor aprueba los siguientes items",
       "more_items": "Y {count} otros {count, plural, one {item} other {items}}",
       "confirm": "Confirmar"
     },

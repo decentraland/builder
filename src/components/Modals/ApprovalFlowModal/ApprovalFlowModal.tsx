@@ -1,5 +1,4 @@
 import * as React from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { Modal } from 'decentraland-dapps/dist/containers'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Center, Icon, Loader, Message, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
@@ -126,24 +125,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
       <>
         <ModalNavigation
           title={t('approval_flow.consume_slots.title')}
-          subtitle={
-            <>
-              <T
-                id="approval_flow.consume_slots.subtitle"
-                values={{
-                  hash: (
-                    <CopyToClipboard text={merkleTreeRoot}>
-                      <>
-                        {this.renderHash(merkleTreeRoot)}
-                        <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
-                      </>
-                    </CopyToClipboard>
-                  ),
-                  br: <br />
-                }}
-              />
-            </>
-          }
+          subtitle={t('approval_flow.consume_slots.subtitle')}
           onClose={this.canCloseModal() ? onClose : undefined}
         />
         <ModalContent>
