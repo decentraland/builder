@@ -42,6 +42,7 @@ import {
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
 import { getLatestItemHash, UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
+import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 
 const getCollection = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
@@ -496,6 +497,7 @@ describe('when executing the approval flow', () => {
     const deployData = getDeployData()
     const curation = getCuration(collection)
     const curationError = 'CollectionCuration Error'
+
     it('should open the modal in an error state', () => {
       const approvedCollection = { ...collection, isApproved: true }
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
@@ -764,7 +766,10 @@ describe('when executing the approval flow', () => {
 
       it('should save the collection without data', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
-          .provide([[call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]])
+          .provide([
+            [select(getOpenModals), {}],
+            [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
+          ])
           .put(saveCollectionSuccess({ ...thirdPartyCollection, contractAddress: remoteCollection.contractAddress }))
           .dispatch(saveCollectionRequest(thirdPartyCollection))
           .dispatch(closeModal('CreateCollectionModal'))

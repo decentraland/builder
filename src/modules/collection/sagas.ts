@@ -1,11 +1,13 @@
 import { Contract, providers, constants, ethers } from 'ethers'
-import { replace } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, CallEffect, all } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
+import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -173,7 +175,16 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     }
   }
 
-  function* handleSaveCollectionSuccess() {
+  function* handleSaveCollectionSuccess(action: SaveCollectionSuccessAction) {
+    const openModals: ModalState = yield select(getOpenModals)
+
+    if (openModals['CreateCollectionModal'] || openModals['CreateThirdPartyCollectionModal']) {
+      // Redirect to the newly created collection detail
+      const { collection } = action.payload
+      yield put(push(locations.collectionDetail(collection.id)))
+    }
+
+    // Close corresponding modals
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('CreateThirdPartyCollectionModal'))
     yield put(closeModal('EditCollectionURNModal'))
