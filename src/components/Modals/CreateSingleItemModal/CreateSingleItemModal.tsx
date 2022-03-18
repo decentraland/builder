@@ -24,7 +24,6 @@ import {
   ITEM_EXTENSIONS,
   THUMBNAIL_PATH,
   Item,
-  ItemType,
   WearableBodyShape,
   BodyShapeType,
   WearableCategory,
@@ -32,7 +31,8 @@ import {
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
   MODEL_EXTENSIONS,
-  IMAGE_EXTENSIONS
+  IMAGE_EXTENSIONS,
+  ItemType
 } from 'modules/item/types'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -52,7 +52,8 @@ import {
   MAX_FILE_SIZE,
   resizeImage,
   isImageCategory,
-  getMaxSupplyForRarity
+  getMaxSupplyForRarity,
+  getEmoteCategories
 } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
@@ -176,6 +177,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         thumbnail,
         bodyShape,
         contents,
+        type,
         metrics,
         collectionId,
         isRepresentation,
@@ -227,7 +229,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             ...pristineItem.data,
             replaces: [],
             hides: [],
-            category
+            category: category as WearableCategory
           },
           name,
           metrics,
@@ -267,7 +269,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           urn,
           description: description || '',
           thumbnail: THUMBNAIL_PATH,
-          type: ItemType.WEARABLE,
+          type: type as ItemType.WEARABLE,
           collectionId,
           totalSupply: 0,
           isPublished: false,
@@ -277,7 +279,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           currentContentHash: null,
           rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
           data: {
-            category,
+            category: category as WearableCategory,
             replaces: [],
             hides: [],
             tags: [],
@@ -396,7 +398,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       }
 
       const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
-      const [thumbnail, model, metrics, contents, assetJson] = await handler(file)
+      const [thumbnail, model, metrics, contents, type, assetJson] = await handler(file)
 
       this.setState({
         id: changeItemFile ? item!.id : uuid.v4(),
@@ -406,6 +408,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         model,
         metrics,
         contents,
+        type,
         error: '',
         category: isRepresentation ? category : undefined,
         isLoading: false,
@@ -454,7 +457,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
     if (this.state.category !== category) {
-      this.updateThumbnailByCategory(category)
+      if (this.state.type === ItemType.WEARABLE) {
+        this.updateThumbnailByCategory(category)
+      }
       this.setState({ category })
     }
   }
@@ -504,9 +509,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return getMissingBodyShapeType(item) === bodyShape && metadata.collectionId === item.collectionId
   }
 
-  async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
+  async processModel(
+    model: string,
+    contents: Record<string, Blob>
+  ): Promise<[string, string, ModelMetrics, Record<string, Blob>, ItemType]> {
     let thumbnail: string = ''
     let metrics: ModelMetrics
+    let type = ItemType.WEARABLE
 
     if (isImageFile(model)) {
       metrics = {
@@ -518,10 +527,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         entities: 1
       }
 
-      thumbnail = await this.convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], this.state.category)
+      thumbnail = await this.convertImageIntoWearableThumbnail(
+        contents[THUMBNAIL_PATH] || contents[model],
+        this.state.category as WearableCategory
+      )
     } else {
       const url = URL.createObjectURL(contents[model])
-      const { image, info } = await getModelData(url, {
+      const data = await getModelData(url, {
         width: 512,
         height: 512,
         extension: getExtension(model) || undefined,
@@ -530,13 +542,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       URL.revokeObjectURL(url)
 
       // for some reason the renderer reports 2x the amount of textures for wearble items
-      info.textures = Math.round(info.textures / 2)
+      data.info.textures = Math.round(data.info.textures / 2)
 
-      thumbnail = image
-      metrics = info
+      thumbnail = data.image
+      metrics = data.info
+      type = data.type
     }
 
-    return [thumbnail, model, metrics, contents]
+    return [thumbnail, model, metrics, contents, type]
   }
 
   /**
@@ -668,7 +681,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           <ItemImport
             error={error}
             acceptedExtensions={
-              isRepresentation || changeItemFile ? (isImageCategory(category!) ? IMAGE_EXTENSIONS : MODEL_EXTENSIONS) : ITEM_EXTENSIONS
+              isRepresentation || changeItemFile
+                ? isImageCategory(category! as WearableCategory)
+                  ? IMAGE_EXTENSIONS
+                  : MODEL_EXTENSIONS
+                : ITEM_EXTENSIONS
             }
             onDropAccepted={this.handleDropAccepted}
             onDropRejected={this.handleDropRejected}
@@ -680,11 +697,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderFields() {
     const { collection } = this.props
-    const { name, category, rarity, contents, item } = this.state
+    const { name, category, rarity, contents, item, type } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const rarities = getRarities()
-    const categories = getWearableCategories(contents)
+    const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
 
     return (
       <>
@@ -710,7 +727,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           label={t('create_single_item_modal.category_label')}
           placeholder={t('create_single_item_modal.category_placeholder')}
           value={categories.includes(category!) ? category : undefined}
-          options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+          options={categories.map(value => ({ value, text: t(`${type}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
       </>
@@ -724,7 +741,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   isValid(): boolean {
-    const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation } = this.state
+    const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation, type } = this.state
     const { collection } = this.props
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
 
@@ -735,7 +752,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     } else if (belongsToAThirdPartyCollection) {
       required = [name, thumbnail, metrics, bodyShape, category]
     } else {
-      required = [name, thumbnail, metrics, bodyShape, category, rarity]
+      required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
     }
 
     return required.every(prop => prop !== undefined)
@@ -743,7 +760,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderDetailsView() {
     const { onClose, metadata, error, isLoading } = this.props
-    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
+    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity, type } = this.state
 
     const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
@@ -759,6 +776,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               <Row className="details">
                 <Column className="preview" width={192} grow={false}>
                   <div className="thumbnail-container">
+                    {type === ItemType.EMOTE ? <div className="emote-thumbnail">{t('global.emote')}</div> : null}
                     <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
                     {isRepresentation ? null : (
                       <>

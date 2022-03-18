@@ -3,7 +3,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
-import { BodyShapeType, Item, ItemRarity, WearableCategory } from 'modules/item/types'
+import { BodyShapeType, Item, ItemRarity, ItemType } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
@@ -23,7 +23,8 @@ export type StateData = {
   id: string
   name: string
   description: string
-  category: WearableCategory
+  type: ItemType
+  category: string
   rarity: ItemRarity
   bodyShape: BodyShapeType
   thumbnail: string
