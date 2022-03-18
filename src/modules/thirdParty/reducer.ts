@@ -127,7 +127,8 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
           ...state.data,
           [thirdParty.id]: {
             ...state.data[thirdParty.id],
-            maxItems: new BN(state.data[thirdParty.id].maxItems).add(new BN(slotsToBuy)).toString()
+            maxItems: new BN(state.data[thirdParty.id].maxItems).add(new BN(slotsToBuy)).toString(),
+            availableSlots: Number(state.data[thirdParty.id].maxItems) + slotsToBuy
           }
         }
       }
