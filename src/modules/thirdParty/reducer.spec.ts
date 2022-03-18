@@ -83,9 +83,7 @@ describe('when reducing the action that signals the success of the purchase of i
       data: {
         ...initialState.data,
         '1': {
-          ...initialState.data['1'],
-          maxItems: '100',
-          availableSlots: 100
+          ...initialState.data['1']
         }
       }
     })

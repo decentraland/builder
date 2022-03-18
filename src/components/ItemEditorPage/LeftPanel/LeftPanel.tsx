@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection, CollectionType } from 'modules/collection/types'
 import { getCollectionType } from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
+import { CurationStatus } from 'modules/curations/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
@@ -34,12 +35,11 @@ export default class LeftPanel extends React.PureComponent<Props> {
       onSetItems,
       onSetCollection
     } = this.props
-
     return (
       <div className="LeftPanel">
         {isConnected ? (
           <CollectionProvider id={selectedCollectionId}>
-            {({ collection, items: collectionItems, isLoading }) => {
+            {({ collection, items: collectionItems, isLoading, itemCurations }) => {
               if (collection && isLoading) {
                 return <Loader size="massive" active />
               }
@@ -57,7 +57,9 @@ export default class LeftPanel extends React.PureComponent<Props> {
                 <>
                   <Header />
                   <Items
-                    items={items}
+                    items={items.filter(item =>
+                      itemCurations?.find(itemCuration => itemCuration.itemId === item.id && itemCuration.status === CurationStatus.PENDING)
+                    )}
                     hasHeader={!selectedCollectionId && collections.length > 0}
                     selectedItemId={selectedItemId}
                     selectedCollectionId={selectedCollectionId}
@@ -68,7 +70,11 @@ export default class LeftPanel extends React.PureComponent<Props> {
                   {selectedCollectionId ? null : (
                     <Collections
                       collections={collections}
-                      items={allItems}
+                      items={allItems.filter(item =>
+                        itemCurations?.find(
+                          itemCuration => itemCuration.itemId === item.id && itemCuration.status === CurationStatus.PENDING
+                        )
+                      )}
                       hasHeader={items.length > 0}
                       selectedCollectionId={selectedCollectionId}
                       onSetCollection={onSetCollection}

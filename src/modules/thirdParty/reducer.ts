@@ -1,5 +1,5 @@
 import BN from 'bn.js'
-import { FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
   FetchThirdPartiesRequestAction,
@@ -61,6 +61,7 @@ type ThirdPartyReducerAction =
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
     case BUY_THIRD_PARTY_ITEM_SLOT_REQUEST:
+    case BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST:
     case FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST:
     case FETCH_THIRD_PARTIES_REQUEST: {
@@ -119,16 +120,21 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: action.payload.error
       }
     }
-    case BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS: {
-      const { thirdParty, slotsToBuy } = action.payload
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [thirdParty.id]: {
-            ...state.data[thirdParty.id],
-            maxItems: new BN(state.data[thirdParty.id].maxItems).add(new BN(slotsToBuy)).toString(),
-            availableSlots: Number(state.data[thirdParty.id].maxItems) + slotsToBuy
+    case FETCH_TRANSACTION_SUCCESS: {
+      const { transaction } = action.payload
+      switch (transaction.actionType) {
+        case BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS: {
+          const { thirdParty, slotsToBuy } = transaction.payload
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              [thirdParty.id]: {
+                ...state.data[thirdParty.id],
+                maxItems: new BN(state.data[thirdParty.id].maxItems).add(new BN(slotsToBuy)).toString(),
+                availableSlots: new BN(state.data[thirdParty.id].availableSlots ?? 0).add(new BN(slotsToBuy)).toNumber()
+              }
+            }
           }
         }
       }
