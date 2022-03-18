@@ -98,7 +98,7 @@ export const getEntityByItemId = createSelector<RootState, Entity[], Record<stri
 
 const getItemSyncedStatus = (item: Item, entity: Entity | null) => {
   let status = SyncStatus.UNSYNCED
-  const hasHashes = item.blockchainContentHash && item.currentContentHash
+  const hasHashes = false //item.blockchainContentHash && item.currentContentHash
   if (hasHashes) {
     if (areSyncedByHash(item)) {
       status = SyncStatus.SYNCED

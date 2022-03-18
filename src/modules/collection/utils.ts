@@ -120,9 +120,9 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
 
 export function getLatestItemHash(collection: Collection, item: Item): Promise<string> {
   // Only old un-updated items don't have a content hash in the server
-  if (item.currentContentHash) {
-    return Promise.resolve(item.currentContentHash)
-  }
+  // if (item.currentContentHash) {
+  //   return Promise.resolve(item.currentContentHash)
+  // }
 
   return buildItemContentHash(collection, item)
 }
