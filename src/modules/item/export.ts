@@ -116,6 +116,8 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
   if (!item.urn) {
     throw new Error('Item does not have URN')
   }
+
+  // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
   const baseEntityData = {
     id: item.urn,
     name: item.name,
@@ -145,6 +147,7 @@ function buildItemEntityMetadata(collection: Collection, item: Item): StandardCa
     throw new Error('You need the collection and item to be published')
   }
 
+  // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
   return {
     id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
     name: item.name,

@@ -90,7 +90,6 @@ describe('when handling the save item request action', () => {
 
     it('should put a saveItemFailure action with invalid character message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })]])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -105,7 +104,6 @@ describe('when handling the save item request action', () => {
 
     it('should put a saveItemFailure action with invalid character message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })]])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -157,7 +155,6 @@ describe('when handling the save item request action', () => {
     it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
-          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [select(getCollection, collection.id), collection],
           [call(calculateFinalSize, item, contents), Promise.resolve(1)]
         ])
