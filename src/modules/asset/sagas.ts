@@ -12,7 +12,6 @@ import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/a
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { TRANSPARENT_PIXEL } from 'lib/getModelData'
 import { BuilderClient, NFT } from '@dcl/builder-client'
-import { sleep } from 'decentraland-commons/dist/utils'
 
 export function* assetSaga(client: BuilderClient) {
   yield takeLatest(LOAD_COLLECTIBLES_REQUEST, handleLoadCollectibles)
