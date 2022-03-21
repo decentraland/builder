@@ -62,7 +62,7 @@ export function* assetSaga(client: BuilderClient) {
   }
 
   async function getNFTs(owner: string, cursor?: string): Promise<NFT[]> {
-    const response = await client.getNFTs({ owner, cursor, first: 1 })
+    const response = await client.getNFTs({ owner, cursor })
 
     const { next, nfts } = response
 
