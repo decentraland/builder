@@ -247,7 +247,7 @@ describe('when handling the request to buy third party item slots', () => {
 })
 
 describe('when handling the successful purchase of a third party item slot', () => {
-  it.skip('should put the action to close the modal to buy the item slots', () => {
+  it('should put the action to close the modal to buy the item slots', () => {
     return expectSaga(thirdPartySaga, mockBuilder)
       .put(closeModal('BuyItemSlotsModal'))
       .dispatch(
