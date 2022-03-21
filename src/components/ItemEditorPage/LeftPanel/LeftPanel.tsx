@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection, CollectionType } from 'modules/collection/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { getCollectionType } from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
 import { CurationStatus } from 'modules/curations/types'
@@ -13,11 +14,15 @@ import { Props } from './LeftPanel.types'
 import './LeftPanel.css'
 
 export default class LeftPanel extends React.PureComponent<Props> {
-  getItems(collection: Collection | null, collectionItems: Item[]) {
+  getItems(collection: Collection | null, collectionItems: Item[], itemCurations: ItemCuration[] | null) {
     const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
       return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing
-        ? collectionItems.filter(item => item.isPublished)
+        ? collectionItems.filter(
+            item =>
+              item.isPublished &&
+              itemCurations?.find(itemCuration => itemCuration.itemId === item.id && itemCuration.status === CurationStatus.PENDING)
+          )
         : collectionItems
     }
     return orphanItems
@@ -44,7 +49,7 @@ export default class LeftPanel extends React.PureComponent<Props> {
                 return <Loader size="massive" active />
               }
 
-              const items = this.getItems(collection, collectionItems)
+              const items = this.getItems(collection, collectionItems, itemCurations)
 
               return items.length === 0 && collections.length === 0 ? (
                 <>
@@ -57,9 +62,7 @@ export default class LeftPanel extends React.PureComponent<Props> {
                 <>
                   <Header />
                   <Items
-                    items={items.filter(item =>
-                      itemCurations?.find(itemCuration => itemCuration.itemId === item.id && itemCuration.status === CurationStatus.PENDING)
-                    )}
+                    items={items}
                     hasHeader={!selectedCollectionId && collections.length > 0}
                     selectedItemId={selectedItemId}
                     selectedCollectionId={selectedCollectionId}
@@ -70,11 +73,7 @@ export default class LeftPanel extends React.PureComponent<Props> {
                   {selectedCollectionId ? null : (
                     <Collections
                       collections={collections}
-                      items={allItems.filter(item =>
-                        itemCurations?.find(
-                          itemCuration => itemCuration.itemId === item.id && itemCuration.status === CurationStatus.PENDING
-                        )
-                      )}
+                      items={allItems}
                       hasHeader={items.length > 0}
                       selectedCollectionId={selectedCollectionId}
                       onSetCollection={onSetCollection}
