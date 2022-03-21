@@ -133,8 +133,7 @@ import {
   getCollectionType,
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
-  isTPDeployEnabled,
-  isTPCollection
+  isTPDeployEnabled
 } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
@@ -182,8 +181,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     if (openModals['CreateCollectionModal'] || openModals['CreateThirdPartyCollectionModal']) {
       // Redirect to the newly created collection detail
       const { collection } = action.payload
-      const detailPageLocation = isTPCollection(collection) ? locations.thirdPartyCollectionDetail : locations.collectionDetail
-      yield put(push(detailPageLocation(collection.id)))
+      yield put(push(locations.collectionDetail(collection.id)))
     }
 
     // Close corresponding modals
