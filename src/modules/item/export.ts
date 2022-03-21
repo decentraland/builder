@@ -112,27 +112,28 @@ function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityV
   }
 }
 
-function getBaseEntityMetadata(item: Item) {
-  return {
-    name: item.name,
-    description: item.description,
-    i18n: [{ code: 'en', text: item.name }],
-    data: item.data,
-    image: IMAGE_PATH,
-    thumbnail: THUMBNAIL_PATH,
-    metrics: item.metrics
-  }
-}
-
 function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): TPCatalystItem {
   if (!item.urn) {
     throw new Error('Item does not have URN')
   }
   const baseEntityData = {
     id: item.urn,
-    ...getBaseEntityMetadata(item),
+    name: item.name,
+    description: item.description,
+    i18n: [{ code: 'en', text: item.name }],
+    data: {
+      replaces: item.data.replaces,
+      hides: item.data.hides,
+      tags: item.data.tags,
+      category: item.data.category,
+      representations: item.data.representations
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: item.metrics,
     content: item.contents
   }
+
   return {
     ...baseEntityData,
     merkleProof: getMerkleProof(tree, itemHash, baseEntityData)
@@ -146,9 +147,21 @@ function buildItemEntityMetadata(collection: Collection, item: Item): StandardCa
 
   return {
     id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
-    rarity: item.rarity,
+    name: item.name,
+    description: item.description,
     collectionAddress: collection.contractAddress!,
-    ...getBaseEntityMetadata(item)
+    rarity: item.rarity!,
+    i18n: [{ code: 'en', text: item.name }],
+    data: {
+      replaces: item.data.replaces,
+      hides: item.data.hides,
+      tags: item.data.tags,
+      category: item.data.category,
+      representations: item.data.representations
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: item.metrics
   }
 }
 
