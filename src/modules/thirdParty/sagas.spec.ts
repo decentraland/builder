@@ -9,6 +9,7 @@ import { ChainId, Network } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { fetchTransactionSuccess } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { loginSuccess } from 'modules/identity/actions'
@@ -35,7 +36,8 @@ import {
   pushChangesThirdPartyItemsSuccess,
   publishAndPushChangesThirdPartyItemsRequest,
   publishAndPushChangesThirdPartyItemsFailure,
-  publishAndPushChangesThirdPartyItemsSuccess
+  publishAndPushChangesThirdPartyItemsSuccess,
+  BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS
 } from './actions'
 import { mockedItem } from 'specs/item'
 import { getCollection } from 'modules/collection/selectors'
@@ -248,7 +250,12 @@ describe('when handling the successful purchase of a third party item slot', () 
   it('should put the action to close the modal to buy the item slots', () => {
     return expectSaga(thirdPartySaga, mockBuilder)
       .put(closeModal('BuyItemSlotsModal'))
-      .dispatch(buyThirdPartyItemSlotSuccess('aTxHash', ChainId.ETHEREUM_GOERLI, thirdParty, 10))
+      .dispatch(
+        fetchTransactionSuccess({
+          actionType: BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS,
+          payload: { thirdParty, slotsToBuy: 10 }
+        } as any)
+      )
       .run({ silenceTimeout: true })
   })
 })
