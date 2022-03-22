@@ -11,7 +11,15 @@ import styles from './BuyItemSlotsModal.module.css'
 
 export default class BuyItemSlotsModal extends React.PureComponent<Props, State> {
   state: State = {
-    slotsToBuy: undefined
+    slotsToBuy: ''
+  }
+
+  componentDidMount(): void {
+    const { isFetchingSlotPrice, onFetchThirdPartyItemSlotPrice } = this.props
+
+    if (!isFetchingSlotPrice) {
+      onFetchThirdPartyItemSlotPrice()
+    }
   }
 
   handleCloseModal = (): void => {
@@ -35,18 +43,20 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
     }
   }
 
-  componentDidMount(): void {
-    const { isFetchingSlotPrice, onFetchThirdPartyItemSlotPrice } = this.props
-
-    if (!isFetchingSlotPrice) {
-      onFetchThirdPartyItemSlotPrice()
-    }
+  handleSlotToBuyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const slotsToBuy = event.target.value
+    this.setState({ slotsToBuy })
   }
 
-  handleSlotToBuyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      slotsToBuy: event.target.value
-    })
+  hasError() {
+    const { slotsToBuy } = this.state
+    return !!slotsToBuy && !this.isValidSlotAmount()
+  }
+
+  isValidSlotAmount() {
+    const { slotsToBuy } = this.state
+    const slotsAmount = parseInt(slotsToBuy, 10)
+    return Number.isInteger(slotsAmount) && slotsAmount > 0
   }
 
   render() {
@@ -69,18 +79,28 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
               <Loader active size="tiny" />
             ) : (
               <>
-                <Field label={t('buy_item_slots_modal.how_many_slots_title')} placeholder="1" onChange={this.handleSlotToBuyChange} />
+                <Field
+                  label={t('buy_item_slots_modal.how_many_slots_title')}
+                  placeholder="1"
+                  value={slotsToBuy}
+                  message={this.hasError() ? t('buy_item_slots_modal.buy_slots_error') : undefined}
+                  error={this.hasError()}
+                  onChange={this.handleSlotToBuyChange}
+                />
+                <br />
+
                 <div className={styles.slotValue}>
                   {t('buy_item_slots_modal.slots_value', {
                     symbol: <Mana network={Network.MATIC} size="small" />,
                     slot_cost: slotPrice,
-                    total_cost: slotPrice && slotsToBuy ? slotPrice * Number(slotsToBuy) : 0
+                    total_cost: slotPrice && this.isValidSlotAmount() ? slotPrice * Number(slotsToBuy) : 0
                   })}
                 </div>
                 <div className={styles.slotValue}>
                   {t('buy_item_slots_modal.total_cost', {
                     symbol: <Mana network={Network.MATIC} size="small" />,
-                    total_cost: slotPrice && slotsToBuy ? applySlotBuySlippage(BigNumber.from(slotPrice).mul(slotsToBuy)).toString() : 0
+                    total_cost:
+                      slotPrice && this.isValidSlotAmount() ? applySlotBuySlippage(BigNumber.from(slotPrice).mul(slotsToBuy)).toString() : 0
                   })}
                 </div>
               </>
@@ -119,7 +139,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           <NetworkButton
             className={styles.acceptButton}
             primary
-            disabled={hasInsufficientMANA || isBuyingItemSlots || slotsToBuy === undefined || isFetchingSlotPrice}
+            disabled={hasInsufficientMANA || isBuyingItemSlots || isFetchingSlotPrice || !this.isValidSlotAmount()}
             loading={isBuyingItemSlots}
             network={Network.MATIC}
             onClick={this.handleItemSlotsBuy}

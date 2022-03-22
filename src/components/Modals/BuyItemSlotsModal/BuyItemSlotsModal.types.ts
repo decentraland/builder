@@ -21,7 +21,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  slotsToBuy: string | undefined
+  slotsToBuy: string
 }
 
 export type BuyItemSlotsModalMetadata = {
