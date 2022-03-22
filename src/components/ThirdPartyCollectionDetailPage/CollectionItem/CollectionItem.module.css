@@ -41,13 +41,10 @@
   padding-left: 10px !important;
 }
 
-.info {
-  width: calc(100% - 80px);
-}
-
 .nameWrapper {
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
 
 .name {
