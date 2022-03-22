@@ -760,7 +760,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderDetailsView() {
     const { onClose, metadata, error, isLoading } = this.props
-    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity, type } = this.state
+    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
 
     const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
@@ -776,7 +776,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               <Row className="details">
                 <Column className="preview" width={192} grow={false}>
                   <div className="thumbnail-container">
-                    {type === ItemType.EMOTE ? <div className="emote-thumbnail">{t('global.emote')}</div> : null}
                     <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
                     {isRepresentation ? null : (
                       <>
