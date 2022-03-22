@@ -1071,6 +1071,7 @@
     "post_to_forum": "Post al foro",
     "posting": "Posteando",
     "not_posted": "La colección no tiene un post asociado. Puedes intentar crearlo aquí",
+    "delete_published_collection": "No puedes borrar una colleción publicada",
     "change_published_urn": "No puedes cambiar el URN una vez que la colleción fue publicada"
   },
   "collection_item": {

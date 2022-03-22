@@ -1053,6 +1053,7 @@
     "post_to_forum": "发布到论坛",
     "posting": "过帐",
     "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试",
+    "delete_published_collection": "您无法删除已发布的集合",
     "change_published_urn": "集合发布后，您将无法更改 URN"
   },
   "collection_item": {

@@ -5,3 +5,12 @@
 .ui.dropdown .menu > .divider {
   background-color: var(--light-gray);
 }
+
+/* Semantic-UI: https://github.com/Semantic-Org/Semantic-UI/issues/4285#issuecomment-232974723 */
+:global(.ui.dropdown).dropdown :global(.menu > .disabled.item) {
+  pointer-events: auto;
+}
+
+:global(.ui.dropdown).dropdown :global(.menu > .disabled.item a) {
+  cursor: default;
+}

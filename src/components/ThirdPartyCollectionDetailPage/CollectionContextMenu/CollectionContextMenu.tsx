@@ -36,8 +36,15 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
     }
   }
 
+  canDelete() {
+    const { collection } = this.props
+    return !isLocked(collection) && !collection.isPublished
+  }
+
   render() {
     const { collection } = this.props
+    const canDelete = this.canDelete()
+    console.log('canDelete: ', canDelete)
     return (
       <Dropdown
         className={styles.dropdown}
@@ -53,32 +60,36 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
           <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
           <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
 
-          {/* TODO: Check if the Item is already published too */}
-          {!isLocked(collection) ? (
-            <>
-              <ConfirmDelete
-                name={collection.name}
-                onDelete={this.handleDeleteCollection}
-                trigger={<Dropdown.Item text={t('global.delete')} />}
-              />
-            </>
-          ) : null}
+          <Popup
+            content={t('collection_context_menu.delete_published_collection')}
+            position="right center"
+            disabled={canDelete}
+            trigger={
+              canDelete ? (
+                // ConfirmDelete breaks the popup, so we just skip it when unnecessary
+                <ConfirmDelete
+                  name={collection.name}
+                  onDelete={this.handleDeleteCollection}
+                  trigger={<Dropdown.Item text={t('global.delete')} />}
+                />
+              ) : (
+                <Dropdown.Item text={t('global.delete')} disabled={true} />
+              )
+            }
+            hideOnScroll={true}
+            on="hover"
+            inverted
+          />
           <Popup
             content={t('collection_context_menu.change_published_urn')}
             position="right center"
             disabled={!collection.isPublished}
             trigger={
-              <Dropdown.Item
-                text={t('collection_context_menu.edit_urn')}
-                onClick={this.handleEditURN}
-                disabled={collection.isPublished}
-                className={styles.disabledItem}
-              />
+              <Dropdown.Item text={t('collection_context_menu.edit_urn')} onClick={this.handleEditURN} disabled={collection.isPublished} />
             }
             hideOnScroll={true}
             on="hover"
             inverted
-            flowing
           />
         </Dropdown.Menu>
       </Dropdown>
