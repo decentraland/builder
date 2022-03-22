@@ -10,7 +10,6 @@ import {
 
 export type Props = ModalProps & {
   isBuyingItemSlots: boolean
-  thirdParty: ThirdParty
   manaBalance: number
   isFetchingSlotPrice: boolean
   slotPrice: number | null

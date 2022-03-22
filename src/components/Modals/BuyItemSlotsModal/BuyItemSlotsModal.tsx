@@ -54,14 +54,24 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   }
 
   isValidSlotAmount() {
+    const { thirdParty } = this.props.metadata
     const { slotsToBuy } = this.state
-    const slotsAmount = parseInt(slotsToBuy, 10)
-    return Number.isInteger(slotsAmount) && slotsAmount > 0
+    const slotsAmount = Number(slotsToBuy)
+    const availableSlots = Number(thirdParty.availableSlots)
+    return Number.isInteger(slotsAmount) && slotsAmount > 0 && availableSlots >= slotsAmount
+  }
+
+  applySlotBuySlippage() {
+    const { slotPrice } = this.props
+    const { slotsToBuy } = this.state
+    const cost = BigNumber.from(slotPrice).mul(Number(slotsToBuy))
+    return applySlotBuySlippage(cost).toString()
   }
 
   render() {
-    const { name, isBuyingItemSlots, error, isFetchingSlotPrice, slotPrice } = this.props
+    const { name, slotPrice, metadata, isBuyingItemSlots, isFetchingSlotPrice, error } = this.props
     const { slotsToBuy } = this.state
+    const { thirdParty } = metadata
 
     const hasError = this.hasError()
     const hasInsufficientMANA = this.hasInsufficientMana()
@@ -85,7 +95,9 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
                     label={t('buy_item_slots_modal.how_many_slots_title')}
                     placeholder="1"
                     value={slotsToBuy}
-                    message={hasError ? t('buy_item_slots_modal.buy_slots_error') : undefined}
+                    message={
+                      hasError ? t('buy_item_slots_modal.buy_slots_error', { available_slots: thirdParty.availableSlots }) : undefined
+                    }
                     error={hasError}
                     onChange={this.handleSlotToBuyChange}
                   />
@@ -100,8 +112,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
                 <div className={styles.slotValue}>
                   {t('buy_item_slots_modal.total_cost', {
                     symbol: <Mana network={Network.MATIC} size="small" />,
-                    total_cost:
-                      slotPrice && this.isValidSlotAmount() ? applySlotBuySlippage(BigNumber.from(slotPrice).mul(slotsToBuy)).toString() : 0
+                    total_cost: slotPrice && this.isValidSlotAmount() ? this.applySlotBuySlippage() : 0
                   })}
                 </div>
               </>
