@@ -1,7 +1,7 @@
 import { retry, race, take, call, put, select, delay } from 'redux-saga/effects'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
-import { replace } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { ChainId, Network, WearableRepresentation } from '@dcl/schemas'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
@@ -762,6 +762,18 @@ describe('when executing the approval flow', () => {
         remoteCollection = {
           contractAddress: '0xdeadbeef'
         } as Collection
+      })
+
+      it('should redirect to the detail page after creating the collection', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([
+            [select(getOpenModals), { CreateThirdPartyCollectionModal: true }],
+            [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
+          ])
+          .put(push(locations.thirdPartyCollectionDetail(thirdPartyCollection.id)))
+          .dispatch(saveCollectionRequest(thirdPartyCollection))
+          .dispatch(closeModal('CreateThirdPartyCollectionModal'))
+          .run({ silenceTimeout: true })
       })
 
       it('should save the collection without data', () => {

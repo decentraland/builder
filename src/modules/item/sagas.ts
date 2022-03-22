@@ -94,10 +94,10 @@ import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize } from './export'
-import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
+import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { buildZipContents, getMetadata, groupsOf, isValidText, MAX_FILE_SIZE } from './utils'
+import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
 
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 
@@ -217,6 +217,15 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       if (collection && isLocked(collection)) {
         throw new Error(t('sagas.collection.collection_locked'))
+      }
+
+      // If there's a new thumbnail image or the item doesn't have a catalyst image, create it and add it to the item
+      if (contents[THUMBNAIL_PATH] || !item.contents[IMAGE_PATH]) {
+        const catalystImage: { content: Blob; hash: string } = yield call(generateCatalystImage, item, {
+          thumbnail: contents[THUMBNAIL_PATH]
+        })
+        contents[IMAGE_PATH] = catalystImage.content
+        item.contents[IMAGE_PATH] = catalystImage.hash
       }
 
       if (Object.keys(contents).length > 0) {
