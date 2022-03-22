@@ -63,6 +63,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
     const { name, isBuyingItemSlots, error, isFetchingSlotPrice, slotPrice } = this.props
     const { slotsToBuy } = this.state
 
+    const hasError = this.hasError()
     const hasInsufficientMANA = this.hasInsufficientMana()
 
     return (
@@ -79,16 +80,16 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
               <Loader active size="tiny" />
             ) : (
               <>
-                <Field
-                  label={t('buy_item_slots_modal.how_many_slots_title')}
-                  placeholder="1"
-                  value={slotsToBuy}
-                  message={this.hasError() ? t('buy_item_slots_modal.buy_slots_error') : undefined}
-                  error={this.hasError()}
-                  onChange={this.handleSlotToBuyChange}
-                />
-                <br />
-
+                <div className={hasError ? styles.errorField : ''}>
+                  <Field
+                    label={t('buy_item_slots_modal.how_many_slots_title')}
+                    placeholder="1"
+                    value={slotsToBuy}
+                    message={hasError ? t('buy_item_slots_modal.buy_slots_error') : undefined}
+                    error={hasError}
+                    onChange={this.handleSlotToBuyChange}
+                  />
+                </div>
                 <div className={styles.slotValue}>
                   {t('buy_item_slots_modal.slots_value', {
                     symbol: <Mana network={Network.MATIC} size="small" />,
