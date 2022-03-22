@@ -4,6 +4,7 @@ import { Contract, providers, utils } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
@@ -68,10 +69,10 @@ export function* getContractInstance(
 
 export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
+  yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeEvery(FETCH_THIRD_PARTIES_REQUEST, handleFetchThirdPartiesRequest)
   yield takeEvery(FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST, handleFetchThirdPartyItemSlotPriceRequest)
   yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, handleBuyThirdPartyItemSlotRequest)
-  yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, handleBuyThirdPartyItemSlotSuccess)
   yield takeEvery(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, handleFetchThirdPartyAvailableSlots)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
@@ -137,8 +138,21 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     }
   }
 
-  function* handleBuyThirdPartyItemSlotSuccess() {
-    yield put(closeModal('BuyItemSlotsModal'))
+  function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
+    const transaction = action.payload.transaction
+    try {
+      switch (transaction.actionType) {
+        case BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS: {
+          yield put(closeModal('BuyItemSlotsModal'))
+          break
+        }
+        default: {
+          break
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   function* handlePublishThirdPartyItemSuccess(action: PublishThirdPartyItemsSuccessAction) {

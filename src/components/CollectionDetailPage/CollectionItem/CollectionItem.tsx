@@ -85,7 +85,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
             <Grid.Column className={styles.column}>
               {data.category ? (
                 <>
-                  <div>{t(`wearable.category.${data.category}`)}</div>
+                  <div>{t(`${item.type}.category.${data.category}`)}</div>
                   <div className={styles.subtitle}>{t('item.category')}</div>
                 </>
               ) : null}

@@ -527,7 +527,8 @@
     "total": "全部的",
     "parcel_plural": "包裹",
     "estate_plural": "庄园",
-    "none": "没有任何"
+    "none": "没有任何",
+    "emote": "表情"
   },
   "navigation": {
     "scenes": "场景",
@@ -1086,7 +1087,8 @@
     "edit_urn": "编辑 URN",
     "copy_urn": "Copy URN",
     "type": {
-      "wearable": "可穿戴"
+      "wearable": "可穿戴",
+      "emote": "表情"
     }
   },
   "edit_price_and_beneficiary_modal": {
@@ -1233,6 +1235,12 @@
       "select_placeholder": "选择一个选项",
       "request_for_changes": "要求变更",
       "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权"
+    }
+  },
+  "emote": {
+    "category": {
+      "simple": "简单的",
+      "loop": "环形"
     }
   },
   "wearable": {
