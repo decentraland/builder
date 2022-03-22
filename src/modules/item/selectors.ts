@@ -119,7 +119,7 @@ const getStatusForTP = (item: Item, itemCuration: ItemCuration | null, entity: E
     status = SyncStatus.UNPUBLISHED
   } else if (itemCuration && itemCuration.status === CurationStatus.PENDING) {
     const hasBeenUpdatedSincePublish = itemCuration.contentHash !== item.currentContentHash
-    if (hasBeenUpdatedSincePublish) {
+    if (item.isApproved && hasBeenUpdatedSincePublish) {
       status = SyncStatus.UNSYNCED
     } else {
       status = SyncStatus.UNDER_REVIEW
