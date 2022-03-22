@@ -91,7 +91,7 @@ import {
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
-import { getCollectionId, getThirdPartyCollectionId } from 'modules/location/selectors'
+import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item, ItemApprovalData } from 'modules/item/types'
@@ -256,8 +256,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       yield call(() => builder.deleteCollection(collection.id))
       yield put(deleteCollectionSuccess(collection))
 
-      const collectionIdSelector = isTPCollection(collection) ? getThirdPartyCollectionId : getCollectionId
-      const collectionIdInUriParam: string = yield select(collectionIdSelector)
+      const collectionIdInUriParam: string = yield select(getCollectionId)
       if (collectionIdInUriParam === collection.id) {
         yield put(replace(locations.collections()))
       }
