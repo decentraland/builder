@@ -8,7 +8,7 @@ import { NO_CACHE_HEADERS } from 'lib/headers'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem, ItemType, EmoteData, EmoteCategory } from './types'
 import { generateCatalystImage, generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
@@ -148,7 +148,7 @@ function buildItemEntityMetadata(collection: Collection, item: Item): StandardCa
   }
 
   // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
-  return {
+  const catalystItem: StandardCatalystItem = {
     id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
     name: item.name,
     description: item.description,
@@ -166,6 +166,14 @@ function buildItemEntityMetadata(collection: Collection, item: Item): StandardCa
     thumbnail: THUMBNAIL_PATH,
     metrics: item.metrics
   }
+
+  if (item.type === ItemType.EMOTE) {
+    catalystItem.emoteDataV0 = {
+      loop: (item.data as EmoteData).category === EmoteCategory.LOOP
+    }
+  }
+
+  return catalystItem
 }
 
 async function buildItemEntityContent(item: Item): Promise<Record<string, string>> {
