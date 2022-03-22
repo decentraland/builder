@@ -92,7 +92,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
                     <ItemImage item={item} />
                     {item.name}
                   </Table.Cell>
-                  <Table.Cell>{t('wearable.category.' + item.data.category)}</Table.Cell>
+                  <Table.Cell>{t(`${item.type}.category.${item.data.category}`)}</Table.Cell>
                   <Table.Cell>
                     {getBodyShapes(item)
                       .map(bodyShape => t(`body_shapes.${toBodyShapeType(bodyShape)}`))

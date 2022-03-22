@@ -16,7 +16,8 @@ import {
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { ModelMetrics } from 'modules/models/types'
-import { getScreenshot } from './getScreenshot'
+import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
+import { ItemType } from 'modules/item/types'
 
 // transparent 1x1 pixel
 export const TRANSPARENT_PIXEL =
@@ -187,8 +188,8 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     }
     const image = engine === EngineType.THREE ? renderer.domElement.toDataURL() : await getScreenshot(url, options)
 
-    return { info, image }
-  } catch (e) {
+    return { info, image, type: ItemType.WEARABLE }
+  } catch (error) {
     // could not render model, default to 0 metrics and default thumnail
     const info: ModelMetrics = {
       triangles: 0,
@@ -199,6 +200,10 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       entities: 1
     }
     const image = TRANSPARENT_PIXEL
-    return { info, image }
+    let type = ItemType.WEARABLE
+    if (error instanceof Error && error.message === EMOTE_ERROR) {
+      type = ItemType.EMOTE
+    }
+    return { info, image, type }
   }
 }
