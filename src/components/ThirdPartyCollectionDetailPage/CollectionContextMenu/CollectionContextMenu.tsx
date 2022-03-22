@@ -44,7 +44,6 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
   render() {
     const { collection } = this.props
     const canDelete = this.canDelete()
-    console.log('canDelete: ', canDelete)
     return (
       <Dropdown
         className={styles.dropdown}
@@ -73,7 +72,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
                   trigger={<Dropdown.Item text={t('global.delete')} />}
                 />
               ) : (
-                <Dropdown.Item text={t('global.delete')} disabled={true} />
+                <Dropdown.Item text={t('global.delete')} disabled />
               )
             }
             hideOnScroll={true}
