@@ -1062,6 +1062,7 @@
     "post_to_forum": "Post to forum",
     "posting": "Posting",
     "not_posted": "The collection wasn't posted to the forum. You can retry here",
+    "delete_published_collection": "You can't delete a published collection",
     "change_published_urn": "You can't change the URN once the collection is published"
   },
   "collection_item": {

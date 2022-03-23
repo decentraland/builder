@@ -9,6 +9,7 @@ import {
   CREATE_COLLECTION_FORUM_POST_SUCCESS,
   CREATE_COLLECTION_FORUM_POST_FAILURE
 } from 'modules/forum/actions'
+import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
 import {
   FetchCollectionsRequestAction,
   FetchCollectionsSuccessAction,
@@ -120,6 +121,7 @@ type CollectionReducerAction =
   | CreateCollectionForumPostRequestAction
   | CreateCollectionForumPostSuccessAction
   | CreateCollectionForumPostFailureAction
+  | PublishThirdPartyItemsSuccessAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
@@ -200,6 +202,27 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
         }
       }
     }
+    case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
+      const { collectionId } = action.payload
+      const now = Date.now()
+
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [collectionId]: {
+            ...state.data[collectionId],
+            isPublished: true,
+
+            // Consolidation on the builder-server will populate these values with the ones on the database
+            // which have the value set at the moment the publication occured.
+            createdAt: now,
+            updatedAt: now,
+            reviewedAt: now
+          }
+        }
+      }
+    }
     case CREATE_COLLECTION_FORUM_POST_SUCCESS: {
       const { collection, forumLink } = action.payload
       return {
@@ -246,8 +269,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
               [collection.id]: {
                 ...state.data[collection.id],
                 isPublished: true,
-                // These date values are set to the current date because now, as the collection is published,
-                // consolidation on the builder-server while fetching will populate these values with the ones on the blockchain
+                // These date values are set to the current date because, as the collection is published,
+                // consolidation on the builder-server will populate these values with the ones on the blockchain
                 // which have the value set at the moment the publication occured.
                 createdAt: now,
                 updatedAt: now,

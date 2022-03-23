@@ -64,12 +64,3 @@
 .action {
   display: none !important;
 }
-
-/* Semantic-UI: https://github.com/Semantic-Org/Semantic-UI/issues/4285#issuecomment-232974723 */
-:global(.ui.dropdown).action :global(.menu > .disabled.item) {
-  pointer-events: auto;
-}
-
-:global(.ui.dropdown).action :global(.menu > .disabled.item a) {
-  cursor: default;
-}
