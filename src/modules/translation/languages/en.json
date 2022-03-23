@@ -255,6 +255,7 @@
     "get_mana": "You can get more using the {link} dapp.",
     "buy_slots": "Buy slots",
     "how_many_slots_title": "How many slots?",
+    "buy_slots_error": "Slots must be an integer less than or equal to {available_slots}",
     "slots_value": "The approximate cost of each slot is {symbol}{slot_cost}.",
     "total_cost": "The total cost will be {symbol}{total_cost}. It has a 3% slippage to cover market price changes."
   },
