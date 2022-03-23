@@ -258,8 +258,10 @@
     "not_enough_mana": "No tienes suficiente {symbol} para comprar esa cantidad de slots.",
     "get_mana": "Puedes conseguir más utilizando la {link} dapp.",
     "buy_slots": "Comprar espacio",
-    "how_many_slots_title": "Cuántos slots?",
-    "slots_value": "El costo aproximado de cada espacio es {symbol}{slot_cost}"
+    "how_many_slots_title": "¿Cuántos slots?",
+    "buy_slots_error": "Los slots deben ser un número entero menor o igual a {available_slots}",
+    "slots_value": "El costo aproximado de cada espacio es {symbol}{slot_cost}",
+    "total_cost": "El costo total será {symbol}{total_cost}. Tiene un 3% de deslizamiento para cubrir los cambios de precio del mercado."
   },
   "share_modal": {
     "title": "Comparte tu Escena",
@@ -534,7 +536,8 @@
     "total": "Total",
     "parcel_plural": "Parcelas",
     "estate_plural": "Estates",
-    "none": "Ninguno"
+    "none": "Ninguno",
+    "emote": "Emote"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -1104,7 +1107,8 @@
     "edit_urn": "Editar URN",
     "copy_urn": "Copiar URN",
     "type": {
-      "wearable": "Vestimenta"
+      "wearable": "Vestimenta",
+      "emote": "Emote"
     }
   },
   "edit_price_and_beneficiary_modal": {
@@ -1249,6 +1253,12 @@
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"
+    }
+  },
+  "emote": {
+    "category": {
+      "simple": "Simple",
+      "loop": "Loop"
     }
   },
   "wearable": {

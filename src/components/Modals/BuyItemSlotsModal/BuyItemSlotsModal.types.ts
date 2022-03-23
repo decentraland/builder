@@ -10,7 +10,6 @@ import {
 
 export type Props = ModalProps & {
   isBuyingItemSlots: boolean
-  thirdParty: ThirdParty
   manaBalance: number
   isFetchingSlotPrice: boolean
   slotPrice: number | null
@@ -21,7 +20,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  slotsToBuy: string | undefined
+  slotsToBuy: string
 }
 
 export type BuyItemSlotsModalMetadata = {

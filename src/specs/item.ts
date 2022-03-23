@@ -43,7 +43,7 @@ export const mockedItem: Item = {
 }
 
 export const mockedLocalItem: LocalItem = {
-  type: ItemType.WEARABLE,
+  type: ItemType.WEARABLE as any,
   id: mockedItem.id,
   name: mockedItem.name,
   thumbnail: mockedItem.thumbnail,
@@ -79,7 +79,7 @@ export const mockedLocalItem: LocalItem = {
 }
 
 export const mockedRemoteItem: RemoteItem = {
-  type: ItemType.WEARABLE,
+  type: ItemType.WEARABLE as any,
   id: mockedItem.id,
   name: mockedItem.name,
   thumbnail: mockedItem.thumbnail,
