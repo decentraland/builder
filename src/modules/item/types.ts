@@ -5,7 +5,8 @@ import { Cheque } from 'modules/thirdParty/types'
 export type BuiltFile<T extends Content> = BuiltItem<T> & { fileName: string }
 
 export enum ItemType {
-  WEARABLE = 'wearable'
+  WEARABLE = 'wearable',
+  EMOTE = 'emote'
 }
 
 export enum SyncStatus {
@@ -46,9 +47,15 @@ export enum WearableCategory {
   SKIN = 'skin'
 }
 
+export enum EmoteCategory {
+  SIMPLE = 'simple',
+  LOOP = 'loop'
+}
+
 export enum ItemMetadataType {
   WEARABLE = 'w',
-  SMART_WEARABLE = 'sw'
+  SMART_WEARABLE = 'sw',
+  EMOTE = 'e'
 }
 
 export const BODY_SHAPE_CATEGORY = 'body_shape'
@@ -75,6 +82,12 @@ export type WearableRepresentation = {
   contents: string[]
   overrideReplaces: WearableCategory[]
   overrideHides: WearableCategory[]
+}
+
+export type EmoteRepresentation = {
+  bodyShapes: WearableBodyShape[]
+  mainFile: string
+  contents: string[]
 }
 
 export const RARITY_COLOR_LIGHT: Record<ItemRarity, string> = {
@@ -107,6 +120,12 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
   [ItemRarity.COMMON]: 100000
 }
 
+export type EmoteData = {
+  category?: EmoteCategory
+  representations: WearableRepresentation[]
+  tags: string[]
+}
+
 export type WearableData = {
   category?: WearableCategory
   representations: WearableRepresentation[]
@@ -135,6 +154,7 @@ export type BaseCatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt' | 'rarit
 export type StandardCatalystItem = BaseCatalystItem &
   Pick<BaseItem, 'rarity'> & {
     collectionAddress: string
+    emoteDataV0?: { loop: boolean }
   }
 
 export type TPCatalystItem = BaseCatalystItem & { merkleProof: TPItemMerkleProof; content: Record<string, string> }
@@ -152,7 +172,7 @@ export type TPItemMerkleProof = {
   entityHash: string
 }
 
-export type Item = BaseItem & {
+export type Item<T = ItemType.WEARABLE> = BaseItem & {
   type: ItemType
   owner: string
   collectionId?: string
@@ -167,7 +187,7 @@ export type Item = BaseItem & {
   contents: Record<string, string>
   blockchainContentHash: string | null
   currentContentHash: string | null
-  data: WearableData
+  data: T extends ItemType.WEARABLE ? WearableData : EmoteData
 }
 
 export type Rarity = {
