@@ -18,7 +18,7 @@ const mapState = (state: RootState): MapStateProps => {
   const pendingTransactions = getPendingTransactions(state)
   return {
     isConfirmingRescueTx: loadingItemActions.some(action => action.type === RESCUE_ITEMS_REQUEST),
-    isConfirmingConsumeSlotsTx: loadingItemActions.some(action => action.type === REVIEW_THIRD_PARTY_REQUEST),
+    isConfirmingReviewThirdPartyTx: loadingItemActions.some(action => action.type === REVIEW_THIRD_PARTY_REQUEST),
     isDeployingItems: loadingEntityActions.some(action => action.type === DEPLOY_ENTITIES_REQUEST),
     isConfirmingApproveTx: loadingCollectionActions.some(action => action.type === APPROVE_COLLECTION_REQUEST),
     isAwaitingApproveTx: pendingTransactions.some(tx => tx.actionType === APPROVE_COLLECTION_SUCCESS)
@@ -29,7 +29,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onRescueItems: (collection, items, contentHashes) => dispatch(rescueItemsRequest(collection, items, contentHashes)),
   onDeployItems: entities => dispatch(deployEntitiesRequest(entities)),
   onApproveCollection: collection => dispatch(approveCollectionRequest(collection)),
-  onConsumeTPSlots: (thirdPartyId, slots, merkleTreeRoot) => dispatch(reviewThirdPartyRequest(thirdPartyId, slots, merkleTreeRoot))
+  onReviewThirdParty: (thirdPartyId, slots, merkleTreeRoot) => dispatch(reviewThirdPartyRequest(thirdPartyId, slots, merkleTreeRoot))
 })
 
 export default connect(mapState, mapDispatch)(ApprovalFlowModal)

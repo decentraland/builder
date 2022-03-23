@@ -39,7 +39,7 @@ export type Props = ModalProps & {
   onApproveCollection: typeof approveCollectionRequest
   onReviewThirdParty: typeof reviewThirdPartyRequest
   isConfirmingRescueTx: boolean
-  isConfirmingConsumeSlotsTx: boolean
+  isConfirmingReviewThirdPartyTx: boolean
   isDeployingItems: boolean
   isConfirmingApproveTx: boolean
   isAwaitingApproveTx: boolean
@@ -52,7 +52,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'isConfirmingRescueTx' | 'isConfirmingConsumeSlotsTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'
+  'isConfirmingRescueTx' | 'isConfirmingReviewThirdPartyTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'
 >
 export type MapDispatchProps = Pick<Props, 'onRescueItems' | 'onDeployItems' | 'onApproveCollection' | 'onReviewThirdParty'>
 export type MapDispatch = Dispatch<
