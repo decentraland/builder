@@ -255,6 +255,7 @@
     "get_mana": "You can get more using the {link} dapp.",
     "buy_slots": "Buy slots",
     "how_many_slots_title": "How many slots?",
+    "buy_slots_error": "Slots must be an integer less than or equal to {available_slots}",
     "slots_value": "The approximate cost of each slot is {symbol}{slot_cost}.",
     "total_cost": "The total cost will be {symbol}{total_cost}. It has a 3% slippage to cover market price changes."
   },
@@ -533,7 +534,8 @@
     "total": "Total",
     "parcel_plural": "Parcels",
     "estate_plural": "Estates",
-    "none": "None"
+    "none": "None",
+    "emote": "Emote"
   },
   "navigation": {
     "scenes": "Scenes",
@@ -1060,6 +1062,7 @@
     "post_to_forum": "Post to forum",
     "posting": "Posting",
     "not_posted": "The collection wasn't posted to the forum. You can retry here",
+    "delete_published_collection": "You can't delete a published collection",
     "change_published_urn": "You can't change the URN once the collection is published"
   },
   "collection_item": {
@@ -1092,7 +1095,8 @@
     "edit_urn": "Edit URN",
     "copy_urn": "Copy URN",
     "type": {
-      "wearable": "Wearable"
+      "wearable": "Wearable",
+      "emote": "Emote"
     }
   },
   "edit_price_and_beneficiary_modal": {
@@ -1233,6 +1237,12 @@
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum"
+    }
+  },
+  "emote": {
+    "category": {
+      "simple": "Simple",
+      "loop": "Loop"
     }
   },
   "wearable": {

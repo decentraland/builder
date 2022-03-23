@@ -131,7 +131,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
               {data.category ? (
                 <Section>
                   <div className="subtitle">{t('item.category')}</div>
-                  <div className="value">{t(`wearable.category.${data.category}`)}</div>
+                  <div className="value">{t(`${item.type}.category.${data.category}`)}</div>
                 </Section>
               ) : null}
               <Section>
