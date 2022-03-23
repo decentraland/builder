@@ -7,7 +7,7 @@ import { Collection } from 'modules/collection/types'
 import { rescueItemsRequest, RescueItemsRequestAction } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 import { deployEntitiesRequest, DeployEntitiesRequestAction } from 'modules/entity/actions'
-import { consumeThirdPartyItemSlotsRequest, ConsumeThirdPartyItemSlotsRequestAction } from 'modules/thirdParty/actions'
+import { reviewThirdPartyRequest, ReviewThirdPartyRequestAction } from 'modules/thirdParty/actions'
 import { Slot } from 'modules/thirdParty/types'
 
 export enum ApprovalFlowModalView {
@@ -37,7 +37,7 @@ export type Props = ModalProps & {
   onRescueItems: typeof rescueItemsRequest
   onDeployItems: typeof deployEntitiesRequest
   onApproveCollection: typeof approveCollectionRequest
-  onConsumeTPSlots: typeof consumeThirdPartyItemSlotsRequest
+  onReviewThirdParty: typeof reviewThirdPartyRequest
   isConfirmingRescueTx: boolean
   isConfirmingConsumeSlotsTx: boolean
   isDeployingItems: boolean
@@ -54,7 +54,7 @@ export type MapStateProps = Pick<
   Props,
   'isConfirmingRescueTx' | 'isConfirmingConsumeSlotsTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'
 >
-export type MapDispatchProps = Pick<Props, 'onRescueItems' | 'onDeployItems' | 'onApproveCollection' | 'onConsumeTPSlots'>
+export type MapDispatchProps = Pick<Props, 'onRescueItems' | 'onDeployItems' | 'onApproveCollection' | 'onReviewThirdParty'>
 export type MapDispatch = Dispatch<
-  RescueItemsRequestAction | DeployEntitiesRequestAction | ApproveCollectionRequestAction | ConsumeThirdPartyItemSlotsRequestAction
+  RescueItemsRequestAction | DeployEntitiesRequestAction | ApproveCollectionRequestAction | ReviewThirdPartyRequestAction
 >

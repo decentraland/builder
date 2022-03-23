@@ -164,6 +164,7 @@ export type CatalystItem = StandardCatalystItem | TPCatalystItem
 export type ItemApprovalData = {
   cheque: Omit<Cheque, 'signedMessage'>
   content_hashes: Record<string, string>
+  chequeWasConsumed: boolean
 }
 export type TPItemMerkleProof = {
   index: number

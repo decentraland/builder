@@ -28,12 +28,12 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     onRescueItems(collection, items, contentHashes)
   }
 
-  handleConsumeSlots = () => {
-    const { metadata, onConsumeTPSlots } = this.props
+  handleReviewThirdParty = () => {
+    const { metadata, onReviewThirdParty } = this.props
     const { collection, merkleTreeRoot, slots } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>
     this.setState({ didApproveConsumeSlots: true })
     const thirdPartyId = extractThirdPartyId(collection.urn)
-    onConsumeTPSlots(thirdPartyId, slots, merkleTreeRoot)
+    onReviewThirdParty(thirdPartyId, slots, merkleTreeRoot)
   }
 
   renderHash(hash: string) {
@@ -163,7 +163,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
             primary
             disabled={didApproveConsumeSlots || isConfirmingConsumeSlotsTx}
             loading={didApproveConsumeSlots}
-            onClick={this.handleConsumeSlots}
+            onClick={this.handleReviewThirdParty}
           >
             {t('approval_flow.rescue.confirm')}
           </Button>

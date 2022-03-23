@@ -48,11 +48,11 @@ import {
   PublishThirdPartyItemsSuccessAction,
   publishAndPushChangesThirdPartyItemsSuccess,
   publishAndPushChangesThirdPartyItemsFailure,
-  ConsumeThirdPartyItemSlotsRequestAction,
-  consumeThirdPartyItemSlotsSuccess,
-  consumeThirdPartyItemSlotsFailure,
-  CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST,
-  consumeThirdPartyItemSlotsTxSuccess
+  ReviewThirdPartyRequestAction,
+  reviewThirdPartySuccess,
+  reviewThirdPartyFailure,
+  REVIEW_THIRD_PARTY_REQUEST,
+  reviewThirdPartyTxSuccess
 } from './actions'
 import { applySlotBuySlippage, getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
@@ -78,7 +78,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
-  yield takeLatest(CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST, handleConsumeSlotsRequest)
+  yield takeLatest(REVIEW_THIRD_PARTY_REQUEST, handleReviewThirdPartyRequest)
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -255,7 +255,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     }
   }
 
-  function* handleConsumeSlotsRequest(action: ConsumeThirdPartyItemSlotsRequestAction) {
+  function* handleReviewThirdPartyRequest(action: ReviewThirdPartyRequestAction) {
     const { thirdPartyId, slots, merkleTreeRoot } = action.payload
     try {
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
@@ -268,11 +268,11 @@ export function* thirdPartySaga(builder: BuilderAPI) {
         merkleTreeRoot,
         slots.map(slot => [slot.qty, slot.salt, slot.sigR, slot.sigS, slot.sigV])
       )
-      yield put(consumeThirdPartyItemSlotsTxSuccess(txHash, maticChainId))
+      yield put(reviewThirdPartyTxSuccess(txHash, maticChainId))
       yield call(waitForTx, txHash)
-      yield put(consumeThirdPartyItemSlotsSuccess())
+      yield put(reviewThirdPartySuccess())
     } catch (error) {
-      yield put(consumeThirdPartyItemSlotsFailure(error))
+      yield put(reviewThirdPartyFailure(error))
     }
   }
 }
