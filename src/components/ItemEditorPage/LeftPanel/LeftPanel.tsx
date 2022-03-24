@@ -64,7 +64,9 @@ export default class LeftPanel extends React.PureComponent<Props> {
                 <>
                   <Header />
                   <div className="empty">
-                    <div className="subtitle">{isReviewing ? 'No items left to review' : 'Empty collection, add some items first!'}</div>
+                    <div className="subtitle">
+                      {isReviewing ? t('item_editor.left_panel.no_items_to_review') : t('item_editor.left_panel.empty_collection')}
+                    </div>
                   </div>
                 </>
               ) : (

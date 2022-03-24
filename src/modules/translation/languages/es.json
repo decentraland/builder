@@ -1235,7 +1235,9 @@
       "items": "Items",
       "collections": "Colecciones",
       "items_count": "{count} items",
-      "invalid_representation_tooltip": "Este item no tiene representacion de {bodyShape}"
+      "invalid_representation_tooltip": "Este item no tiene representacion de {bodyShape}",
+      "no_items_to_review": "No hay más items para revisar",
+      "empty_collection": "La colección está vacía, ¡agrega algunos items primero!"
     },
     "center_panel": {
       "disabled_animation_dropdown": "Tiene que haber al menos un item visible para poder activar una animacion"
