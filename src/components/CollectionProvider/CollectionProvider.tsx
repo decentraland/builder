@@ -3,16 +3,16 @@ import { Props } from './CollectionProvider.types'
 
 export default class CollectionProvider extends React.PureComponent<Props> {
   componentDidMount() {
-    const { id, onFetchCollection, isConnecting } = this.props
-    if (id && !isConnecting) {
+    const { id, onFetchCollection, isConnected } = this.props
+    if (id && isConnected) {
       onFetchCollection(id)
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { id, onFetchCollection, isConnecting, collection } = this.props
-    const justFinishedConnection = prevProps.isConnecting && !isConnecting
-    if (id && justFinishedConnection) {
+    const { id, onFetchCollection, isConnected, collection } = this.props
+    const justFinishedConnecting = !prevProps.isConnected && isConnected
+    if (id && justFinishedConnecting) {
       onFetchCollection(id)
     }
 

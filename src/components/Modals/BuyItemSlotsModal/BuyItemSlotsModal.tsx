@@ -54,11 +54,9 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   }
 
   isValidSlotAmount() {
-    const { thirdParty } = this.props.metadata
     const { slotsToBuy } = this.state
     const slotsAmount = Number(slotsToBuy)
-    const availableSlots = Number(thirdParty.availableSlots)
-    return Number.isInteger(slotsAmount) && slotsAmount > 0 && availableSlots >= slotsAmount
+    return Number.isInteger(slotsAmount) && slotsAmount > 0
   }
 
   applySlotBuySlippage() {
@@ -69,9 +67,8 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { name, slotPrice, metadata, isBuyingItemSlots, isFetchingSlotPrice, error } = this.props
+    const { name, slotPrice, isBuyingItemSlots, isFetchingSlotPrice, error } = this.props
     const { slotsToBuy } = this.state
-    const { thirdParty } = metadata
 
     const hasError = this.hasError()
     const hasInsufficientMANA = this.hasInsufficientMana()
@@ -95,9 +92,7 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
                     label={t('buy_item_slots_modal.how_many_slots_title')}
                     placeholder="1"
                     value={slotsToBuy}
-                    message={
-                      hasError ? t('buy_item_slots_modal.buy_slots_error', { available_slots: thirdParty.availableSlots }) : undefined
-                    }
+                    message={hasError ? t('buy_item_slots_modal.buy_slots_error') : undefined}
                     error={hasError}
                     onChange={this.handleSlotToBuyChange}
                   />

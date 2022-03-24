@@ -467,9 +467,15 @@ export function areSynced(item: Item, entity: Entity) {
 }
 
 export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {
+  if (!item.isApproved) {
+    return false // push changes mechanism makes sense after they're in the blockchain
+  }
   const isUnsynced = status === SyncStatus.UNSYNCED
   const curationHasAnotherContentHash = itemCuration && itemCuration.contentHash !== item.currentContentHash
-  return isUnsynced || ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED || status === SyncStatus.LOADING) && curationHasAnotherContentHash)
+  return (
+    isUnsynced ||
+    ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED || status === SyncStatus.LOADING) && curationHasAnotherContentHash)
+  )
 }
 
 export function buildZipContents(contents: Record<string, Blob | string>, areEqual: boolean) {
