@@ -50,7 +50,7 @@ import { getLatestItemHash, UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
-  isTPDeployEnabled: jest.fn().mockImplementation(() => true)
+  isTPDeployEnabled: jest.fn().mockReturnValue(true)
 }))
 
 const getCollection = (props: Partial<Collection> = {}): Collection =>
@@ -948,7 +948,6 @@ describe('when executing the TP approval flow', () => {
           return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
             .provide([
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
-              [delay(1000), void 0],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }]
             ])
