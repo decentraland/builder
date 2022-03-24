@@ -8,7 +8,7 @@ import { NO_CACHE_HEADERS } from 'lib/headers'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem, ItemType, EmoteData, EmoteCategory } from './types'
 import { generateCatalystImage, generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
@@ -112,27 +112,30 @@ function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityV
   }
 }
 
-function getBaseEntityMetadata(item: Item) {
-  return {
-    name: item.name,
-    description: item.description,
-    i18n: [{ code: 'en', text: item.name }],
-    data: item.data,
-    image: IMAGE_PATH,
-    thumbnail: THUMBNAIL_PATH,
-    metrics: item.metrics
-  }
-}
-
 function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): TPCatalystItem {
   if (!item.urn) {
     throw new Error('Item does not have URN')
   }
+
+  // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
   const baseEntityData = {
     id: item.urn,
-    ...getBaseEntityMetadata(item),
+    name: item.name,
+    description: item.description,
+    i18n: [{ code: 'en', text: item.name }],
+    data: {
+      replaces: item.data.replaces,
+      hides: item.data.hides,
+      tags: item.data.tags,
+      category: item.data.category,
+      representations: item.data.representations
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: item.metrics,
     content: item.contents
   }
+
   return {
     ...baseEntityData,
     merkleProof: getMerkleProof(tree, itemHash, baseEntityData)
@@ -144,12 +147,33 @@ function buildItemEntityMetadata(collection: Collection, item: Item): StandardCa
     throw new Error('You need the collection and item to be published')
   }
 
-  return {
+  // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
+  const catalystItem: StandardCatalystItem = {
     id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
-    rarity: item.rarity,
+    name: item.name,
+    description: item.description,
     collectionAddress: collection.contractAddress!,
-    ...getBaseEntityMetadata(item)
+    rarity: item.rarity!,
+    i18n: [{ code: 'en', text: item.name }],
+    data: {
+      replaces: item.data.replaces,
+      hides: item.data.hides,
+      tags: item.data.tags,
+      category: item.data.category,
+      representations: item.data.representations
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: item.metrics
   }
+
+  if (item.type === ItemType.EMOTE) {
+    catalystItem.emoteDataV0 = {
+      loop: (item.data as EmoteData).category === EmoteCategory.LOOP
+    }
+  }
+
+  return catalystItem
 }
 
 async function buildItemEntityContent(item: Item): Promise<Record<string, string>> {

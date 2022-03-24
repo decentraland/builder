@@ -43,22 +43,10 @@ const collectionIdMatchSelector = createMatchSelector<
   {
     collectionId: string
   }
->(locations.collectionDetail())
+>([locations.collectionDetail(), locations.thirdPartyCollectionDetail()])
 
 export const getCollectionId = (state: RootState) => {
   const result = collectionIdMatchSelector(state)
-  return result ? result.params.collectionId : null
-}
-
-const thirdPartyCollectionIdMatchSelector = createMatchSelector<
-  RootState,
-  {
-    collectionId: string
-  }
->(locations.thirdPartyCollectionDetail())
-
-export const getThirdPartyCollectionId = (state: RootState) => {
-  const result = thirdPartyCollectionIdMatchSelector(state)
   return result ? result.params.collectionId : null
 }
 

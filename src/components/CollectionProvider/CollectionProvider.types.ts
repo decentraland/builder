@@ -13,7 +13,7 @@ export type Props = {
   curation: CollectionCuration | null
   itemCurations: ItemCuration[] | null
   isLoading: boolean
-  isConnecting: boolean
+  isConnected: boolean
   children: ({
     collection,
     items,
@@ -30,7 +30,7 @@ export type Props = {
   onFetchCollection: typeof fetchCollectionRequest
 }
 
-export type MapStateProps = Pick<Props, 'id' | 'collection' | 'items' | 'isLoading' | 'isConnecting' | 'curation' | 'itemCurations'>
+export type MapStateProps = Pick<Props, 'id' | 'collection' | 'items' | 'isLoading' | 'isConnected' | 'curation' | 'itemCurations'>
 export type MapDispatchProps = Pick<Props, 'onFetchCollection'>
 export type MapDispatch = Dispatch<FetchCollectionRequestAction | FetchCollectionItemsRequestAction>
 export type OwnProps = Partial<Pick<Props, 'id'>>

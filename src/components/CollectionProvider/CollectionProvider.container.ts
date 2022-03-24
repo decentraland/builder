@@ -1,9 +1,8 @@
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
-import { isLoggingIn } from 'modules/identity/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
 import { getLoading, getCollection } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_REQUEST, fetchCollectionRequest } from 'modules/collection/actions'
@@ -25,7 +24,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     items,
     itemCurations,
     curation,
-    isConnecting: isLoggingIn(state) || isConnecting(state),
+    isConnected: isConnected(state),
     isLoading:
       isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST)

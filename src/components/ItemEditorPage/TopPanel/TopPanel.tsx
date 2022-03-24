@@ -108,9 +108,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     itemCurations: ItemCuration[] | null
   ) => {
     const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
+    const itemsToApprove = collectionItems.filter(item =>
+      itemCurations?.find(itemCuration => itemCuration.itemId === item.id && itemCuration.status === CurationStatus.PENDING)
+    )
     return (
       <>
-        {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration, collectionItems) : null}
+        {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration, itemsToApprove) : null}
         {this.renderButton(ButtonType.REJECT, collection, collectionCuration)}
         {/* TODO: the disable button from below is not the same as the original disable one, it will be implemented once the sagas are ready */}
         {/* {this.renderButton(ButtonType.DISABLE, collection, collectionCuration)} */}

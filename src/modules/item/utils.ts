@@ -33,7 +33,9 @@ import {
   ThirdPartyContractItem,
   ItemMetadataType,
   WearableRepresentation,
-  GenerateImageOptions
+  GenerateImageOptions,
+  EmoteCategory,
+  EmoteData
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -122,10 +124,17 @@ export function getBackgroundStyle(rarity?: ItemRarity) {
 }
 
 export function getItemMetadataType(item: Item) {
-  if (Object.keys(item.contents).some(path => path.endsWith('.js'))) {
-    return ItemMetadataType.SMART_WEARABLE
+  switch (item.type) {
+    case ItemType.WEARABLE: {
+      if (Object.keys(item.contents).some(path => path.endsWith('.js'))) {
+        return ItemMetadataType.SMART_WEARABLE
+      }
+      return ItemMetadataType.WEARABLE
+    }
+    case ItemType.EMOTE: {
+      return ItemMetadataType.EMOTE
+    }
   }
-  return ItemMetadataType.WEARABLE
 }
 
 export function buildItemMetadata(
@@ -150,6 +159,16 @@ export function getMetadata(item: Item) {
         .map(toWearableBodyShapeType)
         .join(',')
 
+      if (!data.category) {
+        throw new Error(`Unknown item category "${item.data}"`)
+      }
+      return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
+    }
+    case ItemType.EMOTE: {
+      const data = item.data as EmoteData
+      const bodyShapeTypes = getBodyShapes(item)
+        .map(toWearableBodyShapeType)
+        .join(',')
       if (!data.category) {
         throw new Error(`Unknown item category "${item.data}"`)
       }
@@ -323,6 +342,10 @@ export function getWearableCategories(contents: Record<string, any> | undefined 
   return categories
 }
 
+export function getEmoteCategories() {
+  return Object.values(EmoteCategory)
+}
+
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
   const overrideCategories = getCategories(contents)
   if (category === WearableCategory.SKIN) {
@@ -389,13 +412,16 @@ export function areEqualRepresentations(a: WearableRepresentation[], b: Wearable
     const repA = a[i]
     const repB = b[i]
     const areEqual =
-      areEqualArrays(repA.bodyShapes, repB.bodyShapes) &&
-      areEqualArrays(repA.contents, repB.contents) &&
-      repA.mainFile === repB.mainFile &&
-      areEqualArrays(repA.overrideHides, repB.overrideHides) &&
-      areEqualArrays(repA.overrideReplaces, repB.overrideReplaces)
+      areEqualArrays(repA.bodyShapes, repB.bodyShapes) && areEqualArrays(repA.contents, repB.contents) && repA.mainFile === repB.mainFile
     if (!areEqual) {
       return false
+    }
+    if (repA.overrideHides && repB.overrideHides && repA.overrideReplaces && repB.overrideReplaces) {
+      const areEqualOverrides =
+        areEqualArrays(repA.overrideHides, repB.overrideHides) && areEqualArrays(repA.overrideReplaces, repB.overrideReplaces)
+      if (!areEqualOverrides) {
+        return false
+      }
     }
   }
   return true
@@ -409,12 +435,17 @@ export function areSynced(item: Item, entity: Entity) {
   // check if metadata is synced
   const catalystItem = entity.metadata! as CatalystItem
   const hasMetadataChanged =
-    item.name !== catalystItem.name ||
-    item.description !== catalystItem.description ||
-    item.data.category !== catalystItem.data.category ||
-    item.data.hides.toString() !== catalystItem.data.hides.toString() ||
-    item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
-    item.data.tags.toString() !== catalystItem.data.tags.toString()
+    item.type === ItemType.WEARABLE
+      ? item.name !== catalystItem.name ||
+        item.description !== catalystItem.description ||
+        item.data.category !== catalystItem.data.category ||
+        item.data.hides.toString() !== catalystItem.data.hides.toString() ||
+        item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
+        item.data.tags.toString() !== catalystItem.data.tags.toString()
+      : item.name !== catalystItem.name ||
+        item.description !== catalystItem.description ||
+        item.data.category !== catalystItem.data.category ||
+        item.data.tags.toString() !== catalystItem.data.tags.toString()
   if (hasMetadataChanged) {
     return false
   }
@@ -436,9 +467,15 @@ export function areSynced(item: Item, entity: Entity) {
 }
 
 export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {
+  if (!item.isApproved) {
+    return false // push changes mechanism makes sense after they're in the blockchain
+  }
   const isUnsynced = status === SyncStatus.UNSYNCED
   const curationHasAnotherContentHash = itemCuration && itemCuration.contentHash !== item.currentContentHash
-  return isUnsynced || ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED || status === SyncStatus.LOADING) && curationHasAnotherContentHash)
+  return (
+    isUnsynced ||
+    ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED || status === SyncStatus.LOADING) && curationHasAnotherContentHash)
+  )
 }
 
 export function buildZipContents(contents: Record<string, Blob | string>, areEqual: boolean) {
