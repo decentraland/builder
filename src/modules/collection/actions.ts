@@ -1,6 +1,7 @@
 import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { Collection, Mint, Access } from './types'
 
@@ -180,13 +181,24 @@ export type RejectCollectionRequestAction = ReturnType<typeof rejectCollectionRe
 export type RejectCollectionSuccessAction = ReturnType<typeof rejectCollectionSuccess>
 export type RejectCollectionFailureAction = ReturnType<typeof rejectCollectionFailure>
 
-// Initiate Approval Flow
+// Approval Flow
 export const INITIATE_APPROVAL_FLOW = 'Initiate Approval Flow'
-export const initiateApprovalFlow = (collection: Collection) => action(INITIATE_APPROVAL_FLOW, { collection })
-export type InitiateApprovalFlowAction = ReturnType<typeof initiateApprovalFlow>
+export const FINISH_APPROVAL_FLOW = 'Finish Approval Flow'
 
-// Initiate TP Approval Flow
+export const initiateApprovalFlow = (collection: Collection) => action(INITIATE_APPROVAL_FLOW, { collection })
+export const finishApprovalFlow = (collection: Collection) => action(FINISH_APPROVAL_FLOW, { collection })
+
+export type InitiateApprovalFlowAction = ReturnType<typeof initiateApprovalFlow>
+export type FinishApprovalFlowAction = ReturnType<typeof finishApprovalFlow>
+
+// TP Approval Flow
 export const INITIATE_TP_APPROVAL_FLOW = 'Initiate TP Approval Flow'
+export const FINISH_TP_APPROVAL_FLOW = 'Finish TP Approval Flow'
+
 export const initiateTPApprovalFlow = (collection: Collection, itemsToApprove: Item[]) =>
   action(INITIATE_TP_APPROVAL_FLOW, { collection, itemsToApprove })
+export const finishTPApprovalFlow = (collection: Collection, approvedItems: Item[], itemCurations: ItemCuration[]) =>
+  action(FINISH_TP_APPROVAL_FLOW, { collection, approvedItems, itemCurations })
+
 export type InitiateTPApprovalFlowAction = ReturnType<typeof initiateTPApprovalFlow>
+export type FinishTPApprovalFlowAction = ReturnType<typeof finishTPApprovalFlow>

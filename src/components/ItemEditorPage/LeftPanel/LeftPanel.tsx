@@ -36,10 +36,12 @@ export default class LeftPanel extends React.PureComponent<Props> {
       selectedCollectionId,
       visibleItems,
       bodyShape,
+      isReviewing,
       isConnected,
       onSetItems,
       onSetCollection
     } = this.props
+
     return (
       <div className="LeftPanel">
         {isConnected ? (
@@ -56,6 +58,13 @@ export default class LeftPanel extends React.PureComponent<Props> {
                   <Header />
                   <div className="empty">
                     <div className="subtitle">{t('collections_page.empty_description')}</div>
+                  </div>
+                </>
+              ) : items.length === 0 && selectedCollectionId ? (
+                <>
+                  <Header />
+                  <div className="empty">
+                    <div className="subtitle">{isReviewing ? 'No items left to review' : 'Empty collection, add some items first!'}</div>
                   </div>
                 </>
               ) : (
