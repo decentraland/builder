@@ -255,6 +255,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     try {
       yield call(() => builder.deleteCollection(collection.id))
       yield put(deleteCollectionSuccess(collection))
+
       const collectionIdInUriParam: string = yield select(getCollectionId)
       if (collectionIdInUriParam === collection.id) {
         yield put(replace(locations.collections()))

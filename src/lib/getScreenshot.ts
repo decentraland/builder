@@ -17,6 +17,8 @@ import '@babylonjs/loaders'
 import future from 'fp-future'
 import { defaults, Options, ThumbnailType } from './getModelData'
 
+export const EMOTE_ERROR = 'Model is EMOTE'
+
 function refreshBoundingInfo(parent: Mesh) {
   const children = parent.getChildren().filter(mesh => mesh.id !== '__root__')
 
@@ -71,6 +73,11 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   const sceneResolver = (scene: Scene) => scene.onReadyObservable.addOnce(() => sceneFuture.resolve(scene))
   SceneLoader.Append(url, '', root, sceneResolver, null, null, extension)
   const scene = await sceneFuture
+
+  // check if it's emote
+  if (scene.animationGroups.length > 0) {
+    throw new Error(EMOTE_ERROR)
+  }
 
   // Setup Camera
   var camera = new TargetCamera('targetCamera', new Vector3(0, 0, 0), scene)
