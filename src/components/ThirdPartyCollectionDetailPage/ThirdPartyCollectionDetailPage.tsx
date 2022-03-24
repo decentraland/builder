@@ -351,17 +351,15 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     const shouldRender = hasAccess && collection
     return (
       <CollectionProvider id={collection?.id}>
-        {({ isLoading: isLoadingCollectionData }) => {
-          return (
-            <LoggedInDetailPage
-              className="ThirdPartyCollectionDetailPage"
-              hasNavigation={!hasAccess && !isLoading && !isLoadingCollectionData}
-              isLoading={isLoading || isLoadingCollectionData}
-            >
-              {shouldRender && thirdParty ? this.renderPage(thirdParty) : <NotFound />}
-            </LoggedInDetailPage>
-          )
-        }}
+        {({ isLoading: isLoadingCollectionData }) => (
+          <LoggedInDetailPage
+            className="ThirdPartyCollectionDetailPage"
+            hasNavigation={!hasAccess && !isLoading && !isLoadingCollectionData}
+            isLoading={isLoading || isLoadingCollectionData}
+          >
+            {shouldRender && thirdParty ? this.renderPage(thirdParty) : <NotFound />}
+          </LoggedInDetailPage>
+        )}
       </CollectionProvider>
     )
   }
