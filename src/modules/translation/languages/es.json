@@ -259,7 +259,7 @@
     "get_mana": "Puedes conseguir más utilizando la {link} dapp.",
     "buy_slots": "Comprar espacio",
     "how_many_slots_title": "¿Cuántos slots?",
-    "buy_slots_error": "Los slots deben ser un número entero menor o igual a {available_slots}",
+    "buy_slots_error": "Los slots deben ser un número entero",
     "slots_value": "El costo aproximado de cada espacio es {symbol}{slot_cost}",
     "total_cost": "El costo total será {symbol}{total_cost}. Tiene un 3% de deslizamiento para cubrir los cambios de precio del mercado."
   },

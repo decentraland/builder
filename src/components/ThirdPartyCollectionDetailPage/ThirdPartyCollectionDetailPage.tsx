@@ -124,7 +124,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     const items = this.paginate(this.filterItemsBySearchText())
     const newItemSelectionState: Record<string, boolean> = { ...itemSelectionState }
 
-    // Performs the opposite actoin, if everything is selected, it'll deselect and viceversa
+    // Performs the opposite action, if everything is selected, it'll deselect and viceversa
     const isSelected = !this.areAllSelected(items)
 
     for (const item of items) {
