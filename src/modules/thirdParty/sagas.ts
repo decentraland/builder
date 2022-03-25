@@ -1,4 +1,5 @@
-import { takeLatest, takeEvery, call, put, select, all, CallEffect } from 'redux-saga/effects'
+import PQueue from 'p-queue'
+import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract, providers, utils } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
@@ -207,15 +208,19 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     const collectionId = getCollectionId(items)
 
     const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId!)
-    const effects: CallEffect<ItemCuration>[] = items.map(item => {
+    const MAX_CONCURRENT_REQUESTS = 3
+    const queue = new PQueue({ concurrency: MAX_CONCURRENT_REQUESTS })
+    const promises: (() => Promise<ItemCuration>)[] = items.map((item: Item) => {
       const curation = itemCurations.find(itemCuration => itemCuration.itemId === item.id)
       if (curation?.status === CurationStatus.PENDING) {
-        return call([builder, 'updateItemCurationStatus'], item.id, CurationStatus.PENDING)
+        return () => builder.updateItemCurationStatus(item.id, CurationStatus.PENDING)
       }
-      return call([builder, 'pushItemCuration'], item.id) // FOR CURATIONS REJECTED/APPROVED
+      return () => builder.pushItemCuration(item.id) // FOR CURATIONS REJECTED/APPROVED
     })
-
-    const newItemsCurations: ItemCuration[] = yield all(effects)
+    const newItemsCurations: ItemCuration[] = yield queue.addAll(promises)
+    if (newItemsCurations.some(itemCuration => itemCuration === undefined)) {
+      throw Error('Some item curations were not pushed')
+    }
     return newItemsCurations
   }
 
