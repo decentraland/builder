@@ -1,15 +1,16 @@
 import * as React from 'react'
-import { Container, Row, Column, Header, Card, Button, Dropdown } from 'decentraland-ui'
+import { Container, Row, Column, Header, Card, Button, Dropdown, Table, Section } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
 import { locations } from 'routing/locations'
-import ItemCard from './ItemCard'
-import CollectionCard from './CollectionCard'
+// import ItemCard from './ItemCard'
+// import CollectionCard from './CollectionCard'
 import { Props } from './CollectionsPage.types'
 import './CollectionsPage.css'
+import CollectionImage from 'components/CollectionImage'
 
 export default class CollectionsPage extends React.PureComponent<Props> {
   handleNewItem = () => {
@@ -74,17 +75,34 @@ export default class CollectionsPage extends React.PureComponent<Props> {
           </Container>
         </div>
 
-        <Card.Group>
-          {count > 0 ? (
-            <>
-              {items.map((item, index) => (
-                <ItemCard key={index} item={item} />
-              ))}
-              {collections.map((collection, index) => (
-                <CollectionCard key={index} collection={collection} />
-              ))}
-            </>
-          ) : (
+        {count > 0 ? (
+          <Section>
+            <Table basic="very">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Item</Table.HeaderCell>
+                  <Table.HeaderCell>Type</Table.HeaderCell>
+                  <Table.HeaderCell>Items</Table.HeaderCell>
+                  <Table.HeaderCell></Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+
+              <Table.Body>
+                {collections.map(collection => (
+                  <Table.Row>
+                    <Table.Cell width={5}>
+                      <CollectionImage collectionId={collection.id} /> {collection.name}
+                    </Table.Cell>
+                    <Table.Cell>Collection</Table.Cell>
+                    <Table.Cell>1</Table.Cell>
+                    <Table.Cell>Published | ...</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </Section>
+        ) : (
+          <Card.Group>
             <div className="empty">
               <Header className="title" size="large">
                 {t('collections_page.no_items')}
@@ -99,8 +117,8 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                 </div>
               </div>
             </div>
-          )}
-        </Card.Group>
+          </Card.Group>
+        )}
       </>
     )
   }
