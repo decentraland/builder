@@ -1219,7 +1219,9 @@
       "items": "Items",
       "collections": "Collections",
       "items_count": "{count} items",
-      "invalid_representation_tooltip": "This item doesn't have a {bodyShape} representation"
+      "invalid_representation_tooltip": "This item doesn't have a {bodyShape} representation",
+      "no_items_to_review": "No items left to review",
+      "empty_collection": "Empty collection, add some items first!"
     },
     "center_panel": {
       "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation"

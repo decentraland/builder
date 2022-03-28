@@ -69,8 +69,5 @@ export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
     jsonrpc: '2.0'
   })
 
-  const AbiCoderInstance = new utils.AbiCoder()
-  const signedMessage = AbiCoderInstance.encode(['string', 'uint256', 'bytes32'], Object.values(dataToSign))
-
-  return { signature, signedMessage, salt }
+  return { signature, salt }
 }

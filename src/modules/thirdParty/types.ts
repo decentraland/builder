@@ -9,7 +9,6 @@ export type ThirdParty = {
 }
 
 export type Cheque = {
-  signedMessage: string
   signature: string
   qty: number
   salt: string

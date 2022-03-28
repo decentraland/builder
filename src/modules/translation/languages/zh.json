@@ -1218,7 +1218,9 @@
       "items": "物品",
       "collections": "馆藏",
       "items_count": "{count}个项目",
-      "invalid_representation_tooltip": "此项没有{bodyShape}表示形式"
+      "invalid_representation_tooltip": "此项没有{bodyShape}表示形式",
+      "no_items_to_review": "没有待审核的项目",
+      "empty_collection": "空集合，先添加一些项目！"
     },
     "center_panel": {
       "disabled_animation_dropdown": "需要至少可见一个项目才能选择头像动画"
