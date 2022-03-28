@@ -8,7 +8,6 @@ import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import { locations } from 'routing/locations'
 import { getCollectionType } from 'modules/collection/utils'
-import { CollectionType } from 'modules/collection/types'
 import { OptionsDropdown } from '../../OptionsDropdown'
 import { ITEM_DASHBOARD_CARD_SOURCE } from '../ItemCard/ItemCard.dnd'
 import { collect, CollectedProps, collectionTarget } from './CollectionCard.dnd'
@@ -27,7 +26,6 @@ const CollectionCard = (props: Props & CollectedProps) => {
   }, [setIsDeleting, onDeleteCollection])
 
   const type = getCollectionType(collection)
-  const isThirdParty = type === CollectionType.THIRD_PARTY
 
   return (
     <>
@@ -39,7 +37,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
               options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]}
             />
           )}
-          <Link to={isThirdParty ? locations.thirdPartyCollectionDetail(collection.id) : locations.collectionDetail(collection.id)}>
+          <Link to={locations.collectionDetail(collection.id, type)}>
             <CollectionImage collectionId={collection.id} />
             <Card.Content>
               <div className="text" title={collection.name}>
