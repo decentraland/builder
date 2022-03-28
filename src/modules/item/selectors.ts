@@ -19,7 +19,7 @@ import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
 import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
 import { Item, SyncStatus, Rarity, CatalystItem } from './types'
-import { areSynced, areSyncedByHash, canSeeItem, isOwner } from './utils'
+import { areSynced, canSeeItem, isOwner } from './utils'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -96,38 +96,16 @@ export const getEntityByItemId = createSelector<RootState, Entity[], Record<stri
     }, {} as Record<string, Entity>)
 )
 
-const getItemSyncedStatus = (item: Item, entity: Entity | null) => {
-  let status = SyncStatus.UNSYNCED
-  const hasHashes = item.blockchainContentHash && item.currentContentHash
-  if (hasHashes) {
-    if (areSyncedByHash(item)) {
-      status = SyncStatus.SYNCED
-    } else {
-      status = SyncStatus.UNSYNCED
-    }
-  } else if (!entity) {
-    status = SyncStatus.LOADING
-  } else if (areSynced(item, entity)) {
-    status = SyncStatus.SYNCED
-  }
-  return status
-}
-
-const getStatusForTP = (item: Item, itemCuration: ItemCuration | null, entity: Entity): SyncStatus => {
-  let status: SyncStatus
+const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStatus => {
   if (!item.isPublished && !itemCuration) {
-    status = SyncStatus.UNPUBLISHED
+    return SyncStatus.UNPUBLISHED
   } else if (itemCuration && itemCuration.status === CurationStatus.PENDING) {
-    const hasBeenUpdatedSincePublish = itemCuration.contentHash !== item.currentContentHash
-    if (item.isApproved && hasBeenUpdatedSincePublish) {
-      status = SyncStatus.UNSYNCED
-    } else {
-      status = SyncStatus.UNDER_REVIEW
-    }
-  } else {
-    status = getItemSyncedStatus(item, entity)
+    return SyncStatus.UNDER_REVIEW
+  } else if (itemCuration && itemCuration.status === CurationStatus.APPROVED) {
+    // Blockchain content hash contains the hash in the catalyst for TP items
+    return item.blockchainContentHash !== item.currentContentHash ? SyncStatus.UNSYNCED : SyncStatus.SYNCED
   }
-  return status
+  return SyncStatus.UNPUBLISHED
 }
 
 const getStatusForDCL = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
@@ -137,7 +115,13 @@ const getStatusForDCL = (item: Item, collectionCuration: CollectionCuration | nu
   } else if (!item.isApproved || (collectionCuration && collectionCuration.status === CurationStatus.PENDING)) {
     status = SyncStatus.UNDER_REVIEW
   } else {
-    status = getItemSyncedStatus(item, entity)
+    if (!entity) {
+      status = SyncStatus.LOADING
+    } else if (areSynced(item, entity)) {
+      status = SyncStatus.SYNCED
+    } else {
+      status = SyncStatus.UNSYNCED
+    }
   }
   return status
 }
@@ -158,7 +142,7 @@ export const getStatusByItemId = createSelector<
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
       statusByItemId[item.id] = isThirdParty(item.urn)
-        ? getStatusForTP(item, itemCurationByItemId[item.id], entitiesByItemId[item.id])
+        ? getStatusForTP(item, itemCurationByItemId[item.id])
         : getStatusForDCL(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
     }
     return statusByItemId
