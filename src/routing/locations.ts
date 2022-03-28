@@ -1,3 +1,4 @@
+import { CollectionType } from 'modules/collection/types'
 import { PaginationOptions, injectPagination, injectParams } from './utils'
 
 type ItemEditorParams = { itemId?: string; collectionId?: string; isReviewing?: string }
@@ -27,7 +28,8 @@ export const locations = {
   sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
   collections: () => '/collections',
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
-  collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`,
+  collectionDetail: (collectionId = ':collectionId', type: CollectionType = CollectionType.DECENTRALAND) =>
+    type === CollectionType.DECENTRALAND ? `/collections/${collectionId}` : locations.thirdPartyCollectionDetail(collectionId),
   thirdPartyCollectionDetail: (collectionId = ':collectionId', options?: PaginationOptions) =>
     injectPagination(`/thirdPartyCollections/${collectionId}`, options),
   itemEditor: (options?: ItemEditorParams) =>

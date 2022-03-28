@@ -955,6 +955,8 @@
     "new_item": "项目",
     "new_collection": "收藏",
     "new_third_party_collection": "新的链接可穿戴设备系列",
+    "type": "类型",
+    "items": "模型",
     "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {
