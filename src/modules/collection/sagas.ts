@@ -72,8 +72,7 @@ import {
   ApproveCollectionFailureAction,
   InitiateTPApprovalFlowAction,
   INITIATE_TP_APPROVAL_FLOW,
-  finishTPApprovalFlow,
-  finishApprovalFlow
+  finishTPApprovalFlow
 } from './actions'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
@@ -718,7 +717,6 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         })
       )
     } catch (error) {
-      console.log(error)
       // Handle error at any point in the flow and show them
       const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
         view: ApprovalFlowModalView.ERROR,
@@ -880,8 +878,6 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       // 8. Success 🎉
-      yield put(finishApprovalFlow(collection))
-
       yield put(
         openModal('ApprovalFlowModal', {
           view: ApprovalFlowModalView.SUCCESS,

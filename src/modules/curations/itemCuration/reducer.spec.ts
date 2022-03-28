@@ -17,6 +17,7 @@ import { CurationStatus } from '../types'
 import { ItemCuration } from './types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { mockedItem } from 'specs/item'
+import { finishTPApprovalFlow } from 'modules/collection/actions'
 
 const getMockItemCuration = (props: Partial<ItemCuration> = {}): ItemCuration => ({
   id: 'id',
@@ -266,6 +267,29 @@ describe('when an action of type FETCH_ITEM_CURATIONS_FAILURE is called', () => 
     ).toStrictEqual({
       ...INITIAL_STATE,
       error: 'Some Error'
+    })
+  })
+})
+
+describe('when an action of type FINISH_TP_APPROVAL_FLOW is called', () => {
+  let collection: Collection
+  let itemCurations: ItemCuration[]
+  beforeEach(() => {
+    collection = { id: 'collectionId' } as Collection
+    itemCurations = [getMockItemCuration({ createdAt: 1 }), getMockItemCuration({ createdAt: 2 })]
+  })
+  it('should replace the old curation for the new one', () => {
+    const state = {
+      ...INITIAL_STATE,
+      data: {
+        collectionId: []
+      }
+    }
+    expect(itemCurationReducer(state, finishTPApprovalFlow(collection, [], itemCurations))).toStrictEqual({
+      ...state,
+      data: {
+        collectionId: itemCurations
+      }
     })
   })
 })

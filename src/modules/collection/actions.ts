@@ -183,13 +183,10 @@ export type RejectCollectionFailureAction = ReturnType<typeof rejectCollectionFa
 
 // Approval Flow
 export const INITIATE_APPROVAL_FLOW = 'Initiate Approval Flow'
-export const FINISH_APPROVAL_FLOW = 'Finish Approval Flow'
 
 export const initiateApprovalFlow = (collection: Collection) => action(INITIATE_APPROVAL_FLOW, { collection })
-export const finishApprovalFlow = (collection: Collection) => action(FINISH_APPROVAL_FLOW, { collection })
 
 export type InitiateApprovalFlowAction = ReturnType<typeof initiateApprovalFlow>
-export type FinishApprovalFlowAction = ReturnType<typeof finishApprovalFlow>
 
 // TP Approval Flow
 export const INITIATE_TP_APPROVAL_FLOW = 'Initiate TP Approval Flow'
