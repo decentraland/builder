@@ -170,14 +170,13 @@ export function* thirdPartySaga(builder: BuilderAPI) {
 
   function* publishChangesToThirdPartyItems(thirdParty: ThirdParty, items: Item[]) {
     const collectionId = getCollectionId(items)
-    const { signature, signedMessage, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
+    const { signature, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
 
     const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield call(
       [builder, 'publishTPCollection'],
       collectionId,
       items.map(i => i.id),
       {
-        signedMessage,
         signature,
         qty: items.length,
         salt
