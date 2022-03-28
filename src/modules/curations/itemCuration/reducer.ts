@@ -72,12 +72,10 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
 
       return {
         ...state,
-        loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
           [collection.id]: [...itemCurations]
-        },
-        error: null
+        }
       }
     }
     case FETCH_ITEM_CURATIONS_SUCCESS: {
