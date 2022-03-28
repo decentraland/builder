@@ -162,7 +162,7 @@ export type TPCatalystItem = BaseCatalystItem & { merkleProof: TPItemMerkleProof
 export type CatalystItem = StandardCatalystItem | TPCatalystItem
 
 export type ItemApprovalData = {
-  cheque: Omit<Cheque, 'signedMessage'>
+  cheque: Cheque
   content_hashes: Record<string, string>
 }
 export type TPItemMerkleProof = {
