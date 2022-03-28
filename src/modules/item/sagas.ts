@@ -95,7 +95,7 @@ import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH } from './types'
-import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
+import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
 
@@ -208,6 +208,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { item: actionItem, contents } = action.payload
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
+      const oldItem: Item | undefined = yield select(getItem, actionItem.id)
+      const rarityChanged = oldItem && oldItem.rarity !== item.rarity
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
@@ -220,7 +222,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       // If there's a new thumbnail image or the item doesn't have a catalyst image, create it and add it to the item
-      if (contents[THUMBNAIL_PATH] || !item.contents[IMAGE_PATH]) {
+      if (contents[THUMBNAIL_PATH] || !item.contents[IMAGE_PATH] || rarityChanged) {
         const catalystImage: { content: Blob; hash: string } = yield call(generateCatalystImage, item, {
           thumbnail: contents[THUMBNAIL_PATH]
         })

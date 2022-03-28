@@ -44,10 +44,10 @@ import {
   rescueItemsFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
-import { BuiltFile, IMAGE_PATH, Item, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
+import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
-import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
+import { getData as getItemsById, getEntityByItemId, getItem, getItems } from './selectors'
 
 let blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -90,6 +90,7 @@ describe('when handling the save item request action', () => {
 
     it('should put a saveItemFailure action with invalid character message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[select(getItem, item.id), undefined]])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -104,6 +105,7 @@ describe('when handling the save item request action', () => {
 
     it('should put a saveItemFailure action with invalid character message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[select(getItem, item.id), undefined]])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -120,6 +122,7 @@ describe('when handling the save item request action', () => {
     it('should put a saveItemFailure action with item too big message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
+          [select(getItem, item.id), undefined],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [call(calculateFinalSize, item, contents), Promise.resolve(MAX_FILE_SIZE + 1)]
         ])
@@ -155,6 +158,7 @@ describe('when handling the save item request action', () => {
     it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
+          [select(getItem, item.id), undefined],
           [select(getCollection, collection.id), collection],
           [call(calculateFinalSize, item, contents), Promise.resolve(1)]
         ])
@@ -183,6 +187,7 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action with the catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getItem, item.id), undefined],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -208,6 +213,7 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action with the catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getItem, item.id), undefined],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -231,6 +237,34 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action without a new catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getItem, item.id), undefined],
+            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+          ])
+          .put(saveItemSuccess(item, contents))
+          .dispatch(saveItemRequest(item, contents))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe("and the item doesn't have a new thumbnail, has a catalyst image but the rarity was changed", () => {
+      beforeEach(() => {
+        item = { ...item, rarity: ItemRarity.UNIQUE, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
+      })
+
+      it('should put a save item success action with a new catalyst image', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [
+              select(getItem, item.id),
+              { ...item, contents: { ...item.contents, [IMAGE_PATH]: 'someOtherCatalystHash' }, rarity: ItemRarity.COMMON }
+            ],
+            [
+              call(generateCatalystImage, item, {
+                thumbnail: contents[THUMBNAIL_PATH]
+              }),
+              Promise.resolve({ hash: catalystImageHash, content: blob })
+            ],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -248,6 +282,7 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -265,6 +300,7 @@ describe('when handling the save item request action', () => {
       it('should save item if it is already published', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -281,7 +317,10 @@ describe('when handling the save item request action', () => {
 
       it('should not calculate the size of the contents', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
-          .provide([[call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]])
+          .provide([
+            [select(getItem, item.id), undefined],
+            [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
+          ])
           .put(saveItemSuccess(item, {}))
           .dispatch(saveItemRequest(item, {}))
           .run({ silenceTimeout: true })
