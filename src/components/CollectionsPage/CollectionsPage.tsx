@@ -138,20 +138,22 @@ export default class CollectionsPage extends React.PureComponent<Props> {
             this.renderList()
           ) : null
         ) : (
-          <div className="empty">
-            <Header className="title" size="large">
-              {t('collections_page.no_items')}
-            </Header>
-            <div className="empty-description">{t('collections_page.empty_description')}</div>
-            <div className="create-new-wrapper">
-              <div className="create-new create-new-item" onClick={this.handleNewItem}>
-                <div className="text">{t('collections_page.new_item')}</div>
-              </div>
-              <div className="create-new create-new-collection" onClick={this.handleNewCollection}>
-                <div className="text">{t('collections_page.new_collection')}</div>
+          <Card.Group>
+            <div className="empty">
+              <Header className="title" size="large">
+                {t('collections_page.no_items')}
+              </Header>
+              <div className="empty-description">{t('collections_page.empty_description')}</div>
+              <div className="create-new-wrapper">
+                <div className="create-new create-new-item" onClick={this.handleNewItem}>
+                  <div className="text">{t('collections_page.new_item')}</div>
+                </div>
+                <div className="create-new create-new-collection" onClick={this.handleNewCollection}>
+                  <div className="text">{t('collections_page.new_collection')}</div>
+                </div>
               </div>
             </div>
-          </div>
+          </Card.Group>
         )}
       </>
     )
