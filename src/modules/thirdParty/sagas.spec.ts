@@ -446,8 +446,8 @@ describe('when pushing changes to third party items', () => {
           contentHash: 'anotherHash'
         }
       ]
-      ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockImplementation(() => updatedItemCurations[0])
-      ;(mockBuilder.pushItemCuration as jest.Mock).mockImplementation(() => updatedItemCurations[1])
+      ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValue(updatedItemCurations[0])
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[1])
     })
 
     it('should put the push changes success action with the updated item curations and close the PublishThirdPartyCollectionModal modal', () => {
@@ -520,7 +520,7 @@ describe('when publishing & pushing changes to third party items', () => {
 
   describe('when the publish works fine but push items fails', () => {
     beforeEach(() => {
-      ;(mockBuilder.publishTPCollection as jest.Mock).mockReturnValue({ items: publishResponse, itemCurations })
+      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
       ;(mockBuilder.pushItemCuration as jest.Mock).mockRejectedValue(new Error(errorMessage))
     })
     it('should put the publish & push changes failure action', () => {
