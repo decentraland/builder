@@ -71,7 +71,8 @@ import {
   ApproveCollectionSuccessAction,
   ApproveCollectionFailureAction,
   InitiateTPApprovalFlowAction,
-  INITIATE_TP_APPROVAL_FLOW
+  INITIATE_TP_APPROVAL_FLOW,
+  finishTPApprovalFlow
 } from './actions'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
@@ -609,7 +610,6 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       // 1. Open modal
-
       yield put(
         openModal('ApprovalFlowModal', {
           view: ApprovalFlowModalView.LOADING,
@@ -636,9 +636,9 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         sigS: s,
         sigV: v
       }
+
       // Open the ApprovalFlowModal with the items to be approved
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
-
       if (itemsToApprove.length > 0) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS> = {
           view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
@@ -666,7 +666,6 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
-
       const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
         getTPItemsAndEntitiesToDeploy,
         collection,
@@ -706,11 +705,11 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       // 6. If the collection was approved but it had a pending curation, approve the curation
-
       const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemsToApprove, CurationStatus.APPROVED)
-      console.log('newItemsCurations: ', newItemsCurations) // TODO: Add this to the success action that will override the curations in the state
 
       // 7. Success 🎉
+      yield put(finishTPApprovalFlow(collection, itemsToApprove, newItemsCurations))
+
       yield put(
         openModal('ApprovalFlowModal', {
           view: ApprovalFlowModalView.SUCCESS,

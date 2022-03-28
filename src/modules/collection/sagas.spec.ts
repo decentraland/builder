@@ -28,6 +28,7 @@ import {
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { consumeThirdPartyItemSlotsFailure, consumeThirdPartyItemSlotsSuccess } from 'modules/thirdParty/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { BuilderAPI } from 'lib/api/builder'
 import {
@@ -42,7 +43,8 @@ import {
   publishCollectionFailure,
   SAVE_COLLECTION_SUCCESS,
   SAVE_COLLECTION_FAILURE,
-  initiateTPApprovalFlow
+  initiateTPApprovalFlow,
+  finishTPApprovalFlow
 } from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
@@ -101,13 +103,21 @@ const getEntity = (item: Item, props: Partial<Entity> = {}): Entity => ({
 
 const getDeployData = (): DeploymentPreparationData => ({ entityId: 'QmNewEntityId', files: new Map() })
 
-const getCuration = (collection: Collection, props: Partial<CollectionCuration> = {}): CollectionCuration =>
+const getCollectionCuration = (collection: Collection, props: Partial<CollectionCuration> = {}): CollectionCuration =>
   ({
-    id: 'aCuration',
+    id: 'aCollectionCuration',
     collectionId: collection.id,
     status: CurationStatus.PENDING,
     ...props
   } as CollectionCuration)
+
+const getItemCuration = (item: Item, props: Partial<ItemCuration> = {}): ItemCuration =>
+  ({
+    id: 'anItemCuration',
+    itemId: item.id,
+    status: CurationStatus.PENDING,
+    ...props
+  } as ItemCuration)
 
 let mockBuilder: BuilderAPI
 let mockCatalyst: CatalystClient
@@ -226,7 +236,7 @@ describe('when executing the approval flow', () => {
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
-    const curation = getCuration(collection)
+    const curation = getCollectionCuration(collection)
     it('should complete the flow doing a rescue, deploy and approve curation steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
@@ -282,7 +292,7 @@ describe('when executing the approval flow', () => {
     const collection = getCollection({ isApproved: true })
     const items = [getItem(collection), getItem(collection, { id: 'anotherItem' })]
     const entities = [getEntity(items[0]), getEntity(items[1])]
-    const curation = getCuration(collection, { status: CurationStatus.APPROVED })
+    const curation = getCollectionCuration(collection, { status: CurationStatus.APPROVED })
     it('should skip all the unnecessary steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
         .provide([
@@ -515,7 +525,7 @@ describe('when executing the approval flow', () => {
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
-    const curation = getCuration(collection)
+    const curation = getCollectionCuration(collection)
     const curationError = 'CollectionCuration Error'
 
     it('should open the modal in an error state', () => {
@@ -901,6 +911,7 @@ describe('when executing the TP approval flow', () => {
       it('should complete the flow doing the consume, deploy and update the item curations steps', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
         const merkleTree = generateTree(Object.values(contentHashes))
+        const itemCurations = itemsToApprove.map(item => getItemCuration(item))
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
           .provide([
             [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
@@ -914,8 +925,8 @@ describe('when executing the TP approval flow', () => {
               call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[1], merkleTree, contentHashes[itemsToApprove[1].id]),
               deployData
             ],
-            [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), {}],
-            [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), {}]
+            [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), itemCurations[0]],
+            [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), itemCurations[1]]
           ])
           .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
           .put(
@@ -943,6 +954,7 @@ describe('when executing the TP approval flow', () => {
             } as ApprovalFlowModalMetadata)
           )
           .dispatch(deployEntitiesSuccess([deployData]))
+          .put(finishTPApprovalFlow(TPCollection, itemsToApprove, itemCurations))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.SUCCESS,
