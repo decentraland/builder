@@ -552,8 +552,8 @@ describe('when publishing & pushing changes to third party items', () => {
           contentHash: 'aHash'
         }
       ]
-      ;(mockBuilder.publishTPCollection as jest.Mock).mockImplementation(() => ({ items: publishResponse, itemCurations }))
-      ;(mockBuilder.pushItemCuration as jest.Mock).mockReturnValue(updatedItemCurations[0])
+      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[0])
     })
 
     it('should put the publish & push changes success action and the fetch available slots request', () => {

@@ -210,14 +210,14 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId!)
     const MAX_CONCURRENT_REQUESTS = 3
     const queue = new PQueue({ concurrency: MAX_CONCURRENT_REQUESTS })
-    const promises: (() => Promise<ItemCuration>)[] = items.map((item: Item) => {
+    const promisesOfItemsBeingUpdated: (() => Promise<ItemCuration>)[] = items.map((item: Item) => {
       const curation = itemCurations.find(itemCuration => itemCuration.itemId === item.id)
       if (curation?.status === CurationStatus.PENDING) {
         return () => builder.updateItemCurationStatus(item.id, CurationStatus.PENDING)
       }
       return () => builder.pushItemCuration(item.id) // FOR CURATIONS REJECTED/APPROVED
     })
-    const newItemsCurations: ItemCuration[] = yield queue.addAll(promises)
+    const newItemsCurations: ItemCuration[] = yield queue.addAll(promisesOfItemsBeingUpdated)
     if (newItemsCurations.some(itemCuration => itemCuration === undefined)) {
       throw Error('Some item curations were not pushed')
     }
