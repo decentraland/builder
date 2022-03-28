@@ -4,9 +4,12 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
-import { decodeURN, URNType } from 'lib/urn'
+import { decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
+import { buildItemContentHash } from 'modules/item/export'
 import { Collection, Access, Mint, CollectionType } from './types'
+
+export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
 
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
   const address = getSaleAddress(wallet.networks.MATIC.chainId)
@@ -46,7 +49,7 @@ export function getCollectionBaseURI() {
   return env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
 }
 
-export function getCollectionType(collection: Collection) {
+export function getCollectionType(collection: Collection): CollectionType {
   const { type } = decodeURN(collection.urn)
 
   switch (type) {
@@ -74,6 +77,10 @@ export function toCollectionObject(collections: Collection[]) {
 
 export function canSeeCollection(collection: Collection, address: string) {
   return !!collection && [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
+}
+
+export function sortCollectionByCreatedAt(collectionA: Collection, collectionB: Collection) {
+  return collectionB.createdAt - collectionA.createdAt
 }
 
 export function isOwner(collection: Collection, address?: string) {
@@ -109,4 +116,21 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
   const indexA = sorted.indexOf(statusA)
   const indexB = sorted.indexOf(statusB)
   return indexA < indexB ? statusA : statusB
+}
+
+export function getLatestItemHash(collection: Collection, item: Item): Promise<string> {
+  if (item.currentContentHash) {
+    return Promise.resolve(item.currentContentHash)
+  }
+
+  return buildItemContentHash(collection, item)
+}
+
+export function isTPCollection(collection: Collection): boolean {
+  return isThirdParty(collection.urn)
+}
+
+// TODO: Remove this variable once platform supports the TP items deploy
+export function isTPDeployEnabled() {
+  return false
 }

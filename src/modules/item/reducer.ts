@@ -55,18 +55,13 @@ import {
   FETCH_RARITIES_REQUEST,
   FETCH_RARITIES_SUCCESS,
   FETCH_RARITIES_FAILURE,
-  PublishThirdPartyItemsRequestAction,
-  PublishThirdPartyItemsSuccessAction,
-  PublishThirdPartyItemsFailureAction,
-  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
-  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
-  PUBLISH_THIRD_PARTY_ITEMS_FAILURE,
   RescueItemsRequestAction,
   RescueItemsFailureAction,
   RescueItemsSuccessAction,
   RESCUE_ITEMS_REQUEST,
   RESCUE_ITEMS_FAILURE,
   RESCUE_ITEMS_SUCCESS,
+  RESCUE_ITEMS_CHUNK_SUCCESS,
   ResetItemRequestAction,
   ResetItemSuccessAction,
   ResetItemFailureAction,
@@ -84,8 +79,23 @@ import {
   DownloadItemFailureAction,
   DOWNLOAD_ITEM_REQUEST,
   DOWNLOAD_ITEM_FAILURE,
-  DOWNLOAD_ITEM_SUCCESS
+  DOWNLOAD_ITEM_SUCCESS,
+  SaveMultipleItemsSuccessAction,
+  SaveMultipleItemsFailureAction,
+  SaveMultipleItemsCancelledAction,
+  ClearStateSaveMultipleItemsAction,
+  SAVE_MULTIPLE_ITEMS_SUCCESS,
+  SAVE_MULTIPLE_ITEMS_FAILURE,
+  CLEAR_SAVE_MULTIPLE_ITEMS,
+  SAVE_MULTIPLE_ITEMS_CANCELLED,
+  RescueItemsChunkSuccessAction
 } from './actions'
+import {
+  PublishThirdPartyItemsSuccessAction,
+  PublishAndPushChangesThirdPartyItemsSuccessAction,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS
+} from 'modules/thirdParty/actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
@@ -132,11 +142,11 @@ type ItemReducerAction =
   | FetchRaritiesRequestAction
   | FetchRaritiesSuccessAction
   | FetchRaritiesFailureAction
-  | PublishThirdPartyItemsRequestAction
   | PublishThirdPartyItemsSuccessAction
-  | PublishThirdPartyItemsFailureAction
+  | PublishAndPushChangesThirdPartyItemsSuccessAction
   | RescueItemsRequestAction
   | RescueItemsSuccessAction
+  | RescueItemsChunkSuccessAction
   | RescueItemsFailureAction
   | ResetItemRequestAction
   | ResetItemSuccessAction
@@ -145,6 +155,10 @@ type ItemReducerAction =
   | DownloadItemRequestAction
   | DownloadItemSuccessAction
   | DownloadItemFailureAction
+  | SaveMultipleItemsSuccessAction
+  | SaveMultipleItemsFailureAction
+  | SaveMultipleItemsCancelledAction
+  | ClearStateSaveMultipleItemsAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -162,7 +176,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SET_PRICE_AND_BENEFICIARY_REQUEST:
     case SAVE_ITEM_REQUEST:
     case DELETE_ITEM_REQUEST:
-    case PUBLISH_THIRD_PARTY_ITEMS_REQUEST:
     case RESET_ITEM_REQUEST:
     case RESCUE_ITEMS_REQUEST:
     case DOWNLOAD_ITEM_REQUEST: {
@@ -173,8 +186,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_COLLECTION_ITEMS_SUCCESS:
     case FETCH_ITEMS_SUCCESS:
-    case SET_ITEMS_TOKEN_ID_SUCCESS:
-    case RESCUE_ITEMS_SUCCESS: {
+    case SET_ITEMS_TOKEN_ID_SUCCESS: {
       const { items } = action.payload
       return {
         ...state,
@@ -184,6 +196,23 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         },
         loading: loadingReducer(state.loading, action),
         error: null
+      }
+    }
+    case RESCUE_ITEMS_SUCCESS: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
+    case RESCUE_ITEMS_CHUNK_SUCCESS: {
+      const { items } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        }
       }
     }
     case FETCH_RARITIES_SUCCESS: {
@@ -203,7 +232,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SAVE_ITEM_FAILURE:
     case FETCH_RARITIES_FAILURE:
     case DELETE_ITEM_FAILURE:
-    case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case RESET_ITEM_FAILURE:
     case RESCUE_ITEMS_FAILURE:
     case DOWNLOAD_ITEM_FAILURE: {
@@ -225,6 +253,34 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         },
         loading: loadingReducer(state.loading, action),
         error: null
+      }
+    }
+    case SAVE_MULTIPLE_ITEMS_FAILURE: {
+      const { items, error } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        error
+      }
+    }
+    case CLEAR_SAVE_MULTIPLE_ITEMS: {
+      return {
+        ...state,
+        error: null
+      }
+    }
+    case SAVE_MULTIPLE_ITEMS_CANCELLED:
+    case SAVE_MULTIPLE_ITEMS_SUCCESS: {
+      const { items } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        }
       }
     }
     case RESET_ITEM_SUCCESS: {
@@ -310,8 +366,9 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             }
           }
         }
-        case PUBLISH_COLLECTION_SUCCESS:
-        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
+        case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
+        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS:
+        case PUBLISH_COLLECTION_SUCCESS: {
           const items: Item[] = transaction.payload.items
           return {
             ...state,

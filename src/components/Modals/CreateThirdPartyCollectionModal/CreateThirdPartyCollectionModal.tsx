@@ -15,7 +15,7 @@ import {
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { buildThirdPartyURN, decodeURN } from 'lib/urn'
-import { Collection, COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
+import { Collection, TP_COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import { Props, State } from './CreateThirdPartyCollectionModal.types'
 
 export default class CreateThirdPartyCollectionModal extends React.PureComponent<Props, State> {
@@ -100,15 +100,15 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
             />
             <Field
               label={t('create_third_party_collection_modal.name_field.label')}
-              placeholder={t('create_third_party_collection_modal.name_field.placeholder')}
-              message={t('create_third_party_collection_modal.name_field.message', { maxLength: COLLECTION_NAME_MAX_LENGTH })}
+              placeholder="0x..."
+              message={t('create_third_party_collection_modal.name_field.message', { maxLength: TP_COLLECTION_NAME_MAX_LENGTH })}
               value={collectionName}
-              maxLength={COLLECTION_NAME_MAX_LENGTH}
+              maxLength={TP_COLLECTION_NAME_MAX_LENGTH}
               onChange={this.handleNameChange}
             />
             <Field
               label={t('create_third_party_collection_modal.urn_suffix_field.label')}
-              placeholder={t('create_third_party_collection_modal.urn_suffix_field.placeholder')}
+              placeholder="0x..."
               message={t('create_third_party_collection_modal.urn_suffix_field.message')}
               value={urnSuffix}
               onChange={this.handleUrnSuffixChange}

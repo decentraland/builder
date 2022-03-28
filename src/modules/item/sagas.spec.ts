@@ -1,14 +1,21 @@
 import uuidv4 from 'uuid/v4'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
+import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { call, select, take, race } from 'redux-saga/effects'
+import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
-import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
+import { MAX_ITEMS } from 'modules/collection/constants'
+import { getMethodData } from 'modules/wallet/utils'
+import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
+import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
+import { downloadZip } from 'lib/zip'
 import { BuilderAPI } from 'lib/api/builder'
 import util from 'util'
 import {
@@ -23,24 +30,27 @@ import {
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
   setPriceAndBeneficiaryFailure,
-  publishThirdPartyItemsFailure,
-  publishThirdPartyItemsRequest,
-  publishThirdPartyItemsSuccess,
   downloadItemFailure,
   downloadItemRequest,
-  downloadItemSuccess
+  downloadItemSuccess,
+  saveMultipleItemsRequest,
+  saveMultipleItemsSuccess,
+  saveMultipleItemsFailure,
+  saveMultipleItemsCancelled,
+  cancelSaveMultipleItems,
+  rescueItemsRequest,
+  rescueItemsChunkSuccess,
+  rescueItemsSuccess,
+  rescueItemsFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
-import { Item, ItemType, WearableRepresentation } from './types'
+import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
-import { buildZipContents, MAX_FILE_SIZE } from './utils'
-import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
-import { ThirdParty } from 'modules/thirdParty/types'
-import { downloadZip } from 'lib/zip'
-import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
+import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
+import { getData as getItemsById, getEntityByItemId, getItem, getItems } from './selectors'
 
 let blob: Blob = new Blob()
-const contents: Record<string, Blob> = { path: blob }
+let contents: Record<string, Blob>
 
 const builderAPI = ({
   saveItem: jest.fn(),
@@ -48,11 +58,18 @@ const builderAPI = ({
   fetchContents: jest.fn()
 } as unknown) as BuilderAPI
 
+let builderClient: BuilderClient
+
 let dateNowSpy: jest.SpyInstance
 const updatedAt = Date.now()
 
 beforeEach(() => {
   dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => updatedAt)
+  builderClient = ({
+    upsertItem: jest.fn(),
+    getContentSize: jest.fn()
+  } as unknown) as BuilderClient
+  contents = { path: blob }
 })
 
 afterEach(() => {
@@ -60,12 +77,20 @@ afterEach(() => {
 })
 
 describe('when handling the save item request action', () => {
+  let item: Item
+
+  beforeEach(() => {
+    item = { ...mockedItem }
+  })
+
   describe('and the name contains ":"', () => {
+    beforeEach(() => {
+      item.name = 'invalid:name'
+    })
+
     it('should put a saveItemFailure action with invalid character message', () => {
-      const item = {
-        name: 'invalid:name'
-      } as Item
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[select(getItem, item.id), undefined]])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -73,12 +98,14 @@ describe('when handling the save item request action', () => {
   })
 
   describe('and the description contains ":"', () => {
+    beforeEach(() => {
+      item.name = 'valid name'
+      item.description = 'invalid:description'
+    })
+
     it('should put a saveItemFailure action with invalid character message', () => {
-      const item = {
-        name: 'valid name',
-        description: 'invalid:description'
-      } as Item
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[select(getItem, item.id), undefined]])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -86,14 +113,19 @@ describe('when handling the save item request action', () => {
   })
 
   describe('and file size is larger than 2 MB', () => {
+    beforeEach(() => {
+      item.name = 'valid name'
+      item.description = 'valid description'
+      item.updatedAt = updatedAt
+    })
+
     it('should put a saveItemFailure action with item too big message', () => {
-      const item = {
-        name: 'valid name',
-        description: 'valid description',
-        updatedAt
-      } as Item
-      return expectSaga(itemSaga, builderAPI)
-        .provide([[call(calculateFinalSize, item, contents), Promise.resolve(MAX_FILE_SIZE + 1)]])
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getItem, item.id), undefined],
+          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
+          [call(calculateFinalSize, item, contents), Promise.resolve(MAX_FILE_SIZE + 1)]
+        ])
         .put(
           saveItemFailure(
             item,
@@ -108,18 +140,14 @@ describe('when handling the save item request action', () => {
 
   describe('and the collection is locked', () => {
     let collection: Collection
-    let item: Item
     let lock: number
 
     beforeEach(() => {
       lock = Date.now()
       collection = { id: uuidv4(), name: 'valid name', lock } as Collection
-      item = {
-        name: 'valid name',
-        description: 'valid description',
-        collectionId: collection.id
-      } as Item
-
+      item.name = 'valid name'
+      item.description = 'valid description'
+      item.collectionId = collection.id
       jest.spyOn(Date, 'now').mockReturnValueOnce(lock)
     })
 
@@ -128,8 +156,9 @@ describe('when handling the save item request action', () => {
     })
 
     it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
+          [select(getItem, item.id), undefined],
           [select(getCollection, collection.id), collection],
           [call(calculateFinalSize, item, contents), Promise.resolve(1)]
         ])
@@ -140,16 +169,120 @@ describe('when handling the save item request action', () => {
   })
 
   describe('and the name and description don\'t contain ":", the size is below the limit, and the collection is not locked', () => {
-    describe('and the item is not published', () => {
-      it('should put a save item success action', () => {
-        const item = {
-          name: 'valid name',
-          description: 'valid description',
-          updatedAt
-        } as Item
+    let contentsToSave: Record<string, Blob>
+    const catalystImageHash = 'someHash'
 
-        return expectSaga(itemSaga, builderAPI)
+    beforeEach(() => {
+      item.name = 'valid name'
+      item.description = 'valid description'
+      item.updatedAt = updatedAt
+    })
+
+    describe("and the item doesn't have a new thumbnail image but has a catalyst image", () => {
+      beforeEach(() => {
+        item = { ...item, contents: { ...item.contents, [IMAGE_PATH]: 'anotherHash' } }
+        contentsToSave = { ...contents, [IMAGE_PATH]: blob }
+      })
+
+      it('should put a save item success action with the catalyst image', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getItem, item.id), undefined],
+            [
+              call(generateCatalystImage, item, {
+                thumbnail: contents[THUMBNAIL_PATH]
+              }),
+              Promise.resolve({ hash: catalystImageHash, content: blob })
+            ],
+            [call(calculateFinalSize, item, contentsToSave), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
+          ])
+          .put(saveItemSuccess(item, contentsToSave))
+          .dispatch(saveItemRequest(item, contentsToSave))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe("and the item has a new thumbnail but doesn't have a catalyst image", () => {
+      beforeEach(() => {
+        delete item.contents[IMAGE_PATH]
+        contents = { ...contents, [THUMBNAIL_PATH]: new Blob(['someThumbnailData']) }
+        contentsToSave = { ...contents, [IMAGE_PATH]: blob }
+      })
+
+      it('should put a save item success action with the catalyst image', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [select(getItem, item.id), undefined],
+            [
+              call(generateCatalystImage, item, {
+                thumbnail: contents[THUMBNAIL_PATH]
+              }),
+              Promise.resolve({ hash: catalystImageHash, content: blob })
+            ],
+            [call(calculateFinalSize, item, contentsToSave), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
+          ])
+          .put(saveItemSuccess(item, contentsToSave))
+          .dispatch(saveItemRequest(item, contentsToSave))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe("and the item doesn't have a new thumbnail and has a catalyst image", () => {
+      beforeEach(() => {
+        item = { ...item, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
+      })
+
+      it('should put a save item success action without a new catalyst image', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [select(getItem, item.id), undefined],
+            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+          ])
+          .put(saveItemSuccess(item, contents))
+          .dispatch(saveItemRequest(item, contents))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe("and the item doesn't have a new thumbnail, has a catalyst image but the rarity was changed", () => {
+      beforeEach(() => {
+        item = { ...item, rarity: ItemRarity.UNIQUE, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
+      })
+
+      it('should put a save item success action with a new catalyst image', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [
+              select(getItem, item.id),
+              { ...item, contents: { ...item.contents, [IMAGE_PATH]: 'someOtherCatalystHash' }, rarity: ItemRarity.COMMON }
+            ],
+            [
+              call(generateCatalystImage, item, {
+                thumbnail: contents[THUMBNAIL_PATH]
+              }),
+              Promise.resolve({ hash: catalystImageHash, content: blob })
+            ],
+            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+          ])
+          .put(saveItemSuccess(item, contents))
+          .dispatch(saveItemRequest(item, contents))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the item is not published', () => {
+      beforeEach(() => {
+        item = { ...item, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
+      })
+
+      it('should put a save item success action', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -160,15 +293,14 @@ describe('when handling the save item request action', () => {
     })
 
     describe('and the item is already published', () => {
+      beforeEach(() => {
+        item = { ...item, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash }, isPublished: true }
+      })
+
       it('should save item if it is already published', () => {
-        const item = {
-          name: 'valid name',
-          description: 'valid description',
-          updatedAt,
-          isPublished: true
-        } as Item
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -178,16 +310,17 @@ describe('when handling the save item request action', () => {
       })
     })
 
-    describe('and the item has not content', () => {
-      it('should not calculate the size of the contents', () => {
-        const item = {
-          name: 'valid name',
-          description: 'valid description',
-          updatedAt
-        } as Item
+    describe('and the item has no content', () => {
+      beforeEach(() => {
+        item = { ...item, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
+      })
 
-        return expectSaga(itemSaga, builderAPI)
-          .provide([[call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]])
+      it('should not calculate the size of the contents', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [select(getItem, item.id), undefined],
+            [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
+          ])
           .put(saveItemSuccess(item, {}))
           .dispatch(saveItemRequest(item, {}))
           .run({ silenceTimeout: true })
@@ -231,7 +364,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       const price = '1000'
       const beneficiary = '0xpepe'
 
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
@@ -262,7 +395,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
         const nonExistentItemId = 'non-existent-id'
         const errorMessage = 'Error message'
 
-        return expectSaga(itemSaga, builderAPI)
+        return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getItems), [item]],
             [select(getCollections), [collection]],
@@ -291,7 +424,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
 
       const errorMessage = 'Error message'
 
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
@@ -304,7 +437,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   })
 })
 
-describe('when reseting an item to the state found in the catalyst', () => {
+describe('when resetting an item to the state found in the catalyst', () => {
   const originalFetch = window.fetch
 
   window.fetch = jest.fn().mockResolvedValue({
@@ -323,7 +456,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
       [itemId]: {
         name: 'changed name',
         description: 'changed description',
-        contents: { ['changed key']: 'changed hash' },
+        contents: { ['changed key']: 'changed hash', [IMAGE_PATH]: 'catalystImageHash' },
         data: {
           hides: [WearableCategory.MASK],
           replaces: [WearableCategory.MASK],
@@ -349,7 +482,10 @@ describe('when reseting an item to the state found in the catalyst', () => {
         type: EntityType.WEARABLE,
         timestamp: Date.now(),
         pointers: [],
-        content: [{ file: 'key', hash: 'hash' }],
+        content: [
+          { file: 'key', hash: 'hash' },
+          { file: IMAGE_PATH, hash: 'catalystImageHash' }
+        ],
         metadata: {
           name: 'name',
           description: 'description',
@@ -375,7 +511,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
     replacedItem = {
       name: 'name',
       description: 'description',
-      contents: { key: 'hash' },
+      contents: { key: 'hash', [IMAGE_PATH]: 'catalystImageHash' },
       data: {
         hides: [WearableCategory.HAT],
         replaces: [WearableCategory.HAT],
@@ -393,7 +529,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
       }
     }
 
-    replacedContents = { key: blob }
+    replacedContents = { key: blob, [IMAGE_PATH]: blob }
   })
 
   afterAll(() => {
@@ -404,6 +540,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
     return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
       .provide([
         [select(getItemsById), itemsById],
+        [saveItemRequest(replacedItem as any, replacedContents), undefined],
         [select(getEntityByItemId), entitiesByItemId],
         [
           race({
@@ -415,40 +552,8 @@ describe('when reseting an item to the state found in the catalyst', () => {
       ])
       .put(saveItemRequest(replacedItem as any, replacedContents))
       .put(resetItemSuccess(itemId))
+      .dispatch(resetItemRequest(itemId))
       .silentRun()
-  })
-
-  describe('and the collection is locked', () => {
-    let collection: Collection
-    let item: Item
-    let lock: number
-
-    beforeEach(() => {
-      lock = Date.now()
-      collection = { id: uuidv4(), name: 'valid name', lock } as Collection
-      item = {
-        name: 'valid name',
-        description: 'valid description',
-        collectionId: collection.id
-      } as Item
-
-      jest.spyOn(Date, 'now').mockReturnValueOnce(lock)
-    })
-
-    afterEach(() => {
-      jest.restoreAllMocks()
-    })
-
-    it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
-      return expectSaga(itemSaga, builderAPI)
-        .provide([
-          [select(getCollection, collection.id), collection],
-          [call(calculateFinalSize, item, contents), Promise.resolve(1)]
-        ])
-        .put(saveItemFailure(item, contents, 'The collection is locked'))
-        .dispatch(saveItemRequest(item, contents))
-        .run({ silenceTimeout: true })
-    })
   })
 
   describe('and a saveItemFailure action happens after the save item request', () => {
@@ -458,6 +563,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
       return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
         .provide([
           [select(getItemsById), itemsById],
+          [saveItemRequest(replacedItem as any, replacedContents), undefined],
           [select(getEntityByItemId), entitiesByItemId],
           [
             race({
@@ -471,6 +577,7 @@ describe('when reseting an item to the state found in the catalyst', () => {
         ])
         .put(saveItemRequest(replacedItem as any, replacedContents))
         .put(resetItemFailure(itemId, saveItemFailureMessage))
+        .dispatch(resetItemRequest(itemId))
         .silentRun()
     })
   })
@@ -492,141 +599,8 @@ describe('when reseting an item to the state found in the catalyst', () => {
           ]
         ])
         .put(resetItemFailure(itemId, 'Entity does not have content'))
+        .dispatch(resetItemRequest(itemId))
         .silentRun()
-    })
-  })
-})
-
-describe('when publishing third party items', () => {
-  describe('and the transaction is sent correctly', () => {
-    let collection: Collection
-    let items: Item[]
-    let thirdParty: ThirdParty
-    let txHash: string
-
-    beforeEach(() => {
-      collection = {
-        id: 'aCollection',
-        name: 'collection name'
-      } as Collection
-
-      items = [
-        {
-          id: 'anItem',
-          name: 'valid name',
-          description: 'valid description',
-          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id:token-id',
-          collectionId: collection.id,
-          data: {
-            category: WearableCategory.HAT,
-            representations: [
-              {
-                bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE],
-                contents: ['model.glb', 'texture.png'],
-                mainFile: 'model.glb',
-                overrideHides: [],
-                overrideReplaces: []
-              }
-            ] as WearableRepresentation[]
-          }
-        }
-      ] as Item[]
-
-      thirdParty = {
-        id: 'aCollection',
-        name: 'tp name'
-      } as ThirdParty
-
-      txHash = '0xdeadbeef'
-    })
-
-    it('should put a publish thrid party items success action and go to activity', () => {
-      return expectSaga(itemSaga, builderAPI)
-        .provide([
-          [select(getCollection, collection.id), collection],
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-          [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
-        ])
-        .put(publishThirdPartyItemsSuccess(txHash, ChainId.MATIC_MUMBAI, thirdParty, collection, items))
-        .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
-        .run({ silenceTimeout: true })
-    })
-
-    describe('and getting the chain id fails', () => {
-      let collection: Collection
-      let items: Item[]
-      let thirdParty: ThirdParty
-      let errorMessage: string
-
-      beforeEach(() => {
-        collection = { id: 'aCollection' } as Collection
-        items = [{ collectionId: collection.id }] as Item[]
-        thirdParty = { id: 'aCollection' } as ThirdParty
-        errorMessage = 'Cannot get a valid chain id for network'
-      })
-
-      it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI)
-          .provide([
-            [select(getCollection, collection.id), collection],
-            [call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(errorMessage))]
-          ])
-          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
-          .run({ silenceTimeout: true })
-      })
-    })
-
-    describe('and getting the contract fails', () => {
-      let collection: Collection
-      let items: Item[]
-      let thirdParty: ThirdParty
-      let errorMessage: string
-
-      beforeEach(() => {
-        collection = { id: 'aCollection' } as Collection
-        items = [{ collectionId: collection.id }] as Item[]
-        thirdParty = { id: 'aCollection' } as ThirdParty
-        errorMessage = 'Cannot get a valid contract for chain id'
-      })
-
-      it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI)
-          .provide([
-            [select(getCollection, collection.id), collection],
-            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
-            [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MAINNET), Promise.reject(new Error(errorMessage))]
-          ])
-          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
-          .run({ silenceTimeout: true })
-      })
-    })
-
-    describe('and sending the transaction fails', () => {
-      let collection: Collection
-      let items: Item[]
-      let thirdParty: ThirdParty
-      let errorMessage: string
-
-      beforeEach(() => {
-        collection = { id: 'aCollection' } as Collection
-        items = [{ collectionId: collection.id }] as Item[]
-        thirdParty = { id: 'aCollection' } as ThirdParty
-        errorMessage = 'Rejected trasaction'
-      })
-
-      it('should put a publish third party failure action', () => {
-        return expectSaga(itemSaga, builderAPI)
-          .provide([
-            [select(getCollection, collection.id), collection],
-            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-            [matchers.call.fn(sendTransaction), Promise.reject(new Error(errorMessage))]
-          ])
-          .put(publishThirdPartyItemsFailure(thirdParty, items, errorMessage))
-          .dispatch(publishThirdPartyItemsRequest(thirdParty, items))
-          .run({ silenceTimeout: true })
-      })
     })
   })
 })
@@ -653,7 +627,7 @@ describe('when handling the downloadItemRequest action', () => {
   describe('when id is not found', () => {
     const itemId = 'invalid'
     it('should throw an error with a message that says the item was not found', () => {
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(getItemsById), itemsById]])
         .put(downloadItemFailure(itemId, `Item not found for itemId="invalid"`))
         .dispatch(downloadItemRequest(itemId))
@@ -668,7 +642,7 @@ describe('when handling the downloadItemRequest action', () => {
       const model = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': model }
       const zip: Record<string, Blob> = { 'male/model.glb': model }
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -689,7 +663,7 @@ describe('when handling the downloadItemRequest action', () => {
       const femaleModel = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': maleModel, 'female/model.glb': femaleModel }
       const zip: Record<string, Blob> = { 'male/model.glb': maleModel, 'female/model.glb': femaleModel }
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -709,7 +683,7 @@ describe('when handling the downloadItemRequest action', () => {
       const model = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': model, 'female/model.glb': model }
       const zip: Record<string, Blob> = { 'model.glb': model }
-      return expectSaga(itemSaga, builderAPI)
+      return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -719,6 +693,163 @@ describe('when handling the downloadItemRequest action', () => {
         .put(downloadItemSuccess(itemId))
         .dispatch(downloadItemRequest(itemId))
         .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the save multiple items requests action', () => {
+  let items: Item[]
+  let builtFiles: BuiltFile<Blob>[]
+  let remoteItems: RemoteItem[]
+  let savedFiles: string[]
+  const error = 'anError'
+
+  beforeEach(() => {
+    items = [
+      { ...mockedItem, currentContentHash: mockedRemoteItem.local_content_hash },
+      { ...mockedItem, id: 'anotherItemId', currentContentHash: mockedRemoteItem.local_content_hash }
+    ]
+    remoteItems = [{ ...mockedRemoteItem }, { ...mockedRemoteItem, id: 'anotherItemId' }]
+    savedFiles = ['aFile.zip', 'anotherFile.zip']
+    builtFiles = [
+      {
+        item: { ...mockedLocalItem },
+        newContent: { ...mockedItemContents },
+        fileName: 'aFile.zip'
+      },
+      {
+        item: { ...mockedLocalItem, id: 'anotherItemId' },
+        newContent: { ...mockedItemContents },
+        fileName: 'anotherFile.zip'
+      }
+    ]
+  })
+
+  describe('and all of the upsert requests succeed', () => {
+    it('should dispatch the update progress action for each uploaded item and the success action with the upserted items and the name of the files of the upserted items', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [call([builderClient, 'upsertItem'], builtFiles[0].item, builtFiles[0].newContent), Promise.resolve(remoteItems[0])],
+          [call([builderClient, 'upsertItem'], builtFiles[1].item, builtFiles[1].newContent), Promise.resolve(remoteItems[1])]
+        ])
+        .put(updateProgressSaveMultipleItems(50))
+        .put(updateProgressSaveMultipleItems(100))
+        .put(saveMultipleItemsSuccess(items, savedFiles))
+        .dispatch(saveMultipleItemsRequest(builtFiles))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and one of the upsert requests fails', () => {
+    it('should dispatch the update progress action for the non-failing item upload and the failing action with the error, the upserted items and the name of the files of the upserted items', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [call([builderClient, 'upsertItem'], builtFiles[0].item, builtFiles[0].newContent), Promise.resolve(remoteItems[0])],
+          [call([builderClient, 'upsertItem'], builtFiles[1].item, builtFiles[1].newContent), Promise.reject(new Error(error))]
+        ])
+        .put(updateProgressSaveMultipleItems(50))
+        .put(saveMultipleItemsFailure(error, [items[0]], [savedFiles[0]]))
+        .dispatch(saveMultipleItemsRequest(builtFiles))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the operation gets cancelled', () => {
+    it('should dispatch the update progress action for the first non-cancelled upsert and the cancelling action with the upserted items and the name of the files of the upserted items', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [call([builderClient, 'upsertItem'], builtFiles[0].item, builtFiles[0].newContent), Promise.resolve(remoteItems[0])],
+          [call([builderClient, 'upsertItem'], builtFiles[1].item, builtFiles[1].newContent), Promise.reject(new Error(error))]
+        ])
+        .put(updateProgressSaveMultipleItems(50))
+        .put(saveMultipleItemsCancelled([items[0]], [savedFiles[0]]))
+        .dispatch(saveMultipleItemsRequest(builtFiles))
+        .dispatch(cancelSaveMultipleItems())
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the rescue items request action', () => {
+  const txHash = '0x12345'
+  const transactionData = 'some-data'
+  let collection: Collection
+  let items: Item[]
+  let resultItems: Item[]
+  let contentHashes: string[]
+  let groupsOfItems: Item[][]
+  let groupsOfContentHashes: string[][]
+
+  beforeEach(() => {
+    const item = {
+      type: ItemType.WEARABLE,
+      name: 'aName',
+      description: 'someDescription',
+      data: {
+        category: WearableCategory.EARRING,
+        representations: [
+          {
+            bodyShapes: [WearableBodyShape.MALE]
+          }
+        ]
+      },
+      contents: {}
+    } as Item
+
+    items = Array.from({ length: 55 }, (_, i) => ({ ...item, id: `item-${i}`, tokenId: `${i}` })) as Item[]
+    contentHashes = Array.from({ length: items.length }, (_, i) => `content-hash-${i}`)
+    collection = { id: 'aCollection', contractAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' } as Collection
+
+    resultItems = items.map((item, index) => ({ ...item, blockchainContentHash: contentHashes[index] }))
+    groupsOfItems = groupsOf(items, MAX_ITEMS)
+    groupsOfContentHashes = groupsOf(contentHashes, MAX_ITEMS)
+  })
+
+  describe('and the meta transactions are successful', () => {
+    it('should dispatch a rescueItemsChunkSuccess per chunk and the rescueItemsSuccess once the transactions finish', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+          [matchers.call.fn(getMethodData), transactionData],
+          [matchers.call.fn(sendTransaction), txHash],
+          [take(FETCH_TRANSACTION_SUCCESS), { payload: { transaction: { hash: txHash } } }]
+        ])
+        .put(rescueItemsChunkSuccess(collection, groupsOfItems[0], groupsOfContentHashes[0], ChainId.MATIC_MUMBAI, txHash))
+        .put(rescueItemsChunkSuccess(collection, groupsOfItems[1], groupsOfContentHashes[1], ChainId.MATIC_MUMBAI, txHash))
+        .put(rescueItemsSuccess(collection, resultItems, contentHashes, ChainId.MATIC_MUMBAI, [txHash, txHash]))
+        .dispatch(rescueItemsRequest(collection, items, contentHashes))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the meta transactions are unsuccessful', () => {
+    describe('and the transaction fails to get mined', () => {
+      it('should dispatch the rescueItemsFailure with the information about the error', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+            [matchers.call.fn(getMethodData), transactionData],
+            [matchers.call.fn(sendTransaction), Promise.reject(new Error('some-error'))]
+          ])
+          .put(rescueItemsFailure(collection, items, contentHashes, 'some-error'))
+          .dispatch(rescueItemsRequest(collection, items, contentHashes))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the call to the transaction service fails', () => {
+      it('should dispatch the rescueItemsFailure with the information about the error', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+            [matchers.call.fn(getMethodData), transactionData],
+            [matchers.call.fn(sendTransaction), txHash],
+            [take(FETCH_TRANSACTION_FAILURE), { payload: { transaction: { hash: txHash } } }]
+          ])
+          .put(rescueItemsFailure(collection, items, contentHashes, `The transaction ${txHash} failed to be mined.`))
+          .dispatch(rescueItemsRequest(collection, items, contentHashes))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })

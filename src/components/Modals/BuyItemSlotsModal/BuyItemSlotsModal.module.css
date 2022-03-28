@@ -10,37 +10,37 @@
   padding: 0px;
 }
 
-.tier {
-  display: flex;
-  justify-content: space-between;
-}
-
-.tier:not(:last-child) {
-  margin-bottom: 20px;
-}
-
-.tierType span {
-  margin-left: 10px;
+.slotValue {
+  color: var(--light-gray);
+  font-size: 13px;
+  margin-bottom: 6px;
 }
 
 .modalActions {
   display: flex;
   flex-direction: column;
-  margin-top: 56px;
+  margin-top: 28px;
   margin-bottom: 32px;
   margin-left: 32px;
   margin-right: 32px;
 }
 
-.acceptButton {
-  margin-left: 64px !important;
-  margin-right: 64px !important;
+.slotsPriceContainer {
+  position: relative;
+  min-height: 70px;
+  margin-bottom: 20px;
+}
+
+.slotsPriceContainer .dcl.mana.inline {
+  margin-right: 3px;
+}
+
+.errorField {
+  margin-bottom: 15px;
 }
 
 .cancelButton {
   margin-top: 8px !important;
-  margin-left: 64px !important;
-  margin-right: 64px !important;
 }
 
 .header {
@@ -50,11 +50,6 @@
 .description {
   text-align: center;
   margin-bottom: 56px !important;
-}
-
-.content {
-  margin-left: 64px !important;
-  margin-right: 64px !important;
 }
 
 .loader {

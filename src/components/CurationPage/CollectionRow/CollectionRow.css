@@ -1,17 +1,11 @@
-.CollectionRow .ui.grid {
+.ui.table .CollectionRow td {
   padding: 8px 0;
-  color: var(--text);
-  border-bottom: 1px solid var(--divider);
 }
 
-.CollectionRow .ui.grid:hover {
+.CollectionRow:hover {
   background-color: rgba(36, 33, 41, 0.4);
   color: var(--text);
-}
-
-.CollectionRow .ui.grid > .row {
-  align-items: center;
-  font-size: 15px;
+  cursor: pointer;
 }
 
 .CollectionRow .CollectionImage {
@@ -46,7 +40,6 @@
   margin-top: 2px;
   display: block;
   color: var(--secondary-text);
-  text-transform: uppercase;
 }
 
 .CollectionRow .info .title,

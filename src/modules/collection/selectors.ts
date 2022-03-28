@@ -5,27 +5,42 @@ import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getItems, getStatusByItemId } from 'modules/item/selectors'
 import { Item, SyncStatus } from 'modules/item/types'
-import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCollectionThirdParty, getData as getThirdParties } from 'modules/thirdParty/selectors'
 import { getThirdPartyForCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { ThirdParty } from 'modules/thirdParty/types'
-import { Curation } from 'modules/curation/types'
 import { isEqual } from 'lib/address'
 import { isThirdParty } from 'lib/urn'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
 import { Collection, CollectionType } from './types'
 import { CollectionState } from './reducer'
-import { canSeeCollection, getCollectionType, getMostRelevantStatus, isOwner } from './utils'
+import {
+  canSeeCollection,
+  getCollectionType,
+  getMostRelevantStatus,
+  isOwner,
+  sortCollectionByCreatedAt,
+  UNSYNCED_COLLECTION_ERROR_PREFIX
+} from './utils'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
 
+export const getUnsyncedCollectionError = (state: RootState) => {
+  const error = getError(state)
+  if (!error || !error.startsWith(UNSYNCED_COLLECTION_ERROR_PREFIX)) {
+    return null
+  }
+  return error
+}
+
 export const getCollections = createSelector<RootState, CollectionState['data'], string | undefined, Collection[]>(
   getData,
   getAddress,
-  collectionData => Object.values(collectionData)
+  collectionData => Object.values(collectionData).sort(sortCollectionByCreatedAt)
 )
 
 export const getWalletCollections = createSelector<RootState, Collection[], string | undefined, Collection[]>(
@@ -84,12 +99,12 @@ export const getStatusByCollectionId = createSelector<
   RootState,
   Item[],
   Record<string, SyncStatus>,
-  Record<string, Curation>,
+  Record<string, CollectionCuration>,
   Record<string, SyncStatus>
 >(
   state => getItems(state),
-  state => getStatusByItemId(state),
-  state => getCurationsByCollectionId(state),
+  (state: RootState) => getStatusByItemId(state),
+  getCurationsByCollectionId,
   (items, itemStatusByItemId, curationsByCollectionId) => {
     const statusByCollectionId: Record<string, SyncStatus> = {}
     for (const item of items) {

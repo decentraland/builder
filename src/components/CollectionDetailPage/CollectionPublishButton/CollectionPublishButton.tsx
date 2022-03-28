@@ -1,13 +1,14 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useMemo, useState } from 'react'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button } from 'decentraland-ui'
+import { Button, Popup } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
+import { MAX_ITEMS } from 'modules/collection/constants'
 import { isComplete } from 'modules/item/utils'
 import { SyncStatus } from 'modules/item/types'
 import { buildManaAuthorization } from 'lib/mana'
@@ -22,9 +23,11 @@ const CollectionPublishButton = (props: Props) => {
     onInit()
   }, [])
 
-  const isPublishDisabled = () => {
-    return !env.get('REACT_APP_FF_WEARABLES_PUBLISH') || items.length === 0 || !items.every(isComplete)
-  }
+  const hasExceededMaxItemsLimit = items.length > MAX_ITEMS
+  const isPublishDisabled = useMemo(
+    () => !env.get('REACT_APP_FF_WEARABLES_PUBLISH') || items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit,
+    [items, hasExceededMaxItemsLimit]
+  )
 
   const getAuthorization = (): Authorization => {
     return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
@@ -63,11 +66,37 @@ const CollectionPublishButton = (props: Props) => {
       button = <UnderReview type="publish" />
     }
   } else {
-    button = (
-      <NetworkButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} network={Network.MATIC}>
+    const publishButton = (
+      <NetworkButton disabled={isPublishDisabled} primary compact onClick={handlePublish} network={Network.MATIC}>
         {t('global.publish')}
       </NetworkButton>
     )
+
+    if (isPublishDisabled) {
+      let reason: string
+
+      if (items.length > MAX_ITEMS) {
+        reason = t('collection_detail_page.publish_reason_max_items', { maxItems: MAX_ITEMS })
+      } else if (items.length === 0) {
+        reason = t('collection_detail_page.publish_reason_no_items')
+      } else {
+        reason = t('collection_detail_page.publish_reason_items_not_complete')
+      }
+
+      button = (
+        <Popup
+          content={reason}
+          position="top center"
+          trigger={<div className="popup-button">{publishButton}</div>}
+          hideOnScroll={true}
+          on="hover"
+          inverted
+          flowing={true}
+        />
+      )
+    } else {
+      button = publishButton
+    }
   }
 
   return (

@@ -19,7 +19,7 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
-import { PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, RESCUE_ITEMS_SUCCESS, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
+import { RESCUE_ITEMS_CHUNK_SUCCESS, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
 import {
   MINT_COLLECTION_ITEMS_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
@@ -29,7 +29,7 @@ import {
   REJECT_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
 import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
-import { BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS } from 'modules/tiers/actions'
+import { BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS } from 'modules/thirdParty/actions'
 import { getSaleAddress, getTotalAmountOfMintedItems } from 'modules/collection/utils'
 import { isEnoughClaimMana } from 'modules/ens/utils'
 import { includes } from 'lib/address'
@@ -373,35 +373,17 @@ const Transaction = (props: Props) => {
       )
     }
 
-    case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
-      const { collectionId, collectionName, items } = tx.payload
+    case BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS: {
+      const { thirdParty, slotsToyBuy } = tx.payload
       return (
         <TransactionDetail
+          slotsToyBuy={slotsToyBuy}
           tx={tx}
-          collectionId={collectionId}
-          text={
-            <T
-              id="transaction.publish_third_party_items"
-              values={{
-                count: items.length,
-                collectionName: <Link to={locations.thirdPartyCollectionDetail(collectionId)}>{collectionName}</Link>
-              }}
-            />
-          }
+          text={t('transaction.buy_third_party_item_slots', { count: slotsToyBuy, name: thirdParty.name })}
         />
       )
     }
-    case BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS: {
-      const { thirdParty, tier } = tx.payload
-      return (
-        <TransactionDetail
-          tier={tier}
-          tx={tx}
-          text={t('transaction.buy_third_party_item_tiers', { count: tier.value, name: thirdParty.name })}
-        />
-      )
-    }
-    case RESCUE_ITEMS_SUCCESS: {
+    case RESCUE_ITEMS_CHUNK_SUCCESS: {
       const { count, collectionId, collectionName } = tx.payload
       return (
         <TransactionDetail

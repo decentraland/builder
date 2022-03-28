@@ -1,7 +1,12 @@
+import { BuiltItem, Content } from '@dcl/builder-client'
 import { ModelMetrics } from 'modules/models/types'
+import { Cheque } from 'modules/thirdParty/types'
+
+export type BuiltFile<T extends Content> = BuiltItem<T> & { fileName: string }
 
 export enum ItemType {
-  WEARABLE = 'wearable'
+  WEARABLE = 'wearable',
+  EMOTE = 'emote'
 }
 
 export enum SyncStatus {
@@ -38,12 +43,19 @@ export enum WearableCategory {
   MOUTH = 'mouth',
   UPPER_BODY = 'upper_body',
   TIARA = 'tiara',
-  TOP_HEAD = 'top_head'
+  TOP_HEAD = 'top_head',
+  SKIN = 'skin'
+}
+
+export enum EmoteCategory {
+  SIMPLE = 'simple',
+  LOOP = 'loop'
 }
 
 export enum ItemMetadataType {
   WEARABLE = 'w',
-  SMART_WEARABLE = 'sw'
+  SMART_WEARABLE = 'sw',
+  EMOTE = 'e'
 }
 
 export const BODY_SHAPE_CATEGORY = 'body_shape'
@@ -70,6 +82,12 @@ export type WearableRepresentation = {
   contents: string[]
   overrideReplaces: WearableCategory[]
   overrideHides: WearableCategory[]
+}
+
+export type EmoteRepresentation = {
+  bodyShapes: WearableBodyShape[]
+  mainFile: string
+  contents: string[]
 }
 
 export const RARITY_COLOR_LIGHT: Record<ItemRarity, string> = {
@@ -102,6 +120,12 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
   [ItemRarity.COMMON]: 100000
 }
 
+export type EmoteData = {
+  category?: EmoteCategory
+  representations: WearableRepresentation[]
+  tags: string[]
+}
+
 export type WearableData = {
   category?: WearableCategory
   representations: WearableRepresentation[]
@@ -121,14 +145,34 @@ type BaseItem = {
   updatedAt: number
 }
 
-export type CatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt'> & {
+export type BaseCatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt' | 'rarity' | 'collectionAddress'> & {
   i18n: { code: string; text: string }[]
   data: WearableData
   image: string
-  collectionAddress: string
 }
 
-export type Item = BaseItem & {
+export type StandardCatalystItem = BaseCatalystItem &
+  Pick<BaseItem, 'rarity'> & {
+    collectionAddress: string
+    emoteDataV0?: { loop: boolean }
+  }
+
+export type TPCatalystItem = BaseCatalystItem & { merkleProof: TPItemMerkleProof; content: Record<string, string> }
+
+export type CatalystItem = StandardCatalystItem | TPCatalystItem
+
+export type ItemApprovalData = {
+  cheque: Cheque
+  content_hashes: Record<string, string>
+}
+export type TPItemMerkleProof = {
+  index: number
+  proof: string[]
+  hashingKeys: string[]
+  entityHash: string
+}
+
+export type Item<T = ItemType.WEARABLE> = BaseItem & {
   type: ItemType
   owner: string
   collectionId?: string
@@ -141,8 +185,9 @@ export type Item = BaseItem & {
   isApproved: boolean
   inCatalyst: boolean
   contents: Record<string, string>
-  contentHash: string | null
-  data: WearableData
+  blockchainContentHash: string | null
+  currentContentHash: string | null
+  data: T extends ItemType.WEARABLE ? WearableData : EmoteData
 }
 
 export type Rarity = {
@@ -154,6 +199,8 @@ export type Rarity = {
 
 export type ThirdPartyContractItem = [string, string]
 export type InitializeItem = [string, string, string, string]
+
+export type GenerateImageOptions = { width?: number; height?: number; thumbnail?: Blob }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
 export const IMAGE_PATH = 'image.png'

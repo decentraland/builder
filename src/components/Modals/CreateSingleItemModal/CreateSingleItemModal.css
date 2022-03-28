@@ -1,0 +1,151 @@
+.ui.modal.CreateSingleItemModal > .content {
+  margin-bottom: 32px;
+}
+
+.CreateSingleItemModal .details {
+  background-color: rgba(var(--dark-raw), 0.48);
+  border-radius: 8px;
+  width: 100%;
+}
+
+.CreateSingleItemModal .preview {
+  padding: 24px;
+}
+
+.CreateSingleItemModal .preview .thumbnail-container {
+  position: relative;
+  width: 100%;
+}
+
+.CreateSingleItemModal .preview .thumbnail-container .emote-thumbnail {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.CreateSingleItemModal .preview .thumbnail-container .thumbnail {
+  width: 100%;
+  background-color: var(--modal);
+  border-radius: 8px;
+}
+
+.CreateSingleItemModal .preview .thumbnail-container .Icon.camera {
+  position: absolute;
+  bottom: 16px;
+  right: 12px;
+}
+
+.CreateSingleItemModal .preview .thumbnail-container input[type='file'] {
+  display: none;
+}
+
+.CreateSingleItemModal .preview .metrics {
+  margin-top: 24px;
+}
+
+.CreateSingleItemModal .preview .metric {
+  color: var(--secondary-text);
+  font-size: 13px;
+  line-height: 18px;
+  padding-left: 20px;
+  margin-bottom: 16px;
+  background-repeat: no-repeat;
+  background-position-y: center;
+}
+
+.CreateSingleItemModal .preview .metric.triangles {
+  background-image: url(../../../images/triangles.svg);
+}
+
+.CreateSingleItemModal .preview .metric.materials {
+  background-image: url(../../../images/materials.svg);
+}
+
+.CreateSingleItemModal .preview .metric.textures {
+  background-image: url(../../../images/textures.svg);
+}
+
+.CreateSingleItemModal .actions {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.CreateSingleItemModal .dcl.row.details {
+  align-items: flex-start;
+}
+
+.CreateSingleItemModal .data {
+  padding-top: 24px;
+}
+
+.CreateSingleItemModal .data .ui.header.sub {
+  text-transform: none;
+}
+
+.CreateSingleItemModal .option {
+  font-size: 13px;
+  line-height: 18px;
+  border-radius: 5px;
+  border: 1px solid var(--divider);
+  padding: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  color: var(--secondary-text);
+  text-transform: capitalize;
+}
+
+.CreateSingleItemModal .option.has-icon {
+  padding-left: 32px;
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-position-x: 8px;
+}
+
+.CreateSingleItemModal .option + .option {
+  margin-left: 16px;
+}
+
+.CreateSingleItemModal .option:hover {
+  border-color: white;
+  color: white;
+  cursor: pointer;
+}
+
+.CreateSingleItemModal .option.active {
+  border-color: var(--primary);
+  color: white;
+  background-color: var(--primary);
+}
+
+.CreateSingleItemModal .option.has-icon.both {
+  background-image: url(../../../images/unisex.svg);
+}
+
+.CreateSingleItemModal .option.has-icon.male {
+  background-image: url(../../../images/male.svg);
+}
+
+.CreateSingleItemModal .option.has-icon.female {
+  background-image: url(../../../images/female.svg);
+  background-size: 12px;
+  background-position-x: 12px;
+}
+
+.CreateSingleItemModal .dcl.field {
+  margin: 0;
+}
+
+.CreateSingleItemModal .error {
+  margin-top: 15px;
+  width: 100%;
+}
+
+.CreateSingleItemModal .ui.dropdown .menu > .item > .ui.label {
+  float: right;
+  color: var(--text-on-secondary);
+  background-color: var(--secondary-text);
+}

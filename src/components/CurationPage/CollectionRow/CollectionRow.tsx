@@ -1,10 +1,10 @@
 import React from 'react'
 import { format } from 'date-fns'
-import { Grid, Icon } from 'decentraland-ui'
-import { Link } from 'react-router-dom'
+import { Icon, Table } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { hasReviews } from 'modules/collection/utils'
+import { getCollectionType, hasReviews } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
@@ -14,10 +14,27 @@ import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
 
 export default class CollectionRow extends React.PureComponent<Props> {
+  componentDidMount = () => {
+    const { collection, items, onFetchCollectionItems } = this.props
+    // Only refetch when the collection has no items in store
+    // This way we avoid fetching data too many times
+    // Beware that as data is not refreshed, new changes done by another user
+    // will not be seen and a manual browser refresh will be required.
+    if (items.length === 0) {
+      onFetchCollectionItems(collection.id)
+    }
+  }
+
   handleNavigateToForum = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     const { collection } = this.props
     window.open(collection.forumLink!, '_blank')
     event.preventDefault()
+    event.stopPropagation()
+  }
+
+  handleTableRowClick = () => {
+    const { onNavigate, collection } = this.props
+    onNavigate(locations.itemEditor({ collectionId: collection.id, isReviewing: 'true' }))
   }
 
   renderCurationState = () => {
@@ -61,51 +78,50 @@ export default class CollectionRow extends React.PureComponent<Props> {
     const createdAtDate = new Date(curation?.createdAt || collection.createdAt)
 
     return (
-      <Link className="CollectionRow" to={locations.itemEditor({ collectionId: collection.id, isReviewing: 'true' })}>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column width={5}>
-              <div className="image-column">
-                <CollectionImage collectionId={collection.id} />
-                <div className="info">
-                  <div className="title">
-                    <CollectionStatus collection={collection} />
-                    {collection.name}
-                  </div>
-                  <div className="subtitle name">{t('collection_row.items', { count: items.length })}</div>
-                </div>
+      <Table.Row className="CollectionRow" key={collection.id} onClick={this.handleTableRowClick}>
+        <Table.Cell width={5}>
+          <div className="image-column">
+            <CollectionImage collectionId={collection.id} />
+            <div className="info">
+              <div className="title">
+                <CollectionStatus collection={collection} />
+                {collection.name}
               </div>
-            </Grid.Column>
-            <Grid.Column width={4}>
-              <div className="title">{t('collection_row.owner')}</div>
-              <div className="subtitle">
-                <Profile textOnly address={collection.owner} />
-              </div>
-            </Grid.Column>
-            <Grid.Column width={2}>
-              <div className="title">{t('collection_row.forum_post')}</div>
-              <div className="subtitle">
-                {collection.forumLink ? (
-                  <span className="link" onClick={this.handleNavigateToForum}>
-                    {t('collection_row.visit')}
-                  </span>
-                ) : (
-                  t('collection_row.no_forum_post')
-                )}
-              </div>
-            </Grid.Column>
-            <Grid.Column width={3}>
-              <div className="title">{t(curation ? 'collection_row.review_request_date' : 'collection_row.publication_date')}</div>
-              <div className="subtitle" title={format(createdAtDate, 'd MMMM yyyy HH:mm')}>
-                {formatDistanceToNow(createdAtDate, { addSuffix: true })}
-              </div>
-            </Grid.Column>
-            <Grid.Column width={2}>
-              <div className="actions">{this.renderCurationState()}</div>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Link>
+              <div className="subtitle name">{t('collection_row.items', { count: items.length })}</div>
+            </div>
+          </div>
+        </Table.Cell>
+        <Table.Cell width={2}>
+          <div>
+            {getCollectionType(collection) === CollectionType.THIRD_PARTY
+              ? t('collection_row.type_third_party')
+              : t('collection_row.type_standard')}
+          </div>
+        </Table.Cell>
+        <Table.Cell width={3}>
+          <div>{getCollectionType(collection) === CollectionType.THIRD_PARTY ? '-' : <Profile textOnly address={collection.owner} />}</div>
+        </Table.Cell>
+        <Table.Cell width={3}>
+          <div title={format(createdAtDate, 'd MMMM yyyy HH:mm')}>
+            <span>{t(curation ? 'collection_row.review_request' : 'collection_row.published')}</span>{' '}
+            {formatDistanceToNow(createdAtDate, { addSuffix: true })}
+          </div>
+        </Table.Cell>
+        <Table.Cell width={2}>
+          <div>
+            {collection.forumLink ? (
+              <span className="link" onClick={this.handleNavigateToForum}>
+                {t('collection_row.link')}
+              </span>
+            ) : (
+              t('collection_row.no_forum_post')
+            )}
+          </div>
+        </Table.Cell>
+        <Table.Cell width={2}>
+          <div className="actions">{this.renderCurationState()}</div>
+        </Table.Cell>
+      </Table.Row>
     )
   }
 }

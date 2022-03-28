@@ -1,70 +1,76 @@
 import * as React from 'react'
-import BN from 'bn.js'
+import { BigNumber } from '@ethersproject/bignumber'
 import { env } from 'decentraland-commons'
-import { fromWei } from 'web3x/utils'
 import { Network } from '@dcl/schemas'
-import { Button, ModalDescription, ModalHeader, CheckboxProps, Radio, Mana, Loader, Message } from 'decentraland-ui'
+import { Button, ModalDescription, ModalHeader, Mana, Loader, Message, Field } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Modal, NetworkButton } from 'decentraland-dapps/dist/containers'
-import { ThirdPartyItemTier } from 'modules/tiers/types'
-import { sortTiers } from 'modules/tiers/utils'
+import { applySlotBuySlippage } from 'modules/thirdParty/utils'
 import { Props, State } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
 
 export default class BuyItemSlotsModal extends React.PureComponent<Props, State> {
-  state = {
-    selectedTierId: undefined
-  }
-
-  handleCloseModal = (): void => {
-    const { onClose, onBeforeClose } = this.props
-    onBeforeClose()
-    onClose()
-  }
-
-  handleTierChange = (_: React.FormEvent<HTMLInputElement>, data: CheckboxProps): void => {
-    const { onTierSelected } = this.props
-
-    this.setState({ selectedTierId: data.value as string })
-    onTierSelected()
-  }
-
-  getSelectedTier = (): ThirdPartyItemTier | undefined => {
-    const { tiers } = this.props
-    const { selectedTierId } = this.state
-
-    return tiers && selectedTierId ? tiers.find(tier => tier.id === selectedTierId) : undefined
-  }
-
-  hasInsufficientMana = (): boolean => {
-    const { manaBalance } = this.props
-    const selectedTier = this.getSelectedTier()
-    return selectedTier ? fromWei(new BN(selectedTier.price), 'ether').gt(new BN(manaBalance)) : false
-  }
-
-  handleItemSlotsBuy = (): void => {
-    const { onBuyItemSlots, metadata } = this.props
-    const { thirdParty } = metadata
-
-    const selectedTier = this.getSelectedTier()
-
-    if (selectedTier) {
-      onBuyItemSlots(thirdParty, selectedTier as ThirdPartyItemTier)
-    }
+  state: State = {
+    slotsToBuy: ''
   }
 
   componentDidMount(): void {
-    const { tiers, isFetchingTiers, onFetchThirdPartyItemSlots } = this.props
+    const { isFetchingSlotPrice, onFetchThirdPartyItemSlotPrice } = this.props
 
-    if (tiers && tiers.length === 0 && !isFetchingTiers) {
-      onFetchThirdPartyItemSlots()
+    if (!isFetchingSlotPrice) {
+      onFetchThirdPartyItemSlotPrice()
     }
   }
 
-  render() {
-    const { isFetchingTiers, name, isBuyingItemSlots, tiers, error } = this.props
-    const { selectedTierId } = this.state
+  handleCloseModal = (): void => {
+    const { onClose } = this.props
+    onClose()
+  }
 
+  hasInsufficientMana = (): boolean => {
+    const { manaBalance, slotPrice } = this.props
+    const { slotsToBuy } = this.state
+    return slotsToBuy && slotPrice ? Number(slotsToBuy) * slotPrice > manaBalance : false
+  }
+
+  handleItemSlotsBuy = (): void => {
+    const { slotPrice, onBuyItemSlots, metadata } = this.props
+    const { thirdParty } = metadata
+    const { slotsToBuy } = this.state
+
+    if (slotsToBuy) {
+      onBuyItemSlots(thirdParty, Number(slotsToBuy), Number(slotPrice))
+    }
+  }
+
+  handleSlotToBuyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const slotsToBuy = event.target.value
+    this.setState({ slotsToBuy })
+  }
+
+  hasError() {
+    const { slotsToBuy } = this.state
+    return !!slotsToBuy && !this.isValidSlotAmount()
+  }
+
+  isValidSlotAmount() {
+    const { slotsToBuy } = this.state
+    const slotsAmount = Number(slotsToBuy)
+    return Number.isInteger(slotsAmount) && slotsAmount > 0
+  }
+
+  applySlotBuySlippage() {
+    const { slotPrice } = this.props
+    const { slotsToBuy } = this.state
+    const cost = BigNumber.from(slotPrice).mul(Number(slotsToBuy))
+    return applySlotBuySlippage(cost).toString()
+  }
+
+  render() {
+    const { name, slotPrice, isBuyingItemSlots, isFetchingSlotPrice, error } = this.props
+    const { slotsToBuy } = this.state
+
+    const hasError = this.hasError()
     const hasInsufficientMANA = this.hasInsufficientMana()
 
     return (
@@ -76,32 +82,39 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           <span>{t('buy_item_slots_modal.description_line_two')}</span>
         </ModalDescription>
         <Modal.Content className={styles.content}>
-          {(isFetchingTiers || tiers === undefined) && (
-            <div className={styles.loader}>
-              <Loader active size="large" />
-            </div>
-          )}
-          <div>
-            {tiers.sort(sortTiers).map(tier => (
-              <div className={styles.tier} key={tier.id}>
-                <div className={styles.tierType}>
-                  <Radio
-                    name="tier-radio"
-                    disabled={isBuyingItemSlots}
-                    value={tier.id}
-                    checked={tier.id === selectedTierId}
-                    onChange={this.handleTierChange}
+          <div className={styles.slotsPriceContainer}>
+            {isFetchingSlotPrice ? (
+              <Loader active size="tiny" />
+            ) : (
+              <>
+                <div className={hasError ? styles.errorField : ''}>
+                  <Field
+                    label={t('buy_item_slots_modal.how_many_slots_title')}
+                    placeholder="1"
+                    value={slotsToBuy}
+                    message={hasError ? t('buy_item_slots_modal.buy_slots_error') : undefined}
+                    error={hasError}
+                    onChange={this.handleSlotToBuyChange}
                   />
-                  <span>{t('buy_item_slots_modal.tier_value', { value: Number(tier.value).toLocaleString() })}</span>
                 </div>
-                <div className={styles.tierValue}>
-                  <Mana network={Network.MATIC} inline /> {Number(fromWei(tier.price, 'ether')).toLocaleString()}
+                <div className={styles.slotValue}>
+                  {t('buy_item_slots_modal.slots_value', {
+                    symbol: <Mana network={Network.MATIC} size="small" />,
+                    slot_cost: slotPrice,
+                    total_cost: slotPrice && this.isValidSlotAmount() ? slotPrice * Number(slotsToBuy) : 0
+                  })}
                 </div>
-              </div>
-            ))}
+                <div className={styles.slotValue}>
+                  {t('buy_item_slots_modal.total_cost', {
+                    symbol: <Mana network={Network.MATIC} size="small" />,
+                    total_cost: slotPrice && this.isValidSlotAmount() ? this.applySlotBuySlippage() : 0
+                  })}
+                </div>
+              </>
+            )}
           </div>
           {error !== null && <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} />}
-          {hasInsufficientMANA && (
+          {!isFetchingSlotPrice && hasInsufficientMANA && (
             <div className={styles.notEnoughMana}>
               <small>
                 <T
@@ -133,14 +146,19 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
           <NetworkButton
             className={styles.acceptButton}
             primary
-            disabled={hasInsufficientMANA || isBuyingItemSlots || selectedTierId === undefined}
+            disabled={hasInsufficientMANA || isBuyingItemSlots || isFetchingSlotPrice || !this.isValidSlotAmount()}
             loading={isBuyingItemSlots}
             network={Network.MATIC}
             onClick={this.handleItemSlotsBuy}
           >
             {t('buy_item_slots_modal.buy_slots')}
           </NetworkButton>
-          <Button secondary className={styles.cancelButton} onClick={this.handleCloseModal}>
+          <Button
+            secondary
+            className={styles.cancelButton}
+            onClick={this.handleCloseModal}
+            disabled={isFetchingSlotPrice || isBuyingItemSlots}
+          >
             {t('global.cancel')}
           </Button>
         </div>

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { Props } from './FileImport.types'
 import './FileImport.css'
@@ -6,12 +7,9 @@ import './FileImport.css'
 export default class FileImport<T> extends React.Component<Props<T>> {
   renderDropZone = (props: DropzoneState) => {
     const { open, isDragActive, getRootProps, getInputProps } = props
-    const { items, renderFiles, renderAction } = this.props
-    let classes = 'dropzone'
+    const { items, renderFiles, renderAction, className } = this.props
 
-    if (isDragActive) {
-      classes += ' active'
-    }
+    const classes = classNames('dropzone', className, { active: isDragActive })
 
     return (
       <div {...getRootProps()} className={classes}>

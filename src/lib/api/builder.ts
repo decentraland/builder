@@ -12,15 +12,16 @@ import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
-import { Item, ItemType, ItemRarity, WearableData, Rarity } from 'modules/item/types'
+import { Item, ItemType, ItemRarity, WearableData, Rarity, ItemApprovalData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { ThirdParty } from 'modules/thirdParty/types'
+import { Cheque, ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
-import { Curation, CurationStatus } from 'modules/curation/types'
-import { ThirdPartyItemTier } from 'modules/tiers/types'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { CurationStatus } from 'modules/curations/types'
 import { Authorization } from './auth'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -51,6 +52,7 @@ export type RemoteItem = {
   content_hash: string | null
   created_at: Date
   updated_at: Date
+  local_content_hash: string | null
 }
 
 export type RemoteCollection = {
@@ -148,13 +150,21 @@ export type RemoteWeeklyStats = {
   max_concurrent_users_time: string
 }
 
-export type RemoteCuration = {
+type BaseCuration = {
   id: string
-  collection_id: string
-  status: Curation['status']
+  status: CollectionCuration['status']
   created_at: Date
   updated_at: Date
 }
+
+export type RemoteCollectionCuration = {
+  collection_id: string
+} & BaseCuration
+
+export type RemoteItemCuration = {
+  item_id: string
+  content_hash: string
+} & BaseCuration
 
 /**
  * Transforms a Project into a RemoteProject for saving purposes only.
@@ -304,7 +314,8 @@ function toRemoteItem(item: Item): RemoteItem {
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
-    content_hash: item.contentHash,
+    content_hash: item.blockchainContentHash,
+    local_content_hash: item.currentContentHash,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
@@ -325,7 +336,8 @@ function fromRemoteItem(remoteItem: RemoteItem) {
     type: remoteItem.type,
     data: remoteItem.data,
     contents: remoteItem.contents,
-    contentHash: remoteItem.content_hash,
+    currentContentHash: remoteItem.local_content_hash,
+    blockchainContentHash: remoteItem.content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)
@@ -387,13 +399,27 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   return collection
 }
 
-function fromRemoteCuration(remoteCuration: RemoteCuration): Curation {
+function getBaseCurationFields(remoteCuration: RemoteCollectionCuration | RemoteItemCuration) {
   return {
     id: remoteCuration.id,
-    collectionId: remoteCuration.collection_id,
     status: remoteCuration.status,
     createdAt: +new Date(remoteCuration.created_at),
     updatedAt: +new Date(remoteCuration.updated_at)
+  }
+}
+
+function fromRemoteCollectionCuration(remoteCuration: RemoteCollectionCuration): CollectionCuration {
+  return {
+    ...getBaseCurationFields(remoteCuration),
+    collectionId: remoteCuration.collection_id
+  }
+}
+
+function fromRemoteItemCuration(remoteCuration: RemoteItemCuration): ItemCuration {
+  return {
+    ...getBaseCurationFields(remoteCuration),
+    itemId: remoteCuration.item_id,
+    contentHash: remoteCuration.content_hash
   }
 }
 
@@ -638,7 +664,7 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollection(remoteCollection)
   }
 
-  async publishCollection(collectionId: string) {
+  async publishStandardCollection(collectionId: string) {
     const { collection, items }: { collection: RemoteCollection; items: RemoteItem[] } = await this.request(
       'post',
       `/collections/${collectionId}/publish`
@@ -646,6 +672,26 @@ export class BuilderAPI extends BaseAPI {
     return {
       collection: fromRemoteCollection(collection),
       items: items.map(fromRemoteItem)
+    }
+  }
+
+  async publishTPCollection(collectionId: string, itemIds: string[], cheque: Cheque) {
+    const {
+      collection,
+      items,
+      itemCurations
+    }: { collection: RemoteCollection; items: RemoteItem[]; itemCurations: RemoteItemCuration[] } = await this.request(
+      'post',
+      `/collections/${collectionId}/publish`,
+      {
+        itemIds,
+        cheque
+      }
+    )
+    return {
+      collection: fromRemoteCollection(collection),
+      items: items.map(fromRemoteItem),
+      itemCurations: itemCurations.map(fromRemoteItemCuration)
     }
   }
 
@@ -669,24 +715,36 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/collections/${id}`, {})
   }
 
-  async fetchCurations(): Promise<Curation[]> {
-    const curations: RemoteCuration[] = await this.request('get', `/curations`)
+  async fetchCurations(): Promise<CollectionCuration[]> {
+    const curations: RemoteCollectionCuration[] = await this.request('get', `/curations`)
 
-    return curations.map(fromRemoteCuration)
+    return curations.map(fromRemoteCollectionCuration)
   }
 
-  async fetchCuration(collectionId: string): Promise<Curation | undefined> {
-    const curation: RemoteCuration | undefined = await this.request('get', `/collections/${collectionId}/curation`)
+  async fetchItemCurations(collectionId: Collection['id']): Promise<ItemCuration[]> {
+    const curations: RemoteItemCuration[] = await this.request('get', `/collections/${collectionId}/itemCurations`)
+
+    return curations.map(fromRemoteItemCuration)
+  }
+
+  async fetchCuration(collectionId: string): Promise<CollectionCuration | undefined> {
+    const curation: RemoteCollectionCuration | undefined = await this.request('get', `/collections/${collectionId}/curation`)
 
     if (!curation) {
       return
     }
 
-    return fromRemoteCuration(curation)
+    return fromRemoteCollectionCuration(curation)
   }
 
   pushCuration(collectionId: string): Promise<void> {
     return this.request('post', `/collections/${collectionId}/curation`)
+  }
+
+  async pushItemCuration(itemId: string): Promise<ItemCuration> {
+    const curation: RemoteItemCuration = await this.request('post', `/items/${itemId}/curation`)
+
+    return fromRemoteItemCuration(curation)
   }
 
   fetchCommittee(): Promise<string[]> {
@@ -705,16 +763,21 @@ export class BuilderAPI extends BaseAPI {
     return this.request('get', '/thirdParties', { manager })
   }
 
+  fetchThirdPartyAvailableSlots(thirdPartyId: string): Promise<number> {
+    return this.request('get', `/thirdParties/${thirdPartyId}/slots`)
+  }
+
+  fetchApprovalData = (collectionId: string): Promise<ItemApprovalData> => {
+    return this.request('get', `/collections/${collectionId}/approvalData`)
+  }
+
   updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
   }
 
-  fetchThirdPartyItemTiers = (): Promise<ThirdPartyItemTier[]> => {
-    return this.request('get', '/tiers/thirdParty')
-  }
-
-  isAxiosError(error: any): error is AxiosError {
-    return error.isAxiosError
+  async updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {
+    const curation: RemoteItemCuration = await this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
+    return fromRemoteItemCuration(curation)
   }
 
   async fetchContent(hash: string) {
@@ -746,5 +809,9 @@ export class BuilderAPI extends BaseAPI {
         return obj
       }, {})
     )
+  }
+
+  isAxiosError(error: any): error is AxiosError {
+    return error.isAxiosError
   }
 }

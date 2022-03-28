@@ -1,19 +1,29 @@
-import { ChainId, WearableCategory } from '@dcl/schemas'
+import { ChainId } from '@dcl/schemas'
+import { Entity } from 'dcl-catalyst-commons'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { CollectionState } from 'modules/collection/reducer'
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
+import { CollectionCurationState } from 'modules/curations/collectionCuration/reducer'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { ItemCurationState } from 'modules/curations/itemCuration/reducer'
+import { CurationStatus } from 'modules/curations/types'
+import { EntityState } from 'modules/entity/reducer'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { mockedItem } from 'specs/item'
+import { ItemState } from './reducer'
 import {
   getAuthorizedItems,
   getItem,
   getItems,
   getRarities,
   getStatusByItemId,
+  getStatusForItemIds,
   getWalletItems,
   getWalletOrphanItems,
   hasViewAndEditRights
 } from './selectors'
-import { Item, ItemRarity, SyncStatus } from './types'
+import { Item, ItemRarity, ItemType, SyncStatus } from './types'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
@@ -127,187 +137,309 @@ describe('Item selectors', () => {
     })
   })
 
-  describe('when getting status by item id', () => {
-    it('should return the status for each published item', () => {
-      mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
-      const mockState = {
-        curation: {
-          data: {
-            '0': {
-              id: '0',
-              collectionId: '0',
-              status: 'approved'
-            },
-            '1': {
-              id: '1',
-              collectionId: '1',
-              status: 'rejected'
-            },
-            '3': {
-              id: '3',
-              collectionId: '3',
-              status: 'pending'
-            }
-          }
-        },
+  describe('when getting status', () => {
+    const itemId = 'anItemId'
+    const collectionId = 'aCollectionId'
+    mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
+
+    beforeEach(() => {
+      state = {
+        collectionCuration: {
+          data: {},
+          loading: [],
+          error: null
+        } as CollectionCurationState,
+        itemCuration: {
+          data: {},
+          loading: [],
+          error: null
+        } as ItemCurationState,
         item: {
           data: {
-            '0': {
-              id: '0',
-              collectionId: '0',
-              tokenId: 'aTokenId',
-              isPublished: true,
-              isApproved: false
-            },
-            '1': {
-              id: '1',
-              collectionId: '1',
-              tokenId: 'anotherTokenId',
-              isPublished: true,
-              isApproved: true,
-              contents: {
-                'file.ext': 'QmA'
-              },
-              name: 'pepito',
-              description: 'yes it is a pepito',
-              data: {
-                category: WearableCategory.HAT,
-                replaces: [],
-                hides: [],
-                representations: [],
-                tags: []
-              }
-            },
-            '2': {
-              id: '2',
-              collectionId: '2',
-              tokenId: 'yetAnotherTokenId',
-              isPublished: true,
-              isApproved: true,
-              contents: {
-                'file.ext': 'QmB_new'
-              },
-              name: 'pepito',
-              description: 'pepito hat very nice',
-              data: {
-                category: WearableCategory.HAT,
-                replaces: [],
-                hides: [],
-                representations: [],
-                tags: []
-              }
-            },
-            '3': {
-              id: '3',
-              collectionId: '3',
-              tokenId: 'yetAnotherDifferentTokenId',
-              isPublished: true,
-              isApproved: true,
-              contents: {
-                'file.ext': 'QmC_new'
-              },
-              name: 'pepito',
-              description: 'pepito hat very nice',
-              data: {
-                category: WearableCategory.HAT,
-                replaces: [],
-                hides: [],
-                representations: [],
-                tags: []
-              }
-            }
-          }
-        },
+            [itemId]: {
+              ...mockedItem,
+              id: itemId,
+              collectionId: collectionId
+            } as Item<ItemType.WEARABLE>
+          },
+          rarities: [],
+          loading: [],
+          error: null
+        } as ItemState,
         collection: {
           data: {
-            '0': {
-              id: '0',
-              contractAddress: 'anAddress'
-            },
-            '1': {
-              id: '1',
-              contractAddress: 'anotherAddress'
-            },
-            '2': {
-              id: '2',
-              contractAddress: 'yetAnotherAddress'
-            },
-            '3': {
-              id: '3',
-              contractAddress: 'yetAnotherDifferentAddress'
-            }
-          }
-        },
+            [collectionId]: {
+              id: collectionId
+            } as Collection
+          },
+          loading: [],
+          error: null
+        } as CollectionState,
         entity: {
-          data: {
-            Qm1: {
-              content: [
-                {
-                  hash: 'QmA',
-                  file: 'file.ext'
-                }
-              ],
-              metadata: {
-                id: 'urn:decentraland:matic:collections-v2:anotherAddress:anotherTokenId',
-                name: 'pepito',
-                description: 'yes it is a pepito',
-                data: {
-                  category: WearableCategory.HAT,
-                  replaces: [],
-                  hides: [],
-                  representations: [],
-                  tags: []
-                }
-              }
-            },
-            Qm2: {
-              content: [
-                {
-                  hash: 'QmB',
-                  file: 'file.ext'
-                }
-              ],
-              metadata: {
-                id: 'urn:decentraland:matic:collections-v2:yetAnotherAddress:yetAnotherTokenId',
-                name: 'pepito',
-                description: 'pepito hat very nice',
-                data: {
-                  category: WearableCategory.HAT,
-                  replaces: [],
-                  hides: [],
-                  representations: [],
-                  tags: []
-                }
-              }
-            },
-            Qm3: {
-              content: [
-                {
-                  hash: 'QmC',
-                  file: 'file.ext'
-                }
-              ],
-              metadata: {
-                id: 'urn:decentraland:matic:collections-v2:yetAnotherDifferentAddress:yetAnotherDifferentTokenId',
-                name: 'pepito',
-                description: 'pepito hat very nice',
-                data: {
-                  category: WearableCategory.HAT,
-                  replaces: [],
-                  hides: [],
-                  representations: [],
-                  tags: []
-                }
-              }
+          data: {},
+          loading: [],
+          error: null
+        } as EntityState
+      } as RootState
+    })
+
+    describe('and the item is belongs to a TP', () => {
+      beforeEach(() => {
+        state.collection.data[collectionId].urn = 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:a-collection-id'
+        state.item.data[itemId].urn = 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:a-collection-id:an-item-id'
+      })
+
+      describe('and the item is not published nor has an item curation', () => {
+        beforeEach(() => {
+          state.item.data[itemId].isPublished = false
+          state.itemCuration.data[collectionId] = []
+        })
+
+        it('should return a map where the item id of the tested item is set as unpublished', () => {
+          expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNPUBLISHED })
+        })
+      })
+
+      describe('and the item has item curation with a pending status', () => {
+        beforeEach(() => {
+          state.item.data[itemId].isPublished = true
+          state.itemCuration.data[collectionId] = [
+            {
+              id: 'anItemCurationId',
+              itemId,
+              status: CurationStatus.PENDING,
+              contentHash: 'someHash',
+              createdAt: 0,
+              updatedAt: 0
             }
+          ]
+        })
+
+        it('should return a map where the item id of the tested item is set as under review', () => {
+          expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNDER_REVIEW })
+        })
+      })
+
+      describe('and the item has a pending curation with an approved status', () => {
+        beforeEach(() => {
+          state.item.data[itemId].isPublished = true
+          state.itemCuration.data[collectionId] = [
+            {
+              id: 'anItemCurationId',
+              itemId,
+              status: CurationStatus.APPROVED,
+              contentHash: 'someHash',
+              createdAt: 0,
+              updatedAt: 0
+            }
+          ]
+        })
+
+        describe('and the blockchain hash is different from the current content hash', () => {
+          beforeEach(() => {
+            state.item.data[itemId].currentContentHash = 'someHash'
+            state.item.data[itemId].blockchainContentHash = 'aDifferentHash'
+          })
+
+          it('should return a map where the item id of the tested item is set unsynced', () => {
+            expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNSYNCED })
+          })
+        })
+
+        describe('and the blockchain hash is the same as the current content hash', () => {
+          beforeEach(() => {
+            state.item.data[itemId].currentContentHash = state.item.data[itemId].blockchainContentHash
+          })
+
+          it('should return a map where the item id of the tested item is set as synced', () => {
+            expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.SYNCED })
+          })
+        })
+      })
+    })
+
+    describe('and the items belongs to a standard collection', () => {
+      beforeEach(() => {
+        state.collection.data[collectionId].urn = 'urn:decentraland:matic:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+      })
+
+      describe('and the item is not published', () => {
+        beforeEach(() => {
+          state.item.data[itemId].urn = undefined
+          state.item.data[itemId].isPublished = false
+        })
+
+        it('should return a map where the item id of the tested item is set as unpublished', () => {
+          expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNPUBLISHED })
+        })
+      })
+
+      describe('and the item is published', () => {
+        beforeEach(() => {
+          state.item.data[itemId] = {
+            ...state.item.data[itemId],
+            urn: 'urn:decentraland:matic:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311:0',
+            tokenId: '0',
+            isPublished: true
           }
+
+          state.collection.data[collectionId] = {
+            ...state.collection.data[collectionId],
+            isPublished: true,
+            contractAddress: '0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+          }
+
+          state.collectionCuration.data[collectionId] = {
+            id: '0',
+            collectionId,
+            status: CurationStatus.APPROVED
+          } as CollectionCuration
+        })
+
+        describe("and the item's collection curation is pending", () => {
+          beforeEach(() => {
+            state.item.data[itemId] = {
+              ...state.item.data[itemId],
+              isApproved: false
+            }
+
+            state.collection.data[collectionId].isApproved = false
+            state.collectionCuration.data[collectionId].status = CurationStatus.PENDING
+          })
+
+          it('should return a map where the item id of the tested item is set as under review', () => {
+            expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNDER_REVIEW })
+          })
+        })
+
+        describe('and the item is not approved yet', () => {
+          beforeEach(() => {
+            state.item.data[itemId].isApproved = false
+            state.collection.data[collectionId].isApproved = false
+          })
+
+          it('should return a map where the item id of the tested item is set as under review', () => {
+            expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNDER_REVIEW })
+          })
+        })
+
+        describe('and the item is approved', () => {
+          beforeEach(() => {
+            state.item.data[itemId].isApproved = true
+            state.collection.data[collectionId].isApproved = true
+            state.collectionCuration.data[collectionId].status = CurationStatus.APPROVED
+          })
+
+          describe('and the entity is not found', () => {
+            beforeEach(() => {
+              state.collectionCuration.data = {}
+            })
+
+            it('should return a map where the item id of the tested item is set as loading', () => {
+              expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.LOADING })
+            })
+          })
+
+          describe('and the entity is not synced with the item', () => {
+            beforeEach(() => {
+              state.entity.data[state.item.data[itemId].urn!] = {
+                content: [{ key: 'someFile.glb', hash: 'aDifferentHash' }] as unknown,
+                metadata: {
+                  id: state.item.data[itemId].urn,
+                  name: 'aDifferentName',
+                  description: 'aDifferentDescription',
+                  data: {
+                    category: state.item.data[itemId].data.category,
+                    replaces: state.item.data[itemId].data.replaces,
+                    hides: state.item.data[itemId].data.hides,
+                    representations: state.item.data[itemId].data.representations,
+                    tags: state.item.data[itemId].data.tags
+                  }
+                }
+              } as Entity
+            })
+
+            it('should return a map where the item id of the tested item is set as unsynced', () => {
+              expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNSYNCED })
+            })
+          })
+
+          describe('and the entity is synced with the item', () => {
+            beforeEach(() => {
+              state.entity.data[state.item.data[itemId].urn!] = {
+                content: Object.keys(state.item.data[itemId].contents).map(key => ({
+                  hash: state.item.data[itemId].contents[key],
+                  file: key
+                })),
+                metadata: {
+                  id: state.item.data[itemId].urn,
+                  name: state.item.data[itemId].name,
+                  description: state.item.data[itemId].description,
+                  data: {
+                    category: state.item.data[itemId].data.category,
+                    replaces: state.item.data[itemId].data.replaces,
+                    hides: state.item.data[itemId].data.hides,
+                    representations: state.item.data[itemId].data.representations,
+                    tags: state.item.data[itemId].data.tags
+                  }
+                }
+              } as Entity
+            })
+
+            it('should return a map where the item id of the tested item is set as synced', () => {
+              expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.SYNCED })
+            })
+          })
+        })
+      })
+    })
+
+    describe('when getting the status by id', () => {
+      const anotherItemId = 'anotherItemId'
+      const anotherCollectionId = 'anotherCollectionId'
+
+      beforeEach(() => {
+        // First item
+        state.collection.data[collectionId].urn = 'urn:decentraland:matic:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+
+        state.item.data[itemId] = {
+          ...state.item.data[itemId],
+          urn: undefined,
+          isPublished: false
         }
-      }
-      expect(getStatusByItemId((mockState as unknown) as RootState)).toEqual({
-        '0': SyncStatus.UNDER_REVIEW,
-        '1': SyncStatus.SYNCED,
-        '2': SyncStatus.UNSYNCED,
-        '3': SyncStatus.UNDER_REVIEW
+
+        //Second item
+        state.item.data[anotherItemId] = {
+          ...state.item.data[anotherItemId],
+          id: anotherItemId,
+          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:a-collection-id:an-item-id',
+          tokenId: '0',
+          isPublished: true
+        }
+
+        state.collection.data[anotherCollectionId] = {
+          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:a-collection-id:an-item-id',
+          id: anotherCollectionId,
+          isPublished: true
+        } as Collection
+
+        state.itemCuration.data[anotherCollectionId] = [
+          {
+            id: 'anItemCurationId',
+            itemId: anotherItemId,
+            status: CurationStatus.PENDING,
+            contentHash: 'someHash',
+            createdAt: 0,
+            updatedAt: 0
+          }
+        ]
+      })
+
+      it('should return the status by id for a list of item ids', () => {
+        expect(getStatusForItemIds((state as unknown) as RootState, [itemId, anotherItemId])).toEqual({
+          [itemId]: SyncStatus.UNPUBLISHED,
+          [anotherItemId]: SyncStatus.UNDER_REVIEW
+        })
       })
     })
   })

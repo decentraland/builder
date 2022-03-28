@@ -2,9 +2,9 @@ import { connect } from 'react-redux'
 import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/authorization/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { fetchCurationRequest } from 'modules/curation/actions'
-import { getHasPendingCuration } from 'modules/curation/selectors'
+import { fetchCollectionCurationRequest } from 'modules/curations/collectionCuration/actions'
 import { getStatusByCollectionId } from 'modules/collection/selectors'
+import { getHasPendingCollectionCuration } from 'modules/curations/collectionCuration/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionPublishButton.types'
@@ -19,7 +19,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     items: getCollectionItems(state, collectionId),
     authorizations: getAuthorizations(state),
     status: statusByCollectionId[collectionId],
-    hasPendingCuration: getHasPendingCuration(state, collectionId)
+    hasPendingCuration: getHasPendingCollectionCuration(state, collectionId)
   }
 }
 
@@ -29,7 +29,7 @@ const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProp
   return {
     onPublish: () => dispatch(openModal('PublishCollectionModal', { collectionId })),
     onPush: () => dispatch(openModal('PushCollectionChangesModal', { collectionId })),
-    onInit: () => dispatch(fetchCurationRequest(collectionId))
+    onInit: () => dispatch(fetchCollectionCurationRequest(collectionId))
   }
 }
 

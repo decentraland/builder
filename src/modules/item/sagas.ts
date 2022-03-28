@@ -1,16 +1,16 @@
 import { Contract } from 'ethers'
-import { replace, push } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, delay, fork, all, race } from 'redux-saga/effects'
+import { replace } from 'connected-react-router'
+import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
-import { ContractData, ContractName, getContract } from 'decentraland-transactions'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import {
   FetchItemsRequestAction,
-  fetchItemsRequest,
   fetchItemsSuccess,
   fetchItemsFailure,
   FETCH_ITEMS_REQUEST,
@@ -61,43 +61,53 @@ import {
   SAVE_ITEM_FAILURE,
   SaveItemSuccessAction,
   SaveItemFailureAction,
-  PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
-  PublishThirdPartyItemsRequestAction,
-  publishThirdPartyItemsSuccess,
-  publishThirdPartyItemsFailure,
   DOWNLOAD_ITEM_REQUEST,
   DownloadItemRequestAction,
   downloadItemFailure,
-  downloadItemSuccess
+  downloadItemSuccess,
+  SaveMultipleItemsRequestAction,
+  SAVE_MULTIPLE_ITEMS_REQUEST,
+  saveMultipleItemsSuccess,
+  CANCEL_SAVE_MULTIPLE_ITEMS,
+  saveMultipleItemsCancelled,
+  saveMultipleItemsFailure,
+  rescueItemsChunkSuccess,
+  FETCH_COLLECTION_ITEMS_SUCCESS,
+  FetchItemsSuccessAction,
+  FetchCollectionItemsSuccessAction,
+  fetchItemsRequest
 } from './actions'
-import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { fromRemoteItem } from 'lib/api/transformations'
+import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
-import { BuilderAPI } from 'lib/api/builder'
-import { getCollection, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
+import { BuilderAPI as LegacyBuilderAPI } from 'lib/api/builder'
+import { getCollection, getCollections } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
-import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
-import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
+import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
+import { takeLatestCancellable } from 'modules/common/utils'
+import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
-import { buildCatalystItemURN } from '../../lib/urn'
 import { calculateFinalSize } from './export'
-import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
-import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
+import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH } from './types'
+import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem } from './selectors'
 import { ItemTooBigError } from './errors'
-import { buildZipContents, getMetadata, isValidText, MAX_FILE_SIZE, toThirdPartyContractItems } from './utils'
+import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
 
-export function* itemSaga(builder: BuilderAPI) {
+import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
+
+export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
   yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
-  yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
@@ -108,11 +118,15 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
   yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
   yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
+  yield takeLatestCancellable(
+    { initializer: SAVE_MULTIPLE_ITEMS_REQUEST, cancellable: CANCEL_SAVE_MULTIPLE_ITEMS },
+    handleSaveMultipleItemsRequest
+  )
   yield fork(fetchItemEntities)
 
   function* handleFetchRaritiesRequest() {
     try {
-      const rarities: Rarity[] = yield call([builder, 'fetchRarities'])
+      const rarities: Rarity[] = yield call([legacyBuilder, 'fetchRarities'])
       yield put(fetchRaritiesSuccess(rarities))
     } catch (error) {
       yield put(fetchRaritiesFailure(error.message))
@@ -122,7 +136,7 @@ export function* itemSaga(builder: BuilderAPI) {
   function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
     const { address } = action.payload
     try {
-      const items: Item[] = yield call(() => builder.fetchItems(address))
+      const items: Item[] = yield call([legacyBuilder, 'fetchItems'], address)
       yield put(fetchItemsSuccess(items))
     } catch (error) {
       yield put(fetchItemsFailure(error.message))
@@ -132,7 +146,7 @@ export function* itemSaga(builder: BuilderAPI) {
   function* handleFetchItemRequest(action: FetchItemRequestAction) {
     const { id } = action.payload
     try {
-      const item: Item = yield call(() => builder.fetchItem(id))
+      const item: Item = yield call(() => legacyBuilder.fetchItem(id))
       yield put(fetchItemSuccess(id, item))
     } catch (error) {
       yield put(fetchItemFailure(id, error.message))
@@ -142,10 +156,51 @@ export function* itemSaga(builder: BuilderAPI) {
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
     const { collectionId } = action.payload
     try {
-      const items: Item[] = yield call(() => builder.fetchCollectionItems(collectionId))
+      const items: Item[] = yield call(() => legacyBuilder.fetchCollectionItems(collectionId))
       yield put(fetchCollectionItemsSuccess(collectionId, items))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
+    }
+  }
+
+  function* handleSaveMultipleItemsRequest(action: SaveMultipleItemsRequestAction) {
+    const { builtFiles } = action.payload
+    const remoteItems: RemoteItem[] = []
+    const fileNames: string[] = []
+
+    // Upload files sequentially to avoid DoSing the server
+    try {
+      for (const [index, builtFile] of builtFiles.entries()) {
+        const remoteItem: RemoteItem = yield call([builder, 'upsertItem'], builtFile.item, builtFile.newContent)
+        remoteItems.push(remoteItem)
+        fileNames.push(builtFile.fileName)
+        yield put(updateProgressSaveMultipleItems(Math.round(((index + 1) / builtFiles.length) * 100)))
+      }
+
+      yield put(
+        saveMultipleItemsSuccess(
+          remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
+          fileNames
+        )
+      )
+    } catch (error) {
+      yield put(
+        saveMultipleItemsFailure(
+          error.message,
+          remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
+          fileNames
+        )
+      )
+    } finally {
+      const wasCancelled: boolean = yield cancelled()
+      if (wasCancelled) {
+        yield put(
+          saveMultipleItemsCancelled(
+            remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
+            fileNames
+          )
+        )
+      }
     }
   }
 
@@ -153,6 +208,8 @@ export function* itemSaga(builder: BuilderAPI) {
     const { item: actionItem, contents } = action.payload
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
+      const oldItem: Item | undefined = yield select(getItem, actionItem.id)
+      const rarityChanged = oldItem && oldItem.rarity !== item.rarity
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
@@ -164,6 +221,15 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error(t('sagas.collection.collection_locked'))
       }
 
+      // If there's a new thumbnail image or the item doesn't have a catalyst image, create it and add it to the item
+      if (contents[THUMBNAIL_PATH] || !item.contents[IMAGE_PATH] || rarityChanged) {
+        const catalystImage: { content: Blob; hash: string } = yield call(generateCatalystImage, item, {
+          thumbnail: contents[THUMBNAIL_PATH]
+        })
+        contents[IMAGE_PATH] = catalystImage.content
+        item.contents[IMAGE_PATH] = catalystImage.hash
+      }
+
       if (Object.keys(contents).length > 0) {
         const finalSize: number = yield call(calculateFinalSize, item, contents)
         if (finalSize > MAX_FILE_SIZE) {
@@ -171,7 +237,7 @@ export function* itemSaga(builder: BuilderAPI) {
         }
       }
 
-      yield call([builder, 'saveItem'], item, contents)
+      yield call([legacyBuilder, 'saveItem'], item, contents)
 
       yield put(saveItemSuccess(item, contents))
     } catch (error) {
@@ -214,29 +280,10 @@ export function* itemSaga(builder: BuilderAPI) {
     }
   }
 
-  function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
-    const { thirdParty, items } = action.payload
-    try {
-      const collectionId = items[0].collectionId!
-      const collection: Collection = yield select(getCollection, collectionId)
-
-      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-      const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
-        instantiatedThirdPartyContract.addItems(thirdParty.id, toThirdPartyContractItems(items))
-      )
-
-      yield put(publishThirdPartyItemsSuccess(txHash, maticChainId, thirdParty, collection, items))
-      yield put(push(locations.activity()))
-    } catch (error) {
-      yield put(publishThirdPartyItemsFailure(thirdParty, items, error.message))
-    }
-  }
-
   function* handleDeleteItemRequest(action: DeleteItemRequestAction) {
     const { item } = action.payload
     try {
-      yield call(() => builder.deleteItem(item.id))
+      yield call(() => legacyBuilder.deleteItem(item.id))
       yield put(deleteItemSuccess(item))
       const itemIdInUriParam: string = yield select(getItemId)
       if (itemIdInUriParam === item.id) {
@@ -269,7 +316,7 @@ export function* itemSaga(builder: BuilderAPI) {
     const { collection, items } = action.payload
 
     try {
-      const { items: newItems }: { items: Item[] } = yield call(() => builder.publishCollection(collection.id))
+      const { items: newItems }: { items: Item[] } = yield call(() => legacyBuilder.publishStandardCollection(collection.id))
       yield put(setItemsTokenIdSuccess(newItems))
     } catch (error) {
       yield put(setItemsTokenIdFailure(collection, items, error.message))
@@ -294,20 +341,14 @@ export function* itemSaga(builder: BuilderAPI) {
 
   function* fetchItemEntities() {
     while (true) {
-      // TODO: once URN comes within Item remove all this in favor of yield take(FETCH_ITEMS_SUCCESS)
-      // wait for at least 1 fetchItemsSuccess and 1 fetchCollectionsSuccess
-      yield all([take(FETCH_ITEMS_SUCCESS), take(FETCH_COLLECTIONS_SUCCESS)])
-      // wait for remaining itemItemRequests
-      let loadingItemActions: ReturnType<typeof getLoadingItemAction> = yield select(getLoadingItemAction)
-      while (loadingItemActions.some(action => action.type === FETCH_ITEMS_REQUEST)) {
-        yield take(FETCH_ITEMS_SUCCESS)
-        loadingItemActions = yield select(getLoadingItemAction)
-      }
-      const items: Item[] = yield select(getItems)
-      const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
-      const pointers = items
-        .filter(item => item.isPublished)
-        .map(item => buildCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
+      const result: FetchItemsSuccessAction | FetchCollectionItemsSuccessAction = yield take([
+        FETCH_ITEMS_SUCCESS,
+        FETCH_COLLECTION_ITEMS_SUCCESS
+      ])
+
+      const { items } = result.payload
+      const pointers = items.filter(item => item.isPublished).map(item => item.urn!)
+
       if (pointers.length > 0) {
         yield put(fetchEntitiesByPointersRequest(EntityType.WEARABLE, pointers))
       }
@@ -328,14 +369,30 @@ export function* itemSaga(builder: BuilderAPI) {
 
       const manager = getContract(ContractName.CollectionManager, chainId)
       const forwarder = getContract(ContractName.Forwarder, chainId)
-      const data: string = yield call(getMethodData, implementation.populateTransaction.rescueItems(tokenIds, contentHashes, metadatas))
 
-      const txHash: string = yield call(sendTransaction, contract, committee =>
-        committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, [data])
-      )
+      const tokenIdsChunks = groupsOf(tokenIds, MAX_ITEMS)
+      const itemsChunks = groupsOf(items, MAX_ITEMS)
+      const metadatasChunks = groupsOf(metadatas, MAX_ITEMS)
+      const contentHashesChunks = groupsOf(contentHashes, MAX_ITEMS)
+      const txHashes: string[] = []
 
-      const newItems = items.map<Item>((item, index) => ({ ...item, contentHash: contentHashes[index] }))
-      yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
+      for (let i = 0; i < tokenIdsChunks.length; i++) {
+        const data: string = yield call(
+          getMethodData,
+          implementation.populateTransaction.rescueItems(tokenIdsChunks[i], contentHashesChunks[i], metadatasChunks[i])
+        )
+
+        const txHash: string = yield call(sendTransaction, contract, committee =>
+          committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, [data])
+        )
+
+        txHashes.push(txHash)
+        yield put(rescueItemsChunkSuccess(collection, itemsChunks[i], contentHashesChunks[i], chainId, txHash))
+
+        yield call(waitForTx, txHash)
+      }
+      const newItems = items.map<Item>((item, index) => ({ ...item, blockchainContentHash: contentHashes[index] }))
+      yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHashes))
     } catch (error) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
     }
@@ -353,7 +410,7 @@ export function* itemSaga(builder: BuilderAPI) {
       }
 
       // download blobs
-      const files: Record<string, Blob> = yield call([builder, 'fetchContents'], item.contents)
+      const files: Record<string, Blob> = yield call([legacyBuilder, 'fetchContents'], item.contents)
 
       // check if both representations are equal
       const maleHashes: string[] = []

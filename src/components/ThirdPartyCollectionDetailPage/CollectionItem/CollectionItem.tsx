@@ -1,6 +1,6 @@
 import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Grid, Dropdown, Icon, Button, Checkbox, CheckboxProps } from 'decentraland-ui'
+import { Grid, Dropdown, Icon, Button, Checkbox, CheckboxProps, Popup } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
@@ -21,7 +21,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
   handleEditURN = () => {
     const { item, onOpenModal } = this.props
-    onOpenModal('EditItemURNModal', { item })
+    if (!item.isPublished) {
+      onOpenModal('EditItemURNModal', { item })
+    }
   }
 
   handleNavigateToEditor = () => {
@@ -55,12 +57,10 @@ export default class CollectionItem extends React.PureComponent<Props> {
           <Grid.Column className={`${styles.column} ${styles.avatarColumn}`} width={5}>
             <Checkbox checked={selected} disabled={item.isPublished} onClick={this.handleCheckboxChange} />
             <ItemImage className={styles.itemImage} item={item} hasBadge badgeSize="small" />
-            <div className={styles.info}>
-              <div className={styles.nameWrapper}>
-                <div className={styles.name} title={item.name}>
-                  <ItemStatus className={styles.itemStatus} item={item} />
-                  {item.name}
-                </div>
+            <div className={styles.nameWrapper}>
+              <div className={styles.name} title={item.name}>
+                <ItemStatus className={styles.itemStatus} item={item} />
+                {item.name}
               </div>
             </div>
           </Grid.Column>
@@ -87,7 +87,18 @@ export default class CollectionItem extends React.PureComponent<Props> {
                 <Dropdown.Menu>
                   <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
                   <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
-                  <Dropdown.Item text={t('collection_item.edit_urn')} onClick={this.handleEditURN} />
+                  <Popup
+                    content={t('collection_item.cannot_edit_urn')}
+                    position="right center"
+                    disabled={!item.isPublished}
+                    trigger={
+                      <Dropdown.Item text={t('collection_item.edit_urn')} onClick={this.handleEditURN} disabled={item.isPublished} />
+                    }
+                    hideOnScroll={true}
+                    on="hover"
+                    inverted
+                    flowing
+                  />
                   {!item.isPublished && (
                     <ConfirmDelete name={item.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
                   )}

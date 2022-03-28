@@ -9,3 +9,9 @@
 .CurationPage .filters .text-filter-row {
   width: 100%;
 }
+
+.CurationPage .pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

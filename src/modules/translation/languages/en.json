@@ -155,13 +155,11 @@
     },
     "name_field": {
       "label": "Name",
-      "placeholder": "My collection",
       "message": "The name can be {maxLength} characters at most"
     },
     "urn_suffix_field": {
       "label": "Id",
-      "placeholder": "my-collection",
-      "message": "Only letters and dashes (-) are allowed"
+      "message": "We recommend including the collection contract address as part of the id. Only letters, numbers and dashes (-) are allowed"
     }
   },
   "model_metrics": {
@@ -184,7 +182,7 @@
     "mana_not_allowed": "You need to authorize enough MANA to claim a new name",
     "not_enough_mana": "You don't have enough MANA to claim a new name"
   },
-  "create_item_modal": {
+  "create_single_item_modal": {
     "title": "New Item",
     "add_representation": "Add {bodyShape} Repesentation",
     "name_label": "Enter a name for your item",
@@ -207,6 +205,36 @@
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}."
     }
   },
+  "create_multiple_items_modal": {
+    "title": "Create multiple items",
+    "successful_title": "Items created",
+    "cancelled_title": "Cancelled multiple items creation",
+    "failed_title": "Failed multiple items creation",
+    "wrong_file_extension": "File extension is not correct.",
+    "asset_file_not_found": "The asset.json file was not found.",
+    "thumbnail_file_not_found": "Bulk files must contain a thumbnail.png file in their content.",
+    "saved_items_table_title": "Saved items",
+    "invalid_title": "INVALID",
+    "valid_title": "VALID",
+    "add_more_button": "Add more",
+    "upload_items_button": "Upload items",
+    "only_valid_items_info": "Only valid items will be uploaded",
+    "done_button": "Done",
+    "finished_successfully_subtitle": "Great! You've added {number_of_items} items",
+    "finished_unsuccessfully_subtitle": "The creation of items was interrupted, but {number_of_items} items were added.",
+    "importing_files_progress_label": "Processing items",
+    "uploading_items_progress_label": "Uploading {number_of_items} items",
+    "import_information_link_label": "click here",
+    "import_information": "For more information on the ZIP's structure {link}"
+  },
+  "create_items_modal": {
+    "title": "New Item",
+    "subtitle": "Select the method for uploading your item.",
+    "single_item_button_name": "Single item",
+    "single_item_button_description": "Upload GLTF, GLB or PNG files.",
+    "multiple_items_button_name": "Multiple items",
+    "multiple_items_button_description": "Upload a ZIP file with all the files."
+  },
   "edit_collection_name_modal": {
     "title": "Edit Collection Name",
     "subtitle": "Set a new name for this collection"
@@ -223,10 +251,13 @@
     "title": "Slots",
     "description_line_one": "Buy slots to publish your items!",
     "description_line_two": "Please select how many you want to buy.",
-    "not_enough_mana": "You don't have enough {symbol} to buy this tier.",
+    "not_enough_mana": "You don't have enough {symbol} to buy this amount of slots.",
     "get_mana": "You can get more using the {link} dapp.",
-    "tier_value": "{value} {value, plural, one {Slot} other {Slots}}",
-    "buy_slots": "Buy slots"
+    "buy_slots": "Buy slots",
+    "how_many_slots_title": "How many slots?",
+    "buy_slots_error": "Slots must be an integer",
+    "slots_value": "The approximate cost of each slot is {symbol}{slot_cost}.",
+    "total_cost": "The total cost will be {symbol}{total_cost}. It has a 3% slippage to cover market price changes."
   },
   "share_modal": {
     "title": "Share your Scene",
@@ -503,7 +534,8 @@
     "total": "Total",
     "parcel_plural": "Parcels",
     "estate_plural": "Estates",
-    "none": "None"
+    "none": "None",
+    "emote": "Emote"
   },
   "navigation": {
     "scenes": "Scenes",
@@ -864,8 +896,7 @@
     "allowed_claim_mana": "Allowed MANA to claim a new name",
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
-    "publish_third_party_items": "Published {count, plural, one {# item} other {# items}} for {collectionName}",
-    "buy_third_party_item_tiers": "Bought {count} {count, plural, one {slot} other {slots}} for the third party \"{name}\"",
+    "buy_third_party_item_slots": "Bought {count} {count, plural, one {slot} other {slots}} for the third party \"{name}\"",
     "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
   },
   "transfer_page": {
@@ -958,11 +989,17 @@
     "empty_collections": "There are no collections to review yet."
   },
   "collection_row": {
+    "collection": "Collection",
+    "published": "Published",
+    "date": "Date",
+    "discussion": "Discussion",
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Owner",
-    "visit": "Visit",
-    "review_request_date": "Review request date",
-    "publication_date": "Publication date",
+    "link": "Link",
+    "type": "Type",
+    "type_third_party": "Third Party",
+    "type_standard": "Standard",
+    "review_request": "Review request",
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",
     "approved": "Approved",
@@ -984,7 +1021,14 @@
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them.",
-    "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}"
+    "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}",
+    "new_items": "New Items",
+    "publish": "Publish",
+    "push_changes": "Push changes",
+    "publish_and_push_changes": "Publish & push changes",
+    "cant_publish": "This collection is still under review, once that process ends you'll be able to publish more items",
+    "cant_publish_items": "You're trying to publish {count} {count, plural, one {item} other {items}}. There are others under review right now",
+    "cant_publish_and_push_changes": "You're trying to publish {count} {count, plural, one {item} other {items}} and push changes at the same time. Unselect the items to publish to able to push changes"
   },
   "collection_detail_page": {
     "new_item": "New Item",
@@ -1000,7 +1044,10 @@
     "under_review": "Under Review",
     "push_changes": "Push Changes",
     "cant_operate": "This collection is still locked, once publication ends you'll be able to operate again",
-    "locked": "Locked"
+    "locked": "Locked",
+    "publish_reason_max_items": "A collection can be published with a max amount of {maxItems} items.",
+    "publish_reason_no_items": "You need to add at least one item to publish your collection.",
+    "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set."
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
@@ -1014,7 +1061,9 @@
     "minters": "Minters",
     "post_to_forum": "Post to forum",
     "posting": "Posting",
-    "not_posted": "The collection wasn't posted to the forum. You can retry here"
+    "not_posted": "The collection wasn't posted to the forum. You can retry here",
+    "delete_published_collection": "You can't delete a published collection",
+    "change_published_urn": "You can't change the URN once the collection is published"
   },
   "collection_item": {
     "set_price": "set price",
@@ -1025,6 +1074,7 @@
     "edit_price": "Edit price",
     "see_details": "See details",
     "edit_urn": "Edit URN",
+    "cannot_edit_urn": "You can't edit the URN once the item is published",
     "reset_item": "Reset changes"
   },
   "collection": {
@@ -1045,7 +1095,8 @@
     "edit_urn": "Edit URN",
     "copy_urn": "Copy URN",
     "type": {
-      "wearable": "Wearable"
+      "wearable": "Wearable",
+      "emote": "Emote"
     }
   },
   "edit_price_and_beneficiary_modal": {
@@ -1064,7 +1115,8 @@
     "title_tos": "Content Policy",
     "first_paragraph": "You are about to publish your collection, keep in mind the following things:",
     "second_paragraph": "You will not be able to add or delete items after you publish your collection.",
-    "third_paragraph": "You will be able to see your items in the marketplace but they will be available for sale once the collection is validated by the DAO.",
+    "third_paragraph": "You won’t be able to change the name of the collection. Please ensure it’s spelled correctly and doesn’t violate intellectual property rights.",
+    "fourth_paragraph": "You will be able to see your items in the marketplace but they will be available for sale once the collection is validated by the DAO.",
     "items_breakdown_title": "You are about to publish {count} {count, plural, one {item} other {items}}. The MANA fee for each collection goes to the Decentraland DAO, where it is used to support the growth of the community through grants, events, and prizes.",
     "tos_title": "I hereby represent and warrant that:",
     "tos_first_condition": "1: The submitted Wearable/s is in full compliance with the {terms_of_use} and {content_policy}, which I acknowledge and accept.",
@@ -1075,11 +1127,14 @@
     "content_policy": "Content Policy",
     "accept_by_publishing": "By clicking Publish you are accepting our terms",
     "not_enough_mana": "You don't have enough {symbol} to publish this collection.",
-    "get_mana": "You can get more using the {link} dapp."
+    "get_mana": "You can get more using the {link} dapp.",
+    "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again."
   },
   "publish_third_party_collection_modal": {
     "title": "Publish Third Party Items",
-    "description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} slots from {availableSlots} to publish \"{collectionName}\""
+    "publish_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\".",
+    "push_changes_description": "About to push changes to {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
+    "publish_and_push_changes_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\" and changes will be pushed to {itemsWithChanges, plural, one {# item} other {# items}}."
   },
   "mint_items_modal": {
     "title": "Mint Items",
@@ -1164,7 +1219,9 @@
       "items": "Items",
       "collections": "Collections",
       "items_count": "{count} items",
-      "invalid_representation_tooltip": "This item doesn't have a {bodyShape} representation"
+      "invalid_representation_tooltip": "This item doesn't have a {bodyShape} representation",
+      "no_items_to_review": "No items left to review",
+      "empty_collection": "Empty collection, add some items first!"
     },
     "center_panel": {
       "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation"
@@ -1182,6 +1239,12 @@
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum"
+    }
+  },
+  "emote": {
+    "category": {
+      "simple": "Simple",
+      "loop": "Loop"
     }
   },
   "wearable": {
@@ -1217,7 +1280,8 @@
       "mouth": "Mouth",
       "tiara": "Tiara",
       "top_head": "Top Head",
-      "upper_body": "Upper Body"
+      "upper_body": "Upper Body",
+      "skin": "Skin"
     }
   },
   "time": {
@@ -1291,6 +1355,16 @@
     "rescue": {
       "title": "Approve Items",
       "subtitle": "Please approve the items and their hashes",
+      "confirm": "Confirm",
+      "items_exceed_limit": {
+        "title": "Collection exceeds the maximum number of items",
+        "content": "Multiple transactions will be made. Be aware that you'll be asked to sign them."
+      }
+    },
+    "consume_slots": {
+      "title": "Approve Items",
+      "subtitle": "Please approve the following items",
+      "more_items": "And {count} other {count, plural, one {item} other {items}}",
       "confirm": "Confirm"
     },
     "upload": {

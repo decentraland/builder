@@ -1,5 +1,6 @@
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
-import { CatalystClient } from 'dcl-catalyst-client'
+import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
@@ -7,8 +8,8 @@ import { NO_CACHE_HEADERS } from 'lib/headers'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
-import { generateImage } from './utils'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem, ItemType, EmoteData, EmoteCategory } from './types'
+import { generateCatalystImage, generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
   const client = new CatalystClient(PEER_URL, 'Builder')
@@ -62,7 +63,7 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
  * Calculates the final size (with the already stored content and the new one) of the contents of an item.
  * All the files in newContents must also be in the item's contents in both name and hash.
  *
- * @param item - An item that contains the old and the new hahsed content.
+ * @param item - An item that contains the old and the new hashed content.
  * @param newContents - The new content that is going to be added to the item.
  */
 export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>): Promise<number> {
@@ -75,14 +76,19 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   }
 
   const blobs = await getFiles(filesToDownload)
+  const allBlobs = { ...newContents, ...blobs }
+  const allHashes = { ...newHashes, ...filesToDownload }
 
   let imageSize = 0
-  try {
-    const image = await generateImage(item)
-    imageSize = image.size
-  } catch (error) {}
+  // Only generate the catalyst image if there isn't one already
+  if (!allBlobs[IMAGE_PATH]) {
+    try {
+      const image = await generateImage(item, { thumbnail: allBlobs[THUMBNAIL_PATH] })
+      imageSize = image.size
+    } catch (error) {}
+  }
 
-  const uniqueFiles = getUniqueFiles({ ...newHashes, ...filesToDownload }, { ...newContents, ...blobs })
+  const uniqueFiles = getUniqueFiles(allHashes, allBlobs)
   return imageSize + calculateFilesSize(uniqueFiles)
 }
 
@@ -95,45 +101,107 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-export function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem {
-  // We strip the thumbnail from the representations contents as they're not being used by the Catalyst and just occupy extra space
-  const representations = item.data.representations.map(representation => ({
-    ...representation,
-    contents: representation.contents.filter(fileName => fileName !== THUMBNAIL_PATH)
-  }))
-  if (!collection.contractAddress || !item.tokenId) {
-    throw new Error('You need the collection and item to be published')
-  }
+function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityValues: Omit<TPCatalystItem, 'merkleProof'>) {
+  const hashingKeys = Object.keys(entityValues)
+  const { index, proof } = tree.proofs[entityHash]
   return {
-    id: buildCatalystItemURN(collection.contractAddress, item.tokenId),
+    index,
+    proof,
+    hashingKeys,
+    entityHash
+  }
+}
+
+function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): TPCatalystItem {
+  if (!item.urn) {
+    throw new Error('Item does not have URN')
+  }
+
+  // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
+  const baseEntityData = {
+    id: item.urn,
     name: item.name,
     description: item.description,
-    collectionAddress: collection.contractAddress!,
-    rarity: item.rarity,
     i18n: [{ code: 'en', text: item.name }],
     data: {
       replaces: item.data.replaces,
       hides: item.data.hides,
       tags: item.data.tags,
       category: item.data.category,
-      representations
+      representations: item.data.representations
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: item.metrics,
+    content: item.contents
+  }
+
+  return {
+    ...baseEntityData,
+    merkleProof: getMerkleProof(tree, itemHash, baseEntityData)
+  }
+}
+
+function buildItemEntityMetadata(collection: Collection, item: Item): StandardCatalystItem {
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published')
+  }
+
+  // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
+  const catalystItem: StandardCatalystItem = {
+    id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
+    name: item.name,
+    description: item.description,
+    collectionAddress: collection.contractAddress!,
+    rarity: item.rarity!,
+    i18n: [{ code: 'en', text: item.name }],
+    data: {
+      replaces: item.data.replaces,
+      hides: item.data.hides,
+      tags: item.data.tags,
+      category: item.data.category,
+      representations: item.data.representations
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
     metrics: item.metrics
   }
+
+  if (item.type === ItemType.EMOTE) {
+    catalystItem.emoteDataV0 = {
+      loop: (item.data as EmoteData).category === EmoteCategory.LOOP
+    }
+  }
+
+  return catalystItem
 }
 
-export async function buildItemEntityBlobs(item: Item) {
-  const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
-  const blobs: Record<string, Blob> = { ...files, [IMAGE_PATH]: image }
-  return blobs
+async function buildItemEntityContent(item: Item): Promise<Record<string, string>> {
+  const contents = { ...item.contents }
+  if (!item.contents[IMAGE_PATH]) {
+    const catalystItem = await generateCatalystImage(item)
+    contents[IMAGE_PATH] = catalystItem.hash
+  }
+
+  return contents
 }
 
-export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item) {
+async function buildItemEntityBlobs(item: Item): Promise<Record<string, Blob>> {
+  const [files, image] = await Promise.all([getFiles(item.contents), !item.contents[IMAGE_PATH] ? generateImage(item) : null])
+  files[IMAGE_PATH] = image ?? files[IMAGE_PATH]
+  return files
+}
+
+export async function buildItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item,
+  tree?: MerkleDistributorInfo,
+  itemHash?: string
+): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item)
   const files = await makeContentFiles(blobs)
-  const metadata = await buildItemEntityMetadata(collection, item)
+  const metadata = tree && itemHash ? buildTPItemEntityMetadata(item, itemHash, tree) : buildItemEntityMetadata(collection, item)
   return client.buildEntity({
     type: EntityType.WEARABLE,
     pointers: [metadata.id],
@@ -143,20 +211,32 @@ export async function buildItemEntity(client: CatalystClient, collection: Collec
   })
 }
 
-export async function buildItemEntityContent(item: Item) {
-  const blobs = await buildItemEntityBlobs(item)
-  return computeHashes(blobs)
+export async function buildStandardItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item
+): Promise<DeploymentPreparationData> {
+  return buildItemEntity(client, collection, item)
 }
 
-export async function buildItemContentHash(collection: Collection, item: Item) {
-  const blobs = await buildItemEntityBlobs(item)
-  const hashes = await computeHashes(blobs)
+export async function buildTPItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item,
+  tree: MerkleDistributorInfo,
+  itemHash: string
+): Promise<DeploymentPreparationData> {
+  return buildItemEntity(client, collection, item, tree, itemHash)
+}
+
+export async function buildItemContentHash(collection: Collection, item: Item): Promise<string> {
+  const hashes = await buildItemEntityContent(item)
   const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
-  const metadata = await buildItemEntityMetadata(collection, item)
+  const metadata = buildItemEntityMetadata(collection, item)
   return calculateContentHash(content, metadata)
 }
 
-export async function calculateContentHash(content: EntityContentItemReference[], metadata: EntityMetadata) {
+async function calculateContentHash(content: EntityContentItemReference[], metadata: EntityMetadata) {
   const data = JSON.stringify({
     content: content
       .sort((a: EntityContentItemReference, b: EntityContentItemReference) => {

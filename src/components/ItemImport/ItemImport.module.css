@@ -1,0 +1,20 @@
+.zipInfo {
+  color: var(--secondary-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.infoIcon {
+  margin-right: 9px;
+}
+
+.dropzone {
+  height: 500px !important;
+}
+
+.error {
+  margin-top: 15px;
+  width: 100%;
+}

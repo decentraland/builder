@@ -7,8 +7,11 @@ import { Collection } from 'modules/collection/types'
 import { getAuthorizedCollections, getData as getCollectionData } from 'modules/collection/selectors'
 import { getEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
-import { Curation, CurationStatus } from 'modules/curation/types'
-import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { getItemCurationsByItemId } from 'modules/curations/itemCuration/selectors'
+import { CurationStatus } from 'modules/curations/types'
 import { getItemThirdParty } from 'modules/thirdParty/selectors'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { isEqual } from 'lib/address'
@@ -93,47 +96,83 @@ export const getEntityByItemId = createSelector<RootState, Entity[], Record<stri
     }, {} as Record<string, Entity>)
 )
 
+const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStatus => {
+  if (!item.isPublished && !itemCuration) {
+    return SyncStatus.UNPUBLISHED
+  } else if (itemCuration && itemCuration.status === CurationStatus.PENDING) {
+    return SyncStatus.UNDER_REVIEW
+  } else if (itemCuration && itemCuration.status === CurationStatus.APPROVED) {
+    // Blockchain content hash contains the hash in the catalyst for TP items
+    return item.blockchainContentHash !== item.currentContentHash ? SyncStatus.UNSYNCED : SyncStatus.SYNCED
+  }
+  return SyncStatus.UNPUBLISHED
+}
+
+const getStatusForDCL = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
+  let status: SyncStatus
+  if (!item.isPublished) {
+    status = SyncStatus.UNPUBLISHED
+  } else if (!item.isApproved || (collectionCuration && collectionCuration.status === CurationStatus.PENDING)) {
+    status = SyncStatus.UNDER_REVIEW
+  } else {
+    if (!entity) {
+      status = SyncStatus.LOADING
+    } else if (areSynced(item, entity)) {
+      status = SyncStatus.SYNCED
+    } else {
+      status = SyncStatus.UNSYNCED
+    }
+  }
+  return status
+}
+
 export const getStatusByItemId = createSelector<
   RootState,
   Item[],
   EntityState['data'],
-  Record<string, Curation>,
+  Record<string, CollectionCuration>,
+  Record<string, ItemCuration>,
   Record<string, SyncStatus>
 >(
   state => getItems(state),
   state => getEntityByItemId(state),
   state => getCurationsByCollectionId(state),
-  (items, entitiesByItemId, curationsByCollectionId) => {
+  getItemCurationsByItemId,
+  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
-      if (!item.isPublished) {
-        statusByItemId[item.id] = SyncStatus.UNPUBLISHED
-      } else if (!item.isApproved) {
-        statusByItemId[item.id] = SyncStatus.UNDER_REVIEW
-      } else {
-        const entity = entitiesByItemId[item.id]
-        if (!entity) {
-          statusByItemId[item.id] = SyncStatus.LOADING
-        } else if (areSynced(item, entity)) {
-          statusByItemId[item.id] = SyncStatus.SYNCED
-        } else if (item.collectionId && curationsByCollectionId[item.collectionId]?.status === CurationStatus.PENDING) {
-          statusByItemId[item.id] = SyncStatus.UNDER_REVIEW
-        } else {
-          statusByItemId[item.id] = SyncStatus.UNSYNCED
-        }
-      }
+      statusByItemId[item.id] = isThirdParty(item.urn)
+        ? getStatusForTP(item, itemCurationByItemId[item.id])
+        : getStatusForDCL(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
     }
     return statusByItemId
+  }
+)
+
+export const getStatusForItemIds = createSelector<
+  RootState,
+  Item['id'][],
+  Item['id'][],
+  Record<string, SyncStatus>,
+  Record<string, SyncStatus>
+>(
+  (_state: RootState, itemIds: Item['id'][]) => itemIds,
+  getStatusByItemId,
+  (itemIds, statusByItemId) => {
+    return itemIds.reduce((acc, currItemId) => {
+      acc[currItemId] = statusByItemId[currItemId]
+      return acc
+    }, {} as Record<string, SyncStatus>)
   }
 )
 
 export const isDownloading = (state: RootState) => isLoadingType(getLoading(state), DOWNLOAD_ITEM_REQUEST)
 
 export const hasViewAndEditRights = (state: RootState, address: string, collection: Collection | null, item: Item): boolean => {
-  const itemThirdParty = isThirdParty(item.urn) ? getItemThirdParty(state, item) : null
+  const thirdPartyItem = isThirdParty(item.urn) ? getItemThirdParty(state, item) : null
 
   return (
-    (itemThirdParty !== null && isUserManagerOfThirdParty(address, itemThirdParty)) ||
+    (thirdPartyItem !== null && isUserManagerOfThirdParty(address, thirdPartyItem)) ||
     (collection !== null ? canSeeItem(collection, item, address) : isOwner(item, address))
   )
 }

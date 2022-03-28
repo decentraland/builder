@@ -1,10 +1,13 @@
 import { Address } from 'web3x/address'
 import { constants } from 'ethers'
+import { LocalItem } from '@dcl/builder-client'
 import { utils } from 'decentraland-commons'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { computeHashFromContent } from 'modules/deployment/contentUtils'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
@@ -29,7 +32,10 @@ import {
   SyncStatus,
   ThirdPartyContractItem,
   ItemMetadataType,
-  WearableRepresentation
+  WearableRepresentation,
+  GenerateImageOptions,
+  EmoteCategory,
+  EmoteData
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -118,10 +124,17 @@ export function getBackgroundStyle(rarity?: ItemRarity) {
 }
 
 export function getItemMetadataType(item: Item) {
-  if (Object.keys(item.contents).some(path => path.endsWith('.js'))) {
-    return ItemMetadataType.SMART_WEARABLE
+  switch (item.type) {
+    case ItemType.WEARABLE: {
+      if (Object.keys(item.contents).some(path => path.endsWith('.js'))) {
+        return ItemMetadataType.SMART_WEARABLE
+      }
+      return ItemMetadataType.WEARABLE
+    }
+    case ItemType.EMOTE: {
+      return ItemMetadataType.EMOTE
+    }
   }
-  return ItemMetadataType.WEARABLE
 }
 
 export function buildItemMetadata(
@@ -151,6 +164,16 @@ export function getMetadata(item: Item) {
       }
       return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
+    case ItemType.EMOTE: {
+      const data = item.data as EmoteData
+      const bodyShapeTypes = getBodyShapes(item)
+        .map(toWearableBodyShapeType)
+        .join(',')
+      if (!data.category) {
+        throw new Error(`Unknown item category "${item.data}"`)
+      }
+      return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
+    }
     default:
       throw new Error(`Unknown item.type "${item.type}"`)
   }
@@ -163,12 +186,31 @@ export function toItemObject(items: Item[]) {
   }, {} as Record<string, Item>)
 }
 
-export async function generateImage(item: Item, width = 256, height = 256) {
-  // fetch thumbnail
-  const response = await fetch(getContentsStorageUrl(item.contents[item.thumbnail]), { headers: NO_CACHE_HEADERS })
-  if (!response.ok) throw new Error(`Error generating the image: ${response.statusText}`)
+export async function generateCatalystImage(item: Item | LocalItem, options?: GenerateImageOptions) {
+  const catalystImage = await generateImage(item, options)
+  const catalystImageHash = await computeHashFromContent(catalystImage)
+  return {
+    content: catalystImage,
+    hash: catalystImageHash
+  }
+}
 
-  const thumbnail = await response.blob()
+export async function generateImage(item: Item | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
+  // Set default width and height
+  const width: number = options?.width ?? 256
+  const height: number = options?.height ?? 256
+
+  let thumbnail: Blob
+
+  if (options?.thumbnail) {
+    thumbnail = options.thumbnail
+  } else {
+    // fetch thumbnail
+    const response = await fetch(getContentsStorageUrl(item.contents[item.thumbnail]), { headers: NO_CACHE_HEADERS })
+    if (!response.ok) throw new Error(`Error generating the image: ${response.statusText}`)
+
+    thumbnail = await response.blob()
+  }
 
   // create canvas
   const canvas = document.createElement('canvas')
@@ -269,17 +311,49 @@ export function isModelCategory(category: WearableCategory) {
   return !isImageCategory(category)
 }
 
+export function getModelCategories() {
+  return Object.values(WearableCategory).filter(category => isModelCategory(category))
+}
+
+export function getSkinHiddenCategories() {
+  return [
+    WearableCategory.HEAD,
+    WearableCategory.HAIR,
+    WearableCategory.FACIAL_HAIR,
+    WearableCategory.MOUTH,
+    WearableCategory.EYEBROWS,
+    WearableCategory.EYES,
+    WearableCategory.UPPER_BODY,
+    WearableCategory.LOWER_BODY,
+    WearableCategory.FEET
+  ]
+}
+
 function getCategories(contents: Record<string, any> | undefined = {}) {
   const fileNames = Object.keys(contents)
-  return fileNames.some(isModelFile) ? Object.values(WearableCategory).filter(category => isModelCategory(category)) : IMAGE_CATEGORIES
+  return fileNames.some(isModelFile) ? getModelCategories() : IMAGE_CATEGORIES
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
-  return getCategories(contents).filter(category => category !== WearableCategory.HEAD)
+  let categories = getCategories(contents).filter(category => category !== WearableCategory.HEAD)
+  if (!process.env.REACT_APP_FF_SKINS) {
+    categories = categories.filter(category => category !== WearableCategory.SKIN)
+  }
+  return categories
 }
 
-export function getOverridesCategories(contents: Record<string, any> | undefined = {}) {
-  return getCategories(contents)
+export function getEmoteCategories() {
+  return Object.values(EmoteCategory)
+}
+
+export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
+  const overrideCategories = getCategories(contents)
+  if (category === WearableCategory.SKIN) {
+    return overrideCategories.filter(
+      overrideCategory => !getSkinHiddenCategories().includes(overrideCategory) && overrideCategory !== WearableCategory.SKIN
+    )
+  }
+  return overrideCategories
 }
 
 export function isFree(item: Item) {
@@ -338,13 +412,16 @@ export function areEqualRepresentations(a: WearableRepresentation[], b: Wearable
     const repA = a[i]
     const repB = b[i]
     const areEqual =
-      areEqualArrays(repA.bodyShapes, repB.bodyShapes) &&
-      areEqualArrays(repA.contents, repB.contents) &&
-      repA.mainFile === repB.mainFile &&
-      areEqualArrays(repA.overrideHides, repB.overrideHides) &&
-      areEqualArrays(repA.overrideReplaces, repB.overrideReplaces)
+      areEqualArrays(repA.bodyShapes, repB.bodyShapes) && areEqualArrays(repA.contents, repB.contents) && repA.mainFile === repB.mainFile
     if (!areEqual) {
       return false
+    }
+    if (repA.overrideHides && repB.overrideHides && repA.overrideReplaces && repB.overrideReplaces) {
+      const areEqualOverrides =
+        areEqualArrays(repA.overrideHides, repB.overrideHides) && areEqualArrays(repA.overrideReplaces, repB.overrideReplaces)
+      if (!areEqualOverrides) {
+        return false
+      }
     }
   }
   return true
@@ -354,12 +431,17 @@ export function areSynced(item: Item, entity: Entity) {
   // check if metadata is synced
   const catalystItem = entity.metadata! as CatalystItem
   const hasMetadataChanged =
-    item.name !== catalystItem.name ||
-    item.description !== catalystItem.description ||
-    item.data.category !== catalystItem.data.category ||
-    item.data.hides.toString() !== catalystItem.data.hides.toString() ||
-    item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
-    item.data.tags.toString() !== catalystItem.data.tags.toString()
+    item.type === ItemType.WEARABLE
+      ? item.name !== catalystItem.name ||
+        item.description !== catalystItem.description ||
+        item.data.category !== catalystItem.data.category ||
+        item.data.hides.toString() !== catalystItem.data.hides.toString() ||
+        item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
+        item.data.tags.toString() !== catalystItem.data.tags.toString()
+      : item.name !== catalystItem.name ||
+        item.description !== catalystItem.description ||
+        item.data.category !== catalystItem.data.category ||
+        item.data.tags.toString() !== catalystItem.data.tags.toString()
   if (hasMetadataChanged) {
     return false
   }
@@ -380,6 +462,18 @@ export function areSynced(item: Item, entity: Entity) {
   return true
 }
 
+export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {
+  if (!item.isApproved) {
+    return false // push changes mechanism makes sense after they're in the blockchain
+  }
+  const isUnsynced = status === SyncStatus.UNSYNCED
+  const curationHasAnotherContentHash = itemCuration && itemCuration.contentHash !== item.currentContentHash
+  return (
+    isUnsynced ||
+    ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED || status === SyncStatus.LOADING) && curationHasAnotherContentHash)
+  )
+}
+
 export function buildZipContents(contents: Record<string, Blob | string>, areEqual: boolean) {
   const newContents: Record<string, Blob | string> = {}
   const paths = Object.keys(contents)
@@ -388,4 +482,35 @@ export function buildZipContents(contents: Record<string, Blob | string>, areEqu
     newContents[newPath] = contents[path]
   }
   return newContents
+}
+
+/**
+ * Builds an array of arrays by taking chunks of an specified size of an array.
+ * @param array - The array to get the groups of.
+ * @param size - The size of the groups of the array.
+ */
+export function groupsOf<T>(array: T[], size: number): Array<Array<T>> {
+  if (size === 0) {
+    throw new Error('The groups size must be greater than 0')
+  }
+
+  const arrays = []
+  for (let i = 0; i < array.length; i += size) {
+    arrays.push(array.slice(i, i + size))
+  }
+  return arrays
+}
+
+export const getItemsToPublish = (items: Item[], itemsStatus: Record<string, SyncStatus>) => {
+  return items.filter(item => itemsStatus[item.id] === SyncStatus.UNPUBLISHED)
+}
+
+export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, SyncStatus>, itemCurations: ItemCuration[]) => {
+  return items.filter(item =>
+    isAllowedToPushChanges(
+      item,
+      itemsStatus[item.id],
+      itemCurations?.find(itemCuration => itemCuration.itemId === item.id)
+    )
+  )
 }

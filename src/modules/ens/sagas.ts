@@ -8,9 +8,8 @@ import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
 import { CatalystClient, DeploymentBuilder, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
-import { Avatar } from 'decentraland-ui'
 import { Authenticator } from 'dcl-crypto'
-import { Network } from '@dcl/schemas'
+import { Network, Avatar } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
@@ -275,7 +274,7 @@ function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestA
     const from: string = yield select(getAddress)
     const chainId = getChainIdByNetwork(Network.ETHEREUM)
     const contract = getContract(ContractName.MANAToken, chainId)
-    const provider = yield call(getNetworkProvider, chainId)
+    const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
     const mana = new Contract(contract.address, contract.abi, new providers.Web3Provider(provider))
     const allowance: string = yield call(mana.allowance, from, CONTROLLER_ADDRESS)
     const authorization: Authorization = { allowance }

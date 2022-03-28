@@ -1,5 +1,5 @@
 import { Item, ItemMetadataType, ItemType, WearableBodyShape, WearableCategory, WearableRepresentation } from './types'
-import { buildItemMetadata, buildZipContents, toThirdPartyContractItems, areEqualArrays, areEqualRepresentations } from './utils'
+import { buildItemMetadata, buildZipContents, toThirdPartyContractItems, areEqualArrays, areEqualRepresentations, groupsOf } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
   let items: Item[]
@@ -132,5 +132,34 @@ describe('when comparing two representations', () => {
   })
   it('should return false when the first representation is female and the second one is male and female', () => {
     expect(areEqualRepresentations([female], [male, female])).toBe(false)
+  })
+})
+
+describe('when getting the groups of an array', () => {
+  describe('and the array is empty', () => {
+    it('should return an empty array', () => {
+      expect(groupsOf([], 4)).toEqual([])
+    })
+  })
+
+  describe('and the size of the groups is greater than the size of the array', () => {
+    it('should return an array with one group with the whole array', () => {
+      expect(groupsOf([1, 2, 3, 4], 7)).toEqual([[1, 2, 3, 4]])
+    })
+  })
+
+  describe('and the size of the groups is 0', () => {
+    it('should throw an error signaling that the size of the groups should be greater than 0', () => {
+      expect(() => groupsOf([1, 2, 3, 4], 0)).toThrow(new Error('The groups size must be greater than 0'))
+    })
+  })
+
+  describe('when the size of the groups is lower than the size of the array', () => {
+    it('should return an array of groups with the items', () => {
+      expect(groupsOf([1, 2, 3, 4], 2)).toEqual([
+        [1, 2],
+        [3, 4]
+      ])
+    })
   })
 })

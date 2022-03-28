@@ -1,38 +1,32 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import {
-  buyThirdPartyItemTiersRequest,
-  BuyThirdPartyItemTiersRequestAction,
-  clearTiersError,
-  ClearTiersErrorAction,
-  fetchThirdPartyItemTiersRequest,
-  FetchThirdPartyItemTiersRequestAction
-} from 'modules/tiers/actions'
-import { ThirdPartyItemTier } from 'modules/tiers/types'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { fetchThirdPartyItemSlotPriceRequest } from 'modules/thirdParty/actions'
+import {
+  buyThirdPartyItemSlotRequest,
+  BuyThirdPartyItemSlotRequestAction,
+  FetchThirdPartyItemSlotPriceRequestAction
+} from 'modules/thirdParty/actions'
 
 export type Props = ModalProps & {
   isBuyingItemSlots: boolean
-  isFetchingTiers: boolean
-  thirdParty: ThirdParty
   manaBalance: number
-  tiers: ThirdPartyItemTier[]
+  isFetchingSlotPrice: boolean
+  slotPrice: number | null
   metadata: BuyItemSlotsModalMetadata
   error: string | null
-  onBuyItemSlots: typeof buyThirdPartyItemTiersRequest
-  onFetchThirdPartyItemSlots: typeof fetchThirdPartyItemTiersRequest
-  onTierSelected: typeof clearTiersError
-  onBeforeClose: typeof clearTiersError
+  onBuyItemSlots: typeof buyThirdPartyItemSlotRequest
+  onFetchThirdPartyItemSlotPrice: typeof fetchThirdPartyItemSlotPriceRequest
 }
 
 export type State = {
-  selectedTierId: string | undefined
+  slotsToBuy: string
 }
 
 export type BuyItemSlotsModalMetadata = {
   thirdParty: ThirdParty
 }
 
-export type MapStateProps = Pick<Props, 'isBuyingItemSlots' | 'isFetchingTiers' | 'manaBalance' | 'tiers' | 'error'>
-export type MapDispatchProps = Pick<Props, 'onBuyItemSlots' | 'onFetchThirdPartyItemSlots' | 'onTierSelected' | 'onBeforeClose'>
-export type MapDispatch = Dispatch<FetchThirdPartyItemTiersRequestAction | BuyThirdPartyItemTiersRequestAction | ClearTiersErrorAction>
+export type MapStateProps = Pick<Props, 'isBuyingItemSlots' | 'isFetchingSlotPrice' | 'manaBalance' | 'slotPrice' | 'error'>
+export type MapDispatchProps = Pick<Props, 'onBuyItemSlots' | 'onFetchThirdPartyItemSlotPrice'>
+export type MapDispatch = Dispatch<FetchThirdPartyItemSlotPriceRequestAction | BuyThirdPartyItemSlotRequestAction>
