@@ -427,10 +427,6 @@ export function areEqualRepresentations(a: WearableRepresentation[], b: Wearable
   return true
 }
 
-export function areSyncedByHash(item: Item): boolean {
-  return !!item.currentContentHash && item.blockchainContentHash === item.currentContentHash
-}
-
 export function areSynced(item: Item, entity: Entity) {
   // check if metadata is synced
   const catalystItem = entity.metadata! as CatalystItem
