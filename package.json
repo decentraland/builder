@@ -72,6 +72,7 @@
     "mousetrap": "^1.6.2",
     "multihashing-async": "^0.8.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
+    "p-queue": "^6.6.2",
     "pnp-webpack-plugin": "1.1.0",
     "postcss-flexbugs-fixes": "4.1.0",
     "postcss-loader": "3.0.0",

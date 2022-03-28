@@ -381,10 +381,7 @@ describe('when pushing changes to third party items', () => {
   })
 
   describe('when one of the api requests fails', () => {
-    let errorMessage: string
-
     beforeEach(() => {
-      errorMessage = 'Some Error Message'
       itemCurations = [
         {
           id: 'id',
@@ -401,9 +398,9 @@ describe('when pushing changes to third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [select(getItemCurations, item.collectionId), itemCurations],
-          [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), throwError(new Error(errorMessage))]
+          [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), throwError(new Error('Error'))]
         ])
-        .put(pushChangesThirdPartyItemsFailure(errorMessage))
+        .put(pushChangesThirdPartyItemsFailure('Some item curations were not pushed'))
         .dispatch(pushChangesThirdPartyItemsRequest([item]))
         .run({ silenceTimeout: true })
     })
@@ -449,16 +446,14 @@ describe('when pushing changes to third party items', () => {
           contentHash: 'anotherHash'
         }
       ]
+      ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValue(updatedItemCurations[0])
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[1])
     })
 
     it('should put the push changes success action with the updated item curations and close the PublishThirdPartyCollectionModal modal', () => {
       const anotherItem = { ...mockedItem, id: 'anotherItemId' }
       return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([
-          [select(getItemCurations, item.collectionId), itemCurations],
-          [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), updatedItemCurations[0]],
-          [call([mockBuilder, mockBuilder.pushItemCuration], anotherItem.id), updatedItemCurations[1]]
-        ])
+        .provide([[select(getItemCurations, item.collectionId), itemCurations]])
         .put(pushChangesThirdPartyItemsSuccess(item.collectionId!, updatedItemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .dispatch(pushChangesThirdPartyItemsRequest([item, anotherItem]))
@@ -508,7 +503,7 @@ describe('when publishing & pushing changes to third party items', () => {
   })
 
   describe('when the publish items fails', () => {
-    it('should put the publish & push changes failure action action', () => {
+    it('should put the publish & push changes failure action', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
@@ -524,16 +519,15 @@ describe('when publishing & pushing changes to third party items', () => {
   })
 
   describe('when the publish works fine but push items fails', () => {
+    beforeEach(() => {
+      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockRejectedValue(new Error(errorMessage))
+    })
     it('should put the publish & push changes failure action', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
-          [select(getItemCurations, item.collectionId), itemCurations],
-          [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
-            { items: publishResponse, itemCurations }
-          ],
-          [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), throwError(new Error(errorMessage))]
+          [select(getItemCurations, item.collectionId), itemCurations]
         ])
         .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
@@ -554,18 +548,15 @@ describe('when publishing & pushing changes to third party items', () => {
           contentHash: 'aHash'
         }
       ]
+      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[0])
     })
 
     it('should put the publish & push changes success action and the fetch available slots request', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
-          [select(getItemCurations, item.collectionId), itemCurations],
-          [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
-            { items: publishResponse, itemCurations }
-          ],
-          [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), updatedItemCurations[0]]
+          [select(getItemCurations, item.collectionId), itemCurations]
         ])
         .put(publishAndPushChangesThirdPartyItemsSuccess(item.collectionId!, publishResponse, [...itemCurations, updatedItemCurations[0]]))
         .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
