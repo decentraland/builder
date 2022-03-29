@@ -1,13 +1,5 @@
 import { Item, ItemMetadataType, ItemType, WearableBodyShape, WearableCategory, WearableRepresentation } from './types'
-import {
-  buildItemMetadata,
-  buildZipContents,
-  toThirdPartyContractItems,
-  areEqualArrays,
-  areEqualRepresentations,
-  groupsOf,
-  areSyncedByHash
-} from './utils'
+import { buildItemMetadata, buildZipContents, toThirdPartyContractItems, areEqualArrays, areEqualRepresentations, groupsOf } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
   let items: Item[]
@@ -168,55 +160,6 @@ describe('when getting the groups of an array', () => {
         [1, 2],
         [3, 4]
       ])
-    })
-  })
-})
-
-describe('when checking if an item is synced by hash', () => {
-  let item: Item
-
-  beforeEach(() => {
-    item = { id: 'someId' } as Item
-  })
-
-  describe('and the item does not have a server content hash', () => {
-    beforeEach(() => {
-      item = {
-        ...item,
-        currentContentHash: null,
-        blockchainContentHash: 'someHash'
-      }
-    })
-
-    it('should return false', () => {
-      expect(areSyncedByHash(item)).toBe(false)
-    })
-  })
-
-  describe("and the item has a server content hash but it's different from the content hash", () => {
-    beforeEach(() => {
-      item = {
-        ...item,
-        currentContentHash: 'someContentHash'
-      }
-    })
-
-    it('should return false', () => {
-      expect(areSyncedByHash(item)).toBe(false)
-    })
-  })
-
-  describe("and the item has a server content and it's equal to the content hash", () => {
-    beforeEach(() => {
-      item = {
-        ...item,
-        currentContentHash: 'someHash',
-        blockchainContentHash: 'someHash'
-      }
-    })
-
-    it('should return true', () => {
-      expect(areSyncedByHash(item)).toBe(true)
     })
   })
 })
