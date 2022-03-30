@@ -102,7 +102,8 @@ function calculateFilesSize(files: Array<Blob>) {
 }
 
 function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityValues: Omit<TPCatalystItem, 'merkleProof'>) {
-  const hashingKeys = Object.keys(entityValues)
+  // Remove older keys that don't belong to the new entity metadata
+  const hashingKeys = Object.keys(entityValues).filter(key => key !== 'name' && key !== 'description' && key !== 'i18n')
   const { index, proof } = tree.proofs[entityHash]
   return {
     index,
@@ -123,6 +124,8 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
     name: item.name,
     description: item.description,
     i18n: [{ code: 'en', text: item.name }],
+    names: [{ code: 'en', text: item.name }],
+    descriptions: [{ code: 'en', text: item.description }],
     data: {
       replaces: item.data.replaces,
       hides: item.data.hides,

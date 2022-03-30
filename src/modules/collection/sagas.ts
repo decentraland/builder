@@ -130,7 +130,6 @@ import {
   getCollectionType,
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
-  isTPDeployEnabled,
   isTPCollection
 } from './utils'
 
@@ -674,7 +673,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       )
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
-      if (itemsToDeploy.length > 0 && isTPDeployEnabled()) {
+      if (itemsToDeploy.length > 0) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
           view: ApprovalFlowModalView.DEPLOY,
           collection,
