@@ -72,31 +72,31 @@ export type BuyThirdPartyItemSlotRequestAction = ReturnType<typeof buyThirdParty
 export type BuyThirdPartyItemSlotSuccessAction = ReturnType<typeof buyThirdPartyItemSlotSuccess>
 export type BuyThirdPartyItemSlotFailureAction = ReturnType<typeof buyThirdPartyItemSlotFailure>
 
-// Consume a third party slots
+// Review a third party
 
-export const CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST = '[Request] Consume a third party item slots'
-export const CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS = '[Success] Consume a third party item slots'
-export const CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE = '[Failure] Consume a third party item slots'
-export const CONSUME_THIRD_PARTY_ITEM_SLOTS_TX_SUCCESS = '[Tx Success] Consume a third party item slots'
+export const REVIEW_THIRD_PARTY_REQUEST = '[Request] Consume a third party item slots'
+export const REVIEW_THIRD_PARTY_SUCCESS = '[Success] Consume a third party item slots'
+export const REVIEW_THIRD_PARTY_FAILURE = '[Failure] Consume a third party item slots'
+export const REVIEW_THIRD_PARTY_TX_SUCCESS = '[Tx Success] Consume a third party item slots'
 
-export const consumeThirdPartyItemSlotsRequest = (
+export const reviewThirdPartyRequest = (
   thirdPartyId: ThirdParty['id'],
   slots: Slot[],
   merkleTreeRoot: MerkleDistributorInfo['merkleRoot']
-) => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_REQUEST, { thirdPartyId, slots, merkleTreeRoot })
+) => action(REVIEW_THIRD_PARTY_REQUEST, { thirdPartyId, slots, merkleTreeRoot })
 
-export const consumeThirdPartyItemSlotsTxSuccess = (txHash: string, chainId: ChainId) =>
-  action(CONSUME_THIRD_PARTY_ITEM_SLOTS_TX_SUCCESS, {
+export const reviewThirdPartyTxSuccess = (txHash: string, chainId: ChainId) =>
+  action(REVIEW_THIRD_PARTY_TX_SUCCESS, {
     ...buildTransactionPayload(chainId, txHash)
   })
 
-export const consumeThirdPartyItemSlotsSuccess = () => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS)
-export const consumeThirdPartyItemSlotsFailure = (error: string) => action(CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE, { error })
+export const reviewThirdPartySuccess = () => action(REVIEW_THIRD_PARTY_SUCCESS)
+export const reviewThirdPartyFailure = (error: string) => action(REVIEW_THIRD_PARTY_FAILURE, { error })
 
-export type ConsumeThirdPartyItemSlotsRequestAction = ReturnType<typeof consumeThirdPartyItemSlotsRequest>
-export type ConsumeThirdPartyItemSlotsSuccessAction = ReturnType<typeof consumeThirdPartyItemSlotsSuccess>
-export type ConsumeThirdPartyItemSlotsTxSuccessAction = ReturnType<typeof consumeThirdPartyItemSlotsTxSuccess>
-export type ConsumeThirdPartyItemSlotsFailureAction = ReturnType<typeof consumeThirdPartyItemSlotsFailure>
+export type ReviewThirdPartyRequestAction = ReturnType<typeof reviewThirdPartyRequest>
+export type ReviewThirdPartySuccessAction = ReturnType<typeof reviewThirdPartySuccess>
+export type ReviewThirdPartyTxSuccessAction = ReturnType<typeof reviewThirdPartyTxSuccess>
+export type ReviewThirdPartyFailureAction = ReturnType<typeof reviewThirdPartyFailure>
 
 // Publish Third Party Item
 

@@ -26,7 +26,7 @@ import {
   approveCollectionCurationSuccess
 } from 'modules/curations/collectionCuration/actions'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
-import { consumeThirdPartyItemSlotsFailure, consumeThirdPartyItemSlotsSuccess } from 'modules/thirdParty/actions'
+import { reviewThirdPartyFailure, reviewThirdPartySuccess } from 'modules/thirdParty/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
@@ -885,6 +885,7 @@ describe('when executing the TP approval flow', () => {
             '1b'
         }
       })
+
       it('should throw an error if itemsToApprove length is different than the cheque qty', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
           .provide([[call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]])
@@ -907,14 +908,72 @@ describe('when executing the TP approval flow', () => {
       })
     })
 
+    describe('when the cheque was already consumed', () => {
+      it('should complete the flow doing the review without a cheque, deploy and update the item curations steps', () => {
+        const merkleTree = generateTree(Object.values(contentHashes))
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([
+            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: true }],
+            [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
+            [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
+            [
+              call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
+              deployData
+            ],
+            [
+              call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[1], merkleTree, contentHashes[itemsToApprove[1].id]),
+              deployData
+            ],
+            [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), {}],
+            [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), {}]
+          ])
+          .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.LOADING,
+              collection: TPCollection
+            } as ApprovalFlowModalMetadata)
+          )
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+              items: itemsToApprove,
+              collection: TPCollection,
+              merkleTreeRoot: merkleTree.merkleRoot,
+              slots: []
+            } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
+          )
+          .dispatch(reviewThirdPartySuccess())
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.DEPLOY,
+              collection: TPCollection,
+              items: [unsyncedItem],
+              entities: [deployData]
+            } as ApprovalFlowModalMetadata)
+          )
+          .dispatch(deployEntitiesSuccess([deployData]))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.SUCCESS,
+              collection: TPCollection
+            } as ApprovalFlowModalMetadata)
+          )
+          .run({ silenceTimeout: true })
+      })
+    })
+
     describe('when sending a valid cheque', () => {
-      it('should complete the flow doing the consume, deploy and update the item curations steps', () => {
+      it('should complete the flow doing the review, deploy and update the item curations steps', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
         const merkleTree = generateTree(Object.values(contentHashes))
         const itemCurations = itemsToApprove.map(item => getItemCuration(item))
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
           .provide([
-            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
+            [
+              call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+              { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
+            ],
             [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
             [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
             [
@@ -944,7 +1003,7 @@ describe('when executing the TP approval flow', () => {
               slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
             } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
           )
-          .dispatch(consumeThirdPartyItemSlotsSuccess())
+          .dispatch(reviewThirdPartySuccess())
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.DEPLOY,
@@ -964,7 +1023,7 @@ describe('when executing the TP approval flow', () => {
           .run({ silenceTimeout: true })
       })
 
-      describe('when the consume slots transaction fails', () => {
+      describe('when the review transaction fails', () => {
         it('should open the modal in an error state', () => {
           const consumeSlotsError = 'Error when consuming slots'
           const parsedSignature = ethers.utils.splitSignature(cheque.signature)
@@ -991,7 +1050,7 @@ describe('when executing the TP approval flow', () => {
                 slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
               } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
             )
-            .dispatch(consumeThirdPartyItemSlotsFailure(consumeSlotsError))
+            .dispatch(reviewThirdPartyFailure(consumeSlotsError))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.ERROR,
@@ -1038,7 +1097,7 @@ describe('when executing the TP approval flow', () => {
                 slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
               } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
             )
-            .dispatch(consumeThirdPartyItemSlotsSuccess())
+            .dispatch(reviewThirdPartySuccess())
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.DEPLOY,

@@ -112,11 +112,7 @@ import {
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
-import {
-  ConsumeThirdPartyItemSlotsFailureAction,
-  CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE,
-  CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS
-} from 'modules/thirdParty/actions'
+import { ReviewThirdPartyFailureAction, REVIEW_THIRD_PARTY_FAILURE, REVIEW_THIRD_PARTY_SUCCESS } from 'modules/thirdParty/actions'
 import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
@@ -619,7 +615,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       // 2. Get the approval data from the server
       // TODO: Use the builder client. Tracked here: https://github.com/decentraland/builder/issues/1855
-      const { cheque, content_hashes: contentHashes }: ItemApprovalData = yield call([builder, 'fetchApprovalData'], collection.id)
+      const { cheque, content_hashes: contentHashes, chequeWasConsumed }: ItemApprovalData = yield call(
+        [builder, 'fetchApprovalData'],
+        collection.id
+      )
 
       // 3. Compute the merkle tree root & create slot to consume
       const tree = generateTree(Object.values(contentHashes))
@@ -628,31 +627,31 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         throw Error('Invalid qty of items to approve in the cheque')
       }
 
-      const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
-      const slot: Slot = {
-        qty: cheque.qty,
-        salt: cheque.salt,
-        sigR: r,
-        sigS: s,
-        sigV: v
-      }
-
       // Open the ApprovalFlowModal with the items to be approved
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
       if (itemsToApprove.length > 0) {
+        const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
+        const slot: Slot = {
+          qty: cheque.qty,
+          salt: cheque.salt,
+          sigR: r,
+          sigS: s,
+          sigV: v
+        }
+
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS> = {
           view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
           items: itemsToApprove,
           collection,
           merkleTreeRoot: tree.merkleRoot,
-          slots: [slot]
+          slots: chequeWasConsumed ? [] : [slot]
         }
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
         // Wait for actions...
-        const { failure, cancel }: { failure: ConsumeThirdPartyItemSlotsFailureAction; cancel: CloseModalAction } = yield race({
-          success: take(CONSUME_THIRD_PARTY_ITEM_SLOTS_SUCCESS),
-          failure: take(CONSUME_THIRD_PARTY_ITEM_SLOTS_FAILURE),
+        const { failure, cancel }: { failure: ReviewThirdPartyFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(REVIEW_THIRD_PARTY_SUCCESS),
+          failure: take(REVIEW_THIRD_PARTY_FAILURE),
           cancel: take(CLOSE_MODAL)
         })
 
