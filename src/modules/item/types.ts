@@ -1,4 +1,5 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
+import { ThirdPartyWearable, StandardWearable } from '@dcl/schemas'
 import { ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
@@ -145,32 +146,16 @@ type BaseItem = {
   updatedAt: number
 }
 
-export type BaseCatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt' | 'rarity' | 'collectionAddress'> & {
-  i18n: { code: string; text: string }[]
-  data: WearableData
-  image: string
+export type StandardCatalystItem = StandardWearable & {
+  emoteDataV0?: { loop: boolean }
 }
 
-export type StandardCatalystItem = BaseCatalystItem &
-  Pick<BaseItem, 'rarity'> & {
-    collectionAddress: string
-    emoteDataV0?: { loop: boolean }
-  }
-
-export type TPCatalystItem = BaseCatalystItem & { merkleProof: TPItemMerkleProof; content: Record<string, string> }
-
-export type CatalystItem = StandardCatalystItem | TPCatalystItem
+export type CatalystItem = StandardCatalystItem | ThirdPartyWearable
 
 export type ItemApprovalData = {
   cheque: Cheque
   content_hashes: Record<string, string>
   chequeWasConsumed: boolean
-}
-export type TPItemMerkleProof = {
-  index: number
-  proof: string[]
-  hashingKeys: string[]
-  entityHash: string
 }
 
 export type Item<T = ItemType.WEARABLE> = BaseItem & {

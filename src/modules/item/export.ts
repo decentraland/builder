@@ -1,4 +1,5 @@
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { I18N, Rarity, ThirdPartyWearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
@@ -8,7 +9,7 @@ import { NO_CACHE_HEADERS } from 'lib/headers'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { Item, IMAGE_PATH, THUMBNAIL_PATH, TPCatalystItem, StandardCatalystItem, ItemType, EmoteData, EmoteCategory } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, StandardCatalystItem, ItemType, EmoteData, EmoteCategory } from './types'
 import { generateCatalystImage, generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
@@ -101,7 +102,7 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityValues: Omit<TPCatalystItem, 'merkleProof'>) {
+function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityValues: Omit<ThirdPartyWearable, 'merkleProof'>) {
   const hashingKeys = Object.keys(entityValues)
   const { index, proof } = tree.proofs[entityHash]
   return {
@@ -112,7 +113,7 @@ function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityV
   }
 }
 
-function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): TPCatalystItem {
+function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): ThirdPartyWearable {
   if (!item.urn) {
     throw new Error('Item does not have URN')
   }
@@ -122,13 +123,13 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
     id: item.urn,
     name: item.name,
     description: item.description,
-    i18n: [{ code: 'en', text: item.name }],
+    i18n: [{ code: 'en', text: item.name }] as I18N[],
     data: {
-      replaces: item.data.replaces,
-      hides: item.data.hides,
+      replaces: item.data.replaces as WearableCategory[],
+      hides: item.data.hides as WearableCategory[],
       tags: item.data.tags,
-      category: item.data.category,
-      representations: item.data.representations
+      category: item.data.category as WearableCategory,
+      representations: item.data.representations as WearableRepresentation[]
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
@@ -153,14 +154,14 @@ function buildItemEntityMetadata(collection: Collection, item: Item): StandardCa
     name: item.name,
     description: item.description,
     collectionAddress: collection.contractAddress!,
-    rarity: item.rarity!,
-    i18n: [{ code: 'en', text: item.name }],
+    rarity: (item.rarity! as unknown) as Rarity,
+    i18n: [{ code: 'en', text: item.name }] as I18N[],
     data: {
-      replaces: item.data.replaces,
-      hides: item.data.hides,
+      replaces: item.data.replaces as WearableCategory[],
+      hides: item.data.hides as WearableCategory[],
       tags: item.data.tags,
-      category: item.data.category,
-      representations: item.data.representations
+      category: item.data.category as WearableCategory,
+      representations: item.data.representations as WearableRepresentation[]
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
