@@ -94,7 +94,7 @@ import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize } from './export'
-import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH } from './types'
+import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
@@ -479,7 +479,7 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
       name: catalystItem.name,
       description: catalystItem.description,
       contents: entityContentsAsMap,
-      data: catalystItem.data
+      data: catalystItem.data as WearableData
     }
 
     yield put(saveItemRequest(newItem, newContents))
