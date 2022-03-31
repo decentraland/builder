@@ -179,7 +179,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       yield put(
         saveMultipleItemsSuccess(
-          remoteItems.map(remoteItem => fromRemoteItem(remoteItem as any)),
+          remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
           fileNames
         )
       )
@@ -187,7 +187,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(
         saveMultipleItemsFailure(
           error.message,
-          remoteItems.map(remoteItem => fromRemoteItem(remoteItem as any)),
+          remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
           fileNames
         )
       )
@@ -196,7 +196,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (wasCancelled) {
         yield put(
           saveMultipleItemsCancelled(
-            remoteItems.map(remoteItem => fromRemoteItem(remoteItem as any)),
+            remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
             fileNames
           )
         )

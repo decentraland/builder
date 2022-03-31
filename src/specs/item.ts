@@ -1,4 +1,4 @@
-import { LocalItem, Rarity, WearableCategory as LocalItemWearableCategory } from '@dcl/builder-client'
+import { LocalItem, Rarity, WearableCategory as LocalItemWearableCategory, RemoteItem } from '@dcl/builder-client'
 import { Item, ItemRarity, ItemType, WearableBodyShape, WearableCategory } from 'modules/item/types'
 
 export const mockedItem: Item = {
@@ -79,8 +79,7 @@ export const mockedLocalItem: LocalItem = {
   }
 }
 
-// export const mockedRemoteItem: RemoteItem = {
-export const mockedRemoteItem: any = {
+export const mockedRemoteItem: RemoteItem = {
   type: ItemType.WEARABLE as any,
   id: mockedItem.id,
   name: mockedItem.name,

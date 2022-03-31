@@ -2,8 +2,7 @@ import { RemoteItem } from '@dcl/builder-client'
 import { Rarity } from '@dcl/schemas'
 import { Item, ItemRarity } from 'modules/item/types'
 
-// TODO Fix type
-export function fromRemoteItem(remoteItem: RemoteItem & { catalyst_content_hash: string | null }): Item {
+export function fromRemoteItem(remoteItem: RemoteItem): Item {
   const item: Item = {
     id: remoteItem.id,
     name: remoteItem.name,
