@@ -1,9 +1,5 @@
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
-<<<<<<< HEAD
-import { I18N, Rarity, ThirdPartyWearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
-=======
 import { Locale, Rarity, ThirdPartyWearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
->>>>>>> cee62a4179b321cf519bcfb546a8f3b6ca719f6c
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
@@ -159,11 +155,7 @@ function buildItemEntityMetadata(collection: Collection, item: Item): StandardCa
     description: item.description,
     collectionAddress: collection.contractAddress!,
     rarity: (item.rarity! as unknown) as Rarity,
-<<<<<<< HEAD
-    i18n: [{ code: 'en', text: item.name }] as I18N[],
-=======
     i18n: [{ code: Locale.EN, text: item.name }],
->>>>>>> cee62a4179b321cf519bcfb546a8f3b6ca719f6c
     data: {
       replaces: item.data.replaces as WearableCategory[],
       hides: item.data.hides as WearableCategory[],
