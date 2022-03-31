@@ -627,7 +627,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       // Open the ApprovalFlowModal with the items to be approved
-      // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)\
+      // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
       if (itemsToApprove.length > 0) {
         const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
         const slot: Slot = {
