@@ -2,7 +2,8 @@ import { RemoteItem } from '@dcl/builder-client'
 import { Rarity } from '@dcl/schemas'
 import { Item, ItemRarity } from 'modules/item/types'
 
-export function fromRemoteItem(remoteItem: RemoteItem): Item {
+// TODO Fix type
+export function fromRemoteItem(remoteItem: RemoteItem & { catalyst_content_hash: string | null }): Item {
   const item: Item = {
     id: remoteItem.id,
     name: remoteItem.name,
@@ -17,6 +18,7 @@ export function fromRemoteItem(remoteItem: RemoteItem): Item {
     contents: remoteItem.contents,
     blockchainContentHash: remoteItem.content_hash,
     currentContentHash: remoteItem.local_content_hash,
+    catalystContentHash: remoteItem.catalyst_content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)

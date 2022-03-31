@@ -586,7 +586,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const itemsToDeploy: Item[] = []
     const entitiesToDeploy: DeploymentPreparationData[] = []
     for (const item of items) {
-      if (item.blockchainContentHash !== item.currentContentHash) {
+      if (item.catalystContentHash !== item.currentContentHash) {
         const entity: DeploymentPreparationData = yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)

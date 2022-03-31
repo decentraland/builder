@@ -173,6 +173,7 @@ export type Item<T = ItemType.WEARABLE> = BaseItem & {
   contents: Record<string, string>
   blockchainContentHash: string | null
   currentContentHash: string | null
+  catalystContentHash: string | null
   data: T extends ItemType.WEARABLE ? WearableData : EmoteData
 }
 
