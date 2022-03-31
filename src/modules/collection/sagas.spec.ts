@@ -74,6 +74,7 @@ const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
     name: 'An Item',
     description: 'This is an item',
     blockchainContentHash: 'QmSynced',
+    catalystContentHash: 'QmSynced',
     contents: { 'thumbnail.png': 'QmThumbnailHash' } as Record<string, string>,
     data: {
       category: WearableCategory.HAT,
@@ -846,13 +847,13 @@ describe('when executing the TP approval flow', () => {
     const syncedItem = getItem(TPCollection, { currentContentHash: 'QmSynced' })
     const unsyncedItem = getItem(TPCollection, {
       id: 'anotherItem',
-      blockchainContentHash: 'QmOldContentHash',
+      catalystContentHash: 'QmOldContentHash',
       currentContentHash: 'notQmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
     const updatedItem: Item = {
       ...unsyncedItem,
-      blockchainContentHash: 'QmNewContentHash'
+      catalystContentHash: 'QmNewContentHash'
     }
     let cheque: ItemApprovalData['cheque']
     let contentHashes: ItemApprovalData['content_hashes']

@@ -1,6 +1,6 @@
 import { RemoteItem } from '@dcl/builder-client'
 import { Rarity } from '@dcl/schemas'
-import { Item, ItemRarity } from 'modules/item/types'
+import { Item, ItemRarity, WearableData } from 'modules/item/types'
 
 export function fromRemoteItem(remoteItem: RemoteItem): Item {
   const item: Item = {
@@ -13,10 +13,11 @@ export function fromRemoteItem(remoteItem: RemoteItem): Item {
     isApproved: remoteItem.is_approved,
     inCatalyst: remoteItem.in_catalyst,
     type: remoteItem.type,
-    data: remoteItem.data,
+    data: remoteItem.data as WearableData,
     contents: remoteItem.contents,
     blockchainContentHash: remoteItem.content_hash,
     currentContentHash: remoteItem.local_content_hash,
+    catalystContentHash: remoteItem.catalyst_content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)

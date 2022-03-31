@@ -34,6 +34,7 @@ export enum WearableCategory {
   EYEBROWS = 'eyebrows',
   EYES = 'eyes',
   FACIAL_HAIR = 'facial_hair',
+  BODY_SHAPE = 'body_shape',
   FEET = 'feet',
   HAIR = 'hair',
   HAT = 'hat',
@@ -173,6 +174,7 @@ export type Item<T = ItemType.WEARABLE> = BaseItem & {
   contents: Record<string, string>
   blockchainContentHash: string | null
   currentContentHash: string | null
+  catalystContentHash: string | null
   data: T extends ItemType.WEARABLE ? WearableData : EmoteData
 }
 
