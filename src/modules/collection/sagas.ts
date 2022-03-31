@@ -130,7 +130,6 @@ import {
   getCollectionType,
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
-  isTPDeployEnabled,
   isTPCollection
 } from './utils'
 
@@ -602,7 +601,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     try {
       // Check if this makes sense or add a check to see if the items to be published are correct.
       if (!collection.isPublished) {
-        throw new Error(`The collection can't be approved because it's not published`)
+        throw new Error("The collection can't be approved because it's not published")
       }
 
       // 1. Open modal
@@ -674,7 +673,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       )
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
-      if (itemsToDeploy.length > 0 && isTPDeployEnabled()) {
+      if (itemsToDeploy.length > 0) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
           view: ApprovalFlowModalView.DEPLOY,
           collection,

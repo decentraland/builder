@@ -8,7 +8,7 @@
     "@babylonjs/loaders": "^4.2.0",
     "@dcl/builder-client": "^1.6.0",
     "@dcl/content-hash-tree": "^1.1.2",
-    "@dcl/schemas": "^3.9.0",
+    "@dcl/schemas": "^4.1.0",
     "@svgr/webpack": "2.4.1",
     "@types/react-copy-to-clipboard": "^4.3.0",
     "@types/slug": "^5.0.2",
