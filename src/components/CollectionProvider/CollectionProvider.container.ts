@@ -13,14 +13,7 @@ import {
 import { getLoading, getCollection } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_REQUEST, fetchCollectionRequest } from 'modules/collection/actions'
 import { getItemCurations, getLoading as getLoadingItemCurations } from 'modules/curations/itemCuration/selectors'
-import {
-  MapStateProps,
-  MapDispatchProps,
-  MapDispatch,
-  OwnProps,
-  DEFAULT_ITEMS_PAGE_SIZE,
-  DEFAULT_ITEMS_PAGE
-} from './CollectionProvider.types'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionProvider.types'
 import CollectionProvider from './CollectionProvider'
 import { getCuration } from 'modules/curations/collectionCuration/selectors'
 import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
@@ -28,16 +21,9 @@ import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/act
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const id = ownProps.id || getCollectionId(state)
   const collection = id ? getCollection(state, id) : null
-  const pagesAsked = ownProps.itemsPage
-    ? Array.isArray(ownProps.itemsPage)
-      ? ownProps.itemsPage
-      : [ownProps.itemsPage]
-    : [DEFAULT_ITEMS_PAGE]
 
   const items = collection ? getCollectionItems(state, collection.id) : []
-  const paginatedItems = collection
-    ? getPaginatedCollectionItems(state, collection.id, pagesAsked, ownProps.itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE)
-    : []
+  const paginatedItems = collection ? getPaginatedCollectionItems(state, collection.id) : []
   const itemCurations = collection ? getItemCurations(state, collection.id) : []
   const curation = id ? getCuration(state, id) : null
   return {

@@ -12,7 +12,7 @@ import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 
 export const DEFAULT_ITEMS_PAGE = 1
-export const DEFAULT_ITEMS_PAGE_SIZE = 20
+export const DEFAULT_ITEMS_PAGE_SIZE = 50
 
 export type Props = {
   id: string | null

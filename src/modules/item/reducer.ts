@@ -102,12 +102,12 @@ import {
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS
 } from 'modules/thirdParty/actions'
-import { buildPaginationKey, toItemObject } from './utils'
+import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
 
 export type PaginatedResource = {
-  pages: Record<string, string[]>
+  ids: string[]
   total: number
 }
 
@@ -204,7 +204,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEMS_SUCCESS:
     case FETCH_COLLECTION_ITEMS_SUCCESS: {
       const { indexedByField, items, paginationData } = action.payload
-      const { limit, page } = paginationData
       return {
         ...state,
         data: {
@@ -217,10 +216,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
           [indexedByField]: {
             ...state.pagination?.[indexedByField],
             total: Number(paginationData.total),
-            pages: {
-              ...state.pagination?.[indexedByField]?.pages,
-              [buildPaginationKey(page, limit)]: items.map(item => item.id)
-            }
+            ids: items.map(item => item.id)
           }
         },
         error: null

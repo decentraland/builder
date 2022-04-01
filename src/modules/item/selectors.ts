@@ -19,7 +19,7 @@ import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
 import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
 import { Item, SyncStatus, Rarity, CatalystItem } from './types'
-import { areSynced, canSeeItem, isOwner, buildPaginationKey } from './utils'
+import { areSynced, canSeeItem, isOwner } from './utils'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -64,12 +64,11 @@ export const getCollectionItems = (state: RootState, collectionId: string) => {
   return allItems.filter(item => item.collectionId === collectionId)
 }
 
-export const getPaginatedCollectionItems = (state: RootState, collectionId: string, pages: number[], limit: number) => {
+export const getPaginatedCollectionItems = (state: RootState, collectionId: string) => {
   const paginationData = getPaginationData(state, collectionId)
   const allItems = getItems(state)
-  const pagesStrings = pages.map(page => buildPaginationKey(page, limit))
-  const ids = pagesStrings.map(pageString => paginationData?.pages[pageString] || []).flat()
-  return allItems.filter(item => item.collectionId === collectionId && ids.includes(item.id))
+  const ids = paginationData?.ids
+  return allItems.filter(item => item.collectionId === collectionId && ids?.includes(item.id))
 }
 
 export const getRarities = (state: RootState): Rarity[] => {

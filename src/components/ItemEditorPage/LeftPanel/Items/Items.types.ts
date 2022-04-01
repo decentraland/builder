@@ -1,6 +1,10 @@
 import { setItems } from 'modules/editor/actions'
 import { Item, WearableBodyShape } from 'modules/item/types'
 
+export type State = {
+  items: Item[]
+}
+
 export type Props = {
   items: Item[]
   itemsTotal: number | null

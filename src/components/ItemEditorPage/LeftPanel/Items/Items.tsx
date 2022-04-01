@@ -5,11 +5,23 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
 import SidebarItem from './SidebarItem'
-import { Props } from './Items.types'
+import { Props, State } from './Items.types'
 import 'react-virtualized/styles.css' // only needs to be imported once
 import './Items.css'
 
-export default class Items extends React.PureComponent<Props> {
+export default class Items extends React.PureComponent<Props, State> {
+  state = {
+    items: this.props.items
+  }
+  componentDidUpdate() {
+    const { items } = this.props
+    const { items: stateItems } = this.state
+    const prevItemIds = stateItems.map(prevItem => prevItem.id)
+    if (items.find(item => !prevItemIds.includes(item.id))) {
+      const newItems = [...stateItems, ...items.filter(item => !prevItemIds.includes(item.id))]
+      this.setState({ items: newItems })
+    }
+  }
   isVisible = (item: Item) => {
     const { visibleItems } = this.props
     return visibleItems.some(_item => _item.id === item.id)
@@ -27,7 +39,8 @@ export default class Items extends React.PureComponent<Props> {
   }
 
   rowRenderer = ({ key, index, style }: { key: string; index: number; style: any }) => {
-    const { items, selectedItemId, selectedCollectionId, bodyShape } = this.props
+    const { items } = this.state
+    const { selectedItemId, selectedCollectionId, bodyShape } = this.props
     const item = items[index]
     return (
       <div key={key} style={{ ...style, height: '100%' }}>
@@ -45,7 +58,7 @@ export default class Items extends React.PureComponent<Props> {
   }
 
   isRowLoaded = ({ index }: { index: number }) => {
-    const { items } = this.props
+    const { items } = this.state
     return !!items[index]
   }
 
@@ -58,7 +71,8 @@ export default class Items extends React.PureComponent<Props> {
   }
 
   render() {
-    const { items, hasHeader, itemsTotal } = this.props
+    const { items } = this.state
+    const { hasHeader, itemsTotal } = this.props
     if (items.length === 0 || !itemsTotal) return null
 
     return (
