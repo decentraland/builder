@@ -88,7 +88,13 @@ import {
   SAVE_MULTIPLE_ITEMS_FAILURE,
   CLEAR_SAVE_MULTIPLE_ITEMS,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
-  RescueItemsChunkSuccessAction
+  RescueItemsChunkSuccessAction,
+  FETCH_ALL_COLLECTION_ITEMS_SUCCESS,
+  FetchAllCollectionItemsSuccessAction,
+  FETCH_ALL_COLLECTION_ITEMS_REQUEST,
+  FetchAllCollectionItemsRequestAction,
+  FETCH_ALL_COLLECTION_ITEMS_FAILURE,
+  FetchAllCollectionItemsFailureAction
 } from './actions'
 import {
   PublishThirdPartyItemsSuccessAction,
@@ -96,22 +102,29 @@ import {
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS
 } from 'modules/thirdParty/actions'
-import { toItemObject } from './utils'
+import { buildPaginationKey, toItemObject } from './utils'
 import { Item, Rarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
+
+export type PaginatedResource = {
+  pages: Record<string, string[]>
+  total: number
+}
 
 export type ItemState = {
   data: Record<string, Item>
   rarities: Rarity[]
   loading: LoadingState
   error: string | null
+  pagination: Record<string, PaginatedResource> | null
 }
 
 export const INITIAL_STATE: ItemState = {
   data: {},
   rarities: [],
   loading: [],
-  error: null
+  error: null,
+  pagination: null
 }
 
 type ItemReducerAction =
@@ -159,6 +172,9 @@ type ItemReducerAction =
   | SaveMultipleItemsFailureAction
   | SaveMultipleItemsCancelledAction
   | ClearStateSaveMultipleItemsAction
+  | FetchAllCollectionItemsRequestAction
+  | FetchAllCollectionItemsSuccessAction
+  | FetchAllCollectionItemsFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -172,6 +188,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_RARITIES_REQUEST:
     case FETCH_ITEM_REQUEST:
     case FETCH_COLLECTION_ITEMS_REQUEST:
+    case FETCH_ALL_COLLECTION_ITEMS_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
     case SET_PRICE_AND_BENEFICIARY_REQUEST:
     case SAVE_ITEM_REQUEST:
@@ -184,8 +201,43 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         loading: loadingReducer(state.loading, action)
       }
     }
-    case FETCH_COLLECTION_ITEMS_SUCCESS:
     case FETCH_ITEMS_SUCCESS:
+    case FETCH_COLLECTION_ITEMS_SUCCESS: {
+      const { indexedByField, items, paginationData } = action.payload
+      const { limit, page } = paginationData
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        loading: loadingReducer(state.loading, action),
+        pagination: {
+          ...state.pagination,
+          [indexedByField]: {
+            ...state.pagination?.[indexedByField],
+            total: Number(paginationData.total),
+            pages: {
+              ...state.pagination?.[indexedByField]?.pages,
+              [buildPaginationKey(page, limit)]: items.map(item => item.id)
+            }
+          }
+        },
+        error: null
+      }
+    }
+    case FETCH_ALL_COLLECTION_ITEMS_SUCCESS: {
+      const { items } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
     case SET_ITEMS_TOKEN_ID_SUCCESS: {
       const { items } = action.payload
       return {
@@ -227,6 +279,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEMS_FAILURE:
     case FETCH_ITEM_FAILURE:
     case FETCH_COLLECTION_ITEMS_FAILURE:
+    case FETCH_ALL_COLLECTION_ITEMS_FAILURE:
     case SET_ITEMS_TOKEN_ID_FAILURE:
     case SET_PRICE_AND_BENEFICIARY_FAILURE:
     case SAVE_ITEM_FAILURE:

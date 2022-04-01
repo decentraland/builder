@@ -514,3 +514,5 @@ export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, S
     )
   )
 }
+
+export const buildPaginationKey = (page: number, limit: number) => `page=${page}&limit=${limit}`

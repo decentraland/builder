@@ -1,6 +1,7 @@
 import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { PaginatedResource } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
 import { BuiltFile, Item, Rarity } from './types'
 
@@ -10,8 +11,9 @@ export const FETCH_ITEMS_REQUEST = '[Request] Fetch Items'
 export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
 export const FETCH_ITEMS_FAILURE = '[Failure] Fetch Items'
 
-export const fetchItemsRequest = (address?: string) => action(FETCH_ITEMS_REQUEST, { address })
-export const fetchItemsSuccess = (items: Item[]) => action(FETCH_ITEMS_SUCCESS, { items })
+export const fetchItemsRequest = (address: string) => action(FETCH_ITEMS_REQUEST, { address })
+export const fetchItemsSuccess = (items: Item[], paginationData: PaginatedResource<Item>, address: string) =>
+  action(FETCH_ITEMS_SUCCESS, { items, indexedByField: address, paginationData })
 export const fetchItemsFailure = (error: string) => action(FETCH_ITEMS_FAILURE, { error })
 
 export type FetchItemsRequestAction = ReturnType<typeof fetchItemsRequest>
@@ -38,15 +40,33 @@ export const FETCH_COLLECTION_ITEMS_REQUEST = '[Request] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_SUCCESS = '[Success] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_FAILURE = '[Failure] Fetch Collection Items'
 
-export const fetchCollectionItemsRequest = (collectionId: string) => action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId })
-export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[]) =>
-  action(FETCH_COLLECTION_ITEMS_SUCCESS, { collectionId, items })
+export const fetchCollectionItemsRequest = (collectionId: string, page?: number | number[], limit?: number) =>
+  action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId, page, limit })
+export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[], paginationData: PaginatedResource<Item>) =>
+  action(FETCH_COLLECTION_ITEMS_SUCCESS, { indexedByField: collectionId, items, paginationData })
 export const fetchCollectionItemsFailure = (collectionId: string, error: string) =>
   action(FETCH_COLLECTION_ITEMS_FAILURE, { collectionId, error })
 
 export type FetchCollectionItemsRequestAction = ReturnType<typeof fetchCollectionItemsRequest>
 export type FetchCollectionItemsSuccessAction = ReturnType<typeof fetchCollectionItemsSuccess>
 export type FetchCollectionItemsFailureAction = ReturnType<typeof fetchCollectionItemsFailure>
+
+// Fetch all collection item pages
+
+export const FETCH_ALL_COLLECTION_ITEMS_REQUEST = '[Request] Fetch All Collection Items'
+export const FETCH_ALL_COLLECTION_ITEMS_SUCCESS = '[Success] Fetch All Collection Items'
+export const FETCH_ALL_COLLECTION_ITEMS_FAILURE = '[Failure] Fetch All Collection Items'
+
+export const fetchAllCollectionItemsRequest = (collectionId: string, totalPages: number[], limit: number) =>
+  action(FETCH_ALL_COLLECTION_ITEMS_REQUEST, { collectionId, totalPages, limit })
+export const fetchAllCollectionItemsSuccess = (collectionId: string, items: Item[]) =>
+  action(FETCH_ALL_COLLECTION_ITEMS_SUCCESS, { collectionId, items })
+export const fetchAllCollectionItemsFailure = (collectionId: string, error: string) =>
+  action(FETCH_ALL_COLLECTION_ITEMS_FAILURE, { collectionId, error })
+
+export type FetchAllCollectionItemsRequestAction = ReturnType<typeof fetchAllCollectionItemsRequest>
+export type FetchAllCollectionItemsSuccessAction = ReturnType<typeof fetchAllCollectionItemsSuccess>
+export type FetchAllCollectionItemsFailureAction = ReturnType<typeof fetchAllCollectionItemsFailure>
 
 // Save items
 

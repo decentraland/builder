@@ -1,28 +1,49 @@
 import * as React from 'react'
-import { Props } from './CollectionProvider.types'
+import equal from 'fast-deep-equal'
+import { DEFAULT_ITEMS_PAGE_SIZE, DEFAULT_ITEMS_PAGE, Props } from './CollectionProvider.types'
 
 export default class CollectionProvider extends React.PureComponent<Props> {
+  fetchCollectionItems(itemsPage: number | number[] = DEFAULT_ITEMS_PAGE) {
+    const { id, onFetchCollectionItems, itemsPageSize } = this.props
+    if (id) {
+      const pageSize = itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE
+      onFetchCollectionItems(id, itemsPage, pageSize)
+    }
+  }
+
   componentDidMount() {
-    const { id, onFetchCollection, isConnected } = this.props
+    const { id, onFetchCollection, isConnected, itemsPage } = this.props
     if (id && isConnected) {
       onFetchCollection(id)
+      this.fetchCollectionItems(itemsPage)
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { id, onFetchCollection, isConnected, collection } = this.props
+    const { id, isConnected, collection, itemsPage, onFetchCollection } = this.props
     const justFinishedConnecting = !prevProps.isConnected && isConnected
     if (id && justFinishedConnecting) {
       onFetchCollection(id)
+      this.fetchCollectionItems(itemsPage)
     }
 
     if (id && id !== prevProps.id && !collection) {
       onFetchCollection(id)
     }
+
+    const hasChangedPage = !equal(itemsPage, prevProps.itemsPage)
+    if (id && itemsPage && hasChangedPage) {
+      const prevPages = prevProps.itemsPage
+      this.fetchCollectionItems(
+        itemsPage && prevProps.itemsPage && Array.isArray(itemsPage) && Array.isArray(prevPages)
+          ? itemsPage.filter(page => !prevPages?.includes(page))
+          : itemsPage
+      )
+    }
   }
 
   render() {
-    const { collection, items, curation, itemCurations, isLoading, children } = this.props
-    return <>{children({ collection, items, curation, itemCurations, isLoading })}</>
+    const { collection, items, paginatedItems, curation, itemCurations, isLoading, children, onFetchAllCollectionItems } = this.props
+    return <>{children({ collection, items, paginatedItems, curation, itemCurations, isLoading, onFetchAllCollectionItems })}</>
   }
 }

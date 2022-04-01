@@ -164,7 +164,8 @@ describe('Item selectors', () => {
           },
           rarities: [],
           loading: [],
-          error: null
+          error: null,
+          pagination: null
         } as ItemState,
         collection: {
           data: {

@@ -18,6 +18,7 @@ import {
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
+import { getArrayOfPagesFromTotal } from 'lib/api/pagination'
 import { locations } from 'routing/locations'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
@@ -37,14 +38,16 @@ import { ThirdParty } from 'modules/thirdParty/types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
-const PAGE_SIZE = 20
+const PAGE_SIZE = 50
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
     itemSelectionState: {},
     searchText: '',
-    page: 1,
-    isAuthModalOpen: false
+    page: this.props.currentPage,
+    isAuthModalOpen: false,
+    showSelectAllPages: false,
+    fetchAllPages: false
   }
 
   componentDidMount() {
@@ -54,12 +57,24 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     }
   }
 
-  componentDidUpdate() {
-    const { thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots } = this.props
+  componentDidUpdate(prevProps: Props) {
+    const { thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots, currentPage } = this.props
 
     const shouldFetchAvailbleSlots = thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots
     if (shouldFetchAvailbleSlots) {
       onFetchAvailableSlots(thirdParty.id)
+    }
+    // update the state if the page query param changes
+    if (currentPage !== this.state.page) {
+      this.setState({ page: currentPage })
+    }
+    if (prevProps.items !== this.props.items && this.state.fetchAllPages) {
+      // select all items in the state
+      const itemSelectionState = this.props.items.reduce((acc, item) => {
+        acc[item.id] = true
+        return acc
+      }, {} as Record<string, boolean>)
+      this.setState({ itemSelectionState, showSelectAllPages: false })
     }
   }
 
@@ -102,11 +117,15 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   handlePageChange = (_event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
+    const { collection, onPageChange } = this.props
     this.setState({ page: +data.activePage! })
+    onPageChange(collection!.id, +data.activePage!) // pushes the query param to the url
   }
 
   handeSearchChange = (searchText: string) => {
-    this.setState({ page: 1, searchText })
+    if (searchText) {
+      this.setState({ page: 1, searchText })
+    }
   }
 
   handleSelectItemChange = (item: Item, isSelected: boolean) => {
@@ -115,13 +134,14 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
       itemSelectionState: {
         ...itemSelectionState,
         [item.id]: isSelected
-      }
+      },
+      fetchAllPages: false,
+      showSelectAllPages: false
     })
   }
 
-  handleSelectPageChange = () => {
+  handleSelectPageChange = (items: Item[]) => {
     const { itemSelectionState } = this.state
-    const items = this.paginate(this.filterItemsBySearchText())
     const newItemSelectionState: Record<string, boolean> = { ...itemSelectionState }
 
     // Performs the opposite action, if everything is selected, it'll deselect and viceversa
@@ -131,15 +151,14 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
       newItemSelectionState[item.id] = isSelected
     }
 
-    this.setState({ itemSelectionState: newItemSelectionState })
+    this.setState({ itemSelectionState: newItemSelectionState, showSelectAllPages: true })
   }
 
   handleClearSelection = () => {
     this.setState({ itemSelectionState: {} })
   }
 
-  hasItems() {
-    const { items } = this.props
+  hasItems(items: Item[]) {
     return items.length > 0
   }
 
@@ -153,18 +172,16 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return items.every(item => itemSelectionState[item.id])
   }
 
-  getSelectedItems() {
-    const { items } = this.props
-    const { itemSelectionState } = this.state
-    return items.filter(item => itemSelectionState[item.id])
+  getSelectedItems(items: Item[]) {
+    const { itemSelectionState, fetchAllPages } = this.state
+    return fetchAllPages ? items : items.filter(item => itemSelectionState[item.id])
   }
 
   isSearching() {
     return this.state.searchText !== ''
   }
 
-  filterItemsBySearchText() {
-    const { items } = this.props
+  filterItemsBySearchText(items: Item[]) {
     const { searchText } = this.state
 
     return items.filter(
@@ -177,20 +194,29 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   }
 
-  renderPage(thirdParty: ThirdParty) {
-    const { isLoadingAvailableSlots } = this.props
-    const { page, searchText, itemSelectionState, isAuthModalOpen } = this.state
+  handleSelectAllItems = (onFetchAllCollectionItems: (id: string, pages: number[], limit: number) => void) => {
+    const { collection, itemsTotal } = this.props
+    this.setState({ fetchAllPages: true })
+    if (collection) {
+      const totalPages = Math.ceil(itemsTotal! / PAGE_SIZE)
+      onFetchAllCollectionItems(collection.id, getArrayOfPagesFromTotal(totalPages), PAGE_SIZE)
+    }
+  }
+
+  renderPage(
+    thirdParty: ThirdParty,
+    allItems: Item[],
+    paginatedItems: Item[],
+    onFetchAllCollectionItems: (id: string, pages: number[], limit: number) => void
+  ) {
+    const { itemsTotal, isLoadingAvailableSlots } = this.props
+    const { page, searchText, itemSelectionState, isAuthModalOpen, showSelectAllPages } = this.state
+
     const collection = this.props.collection!
     const areSlotsEmpty = thirdParty?.availableSlots && thirdParty.availableSlots <= 0
-
-    const selectedItems = this.getSelectedItems()
+    const selectedItems = allItems.filter(item => itemSelectionState[item.id])
     const selectedItemsCount = selectedItems.length
-
-    const items = this.filterItemsBySearchText()
-    const paginatedItems = this.paginate(items)
-    const total = items.length
-    const pageTotal = total > PAGE_SIZE ? PAGE_SIZE * page : total
-
+    const total = itemsTotal!
     const totalPages = Math.ceil(total / PAGE_SIZE)
 
     return (
@@ -259,7 +285,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
             />
           </Notice>
 
-          {this.hasItems() ? (
+          {paginatedItems.length ? (
             <>
               <div className="search-container">
                 <TextFilter
@@ -269,7 +295,11 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 />
 
                 <div className="search-info secondary-text">
-                  {t('third_party_collection_detail_page.search_info', { page, pageTotal, total })}
+                  {t('third_party_collection_detail_page.search_info', {
+                    page: (page - 1) * PAGE_SIZE,
+                    pageTotal: page * PAGE_SIZE,
+                    total
+                  })}
                 </div>
               </div>
 
@@ -280,6 +310,12 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                   <span className="link" onClick={this.handleClearSelection}>
                     {t('third_party_collection_detail_page.clear_selection')}
                   </span>
+                  . &nbsp;
+                  {showSelectAllPages ? (
+                    <span className="link" onClick={() => this.handleSelectAllItems(onFetchAllCollectionItems)}>
+                      {t('third_party_collection_detail_page.select_all', { total })}
+                    </span>
+                  ) : null}
                   &nbsp;
                 </div>
               ) : null}
@@ -291,7 +327,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                       <Checkbox
                         className="item-checkbox"
                         checked={this.areAllSelected(paginatedItems)}
-                        onClick={this.handleSelectPageChange}
+                        onClick={() => this.handleSelectPageChange(paginatedItems)}
                       />
                       &nbsp;
                       {t('global.item')}
@@ -346,18 +382,19 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   render() {
+    const { page } = this.state
     const { isLoading, collection, thirdParty } = this.props
     const hasAccess = this.hasAccess()
     const shouldRender = hasAccess && collection
     return (
-      <CollectionProvider id={collection?.id}>
-        {({ isLoading: isLoadingCollectionData }) => (
+      <CollectionProvider id={collection?.id} itemsPage={[page]} itemsPageSize={PAGE_SIZE}>
+        {({ isLoading: isLoadingCollectionData, items, paginatedItems, onFetchAllCollectionItems }) => (
           <LoggedInDetailPage
             className="ThirdPartyCollectionDetailPage"
-            hasNavigation={!hasAccess && !isLoading && !isLoadingCollectionData}
+            hasNavigation={!hasAccess && !isLoading}
             isLoading={isLoading || isLoadingCollectionData}
           >
-            {shouldRender && thirdParty ? this.renderPage(thirdParty) : <NotFound />}
+            {shouldRender && thirdParty ? this.renderPage(thirdParty, items, paginatedItems, onFetchAllCollectionItems) : <NotFound />}
           </LoggedInDetailPage>
         )}
       </CollectionProvider>

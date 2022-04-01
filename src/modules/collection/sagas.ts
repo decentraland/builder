@@ -1,3 +1,4 @@
+import PQueue from 'p-queue'
 import { Contract, providers, constants, ethers } from 'ethers'
 import { push, replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, CallEffect, all } from 'redux-saga/effects'
@@ -93,11 +94,18 @@ import {
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
-import { BuilderAPI } from 'lib/api/builder'
+import { BuilderAPI, PaginatedResource } from 'lib/api/builder'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
-import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
+import {
+  getEntityByItemId,
+  getItems,
+  getCollectionItems,
+  getWalletItems,
+  getData as getItemsById,
+  getPaginationData
+} from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
@@ -601,7 +609,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   }
 
   function* handleInitiateTPItemsApprovalFlow(action: InitiateTPApprovalFlowAction) {
-    const { collection, itemsToApprove } = action.payload
+    const { collection } = action.payload
 
     try {
       // Check if this makes sense or add a check to see if the items to be published are correct.
@@ -617,8 +625,23 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         })
       )
 
-      // 2. Get the approval data from the server
+      // 2. Get items to approve & the approval data from the server
       // TODO: Use the builder client. Tracked here: https://github.com/decentraland/builder/issues/1855
+      // Get all items to get approved in batches
+      const paginatedData: PaginatedResource<Item> = yield select(getPaginationData, collection.id)
+      const BATCH_SIZE = 50
+      const REQUESTS_BATCH_SIZE = 10
+      const pages = Array.from({ length: Math.ceil(paginatedData.total / BATCH_SIZE) }, (_, i) => i + 1)
+      const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
+      const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = pages.map((page: number) => () =>
+        builder.fetchCollectionItems(collection.id, page, BATCH_SIZE, true)
+      ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
+      const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
+      const itemsToApprove = allItemPages.map(result => result.results).flat()
+
+      if (!itemsToApprove.length) {
+        throw Error('Error fetching items to approve')
+      }
       const { cheque, content_hashes: contentHashes }: ItemApprovalData = yield call([builder, 'fetchApprovalData'], collection.id)
 
       // 3. Compute the merkle tree root & create slot to consume

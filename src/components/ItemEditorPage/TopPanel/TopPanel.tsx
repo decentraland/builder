@@ -159,9 +159,10 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     return isCommitteeMember && isReviewing && isConnected ? (
       <div className="TopPanel">
         <CollectionProvider id={selectedCollectionId}>
-          {({ collection, items, itemCurations, curation, isLoading }) =>
-            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, items, curation, itemCurations)
-          }
+          {({ collection, items, itemCurations, curation, isLoading }) => {
+            const showLoader = !collection || (isLoading && !items.length)
+            return showLoader ? <Loader size="small" active /> : this.renderPage(collection, items, curation, itemCurations)
+          }}
         </CollectionProvider>
       </div>
     ) : null

@@ -2,11 +2,12 @@ import { Dispatch } from 'redux'
 import { Collection } from 'modules/collection/types'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { setItems, SetItemsAction } from 'modules/editor/actions'
-import { setCollection, SetCollectionAction } from 'modules/item/actions'
+import { FetchCollectionItemsRequestAction, setCollection, SetCollectionAction } from 'modules/item/actions'
 
 export type Props = {
   isConnected: boolean
   items: Item[]
+  itemsTotal: number | null
   orphanItems: Item[]
   collections: Collection[]
   selectedItemId: string | null
@@ -21,6 +22,7 @@ export type Props = {
 export type MapStateProps = Pick<
   Props,
   | 'items'
+  | 'itemsTotal'
   | 'orphanItems'
   | 'collections'
   | 'selectedItemId'
@@ -31,4 +33,4 @@ export type MapStateProps = Pick<
   | 'isReviewing'
 >
 export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onSetCollection'>
-export type MapDispatch = Dispatch<SetItemsAction | SetCollectionAction>
+export type MapDispatch = Dispatch<SetItemsAction | SetCollectionAction | FetchCollectionItemsRequestAction>

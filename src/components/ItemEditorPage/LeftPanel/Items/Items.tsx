@@ -1,11 +1,12 @@
 import * as React from 'react'
+import { AutoSizer, InfiniteLoader, List } from 'react-virtualized'
 import { Header, Section } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { sortByName } from 'lib/sort'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
 import SidebarItem from './SidebarItem'
 import { Props } from './Items.types'
+import 'react-virtualized/styles.css' // only needs to be imported once
 import './Items.css'
 
 export default class Items extends React.PureComponent<Props> {
@@ -25,24 +26,63 @@ export default class Items extends React.PureComponent<Props> {
     onSetItems(newVisibleItemIds)
   }
 
+  rowRenderer = ({ key, index, style }: { key: string; index: number; style: any }) => {
+    const { items, selectedItemId, selectedCollectionId, bodyShape } = this.props
+    const item = items[index]
+    return (
+      <div key={key} style={{ ...style, height: '100%' }}>
+        <SidebarItem
+          key={item.id}
+          item={item}
+          isSelected={selectedItemId === item.id}
+          isVisible={this.isVisible(item)}
+          selectedCollectionId={selectedCollectionId}
+          bodyShape={bodyShape}
+          onClick={this.handleClick}
+        />
+      </div>
+    )
+  }
+
+  isRowLoaded = ({ index }: { index: number }) => {
+    const { items } = this.props
+    return !!items[index]
+  }
+
+  loadMoreItems = () => {
+    const { selectedCollectionId, onLoadNextPage, itemsTotal } = this.props
+    if (selectedCollectionId && itemsTotal) {
+      onLoadNextPage()
+    }
+    return Promise.resolve() // work-around for loadMoreRows expecting a Promise
+  }
+
   render() {
-    const { items, selectedItemId, selectedCollectionId, hasHeader, bodyShape } = this.props
-    if (items.length === 0) return null
+    const { items, hasHeader, itemsTotal } = this.props
+    if (items.length === 0 || !itemsTotal) return null
 
     return (
       <Section className="Items">
         {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
-        {items.sort(sortByName).map(item => (
-          <SidebarItem
-            key={item.id}
-            item={item}
-            isSelected={selectedItemId === item.id}
-            isVisible={this.isVisible(item)}
-            selectedCollectionId={selectedCollectionId}
-            bodyShape={bodyShape}
-            onClick={this.handleClick}
-          />
-        ))}
+        <InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreItems} rowCount={itemsTotal}>
+          {({ onRowsRendered, registerChild }) => (
+            <AutoSizer>
+              {({ height, width }) => {
+                return (
+                  <List
+                    ref={registerChild}
+                    onRowsRendered={onRowsRendered}
+                    width={width}
+                    height={height}
+                    rowCount={items.length}
+                    rowHeight={50}
+                    rowRenderer={this.rowRenderer}
+                  />
+                )
+              }}
+            </AutoSizer>
+          )}
+        </InfiniteLoader>
       </Section>
     )
   }

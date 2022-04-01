@@ -16,7 +16,7 @@ import { Props } from './CollectionCard.types'
 import './CollectionCard.css'
 
 const CollectionCard = (props: Props & CollectedProps) => {
-  const { collection, onDeleteCollection, items, connectDropTarget, isOver, canDrop } = props
+  const { collection, onDeleteCollection, itemCount, connectDropTarget, isOver, canDrop } = props
   const [isDeleting, setIsDeleting] = React.useState(false)
 
   const handleCancelDeleteCollection = React.useCallback(() => setIsDeleting(false), [setIsDeleting])
@@ -35,7 +35,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
         <div className={`CollectionCard is-card ${isOver && canDrop ? 'is-over' : ''}`}>
           {!collection.isPublished && (
             <OptionsDropdown
-              className={classNames({ 'empty-collection-options': items.length === 0 }, 'options-dropdown')}
+              className={classNames({ 'empty-collection-options': itemCount === 0 }, 'options-dropdown')}
               options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]}
             />
           )}
@@ -47,7 +47,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
               </div>
               <div className="subtitle">
                 {t(`collection.type.${type}`)}&nbsp;·&nbsp;
-                {t('collection_card.item_count', { count: items.length })}
+                {t('collection_card.item_count', { count: itemCount })}
               </div>
             </Card.Content>
           </Link>

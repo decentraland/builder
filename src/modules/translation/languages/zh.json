@@ -1008,6 +1008,7 @@
     "search_placeholder": "搜索 {count} {count, plural, one {物品} other {项目}}...",
     "search_info": "{page}-{pageTotal} 个，共 {total} 个",
     "clear_selection": "清空选项",
+    "select_all": "选择所有 {total} 项",
     "selection": "{count, plural, one {# 物品} other {# 项目}} 选中.",
     "max_select_count": "您一次最多可以发布 {count} 个项目",
     "slots": "{amount, plural, =0 {没有插槽} other {# 个插槽}}",
