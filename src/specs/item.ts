@@ -1,4 +1,4 @@
-import { LocalItem, Rarity, RemoteItem, WearableCategory as LocalItemWearableCategory } from '@dcl/builder-client'
+import { LocalItem, Rarity, WearableCategory as LocalItemWearableCategory, RemoteItem } from '@dcl/builder-client'
 import { Item, ItemRarity, ItemType, WearableBodyShape, WearableCategory } from 'modules/item/types'
 
 export const mockedItem: Item = {
@@ -25,6 +25,7 @@ export const mockedItem: Item = {
   contents: { 'anItemContent.glb': 'theFileHash', 'thumbnail.png': 'theThumbnailHash' },
   blockchainContentHash: null,
   currentContentHash: null,
+  catalystContentHash: null,
   data: {
     category: WearableCategory.HAT,
     representations: [
@@ -122,7 +123,8 @@ export const mockedRemoteItem: RemoteItem = {
   in_catalyst: false,
   created_at: 0,
   updated_at: 0,
-  local_content_hash: 'someHash'
+  local_content_hash: 'someHash',
+  catalyst_content_hash: null
 }
 
 export const mockedItemContents = { 'anItemContent.glb': new Blob(), 'thumbnail.png': new Blob() }

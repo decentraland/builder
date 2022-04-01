@@ -236,10 +236,10 @@ describe('Item selectors', () => {
           ]
         })
 
-        describe('and the blockchain hash is different from the current content hash', () => {
+        describe('and the catalyst hash is different from the current content hash', () => {
           beforeEach(() => {
             state.item.data[itemId].currentContentHash = 'someHash'
-            state.item.data[itemId].blockchainContentHash = 'aDifferentHash'
+            state.item.data[itemId].catalystContentHash = 'aDifferentHash'
           })
 
           it('should return a map where the item id of the tested item is set unsynced', () => {
@@ -247,9 +247,9 @@ describe('Item selectors', () => {
           })
         })
 
-        describe('and the blockchain hash is the same as the current content hash', () => {
+        describe('and the catalyst hash is the same as the current content hash', () => {
           beforeEach(() => {
-            state.item.data[itemId].currentContentHash = state.item.data[itemId].blockchainContentHash
+            state.item.data[itemId].currentContentHash = state.item.data[itemId].catalystContentHash
           })
 
           it('should return a map where the item id of the tested item is set as synced', () => {

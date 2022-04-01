@@ -113,7 +113,7 @@ const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStat
     return SyncStatus.UNDER_REVIEW
   } else if (itemCuration && itemCuration.status === CurationStatus.APPROVED) {
     // Blockchain content hash contains the hash in the catalyst for TP items
-    return item.blockchainContentHash !== item.currentContentHash ? SyncStatus.UNSYNCED : SyncStatus.SYNCED
+    return item.currentContentHash !== item.catalystContentHash ? SyncStatus.UNSYNCED : SyncStatus.SYNCED
   }
   return SyncStatus.UNPUBLISHED
 }

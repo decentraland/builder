@@ -277,6 +277,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           inCatalyst: false,
           blockchainContentHash: null,
           currentContentHash: null,
+          catalystContentHash: null,
           rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
           data: {
             category: category as WearableCategory,
