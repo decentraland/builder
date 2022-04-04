@@ -5,9 +5,9 @@ import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getPaginatedCollectionItems, getLoading as getLoadingItems, getCollectionItems } from 'modules/item/selectors'
 import {
-  fetchAllCollectionItemsRequest,
+  fetchCollectionItemsPagesRequest,
   fetchCollectionItemsRequest,
-  FETCH_ALL_COLLECTION_ITEMS_REQUEST,
+  FETCH_COLLECTION_ITEMS_PAGES_REQUEST,
   FETCH_COLLECTION_ITEMS_REQUEST
 } from 'modules/item/actions'
 import { getLoading, getCollection } from 'modules/collection/selectors'
@@ -21,7 +21,6 @@ import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/act
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const id = ownProps.id || getCollectionId(state)
   const collection = id ? getCollection(state, id) : null
-
   const items = collection ? getCollectionItems(state, collection.id) : []
   const paginatedItems = collection ? getPaginatedCollectionItems(state, collection.id) : []
   const itemCurations = collection ? getItemCurations(state, collection.id) : []
@@ -38,14 +37,14 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
       isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST) ||
       isLoadingType(getLoadingItems(state), FETCH_COLLECTION_ITEMS_REQUEST) ||
-      isLoadingType(getLoadingItems(state), FETCH_ALL_COLLECTION_ITEMS_REQUEST)
+      isLoadingType(getLoadingItems(state), FETCH_COLLECTION_ITEMS_PAGES_REQUEST)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onFetchCollection: id => dispatch(fetchCollectionRequest(id)),
   onFetchCollectionItems: (id, page, limit) => dispatch(fetchCollectionItemsRequest(id, page, limit)),
-  onFetchAllCollectionItems: (id, pages, limit) => dispatch(fetchAllCollectionItemsRequest(id, pages, limit))
+  onFetchCollectionItemsPages: (id, pages, limit) => dispatch(fetchCollectionItemsPagesRequest(id, pages, limit))
 })
 
 export default connect(mapState, mapDispatch)(CollectionProvider)

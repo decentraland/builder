@@ -3,10 +3,10 @@ import { Collection } from 'modules/collection/types'
 import { fetchCollectionRequest, FetchCollectionRequestAction } from 'modules/collection/actions'
 import { Item } from 'modules/item/types'
 import {
-  fetchAllCollectionItemsRequest,
-  FetchAllCollectionItemsRequestAction,
   fetchCollectionItemsRequest,
-  FetchCollectionItemsRequestAction
+  fetchCollectionItemsPagesRequest,
+  FetchCollectionItemsRequestAction,
+  FetchCollectionItemsPagesRequestAction
 } from 'modules/item/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
@@ -32,7 +32,7 @@ export type Props = {
     curation,
     itemCurations,
     isLoading,
-    onFetchAllCollectionItems
+    onFetchCollectionItemsPages
   }: {
     collection: Collection | null
     items: Item[]
@@ -40,17 +40,19 @@ export type Props = {
     curation: CollectionCuration | null
     itemCurations: ItemCuration[] | null
     isLoading: boolean
-    onFetchAllCollectionItems: typeof fetchAllCollectionItemsRequest
+    onFetchCollectionItemsPages: typeof fetchCollectionItemsPagesRequest
   }) => React.ReactNode
   onFetchCollection: typeof fetchCollectionRequest
   onFetchCollectionItems: typeof fetchCollectionItemsRequest
-  onFetchAllCollectionItems: typeof fetchAllCollectionItemsRequest
+  onFetchCollectionItemsPages: typeof fetchCollectionItemsPagesRequest
 }
 
 export type MapStateProps = Pick<
   Props,
   'id' | 'collection' | 'items' | 'isLoading' | 'isConnected' | 'curation' | 'itemCurations' | 'paginatedItems'
 >
-export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems' | 'onFetchAllCollectionItems'>
-export type MapDispatch = Dispatch<FetchCollectionRequestAction | FetchCollectionItemsRequestAction | FetchAllCollectionItemsRequestAction>
+export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems' | 'onFetchCollectionItemsPages'>
+export type MapDispatch = Dispatch<
+  FetchCollectionRequestAction | FetchCollectionItemsRequestAction | FetchCollectionItemsPagesRequestAction
+>
 export type OwnProps = Partial<Pick<Props, 'id' | 'itemsPage' | 'itemsPageSize'>>

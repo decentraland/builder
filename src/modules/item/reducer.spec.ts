@@ -12,10 +12,14 @@ import {
   saveMultipleItemsFailure,
   rescueItemsChunkSuccess,
   rescueItemsRequest,
-  rescueItemsSuccess
+  rescueItemsSuccess,
+  fetchCollectionItemsSuccess,
+  fetchCollectionItemsPagesSuccess
 } from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
+import { PaginatedResource } from 'lib/api/builder'
+import { toItemObject } from './utils'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 const getChainIdByNetworkMock: jest.Mock<typeof getChainIdByNetwork> = (getChainIdByNetwork as unknown) as jest.Mock<
@@ -286,6 +290,69 @@ describe('when reducing an action of a successful chunk of rescued items', () =>
         ...state.data,
         [items[0].id]: items[0]
       }
+    })
+  })
+})
+
+describe('when reducing an action of a successful fetch of collection items', () => {
+  let collection: Collection
+  let items: Item[]
+  let paginationData: PaginatedResource<Item>
+
+  beforeEach(() => {
+    collection = { id: 'some-id' } as Collection
+    items = [{ id: 'some-id' } as Item]
+    paginationData = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      total: 1,
+      results: items
+    }
+
+    state = {
+      ...state,
+      data: {
+        anItemId: {
+          id: 'anItemId'
+        } as Item
+      },
+      pagination: {
+        anAddress: {
+          ids: ['anItemId'],
+          total: 1
+        }
+      }
+    }
+  })
+
+  describe('and fetching only one page', () => {
+    it('should add the items to the state and update the pagination data', () => {
+      expect(itemReducer(state, fetchCollectionItemsSuccess(collection.id, items, paginationData))).toEqual({
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        pagination: {
+          ...state.pagination,
+          [collection.id]: {
+            ids: items.map(item => item.id),
+            total: paginationData.total
+          }
+        }
+      })
+    })
+  })
+  describe('and fetching several pages at the same time', () => {
+    it('should add the items to the state with the new items', () => {
+      expect(itemReducer(state, fetchCollectionItemsPagesSuccess(collection.id, items))).toEqual({
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        }
+      })
     })
   })
 })

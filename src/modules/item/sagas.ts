@@ -76,10 +76,10 @@ import {
   FetchItemsSuccessAction,
   FetchCollectionItemsSuccessAction,
   fetchItemsRequest,
-  FETCH_ALL_COLLECTION_ITEMS_REQUEST,
-  FetchAllCollectionItemsRequestAction,
-  fetchAllCollectionItemsSuccess,
-  fetchAllCollectionItemsFailure
+  FETCH_COLLECTION_ITEMS_PAGES_REQUEST,
+  FetchCollectionItemsPagesRequestAction,
+  fetchCollectionItemsPagesSuccess,
+  fetchCollectionItemsPagesFailure
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
@@ -115,7 +115,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
-  yield takeEvery(FETCH_ALL_COLLECTION_ITEMS_REQUEST, handleFetchAllCollectionItemPagesRequest)
+  yield takeEvery(FETCH_COLLECTION_ITEMS_PAGES_REQUEST, handleFetchCollectionItemPagesRequest)
   yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
@@ -156,6 +156,19 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
+  function* fetchCollectionItemsWithBatch(collectionId: string, pagesToFetch: number[], limit?: number, isReviewing = false) {
+    const REQUEST_BATCH_SIZE = 10
+    const queue = new PQueue({ concurrency: REQUEST_BATCH_SIZE })
+    const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = []
+    pagesToFetch.forEach(page => {
+      promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, page, limit, isReviewing))
+    })
+    const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
+    const paginationData = allItemPages[0]
+    const items = allItemPages.map(result => result.results).flat()
+    return { items, paginationData }
+  }
+
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
     const DEFAULT_PAGE = 1
     const { collectionId, page = DEFAULT_PAGE, limit } = action.payload
@@ -163,41 +176,20 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const isReviewing = location.query.reviewing === 'true'
 
     try {
-      const queue = new PQueue({ concurrency: 10 })
-      let promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = []
-      let items: Item[] = []
-      let paginationData
-      if (Array.isArray(page)) {
-        page.forEach(page => {
-          promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, page, limit, isReviewing))
-        })
-      } else {
-        promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, page, limit, isReviewing))
-      }
-      const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-      paginationData = allItemPages[0]
-      items = allItemPages.map(result => result.results).flat()
-
+      const { items, paginationData } = yield call(fetchCollectionItemsWithBatch, collectionId, [page], limit, isReviewing)
       yield put(fetchCollectionItemsSuccess(collectionId, items, paginationData))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
     }
   }
 
-  function* handleFetchAllCollectionItemPagesRequest(action: FetchAllCollectionItemsRequestAction) {
-    const { collectionId, totalPages, limit } = action.payload
-
+  function* handleFetchCollectionItemPagesRequest(action: FetchCollectionItemsPagesRequestAction) {
+    const { collectionId, pagesToFetch, limit } = action.payload
     try {
-      const REQUEST_BATCH_SIZE = 10
-      const queue = new PQueue({ concurrency: REQUEST_BATCH_SIZE })
-      const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = totalPages.map((page: number) => {
-        return () => legacyBuilder.fetchCollectionItems(collectionId, page, limit)
-      })
-      const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-      const items = allItemPages.map(result => result.results).flat()
-      yield put(fetchAllCollectionItemsSuccess(collectionId, items))
+      const { items } = yield call(fetchCollectionItemsWithBatch, collectionId, pagesToFetch, limit)
+      yield put(fetchCollectionItemsPagesSuccess(collectionId, items))
     } catch (error) {
-      yield put(fetchAllCollectionItemsFailure(collectionId, error.message))
+      yield put(fetchCollectionItemsPagesFailure(collectionId, error.message))
     }
   }
 

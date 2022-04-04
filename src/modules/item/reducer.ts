@@ -89,12 +89,12 @@ import {
   CLEAR_SAVE_MULTIPLE_ITEMS,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
   RescueItemsChunkSuccessAction,
-  FETCH_ALL_COLLECTION_ITEMS_SUCCESS,
-  FetchAllCollectionItemsSuccessAction,
-  FETCH_ALL_COLLECTION_ITEMS_REQUEST,
-  FetchAllCollectionItemsRequestAction,
-  FETCH_ALL_COLLECTION_ITEMS_FAILURE,
-  FetchAllCollectionItemsFailureAction
+  FETCH_COLLECTION_ITEMS_PAGES_SUCCESS,
+  FetchCollectionItemsPagesSuccessAction,
+  FETCH_COLLECTION_ITEMS_PAGES_REQUEST,
+  FetchCollectionItemsPagesRequestAction,
+  FETCH_COLLECTION_ITEMS_PAGES_FAILURE,
+  FetchCollectionItemsPagesFailureAction
 } from './actions'
 import {
   PublishThirdPartyItemsSuccessAction,
@@ -172,9 +172,9 @@ type ItemReducerAction =
   | SaveMultipleItemsFailureAction
   | SaveMultipleItemsCancelledAction
   | ClearStateSaveMultipleItemsAction
-  | FetchAllCollectionItemsRequestAction
-  | FetchAllCollectionItemsSuccessAction
-  | FetchAllCollectionItemsFailureAction
+  | FetchCollectionItemsPagesRequestAction
+  | FetchCollectionItemsPagesSuccessAction
+  | FetchCollectionItemsPagesFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -188,7 +188,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_RARITIES_REQUEST:
     case FETCH_ITEM_REQUEST:
     case FETCH_COLLECTION_ITEMS_REQUEST:
-    case FETCH_ALL_COLLECTION_ITEMS_REQUEST:
+    case FETCH_COLLECTION_ITEMS_PAGES_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
     case SET_PRICE_AND_BENEFICIARY_REQUEST:
     case SAVE_ITEM_REQUEST:
@@ -222,7 +222,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
-    case FETCH_ALL_COLLECTION_ITEMS_SUCCESS: {
+    case FETCH_COLLECTION_ITEMS_PAGES_SUCCESS: {
       const { items } = action.payload
       return {
         ...state,
@@ -275,7 +275,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEMS_FAILURE:
     case FETCH_ITEM_FAILURE:
     case FETCH_COLLECTION_ITEMS_FAILURE:
-    case FETCH_ALL_COLLECTION_ITEMS_FAILURE:
+    case FETCH_COLLECTION_ITEMS_PAGES_FAILURE:
     case SET_ITEMS_TOKEN_ID_FAILURE:
     case SET_PRICE_AND_BENEFICIARY_FAILURE:
     case SAVE_ITEM_FAILURE:

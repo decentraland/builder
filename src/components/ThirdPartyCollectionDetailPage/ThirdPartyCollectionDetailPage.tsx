@@ -207,7 +207,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     thirdParty: ThirdParty,
     allItems: Item[],
     paginatedItems: Item[],
-    onFetchAllCollectionItems: (id: string, pages: number[], limit: number) => void
+    onFetchCollectionItemsPages: (id: string, pages: number[], limit: number) => void
   ) {
     const { itemsTotal, isLoadingAvailableSlots } = this.props
     const { page, searchText, itemSelectionState, isAuthModalOpen, showSelectAllPages } = this.state
@@ -312,7 +312,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                   </span>
                   . &nbsp;
                   {showSelectAllPages ? (
-                    <span className="link" onClick={() => this.handleSelectAllItems(onFetchAllCollectionItems)}>
+                    <span className="link" onClick={() => this.handleSelectAllItems(onFetchCollectionItemsPages)}>
                       {t('third_party_collection_detail_page.select_all', { total })}
                     </span>
                   ) : null}
@@ -387,14 +387,14 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     const hasAccess = this.hasAccess()
     const shouldRender = hasAccess && collection
     return (
-      <CollectionProvider id={collection?.id} itemsPage={[page]} itemsPageSize={PAGE_SIZE}>
-        {({ isLoading: isLoadingCollectionData, items, paginatedItems, onFetchAllCollectionItems }) => (
+      <CollectionProvider id={collection?.id} itemsPage={page} itemsPageSize={PAGE_SIZE}>
+        {({ isLoading: isLoadingCollectionData, items, paginatedItems, onFetchCollectionItemsPages }) => (
           <LoggedInDetailPage
             className="ThirdPartyCollectionDetailPage"
             hasNavigation={!hasAccess && !isLoading}
             isLoading={isLoading || isLoadingCollectionData}
           >
-            {shouldRender && thirdParty ? this.renderPage(thirdParty, items, paginatedItems, onFetchAllCollectionItems) : <NotFound />}
+            {shouldRender && thirdParty ? this.renderPage(thirdParty, items, paginatedItems, onFetchCollectionItemsPages) : <NotFound />}
           </LoggedInDetailPage>
         )}
       </CollectionProvider>

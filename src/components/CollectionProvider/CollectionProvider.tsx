@@ -4,10 +4,10 @@ import { DEFAULT_ITEMS_PAGE_SIZE, DEFAULT_ITEMS_PAGE, Props } from './Collection
 
 export default class CollectionProvider extends React.PureComponent<Props> {
   fetchCollectionItems(itemsPage: number | number[] = DEFAULT_ITEMS_PAGE) {
-    const { id, onFetchCollectionItems, itemsPageSize } = this.props
+    const { id, onFetchCollectionItems, onFetchCollectionItemsPages, itemsPageSize } = this.props
     if (id) {
       const pageSize = itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE
-      onFetchCollectionItems(id, itemsPage, pageSize)
+      Array.isArray(itemsPage) ? onFetchCollectionItemsPages(id, itemsPage, pageSize) : onFetchCollectionItems(id, itemsPage, pageSize)
     }
   }
 
@@ -31,6 +31,7 @@ export default class CollectionProvider extends React.PureComponent<Props> {
       onFetchCollection(id)
     }
 
+    // logic to fetch the new pages requested
     const hasChangedPage = !equal(itemsPage, prevProps.itemsPage)
     if (id && itemsPage && hasChangedPage) {
       const prevPages = prevProps.itemsPage
@@ -43,7 +44,7 @@ export default class CollectionProvider extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, items, paginatedItems, curation, itemCurations, isLoading, children, onFetchAllCollectionItems } = this.props
-    return <>{children({ collection, items, paginatedItems, curation, itemCurations, isLoading, onFetchAllCollectionItems })}</>
+    const { collection, items, paginatedItems, curation, itemCurations, isLoading, children, onFetchCollectionItemsPages } = this.props
+    return <>{children({ collection, items, paginatedItems, curation, itemCurations, isLoading, onFetchCollectionItemsPages })}</>
   }
 }

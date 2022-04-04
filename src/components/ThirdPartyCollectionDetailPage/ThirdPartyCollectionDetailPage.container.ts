@@ -8,7 +8,7 @@ import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getCollection, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getCollectionItems, getLoading as getLoadingItem, getPaginationData } from 'modules/item/selectors'
-import { FETCH_ALL_COLLECTION_ITEMS_REQUEST, FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
+import { FETCH_COLLECTION_ITEMS_PAGES_REQUEST, FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
@@ -39,7 +39,7 @@ const mapState = (state: RootState): MapStateProps => {
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItem(state), FETCH_COLLECTION_ITEMS_REQUEST) ||
-      isLoadingType(getLoadingItem(state), FETCH_ALL_COLLECTION_ITEMS_REQUEST),
+      isLoadingType(getLoadingItem(state), FETCH_COLLECTION_ITEMS_PAGES_REQUEST),
     isLoadingAvailableSlots: isFetchingAvailableSlots(state)
   }
 }
