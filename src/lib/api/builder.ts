@@ -744,7 +744,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchItemCurations(collectionId: Collection['id'], itemIds?: Item['id'][]) {
     const curations: RemoteItemCuration[] = await this.request('get', `/collections/${collectionId}/itemCurations`, {
-      itemIds: itemIds?.join(',')
+      itemIds
     })
     return curations.map(fromRemoteItemCuration)
   }
