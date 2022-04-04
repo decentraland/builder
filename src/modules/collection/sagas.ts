@@ -4,6 +4,7 @@ import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, Cal
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
+import { BuilderClient, ThirdParty } from '@dcl/builder-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
@@ -94,6 +95,7 @@ import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
+import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
@@ -133,7 +135,9 @@ import {
   isTPCollection
 } from './utils'
 
-export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
+const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
+
+export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: BuilderClient, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
@@ -155,7 +159,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
     const { address } = action.payload
     try {
-      const collections: Collection[] = yield call(() => builder.fetchCollections(address))
+      const collections: Collection[] = yield call(() => legacyBuilderClient.fetchCollections(address))
       yield put(fetchCollectionsSuccess(collections))
     } catch (error) {
       yield put(fetchCollectionsFailure(error.message))
@@ -165,7 +169,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
     const { id } = action.payload
     try {
-      const collection: Collection = yield call([builder, 'fetchCollection'], id)
+      const collection: Collection = yield call([legacyBuilderClient, 'fetchCollection'], id)
       yield put(fetchCollectionSuccess(id, collection))
     } catch (error) {
       yield put(fetchCollectionFailure(id, error.message))
@@ -237,7 +241,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         )
       }
 
-      const remoteCollection: Collection = yield call([builder, 'saveCollection'], collection, data)
+      const remoteCollection: Collection = yield call([legacyBuilderClient, 'saveCollection'], collection, data)
       const newCollection = { ...collection, ...remoteCollection }
 
       yield put(saveCollectionSuccess(newCollection))
@@ -249,7 +253,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
     const { collection } = action.payload
     try {
-      yield call(() => builder.deleteCollection(collection.id))
+      yield call(() => legacyBuilderClient.deleteCollection(collection.id))
       yield put(deleteCollectionSuccess(collection))
 
       const collectionIdInUriParam: string = yield select(getCollectionId)
@@ -292,7 +296,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // Check that items currently in the builder match the items the user wants to publish
       // This will solve the issue were users could add items in different tabs and not see them in the tab
       // were the publish is being made, leaving the collection in a corrupted state.
-      const serverItems: Item[] = yield call([builder, 'fetchCollectionItems'], collection.id)
+      const serverItems: Item[] = yield call([legacyBuilderClient, 'fetchCollectionItems'], collection.id)
 
       if (serverItems.length !== items.length) {
         throw new Error(`${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`)
@@ -315,7 +319,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
       // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
-      yield retry(10, 500, builder.saveTOS, collection, email)
+      yield retry(10, 500, legacyBuilderClient.saveTOS, collection, email)
 
       const txHash: string = yield call(sendTransaction, manager, collectionManager =>
         collectionManager.createCollection(
@@ -330,7 +334,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         )
       )
 
-      const lock: string = yield retry(10, 500, builder.lockCollection, collection)
+      const lock: string = yield retry(10, 500, legacyBuilderClient.lockCollection, collection)
       collection = { ...collection, lock: +new Date(lock) }
 
       yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
@@ -555,7 +559,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   }
 
   function* updateItemCurationsStatus(items: Item[], status: CurationStatus) {
-    const effects: CallEffect<ItemCuration>[] = items.map(item => call([builder, 'updateItemCurationStatus'], item.id, status))
+    const effects: CallEffect<ItemCuration>[] = items.map(item => call([legacyBuilderClient, 'updateItemCurationStatus'], item.id, status))
     const newItemCuration: ItemCuration[] = yield all(effects)
     return newItemCuration
   }
@@ -615,7 +619,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // 2. Get the approval data from the server
       // TODO: Use the builder client. Tracked here: https://github.com/decentraland/builder/issues/1855
       const { cheque, content_hashes: contentHashes, chequeWasConsumed }: ItemApprovalData = yield call(
-        [builder, 'fetchApprovalData'],
+        [legacyBuilderClient, 'fetchApprovalData'],
         collection.id
       )
 
@@ -654,13 +658,15 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
           cancel: take(CLOSE_MODAL)
         })
 
-        // If success wait for tx to be mined
         if (failure) {
           throw new Error(failure.payload.error)
         } else if (cancel) {
           // If cancel exit flow
           return
         }
+
+        // If success wait for tx to be mined
+        yield waitForMerkleRootToBeSet(extractThirdPartyId(collection.urn), tree.merkleRoot)
       }
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
@@ -891,6 +897,17 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
       yield put(openModal('ApprovalFlowModal', modalMetadata))
     }
+  }
+
+  function* waitForMerkleRootToBeSet(thirdPartyId: string, merkleRoot: string) {
+    for (let i = 0; i < THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES; i++) {
+      const thirdParty: ThirdParty = yield call([client, 'getThirdParty'], thirdPartyId)
+      if (thirdParty.root === merkleRoot) {
+        return
+      }
+      yield delay(1000)
+    }
+    throw new Error('The Merkle Root was not set in time')
   }
 
   function* waitForIndexer(items: Item[], contentHashes: string[], collectionId: string) {
