@@ -40,9 +40,9 @@ export const FETCH_COLLECTION_ITEMS_REQUEST = '[Request] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_SUCCESS = '[Success] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_FAILURE = '[Failure] Fetch Collection Items'
 
-export const fetchCollectionItemsRequest = (collectionId: string, page?: number, limit?: number) =>
+export const fetchCollectionItemsRequest = (collectionId: string, page?: number | number[], limit?: number) =>
   action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId, page, limit })
-export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[], totalItems: PaginatedResource<Item>['total']) =>
+export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[], totalItems?: PaginatedResource<Item>['total']) =>
   action(FETCH_COLLECTION_ITEMS_SUCCESS, { paginationIndex: collectionId, items, totalItems })
 export const fetchCollectionItemsFailure = (collectionId: string, error: string) =>
   action(FETCH_COLLECTION_ITEMS_FAILURE, { collectionId, error })
@@ -50,23 +50,6 @@ export const fetchCollectionItemsFailure = (collectionId: string, error: string)
 export type FetchCollectionItemsRequestAction = ReturnType<typeof fetchCollectionItemsRequest>
 export type FetchCollectionItemsSuccessAction = ReturnType<typeof fetchCollectionItemsSuccess>
 export type FetchCollectionItemsFailureAction = ReturnType<typeof fetchCollectionItemsFailure>
-
-// Fetches several collection item pages but does not update the pagination data
-
-export const FETCH_COLLECTION_ITEMS_PAGES_REQUEST = '[Request] Fetch Collection Items Pages'
-export const FETCH_COLLECTION_ITEMS_PAGES_SUCCESS = '[Success] Fetch Collection Items Pages'
-export const FETCH_COLLECTION_ITEMS_PAGES_FAILURE = '[Failure] Fetch Collection Items Pages'
-
-export const fetchCollectionItemsPagesRequest = (collectionId: string, pagesToFetch: number[], limit: number) =>
-  action(FETCH_COLLECTION_ITEMS_PAGES_REQUEST, { collectionId, pagesToFetch, limit })
-export const fetchCollectionItemsPagesSuccess = (collectionId: string, items: Item[]) =>
-  action(FETCH_COLLECTION_ITEMS_PAGES_SUCCESS, { collectionId, items })
-export const fetchCollectionItemsPagesFailure = (collectionId: string, error: string) =>
-  action(FETCH_COLLECTION_ITEMS_PAGES_FAILURE, { collectionId, error })
-
-export type FetchCollectionItemsPagesRequestAction = ReturnType<typeof fetchCollectionItemsPagesRequest>
-export type FetchCollectionItemsPagesSuccessAction = ReturnType<typeof fetchCollectionItemsPagesSuccess>
-export type FetchCollectionItemsPagesFailureAction = ReturnType<typeof fetchCollectionItemsPagesFailure>
 
 // Save items
 

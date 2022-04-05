@@ -2,12 +2,7 @@ import { Dispatch } from 'redux'
 import { Collection } from 'modules/collection/types'
 import { fetchCollectionRequest, FetchCollectionRequestAction } from 'modules/collection/actions'
 import { Item } from 'modules/item/types'
-import {
-  fetchCollectionItemsRequest,
-  fetchCollectionItemsPagesRequest,
-  FetchCollectionItemsRequestAction,
-  FetchCollectionItemsPagesRequestAction
-} from 'modules/item/actions'
+import { fetchCollectionItemsRequest, FetchCollectionItemsRequestAction } from 'modules/item/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 
@@ -40,19 +35,16 @@ export type Props = {
     curation: CollectionCuration | null
     itemCurations: ItemCuration[] | null
     isLoading: boolean
-    onFetchCollectionItemsPages: typeof fetchCollectionItemsPagesRequest
+    onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest
   }) => React.ReactNode
   onFetchCollection: typeof fetchCollectionRequest
   onFetchCollectionItems: typeof fetchCollectionItemsRequest
-  onFetchCollectionItemsPages: typeof fetchCollectionItemsPagesRequest
 }
 
 export type MapStateProps = Pick<
   Props,
   'id' | 'collection' | 'items' | 'isLoading' | 'isConnected' | 'curation' | 'itemCurations' | 'paginatedItems'
 >
-export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems' | 'onFetchCollectionItemsPages'>
-export type MapDispatch = Dispatch<
-  FetchCollectionRequestAction | FetchCollectionItemsRequestAction | FetchCollectionItemsPagesRequestAction
->
+export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems'>
+export type MapDispatch = Dispatch<FetchCollectionRequestAction | FetchCollectionItemsRequestAction>
 export type OwnProps = Partial<Pick<Props, 'id' | 'itemsPage' | 'itemsPageSize'>>

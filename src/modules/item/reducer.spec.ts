@@ -13,8 +13,7 @@ import {
   rescueItemsChunkSuccess,
   rescueItemsRequest,
   rescueItemsSuccess,
-  fetchCollectionItemsSuccess,
-  fetchCollectionItemsPagesSuccess
+  fetchCollectionItemsSuccess
 } from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
@@ -346,7 +345,7 @@ describe('when reducing an action of a successful fetch of collection items', ()
   })
   describe('and fetching several pages at the same time', () => {
     it('should add the items to the state with the new items', () => {
-      expect(itemReducer(state, fetchCollectionItemsPagesSuccess(collection.id, items))).toEqual({
+      expect(itemReducer(state, fetchCollectionItemsSuccess(collection.id, items, undefined))).toEqual({
         ...state,
         data: {
           ...state.data,

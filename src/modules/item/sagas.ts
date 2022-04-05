@@ -75,11 +75,7 @@ import {
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FetchItemsSuccessAction,
   FetchCollectionItemsSuccessAction,
-  fetchItemsRequest,
-  FETCH_COLLECTION_ITEMS_PAGES_REQUEST,
-  FetchCollectionItemsPagesRequestAction,
-  fetchCollectionItemsPagesSuccess,
-  fetchCollectionItemsPagesFailure
+  fetchItemsRequest
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
@@ -117,7 +113,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
-  yield takeEvery(FETCH_COLLECTION_ITEMS_PAGES_REQUEST, handleFetchCollectionItemPagesRequest)
   yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
@@ -168,30 +163,27 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       )
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-    const paginationData = allItemPages[0]
+    const totalItems = allItemPages[0]?.total
     const items = allItemPages.map(result => result.results).flat()
-    return { items, paginationData }
+    return { items, totalItems }
   }
 
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
     const { collectionId, page = DEFAULT_PAGE, limit } = action.payload
     const isReviewing: boolean = yield select(getIsReviewing)
+    const isFetchingMultiplePages = Array.isArray(page)
 
     try {
-      const { items, paginationData } = yield call(fetchCollectionItemsWithBatch, collectionId, [page], limit, isReviewing)
-      yield put(fetchCollectionItemsSuccess(collectionId, items, paginationData.total))
+      const { items, totalItems } = yield call(
+        fetchCollectionItemsWithBatch,
+        collectionId,
+        isFetchingMultiplePages ? page : [page],
+        limit,
+        isReviewing
+      )
+      yield put(fetchCollectionItemsSuccess(collectionId, items, isFetchingMultiplePages ? undefined : totalItems))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
-    }
-  }
-
-  function* handleFetchCollectionItemPagesRequest(action: FetchCollectionItemsPagesRequestAction) {
-    const { collectionId, pagesToFetch, limit } = action.payload
-    try {
-      const { items } = yield call(fetchCollectionItemsWithBatch, collectionId, pagesToFetch, limit)
-      yield put(fetchCollectionItemsPagesSuccess(collectionId, items))
-    } catch (error) {
-      yield put(fetchCollectionItemsPagesFailure(collectionId, error.message))
     }
   }
 

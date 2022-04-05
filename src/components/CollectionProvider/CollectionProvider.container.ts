@@ -4,12 +4,7 @@ import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getPaginatedCollectionItems, getLoading as getLoadingItems, getCollectionItems } from 'modules/item/selectors'
-import {
-  fetchCollectionItemsPagesRequest,
-  fetchCollectionItemsRequest,
-  FETCH_COLLECTION_ITEMS_PAGES_REQUEST,
-  FETCH_COLLECTION_ITEMS_REQUEST
-} from 'modules/item/actions'
+import { fetchCollectionItemsRequest, FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
 import { getLoading, getCollection } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_REQUEST, fetchCollectionRequest } from 'modules/collection/actions'
 import { getItemCurations, getLoading as getLoadingItemCurations } from 'modules/curations/itemCuration/selectors'
@@ -36,15 +31,13 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     isLoading:
       isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST) ||
-      isLoadingType(getLoadingItems(state), FETCH_COLLECTION_ITEMS_REQUEST) ||
-      isLoadingType(getLoadingItems(state), FETCH_COLLECTION_ITEMS_PAGES_REQUEST)
+      isLoadingType(getLoadingItems(state), FETCH_COLLECTION_ITEMS_REQUEST)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onFetchCollection: id => dispatch(fetchCollectionRequest(id)),
-  onFetchCollectionItems: (id, page, limit) => dispatch(fetchCollectionItemsRequest(id, page, limit)),
-  onFetchCollectionItemsPages: (id, pages, limit) => dispatch(fetchCollectionItemsPagesRequest(id, pages, limit))
+  onFetchCollectionItems: (id, page, limit) => dispatch(fetchCollectionItemsRequest(id, page, limit))
 })
 
 export default connect(mapState, mapDispatch)(CollectionProvider)

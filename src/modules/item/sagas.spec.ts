@@ -46,10 +46,7 @@ import {
   rescueItemsFailure,
   fetchCollectionItemsRequest,
   fetchCollectionItemsSuccess,
-  fetchCollectionItemsFailure,
-  fetchCollectionItemsPagesRequest,
-  fetchCollectionItemsPagesSuccess,
-  fetchCollectionItemsPagesFailure
+  fetchCollectionItemsFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
 import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
@@ -924,8 +921,8 @@ describe('when handling the fetch of collection items pages', () => {
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(isReviewing), true]])
-        .dispatch(fetchCollectionItemsPagesRequest(item.collectionId!, [1], paginationData.limit))
-        .put(fetchCollectionItemsPagesSuccess(item.collectionId!, [item]))
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, [1], paginationData.limit))
+        .put(fetchCollectionItemsSuccess(item.collectionId!, [item], undefined))
         .run({ silenceTimeout: true })
     })
   })
@@ -938,8 +935,8 @@ describe('when handling the fetch of collection items pages', () => {
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(isReviewing), true]])
-        .dispatch(fetchCollectionItemsPagesRequest(item.collectionId!, [1], paginationData.limit))
-        .put(fetchCollectionItemsPagesFailure(item.collectionId!, errorMessage))
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, [1], paginationData.limit))
+        .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
     })
   })
