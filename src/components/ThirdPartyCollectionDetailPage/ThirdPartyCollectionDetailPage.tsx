@@ -42,12 +42,12 @@ const PAGE_SIZE = 50
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
-    itemSelectionState: {},
+    selectedItems: {},
     searchText: '',
     page: this.props.currentPage,
     isAuthModalOpen: false,
     showSelectAllPages: false,
-    fetchAllPages: false
+    shouldFetchAllPages: false
   }
 
   componentDidMount() {
@@ -58,23 +58,24 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots, currentPage } = this.props
+    const { page, shouldFetchAllPages } = this.state
+    const { items, thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots, currentPage } = this.props
 
     const shouldFetchAvailbleSlots = thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots
     if (shouldFetchAvailbleSlots) {
       onFetchAvailableSlots(thirdParty.id)
     }
     // update the state if the page query param changes
-    if (currentPage !== this.state.page) {
+    if (currentPage !== page) {
       this.setState({ page: currentPage })
     }
-    if (prevProps.items !== this.props.items && this.state.fetchAllPages) {
+    if (prevProps.items !== items && shouldFetchAllPages) {
       // select all items in the state
-      const itemSelectionState = this.props.items.reduce((acc, item) => {
+      const selectedItems = items.reduce((acc, item) => {
         acc[item.id] = true
         return acc
       }, {} as Record<string, boolean>)
-      this.setState({ itemSelectionState, showSelectAllPages: false })
+      this.setState({ selectedItems, showSelectAllPages: false })
     }
   }
 
@@ -129,20 +130,20 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   handleSelectItemChange = (item: Item, isSelected: boolean) => {
-    const { itemSelectionState } = this.state
+    const { selectedItems } = this.state
     this.setState({
-      itemSelectionState: {
-        ...itemSelectionState,
+      selectedItems: {
+        ...selectedItems,
         [item.id]: isSelected
       },
-      fetchAllPages: false,
+      shouldFetchAllPages: false,
       showSelectAllPages: false
     })
   }
 
   handleSelectPageChange = (items: Item[]) => {
-    const { itemSelectionState } = this.state
-    const newItemSelectionState: Record<string, boolean> = { ...itemSelectionState }
+    const { selectedItems } = this.state
+    const newItemSelectionState: Record<string, boolean> = { ...selectedItems }
 
     // Performs the opposite action, if everything is selected, it'll deselect and viceversa
     const isSelected = !this.areAllSelected(items)
@@ -151,11 +152,11 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
       newItemSelectionState[item.id] = isSelected
     }
 
-    this.setState({ itemSelectionState: newItemSelectionState, showSelectAllPages: true })
+    this.setState({ selectedItems: newItemSelectionState, showSelectAllPages: true })
   }
 
   handleClearSelection = () => {
-    this.setState({ itemSelectionState: {} })
+    this.setState({ selectedItems: {} })
   }
 
   hasItems(items: Item[]) {
@@ -168,13 +169,13 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   areAllSelected(items: Item[]) {
-    const { itemSelectionState } = this.state
-    return items.every(item => itemSelectionState[item.id])
+    const { selectedItems } = this.state
+    return items.every(item => selectedItems[item.id])
   }
 
   getSelectedItems(items: Item[]) {
-    const { itemSelectionState, fetchAllPages } = this.state
-    return fetchAllPages ? items : items.filter(item => itemSelectionState[item.id])
+    const { selectedItems, shouldFetchAllPages } = this.state
+    return shouldFetchAllPages ? items : items.filter(item => selectedItems[item.id])
   }
 
   isSearching() {
@@ -195,10 +196,10 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   handleSelectAllItems = (onFetchAllCollectionItems: (id: string, pages: number[], limit: number) => void) => {
-    const { collection, itemsTotal } = this.props
-    this.setState({ fetchAllPages: true })
+    const { collection, totalItems } = this.props
+    this.setState({ shouldFetchAllPages: true })
     if (collection) {
-      const totalPages = Math.ceil(itemsTotal! / PAGE_SIZE)
+      const totalPages = Math.ceil(totalItems! / PAGE_SIZE)
       onFetchAllCollectionItems(collection.id, getArrayOfPagesFromTotal(totalPages), PAGE_SIZE)
     }
   }
@@ -209,14 +210,14 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     paginatedItems: Item[],
     onFetchCollectionItemsPages: (id: string, pages: number[], limit: number) => void
   ) {
-    const { itemsTotal, isLoadingAvailableSlots } = this.props
-    const { page, searchText, itemSelectionState, isAuthModalOpen, showSelectAllPages } = this.state
+    const { totalItems, isLoadingAvailableSlots } = this.props
+    const { page, searchText, selectedItems: stateSelectedItems, isAuthModalOpen, showSelectAllPages } = this.state
 
     const collection = this.props.collection!
     const areSlotsEmpty = thirdParty?.availableSlots && thirdParty.availableSlots <= 0
-    const selectedItems = allItems.filter(item => itemSelectionState[item.id])
+    const selectedItems = allItems.filter(item => stateSelectedItems[item.id])
     const selectedItemsCount = selectedItems.length
-    const total = itemsTotal!
+    const total = totalItems!
     const totalPages = Math.ceil(total / PAGE_SIZE)
 
     return (
@@ -344,7 +345,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     key={item.id}
                     collection={collection}
                     item={item}
-                    selected={!!itemSelectionState[item.id]}
+                    selected={!!stateSelectedItems[item.id]}
                     onSelect={this.handleSelectItemChange}
                   />
                 ))}

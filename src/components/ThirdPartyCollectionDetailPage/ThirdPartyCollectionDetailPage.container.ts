@@ -22,12 +22,12 @@ const mapState = (state: RootState): MapStateProps => {
   const collectionId = getCollectionId(state) || ''
   const collection = getCollection(state, collectionId)
   const currentPage = Number(getLocation(state).query.page) || 1
-  const itemsTotal = getPaginationData(state, collectionId)?.total || null
+  const totalItems = getPaginationData(state, collectionId)?.total || null
   const items = collection ? getCollectionItems(state, collection.id) : []
   const paginatedData = (collection && getPaginationData(state, collection.id)) || null
   return {
     items,
-    itemsTotal,
+    totalItems,
     currentPage,
     paginatedData,
     wallet: getWallet(state)!,

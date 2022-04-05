@@ -1,5 +1,6 @@
 import { call, select } from '@redux-saga/core/effects'
-import { BuilderAPI, PaginatedResource } from 'lib/api/builder'
+import { BuilderAPI } from 'lib/api/builder'
+import { PaginatedResource } from 'lib/api/pagination'
 import { Collection } from 'modules/collection/types'
 import { fetchCollectionItemsSuccess } from 'modules/item/actions'
 import { getCollection } from 'modules/collection/selectors'
@@ -66,7 +67,7 @@ describe('when third party items were fetched', () => {
     return expectSaga(itemCurationSaga, mockBuilder)
       .provide([[select(getCollection, thirdPartyCollection.id), thirdPartyCollection]])
       .put(fetchItemCurationsRequest(thirdPartyCollection.id, items))
-      .dispatch(fetchCollectionItemsSuccess(thirdPartyCollection.id, items, paginatedData))
+      .dispatch(fetchCollectionItemsSuccess(thirdPartyCollection.id, items, paginatedData.total))
       .run({ silenceTimeout: true })
   })
 })

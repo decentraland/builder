@@ -94,7 +94,7 @@ import {
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
-import { BuilderAPI, PaginatedResource } from 'lib/api/builder'
+import { BuilderAPI } from 'lib/api/builder'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
@@ -140,6 +140,7 @@ import {
   UNSYNCED_COLLECTION_ERROR_PREFIX,
   isTPCollection
 } from './utils'
+import { PaginatedResource } from 'lib/api/pagination'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -629,7 +630,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const pages = Array.from({ length: Math.ceil(paginatedData.total / BATCH_SIZE) }, (_, i) => i + 1)
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
       const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = pages.map((page: number) => () =>
-        builder.fetchCollectionItems(collection.id, page, BATCH_SIZE, true)
+        builder.fetchCollectionItems(collection.id, page, BATCH_SIZE, CurationStatus.PENDING)
       ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
       const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
       const itemsToApprove = allItemPages.map(result => result.results).flat()

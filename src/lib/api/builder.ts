@@ -22,21 +22,13 @@ import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { Authorization } from './auth'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from './pagination'
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
 export const getContentsStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
-
-export type PaginatedResource<T> = {
-  results: T[]
-  total: number
-  limit: number
-  page: number
-  pages: number
-}
 
 export type RemoteItem = {
   id: string // uuid
@@ -640,10 +632,9 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteItem(remoteItem)
   }
 
-  async fetchCollectionItems(collectionId: string, page?: number, limit?: number, isReviewing = false) {
-    const paginatedURL = `/collections/${collectionId}/items`
-    const params = { page, limit, ...(isReviewing && { status: CurationStatus.PENDING }) }
-    const remoteResponse = await this.request('get', paginatedURL, params)
+  async fetchCollectionItems(collectionId: string, page?: number, limit?: number, status?: CurationStatus) {
+    const params = { page, limit, status }
+    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, params)
     if (page && limit) {
       // TODO: remove this check when we have pagination on standard collections
       return { ...remoteResponse, results: remoteResponse.results.map(fromRemoteItem) }

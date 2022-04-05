@@ -18,7 +18,7 @@ import {
 } from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
-import { PaginatedResource } from 'lib/api/builder'
+import { PaginatedResource } from 'lib/api/pagination'
 import { toItemObject } from './utils'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
@@ -328,7 +328,7 @@ describe('when reducing an action of a successful fetch of collection items', ()
 
   describe('and fetching only one page', () => {
     it('should add the items to the state and update the pagination data', () => {
-      expect(itemReducer(state, fetchCollectionItemsSuccess(collection.id, items, paginationData))).toEqual({
+      expect(itemReducer(state, fetchCollectionItemsSuccess(collection.id, items, paginationData.total))).toEqual({
         ...state,
         data: {
           ...state.data,

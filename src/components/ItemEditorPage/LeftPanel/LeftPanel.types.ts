@@ -7,7 +7,7 @@ import { FetchCollectionItemsRequestAction, setCollection, SetCollectionAction }
 export type Props = {
   isConnected: boolean
   items: Item[]
-  itemsTotal: number | null
+  totalItems: number | null
   orphanItems: Item[]
   collections: Collection[]
   selectedItemId: string | null
@@ -22,7 +22,7 @@ export type Props = {
 export type MapStateProps = Pick<
   Props,
   | 'items'
-  | 'itemsTotal'
+  | 'totalItems'
   | 'orphanItems'
   | 'collections'
   | 'selectedItemId'

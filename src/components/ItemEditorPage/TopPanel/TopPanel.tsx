@@ -160,6 +160,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
       <div className="TopPanel">
         <CollectionProvider id={selectedCollectionId}>
           {({ collection, items, itemCurations, curation, isLoading }) => {
+            // Show loader only while loading the first page of items
             const showLoader = !collection || (isLoading && !items.length)
             return showLoader ? <Loader size="small" active /> : this.renderPage(collection, items, curation, itemCurations)
           }}

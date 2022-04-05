@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
-import { getCollection } from 'modules/collection/selectors'
+import { getCollectionItemCount } from 'modules/collection/selectors'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './CollectionRow.types'
 import CollectionRow from './CollectionRow'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
-  itemCount: getCollection(state, ownProps.collection.id)?.itemCount || 0
+  itemCount: getCollectionItemCount(state)(ownProps.collection.id)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

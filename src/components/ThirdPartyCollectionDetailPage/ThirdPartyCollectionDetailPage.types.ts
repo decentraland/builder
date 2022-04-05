@@ -16,7 +16,7 @@ export type Props = {
   wallet: Wallet
   collection: Collection | null
   thirdParty: ThirdParty | null
-  itemsTotal: number | null
+  totalItems: number | null
   currentPage: number
   paginatedData: PaginatedResource | null
   items: Item[]
@@ -32,10 +32,10 @@ export type Props = {
 }
 
 export type State = {
-  itemSelectionState: Record<string, boolean>
+  selectedItems: Record<string, boolean>
   searchText: string
   page: number
-  fetchAllPages: boolean
+  shouldFetchAllPages: boolean
   isAuthModalOpen: boolean
   showSelectAllPages: boolean
 }
@@ -49,7 +49,7 @@ export type MapStateProps = Pick<
   | 'isLoadingAvailableSlots'
   | 'authorizations'
   | 'currentPage'
-  | 'itemsTotal'
+  | 'totalItems'
   | 'items'
   | 'paginatedData'
 >

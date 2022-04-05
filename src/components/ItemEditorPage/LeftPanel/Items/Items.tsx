@@ -17,7 +17,7 @@ export default class Items extends React.PureComponent<Props, State> {
     const { items } = this.props
     const { items: stateItems } = this.state
     const prevItemIds = stateItems.map(prevItem => prevItem.id)
-    if (items.find(item => !prevItemIds.includes(item.id))) {
+    if (items.some(item => !prevItemIds.includes(item.id))) {
       const newItems = [...stateItems, ...items.filter(item => !prevItemIds.includes(item.id))]
       this.setState({ items: newItems })
     }
@@ -62,23 +62,22 @@ export default class Items extends React.PureComponent<Props, State> {
     return !!items[index]
   }
 
-  loadMoreItems = () => {
-    const { selectedCollectionId, onLoadNextPage, itemsTotal } = this.props
-    if (selectedCollectionId && itemsTotal) {
+  loadMoreItems = async () => {
+    const { selectedCollectionId, onLoadNextPage, totalItems } = this.props
+    if (selectedCollectionId && totalItems) {
       onLoadNextPage()
     }
-    return Promise.resolve() // work-around for loadMoreRows expecting a Promise
   }
 
   render() {
     const { items } = this.state
-    const { hasHeader, itemsTotal } = this.props
-    if (items.length === 0 || !itemsTotal) return null
+    const { hasHeader, totalItems } = this.props
+    if (items.length === 0 || !totalItems) return null
 
     return (
       <Section className="Items">
         {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
-        <InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreItems} rowCount={itemsTotal}>
+        <InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreItems} rowCount={totalItems}>
           {({ onRowsRendered, registerChild }) => (
             <AutoSizer>
               {({ height, width }) => {

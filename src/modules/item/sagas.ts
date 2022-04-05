@@ -1,6 +1,6 @@
 import PQueue from 'p-queue'
 import { Contract } from 'ethers'
-import { getLocation, replace, RouterLocation } from 'connected-react-router'
+import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -85,9 +85,11 @@ import { fromRemoteItem } from 'lib/api/transformations'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
-import { BuilderAPI as LegacyBuilderAPI, PaginatedResource } from 'lib/api/builder'
+import { BuilderAPI as LegacyBuilderAPI } from 'lib/api/builder'
+import { DEFAULT_PAGE, PaginatedResource } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
-import { getItemId } from 'modules/location/selectors'
+import { getItemId, isReviewing as getIsReviewing } from 'modules/location/selectors'
+import { CurationStatus } from 'modules/curations/types'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
@@ -140,7 +142,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { address } = action.payload
     try {
       const response: PaginatedResource<Item> = yield call([legacyBuilder, 'fetchItems'], address)
-      yield put(fetchItemsSuccess(response.results, response, address))
+      yield put(fetchItemsSuccess(response.results, response.total, address))
     } catch (error) {
       yield put(fetchItemsFailure(error.message))
     }
@@ -161,7 +163,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const queue = new PQueue({ concurrency: REQUEST_BATCH_SIZE })
     const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = []
     pagesToFetch.forEach(page => {
-      promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, page, limit, isReviewing))
+      promisesOfPagesToFetch.push(() =>
+        legacyBuilder.fetchCollectionItems(collectionId, page, limit, isReviewing ? CurationStatus.PENDING : undefined)
+      )
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
     const paginationData = allItemPages[0]
@@ -170,14 +174,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
-    const DEFAULT_PAGE = 1
     const { collectionId, page = DEFAULT_PAGE, limit } = action.payload
-    const location: RouterLocation<any> = yield select(getLocation)
-    const isReviewing = location.query.reviewing === 'true'
+    const isReviewing: boolean = yield select(getIsReviewing)
 
     try {
       const { items, paginationData } = yield call(fetchCollectionItemsWithBatch, collectionId, [page], limit, isReviewing)
-      yield put(fetchCollectionItemsSuccess(collectionId, items, paginationData))
+      yield put(fetchCollectionItemsSuccess(collectionId, items, paginationData.total))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
     }

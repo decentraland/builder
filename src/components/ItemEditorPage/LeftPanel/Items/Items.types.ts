@@ -7,7 +7,7 @@ export type State = {
 
 export type Props = {
   items: Item[]
-  itemsTotal: number | null
+  totalItems: number | null
   selectedItemId: string | null
   selectedCollectionId: string | null
   visibleItems: Item[]

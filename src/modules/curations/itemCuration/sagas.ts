@@ -20,8 +20,8 @@ export function* itemCurationSaga(builder: BuilderAPI) {
   yield takeLatest(FETCH_COLLECTION_ITEMS_SUCCESS, handleFetchCollectionItemCurations)
 
   function* handleFetchCollectionItemCurations(action: FetchCollectionItemsSuccessAction) {
-    const { indexedByField, items } = action.payload
-    const collection: Collection = yield select(getCollection, indexedByField)
+    const { paginationIndex, items } = action.payload
+    const collection: Collection = yield select(getCollection, paginationIndex)
     if (getCollectionType(collection) === CollectionType.THIRD_PARTY) {
       yield put(fetchItemCurationsRequest(collection.id, items))
     }

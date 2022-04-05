@@ -13,10 +13,12 @@ import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
+import { isReviewing } from 'modules/location/selectors'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { downloadZip } from 'lib/zip'
-import { BuilderAPI, PaginatedResource } from 'lib/api/builder'
+import { BuilderAPI } from 'lib/api/builder'
+import { PaginatedResource } from 'lib/api/pagination'
 import util from 'util'
 import {
   resetItemFailure,
@@ -54,7 +56,6 @@ import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, Wear
 import { calculateFinalSize } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems } from './selectors'
-import { getLocation } from 'connected-react-router'
 
 let blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -881,9 +882,9 @@ describe('when handling the fetch of collection items', () => {
     })
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(getLocation), { query: { reviewing: 'true' } }]])
+        .provide([[select(isReviewing), true]])
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, 1, paginationData.limit))
-        .put(fetchCollectionItemsSuccess(item.collectionId!, [item], paginationData))
+        .put(fetchCollectionItemsSuccess(item.collectionId!, [item], paginationData.total))
         .run({ silenceTimeout: true })
     })
   })
@@ -895,7 +896,7 @@ describe('when handling the fetch of collection items', () => {
     })
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(getLocation), { query: { reviewing: 'true' } }]])
+        .provide([[select(isReviewing), true]])
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, 1, paginationData.limit))
         .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
@@ -922,7 +923,7 @@ describe('when handling the fetch of collection items pages', () => {
     })
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(getLocation), { query: { reviewing: 'true' } }]])
+        .provide([[select(isReviewing), true]])
         .dispatch(fetchCollectionItemsPagesRequest(item.collectionId!, [1], paginationData.limit))
         .put(fetchCollectionItemsPagesSuccess(item.collectionId!, [item]))
         .run({ silenceTimeout: true })
@@ -936,7 +937,7 @@ describe('when handling the fetch of collection items pages', () => {
     })
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(getLocation), { query: { reviewing: 'true' } }]])
+        .provide([[select(isReviewing), true]])
         .dispatch(fetchCollectionItemsPagesRequest(item.collectionId!, [1], paginationData.limit))
         .put(fetchCollectionItemsPagesFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })

@@ -203,7 +203,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_ITEMS_SUCCESS:
     case FETCH_COLLECTION_ITEMS_SUCCESS: {
-      const { indexedByField, items, paginationData } = action.payload
+      const { paginationIndex, items, totalItems } = action.payload
       return {
         ...state,
         data: {
@@ -213,9 +213,9 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         loading: loadingReducer(state.loading, action),
         pagination: {
           ...state.pagination,
-          [indexedByField]: {
-            ...state.pagination?.[indexedByField],
-            total: Number(paginationData.total),
+          [paginationIndex]: {
+            ...state.pagination?.[paginationIndex],
+            total: totalItems,
             ids: items.map(item => item.id)
           }
         },

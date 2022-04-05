@@ -17,7 +17,7 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     isConnected: isConnected(state),
     items: getItems(state),
-    itemsTotal: paginationData?.total || null,
+    totalItems: paginationData?.total || null,
     orphanItems: getWalletOrphanItems(state),
     collections: getAuthorizedCollections(state),
     selectedItemId: getSelectedItemId(state),

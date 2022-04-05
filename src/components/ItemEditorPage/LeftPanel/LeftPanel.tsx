@@ -30,18 +30,19 @@ export default class LeftPanel extends React.PureComponent<Props> {
   }
 
   loadNextPage = () => {
-    const { itemsTotal } = this.props
+    const { totalItems } = this.props
     const { itemsPage } = this.state
-    const totalPages = Math.ceil(itemsTotal! / LEFT_PANEL_PAGE_SIZE)
+    const totalPages = Math.ceil(totalItems! / LEFT_PANEL_PAGE_SIZE)
     if (!itemsPage.includes(totalPages)) {
-      this.setState({ itemsPage: [...this.state.itemsPage, this.state.itemsPage[this.state.itemsPage.length - 1] + 1] })
+      const lastPage = itemsPage[itemsPage.length - 1]
+      this.setState({ itemsPage: [...itemsPage, lastPage + 1] })
     }
   }
 
   render() {
     const {
       items: allItems,
-      itemsTotal,
+      totalItems,
       collections,
       selectedItemId,
       selectedCollectionId,
@@ -86,7 +87,7 @@ export default class LeftPanel extends React.PureComponent<Props> {
                   <Header />
                   <Items
                     items={items.sort(sortByName)}
-                    itemsTotal={itemsTotal}
+                    totalItems={totalItems}
                     hasHeader={!selectedCollectionId && collections.length > 0}
                     selectedItemId={selectedItemId}
                     selectedCollectionId={selectedCollectionId}
