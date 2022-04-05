@@ -1,13 +1,10 @@
 import PQueue from 'p-queue'
 import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
-import { BigNumber } from '@ethersproject/bignumber'
-import { Contract, providers, utils } from 'ethers'
+import { Contract, providers } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
-import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
-import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { BuilderAPI } from 'lib/api/builder'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -22,14 +19,6 @@ import {
   fetchThirdPartiesSuccess,
   fetchThirdPartiesFailure,
   FetchThirdPartiesRequestAction,
-  FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST,
-  fetchThirdPartyItemSlotPriceSuccess,
-  fetchThirdPartyItemSlotPriceFailure,
-  BuyThirdPartyItemSlotRequestAction,
-  BUY_THIRD_PARTY_ITEM_SLOT_REQUEST,
-  buyThirdPartyItemSlotSuccess,
-  buyThirdPartyItemSlotFailure,
-  BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS,
   FetchThirdPartyAvailableSlotsRequestAction,
   fetchThirdPartyAvailableSlotsSuccess,
   FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
@@ -55,7 +44,7 @@ import {
   REVIEW_THIRD_PARTY_REQUEST,
   reviewThirdPartyTxSuccess
 } from './actions'
-import { applySlotBuySlippage, getPublishItemsSignature } from './utils'
+import { getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
 
 export function* getContractInstance(
@@ -70,10 +59,7 @@ export function* getContractInstance(
 
 export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
-  yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeEvery(FETCH_THIRD_PARTIES_REQUEST, handleFetchThirdPartiesRequest)
-  yield takeEvery(FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST, handleFetchThirdPartyItemSlotPriceRequest)
-  yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, handleBuyThirdPartyItemSlotRequest)
   yield takeEvery(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, handleFetchThirdPartyAvailableSlots)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
@@ -103,56 +89,6 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       yield put(fetchThirdPartyAvailableSlotsSuccess(thirdPartyId, availableSlots))
     } catch (error) {
       yield put(fetchThirdPartyAvailableSlotsFailure(error.message))
-    }
-  }
-
-  function* handleFetchThirdPartyItemSlotPriceRequest() {
-    try {
-      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const provider: Provider = yield call(getNetworkProvider, maticChainId)
-
-      const thirdPartyContractInstance: Contract = yield call(getContractInstance, ContractName.ThirdPartyRegistry, maticChainId, provider)
-      const itemSlotPrice: BigNumber = yield call(thirdPartyContractInstance.itemSlotPrice) // USD
-
-      const chainlinkOracleInstance: Contract = yield call(getContractInstance, ContractName.ChainlinkOracle, maticChainId, provider)
-      const rate: BigNumber = yield call(chainlinkOracleInstance.getRate) // USD/MANA
-      const slotPriceInMANA = itemSlotPrice.div(rate) // USD*MANA/USD
-      yield put(fetchThirdPartyItemSlotPriceSuccess(Number(slotPriceInMANA)))
-    } catch (error) {
-      yield put(fetchThirdPartyItemSlotPriceFailure(error.message))
-    }
-  }
-
-  function* handleBuyThirdPartyItemSlotRequest(action: BuyThirdPartyItemSlotRequestAction) {
-    const { slotsToBuy, thirdParty, priceToPay } = action.payload
-    try {
-      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-      const costWithSlippage = applySlotBuySlippage(BigNumber.from(priceToPay).mul(BigNumber.from(slotsToBuy)))
-      const maxPriceInWei = utils.parseEther(costWithSlippage.toString())
-      const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
-        instantiatedThirdPartyContract.buyItemSlots(thirdParty.id, slotsToBuy, maxPriceInWei)
-      )
-      yield put(buyThirdPartyItemSlotSuccess(txHash, maticChainId, thirdParty, slotsToBuy))
-    } catch (error) {
-      yield put(buyThirdPartyItemSlotFailure(thirdParty.id, slotsToBuy, error.message))
-    }
-  }
-
-  function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
-    const transaction = action.payload.transaction
-    try {
-      switch (transaction.actionType) {
-        case BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS: {
-          yield put(closeModal('BuyItemSlotsModal'))
-          break
-        }
-        default: {
-          break
-        }
-      }
-    } catch (error) {
-      console.error(error)
     }
   }
 

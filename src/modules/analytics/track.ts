@@ -87,12 +87,6 @@ import {
   REJECT_COLLECTION_CURATION_SUCCESS
 } from 'modules/curations/collectionCuration/actions'
 import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
-import {
-  BUY_THIRD_PARTY_ITEM_SLOT_FAILURE,
-  BuyThirdPartyItemSlotFailureAction,
-  BuyThirdPartyItemSlotSuccessAction,
-  BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS
-} from 'modules/thirdParty/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -284,23 +278,6 @@ add(PUBLISH_COLLECTION_FAILURE, 'Publish collection error', action => {
   const { payload } = action as PublishCollectionFailureAction
   return {
     collection: payload.collection,
-    error: payload.error
-  }
-})
-
-add(BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, 'Buy third party item slot success', action => {
-  const { payload } = action as BuyThirdPartyItemSlotSuccessAction
-  return {
-    thirdPartyId: payload.thirdParty.id,
-    slotsToBuy: payload.slotsToBuy
-  }
-})
-
-add(BUY_THIRD_PARTY_ITEM_SLOT_FAILURE, 'Buy third party item slot error', action => {
-  const { payload } = action as BuyThirdPartyItemSlotFailureAction
-  return {
-    thirdPartyId: payload.thirdPartyId,
-    slotsToBuy: payload.slotsToBuy,
     error: payload.error
   }
 })
