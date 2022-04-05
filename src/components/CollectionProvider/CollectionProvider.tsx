@@ -35,9 +35,7 @@ export default class CollectionProvider extends React.PureComponent<Props> {
     if (id && itemsPage && hasChangedPage) {
       const prevPages = prevProps.itemsPage
       this.fetchCollectionItems(
-        itemsPage && prevProps.itemsPage && Array.isArray(itemsPage) && Array.isArray(prevPages)
-          ? itemsPage.filter(page => !prevPages?.includes(page))
-          : itemsPage
+        Array.isArray(itemsPage) && Array.isArray(prevPages) ? itemsPage.filter(page => !prevPages?.includes(page)) : itemsPage
       )
     }
   }
