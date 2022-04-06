@@ -150,7 +150,7 @@
     "message": "El nombre puede tener un máximo de {maxLength} caracteres",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
   },
-  "create_third_party_collection": {
+  "create_third_party_collection_modal": {
     "title": "Nueva colleción externa",
     "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",
     "third_party": {
