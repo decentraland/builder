@@ -1,16 +1,15 @@
 import { connect } from 'react-redux'
-import { getLocation, push } from 'connected-react-router'
+import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/authorization/selectors'
-import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getCollection, getLoading as getLoadingCollection } from 'modules/collection/selectors'
-import { getCollectionItems, getLoading as getLoadingItem, getPaginationData } from 'modules/item/selectors'
-import { FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
+import { getCollectionItems, getLoading as getLoadingItem } from 'modules/item/selectors'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
+import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
@@ -21,24 +20,17 @@ import { CollectionType } from 'modules/collection/types'
 const mapState = (state: RootState): MapStateProps => {
   const collectionId = getCollectionId(state) || ''
   const collection = getCollection(state, collectionId)
-  const currentPage = Number(getLocation(state).query.page) || 1
-  const totalItems = getPaginationData(state, collectionId)?.total || null
-  const items = collection ? getCollectionItems(state, collection.id) : []
-  const paginatedData = (collection && getPaginationData(state, collection.id)) || null
   return {
-    items,
-    totalItems,
-    currentPage,
-    paginatedData,
     wallet: getWallet(state)!,
     collection,
     thirdParty:
       collection && getCollectionType(collection) === CollectionType.THIRD_PARTY ? getCollectionThirdParty(state, collection) : null,
     authorizations: getAuthorizations(state),
+    items: getCollectionItems(state, collectionId),
     isLoading:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
-      isLoadingType(getLoadingItem(state), FETCH_COLLECTION_ITEMS_REQUEST),
+      isLoadingType(getLoadingItem(state), FETCH_ITEMS_REQUEST),
     isLoadingAvailableSlots: isFetchingAvailableSlots(state)
   }
 }
@@ -46,8 +38,7 @@ const mapState = (state: RootState): MapStateProps => {
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId)),
-  onPageChange: (collectionId: string, page: number) => dispatch(push(locations.thirdPartyCollectionDetail(collectionId, { page })))
+  onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId))
 })
 
 export default connect(mapState, mapDispatch)(CollectionDetailPage)
