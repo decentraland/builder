@@ -1,4 +1,3 @@
-import PQueue from 'p-queue'
 import { Contract } from 'ethers'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
@@ -46,6 +45,7 @@ import {
   FetchCollectionItemsRequestAction,
   fetchCollectionItemsSuccess,
   fetchCollectionItemsFailure,
+  fetchCollectionItemsRequest,
   fetchRaritiesSuccess,
   fetchRaritiesFailure,
   FETCH_RARITIES_REQUEST,
@@ -77,15 +77,14 @@ import {
   FetchCollectionItemsSuccessAction,
   fetchItemsRequest
 } from './actions'
+import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI } from 'lib/api/builder'
-import { DEFAULT_PAGE, PaginatedResource } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
-import { getItemId, isReviewing as getIsReviewing } from 'modules/location/selectors'
-import { CurationStatus } from 'modules/curations/types'
+import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
@@ -113,6 +112,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
+  yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
@@ -136,8 +136,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
     const { address } = action.payload
     try {
-      const response: PaginatedResource<Item> = yield call([legacyBuilder, 'fetchItems'], address)
-      yield put(fetchItemsSuccess(response.results, response.total, address))
+      const items: Item[] = yield call([legacyBuilder, 'fetchItems'], address)
+      yield put(fetchItemsSuccess(items))
     } catch (error) {
       yield put(fetchItemsFailure(error.message))
     }
@@ -153,35 +153,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
-  function* fetchCollectionItemsWithBatch(collectionId: string, pagesToFetch: number[], limit?: number, isReviewing = false) {
-    const REQUEST_BATCH_SIZE = 10
-    const queue = new PQueue({ concurrency: REQUEST_BATCH_SIZE })
-    const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = []
-    pagesToFetch.forEach(page => {
-      promisesOfPagesToFetch.push(() =>
-        legacyBuilder.fetchCollectionItems(collectionId, page, limit, isReviewing ? CurationStatus.PENDING : undefined)
-      )
-    })
-    const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-    const totalItems = allItemPages[0]?.total
-    const items = allItemPages.map(result => result.results).flat()
-    return { items, totalItems }
-  }
-
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
-    const { collectionId, page = DEFAULT_PAGE, limit } = action.payload
-    const isReviewing: boolean = yield select(getIsReviewing)
-    const isFetchingMultiplePages = Array.isArray(page)
-
+    const { collectionId } = action.payload
     try {
-      const { items, totalItems } = yield call(
-        fetchCollectionItemsWithBatch,
-        collectionId,
-        isFetchingMultiplePages ? page : [page],
-        limit,
-        isReviewing
-      )
-      yield put(fetchCollectionItemsSuccess(collectionId, items, isFetchingMultiplePages ? undefined : totalItems))
+      const items: Item[] = yield call(() => legacyBuilder.fetchCollectionItems(collectionId))
+      yield put(fetchCollectionItemsSuccess(collectionId, items))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
     }
@@ -356,6 +332,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const newCollection: Collection = yield select(state => getCollection(state, collection.id))
     const newItems: Item[] = yield select(state => getCollectionItems(state, collection.id))
     yield put(setItemsTokenIdRequest(newCollection, newItems))
+  }
+
+  function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
+    const { id } = action.payload
+    yield put(fetchCollectionItemsRequest(id))
   }
 
   function* fetchItemEntities() {
