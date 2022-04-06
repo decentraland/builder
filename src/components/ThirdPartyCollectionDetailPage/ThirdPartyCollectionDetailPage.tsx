@@ -13,7 +13,8 @@ import {
   TextFilter,
   Pagination,
   PaginationProps,
-  Checkbox
+  Checkbox,
+  CheckboxProps
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
@@ -141,8 +142,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     })
   }
 
-  handleSelectPageChange = (items: Item[]) => {
-    const { selectedItems } = this.state
+  handleSelectPageChange = (items: Item[], data: CheckboxProps) => {
+    const { selectedItems, shouldFetchAllPages } = this.state
     const newItemSelectionState: Record<string, boolean> = { ...selectedItems }
 
     // Performs the opposite action, if everything is selected, it'll deselect and viceversa
@@ -152,7 +153,11 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
       newItemSelectionState[item.id] = isSelected
     }
 
-    this.setState({ selectedItems: newItemSelectionState, showSelectAllPages: true })
+    this.setState({
+      selectedItems: newItemSelectionState,
+      showSelectAllPages: true,
+      shouldFetchAllPages: shouldFetchAllPages && !!data.checked // if the checkbox is unchecked, turn off shouldFetchAllPages flag
+    })
   }
 
   handleClearSelection = () => {
@@ -328,7 +333,9 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                       <Checkbox
                         className="item-checkbox"
                         checked={this.areAllSelected(paginatedItems)}
-                        onClick={() => this.handleSelectPageChange(paginatedItems)}
+                        onClick={(_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) =>
+                          this.handleSelectPageChange(paginatedItems, data)
+                        }
                       />
                       &nbsp;
                       {t('global.item')}
