@@ -148,7 +148,7 @@
     "error_name_already_in_use": "Name already in use. Try a different one"
   },
   "create_third_party_collection_modal": {
-    "title": "New Third Party Collection",
+    "title": "New Linked Wearables Collection",
     "subtitle": "Enter a descriptive name for your new collection",
     "third_party": {
       "label": "Third Party"
@@ -974,7 +974,7 @@
     "no_items": "No items",
     "new_item": "New Item",
     "new_collection": "New Collection",
-    "new_third_party_collection": "New Third Party Collection",
+    "new_third_party_collection": "New Linked Wearables Collection",
     "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {
@@ -997,7 +997,7 @@
     "owner": "Owner",
     "link": "Link",
     "type": "Type",
-    "type_third_party": "Third Party",
+    "type_third_party": "Linked",
     "type_standard": "Standard",
     "review_request": "Review request",
     "forum_post": "Forum Post",
@@ -1081,7 +1081,7 @@
   "collection": {
     "type": {
       "decentraland": "Collection",
-      "third_party": "Third Party Collection"
+      "third_party": "Linked Wearables Collection"
     }
   },
   "item": {
@@ -1132,7 +1132,7 @@
     "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again."
   },
   "publish_third_party_collection_modal": {
-    "title": "Publish Third Party Items",
+    "title": "Publish Linked Items",
     "publish_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\".",
     "push_changes_description": "About to push changes to {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
     "publish_and_push_changes_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\" and changes will be pushed to {itemsWithChanges, plural, one {# item} other {# items}}."
