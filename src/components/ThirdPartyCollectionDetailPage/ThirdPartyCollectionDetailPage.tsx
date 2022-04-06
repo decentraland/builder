@@ -13,7 +13,8 @@ import {
   TextFilter,
   Pagination,
   PaginationProps,
-  Checkbox
+  Checkbox,
+  Loader
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ContractName } from 'decentraland-transactions'
@@ -200,18 +201,16 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 </Column>
                 <Column align="right" shrink={false}>
                   <Row className="actions">
-                    <Button
-                      loading={isLoadingAvailableSlots}
-                      secondary
-                      compact
-                      className={classNames({ empty: areSlotsEmpty && !isLoadingAvailableSlots, slots: !isLoadingAvailableSlots })}
-                      onClick={() => {}}
-                    >
-                      <>
-                        {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
-                        {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
-                      </>
-                    </Button>
+                    <div className={classNames('slots', { empty: areSlotsEmpty && !isLoadingAvailableSlots })}>
+                      {isLoadingAvailableSlots ? (
+                        <Loader active size="tiny" />
+                      ) : (
+                        <>
+                          {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
+                          {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
+                        </>
+                      )}
+                    </div>
                     <Button secondary compact className={'add-items'} onClick={this.handleNewItems}>
                       {t('third_party_collection_detail_page.new_items')}
                     </Button>
