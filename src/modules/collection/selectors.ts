@@ -1,4 +1,3 @@
-import memoize from 'lodash.memoize'
 import { createSelector } from 'reselect'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
@@ -75,15 +74,6 @@ export const getCollection = (state: RootState, collectionId: string) => {
   const collections = getCollections(state)
   return collections.find(collection => collection.id === collectionId) || null
 }
-
-export const getCollectionItemCount = createSelector<RootState, ReturnType<typeof getCollections>, (arg: string) => number>(
-  getCollections,
-  collections =>
-    memoize((collectionId: string) => {
-      const collection = collections.find(collection => collection.id === collectionId)
-      return collection?.itemCount || 0
-    })
-)
 
 export const getCollectionsByContractAddress = createSelector<RootState, ReturnType<typeof getData>, Record<string, Collection>>(
   state => getData(state),

@@ -1028,7 +1028,6 @@
     "search_placeholder": "Buscar {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} de {total}",
     "clear_selection": "Limpiar selección",
-    "select_all": "Seleccionar los {total} items",
     "selection": "{count, plural, one {# item} other {# items}} seleccionados.",
     "max_select_count": "Puedes publicar un máximo de {count} items a la vez",
     "slots": "{amount, plural, =0 {Sin Slots} one {# Slot} other {# Slots}}",

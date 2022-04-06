@@ -14,6 +14,17 @@ import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
 
 export default class CollectionRow extends React.PureComponent<Props> {
+  componentDidMount = () => {
+    const { collection, items, onFetchCollectionItems } = this.props
+    // Only refetch when the collection has no items in store
+    // This way we avoid fetching data too many times
+    // Beware that as data is not refreshed, new changes done by another user
+    // will not be seen and a manual browser refresh will be required.
+    if (items.length === 0) {
+      onFetchCollectionItems(collection.id)
+    }
+  }
+
   handleNavigateToForum = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     const { collection } = this.props
     window.open(collection.forumLink!, '_blank')
@@ -63,7 +74,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, itemCount, curation } = this.props
+    const { collection, items, curation } = this.props
     const createdAtDate = new Date(curation?.createdAt || collection.createdAt)
 
     return (
@@ -76,7 +87,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
                 <CollectionStatus collection={collection} />
                 {collection.name}
               </div>
-              <div className="subtitle name">{t('collection_row.items', { count: itemCount })}</div>
+              <div className="subtitle name">{t('collection_row.items', { count: items.length })}</div>
             </div>
           </div>
         </Table.Cell>
