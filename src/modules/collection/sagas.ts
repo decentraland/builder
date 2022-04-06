@@ -745,7 +745,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         })
       )
     } catch (error) {
-      console.log('error: ', error);
       // Handle error at any point in the flow and show them
       const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
         view: ApprovalFlowModalView.ERROR,
