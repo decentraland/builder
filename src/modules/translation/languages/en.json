@@ -1016,6 +1016,7 @@
     "search_placeholder": "Search {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} of {total}",
     "clear_selection": "Clear selection",
+    "select_all": "Select all {total} items",
     "selection": "{count, plural, one {# item} other {# items}} selected.",
     "max_select_count": "You can publish up to {count} items at a time",
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",

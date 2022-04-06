@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { getCollectionItems } from 'modules/item/selectors'
+import { getCollectionItemCount } from 'modules/collection/selectors'
 import { setCollection } from 'modules/item/actions'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionCard.types'
 import CollectionCard from './CollectionCard'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
-  items: getCollectionItems(state, ownProps.collection.id)
+  itemCount: getCollectionItemCount(state)(ownProps.collection.id)
 })
 
 const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProps => ({

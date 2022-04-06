@@ -16,7 +16,7 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
-import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
+import { getEntityByItemId, getItems, getData as getItemsById, getPaginationData } from 'modules/item/selectors'
 import { Item, ItemApprovalData, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
 import { fetchCollectionItemsRequest, fetchCollectionItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
@@ -32,6 +32,7 @@ import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { BuilderAPI } from 'lib/api/builder'
+import { PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import {
   approveCollectionFailure,
@@ -133,7 +134,7 @@ beforeEach(() => {
     saveTOS: jest.fn(),
     fetchApprovalData: jest.fn(),
     updateItemCurationStatus: jest.fn(),
-    fetchCollectionItems: jest.fn().mockResolvedValueOnce([])
+    fetchCollectionItems: jest.fn()
   } as unknown) as BuilderAPI
   mockCatalyst = ({} as unknown) as CatalystClient
   mockBuilderClient = ({
@@ -161,6 +162,13 @@ describe('when executing the approval flow', () => {
   describe('when a collection has not been approved yet', () => {
     const collection = getCollection()
     const syncedItem = getItem(collection)
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
     const unsyncedItem = getItem(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
@@ -201,7 +209,7 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -236,6 +244,13 @@ describe('when executing the approval flow', () => {
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
     const updatedItem: Item = {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
@@ -273,7 +288,7 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -388,6 +403,13 @@ describe('when executing the approval flow', () => {
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
     const updatedItem: Item = {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
@@ -424,7 +446,7 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -456,6 +478,13 @@ describe('when executing the approval flow', () => {
     const updatedItem: Item = {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
+    }
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
     }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
@@ -489,7 +518,7 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -529,6 +558,13 @@ describe('when executing the approval flow', () => {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
@@ -565,7 +601,7 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -608,6 +644,7 @@ describe('when executing the approval flow', () => {
         const now = Date.now()
         newLock = new Date(now)
         finalCollection = { ...collection, lock: now }
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue([])
       })
 
       it('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
@@ -682,6 +719,7 @@ describe('when executing the approval flow', () => {
         newLock = new Date(now)
         lockedCollection = { ...collection, lock: tomorrow.getTime() }
         finalCollection = { ...collection, lock: now }
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue([])
       })
 
       it('should skip saving the collection', () => {
@@ -880,6 +918,7 @@ describe('when executing the TP approval flow', () => {
     const syncedEntity = getEntity(syncedItem)
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
+    const totalItems = 45
 
     describe('when sending an invalid cheque', () => {
       beforeEach(() => {
@@ -891,11 +930,15 @@ describe('when executing the TP approval flow', () => {
             '3574da0ebfb1eaac261698b057b342e52ea53f85287272cea471a4cda41e3466' +
             '1b'
         }
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: [syncedItem, unsyncedItem] })
       })
 
       it('should throw an error if itemsToApprove length is different than the cheque qty', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
-          .provide([[call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]])
+          .provide([
+            [select(getPaginationData, TPCollection.id), { total: totalItems }],
+            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]
+          ])
           .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
           .put(
             openModal('ApprovalFlowModal', {
@@ -916,10 +959,14 @@ describe('when executing the TP approval flow', () => {
     })
 
     describe('when the cheque was already consumed', () => {
+      beforeEach(() => {
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: itemsToApprove })
+      })
       it('should complete the flow doing the review without a cheque, deploy and update the item curations steps', () => {
         const merkleTree = generateTree(Object.values(contentHashes))
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
+            [select(getPaginationData, TPCollection.id), { total: totalItems }],
             [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: true }],
             [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
             [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -972,12 +1019,16 @@ describe('when executing the TP approval flow', () => {
     })
 
     describe('when sending a valid cheque', () => {
+      beforeEach(() => {
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: [syncedItem, unsyncedItem] })
+      })
       it('should complete the flow doing the review, deploy and update the item curations steps', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
         const merkleTree = generateTree(Object.values(contentHashes))
         const itemCurations = itemsToApprove.map(item => getItemCuration(item))
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
+            [select(getPaginationData, TPCollection.id), { total: totalItems }],
             [
               call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
               { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
@@ -1049,6 +1100,7 @@ describe('when executing the TP approval flow', () => {
         it('should complete the flow doing the review, waiting for the merkle root to be updated, deploy and update the item curations', () => {
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [
                 call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
                 { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
@@ -1118,6 +1170,7 @@ describe('when executing the TP approval flow', () => {
         it('should open the modal in an error state', () => {
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -1158,6 +1211,7 @@ describe('when executing the TP approval flow', () => {
           const merkleTree = generateTree(Object.values(contentHashes))
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }]
@@ -1197,6 +1251,7 @@ describe('when executing the TP approval flow', () => {
           const deployError = 'Deployment Error'
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],

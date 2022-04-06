@@ -13,10 +13,12 @@ import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
+import { isReviewing } from 'modules/location/selectors'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { downloadZip } from 'lib/zip'
 import { BuilderAPI } from 'lib/api/builder'
+import { PaginatedResource } from 'lib/api/pagination'
 import util from 'util'
 import {
   resetItemFailure,
@@ -41,7 +43,10 @@ import {
   rescueItemsRequest,
   rescueItemsChunkSuccess,
   rescueItemsSuccess,
-  rescueItemsFailure
+  rescueItemsFailure,
+  fetchCollectionItemsRequest,
+  fetchCollectionItemsSuccess,
+  fetchCollectionItemsFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
 import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
@@ -55,7 +60,8 @@ let contents: Record<string, Blob>
 const builderAPI = ({
   saveItem: jest.fn(),
   saveItemContents: jest.fn(),
-  fetchContents: jest.fn()
+  fetchContents: jest.fn(),
+  fetchCollectionItems: jest.fn()
 } as unknown) as BuilderAPI
 
 let builderClient: BuilderClient
@@ -850,6 +856,88 @@ describe('when handling the rescue items request action', () => {
           .dispatch(rescueItemsRequest(collection, items, contentHashes))
           .run({ silenceTimeout: true })
       })
+    })
+  })
+})
+
+describe('when handling the fetch of collection items', () => {
+  let item: Item
+  let paginationData: PaginatedResource<Item>
+  beforeEach(() => {
+    item = { ...mockedItem }
+    paginationData = {
+      results: [{ ...mockedItem }],
+      limit: 50,
+      page: 1,
+      pages: 1,
+      total: 1
+    }
+  })
+  describe('and the request is successful', () => {
+    beforeEach(() => {
+      ;(builderAPI.fetchCollectionItems as jest.Mock).mockReturnValue(paginationData)
+    })
+    it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[select(isReviewing), true]])
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, 1, paginationData.limit))
+        .put(fetchCollectionItemsSuccess(item.collectionId!, [item], paginationData.total))
+        .run({ silenceTimeout: true })
+    })
+  })
+  describe('and the request fails', () => {
+    let errorMessage: string
+    beforeEach(() => {
+      errorMessage = 'an error'
+      ;(builderAPI.fetchCollectionItems as jest.Mock).mockRejectedValue(new Error(errorMessage))
+    })
+    it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[select(isReviewing), true]])
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, 1, paginationData.limit))
+        .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the fetch of collection items pages', () => {
+  let item: Item
+  let paginationData: PaginatedResource<Item>
+  beforeEach(() => {
+    item = { ...mockedItem }
+    paginationData = {
+      results: [{ ...mockedItem }],
+      limit: 50,
+      page: 1,
+      pages: 1,
+      total: 1
+    }
+  })
+  describe('and the request is successful', () => {
+    beforeEach(() => {
+      ;(builderAPI.fetchCollectionItems as jest.Mock).mockReturnValue(paginationData)
+    })
+    it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[select(isReviewing), true]])
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, [1], paginationData.limit))
+        .put(fetchCollectionItemsSuccess(item.collectionId!, [item], undefined))
+        .run({ silenceTimeout: true })
+    })
+  })
+  describe('and the request fails', () => {
+    let errorMessage: string
+    beforeEach(() => {
+      errorMessage = 'an error'
+      ;(builderAPI.fetchCollectionItems as jest.Mock).mockRejectedValue(new Error(errorMessage))
+    })
+    it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[select(isReviewing), true]])
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, [1], paginationData.limit))
+        .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
+        .run({ silenceTimeout: true })
     })
   })
 })

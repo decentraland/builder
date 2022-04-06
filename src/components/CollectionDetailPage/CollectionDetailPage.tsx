@@ -13,6 +13,8 @@ import {
   isLocked as isCollectionLocked,
   isOwner
 } from 'modules/collection/utils'
+import CollectionProvider from 'components/CollectionProvider'
+import { Item } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
@@ -58,8 +60,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
     this.props.onNavigate(locations.collections())
   }
 
-  hasItems() {
-    const { items } = this.props
+  hasItems(items: Item[]) {
     return items.length > 0
   }
 
@@ -68,8 +69,8 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
     return collection !== null && canSeeCollection(collection, wallet.address)
   }
 
-  renderPage() {
-    const { wallet, items, isOnSaleLoading } = this.props
+  renderPage(items: Item[]) {
+    const { wallet, isOnSaleLoading } = this.props
     const collection = this.props.collection!
 
     const canMint = canMintCollectionItems(collection, wallet.address)
@@ -164,7 +165,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             />
           </Notice>
 
-          {this.hasItems() ? (
+          {this.hasItems(items) ? (
             <div className="collection-items">
               {items.map(item => (
                 <CollectionItem key={item.id} collection={collection} item={item} />
@@ -186,12 +187,21 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isLoading } = this.props
+    const { isLoading, collection } = this.props
     const hasAccess = this.hasAccess()
+    const HUGE_PAGE_SIZE = 10000 // TODO: Remove this ASAP and implement pagination
     return (
-      <LoggedInDetailPage className="CollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
-        {hasAccess ? this.renderPage() : <NotFound />}
-      </LoggedInDetailPage>
+      <CollectionProvider id={collection?.id} itemsPage={1} itemsPageSize={HUGE_PAGE_SIZE}>
+        {({ isLoading: isLoadingCollectionData, items }) => (
+          <LoggedInDetailPage
+            className="CollectionDetailPage"
+            hasNavigation={!hasAccess && !isLoading && !isLoadingCollectionData}
+            isLoading={isLoading || isLoadingCollectionData}
+          >
+            {hasAccess ? this.renderPage(items) : <NotFound />}
+          </LoggedInDetailPage>
+        )}
+      </CollectionProvider>
     )
   }
 }

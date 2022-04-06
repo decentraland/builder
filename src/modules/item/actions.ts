@@ -1,6 +1,7 @@
 import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { PaginatedResource } from 'lib/api/pagination'
 import { Collection } from 'modules/collection/types'
 import { BuiltFile, Item, Rarity } from './types'
 
@@ -10,8 +11,9 @@ export const FETCH_ITEMS_REQUEST = '[Request] Fetch Items'
 export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
 export const FETCH_ITEMS_FAILURE = '[Failure] Fetch Items'
 
-export const fetchItemsRequest = (address?: string) => action(FETCH_ITEMS_REQUEST, { address })
-export const fetchItemsSuccess = (items: Item[]) => action(FETCH_ITEMS_SUCCESS, { items })
+export const fetchItemsRequest = (address: string) => action(FETCH_ITEMS_REQUEST, { address })
+export const fetchItemsSuccess = (items: Item[], totalItems: PaginatedResource<Item>['total'], address: string) =>
+  action(FETCH_ITEMS_SUCCESS, { items, paginationIndex: address, totalItems })
 export const fetchItemsFailure = (error: string) => action(FETCH_ITEMS_FAILURE, { error })
 
 export type FetchItemsRequestAction = ReturnType<typeof fetchItemsRequest>
@@ -38,9 +40,10 @@ export const FETCH_COLLECTION_ITEMS_REQUEST = '[Request] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_SUCCESS = '[Success] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_FAILURE = '[Failure] Fetch Collection Items'
 
-export const fetchCollectionItemsRequest = (collectionId: string) => action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId })
-export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[]) =>
-  action(FETCH_COLLECTION_ITEMS_SUCCESS, { collectionId, items })
+export const fetchCollectionItemsRequest = (collectionId: string, page?: number | number[], limit?: number) =>
+  action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId, page, limit })
+export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[], totalItems?: PaginatedResource<Item>['total']) =>
+  action(FETCH_COLLECTION_ITEMS_SUCCESS, { paginationIndex: collectionId, items, totalItems })
 export const fetchCollectionItemsFailure = (collectionId: string, error: string) =>
   action(FETCH_COLLECTION_ITEMS_FAILURE, { collectionId, error })
 
