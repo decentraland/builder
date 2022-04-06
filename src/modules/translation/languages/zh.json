@@ -143,7 +143,7 @@
     "error_name_already_in_use": "使用中的名称。 尝试其他"
   },
   "create_third_party_collection_modal": {
-    "title": "新的第三方收藏",
+    "title": "新的链接可穿戴设备系列",
     "subtitle": "为您的新集合输入一个描述性名称",
     "third_party": {
       "label": "第三者"
@@ -966,7 +966,7 @@
     "no_items": "有项目",
     "new_item": "项目",
     "new_collection": "收藏",
-    "new_third_party_collection": "新的第三方收藏",
+    "new_third_party_collection": "新的链接可穿戴设备系列",
     "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {
@@ -989,7 +989,7 @@
     "owner": "所有者",
     "link": "关联",
     "type": "类型",
-    "type_third_party": "第三者",
+    "type_third_party": "链接的",
     "type_standard": "标准",
     "review_request": "审查请求",
     "forum_post": "论坛帖子",
@@ -1075,7 +1075,7 @@
   "collection": {
     "type": {
       "decentraland": "采集",
-      "third_party": "第三方收藏"
+      "third_party": "链接的可穿戴设备系列"
     }
   },
   "item": {
@@ -1155,7 +1155,7 @@
     "description": "自上次策展人审查藏品或其中包含的文章以来，对收藏品或其中包含的文章进行了更改。{br}要使这些变化反映在市场和游戏中，必须再次得到委员会的审查和批准。{br}您确定要推动更改以供审核吗？"
   },
   "publish_third_party_collection_modal": {
-    "title": "发布第三方项目",
+    "title": "发布链接项目",
     "publish_description": "即将使用 {availableSlots} 个可用插槽中的 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来发布 \"{collectionName}\"。",
     "push_changes_description": "即将对 \"{collectionName}\" 推送对 {itemsWithChanges, 复数，一个 {# item} 其他 {# items}} 的更改。",
     "publish_and_push_changes_description": "即将使用 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来自 {availableSlots} 可用插槽来发布 \"{collectionName}\"，并且更改将被推送到 {itemsWithChanges，复数，一个 {# item}其他项目}}。"
