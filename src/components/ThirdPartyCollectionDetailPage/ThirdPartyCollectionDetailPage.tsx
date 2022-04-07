@@ -226,16 +226,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
         </Section>
         <Narrow>
           <Notice storageKey={STORAGE_KEY}>
-            <T
-              id="third_party_collection_detail_page.notice"
-              values={{
-                buy_link: (
-                  <span className="link" onClick={() => {}}>
-                    {t('global.click_here')}
-                  </span>
-                )
-              }}
-            />
+            <T id="third_party_collection_detail_page.notice" />
           </Notice>
 
           {this.hasItems() ? (

@@ -247,18 +247,6 @@
     "subtitle_one": "You can create custom layouts for your Scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."
   },
-  "buy_item_slots_modal": {
-    "title": "Slots",
-    "description_line_one": "Buy slots to publish your items!",
-    "description_line_two": "Please select how many you want to buy.",
-    "not_enough_mana": "You don't have enough {symbol} to buy this amount of slots.",
-    "get_mana": "You can get more using the {link} dapp.",
-    "buy_slots": "Buy slots",
-    "how_many_slots_title": "How many slots?",
-    "buy_slots_error": "Slots must be an integer",
-    "slots_value": "The approximate cost of each slot is {symbol}{slot_cost}.",
-    "total_cost": "The total cost will be {symbol}{total_cost}. It has a 3% slippage to cover market price changes."
-  },
   "share_modal": {
     "title": "Share your Scene",
     "description": "Let your friends and co-creators see your work",
@@ -896,7 +884,6 @@
     "allowed_claim_mana": "Allowed MANA to claim a new name",
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
-    "buy_third_party_item_slots": "Bought {count} {count, plural, one {slot} other {slots}} for the third party \"{name}\"",
     "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
   },
   "transfer_page": {
@@ -1012,7 +999,7 @@
     "change_item_file": "Edit representation"
   },
   "third_party_collection_detail_page": {
-    "notice": "Each published item takes 1 Slot. {buy_link} to buy Slot Packs and start publishing your creations!",
+    "notice": "Each published item takes 1 Slot. Create a draft-proposal in the DAO to ask for more slots",
     "search_placeholder": "Search {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} of {total}",
     "clear_selection": "Clear selection",
