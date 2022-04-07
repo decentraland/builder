@@ -251,18 +251,6 @@
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
-  "buy_item_slots_modal": {
-    "title": "Slots",
-    "description_line_one": "Compra slots para publicar tus items!",
-    "description_line_two": "Por favor selecciona cuántos quieres comprar.",
-    "not_enough_mana": "No tienes suficiente {symbol} para comprar esa cantidad de slots.",
-    "get_mana": "Puedes conseguir más utilizando la {link} dapp.",
-    "buy_slots": "Comprar espacio",
-    "how_many_slots_title": "¿Cuántos slots?",
-    "buy_slots_error": "Los slots deben ser un número entero",
-    "slots_value": "El costo aproximado de cada espacio es {symbol}{slot_cost}",
-    "total_cost": "El costo total será {symbol}{total_cost}. Tiene un 3% de deslizamiento para cubrir los cambios de precio del mercado."
-  },
   "share_modal": {
     "title": "Comparte tu Escena",
     "description": "Deja que tus amigos y co-creadores vean tu trabajo",
@@ -906,7 +894,6 @@
     "allowed_claim_mana": "Permitió el uso de MANA para reclamar un nuevo nombre",
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
-    "buy_third_party_item_slots": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\"",
     "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}"
   },
   "transfer_page": {
@@ -1024,7 +1011,7 @@
     "change_item_file": "Editar representación"
   },
   "third_party_collection_detail_page": {
-    "notice": "Cada item publicado toma un Slot. {buy_link} para comprar paquetes de slots y comienza a publicar tus creaciones!",
+    "notice": "Cada item publicado toma un Slot. Crear un borrador de propuesta en el DAO para solicitar más slots",
     "search_placeholder": "Buscar {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} de {total}",
     "clear_selection": "Limpiar selección",

@@ -29,7 +29,6 @@ export type State = {
   itemSelectionState: Record<string, boolean>
   searchText: string
   page: number
-  isAuthModalOpen: boolean
 }
 
 export type MapStateProps = Pick<
