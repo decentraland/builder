@@ -49,3 +49,9 @@
     max-width: 215px;
   }
 }
+
+.delete-collection-confirm .header {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
