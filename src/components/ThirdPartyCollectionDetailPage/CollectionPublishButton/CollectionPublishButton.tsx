@@ -23,7 +23,7 @@ const CollectionPublishButton = (props: Props) => {
   const { collection, items, slots, onClick, itemsStatus, itemCurations, isLoadingItemCurations } = props
 
   const buttonAction = useMemo(() => {
-    let action = PublishButtonAction.PUBLISH
+    let action = PublishButtonAction.NONE
     const { willPublish, willPushChanges } = items.reduce(
       (acc, item) => {
         const status = itemsStatus[item.id]
@@ -33,7 +33,7 @@ const CollectionPublishButton = (props: Props) => {
           isAllowedToPushChanges(
             item,
             status,
-            itemCurations.find(itemCuration => itemCuration.itemId === item.id)
+            itemCurations.find(itemCuration => itemCuration.itemId === item.id && itemCuration.status === CurationStatus.PENDING)
           )
         ) {
           acc.willPushChanges = true
@@ -46,9 +46,12 @@ const CollectionPublishButton = (props: Props) => {
       }
     )
     const isJustPushingChanges = willPushChanges && !willPublish
+    const isJustPublishing = willPublish && !willPushChanges
     const isPublishingAndPushing = willPushChanges && willPublish
     if (isJustPushingChanges) {
       action = PublishButtonAction.PUSH_CHANGES
+    } else if (isJustPublishing) {
+      action = PublishButtonAction.PUBLISH
     } else if (isPublishingAndPushing) {
       action = PublishButtonAction.PUBLISH_AND_PUSH_CHANGES
     }
@@ -81,6 +84,7 @@ const CollectionPublishButton = (props: Props) => {
 
   const hasPendingItemCurations = itemCurations && !!itemCurations.find(ic => ic.status === CurationStatus.PENDING)
   const isTryingToPublish = [PublishButtonAction.PUBLISH, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(buttonAction)
+  const hasEnoughSlots = slots > items.length
 
   return !isLoadingItemCurations && isTryingToPublish && hasPendingItemCurations ? (
     <Popup
@@ -98,16 +102,30 @@ const CollectionPublishButton = (props: Props) => {
       inverted
     />
   ) : (
-    <NetworkButton
-      loading={isLoadingItemCurations}
-      disabled={slots === 0 || items.length === 0}
-      primary
-      compact
-      onClick={handleOnClick}
-      network={Network.MATIC}
-    >
-      {getTPButtonActionLabel(buttonAction)}
-    </NetworkButton>
+    <Popup
+      content={t('third_party_collection_detail_page.exceeds_available_slots')}
+      position="bottom center"
+      trigger={
+        <div className="popup-button">
+          <NetworkButton
+            loading={isLoadingItemCurations}
+            disabled={
+              (isTryingToPublish && (slots === 0 || !hasEnoughSlots)) || items.length === 0 || buttonAction === PublishButtonAction.NONE
+            }
+            primary
+            compact
+            onClick={handleOnClick}
+            network={Network.MATIC}
+          >
+            {getTPButtonActionLabel(buttonAction)}
+          </NetworkButton>
+        </div>
+      }
+      hideOnScroll={true}
+      disabled={!isTryingToPublish || (isTryingToPublish && hasEnoughSlots)}
+      on="hover"
+      inverted
+    />
   )
 }
 

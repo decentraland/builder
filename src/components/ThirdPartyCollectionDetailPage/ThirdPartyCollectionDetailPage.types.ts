@@ -38,7 +38,6 @@ export type State = {
   searchText: string
   page: number
   shouldFetchAllPages: boolean
-  isAuthModalOpen: boolean
   showSelectAllPages: boolean
 }
 
