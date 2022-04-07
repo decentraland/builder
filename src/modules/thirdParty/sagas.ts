@@ -1,11 +1,10 @@
-import { takeLatest, takeEvery, call, put, select, all, CallEffect } from 'redux-saga/effects'
-import { BigNumber } from '@ethersproject/bignumber'
-import { Contract, providers, utils } from 'ethers'
+import PQueue from 'p-queue'
+import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
+import { Contract, providers } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
-import { getChainIdByNetwork, getConnectedProvider, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
-import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { BuilderAPI } from 'lib/api/builder'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -13,20 +12,13 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
+import { waitForTx } from 'modules/transaction/utils'
 import {
   FETCH_THIRD_PARTIES_REQUEST,
   fetchThirdPartiesRequest,
   fetchThirdPartiesSuccess,
   fetchThirdPartiesFailure,
   FetchThirdPartiesRequestAction,
-  FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST,
-  fetchThirdPartyItemSlotPriceSuccess,
-  fetchThirdPartyItemSlotPriceFailure,
-  BuyThirdPartyItemSlotRequestAction,
-  BUY_THIRD_PARTY_ITEM_SLOT_REQUEST,
-  buyThirdPartyItemSlotSuccess,
-  buyThirdPartyItemSlotFailure,
-  BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS,
   FetchThirdPartyAvailableSlotsRequestAction,
   fetchThirdPartyAvailableSlotsSuccess,
   FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
@@ -45,9 +37,14 @@ import {
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
   PublishThirdPartyItemsSuccessAction,
   publishAndPushChangesThirdPartyItemsSuccess,
-  publishAndPushChangesThirdPartyItemsFailure
+  publishAndPushChangesThirdPartyItemsFailure,
+  ReviewThirdPartyRequestAction,
+  reviewThirdPartySuccess,
+  reviewThirdPartyFailure,
+  REVIEW_THIRD_PARTY_REQUEST,
+  reviewThirdPartyTxSuccess
 } from './actions'
-import { applySlotBuySlippage } from './utils'
+import { getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
 
 export function* getContractInstance(
@@ -60,62 +57,15 @@ export function* getContractInstance(
   return contractInstance
 }
 
-export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
-  const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-  const provider: Provider | null = yield call(getConnectedProvider)
-  if (!provider) {
-    throw new Error('Could not get a valid connected Wallet')
-  }
-  const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-  const salt = utils.hexlify(utils.randomBytes(32))
-  const domain = {
-    name: thirdPartyContract.name,
-    verifyingContract: thirdPartyContract.address,
-    version: thirdPartyContract.version,
-    salt
-  }
-  const dataToSign = {
-    thirdPartyId,
-    qty,
-    salt
-  }
-  const domainTypes = {
-    ConsumeSlots: [
-      { name: 'thirdPartyId', type: 'string' },
-      { name: 'qty', type: 'uint256' },
-      { name: 'salt', type: 'bytes32' }
-    ]
-  }
-
-  // TODO: expose this as a function in decentraland-transactions
-  const msgString = JSON.stringify({ domain, message: dataToSign, types: domainTypes, primaryType: 'ConsumeSlots' })
-
-  const accounts: string[] = yield call([provider, 'request'], { method: 'eth_requestAccounts', params: [], jsonrpc: '2.0' })
-  const from = accounts[0]
-
-  const signature: string = yield call([provider, 'request'], {
-    method: 'eth_signTypedData_v4',
-    params: [from, msgString],
-    jsonrpc: '2.0'
-  })
-
-  const AbiCoderInstance = new utils.AbiCoder()
-  const signedMessage = AbiCoderInstance.encode(['string', 'uint256', 'bytes32'], Object.values(dataToSign))
-
-  return { signature, signedMessage, salt }
-}
-
 export function* thirdPartySaga(builder: BuilderAPI) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeEvery(FETCH_THIRD_PARTIES_REQUEST, handleFetchThirdPartiesRequest)
-  yield takeEvery(FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST, handleFetchThirdPartyItemSlotPriceRequest)
-  yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, handleBuyThirdPartyItemSlotRequest)
-  yield takeEvery(BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, handleBuyThirdPartyItemSlotSuccess)
   yield takeEvery(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, handleFetchThirdPartyAvailableSlots)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
+  yield takeLatest(REVIEW_THIRD_PARTY_REQUEST, handleReviewThirdPartyRequest)
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -142,46 +92,9 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     }
   }
 
-  function* handleFetchThirdPartyItemSlotPriceRequest() {
-    try {
-      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const provider: Provider = yield call(getNetworkProvider, maticChainId)
-
-      const thirdPartyContractInstance: Contract = yield call(getContractInstance, ContractName.ThirdPartyRegistry, maticChainId, provider)
-      const itemSlotPrice: BigNumber = yield call(thirdPartyContractInstance.itemSlotPrice) // USD
-
-      const chainlinkOracleInstance: Contract = yield call(getContractInstance, ContractName.ChainlinkOracle, maticChainId, provider)
-      const rate: BigNumber = yield call(chainlinkOracleInstance.getRate) // USD/MANA
-      const slotPriceInMANA = itemSlotPrice.div(rate) // USD*MANA/USD
-      yield put(fetchThirdPartyItemSlotPriceSuccess(Number(slotPriceInMANA)))
-    } catch (error) {
-      yield put(fetchThirdPartyItemSlotPriceFailure(error.message))
-    }
-  }
-
-  function* handleBuyThirdPartyItemSlotRequest(action: BuyThirdPartyItemSlotRequestAction) {
-    const { slotsToBuy, thirdParty, priceToPay } = action.payload
-    try {
-      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-      const costWithSlippage = applySlotBuySlippage(BigNumber.from(priceToPay).mul(BigNumber.from(slotsToBuy)))
-      const maxPriceInWei = utils.parseEther(costWithSlippage.toString())
-      const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContract =>
-        instantiatedThirdPartyContract.buyItemSlots(thirdParty.id, slotsToBuy, maxPriceInWei)
-      )
-      yield put(buyThirdPartyItemSlotSuccess(txHash, maticChainId, thirdParty, slotsToBuy))
-    } catch (error) {
-      yield put(buyThirdPartyItemSlotFailure(thirdParty.id, slotsToBuy, error.message))
-    }
-  }
-
-  function* handleBuyThirdPartyItemSlotSuccess() {
-    yield put(closeModal('BuyItemSlotsModal'))
-  }
-
   function* handlePublishThirdPartyItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
-    const { collectionId } = action.payload
-    yield put(fetchThirdPartyAvailableSlotsRequest(collectionId))
+    const { thirdPartyId } = action.payload
+    yield put(fetchThirdPartyAvailableSlotsRequest(thirdPartyId))
   }
 
   function getCollectionId(items: Item[]): string {
@@ -194,16 +107,17 @@ export function* thirdPartySaga(builder: BuilderAPI) {
 
   function* publishChangesToThirdPartyItems(thirdParty: ThirdParty, items: Item[]) {
     const collectionId = getCollectionId(items)
-    const { signature, signedMessage, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
+    const { signature, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
 
     const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield call(
       [builder, 'publishTPCollection'],
       collectionId,
       items.map(i => i.id),
-      signedMessage,
-      signature,
-      items.length, // qty
-      salt
+      {
+        signature,
+        qty: items.length,
+        salt
+      }
     )
     return { newItems, newItemCurations }
   }
@@ -218,7 +132,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
         items
       )
 
-      yield put(publishThirdPartyItemsSuccess(collectionId, newItems, newItemCurations))
+      yield put(publishThirdPartyItemsSuccess(thirdParty.id, collectionId, newItems, newItemCurations))
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
       yield put(publishThirdPartyItemsFailure(error.message))
@@ -229,15 +143,19 @@ export function* thirdPartySaga(builder: BuilderAPI) {
     const collectionId = getCollectionId(items)
 
     const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId!)
-    const effects: CallEffect<ItemCuration>[] = items.map(item => {
+    const MAX_CONCURRENT_REQUESTS = 3
+    const queue = new PQueue({ concurrency: MAX_CONCURRENT_REQUESTS })
+    const promisesOfItemsBeingUpdated: (() => Promise<ItemCuration>)[] = items.map((item: Item) => {
       const curation = itemCurations.find(itemCuration => itemCuration.itemId === item.id)
       if (curation?.status === CurationStatus.PENDING) {
-        return call([builder, 'updateItemCurationStatus'], item.id, CurationStatus.PENDING)
+        return () => builder.updateItemCurationStatus(item.id, CurationStatus.PENDING)
       }
-      return call([builder, 'pushItemCuration'], item.id) // FOR CURATIONS REJECTED/APPROVED
+      return () => builder.pushItemCuration(item.id) // FOR CURATIONS REJECTED/APPROVED
     })
-
-    const newItemsCurations: ItemCuration[] = yield all(effects)
+    const newItemsCurations: ItemCuration[] = yield queue.addAll(promisesOfItemsBeingUpdated)
+    if (newItemsCurations.some(itemCuration => itemCuration === undefined)) {
+      throw Error('Some item curations were not pushed')
+    }
     return newItemsCurations
   }
 
@@ -270,10 +188,31 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       const newItemCurations = [...resultFromPublish.newItemCurations, ...resultFromPushChanges]
 
       yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
-      yield put(fetchThirdPartyAvailableSlotsRequest(collectionId)) // re-fetch available slots after publishing
+      yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
       yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
+    }
+  }
+
+  function* handleReviewThirdPartyRequest(action: ReviewThirdPartyRequestAction) {
+    const { thirdPartyId, slots, merkleTreeRoot } = action.payload
+    try {
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+      const txHash: string = yield call(
+        sendTransaction as any,
+        thirdPartyContract,
+        'reviewThirdPartyWithRoot',
+        thirdPartyId,
+        merkleTreeRoot,
+        slots.map(slot => [slot.qty, slot.salt, slot.sigR, slot.sigS, slot.sigV])
+      )
+      yield put(reviewThirdPartyTxSuccess(txHash, maticChainId))
+      yield call(waitForTx, txHash)
+      yield put(reviewThirdPartySuccess())
+    } catch (error) {
+      yield put(reviewThirdPartyFailure(error))
     }
   }
 }

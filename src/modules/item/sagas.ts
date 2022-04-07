@@ -89,20 +89,16 @@ import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
+import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize } from './export'
-import { Item, Rarity, CatalystItem, BodyShapeType } from './types'
-import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
+import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData } from './types'
+import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem } from './selectors'
 import { ItemTooBigError } from './errors'
-import { buildZipContents, getMetadata, groupsOf, isValidText, MAX_FILE_SIZE } from './utils'
-import {
-  FetchTransactionFailureAction,
-  FetchTransactionSuccessAction,
-  FETCH_TRANSACTION_FAILURE,
-  FETCH_TRANSACTION_SUCCESS
-} from 'decentraland-dapps/dist/modules/transaction/actions'
+import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
+
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
@@ -212,6 +208,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { item: actionItem, contents } = action.payload
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
+      const oldItem: Item | undefined = yield select(getItem, actionItem.id)
+      const rarityChanged = oldItem && oldItem.rarity !== item.rarity
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
@@ -221,6 +219,15 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       if (collection && isLocked(collection)) {
         throw new Error(t('sagas.collection.collection_locked'))
+      }
+
+      // If there's a new thumbnail image or the item doesn't have a catalyst image, create it and add it to the item
+      if (contents[THUMBNAIL_PATH] || !item.contents[IMAGE_PATH] || rarityChanged) {
+        const catalystImage: { content: Blob; hash: string } = yield call(generateCatalystImage, item, {
+          thumbnail: contents[THUMBNAIL_PATH]
+        })
+        contents[IMAGE_PATH] = catalystImage.content
+        item.contents[IMAGE_PATH] = catalystImage.hash
       }
 
       if (Object.keys(contents).length > 0) {
@@ -382,22 +389,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         txHashes.push(txHash)
         yield put(rescueItemsChunkSuccess(collection, itemsChunks[i], contentHashesChunks[i], chainId, txHash))
 
-        // Wait for the transaction to finish
-        while (true) {
-          const {
-            success,
-            failure
-          }: { success: FetchTransactionSuccessAction | undefined; failure: FetchTransactionFailureAction | undefined } = yield race({
-            success: take(FETCH_TRANSACTION_SUCCESS),
-            failure: take(FETCH_TRANSACTION_FAILURE)
-          })
-
-          if (success?.payload.transaction.hash === txHash) {
-            break
-          } else if (failure?.payload.transaction.hash === txHash) {
-            throw new Error(`The transaction ${txHash} failed to be mined.`)
-          }
-        }
+        yield call(waitForTx, txHash)
       }
       const newItems = items.map<Item>((item, index) => ({ ...item, blockchainContentHash: contentHashes[index] }))
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHashes))
@@ -487,7 +479,7 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
       name: catalystItem.name,
       description: catalystItem.description,
       contents: entityContentsAsMap,
-      data: catalystItem.data
+      data: catalystItem.data as WearableData
     }
 
     yield put(saveItemRequest(newItem, newContents))

@@ -7,3 +7,17 @@ export type ThirdParty = {
   totalItems: string
   availableSlots?: number
 }
+
+export type Cheque = {
+  signature: string
+  qty: number
+  salt: string
+}
+
+export type Slot = {
+  qty: number
+  salt: string
+  sigR: string
+  sigS: string
+  sigV: number
+}

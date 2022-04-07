@@ -18,13 +18,15 @@ import {
   getWearableCategories,
   getOverridesCategories,
   isOwner,
-  resizeImage
+  resizeImage,
+  getEmoteCategories
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import {
   Item,
   ItemRarity,
+  ItemType,
   ITEM_DESCRIPTION_MAX_LENGTH,
   ITEM_NAME_MAX_LENGTH,
   THUMBNAIL_PATH,
@@ -274,8 +276,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return !equal(utils.pick<Item>(state, editableItemAttributes), utils.pick(item, editableItemAttributes))
   }
 
-  asCategorySelect(values: WearableCategory[]) {
-    return values.map(value => ({ value, text: t(`wearable.category.${value}`) }))
+  asCategorySelect(type: ItemType, values: WearableCategory[]) {
+    return values.map(value => ({ value, text: t(`${type}.category.${value}`) }))
   }
 
   asRaritySelect(values: ItemRarity[]) {
@@ -295,8 +297,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
-              let actionableCategories = item ? getOverridesCategories(item.contents, data?.category) : []
-              const wearableCategories = item ? getWearableCategories(item.contents) : []
+              let actionableCategories: string[] = item
+                ? item.type === ItemType.WEARABLE
+                  ? getOverridesCategories(item.contents, data?.category)
+                  : getEmoteCategories()
+                : []
+              const wearableCategories = item
+                ? item.type === ItemType.WEARABLE
+                  ? getWearableCategories(item.contents)
+                  : getEmoteCategories()
+                : []
 
               let overrideCategories: WearableCategory[] = []
               let hidesCategories: WearableCategory[] = []
@@ -304,10 +314,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               let hides: WearableCategory[] = []
 
               if (data) {
-                hides = data.hides.filter(category => actionableCategories.includes(category))
-                replaces = data.replaces.filter(category => actionableCategories.includes(category))
-                hidesCategories = actionableCategories.filter(category => !replaces.includes(category))
-                overrideCategories = actionableCategories.filter(category => !hides.includes(category))
+                hides = data.hides ? data.hides.filter(category => actionableCategories.includes(category)) : []
+                replaces = data.replaces ? data.replaces.filter(category => actionableCategories.includes(category)) : []
+                hidesCategories = actionableCategories.filter(
+                  category => !replaces.includes(category as WearableCategory)
+                ) as WearableCategory[]
+                overrideCategories = actionableCategories.filter(
+                  category => !hides.includes(category as WearableCategory)
+                ) as WearableCategory[]
               }
 
               const downloadButton = isDownloading ? (
@@ -403,7 +417,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           itemId={item.id}
                           label={t('global.category')}
                           value={data!.category}
-                          options={this.asCategorySelect(wearableCategories)}
+                          options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeCategory}
                         />
@@ -428,7 +442,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           label={t('item_editor.right_panel.replaces')}
                           info={t('item_editor.right_panel.replaces_info')}
                           value={replaces}
-                          options={this.asCategorySelect(overrideCategories)}
+                          options={this.asCategorySelect(item.type, overrideCategories)}
                           disabled={!canEditItemMetadata || this.isSkin()}
                           onChange={this.handleChangeReplaces}
                         />
@@ -437,7 +451,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           label={t('item_editor.right_panel.hides')}
                           info={t('item_editor.right_panel.hides_info')}
                           value={hides}
-                          options={this.asCategorySelect(hidesCategories)}
+                          options={this.asCategorySelect(item.type, hidesCategories)}
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeHides}
                         />

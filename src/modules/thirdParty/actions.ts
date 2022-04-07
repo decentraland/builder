@@ -1,10 +1,11 @@
+import { action } from 'typesafe-actions'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
-import { action } from 'typesafe-actions'
-import { ThirdParty } from './types'
+import { Slot, ThirdParty } from './types'
 
 // Fetch Third Party Records
 
@@ -19,20 +20,6 @@ export const fetchThirdPartiesFailure = (error: string) => action(FETCH_THIRD_PA
 export type FetchThirdPartiesRequestAction = ReturnType<typeof fetchThirdPartiesRequest>
 export type FetchThirdPartiesSuccessAction = ReturnType<typeof fetchThirdPartiesSuccess>
 export type FetchThirdPartiesFailureAction = ReturnType<typeof fetchThirdPartiesFailure>
-
-// Fetch third party slot price
-
-export const FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST = '[Request] Fetch third party item slot price'
-export const FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_SUCCESS = '[Success] Fetch third party item slot price'
-export const FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE = '[Failure] Fetch third party item slot price'
-
-export const fetchThirdPartyItemSlotPriceRequest = () => action(FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_REQUEST)
-export const fetchThirdPartyItemSlotPriceSuccess = (value: number) => action(FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_SUCCESS, { value })
-export const fetchThirdPartyItemSlotPriceFailure = (error: string) => action(FETCH_THIRD_PARTY_ITEM_SLOT_PRICE_FAILURE, { error })
-
-export type FetchThirdPartyItemSlotPriceRequestAction = ReturnType<typeof fetchThirdPartyItemSlotPriceRequest>
-export type FetchThirdPartyItemSlotPriceSuccessAction = ReturnType<typeof fetchThirdPartyItemSlotPriceSuccess>
-export type FetchThirdPartyItemSlotPriceFailureAction = ReturnType<typeof fetchThirdPartyItemSlotPriceFailure>
 
 // Fetch Third Party Available Slots
 
@@ -50,26 +37,31 @@ export type FetchThirdPartyAvailableSlotsRequestAction = ReturnType<typeof fetch
 export type FetchThirdPartyAvailableSlotsSuccessAction = ReturnType<typeof fetchThirdPartyAvailableSlotsSuccess>
 export type FetchThirdPartyAvailableSlotsFailureAction = ReturnType<typeof fetchThirdPartyAvailableSlotsFailure>
 
-// Buy a third party slot
+// Review a third party
 
-export const BUY_THIRD_PARTY_ITEM_SLOT_REQUEST = '[Request] Buy a third party item slot'
-export const BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS = '[Success] Buy a third party item slot'
-export const BUY_THIRD_PARTY_ITEM_SLOT_FAILURE = '[Failure] Buy a third party item slot'
+export const REVIEW_THIRD_PARTY_REQUEST = '[Request] Review a third party'
+export const REVIEW_THIRD_PARTY_SUCCESS = '[Success] Review a third party'
+export const REVIEW_THIRD_PARTY_FAILURE = '[Failure] Review a third party'
+export const REVIEW_THIRD_PARTY_TX_SUCCESS = '[Tx Success] Review a third party'
 
-export const buyThirdPartyItemSlotRequest = (thirdParty: ThirdParty, slotsToBuy: number, priceToPay: number) =>
-  action(BUY_THIRD_PARTY_ITEM_SLOT_REQUEST, { thirdParty, slotsToBuy, priceToPay })
-export const buyThirdPartyItemSlotSuccess = (txHash: string, chainId: ChainId, thirdParty: ThirdParty, slotsToBuy: number) =>
-  action(BUY_THIRD_PARTY_ITEM_SLOT_SUCCESS, {
-    thirdParty,
-    slotsToBuy,
-    ...buildTransactionPayload(chainId, txHash, { thirdParty, slotsToBuy })
+export const reviewThirdPartyRequest = (
+  thirdPartyId: ThirdParty['id'],
+  slots: Slot[],
+  merkleTreeRoot: MerkleDistributorInfo['merkleRoot']
+) => action(REVIEW_THIRD_PARTY_REQUEST, { thirdPartyId, slots, merkleTreeRoot })
+
+export const reviewThirdPartyTxSuccess = (txHash: string, chainId: ChainId) =>
+  action(REVIEW_THIRD_PARTY_TX_SUCCESS, {
+    ...buildTransactionPayload(chainId, txHash)
   })
-export const buyThirdPartyItemSlotFailure = (thirdPartyId: string, slotsToBuy: number, error: string) =>
-  action(BUY_THIRD_PARTY_ITEM_SLOT_FAILURE, { thirdPartyId, slotsToBuy, error })
 
-export type BuyThirdPartyItemSlotRequestAction = ReturnType<typeof buyThirdPartyItemSlotRequest>
-export type BuyThirdPartyItemSlotSuccessAction = ReturnType<typeof buyThirdPartyItemSlotSuccess>
-export type BuyThirdPartyItemSlotFailureAction = ReturnType<typeof buyThirdPartyItemSlotFailure>
+export const reviewThirdPartySuccess = () => action(REVIEW_THIRD_PARTY_SUCCESS)
+export const reviewThirdPartyFailure = (error: string) => action(REVIEW_THIRD_PARTY_FAILURE, { error })
+
+export type ReviewThirdPartyRequestAction = ReturnType<typeof reviewThirdPartyRequest>
+export type ReviewThirdPartySuccessAction = ReturnType<typeof reviewThirdPartySuccess>
+export type ReviewThirdPartyTxSuccessAction = ReturnType<typeof reviewThirdPartyTxSuccess>
+export type ReviewThirdPartyFailureAction = ReturnType<typeof reviewThirdPartyFailure>
 
 // Publish Third Party Item
 
@@ -79,8 +71,14 @@ export const PUBLISH_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish third party 
 
 export const publishThirdPartyItemsRequest = (thirdParty: ThirdParty, items: Item[]) =>
   action(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, items })
-export const publishThirdPartyItemsSuccess = (collectionId: Collection['id'], items: Item[], itemCurations: ItemCuration[]) =>
+export const publishThirdPartyItemsSuccess = (
+  thirdPartyId: ThirdParty['id'],
+  collectionId: Collection['id'],
+  items: Item[],
+  itemCurations: ItemCuration[]
+) =>
   action(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, {
+    thirdPartyId,
     collectionId,
     items,
     itemCurations

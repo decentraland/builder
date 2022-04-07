@@ -5,6 +5,7 @@ import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'
 
 export enum PublishButtonAction {
+  NONE,
   PUBLISH,
   PUSH_CHANGES,
   PUBLISH_AND_PUSH_CHANGES

@@ -150,7 +150,7 @@
     "message": "El nombre puede tener un máximo de {maxLength} caracteres",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
   },
-  "create_third_party_collection": {
+  "create_third_party_collection_modal": {
     "title": "Nueva colleción externa",
     "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",
     "third_party": {
@@ -158,12 +158,11 @@
     },
     "name_field": {
       "label": "Nombre",
-      "placeholder": "Mi colección",
       "message": "El nombre puede tener un máximo de {maxLength} caracteres"
     },
     "urn_suffix_field": {
       "label": "Id",
-      "placeholder": "mi-colección"
+      "message": "Recomendamos incluir la dirección del contrato de la colección como parte del id. Solo puede usar letras, números y guiones (-)"
     }
   },
   "model_metrics": {
@@ -251,16 +250,6 @@
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
-  },
-  "buy_item_slots_modal": {
-    "title": "Slots",
-    "description_line_one": "Compra slots para publicar tus items!",
-    "description_line_two": "Por favor selecciona cuántos quieres comprar.",
-    "not_enough_mana": "No tienes suficiente {symbol} para comprar esa cantidad de slots.",
-    "get_mana": "Puedes conseguir más utilizando la {link} dapp.",
-    "buy_slots": "Comprar espacio",
-    "how_many_slots_title": "Cuántos slots?",
-    "slots_value": "El costo aproximado de cada espacio es {symbol}{slot_cost}"
   },
   "share_modal": {
     "title": "Comparte tu Escena",
@@ -535,7 +524,8 @@
     "total": "Total",
     "parcel_plural": "Parcelas",
     "estate_plural": "Estates",
-    "none": "Ninguno"
+    "none": "Ninguno",
+    "emote": "Emote"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -904,7 +894,6 @@
     "allowed_claim_mana": "Permitió el uso de MANA para reclamar un nuevo nombre",
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
-    "buy_third_party_item_slots": "Has comprado {count} {count, plural, one {slot} other {slots}} para el registro externo \"{name}\"",
     "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}"
   },
   "transfer_page": {
@@ -1022,7 +1011,7 @@
     "change_item_file": "Editar representación"
   },
   "third_party_collection_detail_page": {
-    "notice": "Cada item publicado toma un Slot. {buy_link} para comprar paquetes de slots y comienza a publicar tus creaciones!",
+    "notice": "Cada item publicado toma un Slot. Crear un borrador de propuesta en el DAO para solicitar más slots",
     "search_placeholder": "Buscar {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} de {total}",
     "clear_selection": "Limpiar selección",
@@ -1035,7 +1024,11 @@
     "new_items": "Nuevos items",
     "publish": "Publicar",
     "push_changes": "Subir cambios",
-    "publish_and_push_changes": "Publicar y subir cambios"
+    "publish_and_push_changes": "Publicar y subir cambios",
+    "cant_publish": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás publicar más items",
+    "cant_publish_items": "Estas tratando de publicar {count} {count, plural, un {item} other {items}}. Hay otro que se encuentran bajo revisión en este momento",
+    "exceeds_available_slots": "Estas excediendo la cantidad de slots disponibles. Podrás pedir más slots a la DAO através de una propuesta",
+    "cant_publish_and_push_changes": "Estas tratando de publicar {count} {count, plural, un {item} other {items}} y subir cambios al mismo tiempo. Deselecciona los items a publicar para poder subir cambios"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
@@ -1069,6 +1062,7 @@
     "post_to_forum": "Post al foro",
     "posting": "Posteando",
     "not_posted": "La colección no tiene un post asociado. Puedes intentar crearlo aquí",
+    "delete_published_collection": "No puedes borrar una colleción publicada",
     "change_published_urn": "No puedes cambiar el URN una vez que la colleción fue publicada"
   },
   "collection_item": {
@@ -1101,7 +1095,8 @@
     "edit_urn": "Editar URN",
     "copy_urn": "Copiar URN",
     "type": {
-      "wearable": "Vestimenta"
+      "wearable": "Vestimenta",
+      "emote": "Emote"
     }
   },
   "edit_price_and_beneficiary_modal": {
@@ -1228,7 +1223,9 @@
       "items": "Items",
       "collections": "Colecciones",
       "items_count": "{count} items",
-      "invalid_representation_tooltip": "Este item no tiene representacion de {bodyShape}"
+      "invalid_representation_tooltip": "Este item no tiene representacion de {bodyShape}",
+      "no_items_to_review": "No hay más items para revisar",
+      "empty_collection": "La colección está vacía, ¡agrega algunos items primero!"
     },
     "center_panel": {
       "disabled_animation_dropdown": "Tiene que haber al menos un item visible para poder activar una animacion"
@@ -1246,6 +1243,12 @@
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"
+    }
+  },
+  "emote": {
+    "category": {
+      "simple": "Simple",
+      "loop": "Loop"
     }
   },
   "wearable": {
@@ -1361,6 +1364,12 @@
         "title": "La colección excede el máximo número de items",
         "content": "Se realizarán múltiples transacciones. Ten en cuenta que se te pedirá que las firmes."
       }
+    },
+    "consume_slots": {
+      "title": "Aprobar Items",
+      "subtitle": "Por favor aprueba los siguientes items",
+      "more_items": "Y {count} otros {count, plural, one {item} other {items}}",
+      "confirm": "Confirmar"
     },
     "upload": {
       "title": "Subir Archivos",

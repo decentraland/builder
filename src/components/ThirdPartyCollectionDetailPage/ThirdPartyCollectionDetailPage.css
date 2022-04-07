@@ -1,6 +1,7 @@
 .ThirdPartyCollectionDetailPage .header-column {
   flex: none;
   width: calc(100% - 300px);
+  min-width: 0;
 }
 
 .ThirdPartyCollectionDetailPage .header-row {
@@ -55,11 +56,19 @@
   margin-bottom: 32px;
 }
 
-.ThirdPartyCollectionDetailPage .button.slots.empty {
+.ThirdPartyCollectionDetailPage .slots {
+  margin: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: relative;
+}
+
+
+.ThirdPartyCollectionDetailPage .slots.empty {
   color: var(--secondary-text);
 }
 
-.ThirdPartyCollectionDetailPage .button.slots:before {
+.ThirdPartyCollectionDetailPage .slots:before {
   content: '';
   display: inline-block;
   background-image: url('../../images/slots.svg');
@@ -70,7 +79,7 @@
   margin-right: 8px;
 }
 
-.ThirdPartyCollectionDetailPage .button.slots .buy-slots {
+.ThirdPartyCollectionDetailPage .slots .buy-slots {
   margin-left: 10px;
 }
 

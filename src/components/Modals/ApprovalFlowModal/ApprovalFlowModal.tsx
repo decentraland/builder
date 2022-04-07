@@ -1,18 +1,19 @@
 import * as React from 'react'
-
 import { Modal } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Center, Loader, Message, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
 import ItemImage from 'components/ItemImage'
 import { formatBytes } from 'lib/number'
-import { MAX_ITEMS } from 'modules/collection/constants'
+import { extractThirdPartyId } from 'lib/urn'
+import { MAX_ITEMS, MAX_TP_ITEMS } from 'modules/collection/constants'
 import { getBodyShapes, toBodyShapeType } from 'modules/item/utils'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView, Props, State } from './ApprovalFlowModal.types'
 import './ApprovalFlowModal.css'
 
 export default class ApprovalFlowModal extends React.PureComponent<Props> {
   state: State = {
-    didRescue: false
+    didRescue: false,
+    didApproveConsumeSlots: false
   }
 
   canCloseModal() {
@@ -25,6 +26,14 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     const { collection, items, contentHashes } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE>
     this.setState({ didRescue: true })
     onRescueItems(collection, items, contentHashes)
+  }
+
+  handleReviewThirdParty = () => {
+    const { metadata, onReviewThirdParty } = this.props
+    const { collection, merkleTreeRoot, slots } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>
+    this.setState({ didApproveConsumeSlots: true })
+    const thirdPartyId = extractThirdPartyId(collection.urn)
+    onReviewThirdParty(thirdPartyId, slots, merkleTreeRoot)
   }
 
   renderHash(hash: string) {
@@ -83,7 +92,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
                     <ItemImage item={item} />
                     {item.name}
                   </Table.Cell>
-                  <Table.Cell>{t('wearable.category.' + item.data.category)}</Table.Cell>
+                  <Table.Cell>{t(`${item.type}.category.${item.data.category}`)}</Table.Cell>
                   <Table.Cell>
                     {getBodyShapes(item)
                       .map(bodyShape => t(`body_shapes.${toBodyShapeType(bodyShape)}`))
@@ -97,6 +106,65 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         </ModalContent>
         <ModalActions>
           <Button primary disabled={didRescue || isConfirmingRescueTx} loading={didRescue} onClick={this.handleConfirm}>
+            {t('approval_flow.rescue.confirm')}
+          </Button>
+          <Button secondary onClick={onClose} disabled={!this.canCloseModal()}>
+            {t('global.cancel')}
+          </Button>
+        </ModalActions>
+      </>
+    )
+  }
+
+  renderConsumeTPSlotsView() {
+    const { onClose, metadata, isConfirmingReviewThirdPartyTx } = this.props
+    const { items } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>
+    const { didApproveConsumeSlots } = this.state
+
+    return (
+      <>
+        <ModalNavigation
+          title={t('approval_flow.consume_slots.title')}
+          subtitle={t('approval_flow.consume_slots.subtitle')}
+          onClose={this.canCloseModal() ? onClose : undefined}
+        />
+        <ModalContent>
+          <Table basic="very">
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>{t('global.name')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('global.category')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('global.body_shape_plural')}</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {items.slice(0, MAX_TP_ITEMS).map(item => (
+                <Table.Row key={item.id} className="item">
+                  <Table.Cell className="name">
+                    <ItemImage item={item} />
+                    {item.name}
+                  </Table.Cell>
+                  <Table.Cell>{t('wearable.category.' + item.data.category)}</Table.Cell>
+                  <Table.Cell>
+                    {getBodyShapes(item)
+                      .map(bodyShape => t(`body_shapes.${toBodyShapeType(bodyShape)}`))
+                      .join(', ')}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+          {items.length > MAX_TP_ITEMS ? (
+            <span>{t('approval_flow.consume_slots.more_items', { count: items.length - MAX_TP_ITEMS })}</span>
+          ) : null}
+        </ModalContent>
+        <ModalActions>
+          <Button
+            primary
+            disabled={didApproveConsumeSlots || isConfirmingReviewThirdPartyTx}
+            loading={didApproveConsumeSlots}
+            onClick={this.handleReviewThirdParty}
+          >
             {t('approval_flow.rescue.confirm')}
           </Button>
           <Button secondary onClick={onClose} disabled={!this.canCloseModal()}>
@@ -221,6 +289,9 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         break
       case ApprovalFlowModalView.RESCUE:
         content = this.renderRescueView()
+        break
+      case ApprovalFlowModalView.CONSUME_TP_SLOTS:
+        content = this.renderConsumeTPSlotsView()
         break
       case ApprovalFlowModalView.DEPLOY:
         content = this.renderDeployView()

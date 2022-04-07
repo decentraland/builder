@@ -46,9 +46,9 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
   yield all([
     analyticsSaga(),
     assetPackSaga(builderAPI),
-    assetSaga(),
+    assetSaga(newBuilderClient),
     authorizationSaga(),
-    collectionSaga(builderAPI, catalystClient),
+    collectionSaga(builderAPI, newBuilderClient, catalystClient),
     committeeSaga(builderAPI),
     deploymentSaga(builderAPI),
     editorSaga(),

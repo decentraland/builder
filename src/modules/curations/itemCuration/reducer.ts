@@ -1,4 +1,5 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { FinishTPApprovalFlowAction, FINISH_TP_APPROVAL_FLOW } from 'modules/collection/actions'
 import {
   PublishAndPushChangesThirdPartyItemsFailureAction,
   PublishAndPushChangesThirdPartyItemsRequestAction,
@@ -54,6 +55,7 @@ type CurationReducerAction =
   | PublishAndPushChangesThirdPartyItemsRequestAction
   | PublishAndPushChangesThirdPartyItemsSuccessAction
   | PublishAndPushChangesThirdPartyItemsFailureAction
+  | FinishTPApprovalFlowAction
 
 export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, action: CurationReducerAction): ItemCurationState {
   switch (action.type) {
@@ -65,7 +67,17 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         ...state,
         loading: loadingReducer(state.loading, action)
       }
+    case FINISH_TP_APPROVAL_FLOW: {
+      const { collection, itemCurations } = action.payload
 
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [collection.id]: [...itemCurations]
+        }
+      }
+    }
     case FETCH_ITEM_CURATIONS_SUCCESS: {
       const { itemCurations, collectionId } = action.payload
 
@@ -74,12 +86,11 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [collectionId]: itemCurations
+          [collectionId]: [...itemCurations]
         },
         error: null
       }
     }
-
     case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
       const { itemCurations, collectionId } = action.payload
       const oldItemCurations = state.data[collectionId]
@@ -94,14 +105,13 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         error: null
       }
     }
-
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
     case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
       const { itemCurations: newItemCurations, collectionId } = action.payload
       const oldItemCurations = state.data[collectionId]
       const newCurationsItemIds = newItemCurations.map(newItemCuration => newItemCuration.itemId)
-      const oldCurationsNotIncludedInNewOnes = oldItemCurations.filter(oldItemCuration =>
-        !newCurationsItemIds.includes(oldItemCuration.itemId)
+      const oldCurationsNotIncludedInNewOnes = oldItemCurations.filter(
+        oldItemCuration => !newCurationsItemIds.includes(oldItemCuration.itemId)
       )
 
       return {
@@ -114,7 +124,6 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         error: null
       }
     }
-
     case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:

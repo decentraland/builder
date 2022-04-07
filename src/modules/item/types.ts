@@ -1,10 +1,13 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
+import { ThirdPartyWearable, StandardWearable } from '@dcl/schemas'
 import { ModelMetrics } from 'modules/models/types'
+import { Cheque } from 'modules/thirdParty/types'
 
 export type BuiltFile<T extends Content> = BuiltItem<T> & { fileName: string }
 
 export enum ItemType {
-  WEARABLE = 'wearable'
+  WEARABLE = 'wearable',
+  EMOTE = 'emote'
 }
 
 export enum SyncStatus {
@@ -31,6 +34,7 @@ export enum WearableCategory {
   EYEBROWS = 'eyebrows',
   EYES = 'eyes',
   FACIAL_HAIR = 'facial_hair',
+  BODY_SHAPE = 'body_shape',
   FEET = 'feet',
   HAIR = 'hair',
   HAT = 'hat',
@@ -45,9 +49,15 @@ export enum WearableCategory {
   SKIN = 'skin'
 }
 
+export enum EmoteCategory {
+  SIMPLE = 'simple',
+  LOOP = 'loop'
+}
+
 export enum ItemMetadataType {
   WEARABLE = 'w',
-  SMART_WEARABLE = 'sw'
+  SMART_WEARABLE = 'sw',
+  EMOTE = 'e'
 }
 
 export const BODY_SHAPE_CATEGORY = 'body_shape'
@@ -74,6 +84,12 @@ export type WearableRepresentation = {
   contents: string[]
   overrideReplaces: WearableCategory[]
   overrideHides: WearableCategory[]
+}
+
+export type EmoteRepresentation = {
+  bodyShapes: WearableBodyShape[]
+  mainFile: string
+  contents: string[]
 }
 
 export const RARITY_COLOR_LIGHT: Record<ItemRarity, string> = {
@@ -106,6 +122,12 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
   [ItemRarity.COMMON]: 100000
 }
 
+export type EmoteData = {
+  category?: EmoteCategory
+  representations: WearableRepresentation[]
+  tags: string[]
+}
+
 export type WearableData = {
   category?: WearableCategory
   representations: WearableRepresentation[]
@@ -125,14 +147,19 @@ type BaseItem = {
   updatedAt: number
 }
 
-export type CatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt'> & {
-  i18n: { code: string; text: string }[]
-  data: WearableData
-  image: string
-  collectionAddress: string
+export type StandardCatalystItem = StandardWearable & {
+  emoteDataV0?: { loop: boolean }
 }
 
-export type Item = BaseItem & {
+export type CatalystItem = StandardCatalystItem | ThirdPartyWearable
+
+export type ItemApprovalData = {
+  cheque: Cheque
+  content_hashes: Record<string, string>
+  chequeWasConsumed: boolean
+}
+
+export type Item<T = ItemType.WEARABLE> = BaseItem & {
   type: ItemType
   owner: string
   collectionId?: string
@@ -147,7 +174,8 @@ export type Item = BaseItem & {
   contents: Record<string, string>
   blockchainContentHash: string | null
   currentContentHash: string | null
-  data: WearableData
+  catalystContentHash: string | null
+  data: T extends ItemType.WEARABLE ? WearableData : EmoteData
 }
 
 export type Rarity = {

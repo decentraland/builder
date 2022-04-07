@@ -143,19 +143,18 @@
     "error_name_already_in_use": "使用中的名称。 尝试其他"
   },
   "create_third_party_collection_modal": {
-    "title": "新的第三方收藏",
+    "title": "新的链接可穿戴设备系列",
     "subtitle": "为您的新集合输入一个描述性名称",
     "third_party": {
       "label": "第三者"
     },
     "name_field": {
       "label": "姓名",
-      "placeholder": "我的收藏",
       "message": "名称最多可以是 {maxLength} 个字符"
     },
     "urn_suffix_field": {
       "label": "Id",
-      "placeholder": "我的收藏"
+      "message": "我们建议将收款合约地址作为 id 的一部分。只允许使用字母、数字和破折号 (-)"
     }
   },
   "model_metrics": {
@@ -243,17 +242,6 @@
   "custom_layout_modal": {
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
-  },
-  "buy_item_slots_modal": {
-    "title": "插槽",
-    "description_line_one": "购买插槽以发布您的物品！",
-    "description_line_two": "请选择您要购买的数量。",
-    "not_enough_mana": "您没有足够的 {symbol} 购买该数量的插槽。",
-    "get_mana": "您可以使用 {link} 去中心化应用程序获得更多。",
-    "buy_slots": "买插槽",
-    "how_many_slots_title": "多少个插槽？",
-    "slots_value": "每个插槽的近似成本是 {symbol}{slot_cost}",
-    "total_cost": "总成本为 {symbol}{total_cost}。它有 3% 的滑点来弥补市场价格的变化。"
   },
   "share_modal": {
     "title": "分享您的场景",
@@ -527,7 +515,8 @@
     "total": "全部的",
     "parcel_plural": "包裹",
     "estate_plural": "庄园",
-    "none": "没有任何"
+    "none": "没有任何",
+    "emote": "表情"
   },
   "navigation": {
     "scenes": "场景",
@@ -889,7 +878,6 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "buy_third_party_item_slots": "为第三方 {name} 购买了 {count}个插槽",
     "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
   },
   "transfer_page": {
@@ -965,7 +953,7 @@
     "no_items": "有项目",
     "new_item": "项目",
     "new_collection": "收藏",
-    "new_third_party_collection": "新的第三方收藏",
+    "new_third_party_collection": "新的链接可穿戴设备系列",
     "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {
@@ -988,7 +976,7 @@
     "owner": "所有者",
     "link": "关联",
     "type": "类型",
-    "type_third_party": "第三者",
+    "type_third_party": "链接的",
     "type_standard": "标准",
     "review_request": "审查请求",
     "forum_post": "论坛帖子",
@@ -1003,7 +991,7 @@
     "change_item_file": "编辑制图表达"
   },
   "third_party_collection_detail_page": {
-    "notice": "每个发布的项目需要 1 个插槽。 {buy_link} 购买老虎机包并开始发布您的作品！",
+    "notice": "每个发布的项目占用 1 个 Slot。在 DAO 中创建提案草案以申请更多插槽",
     "search_placeholder": "搜索 {count} {count, plural, one {物品} other {项目}}...",
     "search_info": "{page}-{pageTotal} 个，共 {total} 个",
     "clear_selection": "清空选项",
@@ -1016,7 +1004,11 @@
     "new_items": "新的可穿戴物品",
     "publish": "发布",
     "push_changes": "推送更改",
-    "publish_and_push_changes": "发布和推送更改"
+    "publish_and_push_changes": "发布和推送更改",
+    "cant_publish": "此集合仍在审核中，一旦该过程结束，您将能够发布更多项目",
+    "cant_publish_items": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}}。目前还有其他人正在审查中",
+    "exceeds_available_slots": "您超出了可用插槽的数量。在 DAO 中创建提案以添加更多插槽",
+    "cant_publish_and_push_changes": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}} 并同时推送更改。取消选择要发布的项目以推送更改"
   },
   "collection_detail_page": {
     "new_item": "新物品",
@@ -1051,6 +1043,7 @@
     "post_to_forum": "发布到论坛",
     "posting": "过帐",
     "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试",
+    "delete_published_collection": "您无法删除已发布的集合",
     "change_published_urn": "集合发布后，您将无法更改 URN"
   },
   "collection_item": {
@@ -1068,7 +1061,7 @@
   "collection": {
     "type": {
       "decentraland": "采集",
-      "third_party": "第三方收藏"
+      "third_party": "链接的可穿戴设备系列"
     }
   },
   "item": {
@@ -1083,7 +1076,8 @@
     "edit_urn": "编辑 URN",
     "copy_urn": "Copy URN",
     "type": {
-      "wearable": "可穿戴"
+      "wearable": "可穿戴",
+      "emote": "表情"
     }
   },
   "edit_price_and_beneficiary_modal": {
@@ -1147,7 +1141,7 @@
     "description": "自上次策展人审查藏品或其中包含的文章以来，对收藏品或其中包含的文章进行了更改。{br}要使这些变化反映在市场和游戏中，必须再次得到委员会的审查和批准。{br}您确定要推动更改以供审核吗？"
   },
   "publish_third_party_collection_modal": {
-    "title": "发布第三方项目",
+    "title": "发布链接项目",
     "publish_description": "即将使用 {availableSlots} 个可用插槽中的 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来发布 \"{collectionName}\"。",
     "push_changes_description": "即将对 \"{collectionName}\" 推送对 {itemsWithChanges, 复数，一个 {# item} 其他 {# items}} 的更改。",
     "publish_and_push_changes_description": "即将使用 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来自 {availableSlots} 可用插槽来发布 \"{collectionName}\"，并且更改将被推送到 {itemsWithChanges，复数，一个 {# item}其他项目}}。"
@@ -1212,7 +1206,9 @@
       "items": "物品",
       "collections": "馆藏",
       "items_count": "{count}个项目",
-      "invalid_representation_tooltip": "此项没有{bodyShape}表示形式"
+      "invalid_representation_tooltip": "此项没有{bodyShape}表示形式",
+      "no_items_to_review": "没有待审核的项目",
+      "empty_collection": "空集合，先添加一些项目！"
     },
     "center_panel": {
       "disabled_animation_dropdown": "需要至少可见一个项目才能选择头像动画"
@@ -1230,6 +1226,12 @@
       "select_placeholder": "选择一个选项",
       "request_for_changes": "要求变更",
       "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权"
+    }
+  },
+  "emote": {
+    "category": {
+      "simple": "简单的",
+      "loop": "环形"
     }
   },
   "wearable": {
@@ -1345,6 +1347,12 @@
         "title": "集合超过最大项目数",
         "content": "将进行多笔交易。 请注意，您将被要求签署它们。"
       }
+    },
+    "consume_slots": {
+      "title": "批准项目",
+      "subtitle": "请批准以下项目",
+      "more_items": "还有 {count} 个其他 {count，复数，一个 {item} 其他 {items}}",
+      "confirm": "确认"
     },
     "上传": {
       "title": "上传文件",

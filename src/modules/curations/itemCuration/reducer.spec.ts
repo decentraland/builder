@@ -17,6 +17,7 @@ import { CurationStatus } from '../types'
 import { ItemCuration } from './types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { mockedItem } from 'specs/item'
+import { finishTPApprovalFlow } from 'modules/collection/actions'
 
 const getMockItemCuration = (props: Partial<ItemCuration> = {}): ItemCuration => ({
   id: 'id',
@@ -24,6 +25,7 @@ const getMockItemCuration = (props: Partial<ItemCuration> = {}): ItemCuration =>
   status: CurationStatus.PENDING,
   createdAt: 0,
   updatedAt: 0,
+  contentHash: 'aHash',
   ...props
 })
 
@@ -79,11 +81,20 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQU
 })
 
 describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', () => {
+  let thirdParty: ThirdParty
   let collection: Collection
   let items: Item[]
   let itemCurations: ItemCuration[]
   beforeEach(() => {
     collection = { id: 'collectionId' } as Collection
+    thirdParty = {
+      id: '1',
+      name: 'a third party',
+      description: 'some desc',
+      managers: ['0x1', '0x2'],
+      maxItems: '0',
+      totalItems: '0'
+    }
     itemCurations = [getMockItemCuration()]
   })
   it('should merge the old item curations with the new ones', () => {
@@ -93,7 +104,7 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', (
         collectionId: [getMockItemCuration({ id: 'originalItemCuration' })]
       }
     }
-    expect(itemCurationReducer(state, publishThirdPartyItemsSuccess(collection.id, items, itemCurations))).toStrictEqual({
+    expect(itemCurationReducer(state, publishThirdPartyItemsSuccess(thirdParty.id, collection.id, items, itemCurations))).toStrictEqual({
       ...state,
       data: {
         collectionId: [getMockItemCuration({ id: 'originalItemCuration' }), getMockItemCuration()]
@@ -256,6 +267,29 @@ describe('when an action of type FETCH_ITEM_CURATIONS_FAILURE is called', () => 
     ).toStrictEqual({
       ...INITIAL_STATE,
       error: 'Some Error'
+    })
+  })
+})
+
+describe('when an action of type FINISH_TP_APPROVAL_FLOW is called', () => {
+  let collection: Collection
+  let itemCurations: ItemCuration[]
+  beforeEach(() => {
+    collection = { id: 'collectionId' } as Collection
+    itemCurations = [getMockItemCuration({ createdAt: 1 }), getMockItemCuration({ createdAt: 2 })]
+  })
+  it('should replace the old curation for the new one', () => {
+    const state = {
+      ...INITIAL_STATE,
+      data: {
+        collectionId: []
+      }
+    }
+    expect(itemCurationReducer(state, finishTPApprovalFlow(collection, [], itemCurations))).toStrictEqual({
+      ...state,
+      data: {
+        collectionId: itemCurations
+      }
     })
   })
 })

@@ -4,13 +4,9 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { select } from 'redux-saga-test-plan/matchers'
-import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, Network } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
-import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import { ContractName, getContract } from 'decentraland-transactions'
 import { loginSuccess } from 'modules/identity/actions'
 import { BuilderAPI } from 'lib/api/builder'
 import { ThirdParty } from './types'
@@ -18,12 +14,6 @@ import {
   fetchThirdPartiesRequest,
   fetchThirdPartiesFailure,
   fetchThirdPartiesSuccess,
-  fetchThirdPartyItemSlotPriceFailure,
-  fetchThirdPartyItemSlotPriceRequest,
-  fetchThirdPartyItemSlotPriceSuccess,
-  buyThirdPartyItemSlotFailure,
-  buyThirdPartyItemSlotRequest,
-  buyThirdPartyItemSlotSuccess,
   fetchThirdPartyAvailableSlotsFailure,
   fetchThirdPartyAvailableSlotsRequest,
   fetchThirdPartyAvailableSlotsSuccess,
@@ -44,9 +34,8 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { Item } from 'modules/item/types'
-import { thirdPartySaga, getContractInstance, getPublishItemsSignature } from './sagas'
-import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
-import { getItemSlotPrice } from './selectors'
+import { thirdPartySaga } from './sagas'
+import { getPublishItemsSignature } from './utils'
 
 const mockBuilder = ({
   fetchThirdParties: jest.fn(),
@@ -57,9 +46,6 @@ const mockBuilder = ({
 } as any) as BuilderAPI
 
 let thirdParty: ThirdParty
-const defaultError = 'error'
-const txHash = 'mockedHash'
-const mockedSlotsToBuy = 10
 
 beforeEach(() => {
   thirdParty = {
@@ -150,108 +136,6 @@ describe('when fetching third parties', () => {
   })
 })
 
-describe('when handling the request to fetch the third party item slot price', () => {
-  describe('and the request fails', () => {
-    it('should put the action signaling the fetching error with the error message', () => {
-      return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-          [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MUMBAI), Promise.reject(new Error(defaultError))]
-        ])
-        .put(fetchThirdPartyItemSlotPriceFailure(defaultError))
-        .dispatch(fetchThirdPartyItemSlotPriceRequest())
-        .run({ silenceTimeout: true })
-    })
-  })
-
-  describe('and the request succeeds', () => {
-    let mockedSlotPrice: BigNumber
-    let mockedOracleRate: BigNumber
-    let mockedTPContract: { itemSlotPrice: () => BigNumber }
-    let mockedOracleContract: { getRate: () => BigNumber }
-
-    beforeEach(() => {
-      mockedSlotPrice = BigNumber.from('1000000000000000000')
-      mockedOracleRate = BigNumber.from('1000000000000000000')
-      mockedTPContract = {
-        itemSlotPrice: () => mockedSlotPrice
-      }
-      mockedOracleContract = {
-        getRate: () => mockedOracleRate
-      }
-    })
-    it('should put the action signaling the successful fetch with the retrieved item slot price', () => {
-      const mockedProvider = {}
-      return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-          [call(getNetworkProvider, ChainId.MATIC_MUMBAI), mockedProvider],
-          [
-            call(getContractInstance, ContractName.ThirdPartyRegistry, ChainId.MATIC_MUMBAI, (mockedProvider as unknown) as Provider),
-            mockedTPContract
-          ],
-          [
-            call(getContractInstance, ContractName.ChainlinkOracle, ChainId.MATIC_MUMBAI, (mockedProvider as unknown) as Provider),
-            mockedOracleContract
-          ]
-        ])
-        .put(fetchThirdPartyItemSlotPriceSuccess(Number(mockedSlotPrice.div(mockedOracleRate))))
-        .dispatch(fetchThirdPartyItemSlotPriceRequest())
-        .run({ silenceTimeout: true })
-    })
-  })
-})
-
-describe('when handling the request to buy third party item slots', () => {
-  const mockedSlotPriceInMANA = 10
-  describe("and the chain id couldn't be retrieved", () => {
-    it('should put the action signaling the failure of the purchase of item slots with third party id', () => {
-      return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([[call(getChainIdByNetwork, Network.MATIC), Promise.reject(new Error(defaultError))]])
-        .put(buyThirdPartyItemSlotFailure(thirdParty.id, 10, defaultError))
-        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, 10, 10))
-        .run({ silenceTimeout: true })
-    })
-  })
-
-  describe('and sending the transaction fails', () => {
-    it('should put the action signaling the failure of the purchase of item slots with the slot amount and the third party id', () => {
-      return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-          [select(getItemSlotPrice), mockedSlotPriceInMANA],
-          [matchers.call.fn(sendTransaction), Promise.reject(new Error(defaultError))]
-        ])
-        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, mockedSlotsToBuy, mockedSlotPriceInMANA))
-        .put(buyThirdPartyItemSlotFailure(thirdParty.id, mockedSlotPriceInMANA, defaultError))
-        .run({ silenceTimeout: true })
-    })
-  })
-
-  describe('and sending the transaction succeeds', () => {
-    it('should put the action signaling the successful purchase of item slots with the slot amount, the third party and the transaction details', () => {
-      return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-          [select(getItemSlotPrice), mockedSlotPriceInMANA],
-          [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
-        ])
-        .put(buyThirdPartyItemSlotSuccess(txHash, ChainId.MATIC_MUMBAI, thirdParty, mockedSlotsToBuy))
-        .dispatch(buyThirdPartyItemSlotRequest(thirdParty, mockedSlotsToBuy, mockedSlotPriceInMANA))
-        .run({ silenceTimeout: true })
-    })
-  })
-})
-
-describe('when handling the successful purchase of a third party item slot', () => {
-  it('should put the action to close the modal to buy the item slots', () => {
-    return expectSaga(thirdPartySaga, mockBuilder)
-      .put(closeModal('BuyItemSlotsModal'))
-      .dispatch(buyThirdPartyItemSlotSuccess('aTxHash', ChainId.ETHEREUM_GOERLI, thirdParty, 10))
-      .run({ silenceTimeout: true })
-  })
-})
-
 describe('when fetching third party available slots', () => {
   describe('when the api request fails', () => {
     let errorMessage: string
@@ -284,14 +168,12 @@ describe('when publishing third party items', () => {
   let collection: Collection
   let item: Item
   let signature: string
-  let signedMessage: string
   let salt: string
   let qty: number
   beforeEach(() => {
     collection = { name: 'valid collection name' } as Collection
     item = { ...mockedItem, collectionId: 'a valid collectionId' }
     signature = 'a signature'
-    signedMessage = 'a signed message'
     salt = '0xsalt'
     qty = 1
   })
@@ -307,9 +189,9 @@ describe('when publishing third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [select(getCollection, item.collectionId), collection],
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             throwError(new Error(errorMessage))
           ]
         ])
@@ -329,7 +211,8 @@ describe('when publishing third party items', () => {
           itemId: 'itemId',
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         }
       ]
     })
@@ -339,13 +222,13 @@ describe('when publishing third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [select(getCollection, item.collectionId), collection],
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             { collection, items: [mockedItemReturnedByServer], itemCurations }
           ]
         ])
-        .put(publishThirdPartyItemsSuccess(item.collectionId!, [mockedItemReturnedByServer], itemCurations))
+        .put(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .dispatch(publishThirdPartyItemsRequest(thirdParty, [item]))
         .run({ silenceTimeout: true })
@@ -354,8 +237,8 @@ describe('when publishing third party items', () => {
     it('should put the fetch available slots action when the push finishes successfully', () => {
       const mockedItemReturnedByServer = { ...mockedItem, id: 'a new id' }
       return expectSaga(thirdPartySaga, mockBuilder)
-        .put(fetchThirdPartyAvailableSlotsRequest(item.collectionId!))
-        .dispatch(publishThirdPartyItemsSuccess(item.collectionId!, [mockedItemReturnedByServer], itemCurations))
+        .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
+        .dispatch(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations))
         .run({ silenceTimeout: true })
     })
   })
@@ -374,17 +257,15 @@ describe('when pushing changes to third party items', () => {
   })
 
   describe('when one of the api requests fails', () => {
-    let errorMessage: string
-
     beforeEach(() => {
-      errorMessage = 'Some Error Message'
       itemCurations = [
         {
           id: 'id',
           itemId: mockedItem.id,
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         }
       ]
     })
@@ -393,9 +274,9 @@ describe('when pushing changes to third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
           [select(getItemCurations, item.collectionId), itemCurations],
-          [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), throwError(new Error(errorMessage))]
+          [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), throwError(new Error('Error'))]
         ])
-        .put(pushChangesThirdPartyItemsFailure(errorMessage))
+        .put(pushChangesThirdPartyItemsFailure('Some item curations were not pushed'))
         .dispatch(pushChangesThirdPartyItemsRequest([item]))
         .run({ silenceTimeout: true })
     })
@@ -411,14 +292,16 @@ describe('when pushing changes to third party items', () => {
           itemId: mockedItem.id,
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         },
         {
           id: 'id',
           itemId: 'anotherItemId',
           createdAt: 0,
           status: CurationStatus.APPROVED,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'anotherHash'
         }
       ]
       updatedItemCurations = [
@@ -427,26 +310,26 @@ describe('when pushing changes to third party items', () => {
           itemId: mockedItem.id,
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         },
         {
           id: 'id',
           itemId: 'anotherItemId',
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'anotherHash'
         }
       ]
+      ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValue(updatedItemCurations[0])
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[1])
     })
 
     it('should put the push changes success action with the updated item curations and close the PublishThirdPartyCollectionModal modal', () => {
       const anotherItem = { ...mockedItem, id: 'anotherItemId' }
       return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([
-          [select(getItemCurations, item.collectionId), itemCurations],
-          [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), updatedItemCurations[0]],
-          [call([mockBuilder, mockBuilder.pushItemCuration], anotherItem.id), updatedItemCurations[1]]
-        ])
+        .provide([[select(getItemCurations, item.collectionId), itemCurations]])
         .put(pushChangesThirdPartyItemsSuccess(item.collectionId!, updatedItemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .dispatch(pushChangesThirdPartyItemsRequest([item, anotherItem]))
@@ -464,7 +347,6 @@ describe('when publishing & pushing changes to third party items', () => {
   let publishResponse: Item[]
   let itemsToPublish: Item[]
   let signature: string
-  let signedMessage: string
   let salt: string
   let qty: number
   beforeEach(() => {
@@ -485,24 +367,24 @@ describe('when publishing & pushing changes to third party items', () => {
         itemId: mockedItem.id,
         createdAt: 0,
         status: CurationStatus.PENDING,
-        updatedAt: 0
+        updatedAt: 0,
+        contentHash: 'aHash'
       }
     ]
     publishResponse = [{ ...item, id: uuidv4() }]
     itemsToPublish = [item]
     signature = 'a signature'
-    signedMessage = 'a signed message'
     salt = '0xsalt'
     qty = 1
   })
 
   describe('when the publish items fails', () => {
-    it('should put the publish & push changes failure action action', () => {
+    it('should put the publish & push changes failure action', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             throwError(new Error(errorMessage))
           ]
         ])
@@ -513,16 +395,15 @@ describe('when publishing & pushing changes to third party items', () => {
   })
 
   describe('when the publish works fine but push items fails', () => {
+    beforeEach(() => {
+      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockRejectedValue(new Error(errorMessage))
+    })
     it('should put the publish & push changes failure action', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
-          [select(getItemCurations, item.collectionId), itemCurations],
-          [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
-            { items: publishResponse, itemCurations }
-          ],
-          [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), throwError(new Error(errorMessage))]
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [select(getItemCurations, item.collectionId), itemCurations]
         ])
         .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
@@ -539,24 +420,22 @@ describe('when publishing & pushing changes to third party items', () => {
           itemId: mockedItem.id,
           createdAt: 0,
           status: CurationStatus.PENDING,
-          updatedAt: 0
+          updatedAt: 0,
+          contentHash: 'aHash'
         }
       ]
+      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[0])
     })
 
     it('should put the publish & push changes success action and the fetch available slots request', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, signedMessage, salt }],
-          [select(getItemCurations, item.collectionId), itemCurations],
-          [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], signedMessage, signature, qty, salt),
-            { items: publishResponse, itemCurations }
-          ],
-          [call([mockBuilder, mockBuilder.pushItemCuration], itemWithChanges.id), updatedItemCurations[0]]
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [select(getItemCurations, item.collectionId), itemCurations]
         ])
         .put(publishAndPushChangesThirdPartyItemsSuccess(item.collectionId!, publishResponse, [...itemCurations, updatedItemCurations[0]]))
-        .put(fetchThirdPartyAvailableSlotsRequest(item.collectionId!))
+        .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
         .run({ silenceTimeout: true })
     })

@@ -4,7 +4,7 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
-import { decodeURN, URNType } from 'lib/urn'
+import { decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
 import { buildItemContentHash } from 'modules/item/export'
 import { Collection, Access, Mint, CollectionType } from './types'
@@ -119,10 +119,13 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
 }
 
 export function getLatestItemHash(collection: Collection, item: Item): Promise<string> {
-  // Only old un-updated items don't have a content hash in the server
   if (item.currentContentHash) {
     return Promise.resolve(item.currentContentHash)
   }
 
   return buildItemContentHash(collection, item)
+}
+
+export function isTPCollection(collection: Collection): boolean {
+  return isThirdParty(collection.urn)
 }

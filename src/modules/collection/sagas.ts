@@ -1,9 +1,14 @@
-import { Contract, providers, constants } from 'ethers'
-import { replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
+import { Contract, providers, constants, ethers } from 'ethers'
+import { push, replace } from 'connected-react-router'
+import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, CallEffect, all } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
+import { generateTree } from '@dcl/content-hash-tree'
+import { BuilderClient, ThirdParty } from '@dcl/builder-client'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
+import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -65,7 +70,10 @@ import {
   APPROVE_COLLECTION_SUCCESS,
   APPROVE_COLLECTION_FAILURE,
   ApproveCollectionSuccessAction,
-  ApproveCollectionFailureAction
+  ApproveCollectionFailureAction,
+  InitiateTPApprovalFlowAction,
+  INITIATE_TP_APPROVAL_FLOW,
+  finishTPApprovalFlow
 } from './actions'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
@@ -87,13 +95,14 @@ import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
+import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
-import { Item } from 'modules/item/types'
+import { Item, ItemApprovalData } from 'modules/item/types'
+import { Slot } from 'modules/thirdParty/types'
 import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
-import { buildItemEntity } from 'modules/item/export'
+import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
@@ -104,12 +113,15 @@ import {
 } from 'modules/curations/collectionCuration/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { ReviewThirdPartyFailureAction, REVIEW_THIRD_PARTY_FAILURE, REVIEW_THIRD_PARTY_SUCCESS } from 'modules/thirdParty/actions'
 import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
+import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getWalletCollections } from './selectors'
 import { Collection, CollectionType } from './types'
 import {
@@ -119,10 +131,13 @@ import {
   isLocked,
   getCollectionType,
   getLatestItemHash,
-  UNSYNCED_COLLECTION_ERROR_PREFIX
+  UNSYNCED_COLLECTION_ERROR_PREFIX,
+  isTPCollection
 } from './utils'
 
-export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
+const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
+
+export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: BuilderClient, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
@@ -139,11 +154,12 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeLatest(INITIATE_APPROVAL_FLOW, handleInitiateApprovalFlow)
+  yield takeLatest(INITIATE_TP_APPROVAL_FLOW, handleInitiateTPItemsApprovalFlow)
 
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
     const { address } = action.payload
     try {
-      const collections: Collection[] = yield call(() => builder.fetchCollections(address))
+      const collections: Collection[] = yield call(() => legacyBuilderClient.fetchCollections(address))
       yield put(fetchCollectionsSuccess(collections))
     } catch (error) {
       yield put(fetchCollectionsFailure(error.message))
@@ -153,14 +169,24 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
     const { id } = action.payload
     try {
-      const collection: Collection = yield call(() => builder.fetchCollection(id))
+      const collection: Collection = yield call([legacyBuilderClient, 'fetchCollection'], id)
       yield put(fetchCollectionSuccess(id, collection))
     } catch (error) {
       yield put(fetchCollectionFailure(id, error.message))
     }
   }
 
-  function* handleSaveCollectionSuccess() {
+  function* handleSaveCollectionSuccess(action: SaveCollectionSuccessAction) {
+    const openModals: ModalState = yield select(getOpenModals)
+
+    if (openModals['CreateCollectionModal'] || openModals['CreateThirdPartyCollectionModal']) {
+      // Redirect to the newly created collection detail
+      const { collection } = action.payload
+      const detailPageLocation = isTPCollection(collection) ? locations.thirdPartyCollectionDetail : locations.collectionDetail
+      yield put(push(detailPageLocation(collection.id)))
+    }
+
+    // Close corresponding modals
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('CreateThirdPartyCollectionModal'))
     yield put(closeModal('EditCollectionURNModal'))
@@ -215,7 +241,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         )
       }
 
-      const remoteCollection: Collection = yield call([builder, 'saveCollection'], collection, data)
+      const remoteCollection: Collection = yield call([legacyBuilderClient, 'saveCollection'], collection, data)
       const newCollection = { ...collection, ...remoteCollection }
 
       yield put(saveCollectionSuccess(newCollection))
@@ -227,8 +253,9 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
     const { collection } = action.payload
     try {
-      yield call(() => builder.deleteCollection(collection.id))
+      yield call(() => legacyBuilderClient.deleteCollection(collection.id))
       yield put(deleteCollectionSuccess(collection))
+
       const collectionIdInUriParam: string = yield select(getCollectionId)
       if (collectionIdInUriParam === collection.id) {
         yield put(replace(locations.collections()))
@@ -269,7 +296,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // Check that items currently in the builder match the items the user wants to publish
       // This will solve the issue were users could add items in different tabs and not see them in the tab
       // were the publish is being made, leaving the collection in a corrupted state.
-      const serverItems: Item[] = yield call([builder, builder.fetchCollectionItems], collection.id)
+      const serverItems: Item[] = yield call([legacyBuilderClient, 'fetchCollectionItems'], collection.id)
 
       if (serverItems.length !== items.length) {
         throw new Error(`${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`)
@@ -292,7 +319,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
       // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
-      yield retry(10, 500, builder.saveTOS, collection, email)
+      yield retry(10, 500, legacyBuilderClient.saveTOS, collection, email)
 
       const txHash: string = yield call(sendTransaction, manager, collectionManager =>
         collectionManager.createCollection(
@@ -307,7 +334,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         )
       )
 
-      const lock: string = yield retry(10, 500, builder.lockCollection, collection)
+      const lock: string = yield retry(10, 500, legacyBuilderClient.lockCollection, collection)
       collection = { ...collection, lock: +new Date(lock) }
 
       yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
@@ -339,7 +366,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
-      const txHash: string = yield sendTransaction(contract, collection => collection.setMinters(addresses, values))
+      const txHash: string = yield call(sendTransaction, contract, collection => collection.setMinters(addresses, values))
 
       yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), maticChainId, txHash))
       yield put(replace(locations.activity()))
@@ -531,6 +558,179 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return allItems.filter(item => item.collectionId === collection.id)
   }
 
+  function* updateItemCurationsStatus(items: Item[], status: CurationStatus) {
+    const effects: CallEffect<ItemCuration>[] = items.map(item => call([legacyBuilderClient, 'updateItemCurationStatus'], item.id, status))
+    const newItemCuration: ItemCuration[] = yield all(effects)
+    return newItemCuration
+  }
+
+  function* getStandardItemsAndEntitiesToDeploy(collection: Collection) {
+    const itemsToDeploy: Item[] = []
+    const entitiesToDeploy: DeploymentPreparationData[] = []
+    const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
+    const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+    for (const item of itemsOfCollection) {
+      const deployedEntity = entitiesByItemId[item.id]
+      if (!deployedEntity || !areSynced(item, deployedEntity)) {
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
+
+        itemsToDeploy.push(item)
+        entitiesToDeploy.push(entity)
+      }
+    }
+    return { itemsToDeploy, entitiesToDeploy }
+  }
+
+  function* getTPItemsAndEntitiesToDeploy(
+    collection: Collection,
+    items: Item[],
+    tree: MerkleDistributorInfo,
+    hashes: Record<string, string>
+  ) {
+    const itemsToDeploy: Item[] = []
+    const entitiesToDeploy: DeploymentPreparationData[] = []
+    for (const item of items) {
+      if (item.catalystContentHash !== item.currentContentHash) {
+        const entity: DeploymentPreparationData = yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
+        itemsToDeploy.push(item)
+        entitiesToDeploy.push(entity)
+      }
+    }
+    return { itemsToDeploy, entitiesToDeploy }
+  }
+
+  function* handleInitiateTPItemsApprovalFlow(action: InitiateTPApprovalFlowAction) {
+    const { collection, itemsToApprove } = action.payload
+
+    try {
+      // Check if this makes sense or add a check to see if the items to be published are correct.
+      if (!collection.isPublished) {
+        throw new Error("The collection can't be approved because it's not published")
+      }
+
+      // 1. Open modal
+      yield put(
+        openModal('ApprovalFlowModal', {
+          view: ApprovalFlowModalView.LOADING,
+          collection
+        })
+      )
+
+      // 2. Get the approval data from the server
+      // TODO: Use the builder client. Tracked here: https://github.com/decentraland/builder/issues/1855
+      const { cheque, content_hashes: contentHashes, chequeWasConsumed }: ItemApprovalData = yield call(
+        [legacyBuilderClient, 'fetchApprovalData'],
+        collection.id
+      )
+
+      // 3. Compute the merkle tree root & create slot to consume
+      const tree = generateTree(Object.values(contentHashes))
+
+      if (cheque.qty < itemsToApprove.length) {
+        throw Error('Invalid qty of items to approve in the cheque')
+      }
+
+      // Open the ApprovalFlowModal with the items to be approved
+      // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
+      if (itemsToApprove.length > 0) {
+        const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
+        const slot: Slot = {
+          qty: cheque.qty,
+          salt: cheque.salt,
+          sigR: r,
+          sigS: s,
+          sigV: v
+        }
+
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS> = {
+          view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+          items: itemsToApprove,
+          collection,
+          merkleTreeRoot: tree.merkleRoot,
+          slots: chequeWasConsumed ? [] : [slot]
+        }
+        yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+        // Wait for actions...
+        const { failure, cancel }: { failure: ReviewThirdPartyFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(REVIEW_THIRD_PARTY_SUCCESS),
+          failure: take(REVIEW_THIRD_PARTY_FAILURE),
+          cancel: take(CLOSE_MODAL)
+        })
+
+        if (failure) {
+          throw new Error(failure.payload.error)
+        } else if (cancel) {
+          // If cancel exit flow
+          return
+        }
+
+        // If success wait for tx to be mined
+        yield waitForMerkleRootToBeSet(extractThirdPartyId(collection.urn), tree.merkleRoot)
+      }
+
+      // 5. If any, open the modal in the DEPLOY step and wait for actions
+      const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
+        getTPItemsAndEntitiesToDeploy,
+        collection,
+        itemsToApprove,
+        tree,
+        contentHashes
+      )
+
+      // 5. If any, open the modal in the DEPLOY step and wait for actions
+      if (itemsToDeploy.length > 0) {
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
+          view: ApprovalFlowModalView.DEPLOY,
+          collection,
+          items: itemsToDeploy,
+          entities: entitiesToDeploy
+        }
+        yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+        // Wait for actions...
+        const {
+          failure,
+          cancel
+        }: { success: DeployEntitiesSuccessAction; failure: DeployEntitiesFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(DEPLOY_ENTITIES_SUCCESS),
+          failure: take(DEPLOY_ENTITIES_FAILURE),
+          cancel: take(CLOSE_MODAL)
+        })
+
+        // If failure show error and exit flow
+        if (failure) {
+          throw new Error(failure.payload.error)
+
+          // If cancel exit flow
+        } else if (cancel) {
+          return
+        }
+      }
+
+      // 6. If the collection was approved but it had a pending curation, approve the curation
+      const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemsToApprove, CurationStatus.APPROVED)
+
+      // 7. Success 🎉
+      yield put(finishTPApprovalFlow(collection, itemsToApprove, newItemsCurations))
+
+      yield put(
+        openModal('ApprovalFlowModal', {
+          view: ApprovalFlowModalView.SUCCESS,
+          collection
+        })
+      )
+    } catch (error) {
+      // Handle error at any point in the flow and show them
+      const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
+        view: ApprovalFlowModalView.ERROR,
+        collection,
+        error: error.message
+      }
+      yield put(openModal('ApprovalFlowModal', modalMetadata))
+    }
+  }
+
   function* handleInitiateApprovalFlow(action: InitiateApprovalFlowAction) {
     const { collection } = action.payload
 
@@ -595,18 +795,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       // 4. Find items that need to be deployed (the content in the catalyst doesn't match their content hash in the blockchain)
-      const itemsToDeploy: Item[] = []
-      const entitiesToDeploy: DeploymentPreparationData[] = []
-      const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
-      const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
-      for (const item of itemsOfCollection) {
-        const deployedEntity = entitiesByItemId[item.id]
-        if (!deployedEntity || !areSynced(item, deployedEntity)) {
-          const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
-          itemsToDeploy.push(item)
-          entitiesToDeploy.push(entity)
-        }
-      }
+      const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
+        getStandardItemsAndEntitiesToDeploy,
+        collection
+      )
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
       if (itemsToDeploy.length > 0) {
@@ -705,6 +897,17 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
       yield put(openModal('ApprovalFlowModal', modalMetadata))
     }
+  }
+
+  function* waitForMerkleRootToBeSet(thirdPartyId: string, merkleRoot: string) {
+    for (let i = 0; i < THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES; i++) {
+      const thirdParty: ThirdParty = yield call([client, 'getThirdParty'], thirdPartyId)
+      if (thirdParty.root === merkleRoot) {
+        return
+      }
+      yield delay(1000)
+    }
+    throw new Error('The Merkle Root was not set in time')
   }
 
   function* waitForIndexer(items: Item[], contentHashes: string[], collectionId: string) {
