@@ -100,9 +100,12 @@ import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
 
-export type PaginatedResource = {
+export type ItemPaginationData = {
   ids: string[]
   total: number
+  totalPages: number
+  currentPage: number
+  limit: number
 }
 
 export type ItemState = {
@@ -110,7 +113,7 @@ export type ItemState = {
   rarities: Rarity[]
   loading: LoadingState
   error: string | null
-  pagination: Record<string, PaginatedResource> | null
+  pagination: Record<string, ItemPaginationData> | null
 }
 
 export const INITIAL_STATE: ItemState = {
@@ -193,7 +196,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_ITEMS_SUCCESS:
     case FETCH_COLLECTION_ITEMS_SUCCESS: {
-      const { paginationIndex, items, totalItems } = action.payload
+      const { paginationIndex, items, paginationStats } = action.payload
+      const { total, page, pages, limit } = paginationStats || {}
       return {
         ...state,
         data: {
@@ -203,12 +207,14 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         loading: loadingReducer(state.loading, action),
         pagination: {
           ...state.pagination,
-          ...(totalItems
+          ...(total && page && pages && limit
             ? {
                 [paginationIndex]: {
-                  ...state.pagination?.[paginationIndex],
-                  total: totalItems,
-                  ids: items.map(item => item.id)
+                  ids: items.map(item => item.id),
+                  total,
+                  limit,
+                  currentPage: page,
+                  totalPages: pages
                 }
               }
             : {})

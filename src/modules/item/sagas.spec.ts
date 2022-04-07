@@ -1,4 +1,6 @@
 import uuidv4 from 'uuid/v4'
+import { getLocation, push } from 'connected-react-router'
+import { locations } from 'routing/locations'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
@@ -8,6 +10,7 @@ import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/sche
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
@@ -46,13 +49,15 @@ import {
   rescueItemsFailure,
   fetchCollectionItemsRequest,
   fetchCollectionItemsSuccess,
-  fetchCollectionItemsFailure
+  fetchCollectionItemsFailure,
+  deleteItemSuccess
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
 import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
-import { getData as getItemsById, getEntityByItemId, getItem, getItems } from './selectors'
+import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
+import { ItemPaginationData } from './reducer'
 
 let blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -193,6 +198,10 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action with the catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [
               call(generateCatalystImage, item, {
@@ -219,6 +228,8 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action with the catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [
               call(generateCatalystImage, item, {
@@ -243,6 +254,8 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action without a new catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
@@ -261,6 +274,8 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action with a new catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
             [
               select(getItem, item.id),
               { ...item, contents: { ...item.contents, [IMAGE_PATH]: 'someOtherCatalystHash' }, rarity: ItemRarity.COMMON }
@@ -288,6 +303,8 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
@@ -306,6 +323,8 @@ describe('when handling the save item request action', () => {
       it('should save item if it is already published', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
@@ -324,11 +343,59 @@ describe('when handling the save item request action', () => {
       it('should not calculate the size of the contents', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, {}))
           .dispatch(saveItemRequest(item, {}))
+          .run({ silenceTimeout: true })
+      })
+    })
+  })
+})
+
+describe('when handling the save item success action', () => {
+  let item: Item
+  beforeEach(() => {
+    item = { ...mockedItem }
+  })
+  describe('and the location is the TP detail page', () => {
+    describe('and the new item will be in the same page', () => {
+      let paginationData: ItemPaginationData
+      beforeEach(() => {
+        paginationData = { currentPage: 1, limit: 20, total: 5, ids: [item.id], totalPages: 1 }
+      })
+      it('should put a fetch collection items success action to fetch the same page again', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
+            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+            [select(getOpenModals), { EditItemURNModal: true }],
+            [select(getPaginationData, item.collectionId!), paginationData]
+          ])
+          .put(fetchCollectionItemsRequest(item.collectionId!, paginationData.currentPage, paginationData.limit))
+          .dispatch(saveItemSuccess(item, contents))
+          .run({ silenceTimeout: true })
+      })
+    })
+    describe('and the new item will be in another page', () => {
+      let paginationData: ItemPaginationData
+      beforeEach(() => {
+        paginationData = { currentPage: 1, limit: 1, total: 1, ids: [item.id], totalPages: 1 }
+      })
+      it('should put a fetch collection items success action to fetch the same page again', () => {
+        const newPageNumber = Math.ceil((paginationData.total + paginationData.ids.length) / paginationData.limit)
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
+            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+            [select(getOpenModals), { EditItemURNModal: true }],
+            [select(getPaginationData, item.collectionId!), paginationData]
+          ])
+          .put(push(locations.thirdPartyCollectionDetail(item.collectionId!, { page: newPageNumber })))
+          .dispatch(saveItemSuccess(item, contents))
           .run({ silenceTimeout: true })
       })
     })
@@ -735,6 +802,8 @@ describe('when handling the save multiple items requests action', () => {
     it('should dispatch the update progress action for each uploaded item and the success action with the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
+          [select(getLocation), { pathname: 'notTPDetailPage' }],
+          [select(getOpenModals), { EditItemURNModal: true }],
           [call([builderClient, 'upsertItem'], builtFiles[0].item, builtFiles[0].newContent), Promise.resolve(remoteItems[0])],
           [call([builderClient, 'upsertItem'], builtFiles[1].item, builtFiles[1].newContent), Promise.resolve(remoteItems[1])]
         ])
@@ -743,6 +812,46 @@ describe('when handling the save multiple items requests action', () => {
         .put(saveMultipleItemsSuccess(items, savedFiles))
         .dispatch(saveMultipleItemsRequest(builtFiles))
         .run({ silenceTimeout: true })
+    })
+
+    describe('and should fetch the collection items again', () => {
+      describe('and the new items will be in the same page', () => {
+        let paginationData: ItemPaginationData
+        beforeEach(() => {
+          paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
+        })
+        it('should request the same page of items if the user is in the TP detail page', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getOpenModals), { EditItemURNModal: true }],
+              [select(getPaginationData, items[0].collectionId!), paginationData]
+            ])
+            .put(fetchCollectionItemsRequest(items[0].collectionId!, paginationData.currentPage, paginationData.limit))
+            .dispatch(saveMultipleItemsSuccess(items, savedFiles))
+            .run({ silenceTimeout: true })
+        })
+      })
+      describe('and the items will be on a new page', () => {
+        let paginationData: ItemPaginationData
+        beforeEach(() => {
+          paginationData = { currentPage: 1, limit: 1, total: 1, ids: items.map(item => item.id), totalPages: 1 }
+        })
+        it('should push the tp detail page location with the new page of items', () => {
+          const newPageNumber = Math.ceil((paginationData.total + items.length) / paginationData.limit)
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getOpenModals), { EditItemURNModal: true }],
+              [select(getPaginationData, items[0].collectionId!), paginationData]
+            ])
+            .put(push(locations.thirdPartyCollectionDetail(items[0].collectionId!, { page: newPageNumber })))
+            .dispatch(saveMultipleItemsSuccess(items, savedFiles))
+            .run({ silenceTimeout: true })
+        })
+      })
     })
   })
 
@@ -881,7 +990,14 @@ describe('when handling the fetch of collection items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(isReviewing), true]])
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, 1, paginationData.limit))
-        .put(fetchCollectionItemsSuccess(item.collectionId!, [item], paginationData.total))
+        .put(
+          fetchCollectionItemsSuccess(item.collectionId!, [item], {
+            limit: paginationData.limit,
+            page: paginationData.page,
+            pages: paginationData.pages,
+            total: paginationData.total
+          })
+        )
         .run({ silenceTimeout: true })
     })
   })
@@ -938,6 +1054,73 @@ describe('when handling the fetch of collection items pages', () => {
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, [1], paginationData.limit))
         .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the delete item success action', () => {
+  let item: Item
+  beforeEach(() => {
+    item = { ...mockedItem }
+  })
+  describe('and the location is the TP detail page', () => {
+    describe('and the deleted item in not the only item in the current page', () => {
+      let paginationData: ItemPaginationData
+      beforeEach(() => {
+        paginationData = { currentPage: 3, limit: 20, total: 65, ids: [item.id, item.id], totalPages: 3 }
+      })
+      it('should put a fetch collection items success action to fetch the same page again', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
+            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+            [select(getOpenModals), { EditItemURNModal: true }],
+            [select(getPaginationData, item.collectionId!), paginationData]
+          ])
+          .put(fetchCollectionItemsRequest(item.collectionId!, paginationData.currentPage, paginationData.limit))
+          .dispatch(deleteItemSuccess(item))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the deleted item is the only item of the page', () => {
+      describe('and the page has a previous one', () => {
+        let paginationData: ItemPaginationData
+        beforeEach(() => {
+          paginationData = { currentPage: 3, limit: 20, total: 61, ids: [item.id], totalPages: 3 }
+        })
+        it('should put a fetch collection items success action to fetch the previous page', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+              [select(getOpenModals), { EditItemURNModal: true }],
+              [select(getPaginationData, item.collectionId!), paginationData]
+            ])
+            .put(push(locations.thirdPartyCollectionDetail(item.collectionId!, { page: paginationData.currentPage - 1 })))
+            .dispatch(deleteItemSuccess(item))
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('and the current page is the first page', () => {
+        let paginationData: ItemPaginationData
+        beforeEach(() => {
+          paginationData = { currentPage: 1, limit: 20, total: 1, ids: [item.id], totalPages: 1 }
+        })
+        it('should put a fetch collection items success action to fetch the same first page', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+              [select(getOpenModals), { EditItemURNModal: true }],
+              [select(getPaginationData, item.collectionId!), paginationData]
+            ])
+            .put(fetchCollectionItemsRequest(item.collectionId!, paginationData.currentPage, paginationData.limit))
+            .dispatch(deleteItemSuccess(item))
+            .run({ silenceTimeout: true })
+        })
+      })
     })
   })
 })

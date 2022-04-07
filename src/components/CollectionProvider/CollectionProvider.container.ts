@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { DEFAULT_PAGE_SIZE } from 'lib/api/pagination'
 import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getPaginatedCollectionItems, getLoading as getLoadingItems, getCollectionItems } from 'modules/item/selectors'
@@ -17,7 +18,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const id = ownProps.id || getCollectionId(state)
   const collection = id ? getCollection(state, id) : null
   const items = collection ? getCollectionItems(state, collection.id) : []
-  const paginatedItems = collection ? getPaginatedCollectionItems(state, collection.id) : []
+  const paginatedItems = collection ? getPaginatedCollectionItems(state, collection.id, ownProps.itemsPageSize || DEFAULT_PAGE_SIZE) : []
   const itemCurations = collection ? getItemCurations(state, collection.id) : []
   const curation = id ? getCuration(state, id) : null
   return {

@@ -1,10 +1,12 @@
 import PQueue from 'p-queue'
 import { Contract } from 'ethers'
-import { replace } from 'connected-react-router'
+import { getLocation, push, replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
+import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -75,14 +77,19 @@ import {
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FetchItemsSuccessAction,
   FetchCollectionItemsSuccessAction,
-  fetchItemsRequest
+  fetchItemsRequest,
+  DELETE_ITEM_SUCCESS,
+  DeleteItemSuccessAction,
+  fetchCollectionItemsRequest,
+  SAVE_MULTIPLE_ITEMS_SUCCESS,
+  SaveMultipleItemsSuccessAction
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI } from 'lib/api/builder'
-import { DEFAULT_PAGE, PaginatedResource } from 'lib/api/pagination'
+import { DEFAULT_PAGE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
 import { getItemId, isReviewing as getIsReviewing } from 'modules/location/selectors'
 import { CurationStatus } from 'modules/curations/types'
@@ -96,20 +103,23 @@ import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData } from './types'
-import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem } from './selectors'
+import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
 
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
+import { ItemPaginationData } from './reducer'
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
+  yield takeEvery(SAVE_MULTIPLE_ITEMS_SUCCESS, handleSaveMultipleItemsSuccess)
   yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
+  yield takeEvery(DELETE_ITEM_SUCCESS, handleDeleteItemSuccess)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
@@ -137,7 +147,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { address } = action.payload
     try {
       const response: PaginatedResource<Item> = yield call([legacyBuilder, 'fetchItems'], address)
-      yield put(fetchItemsSuccess(response.results, response.total, address))
+      const { limit, page, pages, results, total } = response
+      yield put(fetchItemsSuccess(results, { limit, page, pages, total }, address))
     } catch (error) {
       yield put(fetchItemsFailure(error.message))
     }
@@ -163,9 +174,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       )
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-    const totalItems = allItemPages[0]?.total
+    const paginationStats = allItemPages[0].total
+      ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
+      : {}
     const items = allItemPages.map(result => result.results).flat()
-    return { items, totalItems }
+    return { items, paginationStats }
   }
 
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
@@ -174,14 +187,14 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const isFetchingMultiplePages = Array.isArray(page)
 
     try {
-      const { items, totalItems } = yield call(
+      const { items, paginationStats }: { items: Item[]; paginationStats: PaginationStats } = yield call(
         fetchCollectionItemsWithBatch,
         collectionId,
         isFetchingMultiplePages ? page : [page],
         limit,
         isReviewing
       )
-      yield put(fetchCollectionItemsSuccess(collectionId, items, isFetchingMultiplePages ? undefined : totalItems))
+      yield put(fetchCollectionItemsSuccess(collectionId, items, isFetchingMultiplePages ? undefined : paginationStats))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
     }
@@ -269,8 +282,37 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
-  function* handleSaveItemSuccess() {
-    yield put(closeModal('EditItemURNModal'))
+  function* fetchNewCollectionItemsPaginated(collectionId: string, newItemsAmount = 1) {
+    const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
+    const { currentPage, limit, total } = paginationData
+    const newItemPage = Math.ceil((total + newItemsAmount) / limit) // optimistic computation, in case the save is successfull
+    if (newItemPage !== currentPage) {
+      yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: newItemPage })))
+    } else {
+      yield put(fetchCollectionItemsRequest(collectionId, currentPage, limit))
+    }
+  }
+
+  function* handleSaveMultipleItemsSuccess(action: SaveMultipleItemsSuccessAction) {
+    const { items } = action.payload
+    const collectionId = items[0].collectionId!
+    const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+      yield call(fetchNewCollectionItemsPaginated, collectionId, items.length)
+    }
+  }
+
+  function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
+    const openModals: ModalState = yield select(getOpenModals)
+    if (openModals['EditItemURNModal']) {
+      yield put(closeModal('EditItemURNModal'))
+    }
+    const { item } = action.payload
+    const collectionId = item.collectionId!
+    const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+      yield call(fetchNewCollectionItemsPaginated, collectionId)
+    }
   }
 
   function* handleSetPriceAndBeneficiaryRequest(action: SetPriceAndBeneficiaryRequestAction) {
@@ -315,6 +357,22 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
     } catch (error) {
       yield put(deleteItemFailure(item, error.message))
+    }
+  }
+
+  function* handleDeleteItemSuccess(action: DeleteItemSuccessAction) {
+    const { item } = action.payload
+    const collectionId = item.collectionId!
+    const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+      const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
+      const { currentPage, limit, ids } = paginationData
+      const shouldGoToPreviousPage = currentPage > 1 && ids.length === 1 && ids[0] === item.id
+      if (shouldGoToPreviousPage) {
+        yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: currentPage - 1 })))
+      } else {
+        yield put(fetchCollectionItemsRequest(collectionId, currentPage, limit))
+      }
     }
   }
 

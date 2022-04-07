@@ -319,7 +319,10 @@ describe('when reducing an action of a successful fetch of collection items', ()
       pagination: {
         anAddress: {
           ids: ['anItemId'],
-          total: 1
+          total: 1,
+          currentPage: 1,
+          limit: 1,
+          totalPages: 1
         }
       }
     }
@@ -327,7 +330,7 @@ describe('when reducing an action of a successful fetch of collection items', ()
 
   describe('and fetching only one page', () => {
     it('should add the items to the state and update the pagination data', () => {
-      expect(itemReducer(state, fetchCollectionItemsSuccess(collection.id, items, paginationData.total))).toEqual({
+      expect(itemReducer(state, fetchCollectionItemsSuccess(collection.id, items, paginationData))).toEqual({
         ...state,
         data: {
           ...state.data,
@@ -337,7 +340,10 @@ describe('when reducing an action of a successful fetch of collection items', ()
           ...state.pagination,
           [collection.id]: {
             ids: items.map(item => item.id),
-            total: paginationData.total
+            total: paginationData.total,
+            currentPage: paginationData.page,
+            limit: paginationData.limit,
+            totalPages: paginationData.pages
           }
         }
       })

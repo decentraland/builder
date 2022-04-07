@@ -67,7 +67,14 @@ describe('when third party items were fetched', () => {
     return expectSaga(itemCurationSaga, mockBuilder)
       .provide([[select(getCollection, thirdPartyCollection.id), thirdPartyCollection]])
       .put(fetchItemCurationsRequest(thirdPartyCollection.id, items))
-      .dispatch(fetchCollectionItemsSuccess(thirdPartyCollection.id, items, paginatedData.total))
+      .dispatch(
+        fetchCollectionItemsSuccess(thirdPartyCollection.id, items, {
+          limit: paginatedData.limit,
+          page: paginatedData.page,
+          pages: paginatedData.pages,
+          total: paginatedData.total
+        })
+      )
       .run({ silenceTimeout: true })
   })
 })

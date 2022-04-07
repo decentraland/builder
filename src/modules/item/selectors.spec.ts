@@ -46,7 +46,10 @@ describe('Item selectors', () => {
         pagination: {
           [item.collectionId!]: {
             ids: [item.id],
-            total: 1
+            total: 1,
+            limit: 5,
+            pages: 1,
+            page: 1
           }
         }
       },
@@ -62,7 +65,7 @@ describe('Item selectors', () => {
 
   describe('when getting a collection paginated items', () => {
     it('should return the list of items for the asked page', () => {
-      expect(getPaginatedCollectionItems(state, item.collectionId!)).toEqual([item])
+      expect(getPaginatedCollectionItems(state, item.collectionId!, 1)).toEqual([item])
     })
   })
 

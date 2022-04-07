@@ -24,6 +24,8 @@ import { areSynced, canSeeItem, isOwner } from './utils'
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
+export const getPaginatedItems = (state: RootState, collectionId: string, pageSize: number) =>
+  getState(state).pagination?.[collectionId].ids.slice(0, pageSize)
 export const getPaginationData = (state: RootState, collectionId: string) => getState(state).pagination?.[collectionId]
 export const getPaginationTotal = (state: RootState, collectionId: string) => getState(state).pagination?.[collectionId]?.total
 export const getError = (state: RootState) => getState(state).error
@@ -64,11 +66,11 @@ export const getCollectionItems = (state: RootState, collectionId: string) => {
   return allItems.filter(item => item.collectionId === collectionId)
 }
 
-export const getPaginatedCollectionItems = (state: RootState, collectionId: string) => {
+export const getPaginatedCollectionItems = (state: RootState, collectionId: string, pageSize: number) => {
   const paginationData = getPaginationData(state, collectionId)
-  const allItems = getItems(state)
-  const ids = paginationData?.ids
-  return allItems.filter(item => item.collectionId === collectionId && ids?.includes(item.id))
+  const allItems = getData(state)
+  const ids = paginationData?.ids.slice(0, pageSize) || []
+  return ids.map(itemId => allItems[itemId]).filter(Boolean)
 }
 
 export const getRarities = (state: RootState): Rarity[] => {

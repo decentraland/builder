@@ -10,7 +10,9 @@ import { FetchItemCurationsRequestAction } from 'modules/curations/itemCuration/
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { fetchThirdPartyAvailableSlotsRequest, FetchThirdPartyAvailableSlotsRequestAction } from 'modules/thirdParty/actions'
 import { FetchCollectionItemsRequestAction } from 'modules/item/actions'
-import { PaginatedResource } from 'modules/item/reducer'
+import { ItemPaginationData } from 'modules/item/reducer'
+
+export const PAGE_SIZE = 4
 
 export type Props = {
   wallet: Wallet
@@ -18,7 +20,7 @@ export type Props = {
   thirdParty: ThirdParty | null
   totalItems: number | null
   currentPage: number
-  paginatedData: PaginatedResource | null
+  paginatedData: ItemPaginationData | null
   items: Item[]
   itemCurations: ItemCuration[]
   isOnSaleLoading: boolean

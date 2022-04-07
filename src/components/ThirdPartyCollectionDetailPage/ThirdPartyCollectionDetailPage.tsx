@@ -34,12 +34,11 @@ import { buildManaAuthorization } from 'lib/mana'
 import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
-import { Props, State } from './ThirdPartyCollectionDetailPage.types'
+import { Props, State, PAGE_SIZE } from './ThirdPartyCollectionDetailPage.types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
-const PAGE_SIZE = 50
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -302,8 +301,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
 
                 <div className="search-info secondary-text">
                   {t('third_party_collection_detail_page.search_info', {
-                    page: (page - 1) * PAGE_SIZE,
-                    pageTotal: page * PAGE_SIZE,
+                    page: (page - 1) * PAGE_SIZE + 1,
+                    pageTotal: Math.min(total, page * PAGE_SIZE),
                     total
                   })}
                 </div>

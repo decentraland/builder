@@ -209,7 +209,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -288,7 +295,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -446,7 +460,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -518,7 +539,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -601,7 +629,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], paginatedData.total))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
