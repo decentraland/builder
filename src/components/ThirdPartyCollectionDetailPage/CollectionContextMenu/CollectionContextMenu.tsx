@@ -7,6 +7,13 @@ import { Props } from './CollectionContextMenu.types'
 import styles from './CollectionContextMenu.module.css'
 
 export default class CollectionContextMenu extends React.PureComponent<Props> {
+  handleNavigateToForum = () => {
+    const { collection } = this.props
+    if (collection.isPublished && collection.forumLink) {
+      this.navigateTo(collection.forumLink, '_blank')
+    }
+  }
+
   handleNavigateToExplorer = () => {
     const { collection } = this.props
     this.navigateTo(getExplorerURL(collection), '_blank')
@@ -85,6 +92,21 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
             disabled={!collection.isPublished}
             trigger={
               <Dropdown.Item text={t('collection_context_menu.edit_urn')} onClick={this.handleEditURN} disabled={collection.isPublished} />
+            }
+            hideOnScroll={true}
+            on="hover"
+            inverted
+          />
+          <Popup
+            content={t('collection_context_menu.unpublished')}
+            position="right center"
+            disabled={collection.isPublished || !!collection.forumLink}
+            trigger={
+              <Dropdown.Item
+                disabled={!collection.isPublished || !collection.forumLink}
+                text={t('collection_context_menu.forum_post')}
+                onClick={this.handleNavigateToForum}
+              />
             }
             hideOnScroll={true}
             on="hover"
