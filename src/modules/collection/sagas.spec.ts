@@ -3,6 +3,7 @@ import { retry, race, take, call, put, select, delay } from 'redux-saga/effects'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { generateTree } from '@dcl/content-hash-tree'
+import { BuilderClient } from '@dcl/builder-client'
 import { push, replace } from 'connected-react-router'
 import { ChainId, Network, WearableRepresentation } from '@dcl/schemas'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
@@ -31,6 +32,7 @@ import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { BuilderAPI } from 'lib/api/builder'
+import { extractThirdPartyId } from 'lib/urn'
 import {
   approveCollectionFailure,
   approveCollectionSuccess,
@@ -121,6 +123,7 @@ const getItemCuration = (item: Item, props: Partial<ItemCuration> = {}): ItemCur
   } as ItemCuration)
 
 let mockBuilder: BuilderAPI
+let mockBuilderClient: BuilderClient
 let mockCatalyst: CatalystClient
 
 beforeEach(() => {
@@ -133,13 +136,16 @@ beforeEach(() => {
     fetchCollectionItems: jest.fn().mockResolvedValueOnce([])
   } as unknown) as BuilderAPI
   mockCatalyst = ({} as unknown) as CatalystClient
+  mockBuilderClient = ({
+    getThirdParty: jest.fn()
+  } as unknown) as BuilderClient
 })
 
 describe('when executing the approval flow', () => {
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
       const collection = getCollection({ isPublished: false })
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .dispatch(initiateApprovalFlow(collection))
         .put(
           openModal('ApprovalFlowModal', {
@@ -168,7 +174,7 @@ describe('when executing the approval flow', () => {
     const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
     const deployData = getDeployData()
     it('should complete the flow doing the rescue, deploy and approve collection steps', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
@@ -239,7 +245,7 @@ describe('when executing the approval flow', () => {
     const deployData = getDeployData()
     const curation = getCollectionCuration(collection)
     it('should complete the flow doing a rescue, deploy and approve curation steps', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
@@ -295,7 +301,7 @@ describe('when executing the approval flow', () => {
     const entities = [getEntity(items[0]), getEntity(items[1])]
     const curation = getCollectionCuration(collection, { status: CurationStatus.APPROVED })
     it('should skip all the unnecessary steps', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), items],
           [call(getLatestItemHash, collection, items[0]), items[0].blockchainContentHash],
@@ -341,7 +347,7 @@ describe('when executing the approval flow', () => {
     }
     const rescueError = 'Rescue Transaction Error'
     it('should open the modal in an error state', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
@@ -391,7 +397,7 @@ describe('when executing the approval flow', () => {
     const deployData = getDeployData()
     const deployError = 'Deployment Error'
     it('should open the modal in an error state', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
@@ -456,7 +462,7 @@ describe('when executing the approval flow', () => {
     const deployData = getDeployData()
     const approveError = 'Approve Collection Transaction Error'
     it('should open the modal in an error state', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
@@ -531,7 +537,7 @@ describe('when executing the approval flow', () => {
 
     it('should open the modal in an error state', () => {
       const approvedCollection = { ...collection, isApproved: true }
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
@@ -605,7 +611,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [put(saveCollectionRequest(collection)), true],
             [
@@ -633,7 +639,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should signal with a publish collection failure action with an unsynced collection error', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([[call([mockBuilder, 'fetchCollectionItems'], finalCollection.id), [{}]]])
           .put(publishCollectionFailure(finalCollection, items, `${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`))
           .dispatch(publishCollectionRequest(finalCollection, items, email))
@@ -649,7 +655,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should signal with a publish collection failure action with an unsynced collection error', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([[call([mockBuilder, 'fetchCollectionItems'], finalCollection.id), [{ id: 'other-item-id' }]]])
           .put(
             publishCollectionFailure(
@@ -679,7 +685,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should skip saving the collection', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getAddress), [address]],
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
@@ -704,7 +710,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should dispatch a failure action', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [put(saveCollectionRequest(saltlessCollection)), true],
             [
@@ -727,7 +733,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should dispatch a failure action', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [put(saveCollectionRequest(collection)), true],
             [
@@ -753,7 +759,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should dispatch a failure action', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([[call(t, 'sagas.collection.invalid_character'), errorMessage]])
           .put(saveCollectionFailure(invalidCollection, errorMessage))
           .dispatch(saveCollectionRequest(invalidCollection))
@@ -773,7 +779,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should dispatch a failure action', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([[call(t, 'sagas.collection.collection_locked'), errorMessage]])
           .put(saveCollectionFailure(lockedCollection, errorMessage))
           .dispatch(saveCollectionRequest(lockedCollection))
@@ -796,7 +802,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should redirect to the detail page after creating the collection', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getOpenModals), { CreateThirdPartyCollectionModal: true }],
             [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
@@ -808,7 +814,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should save the collection without data', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getOpenModals), {}],
             [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
@@ -829,7 +835,7 @@ describe('when executing the TP approval flow', () => {
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
       const collection = getTPCollection({ isPublished: false })
-      return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .dispatch(initiateTPApprovalFlow(collection, []))
         .put(
           openModal('ApprovalFlowModal', {
@@ -888,7 +894,7 @@ describe('when executing the TP approval flow', () => {
       })
 
       it('should throw an error if itemsToApprove length is different than the cheque qty', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([[call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]])
           .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
           .put(
@@ -912,11 +918,12 @@ describe('when executing the TP approval flow', () => {
     describe('when the cheque was already consumed', () => {
       it('should complete the flow doing the review without a cheque, deploy and update the item curations steps', () => {
         const merkleTree = generateTree(Object.values(contentHashes))
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: true }],
             [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
             [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
+            [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
             [
               call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
               deployData
@@ -969,7 +976,7 @@ describe('when executing the TP approval flow', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
         const merkleTree = generateTree(Object.values(contentHashes))
         const itemCurations = itemsToApprove.map(item => getItemCuration(item))
-        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [
               call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
@@ -977,6 +984,7 @@ describe('when executing the TP approval flow', () => {
             ],
             [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
             [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
+            [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
             [
               call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
               deployData
@@ -1024,12 +1032,131 @@ describe('when executing the TP approval flow', () => {
           .run({ silenceTimeout: true })
       })
 
+      describe('when fetching the third party to check if the merkle root is updated takes more than one retry', () => {
+        let merkleTree: ReturnType<typeof generateTree>
+        let parsedSignature: ReturnType<typeof ethers.utils.splitSignature>
+        let itemCurations: ItemCuration[]
+
+        beforeEach(() => {
+          merkleTree = generateTree(Object.values(contentHashes))
+          parsedSignature = ethers.utils.splitSignature(cheque.signature)
+          itemCurations = itemsToApprove.map(item => getItemCuration(item))
+          ;((mockBuilderClient.getThirdParty as unknown) as jest.Mock<BuilderClient['getThirdParty']>)
+            .mockResolvedValueOnce({ root: '0x' } as never)
+            .mockResolvedValueOnce({ root: merkleTree.merkleRoot } as never)
+        })
+
+        it('should complete the flow doing the review, waiting for the merkle root to be updated, deploy and update the item curations', () => {
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+            .provide([
+              [
+                call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+                { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
+              ],
+              [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
+              [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
+              [delay(1000), 0],
+              [
+                call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
+                deployData
+              ],
+              [
+                call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[1], merkleTree, contentHashes[itemsToApprove[1].id]),
+                deployData
+              ],
+              [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), itemCurations[0]],
+              [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), itemCurations[1]]
+            ])
+            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.LOADING,
+                collection: TPCollection
+              } as ApprovalFlowModalMetadata)
+            )
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+                items: itemsToApprove,
+                collection: TPCollection,
+                merkleTreeRoot: merkleTree.merkleRoot,
+                slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
+              } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
+            )
+            .dispatch(reviewThirdPartySuccess())
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.DEPLOY,
+                collection: TPCollection,
+                items: [unsyncedItem],
+                entities: [deployData]
+              } as ApprovalFlowModalMetadata)
+            )
+            .dispatch(deployEntitiesSuccess([deployData]))
+            .put(finishTPApprovalFlow(TPCollection, itemsToApprove, itemCurations))
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.SUCCESS,
+                collection: TPCollection
+              } as ApprovalFlowModalMetadata)
+            )
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('when fetching the third party to check if the merkle root is updated, fails', () => {
+        let merkleTree: ReturnType<typeof generateTree>
+        let parsedSignature: ReturnType<typeof ethers.utils.splitSignature>
+        let error: string
+
+        beforeEach(() => {
+          error = 'Third party retrieval error'
+          parsedSignature = ethers.utils.splitSignature(cheque.signature)
+          merkleTree = generateTree(Object.values(contentHashes))
+        })
+
+        it('should open the modal in an error state', () => {
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+            .provide([
+              [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
+              [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
+              [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
+              [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), Promise.reject(new Error(error))]
+            ])
+            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.LOADING,
+                collection: TPCollection
+              } as ApprovalFlowModalMetadata)
+            )
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+                items: itemsToApprove,
+                collection: TPCollection,
+                merkleTreeRoot: merkleTree.merkleRoot,
+                slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
+              } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
+            )
+            .dispatch(reviewThirdPartySuccess())
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.ERROR,
+                collection: TPCollection,
+                error
+              } as ApprovalFlowModalMetadata)
+            )
+            .run({ silenceTimeout: true })
+        })
+      })
+
       describe('when the review transaction fails', () => {
         it('should open the modal in an error state', () => {
           const consumeSlotsError = 'Error when consuming slots'
           const parsedSignature = ethers.utils.splitSignature(cheque.signature)
           const merkleTree = generateTree(Object.values(contentHashes))
-          return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
@@ -1068,11 +1195,12 @@ describe('when executing the TP approval flow', () => {
           const merkleTree = generateTree(Object.values(contentHashes))
           const parsedSignature = ethers.utils.splitSignature(cheque.signature)
           const deployError = 'Deployment Error'
-          return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
+              [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
               [
                 call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
                 deployData

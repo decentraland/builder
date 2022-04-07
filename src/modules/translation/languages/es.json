@@ -150,7 +150,7 @@
     "message": "El nombre puede tener un máximo de {maxLength} caracteres",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
   },
-  "create_third_party_collection": {
+  "create_third_party_collection_modal": {
     "title": "Nueva colleción externa",
     "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",
     "third_party": {
@@ -1027,6 +1027,7 @@
     "publish_and_push_changes": "Publicar y subir cambios",
     "cant_publish": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás publicar más items",
     "cant_publish_items": "Estas tratando de publicar {count} {count, plural, un {item} other {items}}. Hay otro que se encuentran bajo revisión en este momento",
+    "exceeds_available_slots": "Estas excediendo la cantidad de slots disponibles. Podrás pedir más slots a la DAO através de una propuesta",
     "cant_publish_and_push_changes": "Estas tratando de publicar {count} {count, plural, un {item} other {items}} y subir cambios al mismo tiempo. Deselecciona los items a publicar para poder subir cambios"
   },
   "collection_detail_page": {

@@ -39,10 +39,10 @@ export type FetchThirdPartyAvailableSlotsFailureAction = ReturnType<typeof fetch
 
 // Review a third party
 
-export const REVIEW_THIRD_PARTY_REQUEST = '[Request] Consume a third party item slots'
-export const REVIEW_THIRD_PARTY_SUCCESS = '[Success] Consume a third party item slots'
-export const REVIEW_THIRD_PARTY_FAILURE = '[Failure] Consume a third party item slots'
-export const REVIEW_THIRD_PARTY_TX_SUCCESS = '[Tx Success] Consume a third party item slots'
+export const REVIEW_THIRD_PARTY_REQUEST = '[Request] Review a third party'
+export const REVIEW_THIRD_PARTY_SUCCESS = '[Success] Review a third party'
+export const REVIEW_THIRD_PARTY_FAILURE = '[Failure] Review a third party'
+export const REVIEW_THIRD_PARTY_TX_SUCCESS = '[Tx Success] Review a third party'
 
 export const reviewThirdPartyRequest = (
   thirdPartyId: ThirdParty['id'],
