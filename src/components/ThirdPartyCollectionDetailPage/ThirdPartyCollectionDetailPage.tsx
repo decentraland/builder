@@ -13,10 +13,10 @@ import {
   TextFilter,
   Pagination,
   PaginationProps,
-  Checkbox
+  Checkbox,
+  Loader
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
 import { locations } from 'routing/locations'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
@@ -27,7 +27,6 @@ import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
-import { AuthorizationModal } from 'components/AuthorizationModal'
 import { buildManaAuthorization } from 'lib/mana'
 import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
@@ -43,8 +42,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   state: State = {
     itemSelectionState: {},
     searchText: '',
-    page: 1,
-    isAuthModalOpen: false
+    page: 1
   }
 
   componentDidMount() {
@@ -77,23 +75,6 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     const { collection, onOpenModal } = this.props
     if (collection) {
       onOpenModal('EditCollectionNameModal', { collection })
-    }
-  }
-
-  handleAuthModalClose = () => {
-    this.setState({ isAuthModalOpen: false })
-  }
-
-  handleBuySlot = () => {
-    const { onOpenModal, thirdParty, authorizations } = this.props
-    const manaAuthorization = this.getManaAuthorization()
-    if (hasAuthorization(authorizations, manaAuthorization)) {
-      this.setState({ isAuthModalOpen: false })
-      onOpenModal('BuyItemSlotsModal', {
-        thirdParty
-      })
-    } else {
-      this.setState({ isAuthModalOpen: true })
     }
   }
 
@@ -179,7 +160,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
 
   renderPage(thirdParty: ThirdParty) {
     const { isLoadingAvailableSlots } = this.props
-    const { page, searchText, itemSelectionState, isAuthModalOpen } = this.state
+    const { page, searchText, itemSelectionState } = this.state
     const collection = this.props.collection!
     const areSlotsEmpty = thirdParty?.availableSlots && thirdParty.availableSlots <= 0
 
@@ -220,18 +201,16 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 </Column>
                 <Column align="right" shrink={false}>
                   <Row className="actions">
-                    <Button
-                      loading={isLoadingAvailableSlots}
-                      secondary
-                      compact
-                      className={classNames({ empty: areSlotsEmpty && !isLoadingAvailableSlots, slots: !isLoadingAvailableSlots })}
-                      onClick={this.handleBuySlot}
-                    >
-                      <>
-                        {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
-                        {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
-                      </>
-                    </Button>
+                    <div className={classNames('slots', { empty: areSlotsEmpty && !isLoadingAvailableSlots })}>
+                      {isLoadingAvailableSlots ? (
+                        <Loader active size="tiny" />
+                      ) : (
+                        <>
+                          {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
+                          {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
+                        </>
+                      )}
+                    </div>
                     <Button secondary compact className={'add-items'} onClick={this.handleNewItems}>
                       {t('third_party_collection_detail_page.new_items')}
                     </Button>
@@ -247,16 +226,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
         </Section>
         <Narrow>
           <Notice storageKey={STORAGE_KEY}>
-            <T
-              id="third_party_collection_detail_page.notice"
-              values={{
-                buy_link: (
-                  <span className="link" onClick={this.handleBuySlot}>
-                    {t('global.click_here')}
-                  </span>
-                )
-              }}
-            />
+            <T id="third_party_collection_detail_page.notice" />
           </Notice>
 
           {this.hasItems() ? (
@@ -335,12 +305,6 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
             </div>
           )}
         </Narrow>
-        <AuthorizationModal
-          open={isAuthModalOpen}
-          authorization={this.getManaAuthorization()}
-          onProceed={this.handleBuySlot}
-          onCancel={this.handleAuthModalClose}
-        />
       </>
     )
   }
