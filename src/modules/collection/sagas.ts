@@ -649,8 +649,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       // 3. Compute the merkle tree root & create slot to consume
       const tree = generateTree(Object.values(contentHashes))
+      const amountOfItemsToPublish = itemsToApprove.filter(item => !item.isApproved).length
 
-      if (cheque.qty < itemsToApprove.length) {
+      if (cheque.qty < amountOfItemsToPublish) {
         throw Error('Invalid qty of items to approve in the cheque')
       }
 
