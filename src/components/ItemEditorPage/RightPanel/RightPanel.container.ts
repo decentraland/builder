@@ -4,6 +4,7 @@ import { RootState } from 'modules/common/types'
 import { getItem, getError as getItemError, isDownloading } from 'modules/item/selectors'
 import { deleteItemRequest, downloadItemRequest, saveItemRequest, setCollection } from 'modules/item/actions'
 import { openModal } from 'modules/modal/actions'
+import { isOwner } from 'modules/item/utils'
 import { getSelectedItemId } from 'modules/location/selectors'
 import { getCollection, hasViewAndEditRights } from 'modules/collection/selectors'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
@@ -20,7 +21,11 @@ const mapState = (state: RootState): MapStateProps => {
     collection,
     selectedItem,
     selectedItemId,
-    canEditSelectedItem: !!selectedItem && !!collection && hasViewAndEditRights(state, address, collection),
+    canEditSelectedItem: selectedItem
+      ? collection
+        ? hasViewAndEditRights(state, address, collection)
+        : isOwner(selectedItem, address)
+      : false,
     error: getItemError(state),
     isConnected: isConnected(state),
     isDownloading: isDownloading(state),
