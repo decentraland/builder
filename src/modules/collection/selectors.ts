@@ -19,7 +19,7 @@ import {
   canSeeCollection,
   getCollectionType,
   getMostRelevantStatus,
-  isOwner,
+  canManageCollectionItems,
   sortCollectionByCreatedAt,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
@@ -127,5 +127,5 @@ export const getStatusByCollectionId = createSelector<
 export const hasViewAndEditRights = (state: RootState, address: string, collection: Collection): boolean => {
   const thirdParty = isThirdParty(collection.urn) ? getCollectionThirdParty(state, collection) : null
   const isTPManager = thirdParty && isUserManagerOfThirdParty(address, thirdParty)
-  return isTPManager || isOwner(collection, address)
+  return isTPManager || canManageCollectionItems(collection, address)
 }

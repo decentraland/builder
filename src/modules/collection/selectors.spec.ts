@@ -350,7 +350,7 @@ describe('when getting if the user has view or edit rights over a collection', (
 
   describe('and the user is a manager of the third party of the collection', () => {
     beforeEach(() => {
-      collection = { owner: 'some-other-owner', urn: `${thirdPartyId}:some-collection-id` } as Collection
+      collection = { owner: 'some-other-owner', urn: `${thirdPartyId}:some-collection-id`, managers: ['aManager'] } as Collection
     })
 
     it('should return true', () => {
@@ -361,7 +361,10 @@ describe('when getting if the user has view or edit rights over a collection', (
   describe('and the collection is a regular collection', () => {
     beforeEach(() => {
       address = 'anotherAddress'
-      collection = { urn: 'urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8' } as Collection
+      collection = {
+        urn: 'urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8',
+        managers: ['aManager']
+      } as Collection
     })
 
     describe('and the user owns the collection', () => {
@@ -376,7 +379,27 @@ describe('when getting if the user has view or edit rights over a collection', (
 
     describe("and the user doesn't own the collection", () => {
       beforeEach(() => {
-        collection = { ...collection, owner: 'some-other-owner' }
+        collection = { ...collection, owner: 'some-other-owner', managers: [] }
+      })
+
+      it('should return false', () => {
+        expect(hasViewAndEditRights(state, address, collection)).toBe(false)
+      })
+    })
+
+    describe('and the user is manager of the collection', () => {
+      beforeEach(() => {
+        collection = { ...collection, owner: 'some-other-owner', managers: [address] }
+      })
+
+      it('should return true', () => {
+        expect(hasViewAndEditRights(state, address, collection)).toBe(true)
+      })
+    })
+
+    describe('and the user is not a manager of the collection', () => {
+      beforeEach(() => {
+        collection = { ...collection, owner: 'some-other-owner', managers: ['yetAnotherAddress'] }
       })
 
       it('should return false', () => {
