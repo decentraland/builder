@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ModalNavigation, ModalContent, ModalActions, Button, Field, InputOnChangeData, Form } from 'decentraland-ui'
+import { ModalNavigation, ModalContent, ModalActions, Button, Field, InputOnChangeData, Form, Message } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { DecodedURN, decodeURN, URNType } from 'lib/urn'
@@ -44,7 +44,7 @@ export default class EditURNModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { name, elementName, onClose, isLoading } = this.props
+    const { name, elementName, onClose, isLoading, error } = this.props
     const { newURNSection } = this.state
 
     return (
@@ -56,6 +56,9 @@ export default class EditURNModal extends React.PureComponent<Props, State> {
         />
         <Form onSubmit={this.handleSubmit}>
           <ModalContent>
+            {error ? (
+              <Message error size="tiny" visible className="warning-rescue-message" content={error} header={t('global.error_ocurred')} />
+            ) : null}
             <Field label={t('global.urn')} message={this.getUpdatedURN()} value={newURNSection} onChange={this.handleURNChange} />
           </ModalContent>
           <ModalActions>
