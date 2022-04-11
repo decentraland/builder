@@ -9,6 +9,7 @@ export type Props = ModalProps & {
   urn: URN
   isLoading: boolean
   metadata: EditURNModalMetadata
+  error: string | null
   onSave: (urn: string) => ReturnType<typeof saveItemRequest>
   onBuildURN: (decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY>, tokenId: string) => string
 }
@@ -18,6 +19,6 @@ export type EditURNModalMetadata = {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'elementName' | 'urn' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'elementName' | 'urn' | 'isLoading' | 'error'>
 export type MapDispatchProps = Pick<Props, 'onSave' | 'onBuildURN'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

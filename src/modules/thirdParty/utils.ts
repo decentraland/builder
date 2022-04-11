@@ -1,7 +1,6 @@
 import { ChainId, Network } from '@dcl/schemas'
 import { call } from 'redux-saga/effects'
 import { utils } from 'ethers'
-import { BigNumber } from '@ethersproject/bignumber'
 import { getChainIdByNetwork, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
@@ -19,10 +18,6 @@ export const getThirdPartyForCollection = (thirdParties: Record<string, ThirdPar
 
 export const getThirdPartyForItem = (thirdParties: Record<string, ThirdParty>, item: Item): ThirdParty | undefined =>
   item.urn ? thirdParties[extractThirdPartyId(item.urn)] : undefined
-
-export function applySlotBuySlippage(cost: BigNumber) {
-  return cost.mul(103).div(100)
-}
 
 export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
   const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)

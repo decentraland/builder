@@ -110,7 +110,7 @@ const CollectionPublishButton = (props: Props) => {
           <NetworkButton
             loading={isLoadingItemCurations}
             disabled={
-              (isTryingToPublish && slots === 0) || !hasEnoughSlots || items.length === 0 || buttonAction === PublishButtonAction.NONE
+              (isTryingToPublish && (slots === 0 || !hasEnoughSlots)) || items.length === 0 || buttonAction === PublishButtonAction.NONE
             }
             primary
             compact
@@ -122,7 +122,7 @@ const CollectionPublishButton = (props: Props) => {
         </div>
       }
       hideOnScroll={true}
-      disabled={hasEnoughSlots}
+      disabled={!isTryingToPublish || (isTryingToPublish && hasEnoughSlots)}
       on="hover"
       inverted
     />
