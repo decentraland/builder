@@ -4,6 +4,8 @@
   background-color: var(--void);
   position: relative;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .LeftPanel > .empty {

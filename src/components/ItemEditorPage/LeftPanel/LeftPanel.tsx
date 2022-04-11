@@ -85,17 +85,6 @@ export default class LeftPanel extends React.PureComponent<Props> {
               return (
                 <>
                   <Header />
-                  <Items
-                    items={items.sort(sortByName)}
-                    totalItems={totalItems}
-                    hasHeader={!selectedCollectionId && collections.length > 0}
-                    selectedItemId={selectedItemId}
-                    selectedCollectionId={selectedCollectionId}
-                    visibleItems={visibleItems}
-                    bodyShape={bodyShape}
-                    onSetItems={onSetItems}
-                    onLoadNextPage={this.loadNextPage}
-                  />
                   {selectedCollectionId ? null : (
                     <Collections
                       collections={collections}
@@ -105,6 +94,17 @@ export default class LeftPanel extends React.PureComponent<Props> {
                       onSetCollection={onSetCollection}
                     />
                   )}
+                  <Items
+                    items={items.sort(sortByName)}
+                    totalItems={totalItems || items.length}
+                    hasHeader={!selectedCollectionId && collections.length > 0}
+                    selectedItemId={selectedItemId}
+                    selectedCollectionId={selectedCollectionId}
+                    visibleItems={visibleItems}
+                    bodyShape={bodyShape}
+                    onSetItems={onSetItems}
+                    onLoadNextPage={this.loadNextPage}
+                  />
                 </>
               )
             }}

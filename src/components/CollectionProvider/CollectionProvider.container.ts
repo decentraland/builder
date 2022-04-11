@@ -38,7 +38,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onFetchCollection: id => dispatch(fetchCollectionRequest(id)),
-  onFetchCollectionItems: (id, page, limit) => dispatch(fetchCollectionItemsRequest(id, page, limit))
+  onFetchCollectionItems: (id, params) => dispatch(fetchCollectionItemsRequest(id, params))
 })
 
 export default connect(mapState, mapDispatch)(CollectionProvider)

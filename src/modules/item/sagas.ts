@@ -146,7 +146,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
     const { address } = action.payload
     try {
-      const response: PaginatedResource<Item> = yield call([legacyBuilder, 'fetchItems'], address)
+      // fetch just the orphan items for the address
+      const response: PaginatedResource<Item> = yield call([legacyBuilder, 'fetchItems'], address, { collectionId: 'null' })
       const { limit, page, pages, results, total } = response
       yield put(fetchItemsSuccess(results, { limit, page, pages, total }, address))
     } catch (error) {
@@ -182,7 +183,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
-    const { collectionId, page = DEFAULT_PAGE, limit } = action.payload
+    const { collectionId, page = DEFAULT_PAGE, limit, overridePaginationData } = action.payload
     const isReviewing: boolean = yield select(getIsReviewing)
     const isFetchingMultiplePages = Array.isArray(page)
 
@@ -194,7 +195,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         limit,
         isReviewing
       )
-      yield put(fetchCollectionItemsSuccess(collectionId, items, isFetchingMultiplePages ? undefined : paginationStats))
+      yield put(fetchCollectionItemsSuccess(collectionId, items, overridePaginationData ? paginationStats : undefined))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
     }
@@ -289,7 +290,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     if (newItemPage !== currentPage) {
       yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: newItemPage })))
     } else {
-      yield put(fetchCollectionItemsRequest(collectionId, currentPage, limit))
+      yield put(fetchCollectionItemsRequest(collectionId, { page: currentPage, limit }))
     }
   }
 
@@ -371,7 +372,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (shouldGoToPreviousPage) {
         yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: currentPage - 1 })))
       } else {
-        yield put(fetchCollectionItemsRequest(collectionId, currentPage, limit))
+        yield put(fetchCollectionItemsRequest(collectionId, { page: currentPage, limit }))
       }
     }
   }

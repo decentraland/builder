@@ -40,8 +40,18 @@ export const FETCH_COLLECTION_ITEMS_REQUEST = '[Request] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_SUCCESS = '[Success] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_FAILURE = '[Failure] Fetch Collection Items'
 
-export const fetchCollectionItemsRequest = (collectionId: string, page?: number | number[], limit?: number) =>
-  action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId, page, limit })
+export const fetchCollectionItemsRequest = (
+  collectionId: string,
+  {
+    page,
+    limit,
+    overridePaginationData = true
+  }: {
+    page?: number | number[]
+    limit?: number
+    overridePaginationData?: boolean
+  } = {}
+) => action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId, page, limit, overridePaginationData })
 export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[], paginationStats?: PaginationStats) =>
   action(FETCH_COLLECTION_ITEMS_SUCCESS, { items, paginationIndex: collectionId, paginationStats })
 export const fetchCollectionItemsFailure = (collectionId: string, error: string) =>

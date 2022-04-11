@@ -23,6 +23,7 @@ import { getArrayOfPagesFromTotal } from 'lib/api/pagination'
 import { locations } from 'routing/locations'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
+import { fetchCollectionItemsRequest } from 'modules/item/actions'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import CollectionProvider from 'components/CollectionProvider'
 import Notice from 'components/Notice'
@@ -180,12 +181,16 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   }
 
-  handleSelectAllItems = (onFetchAllCollectionItems: (id: string, pages: number[], limit: number) => void) => {
+  handleSelectAllItems = (onFetchAllCollectionItems: typeof fetchCollectionItemsRequest) => {
     const { collection, totalItems } = this.props
     this.setState({ shouldFetchAllPages: true })
     if (collection) {
       const totalPages = Math.ceil(totalItems! / PAGE_SIZE)
-      onFetchAllCollectionItems(collection.id, getArrayOfPagesFromTotal(totalPages), PAGE_SIZE)
+      onFetchAllCollectionItems(collection.id, {
+        page: getArrayOfPagesFromTotal(totalPages),
+        limit: PAGE_SIZE,
+        overridePaginationData: false
+      })
     }
   }
 
@@ -193,7 +198,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     thirdParty: ThirdParty,
     allItems: Item[],
     paginatedItems: Item[],
-    onFetchCollectionItemsPages: (id: string, pages: number[], limit: number) => void
+    onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest
   ) {
     const { totalItems, isLoadingAvailableSlots } = this.props
     const { page, searchText, selectedItems: stateSelectedItems, showSelectAllPages } = this.state

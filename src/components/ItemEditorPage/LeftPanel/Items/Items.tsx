@@ -9,6 +9,8 @@ import { Props, State } from './Items.types'
 import 'react-virtualized/styles.css' // only needs to be imported once
 import './Items.css'
 
+const ITEM_ROW_HEIGHT = 52
+
 export default class Items extends React.PureComponent<Props, State> {
   state = {
     items: this.props.items
@@ -71,31 +73,46 @@ export default class Items extends React.PureComponent<Props, State> {
 
   render() {
     const { items } = this.state
-    const { hasHeader, totalItems } = this.props
+    console.log('items state: ', items);
+    const { hasHeader, totalItems, selectedCollectionId, selectedItemId, bodyShape } = this.props
+    console.log('totalItems: ', totalItems);
+    console.log('bodyShape: ', bodyShape);
     if (items.length === 0 || !totalItems) return null
 
     return (
       <Section className="Items">
         {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
-        <InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreItems} rowCount={totalItems}>
-          {({ onRowsRendered, registerChild }) => (
-            <AutoSizer>
-              {({ height, width }) => {
-                return (
+        {selectedCollectionId ? (
+          <InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreItems} rowCount={totalItems}>
+            {({ onRowsRendered, registerChild }) => (
+              <AutoSizer>
+                {({ height, width }) => (
                   <List
                     ref={registerChild}
-                    onRowsRendered={onRowsRendered}
                     width={width}
                     height={height}
                     rowCount={items.length}
-                    rowHeight={50}
+                    rowHeight={ITEM_ROW_HEIGHT}
                     rowRenderer={this.rowRenderer}
+                    onRowsRendered={onRowsRendered}
                   />
-                )
-              }}
-            </AutoSizer>
-          )}
-        </InfiniteLoader>
+                )}
+              </AutoSizer>
+            )}
+          </InfiniteLoader>
+        ) : (
+          items.map(item => (
+            <SidebarItem
+              key={item.id}
+              item={item}
+              isSelected={selectedItemId === item.id}
+              isVisible={this.isVisible(item)}
+              selectedCollectionId={selectedCollectionId}
+              bodyShape={bodyShape}
+              onClick={this.handleClick}
+            />
+          ))
+        )}
       </Section>
     )
   }

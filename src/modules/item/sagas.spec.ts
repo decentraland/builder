@@ -375,7 +375,7 @@ describe('when handling the save item success action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData]
           ])
-          .put(fetchCollectionItemsRequest(item.collectionId!, paginationData.currentPage, paginationData.limit))
+          .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
           .dispatch(saveItemSuccess(item, contents))
           .run({ silenceTimeout: true })
       })
@@ -828,7 +828,7 @@ describe('when handling the save multiple items requests action', () => {
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
-            .put(fetchCollectionItemsRequest(items[0].collectionId!, paginationData.currentPage, paginationData.limit))
+            .put(fetchCollectionItemsRequest(items[0].collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
             .dispatch(saveMultipleItemsSuccess(items, savedFiles))
             .run({ silenceTimeout: true })
         })
@@ -989,7 +989,7 @@ describe('when handling the fetch of collection items', () => {
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(isReviewing), true]])
-        .dispatch(fetchCollectionItemsRequest(item.collectionId!, 1, paginationData.limit))
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: 1, limit: paginationData.limit }))
         .put(
           fetchCollectionItemsSuccess(item.collectionId!, [item], {
             limit: paginationData.limit,
@@ -1010,7 +1010,7 @@ describe('when handling the fetch of collection items', () => {
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(isReviewing), true]])
-        .dispatch(fetchCollectionItemsRequest(item.collectionId!, 1, paginationData.limit))
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: 1, limit: paginationData.limit }))
         .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
     })
@@ -1037,7 +1037,9 @@ describe('when handling the fetch of collection items pages', () => {
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(isReviewing), true]])
-        .dispatch(fetchCollectionItemsRequest(item.collectionId!, [1], paginationData.limit))
+        .dispatch(
+          fetchCollectionItemsRequest(item.collectionId!, { page: [1], limit: paginationData.limit, overridePaginationData: false })
+        )
         .put(fetchCollectionItemsSuccess(item.collectionId!, [item], undefined))
         .run({ silenceTimeout: true })
     })
@@ -1051,7 +1053,7 @@ describe('when handling the fetch of collection items pages', () => {
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(isReviewing), true]])
-        .dispatch(fetchCollectionItemsRequest(item.collectionId!, [1], paginationData.limit))
+        .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: [1], limit: paginationData.limit }))
         .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
     })
@@ -1077,7 +1079,7 @@ describe('when handling the delete item success action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData]
           ])
-          .put(fetchCollectionItemsRequest(item.collectionId!, paginationData.currentPage, paginationData.limit))
+          .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
           .dispatch(deleteItemSuccess(item))
           .run({ silenceTimeout: true })
       })
@@ -1116,7 +1118,7 @@ describe('when handling the delete item success action', () => {
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
             ])
-            .put(fetchCollectionItemsRequest(item.collectionId!, paginationData.currentPage, paginationData.limit))
+            .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
             .dispatch(deleteItemSuccess(item))
             .run({ silenceTimeout: true })
         })

@@ -621,9 +621,10 @@ export class BuilderAPI extends BaseAPI {
     return this.request(method, `/pools/${pool}/likes`)
   }
 
-  async fetchItems(address?: string, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE) {
+  async fetchItems(address?: string, params: { collectionId?: string; page?: string; limit?: string } = {}) {
+    const { collectionId, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE } = params
     const endpoint = address ? `/${address}/items` : '/items'
-    const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, { page, limit })
+    const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, { page, limit, collectionId })
     return { ...remoteItems, results: remoteItems.results.map(fromRemoteItem) }
   }
 

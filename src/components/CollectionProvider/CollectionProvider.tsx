@@ -6,7 +6,7 @@ export default class CollectionProvider extends React.PureComponent<Props> {
   fetchCollectionItems(itemsPage: number | number[] = DEFAULT_ITEMS_PAGE) {
     const { id, onFetchCollectionItems, itemsPageSize } = this.props
     if (id) {
-      onFetchCollectionItems(id, itemsPage, itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE)
+      onFetchCollectionItems(id, { page: itemsPage, limit: itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE })
     }
   }
 
