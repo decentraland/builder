@@ -12,7 +12,6 @@ import ConfirmDelete from 'components/ConfirmDelete'
 import Icon from 'components/Icon'
 import {
   getMissingBodyShapeType,
-  canManageItem,
   getRarities,
   getWearableCategories,
   getOverridesCategories,
@@ -238,14 +237,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   canEditItemMetadata(item: Item | null) {
-    const { collection, address = '' } = this.props
-    if (!item) {
+    const { collection, canEditSelectedItem } = this.props
+    if (!item || (collection && isLocked(collection))) {
       return false
     }
-    if (collection && isLocked(collection)) {
-      return false
-    }
-    return collection ? canManageItem(collection, item, address) : isOwner(item, address)
+    return canEditSelectedItem
   }
 
   isSkin() {
