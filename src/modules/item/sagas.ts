@@ -237,9 +237,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      yield call([legacyBuilder, 'saveItem'], item, contents)
+      const { curation } = yield call([legacyBuilder, 'saveItem'], item, contents)
 
-      yield put(saveItemSuccess(item, contents))
+      yield put(saveItemSuccess(item, contents, curation))
     } catch (error) {
       yield put(saveItemFailure(actionItem, contents, error.message))
     }

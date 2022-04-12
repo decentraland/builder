@@ -9,6 +9,7 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
@@ -170,6 +171,7 @@ describe('when handling the save item request action', () => {
 
   describe('and the name and description don\'t contain ":", the size is below the limit, and the collection is not locked', () => {
     let contentsToSave: Record<string, Blob>
+    let updatedCuration: ItemCuration
     const catalystImageHash = 'someHash'
 
     beforeEach(() => {
@@ -182,9 +184,10 @@ describe('when handling the save item request action', () => {
       beforeEach(() => {
         item = { ...item, contents: { ...item.contents, [IMAGE_PATH]: 'anotherHash' } }
         contentsToSave = { ...contents, [IMAGE_PATH]: blob }
+        updatedCuration = { itemId: item.id } as ItemCuration
       })
 
-      it('should put a save item success action with the catalyst image', () => {
+      it('should put a save item success action with the catalyst image and the updated curation', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getItem, item.id), undefined],
@@ -195,9 +198,9 @@ describe('when handling the save item request action', () => {
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
             [call(calculateFinalSize, item, contentsToSave), Promise.resolve(1)],
-            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve({ curation: updatedCuration })]
           ])
-          .put(saveItemSuccess(item, contentsToSave))
+          .put(saveItemSuccess(item, contentsToSave, updatedCuration))
           .dispatch(saveItemRequest(item, contentsToSave))
           .run({ silenceTimeout: true })
       })
@@ -221,7 +224,7 @@ describe('when handling the save item request action', () => {
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
             [call(calculateFinalSize, item, contentsToSave), Promise.resolve(1)],
-            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve({})]
           ])
           .put(saveItemSuccess(item, contentsToSave))
           .dispatch(saveItemRequest(item, contentsToSave))
@@ -239,7 +242,7 @@ describe('when handling the save item request action', () => {
           .provide([
             [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
-            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve({})]
           ])
           .put(saveItemSuccess(item, contents))
           .dispatch(saveItemRequest(item, contents))
@@ -266,7 +269,7 @@ describe('when handling the save item request action', () => {
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
-            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve({})]
           ])
           .put(saveItemSuccess(item, contents))
           .dispatch(saveItemRequest(item, contents))
@@ -284,7 +287,7 @@ describe('when handling the save item request action', () => {
           .provide([
             [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
-            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve({})]
           ])
           .put(saveItemSuccess(item, contents))
           .dispatch(saveItemRequest(item, contents))
@@ -302,7 +305,7 @@ describe('when handling the save item request action', () => {
           .provide([
             [select(getItem, item.id), undefined],
             [call(calculateFinalSize, item, contents), Promise.resolve(1)],
-            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve({})]
           ])
           .put(saveItemSuccess(item, contents))
           .dispatch(saveItemRequest(item, contents))
@@ -319,7 +322,7 @@ describe('when handling the save item request action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getItem, item.id), undefined],
-            [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, {}), Promise.resolve({})]
           ])
           .put(saveItemSuccess(item, {}))
           .dispatch(saveItemRequest(item, {}))

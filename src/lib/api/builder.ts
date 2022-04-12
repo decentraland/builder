@@ -635,9 +635,10 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveItem = async (item: Item, contents: Record<string, Blob>) => {
-    await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
+    const { curation } = await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
     // This has to be done after the PUT above, otherwise it will fail when creating an item, since it wont find it in the DB and return a 404
     await this.saveItemContents(item, contents)
+    return { curation: fromRemoteItemCuration(curation) }
   }
 
   saveItemContents = async (item: Item, contents: Record<string, Blob>) => {

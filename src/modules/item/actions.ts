@@ -1,6 +1,7 @@
 import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Collection } from 'modules/collection/types'
 import { BuiltFile, Item, Rarity } from './types'
 
@@ -55,7 +56,8 @@ export const SAVE_ITEM_SUCCESS = '[Success] Save Item'
 export const SAVE_ITEM_FAILURE = '[Failure] Save Item'
 
 export const saveItemRequest = (item: Item, contents: Record<string, Blob>) => action(SAVE_ITEM_REQUEST, { item, contents })
-export const saveItemSuccess = (item: Item, contents: Record<string, Blob>) => action(SAVE_ITEM_SUCCESS, { item, contents })
+export const saveItemSuccess = (item: Item, contents: Record<string, Blob>, curation?: ItemCuration) =>
+  action(SAVE_ITEM_SUCCESS, { item, contents, curation })
 export const saveItemFailure = (item: Item, contents: Record<string, Blob>, error: string) =>
   action(SAVE_ITEM_FAILURE, { item, contents, error })
 

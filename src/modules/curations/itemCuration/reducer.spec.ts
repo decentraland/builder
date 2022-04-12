@@ -2,6 +2,7 @@ import { fetchItemCurationsFailure, fetchItemCurationsRequest, fetchItemCuration
 import { INITIAL_STATE, itemCurationReducer, ItemCurationState } from './reducer'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
+import { saveItemSuccess } from 'modules/item/actions'
 import {
   publishThirdPartyItemsFailure,
   publishThirdPartyItemsRequest,
@@ -289,6 +290,31 @@ describe('when an action of type FINISH_TP_APPROVAL_FLOW is called', () => {
       ...state,
       data: {
         collectionId: itemCurations
+      }
+    })
+  })
+})
+
+describe('when an action of type SAVE_ITEM_SUCCESS is called', () => {
+  let item: Item
+  let oldItemCuration: ItemCuration
+  let updatedItemCuration: ItemCuration
+  beforeEach(() => {
+    item = { ...mockedItem, collectionId: 'collectionId' }
+    oldItemCuration = getMockItemCuration({ createdAt: 1, status: CurationStatus.APPROVED })
+    updatedItemCuration = getMockItemCuration({ createdAt: 2, status: CurationStatus.PENDING })
+  })
+  it('should replace the old curation for the new one', () => {
+    const state = {
+      ...INITIAL_STATE,
+      data: {
+        collectionId: [oldItemCuration]
+      }
+    }
+    expect(itemCurationReducer(state, saveItemSuccess(item, {}, updatedItemCuration))).toStrictEqual({
+      ...state,
+      data: {
+        collectionId: [updatedItemCuration]
       }
     })
   })
