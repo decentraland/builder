@@ -62,6 +62,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
         cancelButton={<Button secondary>{t('global.cancel')}</Button>}
         onCancel={handleCancelDeleteCollection}
         onConfirm={handleDeleteCollection}
+        className="delete-collection-confirm"
       />
     </>
   )

@@ -2,6 +2,7 @@ import { AxiosRequestConfig, AxiosError } from 'axios'
 import { env } from 'decentraland-commons'
 import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
+import { NO_CACHE_HEADERS } from 'lib/headers'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 import { Project, Manifest } from 'modules/project/types'
@@ -20,9 +21,9 @@ import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
-import { Authorization } from './auth'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
+import { Authorization } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -796,7 +797,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchContent(hash: string) {
     const url = getContentsStorageUrl(hash)
-    const resp = await fetch(url)
+    const resp = await fetch(url, { headers: NO_CACHE_HEADERS })
     if (!resp.ok) {
       const message = await resp.text()
       throw new Error(message)
