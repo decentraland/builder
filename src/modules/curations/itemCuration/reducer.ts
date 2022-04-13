@@ -86,7 +86,7 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [collectionId]: itemCuration ? [...oldCurations, itemCuration] : [...oldCurations]
+          [collectionId]: [...oldCurations, itemCuration]
         },
         error: null
       }

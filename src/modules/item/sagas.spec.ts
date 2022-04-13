@@ -202,25 +202,6 @@ describe('when handling the save item request action', () => {
           .dispatch(saveItemRequest(item, contentsToSave))
           .run({ silenceTimeout: true })
       })
-
-      it('should put a fetch item curation request action if the item is a TP one', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
-          .put(fetchItemCurationRequest(item.collectionId!, item.id))
-          .dispatch(
-            saveItemSuccess(
-              { ...item, urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' },
-              contentsToSave
-            )
-          )
-          .run({ silenceTimeout: true })
-      })
-
-      it('should not put a fetch item curation request action if the item is a standard one', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
-          .not.put(fetchItemCurationRequest(item.collectionId!, item.id))
-          .dispatch(saveItemSuccess(item, contentsToSave))
-          .run({ silenceTimeout: true })
-      })
     })
 
     describe("and the item has a new thumbnail but doesn't have a catalyst image", () => {
@@ -871,5 +852,28 @@ describe('when handling the rescue items request action', () => {
           .run({ silenceTimeout: true })
       })
     })
+  })
+})
+
+describe('when handling the save item success action', () => {
+  let item: Item
+  beforeEach(() => {
+    item = { ...mockedItem }
+  })
+
+  it('should put a fetch item curation request action if the item is a TP one', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .put(fetchItemCurationRequest(item.collectionId!, item.id))
+      .dispatch(
+        saveItemSuccess({ ...item, urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' }, {})
+      )
+      .run({ silenceTimeout: true })
+  })
+
+  it('should not put a fetch item curation request action if the item is a standard one', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .not.put(fetchItemCurationRequest(item.collectionId!, item.id))
+      .dispatch(saveItemSuccess(item, {}))
+      .run({ silenceTimeout: true })
   })
 })
