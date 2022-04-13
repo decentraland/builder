@@ -294,7 +294,7 @@ describe('when an action of type FETCH_ITEM_CURATION_SUCCESS is called', () => {
     oldCuration = getMockItemCuration({ itemId: 'itemId', id: 'oldId' })
     newCuration = getMockItemCuration({ itemId: 'itemId', id: 'newId' })
   })
-  it('should add the fetched curation to the array, replacing the old one if there was omne and remove the action from loading and set the error to null', () => {
+  it('should add the fetched curation to the array, replacing the old one if there was on, remove the action from loading and set the error to null', () => {
     const state: ItemCurationState = {
       data: {
         collectionId: [oldCuration]
