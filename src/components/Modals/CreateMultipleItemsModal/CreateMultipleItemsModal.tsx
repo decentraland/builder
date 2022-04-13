@@ -119,8 +119,8 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
             decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
             decodedCollectionUrn.thirdPartyCollectionId
           ) {
-            let decodedUrn = loadedFile.asset.urn ? decodeURN<URNType.COLLECTIONS_THIRDPARTY>(loadedFile.asset.urn) : null
-            if (decodedUrn) {
+            const decodedUrn: DecodedURN<any> | null = loadedFile.asset.urn ? decodeURN(loadedFile.asset.urn) : null
+            if (loadedFile.asset.urn && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY) {
               const { thirdPartyName, thirdPartyCollectionId } = decodedUrn
               if (
                 (thirdPartyCollectionId && thirdPartyCollectionId !== decodedCollectionUrn.thirdPartyCollectionId) ||
@@ -128,15 +128,15 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
               ) {
                 throw new Error(t('create_multiple_items_modal.invalid_urn'))
               }
-            }
-            if (loadedFile.asset.urn && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY && decodedUrn.thirdPartyTokenId) {
-              itemFactory.withUrn(
-                buildThirdPartyURN(
-                  decodedCollectionUrn.thirdPartyName,
-                  decodedCollectionUrn.thirdPartyCollectionId,
-                  decodedUrn.thirdPartyTokenId
+              if (decodedUrn.thirdPartyTokenId) {
+                itemFactory.withUrn(
+                  buildThirdPartyURN(
+                    decodedCollectionUrn.thirdPartyName,
+                    decodedCollectionUrn.thirdPartyCollectionId,
+                    decodedUrn.thirdPartyTokenId
+                  )
                 )
-              )
+              }
             } else {
               itemFactory.withUrn(
                 buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())

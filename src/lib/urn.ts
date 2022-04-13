@@ -121,14 +121,14 @@ export function isThirdParty(urn?: string) {
   return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
 }
 
-export function decodeURN<T extends URNType>(urn: URN): DecodedURN<T> {
+export function decodeURN(urn: URN): DecodedURN {
   const matches = urnRegExp.exec(urn)
 
   if (!matches || !matches.groups) {
     throw new Error(`Invalid URN: "${urn}"`)
   }
 
-  return matches.groups as DecodedURN<T>
+  return matches.groups as DecodedURN
 }
 
 function getNetworkURNProtocol(network: Network) {
