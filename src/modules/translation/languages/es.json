@@ -217,6 +217,7 @@
     "asset_file_not_found": "El archivo asset.json no se encontró.",
     "thumbnail_file_not_found": "Los ZIPs en la creación múltiple deben contener un archivo thumbnail.png.",
     "saved_items_table_title": "Items salvados",
+    "invalid_urn": "El archivo asset.json contiene una URN inválida para esta colección",
     "invalid_title": "INVALIDOS",
     "valid_title": "VALIDOS",
     "add_more_button": "Agregar más",
