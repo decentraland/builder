@@ -79,6 +79,8 @@ import {
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { fromRemoteItem } from 'lib/api/transformations'
+import { isThirdParty } from 'lib/urn'
+import { fetchItemCurationRequest } from 'modules/curations/itemCuration/actions'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
@@ -98,7 +100,6 @@ import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, 
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
-
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
@@ -237,16 +238,20 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      const { curation } = yield call([legacyBuilder, 'saveItem'], item, contents)
+      yield call([legacyBuilder, 'saveItem'], item, contents)
 
-      yield put(saveItemSuccess(item, contents, curation))
+      yield put(saveItemSuccess(item, contents))
     } catch (error) {
       yield put(saveItemFailure(actionItem, contents, error.message))
     }
   }
 
-  function* handleSaveItemSuccess() {
+  function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
+    const { item } = action.payload
     yield put(closeModal('EditItemURNModal'))
+    if (isThirdParty(item.urn)) {
+      yield put(fetchItemCurationRequest(item.collectionId!, item.id))
+    }
   }
 
   function* handleSetPriceAndBeneficiaryRequest(action: SetPriceAndBeneficiaryRequestAction) {
