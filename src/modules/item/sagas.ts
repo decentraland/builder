@@ -171,14 +171,14 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = []
     pagesToFetch.forEach(page => {
       promisesOfPagesToFetch.push(() =>
-        legacyBuilder.fetchCollectionItems(collectionId, page, limit, isReviewing ? CurationStatus.PENDING : undefined)
+        legacyBuilder.fetchCollectionItems(collectionId, { page, limit, status: isReviewing ? CurationStatus.PENDING : undefined })
       )
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
     const paginationStats = allItemPages[0].total
       ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
       : {}
-    const items = allItemPages.map(result => result.results).flat()
+    const items = allItemPages.flatMap(result => result.results)
     return { items, paginationStats }
   }
 
@@ -311,6 +311,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { item } = action.payload
     const collectionId = item.collectionId!
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    // Fetch the the collection items again, we don't know where the item is going to be in the pagination data
     if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)
     }

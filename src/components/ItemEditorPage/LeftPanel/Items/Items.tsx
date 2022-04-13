@@ -40,12 +40,12 @@ export default class Items extends React.PureComponent<Props, State> {
     onSetItems(newVisibleItemIds)
   }
 
-  rowRenderer = ({ key, index, style }: { key: string; index: number; style: any }) => {
+  rowRenderer = ({ key, index, style }: { key: string; index: number; style?: any }) => {
     const { items } = this.state
     const { selectedItemId, selectedCollectionId, bodyShape } = this.props
     const item = items[index]
     return (
-      <div key={key} style={{ ...style, height: '100%' }}>
+      <div key={key} style={style}>
         <SidebarItem
           key={item.id}
           item={item}
@@ -73,10 +73,7 @@ export default class Items extends React.PureComponent<Props, State> {
 
   render() {
     const { items } = this.state
-    console.log('items state: ', items);
-    const { hasHeader, totalItems, selectedCollectionId, selectedItemId, bodyShape } = this.props
-    console.log('totalItems: ', totalItems);
-    console.log('bodyShape: ', bodyShape);
+    const { hasHeader, totalItems, selectedCollectionId } = this.props
     if (items.length === 0 || !totalItems) return null
 
     return (
@@ -101,17 +98,7 @@ export default class Items extends React.PureComponent<Props, State> {
             )}
           </InfiniteLoader>
         ) : (
-          items.map(item => (
-            <SidebarItem
-              key={item.id}
-              item={item}
-              isSelected={selectedItemId === item.id}
-              isVisible={this.isVisible(item)}
-              selectedCollectionId={selectedCollectionId}
-              bodyShape={bodyShape}
-              onClick={this.handleClick}
-            />
-          ))
+          items.map(item => this.rowRenderer({ key: item.id, index: items.indexOf(item) }))
         )}
       </Section>
     )

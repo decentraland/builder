@@ -6,7 +6,7 @@ import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './Collec
 import CollectionRow from './CollectionRow'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
-  itemCount: getCollectionItemCount(state)(ownProps.collection.id)
+  itemCount: getCollectionItemCount(state, ownProps.collection.id)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

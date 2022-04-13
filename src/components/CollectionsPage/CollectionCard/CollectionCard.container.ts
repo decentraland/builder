@@ -8,7 +8,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './Collec
 import CollectionCard from './CollectionCard'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
-  itemCount: getCollectionItemCount(state)(ownProps.collection.id)
+  itemCount: getCollectionItemCount(state, ownProps.collection.id)
 })
 
 const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProps => ({

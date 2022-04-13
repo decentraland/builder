@@ -634,9 +634,9 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteItem(remoteItem)
   }
 
-  async fetchCollectionItems(collectionId: string, page?: number, limit?: number, status?: CurationStatus) {
-    const params = { page, limit, status }
-    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, params)
+  async fetchCollectionItems(collectionId: string, options: { page?: number; limit?: number; status?: CurationStatus } = {}) {
+    const { page, limit } = options
+    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, options)
     if (page && limit) {
       // TODO: remove this check when we have pagination on standard collections
       return { ...remoteResponse, results: remoteResponse.results.map(fromRemoteItem) }

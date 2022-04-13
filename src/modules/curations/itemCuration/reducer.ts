@@ -88,8 +88,8 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
           ...state.data,
           [collectionId]: currentItemCurations
             ? [
-                ...currentItemCurations,
-                ...itemCurations.filter(itemCuration => !currentItemCurations.find(curation => curation.id === itemCuration.id))
+                ...currentItemCurations.filter(itemCuration => !itemCurations.find(curation => curation.itemId === itemCuration.itemId)),
+                ...itemCurations
               ]
             : itemCurations
         },

@@ -24,10 +24,7 @@ import { areSynced, canSeeItem, isOwner } from './utils'
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
-export const getPaginatedItems = (state: RootState, collectionId: string, pageSize: number) =>
-  getState(state).pagination?.[collectionId].ids.slice(0, pageSize)
 export const getPaginationData = (state: RootState, collectionId: string) => getState(state).pagination?.[collectionId]
-export const getPaginationTotal = (state: RootState, collectionId: string) => getState(state).pagination?.[collectionId]?.total
 export const getError = (state: RootState) => getState(state).error
 
 export const getItems = createSelector<RootState, ItemState['data'], Item[]>(getData, itemData => Object.values(itemData))

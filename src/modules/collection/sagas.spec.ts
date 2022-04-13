@@ -909,7 +909,7 @@ describe('when executing the TP approval flow', () => {
     it('should open the modal in an error state', () => {
       const collection = getTPCollection({ isPublished: false })
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
-        .dispatch(initiateTPApprovalFlow(collection, []))
+        .dispatch(initiateTPApprovalFlow(collection))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.ERROR,
@@ -974,7 +974,7 @@ describe('when executing the TP approval flow', () => {
             [select(getPaginationData, TPCollection.id), { total: totalItems }],
             [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]
           ])
-          .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+          .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.LOADING,
@@ -1017,7 +1017,7 @@ describe('when executing the TP approval flow', () => {
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), {}],
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), {}]
           ])
-          .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+          .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.LOADING,
@@ -1054,8 +1054,33 @@ describe('when executing the TP approval flow', () => {
     })
 
     describe('when sending a valid cheque', () => {
+      let secondPageItems = [getItem(TPCollection, { isApproved: true }), getItem(TPCollection, { isApproved: true })]
+      let allItemsToApprove = [syncedItem, unsyncedItem, ...secondPageItems]
       beforeEach(() => {
-        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: [syncedItem, unsyncedItem] })
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({ results: [syncedItem, unsyncedItem] })
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({
+          results: secondPageItems
+        })
+      })
+      it('should fetch all the items needed to be approved, including the 2nd page of the pagination', () => {
+        const parsedSignature = ethers.utils.splitSignature(cheque.signature)
+        const merkleTree = generateTree(Object.values(contentHashes))
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+          .provide([
+            [select(getPaginationData, TPCollection.id), { total: 80 }],
+            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: false }]
+          ])
+          .dispatch(initiateTPApprovalFlow(TPCollection))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+              items: allItemsToApprove,
+              collection: TPCollection,
+              merkleTreeRoot: merkleTree.merkleRoot,
+              slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
+            } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
+          )
+          .run({ silenceTimeout: true })
       })
       it('should complete the flow doing the review, deploy and update the item curations steps', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
@@ -1082,7 +1107,7 @@ describe('when executing the TP approval flow', () => {
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), itemCurations[0]],
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), itemCurations[1]]
           ])
-          .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+          .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.LOADING,
@@ -1154,7 +1179,7 @@ describe('when executing the TP approval flow', () => {
               [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), itemCurations[0]],
               [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), itemCurations[1]]
             ])
-            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.LOADING,
@@ -1211,7 +1236,7 @@ describe('when executing the TP approval flow', () => {
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
               [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), Promise.reject(new Error(error))]
             ])
-            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.LOADING,
@@ -1251,7 +1276,7 @@ describe('when executing the TP approval flow', () => {
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }]
             ])
-            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.LOADING,
@@ -1300,7 +1325,7 @@ describe('when executing the TP approval flow', () => {
                 deployData
               ]
             ])
-            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.LOADING,

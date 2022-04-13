@@ -145,10 +145,6 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     this.setState({ selectedItems: {} })
   }
 
-  hasItems(items: Item[]) {
-    return items.length > 0
-  }
-
   hasAccess() {
     const { wallet, collection, thirdParty } = this.props
     return collection && thirdParty && isUserManagerOfThirdParty(wallet.address, thirdParty)

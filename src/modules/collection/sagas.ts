@@ -96,6 +96,7 @@ import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
+import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item, ItemApprovalData } from 'modules/item/types'
@@ -142,7 +143,6 @@ import {
   UNSYNCED_COLLECTION_ERROR_PREFIX,
   isTPCollection
 } from './utils'
-import { PaginatedResource } from 'lib/api/pagination'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
 
@@ -631,13 +631,13 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const paginatedData: PaginatedResource<Item> = yield select(getPaginationData, collection.id)
       const BATCH_SIZE = 50
       const REQUESTS_BATCH_SIZE = 10
-      const pages = Array.from({ length: Math.ceil(paginatedData.total / BATCH_SIZE) }, (_, i) => i + 1)
+      const pages = getArrayOfPagesFromTotal(Math.ceil(paginatedData.total / BATCH_SIZE))
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
       const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = pages.map((page: number) => () =>
-        legacyBuilderClient.fetchCollectionItems(collection.id, page, BATCH_SIZE, CurationStatus.PENDING)
+        legacyBuilderClient.fetchCollectionItems(collection.id, { page, limit: BATCH_SIZE, status: CurationStatus.PENDING })
       ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
       const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-      const itemsToApprove = allItemPages.map(result => result.results).flat()
+      const itemsToApprove = allItemPages.flatMap(result => result.results)
 
       if (!itemsToApprove.length) {
         throw Error('Error fetching items to approve')

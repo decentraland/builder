@@ -192,8 +192,7 @@ export type InitiateApprovalFlowAction = ReturnType<typeof initiateApprovalFlow>
 export const INITIATE_TP_APPROVAL_FLOW = 'Initiate TP Approval Flow'
 export const FINISH_TP_APPROVAL_FLOW = 'Finish TP Approval Flow'
 
-export const initiateTPApprovalFlow = (collection: Collection, itemsToApprove: Item[]) =>
-  action(INITIATE_TP_APPROVAL_FLOW, { collection, itemsToApprove })
+export const initiateTPApprovalFlow = (collection: Collection) => action(INITIATE_TP_APPROVAL_FLOW, { collection })
 export const finishTPApprovalFlow = (collection: Collection, approvedItems: Item[], itemCurations: ItemCuration[]) =>
   action(FINISH_TP_APPROVAL_FLOW, { collection, approvedItems, itemCurations })
 
