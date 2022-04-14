@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { sortByName } from 'lib/sort'
 import { isThirdParty } from 'lib/urn'
 import { Collection, CollectionType } from 'modules/collection/types'
+import { CurationStatus } from 'modules/curations/types'
 import { getCollectionType } from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
@@ -58,7 +59,12 @@ export default class LeftPanel extends React.PureComponent<Props> {
     return (
       <div className="LeftPanel">
         {isConnected ? (
-          <CollectionProvider id={selectedCollectionId} itemsPage={itemsPage} itemsPageSize={LEFT_PANEL_PAGE_SIZE}>
+          <CollectionProvider
+            id={selectedCollectionId}
+            itemsPage={itemsPage}
+            itemsPageSize={LEFT_PANEL_PAGE_SIZE}
+            status={isReviewing ? CurationStatus.PENDING : undefined}
+          >
             {({ collection, paginatedItems: collectionItems, isLoading }) => {
               const items = this.getItems(collection, collectionItems)
               const showLoader = isLoading && items.length === 0

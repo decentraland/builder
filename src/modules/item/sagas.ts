@@ -91,7 +91,7 @@ import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI } from 'lib/api/builder'
 import { DEFAULT_PAGE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
-import { getItemId, isReviewing as getIsReviewing } from 'modules/location/selectors'
+import { getItemId } from 'modules/location/selectors'
 import { CurationStatus } from 'modules/curations/types'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
@@ -165,26 +165,24 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
-  function* fetchCollectionItemsWithBatch(collectionId: string, pagesToFetch: number[], limit?: number, isReviewing = false) {
+  function* fetchCollectionItemsWithBatch(collectionId: string, pagesToFetch: number[], limit?: number, status?: CurationStatus) {
     const REQUEST_BATCH_SIZE = 10
     const queue = new PQueue({ concurrency: REQUEST_BATCH_SIZE })
     const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = []
     pagesToFetch.forEach(page => {
-      promisesOfPagesToFetch.push(() =>
-        legacyBuilder.fetchCollectionItems(collectionId, { page, limit, status: isReviewing ? CurationStatus.PENDING : undefined })
-      )
+      promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, { page, limit, status }))
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
     const paginationStats = allItemPages[0].total
       ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
       : {}
-    const items = allItemPages.flatMap(result => result.results)
+    // When there is no limit, the result is not paginated so the response is different. The non-paginated ones will be deprecated
+    const items = limit ? allItemPages.flatMap(result => result.results) : allItemPages.flat()
     return { items, paginationStats }
   }
 
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
-    const { collectionId, page = DEFAULT_PAGE, limit, overridePaginationData } = action.payload
-    const isReviewing: boolean = yield select(getIsReviewing)
+    const { collectionId, page = DEFAULT_PAGE, limit, overridePaginationData, status } = action.payload
     const isFetchingMultiplePages = Array.isArray(page)
 
     try {
@@ -193,7 +191,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         collectionId,
         isFetchingMultiplePages ? page : [page],
         limit,
-        isReviewing
+        status
       )
       yield put(fetchCollectionItemsSuccess(collectionId, items, overridePaginationData ? paginationStats : undefined))
     } catch (error) {

@@ -2,6 +2,7 @@ import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { PaginationStats } from 'lib/api/pagination'
+import { CurationStatus } from 'modules/curations/types'
 import { Collection } from 'modules/collection/types'
 import { BuiltFile, Item, Rarity } from './types'
 
@@ -45,13 +46,15 @@ export const fetchCollectionItemsRequest = (
   {
     page,
     limit,
+    status,
     overridePaginationData = true
   }: {
     page?: number | number[]
     limit?: number
+    status?: CurationStatus
     overridePaginationData?: boolean
   } = {}
-) => action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId, page, limit, overridePaginationData })
+) => action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId, page, limit, status, overridePaginationData })
 export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[], paginationStats?: PaginationStats) =>
   action(FETCH_COLLECTION_ITEMS_SUCCESS, { items, paginationIndex: collectionId, paginationStats })
 export const fetchCollectionItemsFailure = (collectionId: string, error: string) =>

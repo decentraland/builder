@@ -4,9 +4,9 @@ import { DEFAULT_ITEMS_PAGE_SIZE, DEFAULT_ITEMS_PAGE, Props } from './Collection
 
 export default class CollectionProvider extends React.PureComponent<Props> {
   fetchCollectionItems(itemsPage: number | number[] = DEFAULT_ITEMS_PAGE) {
-    const { id, onFetchCollectionItems, itemsPageSize } = this.props
+    const { id, onFetchCollectionItems, itemsPageSize, status } = this.props
     if (id) {
-      onFetchCollectionItems(id, { page: itemsPage, limit: itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE })
+      onFetchCollectionItems(id, { page: itemsPage, limit: itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE, status })
     }
   }
 

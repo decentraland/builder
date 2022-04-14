@@ -16,7 +16,6 @@ import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
-import { isReviewing } from 'modules/location/selectors'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { downloadZip } from 'lib/zip'
@@ -370,7 +369,6 @@ describe('when handling the save item success action', () => {
       it('should put a fetch collection items success action to fetch the same page again', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
-            [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
             [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData]
@@ -389,7 +387,6 @@ describe('when handling the save item success action', () => {
         const newPageNumber = Math.ceil((paginationData.total + paginationData.ids.length) / paginationData.limit)
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
-            [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
             [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData]
@@ -823,7 +820,6 @@ describe('when handling the save multiple items requests action', () => {
         it('should request the same page of items if the user is in the TP detail page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
               [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
@@ -842,7 +838,6 @@ describe('when handling the save multiple items requests action', () => {
           const newPageNumber = Math.ceil((paginationData.total + items.length) / paginationData.limit)
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
               [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
@@ -988,7 +983,6 @@ describe('when handling the fetch of collection items', () => {
     })
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(isReviewing), true]])
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: 1, limit: paginationData.limit }))
         .put(
           fetchCollectionItemsSuccess(item.collectionId!, [item], {
@@ -1009,7 +1003,6 @@ describe('when handling the fetch of collection items', () => {
     })
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(isReviewing), true]])
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: 1, limit: paginationData.limit }))
         .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
@@ -1036,7 +1029,6 @@ describe('when handling the fetch of collection items pages', () => {
     })
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(isReviewing), true]])
         .dispatch(
           fetchCollectionItemsRequest(item.collectionId!, { page: [1], limit: paginationData.limit, overridePaginationData: false })
         )
@@ -1052,7 +1044,6 @@ describe('when handling the fetch of collection items pages', () => {
     })
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(isReviewing), true]])
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: [1], limit: paginationData.limit }))
         .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
@@ -1074,7 +1065,6 @@ describe('when handling the delete item success action', () => {
       it('should put a fetch collection items success action to fetch the same page again', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
-            [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
             [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData]
@@ -1094,7 +1084,6 @@ describe('when handling the delete item success action', () => {
         it('should put a fetch collection items success action to fetch the previous page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
               [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
@@ -1113,7 +1102,6 @@ describe('when handling the delete item success action', () => {
         it('should put a fetch collection items success action to fetch the same first page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(isReviewing), true], // needed for the fetchCollectionItemsRequest action dispatched later on
               [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
