@@ -12,16 +12,20 @@ import './Items.css'
 const ITEM_ROW_HEIGHT = 52
 
 export default class Items extends React.PureComponent<Props, State> {
+  listRef: List | null = null
   state = {
     items: this.props.items
   }
-  componentDidUpdate() {
-    const { items } = this.props
+  componentDidUpdate(prevProps: Props) {
+    const { items, selectedItemId } = this.props
     const { items: stateItems } = this.state
     const prevItemIds = stateItems.map(prevItem => prevItem.id)
     if (items.some(item => !prevItemIds.includes(item.id))) {
       const newItems = [...stateItems, ...items.filter(item => !prevItemIds.includes(item.id))]
       this.setState({ items: newItems })
+    }
+    if (selectedItemId !== prevProps.selectedItemId && this.listRef) {
+      this.listRef.forceUpdateGrid()
     }
   }
   isVisible = (item: Item) => {
@@ -85,7 +89,10 @@ export default class Items extends React.PureComponent<Props, State> {
               <AutoSizer>
                 {({ height, width }) => (
                   <List
-                    ref={registerChild}
+                    ref={ref => {
+                      registerChild(ref)
+                      this.listRef = ref
+                    }}
                     width={width}
                     height={height}
                     rowCount={items.length}
