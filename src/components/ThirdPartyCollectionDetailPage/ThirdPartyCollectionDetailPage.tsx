@@ -287,7 +287,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     {t('third_party_collection_detail_page.clear_selection')}
                   </span>
                   . &nbsp;
-                  {showSelectAllPages ? (
+                  {showSelectAllPages && totalPages > 1 ? (
                     <span className="link" onClick={() => this.handleSelectAllItems(onFetchCollectionItemsPages)}>
                       {t('third_party_collection_detail_page.select_all', { total })}
                     </span>

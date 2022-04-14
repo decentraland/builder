@@ -189,7 +189,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
   render() {
     const { isLoading, collection } = this.props
     const hasAccess = this.hasAccess()
-    const HUGE_PAGE_SIZE = 10000 // TODO: Remove this ASAP and implement pagination
+    const HUGE_PAGE_SIZE = 5000 // TODO: Remove this ASAP and implement pagination
     return (
       <CollectionProvider id={collection?.id} itemsPage={1} itemsPageSize={HUGE_PAGE_SIZE}>
         {({ isLoading: isLoadingCollectionData, items }) => (
