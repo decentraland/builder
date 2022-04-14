@@ -23,7 +23,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onFetchCollectionItems: (id, page, limit) => dispatch(fetchCollectionItemsRequest(id, page, limit))
+  onFetchCollectionItems: (id, options) => dispatch(fetchCollectionItemsRequest(id, { page: options?.page, limit: options?.limit }))
 })
 
 export default connect(mapState, mapDispatch)(CollectionImage)

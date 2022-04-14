@@ -27,7 +27,7 @@ export default class CollectionImage extends React.PureComponent<Props> {
     const needsToFetchMoreImages =
       (itemCount >= MAX_IMAGES_TO_SHOW && items.length < MAX_IMAGES_TO_SHOW) || (itemCount < MAX_IMAGES_TO_SHOW && items.length < itemCount)
     if (needsToFetchMoreImages) {
-      onFetchCollectionItems(collectionId, 1, MAX_IMAGES_TO_SHOW) // fetch just the first page and 4 items to show the images
+      onFetchCollectionItems(collectionId, { page: 1, limit: MAX_IMAGES_TO_SHOW }) // fetch just the first page and 4 items to show the images
     }
   }
 
