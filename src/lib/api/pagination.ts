@@ -1,5 +1,5 @@
 export const DEFAULT_PAGE = 1
-export const DEFAULT_PAGE_SIZE = 40
+export const DEFAULT_PAGE_SIZE = 60
 
 export const addPaginationParameters = (url: string, page?: number, limit?: number) => {
   const params = new URLSearchParams()
