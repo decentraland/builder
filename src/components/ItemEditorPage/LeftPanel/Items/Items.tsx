@@ -17,7 +17,7 @@ export default class Items extends React.PureComponent<Props, State> {
     items: this.props.items
   }
   componentDidUpdate(prevProps: Props) {
-    const { items, selectedItemId } = this.props
+    const { items, selectedItemId, selectedCollectionId } = this.props
     const { items: stateItems } = this.state
     const prevItemIds = stateItems.map(prevItem => prevItem.id)
     if (items.some(item => !prevItemIds.includes(item.id))) {
@@ -26,6 +26,10 @@ export default class Items extends React.PureComponent<Props, State> {
     }
     if (selectedItemId !== prevProps.selectedItemId && this.listRef) {
       this.listRef.forceUpdateGrid()
+    }
+    // if selectedCollectionId changes, lets clear the items in the state
+    if (selectedCollectionId !== prevProps.selectedCollectionId) {
+      this.setState({ items })
     }
   }
   isVisible = (item: Item) => {
