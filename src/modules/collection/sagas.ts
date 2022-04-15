@@ -90,7 +90,9 @@ import {
   RescueItemsFailureAction,
   fetchCollectionItemsRequest,
   FETCH_COLLECTION_ITEMS_SUCCESS,
-  FETCH_COLLECTION_ITEMS_FAILURE
+  FETCH_COLLECTION_ITEMS_FAILURE,
+  SAVE_MULTIPLE_ITEMS_SUCCESS,
+  SaveMultipleItemsSuccessAction
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
@@ -153,6 +155,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeEvery(SAVE_COLLECTION_REQUEST, handleSaveCollectionRequest)
   yield takeLatest(SAVE_COLLECTION_SUCCESS, handleSaveCollectionSuccess)
   yield takeLatest(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
+  yield takeLatest(SAVE_MULTIPLE_ITEMS_SUCCESS, handleSaveMultipleItemsSuccess)
   yield takeEvery(DELETE_COLLECTION_REQUEST, handleDeleteCollectionRequest)
   yield takeEvery(PUBLISH_COLLECTION_REQUEST, handlePublishCollectionRequest)
   yield takeEvery(SET_COLLECTION_MINTERS_REQUEST, handleSetCollectionMintersRequest)
@@ -205,7 +208,15 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
     const { item } = action.payload
     if (item.collectionId && !item.isPublished) {
-      const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
+      const collection: Collection = yield select(getCollection, item.collectionId!)
+      yield put(saveCollectionRequest(collection))
+    }
+  }
+
+  function* handleSaveMultipleItemsSuccess(action: SaveMultipleItemsSuccessAction) {
+    const { items } = action.payload
+    if (items.length > 0 && items[0].collectionId) {
+      const collection: Collection = yield select(getCollection, items[0].collectionId!)
       yield put(saveCollectionRequest(collection))
     }
   }

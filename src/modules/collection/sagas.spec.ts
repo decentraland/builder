@@ -17,9 +17,16 @@ import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById, getPaginationData } from 'modules/item/selectors'
+import { getCollection } from 'modules/collection/selectors'
 import { Item, ItemApprovalData, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
-import { fetchCollectionItemsRequest, fetchCollectionItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
+import {
+  fetchCollectionItemsRequest,
+  fetchCollectionItemsSuccess,
+  rescueItemsFailure,
+  rescueItemsSuccess,
+  saveMultipleItemsSuccess
+} from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
 import {
   approveCollectionCurationFailure,
@@ -58,10 +65,10 @@ jest.mock('./utils', () => ({
   isTPDeployEnabled: jest.fn().mockReturnValue(true)
 }))
 
-const getCollection = (props: Partial<Collection> = {}): Collection =>
+const getCollectionMock = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
 
-const getTPCollection = (props: Partial<Collection> = {}): Collection =>
+const getTPCollectionMock = (props: Partial<Collection> = {}): Collection =>
   ({
     id: 'aCollection',
     isPublished: true,
@@ -70,7 +77,7 @@ const getTPCollection = (props: Partial<Collection> = {}): Collection =>
     ...props
   } as Collection)
 
-const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
+const getItemMock = (collection: Collection, props: Partial<Item> = {}): Item =>
   ({
     id: 'anItem',
     collectionId: collection.id,
@@ -89,7 +96,7 @@ const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
     ...props
   } as Item)
 
-const getEntity = (item: Item, props: Partial<Entity> = {}): Entity => ({
+const getEntityMock = (item: Item, props: Partial<Entity> = {}): Entity => ({
   id: 'anEntity',
   content: Object.keys(item.contents).map(file => ({ file, hash: item.contents[file] })),
   metadata: {
@@ -105,7 +112,7 @@ const getEntity = (item: Item, props: Partial<Entity> = {}): Entity => ({
   ...props
 })
 
-const getDeployData = (): DeploymentPreparationData => ({ entityId: 'QmNewEntityId', files: new Map() })
+const getDeployDataMock = (): DeploymentPreparationData => ({ entityId: 'QmNewEntityId', files: new Map() })
 
 const getCollectionCuration = (collection: Collection, props: Partial<CollectionCuration> = {}): CollectionCuration =>
   ({
@@ -115,7 +122,7 @@ const getCollectionCuration = (collection: Collection, props: Partial<Collection
     ...props
   } as CollectionCuration)
 
-const getItemCuration = (item: Item, props: Partial<ItemCuration> = {}): ItemCuration =>
+const getItemCurationMock = (item: Item, props: Partial<ItemCuration> = {}): ItemCuration =>
   ({
     id: 'anItemCuration',
     itemId: item.id,
@@ -145,7 +152,7 @@ beforeEach(() => {
 describe('when executing the approval flow', () => {
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
-      const collection = getCollection({ isPublished: false })
+      const collection = getCollectionMock({ isPublished: false })
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -160,8 +167,8 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when a collection has not been approved yet', () => {
-    const collection = getCollection()
-    const syncedItem = getItem(collection)
+    const collection = getCollectionMock()
+    const syncedItem = getItemMock(collection)
     const paginatedData: PaginatedResource<Item> = {
       limit: 1,
       page: 1,
@@ -169,7 +176,7 @@ describe('when executing the approval flow', () => {
       results: [syncedItem],
       total: 1
     }
-    const unsyncedItem = getItem(collection, {
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -178,9 +185,9 @@ describe('when executing the approval flow', () => {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     it('should complete the flow doing the rescue, deploy and approve collection steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
@@ -244,9 +251,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when a collection has already been approved but it has a pending curation', () => {
-    const collection = getCollection({ isApproved: true })
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock({ isApproved: true })
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -262,9 +269,9 @@ describe('when executing the approval flow', () => {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const curation = getCollectionCuration(collection)
     it('should complete the flow doing a rescue, deploy and approve curation steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
@@ -325,9 +332,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when a collection has already the same content hashes in the DB and in the blockchain, the entities are synced with the ones in the catalyst, the collection is approved and there are no pending curations', () => {
-    const collection = getCollection({ isApproved: true })
-    const items = [getItem(collection), getItem(collection, { id: 'anotherItem' })]
-    const entities = [getEntity(items[0]), getEntity(items[1])]
+    const collection = getCollectionMock({ isApproved: true })
+    const items = [getItemMock(collection), getItemMock(collection, { id: 'anotherItem' })]
+    const entities = [getEntityMock(items[0]), getEntityMock(items[1])]
     const curation = getCollectionCuration(collection, { status: CurationStatus.APPROVED })
     it('should skip all the unnecessary steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
@@ -363,9 +370,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when the rescue transaction fails', () => {
-    const collection = getCollection({ isApproved: true })
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock({ isApproved: true })
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -410,9 +417,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when the deployment to the catalyst fails', () => {
-    const collection = getCollection()
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock()
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -428,9 +435,9 @@ describe('when executing the approval flow', () => {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const deployError = 'Deployment Error'
     it('should open the modal in an error state', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
@@ -489,9 +496,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when the approve collection transaction fails', () => {
-    const collection = getCollection()
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock()
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -507,9 +514,9 @@ describe('when executing the approval flow', () => {
       results: [syncedItem],
       total: 1
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const approveError = 'Approve Collection Transaction Error'
     it('should open the modal in an error state', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
@@ -575,9 +582,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when the approve curation fails', () => {
-    const collection = getCollection({ isApproved: true })
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock({ isApproved: true })
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -593,9 +600,9 @@ describe('when executing the approval flow', () => {
       results: [syncedItem],
       total: 1
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const curation = getCollectionCuration(collection)
     const curationError = 'CollectionCuration Error'
 
@@ -907,7 +914,7 @@ describe('when executing the approval flow', () => {
 describe('when executing the TP approval flow', () => {
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
-      const collection = getTPCollection({ isPublished: false })
+      const collection = getTPCollectionMock({ isPublished: false })
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .dispatch(initiateTPApprovalFlow(collection))
         .put(
@@ -922,9 +929,9 @@ describe('when executing the TP approval flow', () => {
   })
 
   describe('when a collection has not been approved yet', () => {
-    const TPCollection = getTPCollection()
-    const syncedItem = getItem(TPCollection, { currentContentHash: 'QmSynced' })
-    const unsyncedItem = getItem(TPCollection, {
+    const TPCollection = getTPCollectionMock()
+    const syncedItem = getItemMock(TPCollection, { currentContentHash: 'QmSynced' })
+    const unsyncedItem = getItemMock(TPCollection, {
       id: 'anotherItem',
       catalystContentHash: 'QmOldContentHash',
       currentContentHash: 'notQmOldContentHash',
@@ -950,9 +957,9 @@ describe('when executing the TP approval flow', () => {
       itemsToApprove = [syncedItem, unsyncedItem]
     })
 
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const totalItems = 45
 
     describe('when sending an invalid cheque', () => {
@@ -1054,7 +1061,7 @@ describe('when executing the TP approval flow', () => {
     })
 
     describe('when sending a valid cheque', () => {
-      let secondPageItems = [getItem(TPCollection, { isApproved: true }), getItem(TPCollection, { isApproved: true })]
+      let secondPageItems = [getItemMock(TPCollection, { isApproved: true }), getItemMock(TPCollection, { isApproved: true })]
       let allItemsToApprove = [syncedItem, unsyncedItem, ...secondPageItems]
       beforeEach(() => {
         ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({ results: [syncedItem, unsyncedItem] })
@@ -1085,7 +1092,7 @@ describe('when executing the TP approval flow', () => {
       it('should complete the flow doing the review, deploy and update the item curations steps', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
         const merkleTree = generateTree(Object.values(contentHashes))
-        const itemCurations = itemsToApprove.map(item => getItemCuration(item))
+        const itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: totalItems }],
@@ -1151,7 +1158,7 @@ describe('when executing the TP approval flow', () => {
         beforeEach(() => {
           merkleTree = generateTree(Object.values(contentHashes))
           parsedSignature = ethers.utils.splitSignature(cheque.signature)
-          itemCurations = itemsToApprove.map(item => getItemCuration(item))
+          itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
           ;((mockBuilderClient.getThirdParty as unknown) as jest.Mock<BuilderClient['getThirdParty']>)
             .mockResolvedValueOnce({ root: '0x' } as never)
             .mockResolvedValueOnce({ root: merkleTree.merkleRoot } as never)
@@ -1361,6 +1368,45 @@ describe('when executing the TP approval flow', () => {
             .run({ silenceTimeout: true })
         })
       })
+    })
+  })
+})
+
+describe('when handling the save of multiple items', () => {
+  let collection: Collection
+  let items: Item[]
+  let fileNames: string[]
+
+  beforeEach(() => {
+    collection = getTPCollectionMock({ isPublished: false })
+  })
+
+  describe('and there were no items saved', () => {
+    beforeEach(() => {
+      items = []
+      fileNames = []
+    })
+
+    it('should not put the collection save action', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .not.put(saveCollectionRequest(collection))
+        .dispatch(saveMultipleItemsSuccess(items, fileNames))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and there were at least one item saved', () => {
+    beforeEach(() => {
+      items = [{ id: 'item1', collectionId: collection.id } as Item]
+      fileNames = ['file1']
+    })
+
+    it('should put a collection save action', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .provide([[select(getCollection, items[0].collectionId!), collection]])
+        .put(saveCollectionRequest(collection))
+        .dispatch(saveMultipleItemsSuccess(items, fileNames))
+        .run({ silenceTimeout: true })
     })
   })
 })
