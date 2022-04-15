@@ -21,9 +21,16 @@ export function* itemCurationSaga(builder: BuilderAPI) {
 
   function* handleFetchCollectionItemCurations(action: FetchCollectionItemsSuccessAction) {
     const { paginationIndex, items } = action.payload
+    const publishedItems = items.filter(item => item.isPublished)
+
     const collection: Collection = yield select(getCollection, paginationIndex)
-    if (getCollectionType(collection) === CollectionType.THIRD_PARTY) {
-      yield put(fetchItemCurationsRequest(collection.id, items))
+    if (getCollectionType(collection) === CollectionType.THIRD_PARTY && publishedItems.length > 0) {
+      yield put(
+        fetchItemCurationsRequest(
+          collection.id,
+          items.filter(item => item.isPublished)
+        )
+      )
     }
   }
 

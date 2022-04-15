@@ -60,21 +60,47 @@ describe('when third party items were fetched', () => {
       results: [{ id: 'itemId1' } as Item],
       total: 1
     }
-    items = [{ id: 'itemId1' } as Item, { id: 'itemId2' } as Item]
   })
 
-  it('should put the success action and fetch the item curations for those items', () => {
-    return expectSaga(itemCurationSaga, mockBuilder)
-      .provide([[select(getCollection, thirdPartyCollection.id), thirdPartyCollection]])
-      .put(fetchItemCurationsRequest(thirdPartyCollection.id, items))
-      .dispatch(
-        fetchCollectionItemsSuccess(thirdPartyCollection.id, items, {
-          limit: paginatedData.limit,
-          page: paginatedData.page,
-          pages: paginatedData.pages,
-          total: paginatedData.total
-        })
-      )
-      .run({ silenceTimeout: true })
+  describe('and none of the items were published', () => {
+    beforeEach(() => {
+      items = [{ id: 'itemId1', isPublished: false } as Item, { id: 'itemId2', isPublished: false } as Item]
+    })
+
+    it('should not fetch the item curations', () => {
+      return expectSaga(itemCurationSaga, mockBuilder)
+        .provide([[select(getCollection, thirdPartyCollection.id), thirdPartyCollection]])
+        .not.put(fetchItemCurationsRequest(thirdPartyCollection.id, items))
+        .dispatch(
+          fetchCollectionItemsSuccess(thirdPartyCollection.id, items, {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and some of the items were published', () => {
+    beforeEach(() => {
+      items = [{ id: 'itemId1', isPublished: false } as Item, { id: 'itemId2', isPublished: true } as Item]
+    })
+
+    it('should put the success action and fetch the item curations for those items', () => {
+      return expectSaga(itemCurationSaga, mockBuilder)
+        .provide([[select(getCollection, thirdPartyCollection.id), thirdPartyCollection]])
+        .put(fetchItemCurationsRequest(thirdPartyCollection.id, [items[1]]))
+        .dispatch(
+          fetchCollectionItemsSuccess(thirdPartyCollection.id, items, {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
+        .run({ silenceTimeout: true })
+    })
   })
 })
