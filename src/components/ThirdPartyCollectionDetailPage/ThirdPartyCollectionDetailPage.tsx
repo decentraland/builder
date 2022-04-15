@@ -105,7 +105,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     onPageChange(collection!.id, +data.activePage!) // pushes the query param to the url
   }
 
-  handeSearchChange = (searchText: string) => {
+  handleSearchChange = (searchText: string) => {
     if (searchText) {
       this.setState({ page: 1, searchText })
     }
@@ -267,7 +267,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 <TextFilter
                   placeholder={t('third_party_collection_detail_page.search_placeholder', { count: total })}
                   value={searchText}
-                  onChange={this.handeSearchChange}
+                  onChange={this.handleSearchChange}
                 />
 
                 <div className="search-info secondary-text">
