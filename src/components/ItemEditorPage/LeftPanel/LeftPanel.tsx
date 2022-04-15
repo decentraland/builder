@@ -7,6 +7,7 @@ import { Collection, CollectionType } from 'modules/collection/types'
 import { CurationStatus } from 'modules/curations/types'
 import { getCollectionType } from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
@@ -21,11 +22,14 @@ export default class LeftPanel extends React.PureComponent<Props> {
   state = {
     itemsPage: [INITIAL_PAGE]
   }
-  getItems(collection: Collection | null, collectionItems: Item[]) {
+
+  getItems(collection: Collection | null, collectionItems: Item[], itemCurations: ItemCuration[] | null) {
     const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
       return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing
-        ? collectionItems.filter(item => item.isPublished)
+        ? collectionItems.filter(
+            item => item.isPublished && itemCurations?.find(curation => item.id === curation.itemId)?.status === CurationStatus.PENDING
+          )
         : collectionItems
     }
     return orphanItems
@@ -65,14 +69,14 @@ export default class LeftPanel extends React.PureComponent<Props> {
             itemsPageSize={LEFT_PANEL_PAGE_SIZE}
             status={isReviewing ? CurationStatus.PENDING : undefined}
           >
-            {({ collection, paginatedItems: collectionItems, isLoading }) => {
-              const items = this.getItems(collection, collectionItems)
+            {({ collection, paginatedItems: collectionItems, isLoading, itemCurations }) => {
+              const items = this.getItems(collection, collectionItems, itemCurations)
               const showLoader = isLoading && items.length === 0
               if (showLoader) {
                 return <Loader size="massive" active />
               }
 
-              if (items.length === 0 && collections.length === 0) {
+              if (items.length === 0 || collections.length === 0) {
                 return (
                   <>
                     <Header />
