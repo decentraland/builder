@@ -284,7 +284,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   function* fetchNewCollectionItemsPaginated(collectionId: string, newItemsAmount = 1) {
     const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
     const { currentPage, limit, total } = paginationData
-    const newItemPage = Math.ceil((total + newItemsAmount) / limit) // optimistic computation, in case the save is successfull
+    const newItemPage = Math.ceil((total + newItemsAmount) / limit) // optimistic computation, in case the save is successful
     if (newItemPage !== currentPage) {
       yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: newItemPage })))
     } else {

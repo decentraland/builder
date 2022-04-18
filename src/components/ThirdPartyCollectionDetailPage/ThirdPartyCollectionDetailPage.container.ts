@@ -12,7 +12,7 @@ import { FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch, PAGE_SIZE } from './ThirdPartyCollectionDetailPage.types'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
 import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
 import { getCollectionType } from 'modules/collection/utils'
@@ -24,9 +24,7 @@ const mapState = (state: RootState): MapStateProps => {
   const totalItems = getPaginationData(state, collectionId)?.total || null
   const items = collection ? getCollectionItems(state, collection.id) : []
   const paginatedData = (collection && getPaginationData(state, collection.id)) || null
-  const queryParamPage = Number(getLocation(state).query.page)
-  const numberOfPages = paginatedData ? Math.ceil(paginatedData?.total / PAGE_SIZE) : null
-  const currentPage = queryParamPage && numberOfPages && queryParamPage <= numberOfPages ? queryParamPage : 1
+  const currentPage = Number(getLocation(state).query.page ?? 1)
   return {
     items,
     totalItems,
