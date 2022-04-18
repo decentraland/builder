@@ -26,7 +26,13 @@ import {
   FETCH_ITEM_CURATIONS_FAILURE,
   FetchItemCurationsRequestAction,
   FetchItemCurationsFailureAction,
-  FetchItemCurationsSuccessAction
+  FetchItemCurationsSuccessAction,
+  FETCH_ITEM_CURATION_SUCCESS,
+  FetchItemCurationSuccessAction,
+  FETCH_ITEM_CURATION_REQUEST,
+  FetchItemCurationFailureAction,
+  FetchItemCurationRequestAction,
+  FETCH_ITEM_CURATION_FAILURE
 } from './actions'
 import { ItemCuration } from './types'
 
@@ -43,6 +49,9 @@ export const INITIAL_STATE: ItemCurationState = {
 }
 
 type CurationReducerAction =
+  | FetchItemCurationRequestAction
+  | FetchItemCurationSuccessAction
+  | FetchItemCurationFailureAction
   | FetchItemCurationsRequestAction
   | FetchItemCurationsSuccessAction
   | FetchItemCurationsFailureAction
@@ -62,11 +71,26 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
     case PUBLISH_THIRD_PARTY_ITEMS_REQUEST:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST:
     case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST:
+    case FETCH_ITEM_CURATION_REQUEST:
     case FETCH_ITEM_CURATIONS_REQUEST:
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
+    case FETCH_ITEM_CURATION_SUCCESS: {
+      const { collectionId, itemCuration } = action.payload
+      const oldCurations = state.data[collectionId]?.filter(c => c.itemId !== itemCuration?.itemId) || []
+
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        data: {
+          ...state.data,
+          [collectionId]: [...oldCurations, itemCuration]
+        },
+        error: null
+      }
+    }
     case FINISH_TP_APPROVAL_FLOW: {
       const { collection, itemCurations } = action.payload
 
@@ -128,6 +152,7 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
     case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_ITEM_CURATIONS_FAILURE:
+    case FETCH_ITEM_CURATION_FAILURE:
       const { error } = action.payload
 
       return {

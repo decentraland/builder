@@ -15,6 +15,7 @@ import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
+import { fetchItemCurationRequest } from 'modules/curations/itemCuration/actions'
 import { downloadZip } from 'lib/zip'
 import { BuilderAPI } from 'lib/api/builder'
 import util from 'util'
@@ -851,5 +852,28 @@ describe('when handling the rescue items request action', () => {
           .run({ silenceTimeout: true })
       })
     })
+  })
+})
+
+describe('when handling the save item success action', () => {
+  let item: Item
+  beforeEach(() => {
+    item = { ...mockedItem }
+  })
+
+  it('should put a fetch item curation request action if the item is a TP one', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .put(fetchItemCurationRequest(item.collectionId!, item.id))
+      .dispatch(
+        saveItemSuccess({ ...item, urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' }, {})
+      )
+      .run({ silenceTimeout: true })
+  })
+
+  it('should not put a fetch item curation request action if the item is a standard one', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .not.put(fetchItemCurationRequest(item.collectionId!, item.id))
+      .dispatch(saveItemSuccess(item, {}))
+      .run({ silenceTimeout: true })
   })
 })

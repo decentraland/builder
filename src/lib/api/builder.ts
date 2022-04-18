@@ -725,6 +725,12 @@ export class BuilderAPI extends BaseAPI {
     return curations.map(fromRemoteCollectionCuration)
   }
 
+  async fetchItemCuration(itemId: Item['id']): Promise<ItemCuration> {
+    const curation: RemoteItemCuration = await this.request('get', `/items/${itemId}/curation`)
+
+    return fromRemoteItemCuration(curation)
+  }
+
   async fetchItemCurations(collectionId: Collection['id']): Promise<ItemCuration[]> {
     const curations: RemoteItemCuration[] = await this.request('get', `/collections/${collectionId}/itemCurations`)
 
