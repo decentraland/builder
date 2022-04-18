@@ -209,6 +209,7 @@
     "asset_file_not_found": "找不到asset.json 文件。",
     "thumbnail_file_not_found": "批量文件必须在其内容中包含 thumbnail.png 文件。",
     "saved_items_table_title": "保存的可穿戴物品",
+    "invalid_urn": "asset.json 文件包含此集合的无效 URN",
     "invalid_title": "无效的",
     "valid_title": "有效的档案",
     "add_more_button": "添加更多",
