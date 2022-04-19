@@ -22,6 +22,7 @@ import { ModelMetrics } from 'modules/models/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
@@ -73,6 +74,7 @@ export type RemoteCollection = {
   reviewed_at: Date | null
   created_at: Date
   updated_at: Date
+  item_count?: string
 }
 
 export type RemoteProject = {
@@ -388,6 +390,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     urn: remoteCollection.urn,
     isPublished: remoteCollection.is_published,
     isApproved: remoteCollection.is_approved,
+    itemCount: Number(remoteCollection.item_count),
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
     forumLink: remoteCollection.forum_link || undefined,
@@ -619,9 +622,11 @@ export class BuilderAPI extends BaseAPI {
     return this.request(method, `/pools/${pool}/likes`)
   }
 
-  async fetchItems(address?: string) {
-    const remoteItems: RemoteItem[] = address ? await this.request('get', `/${address}/items`) : await this.request('get', `/items`)
-    return remoteItems.map(fromRemoteItem)
+  async fetchItems(address?: string, params: { collectionId?: string; page?: string; limit?: string } = {}) {
+    const { collectionId, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE } = params
+    const endpoint = address ? `/${address}/items` : '/items'
+    const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, { page, limit, collectionId })
+    return { ...remoteItems, results: remoteItems.results.map(fromRemoteItem) }
   }
 
   async fetchItem(id: string) {
@@ -629,9 +634,14 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteItem(remoteItem)
   }
 
-  async fetchCollectionItems(collectionId: string) {
-    const remoteItems: RemoteItem[] = await this.request('get', `/collections/${collectionId}/items`)
-    return remoteItems.map(fromRemoteItem)
+  async fetchCollectionItems(collectionId: string, options: { page?: number; limit?: number; status?: CurationStatus } = {}) {
+    const { page, limit } = options
+    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, options)
+    if (page && limit && remoteResponse.results) {
+      // TODO: remove this check when we have pagination on standard collections
+      return { ...remoteResponse, results: remoteResponse.results.map(fromRemoteItem) }
+    }
+    return remoteResponse.map(fromRemoteItem)
   }
 
   saveItem = async (item: Item, contents: Record<string, Blob>) => {
@@ -731,9 +741,10 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteItemCuration(curation)
   }
 
-  async fetchItemCurations(collectionId: Collection['id']): Promise<ItemCuration[]> {
-    const curations: RemoteItemCuration[] = await this.request('get', `/collections/${collectionId}/itemCurations`)
-
+  async fetchItemCurations(collectionId: Collection['id'], itemIds?: Item['id'][]) {
+    const curations: RemoteItemCuration[] = await this.request('get', `/collections/${collectionId}/itemCurations`, {
+      itemIds
+    })
     return curations.map(fromRemoteItemCuration)
   }
 

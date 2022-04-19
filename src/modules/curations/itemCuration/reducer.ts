@@ -104,13 +104,18 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
     }
     case FETCH_ITEM_CURATIONS_SUCCESS: {
       const { itemCurations, collectionId } = action.payload
-
+      const currentItemCurations = state.data[collectionId]
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [collectionId]: [...itemCurations]
+          [collectionId]: currentItemCurations
+            ? [
+                ...currentItemCurations.filter(itemCuration => !itemCurations.find(curation => curation.itemId === itemCuration.itemId)),
+                ...itemCurations
+              ]
+            : itemCurations
         },
         error: null
       }

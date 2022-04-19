@@ -75,6 +75,11 @@ export const getCollection = (state: RootState, collectionId: string) => {
   return collections.find(collection => collection.id === collectionId) || null
 }
 
+export const getCollectionItemCount = (state: RootState, collectionId: string): number => {
+  const collections = getData(state)
+  return collections[collectionId]?.itemCount || 0
+}
+
 export const getCollectionsByContractAddress = createSelector<RootState, ReturnType<typeof getData>, Record<string, Collection>>(
   state => getData(state),
   collectionsById =>

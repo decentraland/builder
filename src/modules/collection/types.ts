@@ -9,6 +9,7 @@ export type Collection = {
   salt?: string
   isPublished: boolean
   isApproved: boolean
+  itemCount?: number
   minters: string[]
   managers: string[]
   forumLink?: string

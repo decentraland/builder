@@ -16,6 +16,7 @@ import {
   getAuthorizedItems,
   getItem,
   getItems,
+  getPaginatedCollectionItems,
   getRarities,
   getStatusByItemId,
   getStatusForItemIds,
@@ -30,14 +31,26 @@ const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
 
 describe('Item selectors', () => {
   let item: Item
+  let anotherItem: Item
   let state: RootState
 
   beforeEach(() => {
     item = { id: 'anId', name: 'anItem', collectionId: 'someId', owner: 'anAddress' } as Item
+    anotherItem = { id: 'anotherId', name: 'anotherItem', collectionId: 'someId', owner: 'anAddress' } as Item
     state = {
       item: {
         data: {
-          [item.id]: item
+          [item.id]: item,
+          [anotherItem.id]: anotherItem
+        },
+        pagination: {
+          [item.collectionId!]: {
+            ids: [item.id],
+            total: 1,
+            limit: 5,
+            pages: 1,
+            page: 1
+          }
         }
       },
       rarities: [{ id: ItemRarity.COMMON, name: ItemRarity.COMMON, price: '100', maxSupply: 100 }]
@@ -46,7 +59,13 @@ describe('Item selectors', () => {
 
   describe('when getting the items', () => {
     it('should return the list of items available in the state', () => {
-      expect(getItems(state)).toEqual([item])
+      expect(getItems(state)).toEqual([item, anotherItem])
+    })
+  })
+
+  describe('when getting a collection paginated items', () => {
+    it('should return the list of items for the asked page', () => {
+      expect(getPaginatedCollectionItems(state, item.collectionId!, 1)).toEqual([item])
     })
   })
 
@@ -164,7 +183,8 @@ describe('Item selectors', () => {
           },
           rarities: [],
           loading: [],
-          error: null
+          error: null,
+          pagination: null
         } as ItemState,
         collection: {
           data: {

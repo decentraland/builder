@@ -28,7 +28,8 @@ export const locations = {
   collections: () => '/collections',
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
   collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`,
-  thirdPartyCollectionDetail: (collectionId = ':collectionId') => `/thirdPartyCollections/${collectionId}`,
+  thirdPartyCollectionDetail: (collectionId = ':collectionId', options?: PaginationOptions) =>
+    injectPagination(`/thirdPartyCollections/${collectionId}`, options),
   itemEditor: (options?: ItemEditorParams) =>
     injectParams(`/item-editor`, { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing' }, options),
   ens: () => '/names',

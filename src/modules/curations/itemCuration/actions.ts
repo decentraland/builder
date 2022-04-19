@@ -1,6 +1,6 @@
+import { action } from 'typesafe-actions'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
-import { action } from 'typesafe-actions'
 import { ItemCuration } from './types'
 
 // Fetch Item Curations by CollectionId
@@ -9,7 +9,8 @@ export const FETCH_ITEM_CURATIONS_REQUEST = '[Request] Fetch Item Curations'
 export const FETCH_ITEM_CURATIONS_SUCCESS = '[Success] Fetch Item Curations'
 export const FETCH_ITEM_CURATIONS_FAILURE = '[Failure] Fetch Item Curations'
 
-export const fetchItemCurationsRequest = (collectionId: Collection['id']) => action(FETCH_ITEM_CURATIONS_REQUEST, { collectionId })
+export const fetchItemCurationsRequest = (collectionId: Collection['id'], items?: Item[]) =>
+  action(FETCH_ITEM_CURATIONS_REQUEST, { collectionId, items })
 export const fetchItemCurationsSuccess = (collectionId: Collection['id'], itemCurations: ItemCuration[]) =>
   action(FETCH_ITEM_CURATIONS_SUCCESS, { collectionId, itemCurations })
 export const fetchItemCurationsFailure = (error: string) => action(FETCH_ITEM_CURATIONS_FAILURE, { error })

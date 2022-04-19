@@ -247,16 +247,26 @@ describe('when an action of type FETCH_ITEM_CURATIONS_REQUEST is called', () => 
 })
 
 describe('when an action of type FETCH_ITEM_CURATIONS_SUCCESS is called', () => {
-  it('should add the item curations to the data, remove the action from loading and set the error to null', () => {
+  let originalCuration: ItemCuration
+  let newCuration: ItemCuration
+
+  beforeEach(() => {
+    originalCuration = getMockItemCuration({ id: 'originalItemCuration', itemId: '1' })
+    newCuration = getMockItemCuration({ id: 'newCuration', itemId: '1' })
+  })
+
+  it('should merge the item curations into the data, remove the action from loading and set the error to null', () => {
     const state: ItemCurationState = {
-      data: {},
+      data: {
+        collectionId: [originalCuration]
+      },
       loading: [fetchItemCurationsRequest('collectionId')],
       error: 'Some Error'
     }
 
-    expect(itemCurationReducer(state, fetchItemCurationsSuccess('collectionId', [getMockItemCuration()]))).toStrictEqual({
+    expect(itemCurationReducer(state, fetchItemCurationsSuccess('collectionId', [newCuration]))).toStrictEqual({
       data: {
-        collectionId: [getMockItemCuration()]
+        collectionId: [newCuration]
       },
       loading: [],
       error: null

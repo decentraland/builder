@@ -16,10 +16,17 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
-import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
+import { getEntityByItemId, getItems, getData as getItemsById, getPaginationData } from 'modules/item/selectors'
+import { getCollection } from 'modules/collection/selectors'
 import { Item, ItemApprovalData, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
-import { fetchCollectionItemsRequest, fetchCollectionItemsSuccess, rescueItemsFailure, rescueItemsSuccess } from 'modules/item/actions'
+import {
+  fetchCollectionItemsRequest,
+  fetchCollectionItemsSuccess,
+  rescueItemsFailure,
+  rescueItemsSuccess,
+  saveMultipleItemsSuccess
+} from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
 import {
   approveCollectionCurationFailure,
@@ -32,6 +39,7 @@ import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { BuilderAPI } from 'lib/api/builder'
+import { PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import {
   approveCollectionFailure,
@@ -57,10 +65,10 @@ jest.mock('./utils', () => ({
   isTPDeployEnabled: jest.fn().mockReturnValue(true)
 }))
 
-const getCollection = (props: Partial<Collection> = {}): Collection =>
+const getCollectionMock = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
 
-const getTPCollection = (props: Partial<Collection> = {}): Collection =>
+const getTPCollectionMock = (props: Partial<Collection> = {}): Collection =>
   ({
     id: 'aCollection',
     isPublished: true,
@@ -69,7 +77,7 @@ const getTPCollection = (props: Partial<Collection> = {}): Collection =>
     ...props
   } as Collection)
 
-const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
+const getItemMock = (collection: Collection, props: Partial<Item> = {}): Item =>
   ({
     id: 'anItem',
     collectionId: collection.id,
@@ -88,7 +96,7 @@ const getItem = (collection: Collection, props: Partial<Item> = {}): Item =>
     ...props
   } as Item)
 
-const getEntity = (item: Item, props: Partial<Entity> = {}): Entity => ({
+const getEntityMock = (item: Item, props: Partial<Entity> = {}): Entity => ({
   id: 'anEntity',
   content: Object.keys(item.contents).map(file => ({ file, hash: item.contents[file] })),
   metadata: {
@@ -104,7 +112,7 @@ const getEntity = (item: Item, props: Partial<Entity> = {}): Entity => ({
   ...props
 })
 
-const getDeployData = (): DeploymentPreparationData => ({ entityId: 'QmNewEntityId', files: new Map() })
+const getDeployDataMock = (): DeploymentPreparationData => ({ entityId: 'QmNewEntityId', files: new Map() })
 
 const getCollectionCuration = (collection: Collection, props: Partial<CollectionCuration> = {}): CollectionCuration =>
   ({
@@ -114,7 +122,7 @@ const getCollectionCuration = (collection: Collection, props: Partial<Collection
     ...props
   } as CollectionCuration)
 
-const getItemCuration = (item: Item, props: Partial<ItemCuration> = {}): ItemCuration =>
+const getItemCurationMock = (item: Item, props: Partial<ItemCuration> = {}): ItemCuration =>
   ({
     id: 'anItemCuration',
     itemId: item.id,
@@ -133,7 +141,7 @@ beforeEach(() => {
     saveTOS: jest.fn(),
     fetchApprovalData: jest.fn(),
     updateItemCurationStatus: jest.fn(),
-    fetchCollectionItems: jest.fn().mockResolvedValueOnce([])
+    fetchCollectionItems: jest.fn()
   } as unknown) as BuilderAPI
   mockCatalyst = ({} as unknown) as CatalystClient
   mockBuilderClient = ({
@@ -144,7 +152,7 @@ beforeEach(() => {
 describe('when executing the approval flow', () => {
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
-      const collection = getCollection({ isPublished: false })
+      const collection = getCollectionMock({ isPublished: false })
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -159,9 +167,16 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when a collection has not been approved yet', () => {
-    const collection = getCollection()
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock()
+    const syncedItem = getItemMock(collection)
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -170,9 +185,9 @@ describe('when executing the approval flow', () => {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     it('should complete the flow doing the rescue, deploy and approve collection steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
@@ -201,7 +216,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -229,20 +251,27 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when a collection has already been approved but it has a pending curation', () => {
-    const collection = getCollection({ isApproved: true })
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock({ isApproved: true })
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
     const updatedItem: Item = {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const curation = getCollectionCuration(collection)
     it('should complete the flow doing a rescue, deploy and approve curation steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
@@ -273,7 +302,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -296,9 +332,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when a collection has already the same content hashes in the DB and in the blockchain, the entities are synced with the ones in the catalyst, the collection is approved and there are no pending curations', () => {
-    const collection = getCollection({ isApproved: true })
-    const items = [getItem(collection), getItem(collection, { id: 'anotherItem' })]
-    const entities = [getEntity(items[0]), getEntity(items[1])]
+    const collection = getCollectionMock({ isApproved: true })
+    const items = [getItemMock(collection), getItemMock(collection, { id: 'anotherItem' })]
+    const entities = [getEntityMock(items[0]), getEntityMock(items[1])]
     const curation = getCollectionCuration(collection, { status: CurationStatus.APPROVED })
     it('should skip all the unnecessary steps', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
@@ -334,9 +370,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when the rescue transaction fails', () => {
-    const collection = getCollection({ isApproved: true })
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock({ isApproved: true })
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -381,20 +417,27 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when the deployment to the catalyst fails', () => {
-    const collection = getCollection()
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock()
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
     })
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
     const updatedItem: Item = {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const deployError = 'Deployment Error'
     it('should open the modal in an error state', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
@@ -424,7 +467,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -446,9 +496,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when the approve collection transaction fails', () => {
-    const collection = getCollection()
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock()
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -457,9 +507,16 @@ describe('when executing the approval flow', () => {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const approveError = 'Approve Collection Transaction Error'
     it('should open the modal in an error state', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
@@ -489,7 +546,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -518,9 +582,9 @@ describe('when executing the approval flow', () => {
   })
 
   describe('when the approve curation fails', () => {
-    const collection = getCollection({ isApproved: true })
-    const syncedItem = getItem(collection)
-    const unsyncedItem = getItem(collection, {
+    const collection = getCollectionMock({ isApproved: true })
+    const syncedItem = getItemMock(collection)
+    const unsyncedItem = getItemMock(collection, {
       id: 'anotherItem',
       blockchainContentHash: 'QmOldContentHash',
       contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
@@ -529,9 +593,16 @@ describe('when executing the approval flow', () => {
       ...unsyncedItem,
       blockchainContentHash: 'QmNewContentHash'
     }
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const paginatedData: PaginatedResource<Item> = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      results: [syncedItem],
+      total: 1
+    }
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
     const curation = getCollectionCuration(collection)
     const curationError = 'CollectionCuration Error'
 
@@ -565,7 +636,14 @@ describe('when executing the approval flow', () => {
         )
         .dispatch(rescueItemsSuccess(collection, [updatedItem], [updatedItem.blockchainContentHash!], ChainId.MATIC_MAINNET, ['0xhash']))
         .put(fetchCollectionItemsRequest(collection.id))
-        .dispatch(fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem]))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, [syncedItem, updatedItem], {
+            limit: paginatedData.limit,
+            page: paginatedData.page,
+            pages: paginatedData.pages,
+            total: paginatedData.total
+          })
+        )
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.DEPLOY,
@@ -608,6 +686,7 @@ describe('when executing the approval flow', () => {
         const now = Date.now()
         newLock = new Date(now)
         finalCollection = { ...collection, lock: now }
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue([])
       })
 
       it('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
@@ -682,6 +761,7 @@ describe('when executing the approval flow', () => {
         newLock = new Date(now)
         lockedCollection = { ...collection, lock: tomorrow.getTime() }
         finalCollection = { ...collection, lock: now }
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue([])
       })
 
       it('should skip saving the collection', () => {
@@ -834,9 +914,9 @@ describe('when executing the approval flow', () => {
 describe('when executing the TP approval flow', () => {
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
-      const collection = getTPCollection({ isPublished: false })
+      const collection = getTPCollectionMock({ isPublished: false })
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
-        .dispatch(initiateTPApprovalFlow(collection, []))
+        .dispatch(initiateTPApprovalFlow(collection))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.ERROR,
@@ -849,9 +929,9 @@ describe('when executing the TP approval flow', () => {
   })
 
   describe('when a collection has not been approved yet', () => {
-    const TPCollection = getTPCollection()
-    const syncedItem = getItem(TPCollection, { currentContentHash: 'QmSynced' })
-    const unsyncedItem = getItem(TPCollection, {
+    const TPCollection = getTPCollectionMock()
+    const syncedItem = getItemMock(TPCollection, { currentContentHash: 'QmSynced' })
+    const unsyncedItem = getItemMock(TPCollection, {
       id: 'anotherItem',
       catalystContentHash: 'QmOldContentHash',
       currentContentHash: 'notQmOldContentHash',
@@ -877,9 +957,10 @@ describe('when executing the TP approval flow', () => {
       itemsToApprove = [syncedItem, unsyncedItem]
     })
 
-    const syncedEntity = getEntity(syncedItem)
-    const unsyncedEntity = getEntity(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
-    const deployData = getDeployData()
+    const syncedEntity = getEntityMock(syncedItem)
+    const unsyncedEntity = getEntityMock(updatedItem, { content: [{ file: 'thumbnail.png', hash: 'QmOldThumbnailHash' }] })
+    const deployData = getDeployDataMock()
+    const totalItems = 45
 
     describe('when sending an invalid cheque', () => {
       beforeEach(() => {
@@ -891,12 +972,16 @@ describe('when executing the TP approval flow', () => {
             '3574da0ebfb1eaac261698b057b342e52ea53f85287272cea471a4cda41e3466' +
             '1b'
         }
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: [syncedItem, unsyncedItem] })
       })
 
       it('should throw an error if itemsToApprove length is different than the cheque qty', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
-          .provide([[call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]])
-          .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+          .provide([
+            [select(getPaginationData, TPCollection.id), { total: totalItems }],
+            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]
+          ])
+          .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.LOADING,
@@ -916,10 +1001,14 @@ describe('when executing the TP approval flow', () => {
     })
 
     describe('when the cheque was already consumed', () => {
+      beforeEach(() => {
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: itemsToApprove })
+      })
       it('should complete the flow doing the review without a cheque, deploy and update the item curations steps', () => {
         const merkleTree = generateTree(Object.values(contentHashes))
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
+            [select(getPaginationData, TPCollection.id), { total: totalItems }],
             [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: true }],
             [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
             [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -935,7 +1024,7 @@ describe('when executing the TP approval flow', () => {
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), {}],
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), {}]
           ])
-          .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+          .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.LOADING,
@@ -972,12 +1061,41 @@ describe('when executing the TP approval flow', () => {
     })
 
     describe('when sending a valid cheque', () => {
+      let secondPageItems = [getItemMock(TPCollection, { isApproved: true }), getItemMock(TPCollection, { isApproved: true })]
+      let allItemsToApprove = [syncedItem, unsyncedItem, ...secondPageItems]
+      beforeEach(() => {
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({ results: [syncedItem, unsyncedItem] })
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({
+          results: secondPageItems
+        })
+      })
+      it('should fetch all the items needed to be approved, including the 2nd page of the pagination', () => {
+        const parsedSignature = ethers.utils.splitSignature(cheque.signature)
+        const merkleTree = generateTree(Object.values(contentHashes))
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+          .provide([
+            [select(getPaginationData, TPCollection.id), { total: 80 }],
+            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: false }]
+          ])
+          .dispatch(initiateTPApprovalFlow(TPCollection))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+              items: allItemsToApprove,
+              collection: TPCollection,
+              merkleTreeRoot: merkleTree.merkleRoot,
+              slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
+            } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
+          )
+          .run({ silenceTimeout: true })
+      })
       it('should complete the flow doing the review, deploy and update the item curations steps', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
         const merkleTree = generateTree(Object.values(contentHashes))
-        const itemCurations = itemsToApprove.map(item => getItemCuration(item))
+        const itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
+            [select(getPaginationData, TPCollection.id), { total: totalItems }],
             [
               call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
               { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
@@ -996,7 +1114,7 @@ describe('when executing the TP approval flow', () => {
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), itemCurations[0]],
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), itemCurations[1]]
           ])
-          .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+          .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.LOADING,
@@ -1040,7 +1158,7 @@ describe('when executing the TP approval flow', () => {
         beforeEach(() => {
           merkleTree = generateTree(Object.values(contentHashes))
           parsedSignature = ethers.utils.splitSignature(cheque.signature)
-          itemCurations = itemsToApprove.map(item => getItemCuration(item))
+          itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
           ;((mockBuilderClient.getThirdParty as unknown) as jest.Mock<BuilderClient['getThirdParty']>)
             .mockResolvedValueOnce({ root: '0x' } as never)
             .mockResolvedValueOnce({ root: merkleTree.merkleRoot } as never)
@@ -1049,6 +1167,7 @@ describe('when executing the TP approval flow', () => {
         it('should complete the flow doing the review, waiting for the merkle root to be updated, deploy and update the item curations', () => {
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [
                 call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
                 { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
@@ -1067,7 +1186,7 @@ describe('when executing the TP approval flow', () => {
               [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), itemCurations[0]],
               [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[1].id, CurationStatus.APPROVED), itemCurations[1]]
             ])
-            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.LOADING,
@@ -1118,12 +1237,13 @@ describe('when executing the TP approval flow', () => {
         it('should open the modal in an error state', () => {
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
               [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), Promise.reject(new Error(error))]
             ])
-            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.LOADING,
@@ -1158,11 +1278,12 @@ describe('when executing the TP approval flow', () => {
           const merkleTree = generateTree(Object.values(contentHashes))
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }]
             ])
-            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.LOADING,
@@ -1197,6 +1318,7 @@ describe('when executing the TP approval flow', () => {
           const deployError = 'Deployment Error'
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
@@ -1210,7 +1332,7 @@ describe('when executing the TP approval flow', () => {
                 deployData
               ]
             ])
-            .dispatch(initiateTPApprovalFlow(TPCollection, itemsToApprove))
+            .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.LOADING,
@@ -1246,6 +1368,45 @@ describe('when executing the TP approval flow', () => {
             .run({ silenceTimeout: true })
         })
       })
+    })
+  })
+})
+
+describe('when handling the save of multiple items', () => {
+  let collection: Collection
+  let items: Item[]
+  let fileNames: string[]
+
+  beforeEach(() => {
+    collection = getTPCollectionMock({ isPublished: false })
+  })
+
+  describe('and there were no items saved', () => {
+    beforeEach(() => {
+      items = []
+      fileNames = []
+    })
+
+    it('should not put the collection save action', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .not.put(saveCollectionRequest(collection))
+        .dispatch(saveMultipleItemsSuccess(items, fileNames))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and there were at least one item saved', () => {
+    beforeEach(() => {
+      items = [{ id: 'item1', collectionId: collection.id } as Item]
+      fileNames = ['file1']
+    })
+
+    it('should put a collection save action', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .provide([[select(getCollection, items[0].collectionId!), collection]])
+        .put(saveCollectionRequest(collection))
+        .dispatch(saveMultipleItemsSuccess(items, fileNames))
+        .run({ silenceTimeout: true })
     })
   })
 })
