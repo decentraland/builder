@@ -85,6 +85,8 @@ import {
   SaveMultipleItemsSuccessAction
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
+import { isThirdParty } from 'lib/urn'
+import { fetchItemCurationRequest } from 'modules/curations/itemCuration/actions'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
@@ -106,7 +108,6 @@ import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, 
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
-
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ItemPaginationData } from './reducer'
 
@@ -312,6 +313,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     // Fetch the the collection items again, we don't know where the item is going to be in the pagination data
     if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)
+    }
+    if (isThirdParty(item.urn)) {
+      yield put(fetchItemCurationRequest(item.collectionId!, item.id))
     }
   }
 

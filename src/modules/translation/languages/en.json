@@ -214,6 +214,7 @@
     "asset_file_not_found": "The asset.json file was not found.",
     "thumbnail_file_not_found": "Bulk files must contain a thumbnail.png file in their content.",
     "saved_items_table_title": "Saved items",
+    "invalid_urn": "The asset.json file has an invalid URN for this collection",
     "invalid_title": "INVALID",
     "valid_title": "VALID",
     "add_more_button": "Add more",
