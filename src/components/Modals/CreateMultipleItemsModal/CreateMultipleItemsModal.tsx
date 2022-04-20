@@ -394,8 +394,18 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
         <Modal.Content>
           <p className={styles.createdItems}>
             {hasFinishedSuccessfully
-              ? t('create_multiple_items_modal.finished_successfully_subtitle', { number_of_items: savedItemsFiles.length })
-              : t('create_multiple_items_modal.finished_unsuccessfully_subtitle', { number_of_items: savedItemsFiles.length })}
+              ? t(
+                  this.isCreating()
+                    ? 'create_multiple_items_modal.create_finished_successfully_subtitle'
+                    : 'create_multiple_items_modal.edit_finished_successfully_subtitle',
+                  { number_of_items: savedItemsFiles.length }
+                )
+              : t(
+                  this.isCreating()
+                    ? 'create_multiple_items_modal.create_finished_unsuccessfully_subtitle'
+                    : 'create_multiple_items_modal.edit_finished_unsuccessfully_subtitle',
+                  { number_of_items: savedItemsFiles.length }
+                )}
           </p>
           {hasFailed ? <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} /> : null}
           {hasFinishedUnsuccessfully && savedItemsFiles.length > 0 ? (
