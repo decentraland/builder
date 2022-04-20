@@ -15,7 +15,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, items } = this.props
+    const { collection, itemCount } = this.props
     const type = getCollectionType(collection)
 
     return (
@@ -30,7 +30,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
           </div>
         </Table.Cell>
         <Table.Cell width={3}>{t(`collection.type.${type}`)}</Table.Cell>
-        <Table.Cell width={3}>{items.length}</Table.Cell>
+        <Table.Cell width={3}>{itemCount}</Table.Cell>
         <Table.Cell width={2}>
           {collection.isPublished ? (
             <div className={styles.published}>
