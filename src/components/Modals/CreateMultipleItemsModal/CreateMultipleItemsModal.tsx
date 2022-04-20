@@ -5,6 +5,7 @@ import Dropzone, { DropzoneState } from 'react-dropzone'
 import { env } from 'decentraland-commons'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { omit } from 'decentraland-commons/dist/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
@@ -12,7 +13,15 @@ import { generateCatalystImage } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
-import { ImportedFile, ImportedFileType, ItemCreationView, Props, RejectedFile, State } from './CreateMultipleItemsModal.types'
+import {
+  CreateOrEditMultipleItemsModalType,
+  ImportedFile,
+  ImportedFileType,
+  ItemCreationView,
+  Props,
+  RejectedFile,
+  State
+} from './CreateMultipleItemsModal.types'
 import styles from './CreateMultipleItemsModal.module.css'
 
 const REACT_APP_WEARABLES_ZIP_INFRA_URL = env.get('REACT_APP_WEARABLES_ZIP_INFRA_URL', '')
@@ -145,6 +154,9 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
           }
 
           const builtItem = await itemFactory.build()
+          if (!this.isCreating()) {
+            builtItem.item = omit(builtItem.item, ['id'])
+          }
 
           // Generate catalyst image as part of the item
           const catalystImage = await generateCatalystImage(builtItem.item, { thumbnail: builtItem.newContent[THUMBNAIL_PATH] })
@@ -279,7 +291,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
     const { onClose } = this.props
     return (
       <>
-        <ModalNavigation title={t('create_multiple_items_modal.title')} onClose={onClose} />
+        <ModalNavigation title={this.getModalTitle()} subtitle={this.getModalSubtitle()} onClose={onClose} />
         <Dropzone
           children={this.renderDropZone}
           onDropAccepted={this.handleFilesImport}
@@ -291,11 +303,26 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
     )
   }
 
+  private isCreating = () => {
+    const {
+      metadata: { type = CreateOrEditMultipleItemsModalType.CREATE }
+    } = this.props
+    return type === CreateOrEditMultipleItemsModalType.CREATE
+  }
+
+  private getModalTitle = () => {
+    return this.isCreating() ? t('create_multiple_items_modal.create_title') : t('create_multiple_items_modal.edit_title')
+  }
+
+  private getModalSubtitle = () => {
+    return this.isCreating() ? null : t('create_multiple_items_modal.edit_subtitle')
+  }
+
   private renderImportView = () => {
     const { onClose } = this.props
     return (
       <>
-        <ModalNavigation title={t('create_multiple_items_modal.title')} onClose={onClose} />
+        <ModalNavigation title={this.getModalTitle()} subtitle={this.getModalSubtitle()} onClose={onClose} />
         <Modal.Content>
           <ItemImport
             onDropAccepted={this.handleFilesImport}
@@ -328,7 +355,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
   private renderProgressBar(progress: number, label: string, cancel?: () => void) {
     return (
       <>
-        <ModalNavigation title={t('create_multiple_items_modal.title')} />
+        <ModalNavigation title={this.getModalTitle()} subtitle={this.getModalSubtitle()} />
         <Modal.Content className={styles.modalContent}>
           <div className={styles.progressBarContainer}>
             <div className={styles.progressBarLabel}>{label}</div>
@@ -352,12 +379,13 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
     const hasFinishedUnsuccessfully = hasFailed || hasBeenCancelled
 
     let title: string
+    const isCreating = this.isCreating()
     if (hasFinishedSuccessfully) {
-      title = t('create_multiple_items_modal.successful_title')
+      title = isCreating ? t('create_multiple_items_modal.create_successful_title') : t('create_multiple_items_modal.edit_successful_title')
     } else if (hasFailed) {
-      title = t('create_multiple_items_modal.failed_title')
+      title = isCreating ? t('create_multiple_items_modal.create_failed_title') : t('create_multiple_items_modal.edit_failed_title')
     } else {
-      title = t('create_multiple_items_modal.cancelled_title')
+      title = isCreating ? t('create_multiple_items_modal.create_cancelled_title') : t('create_multiple_items_modal.edit_cancelled_title')
     }
 
     return (
