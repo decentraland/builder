@@ -63,27 +63,16 @@ export default class CollectionImage extends React.PureComponent<Props> {
   render() {
     const { items, className, itemCount, isLoading } = this.props
 
-    if (isLoading || itemCount === undefined) {
-      return (
-        <div className="CollectionImage is-image">
+    return (
+      <div className={classNames('CollectionImage', 'is-image', className)}>
+        {isLoading || itemCount === undefined ? (
           <div className="item-row loading">
             <Loader active size="tiny" inline />
           </div>
-        </div>
-      )
-    }
-    const hasNoItems = itemCount === 0
-
-    return (
-      <div className={classNames('CollectionImage', 'is-image', className)}>
-        {hasNoItems ? (
+        ) : itemCount === 0 ? (
           <div className="item-row empty">
             <div className="sparkles" />
             <div>{t('collection_image.no_items')}</div>
-          </div>
-        ) : isLoading ? (
-          <div className="item-row loading">
-            <Loader active size="tiny" inline />
           </div>
         ) : (
           this.renderItemRows(items)

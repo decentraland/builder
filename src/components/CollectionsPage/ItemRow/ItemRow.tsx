@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Icon } from 'decentraland-ui'
+import { Table } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import ItemImage from 'components/ItemImage'
@@ -29,13 +29,7 @@ export default class ItemRow extends React.PureComponent<Props> {
         </Table.Cell>
         <Table.Cell width={3}>{t('global.item')}</Table.Cell>
         <Table.Cell width={3}>-</Table.Cell>
-        <Table.Cell width={2}>
-          {item.isPublished ? (
-            <div className={styles.published}>
-              {t('global.published')} <Icon name="check" />
-            </div>
-          ) : null}
-        </Table.Cell>
+        <Table.Cell width={2}>-</Table.Cell>
       </Table.Row>
     )
   }
