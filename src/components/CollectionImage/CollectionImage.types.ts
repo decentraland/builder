@@ -3,6 +3,7 @@ import { fetchCollectionItemsRequest, FetchCollectionItemsRequestAction } from '
 import { Item } from 'modules/item/types'
 
 export type Props = {
+  className?: string
   collectionId: string
   items: Item[]
   itemCount: number | undefined

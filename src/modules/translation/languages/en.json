@@ -974,6 +974,8 @@
     "new_item": "New Item",
     "new_collection": "New Collection",
     "new_third_party_collection": "New Linked Wearables Collection",
+    "type": "Type",
+    "items": "Items",
     "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {

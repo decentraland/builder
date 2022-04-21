@@ -9,7 +9,7 @@ import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
 import { isThirdParty } from 'lib/urn'
 import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, isFree } from 'modules/item/utils'
-import { isLocked as isCollectionLocked } from 'modules/collection/utils'
+import { getCollectionType, isLocked as isCollectionLocked } from 'modules/collection/utils'
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
@@ -200,7 +200,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 <Section>
                   <div className="subtitle">{t('item.collection')}</div>
                   <div className="value">
-                    <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
+                    <Link to={locations.collectionDetail(collection.id, getCollectionType(collection))}>{collection.name}</Link>
                   </div>
                 </Section>
               ) : null}
