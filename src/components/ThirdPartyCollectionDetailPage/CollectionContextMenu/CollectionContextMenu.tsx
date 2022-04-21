@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getCollectionEditorURL, getExplorerURL, isLocked } from 'modules/collection/utils'
-import { CreateOrEditMultipleItemsModalType } from 'components/Modals/CreateMultipleItemsModal/CreateMultipleItemsModal.types'
+import { CreateOrEditMultipleItemsModalType } from 'components/Modals/CreateAndEditMultipleItemsModal/CreateAndEditMultipleItemsModal.types'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
 import styles from './CollectionContextMenu.module.css'
@@ -40,7 +40,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
   handleEditInBulk = () => {
     const { collection, onOpenModal } = this.props
     if (!collection.isPublished) {
-      onOpenModal('CreateMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
+      onOpenModal('CreateAndEditMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
     }
   }
 

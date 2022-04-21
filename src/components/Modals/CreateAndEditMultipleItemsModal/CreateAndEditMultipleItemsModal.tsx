@@ -21,11 +21,11 @@ import {
   Props,
   RejectedFile,
   State
-} from './CreateMultipleItemsModal.types'
-import styles from './CreateMultipleItemsModal.module.css'
+} from './CreateAndEditMultipleItemsModal.types'
+import styles from './CreateAndEditMultipleItemsModal.module.css'
 
 const REACT_APP_WEARABLES_ZIP_INFRA_URL = env.get('REACT_APP_WEARABLES_ZIP_INFRA_URL', '')
-export default class CreateMultipleItemsModal extends React.PureComponent<Props, State> {
+export default class CreateAndEditMultipleItemsModal extends React.PureComponent<Props, State> {
   state = {
     view: ItemCreationView.IMPORT,
     loadingFilesProgress: 0,
@@ -73,7 +73,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
           accum[file.name] = {
             type: ImportedFileType.REJECTED,
             fileName: file.name,
-            reason: t('create_multiple_items_modal.wrong_file_extension')
+            reason: t('create_and_edit_multiple_items_modal.wrong_file_extension')
           }
           return accum
         }, {} as Record<string, ImportedFile<Blob>>)
@@ -103,11 +103,11 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
 
           // Multiple files must contain an asset file
           if (!loadedFile.asset) {
-            throw new Error(t('create_multiple_items_modal.asset_file_not_found'))
+            throw new Error(t('create_and_edit_multiple_items_modal.asset_file_not_found'))
           }
 
           if (!loadedFile.content[THUMBNAIL_PATH]) {
-            throw new Error(t('create_multiple_items_modal.thumbnail_file_not_found'))
+            throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_found'))
           }
 
           this.setState({
@@ -135,7 +135,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
                 (thirdPartyCollectionId && thirdPartyCollectionId !== decodedCollectionUrn.thirdPartyCollectionId) ||
                 (thirdPartyName && thirdPartyName !== decodedCollectionUrn.thirdPartyName)
               ) {
-                throw new Error(t('create_multiple_items_modal.invalid_urn'))
+                throw new Error(t('create_and_edit_multiple_items_modal.invalid_urn'))
               }
               if (decodedUrn.thirdPartyTokenId) {
                 itemFactory.withUrn(
@@ -220,7 +220,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
                   <Table basic="very" compact="very">
                     <Table.Header>
                       <Table.Row>
-                        <Table.HeaderCell>{t('create_multiple_items_modal.invalid_title')}</Table.HeaderCell>
+                        <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.invalid_title')}</Table.HeaderCell>
                         <Table.HeaderCell textAlign="right">
                           <Icon
                             className={styles.trashIcon}
@@ -250,7 +250,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
                     {rejectedFiles.length > 0 ? (
                       <Table.Header>
                         <Table.Row>
-                          <Table.HeaderCell>{t('create_multiple_items_modal.valid_title')}</Table.HeaderCell>
+                          <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.valid_title')}</Table.HeaderCell>
                         </Table.Row>
                       </Table.Header>
                     ) : null}
@@ -270,17 +270,17 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
             {rejectedFiles.length > 0 ? (
               <div className={styles.rejectedFilesInfo}>
                 <InfoIcon className={styles.infoIcon} />
-                {t('create_multiple_items_modal.only_valid_items_info')}
+                {t('create_and_edit_multiple_items_modal.only_valid_items_info')}
               </div>
             ) : null}
           </div>
         </Modal.Content>
         <Modal.Actions>
           <Button secondary onClick={open}>
-            {t('create_multiple_items_modal.add_more_button')}
+            {t('create_and_edit_multiple_items_modal.add_more_button')}
           </Button>
           <Button primary disabled={validFiles.length === 0} onClick={this.handleFilesUpload}>
-            {t('create_multiple_items_modal.upload_items_button')}
+            {t('create_and_edit_multiple_items_modal.upload_items_button')}
           </Button>
         </Modal.Actions>
       </>
@@ -310,12 +310,16 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
     return type === CreateOrEditMultipleItemsModalType.CREATE
   }
 
+  private getOperationTypeKey = () => {
+    return this.isCreating() ? 'create' : 'edit'
+  }
+
   private getModalTitle = () => {
-    return this.isCreating() ? t('create_multiple_items_modal.create_title') : t('create_multiple_items_modal.edit_title')
+    return t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.title`)
   }
 
   private getModalSubtitle = () => {
-    return this.isCreating() ? null : t('create_multiple_items_modal.edit_subtitle')
+    return this.isCreating() ? null : t('create_and_edit_multiple_items_modal.edit.subtitle')
   }
 
   private renderImportView = () => {
@@ -332,11 +336,11 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
               REACT_APP_WEARABLES_ZIP_INFRA_URL ? (
                 <span>
                   <T
-                    id="create_multiple_items_modal.import_information"
+                    id="create_and_edit_multiple_items_modal.import_information"
                     values={{
                       link: (
                         <a rel="noopener noreferrer" target="_blank" href={REACT_APP_WEARABLES_ZIP_INFRA_URL}>
-                          {t('create_multiple_items_modal.import_information_link_label')}
+                          {t('create_and_edit_multiple_items_modal.import_information_link_label')}
                         </a>
                       )
                     }}
@@ -379,13 +383,12 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
     const hasFinishedUnsuccessfully = hasFailed || hasBeenCancelled
 
     let title: string
-    const isCreating = this.isCreating()
     if (hasFinishedSuccessfully) {
-      title = isCreating ? t('create_multiple_items_modal.create_successful_title') : t('create_multiple_items_modal.edit_successful_title')
+      title = t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.successful_title`)
     } else if (hasFailed) {
-      title = isCreating ? t('create_multiple_items_modal.create_failed_title') : t('create_multiple_items_modal.edit_failed_title')
+      title = t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.failed_title`)
     } else {
-      title = isCreating ? t('create_multiple_items_modal.create_cancelled_title') : t('create_multiple_items_modal.edit_cancelled_title')
+      title = t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.cancelled_title`)
     }
 
     return (
@@ -394,18 +397,12 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
         <Modal.Content>
           <p className={styles.createdItems}>
             {hasFinishedSuccessfully
-              ? t(
-                  this.isCreating()
-                    ? 'create_multiple_items_modal.create_finished_successfully_subtitle'
-                    : 'create_multiple_items_modal.edit_finished_successfully_subtitle',
-                  { number_of_items: savedItemsFiles.length }
-                )
-              : t(
-                  this.isCreating()
-                    ? 'create_multiple_items_modal.create_finished_unsuccessfully_subtitle'
-                    : 'create_multiple_items_modal.edit_finished_unsuccessfully_subtitle',
-                  { number_of_items: savedItemsFiles.length }
-                )}
+              ? t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.finished_successfully_subtitle`, {
+                  number_of_items: savedItemsFiles.length
+                })
+              : t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.finished_unsuccessfully_subtitle`, {
+                  number_of_items: savedItemsFiles.length
+                })}
           </p>
           {hasFailed ? <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} /> : null}
           {hasFinishedUnsuccessfully && savedItemsFiles.length > 0 ? (
@@ -414,7 +411,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
                 <Table basic="very" compact="very">
                   <Table.Header>
                     <Table.Row>
-                      <Table.HeaderCell>{t('create_multiple_items_modal.saved_items_table_title')}</Table.HeaderCell>
+                      <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.saved_items_table_title')}</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
@@ -431,7 +428,7 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
         </Modal.Content>
         <Modal.Actions>
           <Button primary onClick={onClose}>
-            {t('create_multiple_items_modal.done_button')}
+            {t('create_and_edit_multiple_items_modal.done_button')}
           </Button>
         </Modal.Actions>
       </>
@@ -447,13 +444,13 @@ export default class CreateMultipleItemsModal extends React.PureComponent<Props,
       case ItemCreationView.IMPORT:
         return this.renderImportView()
       case ItemCreationView.IMPORTING:
-        return this.renderProgressBar(loadingFilesProgress, t('create_multiple_items_modal.importing_files_progress_label'))
+        return this.renderProgressBar(loadingFilesProgress, t('create_and_edit_multiple_items_modal.importing_files_progress_label'))
       case ItemCreationView.REVIEW:
         return this.renderReviewTable()
       case ItemCreationView.UPLOADING:
         return this.renderProgressBar(
           saveItemsProgress,
-          t('create_multiple_items_modal.uploading_items_progress_label', { number_of_items: validFiles.length }),
+          t('create_and_edit_multiple_items_modal.uploading_items_progress_label', { number_of_items: validFiles.length }),
           onCancelSaveMultipleItems
         )
       case ItemCreationView.COMPLETED:

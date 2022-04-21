@@ -5,8 +5,8 @@ import { getSavedItemsFiles, getMultipleItemsSaveState, getProgress } from 'modu
 import { getError } from 'modules/item/selectors'
 import { Collection } from 'modules/collection/types'
 import { getCollection } from 'modules/collection/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CreateMultipleItemsModal.types'
-import CreateMultipleItemsModal from './CreateMultipleItemsModal'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CreateAndEditMultipleItemsModal.types'
+import CreateAndEditMultipleItemsModal from './CreateAndEditMultipleItemsModal'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const collection: Collection | null = ownProps.metadata.collectionId ? getCollection(state, ownProps.metadata.collectionId) : null
@@ -26,4 +26,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onModalUnmount: () => dispatch(clearSaveMultipleItems())
 })
 
-export default connect(mapState, mapDispatch)(CreateMultipleItemsModal)
+export default connect(mapState, mapDispatch)(CreateAndEditMultipleItemsModal)

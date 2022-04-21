@@ -36,7 +36,7 @@ export enum ImportedFileType {
 
 export type RejectedFile = { fileName: string; reason: string }
 export type ImportedFile<T extends Content> = { type: ImportedFileType } & (BuiltFile<T> | RejectedFile)
-export type CreateMultipleItemsModalMetadata = {
+export type CreateAndEditMultipleItemsModalMetadata = {
   collectionId?: string
   type?: CreateOrEditMultipleItemsModalType
 }
