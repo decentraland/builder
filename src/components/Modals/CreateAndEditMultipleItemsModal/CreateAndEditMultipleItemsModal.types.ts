@@ -13,6 +13,11 @@ import { getSavedItemsFiles, getMultipleItemsSaveState } from 'modules/ui/create
 import { BuiltFile } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 
+export enum CreateOrEditMultipleItemsModalType {
+  CREATE,
+  EDIT
+}
+
 export enum LoadingFilesState {
   LOADING_FILES,
   CREATING_ITEMS
@@ -31,8 +36,9 @@ export enum ImportedFileType {
 
 export type RejectedFile = { fileName: string; reason: string }
 export type ImportedFile<T extends Content> = { type: ImportedFileType } & (BuiltFile<T> | RejectedFile)
-export type CreateMultipleItemsModalMetadata = {
+export type CreateAndEditMultipleItemsModalMetadata = {
   collectionId?: string
+  type?: CreateOrEditMultipleItemsModalType
 }
 
 export type State = {
