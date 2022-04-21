@@ -216,7 +216,7 @@
     },
     "edit": {
       "title": "Edit items in bulk",
-      "subtitle": "In order to edit an exiting item, use the same URN",
+      "subtitle": "In order to edit an existing item, use the same URN",
       "successful_title": "Items updated",
       "failed_title": "Failed multiple items update",
       "cancelled_title": "Cancelled multiple items update",
