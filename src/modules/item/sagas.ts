@@ -2,6 +2,7 @@ import PQueue from 'p-queue'
 import { Contract } from 'ethers'
 import { getLocation, push, replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
+import { channel } from 'redux-saga'
 import { ChainId, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -72,7 +73,7 @@ import {
   saveMultipleItemsSuccess,
   CANCEL_SAVE_MULTIPLE_ITEMS,
   saveMultipleItemsCancelled,
-  saveMultipleItemsFailure,
+  // saveMultipleItemsFailure,
   rescueItemsChunkSuccess,
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FetchItemsSuccessAction,
@@ -112,6 +113,7 @@ import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ItemPaginationData } from './reducer'
 
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
+  const createOrEditProgressChannel = channel()
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
@@ -129,6 +131,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
   yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
   yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
+  yield takeEvery(createOrEditProgressChannel, handleCreateOrEditProgress)
   yield takeLatestCancellable(
     { initializer: SAVE_MULTIPLE_ITEMS_REQUEST, cancellable: CANCEL_SAVE_MULTIPLE_ITEMS },
     handleSaveMultipleItemsRequest
@@ -200,44 +203,55 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
+  function* handleCreateOrEditProgress(action: { progress: number }) {
+    yield put(updateProgressSaveMultipleItems(action.progress))
+  }
+
   function* handleSaveMultipleItemsRequest(action: SaveMultipleItemsRequestAction) {
     const { builtFiles } = action.payload
-    const remoteItems: RemoteItem[] = []
-    const fileNames: string[] = []
+    const fileNamesSucceeded: string[] = []
+    const fileNamesFailed: string[] = []
+    const REQUEST_BATCH_SIZE = 8
+    const queue = new PQueue({ concurrency: REQUEST_BATCH_SIZE })
+    const promisesOfItemsToSave: (() => Promise<RemoteItem | undefined>)[] = []
 
-    // Upload files sequentially to avoid DoSing the server
-    try {
-      for (const [index, builtFile] of builtFiles.entries()) {
-        const remoteItem: RemoteItem = yield call([builder, 'upsertItem'], builtFile.item, builtFile.newContent)
-        remoteItems.push(remoteItem)
-        fileNames.push(builtFile.fileName)
-        yield put(updateProgressSaveMultipleItems(Math.round(((index + 1) / builtFiles.length) * 100)))
-      }
+    for (const [_index, builtFile] of builtFiles.entries()) {
+      promisesOfItemsToSave.push(async () => {
+        try {
+          const remoteItem: RemoteItem = await builder.upsertItem(builtFile.item, builtFile.newContent)
+          fileNamesSucceeded.push(builtFile.fileName)
+          return remoteItem
+        } catch (error) {
+          fileNamesFailed.push(builtFile.fileName)
+          return undefined
+        }
+      })
+    }
 
+    queue.on('next', () => {
+      createOrEditProgressChannel.put({ progress: Math.round(((builtFiles.length - queue.size) / builtFiles.length) * 100) })
+    })
+
+    const remoteResponses: RemoteItem[] = yield queue.addAll(promisesOfItemsToSave)
+    const remoteItems: RemoteItem[] = remoteResponses.filter(Boolean)
+
+    yield put(
+      saveMultipleItemsSuccess(
+        remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
+        fileNamesSucceeded,
+        fileNamesFailed
+      )
+    )
+
+    const wasCancelled: boolean = yield cancelled()
+    if (wasCancelled) {
       yield put(
-        saveMultipleItemsSuccess(
+        saveMultipleItemsCancelled(
           remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
-          fileNames
+          fileNamesSucceeded,
+          fileNamesFailed
         )
       )
-    } catch (error) {
-      yield put(
-        saveMultipleItemsFailure(
-          error.message,
-          remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
-          fileNames
-        )
-      )
-    } finally {
-      const wasCancelled: boolean = yield cancelled()
-      if (wasCancelled) {
-        yield put(
-          saveMultipleItemsCancelled(
-            remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
-            fileNames
-          )
-        )
-      }
     }
   }
 

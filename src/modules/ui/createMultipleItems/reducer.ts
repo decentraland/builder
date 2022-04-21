@@ -2,12 +2,10 @@ import {
   CancelSaveMultipleItemsAction,
   ClearStateSaveMultipleItemsAction,
   SaveMultipleItemsCancelledAction,
-  SaveMultipleItemsFailureAction,
   SaveMultipleItemsRequestAction,
   SaveMultipleItemsSuccessAction,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
   CLEAR_SAVE_MULTIPLE_ITEMS,
-  SAVE_MULTIPLE_ITEMS_FAILURE,
   SAVE_MULTIPLE_ITEMS_REQUEST,
   SAVE_MULTIPLE_ITEMS_SUCCESS
 } from 'modules/item/actions'
@@ -24,13 +22,15 @@ export enum MultipleItemsSaveState {
 export type CreateMultipleItemsState = {
   state: MultipleItemsSaveState
   savedItemsFiles: string[]
+  notSavedItemsFiles: string[]
   progress: number
 }
 
 export const INITIAL_STATE: CreateMultipleItemsState = {
   state: MultipleItemsSaveState.NOT_STARTED,
   progress: 0,
-  savedItemsFiles: []
+  savedItemsFiles: [],
+  notSavedItemsFiles: []
 }
 
 type CreateMultipleItemsReducerAction =
@@ -38,7 +38,6 @@ type CreateMultipleItemsReducerAction =
   | CancelSaveMultipleItemsAction
   | SaveMultipleItemsRequestAction
   | SaveMultipleItemsSuccessAction
-  | SaveMultipleItemsFailureAction
   | SaveMultipleItemsCancelledAction
   | UpdateProgressSaveMultipleItemsAction
 
@@ -48,11 +47,12 @@ export const createMultipleItemsReducer = (state = INITIAL_STATE, action: Create
       return INITIAL_STATE
     }
     case SAVE_MULTIPLE_ITEMS_CANCELLED: {
-      const { fileNames } = action.payload
+      const { savedFileNames, notSavedFileNames } = action.payload
 
       return {
         ...state,
-        savedItemsFiles: fileNames,
+        savedItemsFiles: savedFileNames,
+        notSavedItemsFiles: notSavedFileNames,
         state: MultipleItemsSaveState.CANCELLED
       }
     }
@@ -62,21 +62,13 @@ export const createMultipleItemsReducer = (state = INITIAL_STATE, action: Create
         state: MultipleItemsSaveState.UPLOADING
       }
     }
-    case SAVE_MULTIPLE_ITEMS_FAILURE: {
-      const { fileNames } = action.payload
-
-      return {
-        ...state,
-        savedItemsFiles: fileNames,
-        state: MultipleItemsSaveState.FINISHED_UNSUCCESSFULLY
-      }
-    }
     case SAVE_MULTIPLE_ITEMS_SUCCESS: {
-      const { fileNames } = action.payload
+      const { savedFileNames, notSavedFileNames } = action.payload
 
       return {
         ...state,
-        savedItemsFiles: fileNames,
+        savedItemsFiles: savedFileNames,
+        notSavedItemsFiles: notSavedFileNames,
         state: MultipleItemsSaveState.FINISHED_SUCCESSFULLY
       }
     }

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { cancelSaveMultipleItems, saveMultipleItemsRequest, clearSaveMultipleItems } from 'modules/item/actions'
-import { getSavedItemsFiles, getMultipleItemsSaveState, getProgress } from 'modules/ui/createMultipleItems/selectors'
+import { getSavedItemsFiles, getMultipleItemsSaveState, getProgress, getNotSavedItemsFiles } from 'modules/ui/createMultipleItems/selectors'
 import { getError } from 'modules/item/selectors'
 import { Collection } from 'modules/collection/types'
 import { getCollection } from 'modules/collection/selectors'
@@ -15,6 +15,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     collection,
     error: getError(state),
     savedItemsFiles: getSavedItemsFiles(state),
+    notSavedItemsFiles: getNotSavedItemsFiles(state),
     saveMultipleItemsState: getMultipleItemsSaveState(state),
     saveItemsProgress: getProgress(state)
   }

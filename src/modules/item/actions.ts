@@ -89,18 +89,16 @@ export const CANCEL_SAVE_MULTIPLE_ITEMS = '[Cancel] Save Multiple Items'
 export const CLEAR_SAVE_MULTIPLE_ITEMS = '[Clear] Save Multiple Items'
 
 export const saveMultipleItemsRequest = (builtFiles: BuiltFile<Blob>[]) => action(SAVE_MULTIPLE_ITEMS_REQUEST, { builtFiles })
-export const saveMultipleItemsFailure = (error: string, items: Item[], fileNames: string[]) =>
-  action(SAVE_MULTIPLE_ITEMS_FAILURE, { error, items, fileNames })
-export const saveMultipleItemsCancelled = (items: Item[], fileNames: string[]) =>
-  action(SAVE_MULTIPLE_ITEMS_CANCELLED, { items, fileNames })
-export const saveMultipleItemsSuccess = (items: Item[], fileNames: string[]) => action(SAVE_MULTIPLE_ITEMS_SUCCESS, { items, fileNames })
+export const saveMultipleItemsSuccess = (items: Item[], savedFileNames: string[], notSavedFileNames: string[]) =>
+  action(SAVE_MULTIPLE_ITEMS_SUCCESS, { items, savedFileNames, notSavedFileNames })
+export const saveMultipleItemsCancelled = (items: Item[], savedFileNames: string[], notSavedFileNames: string[]) =>
+  action(SAVE_MULTIPLE_ITEMS_CANCELLED, { items, savedFileNames, notSavedFileNames })
 
 export const cancelSaveMultipleItems = () => action(CANCEL_SAVE_MULTIPLE_ITEMS)
 export const clearSaveMultipleItems = () => action(CLEAR_SAVE_MULTIPLE_ITEMS)
 
 export type SaveMultipleItemsRequestAction = ReturnType<typeof saveMultipleItemsRequest>
 export type SaveMultipleItemsSuccessAction = ReturnType<typeof saveMultipleItemsSuccess>
-export type SaveMultipleItemsFailureAction = ReturnType<typeof saveMultipleItemsFailure>
 export type SaveMultipleItemsCancelledAction = ReturnType<typeof saveMultipleItemsCancelled>
 export type CancelSaveMultipleItemsAction = ReturnType<typeof cancelSaveMultipleItems>
 export type ClearStateSaveMultipleItemsAction = ReturnType<typeof clearSaveMultipleItems>

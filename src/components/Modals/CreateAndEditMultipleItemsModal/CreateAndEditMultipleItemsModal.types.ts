@@ -54,11 +54,15 @@ export type Props = ModalProps & {
   onCancelSaveMultipleItems: typeof cancelSaveMultipleItems
   onModalUnmount: typeof clearSaveMultipleItems
   savedItemsFiles: ReturnType<typeof getSavedItemsFiles>
+  notSavedItemsFiles: ReturnType<typeof getSavedItemsFiles>
   saveMultipleItemsState: ReturnType<typeof getMultipleItemsSaveState>
   saveItemsProgress: number
 }
 
 export type OwnProps = Pick<Props, 'name' | 'metadata' | 'onClose'>
-export type MapStateProps = Pick<Props, 'savedItemsFiles' | 'error' | 'saveMultipleItemsState' | 'saveItemsProgress' | 'collection'>
+export type MapStateProps = Pick<
+  Props,
+  'savedItemsFiles' | 'notSavedItemsFiles' | 'error' | 'saveMultipleItemsState' | 'saveItemsProgress' | 'collection'
+>
 export type MapDispatchProps = Pick<Props, 'onSaveMultipleItems' | 'onCancelSaveMultipleItems' | 'onModalUnmount'>
 export type MapDispatch = Dispatch<SaveMultipleItemsRequestAction | CancelSaveMultipleItemsAction | ClearStateSaveMultipleItemsAction>
