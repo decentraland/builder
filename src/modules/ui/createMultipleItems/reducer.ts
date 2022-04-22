@@ -23,6 +23,7 @@ export type CreateMultipleItemsState = {
   state: MultipleItemsSaveState
   savedItemsFiles: string[]
   notSavedItemsFiles: string[]
+  cancelledItemFiles: string[]
   progress: number
 }
 
@@ -30,7 +31,8 @@ export const INITIAL_STATE: CreateMultipleItemsState = {
   state: MultipleItemsSaveState.NOT_STARTED,
   progress: 0,
   savedItemsFiles: [],
-  notSavedItemsFiles: []
+  notSavedItemsFiles: [],
+  cancelledItemFiles: []
 }
 
 type CreateMultipleItemsReducerAction =
@@ -47,12 +49,13 @@ export const createMultipleItemsReducer = (state = INITIAL_STATE, action: Create
       return INITIAL_STATE
     }
     case SAVE_MULTIPLE_ITEMS_CANCELLED: {
-      const { savedFileNames, notSavedFileNames } = action.payload
+      const { savedFileNames, notSavedFileNames, cancelledFileNames } = action.payload
 
       return {
         ...state,
         savedItemsFiles: savedFileNames,
         notSavedItemsFiles: notSavedFileNames,
+        cancelledItemFiles: cancelledFileNames,
         state: MultipleItemsSaveState.CANCELLED
       }
     }

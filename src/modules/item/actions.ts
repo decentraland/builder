@@ -91,8 +91,12 @@ export const CLEAR_SAVE_MULTIPLE_ITEMS = '[Clear] Save Multiple Items'
 export const saveMultipleItemsRequest = (builtFiles: BuiltFile<Blob>[]) => action(SAVE_MULTIPLE_ITEMS_REQUEST, { builtFiles })
 export const saveMultipleItemsSuccess = (items: Item[], savedFileNames: string[], notSavedFileNames: string[]) =>
   action(SAVE_MULTIPLE_ITEMS_SUCCESS, { items, savedFileNames, notSavedFileNames })
-export const saveMultipleItemsCancelled = (items: Item[], savedFileNames: string[], notSavedFileNames: string[]) =>
-  action(SAVE_MULTIPLE_ITEMS_CANCELLED, { items, savedFileNames, notSavedFileNames })
+export const saveMultipleItemsCancelled = (
+  items: Item[],
+  savedFileNames: string[],
+  notSavedFileNames: string[],
+  cancelledFileNames: string[]
+) => action(SAVE_MULTIPLE_ITEMS_CANCELLED, { items, savedFileNames, notSavedFileNames, cancelledFileNames })
 
 export const cancelSaveMultipleItems = () => action(CANCEL_SAVE_MULTIPLE_ITEMS)
 export const clearSaveMultipleItems = () => action(CLEAR_SAVE_MULTIPLE_ITEMS)

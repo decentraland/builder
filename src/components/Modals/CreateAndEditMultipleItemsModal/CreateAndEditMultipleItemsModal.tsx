@@ -376,7 +376,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   }
 
   private renderCompleted() {
-    const { onClose, savedItemsFiles, notSavedItemsFiles, saveMultipleItemsState, error } = this.props
+    const { onClose, savedItemsFiles, notSavedItemsFiles, cancelledItemsFiles, saveMultipleItemsState, error } = this.props
     const hasFinishedSuccessfully = saveMultipleItemsState === MultipleItemsSaveState.FINISHED_SUCCESSFULLY
     const hasBeenCancelled = saveMultipleItemsState === MultipleItemsSaveState.CANCELLED
     const hasFailed = saveMultipleItemsState === MultipleItemsSaveState.FINISHED_UNSUCCESSFULLY
@@ -405,6 +405,26 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
                 })}
           </p>
           {hasFailed ? <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} /> : null}
+          {hasBeenCancelled && cancelledItemsFiles.length > 0 ? (
+            <>
+              <div className={styles.tablesContainer}>
+                <Table basic="very" compact="very">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.cancelled_items_table_title')}</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {cancelledItemsFiles.map((item, index) => (
+                      <Table.Row key={index}>
+                        <Table.Cell>{item}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table>
+              </div>
+            </>
+          ) : null}
           {hasBeenCancelled || notSavedItemsFiles.length > 0 ? (
             <>
               <div className={styles.tablesContainer}>
