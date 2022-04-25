@@ -185,7 +185,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const paginationStats =
       allItemPages[0].total !== undefined
         ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
-        : {}
+        : undefined
     // When there is no limit, the result is not paginated so the response is different. The non-paginated ones will be deprecated
     const items = limit ? allItemPages.flatMap(result => result.results) : allItemPages.flat()
     return { items, paginationStats }
@@ -196,7 +196,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const isFetchingMultiplePages = Array.isArray(page)
 
     try {
-      const { items, paginationStats }: { items: Item[]; paginationStats: PaginationStats } = yield call(
+      const { items, paginationStats }: { items: Item[]; paginationStats?: PaginationStats } = yield call(
         fetchCollectionItemsWithBatch,
         collectionId,
         isFetchingMultiplePages ? page : [page],
