@@ -3,6 +3,11 @@ import { ThirdPartyWearable, StandardWearable } from '@dcl/schemas'
 import { ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
+export enum EntityHashingType {
+  V0,
+  V1
+}
+
 export type BuiltFile<T extends Content> = BuiltItem<T> & { fileName: string }
 
 export enum ItemType {

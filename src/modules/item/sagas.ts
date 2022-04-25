@@ -103,7 +103,7 @@ import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
-import { calculateFinalSize } from './export'
+import { calculateFinalSize, reHashOlderContents } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError } from './errors'
@@ -242,7 +242,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleSaveItemRequest(action: SaveItemRequestAction) {
-    const { item: actionItem, contents } = action.payload
+    const { item: actionItem, contents: actionContents } = action.payload
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
@@ -251,6 +251,19 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
       }
+
+      // Get all of the old content that is hashed with an older hashing mechanism
+      const oldReHashedContentAndHashes: Record<string, { hash: string; content: Blob }> = yield call(reHashOlderContents, item.contents)
+      console.log('Old re hashed content and hashes', oldReHashedContentAndHashes)
+      const oldReHashedContent = Object.fromEntries(Object.entries(oldReHashedContentAndHashes).map(([key, value]) => [key, value.hash]))
+      const oldReHashedContentWithNewHashes = Object.fromEntries(
+        Object.entries(oldReHashedContentAndHashes).map(([key, value]) => [key, value.content])
+      )
+
+      // Re-write the contents so the files have the new hash
+      item.contents = { ...item.contents, ...oldReHashedContent }
+      // Add the old content to be uploaded again with the new hash
+      const contents = { ...actionContents, ...oldReHashedContentWithNewHashes }
 
       const collection: Collection | undefined = item.collectionId ? yield select(getCollection, item.collectionId!) : undefined
 
@@ -274,11 +287,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
+      console.log('Saving item', item)
       yield call([legacyBuilder, 'saveItem'], item, contents)
 
       yield put(saveItemSuccess(item, contents))
     } catch (error) {
-      yield put(saveItemFailure(actionItem, contents, error.message))
+      yield put(saveItemFailure(actionItem, actionContents, error.message))
     }
   }
 

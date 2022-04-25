@@ -15,7 +15,7 @@ import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
-import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
+import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
 
@@ -216,7 +216,7 @@ export async function createGameFile(args: { project: Project; scene: Scene; rot
       for (const [assetId, src] of Array.from(scripts)) {
         const scriptName = SCRIPT_INSTANCE_NAME + currentScript++
         assetIdToScriptName.set(assetId, scriptName)
-        const hash = await convertToV1(src)
+        const hash = await reHashContent(src, EXPORT_PATH.BUNDLED_GAME_FILE)
         executeScripts += `\n\tconst ${scriptName} = await getScriptInstance("${assetId}", "${hash}")`
       }
       // initialize all the scripts
@@ -532,12 +532,4 @@ async function createThumbnailBlob(thumbnail: string | null) {
 
 export function buildAssetPath(namespace: string, path: string) {
   return `${namespace}/${path}`
-}
-
-/* Temporary fix until we migrate the Builder to use CID v1 */
-export async function convertToV1(v0: string) {
-  const blob = await fetch(getContentsStorageUrl(v0), { headers: NO_CACHE_HEADERS }).then(resp => resp.blob())
-  const file = await makeContentFile(EXPORT_PATH.BUNDLED_GAME_FILE, blob)
-  const v1 = await calculateBufferHash(file.content)
-  return v1
 }

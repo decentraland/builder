@@ -94,7 +94,7 @@ import {
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SaveMultipleItemsSuccessAction
 } from 'modules/item/actions'
-import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
+import { areSynced, getLatestStandardItemContentHash, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
@@ -141,7 +141,6 @@ import {
   getCollectionSymbol,
   isLocked,
   getCollectionType,
-  getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
   isTPCollection
 } from './utils'
@@ -787,7 +786,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const contentHashes: string[] = []
       const items: Item[] = yield getItemsFromCollection(collection)
       for (const item of items) {
-        const latestContentHash: string = yield call(getLatestItemHash, collection, item)
+        const latestContentHash: string = yield call(getLatestStandardItemContentHash, item, collection)
         if (latestContentHash !== item.blockchainContentHash) {
           itemsToRescue.push(item)
           contentHashes.push(latestContentHash)

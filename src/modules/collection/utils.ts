@@ -6,7 +6,6 @@ import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
-import { buildItemContentHash } from 'modules/item/export'
 import { Collection, Access, Mint, CollectionType } from './types'
 
 export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
@@ -116,14 +115,6 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
   const indexA = sorted.indexOf(statusA)
   const indexB = sorted.indexOf(statusB)
   return indexA < indexB ? statusA : statusB
-}
-
-export function getLatestItemHash(collection: Collection, item: Item): Promise<string> {
-  if (item.currentContentHash) {
-    return Promise.resolve(item.currentContentHash)
-  }
-
-  return buildItemContentHash(collection, item)
 }
 
 export function isTPCollection(collection: Collection): boolean {

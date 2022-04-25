@@ -1,25 +1,26 @@
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { Locale, Rarity, ThirdPartyWearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
-import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
+import { EntityType } from 'dcl-catalyst-commons'
+import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
 import { getContentsStorageUrl } from 'lib/api/builder'
-import { PEER_URL } from 'lib/api/peer'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { Item, IMAGE_PATH, THUMBNAIL_PATH, StandardCatalystItem, ItemType, EmoteData, EmoteCategory } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, StandardCatalystItem, ItemType, EmoteData, EmoteCategory, EntityHashingType } from './types'
 import { generateCatalystImage, generateImage } from './utils'
 
-export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
-  const client = new CatalystClient(PEER_URL, 'Builder')
-  const entity = await buildItemEntity(client, collection, item)
-  const authChain = Authenticator.signPayload(identity, entity.entityId)
-
-  await client.deployEntity({ ...entity, authChain })
-
-  return { ...item, inCatalyst: true }
+export async function reHashOlderContents(contents: Record<string, string>): Promise<Record<string, { hash: string; content: Blob }>> {
+  const contentsWithOldHashes = Object.fromEntries(Object.entries(contents).filter(([_, content]) => content.startsWith('Qm')))
+  console.log('Contents with old hashes', contentsWithOldHashes)
+  const contentOfOldHashedFiles = await getFiles(contentsWithOldHashes)
+  console.log('Files with old hashes', contentOfOldHashedFiles)
+  const newHashesOfOldHashedFiles = await computeHashes(contentOfOldHashedFiles)
+  console.log('Hashes of old hashes', newHashesOfOldHashedFiles)
+  return Object.fromEntries(
+    Object.keys(contentsWithOldHashes).map(key => [key, { hash: newHashesOfOldHashedFiles[key], content: contentOfOldHashedFiles[key] }])
+  )
 }
 
 /**
@@ -52,12 +53,12 @@ export async function getFiles(contents: Record<string, string>): Promise<Record
  * @param blobs - The record of names->blobs.
  */
 function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Blob>): Array<Blob> {
-  const uniqueFileHases: Array<string> = [...new Set(Object.values(hashes))]
+  const uniqueFileHashes: Array<string> = [...new Set(Object.values(hashes))]
   const inverseFileHashesRecord = Object.keys(hashes).reduce((obj: Record<string, string>, key: string) => {
     obj[hashes[key]] = key
     return obj
   }, {})
-  return uniqueFileHases.map(hash => blobs[inverseFileHashesRecord[hash]])
+  return uniqueFileHashes.map(hash => blobs[inverseFileHashesRecord[hash]])
 }
 
 /**
@@ -113,13 +114,13 @@ function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityV
   }
 }
 
-function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): ThirdPartyWearable {
+function buildTPUnmerkledProofedEntityMetadata(item: Item): Omit<ThirdPartyWearable, 'merkleProof'> {
   if (!item.urn) {
     throw new Error('Item does not have URN')
   }
 
   // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
-  const baseEntityData = {
+  return {
     id: item.urn,
     name: item.name,
     description: item.description,
@@ -136,6 +137,10 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
     metrics: item.metrics,
     content: item.contents
   }
+}
+
+function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): ThirdPartyWearable {
+  const baseEntityData = buildTPUnmerkledProofedEntityMetadata(item)
 
   return {
     ...baseEntityData,
@@ -230,24 +235,17 @@ export async function buildTPItemEntity(
   return buildItemEntity(client, collection, item, tree, itemHash)
 }
 
-export async function buildItemContentHash(collection: Collection, item: Item): Promise<string> {
+export async function buildStandardWearableContentHash(
+  collection: Collection,
+  item: Item,
+  hashingType = EntityHashingType.V1
+): Promise<string> {
   const hashes = await buildItemEntityContent(item)
   const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
   const metadata = buildItemEntityMetadata(collection, item)
-  return calculateContentHash(content, metadata)
-}
-
-async function calculateContentHash(content: EntityContentItemReference[], metadata: EntityMetadata) {
-  const data = JSON.stringify({
-    content: content
-      .sort((a: EntityContentItemReference, b: EntityContentItemReference) => {
-        if (a.hash > b.hash) return 1
-        else if (a.hash < b.hash) return -1
-        else return a.file > b.file ? 1 : -1
-      })
-      .map(entry => ({ key: entry.file, hash: entry.hash })),
-    metadata
-  })
-  const buffer = Buffer.from(data)
-  return Hashing.calculateBufferHash(buffer)
+  if (hashingType === EntityHashingType.V0) {
+    return (await calculateMultipleHashesADR32LegacyQmHash(content, metadata)).hash
+  } else {
+    return (await calculateMultipleHashesADR32(content, metadata)).hash
+  }
 }

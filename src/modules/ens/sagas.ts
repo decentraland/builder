@@ -89,7 +89,7 @@ function* handleConnectWallet() {
 function* handleSetAlias(action: SetAliasRequestAction) {
   const { address, name } = action.payload
   try {
-    const client = new CatalystClient(PEER_URL, 'builder')
+    const client = new CatalystClient({ catalystUrl: PEER_URL })
     const entities: Entity[] = yield call(() => client.fetchEntitiesByPointers(EntityType.PROFILE, [address.toLowerCase()]))
     let entity: Entity
     if (entities.length > 0) {
@@ -117,7 +117,12 @@ function* handleSetAlias(action: SetAliasRequestAction) {
     const content: Map<string, string> = new Map((newEntity.content || []).map(({ file, hash }) => [file, hash]))
 
     const deployPreparationData: DeploymentPreparationData = yield call(() =>
-      DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, newEntity.metadata)
+      DeploymentBuilder.buildEntityWithoutNewFiles({
+        type: EntityType.PROFILE,
+        pointers: [address],
+        hashesByKey: content,
+        metadata: newEntity.metadata
+      })
     )
 
     // Request signature

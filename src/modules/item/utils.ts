@@ -35,8 +35,10 @@ import {
   WearableRepresentation,
   GenerateImageOptions,
   EmoteCategory,
-  EmoteData
+  EmoteData,
+  EntityHashingType
 } from './types'
+import { buildStandardWearableContentHash } from './export'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -513,4 +515,24 @@ export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, S
       itemCurations?.find(itemCuration => itemCuration.itemId === item.id)
     )
   )
+}
+
+export async function getLatestStandardItemContentHash(item: Item, collection: Collection): Promise<string> {
+  if (!item.catalystContentHash) {
+    return item.currentContentHash ? item.currentContentHash : buildStandardWearableContentHash(collection, item, EntityHashingType.V1)
+  }
+
+  const isCatalystContentHashV0 = item.catalystContentHash.startsWith('Qm')
+  const currentContentHashExists = item.currentContentHash !== null
+
+  if (isCatalystContentHashV0 && (!currentContentHashExists || (currentContentHashExists && !item.currentContentHash!.startsWith('Qm')))) {
+    return buildStandardWearableContentHash(collection, item, EntityHashingType.V0)
+  } else if (
+    !isCatalystContentHashV0 &&
+    (!currentContentHashExists || (currentContentHashExists && item.currentContentHash!.startsWith('Qm')))
+  ) {
+    return buildStandardWearableContentHash(collection, item, EntityHashingType.V1)
+  }
+
+  return item.currentContentHash!
 }
