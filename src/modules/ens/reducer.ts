@@ -31,12 +31,6 @@ import {
   SET_ENS_RESOLVER_REQUEST,
   SET_ENS_RESOLVER_SUCCESS,
   SET_ENS_RESOLVER_FAILURE,
-  SET_ALIAS_SUCCESS,
-  SET_ALIAS_FAILURE,
-  SET_ALIAS_REQUEST,
-  SetAliasSuccessAction,
-  SetAliasFailureAction,
-  SetAliasRequestAction,
   CLAIM_NAME_REQUEST,
   ClaimNameRequestAction,
   ClaimNameFailureAction,
@@ -83,9 +77,6 @@ export type ENSReducerAction =
   | FetchENSAuthorizationSuccessAction
   | FetchENSAuthorizationFailureAction
   | FetchTransactionSuccessAction
-  | SetAliasSuccessAction
-  | SetAliasFailureAction
-  | SetAliasRequestAction
   | ClaimNameRequestAction
   | ClaimNameFailureAction
   | ClaimNameSuccessAction
@@ -96,8 +87,6 @@ export type ENSReducerAction =
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
     case CLAIM_NAME_REQUEST:
-    case SET_ALIAS_REQUEST:
-    case SET_ALIAS_SUCCESS:
     case FETCH_ENS_LIST_REQUEST:
     case FETCH_ENS_AUTHORIZATION_REQUEST:
     case FETCH_ENS_REQUEST:
@@ -169,7 +158,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
-    case SET_ALIAS_FAILURE:
     case CLAIM_NAME_FAILURE:
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:

@@ -1,20 +1,14 @@
 import { Eth, SendTx } from 'web3x/eth'
 import { Address } from 'web3x/address'
 import { TransactionReceipt } from 'web3x/formatters'
-import { Personal } from 'web3x/personal'
 import { Contract, providers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
-import { CatalystClient, DeploymentBuilder, DeploymentPreparationData } from 'dcl-catalyst-client'
-import { Entity, EntityType } from 'dcl-catalyst-commons'
-import { Authenticator } from 'dcl-crypto'
-import { Network, Avatar } from '@dcl/schemas'
+import { Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
-import { changeProfile } from 'decentraland-dapps/dist/modules/profile/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 
 import { ENS as ENSContract } from 'contracts/ENS'
@@ -22,12 +16,11 @@ import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { DCLController } from 'contracts/DCLController'
 import { ERC20 as MANAToken } from 'contracts/ERC20'
-import { getWallet, getEth } from 'modules/wallet/utils'
+import { getWallet } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { ipfs } from 'lib/api/ipfs'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
-import { PEER_URL } from 'lib/api/peer'
 import { Land } from 'modules/land/types'
 import { closeModal } from 'modules/modal/actions'
 import {
@@ -53,10 +46,6 @@ import {
   fetchENSListRequest,
   fetchENSListSuccess,
   fetchENSListFailure,
-  SET_ALIAS_REQUEST,
-  SetAliasRequestAction,
-  setAliasSuccess,
-  setAliasFailure,
   CLAIM_NAME_REQUEST,
   ClaimNameRequestAction,
   claimNameSuccess,
@@ -67,10 +56,9 @@ import {
   allowClaimManaFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
-import { getDefaultProfileEntity, getDomainFromName, setProfileFromEntity } from './utils'
+import { getDomainFromName } from './utils'
 
 export function* ensSaga() {
-  yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
@@ -84,59 +72,6 @@ export function* ensSaga() {
 function* handleConnectWallet() {
   yield put(fetchENSAuthorizationRequest())
   yield put(fetchENSListRequest())
-}
-
-function* handleSetAlias(action: SetAliasRequestAction) {
-  const { address, name } = action.payload
-  try {
-    const client = new CatalystClient(PEER_URL, 'builder')
-    const entities: Entity[] = yield call(() => client.fetchEntitiesByPointers(EntityType.PROFILE, [address.toLowerCase()]))
-    let entity: Entity
-    if (entities.length > 0) {
-      entity = entities[0]
-    } else {
-      entity = yield call(() => getDefaultProfileEntity())
-    }
-
-    const avatar = entity && entity.metadata && entity.metadata.avatars[0]
-    const newAvatar: Avatar = {
-      ...avatar,
-      hasClaimedName: true,
-      version: avatar.version + 1,
-      name
-    }
-
-    const newEntity: Entity = {
-      ...entity,
-      metadata: {
-        ...entity.metadata,
-        avatars: [newAvatar, ...entity.metadata.avatars.slice(1)]
-      }
-    }
-    // Build entity
-    const content: Map<string, string> = new Map((newEntity.content || []).map(({ file, hash }) => [file, hash]))
-
-    const deployPreparationData: DeploymentPreparationData = yield call(() =>
-      DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, newEntity.metadata)
-    )
-
-    // Request signature
-    const eth: Eth = yield call(getEth)
-
-    const personal = new Personal(eth.provider)
-    const signature: string = yield personal.sign(deployPreparationData.entityId, Address.fromString(address), '')
-
-    // Deploy change
-    const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
-    yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
-
-    const stateEntity = setProfileFromEntity(newEntity)
-    yield put(setAliasSuccess(address, name))
-    yield put(changeProfile(address, stateEntity.metadata as Profile))
-  } catch (error) {
-    const ensError: ENSError = { message: error.message }
-    yield put(setAliasFailure(address, ensError))
-  }
 }
 
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
