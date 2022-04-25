@@ -194,8 +194,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEMS_SUCCESS:
     case FETCH_COLLECTION_ITEMS_SUCCESS: {
       const { paginationIndex, items, paginationStats } = action.payload
-      const { total, page, pages, limit } = paginationStats || {}
-      const hasPagination = total && page && pages && limit
+      const hasPagination = paginationStats !== undefined
       return {
         ...state,
         data: {
@@ -209,10 +208,10 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             ? {
                 [paginationIndex]: {
                   ids: items.map(item => item.id),
-                  total,
-                  limit,
-                  currentPage: page,
-                  totalPages: pages
+                  total: paginationStats.total,
+                  limit: paginationStats.limit,
+                  currentPage: paginationStats.page,
+                  totalPages: paginationStats.pages
                 }
               }
             : {})
