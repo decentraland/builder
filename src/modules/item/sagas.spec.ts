@@ -778,10 +778,11 @@ describe('when handling the save multiple items requests action', () => {
   beforeEach(() => {
     items = [
       { ...mockedItem, currentContentHash: mockedRemoteItem.local_content_hash },
-      { ...mockedItem, id: 'anotherItemId', currentContentHash: mockedRemoteItem.local_content_hash }
+      { ...mockedItem, id: 'anotherItemId', currentContentHash: mockedRemoteItem.local_content_hash },
+      { ...mockedItem, id: 'oneMoreItemId', currentContentHash: mockedRemoteItem.local_content_hash }
     ]
-    remoteItems = [{ ...mockedRemoteItem }, { ...mockedRemoteItem, id: 'anotherItemId' }]
-    savedFiles = ['aFile.zip', 'anotherFile.zip']
+    remoteItems = [{ ...mockedRemoteItem }, { ...mockedRemoteItem, id: 'anotherItemId' }, { ...mockedRemoteItem, id: 'oneMoreItemId' }]
+    savedFiles = ['aFile.zip', 'anotherFile.zip', 'oneMoreFile.zip']
     builtFiles = [
       {
         item: { ...mockedLocalItem },
@@ -792,6 +793,11 @@ describe('when handling the save multiple items requests action', () => {
         item: { ...mockedLocalItem, id: 'anotherItemId' },
         newContent: { ...mockedItemContents },
         fileName: 'anotherFile.zip'
+      },
+      {
+        item: { ...mockedLocalItem, id: 'oneMoreItemId' },
+        newContent: { ...mockedItemContents },
+        fileName: 'oneMoreFile.zip'
       }
     ]
     paginationData = { currentPage: 1, limit: 1, total: 1, ids: items.map(item => item.id), totalPages: 1 }
@@ -801,6 +807,7 @@ describe('when handling the save multiple items requests action', () => {
     beforeEach(() => {
       ;(builderClient.upsertItem as jest.Mock).mockResolvedValueOnce(remoteItems[0])
       ;(builderClient.upsertItem as jest.Mock).mockResolvedValueOnce(remoteItems[1])
+      ;(builderClient.upsertItem as jest.Mock).mockResolvedValueOnce(remoteItems[2])
     })
     it('should dispatch the update progress action for each uploaded item and the success action with the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
@@ -808,7 +815,8 @@ describe('when handling the save multiple items requests action', () => {
           [select(getLocation), { pathname: 'notTPDetailPage' }],
           [select(getOpenModals), { EditItemURNModal: true }]
         ])
-        .put(updateProgressSaveMultipleItems(50))
+        .put(updateProgressSaveMultipleItems(33))
+        .put(updateProgressSaveMultipleItems(67))
         .put(updateProgressSaveMultipleItems(100))
         .put(saveMultipleItemsSuccess(items, savedFiles, []))
         .dispatch(saveMultipleItemsRequest(builtFiles))
@@ -858,6 +866,7 @@ describe('when handling the save multiple items requests action', () => {
     beforeEach(() => {
       ;(builderClient.upsertItem as jest.Mock).mockResolvedValueOnce(remoteItems[0])
       ;(builderClient.upsertItem as jest.Mock).mockRejectedValueOnce(new Error(error))
+      ;(builderClient.upsertItem as jest.Mock).mockResolvedValueOnce(remoteItems[2])
     })
     it('should dispatch the update progress action for the non-failing item upload and the success action with the items that failed, the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
@@ -866,7 +875,7 @@ describe('when handling the save multiple items requests action', () => {
           [select(getPaginationData, items[0].collectionId!), paginationData]
         ])
         .put(updateProgressSaveMultipleItems(100))
-        .put(saveMultipleItemsSuccess([items[0]], [savedFiles[0]], [savedFiles[1]]))
+        .put(saveMultipleItemsSuccess([items[0], items[2]], [savedFiles[0], savedFiles[2]], [savedFiles[1]]))
         .dispatch(saveMultipleItemsRequest(builtFiles))
         .run({ silenceTimeout: true })
     })
@@ -907,6 +916,80 @@ describe('when handling the save multiple items requests action', () => {
         .dispatch(saveMultipleItemsRequest(builtFilesThatWillCancelled))
         .dispatch(cancelSaveMultipleItems())
         .run({ silenceTimeout: true })
+    })
+
+    describe('and should fetch the collection items again', () => {
+      describe('and the new items will be in the same page', () => {
+        let paginationData: ItemPaginationData
+        beforeEach(() => {
+          paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
+        })
+        it('should request the same page of items if the user is in the TP detail page', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getOpenModals), { EditItemURNModal: true }],
+              [select(getPaginationData, items[0].collectionId!), paginationData]
+            ])
+            .put(fetchCollectionItemsRequest(items[0].collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
+            .dispatch(
+              saveMultipleItemsCancelled(
+                Array(SAVE_AND_EDIT_FILES_BATCH_SIZE).fill(items[0]),
+                savedFilesWithCancelled.slice(0, SAVE_AND_EDIT_FILES_BATCH_SIZE),
+                [],
+                savedFilesWithCancelled.slice(-amountOfFilesThatWillBeCancelled)
+              )
+            )
+            .run({ silenceTimeout: true })
+        })
+      })
+      describe('and the items will be on a new page', () => {
+        let paginationData: ItemPaginationData
+        beforeEach(() => {
+          paginationData = { currentPage: 1, limit: 1, total: 1, ids: items.map(item => item.id), totalPages: 1 }
+        })
+        it('should push the tp detail page location with the new page of items', () => {
+          const newPageNumber = Math.ceil(
+            (paginationData.total + (savedFilesWithCancelled.length - amountOfFilesThatWillBeCancelled)) / paginationData.limit
+          )
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getOpenModals), { EditItemURNModal: true }],
+              [select(getPaginationData, items[0].collectionId!), paginationData]
+            ])
+            .put(push(locations.thirdPartyCollectionDetail(items[0].collectionId!, { page: newPageNumber })))
+            .dispatch(
+              saveMultipleItemsCancelled(
+                Array(SAVE_AND_EDIT_FILES_BATCH_SIZE).fill(items[0]),
+                savedFilesWithCancelled.slice(0, SAVE_AND_EDIT_FILES_BATCH_SIZE),
+                [],
+                savedFilesWithCancelled.slice(-amountOfFilesThatWillBeCancelled)
+              )
+            )
+            .run({ silenceTimeout: true })
+        })
+      })
+    })
+
+    describe('and should not fetch the collection items again if they were all cancelled', () => {
+      describe('and the new items will be in the same page', () => {
+        let paginationData: ItemPaginationData
+        beforeEach(() => {
+          paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
+        })
+        it('should request the same page of items if the user is in the TP detail page', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getOpenModals), { EditItemURNModal: true }],
+              [select(getPaginationData, items[0].collectionId!), paginationData]
+            ])
+            .not.put(fetchCollectionItemsRequest(items[0].collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
+            .dispatch(saveMultipleItemsCancelled([], [], [], savedFilesWithCancelled))
+            .run({ silenceTimeout: true })
+        })
+      })
     })
   })
 })

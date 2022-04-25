@@ -73,7 +73,6 @@ import {
   saveMultipleItemsSuccess,
   CANCEL_SAVE_MULTIPLE_ITEMS,
   saveMultipleItemsCancelled,
-  // saveMultipleItemsFailure,
   rescueItemsChunkSuccess,
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FetchItemsSuccessAction,
@@ -84,7 +83,8 @@ import {
   fetchCollectionItemsRequest,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SaveMultipleItemsSuccessAction,
-  SaveMultipleItemsCancelledAction
+  SaveMultipleItemsCancelledAction,
+  SAVE_MULTIPLE_ITEMS_CANCELLED
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -122,7 +122,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
-  yield takeEvery(SAVE_MULTIPLE_ITEMS_SUCCESS, handleSaveMultipleItemsSuccess)
+  yield takeEvery([SAVE_MULTIPLE_ITEMS_SUCCESS, SAVE_MULTIPLE_ITEMS_CANCELLED], handleSaveMultipleItemsSuccess)
   yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
@@ -325,9 +325,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleSaveMultipleItemsSuccess(action: SaveMultipleItemsSuccessAction) {
     const { items } = action.payload
-    const collectionId = items[0].collectionId!
+    const collectionId = items[0]?.collectionId!
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
-    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+    if (items.length > 0 && location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId, items.length)
     }
   }
