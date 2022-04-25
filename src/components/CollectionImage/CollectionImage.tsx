@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -9,6 +10,10 @@ import './CollectionImage.css'
 const MAX_IMAGES_TO_SHOW = 4
 
 export default class CollectionImage extends React.PureComponent<Props> {
+  static defaultProps = {
+    className: ''
+  }
+
   componentDidMount() {
     const { itemCount } = this.props
     if (itemCount) {
@@ -56,29 +61,18 @@ export default class CollectionImage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { items, itemCount, isLoading } = this.props
+    const { items, className, itemCount, isLoading } = this.props
 
-    if (isLoading || itemCount === undefined) {
-      return (
-        <div className="CollectionImage is-image">
+    return (
+      <div className={classNames('CollectionImage', 'is-image', className)}>
+        {isLoading || itemCount === undefined ? (
           <div className="item-row loading">
             <Loader active size="tiny" inline />
           </div>
-        </div>
-      )
-    }
-    const hasNoItems = itemCount === 0
-
-    return (
-      <div className="CollectionImage is-image">
-        {hasNoItems ? (
+        ) : itemCount === 0 ? (
           <div className="item-row empty">
             <div className="sparkles" />
             <div>{t('collection_image.no_items')}</div>
-          </div>
-        ) : isLoading ? (
-          <div className="item-row loading">
-            <Loader active size="tiny" inline />
           </div>
         ) : (
           this.renderItemRows(items)

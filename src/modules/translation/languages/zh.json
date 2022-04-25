@@ -200,11 +200,24 @@
       "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。"
     }
   },
-  "create_multiple_items_modal": {
-    "title": "创建多个可穿戴设备",
-    "successful_title": "创建的可穿戴物品",
-    "cancelled_title": "取消了多个可穿戴项目的创建",
-    "failed_title": "多个可穿戴项目创建失败",
+  "create_and_edit_multiple_items_modal": {
+    "create": {
+      "title": "创建多个可穿戴设备",
+      "successful_title": "创建的可穿戴物品",
+      "cancelled_title": "取消了多个可穿戴项目的创建",
+      "failed_title": "多个可穿戴项目创建失败",
+      "finished_successfully_subtitle": "伟大的！ 您已添加 {number_of_items} 项",
+      "finished_unsuccessfully_subtitle": "可穿戴物品的创建被打断，但增加了 {number_of_items} 件物品。"
+    },
+    "edit": {
+      "title": "批量编辑项目",
+      "subtitle": "要编辑现有项目，请使用相同的 URN",
+      "successful_title": "更新的项目",
+      "cancelled_title": "取消了多项更新",
+      "failed_title": "多个项目更新失败",
+      "finished_successfully_subtitle": "伟大的！您已更新 {number_of_items} 项",
+      "finished_unsuccessfully_subtitle": "项目的编辑被中断，但有 {number_of_items} 个项目被编辑。"
+    },
     "wrong_file_extension": "文件扩展名不正确。",
     "asset_file_not_found": "找不到asset.json 文件。",
     "thumbnail_file_not_found": "批量文件必须在其内容中包含 thumbnail.png 文件。",
@@ -216,8 +229,7 @@
     "upload_items_button": "上传可穿戴物品",
     "only_valid_items_info": "只会上传有效的项目",
     "done_button": "完成",
-    "finished_successfully_subtitle": "伟大的！ 您已添加 {number_of_items} 项",
-    "finished_unsuccessfully_subtitle": "可穿戴物品的创建被打断，但增加了 {number_of_items} 件物品。",
+
     "importing_files_progress_label": "加工项目",
     "uploading_items_progress_label": "上传 {number_of_items} 个项目",
     "import_information_link_label": "点击这里",
@@ -955,6 +967,8 @@
     "new_item": "项目",
     "new_collection": "收藏",
     "new_third_party_collection": "新的链接可穿戴设备系列",
+    "type": "类型",
+    "items": "模型",
     "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {
@@ -1037,6 +1051,7 @@
     "forum_post": "论坛帖子",
     "copy_address": "复制地址",
     "edit_urn": "编辑 URN",
+    "edit_in_bulk": "批量编辑",
     "copy_urn": "复制 URN",
     "see_in_world": "见世面",
     "unpublished": "此合集尚未发布",

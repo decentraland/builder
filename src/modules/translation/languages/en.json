@@ -205,11 +205,24 @@
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}."
     }
   },
-  "create_multiple_items_modal": {
-    "title": "Create multiple items",
-    "successful_title": "Items created",
-    "cancelled_title": "Cancelled multiple items creation",
-    "failed_title": "Failed multiple items creation",
+  "create_and_edit_multiple_items_modal": {
+    "create": {
+      "title": "Create multiple items",
+      "successful_title": "Items created",
+      "cancelled_title": "Cancelled multiple items creation",
+      "failed_title": "Failed multiple items creation",
+      "finished_successfully_subtitle": "Great! You've added {number_of_items} items",
+      "finished_unsuccessfully_subtitle": "The creation of items was interrupted, but {number_of_items} items were added."
+    },
+    "edit": {
+      "title": "Edit items in bulk",
+      "subtitle": "In order to edit an existing item, use the same URN",
+      "successful_title": "Items updated",
+      "failed_title": "Failed multiple items update",
+      "cancelled_title": "Cancelled multiple items update",
+      "finished_successfully_subtitle": "Great! You've updated {number_of_items} items",
+      "finished_unsuccessfully_subtitle": "The edit of items was interrupted, but {number_of_items} items were edited."
+    },
     "wrong_file_extension": "File extension is not correct.",
     "asset_file_not_found": "The asset.json file was not found.",
     "thumbnail_file_not_found": "Bulk files must contain a thumbnail.png file in their content.",
@@ -221,8 +234,6 @@
     "upload_items_button": "Upload items",
     "only_valid_items_info": "Only valid items will be uploaded",
     "done_button": "Done",
-    "finished_successfully_subtitle": "Great! You've added {number_of_items} items",
-    "finished_unsuccessfully_subtitle": "The creation of items was interrupted, but {number_of_items} items were added.",
     "importing_files_progress_label": "Processing items",
     "uploading_items_progress_label": "Uploading {number_of_items} items",
     "import_information_link_label": "click here",
@@ -963,6 +974,8 @@
     "new_item": "New Item",
     "new_collection": "New Collection",
     "new_third_party_collection": "New Linked Wearables Collection",
+    "type": "Type",
+    "items": "Items",
     "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {
@@ -1044,6 +1057,7 @@
     "forum_post": "Forum post",
     "copy_address": "Copy address",
     "edit_urn": "Edit URN",
+    "edit_in_bulk": "Edit in bulk",
     "copy_urn": "Copy URN",
     "see_in_world": "See in world",
     "unpublished": "This collection is not published yet",
