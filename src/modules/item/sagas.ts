@@ -182,9 +182,10 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, { page, limit, status }))
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-    const paginationStats = allItemPages[0].total
-      ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
-      : {}
+    const paginationStats =
+      allItemPages[0].total !== undefined
+        ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
+        : {}
     // When there is no limit, the result is not paginated so the response is different. The non-paginated ones will be deprecated
     const items = limit ? allItemPages.flatMap(result => result.results) : allItemPages.flat()
     return { items, paginationStats }
@@ -314,7 +315,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* fetchNewCollectionItemsPaginated(collectionId: string, newItemsAmount = 1) {
     const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
-    const { currentPage, limit, total } = paginationData
+    const { currentPage, limit, total } = paginationData || {}
     const newItemPage = Math.ceil((total + newItemsAmount) / limit) // optimistic computation, in case the save is successful
     if (newItemPage !== currentPage) {
       yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: newItemPage })))
