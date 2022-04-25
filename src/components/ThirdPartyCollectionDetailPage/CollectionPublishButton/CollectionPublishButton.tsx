@@ -86,7 +86,7 @@ const CollectionPublishButton = (props: Props) => {
   const isTryingToPublish = [PublishButtonAction.PUBLISH, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(buttonAction)
   const hasEnoughSlots = slots > items.length
 
-  return !isLoadingItemCurations && isTryingToPublish && hasPendingItemCurations ? (
+  return !isLoadingItemCurations && hasPendingItemCurations && (isTryingToPublish || buttonAction === PublishButtonAction.NONE) ? (
     <Popup
       content={underReviewButtonLabel}
       position="bottom center"
