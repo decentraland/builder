@@ -207,21 +207,24 @@
       "cancelled_title": "取消了多个可穿戴项目的创建",
       "failed_title": "多个可穿戴项目创建失败",
       "finished_successfully_subtitle": "伟大的！ 您已添加 {number_of_items} 项",
-      "finished_unsuccessfully_subtitle": "可穿戴物品的创建被打断，但增加了 {number_of_items} 件物品。"
+      "finished_partial_successfully_subtitle": "您已添加 {number_of_items} 个项目，但 {number_of_failed_items} 个失败",
+      "saved_items_table_title": "保存的项目"
     },
     "edit": {
       "title": "批量编辑项目",
       "subtitle": "要编辑现有项目，请使用相同的 URN",
       "successful_title": "更新的项目",
-      "cancelled_title": "取消了多项更新",
       "failed_title": "多个项目更新失败",
+      "cancelled_title": "取消了多项更新",
       "finished_successfully_subtitle": "伟大的！您已更新 {number_of_items} 项",
-      "finished_unsuccessfully_subtitle": "项目的编辑被中断，但有 {number_of_items} 个项目被编辑。"
+      "finished_partial_successfully_subtitle": "您已更新 {number_of_items} 个项目，但 {number_of_failed_items} 个失败。请查看提供的 URN",
+      "saved_items_table_title": "更新项目"
     },
     "wrong_file_extension": "文件扩展名不正确。",
     "asset_file_not_found": "找不到asset.json 文件。",
     "thumbnail_file_not_found": "批量文件必须在其内容中包含 thumbnail.png 文件。",
-    "saved_items_table_title": "保存的可穿戴物品",
+    "not_saved_items_table_title": "Invalid items",
+    "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "asset.json 文件包含此集合的无效 URN",
     "invalid_title": "无效的",
     "valid_title": "有效的档案",

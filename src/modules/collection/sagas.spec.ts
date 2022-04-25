@@ -1390,7 +1390,7 @@ describe('when handling the save of multiple items', () => {
     it('should not put the collection save action', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .not.put(saveCollectionRequest(collection))
-        .dispatch(saveMultipleItemsSuccess(items, fileNames))
+        .dispatch(saveMultipleItemsSuccess(items, fileNames, []))
         .run({ silenceTimeout: true })
     })
   })
@@ -1405,7 +1405,7 @@ describe('when handling the save of multiple items', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([[select(getCollection, items[0].collectionId!), collection]])
         .put(saveCollectionRequest(collection))
-        .dispatch(saveMultipleItemsSuccess(items, fileNames))
+        .dispatch(saveMultipleItemsSuccess(items, fileNames, []))
         .run({ silenceTimeout: true })
     })
   })
