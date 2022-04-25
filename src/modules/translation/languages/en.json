@@ -212,7 +212,8 @@
       "cancelled_title": "Cancelled multiple items creation",
       "failed_title": "Failed multiple items creation",
       "finished_successfully_subtitle": "Great! You've added {number_of_items} items",
-      "finished_unsuccessfully_subtitle": "The creation of items was interrupted, but {number_of_items} items were added."
+      "finished_partial_successfully_subtitle": "You've added {number_of_items} items but {number_of_failed_items} failed",
+      "saved_items_table_title": "Saved items"
     },
     "edit": {
       "title": "Edit items in bulk",
@@ -221,12 +222,14 @@
       "failed_title": "Failed multiple items update",
       "cancelled_title": "Cancelled multiple items update",
       "finished_successfully_subtitle": "Great! You've updated {number_of_items} items",
-      "finished_unsuccessfully_subtitle": "The edit of items was interrupted, but {number_of_items} items were edited."
+      "finished_partial_successfully_subtitle": "You've updated {number_of_items} items but {number_of_failed_items} failed. Please review the URNs provided",
+      "saved_items_table_title": "Updated items"
     },
     "wrong_file_extension": "File extension is not correct.",
     "asset_file_not_found": "The asset.json file was not found.",
     "thumbnail_file_not_found": "Bulk files must contain a thumbnail.png file in their content.",
-    "saved_items_table_title": "Saved items",
+    "not_saved_items_table_title": "Invalid items",
+    "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "The asset.json file has an invalid URN for this collection",
     "invalid_title": "INVALID",
     "valid_title": "VALID",

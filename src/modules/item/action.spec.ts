@@ -2,11 +2,9 @@ import { LocalItem } from '@dcl/builder-client'
 import {
   saveMultipleItemsRequest,
   SAVE_MULTIPLE_ITEMS_REQUEST,
-  saveMultipleItemsFailure,
   saveMultipleItemsSuccess,
   saveMultipleItemsCancelled,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
-  SAVE_MULTIPLE_ITEMS_FAILURE,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
   cancelSaveMultipleItems,
   CANCEL_SAVE_MULTIPLE_ITEMS,
@@ -16,11 +14,13 @@ import {
 import { BuiltFile, Item } from './types'
 
 let savedFiles: string[]
+let cancelledFiles: string[]
 let savedItems: Item[]
 let builtFiles: BuiltFile<Blob>[]
 
 beforeEach(() => {
   savedFiles = ['aFile', 'anotherFile']
+  cancelledFiles = ['aCancelledItem']
   builtFiles = [
     {
       item: {} as LocalItem,
@@ -47,28 +47,14 @@ describe('when creating the action to request the saving of multiple items', () 
 
 describe('when creating the action to signal the success of saving multiple items', () => {
   it('should return an action signaling the success of saving multiple items', () => {
-    expect(saveMultipleItemsSuccess(savedItems, savedFiles)).toEqual({
+    expect(saveMultipleItemsSuccess(savedItems, savedFiles, [])).toEqual({
       error: undefined,
       meta: undefined,
       type: SAVE_MULTIPLE_ITEMS_SUCCESS,
       payload: {
         items: savedItems,
-        fileNames: savedFiles
-      }
-    })
-  })
-})
-
-describe('when creating the action to signal the failure of saving multiple items', () => {
-  it('should return an action signaling the failure of saving multiple items', () => {
-    expect(saveMultipleItemsFailure('someError', savedItems, savedFiles)).toEqual({
-      error: undefined,
-      meta: undefined,
-      type: SAVE_MULTIPLE_ITEMS_FAILURE,
-      payload: {
-        error: 'someError',
-        items: savedItems,
-        fileNames: savedFiles
+        savedFileNames: savedFiles,
+        notSavedFileNames: []
       }
     })
   })
@@ -76,13 +62,15 @@ describe('when creating the action to signal the failure of saving multiple item
 
 describe('when creating the action to signal the cancellation of saving multiple items', () => {
   it('should return an action signaling the cancellation of saving multiple items', () => {
-    expect(saveMultipleItemsCancelled(savedItems, savedFiles)).toEqual({
+    expect(saveMultipleItemsCancelled(savedItems, savedFiles, [], cancelledFiles)).toEqual({
       error: undefined,
       meta: undefined,
       type: SAVE_MULTIPLE_ITEMS_CANCELLED,
       payload: {
         items: savedItems,
-        fileNames: savedFiles
+        savedFileNames: savedFiles,
+        notSavedFileNames: [],
+        cancelledFileNames: cancelledFiles
       }
     })
   })
