@@ -208,15 +208,32 @@
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}."
     }
   },
-  "create_multiple_items_modal": {
-    "title": "Crea multiples items",
-    "successful_title": "Items creados",
-    "cancelled_title": "Creación de múltiples items cancelada",
-    "failed_title": "Creación de múltiples items fallida",
+  "create_and_edit_multiple_items_modal": {
+    "create": {
+      "title": "Crea multiples items",
+      "successful_title": "Items creados",
+      "cancelled_title": "Creación de múltiples items cancelada",
+      "failed_title": "Creación de múltiples items fallida",
+      "finished_successfully_subtitle": "Excelente! Agregaste {number_of_items} items",
+      "finished_partial_successfully_subtitle": "Agregaste {number_of_items} items pero {number_of_failed_items} fallaron",
+      "saved_items_table_title": "Items guardados"
+    },
+    "edit": {
+      "title": "Editar multiples items",
+      "subtitle": "Para poder editar un item existente, use la misma URN",
+      "successful_title": "Items editados",
+      "cancelled_title": "Edición de múltiples items cancelada",
+      "failed_title": "Edición de múltiples items fallida",
+      "finished_successfully_subtitle": "Excelente! Editaste {number_of_items} items",
+      "finished_partial_successfully_subtitle": "Agregaste {number_of_items} items pero {number_of_failed_items} fallaron. Por favor revise las URNs subidas",
+      "saved_items_table_title": "Items actualizados"
+    },
     "wrong_file_extension": "La extensión del artchivo no es correcta.",
     "asset_file_not_found": "El archivo asset.json no se encontró.",
     "thumbnail_file_not_found": "Los ZIPs en la creación múltiple deben contener un archivo thumbnail.png.",
     "saved_items_table_title": "Items salvados",
+    "not_saved_items_table_title": "Invalid items",
+    "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "El archivo asset.json contiene una URN inválida para esta colección",
     "invalid_title": "INVALIDOS",
     "valid_title": "VALIDOS",
@@ -224,8 +241,6 @@
     "upload_items_button": "Subir items",
     "only_valid_items_info": "Sólo los items válidos serán subidos",
     "done_button": "Listo",
-    "finished_successfully_subtitle": "Excelente! Agregaste {number_of_items} items",
-    "finished_unsuccessfully_subtitle": "La creación de items fue interrumpida, igualmente {number_of_items} items fueron agregados en el proceso.",
     "importing_files_progress_label": "Procesando items",
     "uploading_items_progress_label": "Subiendo {number_of_items} items",
     "import_information_link_label": "haz click aquí",
@@ -975,6 +990,8 @@
     "new_item": "Nuevo item",
     "new_collection": "Nueva colección",
     "new_third_party_collection": "Nueva colección externa",
+    "type": "Tipo",
+    "items": "Items",
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "curation_page": {
@@ -1056,6 +1073,7 @@
     "forum_post": "Post en el foro",
     "copy_address": "Copiar dirección",
     "edit_urn": "Editar URN",
+    "edit_in_bulk": "Editar en masa",
     "copy_urn": "Copiar URN",
     "see_in_world": "Ver en el mundo",
     "unpublished": "Esta colleción aún no está publicada",

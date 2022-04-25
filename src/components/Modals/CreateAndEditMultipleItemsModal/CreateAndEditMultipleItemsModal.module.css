@@ -8,6 +8,12 @@
   border-radius: 8px;
   background-color: rgba(var(--dark-raw), 0.48);
   padding: 20px;
+  margin-bottom: 16px;
+  padding-top: 0;
+}
+
+.itemDropZoneContainer {
+  padding-top: 20px;
 }
 
 .rejectedFileReason {

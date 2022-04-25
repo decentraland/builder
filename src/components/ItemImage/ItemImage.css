@@ -6,7 +6,7 @@
   border-radius: 5px;
 }
 
-.ItemImage.image-wrapper .image {
+.ItemImage.image-wrapper .item-image {
   width: auto;
   max-width: 100%;
 }

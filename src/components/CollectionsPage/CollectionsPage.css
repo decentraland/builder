@@ -92,6 +92,21 @@
   transform: translateY(0px);
 }
 
+.CollectionsPage .Chip {
+  padding: 4px;
+  height: 28px;
+  width: 32px;
+}
+
+.CollectionsPage .Chip.grid {
+  border-radius: 4px 0px 0px 4px;
+  margin-left: 16px;
+}
+
+.CollectionsPage .Chip.list {
+  border-radius: 0px 4px 4px 0px;
+}
+
 .CollectionsPage .is-card {
   transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
   box-shadow: none;

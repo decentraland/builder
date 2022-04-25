@@ -2,6 +2,7 @@ import PQueue from 'p-queue'
 import { Contract } from 'ethers'
 import { getLocation, push, replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
+import { channel } from 'redux-saga'
 import { ChainId, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -72,7 +73,6 @@ import {
   saveMultipleItemsSuccess,
   CANCEL_SAVE_MULTIPLE_ITEMS,
   saveMultipleItemsCancelled,
-  saveMultipleItemsFailure,
   rescueItemsChunkSuccess,
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FetchItemsSuccessAction,
@@ -82,7 +82,9 @@ import {
   DeleteItemSuccessAction,
   fetchCollectionItemsRequest,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
-  SaveMultipleItemsSuccessAction
+  SaveMultipleItemsSuccessAction,
+  SaveMultipleItemsCancelledAction,
+  SAVE_MULTIPLE_ITEMS_CANCELLED
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -111,12 +113,16 @@ import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystI
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ItemPaginationData } from './reducer'
 
+export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
+
 export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
+  const createOrEditCancelledItemsChannel = channel()
+  const createOrEditProgressChannel = channel()
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
-  yield takeEvery(SAVE_MULTIPLE_ITEMS_SUCCESS, handleSaveMultipleItemsSuccess)
+  yield takeEvery([SAVE_MULTIPLE_ITEMS_SUCCESS, SAVE_MULTIPLE_ITEMS_CANCELLED], handleSaveMultipleItemsSuccess)
   yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
@@ -129,6 +135,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
   yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
   yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
+  yield takeEvery(createOrEditProgressChannel, handleCreateOrEditProgress)
+  yield takeEvery(createOrEditCancelledItemsChannel, handleCreateOrEditCancelledItems)
   yield takeLatestCancellable(
     { initializer: SAVE_MULTIPLE_ITEMS_REQUEST, cancellable: CANCEL_SAVE_MULTIPLE_ITEMS },
     handleSaveMultipleItemsRequest
@@ -174,9 +182,10 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, { page, limit, status }))
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-    const paginationStats = allItemPages[0].total
-      ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
-      : {}
+    const paginationStats =
+      allItemPages[0].total !== undefined
+        ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
+        : undefined
     // When there is no limit, the result is not paginated so the response is different. The non-paginated ones will be deprecated
     const items = limit ? allItemPages.flatMap(result => result.results) : allItemPages.flat()
     return { items, paginationStats }
@@ -187,7 +196,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const isFetchingMultiplePages = Array.isArray(page)
 
     try {
-      const { items, paginationStats }: { items: Item[]; paginationStats: PaginationStats } = yield call(
+      const { items, paginationStats }: { items: Item[]; paginationStats?: PaginationStats } = yield call(
         fetchCollectionItemsWithBatch,
         collectionId,
         isFetchingMultiplePages ? page : [page],
@@ -200,43 +209,65 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
+  function* handleCreateOrEditProgress(action: { progress: number }) {
+    yield put(updateProgressSaveMultipleItems(action.progress))
+  }
+
+  function* handleCreateOrEditCancelledItems(action: SaveMultipleItemsCancelledAction['payload']) {
+    const { items, savedFileNames, notSavedFileNames, cancelledFileNames } = action
+    yield put(saveMultipleItemsCancelled(items, savedFileNames, notSavedFileNames, cancelledFileNames))
+  }
+
   function* handleSaveMultipleItemsRequest(action: SaveMultipleItemsRequestAction) {
     const { builtFiles } = action.payload
+    const fileNamesSucceeded: string[] = []
+    const fileNamesFailed: string[] = []
     const remoteItems: RemoteItem[] = []
-    const fileNames: string[] = []
-
-    // Upload files sequentially to avoid DoSing the server
+    const queue = new PQueue({ concurrency: SAVE_AND_EDIT_FILES_BATCH_SIZE })
     try {
-      for (const [index, builtFile] of builtFiles.entries()) {
-        const remoteItem: RemoteItem = yield call([builder, 'upsertItem'], builtFile.item, builtFile.newContent)
-        remoteItems.push(remoteItem)
-        fileNames.push(builtFile.fileName)
-        yield put(updateProgressSaveMultipleItems(Math.round(((index + 1) / builtFiles.length) * 100)))
+      const promisesOfItemsToSave: (() => Promise<void>)[] = []
+
+      for (const [_index, builtFile] of builtFiles.entries()) {
+        promisesOfItemsToSave.push(async () => {
+          try {
+            const remoteItem: RemoteItem = await builder.upsertItem(builtFile.item, builtFile.newContent)
+            fileNamesSucceeded.push(builtFile.fileName)
+            remoteItems.push(remoteItem)
+          } catch (error) {
+            fileNamesFailed.push(builtFile.fileName)
+          }
+        })
       }
+
+      queue.on('next', () => {
+        createOrEditProgressChannel.put({ progress: Math.round(((builtFiles.length - queue.pending) / builtFiles.length) * 100) })
+      })
+
+      yield queue.addAll(promisesOfItemsToSave)
 
       yield put(
         saveMultipleItemsSuccess(
           remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
-          fileNames
-        )
-      )
-    } catch (error) {
-      yield put(
-        saveMultipleItemsFailure(
-          error.message,
-          remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
-          fileNames
+          fileNamesSucceeded,
+          fileNamesFailed
         )
       )
     } finally {
       const wasCancelled: boolean = yield cancelled()
       if (wasCancelled) {
-        yield put(
-          saveMultipleItemsCancelled(
-            remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
-            fileNames
+        queue.clear()
+        // using on idle to wait until the ongoing promises are finished
+        queue.on('idle', () => {
+          const cancelledFiles = builtFiles.filter(
+            builtFile => !fileNamesSucceeded.includes(builtFile.fileName) && !fileNamesFailed.includes(builtFile.fileName)
           )
-        )
+          createOrEditCancelledItemsChannel.put({
+            items: remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
+            savedFileNames: fileNamesSucceeded,
+            notSavedFileNames: fileNamesFailed,
+            cancelledFileNames: cancelledFiles.map(builtFile => builtFile.fileName)
+          })
+        })
       }
     }
   }
@@ -298,7 +329,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* fetchNewCollectionItemsPaginated(collectionId: string, newItemsAmount = 1) {
     const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
-    const { currentPage, limit, total } = paginationData
+    const { currentPage, limit, total } = paginationData || {}
     const newItemPage = Math.ceil((total + newItemsAmount) / limit) // optimistic computation, in case the save is successful
     if (newItemPage !== currentPage) {
       yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: newItemPage })))
@@ -309,9 +340,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleSaveMultipleItemsSuccess(action: SaveMultipleItemsSuccessAction) {
     const { items } = action.payload
-    const collectionId = items[0].collectionId!
+    const collectionId = items[0]?.collectionId!
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
-    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+    if (items.length > 0 && location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId, items.length)
     }
   }

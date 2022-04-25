@@ -1,7 +1,6 @@
 import {
   clearSaveMultipleItems,
   saveMultipleItemsCancelled,
-  saveMultipleItemsFailure,
   saveMultipleItemsRequest,
   saveMultipleItemsSuccess
 } from 'modules/item/actions'
@@ -21,7 +20,9 @@ describe('when reducing the action to clear the state', () => {
         {
           state: MultipleItemsSaveState.UPLOADING,
           progress: 50,
-          savedItemsFiles: ['file1', 'file2']
+          savedItemsFiles: ['file1', 'file2'],
+          cancelledItemFiles: ['file3'],
+          notSavedItemsFiles: ['file4', 'file5']
         },
         clearSaveMultipleItems()
       )
@@ -38,32 +39,33 @@ describe('when reducing the action to request the start of the multiple items sa
   })
 })
 
-describe('when reducing the action that signal the failure of the multiple items save', () => {
-  it('should change the state to finished unsuccessfully and store the file names of the saved items', () => {
-    expect(createMultipleItemsReducer(INITIAL_STATE, saveMultipleItemsFailure('someError', [], ['file1', 'file2']))).toEqual({
-      ...INITIAL_STATE,
-      state: MultipleItemsSaveState.FINISHED_UNSUCCESSFULLY,
-      savedItemsFiles: ['file1', 'file2']
-    })
-  })
-})
-
 describe('when reducing the action that signal the cancelling of the multiple items save', () => {
   it('should change the state to cancelled and store the file names of the saved items', () => {
-    expect(createMultipleItemsReducer(INITIAL_STATE, saveMultipleItemsCancelled([], ['file1', 'file2']))).toEqual({
+    expect(createMultipleItemsReducer(INITIAL_STATE, saveMultipleItemsCancelled([], ['file1', 'file2'], [], ['file3', 'file4']))).toEqual({
       ...INITIAL_STATE,
       state: MultipleItemsSaveState.CANCELLED,
-      savedItemsFiles: ['file1', 'file2']
+      savedItemsFiles: ['file1', 'file2'],
+      cancelledItemFiles: ['file3', 'file4']
     })
   })
 })
 
 describe('when reducing the action that signals the successful multiple items save', () => {
   it('should change the state to finished successfully and store the file names of the saved items', () => {
-    expect(createMultipleItemsReducer(INITIAL_STATE, saveMultipleItemsSuccess([], ['file1', 'file2']))).toEqual({
+    expect(createMultipleItemsReducer(INITIAL_STATE, saveMultipleItemsSuccess([], ['file1', 'file2'], []))).toEqual({
       ...INITIAL_STATE,
       state: MultipleItemsSaveState.FINISHED_SUCCESSFULLY,
       savedItemsFiles: ['file1', 'file2']
+    })
+  })
+})
+
+describe('when reducing the action that signal the successfull multiple multiple items save but some failed', () => {
+  it('should change the state to finished unsuccessfully and store the file names of the saved items', () => {
+    expect(createMultipleItemsReducer(INITIAL_STATE, saveMultipleItemsSuccess([], [], ['file1', 'file2']))).toEqual({
+      ...INITIAL_STATE,
+      state: MultipleItemsSaveState.FINISHED_SUCCESSFULLY,
+      notSavedItemsFiles: ['file1', 'file2']
     })
   })
 })
