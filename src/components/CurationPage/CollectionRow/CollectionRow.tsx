@@ -21,6 +21,12 @@ export default class CollectionRow extends React.PureComponent<Props> {
     event.stopPropagation()
   }
 
+  handleAssignToMe = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    // TODO: Add logic to open assignment confirmation modal
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
   handleTableRowClick = () => {
     const { onNavigate, collection } = this.props
     onNavigate(locations.itemEditor({ collectionId: collection.id, isReviewing: 'true' }))
@@ -63,7 +69,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, itemCount, curation } = this.props
+    const { address, collection, itemCount, curation } = this.props
     const createdAtDate = new Date(curation?.createdAt || collection.createdAt)
 
     return (
@@ -87,7 +93,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
               : t('collection_row.type_standard')}
           </div>
         </Table.Cell>
-        <Table.Cell width={3}>
+        <Table.Cell width={2}>
           <div>{getCollectionType(collection) === CollectionType.THIRD_PARTY ? '-' : <Profile textOnly address={collection.owner} />}</div>
         </Table.Cell>
         <Table.Cell width={3}>
@@ -97,7 +103,27 @@ export default class CollectionRow extends React.PureComponent<Props> {
           </div>
         </Table.Cell>
         <Table.Cell width={2}>
+          <div className="actions text-centered">{this.renderCurationState()}</div>
+        </Table.Cell>
+        <Table.Cell width={4}>
           <div>
+            {curation?.assignee ? (
+              <>
+                <Profile textOnly address={curation.assignee} />
+                {address === curation.assignee ? <> ({t('collection_row.you')})</> : null}
+              </>
+            ) : (
+              <div className="assignee-container">
+                {t('collection_row.unassigned')}
+                <span className="link" onClick={this.handleAssignToMe}>
+                  {t('collection_row.assign_to_me')}
+                </span>
+              </div>
+            )}
+          </div>
+        </Table.Cell>
+        <Table.Cell width={2}>
+          <div className="text-centered">
             {collection.forumLink ? (
               <span className="link" onClick={this.handleNavigateToForum}>
                 {t('collection_row.link')}
@@ -106,9 +132,6 @@ export default class CollectionRow extends React.PureComponent<Props> {
               t('collection_row.no_forum_post')
             )}
           </div>
-        </Table.Cell>
-        <Table.Cell width={2}>
-          <div className="actions">{this.renderCurationState()}</div>
         </Table.Cell>
       </Table.Row>
     )

@@ -1009,6 +1009,8 @@
     "collection": "Colección",
     "published": "Publicado",
     "date": "Fecha",
+    "assignee": "Asignado a",
+    "status": "Estado",
     "discussion": "Discusión",
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Dueño",
@@ -1021,7 +1023,10 @@
     "no_forum_post": "No hay post",
     "approved": "Aprobada",
     "rejected": "Rechazada",
-    "disabled": "Deshabilitada"
+    "disabled": "Deshabilitada",
+    "unassigned": "Sin asignar",
+    "assign_to_me": "Asignar a mí",
+    "you": "usted"
   },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",

@@ -989,6 +989,8 @@
     "collection": "收藏",
     "published": "发表",
     "date": "日期",
+    "assignee": "受让人",
+    "status": "地位",
     "discussion": "讨论",
     "items": "{count} 项",
     "owner": "所有者",
@@ -1001,7 +1003,10 @@
     "no_forum_post": "尚未发布到论坛",
     "approved": "已批准",
     "rejected": "拒绝了",
-    "disabled": "禁用"
+    "disabled": "禁用",
+    "unassigned": "未分配",
+    "assign_to_me": "分配给我",
+    "you": "你"
   },
   "item_detail_page": {
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",

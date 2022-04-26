@@ -163,6 +163,7 @@ type BaseCuration = {
 
 export type RemoteCollectionCuration = {
   collection_id: string
+  assignee?: string
 } & BaseCuration
 
 export type RemoteItemCuration = {
@@ -418,7 +419,8 @@ function getBaseCurationFields(remoteCuration: RemoteCollectionCuration | Remote
 function fromRemoteCollectionCuration(remoteCuration: RemoteCollectionCuration): CollectionCuration {
   return {
     ...getBaseCurationFields(remoteCuration),
-    collectionId: remoteCuration.collection_id
+    collectionId: remoteCuration.collection_id,
+    assignee: remoteCuration.assignee
   }
 }
 
