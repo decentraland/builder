@@ -9,7 +9,6 @@ import {
   ExportProjectRequestAction,
   ExportProjectSuccessAction
 } from 'modules/project/actions'
-import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
 import { hasBodyShape } from 'modules/item/utils'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
@@ -44,8 +43,8 @@ import {
   SET_BODY_SHAPE,
   SetItemsAction,
   SET_ITEMS,
-  SetAvatarAnimationAction,
-  SET_AVATAR_ANIMATION,
+  SetEmoteAction,
+  SET_EMOTE,
   SetSkinColorAction,
   SET_SKIN_COLOR,
   SetEyeColorAction,
@@ -61,8 +60,9 @@ import {
   FetchBaseWearablesRequestAction,
   FetchBaseWearablesFailureAction
 } from './actions'
-import { AvatarAnimation, Gizmo } from './types'
+import { Gizmo } from './types'
 import { pickRandom, filterWearables } from './utils'
+import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -83,12 +83,12 @@ export type EditorState = {
     total: number
   }
   bodyShape: WearableBodyShape
-  avatarAnimation: AvatarAnimation
+  emote: PreviewEmote
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4
   baseWearables: Wearable[]
-  selectedBaseWearables: Record<WearableBodyShape, Record<string, Wearable | null>> | null
+  selectedBaseWearablesByBodyShape: Record<WearableBodyShape, Record<string, Wearable | null>> | null
   visibleItemIds: string[]
   loading: LoadingState
   fetchingBaseWearablesError: string | null
@@ -112,13 +112,13 @@ export const INITIAL_STATE: EditorState = {
     progress: 0,
     total: 0
   },
-  bodyShape: pickRandom(Object.values(WearableBodyShape)),
-  avatarAnimation: AvatarAnimation.IDLE,
+  bodyShape: pickRandom([WearableBodyShape.MALE, WearableBodyShape.FEMALE]),
+  emote: PreviewEmote.IDLE,
   skinColor: pickRandom(getSkinColors()),
   eyeColor: pickRandom(getEyeColors()),
   hairColor: pickRandom(getHairColors()),
   baseWearables: [],
-  selectedBaseWearables: null,
+  selectedBaseWearablesByBodyShape: null,
   visibleItemIds: [],
   loading: [],
   fetchingBaseWearablesError: null
@@ -143,7 +143,7 @@ export type EditorReducerAction =
   | LoadAssetPacksSuccessAction
   | ToggleMultiselectionAction
   | SetBodyShapeAction
-  | SetAvatarAnimationAction
+  | SetEmoteAction
   | SetItemsAction
   | DeleteItemSuccessAction
   | SetSkinColorAction
@@ -282,10 +282,10 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         bodyShape: action.payload.bodyShape
       }
     }
-    case SET_AVATAR_ANIMATION: {
+    case SET_EMOTE: {
       return {
         ...state,
-        avatarAnimation: action.payload.animation
+        emote: action.payload.emote
       }
     }
     case SET_SKIN_COLOR: {
@@ -310,10 +310,10 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       const { category, bodyShape, wearable } = action.payload
       return {
         ...state,
-        selectedBaseWearables: {
-          ...(state.selectedBaseWearables ?? ({} as Record<WearableBodyShape, Record<string, Wearable | null>>)),
+        selectedBaseWearablesByBodyShape: {
+          ...(state.selectedBaseWearablesByBodyShape ?? ({} as Record<WearableBodyShape, Record<string, Wearable | null>>)),
           [bodyShape]: {
-            ...state.selectedBaseWearables![bodyShape],
+            ...state.selectedBaseWearablesByBodyShape![bodyShape],
             [category]: wearable
           }
         }
@@ -341,7 +341,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         fetchingBaseWearablesError: null,
         loading: loadingReducer(state.loading, action),
         // Initialize the selectedBaseWearables randomly
-        selectedBaseWearables: {
+        selectedBaseWearablesByBodyShape: {
           [WearableBodyShape.FEMALE]: {
             [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, WearableBodyShape.FEMALE)),
             [WearableCategory.FACIAL_HAIR]: null,

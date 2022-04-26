@@ -1,5 +1,6 @@
-import { Wearable } from 'decentraland-ecs'
 import { createSelector } from 'reselect'
+import { Wearable } from 'decentraland-ecs'
+import { WearableBodyShape } from '@dcl/schemas'
 
 import { RootState } from 'modules/common/types'
 import { ComponentType, Scene } from 'modules/scene/types'
@@ -15,7 +16,7 @@ import { Asset } from 'modules/asset/types'
 import { ItemState } from 'modules/item/reducer'
 import { getData } from 'modules/item/selectors'
 import { Item } from 'modules/item/types'
-import { SelectedBaseWearables } from './types'
+import { SelectedBaseWearablesByBodyShape } from './types'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 
 const getLoading = (state: RootState) => getState(state).loading
@@ -34,12 +35,21 @@ export const isScreenshotReady = (state: RootState) => getState(state).isScreens
 export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
 export const getBodyShape = (state: RootState) => getState(state).bodyShape
-export const getAvatarAnimation = (state: RootState) => getState(state).avatarAnimation
+export const getEmote = (state: RootState) => getState(state).emote
 export const getSkinColor = (state: RootState) => getState(state).skinColor
 export const getEyeColor = (state: RootState) => getState(state).eyeColor
 export const getHairColor = (state: RootState) => getState(state).hairColor
 export const getBaseWearables = (state: RootState): Wearable[] => getState(state).baseWearables
-export const getSelectedBaseWearables = (state: RootState): SelectedBaseWearables | null => getState(state).selectedBaseWearables
+export const getSelectedBaseWearablesByBodyShape = (state: RootState): SelectedBaseWearablesByBodyShape | null =>
+  getState(state).selectedBaseWearablesByBodyShape
+export const getSelectedBaseWearables = createSelector<
+  RootState,
+  WearableBodyShape,
+  SelectedBaseWearablesByBodyShape | null,
+  Record<string, Wearable | null> | null
+>(getBodyShape, getSelectedBaseWearablesByBodyShape, (bodyShape, selectedWearablesByBodyShape) =>
+  selectedWearablesByBodyShape ? selectedWearablesByBodyShape[bodyShape] : null
+)
 export const getFetchingBaseWearablesError = (state: RootState) => getState(state).fetchingBaseWearablesError
 export const isLoadingBaseWearables = (state: RootState): boolean =>
   isLoadingType(getLoading(state), FETCH_BASE_WEARABLES_REQUEST) ||

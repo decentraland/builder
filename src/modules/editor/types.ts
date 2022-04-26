@@ -1,6 +1,5 @@
-import { WearableBodyShape } from 'modules/item/types'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
-import { WearableCategory } from 'modules/item/types'
 
 export enum Gizmo {
   MOVE = 'MOVE',
@@ -35,8 +34,7 @@ export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightA
 export enum PreviewType {
   PROJECT = 'project',
   PUBLIC = 'public',
-  POOL = 'pool',
-  WEARABLE = 'wearable'
+  POOL = 'pool'
 }
 
 export type OpenEditorOptions = {
@@ -44,18 +42,7 @@ export type OpenEditorOptions = {
   type: PreviewType
 }
 
-export enum AvatarAnimation {
-  IDLE = 'idle',
-  WAVE = 'wave',
-  FISTPUMP = 'fistpump',
-  ROBOT = 'robot',
-  RAISEHAND = 'raiseHand',
-  CLAP = 'clap',
-  MONEY = 'money',
-  KISS = 'kiss'
-}
-
-export type SelectedBaseWearables = Record<WearableBodyShape, Record<string, Wearable | null>>
+export type SelectedBaseWearablesByBodyShape = Record<WearableBodyShape, Record<string, Wearable | null>>
 
 export type CatalystWearable = {
   id: string

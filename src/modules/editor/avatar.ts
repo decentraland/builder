@@ -1,5 +1,5 @@
+import { WearableBodyShape } from '@dcl/schemas'
 import { Color4 } from 'decentraland-ecs'
-import { WearableBodyShape } from 'modules/item/types'
 
 export function getSkinColors() {
   return [

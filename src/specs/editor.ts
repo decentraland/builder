@@ -1,6 +1,6 @@
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { Wearable } from 'decentraland-ecs'
 import { CatalystWearable } from 'modules/editor/types'
-import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 
 export const wearable: Wearable = {
   id: 'urn:decentraland:off-chain:base-avatars:aviatorstyle',

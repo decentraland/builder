@@ -1,6 +1,6 @@
+import { WearableCategory } from '@dcl/schemas'
 import { ThumbnailType } from 'lib/getModelData'
 import { InvalidContentPath, InvalidEnumValue } from 'modules/item/errors'
-import { WearableCategory } from 'modules/item/types'
 import { ItemAssetJson } from './CreateSingleItemModal.types'
 
 export const getThumbnailType = (category: WearableCategory) => {
@@ -22,7 +22,7 @@ export function validatePath(path: keyof ItemAssetJson, assetJson: ItemAssetJson
   }
 }
 
-export function validateEnum(name: keyof ItemAssetJson, assetJson: ItemAssetJson, values: string[] = []) {
+export function validateEnum(name: keyof ItemAssetJson, assetJson: ItemAssetJson, values: any[] = []) {
   const value = assetJson[name]
   if (value && !values.includes(value)) {
     throw new InvalidEnumValue(value!, values, name)

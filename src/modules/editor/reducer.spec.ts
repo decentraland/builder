@@ -1,5 +1,6 @@
+import { WearableBodyShape } from '@dcl/schemas'
 import { Wearable } from 'decentraland-ecs'
-import { WearableBodyShape, WearableCategory } from 'modules/item/types'
+import { WearableCategory } from 'modules/item/types'
 import { anotherWearable, convertWearable, wearable } from 'specs/editor'
 import { fetchBaseWearablesFailure, fetchBaseWearablesRequest, fetchBaseWearablesSuccess, setBaseWearable } from './actions'
 import { editorReducer, EditorState, INITIAL_STATE } from './reducer'
@@ -16,7 +17,7 @@ describe('when reducing the action that sets the selected base wearable', () => 
   beforeEach(() => {
     state = {
       ...state,
-      selectedBaseWearables: {
+      selectedBaseWearablesByBodyShape: {
         [WearableBodyShape.FEMALE]: {
           [anotherWearable.category]: anotherWearable
         }
@@ -28,7 +29,7 @@ describe('when reducing the action that sets the selected base wearable', () => 
     expect(editorReducer(state, setBaseWearable(wearable.category as WearableCategory, WearableBodyShape.MALE, wearable))).toEqual({
       ...state,
       selectedBaseWearables: {
-        ...state.selectedBaseWearables,
+        ...state.selectedBaseWearablesByBodyShape,
         [WearableBodyShape.MALE]: {
           [wearable.category]: wearable
         }

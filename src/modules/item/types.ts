@@ -1,5 +1,5 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
-import { ThirdPartyWearable, StandardWearable } from '@dcl/schemas'
+import { ThirdPartyWearable, StandardWearable, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
@@ -32,28 +32,6 @@ export enum ItemRarity {
   UNCOMMON = 'uncommon',
   COMMON = 'common'
 }
-
-export enum WearableCategory {
-  EARRING = 'earring',
-  EYEWEAR = 'eyewear',
-  EYEBROWS = 'eyebrows',
-  EYES = 'eyes',
-  FACIAL_HAIR = 'facial_hair',
-  BODY_SHAPE = 'body_shape',
-  FEET = 'feet',
-  HAIR = 'hair',
-  HAT = 'hat',
-  HEAD = 'head',
-  HELMET = 'helmet',
-  LOWER_BODY = 'lower_body',
-  MASK = 'mask',
-  MOUTH = 'mouth',
-  UPPER_BODY = 'upper_body',
-  TIARA = 'tiara',
-  TOP_HEAD = 'top_head',
-  SKIN = 'skin'
-}
-
 export enum EmoteCategory {
   SIMPLE = 'simple',
   LOOP = 'loop'
@@ -72,12 +50,6 @@ export enum BodyShapeType {
   MALE = 'male',
   FEMALE = 'female'
 }
-
-export enum WearableBodyShape {
-  MALE = 'urn:decentraland:off-chain:base-avatars:BaseMale',
-  FEMALE = 'urn:decentraland:off-chain:base-avatars:BaseFemale'
-}
-
 export enum WearableBodyShapeType {
   MALE = 'BaseMale',
   FEMALE = 'BaseFemale'

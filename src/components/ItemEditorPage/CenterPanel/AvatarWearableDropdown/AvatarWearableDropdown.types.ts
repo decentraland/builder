@@ -1,5 +1,5 @@
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { Wearable } from 'decentraland-ecs'
-import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 
 export type Props = {
   wearable: Wearable | null

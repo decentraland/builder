@@ -2,16 +2,17 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import {
   closeEditor,
-  setAvatarAnimation,
+  setEmote,
   setBaseWearable,
   setBodyShape,
   setEyeColor,
   setHairColor,
-  setSkinColor
+  setSkinColor,
+  fetchBaseWearablesRequest
 } from 'modules/editor/actions'
 import {
-  getAvatarAnimation,
-  getSelectedBaseWearables,
+  getEmote,
+  getSelectedBaseWearablesByBodyShape,
   getBodyShape,
   getEyeColor,
   getHairColor,
@@ -23,25 +24,26 @@ import CenterPanel from './CenterPanel'
 
 const mapState = (state: RootState): MapStateProps => {
   const bodyShape = getBodyShape(state)
-  const selectedBaseWearables = getSelectedBaseWearables(state)
+  const selectedBaseWearablesByBodyShape = getSelectedBaseWearablesByBodyShape(state)
   return {
     bodyShape,
-    bodyShapeBaseWearables: selectedBaseWearables ? selectedBaseWearables[bodyShape] : null,
+    selectedBaseWearables: selectedBaseWearablesByBodyShape ? selectedBaseWearablesByBodyShape[bodyShape] : null,
     skinColor: getSkinColor(state),
     eyeColor: getEyeColor(state),
     hairColor: getHairColor(state),
-    avatarAnimation: getAvatarAnimation(state),
+    emote: getEmote(state),
     visibleItems: getVisibleItems(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetBodyShape: bodyShape => dispatch(setBodyShape(bodyShape)),
-  onSetAvatarAnimation: animation => dispatch(setAvatarAnimation(animation)),
+  onSetAvatarAnimation: animation => dispatch(setEmote(animation)),
   onSetSkinColor: color => dispatch(setSkinColor(color)),
   onSetEyeColor: color => dispatch(setEyeColor(color)),
   onSetHairColor: color => dispatch(setHairColor(color)),
   onSetBaseWearable: (category, bodyShape, wearable) => dispatch(setBaseWearable(category, bodyShape, wearable)),
+  onFetchBaseWearables: () => dispatch(fetchBaseWearablesRequest()),
   onClose: () => dispatch(closeEditor())
 })
 

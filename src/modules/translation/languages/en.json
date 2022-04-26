@@ -134,15 +134,17 @@
     "wearable": "Wearable",
     "smart_wearable": "Smart Wearable"
   },
-  "avatar_animations": {
+  "emotes": {
     "idle": "Idle",
-    "wave": "Wave",
-    "fistpump": "Fistpump",
-    "robot": "Dance",
-    "raiseHand": "Raise Hand",
     "clap": "Clap",
+    "dab": "Dab",
+    "dance": "Dance",
+    "fashion": "Try On",
+    "fashion-2": "Chic",
+    "fashion-3": "Fashionista",
+    "fashion-4": "Spotlight",
     "money": "Money",
-    "kiss": "Kiss"
+    "love": "Love"
   },
   "create_collection_modal": {
     "title": "New Collection",

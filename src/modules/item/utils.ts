@@ -18,12 +18,10 @@ import {
   ItemRarity,
   ItemType,
   WearableData,
-  WearableBodyShape,
   BodyShapeType,
   RARITY_MAX_SUPPLY,
   RARITY_COLOR_LIGHT,
   RARITY_COLOR,
-  WearableCategory,
   WearableBodyShapeType,
   IMAGE_CATEGORIES,
   THUMBNAIL_PATH,
@@ -37,6 +35,7 @@ import {
   EmoteCategory,
   EmoteData
 } from './types'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -312,7 +311,7 @@ export function isModelCategory(category: WearableCategory) {
 }
 
 export function getModelCategories() {
-  return Object.values(WearableCategory).filter(category => isModelCategory(category))
+  return Object.values(WearableCategory).filter(category => typeof category === 'string' && isModelCategory(category)) as WearableCategory[]
 }
 
 export function getSkinHiddenCategories() {

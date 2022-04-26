@@ -1,9 +1,10 @@
+import { WearableBodyShape } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
-import { WearableBodyShape, WearableCategory } from 'modules/item/types'
+import { WearableCategory } from 'modules/item/types'
 import { wearable } from 'specs/editor'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 import { INITIAL_STATE } from './reducer'
-import { getFetchingBaseWearablesError, getSelectedBaseWearables, isLoadingBaseWearables } from './selectors'
+import { getFetchingBaseWearablesError, getSelectedBaseWearablesByBodyShape, isLoadingBaseWearables } from './selectors'
 
 let state: RootState
 
@@ -95,7 +96,7 @@ describe('when getting the selected base wearables', () => {
       ...state,
       editor: {
         ...state.editor,
-        selectedBaseWearables: {
+        selectedBaseWearablesByBodyShape: {
           [WearableBodyShape.FEMALE]: {
             [WearableCategory.HAIR]: wearable,
             [WearableCategory.FACIAL_HAIR]: null,
@@ -114,7 +115,7 @@ describe('when getting the selected base wearables', () => {
   })
 
   it('should return the selected base wearables', () => {
-    expect(getSelectedBaseWearables(state)).toEqual(state.editor.selectedBaseWearables)
+    expect(getSelectedBaseWearablesByBodyShape(state)).toEqual(state.editor.selectedBaseWearablesByBodyShape)
   })
 })
 

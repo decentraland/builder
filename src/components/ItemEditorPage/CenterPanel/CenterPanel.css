@@ -45,6 +45,7 @@
   background-color: var(--dark-two);
   padding: 16px 16px 4px;
   margin-bottom: -204px;
+  border-top: 1px solid rgba(115, 110, 125, 0.3);
 }
 
 .CenterPanel .footer .avatar-attributes .dropdown-container {

@@ -24,9 +24,7 @@ import {
   ITEM_EXTENSIONS,
   THUMBNAIL_PATH,
   Item,
-  WearableBodyShape,
   BodyShapeType,
-  WearableCategory,
   ItemRarity,
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
@@ -69,6 +67,7 @@ import {
   ItemAssetJson
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
