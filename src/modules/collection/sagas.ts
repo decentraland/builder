@@ -591,8 +591,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
-        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
-
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, legacyBuilderClient, collection, item)
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }
@@ -610,7 +609,15 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const entitiesToDeploy: DeploymentPreparationData[] = []
     for (const item of items) {
       if (item.catalystContentHash !== item.currentContentHash) {
-        const entity: DeploymentPreparationData = yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
+        const entity: DeploymentPreparationData = yield call(
+          buildTPItemEntity,
+          catalyst,
+          legacyBuilderClient,
+          collection,
+          item,
+          tree,
+          hashes[item.id]
+        )
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }

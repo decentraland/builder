@@ -17,6 +17,7 @@ import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById, getPaginationData } from 'modules/item/selectors'
+import { getLatestStandardItemContentHash } from 'modules/item/utils'
 import { getCollection } from 'modules/collection/selectors'
 import { Item, ItemApprovalData, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal } from 'modules/modal/actions'
@@ -58,7 +59,7 @@ import {
 } from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
-import { getLatestItemHash, UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
+import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
@@ -192,12 +193,12 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
-          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, syncedItem, collection), syncedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, unsyncedItem, collection), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -277,12 +278,12 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
-          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, syncedItem, collection), syncedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, unsyncedItem, collection), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData],
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem), deployData],
           [select(getCurationsByCollectionId), { [collection.id]: curation }]
         ])
         .dispatch(initiateApprovalFlow(collection))
@@ -340,8 +341,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), items],
-          [call(getLatestItemHash, collection, items[0]), items[0].blockchainContentHash],
-          [call(getLatestItemHash, collection, items[1]), items[1].blockchainContentHash],
+          [call(getLatestStandardItemContentHash, items[0], collection), items[0].blockchainContentHash],
+          [call(getLatestStandardItemContentHash, items[1], collection), items[1].blockchainContentHash],
           [select(getItems), items],
           [
             select(getEntityByItemId),
@@ -386,8 +387,8 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
-          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash]
+          [call(getLatestStandardItemContentHash, syncedItem, collection), syncedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, unsyncedItem, collection), updatedItem.blockchainContentHash]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -443,12 +444,12 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
-          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, syncedItem, collection), syncedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, unsyncedItem, collection), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -522,12 +523,12 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
-          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, syncedItem, collection), syncedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, unsyncedItem, collection), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -611,12 +612,12 @@ describe('when executing the approval flow', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
-          [call(getLatestItemHash, collection, syncedItem), syncedItem.blockchainContentHash],
-          [call(getLatestItemHash, collection, unsyncedItem), updatedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, syncedItem, collection), syncedItem.blockchainContentHash],
+          [call(getLatestStandardItemContentHash, unsyncedItem, collection), updatedItem.blockchainContentHash],
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, collection, unsyncedItem), deployData],
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem), deployData],
           [select(getCurationsByCollectionId), { [collection.id]: curation }]
         ])
         .dispatch(initiateApprovalFlow(collection))
@@ -1014,11 +1015,27 @@ describe('when executing the TP approval flow', () => {
             [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
             [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
             [
-              call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
+              call(
+                buildTPItemEntity,
+                mockCatalyst,
+                mockBuilder,
+                TPCollection,
+                itemsToApprove[0],
+                merkleTree,
+                contentHashes[itemsToApprove[0].id]
+              ),
               deployData
             ],
             [
-              call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[1], merkleTree, contentHashes[itemsToApprove[1].id]),
+              call(
+                buildTPItemEntity,
+                mockCatalyst,
+                mockBuilder,
+                TPCollection,
+                itemsToApprove[1],
+                merkleTree,
+                contentHashes[itemsToApprove[1].id]
+              ),
               deployData
             ],
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), {}],
@@ -1104,11 +1121,27 @@ describe('when executing the TP approval flow', () => {
             [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
             [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
             [
-              call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
+              call(
+                buildTPItemEntity,
+                mockCatalyst,
+                mockBuilder,
+                TPCollection,
+                itemsToApprove[0],
+                merkleTree,
+                contentHashes[itemsToApprove[0].id]
+              ),
               deployData
             ],
             [
-              call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[1], merkleTree, contentHashes[itemsToApprove[1].id]),
+              call(
+                buildTPItemEntity,
+                mockCatalyst,
+                mockBuilder,
+                TPCollection,
+                itemsToApprove[1],
+                merkleTree,
+                contentHashes[itemsToApprove[1].id]
+              ),
               deployData
             ],
             [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), itemCurations[0]],
@@ -1176,11 +1209,27 @@ describe('when executing the TP approval flow', () => {
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
               [delay(1000), 0],
               [
-                call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
+                call(
+                  buildTPItemEntity,
+                  mockCatalyst,
+                  mockBuilder,
+                  TPCollection,
+                  itemsToApprove[0],
+                  merkleTree,
+                  contentHashes[itemsToApprove[0].id]
+                ),
                 deployData
               ],
               [
-                call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[1], merkleTree, contentHashes[itemsToApprove[1].id]),
+                call(
+                  buildTPItemEntity,
+                  mockCatalyst,
+                  mockBuilder,
+                  TPCollection,
+                  itemsToApprove[1],
+                  merkleTree,
+                  contentHashes[itemsToApprove[1].id]
+                ),
                 deployData
               ],
               [call([mockBuilder, 'updateItemCurationStatus'], itemsToApprove[0].id, CurationStatus.APPROVED), itemCurations[0]],
@@ -1324,11 +1373,27 @@ describe('when executing the TP approval flow', () => {
               [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
               [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
               [
-                call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[0], merkleTree, contentHashes[itemsToApprove[0].id]),
+                call(
+                  buildTPItemEntity,
+                  mockCatalyst,
+                  mockBuilder,
+                  TPCollection,
+                  itemsToApprove[0],
+                  merkleTree,
+                  contentHashes[itemsToApprove[0].id]
+                ),
                 deployData
               ],
               [
-                call(buildTPItemEntity, mockCatalyst, TPCollection, itemsToApprove[1], merkleTree, contentHashes[itemsToApprove[1].id]),
+                call(
+                  buildTPItemEntity,
+                  mockCatalyst,
+                  mockBuilder,
+                  TPCollection,
+                  itemsToApprove[1],
+                  merkleTree,
+                  contentHashes[itemsToApprove[1].id]
+                ),
                 deployData
               ]
             ])

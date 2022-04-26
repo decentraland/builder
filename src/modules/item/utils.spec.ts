@@ -1,5 +1,22 @@
-import { Item, ItemMetadataType, ItemType, WearableBodyShape, WearableCategory, WearableRepresentation } from './types'
-import { buildItemMetadata, buildZipContents, toThirdPartyContractItems, areEqualArrays, areEqualRepresentations, groupsOf } from './utils'
+import { EntityHashingType, Item, ItemMetadataType, ItemType, WearableBodyShape, WearableCategory, WearableRepresentation } from './types'
+import {
+  buildItemMetadata,
+  buildZipContents,
+  toThirdPartyContractItems,
+  areEqualArrays,
+  areEqualRepresentations,
+  groupsOf,
+  getLatestStandardItemContentHash
+} from './utils'
+import * as exportModule from './export'
+import { mockedItem } from 'specs/item'
+import { Collection } from 'modules/collection/types'
+
+jest.mock('./export')
+
+const buildStandardWearableContentHashMock = (exportModule.buildStandardWearableContentHash as unknown) as jest.Mock<
+  typeof exportModule.buildStandardWearableContentHash
+>
 
 describe('when transforming third party items to be sent to a contract method', () => {
   let items: Item[]
@@ -160,6 +177,98 @@ describe('when getting the groups of an array', () => {
         [1, 2],
         [3, 4]
       ])
+    })
+  })
+})
+
+describe('when getting the latest content hash of a standard item', () => {
+  let item: Item
+  let collection: Collection
+
+  beforeEach(() => {
+    item = { ...mockedItem }
+    collection = { id: 'pepe' } as Collection
+  })
+
+  describe("and the item doesn't have the catalyst content hash", () => {
+    beforeEach(() => {
+      item = { ...item, catalystContentHash: null }
+    })
+
+    describe('and it has the current content hash', () => {
+      beforeEach(() => {
+        item = { ...item, currentContentHash: 'someHash' }
+      })
+
+      it("should return the item's current content hash", () => {
+        return expect(getLatestStandardItemContentHash(item, collection)).resolves.toEqual(item.currentContentHash)
+      })
+    })
+
+    describe("and it doesn't have the current content hash", () => {
+      beforeEach(() => {
+        item = { ...item, currentContentHash: null }
+        buildStandardWearableContentHashMock.mockResolvedValueOnce('someHash' as never)
+      })
+
+      it('should compute the latest content hash', () => {
+        return expect(getLatestStandardItemContentHash(item, collection)).resolves.toEqual('someHash')
+      })
+
+      it('should compute the latest content hash with the V1 version', () => {
+        expect(buildStandardWearableContentHashMock).toHaveBeenCalledWith(collection, item, EntityHashingType.V1)
+      })
+    })
+  })
+
+  describe('and the item has the catalyst content hash using v0', () => {
+    beforeEach(() => {
+      item = { ...item, catalystContentHash: 'QmZ4sEDbhziGhU4CjbcVh7dXPoMPM8CbCQ2giPbPNSTW4i' }
+    })
+
+    describe("and the current content hash doesn't exist", () => {
+      let computedContentHash: string
+
+      beforeEach(() => {
+        item = { ...item, currentContentHash: null }
+        computedContentHash = 'QmNPieKuv5z2ZpSza7rWa3nNCVq6QzadEPqTEioG7thwAX'
+        buildStandardWearableContentHashMock.mockResolvedValueOnce(computedContentHash as never)
+      })
+
+      it('should return the hashed item with the v0 algorithm', () => {
+        return expect(getLatestStandardItemContentHash(item, collection)).resolves.toEqual(computedContentHash)
+      })
+
+      it('should have computed the v0 hash', () => {
+        expect(buildStandardWearableContentHashMock).toHaveBeenCalledWith(collection, item, EntityHashingType.V0)
+      })
+    })
+
+    describe('and the current content hash exists and is v0', () => {
+      beforeEach(() => {
+        item = { ...item, currentContentHash: 'QmNPieKuv5z2ZpSza7rWa3nNCVq6QzadEPqTEioG7thwAX' }
+      })
+
+      it("should return the item's current content hash", () => {
+        return expect(getLatestStandardItemContentHash(item, collection)).resolves.toEqual(item.currentContentHash)
+      })
+    })
+
+    describe('and the current content hash exists and is v1', () => {
+      let computedContentHash: string
+
+      beforeEach(() => {
+        computedContentHash = 'QmNPieKuv5z2ZpSza7rWa3nNCVq6QzadEPqTEioG7thwAX'
+        item = { ...item, currentContentHash: null }
+      })
+
+      it('should return the hashed item with the v0 algorithm', () => {
+        return expect(getLatestStandardItemContentHash(item, collection)).resolves.toEqual(computedContentHash)
+      })
+
+      it('should have computed the v0 hash', () => {
+        expect(buildStandardWearableContentHashMock).toHaveBeenCalledWith(collection, item, EntityHashingType.V0)
+      })
     })
   })
 })

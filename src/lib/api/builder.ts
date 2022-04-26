@@ -812,7 +812,7 @@ export class BuilderAPI extends BaseAPI {
     return blob
   }
 
-  async fetchContents(contents: Record<string, string>) {
+  async fetchContents(contents: Record<string, string>): Promise<Record<string, Blob>> {
     const blobs = new Map<string, Promise<Blob>>()
     const mappings: Promise<[string, Blob]>[] = []
     for (const path in contents) {

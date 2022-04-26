@@ -284,7 +284,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       // Get all of the old content that is hashed with an older hashing mechanism
-      const oldReHashedContentAndHashes: Record<string, { hash: string; content: Blob }> = yield call(reHashOlderContents, item.contents)
+      const oldReHashedContentAndHashes: Record<string, { hash: string; content: Blob }> = yield call(
+        reHashOlderContents,
+        item.contents,
+        legacyBuilder
+      )
       console.log('Old re hashed content and hashes', oldReHashedContentAndHashes)
       const oldReHashedContent = Object.fromEntries(Object.entries(oldReHashedContentAndHashes).map(([key, value]) => [key, value.hash]))
       const oldReHashedContentWithNewHashes = Object.fromEntries(
@@ -312,7 +316,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       if (Object.keys(contents).length > 0) {
-        const finalSize: number = yield call(calculateFinalSize, item, contents)
+        const finalSize: number = yield call(calculateFinalSize, item, contents, legacyBuilder)
         if (finalSize > MAX_FILE_SIZE) {
           throw new ItemTooBigError()
         }
