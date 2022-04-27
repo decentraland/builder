@@ -2,7 +2,6 @@ import { Dispatch } from 'redux'
 import { Color4, Wearable } from 'decentraland-ecs'
 import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import {
-  closeEditor,
   CloseEditorAction,
   setEmote,
   SetEmoteAction,
@@ -36,7 +35,6 @@ export type Props = {
   onSetHairColor: typeof setHairColor
   onSetBaseWearable: typeof setBaseWearable
   onFetchBaseWearables: typeof fetchBaseWearablesRequest
-  onClose: typeof closeEditor
 }
 
 export type State = {
@@ -49,7 +47,6 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<
   Props,
-  | 'onClose'
   | 'onSetBodyShape'
   | 'onSetAvatarAnimation'
   | 'onSetSkinColor'

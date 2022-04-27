@@ -66,11 +66,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  componentWillUnmount() {
-    const { onClose } = this.props
-    onClose()
-  }
-
   handleToggleShowingAvatarAttributes = () => {
     this.setState({ isShowingAvatarAttributes: !this.state.isShowingAvatarAttributes })
   }

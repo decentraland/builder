@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import {
-  closeEditor,
   setEmote,
   setBaseWearable,
   setBodyShape,
@@ -43,8 +42,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetEyeColor: color => dispatch(setEyeColor(color)),
   onSetHairColor: color => dispatch(setHairColor(color)),
   onSetBaseWearable: (category, bodyShape, wearable) => dispatch(setBaseWearable(category, bodyShape, wearable)),
-  onFetchBaseWearables: () => dispatch(fetchBaseWearablesRequest()),
-  onClose: () => dispatch(closeEditor())
+  onFetchBaseWearables: () => dispatch(fetchBaseWearablesRequest())
 })
 
 export default connect(mapState, mapDispatch)(CenterPanel)
