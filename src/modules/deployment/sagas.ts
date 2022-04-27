@@ -9,6 +9,22 @@ import { getCurrentProject, getData as getProjects } from 'modules/project/selec
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
+import { store } from 'modules/common/store'
+import { Media } from 'modules/media/types'
+import { getMedia } from 'modules/media/selectors'
+import { createFiles, EXPORT_PATH } from 'modules/project/export'
+import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
+import { takeScreenshot } from 'modules/editor/actions'
+import { objectURLToBlob } from 'modules/media/utils'
+import { getSceneByProjectId } from 'modules/scene/utils'
+import { BuilderAPI, getPreviewUrl } from 'lib/api/builder'
+import { getIdentity } from 'modules/identity/utils'
+import { isLoggedIn } from 'modules/identity/selectors'
+import { getName } from 'modules/profile/selectors'
+import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
+import { LandType } from 'modules/land/types'
+import { coordsToId, idToCoords } from 'modules/land/utils'
+import { getCoordsByEstateId } from 'modules/land/selectors'
 import {
   DEPLOY_TO_POOL_REQUEST,
   deployToPoolFailure,
@@ -29,25 +45,9 @@ import {
   fetchDeploymentsSuccess,
   fetchDeploymentsFailure
 } from './actions'
-import { store } from 'modules/common/store'
-import { Media } from 'modules/media/types'
-import { getMedia } from 'modules/media/selectors'
-import { createFiles, EXPORT_PATH } from 'modules/project/export'
-import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 import { ProgressStage } from './types'
-import { takeScreenshot } from 'modules/editor/actions'
-import { objectURLToBlob } from 'modules/media/utils'
-import { getSceneByProjectId } from 'modules/scene/utils'
-import { BuilderAPI, getPreviewUrl } from 'lib/api/builder'
 import { makeContentFiles } from './contentUtils'
-import { getIdentity } from 'modules/identity/utils'
-import { isLoggedIn } from 'modules/identity/selectors'
-import { getName } from 'modules/profile/selectors'
 import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
-import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
-import { LandType } from 'modules/land/types'
-import { coordsToId, idToCoords } from 'modules/land/utils'
-import { getCoordsByEstateId } from 'modules/land/selectors'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 

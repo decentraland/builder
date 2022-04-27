@@ -289,7 +289,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         item.contents,
         legacyBuilder
       )
-      console.log('Old re hashed content and hashes', oldReHashedContentAndHashes)
       const oldReHashedContent = Object.fromEntries(Object.entries(oldReHashedContentAndHashes).map(([key, value]) => [key, value.hash]))
       const oldReHashedContentWithNewHashes = Object.fromEntries(
         Object.entries(oldReHashedContentAndHashes).map(([key, value]) => [key, value.content])
@@ -322,7 +321,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      console.log('Saving item', item)
       yield call([legacyBuilder, 'saveItem'], item, contents)
 
       yield put(saveItemSuccess(item, contents))
