@@ -148,7 +148,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           }
           hotreload
           base64s={visibleItems.map(toBase64)}
-          baseUrl="http://localhost:3002"
           transparentBackground
         />
         <div className="footer">
