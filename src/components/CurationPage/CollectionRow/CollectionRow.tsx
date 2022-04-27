@@ -7,6 +7,7 @@ import { getCollectionType, hasReviews } from 'modules/collection/utils'
 import { CollectionType } from 'modules/collection/types'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
+import { AssignModalOperationType } from 'components/Modals/EditCurationAssigneeModal/EditCurationAssigneeModal.types'
 import Profile from 'components/Profile'
 import { formatDistanceToNow } from 'lib/date'
 import { Props } from './CollectionRow.types'
@@ -21,8 +22,10 @@ export default class CollectionRow extends React.PureComponent<Props> {
     event.stopPropagation()
   }
 
-  handleAssignToMe = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+  handleAssign = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, type = AssignModalOperationType.SELF_ASSIGN) => {
     // TODO: Add logic to open assignment confirmation modal
+    const { onOpenModal, collection } = this.props
+    onOpenModal('EditCurationAssigneeModal', { collectionId: collection.id, type })
     event.preventDefault()
     event.stopPropagation()
   }
@@ -105,17 +108,20 @@ export default class CollectionRow extends React.PureComponent<Props> {
         <Table.Cell width={2}>
           <div className="actions text-centered">{this.renderCurationState()}</div>
         </Table.Cell>
-        <Table.Cell width={4}>
-          <div>
+        <Table.Cell width={2}>
+          <div className="edit-container">
             {curation?.assignee ? (
               <>
-                <Profile textOnly address={curation.assignee} />
-                {address === curation.assignee ? <> ({t('collection_row.you')})</> : null}
+                <div className="curator-name">
+                  <Profile textOnly address={curation.assignee} />
+                  {address === curation.assignee ? <> ({t('collection_row.you')})</> : null}{' '}
+                </div>
+                <Icon name="pencil" onClick={(e: any) => this.handleAssign(e, AssignModalOperationType.REASSIGN)} />
               </>
             ) : (
               <div className="assignee-container">
                 {t('collection_row.unassigned')}
-                <span className="link" onClick={this.handleAssignToMe}>
+                <span className="link" onClick={this.handleAssign}>
                   {t('collection_row.assign_to_me')}
                 </span>
               </div>

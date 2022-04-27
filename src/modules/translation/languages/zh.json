@@ -983,7 +983,27 @@
     },
     "search_placeholder": "按名称或所有者地址在 {count} 个结果之间搜索...",
     "collections": "{count} {count, plural, one {个合集} other {个收藏}}",
-    "empty_collections": "尚无要审查的收藏集。"
+    "empty_collections": "尚无要审查的收藏集。",
+    "assign_modal": {
+      "unassign": "取消分配",
+      "collection_unassigned": "{collection_name} 集合已取消分配。",
+      "self_assign": {
+        "title": "确认您对 {collection_name} 的分配",
+        "body": "您将负责 {emphasis}。如果需要，您可以将收藏重新分配给其他策展人。",
+        "emphasis": "审阅此收藏并在论坛中与创作者交流",
+        "success": "{collection_name} 集合已分配给您。"
+      },
+      "reassign": {
+        "title": "编辑 {collection_name} 收藏的指定策展人",
+        "body": "如果您无法查看此收藏，请将其重新分配给其他策展人。确保让他们知道此更改",
+        "success": "{collection_name} 集合已分配给 {assignee}。"
+      }
+    },
+    "error_message_title": "错误",
+    "error_message_body": "发生错误。请稍后再试。",
+    "assign_success_title": "已分配集合",
+    "unassign_success_title": "集合未分配",
+    "curator": "馆长"
   },
   "collection_row": {
     "collection": "收藏",

@@ -67,6 +67,20 @@
   color: rgb(var(--light-blue-raw));
 }
 
+.CollectionRow .edit-container {
+  display: flex;
+}
+
+.CollectionRow .edit-container .curator-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.CollectionRow .pencil.icon {
+  padding-left: 6px;
+}
+
 .CollectionRow .actions .action.rejected,
 .CollectionRow .actions .action.disabled {
   color: var(--secondary-text);

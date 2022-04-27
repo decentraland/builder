@@ -760,8 +760,8 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollectionCuration(curation)
   }
 
-  pushCuration(collectionId: string): Promise<void> {
-    return this.request('post', `/collections/${collectionId}/curation`)
+  pushCuration(collectionId: string, assignee?: string | null): Promise<void> {
+    return this.request('post', `/collections/${collectionId}/curation`, { curation: { assignee } })
   }
 
   async pushItemCuration(itemId: string): Promise<ItemCuration> {
@@ -796,6 +796,10 @@ export class BuilderAPI extends BaseAPI {
 
   updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
+  }
+
+  updateCuration(collectionId: string, curation: Partial<Pick<CollectionCuration, 'assignee' | 'status'>>): Promise<void> {
+    return this.request('patch', `/collections/${collectionId}/curation`, { curation })
   }
 
   async updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {

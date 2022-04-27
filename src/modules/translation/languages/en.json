@@ -990,7 +990,27 @@
     },
     "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
-    "empty_collections": "There are no collections to review yet."
+    "empty_collections": "There are no collections to review yet.",
+    "assign_modal": {
+      "unassign": "Unassign",
+      "collection_unassigned": "The {collection_name} collection have been unassigned.",
+      "self_assign": {
+        "title": "Confirm your assignation to {collection_name}",
+        "body": "You will be the responsible of {emphasis}. If needed, you will be able to reassign the collection to another curator.",
+        "emphasis": "reviewing this collection and communicating with the creator in the forum",
+        "success": "The {collection_name} collection have been assigned to you."
+      },
+      "reassign": {
+        "title": "Edit assigned curator for {collection_name} collection",
+        "body": "In case you cannot review this collection, reassign it to another curator. Make sure you let them know about this change.",
+        "success": "The {collection_name} collection have been assigned to {assignee}."
+      }
+    },
+    "error_message_title": "Error",
+    "error_message_body": "Something went wrong... Please try again later.",
+    "assign_success_title": "Collection Assigned",
+    "unassign_success_title": "Collection Unassigned",
+    "curator": "Curator"
   },
   "collection_row": {
     "collection": "Collection",
