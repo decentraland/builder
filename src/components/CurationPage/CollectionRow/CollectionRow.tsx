@@ -116,7 +116,10 @@ export default class CollectionRow extends React.PureComponent<Props> {
                   <Profile textOnly address={curation.assignee} />
                   {address === curation.assignee ? <> ({t('collection_row.you')})</> : null}{' '}
                 </div>
-                <Icon name="pencil" onClick={(e: any) => this.handleAssign(e, AssignModalOperationType.REASSIGN)} />
+                <Icon
+                  name="pencil"
+                  onClick={(e: React.MouseEvent<HTMLSpanElement>) => this.handleAssign(e, AssignModalOperationType.REASSIGN)}
+                />
               </>
             ) : (
               <div className="assignee-container">

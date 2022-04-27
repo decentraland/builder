@@ -20,7 +20,6 @@ export default class EditCurationAssigneeModal extends React.PureComponent<Props
   }
 
   handleChangeAssignee = (_event: React.SyntheticEvent<HTMLElement, Event>, target: DropdownProps) => {
-    console.log('target: ', target)
     this.setState({ assignee: `${target.value}` })
   }
 
@@ -34,7 +33,6 @@ export default class EditCurationAssigneeModal extends React.PureComponent<Props
     const { type } = metadata
     const { assignee } = this.state
     const isReassigning = type === AssignModalOperationType.REASSIGN
-    console.log('assignee: ', assignee)
     return (
       <Modal name={name} onClose={this.handleClose}>
         <ModalNavigation
@@ -57,7 +55,7 @@ export default class EditCurationAssigneeModal extends React.PureComponent<Props
             {isReassigning ? (
               <SelectField
                 label={t('curation_page.curator')}
-                value={assignee ?? 'Pepe'}
+                value={assignee ?? UNASSIGN_PLACEHOLDER}
                 options={[UNASSIGN_PLACEHOLDER, ...committeeMembers].map(value => ({
                   value,
                   text:
