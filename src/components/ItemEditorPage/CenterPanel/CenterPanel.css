@@ -1,7 +1,11 @@
 .CenterPanel {
   position: relative;
   flex: 1 1 auto;
-  background-color: var(--preview-background);
+  background-color: #4c4852;
+}
+
+.CenterPanel .WearablePreview {
+  background: none;
 }
 
 .CenterPanel .footer {
