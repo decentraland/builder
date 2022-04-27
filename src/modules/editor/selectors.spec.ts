@@ -1,6 +1,5 @@
-import { WearableBodyShape } from '@dcl/schemas'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
-import { WearableCategory } from 'modules/item/types'
 import { wearable } from 'specs/editor'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 import { INITIAL_STATE } from './reducer'

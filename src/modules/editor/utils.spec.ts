@@ -1,5 +1,5 @@
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { Wearable } from 'decentraland-ecs'
-import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
 import { convertWearable, wearable, catalystWearable } from 'specs/editor'
 import { CatalystWearable, PatchedWearable } from './types'
