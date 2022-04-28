@@ -3,7 +3,9 @@ import { format } from 'date-fns'
 import { Icon, Table } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { getCollectionType, hasReviews } from 'modules/collection/utils'
+import { getCollectionCurationState } from 'modules/curations/collectionCuration/utils'
+import { getCollectionType } from 'modules/collection/utils'
+import { CurationStatus } from 'modules/curations/types'
 import { CollectionType } from 'modules/collection/types'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
@@ -37,38 +39,35 @@ export default class CollectionRow extends React.PureComponent<Props> {
 
   renderCurationState = () => {
     const { collection, curation } = this.props
-
-    if (collection.isApproved) {
-      if (!curation || curation.status === 'approved') {
+    const curationState = getCollectionCurationState(collection, curation)
+    switch (curationState) {
+      case CurationStatus.APPROVED:
         return (
           <div className="approved action">
             <span className="action-text">{t('collection_row.approved')}</span> <Icon name="check" />
           </div>
         )
-      } else if (curation.status === 'rejected') {
+      case CurationStatus.REJECTED:
         return (
           <div className="rejected action">
             <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
           </div>
         )
-      }
-    } else {
-      if (!curation && hasReviews(collection)) {
+      case CurationStatus.DISABLED:
         return (
           <div className="disabled action">
             <span className="action-text">{t('collection_row.disabled')}</span> <Icon name="close" />
           </div>
         )
-      } else if (curation && curation.status === 'rejected') {
-        return (
-          <div className="rejected action">
-            <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
-          </div>
-        )
-      }
-    }
+      case CurationStatus.UNDER_REVIEW:
+        return <span> {t('collection_row.under_review')}</span>
 
-    return null
+      case CurationStatus.TO_REVIEW:
+        return <span> {t('collection_row.to_review')}</span>
+
+      default:
+        return <span> {t('collection_row.to_review')}</span>
+    }
   }
 
   render() {

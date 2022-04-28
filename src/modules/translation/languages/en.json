@@ -982,11 +982,17 @@
     "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {
+    "order": {
+      "most_relevant": "Most relevant"
+    },
     "filter": {
       "all_status": "All status",
+      "all_assignees": "All assignees",
       "not_reviewed": "Not reviewed",
       "approved": "Approved",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "under_review": "Under Review",
+      "to_review": "To Review"
     },
     "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
@@ -1028,6 +1034,8 @@
     "review_request": "Review request",
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",
+    "to_review": "To review",
+    "under_review": "Under Review",
     "approved": "Approved",
     "rejected": "Rejected",
     "disabled": "Disabled",

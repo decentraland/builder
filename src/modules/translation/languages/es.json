@@ -995,11 +995,17 @@
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "curation_page": {
+    "order": {
+      "most_relevant": "Más relevantes"
+    },
     "filter": {
       "all_status": "Todos los estados",
+      "all_assignees": "Todos los asignados",
       "not_reviewed": "No revisado",
       "approved": "Aprobado",
-      "rejected": "Rechazado"
+      "rejected": "Rechazado",
+      "under_review": "Bajo revisión",
+      "to_review": "A revisar"
     },
     "search_placeholder": "Busca entre {count} {count, plural, one {resultado} other {resultados} por nombre o por la dirección del dueño...",
     "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
