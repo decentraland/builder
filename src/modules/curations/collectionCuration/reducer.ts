@@ -30,7 +30,13 @@ import {
   RejectCollectionCurationSuccessAction,
   REJECT_COLLECTION_CURATION_FAILURE,
   REJECT_COLLECTION_CURATION_REQUEST,
-  REJECT_COLLECTION_CURATION_SUCCESS
+  REJECT_COLLECTION_CURATION_SUCCESS,
+  SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS,
+  SetCollectionCurationAssigneeRequestAction,
+  SetCollectionCurationAssigneeSuccessAction,
+  SetCollectionCurationAssigneeFailureAction,
+  SET_COLLECTION_CURATION_ASSIGNEE_REQUEST,
+  SET_COLLECTION_CURATION_ASSIGNEE_FAILURE
 } from './actions'
 import { CollectionCuration } from './types'
 
@@ -62,6 +68,9 @@ type CurationReducerAction =
   | RejectCollectionCurationRequestAction
   | RejectCollectionCurationSuccessAction
   | RejectCollectionFailureSuccessAction
+  | SetCollectionCurationAssigneeRequestAction
+  | SetCollectionCurationAssigneeSuccessAction
+  | SetCollectionCurationAssigneeFailureAction
 
 export function collectionCurationReducer(
   state: CollectionCurationState = INITIAL_STATE,
@@ -73,6 +82,7 @@ export function collectionCurationReducer(
     case PUSH_COLLECTION_CURATION_REQUEST:
     case APPROVE_COLLECTION_CURATION_REQUEST:
     case REJECT_COLLECTION_CURATION_REQUEST:
+    case SET_COLLECTION_CURATION_ASSIGNEE_REQUEST:
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -88,6 +98,7 @@ export function collectionCurationReducer(
         error: null
       }
 
+    case SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS:
     case FETCH_COLLECTION_CURATION_SUCCESS:
       const { collectionId, curation } = action.payload
 
@@ -150,6 +161,7 @@ export function collectionCurationReducer(
     case PUSH_COLLECTION_CURATION_FAILURE:
     case REJECT_COLLECTION_CURATION_FAILURE:
     case APPROVE_COLLECTION_CURATION_FAILURE:
+    case SET_COLLECTION_CURATION_ASSIGNEE_FAILURE:
       const { error } = action.payload
 
       return {

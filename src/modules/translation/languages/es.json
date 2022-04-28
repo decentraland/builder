@@ -1003,7 +1003,27 @@
     },
     "search_placeholder": "Busca entre {count} {count, plural, one {resultado} other {resultados} por nombre o por la dirección del dueño...",
     "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
-    "empty_collections": "Aún no hay colecciones para revisar."
+    "empty_collections": "Aún no hay colecciones para revisar.",
+    "assign_modal": {
+      "unassign": "Desasignar",
+      "collection_unassigned": "La colección {collection_name} no se ha asignado.",
+      "self_assign": {
+        "title": "Confirma tu asignación a {collection_name}",
+        "body": "Serás el responsable de {emphasis}. Si es necesario, podrá reasignar la colección a otro curador.",
+        "emphasis": "revisar esta colección y comunicarse con el creador en el foro",
+        "success": "Se te asignó la colección {collection_name}."
+      },
+      "reassign": {
+        "title": "Editar curador asignado para la colección {nombre_de_la_colección}",
+        "body": "En caso de que no pueda revisar esta colección, reasígnela a otro curador. Asegúrese de informarles acerca de este cambio.",
+        "success": "La colección {collection_name} se ha asignado a {assignee}."
+      }
+    },
+    "error_message_title": "Error",
+    "error_message_body": "Algo salió mal... Vuelve a intentarlo más tarde.",
+    "assign_success_title": "Colección asignada",
+    "unassign_success_title": "Colección sin asignar",
+    "curator": "Curador"
   },
   "collection_row": {
     "collection": "Colección",
