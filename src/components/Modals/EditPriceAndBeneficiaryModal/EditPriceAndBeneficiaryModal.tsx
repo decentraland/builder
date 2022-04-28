@@ -24,6 +24,7 @@ import { isValid } from 'lib/address'
 import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
+import { toFixedMANAValue } from 'lib/mana'
 
 const MIN_SALE_VALUE = fromWei(env.get('REACT_APP_MIN_SALE_VALUE_IN_WEI', '0'), 'ether')
 
@@ -60,7 +61,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   handlePriceChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
-    this.setState({ price: props.value })
+    this.setState({ price: toFixedMANAValue(props.value) })
   }
 
   handleBeneficiaryChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
