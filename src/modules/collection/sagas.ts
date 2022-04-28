@@ -142,7 +142,8 @@ import {
   isLocked,
   getCollectionType,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
-  isTPCollection
+  isTPCollection,
+  getCollectionFactoryContract
 } from './utils'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
@@ -334,7 +335,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
 
       const forwarder = getContract(ContractName.Forwarder, maticChainId)
-      const factory = getContract(ContractName.CollectionFactory, maticChainId)
+      const factory = getCollectionFactoryContract(maticChainId)
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
       // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails

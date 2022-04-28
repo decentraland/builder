@@ -34,7 +34,6 @@
       "REACT_APP_BUILDER_SERVER_URL": "https://builder-api.decentraland.io/v1",
       "REACT_APP_FF_WEARABLES": "1",
       "REACT_APP_FF_WEARABLES_PUBLISH": "1",
-      "REACT_APP_FF_THIRD_PARTY_WEARABLES": "1",
       "REACT_APP_FF_ENS": "1",
       "REACT_APP_FF_SKINS": "1",
       "REACT_APP_EXPLORER_URL": "https://play.decentraland.org",
@@ -42,7 +41,8 @@
       "REACT_APP_ACCOUNT_URL": "https://account.decentraland.org",
       "REACT_APP_DISCORD_URL": "https://dcl.gg/discord",
       "REACT_APP_IPFS_URL": "https://ipfs.infura.io:5001/api/v0/add?pin=false",
-      "REACT_APP_MARKETPLACE_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/marketplace-ropsten"
+      "REACT_APP_MARKETPLACE_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/marketplace-ropsten",
+      "REACT_APP_COLLECTION_FACTORY_VERSION": "3"
     }
   },
   "routes": [
