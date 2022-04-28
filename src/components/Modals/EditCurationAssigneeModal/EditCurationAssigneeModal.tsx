@@ -1,6 +1,5 @@
 import React from 'react'
 import { ModalNavigation, Button, Form, SelectField, DropdownProps } from 'decentraland-ui'
-import Profile from 'components/Profile'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { AssignModalOperationType, Props, State } from './EditCurationAssigneeModal.types'
@@ -29,7 +28,7 @@ export default class EditCurationAssigneeModal extends React.PureComponent<Props
   }
 
   render() {
-    const { name, metadata, isLoading, committeeMembers, collection, address } = this.props
+    const { name, metadata, isLoading, committeeMembers, collection, address, profiles } = this.props
     const { type } = metadata
     const { assignee } = this.state
     const isReassigning = type === AssignModalOperationType.REASSIGN
@@ -54,20 +53,17 @@ export default class EditCurationAssigneeModal extends React.PureComponent<Props
             </div>
             {isReassigning ? (
               <SelectField
+                loading={isLoading}
                 label={t('curation_page.curator')}
                 value={assignee ?? UNASSIGN_PLACEHOLDER}
                 options={[UNASSIGN_PLACEHOLDER, ...committeeMembers].map(value => ({
                   value,
                   text:
-                    value === UNASSIGN_PLACEHOLDER ? (
-                      <>- {t('curation_page.assign_modal.unassign')} -</>
-                    ) : value === address ? (
-                      <>
-                        <Profile textOnly address={value} /> ({t('collection_row.you')})
-                      </>
-                    ) : (
-                      <Profile textOnly address={value} />
-                    )
+                    value === UNASSIGN_PLACEHOLDER
+                      ? `- ${t('curation_page.assign_modal.unassign')} -`
+                      : value === address
+                      ? `${profiles[address].avatars[0].name} (${t('collection_row.you')})`
+                      : profiles[value]?.avatars[0].name ?? value
                 }))}
                 onChange={this.handleChangeAssignee}
               />
