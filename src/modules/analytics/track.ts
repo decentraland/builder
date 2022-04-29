@@ -2,6 +2,7 @@ import { AnyAction } from 'redux'
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getTransactionFromAction } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/dist/modules/authorization/actions'
+import { SET_PROFILE_AVATAR_ALIAS_SUCCESS } from 'decentraland-dapps/dist/modules/profile/actions'
 import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
 import {
   EDITOR_UNDO,
@@ -71,7 +72,6 @@ import {
 } from 'modules/collection/actions'
 import {
   ALLOW_CLAIM_MANA_SUCCESS,
-  SET_ALIAS_SUCCESS,
   CLAIM_NAME_SUCCESS,
   SET_ENS_CONTENT_SUCCESS,
   SET_ENS_RESOLVER_SUCCESS,
@@ -84,7 +84,10 @@ import {
   PUSH_COLLECTION_CURATION_FAILURE,
   PUSH_COLLECTION_CURATION_SUCCESS,
   REJECT_COLLECTION_CURATION_FAILURE,
-  REJECT_COLLECTION_CURATION_SUCCESS
+  REJECT_COLLECTION_CURATION_SUCCESS,
+  SetCollectionCurationAssigneeSuccessAction,
+  SET_COLLECTION_CURATION_ASSIGNEE_FAILURE,
+  SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS
 } from 'modules/curations/collectionCuration/actions'
 import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
 
@@ -340,7 +343,7 @@ add(SET_ENS_CONTENT_SUCCESS, 'Set ENS Content', action => {
   }
 })
 
-addPayload(SET_ALIAS_SUCCESS, 'Use as Alias')
+addPayload(SET_PROFILE_AVATAR_ALIAS_SUCCESS, 'Use as Alias')
 
 addPayload(ALLOW_CLAIM_MANA_SUCCESS, 'Allow Claim Mana')
 
@@ -352,3 +355,17 @@ add(CLAIM_NAME_SUCCESS, 'Claim Name', action => {
     ens
   }
 })
+
+add(
+  SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS,
+  action => (action.payload.curation.assignee ? 'Assign curator' : 'Unassign curator'),
+  action => {
+    const { payload } = action as SetCollectionCurationAssigneeSuccessAction
+    return {
+      collectionId: payload.collectionId,
+      assignee: payload.curation?.assignee
+    }
+  }
+)
+
+addPayload(SET_COLLECTION_CURATION_ASSIGNEE_FAILURE, 'Assign curator error')

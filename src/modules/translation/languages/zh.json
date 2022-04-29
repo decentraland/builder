@@ -207,21 +207,24 @@
       "cancelled_title": "取消了多个可穿戴项目的创建",
       "failed_title": "多个可穿戴项目创建失败",
       "finished_successfully_subtitle": "伟大的！ 您已添加 {number_of_items} 项",
-      "finished_unsuccessfully_subtitle": "可穿戴物品的创建被打断，但增加了 {number_of_items} 件物品。"
+      "finished_partial_successfully_subtitle": "您已添加 {number_of_items} 个项目，但 {number_of_failed_items} 个失败",
+      "saved_items_table_title": "保存的项目"
     },
     "edit": {
       "title": "批量编辑项目",
       "subtitle": "要编辑现有项目，请使用相同的 URN",
       "successful_title": "更新的项目",
-      "cancelled_title": "取消了多项更新",
       "failed_title": "多个项目更新失败",
+      "cancelled_title": "取消了多项更新",
       "finished_successfully_subtitle": "伟大的！您已更新 {number_of_items} 项",
-      "finished_unsuccessfully_subtitle": "项目的编辑被中断，但有 {number_of_items} 个项目被编辑。"
+      "finished_partial_successfully_subtitle": "您已更新 {number_of_items} 个项目，但 {number_of_failed_items} 个失败。请查看提供的 URN",
+      "saved_items_table_title": "更新项目"
     },
     "wrong_file_extension": "文件扩展名不正确。",
     "asset_file_not_found": "找不到asset.json 文件。",
     "thumbnail_file_not_found": "批量文件必须在其内容中包含 thumbnail.png 文件。",
-    "saved_items_table_title": "保存的可穿戴物品",
+    "not_saved_items_table_title": "Invalid items",
+    "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "asset.json 文件包含此集合的无效 URN",
     "invalid_title": "无效的",
     "valid_title": "有效的档案",
@@ -972,20 +975,54 @@
     "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {
+    "order": {
+      "most_relevant": "最相关的"
+    },
     "filter": {
       "all_status": "所有状态",
+      "all_assignees": "所有受让人",
       "not_reviewed": "尚未审核",
       "approved": "已批准",
-      "rejected": "拒绝了"
+      "rejected": "拒绝了",
+      "under_review": "审查中",
+      "to_review": "回顾"
     },
     "search_placeholder": "按名称或所有者地址在 {count} 个结果之间搜索...",
     "collections": "{count} {count, plural, one {个合集} other {个收藏}}",
-    "empty_collections": "尚无要审查的收藏集。"
+    "empty_collections": "尚无要审查的收藏集。",
+    "assign_modal": {
+      "unassign": "取消分配",
+      "collection_unassigned": "{collection_name} 集合已取消分配。",
+      "self_assign": {
+        "title": "确认您对 {collection_name} 的分配",
+        "body": "您将负责 {emphasis}。如果需要，您可以将收藏重新分配给其他策展人。",
+        "emphasis": "审阅此收藏并在论坛中与创作者交流",
+        "success": "{collection_name} 集合已分配给您。"
+      },
+      "reassign": {
+        "title": "编辑 {collection_name} 收藏的指定策展人",
+        "body": "如果您无法查看此收藏，请将其重新分配给其他策展人。确保让他们知道此更改",
+        "success": "{collection_name} 集合已分配给 {assignee}。"
+      }
+    },
+    "error_message_title": "错误",
+    "error_message_body": "发生错误。请稍后再试。",
+    "assign_success_title": "已分配集合",
+    "unassign_success_title": "集合未分配",
+    "curator": "馆长",
+    "confirm_not_assigned_curation_modal": {
+      "title": "批准收集",
+      "body": "此集合已分配给 {assignee}。如果需要，您仍然可以批准它，但请确保让指定的策展人知道它。",
+      "confirm_footer": "确认此集合的批准，使其能够被铸造。",
+      "confirm_button": "分配给我并批准收藏"
+    }
   },
   "collection_row": {
     "collection": "收藏",
     "published": "发表",
     "date": "日期",
+    "assignee": "受让人",
+    "status": "地位",
     "discussion": "讨论",
     "items": "{count} 项",
     "owner": "所有者",
@@ -998,7 +1035,10 @@
     "no_forum_post": "尚未发布到论坛",
     "approved": "已批准",
     "rejected": "拒绝了",
-    "disabled": "禁用"
+    "disabled": "禁用",
+    "unassigned": "未分配",
+    "assign_to_me": "分配给我",
+    "you": "你"
   },
   "item_detail_page": {
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",

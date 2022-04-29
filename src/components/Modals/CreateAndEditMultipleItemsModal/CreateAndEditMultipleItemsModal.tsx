@@ -215,7 +215,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
           <div {...getRootProps()}>
             <input {...getInputProps()} />
             <div>
-              <div className={styles.tablesContainer}>
+              <div className={`${styles.tablesContainer} ${styles.itemDropZoneContainer}`}>
                 {rejectedFiles.length > 0 ? (
                   <Table basic="very" compact="very">
                     <Table.Header>
@@ -375,12 +375,32 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
     )
   }
 
+  private renderItemsTableSection(title: string, items: string[]) {
+    return (
+      <div className={styles.tablesContainer}>
+        <Table basic="very" compact="very">
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>{title}</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {items.map((item, index) => (
+              <Table.Row key={index}>
+                <Table.Cell>{item}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      </div>
+    )
+  }
+
   private renderCompleted() {
-    const { onClose, savedItemsFiles, saveMultipleItemsState, error } = this.props
+    const { onClose, savedItemsFiles, notSavedItemsFiles, cancelledItemsFiles, saveMultipleItemsState, error } = this.props
     const hasFinishedSuccessfully = saveMultipleItemsState === MultipleItemsSaveState.FINISHED_SUCCESSFULLY
     const hasBeenCancelled = saveMultipleItemsState === MultipleItemsSaveState.CANCELLED
     const hasFailed = saveMultipleItemsState === MultipleItemsSaveState.FINISHED_UNSUCCESSFULLY
-    const hasFinishedUnsuccessfully = hasFailed || hasBeenCancelled
 
     let title: string
     if (hasFinishedSuccessfully) {
@@ -396,35 +416,28 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <p className={styles.createdItems}>
-            {hasFinishedSuccessfully
+            {!notSavedItemsFiles.length
               ? t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.finished_successfully_subtitle`, {
                   number_of_items: savedItemsFiles.length
                 })
-              : t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.finished_unsuccessfully_subtitle`, {
-                  number_of_items: savedItemsFiles.length
+              : t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.finished_partial_successfully_subtitle`, {
+                  number_of_items: savedItemsFiles.length,
+                  number_of_failed_items: notSavedItemsFiles.length
                 })}
           </p>
           {hasFailed ? <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} /> : null}
-          {hasFinishedUnsuccessfully && savedItemsFiles.length > 0 ? (
-            <>
-              <div className={styles.tablesContainer}>
-                <Table basic="very" compact="very">
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.saved_items_table_title')}</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {savedItemsFiles.map((item, index) => (
-                      <Table.Row key={index}>
-                        <Table.Cell>{item}</Table.Cell>
-                      </Table.Row>
-                    ))}
-                  </Table.Body>
-                </Table>
-              </div>
-            </>
-          ) : null}
+          {hasBeenCancelled && cancelledItemsFiles.length > 0
+            ? this.renderItemsTableSection(t('create_and_edit_multiple_items_modal.cancelled_items_table_title'), cancelledItemsFiles)
+            : null}
+          {hasBeenCancelled || notSavedItemsFiles.length > 0
+            ? this.renderItemsTableSection(t('create_and_edit_multiple_items_modal.not_saved_items_table_title'), notSavedItemsFiles)
+            : null}
+          {savedItemsFiles.length > 0
+            ? this.renderItemsTableSection(
+                t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.saved_items_table_title`),
+                savedItemsFiles
+              )
+            : null}
         </Modal.Content>
         <Modal.Actions>
           <Button primary onClick={onClose}>

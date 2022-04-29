@@ -9,7 +9,6 @@ import {
   downloadItemSuccess,
   saveMultipleItemsCancelled,
   saveMultipleItemsSuccess,
-  saveMultipleItemsFailure,
   rescueItemsChunkSuccess,
   rescueItemsRequest,
   rescueItemsSuccess,
@@ -189,29 +188,16 @@ describe('when an action of type DOWNLOAD_ITEM_FAILURE is called', () => {
 
 describe('when reducing the successful save multiple items action', () => {
   it('should return a state with the saved items', () => {
-    expect(itemReducer(state, saveMultipleItemsSuccess(items, fileNames))).toEqual({
+    expect(itemReducer(state, saveMultipleItemsSuccess(items, fileNames, []))).toEqual({
       ...INITIAL_STATE,
       data: { ...state.data, ...itemsMap }
     })
   })
 })
 
-describe('when reducing the failing save multiple items action', () => {
-  it('should return a state with the saved items added and the error set', () => {
-    expect(itemReducer(state, saveMultipleItemsFailure(error, items, fileNames))).toEqual({
-      ...INITIAL_STATE,
-      error,
-      data: {
-        ...state.data,
-        ...itemsMap
-      }
-    })
-  })
-})
-
 describe('when reducing the save cancelling save multiple items action', () => {
   it('should return a state with the saved items added', () => {
-    expect(itemReducer(state, saveMultipleItemsCancelled(items, fileNames))).toEqual({
+    expect(itemReducer(state, saveMultipleItemsCancelled(items, [], [], fileNames))).toEqual({
       ...INITIAL_STATE,
       data: {
         ...state.data,

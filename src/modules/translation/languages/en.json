@@ -212,7 +212,8 @@
       "cancelled_title": "Cancelled multiple items creation",
       "failed_title": "Failed multiple items creation",
       "finished_successfully_subtitle": "Great! You've added {number_of_items} items",
-      "finished_unsuccessfully_subtitle": "The creation of items was interrupted, but {number_of_items} items were added."
+      "finished_partial_successfully_subtitle": "You've added {number_of_items} items but {number_of_failed_items} failed",
+      "saved_items_table_title": "Saved items"
     },
     "edit": {
       "title": "Edit items in bulk",
@@ -221,12 +222,14 @@
       "failed_title": "Failed multiple items update",
       "cancelled_title": "Cancelled multiple items update",
       "finished_successfully_subtitle": "Great! You've updated {number_of_items} items",
-      "finished_unsuccessfully_subtitle": "The edit of items was interrupted, but {number_of_items} items were edited."
+      "finished_partial_successfully_subtitle": "You've updated {number_of_items} items but {number_of_failed_items} failed. Please review the URNs provided",
+      "saved_items_table_title": "Updated items"
     },
     "wrong_file_extension": "File extension is not correct.",
     "asset_file_not_found": "The asset.json file was not found.",
     "thumbnail_file_not_found": "Bulk files must contain a thumbnail.png file in their content.",
-    "saved_items_table_title": "Saved items",
+    "not_saved_items_table_title": "Invalid items",
+    "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "The asset.json file has an invalid URN for this collection",
     "invalid_title": "INVALID",
     "valid_title": "VALID",
@@ -979,20 +982,54 @@
     "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {
+    "order": {
+      "most_relevant": "Most relevant"
+    },
     "filter": {
       "all_status": "All status",
+      "all_assignees": "All assignees",
       "not_reviewed": "Not reviewed",
       "approved": "Approved",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "under_review": "Under Review",
+      "to_review": "To Review"
     },
     "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
-    "empty_collections": "There are no collections to review yet."
+    "empty_collections": "There are no collections to review yet.",
+    "assign_modal": {
+      "unassign": "Unassign",
+      "collection_unassigned": "The {collection_name} collection have been unassigned.",
+      "self_assign": {
+        "title": "Confirm your assignation to {collection_name}",
+        "body": "You will be the responsible of {emphasis}. If needed, you will be able to reassign the collection to another curator.",
+        "emphasis": "reviewing this collection and communicating with the creator in the forum",
+        "success": "The {collection_name} collection have been assigned to you."
+      },
+      "reassign": {
+        "title": "Edit assigned curator for {collection_name} collection",
+        "body": "In case you cannot review this collection, reassign it to another curator. Make sure you let them know about this change.",
+        "success": "The {collection_name} collection have been assigned to {assignee}."
+      }
+    },
+    "error_message_title": "Error",
+    "error_message_body": "Something went wrong... Please try again later.",
+    "assign_success_title": "Collection Assigned",
+    "unassign_success_title": "Collection Unassigned",
+    "curator": "Curator",
+    "confirm_not_assigned_curation_modal": {
+      "title": "Approve collection",
+      "body": "This collection is assigned to {assignee}. If needed, you can still approve it but make sure to let the assigned curator know about it.",
+      "confirm_footer": "Confirm the approval of this collection so it is enabled to be minted.",
+      "confirm_button": "Assign to me and approve collection"
+    }
   },
   "collection_row": {
     "collection": "Collection",
     "published": "Published",
     "date": "Date",
+    "assignee": "Assignee",
+    "status": "Status",
     "discussion": "Discussion",
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Owner",
@@ -1003,9 +1040,14 @@
     "review_request": "Review request",
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",
+    "to_review": "To review",
+    "under_review": "Under Review",
     "approved": "Approved",
     "rejected": "Rejected",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "unassigned": "Unassigned",
+    "assign_to_me": "Assign to me",
+    "you": "you"
   },
   "item_detail_page": {
     "notice": "You need to add your items to a collection before you can publish them",
