@@ -1019,7 +1019,7 @@
     "curator": "Curator",
     "confirm_not_assigned_curation_modal": {
       "title": "Approve collection",
-      "body": "This collection is assigned to {assignee}. If needed, you can still approve it but make sure of let the assigned curator know about it.",
+      "body": "This collection is assigned to {assignee}. If needed, you can still approve it but make sure to let the assigned curator know about it.",
       "confirm_footer": "Confirm the approval of this collection so it is enabled to be minted.",
       "confirm_button": "Approve Collection"
     }
