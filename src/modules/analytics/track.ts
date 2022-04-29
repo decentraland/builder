@@ -84,7 +84,10 @@ import {
   PUSH_COLLECTION_CURATION_FAILURE,
   PUSH_COLLECTION_CURATION_SUCCESS,
   REJECT_COLLECTION_CURATION_FAILURE,
-  REJECT_COLLECTION_CURATION_SUCCESS
+  REJECT_COLLECTION_CURATION_SUCCESS,
+  SetCollectionCurationAssigneeSuccessAction,
+  SET_COLLECTION_CURATION_ASSIGNEE_FAILURE,
+  SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS
 } from 'modules/curations/collectionCuration/actions'
 import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
 
@@ -352,3 +355,17 @@ add(CLAIM_NAME_SUCCESS, 'Claim Name', action => {
     ens
   }
 })
+
+add(
+  SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS,
+  action => (action.payload.curation.assignee ? 'Assign curator' : 'Unassign curator'),
+  action => {
+    const { payload } = action as SetCollectionCurationAssigneeSuccessAction
+    return {
+      collectionId: payload.collectionId,
+      assignee: payload.curation?.assignee
+    }
+  }
+)
+
+addPayload(SET_COLLECTION_CURATION_ASSIGNEE_FAILURE, 'Assign curator error')
