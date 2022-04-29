@@ -68,7 +68,7 @@ export const estateFields = () => gql`
     }
     updateOperator
     size
-    parcels {
+    parcels(first: 1000) {
       x
       y
       tokenId
