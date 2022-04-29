@@ -74,8 +74,7 @@ import {
   ApproveCollectionFailureAction,
   InitiateTPApprovalFlowAction,
   INITIATE_TP_APPROVAL_FLOW,
-  finishTPApprovalFlow,
-  initiateApprovalFlow
+  finishTPApprovalFlow
 } from './actions'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
@@ -94,8 +93,7 @@ import {
   FETCH_COLLECTION_ITEMS_FAILURE,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SaveMultipleItemsSuccessAction,
-  SET_ITEMS_TOKEN_ID_SUCCESS,
-  SetItemsTokenIdSuccessAction
+  SET_ITEMS_TOKEN_ID_SUCCESS
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
@@ -789,7 +787,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       // 2. Find items that need to be rescued (their content hash needs to be updated)
       const itemsToRescue: Item[] = []
       const contentHashes: string[] = []
-      const items: Item[] = yield getItemsFromCollection(collection)
+
+      let items: Item[] = yield getItemsFromCollection(collection)
 
       // Check if any item does not have a tokenId.
       // This might happen because the creator left the browser and never came back after publishing.
@@ -800,16 +799,11 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         // If any item does not have the token id, trigger the action that sets it.
         yield put(setItemsTokenIdRequest(collection, items))
 
-        // Wait until the triggered action emits a success
-        const { success }: { success: SetItemsTokenIdSuccessAction } = yield race({
-          success: take(SET_ITEMS_TOKEN_ID_SUCCESS)
-        })
+        // Wait until the triggered action emits a success.
+        yield take(SET_ITEMS_TOKEN_ID_SUCCESS)
 
-        // Restart the approve flow once the token ids were set.
-        if (success) {
-          yield put(initiateApprovalFlow(collection))
-          return
-        }
+        // Update the items to the new ones with the token id.
+        items = yield getItemsFromCollection(collection)
       }
 
       for (const item of items) {
