@@ -32,10 +32,10 @@ const getLandQuery = () => gql`
     operatorAuthorizations: authorizations(first: 1000, where: { operator: $address, type: "UpdateManager" }) {
       owner {
         address
-        parcels(where: { estate: null }) {
+        parcels(first: 1000, where: { estate: null }) {
           ...parcelFields
         }
-        estates {
+        estates(first: 1000) {
           ...estateFields
         }
       }
