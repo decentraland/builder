@@ -81,20 +81,16 @@ export function* analyticsSaga() {
 const track = (event: string, params: any) => getAnalytics().track(event, params)
 
 function* handleSaveCollectionSuccess(action: SaveCollectionSuccessAction) {
-  const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
-  if (!project) return
   const { collection } = action.payload
   if (getCollectionType(collection) === CollectionType.THIRD_PARTY) {
-    track('Create TPC', { project: project.id, collectionId: action.payload.collection.id })
+    track('Create TPC', { collectionId: action.payload.collection.id })
   }
 }
 
 function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
-  const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
-  if (!project) return
   const { item } = action.payload
   if (isThirdParty(item.urn)) {
-    track('Create TPI', { project: project.id, item: item.id })
+    track('Create TPI', { item: item.id, collectionId: item.collectionId })
   }
 }
 
