@@ -26,9 +26,10 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.curation())
   }
 
-  handleConfirmApprovalModal = (collection: Collection) => {
-    const { onInitiateApprovalFlow, onInitiateTPApprovalFlow } = this.props
+  handleConfirmApprovalModal = (collection: Collection, curation: CollectionCuration | null) => {
+    const { address, onInitiateApprovalFlow, onInitiateTPApprovalFlow, onSetAssignee } = this.props
     this.setState({ showApproveConfirmModal: false })
+    address && onSetAssignee(collection.id, address, curation)
     isTPCollection(collection) ? onInitiateTPApprovalFlow(collection) : onInitiateApprovalFlow(collection)
   }
 
@@ -70,7 +71,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           <ConfirmApprovalModal
             open
             assignee={curation.assignee}
-            onConfirm={() => this.handleConfirmApprovalModal(collection)}
+            onConfirm={() => this.handleConfirmApprovalModal(collection, curation)}
             onClose={() => this.setState({ showApproveConfirmModal: false })}
           />
         )}

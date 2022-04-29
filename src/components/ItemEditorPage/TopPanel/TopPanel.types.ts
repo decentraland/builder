@@ -7,6 +7,10 @@ import {
   initiateTPApprovalFlow,
   InitiateTPApprovalFlowAction
 } from 'modules/collection/actions'
+import {
+  setCollectionCurationAssigneeRequest,
+  SetCollectionCurationAssigneeRequestAction
+} from 'modules/curations/collectionCuration/actions'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
 
 export type Props = {
@@ -19,6 +23,7 @@ export type Props = {
   onNavigate: (path: string) => void
   onInitiateApprovalFlow: typeof initiateApprovalFlow
   onInitiateTPApprovalFlow: typeof initiateTPApprovalFlow
+  onSetAssignee: typeof setCollectionCurationAssigneeRequest
 }
 
 export type State = {
@@ -38,5 +43,7 @@ export type MapStateProps = Pick<
   Props,
   'address' | 'chainId' | 'isConnected' | 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | InitiateApprovalFlowAction | InitiateTPApprovalFlowAction>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow' | 'onSetAssignee'>
+export type MapDispatch = Dispatch<
+  CallHistoryMethodAction | InitiateApprovalFlowAction | InitiateTPApprovalFlowAction | SetCollectionCurationAssigneeRequestAction
+>

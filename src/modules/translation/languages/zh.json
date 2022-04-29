@@ -1014,7 +1014,7 @@
       "title": "批准收集",
       "body": "此集合已分配给 {assignee}。如果需要，您仍然可以批准它，但请确保让指定的策展人知道它。",
       "confirm_footer": "确认此集合的批准，使其能够被铸造。",
-      "confirm_button": "批准收集"
+      "confirm_button": "分配给我并批准收藏"
     }
   },
   "collection_row": {

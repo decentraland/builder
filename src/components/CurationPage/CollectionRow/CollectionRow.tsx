@@ -25,7 +25,6 @@ export default class CollectionRow extends React.PureComponent<Props> {
   }
 
   handleAssign = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, type = AssignModalOperationType.SELF_ASSIGN) => {
-    // TODO: Add logic to open assignment confirmation modal
     const { onOpenModal, collection } = this.props
     onOpenModal('EditCurationAssigneeModal', { collectionId: collection.id, type })
     event.preventDefault()

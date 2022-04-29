@@ -4,6 +4,7 @@ import { getAddress, getChainId, isConnected } from 'decentraland-dapps/dist/mod
 import { RootState } from 'modules/common/types'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
+import { setCollectionCurationAssigneeRequest } from 'modules/curations/collectionCuration/actions'
 import { initiateApprovalFlow, initiateTPApprovalFlow } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopPanel.types'
 import TopPanel from './TopPanel'
@@ -19,6 +20,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
+  onSetAssignee: (collectionId, assignee, curation) => dispatch(setCollectionCurationAssigneeRequest(collectionId, assignee, curation)),
   onInitiateTPApprovalFlow: collection => dispatch(initiateTPApprovalFlow(collection)),
   onInitiateApprovalFlow: collection => dispatch(initiateApprovalFlow(collection))
 })
