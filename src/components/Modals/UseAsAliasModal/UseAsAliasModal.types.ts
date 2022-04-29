@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { setProfileAvatarAliasRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { ENS } from 'modules/ens/types'
-import { setAliasRequest } from 'modules/ens/actions'
 
 export type Props = ModalProps & {
   address?: string
@@ -11,7 +11,7 @@ export type Props = ModalProps & {
   metadata: {
     newName: string
   }
-  onSubmit: typeof setAliasRequest
+  onSubmit: typeof setProfileAvatarAliasRequest
 }
 
 export type MapStateProps = Pick<Props, 'isLoading' | 'address' | 'aliases' | 'name'>

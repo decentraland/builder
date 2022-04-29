@@ -9,13 +9,15 @@ import {
   downloadItemSuccess,
   saveMultipleItemsCancelled,
   saveMultipleItemsSuccess,
-  saveMultipleItemsFailure,
   rescueItemsChunkSuccess,
   rescueItemsRequest,
-  rescueItemsSuccess
+  rescueItemsSuccess,
+  fetchCollectionItemsSuccess
 } from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
+import { PaginatedResource } from 'lib/api/pagination'
+import { toItemObject } from './utils'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 const getChainIdByNetworkMock: jest.Mock<typeof getChainIdByNetwork> = (getChainIdByNetwork as unknown) as jest.Mock<
@@ -186,29 +188,16 @@ describe('when an action of type DOWNLOAD_ITEM_FAILURE is called', () => {
 
 describe('when reducing the successful save multiple items action', () => {
   it('should return a state with the saved items', () => {
-    expect(itemReducer(state, saveMultipleItemsSuccess(items, fileNames))).toEqual({
+    expect(itemReducer(state, saveMultipleItemsSuccess(items, fileNames, []))).toEqual({
       ...INITIAL_STATE,
       data: { ...state.data, ...itemsMap }
     })
   })
 })
 
-describe('when reducing the failing save multiple items action', () => {
-  it('should return a state with the saved items added and the error set', () => {
-    expect(itemReducer(state, saveMultipleItemsFailure(error, items, fileNames))).toEqual({
-      ...INITIAL_STATE,
-      error,
-      data: {
-        ...state.data,
-        ...itemsMap
-      }
-    })
-  })
-})
-
 describe('when reducing the save cancelling save multiple items action', () => {
   it('should return a state with the saved items added', () => {
-    expect(itemReducer(state, saveMultipleItemsCancelled(items, fileNames))).toEqual({
+    expect(itemReducer(state, saveMultipleItemsCancelled(items, [], [], fileNames))).toEqual({
       ...INITIAL_STATE,
       data: {
         ...state.data,
@@ -286,6 +275,75 @@ describe('when reducing an action of a successful chunk of rescued items', () =>
         ...state.data,
         [items[0].id]: items[0]
       }
+    })
+  })
+})
+
+describe('when reducing an action of a successful fetch of collection items', () => {
+  let collection: Collection
+  let items: Item[]
+  let paginationData: PaginatedResource<Item>
+
+  beforeEach(() => {
+    collection = { id: 'some-id' } as Collection
+    items = [{ id: 'some-id' } as Item]
+    paginationData = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      total: 1,
+      results: items
+    }
+
+    state = {
+      ...state,
+      data: {
+        anItemId: {
+          id: 'anItemId'
+        } as Item
+      },
+      pagination: {
+        anAddress: {
+          ids: ['anItemId'],
+          total: 1,
+          currentPage: 1,
+          limit: 1,
+          totalPages: 1
+        }
+      }
+    }
+  })
+
+  describe('and fetching only one page', () => {
+    it('should add the items to the state and update the pagination data', () => {
+      expect(itemReducer(state, fetchCollectionItemsSuccess(collection.id, items, paginationData))).toEqual({
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        pagination: {
+          ...state.pagination,
+          [collection.id]: {
+            ids: items.map(item => item.id),
+            total: paginationData.total,
+            currentPage: paginationData.page,
+            limit: paginationData.limit,
+            totalPages: paginationData.pages
+          }
+        }
+      })
+    })
+  })
+  describe('and fetching several pages at the same time', () => {
+    it('should add the items to the state with the new items', () => {
+      expect(itemReducer(state, fetchCollectionItemsSuccess(collection.id, items, undefined))).toEqual({
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        }
+      })
     })
   })
 })

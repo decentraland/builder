@@ -1,6 +1,8 @@
 import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { PaginationStats } from 'lib/api/pagination'
+import { CurationStatus } from 'modules/curations/types'
 import { Collection } from 'modules/collection/types'
 import { BuiltFile, Item, Rarity } from './types'
 
@@ -10,8 +12,9 @@ export const FETCH_ITEMS_REQUEST = '[Request] Fetch Items'
 export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
 export const FETCH_ITEMS_FAILURE = '[Failure] Fetch Items'
 
-export const fetchItemsRequest = (address?: string) => action(FETCH_ITEMS_REQUEST, { address })
-export const fetchItemsSuccess = (items: Item[]) => action(FETCH_ITEMS_SUCCESS, { items })
+export const fetchItemsRequest = (address: string) => action(FETCH_ITEMS_REQUEST, { address })
+export const fetchItemsSuccess = (items: Item[], paginationStats: PaginationStats, address: string) =>
+  action(FETCH_ITEMS_SUCCESS, { items, paginationStats, paginationIndex: address })
 export const fetchItemsFailure = (error: string) => action(FETCH_ITEMS_FAILURE, { error })
 
 export type FetchItemsRequestAction = ReturnType<typeof fetchItemsRequest>
@@ -38,9 +41,22 @@ export const FETCH_COLLECTION_ITEMS_REQUEST = '[Request] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_SUCCESS = '[Success] Fetch Collection Items'
 export const FETCH_COLLECTION_ITEMS_FAILURE = '[Failure] Fetch Collection Items'
 
-export const fetchCollectionItemsRequest = (collectionId: string) => action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId })
-export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[]) =>
-  action(FETCH_COLLECTION_ITEMS_SUCCESS, { collectionId, items })
+export const fetchCollectionItemsRequest = (
+  collectionId: string,
+  {
+    page,
+    limit,
+    status,
+    overridePaginationData = true
+  }: {
+    page?: number | number[]
+    limit?: number
+    status?: CurationStatus
+    overridePaginationData?: boolean
+  } = {}
+) => action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId, page, limit, status, overridePaginationData })
+export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[], paginationStats?: PaginationStats) =>
+  action(FETCH_COLLECTION_ITEMS_SUCCESS, { items, paginationIndex: collectionId, paginationStats })
 export const fetchCollectionItemsFailure = (collectionId: string, error: string) =>
   action(FETCH_COLLECTION_ITEMS_FAILURE, { collectionId, error })
 
@@ -73,18 +89,20 @@ export const CANCEL_SAVE_MULTIPLE_ITEMS = '[Cancel] Save Multiple Items'
 export const CLEAR_SAVE_MULTIPLE_ITEMS = '[Clear] Save Multiple Items'
 
 export const saveMultipleItemsRequest = (builtFiles: BuiltFile<Blob>[]) => action(SAVE_MULTIPLE_ITEMS_REQUEST, { builtFiles })
-export const saveMultipleItemsFailure = (error: string, items: Item[], fileNames: string[]) =>
-  action(SAVE_MULTIPLE_ITEMS_FAILURE, { error, items, fileNames })
-export const saveMultipleItemsCancelled = (items: Item[], fileNames: string[]) =>
-  action(SAVE_MULTIPLE_ITEMS_CANCELLED, { items, fileNames })
-export const saveMultipleItemsSuccess = (items: Item[], fileNames: string[]) => action(SAVE_MULTIPLE_ITEMS_SUCCESS, { items, fileNames })
+export const saveMultipleItemsSuccess = (items: Item[], savedFileNames: string[], notSavedFileNames: string[]) =>
+  action(SAVE_MULTIPLE_ITEMS_SUCCESS, { items, savedFileNames, notSavedFileNames })
+export const saveMultipleItemsCancelled = (
+  items: Item[],
+  savedFileNames: string[],
+  notSavedFileNames: string[],
+  cancelledFileNames: string[]
+) => action(SAVE_MULTIPLE_ITEMS_CANCELLED, { items, savedFileNames, notSavedFileNames, cancelledFileNames })
 
 export const cancelSaveMultipleItems = () => action(CANCEL_SAVE_MULTIPLE_ITEMS)
 export const clearSaveMultipleItems = () => action(CLEAR_SAVE_MULTIPLE_ITEMS)
 
 export type SaveMultipleItemsRequestAction = ReturnType<typeof saveMultipleItemsRequest>
 export type SaveMultipleItemsSuccessAction = ReturnType<typeof saveMultipleItemsSuccess>
-export type SaveMultipleItemsFailureAction = ReturnType<typeof saveMultipleItemsFailure>
 export type SaveMultipleItemsCancelledAction = ReturnType<typeof saveMultipleItemsCancelled>
 export type CancelSaveMultipleItemsAction = ReturnType<typeof cancelSaveMultipleItems>
 export type ClearStateSaveMultipleItemsAction = ReturnType<typeof clearSaveMultipleItems>

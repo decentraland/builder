@@ -9,6 +9,7 @@ export type Collection = {
   salt?: string
   isPublished: boolean
   isApproved: boolean
+  itemCount?: number
   minters: string[]
   managers: string[]
   forumLink?: string
@@ -41,4 +42,4 @@ export type Access = {
 }
 
 export const COLLECTION_NAME_MAX_LENGTH = 32
-export const TP_COLLECTION_NAME_MAX_LENGTH = 64
+export const TP_COLLECTION_NAME_MAX_LENGTH = 42

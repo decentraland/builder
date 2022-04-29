@@ -1,3 +1,6 @@
 .Collections {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   padding: 0px 16px;
 }

@@ -3,12 +3,21 @@ import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getCollectionEditorURL, getExplorerURL, isLocked } from 'modules/collection/utils'
+import { CreateOrEditMultipleItemsModalType } from 'components/Modals/CreateAndEditMultipleItemsModal/CreateAndEditMultipleItemsModal.types'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
 import styles from './CollectionContextMenu.module.css'
 
 export default class CollectionContextMenu extends React.PureComponent<Props> {
   analytics = getAnalytics()
+
+  handleNavigateToForum = () => {
+    const { collection } = this.props
+    if (collection.isPublished && collection.forumLink) {
+      this.navigateTo(collection.forumLink, '_blank')
+    }
+  }
+
   handleNavigateToExplorer = () => {
     const { collection } = this.props
     this.analytics.track('See in world')
@@ -29,6 +38,13 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
     const { collection, onOpenModal } = this.props
     if (!collection.isPublished) {
       onOpenModal('EditCollectionURNModal', { collection })
+    }
+  }
+
+  handleEditInBulk = () => {
+    const { collection, onOpenModal } = this.props
+    if (!collection.isPublished) {
+      onOpenModal('CreateAndEditMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
     }
   }
 
@@ -88,6 +104,22 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
             disabled={!collection.isPublished}
             trigger={
               <Dropdown.Item text={t('collection_context_menu.edit_urn')} onClick={this.handleEditURN} disabled={collection.isPublished} />
+            }
+            hideOnScroll={true}
+            on="hover"
+            inverted
+          />
+          <Dropdown.Item text={t('collection_context_menu.edit_in_bulk')} onClick={this.handleEditInBulk} />
+          <Popup
+            content={t('collection_context_menu.unpublished')}
+            position="right center"
+            disabled={collection.isPublished || !!collection.forumLink}
+            trigger={
+              <Dropdown.Item
+                disabled={!collection.isPublished || !collection.forumLink}
+                text={t('collection_context_menu.forum_post')}
+                onClick={this.handleNavigateToForum}
+              />
             }
             hideOnScroll={true}
             on="hover"

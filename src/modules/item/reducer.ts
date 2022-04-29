@@ -81,11 +81,9 @@ import {
   DOWNLOAD_ITEM_FAILURE,
   DOWNLOAD_ITEM_SUCCESS,
   SaveMultipleItemsSuccessAction,
-  SaveMultipleItemsFailureAction,
   SaveMultipleItemsCancelledAction,
   ClearStateSaveMultipleItemsAction,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
-  SAVE_MULTIPLE_ITEMS_FAILURE,
   CLEAR_SAVE_MULTIPLE_ITEMS,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
   RescueItemsChunkSuccessAction
@@ -100,18 +98,28 @@ import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
 
+export type ItemPaginationData = {
+  ids: string[]
+  total: number
+  totalPages: number
+  currentPage: number
+  limit: number
+}
+
 export type ItemState = {
   data: Record<string, Item>
   rarities: Rarity[]
   loading: LoadingState
   error: string | null
+  pagination: Record<string, ItemPaginationData> | null
 }
 
 export const INITIAL_STATE: ItemState = {
   data: {},
   rarities: [],
   loading: [],
-  error: null
+  error: null,
+  pagination: null
 }
 
 type ItemReducerAction =
@@ -156,7 +164,6 @@ type ItemReducerAction =
   | DownloadItemSuccessAction
   | DownloadItemFailureAction
   | SaveMultipleItemsSuccessAction
-  | SaveMultipleItemsFailureAction
   | SaveMultipleItemsCancelledAction
   | ClearStateSaveMultipleItemsAction
 
@@ -184,8 +191,34 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         loading: loadingReducer(state.loading, action)
       }
     }
-    case FETCH_COLLECTION_ITEMS_SUCCESS:
     case FETCH_ITEMS_SUCCESS:
+    case FETCH_COLLECTION_ITEMS_SUCCESS: {
+      const { paginationIndex, items, paginationStats } = action.payload
+      const hasPagination = paginationStats !== undefined
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        loading: loadingReducer(state.loading, action),
+        pagination: {
+          ...state.pagination,
+          ...(hasPagination
+            ? {
+                [paginationIndex]: {
+                  ids: items.map(item => item.id),
+                  total: paginationStats.total,
+                  limit: paginationStats.limit,
+                  currentPage: paginationStats.page,
+                  totalPages: paginationStats.pages
+                }
+              }
+            : {})
+        },
+        error: null
+      }
+    }
     case SET_ITEMS_TOKEN_ID_SUCCESS: {
       const { items } = action.payload
       return {
@@ -253,17 +286,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         },
         loading: loadingReducer(state.loading, action),
         error: null
-      }
-    }
-    case SAVE_MULTIPLE_ITEMS_FAILURE: {
-      const { items, error } = action.payload
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          ...toItemObject(items)
-        },
-        error
       }
     }
     case CLEAR_SAVE_MULTIPLE_ITEMS: {

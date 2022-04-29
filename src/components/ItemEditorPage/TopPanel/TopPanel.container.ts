@@ -18,7 +18,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
-  onInitiateTPApprovalFlow: (collection, itemsToApprove) => dispatch(initiateTPApprovalFlow(collection, itemsToApprove)),
+  onInitiateTPApprovalFlow: collection => dispatch(initiateTPApprovalFlow(collection)),
   onInitiateApprovalFlow: collection => dispatch(initiateApprovalFlow(collection))
 })
 

@@ -8,7 +8,6 @@ import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import { locations } from 'routing/locations'
 import { getCollectionType } from 'modules/collection/utils'
-import { CollectionType } from 'modules/collection/types'
 import { OptionsDropdown } from '../../OptionsDropdown'
 import { ITEM_DASHBOARD_CARD_SOURCE } from '../ItemCard/ItemCard.dnd'
 import { collect, CollectedProps, collectionTarget } from './CollectionCard.dnd'
@@ -16,7 +15,7 @@ import { Props } from './CollectionCard.types'
 import './CollectionCard.css'
 
 const CollectionCard = (props: Props & CollectedProps) => {
-  const { collection, onDeleteCollection, items, connectDropTarget, isOver, canDrop } = props
+  const { collection, onDeleteCollection, itemCount, connectDropTarget, isOver, canDrop } = props
   const [isDeleting, setIsDeleting] = React.useState(false)
 
   const handleCancelDeleteCollection = React.useCallback(() => setIsDeleting(false), [setIsDeleting])
@@ -27,7 +26,6 @@ const CollectionCard = (props: Props & CollectedProps) => {
   }, [setIsDeleting, onDeleteCollection])
 
   const type = getCollectionType(collection)
-  const isThirdParty = type === CollectionType.THIRD_PARTY
 
   return (
     <>
@@ -35,11 +33,11 @@ const CollectionCard = (props: Props & CollectedProps) => {
         <div className={`CollectionCard is-card ${isOver && canDrop ? 'is-over' : ''}`}>
           {!collection.isPublished && (
             <OptionsDropdown
-              className={classNames({ 'empty-collection-options': items.length === 0 }, 'options-dropdown')}
+              className={classNames({ 'empty-collection-options': itemCount === 0 }, 'options-dropdown')}
               options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]}
             />
           )}
-          <Link to={isThirdParty ? locations.thirdPartyCollectionDetail(collection.id) : locations.collectionDetail(collection.id)}>
+          <Link to={locations.collectionDetail(collection.id, type)}>
             <CollectionImage collectionId={collection.id} />
             <Card.Content>
               <div className="text" title={collection.name}>
@@ -47,7 +45,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
               </div>
               <div className="subtitle">
                 {t(`collection.type.${type}`)}&nbsp;·&nbsp;
-                {t('collection_card.item_count', { count: items.length })}
+                {t('collection_card.item_count', { count: itemCount })}
               </div>
             </Card.Content>
           </Link>
@@ -62,6 +60,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
         cancelButton={<Button secondary>{t('global.cancel')}</Button>}
         onCancel={handleCancelDeleteCollection}
         onConfirm={handleDeleteCollection}
+        className="delete-collection-confirm"
       />
     </>
   )

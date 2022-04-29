@@ -4,7 +4,7 @@ import { Props } from './Back.types'
 
 export default class Back extends React.PureComponent<Props> {
   render() {
-    const { onBack, onClick, hasHistory, ...rest } = this.props
-    return <BackComponent {...rest} onClick={hasHistory ? onBack : onClick} />
+    const { onBack, onClick, hasHistory, absolute, ...rest } = this.props
+    return <BackComponent {...rest} onClick={hasHistory && !absolute ? onBack : onClick} />
   }
 }

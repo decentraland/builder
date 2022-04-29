@@ -2,6 +2,7 @@ import { AnyAction } from 'redux'
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getTransactionFromAction } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/dist/modules/authorization/actions'
+import { SET_PROFILE_AVATAR_ALIAS_SUCCESS } from 'decentraland-dapps/dist/modules/profile/actions'
 import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
 import {
   EDITOR_UNDO,
@@ -71,7 +72,6 @@ import {
 } from 'modules/collection/actions'
 import {
   ALLOW_CLAIM_MANA_SUCCESS,
-  SET_ALIAS_SUCCESS,
   CLAIM_NAME_SUCCESS,
   SET_ENS_CONTENT_SUCCESS,
   SET_ENS_RESOLVER_SUCCESS,
@@ -340,7 +340,7 @@ add(SET_ENS_CONTENT_SUCCESS, 'Set ENS Content', action => {
   }
 })
 
-addPayload(SET_ALIAS_SUCCESS, 'Use as Alias')
+addPayload(SET_PROFILE_AVATAR_ALIAS_SUCCESS, 'Use as Alias')
 
 addPayload(ALLOW_CLAIM_MANA_SUCCESS, 'Allow Claim Mana')
 

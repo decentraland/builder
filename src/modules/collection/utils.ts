@@ -129,3 +129,14 @@ export function getLatestItemHash(collection: Collection, item: Item): Promise<s
 export function isTPCollection(collection: Collection): boolean {
   return isThirdParty(collection.urn)
 }
+
+export function getCollectionFactoryContract(chainId: ChainId) {
+  const version = env.get<string | undefined>('REACT_APP_COLLECTION_FACTORY_VERSION')
+
+  switch (version) {
+    case '3':
+      return getContract(ContractName.CollectionFactoryV3, chainId)
+    default:
+      return getContract(ContractName.CollectionFactory, chainId)
+  }
+}

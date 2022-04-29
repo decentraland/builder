@@ -3,5 +3,5 @@ export function sortByCreatedAt<T extends { createdAt?: number | string }>(a: T,
 }
 
 export function sortByName<T extends { name: string }>(a: T, b: T) {
-  return a.name > b.name ? 1 : -1
+  return a.name.localeCompare(b.name, undefined, { numeric: true })
 }

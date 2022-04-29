@@ -24,6 +24,7 @@ import { areSynced, canSeeItem, isOwner } from './utils'
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
+export const getPaginationData = (state: RootState, collectionId: string) => getState(state).pagination?.[collectionId]
 export const getError = (state: RootState) => getState(state).error
 
 export const getItems = createSelector<RootState, ItemState['data'], Item[]>(getData, itemData => Object.values(itemData))
@@ -60,6 +61,13 @@ export const getWalletOrphanItems = createSelector<RootState, Item[], Item[]>(ge
 export const getCollectionItems = (state: RootState, collectionId: string) => {
   const allItems = getItems(state)
   return allItems.filter(item => item.collectionId === collectionId)
+}
+
+export const getPaginatedCollectionItems = (state: RootState, collectionId: string, pageSize: number) => {
+  const paginationData = getPaginationData(state, collectionId)
+  const allItems = getData(state)
+  const ids = paginationData?.ids.slice(0, pageSize) || []
+  return ids.map(itemId => allItems[itemId]).filter(Boolean)
 }
 
 export const getRarities = (state: RootState): Rarity[] => {

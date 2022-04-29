@@ -13,6 +13,7 @@
 
 .CollectionCard .subtitle {
   margin-top: 5px;
+  max-width: 248px;
   color: var(--secondary-text);
 }
 
@@ -48,4 +49,10 @@
   .CollectionCard .content .text {
     max-width: 215px;
   }
+}
+
+.delete-collection-confirm .header {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

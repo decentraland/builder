@@ -1,0 +1,32 @@
+.CollectionRow:hover {
+  background-color: rgba(36, 33, 41, 0.4);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.image {
+  width: 64px;
+  height: 64px;
+  margin-right: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex: none;
+}
+
+.name {
+  display: inline-block;
+  margin-left: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title,
+.imageColumn {
+  display: flex;
+  align-items: center;
+}
+
+.published {
+  color: rgb(var(--light-blue-raw));
+}

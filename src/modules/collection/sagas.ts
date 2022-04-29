@@ -1,3 +1,4 @@
+import PQueue from 'p-queue'
 import { Contract, providers, constants, ethers } from 'ethers'
 import { push, replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, CallEffect, all } from 'redux-saga/effects'
@@ -89,17 +90,27 @@ import {
   RescueItemsFailureAction,
   fetchCollectionItemsRequest,
   FETCH_COLLECTION_ITEMS_SUCCESS,
-  FETCH_COLLECTION_ITEMS_FAILURE
+  FETCH_COLLECTION_ITEMS_FAILURE,
+  SAVE_MULTIPLE_ITEMS_SUCCESS,
+  SaveMultipleItemsSuccessAction
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
+import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
-import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
+import {
+  getEntityByItemId,
+  getItems,
+  getCollectionItems,
+  getWalletItems,
+  getData as getItemsById,
+  getPaginationData
+} from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
@@ -132,7 +143,8 @@ import {
   getCollectionType,
   getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
-  isTPCollection
+  isTPCollection,
+  getCollectionFactoryContract
 } from './utils'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
@@ -144,6 +156,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeEvery(SAVE_COLLECTION_REQUEST, handleSaveCollectionRequest)
   yield takeLatest(SAVE_COLLECTION_SUCCESS, handleSaveCollectionSuccess)
   yield takeLatest(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
+  yield takeLatest(SAVE_MULTIPLE_ITEMS_SUCCESS, handleSaveMultipleItemsSuccess)
   yield takeEvery(DELETE_COLLECTION_REQUEST, handleDeleteCollectionRequest)
   yield takeEvery(PUBLISH_COLLECTION_REQUEST, handlePublishCollectionRequest)
   yield takeEvery(SET_COLLECTION_MINTERS_REQUEST, handleSetCollectionMintersRequest)
@@ -196,7 +209,15 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
     const { item } = action.payload
     if (item.collectionId && !item.isPublished) {
-      const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
+      const collection: Collection = yield select(getCollection, item.collectionId!)
+      yield put(saveCollectionRequest(collection))
+    }
+  }
+
+  function* handleSaveMultipleItemsSuccess(action: SaveMultipleItemsSuccessAction) {
+    const { items } = action.payload
+    if (items.length > 0 && items[0].collectionId) {
+      const collection: Collection = yield select(getCollection, items[0].collectionId!)
       yield put(saveCollectionRequest(collection))
     }
   }
@@ -315,7 +336,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
 
       const forwarder = getContract(ContractName.Forwarder, maticChainId)
-      const factory = getContract(ContractName.CollectionFactory, maticChainId)
+      const factory = getCollectionFactoryContract(maticChainId)
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
       // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
@@ -600,7 +621,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handleInitiateTPItemsApprovalFlow(action: InitiateTPApprovalFlowAction) {
-    const { collection, itemsToApprove } = action.payload
+    const { collection } = action.payload
 
     try {
       // Check if this makes sense or add a check to see if the items to be published are correct.
@@ -616,8 +637,23 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         })
       )
 
-      // 2. Get the approval data from the server
+      // 2. Get items to approve & the approval data from the server
       // TODO: Use the builder client. Tracked here: https://github.com/decentraland/builder/issues/1855
+      // Get all items to get approved in batches
+      const paginatedData: PaginatedResource<Item> = yield select(getPaginationData, collection.id)
+      const BATCH_SIZE = 50
+      const REQUESTS_BATCH_SIZE = 10
+      const pages = getArrayOfPagesFromTotal(Math.ceil(paginatedData.total / BATCH_SIZE))
+      const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
+      const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = pages.map((page: number) => () =>
+        legacyBuilderClient.fetchCollectionItems(collection.id, { page, limit: BATCH_SIZE, status: CurationStatus.PENDING })
+      ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
+      const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
+      const itemsToApprove = allItemPages.flatMap(result => result.results)
+
+      if (!itemsToApprove.length) {
+        throw Error('Error fetching items to approve')
+      }
       const { cheque, content_hashes: contentHashes, chequeWasConsumed }: ItemApprovalData = yield call(
         [legacyBuilderClient, 'fetchApprovalData'],
         collection.id
@@ -625,8 +661,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       // 3. Compute the merkle tree root & create slot to consume
       const tree = generateTree(Object.values(contentHashes))
+      const amountOfItemsToPublish = itemsToApprove.filter(item => !item.isApproved).length
 
-      if (cheque.qty < itemsToApprove.length) {
+      if (cheque.qty < amountOfItemsToPublish) {
         throw Error('Invalid qty of items to approve in the cheque')
       }
 

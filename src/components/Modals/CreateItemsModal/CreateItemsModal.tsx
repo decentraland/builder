@@ -11,7 +11,7 @@ export default class CreateItemsModal extends React.PureComponent<Props> {
   }
 
   private handleOpenMultipleItemsModal = () => {
-    this.handleOpenModal('CreateMultipleItemsModal')
+    this.handleOpenModal('CreateAndEditMultipleItemsModal')
   }
 
   private handleOpenModal = (name: string) => {
