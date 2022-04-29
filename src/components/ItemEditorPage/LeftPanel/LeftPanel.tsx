@@ -76,17 +76,22 @@ export default class LeftPanel extends React.PureComponent<Props> {
                 return <Loader size="massive" active />
               }
 
-              if (items.length === 0 || collections.length === 0) {
+              if (items.length === 0 && collections.length === 0) {
+                return (
+                  <>
+                    <Header />
+                    <div className="empty">
+                      <div className="subtitle">{t('collections_page.empty_description')}</div>
+                    </div>
+                  </>
+                )
+              } else if (items.length === 0 && selectedCollectionId) {
                 return (
                   <>
                     <Header />
                     <div className="empty">
                       <div className="subtitle">
-                        {collections.length === 0
-                          ? t('collections_page.empty_description')
-                          : isReviewing
-                          ? t('item_editor.left_panel.no_items_to_review')
-                          : t('item_editor.left_panel.empty_collection')}
+                        {isReviewing ? t('item_editor.left_panel.no_items_to_review') : t('item_editor.left_panel.empty_collection')}
                       </div>
                     </div>
                   </>

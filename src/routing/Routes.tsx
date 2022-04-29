@@ -130,11 +130,7 @@ export default class Routes extends React.Component<Props, State> {
                   <Route exact key={5} path={locations.curation()} component={CurationPage} />
                 ]
               : null}
-
-            {/* This env check will be replaced for https://github.com/decentraland/feature-flags */
-            env.get('REACT_APP_FF_THIRD_PARTY_WEARABLES')
-              ? [<Route exact key={1} path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />]
-              : null}
+            <Route exact key={1} path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />
 
             <Redirect to={locations.root()} />
           </Switch>
