@@ -1029,7 +1029,13 @@
     "error_message_body": "Algo salió mal... Vuelve a intentarlo más tarde.",
     "assign_success_title": "Colección asignada",
     "unassign_success_title": "Colección sin asignar",
-    "curator": "Curador"
+    "curator": "Curador",
+    "confirm_not_assigned_curation_modal": {
+      "title": "Aprobar colección",
+      "body": "Esta colección está asignada a {assignee}. Si es necesario, aún puede aprobarlo, pero asegúrese de informar al curador asignado.",
+      "confirm_footer": "Confirmar la aprobación de esta colección para que se habilite para ser acuñada.",
+      "confirm_button": "Asignarme y aprobar la colección"
+    }
   },
   "collection_row": {
     "collection": "Colección",

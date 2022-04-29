@@ -25,7 +25,6 @@ export default class CollectionRow extends React.PureComponent<Props> {
   }
 
   handleAssign = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, type = AssignModalOperationType.SELF_ASSIGN) => {
-    // TODO: Add logic to open assignment confirmation modal
     const { onOpenModal, collection } = this.props
     onOpenModal('EditCurationAssigneeModal', { collectionId: collection.id, type })
     event.preventDefault()
@@ -115,10 +114,12 @@ export default class CollectionRow extends React.PureComponent<Props> {
                   <Profile textOnly address={curation.assignee} />
                   {address === curation.assignee ? <> ({t('collection_row.you')})</> : null}{' '}
                 </div>
-                <Icon
-                  name="pencil"
-                  onClick={(e: React.MouseEvent<HTMLSpanElement>) => this.handleAssign(e, AssignModalOperationType.REASSIGN)}
-                />
+                {curation.status !== CurationStatus.APPROVED || !collection.isApproved ? (
+                  <Icon
+                    name="pencil"
+                    onClick={(e: React.MouseEvent<HTMLSpanElement>) => this.handleAssign(e, AssignModalOperationType.REASSIGN)}
+                  />
+                ) : null}
               </>
             ) : (
               <div className="assignee-container">
