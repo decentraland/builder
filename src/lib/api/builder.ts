@@ -778,6 +778,10 @@ export class BuilderAPI extends BaseAPI {
     return this.request('post', `/collections/${collection.id}/post`, { forumPost })
   }
 
+  createCollectionNewAssigneeForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
+    return this.request('post', `/collections/${collection.id}/curation/post`, { forumPost })
+  }
+
   fetchRarities(): Promise<Rarity[]> {
     return this.request('get', '/rarities')
   }
