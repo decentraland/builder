@@ -975,11 +975,17 @@
     "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {
+    "order": {
+      "most_relevant": "最相关的"
+    },
     "filter": {
       "all_status": "所有状态",
+      "all_assignees": "所有受让人",
       "not_reviewed": "尚未审核",
       "approved": "已批准",
-      "rejected": "拒绝了"
+      "rejected": "拒绝了",
+      "under_review": "审查中",
+      "to_review": "回顾"
     },
     "search_placeholder": "按名称或所有者地址在 {count} 个结果之间搜索...",
     "collections": "{count} {count, plural, one {个合集} other {个收藏}}",

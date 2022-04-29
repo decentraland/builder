@@ -1,22 +1,24 @@
 import React from 'react'
 import { Row, Column, Section, Container, Dropdown, Pagination, Empty, TextFilter, Table } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { hasReviews } from 'modules/collection/utils'
+import { getCollectionCurationState } from 'modules/curations/collectionCuration/utils'
+import Profile from 'components/Profile'
 import NotFound from 'components/NotFound'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import CollectionRow from './CollectionRow'
-import { Props, State, SortBy, FilterBy } from './CurationPage.types'
+import { Props, State, SortBy, CurationFilterOptions, CurationExtraStatuses, Filters } from './CurationPage.types'
 import { CurationStatus } from 'modules/curations/types'
-
 import './CurationPage.css'
 
 const PAGE_SIZE = 12
+const ALL_ASSIGNEES_KEY = 'all'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
-    sortBy: SortBy.NEWEST,
-    filterBy: FilterBy.ALL_STATUS,
+    sortBy: SortBy.MOST_RELEVANT,
+    filterBy: CurationExtraStatuses.ALL_STATUS,
+    assigneeFilter: ALL_ASSIGNEES_KEY,
     searchText: '',
     page: 1
   }
@@ -28,6 +30,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         direction="left"
         value={sortBy}
         options={[
+          { value: SortBy.MOST_RELEVANT, text: t('curation_page.order.most_relevant') },
           { value: SortBy.NEWEST, text: t('global.order.newest') },
           { value: SortBy.NAME_ASC, text: t('global.order.name_asc') },
           { value: SortBy.NAME_DESC, text: t('global.order.name_desc') }
@@ -44,19 +47,36 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         direction="left"
         value={filterBy}
         options={[
-          { value: FilterBy.ALL_STATUS, text: t('curation_page.filter.all_status') },
-          { value: FilterBy.NOT_REVIWED, text: t('curation_page.filter.not_reviewed') },
-          { value: FilterBy.APPROVED, text: t('curation_page.filter.approved') },
-          { value: FilterBy.REJECTED, text: t('curation_page.filter.rejected') }
+          { value: CurationFilterOptions.ALL_STATUS, text: t('curation_page.filter.all_status') },
+          { value: CurationFilterOptions.UNDER_REVIEW, text: t('curation_page.filter.under_review') },
+          { value: CurationFilterOptions.TO_REVIEW, text: t('curation_page.filter.to_review') },
+          { value: CurationFilterOptions.APPROVED, text: t('curation_page.filter.approved') },
+          { value: CurationFilterOptions.REJECTED, text: t('curation_page.filter.rejected') }
         ]}
-        onChange={(_event, { value }) => this.setState({ filterBy: value as FilterBy })}
+        onChange={(_event, { value }) => this.setState({ filterBy: value as Filters })}
+      />
+    )
+  }
+
+  renderAssigneeFilterDropdown = () => {
+    const { committeeMembers } = this.props
+    const { assigneeFilter } = this.state
+    return (
+      <Dropdown
+        direction="left"
+        value={assigneeFilter}
+        options={[
+          { value: ALL_ASSIGNEES_KEY, text: t('curation_page.filter.all_assignees') },
+          ...committeeMembers.map(address => ({ value: address, text: <Profile textOnly address={address} /> }))
+        ]}
+        onChange={(_event, { value }) => this.setState({ assigneeFilter: `${value}` })}
       />
     )
   }
 
   paginate = () => {
     const { collections, curationsByCollectionId } = this.props
-    const { page, filterBy, sortBy, searchText } = this.state
+    const { page, filterBy, sortBy, searchText, assigneeFilter } = this.state
 
     return collections
       .filter(
@@ -66,24 +86,46 @@ export default class CurationPage extends React.PureComponent<Props, State> {
       )
       .filter(collection => {
         const curation = curationsByCollectionId[collection.id]
+        const curationState = getCollectionCurationState(collection, curation)
 
         switch (filterBy) {
-          case FilterBy.APPROVED:
-            return curation ? curation.status === CurationStatus.APPROVED : collection.isApproved
-          case FilterBy.REJECTED:
-            return curation ? curation.status === CurationStatus.REJECTED : hasReviews(collection) && !collection.isApproved
-          case FilterBy.NOT_REVIWED:
-            return curation ? curation.status === CurationStatus.PENDING : !hasReviews(collection)
-          case FilterBy.ALL_STATUS:
+          case CurationFilterOptions.APPROVED:
+            return curationState === CurationStatus.APPROVED
+          case CurationFilterOptions.REJECTED:
+            return curationState === CurationStatus.REJECTED
+          case CurationFilterOptions.UNDER_REVIEW:
+            return curationState === CurationStatus.UNDER_REVIEW
+          case CurationFilterOptions.TO_REVIEW:
+            return curationState === CurationStatus.TO_REVIEW
+          case CurationFilterOptions.ALL_STATUS:
           default:
             return true
         }
+      })
+      .filter(collection => {
+        const curation = curationsByCollectionId[collection.id]
+        if (assigneeFilter !== ALL_ASSIGNEES_KEY) {
+          return curation && curation.assignee === assigneeFilter
+        }
+        return true
       })
       .sort((collectionA, collectionB) => {
         const curationA = curationsByCollectionId[collectionA.id]
         const curationB = curationsByCollectionId[collectionB.id]
 
         switch (sortBy) {
+          case SortBy.MOST_RELEVANT: {
+            const curationRelevanceOrder = [
+              CurationStatus.TO_REVIEW,
+              CurationStatus.UNDER_REVIEW,
+              CurationStatus.APPROVED,
+              CurationStatus.REJECTED,
+              CurationStatus.DISABLED
+            ]
+            const curationAState = getCollectionCurationState(collectionA, curationA)
+            const curationBState = getCollectionCurationState(collectionB, curationB)
+            return curationRelevanceOrder.indexOf(curationAState) - curationRelevanceOrder.indexOf(curationBState)
+          }
           case SortBy.NEWEST: {
             const dateA = curationA ? curationA.createdAt : collectionA.createdAt
             const dateB = curationB ? curationB.createdAt : collectionB.createdAt
@@ -134,6 +176,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
               <Column align="right">
                 {collections.length > 1 ? (
                   <Row>
+                    {this.renderAssigneeFilterDropdown()}
                     {this.renderFilterDropdown()}
                     {this.renderSortDropdown()}
                   </Row>
