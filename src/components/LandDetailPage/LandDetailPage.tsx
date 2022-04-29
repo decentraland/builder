@@ -214,6 +214,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                 <div className="deployments">
                   {deployments.map(deployment => (
                     <Scene
+                      key={deployment.id}
                       deployment={deployment}
                       onMouseEnter={this.handleMouseEnter}
                       onMouseLeave={this.handleMouseLeave}
@@ -236,7 +237,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               </Header>
               <div className="ens-list">
                 {ensList.map(ens => (
-                  <ENSChip key={ens.subdomain} ens={ens} onIconClick={() => onOpenModal('UnsetENSContentModal', { ens, land })}/>
+                  <ENSChip key={ens.subdomain} ens={ens} onIconClick={() => onOpenModal('UnsetENSContentModal', { ens, land })} />
                 ))}
               </div>
             </Section>
