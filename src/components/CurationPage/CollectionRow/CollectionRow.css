@@ -48,9 +48,14 @@
   align-items: center;
 }
 
-.CollectionRow .action {
+.CollectionRow .text-centered {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+}
+
+.CollectionRow .assignee-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .CollectionRow .actions .action-text {
@@ -60,6 +65,20 @@
 .CollectionRow .actions .action.approved {
   text-align: right;
   color: rgb(var(--light-blue-raw));
+}
+
+.CollectionRow .edit-container {
+  display: flex;
+}
+
+.CollectionRow .edit-container .curator-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.CollectionRow .pencil.icon {
+  padding-left: 6px;
 }
 
 .CollectionRow .actions .action.rejected,

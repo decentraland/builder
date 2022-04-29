@@ -1,0 +1,8 @@
+.EditCurationAssigneeModal.ui.modal .content .details {
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.EditCurationAssigneeModal.ui.modal .content .dcl.select-field {
+  margin-top: 16px;
+}
