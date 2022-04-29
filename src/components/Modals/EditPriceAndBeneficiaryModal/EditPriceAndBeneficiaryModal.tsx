@@ -21,10 +21,10 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Info from 'components/Info'
 import { isValid } from 'lib/address'
+import { toFixedMANAValue } from 'lib/mana'
 import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
-import { toFixedMANAValue } from 'lib/mana'
 
 const MIN_SALE_VALUE = fromWei(env.get('REACT_APP_MIN_SALE_VALUE_IN_WEI', '0'), 'ether')
 
