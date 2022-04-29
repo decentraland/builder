@@ -26,7 +26,8 @@ import {
   fetchCollectionItemsSuccess,
   rescueItemsFailure,
   rescueItemsSuccess,
-  saveMultipleItemsSuccess
+  saveMultipleItemsSuccess,
+  setItemsTokenIdRequest
 } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
 import {
@@ -87,6 +88,7 @@ const getItemMock = (collection: Collection, props: Partial<Item> = {}): Item =>
     blockchainContentHash: 'QmSynced',
     catalystContentHash: 'QmSynced',
     contents: { 'thumbnail.png': 'QmThumbnailHash' } as Record<string, string>,
+    tokenId: 'tokenId',
     data: {
       category: WearableCategory.HAT,
       hides: [] as WearableCategory[],
@@ -163,6 +165,26 @@ describe('when executing the approval flow', () => {
             error: `The collection can't be approved because it's not published`
           } as ApprovalFlowModalMetadata)
         )
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when an item in the collection does not have the token id', () => {
+    it('should dispatch an action to set the token id', async () => {
+      const collection = getCollectionMock({})
+      const item1 = getItemMock(collection)
+      const item2 = getItemMock(collection, { tokenId: undefined })
+
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .provide([[select(getItems), [item1, item2]]])
+        .dispatch(initiateApprovalFlow(collection))
+        .put(
+          openModal('ApprovalFlowModal', {
+            view: ApprovalFlowModalView.LOADING,
+            collection
+          } as ApprovalFlowModalMetadata)
+        )
+        .put(setItemsTokenIdRequest(collection, [item1, item2]))
         .run({ silenceTimeout: true })
     })
   })
@@ -699,13 +721,13 @@ describe('when executing the approval flow', () => {
               { success: saveCollectionSuccess(collection) }
             ],
             [select(getAddress), [address]],
-            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
             [retry(10, 500, mockBuilder.lockCollection, collection), newLock],
             [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
             [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
           ])
           .put(saveCollectionRequest(collection))
-          .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MAINNET, txHash))
+          .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
           .put(replace(locations.activity()))
           .dispatch(publishCollectionRequest(collection, items, email))
           .run({ silenceTimeout: true })
@@ -769,13 +791,13 @@ describe('when executing the approval flow', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getAddress), [address]],
-            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
             [retry(10, 500, mockBuilder.lockCollection, lockedCollection), newLock],
             [retry(10, 500, mockBuilder.saveTOS, lockedCollection, email), undefined],
             [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
           ])
           .not.put(saveCollectionRequest(collection))
-          .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MAINNET, txHash))
+          .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
           .put(replace(locations.activity()))
           .dispatch(publishCollectionRequest(lockedCollection, items, email))
           .run({ silenceTimeout: true })

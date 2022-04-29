@@ -92,7 +92,8 @@ import {
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FETCH_COLLECTION_ITEMS_FAILURE,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
-  SaveMultipleItemsSuccessAction
+  SaveMultipleItemsSuccessAction,
+  SET_ITEMS_TOKEN_ID_SUCCESS
 } from 'modules/item/actions'
 import { areSynced, getLatestStandardItemContentHash, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
@@ -792,7 +793,25 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       // 2. Find items that need to be rescued (their content hash needs to be updated)
       const itemsToRescue: Item[] = []
       const contentHashes: string[] = []
-      const items: Item[] = yield getItemsFromCollection(collection)
+
+      let items: Item[] = yield getItemsFromCollection(collection)
+
+      // Check if any item does not have a tokenId.
+      // This might happen because the creator left the browser and never came back after publishing.
+      // Meaning that the tokenId could never be set.
+      // If the tokenId is never set, curators can't approve the collection.
+      // The following code attempts to set the tokenId for items that don't have it in a collection.
+      if (items.some(item => !item.tokenId)) {
+        // If any item does not have the token id, trigger the action that sets it.
+        yield put(setItemsTokenIdRequest(collection, items))
+
+        // Wait until the triggered action emits a success.
+        yield take(SET_ITEMS_TOKEN_ID_SUCCESS)
+
+        // Update the items to the new ones with the token id.
+        items = yield getItemsFromCollection(collection)
+      }
+
       for (const item of items) {
         const latestContentHash: string = yield call(getLatestStandardItemContentHash, item, collection)
         if (latestContentHash !== item.blockchainContentHash) {

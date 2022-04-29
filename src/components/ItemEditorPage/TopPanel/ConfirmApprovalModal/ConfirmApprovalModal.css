@@ -1,0 +1,12 @@
+.ConfirmApprovalModal .message-container {
+  background-color: #ecebed;
+  border-radius: 4px;
+  color: black;
+  padding: 16px;
+  font-size: 14px;
+  margin-bottom: 26px;
+}
+
+.ConfirmApprovalModal.ui.modal .content {
+  font-size: 15px;
+}

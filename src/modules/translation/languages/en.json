@@ -982,20 +982,54 @@
     "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {
+    "order": {
+      "most_relevant": "Most relevant"
+    },
     "filter": {
       "all_status": "All status",
+      "all_assignees": "All assignees",
       "not_reviewed": "Not reviewed",
       "approved": "Approved",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "under_review": "Under Review",
+      "to_review": "To Review"
     },
     "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
-    "empty_collections": "There are no collections to review yet."
+    "empty_collections": "There are no collections to review yet.",
+    "assign_modal": {
+      "unassign": "Unassign",
+      "collection_unassigned": "The {collection_name} collection have been unassigned.",
+      "self_assign": {
+        "title": "Confirm your assignation to {collection_name}",
+        "body": "You will be the responsible of {emphasis}. If needed, you will be able to reassign the collection to another curator.",
+        "emphasis": "reviewing this collection and communicating with the creator in the forum",
+        "success": "The {collection_name} collection have been assigned to you."
+      },
+      "reassign": {
+        "title": "Edit assigned curator for {collection_name} collection",
+        "body": "In case you cannot review this collection, reassign it to another curator. Make sure you let them know about this change.",
+        "success": "The {collection_name} collection have been assigned to {assignee}."
+      }
+    },
+    "error_message_title": "Error",
+    "error_message_body": "Something went wrong... Please try again later.",
+    "assign_success_title": "Collection Assigned",
+    "unassign_success_title": "Collection Unassigned",
+    "curator": "Curator",
+    "confirm_not_assigned_curation_modal": {
+      "title": "Approve collection",
+      "body": "This collection is assigned to {assignee}. If needed, you can still approve it but make sure to let the assigned curator know about it.",
+      "confirm_footer": "Confirm the approval of this collection so it is enabled to be minted.",
+      "confirm_button": "Assign to me and approve collection"
+    }
   },
   "collection_row": {
     "collection": "Collection",
     "published": "Published",
     "date": "Date",
+    "assignee": "Assignee",
+    "status": "Status",
     "discussion": "Discussion",
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Owner",
@@ -1006,9 +1040,14 @@
     "review_request": "Review request",
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",
+    "to_review": "To review",
+    "under_review": "Under Review",
     "approved": "Approved",
     "rejected": "Rejected",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "unassigned": "Unassigned",
+    "assign_to_me": "Assign to me",
+    "you": "you"
   },
   "item_detail_page": {
     "notice": "You need to add your items to a collection before you can publish them",
