@@ -1009,7 +1009,13 @@
     "error_message_body": "发生错误。请稍后再试。",
     "assign_success_title": "已分配集合",
     "unassign_success_title": "集合未分配",
-    "curator": "馆长"
+    "curator": "馆长",
+    "confirm_not_assigned_curation_modal": {
+      "title": "批准收集",
+      "body": "此集合已分配给 {assignee}。如果需要，您仍然可以批准它，但请确保让指定的策展人知道它。",
+      "confirm_footer": "确认此集合的批准，使其能够被铸造。",
+      "confirm_button": "批准收集"
+    }
   },
   "collection_row": {
     "collection": "收藏",

@@ -9,6 +9,7 @@ import { CurationStatus } from 'modules/curations/types'
 import { getCollectionType, hasReviews, isTPCollection } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
+import ConfirmApprovalModal from './ConfirmApprovalModal'
 import RejectionModal from './RejectionModal'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
 import { ButtonType, Props, State } from './TopPanel.types'
@@ -17,17 +18,24 @@ import './TopPanel.css'
 export default class TopPanel extends React.PureComponent<Props, State> {
   state: State = {
     currentVeredict: undefined,
-    showRejectionModal: null
+    showRejectionModal: null,
+    showApproveConfirmModal: false
   }
 
   handleBack = () => {
     this.props.onNavigate(locations.curation())
   }
 
+  handleConfirmApprovalModal = (collection: Collection) => {
+    const { onInitiateApprovalFlow, onInitiateTPApprovalFlow } = this.props
+    this.setState({ showApproveConfirmModal: false })
+    isTPCollection(collection) ? onInitiateTPApprovalFlow(collection) : onInitiateApprovalFlow(collection)
+  }
+
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
   renderPage = (collection: Collection, curation: CollectionCuration | null, itemsCuration: ItemCuration[] | null) => {
-    const { showRejectionModal } = this.state
+    const { showRejectionModal, showApproveConfirmModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
 
@@ -58,15 +66,28 @@ export default class TopPanel extends React.PureComponent<Props, State> {
             onClose={() => this.setShowRejectionModal(null)}
           />
         )}
+        {curation?.assignee && showApproveConfirmModal && (
+          <ConfirmApprovalModal
+            open
+            assignee={curation.assignee}
+            onConfirm={() => this.handleConfirmApprovalModal(collection)}
+            onClose={() => this.setState({ showApproveConfirmModal: false })}
+          />
+        )}
       </>
     )
   }
 
   renderButton = (type: ButtonType, collection: Collection, curation: CollectionCuration | null) => {
-    const { onInitiateApprovalFlow, onInitiateTPApprovalFlow } = this.props
+    const { address, onInitiateApprovalFlow, onInitiateTPApprovalFlow } = this.props
 
     const onClickMap = {
-      [ButtonType.APPROVE]: () => (isTPCollection(collection) ? onInitiateTPApprovalFlow(collection) : onInitiateApprovalFlow(collection)),
+      [ButtonType.APPROVE]: () =>
+        curation?.assignee && address !== curation?.assignee
+          ? this.setState({ showApproveConfirmModal: true })
+          : isTPCollection(collection)
+          ? onInitiateTPApprovalFlow(collection)
+          : onInitiateApprovalFlow(collection),
       [ButtonType.ENABLE]: () => onInitiateApprovalFlow(collection),
       [ButtonType.DISABLE]: () => this.setShowRejectionModal(RejectionType.DISABLE_COLLECTION),
       [ButtonType.REJECT]: () => {

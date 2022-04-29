@@ -10,6 +10,7 @@ import {
 import { RejectionType } from './RejectionModal/RejectionModal.types'
 
 export type Props = {
+  address?: string
   chainId?: ChainId
   isConnected: boolean
   isReviewing: boolean
@@ -23,6 +24,7 @@ export type Props = {
 export type State = {
   currentVeredict?: boolean
   showRejectionModal: RejectionType | null
+  showApproveConfirmModal: boolean
 }
 
 export enum ButtonType {
@@ -32,6 +34,9 @@ export enum ButtonType {
   DISABLE
 }
 
-export type MapStateProps = Pick<Props, 'chainId' | 'isConnected' | 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId'>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'chainId' | 'isConnected' | 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId'
+>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | InitiateApprovalFlowAction | InitiateTPApprovalFlowAction>
