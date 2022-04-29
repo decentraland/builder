@@ -1,12 +1,26 @@
-import { takeEvery, call, put, delay } from 'redux-saga/effects'
+import { takeEvery, call, put, delay, select } from 'redux-saga/effects'
+import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile/selectors'
+import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 import { BuilderAPI } from 'lib/api/builder'
-import { shorten } from '../../lib/address'
 import {
+  SetCollectionCurationAssigneeSuccessAction,
+  SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS
+} from 'modules/curations/collectionCuration/actions'
+import { Collection } from 'modules/collection/types'
+import { getCollection } from 'modules/collection/selectors'
+import { shorten } from '../../lib/address'
+import { buildCollectionNewAssigneePostBody } from './utils'
+import {
+  createCollectionAssigneeForumPostFailure,
+  createCollectionAssigneeForumPostRequest,
+  CreateCollectionAssigneeForumPostRequestAction,
+  createCollectionAssigneeForumPostSuccess,
   createCollectionForumPostFailure,
   CreateCollectionForumPostFailureAction,
   createCollectionForumPostRequest,
   CreateCollectionForumPostRequestAction,
   createCollectionForumPostSuccess,
+  CREATE_COLLECTION_ASSIGNEE_FORUM_POST_REQUEST,
   CREATE_COLLECTION_FORUM_POST_FAILURE,
   CREATE_COLLECTION_FORUM_POST_REQUEST
 } from './actions'
@@ -16,6 +30,8 @@ const RETRY_DELAY = 5000
 export function* forumSaga(builder: BuilderAPI) {
   yield takeEvery(CREATE_COLLECTION_FORUM_POST_REQUEST, handleCreateForumPostRequest)
   yield takeEvery(CREATE_COLLECTION_FORUM_POST_FAILURE, handleCreateForumPostFailure)
+  yield takeEvery(SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS, handleSetAssigneeSuccess)
+  yield takeEvery(CREATE_COLLECTION_ASSIGNEE_FORUM_POST_REQUEST, handleCreateCollectionAssigneeForumPost)
 
   function* handleCreateForumPostRequest(action: CreateCollectionForumPostRequestAction) {
     const { collection, forumPost } = action.payload
@@ -46,6 +62,31 @@ export function* forumSaga(builder: BuilderAPI) {
       }
 
       yield put(createCollectionForumPostFailure(collection, forumPost, error.message))
+    }
+  }
+
+  function* handleSetAssigneeSuccess(action: SetCollectionCurationAssigneeSuccessAction) {
+    const { collectionId, curation } = action.payload
+    yield put(createCollectionAssigneeForumPostRequest(collectionId, curation))
+  }
+
+  function* handleCreateCollectionAssigneeForumPost(action: CreateCollectionAssigneeForumPostRequestAction) {
+    const { collectionId, curation } = action.payload
+    const collection: Collection = yield select(getCollection, collectionId)
+    const profile: Profile | null = curation.assignee ? yield select(getProfileOfAddress, curation.assignee) : null
+
+    if (collection.forumLink) {
+      const topicId = collection.forumLink.split('/').pop()
+      const forumPost = {
+        topic_id: parseInt(topicId!, 10),
+        raw: buildCollectionNewAssigneePostBody(curation.assignee, profile)
+      }
+      try {
+        yield call([builder, 'createCollectionNewAssigneeForumPost'], collection, forumPost)
+        yield put(createCollectionAssigneeForumPostSuccess())
+      } catch (error) {
+        yield put(createCollectionAssigneeForumPostFailure(collectionId, forumPost, error.message))
+      }
     }
   }
 }

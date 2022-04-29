@@ -1,9 +1,13 @@
+import { env } from 'decentraland-commons'
+import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 import { Item } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { locations } from 'routing/locations'
 import { getThumbnailURL } from 'modules/item/utils'
 import { shorten } from 'lib/address'
 import { ForumPost } from './types'
+
+const MARKETPLACE_WEB_URL = env.get('REACT_APP_MARKETPLACE_WEB_URL', '')
 
 export function buildCollectionForumPost(collection: Collection, items: Item[], ownerName: string = ''): ForumPost {
   const collectionURL = window.location.origin + locations.itemEditor({ collectionId: collection.id })
@@ -36,4 +40,15 @@ function toRawItem(item: Item) {
 ${sections.join('\n')}
 ![](${getThumbnailURL(item)})
 [Link to editor](${window.location.origin}${locations.itemEditor({ itemId: item.id })})`
+}
+
+export function buildCollectionNewAssigneePostBody(assignee: string | null | undefined, profile: Profile | null) {
+  // We only post in English
+  return `The collection has been ${
+    assignee
+      ? profile?.avatars[0].name
+        ? `assigned to <a target="_blank" href="${MARKETPLACE_WEB_URL}/accounts/${assignee}">${profile.avatars[0].name}</a>`
+        : `assigned to ${assignee}`
+      : 'unassigned.'
+  }`
 }
