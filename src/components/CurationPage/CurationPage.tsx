@@ -63,6 +63,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     const { assigneeFilter } = this.state
     return (
       <Dropdown
+        className="assignees"
         direction="left"
         value={assigneeFilter}
         options={[

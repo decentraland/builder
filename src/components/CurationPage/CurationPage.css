@@ -15,3 +15,13 @@
   display: flex;
   justify-content: center;
 }
+
+.CurationPage .filters .dropdown.assignees .menu {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.CurationPage .filters .dropdown.assignees .menu .selected.item,
+.ui.dropdown.selected {
+  color: var(--primary);
+}
