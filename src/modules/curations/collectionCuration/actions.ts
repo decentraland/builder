@@ -74,3 +74,20 @@ export const rejectCollectionCurationFailure = (collectionId: string, error: str
 export type RejectCollectionCurationRequestAction = ReturnType<typeof rejectCollectionCurationRequest>
 export type RejectCollectionCurationSuccessAction = ReturnType<typeof rejectCollectionCurationSuccess>
 export type RejectCollectionFailureSuccessAction = ReturnType<typeof rejectCollectionCurationFailure>
+
+// Set Collection Curation Assignee
+
+export const SET_COLLECTION_CURATION_ASSIGNEE_REQUEST = '[Request] Set Collection Curation Assignee'
+export const SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS = '[Success] Set Collection Curation Assignee'
+export const SET_COLLECTION_CURATION_ASSIGNEE_FAILURE = '[Failure] Set Collection Curation Assignee'
+
+export const setCollectionCurationAssigneeRequest = (collectionId: string, assignee: string | null, curation: CollectionCuration | null) =>
+  action(SET_COLLECTION_CURATION_ASSIGNEE_REQUEST, { collectionId, assignee, curation })
+export const setCollectionCurationAssigneeSuccess = (collectionId: string, curation: CollectionCuration) =>
+  action(SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS, { collectionId, curation })
+export const setCollectionCurationAssigneeFailure = (collectionId: string, error: string) =>
+  action(SET_COLLECTION_CURATION_ASSIGNEE_FAILURE, { collectionId, error })
+
+export type SetCollectionCurationAssigneeRequestAction = ReturnType<typeof setCollectionCurationAssigneeRequest>
+export type SetCollectionCurationAssigneeSuccessAction = ReturnType<typeof setCollectionCurationAssigneeSuccess>
+export type SetCollectionCurationAssigneeFailureAction = ReturnType<typeof setCollectionCurationAssigneeFailure>

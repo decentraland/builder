@@ -995,20 +995,54 @@
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "curation_page": {
+    "order": {
+      "most_relevant": "Más relevantes"
+    },
     "filter": {
       "all_status": "Todos los estados",
+      "all_assignees": "Todos los asignados",
       "not_reviewed": "No revisado",
       "approved": "Aprobado",
-      "rejected": "Rechazado"
+      "rejected": "Rechazado",
+      "under_review": "Bajo revisión",
+      "to_review": "A revisar"
     },
     "search_placeholder": "Busca entre {count} {count, plural, one {resultado} other {resultados} por nombre o por la dirección del dueño...",
     "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
-    "empty_collections": "Aún no hay colecciones para revisar."
+    "empty_collections": "Aún no hay colecciones para revisar.",
+    "assign_modal": {
+      "unassign": "Desasignar",
+      "collection_unassigned": "La colección {collection_name} no se ha asignado.",
+      "self_assign": {
+        "title": "Confirma tu asignación a {collection_name}",
+        "body": "Serás el responsable de {emphasis}. Si es necesario, podrá reasignar la colección a otro curador.",
+        "emphasis": "revisar esta colección y comunicarse con el creador en el foro",
+        "success": "Se te asignó la colección {collection_name}."
+      },
+      "reassign": {
+        "title": "Editar curador asignado para la colección {nombre_de_la_colección}",
+        "body": "En caso de que no pueda revisar esta colección, reasígnela a otro curador. Asegúrese de informarles acerca de este cambio.",
+        "success": "La colección {collection_name} se ha asignado a {assignee}."
+      }
+    },
+    "error_message_title": "Error",
+    "error_message_body": "Algo salió mal... Vuelve a intentarlo más tarde.",
+    "assign_success_title": "Colección asignada",
+    "unassign_success_title": "Colección sin asignar",
+    "curator": "Curador",
+    "confirm_not_assigned_curation_modal": {
+      "title": "Aprobar colección",
+      "body": "Esta colección está asignada a {assignee}. Si es necesario, aún puede aprobarlo, pero asegúrese de informar al curador asignado.",
+      "confirm_footer": "Confirmar la aprobación de esta colección para que se habilite para ser acuñada.",
+      "confirm_button": "Asignarme y aprobar la colección"
+    }
   },
   "collection_row": {
     "collection": "Colección",
     "published": "Publicado",
     "date": "Fecha",
+    "assignee": "Asignado a",
+    "status": "Estado",
     "discussion": "Discusión",
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Dueño",
@@ -1021,7 +1055,10 @@
     "no_forum_post": "No hay post",
     "approved": "Aprobada",
     "rejected": "Rechazada",
-    "disabled": "Deshabilitada"
+    "disabled": "Deshabilitada",
+    "unassigned": "Sin asignar",
+    "assign_to_me": "Asignar a mí",
+    "you": "usted"
   },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
