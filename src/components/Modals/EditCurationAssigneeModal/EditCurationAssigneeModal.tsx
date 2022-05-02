@@ -62,7 +62,7 @@ export default class EditCurationAssigneeModal extends React.PureComponent<Props
                     value === UNASSIGN_PLACEHOLDER
                       ? `- ${t('curation_page.assign_modal.unassign')} -`
                       : value === address
-                      ? `${profiles[address]?.avatars[0].name} (${t('collection_row.you')})`
+                      ? `${profiles[address] ? profiles[address].avatars[0].name : value} (${t('collection_row.you')})`
                       : profiles[value]?.avatars[0].name ?? value
                 }))}
                 onChange={this.handleChangeAssignee}
