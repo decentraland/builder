@@ -67,13 +67,19 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         value={assigneeFilter}
         options={[
           { value: ALL_ASSIGNEES_KEY, text: t('curation_page.filter.all_assignees') },
-          ...[
-            ...committeeMembers.filter(member => member === wallet.address),
-            ...committeeMembers.filter(member => member !== wallet.address)
-          ].map(address => ({
-            value: address,
-            text: <Profile textOnly address={address} />
-          }))
+          ...committeeMembers
+            .reduce((acc, member) => {
+              if (member === wallet.address) {
+                acc.unshift(member)
+              } else {
+                acc.push(member)
+              }
+              return acc
+            }, [] as string[])
+            .map(address => ({
+              value: address,
+              text: <Profile textOnly address={address} />
+            }))
         ]}
         onChange={(_event, { value }) => this.setState({ assigneeFilter: `${value}` })}
       />
