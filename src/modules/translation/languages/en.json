@@ -1188,6 +1188,26 @@
     "get_mana": "You can get more using the {link} dapp.",
     "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again."
   },
+  "publish_collection_modal_with_oracle": {
+    "title": "Publish Collection",
+    "title_tos": "Content Policy",
+    "first_paragraph": "You are about to publish your collection, keep in mind the following things:",
+    "second_paragraph": "You will not be able to add or delete items after you publish your collection.",
+    "third_paragraph": "You won’t be able to change the name of the collection. Please ensure it’s spelled correctly and doesn’t violate intellectual property rights.",
+    "fourth_paragraph": "You will be able to see your items in the marketplace but they will be available for sale once the collection is validated by the DAO.",
+    "items_breakdown_title": "You are about to publish a collection with {count} {count, plural, one {item} other {items}}. In order to support the growth of the community, there is a publication fee of {publicationFee} USD per item (paid in MANA) that goes to the DAO and the Curation Committee.",
+    "tos_title": "I hereby represent and warrant that:",
+    "tos_first_condition": "1: The submitted Wearable/s is in full compliance with the {terms_of_use} and {content_policy}, which I acknowledge and accept.",
+    "tos_second_condition": "2: I have sufficient Intellectual Property Rights over the submitted Wearable/s.",
+    "tos_third_condition": "3: I acknowledge that the DAO may refuse to mint the Wearable/s based on infringements to the Content Policy and Terms of Use. I also acknowledge that the proposal fee won’t be reimbursed in case of rejection.",
+    "invalid_email": "The given email is not valid.",
+    "terms_of_use": "Terms of Use",
+    "content_policy": "Content Policy",
+    "accept_by_publishing": "By clicking Publish you are accepting our terms",
+    "not_enough_mana": "You don't have enough {symbol} to publish this collection.",
+    "get_mana": "You can get more using the {link} dapp.",
+    "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again."
+  },
   "publish_third_party_collection_modal": {
     "title": "Publish Linked Items",
     "publish_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\".",

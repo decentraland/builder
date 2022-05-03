@@ -1,0 +1,128 @@
+.PublishCollectionModal .header,
+.PublishCollectionModal .content {
+  text-align: center;
+}
+.PublishCollectionModal.ui.modal > .dcl.modal-navigation {
+  padding-top: 48px;
+}
+
+.PublishCollectionModal.ui.modal > .first-step,
+.PublishCollectionModal.ui.modal > .second-step {
+  padding: 0 20px 20px;
+}
+
+.PublishCollectionModal .loader-wrapper {
+  height: 80px;
+  position: relative;
+}
+
+.PublishCollectionModal .divider {
+  width: 50%;
+  margin: 25px auto;
+  height: 1px;
+  border: 2px solid var(--primary);
+  border-radius: 2px;
+}
+
+.PublishCollectionModal .items-breakdown {
+  padding: 20px 0;
+  margin: 30px 0;
+  border-radius: 10px;
+  background-color: var(--background);
+}
+
+.PublishCollectionModal .items-breakdown .item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px 20px;
+  text-transform: capitalize;
+}
+
+.PublishCollectionModal .items-breakdown .item.total {
+  border-top: 1px solid var(--secondary-text);
+  color: var(--secondary-text);
+  padding: 20px 20px 0;
+}
+
+.PublishCollectionModal .items-breakdown .item.total .mana {
+  color: var(--text);
+}
+
+.PublishCollectionModal .items-breakdown .item i.item-rarity {
+  height: 10px;
+  width: 10px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.PublishCollectionModal .content .ui.button {
+  margin-top: 60px;
+}
+
+.PublishCollectionModal .ui.button.proceed {
+  margin-top: 0;
+}
+
+.PublishCollectionModal .not-enough-mana-notice {
+  margin-top: 20px;
+  display: inline-block;
+}
+
+.PublishCollectionModal .not-enough-mana-notice .dcl.mana .symbol {
+  padding-right: 0;
+}
+
+.PublishCollectionModal .tos > p:not(:last-child) {
+  margin-bottom: 25px;
+}
+
+/* Third step content */
+
+.PublishCollectionModal .third-step.content {
+  padding: 0;
+}
+
+.PublishCollectionModal .third-step.content .dcl.field {
+  margin-top: 50px;
+  margin-left: 40px;
+  margin-right: 40px;
+  width: auto;
+}
+
+.PublishCollectionModal .third-step.content .tos {
+  background-color: var(--dark-gray);
+  font-size: 15px;
+  padding: 15px;
+  text-align: left;
+  color: var(--text);
+  border-radius: 3px;
+}
+
+.PublishCollectionModal .third-step.content .ui.input > input {
+  text-align: center;
+}
+
+/* Third step Footer */
+
+.PublishCollectionModal .third-step-footer {
+  display: flex;
+  flex-direction: column;
+}
+
+.PublishCollectionModal .third-step-footer > p {
+  color: var(--secondary-text);
+  margin-top: 20px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.PublishCollectionModal .error {
+  color: var(--error) !important;
+}
+
+.PublishCollectionModal.ui.modal .actions.third-step-footer > button {
+  margin-left: 40px;
+  margin-right: 40px;
+  width: auto;
+}

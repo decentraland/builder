@@ -1,3 +1,6 @@
+import _PublishCollectionModalWithOracle from './PublishCollectionModalWithOracle'
+import _PublishCollectionModal from './PublishCollectionModal'
+
 export { default as AddExistingItemModal } from './AddExistingItemModal'
 export { default as ApprovalFlowModal } from './ApprovalFlowModal'
 export { default as ClaimNameFatFingerModal } from './ClaimNameFatFingerModal'
@@ -24,7 +27,10 @@ export { default as ImportModal } from './ImportModal'
 export { default as LikeModal } from './LikeModal'
 export { default as ManageCollectionRoleModal } from './ManageCollectionRoleModal'
 export { default as MintItemsModal } from './MintItemsModal'
-export { default as PublishCollectionModal } from './PublishCollectionModal'
+
+export const PublishCollectionModal = (() =>
+  process.env.REACT_APP_FF_RARITIES_WITH_ORACLE === '1' ? _PublishCollectionModalWithOracle : _PublishCollectionModal)()
+
 export { default as PublishThirdPartyCollectionModal } from './PublishThirdPartyCollectionModal'
 export { default as PushCollectionChangesModal } from './PushCollectionChangesModal'
 export { default as QuotaExceededModal } from './QuotaExceededModal'
