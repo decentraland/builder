@@ -29,7 +29,6 @@ import {
 import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
 import { Project } from 'modules/project/types'
-import { isThirdParty } from 'lib/urn'
 import { trimAsset } from './track'
 import { handleDelighted } from './delighted'
 import { SyncAction, SYNC } from 'modules/sync/actions'
@@ -45,10 +44,6 @@ import {
   DeleteAssetPackFailureAction
 } from 'modules/assetPack/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
-import { SaveCollectionSuccessAction, SAVE_COLLECTION_SUCCESS } from 'modules/collection/actions'
-import { getCollectionType } from 'modules/collection/utils'
-import { CollectionType } from 'modules/collection/types'
-import { SaveItemSuccessAction, SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
 
 export function* analyticsSaga() {
@@ -73,32 +68,16 @@ export function* analyticsSaga() {
   yield takeLatest(DELETE_ASSET_PACK_SUCCESS, handleDeleteAssetPackSuccess)
   yield takeLatest(SAVE_ASSET_PACK_FAILURE, handleSaveAssetPackFailure)
   yield takeLatest(DELETE_ASSET_PACK_FAILURE, handleDeleteAssetPackFailure)
-  yield takeLatest(SAVE_COLLECTION_SUCCESS, handleSaveCollectionSuccess)
-  yield takeLatest(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeLatest(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishTPItemSuccess)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
 
-function* handleSaveCollectionSuccess(action: SaveCollectionSuccessAction) {
-  const { collection } = action.payload
-  if (getCollectionType(collection) === CollectionType.THIRD_PARTY) {
-    track('Create TPC', { collectionId: action.payload.collection.id })
-  }
-}
-
-function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
-  const { item } = action.payload
-  if (isThirdParty(item.urn)) {
-    track('Create TPI', { item: item.id, collectionId: item.collectionId })
-  }
-}
-
 function* handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
   if (!project) return
   const { items } = action.payload
-  track('Publish TPI', { project: project.id, items })
+  track('Publish TP Item', { project: project.id, items })
 }
 
 function* handleOpenEditor(_: OpenEditorAction) {
