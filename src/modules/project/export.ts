@@ -7,7 +7,7 @@ import builderInventoryRaw from 'raw-loader!decentraland-builder-scripts/lib/inv
 import * as ECS from 'decentraland-ecs'
 import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import packageJson from 'decentraland/samples/ecs/package.json'
-import sceneJson from 'decentraland/samples/ecs/scene.json'
+import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
 import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
@@ -18,8 +18,11 @@ import { migrations } from 'modules/migrations/manifest'
 import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
+import { utils } from 'decentraland-commons'
 
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
+
+const sceneJson: SceneDefinition = utils.omit(sceneJsonSample, ['communications', 'policy'])
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
@@ -459,7 +462,7 @@ export function getSceneDefinition(
   const sceneDefinition: SceneDefinition = {
     ...sceneJson,
     display: {
-      ...sceneJson.display,
+      ...sceneJson.display!,
       title: project.title
     },
     scene: {

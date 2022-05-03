@@ -168,7 +168,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
       const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
       // Remove the old communications property if it exists
-      const sceneDefinition: SceneDefinition = utils.omit(JSON.parse(files[EXPORT_PATH.SCENE_FILE]), ['communications', 'policy'])
+      const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
       const { entityId, files: hashedFiles } = yield call([catalystClient, 'buildEntity'], {
         type: EntityType.SCENE,
         pointers: [...sceneDefinition.scene.parcels],
@@ -229,12 +229,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
       const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
-      const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-      console.log('Entity to be deployed (cleared)', {
-        type: EntityType.SCENE,
-        pointers: [...sceneDefinition.scene.parcels],
-        metadata: sceneDefinition
-      })
+      const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
       const { entityId, files: hashedFiles } = yield call([catalystClient, 'buildEntity'], {
         type: EntityType.SCENE,
         pointers: [...sceneDefinition.scene.parcels],
