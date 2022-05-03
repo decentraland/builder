@@ -516,23 +516,3 @@ export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, S
     )
   )
 }
-
-export async function getLatestStandardItemContentHash(item: Item, collection: Collection): Promise<string> {
-  if (!item.catalystContentHash) {
-    return item.currentContentHash ? item.currentContentHash : buildStandardWearableContentHash(collection, item, EntityHashingType.V1)
-  }
-
-  const isCatalystContentHashV0 = item.catalystContentHash.startsWith('Qm')
-  const currentContentHashExists = item.currentContentHash !== null
-
-  if (isCatalystContentHashV0 && (!currentContentHashExists || (currentContentHashExists && !item.currentContentHash!.startsWith('Qm')))) {
-    return buildStandardWearableContentHash(collection, item, EntityHashingType.V0)
-  } else if (
-    !isCatalystContentHashV0 &&
-    (!currentContentHashExists || (currentContentHashExists && item.currentContentHash!.startsWith('Qm')))
-  ) {
-    return buildStandardWearableContentHash(collection, item, EntityHashingType.V1)
-  }
-
-  return item.currentContentHash!
-}

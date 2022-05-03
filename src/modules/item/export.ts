@@ -60,7 +60,6 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   }
 
   const blobs = await legacyBuilderClient.fetchContents(filesToDownload)
-  // const blobs = await getFiles(filesToDownload)
   const allBlobs = { ...newContents, ...blobs }
   const allHashes = { ...newHashes, ...filesToDownload }
 

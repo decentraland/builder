@@ -94,14 +94,14 @@ import {
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SaveMultipleItemsSuccessAction
 } from 'modules/item/actions'
-import { areSynced, getLatestStandardItemContentHash, isValidText, toInitializeItems } from 'modules/item/utils'
+import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
-import { Item, ItemApprovalData } from 'modules/item/types'
+import { EntityHashingType, Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
 import {
   getEntityByItemId,
@@ -113,7 +113,7 @@ import {
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
+import { buildItemEntity, buildStandardWearableContentHash, buildTPItemEntity } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
@@ -794,10 +794,18 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const contentHashes: string[] = []
       const items: Item[] = yield getItemsFromCollection(collection)
       for (const item of items) {
-        const latestContentHash: string = yield call(getLatestStandardItemContentHash, item, collection)
-        if (latestContentHash !== item.blockchainContentHash) {
+        if (!item.currentContentHash) {
+          const v0ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0)
+          const v1ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1)
+
+          // Check if the old and the new hash match
+          if (v0ContentHash !== item.blockchainContentHash && v1ContentHash !== item.blockchainContentHash) {
+            itemsToRescue.push(item)
+            contentHashes.push(v1ContentHash)
+          }
+        } else if (item.currentContentHash !== item.blockchainContentHash) {
           itemsToRescue.push(item)
-          contentHashes.push(latestContentHash)
+          contentHashes.push(item.currentContentHash)
         }
       }
 

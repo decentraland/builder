@@ -3,13 +3,10 @@ import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { Collection, CollectionType } from 'modules/collection/types'
-// import { buildStandardWearableContentHash } from 'modules/item/export'
 import { Mint } from './types'
 import { getTotalAmountOfMintedItems, isLocked, getCollectionType, isTPCollection } from './utils'
 
 jest.mock('modules/item/export')
-
-// const buildItemContentHashMock = buildStandardWearableContentHash as jest.Mock
 
 beforeEach(() => {
   jest.clearAllMocks()
