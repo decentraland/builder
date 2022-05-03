@@ -85,7 +85,10 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
             </div>
           ) : (
             <>
-              {t('publish_collection_modal_with_oracle.items_breakdown_title', { count: items.length, publicationFee: '500' })}
+              <p>{t('publish_collection_modal_with_oracle.items_breakdown_title', { count: items.length, publicationFee: '500' })}</p>
+              <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener">
+                {t('publish_collection_modal_with_oracle.learn_more')}
+              </a>
               <div className="items-breakdown">
                 {Object.values(itemsByRarity).map(itemByRarity => (
                   <div className="item" key={itemByRarity.name}>
