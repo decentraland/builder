@@ -60,7 +60,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderAssigneeFilterDropdown = () => {
-    const { committeeMembers } = this.props
+    const { committeeMembers, wallet } = this.props
     const { assigneeFilter } = this.state
     return (
       <Dropdown
@@ -69,7 +69,19 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         value={assigneeFilter}
         options={[
           { value: ALL_ASSIGNEES_KEY, text: t('curation_page.filter.all_assignees') },
-          ...committeeMembers.map(address => ({ value: address, text: <Profile textOnly address={address} /> }))
+          ...committeeMembers
+            .reduce((acc, member) => {
+              if (member === wallet.address) {
+                acc.unshift(member)
+              } else {
+                acc.push(member)
+              }
+              return acc
+            }, [] as string[])
+            .map(address => ({
+              value: address,
+              text: <Profile textOnly address={address} />
+            }))
         ]}
         onChange={(_event, { value }) => this.setState({ assigneeFilter: `${value}` })}
       />
