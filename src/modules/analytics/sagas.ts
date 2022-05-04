@@ -74,10 +74,8 @@ export function* analyticsSaga() {
 const track = (event: string, params: any) => getAnalytics().track(event, params)
 
 function* handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
-  const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
-  if (!project) return
   const { items } = action.payload
-  track('Publish TP Item', { project: project.id, items })
+  track('Publish TP Item', { project: items })
 }
 
 function* handleOpenEditor(_: OpenEditorAction) {
