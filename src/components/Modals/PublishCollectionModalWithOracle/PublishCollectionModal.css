@@ -56,12 +56,61 @@
   margin-right: 10px;
 }
 
+.PublishCollectionModal .price-breakdown-container {
+  margin: 20px 0;
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--background);
+  border-radius: 10px;
+}
+
+.PublishCollectionModal .price-breakdown-container::after {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--light-gray);
+  opacity: 40%;
+}
+
+.PublishCollectionModal .price-breakdown-container .element {
+}
+
+.PublishCollectionModal .price-breakdown-container .element .element-header {
+  display: flex;
+  font-size: 13px;
+  align-items: center;
+  padding: .5rem 0 .5rem 0;
+  text-align: left;
+  color: var(--light-gray);
+}
+
+.PublishCollectionModal .price-breakdown-container .element .element-content {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0 1rem 0;
+  text-align: left;
+}
+
 .PublishCollectionModal .content .ui.button {
   margin-top: 60px;
 }
 
 .PublishCollectionModal .ui.button.proceed {
   margin-top: 0;
+}
+
+.PublishCollectionModal .estimate-notice {
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: var(--secondary-text);
+}
+
+.PublishCollectionModal .rarities-error {
+  margin-bottom: 20px;
 }
 
 .PublishCollectionModal .not-enough-mana-notice {

@@ -188,6 +188,7 @@ export type Rarity = {
   name: ItemRarity
   price: string
   maxSupply: string
+  priceUSD?: string
 }
 
 export type ThirdPartyContractItem = [string, string]

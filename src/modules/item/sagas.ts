@@ -108,7 +108,15 @@ import { calculateFinalSize, reHashOlderContents } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError } from './errors'
-import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
+import {
+  buildZipContents,
+  getMetadata,
+  groupsOf,
+  isValidText,
+  generateCatalystImage,
+  MAX_FILE_SIZE,
+  isUsingRaritiesWithOracle
+} from './utils'
 import { ItemPaginationData } from './reducer'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
@@ -142,7 +150,30 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleFetchRaritiesRequest() {
     try {
-      const rarities: Rarity[] = yield call([legacyBuilder, 'fetchRarities'])
+      const rarities: Rarity[] = yield call([legacyBuilder, legacyBuilder.fetchRarities])
+
+      if (isUsingRaritiesWithOracle()) {
+        // Create a map of the rarities by id for an easier lookup.
+        const raritiesMap = new Map(rarities.map(rarity => [rarity.id, rarity]))
+        // Fetch rarities with their price in USD.
+        const raritiesInUSD: Rarity[] = yield call([legacyBuilder, legacyBuilder.fetchRarities], { inUSD: true })
+
+        // If there is a missmatch in length fail in order to avoid corrupted state.
+        if (raritiesInUSD.length !== rarities.length) {
+          throw new Error('Different rarities length')
+        }
+
+        // If they have different rarities, fail for the same reason.
+        if (raritiesInUSD.some(r => !raritiesMap.has(r.id))) {
+          throw new Error('Rarity not found')
+        }
+
+        // Update the price in USD for the obtained rarities.
+        for (const r of raritiesInUSD) {
+          raritiesMap.get(r.id)!.priceUSD = r.price
+        }
+      }
+
       yield put(fetchRaritiesSuccess(rarities))
     } catch (error) {
       yield put(fetchRaritiesFailure(error.message))

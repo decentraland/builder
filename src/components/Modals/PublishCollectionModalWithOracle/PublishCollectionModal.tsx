@@ -2,11 +2,11 @@ import * as React from 'react'
 import { Network } from '@dcl/schemas'
 import { env } from 'decentraland-commons'
 import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
+import { BigNumber } from 'ethers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { fromWei } from 'web3x/utils'
 import { ItemRarity } from 'modules/item/types'
-import { getBackgroundStyle } from 'modules/item/utils'
 import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
@@ -51,7 +51,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderFirstStep = () => {
-    const { items, wallet, onClose, rarities, isFetchingItems, isFetchingRarities } = this.props
+    const { items, wallet, onClose, rarities, error, isFetchingItems, isFetchingRarities } = this.props
 
     const itemsByRarity: Record<string, { id: ItemRarity; name: ItemRarity; count: number; price: number }> = {}
     let totalPrice = 0
@@ -85,30 +85,57 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
             </div>
           ) : (
             <>
-              <p>{t('publish_collection_modal_with_oracle.items_breakdown_title', { count: items.length, publicationFee: '500' })}</p>
+              {rarities.length > 0 && (
+                <p>
+                  {t('publish_collection_modal_with_oracle.items_breakdown_title', {
+                    count: items.length,
+                    publicationFee: fromWei(rarities[0].priceUSD!, 'ether')
+                  })}
+                </p>
+              )}
               <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener">
                 {t('publish_collection_modal_with_oracle.learn_more')}
               </a>
-              <div className="items-breakdown">
-                {Object.values(itemsByRarity).map(itemByRarity => (
-                  <div className="item" key={itemByRarity.name}>
-                    <div>
-                      <i className="item-rarity" style={getBackgroundStyle(itemByRarity.id)}></i>
-                      {itemByRarity.count} {itemByRarity.name}
-                    </div>
-                    <div>
-                      <Mana network={Network.MATIC}>{itemByRarity.price}</Mana>
+              {rarities.length > 0 && (
+                <div className="price-breakdown-container">
+                  <div className="element">
+                    <div className="element-header">{t('publish_collection_modal_with_oracle.qty_of_items')}</div>
+                    <div className="element-content">{items.length}</div>
+                  </div>
+                  <div className="element">
+                    <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
+                    <div className="element-content">USD {fromWei(rarities[0].priceUSD!, 'ether')}</div>
+                  </div>
+                  <div className="element">
+                    <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd')}</div>
+                    <div className="element-content">
+                      USD{' '}
+                      {fromWei(
+                        BigNumber.from(rarities[0].priceUSD!)
+                          .mul(items.length)
+                          .toString(),
+                        'ether'
+                      )}
                     </div>
                   </div>
-                ))}
-                <div className="item total">
-                  <div>{t('global.total')}</div>
-                  <div>
-                    <Mana network={Network.MATIC}>{totalPrice}</Mana>
+                  <div className="element">
+                    <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
+                    <div className="element-content">
+                      <Mana network={Network.MATIC} size="medium">
+                        {fromWei(
+                          BigNumber.from(rarities[0].price)
+                            .mul(items.length)
+                            .toString(),
+                          'ether'
+                        )}
+                      </Mana>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA}>
+              )}
+              <p className="estimate-notice">{t('publish_collection_modal_with_oracle.estimate_notice')}</p>
+              {!!error && <small className="rarities-error error">{error}</small>}
+              <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA || !!error}>
                 {t('global.next')}
               </Button>
               {hasInsufficientMANA ? (
@@ -238,9 +265,10 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
 
   render() {
     const { onClose } = this.props
+    const { step } = this.state
 
     return (
-      <Modal className="PublishCollectionModal" size="tiny" onClose={onClose}>
+      <Modal className="PublishCollectionModal" size={step !== 1 ? 'tiny' : undefined} onClose={onClose}>
         {this.renderStep()}
       </Modal>
     )

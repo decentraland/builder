@@ -515,3 +515,6 @@ export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, S
     )
   )
 }
+
+// This function, as well as the env, should be removed once all environments have implemented RaritiesWithOracle.
+export const isUsingRaritiesWithOracle = () => process.env.REACT_APP_FF_RARITIES_WITH_ORACLE === '1'

@@ -16,6 +16,7 @@ export type Props = ModalProps & {
   isFetchingItems: boolean
   isFetchingRarities: boolean
   unsyncedCollectionError: string | null
+  error: string | null
   onPublish: typeof publishCollectionRequest
   onFetchRarities: typeof fetchRaritiesRequest
 }
@@ -32,7 +33,15 @@ export type PublishCollectionModalMetadata = {
 
 export type MapStateProps = Pick<
   Props,
-  'wallet' | 'collection' | 'items' | 'rarities' | 'unsyncedCollectionError' | 'isPublishLoading' | 'isFetchingItems' | 'isFetchingRarities'
+  | 'wallet'
+  | 'collection'
+  | 'items'
+  | 'rarities'
+  | 'unsyncedCollectionError'
+  | 'isPublishLoading'
+  | 'isFetchingItems'
+  | 'isFetchingRarities'
+  | 'error'
 >
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onFetchRarities'>
 export type MapDispatch = Dispatch<PublishCollectionRequestAction | FetchRaritiesRequestAction>

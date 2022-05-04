@@ -782,8 +782,8 @@ export class BuilderAPI extends BaseAPI {
     return this.request('post', `/collections/${collection.id}/curation/post`, { forumPost })
   }
 
-  fetchRarities(): Promise<Rarity[]> {
-    return this.request('get', '/rarities')
+  fetchRarities({ inUSD }: { inUSD?: boolean } = {}): Promise<Rarity[]> {
+    return this.request('get', `/rarities?inUSD=${inUSD ? 'true' : 'false'}`)
   }
 
   fetchThirdParties(manager?: string): Promise<ThirdParty[]> {
