@@ -686,7 +686,6 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCollections(address?: string, params?: FetchCollectionsParams) {
-    console.log('params in builder: ', params)
     const remoteCollections = address
       ? await this.request('get', `/${address}/collections`)
       : await this.request('get', '/collections', toRemoteCollectionQueryParameters(params))

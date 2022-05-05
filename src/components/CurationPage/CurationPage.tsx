@@ -248,7 +248,6 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   render() {
     const { isCommitteeMember, isConnecting, isLoadingCommittee } = this.props
     const isLoadingTopLevel = isConnecting || isLoadingCommittee
-    console.log('isLoadingTopLevel: ', isLoadingTopLevel)
     return (
       <LoggedInDetailPage className="CurationPage" activeTab={NavigationTab.CURATION} isLoading={isLoadingTopLevel}>
         {isCommitteeMember ? this.renderPage() : <NotFound />}
