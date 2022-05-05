@@ -1202,6 +1202,7 @@
     "fee_per_item": "Fee per item",
     "total_in_usd": "Total in USD",
     "total_in_mana": "Total in MANA",
+    "rarities_error": "There was an error while trying to fetch the publication fees.",
     "tos_title": "I hereby represent and warrant that:",
     "tos_first_condition": "1: The submitted Wearable/s is in full compliance with the {terms_of_use} and {content_policy}, which I acknowledge and accept.",
     "tos_second_condition": "2: I have sufficient Intellectual Property Rights over the submitted Wearable/s.",

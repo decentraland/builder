@@ -1195,6 +1195,7 @@
     "fee_per_item": "每件商品的费用",
     "total_in_usd": "总计（美元）",
     "total_in_mana": "MANA 中的总计",
+    "rarities_error": "尝试获取出版费时出错。",
     "tos_title": "我在此声明并保证：",
     "tos_first_condition": "1：提交穿戴式是完全符合{TERMS_OF_USE}和{} content_policy，我承认并接受。",
     "tos_second_condition": "2：我对提交的穿戴式拥有足够的知识产权。",

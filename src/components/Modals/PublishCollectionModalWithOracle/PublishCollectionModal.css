@@ -78,6 +78,11 @@
   margin-bottom: 20px;
 }
 
+.PublishCollectionModal .rarities-error-sub {
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
 .PublishCollectionModal .not-enough-mana-notice {
   margin-top: 20px;
   display: inline-block;

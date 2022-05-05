@@ -1213,6 +1213,7 @@
     "fee_per_item": "Tarifa por artículo",
     "total_in_usd": "Total en USD",
     "total_in_mana": "Total en MANA",
+    "rarities_error": "Hubo un error al intentar obtener las tarifas de publicación.",
     "tos_title": "Por la presente declaro y garantizo que:",
     "tos_first_condition": "1: Los Wearables por publicarse cumplen plenamente con los {terms_of_use} y las {content_policy}, que reconozco y acepto.",
     "tos_second_condition": "2: Tengo suficientes derechos de propiedad intelectual sobre los Wearables que serán publicados.",

@@ -6,7 +6,7 @@ import { BigNumber } from 'ethers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { fromWei } from 'web3x/utils'
-import { ItemRarity } from 'modules/item/types'
+import { Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
@@ -23,6 +23,8 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
 
     onFetchRarities()
   }
+
+  componentDidUpdate() {}
 
   handleNextStep = () => {
     this.setState({ step: 3 })
@@ -53,27 +55,41 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   renderFirstStep = () => {
     const { items, wallet, onClose, rarities, error, isFetchingItems, isFetchingRarities } = this.props
 
-    const itemsByRarity: Record<string, { id: ItemRarity; name: ItemRarity; count: number; price: number }> = {}
-    let totalPrice = 0
+    // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
+    // as reference for the prices is enough.
+    const refRarity: Rarity | undefined = rarities[0]
 
-    for (const item of items) {
-      const rarity = rarities.find(rarity => rarity.name === item.rarity)
+    let price: string | undefined
+    let priceUSD: string | undefined
 
-      if (!rarity) {
-        continue
-      }
-
-      if (!itemsByRarity[rarity.id]) {
-        itemsByRarity[rarity.id] = { id: rarity.id, name: rarity.name, count: 0, price: 0 }
-      }
-
-      const rarityPrice = parseInt(fromWei(rarity.price, 'ether'), 10)
-      itemsByRarity[rarity.name].count++
-      itemsByRarity[rarity.name].price += rarityPrice
-      totalPrice += rarityPrice
+    // Get the prices per item if the reference rarity is defined.
+    if (refRarity) {
+      price = refRarity.price
+      priceUSD = refRarity.priceUSD
     }
 
-    const hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < totalPrice
+    let totalPrice: string | undefined
+    let totalPriceUSD: string | undefined
+
+    // Evaluate the total prices to pay in USD and MANA if the rarity is defined.
+    if (price) {
+      totalPrice = BigNumber.from(price)
+        .mul(items.length)
+        .toString()
+
+      if (priceUSD) {
+        totalPriceUSD = BigNumber.from(priceUSD)
+          .mul(items.length)
+          .toString()
+      }
+    }
+
+    // Check that the user has enought MANA to publish the collection.
+    let hasInsufficientMANA = true
+
+    if (totalPrice && wallet && wallet.networks.MATIC.mana > Number(fromWei(totalPrice, 'ether'))) {
+      hasInsufficientMANA = false
+    }
 
     return (
       <>
@@ -85,7 +101,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
             </div>
           ) : (
             <>
-              {rarities.length > 0 && (
+              {refRarity && (
                 <p>
                   {t('publish_collection_modal_with_oracle.items_breakdown_title', {
                     count: items.length,
@@ -96,28 +112,24 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener">
                 {t('publish_collection_modal_with_oracle.learn_more')}
               </a>
-              {rarities.length > 0 && (
+              {refRarity && (
                 <div className="price-breakdown-container">
                   <div className="element">
                     <div className="element-header">{t('publish_collection_modal_with_oracle.qty_of_items')}</div>
                     <div className="element-content">{items.length}</div>
                   </div>
-                  <div className="element">
-                    <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
-                    <div className="element-content">USD {fromWei(rarities[0].priceUSD!, 'ether')}</div>
-                  </div>
-                  <div className="element">
-                    <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd')}</div>
-                    <div className="element-content">
-                      USD{' '}
-                      {fromWei(
-                        BigNumber.from(rarities[0].priceUSD!)
-                          .mul(items.length)
-                          .toString(),
-                        'ether'
-                      )}
+                  {priceUSD && (
+                    <div className="element">
+                      <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
+                      <div className="element-content">USD {fromWei(priceUSD, 'ether')}</div>
                     </div>
-                  </div>
+                  )}
+                  {totalPriceUSD && (
+                    <div className="element">
+                      <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd')}</div>
+                      <div className="element-content">USD {fromWei(totalPriceUSD, 'ether')}</div>
+                    </div>
+                  )}
                   <div className="element">
                     <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
                     <div className="element-content">
@@ -134,11 +146,16 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 </div>
               )}
               <p className="estimate-notice">{t('publish_collection_modal_with_oracle.estimate_notice')}</p>
-              {!!error && <small className="rarities-error error">{error}</small>}
+              {error && (
+                <>
+                  <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
+                  <p className="rarities-error-sub error">{error}</p>
+                </>
+              )}
               <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA || !!error}>
                 {t('global.next')}
               </Button>
-              {hasInsufficientMANA ? (
+              {hasInsufficientMANA && (
                 <small className="not-enough-mana-notice">
                   <T
                     id="publish_collection_modal_with_oracle.not_enough_mana"
@@ -162,7 +179,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                     }}
                   />
                 </small>
-              ) : null}
+              )}
             </>
           )}
         </Modal.Content>
