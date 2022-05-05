@@ -13,7 +13,7 @@ import CurationPage from './CurationPage'
 
 const mapState = (state: RootState): MapStateProps => {
   const curationsByCollectionId = getCurationsByCollectionId(state)
-  const paginatedCollections = getPaginatedCollections(state, 10)
+  const paginatedCollections = getPaginatedCollections(state)
   const paginationData = getPaginationData(state)
 
   return {

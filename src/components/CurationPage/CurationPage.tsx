@@ -24,7 +24,7 @@ import { Props, State, CurationFilterOptions, CurationExtraStatuses, Filters } f
 import { CurationSortOptions } from 'modules/curations/types'
 import './CurationPage.css'
 
-const PAGE_SIZE = 12
+const PAGE_SIZE = 2
 const ALL_ASSIGNEES_KEY = 'all'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
@@ -37,8 +37,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { onFetchCollections, wallet, isLoadingCollectionsData, isLoadingCommittee, isCommitteeMember } = this.props
-    console.log('isLoadingCollectionsData: ', isLoadingCollectionsData)
+    const { onFetchCollections, wallet, isLoadingCommittee, isCommitteeMember } = this.props
     // fetch collections once the committee value is resolved is connected
     if (wallet && !isLoadingCommittee && isCommitteeMember && prevProps.isCommitteeMember !== isCommitteeMember) {
       onFetchCollections({ page: 1, limit: PAGE_SIZE, isPublished: true, sort: CurationSortOptions.MOST_RELEVANT })

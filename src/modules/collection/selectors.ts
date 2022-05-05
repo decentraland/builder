@@ -30,10 +30,10 @@ export const getLoading = (state: RootState) => getState(state).loading
 export const getPaginationData = (state: RootState) => getState(state).pagination
 export const getError = (state: RootState) => getState(state).error
 
-export const getPaginatedCollections = (state: RootState, pageSize: number) => {
+export const getPaginatedCollections = (state: RootState, pageSize?: number) => {
   const paginationData = getPaginationData(state)
   const allCollections = getData(state)
-  const ids = paginationData?.ids.slice(0, pageSize) || []
+  const ids = paginationData ? (pageSize ? paginationData.ids.slice(0, pageSize) : paginationData.ids) : []
   return ids.map(id => allCollections[id]).filter(Boolean)
 }
 
