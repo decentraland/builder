@@ -193,7 +193,8 @@ describe('Item selectors', () => {
             } as Collection
           },
           loading: [],
-          error: null
+          error: null,
+          pagination: null
         } as CollectionState,
         entity: {
           data: {},
