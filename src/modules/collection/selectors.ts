@@ -27,7 +27,15 @@ import {
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
+export const getPaginationData = (state: RootState) => getState(state).pagination
 export const getError = (state: RootState) => getState(state).error
+
+export const getPaginatedCollections = (state: RootState, pageSize: number) => {
+  const paginationData = getPaginationData(state)
+  const allCollections = getData(state)
+  const ids = paginationData?.ids.slice(0, pageSize) || []
+  return ids.map(id => allCollections[id]).filter(Boolean)
+}
 
 export const getUnsyncedCollectionError = (state: RootState) => {
   const error = getError(state)

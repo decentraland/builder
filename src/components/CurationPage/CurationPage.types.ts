@@ -1,14 +1,11 @@
+import { Dispatch } from 'redux'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { FetchCollectionsParams } from 'lib/api/builder'
+import { FetchCollectionsRequestAction } from 'modules/collection/actions'
+import { CollectionPaginationData } from 'modules/collection/reducer'
+import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { Collection } from 'modules/collection/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
-import { CurationStatus } from 'modules/curations/types'
-
-export enum SortBy {
-  MOST_RELEVANT = 'MOST_RELEVANT',
-  NEWEST = 'NEWEST',
-  NAME_DESC = 'NAME_DESC',
-  NAME_ASC = 'NAME_ASC'
-}
 
 export enum CurationExtraStatuses {
   ALL_STATUS = 'ALL_STATUS'
@@ -21,23 +18,37 @@ export type Filters = CurationStatus | CurationExtraStatuses
 export type Props = {
   wallet: Wallet
   collections: Collection[]
+  paginationData: CollectionPaginationData | null
   curationsByCollectionId: Record<string, CollectionCuration>
   isCommitteeMember: boolean
   committeeMembers: string[]
   isConnecting: boolean
-  isLoading: boolean
+  isLoadingCollectionsData: boolean
+  isLoadingCommittee: boolean
   onNavigate: (path: string) => void
+  onFetchCollections: (params?: FetchCollectionsParams) => ReturnType<Dispatch<FetchCollectionsRequestAction>>
 }
 
 export type State = {
   page: number
-  sortBy: SortBy
+  sortBy: CurationSortOptions
   filterBy: Filters
-  assigneeFilter: string
+  assignee: string
   searchText: string
 }
 
 export type MapStateProps = Pick<
   Props,
-  'wallet' | 'collections' | 'curationsByCollectionId' | 'isCommitteeMember' | 'committeeMembers' | 'isConnecting' | 'isLoading'
+  | 'wallet'
+  | 'collections'
+  | 'paginationData'
+  | 'curationsByCollectionId'
+  | 'isCommitteeMember'
+  | 'committeeMembers'
+  | 'isConnecting'
+  | 'isLoadingCollectionsData'
+  | 'isLoadingCommittee'
 >
+
+export type MapDispatchProps = Pick<Props, 'onFetchCollections'>
+export type MapDispatch = Dispatch<FetchCollectionsRequestAction>

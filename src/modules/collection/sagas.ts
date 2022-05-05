@@ -170,11 +170,27 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeLatest(INITIATE_APPROVAL_FLOW, handleInitiateApprovalFlow)
   yield takeLatest(INITIATE_TP_APPROVAL_FLOW, handleInitiateTPItemsApprovalFlow)
 
+  function isPaginated(response: PaginatedResource<Collection> | Collection[]): response is PaginatedResource<Collection> {
+    return (<PaginatedResource<Collection>>response).results !== undefined
+  }
+
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
-    const { address } = action.payload
+    const { address, params } = action.payload
     try {
-      const collections: Collection[] = yield call(() => legacyBuilderClient.fetchCollections(address))
-      yield put(fetchCollectionsSuccess(collections))
+      const response: PaginatedResource<Collection> | Collection[] = yield call(() => legacyBuilderClient.fetchCollections(address, params))
+      if (isPaginated(response)) {
+        const { results, limit, page, pages, total } = response
+        yield put(
+          fetchCollectionsSuccess(results, {
+            limit,
+            page,
+            pages,
+            total
+          })
+        )
+      } else {
+        yield put(fetchCollectionsSuccess(response))
+      }
     } catch (error) {
       yield put(fetchCollectionsFailure(error.message))
     }
