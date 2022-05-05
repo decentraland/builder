@@ -152,7 +152,10 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     try {
       const rarities: Rarity[] = yield call([legacyBuilder, legacyBuilder.fetchRarities])
 
-      if (isUsingRaritiesWithOracle()) {
+      // This is true when the feature for rarity prices pegged to the US dollar is enabled
+      const shouldFetchPricesInUSD: boolean = yield call(isUsingRaritiesWithOracle)
+
+      if (shouldFetchPricesInUSD) {
         // Create a map of the rarities by id for an easier lookup.
         const raritiesMap = new Map(rarities.map(rarity => [rarity.id, rarity]))
         // Fetch rarities with their price in USD.
