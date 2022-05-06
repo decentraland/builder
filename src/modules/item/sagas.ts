@@ -159,7 +159,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         // Create a map of the rarities by id for an easier lookup.
         const raritiesMap = new Map(rarities.map(rarity => [rarity.id, rarity]))
         // Fetch rarities with their price in USD.
-        const raritiesInUSD: Rarity[] = yield call([legacyBuilder, legacyBuilder.fetchRarities], { inUSD: true })
+        const raritiesInUSD: Rarity[] = yield call([legacyBuilder, legacyBuilder.fetchRarities], { currency: 'USD' })
 
         // If there is a missmatch in length fail in order to avoid corrupted state.
         if (raritiesInUSD.length !== rarities.length) {
