@@ -36,6 +36,14 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     page: 1
   }
 
+  // the mount if needed if the user comes from another page and they are already connected
+  componentDidMount() {
+    const { onFetchCollections, wallet, isLoadingCommittee, isCommitteeMember } = this.props
+    if (wallet && !isLoadingCommittee && isCommitteeMember) {
+      onFetchCollections({ page: 1, limit: PAGE_SIZE, isPublished: true, sort: CurationSortOptions.MOST_RELEVANT })
+    }
+  }
+
   componentDidUpdate(prevProps: Props) {
     const { onFetchCollections, wallet, isLoadingCommittee, isCommitteeMember } = this.props
     // fetch collections once the committee value is resolved is connected
