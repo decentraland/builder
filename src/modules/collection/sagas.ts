@@ -93,6 +93,8 @@ import {
   FETCH_COLLECTION_ITEMS_FAILURE,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SaveMultipleItemsSuccessAction,
+  saveItemRequest,
+  SAVE_ITEM_FAILURE,
   SET_ITEMS_TOKEN_ID_SUCCESS
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
@@ -114,7 +116,7 @@ import {
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { buildItemEntity, buildStandardWearableContentHash, buildTPItemEntity } from 'modules/item/export'
+import { buildItemEntity, buildStandardWearableContentHash, buildTPItemEntity, hasOldHashedContents } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
@@ -332,6 +334,25 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         }
       })
 
+      // Re-save items that are not updated with the latest hash
+      for (const item of items) {
+        if (hasOldHashedContents(item)) {
+          yield put(saveItemRequest(item, {}))
+
+          const saveItem: {
+            success: SaveCollectionSuccessAction
+            failure: SaveCollectionFailureAction
+          } = yield race({
+            success: take(SAVE_ITEM_SUCCESS),
+            failure: take(SAVE_ITEM_FAILURE)
+          })
+
+          if (saveItem.failure) {
+            throw new Error(saveItem.failure.payload.error)
+          }
+        }
+      }
+
       const from: string = yield select(getAddress)
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
 
@@ -523,8 +544,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   /**
-   * Proccesses a collection that was published to the blockchain by singaling the
-   * builder server that the collecton has been published, setting the item ids,
+   * Processes a collection that was published to the blockchain by signaling the
+   * builder server that the collection has been published, setting the item ids,
    * deploys the item entities to the Catalyst server and creates the forum post.
    *
    * @param collection - The collection to post process.
@@ -817,7 +838,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           const v0ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0)
           const v1ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1)
 
-          // Check if the old and the new hash match
+          // As there could be older hashes in the blockchain, check if both of them are different to see if they need an update
           if (v0ContentHash !== item.blockchainContentHash && v1ContentHash !== item.blockchainContentHash) {
             itemsToRescue.push(item)
             contentHashes.push(v1ContentHash)
@@ -836,6 +857,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           items: itemsToRescue,
           contentHashes
         }
+
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
         // Wait for actions...

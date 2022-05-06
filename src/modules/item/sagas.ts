@@ -296,6 +296,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       // Re-write the contents so the files have the new hash
       item.contents = { ...item.contents, ...oldReHashedContent }
+
       // Add the old content to be uploaded again with the new hash
       const contents = { ...actionContents, ...oldReHashedContentWithNewHashes }
 

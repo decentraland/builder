@@ -11,16 +11,37 @@ import { Item, IMAGE_PATH, THUMBNAIL_PATH, StandardCatalystItem, ItemType, Emote
 import { generateCatalystImage, generateImage } from './utils'
 
 /**
- * Downloads content that has an old hash.
+ * Checks if a hash was generated using an older algorithm.
+ *
+ * @param hash - A hash.
+ * @returns true if the hash is from an older version.
+ */
+export function isOldHash(hash: string): boolean {
+  return hash.startsWith('Qm')
+}
+
+/**
+ * Checks if an item has content hashes generated using an older algorithm.
+ *
+ * @param item - An item.
+ * @returns true if the item has older hashes.
+ */
+export function hasOldHashedContents(item: Item): boolean {
+  return Object.values(item.contents).some(hash => isOldHash(hash))
+}
+
+/**
+ * Takes a map of contents (file name -> hash), downloads the contents that are hashed with an older algorithm
+ * and builds a new map that contains the content and their hash.
  *
  * @param contents - The contents to be updated.
- * @returns A map with the contents that have been updated.
+ * @returns A map containing only the contents that have been updated and re-hashed.
  */
 export async function reHashOlderContents(
   contents: Record<string, string>,
   legacyBuilderClient: BuilderAPI
 ): Promise<Record<string, { hash: string; content: Blob }>> {
-  const contentsWithOldHashes = Object.fromEntries(Object.entries(contents).filter(([_, content]) => content.startsWith('Qm')))
+  const contentsWithOldHashes = Object.fromEntries(Object.entries(contents).filter(([_, content]) => isOldHash(content)))
   const contentOfOldHashedFiles = await legacyBuilderClient.fetchContents(contentsWithOldHashes)
   const newHashesOfOldHashedFiles = await computeHashes(contentOfOldHashedFiles)
   return Object.fromEntries(

@@ -35,10 +35,8 @@ import {
   WearableRepresentation,
   GenerateImageOptions,
   EmoteCategory,
-  EmoteData,
-  EntityHashingType
+  EmoteData
 } from './types'
-import { buildStandardWearableContentHash } from './export'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -461,6 +459,7 @@ export function areSynced(item: Item, entity: Entity) {
       return false
     }
   }
+
   return true
 }
 
