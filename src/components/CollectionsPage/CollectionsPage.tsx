@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Container, Row, Column, Header, Card, Button, Dropdown, Table, Section } from 'decentraland-ui'
+import { Container, Row, Column, Header, Card, Button, Dropdown, Table, Section, Tabs, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { NavigationTab } from 'components/Navigation/Navigation.types'
@@ -12,10 +12,13 @@ import ItemCard from './ItemCard'
 import ItemRow from './ItemRow'
 import CollectionCard from './CollectionCard'
 import CollectionRow from './CollectionRow'
-import { Props } from './CollectionsPage.types'
+import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
 export default class CollectionsPage extends React.PureComponent<Props> {
+  state = {
+    currentTab: TABS.COLLECTIONS
+  }
   handleNewItem = () => {
     this.props.onOpenModal('CreateSingleItemModal', {})
   }
@@ -33,16 +36,25 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     onNavigate(locations.itemEditor())
   }
 
+  handleTabChange = (tab: TABS) => {
+    const { onFetchOrphanItems, address } = this.props
+    if (tab === TABS.ITEMS && address) {
+      onFetchOrphanItems(address)
+    }
+    this.setState({ currentTab: tab })
+  }
+
   renderGrid() {
-    const { items, collections } = this.props
+    const { items, collections, isLoadingItems } = this.props
     return (
       <Card.Group>
-        {items.map((item, index) => (
-          <ItemCard key={index} item={item} />
-        ))}
-        {collections.map((collection, index) => (
-          <CollectionCard key={index} collection={collection} />
-        ))}
+        {this.isCollectionTabActive() ? (
+          collections.map((collection, index) => <CollectionCard key={index} collection={collection} />)
+        ) : isLoadingItems ? (
+          <Loader size="large" active />
+        ) : (
+          items.map((item, index) => <ItemCard key={index} item={item} />)
+        )}
       </Card.Group>
     )
   }
@@ -56,38 +68,43 @@ export default class CollectionsPage extends React.PureComponent<Props> {
             <Table.Row>
               <Table.HeaderCell>{t('global.item')}</Table.HeaderCell>
               <Table.HeaderCell>{t('collections_page.type')}</Table.HeaderCell>
-              <Table.HeaderCell>{t('collections_page.items')}</Table.HeaderCell>
+              <Table.HeaderCell>
+                {this.isCollectionTabActive() ? t('collections_page.collections') : t('collections_page.items')}
+              </Table.HeaderCell>
               <Table.HeaderCell></Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
           <Table.Body>
-            {items.map(item => (
-              <ItemRow key={item.id} item={item} />
-            ))}
-            {collections.map(collection => (
-              <CollectionRow key={collection.id} collection={collection} />
-            ))}
+            {this.isCollectionTabActive()
+              ? collections.map(collection => <CollectionRow key={collection.id} collection={collection} />)
+              : items.map(item => <ItemRow key={item.id} item={item} />)}
           </Table.Body>
         </Table>
       </Section>
     )
   }
 
+  isCollectionTabActive = () => {
+    const { currentTab } = this.state
+    return currentTab === TABS.COLLECTIONS
+  }
+
   renderPage() {
-    const { items, collections, view, isThirdPartyManager, onSetView } = this.props
-    const count = items.length + collections.length
+    const { items, collections, view, isThirdPartyManager, onSetView, isLoadingItems } = this.props
+    const count = this.isCollectionTabActive() ? collections.length : items.length
 
     return (
       <>
         <div className="filters">
           <Container>
-            <Row height={30}>
-              <Column>
-                <Row>
-                  <Header sub>{t('collections_page.results', { count })}</Header>
-                </Row>
-              </Column>
+            <Tabs isFullscreen>
+              <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.COLLECTIONS)}>
+                {t('collections_page.collections')}
+              </Tabs.Tab>
+              <Tabs.Tab active={!this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.ITEMS)}>
+                {t('collections_page.single_items')}
+              </Tabs.Tab>
               <Column align="right">
                 <Row className="actions">
                   <Dropdown
@@ -100,14 +117,19 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                     direction="left"
                   >
                     <Dropdown.Menu>
-                      <Dropdown.Item text={t('collections_page.new_item')} onClick={this.handleNewItem} />
-                      <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
-                      {isThirdPartyManager ? (
-                        <Dropdown.Item
-                          text={t('collections_page.new_third_party_collection')}
-                          onClick={this.handleNewThirdPartyCollection}
-                        />
-                      ) : null}
+                      {this.isCollectionTabActive() ? (
+                        <>
+                          <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
+                          {isThirdPartyManager ? (
+                            <Dropdown.Item
+                              text={t('collections_page.new_third_party_collection')}
+                              onClick={this.handleNewThirdPartyCollection}
+                            />
+                          ) : null}
+                        </>
+                      ) : (
+                        <Dropdown.Item text={t('collections_page.new_item')} onClick={this.handleNewItem} />
+                      )}
                     </Dropdown.Menu>
                   </Dropdown>
                   <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
@@ -127,11 +149,18 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                   />
                 </Row>
               </Column>
+            </Tabs>
+            <Row height={30}>
+              <Column>
+                <Row>{!isLoadingItems && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
+              </Column>
             </Row>
           </Container>
         </div>
 
-        {count > 0 ? (
+        {isLoadingItems ? (
+          <Loader active size="large" />
+        ) : count > 0 ? (
           view === CollectionPageView.GRID ? (
             this.renderGrid()
           ) : view === CollectionPageView.LIST ? (
@@ -160,9 +189,9 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isLoading } = this.props
+    const { isLoadingCollections } = this.props
     return (
-      <LoggedInDetailPage className="CollectionsPage" activeTab={NavigationTab.COLLECTIONS} isLoading={isLoading}>
+      <LoggedInDetailPage className="CollectionsPage" activeTab={NavigationTab.COLLECTIONS} isLoading={isLoadingCollections}>
         {this.renderPage()}
       </LoggedInDetailPage>
     )

@@ -1,0 +1,4 @@
+.CollectionDropdown .no-items {
+  pointer-events: none;
+  color: var(--secondary-text);
+}

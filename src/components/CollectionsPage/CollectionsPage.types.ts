@@ -5,18 +5,30 @@ import { setCollectionPageView, SetCollectionPageViewAction } from 'modules/ui/c
 import { CollectionPageView } from 'modules/ui/collection/types'
 import { Item } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
+import { fetchItemsRequest, FetchItemsRequestAction } from 'modules/item/actions'
+
+export enum TABS {
+  COLLECTIONS,
+  ITEMS
+}
 
 export type Props = {
+  address?: string
   items: Item[]
   collections: Collection[]
   view: CollectionPageView
   isThirdPartyManager: boolean
-  isLoading: boolean
+  isLoadingCollections: boolean
+  isLoadingItems: boolean
   onNavigate: (path: string) => void
   onSetView: typeof setCollectionPageView
   onOpenModal: typeof openModal
+  onFetchOrphanItems: typeof fetchItemsRequest
 }
 
-export type MapStateProps = Pick<Props, 'items' | 'collections' | 'view' | 'isThirdPartyManager' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onSetView' | 'onOpenModal'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | SetCollectionPageViewAction | OpenModalAction>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'items' | 'collections' | 'view' | 'isThirdPartyManager' | 'isLoadingCollections' | 'isLoadingItems'
+>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onSetView' | 'onOpenModal' | 'onFetchOrphanItems'>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | SetCollectionPageViewAction | OpenModalAction | FetchItemsRequestAction>

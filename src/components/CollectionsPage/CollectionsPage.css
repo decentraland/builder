@@ -146,3 +146,8 @@
     height: 215px;
   }
 }
+
+.CollectionsPage .dcl.tabs.fullscreen .dcl.column.right {
+  float: right;
+  padding: 19px 0;
+}

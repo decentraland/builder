@@ -14,6 +14,11 @@
     "title": "添加现有项目",
     "subtitle": "选择一个不属于集合的项目"
   },
+  "move_item_to_collection_modal": {
+    "title": "将项目移至收藏夹",
+    "subtitle": "选择要将项目移动到的集合",
+    "confirm": "移动"
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "清除Asset Pack",
@@ -591,6 +596,10 @@
     "placeholder": "选择一个项目",
     "no_items": "找不到有效的项目"
   },
+  "collection_dropdown": {
+    "placeholder": "选择一个集合",
+    "no_collections": "未找到有效集合"
+  },
   "layout_picker": {
     "columns": "列",
     "rows": "行"
@@ -754,6 +763,7 @@
     "confirm_delete_header": "删除 \"{title}\""
   },
   "item_card": {
+    "move_to_collection": "移至收藏",
     "confirm_delete_content": "您确定要删除项目\"{name}\"吗？ 此操作不可逆转！",
     "confirm_delete_header": "删除 \"{name}\""
   },
@@ -972,6 +982,8 @@
     "new_third_party_collection": "新的链接可穿戴设备系列",
     "type": "类型",
     "items": "模型",
+    "collections": "收藏品",
+    "single_items": "单品",
     "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {

@@ -77,7 +77,6 @@ import {
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FetchItemsSuccessAction,
   FetchCollectionItemsSuccessAction,
-  fetchItemsRequest,
   DELETE_ITEM_SUCCESS,
   DeleteItemSuccessAction,
   fetchCollectionItemsRequest,
@@ -110,7 +109,6 @@ import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, 
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
-import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ItemPaginationData } from './reducer'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
@@ -127,7 +125,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeEvery(DELETE_ITEM_SUCCESS, handleDeleteItemSuccess)
-  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
   yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
@@ -426,11 +423,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         yield put(fetchCollectionItemsRequest(collectionId, { page: currentPage, limit }))
       }
     }
-  }
-
-  function* handleLoginSuccess(action: LoginSuccessAction) {
-    const { wallet } = action.payload
-    yield put(fetchItemsRequest(wallet.address))
   }
 
   function* handleSetCollection(action: SetCollectionAction) {

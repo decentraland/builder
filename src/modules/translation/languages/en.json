@@ -14,6 +14,11 @@
     "title": "Add Existing Item",
     "subtitle": "Select an item that is not part of a collection yet"
   },
+  "move_item_to_collection_modal": {
+    "title": "Move Item to Collection",
+    "subtitle": "Select the collection that you want to move the item to",
+    "confirm": "Move"
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "Delete Asset Pack",
@@ -597,6 +602,10 @@
     "placeholder": "Select an item",
     "no_items": "No valid items found"
   },
+  "collection_dropdown": {
+    "placeholder": "Select a collection",
+    "no_collections": "No valid collections were found"
+  },
   "layout_picker": {
     "columns": "columns",
     "rows": "rows"
@@ -759,6 +768,7 @@
     "confirm_delete_header": "Delete \"{title}\""
   },
   "item_card": {
+    "move_to_collection": "Move to collection",
     "confirm_delete_content": "Are you sure you want to delete your item \"{name}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{name}\""
   },
@@ -979,6 +989,8 @@
     "new_third_party_collection": "New Linked Wearables Collection",
     "type": "Type",
     "items": "Items",
+    "collections": "Collections",
+    "single_items": "Single items",
     "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {
