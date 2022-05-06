@@ -1360,7 +1360,7 @@ describe('when handling the fetch of rarities', () => {
         .provide([
           [call([builderAPI, builderAPI.fetchRarities]), rarities],
           [call(isUsingRaritiesWithOracle), true],
-          [call([builderAPI, builderAPI.fetchRarities], { inUSD: true }), raritiesInUSD]
+          [call([builderAPI, builderAPI.fetchRarities], { currency: 'USD' }), raritiesInUSD]
         ])
         .dispatch(fetchRaritiesRequest())
         .put(fetchRaritiesSuccess([{ ...rarities[0], priceUSD: raritiesInUSD[0].price }]))
@@ -1375,7 +1375,7 @@ describe('when handling the fetch of rarities', () => {
           .provide([
             [call([builderAPI, builderAPI.fetchRarities]), rarities],
             [call(isUsingRaritiesWithOracle), true],
-            [call([builderAPI, builderAPI.fetchRarities], { inUSD: true }), raritiesInUSD]
+            [call([builderAPI, builderAPI.fetchRarities], { currency: 'USD' }), raritiesInUSD]
           ])
           .dispatch(fetchRaritiesRequest())
           .put(fetchRaritiesFailure('Different rarities length'))
@@ -1391,7 +1391,7 @@ describe('when handling the fetch of rarities', () => {
           .provide([
             [call([builderAPI, builderAPI.fetchRarities]), rarities],
             [call(isUsingRaritiesWithOracle), true],
-            [call([builderAPI, builderAPI.fetchRarities], { inUSD: true }), raritiesInUSD]
+            [call([builderAPI, builderAPI.fetchRarities], { currency: 'USD' }), raritiesInUSD]
           ])
           .dispatch(fetchRaritiesRequest())
           .put(fetchRaritiesFailure('Rarity not found'))
