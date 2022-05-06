@@ -50,7 +50,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     authorizationSaga(),
     collectionSaga(builderAPI, newBuilderClient, catalystClient),
     committeeSaga(builderAPI),
-    deploymentSaga(builderAPI),
+    deploymentSaga(builderAPI, catalystClient),
     editorSaga(),
     ensSaga(),
     entitySaga(catalystClient),

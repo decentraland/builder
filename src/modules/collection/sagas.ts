@@ -93,6 +93,8 @@ import {
   FETCH_COLLECTION_ITEMS_FAILURE,
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SaveMultipleItemsSuccessAction,
+  saveItemRequest,
+  SAVE_ITEM_FAILURE,
   SET_ITEMS_TOKEN_ID_SUCCESS
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
@@ -102,7 +104,7 @@ import { BuilderAPI } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
-import { Item, ItemApprovalData } from 'modules/item/types'
+import { EntityHashingType, Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
 import {
   getEntityByItemId,
@@ -114,7 +116,7 @@ import {
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { buildItemEntity, buildTPItemEntity } from 'modules/item/export'
+import { buildItemEntity, buildStandardWearableContentHash, buildTPItemEntity, hasOldHashedContents } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
@@ -142,7 +144,6 @@ import {
   getCollectionSymbol,
   isLocked,
   getCollectionType,
-  getLatestItemHash,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
   isTPCollection,
   getCollectionFactoryContract
@@ -332,6 +333,25 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           throw new Error(`${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`)
         }
       })
+
+      // Re-save items that are not updated with the latest hash
+      for (const item of items) {
+        if (hasOldHashedContents(item)) {
+          yield put(saveItemRequest(item, {}))
+
+          const saveItem: {
+            success: SaveCollectionSuccessAction
+            failure: SaveCollectionFailureAction
+          } = yield race({
+            success: take(SAVE_ITEM_SUCCESS),
+            failure: take(SAVE_ITEM_FAILURE)
+          })
+
+          if (saveItem.failure) {
+            throw new Error(saveItem.failure.payload.error)
+          }
+        }
+      }
 
       const from: string = yield select(getAddress)
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
@@ -524,8 +544,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   /**
-   * Proccesses a collection that was published to the blockchain by singaling the
-   * builder server that the collecton has been published, setting the item ids,
+   * Processes a collection that was published to the blockchain by signaling the
+   * builder server that the collection has been published, setting the item ids,
    * deploys the item entities to the Catalyst server and creates the forum post.
    *
    * @param collection - The collection to post process.
@@ -594,8 +614,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
-        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
-
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, legacyBuilderClient, collection, item)
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }
@@ -613,7 +632,15 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const entitiesToDeploy: DeploymentPreparationData[] = []
     for (const item of items) {
       if (item.catalystContentHash !== item.currentContentHash) {
-        const entity: DeploymentPreparationData = yield call(buildTPItemEntity, catalyst, collection, item, tree, hashes[item.id])
+        const entity: DeploymentPreparationData = yield call(
+          buildTPItemEntity,
+          catalyst,
+          legacyBuilderClient,
+          collection,
+          item,
+          tree,
+          hashes[item.id]
+        )
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }
@@ -807,10 +834,18 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       }
 
       for (const item of items) {
-        const latestContentHash: string = yield call(getLatestItemHash, collection, item)
-        if (latestContentHash !== item.blockchainContentHash) {
+        if (!item.currentContentHash) {
+          const v0ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0)
+          const v1ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1)
+
+          // As there could be older hashes in the blockchain, check if both of them are different to see if they need an update
+          if (v0ContentHash !== item.blockchainContentHash && v1ContentHash !== item.blockchainContentHash) {
+            itemsToRescue.push(item)
+            contentHashes.push(v1ContentHash)
+          }
+        } else if (item.currentContentHash !== item.blockchainContentHash) {
           itemsToRescue.push(item)
-          contentHashes.push(latestContentHash)
+          contentHashes.push(item.currentContentHash)
         }
       }
 
@@ -822,6 +857,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           items: itemsToRescue,
           contentHashes
         }
+
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
         // Wait for actions...
