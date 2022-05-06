@@ -63,10 +63,10 @@ export const getCollectionItems = (state: RootState, collectionId: string) => {
   return allItems.filter(item => item.collectionId === collectionId)
 }
 
-export const getPaginatedCollectionItems = (state: RootState, collectionId: string, pageSize: number) => {
+export const getPaginatedCollectionItems = (state: RootState, collectionId: string, pageSize?: number) => {
   const paginationData = getPaginationData(state, collectionId)
   const allItems = getData(state)
-  const ids = paginationData?.ids.slice(0, pageSize) || []
+  const ids = paginationData ? (pageSize ? paginationData.ids.slice(0, pageSize) : paginationData.ids) : []
   return ids.map(itemId => allItems[itemId]).filter(Boolean)
 }
 

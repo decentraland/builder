@@ -150,10 +150,10 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
-    const { address } = action.payload
+    const { address, params } = action.payload
     try {
       // fetch just the orphan items for the address
-      const response: PaginatedResource<Item> = yield call([legacyBuilder, 'fetchItems'], address, { collectionId: 'null' })
+      const response: PaginatedResource<Item> = yield call([legacyBuilder, 'fetchItems'], address, { ...params, collectionId: 'null' })
       const { limit, page, pages, results, total } = response
       yield put(fetchItemsSuccess(results, { limit, page, pages, total }, address))
     } catch (error) {

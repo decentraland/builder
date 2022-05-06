@@ -12,7 +12,8 @@ export const FETCH_ITEMS_REQUEST = '[Request] Fetch Items'
 export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
 export const FETCH_ITEMS_FAILURE = '[Failure] Fetch Items'
 
-export const fetchItemsRequest = (address: string) => action(FETCH_ITEMS_REQUEST, { address })
+export const fetchItemsRequest = (address: string, params?: { limit: number; page: number }) =>
+  action(FETCH_ITEMS_REQUEST, { address, params })
 export const fetchItemsSuccess = (items: Item[], paginationStats: PaginationStats, address: string) =>
   action(FETCH_ITEMS_SUCCESS, { items, paginationStats, paginationIndex: address })
 export const fetchItemsFailure = (error: string) => action(FETCH_ITEMS_FAILURE, { error })

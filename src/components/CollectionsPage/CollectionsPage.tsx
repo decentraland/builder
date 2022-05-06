@@ -1,5 +1,19 @@
 import * as React from 'react'
-import { Container, Row, Column, Header, Card, Button, Dropdown, Table, Section, Tabs, Loader } from 'decentraland-ui'
+import {
+  Container,
+  Row,
+  Column,
+  Header,
+  Card,
+  Button,
+  Dropdown,
+  Table,
+  Section,
+  Tabs,
+  Loader,
+  Pagination,
+  PaginationProps
+} from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { NavigationTab } from 'components/Navigation/Navigation.types'
@@ -15,10 +29,30 @@ import CollectionRow from './CollectionRow'
 import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
+const PAGE_SIZE = 20
+
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
-    currentTab: TABS.COLLECTIONS
+    currentTab: TABS.COLLECTIONS,
+    page: 1
   }
+
+  componentDidMount() {
+    const { onFetchCollections, address } = this.props
+    // fetch if already connected
+    if (address && address) {
+      onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { onFetchCollections, address } = this.props
+    // if it's the first page and it was not connected when mounting
+    if (address && address !== prevProps.address) {
+      onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
+    }
+  }
+
   handleNewItem = () => {
     this.props.onOpenModal('CreateSingleItemModal', {})
   }
@@ -37,11 +71,12 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   handleTabChange = (tab: TABS) => {
+    const { page } = this.state
     const { onFetchOrphanItems, address } = this.props
     if (tab === TABS.ITEMS && address) {
-      onFetchOrphanItems(address)
+      onFetchOrphanItems(address, { page, limit: PAGE_SIZE })
     }
-    this.setState({ currentTab: tab })
+    this.setState({ currentTab: tab, page: 1 })
   }
 
   renderGrid() {
@@ -90,9 +125,37 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     return currentTab === TABS.COLLECTIONS
   }
 
+  fetchCollections = () => {
+    const { address, onFetchCollections } = this.props
+    const { page } = this.state
+    onFetchCollections(address, { page, limit: PAGE_SIZE })
+  }
+
+  fetchItems = () => {
+    const { address, onFetchOrphanItems } = this.props
+    const { page } = this.state
+    address && onFetchOrphanItems(address, { page, limit: PAGE_SIZE })
+  }
+
+  handlePageChange = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
+    this.setState({ page: +props.activePage! }, this.isCollectionTabActive() ? this.fetchCollections : this.fetchItems)
+  }
+
   renderPage() {
-    const { items, collections, view, isThirdPartyManager, onSetView, isLoadingItems } = this.props
-    const count = this.isCollectionTabActive() ? collections.length : items.length
+    const {
+      collectionsPaginationData,
+      itemsPaginationData,
+      view,
+      isThirdPartyManager,
+      onSetView,
+      isLoadingItems,
+      isLoadingCollections
+    } = this.props
+    const { page } = this.state
+    const totalCollections = collectionsPaginationData?.total
+    const totalItems = itemsPaginationData?.total
+    const count = this.isCollectionTabActive() ? totalCollections : totalItems
+    const totalPages = this.isCollectionTabActive() ? collectionsPaginationData?.totalPages : itemsPaginationData?.totalPages
 
     return (
       <>
@@ -160,14 +223,22 @@ export default class CollectionsPage extends React.PureComponent<Props> {
           </Container>
         </div>
 
-        {isLoadingItems ? (
+        {isLoadingItems || isLoadingCollections || count === undefined ? (
           <Loader active size="large" />
         ) : count > 0 ? (
-          view === CollectionPageView.GRID ? (
-            this.renderGrid()
-          ) : view === CollectionPageView.LIST ? (
-            this.renderList()
-          ) : null
+          <>
+            {view === CollectionPageView.GRID ? this.renderGrid() : view === CollectionPageView.LIST ? this.renderList() : null}
+            {!!totalPages && totalPages > 1 && (
+              <Pagination
+                className="pagination"
+                firstItem={null}
+                lastItem={null}
+                totalPages={totalPages}
+                activePage={page}
+                onPageChange={this.handlePageChange}
+              />
+            )}
+          </>
         ) : (
           <Card.Group>
             <div className="empty">
@@ -191,9 +262,8 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isLoadingCollections } = this.props
     return (
-      <LoggedInDetailPage className="CollectionsPage" activeTab={NavigationTab.COLLECTIONS} isLoading={isLoadingCollections}>
+      <LoggedInDetailPage className="CollectionsPage" activeTab={NavigationTab.COLLECTIONS}>
         {this.renderPage()}
       </LoggedInDetailPage>
     )
