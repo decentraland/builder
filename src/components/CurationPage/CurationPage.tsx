@@ -24,7 +24,7 @@ import { Props, State, CurationFilterOptions, CurationExtraStatuses, Filters } f
 import { CurationSortOptions } from 'modules/curations/types'
 import './CurationPage.css'
 
-const PAGE_SIZE = 2
+const PAGE_SIZE = 12
 const ALL_ASSIGNEES_KEY = 'all'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
