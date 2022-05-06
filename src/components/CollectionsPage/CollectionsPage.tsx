@@ -152,9 +152,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
             </Tabs>
             <Row height={30}>
               <Column>
-                <Row>
-                  {isLoadingItems ? <Loader active size="mini" /> : <Header sub>{t('collections_page.results', { count })}</Header>}
-                </Row>
+                <Row>{!isLoadingItems && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
               </Column>
             </Row>
           </Container>
