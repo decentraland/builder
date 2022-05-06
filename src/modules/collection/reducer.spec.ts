@@ -1,6 +1,9 @@
 import { fetchTransactionSuccess } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { PUBLISH_COLLECTION_SUCCESS } from './actions'
+import { PaginationStats } from 'lib/api/pagination'
+import { fetchCollectionsSuccess, PUBLISH_COLLECTION_SUCCESS } from './actions'
 import { collectionReducer as reducer } from './reducer'
+import { Collection } from './types'
+import { toCollectionObject } from './utils'
 
 describe('when FETCH_TRANSACTION_SUCCESS', () => {
   describe('when PUBLISH_COLLECTION_SUCCESS', () => {
@@ -43,6 +46,49 @@ describe('when FETCH_TRANSACTION_SUCCESS', () => {
       expect(state.data.id.createdAt).toBe(mockNow)
       expect(state.data.id.reviewedAt).toBe(mockNow)
       expect(state.data.id.updatedAt).toBe(mockNow)
+    })
+  })
+})
+
+describe('when FETCH_COLLECTIONS_SUCCESS', () => {
+  let mockedCollection: Collection, mockedPaginationStats: PaginationStats
+  beforeEach(() => {
+    mockedCollection = {
+      id: 'collectionId'
+    } as Collection
+    mockedPaginationStats = {
+      limit: 1,
+      page: 1,
+      pages: 1,
+      total: 1
+    } as PaginationStats
+  })
+
+  it('should update pagination data if it is passed as parameter', () => {
+    const anExistingCollectionId = 'id'
+    const initialState = {
+      data: {
+        [anExistingCollectionId]: {
+          id: 'anExistingCollectionId'
+        }
+      }
+    } as any
+
+    const state = reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats))
+    expect(reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats))).toEqual({
+      ...state,
+      data: {
+        ...state.data,
+        ...toCollectionObject([mockedCollection])
+      },
+      pagination: {
+        ...state.pagination,
+        ids: [mockedCollection].map(collection => collection.id),
+        total: mockedPaginationStats.total,
+        currentPage: mockedPaginationStats.page,
+        limit: mockedPaginationStats.limit,
+        totalPages: mockedPaginationStats.pages
+      }
     })
   })
 })

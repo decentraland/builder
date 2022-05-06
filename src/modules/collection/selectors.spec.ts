@@ -6,6 +6,7 @@ import { ThirdParty } from 'modules/thirdParty/types'
 import {
   getAuthorizedCollections,
   getCollectionItemCount,
+  getPaginatedCollections,
   getStatusByCollectionId,
   getUnsyncedCollectionError,
   hasViewAndEditRights
@@ -449,6 +450,56 @@ describe('when getting the items count by collection', () => {
   describe('and it is missing itemCount field', () => {
     it('should return the fallback value for the selector', () => {
       expect(getCollectionItemCount(mockState, collections[1].id)).toEqual(0)
+    })
+  })
+})
+
+describe('when getting collections paginated', () => {
+  let collections: Collection[]
+  let mockState: RootState
+
+  beforeEach(() => {
+    collections = [
+      {
+        id: '0',
+        contractAddress: 'anAddress',
+        itemCount: 5
+      } as Collection,
+      {
+        id: '1',
+        contractAddress: 'anotherAddress'
+      } as Collection
+    ]
+    mockState = ({
+      collection: {
+        data: {
+          '0': collections[0],
+          '1': collections[1]
+        },
+        pagination: {
+          ids: [collections[0].id, collections[1].id],
+          total: 2,
+          totalPages: 1,
+          currentPage: 1,
+          limit: 1
+        }
+      }
+    } as unknown) as RootState
+  })
+
+  describe('and it has the pageSize is not specified', () => {
+    let paginationSize: number
+    beforeEach(() => {
+      paginationSize = 1
+    })
+    it('should return the collections by the page size fetched', () => {
+      expect(getPaginatedCollections(mockState, paginationSize)).toEqual([collections[0]])
+    })
+  })
+
+  describe('and it has the pageSize is specified', () => {
+    it('should return the collections by the page size fetched', () => {
+      expect(getPaginatedCollections(mockState)).toEqual([collections[0], collections[1]])
     })
   })
 })

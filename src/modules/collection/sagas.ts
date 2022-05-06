@@ -177,7 +177,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
     const { address, params } = action.payload
     try {
-      const response: PaginatedResource<Collection> | Collection[] = yield call(() => legacyBuilderClient.fetchCollections(address, params))
+      const response: PaginatedResource<Collection> | Collection[] = yield call([legacyBuilderClient, 'fetchCollections'], address, params)
       if (isPaginated(response)) {
         const { results, limit, page, pages, total } = response
         yield put(
