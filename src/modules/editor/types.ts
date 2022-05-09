@@ -23,16 +23,6 @@ export type EditorScene = {
     parcels: string[]
     base: string
   }
-  communications: {
-    type: string
-    signalling: string
-  }
-  policy: {
-    fly: boolean
-    voiceEnabled: boolean
-    blacklist: string[]
-    teleportPosition: string
-  }
   source: {
     origin: 'builder'
   }

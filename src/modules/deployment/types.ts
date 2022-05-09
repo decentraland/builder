@@ -73,11 +73,9 @@ export type SceneDefinition = {
     layout?: Project['layout']
     isEmpty?: boolean
   }
-  communications?: any
   contact: {
     name: string
     email: string
   }
-  policy?: any
   tags: string[]
 }

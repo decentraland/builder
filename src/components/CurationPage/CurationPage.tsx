@@ -6,6 +6,7 @@ import Profile from 'components/Profile'
 import NotFound from 'components/NotFound'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import { Collection } from 'modules/collection/types'
 import CollectionRow from './CollectionRow'
 import { Props, State, SortBy, CurationFilterOptions, CurationExtraStatuses, Filters } from './CurationPage.types'
 import { CurationStatus } from 'modules/curations/types'
@@ -59,24 +60,37 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderAssigneeFilterDropdown = () => {
-    const { committeeMembers } = this.props
+    const { committeeMembers, wallet } = this.props
     const { assigneeFilter } = this.state
     return (
       <Dropdown
+        className="assignees"
         direction="left"
         value={assigneeFilter}
         options={[
           { value: ALL_ASSIGNEES_KEY, text: t('curation_page.filter.all_assignees') },
-          ...committeeMembers.map(address => ({ value: address, text: <Profile textOnly address={address} /> }))
+          ...committeeMembers
+            .reduce((acc, member) => {
+              if (member === wallet.address) {
+                acc.unshift(member)
+              } else {
+                acc.push(member)
+              }
+              return acc
+            }, [] as string[])
+            .map(address => ({
+              value: address,
+              text: <Profile textOnly address={address} />
+            }))
         ]}
         onChange={(_event, { value }) => this.setState({ assigneeFilter: `${value}` })}
       />
     )
   }
 
-  paginate = () => {
+  sortAndFilter = () => {
     const { collections, curationsByCollectionId } = this.props
-    const { page, filterBy, sortBy, searchText, assigneeFilter } = this.state
+    const { filterBy, sortBy, searchText, assigneeFilter } = this.state
 
     return collections
       .filter(
@@ -144,7 +158,11 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           }
         }
       })
-      .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  }
+
+  paginate = (collections: Collection[]) => {
+    const { page } = this.state
+    return collections.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   }
 
   handleSearchChange = (value: string): void => {
@@ -155,9 +173,10 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     const { collections, curationsByCollectionId } = this.props
     const { page, searchText } = this.state
 
-    const total = collections.length
+    const sortedAndFiltered = this.sortAndFilter()
+    const total = sortedAndFiltered.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
-    const paginatedCollections = this.paginate()
+    const paginatedCollections = this.paginate(sortedAndFiltered)
 
     return (
       <>
