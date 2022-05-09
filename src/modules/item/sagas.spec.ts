@@ -57,7 +57,7 @@ import {
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
 import { calculateFinalSize, reHashOlderContents } from './export'
-import { buildZipContents, generateCatalystImage, groupsOf, isUsingRaritiesWithOracle, MAX_FILE_SIZE } from './utils'
+import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
 
@@ -1334,69 +1334,27 @@ describe('when handling the fetch of rarities', () => {
         id: ItemRarity.COMMON,
         name: ItemRarity.COMMON,
         price: '4000000000000000000',
-        maxSupply: '100000'
+        maxSupply: '100000',
+        originalPrice: '10000000000000000000'
       }
     ]
   })
 
-  describe('when NOT using rarities price pegged to the USD', () => {
-    it('should put the rarities obtained from the server', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([
-          [call([builderAPI, builderAPI.fetchRarities]), rarities],
-          [call(isUsingRaritiesWithOracle), false]
-        ])
-        .dispatch(fetchRaritiesRequest())
-        .put(fetchRaritiesSuccess(rarities))
-        .run({ silenceTimeout: true })
-    })
+  it('should put a fetch rarities success action with the fetched rarities', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .provide([[call([builderAPI, builderAPI.fetchRarities]), rarities]])
+      .dispatch(fetchRaritiesRequest())
+      .put(fetchRaritiesSuccess(rarities))
+      .run({ silenceTimeout: true })
   })
 
-  describe('when using rarities price pegged to the USD', () => {
-    it('should put the rarities obtained from the server with priceUSD field set', () => {
-      const raritiesInUSD: Rarity[] = [{ ...rarities[0], price: '10000000000000000000' }]
-
+  describe('when the request to the builder fails', () => {
+    it('should put a fetch rarities failure action with the error', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([
-          [call([builderAPI, builderAPI.fetchRarities]), rarities],
-          [call(isUsingRaritiesWithOracle), true],
-          [call([builderAPI, builderAPI.fetchRarities], { currency: 'USD' }), raritiesInUSD]
-        ])
+        .provide([[call([builderAPI, builderAPI.fetchRarities]), Promise.reject(new Error('Failed to fetch rarities'))]])
         .dispatch(fetchRaritiesRequest())
-        .put(fetchRaritiesSuccess([{ ...rarities[0], priceUSD: raritiesInUSD[0].price }]))
+        .put(fetchRaritiesFailure('Failed to fetch rarities'))
         .run({ silenceTimeout: true })
-    })
-
-    describe('when obtained rarities in USD does not match the length of the rarities in MANA', () => {
-      it('should put an error with invalid length message', () => {
-        const raritiesInUSD: Rarity[] = []
-
-        return expectSaga(itemSaga, builderAPI, builderClient)
-          .provide([
-            [call([builderAPI, builderAPI.fetchRarities]), rarities],
-            [call(isUsingRaritiesWithOracle), true],
-            [call([builderAPI, builderAPI.fetchRarities], { currency: 'USD' }), raritiesInUSD]
-          ])
-          .dispatch(fetchRaritiesRequest())
-          .put(fetchRaritiesFailure('Different rarities length'))
-          .run({ silenceTimeout: true })
-      })
-    })
-
-    describe('when obtained rarities in USD have different ids than the ones in MANA', () => {
-      it('should put an error with not found message', () => {
-        const raritiesInUSD: Rarity[] = [{ ...rarities[0], id: ItemRarity.EPIC, price: '10000000000000000000' }]
-
-        return expectSaga(itemSaga, builderAPI, builderClient)
-          .provide([
-            [call([builderAPI, builderAPI.fetchRarities]), rarities],
-            [call(isUsingRaritiesWithOracle), true],
-            [call([builderAPI, builderAPI.fetchRarities], { currency: 'USD' }), raritiesInUSD]
-          ])
-          .dispatch(fetchRaritiesRequest())
-          .put(fetchRaritiesFailure('Rarity not found'))
-          .run({ silenceTimeout: true })
-      })
     })
   })
 })

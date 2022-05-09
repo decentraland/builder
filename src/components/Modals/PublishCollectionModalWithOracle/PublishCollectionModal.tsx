@@ -58,16 +58,18 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     const refRarity: Rarity | undefined = rarities[0]
 
     let price: string | undefined
-    let priceUSD: string | undefined
+    let originalPrice: Rarity['originalPrice']
+    let originalCurrency: Rarity['originalCurrency']
 
     // Get the prices per item if the reference rarity is defined.
     if (refRarity) {
       price = refRarity.price
-      priceUSD = refRarity.priceUSD
+      originalPrice = refRarity.originalPrice
+      originalCurrency = refRarity.originalCurrency
     }
 
     let totalPrice: string | undefined
-    let totalPriceUSD: string | undefined
+    let totalOriginalPrice: string | undefined
 
     // Evaluate the total prices to pay in USD and MANA if the rarity is defined.
     if (price) {
@@ -75,8 +77,8 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
         .mul(items.length)
         .toString()
 
-      if (priceUSD) {
-        totalPriceUSD = BigNumber.from(priceUSD)
+      if (originalPrice) {
+        totalOriginalPrice = BigNumber.from(originalPrice)
           .mul(items.length)
           .toString()
       }
@@ -103,7 +105,8 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 <p>
                   {t('publish_collection_modal_with_oracle.items_breakdown_title', {
                     count: items.length,
-                    publicationFee: fromWei(rarities[0].priceUSD!, 'ether')
+                    publicationFee: fromWei(originalPrice!, 'ether'),
+                    currency: originalCurrency
                   })}
                 </p>
               )}
@@ -116,16 +119,22 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                     <div className="element-header">{t('publish_collection_modal_with_oracle.qty_of_items')}</div>
                     <div className="element-content">{items.length}</div>
                   </div>
-                  {priceUSD && (
+                  {originalPrice && (
                     <div className="element">
                       <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
-                      <div className="element-content">USD {fromWei(priceUSD, 'ether')}</div>
+                      <div className="element-content">
+                        {originalCurrency} {fromWei(originalPrice, 'ether')}
+                      </div>
                     </div>
                   )}
-                  {totalPriceUSD && (
+                  {totalOriginalPrice && originalCurrency && (
                     <div className="element">
-                      <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd')}</div>
-                      <div className="element-content">USD {fromWei(totalPriceUSD, 'ether')}</div>
+                      <div className="element-header">
+                        {t('publish_collection_modal_with_oracle.total_in_usd', { currency: originalCurrency })}
+                      </div>
+                      <div className="element-content">
+                        {originalCurrency} {fromWei(totalOriginalPrice, 'ether')}
+                      </div>
                     </div>
                   )}
                   <div className="element">
