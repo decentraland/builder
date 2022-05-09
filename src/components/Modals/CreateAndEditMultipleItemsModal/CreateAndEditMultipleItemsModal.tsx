@@ -1,18 +1,21 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { FileTooBigError, ItemFactory, loadFile, MAX_FILE_SIZE, THUMBNAIL_PATH } from '@dcl/builder-client'
+import { FileTooBigError, ItemFactory, loadFile, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { env } from 'decentraland-commons'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { omit } from 'decentraland-commons/dist/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { EngineType, getModelData } from 'lib/getModelData'
+import { getExtension } from 'lib/file'
+import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
+import { dataURLToBlob } from 'modules/media/utils'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
 import { generateCatalystImage } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
-import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
 import {
   CreateOrEditMultipleItemsModalType,
   ImportedFile,
@@ -106,14 +109,30 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
             throw new Error(t('create_and_edit_multiple_items_modal.asset_file_not_found'))
           }
 
-          if (!loadedFile.content[THUMBNAIL_PATH]) {
-            throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_found'))
-          }
-
           this.setState({
             loadingFilesProgress: this.state.loadingFilesProgress + 100 / acceptedFiles.length
           })
           const itemFactory = new ItemFactory<Blob>().fromAsset(loadedFile.asset!, loadedFile.content)
+
+          if (!loadedFile.content[THUMBNAIL_PATH]) {
+            const modelPath = loadedFile.asset.representations[0].mainFile
+            const url = URL.createObjectURL(loadedFile.content[modelPath])
+            const data = await getModelData(url, {
+              width: 512,
+              height: 512,
+              extension: getExtension(modelPath) || undefined,
+              engine: EngineType.BABYLON
+            })
+            URL.revokeObjectURL(url)
+            const imageBlob = await dataURLToBlob(data.image)
+            if (!imageBlob) {
+              throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
+            }
+            itemFactory.withThumbnail(imageBlob)
+          }
+
+          // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
+          itemFactory.withRarity(Rarity.UNIQUE)
 
           // Override collection id if specified in the modal's metadata
           if (metadata.collectionId) {
