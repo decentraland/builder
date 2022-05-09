@@ -227,7 +227,7 @@
     },
     "wrong_file_extension": "文件扩展名不正确。",
     "asset_file_not_found": "找不到asset.json 文件。",
-    "thumbnail_file_not_found": "批量文件必须在其内容中包含 thumbnail.png 文件。",
+    "thumbnail_file_not_generated": "无法生成 thumbnail.png 文件。",
     "not_saved_items_table_title": "Invalid items",
     "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "asset.json 文件包含此集合的无效 URN",

@@ -235,7 +235,7 @@
     },
     "wrong_file_extension": "La extensión del artchivo no es correcta.",
     "asset_file_not_found": "El archivo asset.json no se encontró.",
-    "thumbnail_file_not_found": "Los ZIPs en la creación múltiple deben contener un archivo thumbnail.png.",
+    "thumbnail_file_not_generated": "El archivo thumbnail.png no pudo ser generado.",
     "saved_items_table_title": "Items salvados",
     "not_saved_items_table_title": "Invalid items",
     "cancelled_items_table_title": "Cancelled items",
