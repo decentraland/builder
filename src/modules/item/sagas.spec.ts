@@ -55,7 +55,7 @@ import {
   fetchRaritiesFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
-import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
+import { BuiltFile, Currency, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
 import { calculateFinalSize, reHashOlderContents } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
@@ -1335,7 +1335,10 @@ describe('when handling the fetch of rarities', () => {
         name: ItemRarity.COMMON,
         price: '4000000000000000000',
         maxSupply: '100000',
-        originalPrice: '10000000000000000000'
+        prices: {
+          [Currency.MANA]: '4000000000000000000',
+          [Currency.USD]: '10000000000000000000'
+        }
       }
     ]
   })
