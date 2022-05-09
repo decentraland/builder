@@ -24,8 +24,6 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     onFetchRarities()
   }
 
-  componentDidUpdate() {}
-
   handleNextStep = () => {
     this.setState({ step: 3 })
   }
