@@ -158,3 +158,11 @@
   justify-content: center;
   margin-top: 16px;
 }
+
+.CollectionsPage .ui.pagination.menu {
+  margin-top: 16px;
+}
+
+.CollectionsPage .dcl.tabs .ui.container {
+  margin-bottom: 20px;
+}
