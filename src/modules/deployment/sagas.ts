@@ -2,7 +2,6 @@ import { CatalystClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { utils } from 'decentraland-commons'
-import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
 import { getData as getDeployments } from 'modules/deployment/selectors'
@@ -10,6 +9,22 @@ import { getCurrentProject, getData as getProjects } from 'modules/project/selec
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
+import { store } from 'modules/common/store'
+import { Media } from 'modules/media/types'
+import { getMedia } from 'modules/media/selectors'
+import { createFiles, EXPORT_PATH } from 'modules/project/export'
+import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
+import { takeScreenshot } from 'modules/editor/actions'
+import { objectURLToBlob } from 'modules/media/utils'
+import { getSceneByProjectId } from 'modules/scene/utils'
+import { BuilderAPI, getPreviewUrl } from 'lib/api/builder'
+import { getIdentity } from 'modules/identity/utils'
+import { isLoggedIn } from 'modules/identity/selectors'
+import { getName } from 'modules/profile/selectors'
+import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
+import { LandType } from 'modules/land/types'
+import { coordsToId, idToCoords } from 'modules/land/utils'
+import { getCoordsByEstateId } from 'modules/land/selectors'
 import {
   DEPLOY_TO_POOL_REQUEST,
   deployToPoolFailure,
@@ -30,26 +45,9 @@ import {
   fetchDeploymentsSuccess,
   fetchDeploymentsFailure
 } from './actions'
-import { store } from 'modules/common/store'
-import { Media } from 'modules/media/types'
-import { getMedia } from 'modules/media/selectors'
-import { createFiles, EXPORT_PATH } from 'modules/project/export'
-import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 import { ProgressStage } from './types'
-import { takeScreenshot } from 'modules/editor/actions'
-import { objectURLToBlob } from 'modules/media/utils'
-import { getSceneByProjectId } from 'modules/scene/utils'
-import { PEER_URL } from 'lib/api/peer'
-import { BuilderAPI, getPreviewUrl } from 'lib/api/builder'
 import { makeContentFiles } from './contentUtils'
-import { getIdentity } from 'modules/identity/utils'
-import { isLoggedIn } from 'modules/identity/selectors'
-import { getName } from 'modules/profile/selectors'
 import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
-import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
-import { LandType } from 'modules/land/types'
-import { coordsToId, idToCoords } from 'modules/land/utils'
-import { getCoordsByEstateId } from 'modules/land/selectors'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -59,7 +57,7 @@ const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: 
   store.dispatch(setProgress(type, progress))
 }
 
-export function* deploymentSaga(builder: BuilderAPI) {
+export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystClient) {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeploymentRequest)
@@ -142,8 +140,12 @@ export function* deploymentSaga(builder: BuilderAPI) {
           call(objectURLToBlob, media.preview)
         ])
 
-        yield call(() =>
-          builder.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+        yield call(
+          [builder, 'uploadMedia'],
+          project.id,
+          thumbnail,
+          { north, east, south, west },
+          handleProgress(ProgressStage.UPLOAD_RECORDING)
         )
 
         previewUrl = getPreviewUrl(project.id)
@@ -165,18 +167,16 @@ export function* deploymentSaga(builder: BuilderAPI) {
       })
 
       const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
+      // Remove the old communications property if it exists
       const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-      const client = new CatalystClient(PEER_URL, 'Builder')
-      const { entityId, files: hashedFiles } = yield call(() =>
-        client.buildEntity({
-          type: EntityType.SCENE,
-          pointers: [...sceneDefinition.scene.parcels],
-          metadata: sceneDefinition,
-          files: contentFiles
-        })
-      )
+      const { entityId, files: hashedFiles } = yield call([catalystClient, 'buildEntity'], {
+        type: EntityType.SCENE,
+        pointers: [...sceneDefinition.scene.parcels],
+        metadata: sceneDefinition,
+        files: contentFiles
+      })
       const authChain = Authenticator.signPayload(identity, entityId)
-      yield call(() => client.deployEntity({ entityId, files: hashedFiles, authChain }))
+      yield call([catalystClient, 'deployEntity'], { entityId, files: hashedFiles, authChain })
       // generate new deployment
       const deployment: Deployment = {
         id: entityId,
@@ -229,18 +229,15 @@ export function* deploymentSaga(builder: BuilderAPI) {
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
       const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
-      const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-      const client = new CatalystClient(PEER_URL, 'Builder')
-      const { entityId, files: hashedFiles } = yield call(() =>
-        client.buildEntity({
-          type: EntityType.SCENE,
-          pointers: [...sceneDefinition.scene.parcels],
-          metadata: sceneDefinition,
-          files: contentFiles
-        })
-      )
+      const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
+      const { entityId, files: hashedFiles } = yield call([catalystClient, 'buildEntity'], {
+        type: EntityType.SCENE,
+        pointers: [...sceneDefinition.scene.parcels],
+        metadata: sceneDefinition,
+        files: contentFiles
+      })
       const authChain = Authenticator.signPayload(identity, entityId)
-      yield call(() => client.deployEntity({ entityId, files: hashedFiles, authChain }))
+      yield call([catalystClient, 'deployEntity'], { entityId, files: hashedFiles, authChain })
       yield put(clearDeploymentSuccess(deploymentId))
     } catch (error) {
       yield put(clearDeploymentFailure(deploymentId, error.message))
@@ -272,12 +269,10 @@ export function* deploymentSaga(builder: BuilderAPI) {
     const { coords } = action.payload
 
     try {
-      const catalyst = new CatalystClient(PEER_URL, 'builder')
-
       let entities: Entity[] = []
 
       if (coords.length > 0) {
-        entities = yield call([catalyst, 'fetchEntitiesByPointers'], EntityType.SCENE, coords)
+        entities = yield call([catalystClient, 'fetchEntitiesByPointers'], EntityType.SCENE, coords)
       }
 
       const deployments = new Map<string, Deployment>()

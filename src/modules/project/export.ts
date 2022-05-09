@@ -7,7 +7,7 @@ import builderInventoryRaw from 'raw-loader!decentraland-builder-scripts/lib/inv
 import * as ECS from 'decentraland-ecs'
 import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import packageJson from 'decentraland/samples/ecs/package.json'
-import sceneJson from 'decentraland/samples/ecs/scene.json'
+import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
 import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
@@ -15,11 +15,14 @@ import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
-import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
+import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
+import { utils } from 'decentraland-commons'
 
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
+
+const sceneJson: SceneDefinition = utils.omit(sceneJsonSample, ['communications', 'policy'])
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
@@ -216,7 +219,7 @@ export async function createGameFile(args: { project: Project; scene: Scene; rot
       for (const [assetId, src] of Array.from(scripts)) {
         const scriptName = SCRIPT_INSTANCE_NAME + currentScript++
         assetIdToScriptName.set(assetId, scriptName)
-        const hash = await convertToV1(src)
+        const hash = await reHashContent(src, EXPORT_PATH.BUNDLED_GAME_FILE)
         executeScripts += `\n\tconst ${scriptName} = await getScriptInstance("${assetId}", "${hash}")`
       }
       // initialize all the scripts
@@ -459,7 +462,7 @@ export function getSceneDefinition(
   const sceneDefinition: SceneDefinition = {
     ...sceneJson,
     display: {
-      ...sceneJson.display,
+      ...sceneJson.display!,
       title: project.title
     },
     scene: {
@@ -532,12 +535,4 @@ async function createThumbnailBlob(thumbnail: string | null) {
 
 export function buildAssetPath(namespace: string, path: string) {
   return `${namespace}/${path}`
-}
-
-/* Temporary fix until we migrate the Builder to use CID v1 */
-export async function convertToV1(v0: string) {
-  const blob = await fetch(getContentsStorageUrl(v0), { headers: NO_CACHE_HEADERS }).then(resp => resp.blob())
-  const file = await makeContentFile(EXPORT_PATH.BUNDLED_GAME_FILE, blob)
-  const v1 = await calculateBufferHash(file.content)
-  return v1
 }

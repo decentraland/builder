@@ -459,6 +459,7 @@ export function areSynced(item: Item, entity: Entity) {
       return false
     }
   }
+
   return true
 }
 

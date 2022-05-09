@@ -53,7 +53,7 @@ import {
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
-import { calculateFinalSize } from './export'
+import { calculateFinalSize, reHashOlderContents } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
@@ -133,8 +133,9 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [call(calculateFinalSize, item, contents), Promise.resolve(MAX_FILE_SIZE + 1)]
+          [matchers.call.fn(calculateFinalSize), Promise.resolve(MAX_FILE_SIZE + 1)]
         ])
         .put(
           saveItemFailure(
@@ -168,9 +169,10 @@ describe('when handling the save item request action', () => {
     it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
+          [matchers.call.fn(reHashOlderContents), {}],
           [select(getItem, item.id), undefined],
           [select(getCollection, collection.id), collection],
-          [call(calculateFinalSize, item, contents), Promise.resolve(1)]
+          [matchers.call.fn(calculateFinalSize), Promise.resolve(1)]
         ])
         .put(saveItemFailure(item, contents, 'The collection is locked'))
         .dispatch(saveItemRequest(item, contents))
@@ -197,6 +199,7 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action with the catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [matchers.call.fn(reHashOlderContents), {}],
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getLocation), { pathname: 'notTPdetailPage' }],
@@ -208,7 +211,7 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateFinalSize, item, contentsToSave), Promise.resolve(1)],
+            [matchers.call.fn(calculateFinalSize), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contentsToSave))
@@ -218,15 +221,19 @@ describe('when handling the save item request action', () => {
     })
 
     describe("and the item has a new thumbnail but doesn't have a catalyst image", () => {
+      let itemWithCatalystImage: Item
+
       beforeEach(() => {
         delete item.contents[IMAGE_PATH]
         contents = { ...contents, [THUMBNAIL_PATH]: new Blob(['someThumbnailData']) }
         contentsToSave = { ...contents, [IMAGE_PATH]: blob }
+        itemWithCatalystImage = { ...item, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
       })
 
       it('should put a save item success action with the catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [matchers.call.fn(reHashOlderContents), {}],
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
@@ -236,10 +243,10 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateFinalSize, item, contentsToSave), Promise.resolve(1)],
+            [call(calculateFinalSize, itemWithCatalystImage, contentsToSave, builderAPI), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
           ])
-          .put(saveItemSuccess(item, contentsToSave))
+          .put(saveItemSuccess(itemWithCatalystImage, contentsToSave))
           .dispatch(saveItemRequest(item, contentsToSave))
           .run({ silenceTimeout: true })
       })
@@ -253,10 +260,11 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action without a new catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [matchers.call.fn(reHashOlderContents), {}],
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
-            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+            [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -266,18 +274,24 @@ describe('when handling the save item request action', () => {
     })
 
     describe("and the item doesn't have a new thumbnail, has a catalyst image but the rarity was changed", () => {
+      let itemWithCatalystImage: Item
+      let newContentsContainingNewCatalystImage: Record<string, Blob>
+
       beforeEach(() => {
-        item = { ...item, rarity: ItemRarity.UNIQUE, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
+        item = { ...item, rarity: ItemRarity.UNIQUE, contents: { ...item.contents, [IMAGE_PATH]: 'someOtherCatalystHash' } }
+        itemWithCatalystImage = { ...item, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
+        newContentsContainingNewCatalystImage = { ...contents, [IMAGE_PATH]: blob }
       })
 
       it('should put a save item success action with a new catalyst image', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [matchers.call.fn(reHashOlderContents), {}],
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [
               select(getItem, item.id),
-              { ...item, contents: { ...item.contents, [IMAGE_PATH]: 'someOtherCatalystHash' }, rarity: ItemRarity.COMMON }
+              { ...item, contents: { ...item.contents, [IMAGE_PATH]: item.contents[IMAGE_PATH] }, rarity: ItemRarity.COMMON }
             ],
             [
               call(generateCatalystImage, item, {
@@ -285,10 +299,10 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
-            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+            [call(calculateFinalSize, itemWithCatalystImage, newContentsContainingNewCatalystImage, builderAPI), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage), Promise.resolve()]
           ])
-          .put(saveItemSuccess(item, contents))
+          .put(saveItemSuccess(itemWithCatalystImage, newContentsContainingNewCatalystImage))
           .dispatch(saveItemRequest(item, contents))
           .run({ silenceTimeout: true })
       })
@@ -302,10 +316,11 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [matchers.call.fn(reHashOlderContents), {}],
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
-            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+            [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -322,10 +337,11 @@ describe('when handling the save item request action', () => {
       it('should save item if it is already published', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [matchers.call.fn(reHashOlderContents), {}],
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
-            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+            [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -342,6 +358,7 @@ describe('when handling the save item request action', () => {
       it('should not calculate the size of the contents', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [matchers.call.fn(reHashOlderContents), {}],
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
@@ -349,6 +366,37 @@ describe('when handling the save item request action', () => {
           ])
           .put(saveItemSuccess(item, {}))
           .dispatch(saveItemRequest(item, {}))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the item has old hashed content', () => {
+      let itemWithNewHashes: Item
+      let newContents: Record<string, Blob>
+
+      beforeEach(() => {
+        item = { ...item, contents: { ...item.contents, 'anItemContent.glb': 'QmOldHash', [IMAGE_PATH]: catalystImageHash } }
+        itemWithNewHashes = { ...item, contents: { ...item.contents, 'anItemContent.glb': 'newHash' } }
+        newContents = { ...contents, 'anItemContent.glb': blob }
+      })
+
+      it("should update the item's content with the new hash and upload the files", () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [
+              call(reHashOlderContents, item.contents, builderAPI),
+              {
+                'anItemContent.glb': { hash: 'newHash', content: blob }
+              }
+            ],
+            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [select(getOpenModals), { EditItemURNModal: true }],
+            [select(getItem, item.id), item],
+            [call(calculateFinalSize, itemWithNewHashes, newContents, builderAPI), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve()]
+          ])
+          .put(saveItemSuccess(itemWithNewHashes, newContents))
+          .dispatch(saveItemRequest(item, contents))
           .run({ silenceTimeout: true })
       })
     })
@@ -1257,6 +1305,17 @@ describe('when handling the save item success action', () => {
         [select(getPaginationData, item.collectionId!), {}]
       ])
       .not.put(fetchItemCurationRequest(item.collectionId!, item.id))
+      .dispatch(saveItemSuccess(item, {}))
+      .run({ silenceTimeout: true })
+  })
+
+  it('should put a location change to the item detail if the CreateSingleItemModal was opened', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .provide([
+        [select(getLocation), { pathname: locations.collections() }],
+        [select(getOpenModals), { CreateSingleItemModal: true }],
+      ])
+      .put(push(locations.itemDetail(item.id)))
       .dispatch(saveItemSuccess(item, {}))
       .run({ silenceTimeout: true })
   })
