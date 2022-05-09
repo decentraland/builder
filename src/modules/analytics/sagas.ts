@@ -75,7 +75,7 @@ const track = (event: string, params: any) => getAnalytics().track(event, params
 
 function* handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
   const { items } = action.payload
-  track('Publish TP Item', { project: items })
+  track('Publish TP Item', { items })
 }
 
 function* handleOpenEditor(_: OpenEditorAction) {
