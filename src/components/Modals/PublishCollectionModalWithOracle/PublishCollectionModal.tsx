@@ -6,7 +6,7 @@ import { BigNumber } from 'ethers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { fromWei } from 'web3x/utils'
-import { Rarity } from 'modules/item/types'
+import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
@@ -57,20 +57,19 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     // as reference for the prices is enough.
     const refRarity: Rarity | undefined = rarities[0]
 
-    let originalPrice: Rarity['originalPrice']
-    let originalCurrency: Rarity['originalCurrency']
+    let priceUSD: string | undefined
     let totalPrice: string | undefined
-    let totalOriginalPrice: string | undefined
+    let totalPriceUSD: string | undefined
     let hasInsufficientMANA = true
 
     if (refRarity) {
-      originalPrice = refRarity.originalPrice
-      originalCurrency = refRarity.originalCurrency
+      priceUSD = refRarity.prices!.USD
 
-      totalPrice = BigNumber.from(refRarity.price)
+      totalPrice = BigNumber.from(refRarity.prices!.MANA)
         .mul(items.length)
         .toString()
-      totalOriginalPrice = BigNumber.from(originalPrice)
+
+      totalPriceUSD = BigNumber.from(priceUSD)
         .mul(items.length)
         .toString()
 
@@ -90,8 +89,8 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               <p>
                 {t('publish_collection_modal_with_oracle.items_breakdown_title', {
                   count: items.length,
-                  publicationFee: fromWei(originalPrice!, 'ether'),
-                  currency: originalCurrency
+                  publicationFee: fromWei(priceUSD!, 'ether'),
+                  currency: Currency.USD
                 })}
               </p>
               <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener">
@@ -105,15 +104,13 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
                   <div className="element-content">
-                    {originalCurrency} {fromWei(originalPrice!, 'ether')}
+                    {Currency.USD} {fromWei(priceUSD!, 'ether')}
                   </div>
                 </div>
                 <div className="element">
-                  <div className="element-header">
-                    {t('publish_collection_modal_with_oracle.total_in_usd', { currency: originalCurrency })}
-                  </div>
+                  <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd', { currency: Currency.USD })}</div>
                   <div className="element-content">
-                    {originalCurrency} {fromWei(totalOriginalPrice!, 'ether')}
+                    {Currency.USD} {fromWei(totalPriceUSD!, 'ether')}
                   </div>
                 </div>
                 <div className="element">

@@ -60,6 +60,10 @@
   text-align: left;
 }
 
+.PublishCollectionModal .price-breakdown-container .element .element-content .dcl.mana {
+  font-size: 17px;
+}
+
 .PublishCollectionModal .content .ui.button {
   margin-top: 60px;
 }
