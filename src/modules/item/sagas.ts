@@ -351,6 +351,10 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const openModals: ModalState = yield select(getOpenModals)
     if (openModals['EditItemURNModal']) {
       yield put(closeModal('EditItemURNModal'))
+    } else if (openModals['CreateSingleItemModal']) {
+      // Redirect to the newly created item detail
+      const { item } = action.payload
+      yield put(push(locations.itemDetail(item.id)))
     }
     const { item } = action.payload
     const collectionId = item.collectionId!

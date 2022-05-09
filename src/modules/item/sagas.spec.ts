@@ -1308,4 +1308,15 @@ describe('when handling the save item success action', () => {
       .dispatch(saveItemSuccess(item, {}))
       .run({ silenceTimeout: true })
   })
+
+  it('should put a location change to the item detail if the CreateSingleItemModal was opened', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .provide([
+        [select(getLocation), { pathname: locations.collections() }],
+        [select(getOpenModals), { CreateSingleItemModal: true }],
+      ])
+      .put(push(locations.itemDetail(item.id)))
+      .dispatch(saveItemSuccess(item, {}))
+      .run({ silenceTimeout: true })
+  })
 })
