@@ -57,101 +57,74 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     // as reference for the prices is enough.
     const refRarity: Rarity | undefined = rarities[0]
 
-    let price: string | undefined
     let originalPrice: Rarity['originalPrice']
     let originalCurrency: Rarity['originalCurrency']
-
-    // Get the prices per item if the reference rarity is defined.
-    if (refRarity) {
-      price = refRarity.price
-      originalPrice = refRarity.originalPrice
-      originalCurrency = refRarity.originalCurrency
-    }
-
     let totalPrice: string | undefined
     let totalOriginalPrice: string | undefined
+    let hasInsufficientMANA = true
 
-    // Evaluate the total prices to pay in USD and MANA if the rarity is defined.
-    if (price) {
-      totalPrice = BigNumber.from(price)
+    if (refRarity) {
+      originalPrice = refRarity.originalPrice
+      originalCurrency = refRarity.originalCurrency
+
+      totalPrice = BigNumber.from(refRarity.price)
+        .mul(items.length)
+        .toString()
+      totalOriginalPrice = BigNumber.from(originalPrice)
         .mul(items.length)
         .toString()
 
-      if (originalPrice) {
-        totalOriginalPrice = BigNumber.from(originalPrice)
-          .mul(items.length)
-          .toString()
-      }
-    }
-
-    // Check that the user has enought MANA to publish the collection.
-    let hasInsufficientMANA = true
-
-    if (totalPrice && wallet && wallet.networks.MATIC.mana > Number(fromWei(totalPrice, 'ether'))) {
-      hasInsufficientMANA = false
+      hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(fromWei(totalPrice, 'ether'))
     }
 
     return (
       <>
         <ModalNavigation title={t('publish_collection_modal_with_oracle.title')} onClose={onClose} />
         <Modal.Content className="first-step">
-          {isFetchingItems || isFetchingRarities ? (
+          {isFetchingItems || isFetchingRarities || !refRarity ? (
             <div className="loader-wrapper">
               <Loader size="big" active={isFetchingItems || isFetchingRarities} />
             </div>
           ) : (
             <>
-              {refRarity && (
-                <p>
-                  {t('publish_collection_modal_with_oracle.items_breakdown_title', {
-                    count: items.length,
-                    publicationFee: fromWei(originalPrice!, 'ether'),
-                    currency: originalCurrency
-                  })}
-                </p>
-              )}
+              <p>
+                {t('publish_collection_modal_with_oracle.items_breakdown_title', {
+                  count: items.length,
+                  publicationFee: fromWei(originalPrice!, 'ether'),
+                  currency: originalCurrency
+                })}
+              </p>
               <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener">
                 {t('publish_collection_modal_with_oracle.learn_more')}
               </a>
-              {refRarity && (
-                <div className="price-breakdown-container">
-                  <div className="element">
-                    <div className="element-header">{t('publish_collection_modal_with_oracle.qty_of_items')}</div>
-                    <div className="element-content">{items.length}</div>
-                  </div>
-                  {originalPrice && (
-                    <div className="element">
-                      <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
-                      <div className="element-content">
-                        {originalCurrency} {fromWei(originalPrice, 'ether')}
-                      </div>
-                    </div>
-                  )}
-                  {totalOriginalPrice && originalCurrency && (
-                    <div className="element">
-                      <div className="element-header">
-                        {t('publish_collection_modal_with_oracle.total_in_usd', { currency: originalCurrency })}
-                      </div>
-                      <div className="element-content">
-                        {originalCurrency} {fromWei(totalOriginalPrice, 'ether')}
-                      </div>
-                    </div>
-                  )}
-                  <div className="element">
-                    <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
-                    <div className="element-content">
-                      <Mana network={Network.MATIC} size="medium">
-                        {fromWei(
-                          BigNumber.from(rarities[0].price)
-                            .mul(items.length)
-                            .toString(),
-                          'ether'
-                        )}
-                      </Mana>
-                    </div>
+              <div className="price-breakdown-container">
+                <div className="element">
+                  <div className="element-header">{t('publish_collection_modal_with_oracle.qty_of_items')}</div>
+                  <div className="element-content">{items.length}</div>
+                </div>
+                <div className="element">
+                  <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
+                  <div className="element-content">
+                    {originalCurrency} {fromWei(originalPrice!, 'ether')}
                   </div>
                 </div>
-              )}
+                <div className="element">
+                  <div className="element-header">
+                    {t('publish_collection_modal_with_oracle.total_in_usd', { currency: originalCurrency })}
+                  </div>
+                  <div className="element-content">
+                    {originalCurrency} {fromWei(totalOriginalPrice!, 'ether')}
+                  </div>
+                </div>
+                <div className="element">
+                  <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
+                  <div className="element-content">
+                    <Mana network={Network.MATIC} size="medium">
+                      {fromWei(totalPrice!, 'ether')}
+                    </Mana>
+                  </div>
+                </div>
+              </div>
               <p className="estimate-notice">{t('publish_collection_modal_with_oracle.estimate_notice')}</p>
               {error && (
                 <>
