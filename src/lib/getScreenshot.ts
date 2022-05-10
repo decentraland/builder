@@ -69,7 +69,7 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   scene.autoClear = true
   scene.clearColor = new Color4(0, 0, 0, 0)
 
-  SceneLoader.Append(url, '', scene, undefined, null, null, extension)
+  await SceneLoader.AppendAsync(url, '', scene, undefined, extension)
   await scene.whenReadyAsync()
 
   // check if it's emote
