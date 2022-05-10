@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized'
-import { Header, Section } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Section } from 'decentraland-ui'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
 import SidebarItem from './SidebarItem'
@@ -73,44 +72,39 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   loadMoreItems = async () => {
-    const { selectedCollectionId, onLoadNextPage, totalItems } = this.props
-    if (selectedCollectionId && totalItems) {
+    const { onLoadNextPage, totalItems } = this.props
+    if (totalItems) {
       onLoadNextPage()
     }
   }
 
   render() {
     const { items } = this.state
-    const { hasHeader, totalItems, selectedCollectionId } = this.props
+    const { totalItems } = this.props
     if (items.length === 0 || !totalItems) return null
 
     return (
       <Section className="Items">
-        {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
-        {selectedCollectionId ? (
-          <InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreItems} rowCount={totalItems}>
-            {({ onRowsRendered, registerChild }) => (
-              <AutoSizer>
-                {({ height, width }) => (
-                  <List
-                    ref={ref => {
-                      registerChild(ref)
-                      this.listRef = ref
-                    }}
-                    width={width}
-                    height={height}
-                    rowCount={items.length}
-                    rowHeight={ITEM_ROW_HEIGHT}
-                    rowRenderer={this.rowRenderer}
-                    onRowsRendered={onRowsRendered}
-                  />
-                )}
-              </AutoSizer>
-            )}
-          </InfiniteLoader>
-        ) : (
-          items.map(item => this.rowRenderer({ key: item.id, index: items.indexOf(item) }))
-        )}
+        <InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreItems} rowCount={totalItems}>
+          {({ onRowsRendered, registerChild }) => (
+            <AutoSizer>
+              {({ height, width }) => (
+                <List
+                  ref={ref => {
+                    registerChild(ref)
+                    this.listRef = ref
+                  }}
+                  width={width}
+                  height={height}
+                  rowCount={items.length}
+                  rowHeight={ITEM_ROW_HEIGHT}
+                  rowRenderer={this.rowRenderer}
+                  onRowsRendered={onRowsRendered}
+                />
+              )}
+            </AutoSizer>
+          )}
+        </InfiniteLoader>
       </Section>
     )
   }

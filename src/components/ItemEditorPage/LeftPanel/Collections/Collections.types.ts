@@ -5,7 +5,9 @@ import { Item } from 'modules/item/types'
 export type Props = {
   selectedCollectionId: string | null
   collections: Collection[]
+  totalCollections: number
   items: Item[]
   hasHeader: boolean
   onSetCollection: typeof setCollection
+  onLoadNextPage: () => void
 }

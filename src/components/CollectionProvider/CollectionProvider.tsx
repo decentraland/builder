@@ -26,8 +26,13 @@ export default class CollectionProvider extends React.PureComponent<Props> {
       this.fetchCollectionItems(itemsPage)
     }
 
-    if (id && id !== prevProps.id && !collection) {
-      onFetchCollection(id)
+    if (id && id !== prevProps.id) {
+      // fetch collection if data is not available
+      if (!collection) {
+        onFetchCollection(id)
+      }
+      // fetch collection items if the id changes
+      this.fetchCollectionItems(itemsPage)
     }
 
     // logic to fetch the new pages requested
