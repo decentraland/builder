@@ -1,4 +1,6 @@
+import React from 'react'
+
 export type Props = {
   className?: string
-  content?: string
+  content?: React.ReactNode
 }

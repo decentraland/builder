@@ -2,10 +2,11 @@ import * as React from 'react'
 import { Address } from 'web3x/address'
 import { fromWei, toWei } from 'web3x/utils'
 import { Network } from '@dcl/schemas'
+import { env } from 'decentraland-commons'
 import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData, FieldProps, Mana } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Info from 'components/Info'
 import { isValid } from 'lib/address'
@@ -101,7 +102,9 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   render() {
     const { name, item, isLoading, onClose } = this.props
     const { isFree, price = '', beneficiary = '' } = this.state
+
     const isGift = this.isGift()
+    const minPrice = fromWei(env.get('REACT_APP_MIN_SALE_VALUE_IN_WEI', '0'), 'ether')
 
     return (
       <Modal name={name} size="tiny" onClose={onClose}>
@@ -124,7 +127,29 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
           <ModalContent>
             <div className="price-field">
               <Field
-                label={t('edit_price_and_beneficiary_modal.price_label')}
+                label={
+                  (
+                    <>
+                      {t('edit_price_and_beneficiary_modal.price_label', { minPrice })}
+                      <Info
+                        content={
+                          <T
+                            id="edit_price_and_beneficiary_modal.price_popup"
+                            values={{
+                              minPrice: (
+                                <Mana inline network={Network.MATIC}>
+                                  {minPrice}
+                                </Mana>
+                              ),
+                              token: t(`tokens.${Network.MATIC.toLowerCase()}`)
+                            }}
+                          />
+                        }
+                        className="info"
+                      />
+                    </>
+                  ) as FieldProps['label']
+                }
                 placeholder={100}
                 value={price}
                 onChange={this.handlePriceChange}

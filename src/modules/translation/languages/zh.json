@@ -1154,6 +1154,7 @@
     "for_me": "我是受益人",
     "free": "免费",
     "price_label": "价格",
+    "price_popup": "请记住，无成本交易支持的最低金额是 {minPrice}。 如果您的商品价格低于此价格，买家将需要支付 {token} 中的交易费用。",
     "beneficiary_label": "受益人",
     "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
   },
@@ -1358,6 +1359,10 @@
   "networks": {
     "ethereum": "Ethereum",
     "matic": "Polygon"
+  },
+  "tokens": {
+    "ethereum": "ETH",
+    "matic": "MATIC"
   },
   "intro_popup": {
     "title": "介绍Polygon MANA",
