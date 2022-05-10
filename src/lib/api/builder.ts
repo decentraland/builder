@@ -783,7 +783,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   fetchRarities(): Promise<Rarity[]> {
-    return this.request('get', `/rarities`)
+    return this.request('get', '/rarities')
   }
 
   fetchThirdParties(manager?: string): Promise<ThirdParty[]> {
