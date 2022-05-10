@@ -144,7 +144,9 @@
     "fashion-3": "Fashionista",
     "fashion-4": "Spotlight",
     "money": "Money",
-    "love": "Love"
+    "love": "Love",
+    "head-explode": "Head Explode",
+    "fist-pump": "Fist Pump"
   },
   "create_collection_modal": {
     "title": "New Collection",

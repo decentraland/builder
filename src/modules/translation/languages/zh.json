@@ -129,15 +129,19 @@
     "wearable": "可穿戴",
     "smart_wearable": "智能穿戴"
   },
-  "avatar_animations": {
+  "emotes": {
     "idle": "闲",
-    "wave": "挥手",
-    "fistpump": "拳头泵",
-    "robot": "舞蹈",
-    "raiseHand": "举手",
     "clap": "拍",
-    "money": "扔钱",
-    "kiss": "吻"
+    "dab": "轻拍",
+    "dance": "舞",
+    "fashion": "试穿",
+    "fashion-2": "别致",
+    "fashion-3": "时尚达人",
+    "fashion-4": "聚光灯",
+    "money": "钱",
+    "love": "爱",
+    "head-explode": "头部爆炸",
+    "fist-pump": "拳头泵"
   },
   "create_collection_modal": {
     "title": "新系列",
