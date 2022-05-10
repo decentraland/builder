@@ -142,7 +142,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleFetchRaritiesRequest() {
     try {
-      const rarities: Rarity[] = yield call([legacyBuilder, 'fetchRarities'])
+      const rarities: Rarity[] = yield call([legacyBuilder, legacyBuilder.fetchRarities])
       yield put(fetchRaritiesSuccess(rarities))
     } catch (error) {
       yield put(fetchRaritiesFailure(error.message))
