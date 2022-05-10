@@ -14,7 +14,6 @@ import {
   Vector3
 } from '@babylonjs/core'
 import '@babylonjs/loaders'
-import future from 'fp-future'
 import { defaults, Options, ThumbnailType } from './getModelData'
 
 export const EMOTE_ERROR = 'Model is EMOTE'
@@ -66,13 +65,24 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   })
 
   // Load GLTF
-  const root = new Scene(engine)
-  root.autoClear = true
-  root.clearColor = new Color4(0, 0, 0, 0)
-  const sceneFuture = future<Scene>()
-  const sceneResolver = (scene: Scene) => scene.onReadyObservable.addOnce(() => sceneFuture.resolve(scene))
-  SceneLoader.Append(url, '', root, sceneResolver, null, null, extension)
-  const scene = await sceneFuture
+  const scene = new Scene(engine)
+  scene.autoClear = true
+  scene.clearColor = new Color4(0, 0, 0, 0)
+
+  await new Promise<void>(resolve => {
+    SceneLoader.Append(
+      url,
+      '',
+      scene,
+      async () => {
+        await scene.whenReadyAsync()
+        resolve()
+      },
+      null,
+      null,
+      extension
+    )
+  })
 
   // check if it's emote
   if (scene.animationGroups.length > 0) {
