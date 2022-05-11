@@ -10,7 +10,7 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { getExtension } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
-import { dataURLToBlob } from 'modules/media/utils'
+import { convertImageIntoWearableThumbnail, dataURLToBlob } from 'modules/media/utils'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
 import { generateCatalystImage } from 'modules/item/utils'
@@ -114,12 +114,14 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
           })
           const itemFactory = new ItemFactory<Blob>().fromAsset(loadedFile.asset!, loadedFile.content)
 
-          if (!loadedFile.content[THUMBNAIL_PATH]) {
+          let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
+
+          if (!thumbnail) {
             const modelPath = loadedFile.asset.representations[0].mainFile
             const url = URL.createObjectURL(loadedFile.content[modelPath])
             const data = await getModelData(url, {
-              width: 512,
-              height: 512,
+              width: 1024,
+              height: 1024,
               extension: getExtension(modelPath) || undefined,
               engine: EngineType.BABYLON
             })
@@ -128,8 +130,16 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
             if (!imageBlob) {
               throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
             }
-            itemFactory.withThumbnail(imageBlob)
           }
+
+          // Process the thumbnail so it fits our requirements
+          thumbnail = dataURLToBlob(await convertImageIntoWearableThumbnail(thumbnail))
+
+          if (!thumbnail) {
+            throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
+          }
+
+          itemFactory.withThumbnail(thumbnail)
 
           // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
           itemFactory.withRarity(Rarity.UNIQUE)
