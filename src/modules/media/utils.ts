@@ -57,7 +57,6 @@ export async function blobToDataURL(blob: Blob): Promise<string> {
 export async function convertImageIntoWearableThumbnail(blob: Blob, category: WearableCategory = WearableCategory.EYES): Promise<string> {
   // load blob into image
   const image = new Image()
-  // const loadFuture = future()z
   const promiseOfALoadedImage = new Promise(resolve => {
     image.onload = () => resolve(image)
   })
