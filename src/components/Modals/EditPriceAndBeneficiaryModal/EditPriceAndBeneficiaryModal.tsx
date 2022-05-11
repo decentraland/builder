@@ -3,7 +3,18 @@ import { Address } from 'web3x/address'
 import { fromWei, toWei } from 'web3x/utils'
 import { Network } from '@dcl/schemas'
 import { env } from 'decentraland-commons'
-import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData, FieldProps, Mana } from 'decentraland-ui'
+import {
+  ModalNavigation,
+  ModalContent,
+  ModalActions,
+  Form,
+  Field,
+  Button,
+  InputOnChangeData,
+  FieldProps,
+  Mana,
+  Card
+} from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -127,29 +138,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
           <ModalContent>
             <div className="price-field">
               <Field
-                label={
-                  (
-                    <>
-                      {t('edit_price_and_beneficiary_modal.price_label', { minPrice })}
-                      <Info
-                        content={
-                          <T
-                            id="edit_price_and_beneficiary_modal.price_popup"
-                            values={{
-                              minPrice: (
-                                <Mana inline network={Network.MATIC}>
-                                  {minPrice}
-                                </Mana>
-                              ),
-                              token: t(`tokens.${Network.MATIC.toLowerCase()}`)
-                            }}
-                          />
-                        }
-                        className="info"
-                      />
-                    </>
-                  ) as FieldProps['label']
-                }
+                label={t('edit_price_and_beneficiary_modal.price_label', { minPrice })}
                 placeholder={100}
                 value={price}
                 onChange={this.handlePriceChange}
@@ -174,6 +163,26 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               onChange={this.handleBeneficiaryChange}
               error={!!beneficiary && !this.isValidBeneficiary()}
             />
+            {price !== '' && price < minPrice ? (
+              <Card fluid className="min-price-notice">
+                <Card.Content>
+                  <div>
+                    <T
+                      id="edit_price_and_beneficiary_modal.price_message"
+                      values={{
+                        minPrice: (
+                          <Mana inline network={Network.MATIC}>
+                            {minPrice}
+                          </Mana>
+                        ),
+                        token: t(`tokens.${Network.MATIC.toLowerCase()}`),
+                        br: <br />
+                      }}
+                    />
+                  </div>
+                </Card.Content>
+              </Card>
+            ) : null}
           </ModalContent>
           <ModalActions>
             <NetworkButton primary disabled={this.isDisabled()} loading={isLoading} network={Network.MATIC}>
