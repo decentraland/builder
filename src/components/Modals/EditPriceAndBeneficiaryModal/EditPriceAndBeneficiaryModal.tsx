@@ -25,6 +25,8 @@ import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
 
+const MIN_SALE_VALUE = fromWei(env.get('REACT_APP_MIN_SALE_VALUE_IN_WEI', '0'), 'ether')
+
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
   state: State = {
     isFree: false
@@ -105,6 +107,11 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     return Number(numberPrice) > 0 || (numberPrice === 0 && beneficiary === Address.ZERO.toString())
   }
 
+  isPriceTooLow() {
+    const { price = '' } = this.state
+    return price !== '' && price < MIN_SALE_VALUE
+  }
+
   isValidBeneficiary() {
     const { beneficiary = '' } = this.state
     return isValid(beneficiary)
@@ -115,7 +122,6 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     const { isFree, price = '', beneficiary = '' } = this.state
 
     const isGift = this.isGift()
-    const minPrice = fromWei(env.get('REACT_APP_MIN_SALE_VALUE_IN_WEI', '0'), 'ether')
 
     return (
       <Modal name={name} size="tiny" onClose={onClose}>
@@ -138,7 +144,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
           <ModalContent>
             <div className="price-field">
               <Field
-                label={t('edit_price_and_beneficiary_modal.price_label', { minPrice })}
+                label={t('edit_price_and_beneficiary_modal.price_label', { minPrice: MIN_SALE_VALUE })}
                 placeholder={100}
                 value={price}
                 onChange={this.handlePriceChange}
@@ -163,7 +169,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               onChange={this.handleBeneficiaryChange}
               error={!!beneficiary && !this.isValidBeneficiary()}
             />
-            {price !== '' && price < minPrice ? (
+            {this.isPriceTooLow() ? (
               <Card fluid className="min-price-notice">
                 <Card.Content>
                   <div>
@@ -172,7 +178,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                       values={{
                         minPrice: (
                           <Mana inline network={Network.MATIC}>
-                            {minPrice}
+                            {MIN_SALE_VALUE}
                           </Mana>
                         ),
                         token: t(`tokens.${Network.MATIC.toLowerCase()}`),
