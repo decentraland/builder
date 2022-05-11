@@ -5,6 +5,7 @@ import Dropzone, { DropzoneState } from 'react-dropzone'
 import { env } from 'decentraland-commons'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { omit } from 'decentraland-commons/dist/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { EngineType, getModelData } from 'lib/getModelData'
@@ -29,6 +30,7 @@ import styles from './CreateAndEditMultipleItemsModal.module.css'
 
 const REACT_APP_WEARABLES_ZIP_INFRA_URL = env.get('REACT_APP_WEARABLES_ZIP_INFRA_URL', '')
 export default class CreateAndEditMultipleItemsModal extends React.PureComponent<Props, State> {
+  analytics = getAnalytics()
   state = {
     view: ItemCreationView.IMPORT,
     loadingFilesProgress: 0,
@@ -212,10 +214,15 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   }
 
   private handleFilesUpload = (): void => {
-    const { onSaveMultipleItems } = this.props
-    onSaveMultipleItems(this.getValidFiles())
+    const { collection, onSaveMultipleItems } = this.props
+    const files = this.getValidFiles()
+    onSaveMultipleItems(files)
     this.setState({
       view: ItemCreationView.UPLOADING
+    })
+    this.analytics.track(`${this.isCreating() ? 'Create' : 'Edit'} TP Items`, {
+      items: files.map(file => file.item.id),
+      collectionId: collection?.id
     })
   }
 

@@ -49,10 +49,13 @@ import {
   fetchCollectionItemsRequest,
   fetchCollectionItemsSuccess,
   fetchCollectionItemsFailure,
-  deleteItemSuccess
+  deleteItemSuccess,
+  fetchRaritiesRequest,
+  fetchRaritiesSuccess,
+  fetchRaritiesFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
-import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
+import { BuiltFile, Currency, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
 import { calculateFinalSize, reHashOlderContents } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
@@ -65,7 +68,8 @@ const builderAPI = ({
   saveItem: jest.fn(),
   saveItemContents: jest.fn(),
   fetchContents: jest.fn(),
-  fetchCollectionItems: jest.fn()
+  fetchCollectionItems: jest.fn(),
+  fetchRarities: jest.fn()
 } as unknown) as BuilderAPI
 
 let builderClient: BuilderClient
@@ -1313,10 +1317,47 @@ describe('when handling the save item success action', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
         [select(getLocation), { pathname: locations.collections() }],
-        [select(getOpenModals), { CreateSingleItemModal: true }],
+        [select(getOpenModals), { CreateSingleItemModal: true }]
       ])
       .put(push(locations.itemDetail(item.id)))
       .dispatch(saveItemSuccess(item, {}))
       .run({ silenceTimeout: true })
+  })
+})
+
+describe('when handling the fetch of rarities', () => {
+  let rarities: Rarity[]
+
+  beforeEach(() => {
+    rarities = [
+      {
+        id: ItemRarity.COMMON,
+        name: ItemRarity.COMMON,
+        price: '4000000000000000000',
+        maxSupply: '100000',
+        prices: {
+          [Currency.MANA]: '4000000000000000000',
+          [Currency.USD]: '10000000000000000000'
+        }
+      }
+    ]
+  })
+
+  it('should put a fetch rarities success action with the fetched rarities', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .provide([[call([builderAPI, builderAPI.fetchRarities]), rarities]])
+      .dispatch(fetchRaritiesRequest())
+      .put(fetchRaritiesSuccess(rarities))
+      .run({ silenceTimeout: true })
+  })
+
+  describe('when the request to the builder fails', () => {
+    it('should put a fetch rarities failure action with the error', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([[call([builderAPI, builderAPI.fetchRarities]), Promise.reject(new Error('Failed to fetch rarities'))]])
+        .dispatch(fetchRaritiesRequest())
+        .put(fetchRaritiesFailure('Failed to fetch rarities'))
+        .run({ silenceTimeout: true })
+    })
   })
 })
