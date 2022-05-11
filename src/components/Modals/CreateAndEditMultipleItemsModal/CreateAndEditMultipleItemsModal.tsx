@@ -128,8 +128,8 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
               engine: EngineType.BABYLON
             })
             URL.revokeObjectURL(url)
-            const imageBlob = await dataURLToBlob(data.image)
-            if (!imageBlob) {
+            thumbnail = await dataURLToBlob(data.image)
+            if (!thumbnail) {
               throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
             }
           }
