@@ -37,7 +37,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   renderPage = (collection: Collection, curation: CollectionCuration | null, itemsCuration: ItemCuration[] | null) => {
     const { showRejectionModal, showApproveConfirmModal } = this.state
-    const { chainId } = this.props
+    const { chainId, isReviewing } = this.props
     const type = getCollectionType(collection)
 
     return (
@@ -49,7 +49,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           {collection.name}
           &nbsp;·&nbsp;
           {t(`collection.type.${type}`)}
-          <JumpIn size="small" collection={collection} chainId={chainId} />
+          <JumpIn
+            size="small"
+            collection={collection}
+            chainId={chainId}
+            itemStatus={isReviewing && type === CollectionType.THIRD_PARTY ? CurationStatus.PENDING : undefined}
+          />
         </div>
         <div className="actions">
           <span className="button-container">

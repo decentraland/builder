@@ -6,6 +6,7 @@ import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
+import { CurationStatus } from 'modules/curations/types'
 import { Collection, Access, Mint, CollectionType } from './types'
 
 export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
@@ -38,10 +39,13 @@ export function getCollectionEditorURL(collection: Collection, items: Item[]): s
   return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })
 }
 
-export function getExplorerURL(collection: Collection) {
+export function getExplorerURL(collection: Collection, itemStatus?: CurationStatus) {
   const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '')
   const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
-  return `${EXPLORER_URL}?WITH_COLLECTIONS=${collection.id}&BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=ropsten&DEBUG_MODE=true`
+  return (
+    `${EXPLORER_URL}?WITH_COLLECTIONS=${collection.id}&BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=ropsten&DEBUG_MODE=true` +
+    (itemStatus ? `&ITEM_STATUS=${itemStatus}` : '')
+  )
 }
 
 export function getCollectionBaseURI() {
