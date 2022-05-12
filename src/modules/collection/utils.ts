@@ -122,12 +122,5 @@ export function isTPCollection(collection: Collection): boolean {
 }
 
 export function getCollectionFactoryContract(chainId: ChainId) {
-  const version = env.get<string | undefined>('REACT_APP_COLLECTION_FACTORY_VERSION')
-
-  switch (version) {
-    case '3':
-      return getContract(ContractName.CollectionFactoryV3, chainId)
-    default:
-      return getContract(ContractName.CollectionFactory, chainId)
-  }
+  return getContract(ContractName.CollectionFactoryV3, chainId)
 }
