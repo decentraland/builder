@@ -2,7 +2,6 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import future from 'fp-future'
 import {
   ModalNavigation,
   Row,
@@ -19,7 +18,7 @@ import {
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName } from 'modules/asset/utils'
-import { blobToDataURL, dataURLToBlob } from 'modules/media/utils'
+import { blobToDataURL, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import {
   ITEM_EXTENSIONS,
   THUMBNAIL_PATH,
@@ -528,15 +527,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         entities: 1
       }
 
-      thumbnail = await this.convertImageIntoWearableThumbnail(
+      thumbnail = await convertImageIntoWearableThumbnail(
         contents[THUMBNAIL_PATH] || contents[model],
         this.state.category as WearableCategory
       )
     } else {
       const url = URL.createObjectURL(contents[model])
       const data = await getModelData(url, {
-        width: 512,
-        height: 512,
+        width: 1024,
+        height: 1024,
         extension: getExtension(model) || undefined,
         engine: EngineType.BABYLON
       })
@@ -565,12 +564,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (!isCustom) {
       let thumbnail
       if (contents && isImageFile(model!)) {
-        thumbnail = await this.convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model!], category)
+        thumbnail = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model!], category)
       } else {
         const url = URL.createObjectURL(contents![model!])
         const { image } = await getModelData(url, {
-          width: 512,
-          height: 512,
+          width: 1024,
+          height: 1024,
           thumbnailType: getThumbnailType(category),
           extension: (model && getExtension(model)) || undefined,
           engine: EngineType.BABYLON
@@ -580,50 +579,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       }
       this.setState({ thumbnail })
     }
-  }
-
-  /**
-   * Converts an image blob of a wearable into a fixed 512x512 image encoded as data url.
-   * This function also adds some padding according to the category of the wearable.
-   *
-   * @param blob - The blob of the image.
-   * @param category - The category of the wearable.
-   */
-  async convertImageIntoWearableThumbnail(blob: Blob, category: WearableCategory = WearableCategory.EYES) {
-    // load blob into image
-    const image = new Image()
-    const loadFuture = future()
-    image.onload = loadFuture.resolve
-    image.src = await blobToDataURL(blob)
-    await loadFuture
-
-    let padding = 128
-    switch (category) {
-      case WearableCategory.EYEBROWS:
-        padding = 160
-        break
-      case WearableCategory.MOUTH:
-        padding = 160
-        break
-      case WearableCategory.EYES:
-        padding = 128
-        break
-    }
-
-    // render image into canvas, with a padding from the top. This is to center the textures into the square thumbnail.
-    const canvas = document.createElement('canvas')
-    canvas.width = 512
-    canvas.height = 512
-    canvas.style.visibility = 'hidden'
-    document.body.appendChild(canvas)
-    const ctx = canvas.getContext('2d')!
-    ctx.drawImage(image, 0, padding, canvas.width, canvas.height)
-
-    // remove canvas
-    document.body.removeChild(canvas)
-
-    // return image
-    return canvas.toDataURL()
   }
 
   buildRepresentations(bodyShape: BodyShapeType, model: string, contents: SortedContent): WearableRepresentation[] {

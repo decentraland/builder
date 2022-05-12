@@ -197,8 +197,8 @@ export async function generateCatalystImage(item: Item | LocalItem, options?: Ge
 
 export async function generateImage(item: Item | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
   // Set default width and height
-  const width: number = options?.width ?? 256
-  const height: number = options?.height ?? 256
+  const width: number = options?.width ?? 512
+  const height: number = options?.height ?? 512
 
   let thumbnail: Blob
 
@@ -515,3 +515,8 @@ export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, S
     )
   )
 }
+
+/**
+ * This function, as well as the env, should be removed once all environments have implemented RaritiesWithOracle.
+ */
+export const isUsingRaritiesWithOracle = () => process.env.REACT_APP_FF_RARITIES_WITH_ORACLE === '1'

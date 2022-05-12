@@ -44,8 +44,8 @@ export type Options = {
 }
 
 export const defaults: Options = {
-  width: 512,
-  height: 512,
+  width: 1024,
+  height: 1024,
   extension: '.glb',
   engine: EngineType.THREE,
   thumbnailType: ThumbnailType.DEFAULT

@@ -183,11 +183,17 @@ export type Item<T = ItemType.WEARABLE> = BaseItem & {
   data: T extends ItemType.WEARABLE ? WearableData : EmoteData
 }
 
+export enum Currency {
+  MANA = 'MANA',
+  USD = 'USD'
+}
+
 export type Rarity = {
   id: ItemRarity
   name: ItemRarity
   price: string
   maxSupply: string
+  prices?: Record<Currency, string>
 }
 
 export type ThirdPartyContractItem = [string, string]
