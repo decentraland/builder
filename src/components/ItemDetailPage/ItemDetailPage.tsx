@@ -7,10 +7,13 @@ import { fromWei } from 'web3x/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
+import { Collection } from 'modules/collection/types'
+import { Item } from 'modules/item/types'
 import { isThirdParty } from 'lib/urn'
 import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, isFree } from 'modules/item/utils'
 import { getCollectionType, isLocked as isCollectionLocked } from 'modules/collection/utils'
 import Notice from 'components/Notice'
+import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
 import ItemStatus from 'components/ItemStatus'
@@ -48,10 +51,8 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     onOpenModal('EditItemURNModal', { item })
   }
 
-  renderPage() {
-    const { collection, onNavigate } = this.props
-
-    const item = this.props.item!
+  renderPage(item: Item, collection: Collection | null) {
+    const { onNavigate } = this.props
     const data = item.data as WearableData
 
     const missingBodyShape = getMissingBodyShapeType(item)
@@ -212,11 +213,15 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isLoading, hasAccess } = this.props
+    const { itemId, isLoading, hasAccess } = this.props
     return (
-      <LoggedInDetailPage className="ItemDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
-        {hasAccess ? this.renderPage() : <NotFound />}
-      </LoggedInDetailPage>
+      <ItemProvider id={itemId}>
+        {(item, collection, isLoadingItem) => (
+          <LoggedInDetailPage className="ItemDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading || isLoadingItem}>
+            {hasAccess && item ? this.renderPage(item, collection) : <NotFound />}
+          </LoggedInDetailPage>
+        )}
+      </ItemProvider>
     )
   }
 }
