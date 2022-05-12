@@ -11,7 +11,7 @@
   position: relative;
 }
 
-.EditPriceAndBeneficiaryModal .ui.form .price-field .dcl.mana.inline {
+.EditPriceAndBeneficiaryModal .ui.form .price-field > .dcl.mana.inline {
   position: absolute;
   top: 24px;
   margin: 0;
@@ -29,4 +29,13 @@
   width: 11px;
   height: 11px;
   margin-left: 8px;
+}
+
+.EditPriceAndBeneficiaryModal .ui.card.min-price-notice {
+  background-color: var(--toast);
+}
+
+.EditPriceAndBeneficiaryModal .ui.card.min-price-notice .dcl.mana {
+  display: inline !important;
+  color: var(--text);
 }
