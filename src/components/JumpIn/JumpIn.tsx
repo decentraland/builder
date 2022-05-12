@@ -11,7 +11,7 @@ export default class JumpIn extends React.PureComponent<Props> {
     let url = ''
 
     if (collection) {
-      url = getCollectionURL(collection)
+      url = getCollectionURL({ collection })
     } else if (land) {
       const selection = getSelection(land)
       const [x, y] = getCenter(selection)
