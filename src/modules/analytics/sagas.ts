@@ -44,6 +44,7 @@ import {
   DeleteAssetPackFailureAction
 } from 'modules/assetPack/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
+import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
 
 export function* analyticsSaga() {
   yield fork(handleDelighted)
@@ -67,9 +68,15 @@ export function* analyticsSaga() {
   yield takeLatest(DELETE_ASSET_PACK_SUCCESS, handleDeleteAssetPackSuccess)
   yield takeLatest(SAVE_ASSET_PACK_FAILURE, handleSaveAssetPackFailure)
   yield takeLatest(DELETE_ASSET_PACK_FAILURE, handleDeleteAssetPackFailure)
+  yield takeLatest(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishTPItemSuccess)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
+
+function* handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
+  const { items } = action.payload
+  track('Publish TP Item', { items })
+}
 
 function* handleOpenEditor(_: OpenEditorAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)

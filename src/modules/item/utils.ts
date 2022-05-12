@@ -197,8 +197,8 @@ export async function generateCatalystImage(item: Item | LocalItem, options?: Ge
 
 export async function generateImage(item: Item | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
   // Set default width and height
-  const width: number = options?.width ?? 256
-  const height: number = options?.height ?? 256
+  const width: number = options?.width ?? 512
+  const height: number = options?.height ?? 512
 
   let thumbnail: Blob
 
