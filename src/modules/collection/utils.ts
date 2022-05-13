@@ -131,3 +131,9 @@ export function getCollectionFactoryContract(chainId: ChainId) {
       return getContract(ContractName.CollectionFactory, chainId)
   }
 }
+
+export function getRaritiesContract(chainId: ChainId) {
+  return env.get<string | undefined>('REACT_APP_FF_RARITIES_WITH_ORACLE') === '1'
+    ? getContract(ContractName.RaritiesWithOracle, chainId)
+    : getContract(ContractName.Rarities, chainId)
+}
