@@ -1,11 +1,11 @@
 import { ChainId } from '@dcl/schemas'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
+import { env } from 'decentraland-commons'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { Collection, CollectionType } from 'modules/collection/types'
 import { Mint } from './types'
 import { getTotalAmountOfMintedItems, isLocked, getCollectionType, isTPCollection, getRaritiesContract } from './utils'
-import { env } from 'decentraland-commons'
 
 jest.mock('modules/item/export')
 jest.mock('decentraland-commons')
