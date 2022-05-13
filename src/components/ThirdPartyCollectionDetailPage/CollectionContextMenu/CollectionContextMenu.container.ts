@@ -4,12 +4,10 @@ import { RootState } from 'modules/common/types'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { getName } from 'modules/profile/selectors'
 import { openModal } from 'modules/modal/actions'
-import { getCollectionItems } from 'modules/item/selectors'
-import { MapDispatchProps, MapDispatch, MapStateProps, OwnProps } from './CollectionContextMenu.types'
+import { MapDispatchProps, MapDispatch, MapStateProps } from './CollectionContextMenu.types'
 import CollectionContextMenu from './CollectionContextMenu'
 
-const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
-  items: getCollectionItems(state, ownProps.collection.id),
+const mapState = (state: RootState): MapStateProps => ({
   name: getName(state) || ''
 })
 
