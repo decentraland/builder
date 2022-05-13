@@ -347,12 +347,17 @@ export function getEmoteCategories() {
 }
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
-  const overrideCategories = getCategories(contents)
+  let overrideCategories = getCategories(contents)
+
   if (category === WearableCategory.SKIN) {
-    return overrideCategories.filter(
+    overrideCategories = overrideCategories.filter(
       overrideCategory => !getSkinHiddenCategories().includes(overrideCategory) && overrideCategory !== WearableCategory.SKIN
     )
   }
+
+  // The body shape should never be hidden, filtering it out will prevent it from showing up in the selection.
+  overrideCategories = overrideCategories.filter(c => c !== WearableCategory.BODY_SHAPE)
+
   return overrideCategories
 }
 
