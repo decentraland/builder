@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { Collection, CollectionType } from 'modules/collection/types'
+import { Collection } from 'modules/collection/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
@@ -14,6 +14,7 @@ import RejectionModal from './RejectionModal'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
 import { ButtonType, Props, State } from './TopPanel.types'
 import './TopPanel.css'
+import { Item } from 'modules/item/types'
 
 export default class TopPanel extends React.PureComponent<Props, State> {
   state: State = {
@@ -35,7 +36,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
-  renderPage = (collection: Collection, curation: CollectionCuration | null, itemsCuration: ItemCuration[] | null) => {
+  renderPage = (collection: Collection, items: Item[], curation: CollectionCuration | null, itemsCuration: ItemCuration[] | null) => {
     const { showRejectionModal, showApproveConfirmModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -49,11 +50,11 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           {collection.name}
           &nbsp;·&nbsp;
           {t(`collection.type.${type}`)}
-          <JumpIn size="small" collection={collection} chainId={chainId} />
+          <JumpIn size="small" collection={collection} chainId={chainId} items={isTPCollection(collection) ? items : undefined} />
         </div>
         <div className="actions">
           <span className="button-container">
-            {type === CollectionType.THIRD_PARTY
+            {isTPCollection(collection)
               ? this.renderTPButtons(collection, curation, itemsCuration)
               : this.renderButtons(collection, curation)}
           </span>
@@ -165,11 +166,11 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
     return isCommitteeMember && isReviewing && isConnected ? (
       <div className="TopPanel">
-        <CollectionProvider id={selectedCollectionId}>
+        <CollectionProvider id={selectedCollectionId} status={isReviewing ? CurationStatus.PENDING : undefined}>
           {({ collection, items, itemCurations, curation, isLoading }) => {
             // Show loader only while loading the first page of items
             const showLoader = !collection || (isLoading && !items.length)
-            return showLoader ? <Loader size="small" active /> : this.renderPage(collection, curation, itemCurations)
+            return showLoader ? <Loader size="small" active /> : this.renderPage(collection, items, curation, itemCurations)
           }}
         </CollectionProvider>
       </div>

@@ -19,9 +19,9 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
   }
 
   handleNavigateToExplorer = () => {
-    const { collection } = this.props
+    const { items } = this.props
     this.analytics.track('See in world')
-    this.navigateTo(getExplorerURL({ collection }), '_blank')
+    this.navigateTo(getExplorerURL({ item_ids: items.map(item => item.id) }), '_blank')
   }
 
   handleNavigateToEditor = () => {

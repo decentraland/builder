@@ -6,11 +6,12 @@ import './JumpIn.css'
 
 export default class JumpIn extends React.PureComponent<Props> {
   render() {
-    const { size = 'medium', land, collection } = this.props
+    const { size = 'medium', land, collection, items } = this.props
 
     let url = ''
-
-    if (collection) {
+    if (items) {
+      url = getCollectionURL({ item_ids: items.map(item => item.id) })
+    } else if (collection) {
       url = getCollectionURL({ collection })
     } else if (land) {
       const selection = getSelection(land)
