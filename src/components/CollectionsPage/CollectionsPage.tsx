@@ -29,7 +29,7 @@ import CollectionRow from './CollectionRow'
 import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 6
 
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
@@ -40,7 +40,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   componentDidMount() {
     const { onFetchCollections, address } = this.props
     // fetch if already connected
-    if (address && address) {
+    if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
     }
   }
@@ -215,9 +215,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
             </Tabs>
             <Row height={30}>
               <Column>
-                <Row>
-                  {isLoadingItems ? <Loader active size="mini" /> : <Header sub>{t('collections_page.results', { count })}</Header>}
-                </Row>
+                <Row>{!isLoadingItems && count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
               </Column>
             </Row>
           </Container>

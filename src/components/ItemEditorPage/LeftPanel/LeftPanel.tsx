@@ -7,7 +7,6 @@ import { Collection, CollectionType } from 'modules/collection/types'
 import { CurationStatus } from 'modules/curations/types'
 import { getCollectionType } from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
-import { ItemCuration } from 'modules/curations/itemCuration/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
@@ -46,24 +45,22 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  getItems(collection: Collection | null, collectionItems: Item[], itemCurations: ItemCuration[] | null) {
+  getItems(collection: Collection | null, collectionItems: Item[]) {
     const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
       return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing
-        ? collectionItems.filter(
-            item => item.isPublished && itemCurations?.find(curation => item.id === curation.itemId)?.status === CurationStatus.PENDING
-          )
+        ? collectionItems.filter(item => item.isPublished)
         : collectionItems
     }
     return orphanItems
   }
 
-  loadNextPage = () => {
+  loadNextPage = (isLoading: boolean) => {
     const { pages } = this.state
     const { totalItems, totalCollections, selectedCollectionId } = this.props
     const totalResources = this.isCollectionTabActive() ? totalCollections : totalItems
     const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
-    if (!pages.includes(totalPages)) {
+    if (!pages.includes(totalPages) && !isLoading) {
       const lastPage = pages[pages.length - 1]
       this.setState({ pages: [...pages, lastPage + 1] }, selectedCollectionId ? undefined : this.fetchResource)
     }
@@ -107,8 +104,8 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
             itemsPageSize={LEFT_PANEL_PAGE_SIZE}
             status={isReviewing ? CurationStatus.PENDING : undefined}
           >
-            {({ collection, paginatedItems: collectionItems, isLoading, itemCurations }) => {
-              const items = this.getItems(collection, collectionItems, itemCurations)
+            {({ collection, paginatedItems: collectionItems, isLoading }) => {
+              const items = this.getItems(collection, collectionItems)
               const showLoader = isLoading && items.length === 0
               if (showLoader) {
                 return <Loader size="massive" active />
@@ -157,7 +154,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       hasHeader={items.length > 0}
                       selectedCollectionId={selectedCollectionId}
                       onSetCollection={onSetCollection}
-                      onLoadNextPage={this.loadNextPage}
+                      onLoadNextPage={() => this.loadNextPage(isLoading)}
                     />
                   ) : null}
                   {showItems ? (
@@ -170,7 +167,8 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       visibleItems={visibleItems}
                       bodyShape={bodyShape}
                       onSetItems={onSetItems}
-                      onLoadNextPage={this.loadNextPage}
+                      onLoadNextPage={() => this.loadNextPage(isLoading)}
+                      isLoading={isLoading}
                     />
                   ) : null}
                 </>

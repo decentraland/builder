@@ -1,48 +1,52 @@
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { Locale, Rarity, ThirdPartyWearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
-import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
-import { getContentsStorageUrl } from 'lib/api/builder'
-import { PEER_URL } from 'lib/api/peer'
-import { NO_CACHE_HEADERS } from 'lib/headers'
+import { EntityType } from 'dcl-catalyst-commons'
+import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
+import { BuilderAPI } from 'lib/api/builder'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { Item, IMAGE_PATH, THUMBNAIL_PATH, StandardCatalystItem, ItemType, EmoteData, EmoteCategory } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, StandardCatalystItem, ItemType, EmoteData, EmoteCategory, EntityHashingType } from './types'
 import { generateCatalystImage, generateImage } from './utils'
 
-export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
-  const client = new CatalystClient(PEER_URL, 'Builder')
-  const entity = await buildItemEntity(client, collection, item)
-  const authChain = Authenticator.signPayload(identity, entity.entityId)
-
-  await client.deployEntity({ ...entity, authChain })
-
-  return { ...item, inCatalyst: true }
+/**
+ * Checks if a hash was generated using an older algorithm.
+ *
+ * @param hash - A hash.
+ * @returns true if the hash is from an older version.
+ */
+export function isOldHash(hash: string): boolean {
+  return hash.startsWith('Qm')
 }
 
 /**
- * Downloads item contents.
- * Commonly used to download already uploaded representations of an item.
+ * Checks if an item has content hashes generated using an older algorithm.
  *
- * @param contents - The record of contents to be fetched.
+ * @param item - An item.
+ * @returns true if the item has older hashes.
  */
-export async function getFiles(contents: Record<string, string>): Promise<Record<string, Blob>> {
-  const promises = Object.keys(contents).map(path => {
-    const url = getContentsStorageUrl(contents[path])
+export function hasOldHashedContents(item: Item): boolean {
+  return Object.values(item.contents).some(hash => isOldHash(hash))
+}
 
-    return fetch(url, { headers: NO_CACHE_HEADERS })
-      .then(resp => resp.blob())
-      .then(blob => ({ path, blob }))
-  })
-
-  const results = await Promise.all(promises)
-
-  return results.reduce<Record<string, Blob>>((files, file) => {
-    files[file.path] = file.blob
-    return files
-  }, {})
+/**
+ * Takes a map of contents (file name -> hash), downloads the contents that are hashed with an older algorithm
+ * and builds a new map that contains the content and their hash.
+ *
+ * @param contents - The contents to be updated.
+ * @returns A map containing only the contents that have been updated and re-hashed.
+ */
+export async function reHashOlderContents(
+  contents: Record<string, string>,
+  legacyBuilderClient: BuilderAPI
+): Promise<Record<string, { hash: string; content: Blob }>> {
+  const contentsWithOldHashes = Object.fromEntries(Object.entries(contents).filter(([_, content]) => isOldHash(content)))
+  const contentOfOldHashedFiles = await legacyBuilderClient.fetchContents(contentsWithOldHashes)
+  const newHashesOfOldHashedFiles = await computeHashes(contentOfOldHashedFiles)
+  return Object.fromEntries(
+    Object.keys(contentsWithOldHashes).map(key => [key, { hash: newHashesOfOldHashedFiles[key], content: contentOfOldHashedFiles[key] }])
+  )
 }
 
 /**
@@ -52,12 +56,12 @@ export async function getFiles(contents: Record<string, string>): Promise<Record
  * @param blobs - The record of names->blobs.
  */
 function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Blob>): Array<Blob> {
-  const uniqueFileHases: Array<string> = [...new Set(Object.values(hashes))]
+  const uniqueFileHashes: Array<string> = [...new Set(Object.values(hashes))]
   const inverseFileHashesRecord = Object.keys(hashes).reduce((obj: Record<string, string>, key: string) => {
     obj[hashes[key]] = key
     return obj
   }, {})
-  return uniqueFileHases.map(hash => blobs[inverseFileHashesRecord[hash]])
+  return uniqueFileHashes.map(hash => blobs[inverseFileHashesRecord[hash]])
 }
 
 /**
@@ -67,7 +71,7 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
  * @param item - An item that contains the old and the new hashed content.
  * @param newContents - The new content that is going to be added to the item.
  */
-export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>): Promise<number> {
+export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>, legacyBuilderClient: BuilderAPI): Promise<number> {
   const newHashes = await computeHashes(newContents)
   const filesToDownload: Record<string, string> = {}
   for (const fileName in item.contents) {
@@ -76,7 +80,7 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
     }
   }
 
-  const blobs = await getFiles(filesToDownload)
+  const blobs = await legacyBuilderClient.fetchContents(filesToDownload)
   const allBlobs = { ...newContents, ...blobs }
   const allHashes = { ...newHashes, ...filesToDownload }
 
@@ -187,20 +191,24 @@ async function buildItemEntityContent(item: Item): Promise<Record<string, string
   return contents
 }
 
-async function buildItemEntityBlobs(item: Item): Promise<Record<string, Blob>> {
-  const [files, image] = await Promise.all([getFiles(item.contents), !item.contents[IMAGE_PATH] ? generateImage(item) : null])
+async function buildItemEntityBlobs(item: Item, legacyBuilderClient: BuilderAPI): Promise<Record<string, Blob>> {
+  const [files, image] = await Promise.all([
+    legacyBuilderClient.fetchContents(item.contents),
+    !item.contents[IMAGE_PATH] ? generateImage(item) : null
+  ])
   files[IMAGE_PATH] = image ?? files[IMAGE_PATH]
   return files
 }
 
 export async function buildItemEntity(
   client: CatalystClient,
+  legacyBuilderClient: BuilderAPI,
   collection: Collection,
   item: Item,
   tree?: MerkleDistributorInfo,
   itemHash?: string
 ): Promise<DeploymentPreparationData> {
-  const blobs = await buildItemEntityBlobs(item)
+  const blobs = await buildItemEntityBlobs(item, legacyBuilderClient)
   const files = await makeContentFiles(blobs)
   const metadata = tree && itemHash ? buildTPItemEntityMetadata(item, itemHash, tree) : buildItemEntityMetadata(collection, item)
   return client.buildEntity({
@@ -214,40 +222,35 @@ export async function buildItemEntity(
 
 export async function buildStandardItemEntity(
   client: CatalystClient,
+  legacyBuilderClient: BuilderAPI,
   collection: Collection,
   item: Item
 ): Promise<DeploymentPreparationData> {
-  return buildItemEntity(client, collection, item)
+  return buildItemEntity(client, legacyBuilderClient, collection, item)
 }
 
 export async function buildTPItemEntity(
   client: CatalystClient,
+  legacyBuilderClient: BuilderAPI,
   collection: Collection,
   item: Item,
   tree: MerkleDistributorInfo,
   itemHash: string
 ): Promise<DeploymentPreparationData> {
-  return buildItemEntity(client, collection, item, tree, itemHash)
+  return buildItemEntity(client, legacyBuilderClient, collection, item, tree, itemHash)
 }
 
-export async function buildItemContentHash(collection: Collection, item: Item): Promise<string> {
+export async function buildStandardWearableContentHash(
+  collection: Collection,
+  item: Item,
+  hashingType = EntityHashingType.V1
+): Promise<string> {
   const hashes = await buildItemEntityContent(item)
   const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
   const metadata = buildItemEntityMetadata(collection, item)
-  return calculateContentHash(content, metadata)
-}
-
-async function calculateContentHash(content: EntityContentItemReference[], metadata: EntityMetadata) {
-  const data = JSON.stringify({
-    content: content
-      .sort((a: EntityContentItemReference, b: EntityContentItemReference) => {
-        if (a.hash > b.hash) return 1
-        else if (a.hash < b.hash) return -1
-        else return a.file > b.file ? 1 : -1
-      })
-      .map(entry => ({ key: entry.file, hash: entry.hash })),
-    metadata
-  })
-  const buffer = Buffer.from(data)
-  return Hashing.calculateBufferHash(buffer)
+  if (hashingType === EntityHashingType.V0) {
+    return (await calculateMultipleHashesADR32LegacyQmHash(content, metadata)).hash
+  } else {
+    return (await calculateMultipleHashesADR32(content, metadata)).hash
+  }
 }

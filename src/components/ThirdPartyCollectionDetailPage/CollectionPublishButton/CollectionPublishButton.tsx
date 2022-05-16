@@ -84,7 +84,7 @@ const CollectionPublishButton = (props: Props) => {
 
   const hasPendingItemCurations = itemCurations && !!itemCurations.find(ic => ic.status === CurationStatus.PENDING)
   const isTryingToPublish = [PublishButtonAction.PUBLISH, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(buttonAction)
-  const hasEnoughSlots = slots > items.length
+  const hasEnoughSlots = slots >= items.length
 
   return !isLoadingItemCurations && hasPendingItemCurations && (isTryingToPublish || buttonAction === PublishButtonAction.NONE) ? (
     <Popup

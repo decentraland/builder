@@ -1,18 +1,22 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { FileTooBigError, ItemFactory, loadFile, MAX_FILE_SIZE, THUMBNAIL_PATH } from '@dcl/builder-client'
+import { FileTooBigError, ItemFactory, loadFile, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { env } from 'decentraland-commons'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { omit } from 'decentraland-commons/dist/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { EngineType, getModelData } from 'lib/getModelData'
+import { getExtension } from 'lib/file'
+import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
+import { convertImageIntoWearableThumbnail, dataURLToBlob } from 'modules/media/utils'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
 import { generateCatalystImage } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
-import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
 import {
   CreateOrEditMultipleItemsModalType,
   ImportedFile,
@@ -26,6 +30,7 @@ import styles from './CreateAndEditMultipleItemsModal.module.css'
 
 const REACT_APP_WEARABLES_ZIP_INFRA_URL = env.get('REACT_APP_WEARABLES_ZIP_INFRA_URL', '')
 export default class CreateAndEditMultipleItemsModal extends React.PureComponent<Props, State> {
+  analytics = getAnalytics()
   state = {
     view: ItemCreationView.IMPORT,
     loadingFilesProgress: 0,
@@ -106,14 +111,40 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
             throw new Error(t('create_and_edit_multiple_items_modal.asset_file_not_found'))
           }
 
-          if (!loadedFile.content[THUMBNAIL_PATH]) {
-            throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_found'))
-          }
-
           this.setState({
             loadingFilesProgress: this.state.loadingFilesProgress + 100 / acceptedFiles.length
           })
           const itemFactory = new ItemFactory<Blob>().fromAsset(loadedFile.asset!, loadedFile.content)
+
+          let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
+
+          if (!thumbnail) {
+            const modelPath = loadedFile.asset.representations[0].mainFile
+            const url = URL.createObjectURL(loadedFile.content[modelPath])
+            const data = await getModelData(url, {
+              width: 1024,
+              height: 1024,
+              extension: getExtension(modelPath) || undefined,
+              engine: EngineType.BABYLON
+            })
+            URL.revokeObjectURL(url)
+            thumbnail = await dataURLToBlob(data.image)
+            if (!thumbnail) {
+              throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
+            }
+          }
+
+          // Process the thumbnail so it fits our requirements
+          thumbnail = dataURLToBlob(await convertImageIntoWearableThumbnail(thumbnail))
+
+          if (!thumbnail) {
+            throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
+          }
+
+          itemFactory.withThumbnail(thumbnail)
+
+          // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
+          itemFactory.withRarity(Rarity.UNIQUE)
 
           // Override collection id if specified in the modal's metadata
           if (metadata.collectionId) {
@@ -183,10 +214,15 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   }
 
   private handleFilesUpload = (): void => {
-    const { onSaveMultipleItems } = this.props
-    onSaveMultipleItems(this.getValidFiles())
+    const { collection, onSaveMultipleItems } = this.props
+    const files = this.getValidFiles()
+    onSaveMultipleItems(files)
     this.setState({
       view: ItemCreationView.UPLOADING
+    })
+    this.analytics.track(`${this.isCreating() ? 'Create' : 'Edit'} TP Items`, {
+      items: files.map(file => file.item.id),
+      collectionId: collection?.id
     })
   }
 

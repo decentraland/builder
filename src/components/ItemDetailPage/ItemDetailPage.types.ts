@@ -7,6 +7,7 @@ import { Item } from 'modules/item/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export type Props = {
+  itemId: string | null
   wallet: Wallet
   item: Item | null
   collection: Collection | null
@@ -17,6 +18,6 @@ export type Props = {
   hasAccess: boolean
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'item' | 'collection' | 'isLoading' | 'hasAccess'>
+export type MapStateProps = Pick<Props, 'wallet' | 'itemId' | 'item' | 'collection' | 'isLoading' | 'hasAccess'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onDelete' | 'onOpenModal'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | DeleteItemRequestAction | OpenModalAction>

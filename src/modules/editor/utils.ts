@@ -40,16 +40,6 @@ export function getNewEditorScene(project: Project): EditorScene {
       name: 'Decentraland',
       email: 'support@decentraland.org'
     },
-    communications: {
-      type: 'webrtc',
-      signalling: 'https://rendezvous.decentraland.org'
-    },
-    policy: {
-      fly: true,
-      voiceEnabled: true,
-      blacklist: [],
-      teleportPosition: '0,0,0'
-    },
     main: 'game.js',
     _mappings: mappings
   } as EditorScene
