@@ -1,0 +1,151 @@
+.PublishCollectionModal .header,
+.PublishCollectionModal .content {
+  text-align: center;
+}
+.PublishCollectionModal.ui.modal > .dcl.modal-navigation {
+  padding-top: 48px;
+}
+
+.PublishCollectionModal.ui.modal > .first-step,
+.PublishCollectionModal.ui.modal > .second-step {
+  padding: 0 20px 20px;
+}
+
+.PublishCollectionModal .loader-wrapper {
+  height: 80px;
+  position: relative;
+}
+
+.PublishCollectionModal .divider {
+  width: 50%;
+  margin: 25px auto;
+  height: 1px;
+  border: 2px solid var(--primary);
+  border-radius: 2px;
+}
+
+.PublishCollectionModal .price-breakdown-container {
+  margin: 20px 0;
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--background);
+  border-radius: 10px;
+}
+
+.PublishCollectionModal .price-breakdown-container::after {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--light-gray);
+  opacity: 40%;
+}
+
+.PublishCollectionModal .price-breakdown-container .element .element-header {
+  display: flex;
+  font-size: 13px;
+  align-items: center;
+  padding: 0.5rem 0 0.5rem 0;
+  text-align: left;
+  color: var(--light-gray);
+}
+
+.PublishCollectionModal .price-breakdown-container .element .element-content {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0 1rem 0;
+  text-align: left;
+}
+
+.PublishCollectionModal .price-breakdown-container .element .element-content .dcl.mana {
+  font-size: 17px;
+}
+
+.PublishCollectionModal .content .ui.button {
+  margin-top: 60px;
+}
+
+.PublishCollectionModal .ui.button.proceed {
+  margin-top: 0;
+}
+
+.PublishCollectionModal .estimate-notice {
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: var(--secondary-text);
+}
+
+.PublishCollectionModal .rarities-error {
+  margin-bottom: 20px;
+}
+
+.PublishCollectionModal .rarities-error-sub {
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.PublishCollectionModal .not-enough-mana-notice {
+  margin-top: 20px;
+  display: inline-block;
+}
+
+.PublishCollectionModal .not-enough-mana-notice .dcl.mana .symbol {
+  padding-right: 0;
+}
+
+.PublishCollectionModal .tos > p:not(:last-child) {
+  margin-bottom: 25px;
+}
+
+/* Third step content */
+
+.PublishCollectionModal .third-step.content {
+  padding: 0;
+}
+
+.PublishCollectionModal .third-step.content .dcl.field {
+  margin-top: 50px;
+  margin-left: 40px;
+  margin-right: 40px;
+  width: auto;
+}
+
+.PublishCollectionModal .third-step.content .tos {
+  background-color: var(--dark-gray);
+  font-size: 15px;
+  padding: 15px;
+  text-align: left;
+  color: var(--text);
+  border-radius: 3px;
+}
+
+.PublishCollectionModal .third-step.content .ui.input > input {
+  text-align: center;
+}
+
+/* Third step Footer */
+
+.PublishCollectionModal .third-step-footer {
+  display: flex;
+  flex-direction: column;
+}
+
+.PublishCollectionModal .third-step-footer > p {
+  color: var(--secondary-text);
+  margin-top: 20px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.PublishCollectionModal .error {
+  color: var(--error) !important;
+}
+
+.PublishCollectionModal.ui.modal .actions.third-step-footer > button {
+  margin-left: 40px;
+  margin-right: 40px;
+  width: auto;
+}

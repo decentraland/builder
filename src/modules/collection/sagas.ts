@@ -146,7 +146,8 @@ import {
   getCollectionType,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
   isTPCollection,
-  getCollectionFactoryContract
+  getCollectionFactoryContract,
+  getRaritiesContract
 } from './utils'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
@@ -256,7 +257,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
         const from: string = yield select(getAddress)
         const maticChainId = getChainIdByNetwork(Network.MATIC)
-        const rarities = getContract(ContractName.Rarities, maticChainId)
+        const rarities = getRaritiesContract(maticChainId)
         const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
 
         const provider: Provider = yield call(getNetworkProvider, maticChainId)
