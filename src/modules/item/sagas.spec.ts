@@ -49,7 +49,8 @@ import {
   fetchCollectionItemsRequest,
   fetchCollectionItemsSuccess,
   fetchCollectionItemsFailure,
-  deleteItemSuccess
+  deleteItemSuccess,
+  fetchItemsRequest
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import { BuiltFile, IMAGE_PATH, Item, ItemRarity, ItemType, THUMBNAIL_PATH, WearableRepresentation } from './types'
@@ -57,6 +58,7 @@ import { calculateFinalSize } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 let blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -72,6 +74,7 @@ let builderClient: BuilderClient
 
 let dateNowSpy: jest.SpyInstance
 const updatedAt = Date.now()
+const mockAddress = '0x6D7227d6F36FC997D53B4646132b3B55D751cc7c'
 
 beforeEach(() => {
   dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => updatedAt)
@@ -1179,6 +1182,7 @@ describe('when handling the delete item success action', () => {
       it('should put a fetch collection items success action to fetch the same page again', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
+            [select(getAddress), mockAddress],
             [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData]
@@ -1198,6 +1202,7 @@ describe('when handling the delete item success action', () => {
         it('should put a fetch collection items success action to fetch the previous page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
+              [select(getAddress), mockAddress],
               [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
@@ -1216,6 +1221,7 @@ describe('when handling the delete item success action', () => {
         it('should put a fetch collection items success action to fetch the same first page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
+              [select(getAddress), mockAddress],
               [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
@@ -1225,6 +1231,24 @@ describe('when handling the delete item success action', () => {
             .run({ silenceTimeout: true })
         })
       })
+    })
+  })
+  describe('and the location /collections page', () => {
+    let paginationData: ItemPaginationData
+    beforeEach(() => {
+      paginationData = { currentPage: 3, limit: 20, total: 65, ids: [item.id, item.id], totalPages: 3 }
+    })
+    it('should put a fetch address items success action to fetch the same page again', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getAddress), mockAddress],
+          [select(getLocation), { pathname: locations.collections() }],
+          [select(getOpenModals), { EditItemURNModal: true }],
+          [select(getPaginationData, mockAddress), paginationData]
+        ])
+        .put(fetchItemsRequest(mockAddress, { page: paginationData.currentPage, limit: paginationData.limit }))
+        .dispatch(deleteItemSuccess(item))
+        .run({ silenceTimeout: true })
     })
   })
 })

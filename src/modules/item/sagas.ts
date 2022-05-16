@@ -83,7 +83,8 @@ import {
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   SaveMultipleItemsSuccessAction,
   SaveMultipleItemsCancelledAction,
-  SAVE_MULTIPLE_ITEMS_CANCELLED
+  SAVE_MULTIPLE_ITEMS_CANCELLED,
+  fetchItemsRequest
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -110,6 +111,7 @@ import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItem
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
 import { ItemPaginationData } from './reducer'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
 
@@ -396,14 +398,19 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { item } = action.payload
     const collectionId = item.collectionId!
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
-    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
-      const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
+    const isTPCollectionPage = location.pathname === locations.thirdPartyCollectionDetail(collectionId)
+    const isCollectionsPage = location.pathname === locations.collections()
+    if (isTPCollectionPage || isCollectionsPage) {
+      const address: string = yield select(getAddress)
+      const paginationIndex = isTPCollectionPage ? collectionId : address
+      const paginationData: ItemPaginationData = yield select(getPaginationData, paginationIndex)
       const { currentPage, limit, ids } = paginationData
       const shouldGoToPreviousPage = currentPage > 1 && ids.length === 1 && ids[0] === item.id
-      if (shouldGoToPreviousPage) {
+      if (isTPCollectionPage && shouldGoToPreviousPage) {
         yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: currentPage - 1 })))
       } else {
-        yield put(fetchCollectionItemsRequest(collectionId, { page: currentPage, limit }))
+        const fetchFn = isTPCollectionPage ? fetchCollectionItemsRequest : fetchItemsRequest
+        yield put(fetchFn(paginationIndex, { page: currentPage, limit }))
       }
     }
   }
