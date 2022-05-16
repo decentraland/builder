@@ -7,7 +7,6 @@ import { Collection, CollectionType } from 'modules/collection/types'
 import { CurationStatus } from 'modules/curations/types'
 import { getCollectionType } from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
-import { ItemCuration } from 'modules/curations/itemCuration/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
@@ -23,23 +22,21 @@ export default class LeftPanel extends React.PureComponent<Props> {
     itemsPage: [INITIAL_PAGE]
   }
 
-  getItems(collection: Collection | null, collectionItems: Item[], itemCurations: ItemCuration[] | null) {
+  getItems(collection: Collection | null, collectionItems: Item[]) {
     const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
       return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing
-        ? collectionItems.filter(
-            item => item.isPublished && itemCurations?.find(curation => item.id === curation.itemId)?.status === CurationStatus.PENDING
-          )
+        ? collectionItems.filter(item => item.isPublished)
         : collectionItems
     }
     return orphanItems
   }
 
-  loadNextPage = () => {
+  loadNextPage = (isLoading: boolean) => {
     const { totalItems } = this.props
     const { itemsPage } = this.state
     const totalPages = Math.ceil(totalItems! / LEFT_PANEL_PAGE_SIZE)
-    if (!itemsPage.includes(totalPages)) {
+    if (!itemsPage.includes(totalPages) && !isLoading) {
       const lastPage = itemsPage[itemsPage.length - 1]
       this.setState({ itemsPage: [...itemsPage, lastPage + 1] })
     }
@@ -69,8 +66,8 @@ export default class LeftPanel extends React.PureComponent<Props> {
             itemsPageSize={LEFT_PANEL_PAGE_SIZE}
             status={isReviewing ? CurationStatus.PENDING : undefined}
           >
-            {({ collection, paginatedItems: collectionItems, isLoading, itemCurations }) => {
-              const items = this.getItems(collection, collectionItems, itemCurations)
+            {({ collection, paginatedItems: collectionItems, isLoading }) => {
+              const items = this.getItems(collection, collectionItems)
               const showLoader = isLoading && items.length === 0
               if (showLoader) {
                 return <Loader size="massive" active />
@@ -119,7 +116,8 @@ export default class LeftPanel extends React.PureComponent<Props> {
                     visibleItems={visibleItems}
                     bodyShape={bodyShape}
                     onSetItems={onSetItems}
-                    onLoadNextPage={this.loadNextPage}
+                    onLoadNextPage={() => this.loadNextPage(isLoading)}
+                    isLoading={isLoading}
                   />
                 </>
               )
