@@ -349,16 +349,16 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
     const openModals: ModalState = yield select(getOpenModals)
+    const location: ReturnType<typeof getLocation> = yield select(getLocation)
     if (openModals['EditItemURNModal']) {
       yield put(closeModal('EditItemURNModal'))
-    } else if (openModals['CreateSingleItemModal']) {
+    } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections()) {
       // Redirect to the newly created item detail
       const { item } = action.payload
       yield put(push(locations.itemDetail(item.id)))
     }
     const { item } = action.payload
     const collectionId = item.collectionId!
-    const location: ReturnType<typeof getLocation> = yield select(getLocation)
     // Fetch the the collection items again, we don't know where the item is going to be in the pagination data
     if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)
