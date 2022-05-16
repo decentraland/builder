@@ -16,3 +16,8 @@
 .Collections .ReactVirtualized__Grid__innerScrollContainer {
   margin-bottom: 16px;
 }
+
+.Collections .ui.loader {
+  top: 100%;
+  margin-top: 15px;
+}
