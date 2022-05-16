@@ -3,6 +3,11 @@ import { ThirdPartyWearable, StandardWearable } from '@dcl/schemas'
 import { ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
+export enum EntityHashingType {
+  V0,
+  V1
+}
+
 export type BuiltFile<T extends Content> = BuiltItem<T> & { fileName: string }
 
 export enum ItemType {
@@ -178,11 +183,17 @@ export type Item<T = ItemType.WEARABLE> = BaseItem & {
   data: T extends ItemType.WEARABLE ? WearableData : EmoteData
 }
 
+export enum Currency {
+  MANA = 'MANA',
+  USD = 'USD'
+}
+
 export type Rarity = {
   id: ItemRarity
   name: ItemRarity
   price: string
   maxSupply: string
+  prices?: Record<Currency, string>
 }
 
 export type ThirdPartyContractItem = [string, string]

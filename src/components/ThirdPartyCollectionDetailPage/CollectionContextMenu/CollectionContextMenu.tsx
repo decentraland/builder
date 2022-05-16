@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getCollectionEditorURL, getExplorerURL, isLocked } from 'modules/collection/utils'
 import { CreateOrEditMultipleItemsModalType } from 'components/Modals/CreateAndEditMultipleItemsModal/CreateAndEditMultipleItemsModal.types'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -8,6 +9,8 @@ import { Props } from './CollectionContextMenu.types'
 import styles from './CollectionContextMenu.module.css'
 
 export default class CollectionContextMenu extends React.PureComponent<Props> {
+  analytics = getAnalytics()
+
   handleNavigateToForum = () => {
     const { collection } = this.props
     if (collection.isPublished && collection.forumLink) {
@@ -16,8 +19,9 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
   }
 
   handleNavigateToExplorer = () => {
-    const { collection } = this.props
-    this.navigateTo(getExplorerURL(collection), '_blank')
+    const { items } = this.props
+    this.analytics.track('See in world')
+    this.navigateTo(getExplorerURL({ item_ids: items.map(item => item.id) }), '_blank')
   }
 
   handleNavigateToEditor = () => {

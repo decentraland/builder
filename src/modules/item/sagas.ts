@@ -105,7 +105,7 @@ import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
-import { calculateFinalSize } from './export'
+import { calculateFinalSize, reHashOlderContents } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError } from './errors'
@@ -144,7 +144,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleFetchRaritiesRequest() {
     try {
-      const rarities: Rarity[] = yield call([legacyBuilder, 'fetchRarities'])
+      const rarities: Rarity[] = yield call([legacyBuilder, legacyBuilder.fetchRarities])
       yield put(fetchRaritiesSuccess(rarities))
     } catch (error) {
       yield put(fetchRaritiesFailure(error.message))
@@ -272,7 +272,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleSaveItemRequest(action: SaveItemRequestAction) {
-    const { item: actionItem, contents } = action.payload
+    const { item: actionItem, contents: actionContents } = action.payload
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
@@ -281,6 +281,23 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
       }
+
+      // Get all of the old content that is hashed with an older hashing mechanism
+      const oldReHashedContentAndHashes: Record<string, { hash: string; content: Blob }> = yield call(
+        reHashOlderContents,
+        item.contents,
+        legacyBuilder
+      )
+      const oldReHashedContent = Object.fromEntries(Object.entries(oldReHashedContentAndHashes).map(([key, value]) => [key, value.hash]))
+      const oldReHashedContentWithNewHashes = Object.fromEntries(
+        Object.entries(oldReHashedContentAndHashes).map(([key, value]) => [key, value.content])
+      )
+
+      // Re-write the contents so the files have the new hash
+      item.contents = { ...item.contents, ...oldReHashedContent }
+
+      // Add the old content to be uploaded again with the new hash
+      const contents = { ...actionContents, ...oldReHashedContentWithNewHashes }
 
       const collection: Collection | undefined = item.collectionId ? yield select(getCollection, item.collectionId!) : undefined
 
@@ -298,7 +315,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       if (Object.keys(contents).length > 0) {
-        const finalSize: number = yield call(calculateFinalSize, item, contents)
+        const finalSize: number = yield call(calculateFinalSize, item, contents, legacyBuilder)
         if (finalSize > MAX_FILE_SIZE) {
           throw new ItemTooBigError()
         }
@@ -308,7 +325,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       yield put(saveItemSuccess(item, contents))
     } catch (error) {
-      yield put(saveItemFailure(actionItem, contents, error.message))
+      yield put(saveItemFailure(actionItem, actionContents, error.message))
     }
   }
 
@@ -334,12 +351,16 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
     const openModals: ModalState = yield select(getOpenModals)
+    const location: ReturnType<typeof getLocation> = yield select(getLocation)
     if (openModals['EditItemURNModal']) {
       yield put(closeModal('EditItemURNModal'))
+    } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections()) {
+      // Redirect to the newly created item detail
+      const { item } = action.payload
+      yield put(push(locations.itemDetail(item.id)))
     }
     const { item } = action.payload
     const collectionId = item.collectionId!
-    const location: ReturnType<typeof getLocation> = yield select(getLocation)
     // Fetch the the collection items again, we don't know where the item is going to be in the pagination data
     if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)

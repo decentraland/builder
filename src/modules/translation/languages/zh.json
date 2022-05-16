@@ -227,7 +227,7 @@
     },
     "wrong_file_extension": "文件扩展名不正确。",
     "asset_file_not_found": "找不到asset.json 文件。",
-    "thumbnail_file_not_found": "批量文件必须在其内容中包含 thumbnail.png 文件。",
+    "thumbnail_file_not_generated": "无法生成 thumbnail.png 文件。",
     "not_saved_items_table_title": "Invalid items",
     "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "asset.json 文件包含此集合的无效 URN",
@@ -1154,6 +1154,7 @@
     "for_me": "我是受益人",
     "free": "免费",
     "price_label": "价格",
+    "price_message": "请记住，无成本交易支持的最低金额是 {minPrice}。{br}{br}如果您的商品价格低于此价格，买家将需要支付 {token} 中的交易费用。",
     "beneficiary_label": "受益人",
     "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
   },
@@ -1168,6 +1169,34 @@
     "third_paragraph": "您将无法更改集合的名称。请确保拼写正确且不侵犯知识产权。",
     "fourth_paragraph": "您收藏中的物品将出现在市场中，但只有获得批准，才能出售。",
     "items_breakdown_title": "“您即将发布{count} {count, 复数，一个{item} 其他{items}}。您需要Polygon MANA 来支付交易费用，所有这些费用都交给Decentraland DAO。DAO 使用这个MANA 来支付 用于对您提交的内容进行技术审查，并通过赠款、活动和奖品支持社区的发展”",
+    "tos_title": "我在此声明并保证：",
+    "tos_first_condition": "1：提交穿戴式是完全符合{TERMS_OF_USE}和{} content_policy，我承认并接受。",
+    "tos_second_condition": "2：我对提交的穿戴式拥有足够的知识产权。",
+    "tos_third_condition": "3：我承认，DAO 可能会因违反内容政策和使用条款而拒绝创建穿戴式。 我也承认，如果被拒绝，将不会退还提案费。",
+    "invalid_email": "给定的电子邮件无效。",
+    "terms_of_use": "使用条款",
+    "content_policy": "内容政策",
+    "accept_by_publishing": "通过点击发表您接受我们的条件",
+    "publish": "发布",
+    "not_enough_mana": "您没有足够的{symbol} 来发布此收藏集。",
+    "get_mana": "您可以使用{link} dapp获得更多信息。",
+    "unsynced_collection": "您尝试发布的集合中的项与服务器上的项存在差异。请刷新浏览器，然后重试。"
+  },
+  "publish_collection_modal_with_oracle": {
+    "title": "发布收藏",
+    "title_tos": "内容政策",
+    "first_paragraph": "您将要发布您的收藏集，请注意以下几点：",
+    "second_paragraph": "发布收藏集后，您将无法添加或删除项目",
+    "third_paragraph": "您将无法更改集合的名称。请确保拼写正确且不侵犯知识产权。",
+    "fourth_paragraph": "您收藏中的物品将出现在市场中，但只有获得批准，才能出售。",
+    "items_breakdown_title": "您将要发布一个包含 {count} {count， plural， one {item} other {items}} 的集合。为了支持社区的发展，每篇文章（以MANA支付）的出版费为美元{出版费}，该费用将支付给DAO和策展人委员会。",
+    "learn_more": "详细了解发布费",
+    "estimate_notice": "* MANA中的总额是根据当前市场价格计算的。执行事务时，此值可能会略有变化。",
+    "qty_of_items": "项目数",
+    "fee_per_item": "每件商品的费用",
+    "total_in_usd": "总计（美元）",
+    "total_in_mana": "MANA 中的总计",
+    "rarities_error": "尝试获取出版费时出错。",
     "tos_title": "我在此声明并保证：",
     "tos_first_condition": "1：提交穿戴式是完全符合{TERMS_OF_USE}和{} content_policy，我承认并接受。",
     "tos_second_condition": "2：我对提交的穿戴式拥有足够的知识产权。",
@@ -1358,6 +1387,10 @@
   "networks": {
     "ethereum": "Ethereum",
     "matic": "Polygon"
+  },
+  "tokens": {
+    "ethereum": "ETH",
+    "matic": "MATIC"
   },
   "intro_popup": {
     "title": "介绍Polygon MANA",

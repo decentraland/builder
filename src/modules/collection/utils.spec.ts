@@ -1,15 +1,16 @@
 import { ChainId } from '@dcl/schemas'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
+import { env } from 'decentraland-commons'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { Collection, CollectionType } from 'modules/collection/types'
-import { buildItemContentHash } from 'modules/item/export'
 import { Mint } from './types'
-import { getTotalAmountOfMintedItems, isLocked, getCollectionType, getLatestItemHash, isTPCollection } from './utils'
+import { getTotalAmountOfMintedItems, isLocked, getCollectionType, isTPCollection, getRaritiesContract } from './utils'
 
 jest.mock('modules/item/export')
+jest.mock('decentraland-commons')
 
-const buildItemContentHashMock = buildItemContentHash as jest.Mock
+const mockEnv = env as jest.Mocked<typeof env>
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -134,39 +135,6 @@ describe('when getting the collection type', () => {
   })
 })
 
-describe('when getting the latest item hash', () => {
-  let item: Item
-  let resultHash: string
-  let collection: Collection
-
-  beforeEach(() => {
-    collection = { id: 'aCollection' } as Collection
-  })
-
-  describe('and the item has a hash coming from the server', () => {
-    beforeEach(() => {
-      resultHash = 'aHash'
-      item = { id: 'anId', currentContentHash: resultHash } as Item
-    })
-
-    it('should return the hash coming from the server', () => {
-      return expect(getLatestItemHash(collection, item)).resolves.toEqual(resultHash)
-    })
-  })
-
-  describe("and the item doesn't have a hash coming from the server", () => {
-    beforeEach(() => {
-      resultHash = 'aHash'
-      buildItemContentHashMock.mockResolvedValueOnce(resultHash)
-      item = { id: 'anId', currentContentHash: null } as Item
-    })
-
-    it("should return the computed hash of the item's entity", () => {
-      return expect(getLatestItemHash(collection, item)).resolves.toEqual(resultHash)
-    })
-  })
-})
-
 describe('when checking if a collection is of type third party', () => {
   let collection: Collection
 
@@ -193,6 +161,28 @@ describe('when checking if a collection is of type third party', () => {
 
     it('should return true', () => {
       expect(isTPCollection(collection)).toBe(true)
+    })
+  })
+})
+
+describe('when getting the rarities contract', () => {
+  describe('when the rarities with oracle ff IS NOT 1', () => {
+    beforeEach(() => {
+      mockEnv.get.mockReturnValueOnce('0')
+    })
+
+    it('should return the original rarities contract', () => {
+      expect(getRaritiesContract(ChainId.MATIC_MUMBAI).address).toEqual('0x8eabF06f6cf667915bfF30138be70543bCE2901A')
+    })
+  })
+
+  describe('when the rarities with oracle ff IS 1', () => {
+    beforeEach(() => {
+      mockEnv.get.mockReturnValueOnce('1')
+    })
+
+    it('should return the original rarities contract', () => {
+      expect(getRaritiesContract(ChainId.MATIC_MUMBAI).address).toEqual('0xb9957735bbe6D42585058Af11AA72da8eAD9043a')
     })
   })
 })

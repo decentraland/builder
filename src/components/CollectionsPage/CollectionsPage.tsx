@@ -213,15 +213,11 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                 </Row>
               </Column>
             </Tabs>
-            {!isLoadingItems && count && count > 0 ? (
-              <Row height={30}>
-                <Column>
-                  <Row>
-                    <Header sub>{t('collections_page.results', { count })}</Header>
-                  </Row>
-                </Column>
-              </Row>
-            ) : null}
+            <Row height={30}>
+              <Column>
+                <Row>{!isLoadingItems && count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
+              </Column>
+            </Row>
           </Container>
         </div>
 

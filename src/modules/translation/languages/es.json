@@ -235,7 +235,7 @@
     },
     "wrong_file_extension": "La extensión del artchivo no es correcta.",
     "asset_file_not_found": "El archivo asset.json no se encontró.",
-    "thumbnail_file_not_found": "Los ZIPs en la creación múltiple deben contener un archivo thumbnail.png.",
+    "thumbnail_file_not_generated": "El archivo thumbnail.png no pudo ser generado.",
     "saved_items_table_title": "Items salvados",
     "not_saved_items_table_title": "Invalid items",
     "cancelled_items_table_title": "Cancelled items",
@@ -1173,6 +1173,7 @@
     "for_me": "Soy el beneficiario",
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
+    "price_message": "Tenga en cuenta que la cantidad mínima admitida para transacciones sin costo es {minPrice}.{br}{br}Si el item cuesta menos que eso, el comprador deberá cubrir el costo de la transacción en {token}.",
     "beneficiary_label": "Beneficiario",
     "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección."
   },
@@ -1187,6 +1188,33 @@
     "third_paragraph": "No podrás cambiar el nombre de la colección. Asegúrese de que esté escrito correctamente y que no viole los derechos de propiedad intelectual.",
     "fourth_paragraph": "Los items de la colección aparecerán en Marketplace, pero no se pueden vender hasta que sean aprobados por la DAO.",
     "items_breakdown_title": "Estas por publicar {count} {count, plural, one {item} other {items}}. El fee de MANA por publicar la collección será enviado a la DAO, donde va a ser usado para soportar grants, eventos y premios",
+    "tos_title": "Por la presente declaro y garantizo que:",
+    "tos_first_condition": "1: Los Wearables por publicarse cumplen plenamente con los {terms_of_use} y las {content_policy}, que reconozco y acepto.",
+    "tos_second_condition": "2: Tengo suficientes derechos de propiedad intelectual sobre los Wearables que serán publicados.",
+    "tos_third_condition": "3: Reconozco que la DAO puede negarse a aceptar los Wearables basándose en infracciones a la Política de contenido y los Términos de uso. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo.",
+    "invalid_email": "El email provisto no es válido.",
+    "terms_of_use": "Términos de uso",
+    "content_policy": "Política de contenido",
+    "accept_by_publishing": "Al presionar Publish estás aceptando nuestros términos y condiciones",
+    "not_enough_mana": "No tienes suficiente {symbol} para publicar la collección.",
+    "get_mana": "Puedes obtener más usando la {link} dapp.",
+    "unsynced_collection": "La colección que está intentando publicar tiene diferencias con la que hay en el servidor. Por favor, refresque el navegador e intente de nuevo."
+  },
+  "publish_collection_modal_with_oracle": {
+    "title": "Publicar Colección",
+    "title_tos": "Política de contenido",
+    "first_paragraph": "Estás por publicar tu colleción, recuerda que:",
+    "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar.",
+    "third_paragraph": "No podrás cambiar el nombre de la colección. Asegúrese de que esté escrito correctamente y que no viole los derechos de propiedad intelectual.",
+    "fourth_paragraph": "Los items de la colección aparecerán en Marketplace, pero no se pueden vender hasta que sean aprobados por la DAO.",
+    "items_breakdown_title": "Está a punto de publicar una colección con {count} {count, plural, one {item} other {items}}. Para apoyar el crecimiento de la comunidad, hay una tarifa de publicación de {publicationFee} {currency} por artículo (pagado en MANA) que va a la DAO y al Comité de Curadores.",
+    "learn_more": "Más información sobre la tarifa de publicación",
+    "estimate_notice": "* El total en MANA se calcula en función de los precios actuales del mercado. Este valor puede cambiar ligeramente cuando se ejecuta la transacción.",
+    "qty_of_items": "# de artículos",
+    "fee_per_item": "Tarifa por artículo",
+    "total_in_usd": "Total en {currency}",
+    "total_in_mana": "Total en MANA",
+    "rarities_error": "Hubo un error al intentar obtener las tarifas de publicación.",
     "tos_title": "Por la presente declaro y garantizo que:",
     "tos_first_condition": "1: Los Wearables por publicarse cumplen plenamente con los {terms_of_use} y las {content_policy}, que reconozco y acepto.",
     "tos_second_condition": "2: Tengo suficientes derechos de propiedad intelectual sobre los Wearables que serán publicados.",
@@ -1375,6 +1403,10 @@
   "networks": {
     "ethereum": "Ethereum",
     "matic": "Polygon"
+  },
+  "tokens": {
+    "ethereum": "ETH",
+    "matic": "MATIC"
   },
   "intro_popup": {
     "title": "Introducimos Polygon MANA",

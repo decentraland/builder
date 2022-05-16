@@ -116,7 +116,7 @@ const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStat
   return SyncStatus.UNPUBLISHED
 }
 
-const getStatusForDCL = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
+const getStatusForStandard = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
   let status: SyncStatus
   if (!item.isPublished) {
     status = SyncStatus.UNPUBLISHED
@@ -151,7 +151,7 @@ export const getStatusByItemId = createSelector<
     for (const item of items) {
       statusByItemId[item.id] = isThirdParty(item.urn)
         ? getStatusForTP(item, itemCurationByItemId[item.id])
-        : getStatusForDCL(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
+        : getStatusForStandard(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
     }
     return statusByItemId
   }
