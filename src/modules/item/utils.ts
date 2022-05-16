@@ -335,10 +335,14 @@ function getCategories(contents: Record<string, any> | undefined = {}) {
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
-  let categories = getCategories(contents).filter(category => category !== WearableCategory.HEAD)
+  const ignoreCategories = new Set([WearableCategory.HEAD, WearableCategory.BODY_SHAPE])
+
+  let categories = getCategories(contents).filter(category => !ignoreCategories.has(category))
+
   if (!process.env.REACT_APP_FF_SKINS) {
     categories = categories.filter(category => category !== WearableCategory.SKIN)
   }
+
   return categories
 }
 
