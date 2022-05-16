@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized'
-import { Header, Section } from 'decentraland-ui'
+import { Header, Loader, Section } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
@@ -13,14 +13,19 @@ const ITEM_ROW_HEIGHT = 52
 
 export default class Items extends React.PureComponent<Props, State> {
   listRef: List | null = null
-  state = {
-    items: this.props.items
+  state: State = {
+    items: this.props.items,
+    resolveNextPagePromise: null
   }
   componentDidUpdate(prevProps: Props) {
     const { items, selectedItemId, selectedCollectionId } = this.props
-    const { items: stateItems } = this.state
+    const { items: stateItems, resolveNextPagePromise } = this.state
     const prevItemIds = stateItems.map(prevItem => prevItem.id)
     if (items.some(item => !prevItemIds.includes(item.id))) {
+      // if there was a promise pending, let's resolve it
+      if (resolveNextPagePromise) {
+        resolveNextPagePromise()
+      }
       const newItems = [...stateItems, ...items.filter(item => !prevItemIds.includes(item.id))]
       this.setState({ items: newItems })
     }
@@ -77,11 +82,16 @@ export default class Items extends React.PureComponent<Props, State> {
     if (selectedCollectionId && totalItems) {
       onLoadNextPage()
     }
+    const promise = new Promise<void>(resolve => {
+      // set the resolve fn in the state so it's call later when the items are updated
+      this.setState({ resolveNextPagePromise: resolve })
+    })
+    return promise
   }
 
   render() {
     const { items } = this.state
-    const { hasHeader, totalItems, selectedCollectionId } = this.props
+    const { hasHeader, totalItems, selectedCollectionId, isLoading } = this.props
     if (items.length === 0 || !totalItems) return null
 
     return (
@@ -111,6 +121,7 @@ export default class Items extends React.PureComponent<Props, State> {
         ) : (
           items.map(item => this.rowRenderer({ key: item.id, index: items.indexOf(item) }))
         )}
+        {isLoading ? <Loader size="small" active /> : null}
       </Section>
     )
   }

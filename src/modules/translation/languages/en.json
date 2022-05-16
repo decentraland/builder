@@ -1162,6 +1162,7 @@
     "for_me": "I'm the beneficiary",
     "free": "Make it free",
     "price_label": "Price",
+    "price_message": "Keep in mind that the minimun amount supported for costless transactions is {minPrice}.{br}{br}If your item costs less than that, the buyer will need to cover the transaction cost in {token}.",
     "beneficiary_label": "Beneficiary",
     "beneficiary_popup": "This is the wallet address that will receive MANA when the item is sold for the first time and Royalties when it is resold. You can set a different beneficiary address for each item in a collection."
   },
@@ -1387,6 +1388,10 @@
   "networks": {
     "ethereum": "Ethereum",
     "matic": "Polygon"
+  },
+  "tokens": {
+    "ethereum": "ETH",
+    "matic": "MATIC"
   },
   "intro_popup": {
     "title": "Introducing Polygon MANA",

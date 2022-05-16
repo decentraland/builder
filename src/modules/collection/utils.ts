@@ -38,10 +38,21 @@ export function getCollectionEditorURL(collection: Collection, items: Item[]): s
   return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })
 }
 
-export function getExplorerURL(collection: Collection) {
+export function getExplorerURL({ collection, item_ids }: { collection?: Collection; item_ids?: string[] }): string {
+  if (!collection && !item_ids) {
+    throw new Error('Either a collection or item ids must be specified to get the explorer url')
+  }
   const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '')
   const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
-  return `${EXPLORER_URL}?WITH_COLLECTIONS=${collection.id}&BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=ropsten&DEBUG_MODE=true`
+  let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=ropsten&DEBUG_MODE=true`
+
+  if (collection) {
+    URL += `&WITH_COLLECTIONS=${collection.id}`
+  } else if (item_ids) {
+    URL += `&WITH_ITEMS=${item_ids.join(',')}`
+  }
+
+  return URL
 }
 
 export function getCollectionBaseURI() {
@@ -123,4 +134,10 @@ export function isTPCollection(collection: Collection): boolean {
 
 export function getCollectionFactoryContract(chainId: ChainId) {
   return getContract(ContractName.CollectionFactoryV3, chainId)
+}
+
+export function getRaritiesContract(chainId: ChainId) {
+  return env.get<string | undefined>('REACT_APP_FF_RARITIES_WITH_ORACLE') === '1'
+    ? getContract(ContractName.RaritiesWithOracle, chainId)
+    : getContract(ContractName.Rarities, chainId)
 }
