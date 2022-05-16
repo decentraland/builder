@@ -43,9 +43,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
 
   handleEditInBulk = () => {
     const { collection, onOpenModal } = this.props
-    if (collection.isPublished) {
-      onOpenModal('CreateAndEditMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
-    }
+    onOpenModal('CreateAndEditMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
   }
 
   navigateTo = (url: string, target: string = '') => {
@@ -109,9 +107,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
             on="hover"
             inverted
           />
-          {collection.isPublished ? (
-            <Dropdown.Item text={t('collection_context_menu.edit_in_bulk')} onClick={this.handleEditInBulk} />
-          ) : null}
+          <Dropdown.Item text={t('collection_context_menu.edit_in_bulk')} onClick={this.handleEditInBulk} />
           <Popup
             content={t('collection_context_menu.unpublished')}
             position="right center"
