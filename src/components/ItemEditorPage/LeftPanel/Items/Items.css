@@ -2,3 +2,8 @@
   padding: 0px 16px;
   flex: 1 1 auto;
 }
+
+.Items .ui.loader {
+  top: 100%;
+  margin-top: 15px;
+}
