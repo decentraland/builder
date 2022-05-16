@@ -249,7 +249,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     {thirdParty.availableSlots !== undefined ? (
                       <CollectionPublishButton collection={collection} items={selectedItems} slots={thirdParty.availableSlots} />
                     ) : null}
-                    <CollectionContextMenu collection={collection} />
+                    <CollectionContextMenu collection={collection} items={paginatedItems} />
                   </Row>
                 </Column>
               </Row>
