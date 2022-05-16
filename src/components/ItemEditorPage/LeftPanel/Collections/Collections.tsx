@@ -1,21 +1,26 @@
 import * as React from 'react'
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized'
-import { Section } from 'decentraland-ui'
+import { Loader, Section } from 'decentraland-ui'
 import SidebarCollection from './SidebarCollection'
-import { Props } from './Collections.types'
+import { Props, State } from './Collections.types'
 import './Collections.css'
 
 const COLLECTION_ROW_HEIGHT = 80
 
-export default class Collections extends React.PureComponent<Props> {
-  state = {
-    collections: this.props.collections
+export default class Collections extends React.PureComponent<Props, State> {
+  state: State = {
+    collections: this.props.collections,
+    resolveNextPagePromise: null
   }
   componentDidUpdate() {
     const { collections } = this.props
-    const { collections: stateCollections } = this.state
-    const prevCollectionIds = stateCollections.map(prevItem => prevItem.id)
+    const { collections: stateCollections, resolveNextPagePromise } = this.state
+    const prevCollectionIds = stateCollections.map(prevCollection => prevCollection.id)
     if (collections.some(c => !prevCollectionIds.includes(c.id))) {
+      // if there was a promise pending, let's resolve it
+      if (resolveNextPagePromise) {
+        resolveNextPagePromise()
+      }
       const newCollections = [...stateCollections, ...collections.filter(c => !prevCollectionIds.includes(c.id))]
       this.setState({ collections: newCollections })
     }
@@ -48,10 +53,16 @@ export default class Collections extends React.PureComponent<Props> {
     if (totalCollections) {
       onLoadNextPage()
     }
+    const promise = new Promise<void>(resolve => {
+      // set the resolve fn in the state so it's call later when the items are updated
+      this.setState({ resolveNextPagePromise: resolve })
+    })
+    return promise
   }
 
   render() {
-    const { collections, totalCollections } = this.props
+    const { collections } = this.state
+    const { totalCollections, isLoading } = this.props
     if (collections.length === 0) return null
 
     return (
@@ -73,6 +84,7 @@ export default class Collections extends React.PureComponent<Props> {
             </AutoSizer>
           )}
         </InfiniteLoader>
+        {isLoading ? <Loader size="small" active /> : null}
       </Section>
     )
   }

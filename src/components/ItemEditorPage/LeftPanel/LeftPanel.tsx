@@ -106,7 +106,8 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
           >
             {({ collection, paginatedItems: collectionItems, isLoading }) => {
               const items = this.getItems(collection, collectionItems)
-              const showLoader = isLoading && items.length === 0
+              const isCollectionTab = this.isCollectionTabActive()
+              const showLoader = isLoading && ((isCollectionTab && collections.length === 0) || (!isCollectionTab && items.length === 0))
               if (showLoader) {
                 return <Loader size="massive" active />
               }
@@ -138,10 +139,10 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                   <Header />
                   {showTabs ? (
                     <Tabs isFullscreen>
-                      <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(ItemEditorTabs.COLLECTIONS)}>
+                      <Tabs.Tab active={isCollectionTab} onClick={() => this.handleTabChange(ItemEditorTabs.COLLECTIONS)}>
                         {t('collections_page.collections')}
                       </Tabs.Tab>
-                      <Tabs.Tab active={!this.isCollectionTabActive()} onClick={() => this.handleTabChange(ItemEditorTabs.ORPHAN_ITEMS)}>
+                      <Tabs.Tab active={!isCollectionTab} onClick={() => this.handleTabChange(ItemEditorTabs.ORPHAN_ITEMS)}>
                         {t('item_editor.left_panel.items')}
                       </Tabs.Tab>
                     </Tabs>
@@ -155,6 +156,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       selectedCollectionId={selectedCollectionId}
                       onSetCollection={onSetCollection}
                       onLoadNextPage={() => this.loadNextPage(isLoading)}
+                      isLoading={isLoading}
                     />
                   ) : null}
                   {showItems ? (
