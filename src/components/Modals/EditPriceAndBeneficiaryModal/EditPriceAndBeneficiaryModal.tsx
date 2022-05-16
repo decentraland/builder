@@ -18,10 +18,10 @@ import {
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 
 import Info from 'components/Info'
 import { isValid } from 'lib/address'
-import { toFixedMANAValue } from 'lib/mana'
 import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
