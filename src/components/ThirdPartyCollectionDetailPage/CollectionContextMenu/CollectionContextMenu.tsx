@@ -43,9 +43,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
 
   handleEditInBulk = () => {
     const { collection, onOpenModal } = this.props
-    if (!collection.isPublished) {
-      onOpenModal('CreateAndEditMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
-    }
+    onOpenModal('CreateAndEditMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
   }
 
   navigateTo = (url: string, target: string = '') => {
