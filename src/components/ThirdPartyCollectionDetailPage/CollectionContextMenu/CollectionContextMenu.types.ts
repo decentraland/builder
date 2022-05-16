@@ -14,7 +14,7 @@ export type Props = {
   onNavigate: (path: string) => void
 }
 
-export type OwnProps = Pick<Props, 'collection'>
-export type MapStateProps = Pick<Props, 'items' | 'name'>
+export type OwnProps = Pick<Props, 'collection' | 'items'>
+export type MapStateProps = Pick<Props, 'name'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onDelete'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | DeleteCollectionRequestAction>

@@ -1313,13 +1313,24 @@ describe('when handling the save item success action', () => {
       .run({ silenceTimeout: true })
   })
 
-  it('should put a location change to the item detail if the CreateSingleItemModal was opened', () => {
+  it('should put a location change to the item detail if the CreateSingleItemModal was opened and the location was /collections', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
         [select(getLocation), { pathname: locations.collections() }],
         [select(getOpenModals), { CreateSingleItemModal: true }]
       ])
       .put(push(locations.itemDetail(item.id)))
+      .dispatch(saveItemSuccess(item, {}))
+      .run({ silenceTimeout: true })
+  })
+
+  it('should not put a location change to the item detail if the CreateSingleItemModal was opened and the location was not /collections', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .provide([
+        [select(getLocation), { pathname: locations.collectionDetail('id') }],
+        [select(getOpenModals), { CreateSingleItemModal: true }]
+      ])
+      .not.put(push(locations.itemDetail(item.id)))
       .dispatch(saveItemSuccess(item, {}))
       .run({ silenceTimeout: true })
   })
