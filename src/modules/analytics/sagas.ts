@@ -3,7 +3,6 @@ import { takeLatest, select, fork, takeEvery } from 'redux-saga/effects'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { trackConnectWallet } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { OPEN_EDITOR, OpenEditorAction, TOGGLE_SNAP_TO_GRID, ToggleSnapToGridAction } from 'modules/editor/actions'
 import { getCurrentProject } from 'modules/project/selectors'
@@ -56,6 +55,7 @@ export function* analyticsSaga() {
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
+  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeLatest(DEPLOY_TO_POOL_SUCCESS, handleDeployToPoolSuccess)
   yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
   yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
@@ -129,6 +129,22 @@ function* handleUpdateTransfrom(_: UpdateTransfromAction) {
   track('Update item', { projectId: project.id })
 }
 
+function handleConnectWallet(action: ConnectWalletSuccessAction) {
+  const ethereum = (window as any)['ethereum']
+
+  let provider = null
+
+  if (ethereum) {
+    if (ethereum.isMetaMask) {
+      provider = 'metamask'
+    } else if (ethereum.isDapper) {
+      provider = 'dapper'
+    }
+  }
+
+  track('Connect wallet', { address: action.payload.wallet.address, provider })
+}
+
 function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
@@ -172,7 +188,6 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
 
   if (analytics) {
     analytics.identify(wallet.address)
-    trackConnectWallet({ providerType: wallet.providerType })
   }
 }
 
