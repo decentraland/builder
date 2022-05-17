@@ -129,7 +129,20 @@ describe('when third party items were fetched', () => {
 
   describe('and some of the items were published', () => {
     beforeEach(() => {
-      items = [{ id: 'itemId1', isPublished: false } as Item, { id: 'itemId2', isPublished: true } as Item]
+      items = [
+        {
+          id: 'itemId1',
+          collectionId: thirdPartyCollection.id,
+          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:tercer-fiesta-2',
+          isPublished: false
+        } as Item,
+        {
+          id: 'itemId2',
+          collectionId: thirdPartyCollection.id,
+          urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:tercer-fiesta-2',
+          isPublished: true
+        } as Item
+      ]
     })
 
     it('should put the success action and fetch the item curations for those items', () => {
