@@ -29,7 +29,7 @@ import CollectionRow from './CollectionRow'
 import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
-const PAGE_SIZE = 6
+const PAGE_SIZE = 20
 
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
