@@ -2,5 +2,22 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+}
+
+.Collections.dcl.section.medium {
+  margin-bottom: 0;
+}
+
+.Collections .ReactVirtualized__List {
   padding: 0px 16px;
+  margin-bottom: 16px;
+}
+
+.Collections .ReactVirtualized__Grid__innerScrollContainer {
+  margin-bottom: 16px;
+}
+
+.Collections .ui.loader {
+  top: 100%;
+  margin-top: 15px;
 }
