@@ -359,9 +359,6 @@ export function getOverridesCategories(contents: Record<string, any> | undefined
     )
   }
 
-  // The body shape should never be hidden, filtering it out will prevent it from showing up in the selection.
-  overrideCategories = overrideCategories.filter(c => c !== WearableCategory.BODY_SHAPE)
-
   return overrideCategories
 }
 
