@@ -1,6 +1,6 @@
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { takeLatest, select, fork, takeEvery } from 'redux-saga/effects'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { getAnalytics, trackConnectWallet } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
@@ -188,6 +188,7 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
 
   if (analytics) {
     analytics.identify(wallet.address)
+    trackConnectWallet({ providerType: wallet.providerType, address: wallet.address })
   }
 }
 
