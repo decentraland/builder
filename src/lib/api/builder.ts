@@ -642,7 +642,7 @@ export class BuilderAPI extends BaseAPI {
     return this.request(method, `/pools/${pool}/likes`)
   }
 
-  async fetchItems(address?: string, params: { collectionId?: string; page?: string; limit?: string } = {}) {
+  async fetchItems(address?: string, params: { collectionId?: string; page?: number; limit?: number } = {}) {
     const { collectionId, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE } = params
     const endpoint = address ? `/${address}/items` : '/items'
     const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, { page, limit, collectionId })
@@ -687,7 +687,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections(address?: string, params?: FetchCollectionsParams) {
     const remoteCollections = address
-      ? await this.request('get', `/${address}/collections`)
+      ? await this.request('get', `/${address}/collections`, params)
       : await this.request('get', '/collections', toRemoteCollectionQueryParameters(params))
 
     const { limit, page } = params || {}

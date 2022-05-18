@@ -1,6 +1,19 @@
+.Items.dcl.section.medium {
+  margin-bottom: 0;
+}
+
 .Items {
-  padding: 0px 16px;
+  margin-top: 8px;
   flex: 1 1 auto;
+}
+
+.Items .ReactVirtualized__List {
+  padding: 0px 16px;
+  margin-bottom: 16px;
+}
+
+.Items .ReactVirtualized__Grid__innerScrollContainer {
+  margin-bottom: 16px;
 }
 
 .Items .ui.loader {

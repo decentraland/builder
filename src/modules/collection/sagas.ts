@@ -19,7 +19,6 @@ import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist
 import { Network } from '@dcl/schemas'
 import {
   FetchCollectionsRequestAction,
-  fetchCollectionsRequest,
   fetchCollectionsSuccess,
   fetchCollectionsFailure,
   FETCH_COLLECTIONS_REQUEST,
@@ -115,7 +114,6 @@ import {
   getPaginationData
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
-import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { buildItemEntity, buildStandardWearableContentHash, buildTPItemEntity, hasOldHashedContents } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
@@ -167,7 +165,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeEvery(MINT_COLLECTION_ITEMS_REQUEST, handleMintCollectionItemsRequest)
   yield takeEvery(APPROVE_COLLECTION_REQUEST, handleApproveCollectionRequest)
   yield takeEvery(REJECT_COLLECTION_REQUEST, handleRejectCollectionRequest)
-  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeLatest(INITIATE_APPROVAL_FLOW, handleInitiateApprovalFlow)
   yield takeLatest(INITIATE_TP_APPROVAL_FLOW, handleInitiateTPItemsApprovalFlow)
@@ -513,11 +510,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     } catch (error) {
       yield put(rejectCollectionFailure(collection, error.message))
     }
-  }
-
-  function* handleLoginSuccess(action: LoginSuccessAction) {
-    const { wallet } = action.payload
-    yield put(fetchCollectionsRequest(wallet.address))
   }
 
   function* handleRequestCollectionSuccess() {

@@ -18,6 +18,7 @@ const mapState = (state: RootState): MapStateProps => {
   const collection = item && item.collectionId ? getCollection(state, item.collectionId) : null
 
   return {
+    itemId,
     wallet,
     item,
     collection,

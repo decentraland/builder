@@ -22,3 +22,11 @@
 .LeftPanel > .empty .subtitle {
   color: var(--secondary-text);
 }
+
+.LeftPanel .tabs {
+  padding: 0 16px;
+}
+
+.LeftPanel .dcl.tabs.fullscreen {
+  margin-bottom: 8px;
+}
