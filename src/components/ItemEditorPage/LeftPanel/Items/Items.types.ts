@@ -1,9 +1,20 @@
 import { setItems } from 'modules/editor/actions'
 import { Item, WearableBodyShape } from 'modules/item/types'
 
+export enum ItemPanelTabs {
+  TO_REVIEW = 'to-review',
+  REVIEWED = 'reviewed',
+  ALL_ITEMS = 'all-items'
+}
+
 export type State = {
   items: Item[]
-  resolveNextPagePromise: (() => void) | null
+  reviewed: Item[]
+  currentTab: ItemPanelTabs
+  currentPages: Record<ItemPanelTabs, number>
+  reviewedTabPage: number
+  showGetMoreSamplesModal: boolean
+  doNotShowSamplesModalAgain: boolean
 }
 
 export type Props = {
@@ -16,5 +27,6 @@ export type Props = {
   hasHeader: boolean
   bodyShape: WearableBodyShape
   onSetItems: typeof setItems
-  onLoadNextPage: () => void
+  onLoadRandomPage: () => void
+  onLoadPage: (page: number) => void
 }

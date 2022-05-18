@@ -1,15 +1,14 @@
 import React from 'react'
-import { Button, Loader } from 'decentraland-ui'
+import { Button, Header, Icon, Loader, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Collection } from 'modules/collection/types'
-import { Item } from 'modules/item/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { getCollectionType, hasReviews, isTPCollection } from 'modules/collection/utils'
-import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
+import { TP_TRESHOLD_TO_REVIEW } from '../LeftPanel/LeftPanel'
 import ConfirmApprovalModal from './ConfirmApprovalModal'
 import RejectionModal from './RejectionModal'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
@@ -36,7 +35,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
-  renderPage = (collection: Collection, items: Item[], curation: CollectionCuration | null, itemsCuration: ItemCuration[] | null) => {
+  renderPage = (collection: Collection) => {
+    const { items, itemCurations, curation } = this.props
     const { showRejectionModal, showApproveConfirmModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -55,7 +55,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         <div className="actions">
           <span className="button-container">
             {isTPCollection(collection)
-              ? this.renderTPButtons(collection, curation, itemsCuration)
+              ? this.renderTPButtons(collection, curation, itemCurations)
               : this.renderButtons(collection, curation)}
           </span>
         </div>
@@ -80,8 +80,13 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
+  getThresholdToReview = () => {
+    const { totalItems } = this.props
+    return Math.floor(totalItems! * TP_TRESHOLD_TO_REVIEW)
+  }
+
   renderButton = (type: ButtonType, collection: Collection, curation: CollectionCuration | null) => {
-    const { address, onInitiateApprovalFlow, onInitiateTPApprovalFlow } = this.props
+    const { address, onInitiateApprovalFlow, onInitiateTPApprovalFlow, reviewedItems, totalItems } = this.props
 
     const onClickMap = {
       [ButtonType.APPROVE]: () =>
@@ -109,18 +114,46 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     }
 
     const isPrimary = type === ButtonType.APPROVE || type === ButtonType.ENABLE
-
+    const isApproveButtonPopupDisabled =
+      !isTPCollection(collection) || (!!totalItems && reviewedItems.length >= this.getThresholdToReview())
     return (
-      <Button primary={isPrimary} onClick={() => onClickMap[type]()}>
-        {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)}
-      </Button>
+      <Popup
+        content={t('item_editor.top_panel.items_pending_to_review')}
+        disabled={isApproveButtonPopupDisabled}
+        position="bottom center"
+        trigger={
+          <div>
+            <Button
+              primary={isPrimary}
+              onClick={() => onClickMap[type]()}
+              disabled={
+                isTPCollection(collection) &&
+                type === ButtonType.APPROVE &&
+                !!totalItems &&
+                reviewedItems.length < this.getThresholdToReview()
+              }
+            >
+              {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)}
+            </Button>
+          </div>
+        }
+        hideOnScroll={true}
+        on="hover"
+        inverted
+        flowing
+      />
     )
   }
 
   renderTPButtons = (collection: Collection, collectionCuration: CollectionCuration | null, itemCurations: ItemCuration[] | null) => {
+    const { reviewedItems } = this.props
     const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
     return (
       <>
+        <Header sub>
+          {t('item_editor.top_panel.reviewed_counter', { count: reviewedItems.length, threshold: this.getThresholdToReview() })}
+          {reviewedItems.length >= this.getThresholdToReview() ? <Icon name="check circle" /> : null}
+        </Header>
         {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration) : null}
         {this.renderButton(ButtonType.REJECT, collection, collectionCuration)}
         {/* TODO: the disable button from below is not the same as the original disable one, it will be implemented once the sagas are ready */}
@@ -162,18 +195,11 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isCommitteeMember, isReviewing, selectedCollectionId, isConnected } = this.props
-
+    const { collection, items, isCommitteeMember, isReviewing, isConnected, isLoading } = this.props
+    // Show loader only while loading the first page of items
+    const showLoader = !collection || (isLoading && !items.length)
     return isCommitteeMember && isReviewing && isConnected ? (
-      <div className="TopPanel">
-        <CollectionProvider id={selectedCollectionId} status={isReviewing ? CurationStatus.PENDING : undefined}>
-          {({ collection, items, itemCurations, curation, isLoading }) => {
-            // Show loader only while loading the first page of items
-            const showLoader = !collection || (isLoading && !items.length)
-            return showLoader ? <Loader size="small" active /> : this.renderPage(collection, items, curation, itemCurations)
-          }}
-        </CollectionProvider>
-      </div>
+      <div className="TopPanel">{showLoader ? <Loader size="small" active /> : this.renderPage(collection)}</div>
     ) : null
   }
 }

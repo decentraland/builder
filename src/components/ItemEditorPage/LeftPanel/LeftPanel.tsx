@@ -14,7 +14,8 @@ import Collections from './Collections'
 import { Props, State, ItemEditorTabs } from './LeftPanel.types'
 import './LeftPanel.css'
 
-export const LEFT_PANEL_PAGE_SIZE = 20
+export const TP_TRESHOLD_TO_REVIEW = 0.01
+export const LEFT_PANEL_PAGE_SIZE = 10
 const INITIAL_PAGE = 1
 
 export default class LeftPanel extends React.PureComponent<Props, State> {
@@ -24,9 +25,9 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   fetchResource() {
-    const { address, onFetchCollections, onFetchOrphanItems } = this.props
+    const { address, onFetchCollections, onFetchOrphanItems, isReviewing } = this.props
     const { pages } = this.state
-    if (address) {
+    if (address && !isReviewing) {
       const page = pages[pages.length - 1] // fetch new last page added, the previous ones were already fetched
       const fetchFn = this.isCollectionTabActive() ? onFetchCollections : onFetchOrphanItems
       fetchFn(address, { limit: LEFT_PANEL_PAGE_SIZE, page })
@@ -66,6 +67,26 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     }
   }
 
+  loadPage = (page: number) => {
+    this.setState({ pages: [page] }, this.fetchResource)
+  }
+
+  loadRandomPage = (currentItems: Item[]) => {
+    const { pages } = this.state
+    const { totalItems, totalCollections, onSetReviewedItems } = this.props
+    const totalResources = this.isCollectionTabActive() ? totalCollections : totalItems
+    const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
+    let randomPage
+    while (!randomPage) {
+      randomPage = Math.floor(Math.random() * totalPages)
+      if (pages.includes(randomPage)) {
+        randomPage = null
+      }
+    }
+    onSetReviewedItems(currentItems)
+    this.setState({ pages: [randomPage] }, this.fetchResource)
+  }
+
   handleTabChange = (tab: ItemEditorTabs) => {
     this.setState({ currentTab: tab, pages: [INITIAL_PAGE] }, this.fetchResource)
   }
@@ -89,7 +110,8 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       isReviewing,
       isConnected,
       onSetItems,
-      onSetCollection
+      onSetCollection,
+      isLoading: isLoadingOrphanItems
     } = this.props
     const { pages } = this.state
     const showTabs = !selectedCollectionId
@@ -169,8 +191,9 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       visibleItems={visibleItems}
                       bodyShape={bodyShape}
                       onSetItems={onSetItems}
-                      onLoadNextPage={() => this.loadNextPage(isLoading)}
-                      isLoading={isLoading}
+                      onLoadRandomPage={() => this.loadRandomPage(items)}
+                      onLoadPage={this.loadPage}
+                      isLoading={isLoading || isLoadingOrphanItems}
                     />
                   ) : null}
                 </>

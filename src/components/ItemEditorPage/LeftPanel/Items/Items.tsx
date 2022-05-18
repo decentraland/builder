@@ -1,41 +1,47 @@
 import * as React from 'react'
-import { AutoSizer, InfiniteLoader, List } from 'react-virtualized'
-import { Section, Loader } from 'decentraland-ui'
+import { List } from 'react-virtualized'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { isThirdParty } from 'lib/urn'
+import { Section, Loader, Tabs, Button, Icon, Pagination, PaginationProps, Header, Modal, Checkbox } from 'decentraland-ui'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
+import { LEFT_PANEL_PAGE_SIZE, TP_TRESHOLD_TO_REVIEW } from '../LeftPanel'
 import SidebarItem from './SidebarItem'
-import { Props, State } from './Items.types'
+import { Props, State, ItemPanelTabs } from './Items.types'
 import 'react-virtualized/styles.css' // only needs to be imported once
 import './Items.css'
 
-const ITEM_ROW_HEIGHT = 52
+const INITIAL_PAGE_STATE = {
+  [ItemPanelTabs.TO_REVIEW]: 1,
+  [ItemPanelTabs.REVIEWED]: 1,
+  [ItemPanelTabs.ALL_ITEMS]: 1
+}
 
 export default class Items extends React.PureComponent<Props, State> {
   listRef: List | null = null
   state: State = {
     items: this.props.items,
-    resolveNextPagePromise: null
+    reviewed: [],
+    currentTab: ItemPanelTabs.TO_REVIEW,
+    currentPages: INITIAL_PAGE_STATE,
+    reviewedTabPage: 1,
+    showGetMoreSamplesModal: false,
+    doNotShowSamplesModalAgain: false
   }
+
   componentDidUpdate(prevProps: Props) {
-    const { items, selectedItemId, selectedCollectionId } = this.props
-    const { items: stateItems, resolveNextPagePromise } = this.state
-    const prevItemIds = stateItems.map(prevItem => prevItem.id)
-    if (items.some(item => !prevItemIds.includes(item.id))) {
-      // if there was a promise pending, let's resolve it
-      if (resolveNextPagePromise) {
-        resolveNextPagePromise()
-      }
-      const newItems = [...stateItems, ...items.filter(item => !prevItemIds.includes(item.id))]
-      this.setState({ items: newItems })
-    }
-    if (selectedItemId !== prevProps.selectedItemId && this.listRef) {
-      this.listRef.forceUpdateGrid()
+    const { items, selectedCollectionId } = this.props
+    const { currentTab } = this.state
+    const prevItemIds = prevProps.items.map(prevItem => prevItem.id)
+    if (currentTab === ItemPanelTabs.TO_REVIEW && items.some(item => !prevItemIds.includes(item.id))) {
+      this.setState({ items })
     }
     // if selectedCollectionId changes, lets clear the items in the state
     if (selectedCollectionId !== prevProps.selectedCollectionId) {
       this.setState({ items })
     }
   }
+
   isVisible = (item: Item) => {
     const { visibleItems } = this.props
     return visibleItems.some(_item => _item.id === item.id)
@@ -52,70 +58,242 @@ export default class Items extends React.PureComponent<Props, State> {
     onSetItems(newVisibleItemIds)
   }
 
-  rowRenderer = ({ key, index, style }: { key: string; index: number; style?: any }) => {
-    const { items } = this.state
-    const { selectedItemId, selectedCollectionId, bodyShape } = this.props
-    const item = items[index]
+  handleTabChange = (targetTab: ItemPanelTabs) => {
+    const { onLoadPage } = this.props
+    const { currentPages } = this.state
+    if (targetTab === ItemPanelTabs.ALL_ITEMS) {
+      onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS])
+    }
+    this.setState({ currentTab: targetTab })
+  }
+
+  handleGetRandomSampleClick = () => {
+    const { doNotShowSamplesModalAgain, items } = this.state
+    if (doNotShowSamplesModalAgain) {
+      const { onLoadRandomPage } = this.props
+      this.setState(prevState => ({ reviewed: [...prevState.reviewed, ...items] }), onLoadRandomPage)
+    } else {
+      this.setState({ showGetMoreSamplesModal: true })
+    }
+  }
+
+  handleReviewedPageChange = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
+    this.setState({ reviewedTabPage: +props.activePage! })
+  }
+
+  handlePageChange = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
+    const { currentTab } = this.state
+    const { onLoadPage } = this.props
+    this.setState(prevState => ({ currentPages: { ...prevState.currentPages, [currentTab]: +props.activePage! } }))
+    onLoadPage(+props.activePage!)
+  }
+
+  getAreTPItems = () => {
+    const { items } = this.props
+    return items[0] ? isThirdParty(items[0].urn) : false
+  }
+
+  renderSidebarItem = (item: Item) => {
+    const { selectedCollectionId, selectedItemId, bodyShape } = this.props
     return (
-      <div key={key} style={style}>
-        <SidebarItem
-          key={item.id}
-          item={item}
-          isSelected={selectedItemId === item.id}
-          isVisible={this.isVisible(item)}
-          selectedCollectionId={selectedCollectionId}
-          bodyShape={bodyShape}
-          onClick={this.handleClick}
-        />
-      </div>
+      <SidebarItem
+        key={item.id}
+        item={item}
+        isSelected={selectedItemId === item.id}
+        isVisible={this.isVisible(item)}
+        selectedCollectionId={selectedCollectionId}
+        bodyShape={bodyShape}
+        onClick={this.handleClick}
+      />
     )
   }
 
-  isRowLoaded = ({ index }: { index: number }) => {
-    const { items } = this.state
-    return !!items[index]
+  renderTabPagination = (total: number) => {
+    const { currentTab, currentPages } = this.state
+    const currentPage = currentPages[currentTab]
+    return (
+      <Pagination
+        siblingRange={0}
+        firstItem={null}
+        lastItem={null}
+        totalPages={Math.ceil(total / LEFT_PANEL_PAGE_SIZE)}
+        activePage={currentPage}
+        onPageChange={this.handlePageChange}
+      />
+    )
   }
 
-  loadMoreItems = async () => {
-    const { onLoadNextPage, totalItems } = this.props
-    if (totalItems) {
-      onLoadNextPage()
+  renderPaginationStats = (total: number) => {
+    const { currentPages, currentTab } = this.state
+    const currentPage = currentPages[currentTab]
+    const pageStart = (currentPage - 1) * LEFT_PANEL_PAGE_SIZE
+    const pageEnd = currentPage * LEFT_PANEL_PAGE_SIZE
+    return (
+      <Header sub>
+        {t('item_editor.left_panel.reviewed_tab.page_counter', {
+          pageStart,
+          pageEnd: pageEnd > total ? total : pageEnd,
+          total: total
+        })}
+      </Header>
+    )
+  }
+
+  renderTabContent = () => {
+    const { items: propItems, isLoading, totalItems } = this.props
+    console.log('propItems: ', propItems);
+    const { items: stateItems, reviewed, currentTab, currentPages } = this.state
+    const areTPItems = this.getAreTPItems()
+    const currentPage = currentPages[currentTab]
+    switch (currentTab) {
+      case ItemPanelTabs.TO_REVIEW:
+        return isLoading ? (
+          <Loader size="large" active />
+        ) : (
+          <>
+            {(areTPItems ? stateItems : propItems).map(this.renderSidebarItem)}
+            {!areTPItems && totalItems ? this.renderTabPagination(totalItems) : null}
+          </>
+        )
+      case ItemPanelTabs.REVIEWED: {
+        const paginatedItems = reviewed.slice((currentPage - 1) * LEFT_PANEL_PAGE_SIZE, currentPage * LEFT_PANEL_PAGE_SIZE)
+        return (
+          <>
+            {reviewed.length ? this.renderPaginationStats(reviewed.length) : null}
+            {paginatedItems.map(this.renderSidebarItem)}
+            {reviewed.length ? this.renderTabPagination(reviewed.length) : null}
+          </>
+        )
+      }
+      case ItemPanelTabs.ALL_ITEMS: {
+        return isLoading ? (
+          <Loader size="large" active />
+        ) : (
+          <>
+            {propItems.length && totalItems ? this.renderPaginationStats(totalItems) : null}
+            {propItems.map(this.renderSidebarItem)}
+            {propItems.length && totalItems ? this.renderTabPagination(totalItems) : null}
+          </>
+        )
+      }
+      default:
+        return null
     }
-    const promise = new Promise<void>(resolve => {
-      // set the resolve fn in the state so it's call later when the items are updated
-      this.setState({ resolveNextPagePromise: resolve })
-    })
-    return promise
+  }
+
+  getThresholdToReview = () => {
+    const { totalItems } = this.props
+    if (!totalItems) return null
+    return Math.floor(totalItems * TP_TRESHOLD_TO_REVIEW)
+  }
+
+  renderTabHeader = () => {
+    const { isLoading, totalItems } = this.props
+    const { currentTab, reviewed } = this.state
+    if (!this.getAreTPItems()) {
+      return null
+    }
+    let headerInnerContent
+    switch (currentTab) {
+      case ItemPanelTabs.TO_REVIEW:
+        headerInnerContent = (
+          <Button
+            disabled={isLoading || (!!totalItems && reviewed.length === totalItems)}
+            primary
+            className="random-sample-button"
+            onClick={this.handleGetRandomSampleClick}
+          >
+            <Icon name="random" />
+            {t('item_editor.left_panel.get_random_sample')}
+          </Button>
+        )
+        break
+      case ItemPanelTabs.REVIEWED:
+        const thresholdToReview = this.getThresholdToReview()
+        headerInnerContent = (
+          <T
+            id="item_editor.left_panel.reviewed_samples"
+            values={{
+              reviewed_samples_bold: <b>{t('item_editor.left_panel.reviewed_samples_bold', { count: reviewed.length })}</b>,
+              total: thresholdToReview
+            }}
+          />
+        )
+        break
+      default:
+        return null
+    }
+    return <div className="tab-header"> {headerInnerContent} </div>
+  }
+
+  renderModal = () => {
+    const { onLoadRandomPage } = this.props
+    const { showGetMoreSamplesModal, doNotShowSamplesModalAgain, items } = this.state
+    return (
+      <Modal open={showGetMoreSamplesModal} size="small" className="ConfirmNewSampleModal">
+        <Modal.Header>{t('item_editor.left_panel.get_more_samples_modal.title')}</Modal.Header>
+        <Modal.Content>
+          <T
+            id="item_editor.left_panel.get_more_samples_modal.content"
+            values={{
+              count: 10,
+              tabName: <b>{ItemPanelTabs.REVIEWED}</b>
+            }}
+          />
+          <div
+            className="checkbox-container"
+            onClick={() => this.setState(prevState => ({ doNotShowSamplesModalAgain: !prevState.doNotShowSamplesModalAgain }))}
+          >
+            <Checkbox checked={doNotShowSamplesModalAgain} />
+            {t('item_editor.left_panel.get_more_samples_modal.dont_show_again')}
+          </div>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button onClick={() => this.setState({ showGetMoreSamplesModal: false })}>{t('global.cancel')}</Button>
+          <Button
+            primary
+            onClick={() =>
+              this.setState(
+                prevState => ({ showGetMoreSamplesModal: false, reviewed: [...prevState.reviewed, ...items] }),
+                onLoadRandomPage
+              )
+            }
+          >
+            {t('item_editor.left_panel.get_more_samples_modal.understood')}
+          </Button>
+        </Modal.Actions>
+      </Modal>
+    )
+  }
+
+  renderTabs = () => {
+    const { currentTab } = this.state
+    return this.getAreTPItems() ? (
+      <Tabs isFullscreen>
+        <Tabs.Tab active={currentTab === ItemPanelTabs.TO_REVIEW} onClick={() => this.handleTabChange(ItemPanelTabs.TO_REVIEW)}>
+          {t('item_editor.left_panel.to_review')}
+        </Tabs.Tab>
+        <Tabs.Tab active={currentTab === ItemPanelTabs.REVIEWED} onClick={() => this.handleTabChange(ItemPanelTabs.REVIEWED)}>
+          {t('item_editor.left_panel.reviewed')}
+        </Tabs.Tab>
+        <Tabs.Tab active={currentTab === ItemPanelTabs.ALL_ITEMS} onClick={() => this.handleTabChange(ItemPanelTabs.ALL_ITEMS)}>
+          {t('item_editor.left_panel.all_items')}
+        </Tabs.Tab>
+      </Tabs>
+    ) : null
   }
 
   render() {
     const { items } = this.state
-    const { totalItems, isLoading } = this.props
+    const { totalItems } = this.props
     if (items.length === 0 || !totalItems) return null
 
     return (
       <Section className="Items">
-        <InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreItems} rowCount={totalItems}>
-          {({ onRowsRendered, registerChild }) => (
-            <AutoSizer>
-              {({ height, width }) => (
-                <List
-                  ref={ref => {
-                    registerChild(ref)
-                    this.listRef = ref
-                  }}
-                  width={width}
-                  height={height}
-                  rowCount={items.length}
-                  rowHeight={ITEM_ROW_HEIGHT}
-                  rowRenderer={this.rowRenderer}
-                  onRowsRendered={onRowsRendered}
-                />
-              )}
-            </AutoSizer>
-          )}
-        </InfiniteLoader>
-        {isLoading ? <Loader size="small" active /> : null}
+        {this.renderTabs()}
+        {this.renderTabHeader()}
+        {this.renderTabContent()}
+        {this.renderModal()}
       </Section>
     )
   }
