@@ -188,7 +188,7 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
 
   if (analytics) {
     analytics.identify(wallet.address)
-    trackConnectWallet({ providerType: wallet.providerType })
+    trackConnectWallet({ providerType: wallet.providerType, address: wallet.address })
   }
 }
 
