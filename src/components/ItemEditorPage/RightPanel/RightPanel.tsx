@@ -447,7 +447,15 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           label={t('item_editor.right_panel.hides')}
                           info={t('item_editor.right_panel.hides_info')}
                           value={hides}
-                          options={this.asCategorySelect(item.type, hidesCategories)}
+                          options={this.asCategorySelect(
+                            item.type,
+                            // Workaround for https://github.com/decentraland/builder/issues/2068
+                            // This will only show the body shape option if the item is currenlty hiding it.
+                            // Once removed, the option cannot be selected again
+                            hides.some(c => c === WearableCategory.BODY_SHAPE)
+                              ? hidesCategories
+                              : hidesCategories.filter(c => c !== WearableCategory.BODY_SHAPE)
+                          )}
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeHides}
                         />
