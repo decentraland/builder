@@ -191,9 +191,9 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       visibleItems={visibleItems}
                       bodyShape={bodyShape}
                       onSetItems={onSetItems}
+                      isLoading={isLoading || isLoadingOrphanItems}
                       onLoadRandomPage={() => this.loadRandomPage(items)}
                       onLoadPage={this.loadPage}
-                      isLoading={isLoading || isLoadingOrphanItems}
                     />
                   ) : null}
                 </>

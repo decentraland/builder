@@ -141,7 +141,6 @@ export default class Items extends React.PureComponent<Props, State> {
 
   renderTabContent = () => {
     const { items: propItems, isLoading, totalItems } = this.props
-    console.log('propItems: ', propItems);
     const { items: stateItems, reviewed, currentTab, currentPages } = this.state
     const areTPItems = this.getAreTPItems()
     const currentPage = currentPages[currentTab]
@@ -266,6 +265,7 @@ export default class Items extends React.PureComponent<Props, State> {
     )
   }
 
+  // the tabs will be just rendered for the TP items being reviewed
   renderTabs = () => {
     const { currentTab } = this.state
     return this.getAreTPItems() ? (
