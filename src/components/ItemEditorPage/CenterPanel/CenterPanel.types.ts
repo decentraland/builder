@@ -39,6 +39,7 @@ export type Props = {
 
 export type State = {
   isShowingAvatarAttributes: boolean
+  isLoading: boolean
 }
 
 export type MapStateProps = Pick<

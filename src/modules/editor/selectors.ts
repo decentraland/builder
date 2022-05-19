@@ -18,6 +18,7 @@ import { getData } from 'modules/item/selectors'
 import { Item } from 'modules/item/types'
 import { SelectedBaseWearablesByBodyShape } from './types'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
+import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 
 const getLoading = (state: RootState) => getState(state).loading
 export const getState = (state: RootState) => state.editor
@@ -111,8 +112,26 @@ export const isFetching = createSelector<RootState, Project | null, boolean, Loa
   }
 )
 
-export const getVisibleItems = createSelector<RootState, string[], ItemState['data'], Item[]>(
+export const getVisibleItems = createSelector<RootState, string | null, boolean, string[], ItemState['data'], Item[]>(
+  getSelectedCollectionId,
+  isReviewing,
   getVisibleItemIds,
   getData,
-  (itemIds, itemData) => itemIds.map(id => itemData[id]).filter(item => !!item)
+  (selectedCollectionId, reviewing, itemIds, itemData) =>
+    itemIds
+      .map(id => itemData[id])
+      .filter(item => {
+        if (!item) {
+          return false
+        }
+        if (reviewing) {
+          if (selectedCollectionId) {
+            return selectedCollectionId === item.collectionId
+          } else {
+            return !item.collectionId
+          }
+        } else {
+          return true
+        }
+      })
 )

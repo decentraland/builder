@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Color4, Wearable } from 'decentraland-ecs'
 import { PreviewEmote, WearableBodyShape, WearableDefinition, WearableCategory, Locale } from '@dcl/schemas'
-import { Dropdown, DropdownProps, Popup, Icon } from 'decentraland-ui'
+import { Dropdown, DropdownProps, Popup, Icon, Loader, Center } from 'decentraland-ui'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
@@ -56,7 +56,8 @@ function toBase64(item: Item): string {
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
-    isShowingAvatarAttributes: false
+    isShowingAvatarAttributes: false,
+    isLoading: false
   }
 
   componentDidMount() {
@@ -64,6 +65,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     if (!bodyShapeBaseWearables) {
       onFetchBaseWearables()
     }
+    this.setState({ isLoading: true })
   }
 
   handleToggleShowingAvatarAttributes = () => {
@@ -122,7 +124,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
 
   render() {
     const { bodyShape, skinColor, eyeColor, hairColor, emote, selectedBaseWearables, visibleItems } = this.props
-    const { isShowingAvatarAttributes } = this.state
+    const { isShowingAvatarAttributes, isLoading } = this.state
 
     return (
       <div className="CenterPanel">
@@ -144,7 +146,16 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           hotreload
           base64s={visibleItems.map(toBase64)}
           transparentBackground
+          wheelZoom={1.5}
+          wheelStart={100}
+          onUpdate={() => this.setState({ isLoading: true })}
+          onLoad={() => this.setState({ isLoading: false })}
         />
+        {isLoading && (
+          <Center>
+            <Loader active />
+          </Center>
+        )}
         <div className="footer">
           <div className="options">
             <div className={`option ${isShowingAvatarAttributes ? 'active' : ''}`} onClick={this.handleToggleShowingAvatarAttributes}>
