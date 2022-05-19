@@ -5,7 +5,8 @@ import { isThirdParty } from 'lib/urn'
 import { Section, Loader, Tabs, Button, Icon, Pagination, PaginationProps, Header, Modal, Checkbox } from 'decentraland-ui'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
-import { LEFT_PANEL_PAGE_SIZE, TP_TRESHOLD_TO_REVIEW } from '../LeftPanel'
+import { TP_TRESHOLD_TO_REVIEW } from '../LeftPanel'
+import { LEFT_PANEL_PAGE_SIZE } from '../../constants'
 import SidebarItem from './SidebarItem'
 import { Props, State, ItemPanelTabs } from './Items.types'
 import 'react-virtualized/styles.css' // only needs to be imported once
@@ -182,16 +183,12 @@ export default class Items extends React.PureComponent<Props, State> {
 
   getThresholdToReview = () => {
     const { totalItems } = this.props
-    if (!totalItems) return null
-    return Math.floor(totalItems * TP_TRESHOLD_TO_REVIEW)
+    return Math.floor(totalItems! * TP_TRESHOLD_TO_REVIEW)
   }
 
   renderTabHeader = () => {
     const { isLoading, totalItems } = this.props
     const { currentTab, reviewed } = this.state
-    if (!this.getAreTPItems()) {
-      return null
-    }
     let headerInnerContent
     switch (currentTab) {
       case ItemPanelTabs.TO_REVIEW:
@@ -208,13 +205,12 @@ export default class Items extends React.PureComponent<Props, State> {
         )
         break
       case ItemPanelTabs.REVIEWED:
-        const thresholdToReview = this.getThresholdToReview()
         headerInnerContent = (
           <T
             id="item_editor.left_panel.reviewed_samples"
             values={{
               reviewed_samples_bold: <b>{t('item_editor.left_panel.reviewed_samples_bold', { count: reviewed.length })}</b>,
-              total: thresholdToReview
+              total: this.getThresholdToReview()
             }}
           />
         )
@@ -268,7 +264,7 @@ export default class Items extends React.PureComponent<Props, State> {
   // the tabs will be just rendered for the TP items being reviewed
   renderTabs = () => {
     const { currentTab } = this.state
-    return this.getAreTPItems() ? (
+    return (
       <Tabs isFullscreen>
         <Tabs.Tab active={currentTab === ItemPanelTabs.TO_REVIEW} onClick={() => this.handleTabChange(ItemPanelTabs.TO_REVIEW)}>
           {t('item_editor.left_panel.to_review')}
@@ -280,7 +276,7 @@ export default class Items extends React.PureComponent<Props, State> {
           {t('item_editor.left_panel.all_items')}
         </Tabs.Tab>
       </Tabs>
-    ) : null
+    )
   }
 
   render() {
@@ -290,8 +286,12 @@ export default class Items extends React.PureComponent<Props, State> {
 
     return (
       <Section className="Items">
-        {this.renderTabs()}
-        {this.renderTabHeader()}
+        {this.getAreTPItems() ? (
+          <>
+            {this.renderTabs()}
+            {this.renderTabHeader()}
+          </>
+        ) : null}
         {this.renderTabContent()}
         {this.renderModal()}
       </Section>

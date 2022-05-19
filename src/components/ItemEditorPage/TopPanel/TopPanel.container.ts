@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { getAddress, getChainId, getLoading, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-// import { isWalletCommitteeMember } from 'modules/committee/selectors'
+import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 import { setCollectionCurationAssigneeRequest } from 'modules/curations/collectionCuration/actions'
 import { FETCH_COLLECTION_REQUEST, initiateApprovalFlow, initiateTPApprovalFlow } from 'modules/collection/actions'
@@ -33,7 +33,7 @@ const mapState = (state: RootState): MapStateProps => {
     chainId: getChainId(state),
     isConnected: isConnected(state),
     isReviewing: isReviewing(state),
-    isCommitteeMember: true,
+    isCommitteeMember: isWalletCommitteeMember(state),
     selectedCollectionId: getSelectedCollectionId(state),
     isLoading:
       isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||

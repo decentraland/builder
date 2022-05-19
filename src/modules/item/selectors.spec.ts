@@ -17,6 +17,7 @@ import {
   getItem,
   getItems,
   getPaginatedCollectionItems,
+  getPaginatedWalletOrphanItems,
   getRarities,
   getStatusByItemId,
   getStatusForItemIds,
@@ -29,23 +30,35 @@ import { Item, ItemRarity, ItemType, SyncStatus } from './types'
 jest.mock('decentraland-dapps/dist/lib/eth')
 const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
 
+const mockAddress = '0x6D7227d6F36FC997D53B4646132b3B55D751cc7c'
+
 describe('Item selectors', () => {
   let item: Item
   let anotherItem: Item
+  let yetAnotherItem: Item
   let state: RootState
 
   beforeEach(() => {
     item = { id: 'anId', name: 'anItem', collectionId: 'someId', owner: 'anAddress' } as Item
     anotherItem = { id: 'anotherId', name: 'anotherItem', collectionId: 'someId', owner: 'anAddress' } as Item
+    yetAnotherItem = { id: 'yetAnotherId', name: 'yetAnotherItem', collectionId: 'someId', owner: 'anAddress' } as Item
     state = {
       item: {
         data: {
           [item.id]: item,
-          [anotherItem.id]: anotherItem
+          [anotherItem.id]: anotherItem,
+          [yetAnotherItem.id]: yetAnotherItem
         },
         pagination: {
           [item.collectionId!]: {
             ids: [item.id],
+            total: 1,
+            limit: 5,
+            pages: 1,
+            page: 1
+          },
+          [mockAddress!]: {
+            ids: [anotherItem.id, yetAnotherItem.id],
             total: 1,
             limit: 5,
             pages: 1,
@@ -59,13 +72,30 @@ describe('Item selectors', () => {
 
   describe('when getting the items', () => {
     it('should return the list of items available in the state', () => {
-      expect(getItems(state)).toEqual([item, anotherItem])
+      expect(getItems(state)).toEqual([item, anotherItem, yetAnotherItem])
     })
   })
 
   describe('when getting a collection paginated items', () => {
     it('should return the list of items for the asked page', () => {
       expect(getPaginatedCollectionItems(state, item.collectionId!, 1)).toEqual([item])
+    })
+  })
+
+  describe('when getting paginated wallet orphan items', () => {
+    let pageSize: number
+    describe('and passing pageSize', () => {
+      beforeEach(() => {
+        pageSize = 1
+      })
+      it('should return the list of orphan items for the asked page', () => {
+        expect(getPaginatedWalletOrphanItems(state, mockAddress, pageSize)).toEqual([anotherItem])
+      })
+    })
+    describe('and not passing pageSize', () => {
+      it('should return the list of orphan items for the asked page', () => {
+        expect(getPaginatedWalletOrphanItems(state, mockAddress)).toEqual([anotherItem, yetAnotherItem])
+      })
     })
   })
 

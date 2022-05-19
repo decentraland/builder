@@ -11,11 +11,11 @@ import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
 import Collections from './Collections'
+import { LEFT_PANEL_PAGE_SIZE } from '../constants'
 import { Props, State, ItemEditorTabs } from './LeftPanel.types'
 import './LeftPanel.css'
 
 export const TP_TRESHOLD_TO_REVIEW = 0.01
-export const LEFT_PANEL_PAGE_SIZE = 10
 const INITIAL_PAGE = 1
 
 export default class LeftPanel extends React.PureComponent<Props, State> {
