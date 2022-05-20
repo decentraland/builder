@@ -1,3 +1,4 @@
+import PQueue from 'p-queue'
 import * as React from 'react'
 import uuid from 'uuid'
 import { FileTooBigError, ItemFactory, loadFile, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
@@ -29,6 +30,8 @@ import {
 import styles from './CreateAndEditMultipleItemsModal.module.css'
 
 const REACT_APP_WEARABLES_ZIP_INFRA_URL = env.get('REACT_APP_WEARABLES_ZIP_INFRA_URL', '')
+const AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY = 4
+
 export default class CreateAndEditMultipleItemsModal extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
   state = {
@@ -90,117 +93,119 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
     })
   }
 
+  processAcceptedFile = async (file: File) => {
+    const { collection, metadata } = this.props
+    try {
+      if (file.size > MAX_FILE_SIZE) {
+        throw new FileTooBigError(file.name, file.size)
+      }
+
+      const fileArrayBuffer = await file.arrayBuffer()
+      const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
+
+      // Multiple files must contain an asset file
+      if (!loadedFile.asset) {
+        throw new Error(t('create_and_edit_multiple_items_modal.asset_file_not_found'))
+      }
+      const itemFactory = new ItemFactory<Blob>().fromAsset(loadedFile.asset!, loadedFile.content)
+
+      let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
+
+      if (!thumbnail) {
+        const modelPath = loadedFile.asset.representations[0].mainFile
+        const url = URL.createObjectURL(loadedFile.content[modelPath])
+        const data = await getModelData(url, {
+          width: 1024,
+          height: 1024,
+          extension: getExtension(modelPath) || undefined,
+          engine: EngineType.BABYLON
+        })
+        URL.revokeObjectURL(url)
+        thumbnail = await dataURLToBlob(data.image)
+        if (!thumbnail) {
+          throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
+        }
+      }
+
+      // Process the thumbnail so it fits our requirements
+      thumbnail = dataURLToBlob(await convertImageIntoWearableThumbnail(thumbnail))
+
+      if (!thumbnail) {
+        throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
+      }
+
+      itemFactory.withThumbnail(thumbnail)
+
+      // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
+      itemFactory.withRarity(Rarity.UNIQUE)
+
+      // Override collection id if specified in the modal's metadata
+      if (metadata.collectionId) {
+        itemFactory.withCollectionId(metadata.collectionId)
+      }
+
+      // Generate or set the correct URN for the items taking into consideration the selected collection
+      let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
+
+      if (
+        decodedCollectionUrn &&
+        decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
+        decodedCollectionUrn.thirdPartyCollectionId
+      ) {
+        const decodedUrn: DecodedURN<any> | null = loadedFile.asset.urn ? decodeURN(loadedFile.asset.urn) : null
+        if (loadedFile.asset.urn && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY) {
+          const { thirdPartyName, thirdPartyCollectionId } = decodedUrn
+          if (
+            (thirdPartyCollectionId && thirdPartyCollectionId !== decodedCollectionUrn.thirdPartyCollectionId) ||
+            (thirdPartyName && thirdPartyName !== decodedCollectionUrn.thirdPartyName)
+          ) {
+            throw new Error(t('create_and_edit_multiple_items_modal.invalid_urn'))
+          }
+          if (decodedUrn.thirdPartyTokenId) {
+            itemFactory.withUrn(
+              buildThirdPartyURN(
+                decodedCollectionUrn.thirdPartyName,
+                decodedCollectionUrn.thirdPartyCollectionId,
+                decodedUrn.thirdPartyTokenId
+              )
+            )
+          }
+        } else {
+          itemFactory.withUrn(
+            buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+          )
+        }
+      }
+
+      const builtItem = await itemFactory.build()
+      if (!this.isCreating()) {
+        builtItem.item = omit(builtItem.item, ['id'])
+      }
+
+      // Generate catalyst image as part of the item
+      const catalystImage = await generateCatalystImage(builtItem.item, { thumbnail: builtItem.newContent[THUMBNAIL_PATH] })
+      builtItem.newContent[IMAGE_PATH] = catalystImage.content
+      builtItem.item.contents[IMAGE_PATH] = catalystImage.hash
+
+      return { type: ImportedFileType.ACCEPTED, ...builtItem, fileName: file.name }
+    } catch (error) {
+      return { type: ImportedFileType.REJECTED, fileName: file.name, reason: error.message }
+    }
+  }
+
   private handleFilesImport = async (acceptedFiles: File[]): Promise<void> => {
-    const { metadata, collection } = this.props
     this.setState({
       view: ItemCreationView.IMPORTING
     })
 
-    const importedFiles: ImportedFile<Blob>[] = await Promise.all(
-      acceptedFiles.map(async file => {
-        try {
-          if (file.size > MAX_FILE_SIZE) {
-            throw new FileTooBigError(file.name, file.size)
-          }
-
-          const fileArrayBuffer = await file.arrayBuffer()
-          const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
-
-          // Multiple files must contain an asset file
-          if (!loadedFile.asset) {
-            throw new Error(t('create_and_edit_multiple_items_modal.asset_file_not_found'))
-          }
-
-          this.setState({
-            loadingFilesProgress: this.state.loadingFilesProgress + 100 / acceptedFiles.length
-          })
-          const itemFactory = new ItemFactory<Blob>().fromAsset(loadedFile.asset!, loadedFile.content)
-
-          let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
-
-          if (!thumbnail) {
-            const modelPath = loadedFile.asset.representations[0].mainFile
-            const url = URL.createObjectURL(loadedFile.content[modelPath])
-            const data = await getModelData(url, {
-              width: 1024,
-              height: 1024,
-              extension: getExtension(modelPath) || undefined,
-              engine: EngineType.BABYLON
-            })
-            URL.revokeObjectURL(url)
-            thumbnail = await dataURLToBlob(data.image)
-            if (!thumbnail) {
-              throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
-            }
-          }
-
-          // Process the thumbnail so it fits our requirements
-          thumbnail = dataURLToBlob(await convertImageIntoWearableThumbnail(thumbnail))
-
-          if (!thumbnail) {
-            throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
-          }
-
-          itemFactory.withThumbnail(thumbnail)
-
-          // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
-          itemFactory.withRarity(Rarity.UNIQUE)
-
-          // Override collection id if specified in the modal's metadata
-          if (metadata.collectionId) {
-            itemFactory.withCollectionId(metadata.collectionId)
-          }
-
-          // Generate or set the correct URN for the items taking into consideration the selected collection
-          let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
-
-          if (
-            decodedCollectionUrn &&
-            decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
-            decodedCollectionUrn.thirdPartyCollectionId
-          ) {
-            const decodedUrn: DecodedURN<any> | null = loadedFile.asset.urn ? decodeURN(loadedFile.asset.urn) : null
-            if (loadedFile.asset.urn && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY) {
-              const { thirdPartyName, thirdPartyCollectionId } = decodedUrn
-              if (
-                (thirdPartyCollectionId && thirdPartyCollectionId !== decodedCollectionUrn.thirdPartyCollectionId) ||
-                (thirdPartyName && thirdPartyName !== decodedCollectionUrn.thirdPartyName)
-              ) {
-                throw new Error(t('create_and_edit_multiple_items_modal.invalid_urn'))
-              }
-              if (decodedUrn.thirdPartyTokenId) {
-                itemFactory.withUrn(
-                  buildThirdPartyURN(
-                    decodedCollectionUrn.thirdPartyName,
-                    decodedCollectionUrn.thirdPartyCollectionId,
-                    decodedUrn.thirdPartyTokenId
-                  )
-                )
-              }
-            } else {
-              itemFactory.withUrn(
-                buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
-              )
-            }
-          }
-
-          const builtItem = await itemFactory.build()
-          if (!this.isCreating()) {
-            builtItem.item = omit(builtItem.item, ['id'])
-          }
-
-          // Generate catalyst image as part of the item
-          const catalystImage = await generateCatalystImage(builtItem.item, { thumbnail: builtItem.newContent[THUMBNAIL_PATH] })
-          builtItem.newContent[IMAGE_PATH] = catalystImage.content
-          builtItem.item.contents[IMAGE_PATH] = catalystImage.hash
-
-          return { type: ImportedFileType.ACCEPTED, ...builtItem, fileName: file.name }
-        } catch (error) {
-          return { type: ImportedFileType.REJECTED, fileName: file.name, reason: error.message }
-        }
+    const queue = new PQueue({ concurrency: AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY })
+    queue.on('next', () => {
+      this.setState({
+        loadingFilesProgress: Math.round(((acceptedFiles.length - (queue.size + queue.pending)) * 100) / acceptedFiles.length)
       })
-    )
-
+    })
+    const promisesToProcess = acceptedFiles.map(file => () => this.processAcceptedFile(file))
+    const importedFiles: ImportedFile<Blob>[] = await queue.addAll(promisesToProcess)
     this.setState({
       importedFiles: {
         ...this.state.importedFiles,

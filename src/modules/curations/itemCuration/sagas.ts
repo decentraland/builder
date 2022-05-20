@@ -1,10 +1,7 @@
 import { call, takeEvery, takeLatest } from '@redux-saga/core/effects'
-import { select } from 'redux-saga/effects'
 import { BuilderAPI } from 'lib/api/builder'
-import { getCollection } from 'modules/collection/selectors'
-import { Collection, CollectionType } from 'modules/collection/types'
 import { FetchCollectionItemsSuccessAction, FETCH_COLLECTION_ITEMS_SUCCESS } from 'modules/item/actions'
-import { getCollectionType } from 'modules/collection/utils'
+import { isThirdParty } from 'lib/urn'
 import { put } from 'redux-saga-test-plan/matchers'
 import {
   fetchItemCurationFailure,
@@ -25,14 +22,16 @@ export function* itemCurationSaga(builder: BuilderAPI) {
   yield takeLatest(FETCH_COLLECTION_ITEMS_SUCCESS, handleFetchCollectionItemCurations)
 
   function* handleFetchCollectionItemCurations(action: FetchCollectionItemsSuccessAction) {
-    const { paginationIndex, items } = action.payload
+    const { items } = action.payload
     const publishedItems = items.filter(item => item.isPublished)
-
-    const collection: Collection = yield select(getCollection, paginationIndex)
-    if (getCollectionType(collection) === CollectionType.THIRD_PARTY && publishedItems.length > 0) {
+    // the collection fetch is done at the same time of the items fetch, so we might not have the collection data yet
+    // so we can infer if the collection is TP by the item.urn
+    const isTPCollection = isThirdParty(items[0]?.urn)
+    const collectionId = items[0]?.collectionId
+    if (collectionId && isTPCollection && publishedItems.length > 0) {
       yield put(
         fetchItemCurationsRequest(
-          collection.id,
+          collectionId,
           items.filter(item => item.isPublished)
         )
       )

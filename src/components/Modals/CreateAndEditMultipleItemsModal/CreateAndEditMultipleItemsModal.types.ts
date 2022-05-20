@@ -52,7 +52,7 @@ export type State = {
   importedFiles: Record<string, ImportedFile<Blob>>
 }
 
-export type Props = ModalProps & {
+export type Props = Omit<ModalProps, 'metadata'> & {
   collection: Collection | null
   error: string | null
   onSaveMultipleItems: typeof saveMultipleItemsRequest
@@ -63,6 +63,7 @@ export type Props = ModalProps & {
   cancelledItemsFiles: ReturnType<typeof getCanceledItemsFiles>
   saveMultipleItemsState: ReturnType<typeof getMultipleItemsSaveState>
   saveItemsProgress: number
+  metadata: CreateAndEditMultipleItemsModalMetadata
 }
 
 export type OwnProps = Pick<Props, 'name' | 'metadata' | 'onClose'>
