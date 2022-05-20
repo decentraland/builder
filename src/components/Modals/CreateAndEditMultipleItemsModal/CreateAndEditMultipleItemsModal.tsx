@@ -201,7 +201,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
     const queue = new PQueue({ concurrency: AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY })
     queue.on('next', () => {
       this.setState({
-        loadingFilesProgress: Math.round(((acceptedFiles.length - queue.size) * 100) / acceptedFiles.length)
+        loadingFilesProgress: Math.round(((acceptedFiles.length - (queue.size + queue.pending)) * 100) / acceptedFiles.length)
       })
     })
     const promisesToProcess = acceptedFiles.map(file => () => this.processAcceptedFile(file))
