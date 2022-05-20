@@ -1,12 +1,11 @@
 import PQueue from 'p-queue'
 import { Contract, providers, constants, ethers } from 'ethers'
 import { push, replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, CallEffect, all } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient, ThirdParty } from '@dcl/builder-client'
-import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
@@ -116,7 +115,7 @@ import {
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { buildItemEntity, buildStandardWearableContentHash, buildTPItemEntity, hasOldHashedContents } from 'modules/item/export'
+import { buildItemEntity, buildStandardWearableContentHash, hasOldHashedContents } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   ApproveCollectionCurationFailureAction,
@@ -128,7 +127,13 @@ import {
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
-import { ReviewThirdPartyFailureAction, REVIEW_THIRD_PARTY_FAILURE, REVIEW_THIRD_PARTY_SUCCESS } from 'modules/thirdParty/actions'
+import {
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE,
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
+  ReviewThirdPartyFailureAction,
+  REVIEW_THIRD_PARTY_FAILURE,
+  REVIEW_THIRD_PARTY_SUCCESS
+} from 'modules/thirdParty/actions'
 import {
   DeployEntitiesFailureAction,
   DeployEntitiesSuccessAction,
@@ -602,8 +607,12 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* updateItemCurationsStatus(items: Item[], status: CurationStatus) {
-    const effects: CallEffect<ItemCuration>[] = items.map(item => call([legacyBuilderClient, 'updateItemCurationStatus'], item.id, status))
-    const newItemCuration: ItemCuration[] = yield all(effects)
+    const REQUESTS_BATCH_SIZE = 5
+    const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
+    const promisesOfUpdatedCurations: (() => Promise<ItemCuration>)[] = items.map((item: Item) => () =>
+      legacyBuilderClient.updateItemCurationStatus(item.id, status)
+    ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
+    const newItemCuration: PaginatedResource<Item>[] = yield call([queue, 'addAll'], promisesOfUpdatedCurations)
     return newItemCuration
   }
 
@@ -616,32 +625,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
         const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, legacyBuilderClient, collection, item)
-        itemsToDeploy.push(item)
-        entitiesToDeploy.push(entity)
-      }
-    }
-    return { itemsToDeploy, entitiesToDeploy }
-  }
-
-  function* getTPItemsAndEntitiesToDeploy(
-    collection: Collection,
-    items: Item[],
-    tree: MerkleDistributorInfo,
-    hashes: Record<string, string>
-  ) {
-    const itemsToDeploy: Item[] = []
-    const entitiesToDeploy: DeploymentPreparationData[] = []
-    for (const item of items) {
-      if (item.catalystContentHash !== item.currentContentHash) {
-        const entity: DeploymentPreparationData = yield call(
-          buildTPItemEntity,
-          catalyst,
-          legacyBuilderClient,
-          collection,
-          item,
-          tree,
-          hashes[item.id]
-        )
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }
@@ -715,6 +698,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           merkleTreeRoot: tree.merkleRoot,
           slots: chequeWasConsumed ? [] : [slot]
         }
+
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
         // Wait for actions...
@@ -736,22 +720,19 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       }
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
-      const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
-        getTPItemsAndEntitiesToDeploy,
-        collection,
-        itemsToApprove,
-        tree,
-        contentHashes
-      )
+
+      const itemsToDeploy = itemsToApprove.filter(item => item.catalystContentHash !== item.currentContentHash)
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
       if (itemsToDeploy.length > 0) {
-        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
-          view: ApprovalFlowModalView.DEPLOY,
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY_TP> = {
+          view: ApprovalFlowModalView.DEPLOY_TP,
           collection,
+          tree,
           items: itemsToDeploy,
-          entities: entitiesToDeploy
+          hashes: contentHashes
         }
+
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
         // Wait for actions...
@@ -759,8 +740,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           failure,
           cancel
         }: { success: DeployEntitiesSuccessAction; failure: DeployEntitiesFailureAction; cancel: CloseModalAction } = yield race({
-          success: take(DEPLOY_ENTITIES_SUCCESS),
-          failure: take(DEPLOY_ENTITIES_FAILURE),
+          success: take(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS),
+          failure: take(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE),
           cancel: take(CLOSE_MODAL)
         })
 

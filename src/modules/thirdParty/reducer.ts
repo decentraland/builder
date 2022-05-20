@@ -12,7 +12,13 @@ import {
   FetchThirdPartyAvailableSlotsSuccessAction,
   FETCH_THIRD_PARTY_AVAILABLE_SLOTS_SUCCESS,
   FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE,
-  FetchThirdPartyAvailableSlotsFailureAction
+  FetchThirdPartyAvailableSlotsFailureAction,
+  DeployBatchedThirdPartyItemsRequestAction,
+  DeployBatchedThirdPartyItemsSuccessAction,
+  DeployBatchedThirdPartyItemsFailureAction,
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE,
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS
 } from './actions'
 import { ThirdParty } from './types'
 
@@ -38,9 +44,13 @@ type ThirdPartyReducerAction =
   | FetchThirdPartyAvailableSlotsRequestAction
   | FetchThirdPartyAvailableSlotsSuccessAction
   | FetchThirdPartyAvailableSlotsFailureAction
+  | DeployBatchedThirdPartyItemsRequestAction
+  | DeployBatchedThirdPartyItemsSuccessAction
+  | DeployBatchedThirdPartyItemsFailureAction
 
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
+    case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST:
     case FETCH_THIRD_PARTIES_REQUEST: {
       return {
@@ -78,7 +88,14 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: null
       }
     }
-
+    case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
+    case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE:
     case FETCH_THIRD_PARTIES_FAILURE: {
       return {

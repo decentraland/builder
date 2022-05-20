@@ -1,4 +1,16 @@
-import { fetchThirdPartiesRequest, fetchThirdPartiesSuccess, fetchThirdPartiesFailure } from './actions'
+import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
+import { Collection } from 'modules/collection/types'
+import {
+  fetchThirdPartiesRequest,
+  fetchThirdPartiesSuccess,
+  fetchThirdPartiesFailure,
+  // DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
+  deployBatchedThirdPartyItemsRequest,
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
+  deployBatchedThirdPartyItemsSuccess,
+  deployBatchedThirdPartyItemsFailure,
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE
+} from './actions'
 import { INITIAL_STATE, thirdPartyReducer, ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
 
@@ -50,6 +62,47 @@ describe('when an action of type FETCH_THIRD_PARTIES_FAILURE is called', () => {
     ).toStrictEqual({
       ...INITIAL_STATE,
       error: 'Some Error'
+    })
+  })
+})
+
+describe('when reducing an DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST action', () => {
+  it('should add the action to the loading array', () => {
+    expect(
+      thirdPartyReducer(INITIAL_STATE, deployBatchedThirdPartyItemsRequest([], {} as Collection, {} as MerkleDistributorInfo, {}))
+    ).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [deployBatchedThirdPartyItemsRequest([], {} as Collection, {} as MerkleDistributorInfo, {})]
+    })
+  })
+})
+
+describe('when reducing an DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS action', () => {
+  it('should remove the corresponding request action from the loading state and set the error to null', () => {
+    expect(
+      thirdPartyReducer(
+        { ...INITIAL_STATE, error: 'someError', loading: [{ type: DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS }] },
+        deployBatchedThirdPartyItemsSuccess([])
+      )
+    ).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [],
+      error: null
+    })
+  })
+})
+
+describe('when reducing an DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE action', () => {
+  it('should remove the corresponding request action from the loading state and set the error', () => {
+    expect(
+      thirdPartyReducer(
+        { ...INITIAL_STATE, loading: [{ type: DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE }] },
+        deployBatchedThirdPartyItemsFailure([], 'error')
+      )
+    ).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [],
+      error: 'error'
     })
   })
 })

@@ -69,7 +69,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     sceneSaga(),
     statsSaga(),
     syncSaga(builderAPI),
-    thirdPartySaga(builderAPI),
+    thirdPartySaga(builderAPI, catalystClient),
     tileSaga(),
     toastSaga(),
     transactionSaga(),
