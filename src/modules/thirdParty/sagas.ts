@@ -238,11 +238,8 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       const promisesOfItemsBeingDeployed: (() => Promise<DeploymentPreparationData>)[] = items.map((item: Item) => async () => {
-        console.log('Tried to execute this')
         const entity: DeploymentPreparationData = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
-        console.log('Entity built', entity.entityId)
         await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
-        console.log('Deployed entity', entity.entityId)
         return entity
       })
 
