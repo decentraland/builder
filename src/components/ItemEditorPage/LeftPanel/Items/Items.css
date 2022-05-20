@@ -8,15 +8,72 @@
 }
 
 .Items .ReactVirtualized__List {
-  padding: 0px 16px;
   margin-bottom: 16px;
+}
+
+.Items .ReactVirtualized__List::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.Items .ReactVirtualized__List {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .Items .ReactVirtualized__Grid__innerScrollContainer {
   margin-bottom: 16px;
 }
 
-.Items .ui.loader {
-  top: 100%;
-  margin-top: 15px;
+.Items.dcl.section.medium {
+  display: flex;
+  flex-direction: column;
+}
+
+.Items.dcl.medium {
+  display: flex;
+  flex-direction: column;
+}
+
+.Items .tab-header .random-sample-button {
+  width: 100%;
+}
+
+.Items .tab-header {
+  border-bottom: 1px solid #242229;
+  padding: 16px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.Items .ui.pagination.menu {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 16px;
+}
+
+.Items.dcl.section .ui.header.sub {
+  margin: 12px 16px;
+}
+
+.Items .dcl.tabs.fullscreen .ui.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Items .dcl.tabs.fullscreen .ui.container .dcl.tab:last-child {
+  margin-right: 8px;
+}
+
+.ConfirmNewSampleModal .checkbox-container {
+  cursor: pointer;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.ConfirmNewSampleModal .checkbox-container .ui.fitted.checkbox {
+  margin-right: 8px;
 }

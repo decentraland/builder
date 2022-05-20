@@ -33,11 +33,33 @@
 }
 
 .TopPanel .actions .button-container {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+}
+
+.TopPanel .actions .button-container .check.circle.icon {
+  color: #36d41d;
+  margin-left: 8px;
+  background-color: white;
+  border-radius: 10px;
+  width: 16px;
+  height: 16px;
+}
+
+.TopPanel .actions .button-container .header {
+  color: var(--text);
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
 }
 
 .TopPanel .actions .ui.button {
   padding-top: 8px;
   padding-bottom: 8px;
   margin-right: 8px;
+}
+
+.TopPanel .dropdown .menu > .disabled.item {
+  pointer-events: all;
 }

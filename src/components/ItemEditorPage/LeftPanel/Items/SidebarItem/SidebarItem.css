@@ -1,6 +1,8 @@
 .SidebarItem {
   display: flex;
   align-items: center;
+  margin-top: 8px;
+  padding: 0 16px;
 }
 
 .SidebarItem > .ui.checkbox {

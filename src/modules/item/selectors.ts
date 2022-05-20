@@ -58,6 +58,13 @@ export const getWalletOrphanItems = createSelector<RootState, Item[], Item[]>(ge
   items.filter(item => item.collectionId === undefined)
 )
 
+export const getPaginatedWalletOrphanItems = (state: RootState, address: string, pageSize?: number) => {
+  const paginationData = getPaginationData(state, address)
+  const allItems = getData(state)
+  const ids = paginationData ? (pageSize ? paginationData.ids.slice(0, pageSize) : paginationData.ids) : []
+  return ids.map(itemId => allItems[itemId]).filter(Boolean)
+}
+
 export const getCollectionItems = (state: RootState, collectionId: string) => {
   const allItems = getItems(state)
   return allItems.filter(item => item.collectionId === collectionId)

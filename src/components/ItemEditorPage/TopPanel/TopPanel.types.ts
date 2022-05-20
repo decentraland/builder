@@ -7,13 +7,24 @@ import {
   initiateTPApprovalFlow,
   InitiateTPApprovalFlowAction
 } from 'modules/collection/actions'
+import { Item } from 'modules/item/types'
 import {
   setCollectionCurationAssigneeRequest,
   SetCollectionCurationAssigneeRequestAction
 } from 'modules/curations/collectionCuration/actions'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
+import { Collection } from 'modules/collection/types'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 
 export type Props = {
+  items: Item[]
+  collection: Collection | null
+  curation: CollectionCuration | null
+  itemCurations: ItemCuration[] | null
+  isLoading: boolean
+  reviewedItems: Item[]
+  totalItems: number | null
   address?: string
   chainId?: ChainId
   isConnected: boolean
@@ -41,7 +52,18 @@ export enum ButtonType {
 
 export type MapStateProps = Pick<
   Props,
-  'address' | 'chainId' | 'isConnected' | 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId'
+  | 'items'
+  | 'totalItems'
+  | 'collection'
+  | 'curation'
+  | 'itemCurations'
+  | 'isLoading'
+  | 'address'
+  | 'chainId'
+  | 'isConnected'
+  | 'isReviewing'
+  | 'isCommitteeMember'
+  | 'selectedCollectionId'
 >
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow' | 'onSetAssignee'>
 export type MapDispatch = Dispatch<

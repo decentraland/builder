@@ -29,10 +29,12 @@ export type Props = {
   visibleItems: Item[]
   isReviewing: boolean
   bodyShape: WearableBodyShape
+  isLoading: boolean
   onSetItems: typeof setItems
   onSetCollection: typeof setCollection
   onFetchOrphanItems: typeof fetchItemsRequest
   onFetchCollections: typeof fetchCollectionsRequest
+  onSetReviewedItems: (itemIds: Item[]) => void
 }
 
 export type State = {
@@ -54,6 +56,7 @@ export type MapStateProps = Pick<
   | 'bodyShape'
   | 'isConnected'
   | 'isReviewing'
+  | 'isLoading'
 >
 export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onSetCollection' | 'onFetchOrphanItems' | 'onFetchCollections'>
 export type MapDispatch = Dispatch<
