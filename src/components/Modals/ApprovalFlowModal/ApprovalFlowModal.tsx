@@ -175,6 +175,55 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     )
   }
 
+  renderDeployThirdPartyView() {
+    const { onClose, metadata, onDeployThirdPartyItems, isDeployingItems } = this.props
+    const { items, collection, tree, hashes } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY_TP>
+    return (
+      <>
+        <ModalNavigation
+          title={t('approval_flow.upload.title')}
+          subtitle={t('approval_flow.upload.subtitle')}
+          onClose={this.canCloseModal() ? onClose : undefined}
+        />
+        <ModalContent>
+          <Table basic="very">
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>{t('global.name')}</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {items.slice(0, MAX_TP_ITEMS).map(item => (
+                <Table.Row key={item.id} className="item">
+                  <Table.Cell className="name">
+                    <ItemImage item={item} />
+                    {item.name}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+          {items.length > MAX_TP_ITEMS ? (
+            <span>{t('approval_flow.consume_slots.more_items', { count: items.length - MAX_TP_ITEMS })}</span>
+          ) : null}
+        </ModalContent>
+        <ModalActions>
+          <Button
+            primary
+            disabled={isDeployingItems}
+            loading={isDeployingItems}
+            onClick={() => onDeployThirdPartyItems(items, collection, tree, hashes)}
+          >
+            {t('approval_flow.upload.confirm')}
+          </Button>
+          <Button secondary onClick={onClose} disabled={!this.canCloseModal()}>
+            {t('global.cancel')}
+          </Button>
+        </ModalActions>
+      </>
+    )
+  }
+
   renderDeployView() {
     const { onClose, metadata, onDeployItems, isDeployingItems } = this.props
     const { items, entities } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY>
@@ -297,6 +346,9 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         break
       case ApprovalFlowModalView.DEPLOY:
         content = this.renderDeployView()
+        break
+      case ApprovalFlowModalView.DEPLOY_TP:
+        content = this.renderDeployThirdPartyView()
         break
       case ApprovalFlowModalView.APPROVE:
         content = this.renderApproveView()

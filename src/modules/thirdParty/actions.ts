@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+import { DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
@@ -125,3 +126,27 @@ export const publishAndPushChangesThirdPartyItemsFailure = (error: string) =>
 export type PublishAndPushChangesThirdPartyItemsRequestAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsRequest>
 export type PublishAndPushChangesThirdPartyItemsSuccessAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsSuccess>
 export type PublishAndPushChangesThirdPartyItemsFailureAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsFailure>
+
+// Deploy batched third party items
+
+export const DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST = '[Request] Deploy batched third party items'
+export const DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Deploy batched third party items'
+export const DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Deploy batched third party items'
+
+export const deployBatchedThirdPartyItemsRequest = (
+  items: Item[],
+  collection: Collection,
+  tree: MerkleDistributorInfo,
+  hashes: Record<string, string>
+) => action(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, { items, collection, tree, hashes })
+
+export const deployBatchedThirdPartyItemsSuccess = (entities: DeploymentPreparationData[]) =>
+  action(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS, {
+    entities
+  })
+export const deployBatchedThirdPartyItemsFailure = (items: Item[], error: string) =>
+  action(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE, { items, error })
+
+export type DeployBatchedThirdPartyItemsRequestAction = ReturnType<typeof deployBatchedThirdPartyItemsRequest>
+export type DeployBatchedThirdPartyItemsSuccessAction = ReturnType<typeof deployBatchedThirdPartyItemsSuccess>
+export type DeployBatchedThirdPartyItemsFailureAction = ReturnType<typeof deployBatchedThirdPartyItemsFailure>

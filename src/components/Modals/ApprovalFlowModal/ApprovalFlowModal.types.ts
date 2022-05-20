@@ -7,7 +7,12 @@ import { Collection } from 'modules/collection/types'
 import { rescueItemsRequest, RescueItemsRequestAction } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 import { deployEntitiesRequest, DeployEntitiesRequestAction } from 'modules/entity/actions'
-import { reviewThirdPartyRequest, ReviewThirdPartyRequestAction } from 'modules/thirdParty/actions'
+import {
+  deployBatchedThirdPartyItemsRequest,
+  DeployBatchedThirdPartyItemsRequestAction,
+  reviewThirdPartyRequest,
+  ReviewThirdPartyRequestAction
+} from 'modules/thirdParty/actions'
 import { Slot } from 'modules/thirdParty/types'
 
 export enum ApprovalFlowModalView {
@@ -15,6 +20,7 @@ export enum ApprovalFlowModalView {
   RESCUE = 'rescue',
   CONSUME_TP_SLOTS = 'consume_tp_slots',
   DEPLOY = 'deploy',
+  DEPLOY_TP = 'deploy_third_party',
   APPROVE = 'approve',
   SUCCESS = 'success',
   ERROR = 'error'
@@ -29,6 +35,8 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
   ? { items: Item[]; entities: DeploymentPreparationData[] }
   : V extends ApprovalFlowModalView.CONSUME_TP_SLOTS
   ? { slots: Slot[]; merkleTreeRoot: MerkleDistributorInfo['merkleRoot']; items: Item[] }
+  : V extends ApprovalFlowModalView.DEPLOY_TP
+  ? { items: Item[]; collection: Collection; tree: MerkleDistributorInfo; hashes: Record<string, string> }
   : V extends ApprovalFlowModalView.ERROR
   ? { error: string }
   : {})
@@ -36,6 +44,7 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
 export type Props = ModalProps & {
   onRescueItems: typeof rescueItemsRequest
   onDeployItems: typeof deployEntitiesRequest
+  onDeployThirdPartyItems: typeof deployBatchedThirdPartyItemsRequest
   onApproveCollection: typeof approveCollectionRequest
   onReviewThirdParty: typeof reviewThirdPartyRequest
   isConfirmingRescueTx: boolean
@@ -54,7 +63,14 @@ export type MapStateProps = Pick<
   Props,
   'isConfirmingRescueTx' | 'isConfirmingReviewThirdPartyTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'
 >
-export type MapDispatchProps = Pick<Props, 'onRescueItems' | 'onDeployItems' | 'onApproveCollection' | 'onReviewThirdParty'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onRescueItems' | 'onDeployItems' | 'onApproveCollection' | 'onReviewThirdParty' | 'onDeployThirdPartyItems'
+>
 export type MapDispatch = Dispatch<
-  RescueItemsRequestAction | DeployEntitiesRequestAction | ApproveCollectionRequestAction | ReviewThirdPartyRequestAction
+  | RescueItemsRequestAction
+  | DeployEntitiesRequestAction
+  | ApproveCollectionRequestAction
+  | ReviewThirdPartyRequestAction
+  | DeployBatchedThirdPartyItemsRequestAction
 >

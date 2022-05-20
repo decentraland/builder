@@ -1,5 +1,7 @@
 import PQueue from 'p-queue'
 import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
+import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { Contract, providers } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -12,6 +14,8 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
+import { getIdentity } from 'modules/identity/utils'
+import { buildTPItemEntity } from 'modules/item/export'
 import { waitForTx } from 'modules/transaction/utils'
 import {
   FETCH_THIRD_PARTIES_REQUEST,
@@ -42,7 +46,11 @@ import {
   reviewThirdPartySuccess,
   reviewThirdPartyFailure,
   REVIEW_THIRD_PARTY_REQUEST,
-  reviewThirdPartyTxSuccess
+  reviewThirdPartyTxSuccess,
+  deployBatchedThirdPartyItemsSuccess,
+  deployBatchedThirdPartyItemsFailure,
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
+  DeployBatchedThirdPartyItemsRequestAction
 } from './actions'
 import { getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
@@ -57,8 +65,9 @@ export function* getContractInstance(
   return contractInstance
 }
 
-export function* thirdPartySaga(builder: BuilderAPI) {
+export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
+  yield takeLatest(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, handleDeployBatchedThirdPartyItemsRequest)
   yield takeEvery(FETCH_THIRD_PARTIES_REQUEST, handleFetchThirdPartiesRequest)
   yield takeEvery(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, handleFetchThirdPartyAvailableSlots)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
@@ -213,6 +222,36 @@ export function* thirdPartySaga(builder: BuilderAPI) {
       yield put(reviewThirdPartySuccess())
     } catch (error) {
       yield put(reviewThirdPartyFailure(error))
+    }
+  }
+
+  function* handleDeployBatchedThirdPartyItemsRequest(action: DeployBatchedThirdPartyItemsRequestAction) {
+    const { items, collection, tree, hashes } = action.payload
+    const REQUESTS_BATCH_SIZE = 5
+
+    let queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
+    try {
+      const identity: AuthIdentity | undefined = yield call(getIdentity)
+
+      if (!identity) {
+        throw new Error('Invalid Identity')
+      }
+
+      const promisesOfItemsBeingDeployed: (() => Promise<DeploymentPreparationData>)[] = items.map((item: Item) => async () => {
+        console.log('Tried to execute this')
+        const entity: DeploymentPreparationData = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
+        console.log('Entity built', entity.entityId)
+        await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
+        console.log('Deployed entity', entity.entityId)
+        return entity
+      })
+
+      const deployedEntities: DeploymentPreparationData[] = yield call([queue, 'addAll'], promisesOfItemsBeingDeployed)
+
+      yield put(deployBatchedThirdPartyItemsSuccess(deployedEntities))
+    } catch (error) {
+      queue.clear()
+      yield put(deployBatchedThirdPartyItemsFailure(items, error.message))
     }
   }
 }
