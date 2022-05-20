@@ -72,6 +72,7 @@ export default class Routes extends React.Component<Props, State> {
   }
 
   renderRoutes() {
+    const { inMaintenance } = this.props
     const { hasError, stackTrace } = this.state
 
     if (isDevelopment && hasError) {
@@ -80,7 +81,7 @@ export default class Routes extends React.Component<Props, State> {
       return <UnsupportedBrowserPage />
     }
 
-    if (env.get('REACT_APP_UNDER_MAINTAINANCE')) {
+    if (inMaintenance) {
       return this.renderMaintainancePage()
     }
 
