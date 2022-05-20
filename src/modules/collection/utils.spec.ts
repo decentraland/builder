@@ -164,25 +164,3 @@ describe('when checking if a collection is of type third party', () => {
     })
   })
 })
-
-describe('when getting the rarities contract', () => {
-  describe('when the rarities with oracle ff IS NOT 1', () => {
-    beforeEach(() => {
-      mockEnv.get.mockReturnValueOnce('0')
-    })
-
-    it('should return the original rarities contract', () => {
-      expect(getRaritiesContract(ChainId.MATIC_MUMBAI).address).toEqual('0x8eabF06f6cf667915bfF30138be70543bCE2901A')
-    })
-  })
-
-  describe('when the rarities with oracle ff IS 1', () => {
-    beforeEach(() => {
-      mockEnv.get.mockReturnValueOnce('1')
-    })
-
-    it('should return the original rarities contract', () => {
-      expect(getRaritiesContract(ChainId.MATIC_MUMBAI).address).toEqual('0xb9957735bbe6D42585058Af11AA72da8eAD9043a')
-    })
-  })
-})
