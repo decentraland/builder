@@ -1,11 +1,13 @@
 import { all } from 'redux-saga/effects'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { BuilderClient } from '@dcl/builder-client'
+import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 
 import { createProfileSaga } from 'decentraland-dapps/dist/modules/profile/sagas'
 import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
 import { authorizationSaga } from 'decentraland-dapps/dist/modules/authorization/sagas'
 import { toastSaga } from 'decentraland-dapps/dist/modules/toast/sagas'
+import { featuresSaga } from 'decentraland-dapps/dist/modules/features/sagas'
 
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
@@ -77,6 +79,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     uiSaga(),
     walletSaga(),
     collectionCurationSaga(builderAPI),
-    itemCurationSaga(builderAPI)
+    itemCurationSaga(builderAPI),
+    featuresSaga({ polling: { apps: [ApplicationName.BUILDER], delay: 60000 /* 60 seconds */ } })
   ])
 }

@@ -1,4 +1,5 @@
 import { env, utils } from 'decentraland-commons'
+import { select } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -6,6 +7,7 @@ import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
+import { getIsRaritiesWithOracleEnabled } from 'modules/features/selectors'
 import { Collection, Access, Mint, CollectionType } from './types'
 
 export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
@@ -136,8 +138,7 @@ export function getCollectionFactoryContract(chainId: ChainId) {
   return getContract(ContractName.CollectionFactoryV3, chainId)
 }
 
-export function getRaritiesContract(chainId: ChainId) {
-  return env.get<string | undefined>('REACT_APP_FF_RARITIES_WITH_ORACLE') === '1'
-    ? getContract(ContractName.RaritiesWithOracle, chainId)
-    : getContract(ContractName.Rarities, chainId)
+export function* getRaritiesContract(chainId: ChainId) {
+  const isRaritiesWithOracleEnabled: boolean = yield select(getIsRaritiesWithOracleEnabled)
+  return isRaritiesWithOracleEnabled ? getContract(ContractName.RaritiesWithOracle, chainId) : getContract(ContractName.Rarities, chainId)
 }

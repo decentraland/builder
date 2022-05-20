@@ -9,6 +9,7 @@ import { toastReducer as toast } from 'decentraland-dapps/dist/modules/toast/red
 import { transactionReducer as transaction } from 'decentraland-dapps/dist/modules/transaction/reducer'
 import { translationReducer as translation } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
+import { featuresReducer as features } from 'decentraland-dapps/dist/modules/features/reducer'
 
 import { RootState } from 'modules/common/types'
 import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
@@ -71,7 +72,8 @@ export function createRootReducer(history: History) {
       transaction,
       translation,
       ui,
-      wallet
+      wallet,
+      features
     })
   )
 }
