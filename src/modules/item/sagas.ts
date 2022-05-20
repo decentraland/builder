@@ -239,7 +239,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       queue.on('next', () => {
-        createOrEditProgressChannel.put({ progress: Math.round(((builtFiles.length - queue.pending) / builtFiles.length) * 100) })
+        // queue.size is the number of items in the queue and queue.pending the number of ongoing promises
+        // the total pending files is the sum of the queue.size and queue.pending
+        createOrEditProgressChannel.put({
+          progress: Math.round(((builtFiles.length - (queue.size + queue.pending)) / builtFiles.length) * 100)
+        })
       })
 
       yield queue.addAll(promisesOfItemsToSave)
