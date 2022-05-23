@@ -1,8 +1,10 @@
 import { RouteComponentProps } from 'react-router'
 
-export type Props = RouteComponentProps
+export type Props = RouteComponentProps & {
+  inMaintenance: boolean
+}
 
-export type MapStateProps = {}
+export type MapStateProps = Pick<Props, 'inMaintenance'>
 
 export type State = {
   hasError: boolean
