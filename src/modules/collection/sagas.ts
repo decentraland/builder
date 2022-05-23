@@ -6,7 +6,7 @@ import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient, ThirdParty } from '@dcl/builder-client'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -259,7 +259,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
         const from: string = yield select(getAddress)
         const maticChainId = getChainIdByNetwork(Network.MATIC)
-        const rarities = getRaritiesContract(maticChainId)
+        const rarities: ContractData = yield getRaritiesContract(maticChainId)
         const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
 
         const provider: Provider = yield call(getNetworkProvider, maticChainId)
