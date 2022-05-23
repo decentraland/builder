@@ -4,7 +4,6 @@ import { env } from 'decentraland-commons'
 import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { fromWei } from 'web3x/utils'
 import { ItemRarity } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
 import { emailRegex } from 'lib/validators'
@@ -55,7 +54,22 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     const { items, wallet, onClose, rarities, isFetchingItems, isFetchingRarities } = this.props
 
     const itemsByRarity: Record<string, { id: ItemRarity; name: ItemRarity; count: number; price: number }> = {}
-    let totalPrice = 0
+
+    // This is the publication fee price in MANA set for all rarities at the date of 2022-05-20
+    // in the Rarities contract https://polygonscan.com/address/0x17113b44fdd661A156cc01b5031E3aCF72c32EB3.
+    // When migrating to the new RaritiesWithOracle contract and feature, the first thing to be done is to redeploy
+    // the graph https://thegraph.com/hosted-service/subgraph/decentraland/collections-matic-mainnet with the new rarities
+    // https://github.com/decentraland/collections-graph/pull/51.
+    //
+    // When the graph finishes to publish, rarity prices will be different. And in order to prevent showing a differenet price
+    // than what will be actually charged for publishing a collection before the rarities contract is updated in the CollectionManager
+    // contract, a solution is to just hardcode the price (as there are no plans to change it) of the old rarities until
+    // the whole prices pegged to usd feature comes to life.
+    //
+    // This is a temporal solution, when the feature is implemented, the whole PublishCollectionModalOld directory will be erased in
+    // favor of the PublishCollectionModalWithOracle.
+    const hardcodedPrice = 100
+    const totalPrice = hardcodedPrice * items.length
 
     for (const item of items) {
       const rarity = rarities.find(rarity => rarity.name === item.rarity)
@@ -68,10 +82,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
         itemsByRarity[rarity.id] = { id: rarity.id, name: rarity.name, count: 0, price: 0 }
       }
 
-      const rarityPrice = parseInt(fromWei(rarity.price, 'ether'), 10)
       itemsByRarity[rarity.name].count++
-      itemsByRarity[rarity.name].price += rarityPrice
-      totalPrice += rarityPrice
     }
 
     const hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < totalPrice
@@ -95,7 +106,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                       {itemByRarity.count} {itemByRarity.name}
                     </div>
                     <div>
-                      <Mana network={Network.MATIC}>{itemByRarity.price}</Mana>
+                      <Mana network={Network.MATIC}>{hardcodedPrice * itemByRarity.count}</Mana>
                     </div>
                   </div>
                 ))}
