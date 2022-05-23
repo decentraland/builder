@@ -18,7 +18,6 @@ import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist
 import { Network } from '@dcl/schemas'
 import {
   FetchCollectionsRequestAction,
-  fetchCollectionsRequest,
   fetchCollectionsSuccess,
   fetchCollectionsFailure,
   FETCH_COLLECTIONS_REQUEST,
@@ -114,7 +113,6 @@ import {
   getPaginationData
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
-import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { buildItemEntity, buildStandardWearableContentHash, hasOldHashedContents } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
@@ -172,16 +170,31 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeEvery(MINT_COLLECTION_ITEMS_REQUEST, handleMintCollectionItemsRequest)
   yield takeEvery(APPROVE_COLLECTION_REQUEST, handleApproveCollectionRequest)
   yield takeEvery(REJECT_COLLECTION_REQUEST, handleRejectCollectionRequest)
-  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeLatest(INITIATE_APPROVAL_FLOW, handleInitiateApprovalFlow)
   yield takeLatest(INITIATE_TP_APPROVAL_FLOW, handleInitiateTPItemsApprovalFlow)
 
+  function isPaginated(response: PaginatedResource<Collection> | Collection[]): response is PaginatedResource<Collection> {
+    return (<PaginatedResource<Collection>>response).results !== undefined
+  }
+
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
-    const { address } = action.payload
+    const { address, params } = action.payload
     try {
-      const collections: Collection[] = yield call(() => legacyBuilderClient.fetchCollections(address))
-      yield put(fetchCollectionsSuccess(collections))
+      const response: PaginatedResource<Collection> | Collection[] = yield call([legacyBuilderClient, 'fetchCollections'], address, params)
+      if (isPaginated(response)) {
+        const { results, limit, page, pages, total } = response
+        yield put(
+          fetchCollectionsSuccess(results, {
+            limit,
+            page,
+            pages,
+            total
+          })
+        )
+      } else {
+        yield put(fetchCollectionsSuccess(response))
+      }
     } catch (error) {
       yield put(fetchCollectionsFailure(error.message))
     }
@@ -502,11 +515,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     } catch (error) {
       yield put(rejectCollectionFailure(collection, error.message))
     }
-  }
-
-  function* handleLoginSuccess(action: LoginSuccessAction) {
-    const { wallet } = action.payload
-    yield put(fetchCollectionsRequest(wallet.address))
   }
 
   function* handleRequestCollectionSuccess() {

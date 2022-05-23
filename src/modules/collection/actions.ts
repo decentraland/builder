@@ -1,6 +1,8 @@
 import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { FetchCollectionsParams } from 'lib/api/builder'
+import { PaginationStats } from 'lib/api/pagination'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { Collection, Mint, Access } from './types'
@@ -11,8 +13,10 @@ export const FETCH_COLLECTIONS_REQUEST = '[Request] Fetch Collections'
 export const FETCH_COLLECTIONS_SUCCESS = '[Success] Fetch Collections'
 export const FETCH_COLLECTIONS_FAILURE = '[Failure] Fetch Collections'
 
-export const fetchCollectionsRequest = (address?: string) => action(FETCH_COLLECTIONS_REQUEST, { address })
-export const fetchCollectionsSuccess = (collections: Collection[]) => action(FETCH_COLLECTIONS_SUCCESS, { collections })
+export const fetchCollectionsRequest = (address?: string, params?: FetchCollectionsParams) =>
+  action(FETCH_COLLECTIONS_REQUEST, { address, params })
+export const fetchCollectionsSuccess = (collections: Collection[], paginationStats?: PaginationStats) =>
+  action(FETCH_COLLECTIONS_SUCCESS, { collections, paginationStats })
 export const fetchCollectionsFailure = (error: string) => action(FETCH_COLLECTIONS_FAILURE, { error })
 
 export type FetchCollectionsRequestAction = ReturnType<typeof fetchCollectionsRequest>

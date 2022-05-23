@@ -22,3 +22,22 @@
 .LeftPanel > .empty .subtitle {
   color: var(--secondary-text);
 }
+
+.LeftPanel .tabs {
+  padding: 0 16px;
+}
+
+.LeftPanel .dcl.tabs.fullscreen {
+  margin-bottom: 8px;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.LeftPanel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.LeftPanel {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

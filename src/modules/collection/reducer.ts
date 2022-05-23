@@ -74,16 +74,26 @@ import {
 import { toCollectionObject } from './utils'
 import { Collection } from './types'
 
+export type CollectionPaginationData = {
+  ids: string[]
+  total: number
+  totalPages: number
+  currentPage: number
+  limit: number
+}
+
 export type CollectionState = {
   data: Record<string, Collection>
   loading: LoadingState
   error: string | null
+  pagination: CollectionPaginationData | null
 }
 
 const INITIAL_STATE: CollectionState = {
   data: {},
   loading: [],
-  error: null
+  error: null,
+  pagination: null
 }
 
 type CollectionReducerAction =
@@ -123,7 +133,7 @@ type CollectionReducerAction =
   | CreateCollectionForumPostFailureAction
   | PublishThirdPartyItemsSuccessAction
 
-export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
+export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction): CollectionState {
   switch (action.type) {
     case LOCATION_CHANGE: {
       return {
@@ -152,7 +162,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
       }
     }
     case FETCH_COLLECTIONS_SUCCESS: {
-      const { collections } = action.payload
+      const { collections, paginationStats } = action.payload
+      const hasPagination = paginationStats !== undefined
       return {
         ...state,
         data: {
@@ -160,6 +171,17 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
           ...toCollectionObject(collections)
         },
         loading: loadingReducer(state.loading, action),
+        ...(hasPagination
+          ? {
+              pagination: {
+                ids: collections.map(collections => collections.id),
+                total: paginationStats.total,
+                limit: paginationStats.limit,
+                currentPage: paginationStats.page,
+                totalPages: paginationStats.pages
+              }
+            }
+          : {}),
         error: null
       }
     }
@@ -180,6 +202,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case DELETE_COLLECTION_SUCCESS: {
       const { collection } = action.payload
       const newState = {
+        ...state,
         data: {
           ...state.data
         },

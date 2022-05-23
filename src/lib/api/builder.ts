@@ -20,7 +20,7 @@ import { PreviewType } from 'modules/editor/types'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
-import { CurationStatus } from 'modules/curations/types'
+import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
@@ -30,6 +30,16 @@ export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 export const getContentsStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
+
+export type FetchCollectionsParams = {
+  assignee?: string
+  status?: CurationStatus
+  sort?: CurationSortOptions
+  q?: string
+  isPublished?: boolean
+  page?: number
+  limit?: number
+}
 
 export type RemoteItem = {
   id: string // uuid
@@ -432,6 +442,14 @@ function fromRemoteItemCuration(remoteCuration: RemoteItemCuration): ItemCuratio
   }
 }
 
+const toRemoteCollectionQueryParameters = (params?: FetchCollectionsParams) => {
+  const { isPublished, ...rest } = params || {}
+  return {
+    is_published: isPublished,
+    ...rest
+  }
+}
+
 export type PoolDeploymentAdditionalFields = {
   groups?: string[]
 }
@@ -624,7 +642,7 @@ export class BuilderAPI extends BaseAPI {
     return this.request(method, `/pools/${pool}/likes`)
   }
 
-  async fetchItems(address?: string, params: { collectionId?: string; page?: string; limit?: string } = {}) {
+  async fetchItems(address?: string, params: { collectionId?: string; page?: number; limit?: number } = {}) {
     const { collectionId, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE } = params
     const endpoint = address ? `/${address}/items` : '/items'
     const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, { page, limit, collectionId })
@@ -667,11 +685,16 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/items/${id}`, {})
   }
 
-  async fetchCollections(address?: string) {
-    const remoteCollections: RemoteCollection[] = address
-      ? await this.request('get', `/${address}/collections`)
-      : await this.request('get', '/collections')
+  async fetchCollections(address?: string, params?: FetchCollectionsParams) {
+    const remoteCollections = address
+      ? await this.request('get', `/${address}/collections`, params)
+      : await this.request('get', '/collections', toRemoteCollectionQueryParameters(params))
 
+    const { limit, page } = params || {}
+    if (page && limit && remoteCollections.results) {
+      // TODO: remove this check when we have pagination on standard collections
+      return { ...remoteCollections, results: remoteCollections.results.map(fromRemoteCollection) }
+    }
     return remoteCollections.map(fromRemoteCollection)
   }
 

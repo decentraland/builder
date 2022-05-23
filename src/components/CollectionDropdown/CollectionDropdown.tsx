@@ -5,6 +5,13 @@ import { Props } from './CollectionDropdown.types'
 import './CollectionDropdown.css'
 
 export default class CollectionDropdown extends React.PureComponent<Props> {
+  componentDidMount() {
+    const { address, onFetchCollections } = this.props
+    if (address) {
+      onFetchCollections(address)
+    }
+  }
+
   getOptions() {
     const { collections, filter } = this.props
     const filteredCollections = filter ? collections.filter(filter) : collections

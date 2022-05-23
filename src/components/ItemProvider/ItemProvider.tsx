@@ -3,15 +3,16 @@ import { Props } from './ItemProvider.types'
 
 export default class ItemProvider extends React.PureComponent<Props> {
   componentDidMount() {
-    const { id, item, onFetchItem } = this.props
-    if (id && !item) {
+    const { id, item, onFetchItem, isConnected } = this.props
+    if (isConnected && id && !item) {
       onFetchItem(id)
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { id, item, onFetchItem } = this.props
-    if (id && id !== prevProps.id && !item) {
+    const { id, item, onFetchItem, isConnected } = this.props
+    const idChanged = id && id !== prevProps.id
+    if (isConnected && id && (idChanged || !item)) {
       onFetchItem(id)
     }
   }

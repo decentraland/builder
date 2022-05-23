@@ -15,8 +15,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
+import { getEntityByItemId, getItems, getData as getItemsById, getPaginationData, getWalletItems } from 'modules/item/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
-import { getEntityByItemId, getItems, getData as getItemsById, getPaginationData } from 'modules/item/selectors'
 import { getCollection } from 'modules/collection/selectors'
 import { EntityHashingType, Item, ItemApprovalData, WearableCategory } from 'modules/item/types'
 import { openModal, closeModal, CLOSE_MODAL } from 'modules/modal/actions'
@@ -53,9 +53,9 @@ import {
 } from 'modules/thirdParty/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
-import { CurationStatus } from 'modules/curations/types'
-import { BuilderAPI } from 'lib/api/builder'
-import { PaginatedResource } from 'lib/api/pagination'
+import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
+import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
+import { PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import {
   approveCollectionFailure,
@@ -70,6 +70,8 @@ import {
   SAVE_COLLECTION_FAILURE,
   initiateTPApprovalFlow,
   finishTPApprovalFlow,
+  fetchCollectionsRequest,
+  fetchCollectionsSuccess,
   approveCollectionSuccess
 } from './actions'
 import { collectionSaga } from './sagas'
@@ -140,6 +142,13 @@ const getCollectionCuration = (collection: Collection, props: Partial<Collection
     ...props
   } as CollectionCuration)
 
+const getPaginationDataMock = (): PaginationStats => ({
+  limit: 1,
+  page: 1,
+  pages: 1,
+  total: 1
+})
+
 const getItemCurationMock = (item: Item, props: Partial<ItemCuration> = {}): ItemCuration =>
   ({
     id: 'anItemCuration',
@@ -159,7 +168,8 @@ beforeEach(() => {
     saveTOS: jest.fn(),
     fetchApprovalData: jest.fn(),
     updateItemCurationStatus: jest.fn(),
-    fetchCollectionItems: jest.fn()
+    fetchCollectionItems: jest.fn(),
+    fetchCollections: jest.fn()
   } as unknown) as BuilderAPI
   mockCatalyst = ({} as unknown) as CatalystClient
   mockBuilderClient = ({
@@ -1678,6 +1688,64 @@ describe('when handling the save of multiple items', () => {
         .provide([[select(getCollection, items[0].collectionId!), collection]])
         .put(saveCollectionRequest(collection))
         .dispatch(saveMultipleItemsSuccess(items, fileNames, []))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the fetch of collections', () => {
+  let collection: Collection
+
+  describe('and pagination parameters are sent', () => {
+    let mockedPaginationData: PaginationStats
+    let mockedFetchParameters: FetchCollectionsParams
+    beforeEach(() => {
+      mockedPaginationData = getPaginationDataMock()
+      collection = getCollectionMock()
+      mockedFetchParameters = {
+        assignee: '0x123',
+        isPublished: true,
+        limit: 1,
+        page: 1,
+        q: collection.name,
+        sort: CurationSortOptions.NAME_ASC,
+        status: CurationStatus.TO_REVIEW
+      }
+    })
+
+    it('should put the success action with the pagination information from the response', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .provide([
+          [select(getWalletItems), []],
+          [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), { ...mockedPaginationData, results: [collection] }]
+        ])
+        .put(fetchCollectionsSuccess([collection], mockedPaginationData))
+        .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and pagination params are not sent', () => {
+    let mockedFetchParameters: FetchCollectionsParams
+    beforeEach(() => {
+      collection = getCollectionMock()
+      mockedFetchParameters = {
+        assignee: '0x123',
+        isPublished: true,
+        q: collection.name,
+        sort: CurationSortOptions.NAME_ASC,
+        status: CurationStatus.TO_REVIEW
+      }
+    })
+
+    it('should put the success action with the data without pagination information ', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .provide([
+          [select(getWalletItems), []],
+          [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), [collection]]
+        ])
+        .put(fetchCollectionsSuccess([collection], undefined))
+        .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters))
         .run({ silenceTimeout: true })
     })
   })

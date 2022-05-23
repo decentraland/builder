@@ -1271,6 +1271,8 @@
   "item_editor": {
     "open": "Open editor",
     "top_panel": {
+      "reviewed_counter": "Reviewed wearables: {count}/{threshold}",
+      "items_pending_to_review": "There are items pending to review",
       "approve": "Approve",
       "reject": "Reject",
       "enable": "Enable",
@@ -1302,6 +1304,21 @@
         "add_existing_item": "Add Existing Item",
         "edit_name": "Edit Name"
       },
+      "reviewed_tab": {
+        "page_counter": "{pageStart}-{pageEnd} of {total} items"
+      },
+      "get_more_samples_modal": {
+        "title": "Get More Samples",
+        "content": "This will replace the current samples and get {count} more randomly picked samples. You can always check previous samples in the {tabName} tab.",
+        "understood": "Understood",
+        "dont_show_again": "Don't show this message again."
+      },
+      "to_review": "To review",
+      "reviewed": "Reviewed",
+      "all_items": "All items",
+      "get_random_sample": "Get Random Sample",
+      "reviewed_samples_bold": "Reviewed samples: {count}",
+      "reviewed_samples": "{reviewed_samples_bold}/{total}",
       "items": "Items",
       "collections": "Collections",
       "items_count": "{count} items",

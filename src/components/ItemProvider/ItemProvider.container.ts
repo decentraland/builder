@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getItemId } from 'modules/location/selectors'
 import { isLoggingIn } from 'modules/identity/selectors'
@@ -26,6 +26,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     id,
     item,
     collection,
+    isConnected: isConnected(state),
     isLoading:
       isLoadingType(getLoading(state), FETCH_ITEM_REQUEST) ||
       isLoadingType(getLoading(state), SAVE_ITEM_REQUEST) ||

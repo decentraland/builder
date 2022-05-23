@@ -7,6 +7,13 @@ export enum CurationStatus {
   DISABLED = 'disabled'
 }
 
+export enum CurationSortOptions {
+  MOST_RELEVANT = 'MOST_RELEVANT',
+  NEWEST = 'NEWEST',
+  NAME_DESC = 'NAME_DESC',
+  NAME_ASC = 'NAME_ASC'
+}
+
 export type BaseCuration = {
   id: string
   status: CurationStatus

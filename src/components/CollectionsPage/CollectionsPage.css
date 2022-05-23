@@ -151,3 +151,18 @@
   float: right;
   padding: 19px 0;
 }
+
+.CollectionsPage .pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.CollectionsPage .ui.pagination.menu {
+  margin-top: 16px;
+}
+
+.CollectionsPage .dcl.tabs .ui.container {
+  margin-bottom: 20px;
+}

@@ -1,15 +1,27 @@
 import React from 'react'
-import { Row, Column, Section, Container, Dropdown, Pagination, Empty, TextFilter, Table } from 'decentraland-ui'
+import {
+  Row,
+  Column,
+  Section,
+  Container,
+  Dropdown,
+  Pagination,
+  Empty,
+  TextFilter,
+  Table,
+  DropdownProps,
+  PaginationProps,
+  Loader
+} from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getCollectionCurationState } from 'modules/curations/collectionCuration/utils'
+import { FetchCollectionsParams } from 'lib/api/builder'
 import Profile from 'components/Profile'
 import NotFound from 'components/NotFound'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
-import { Collection } from 'modules/collection/types'
 import CollectionRow from './CollectionRow'
-import { Props, State, SortBy, CurationFilterOptions, CurationExtraStatuses, Filters } from './CurationPage.types'
-import { CurationStatus } from 'modules/curations/types'
+import { Props, State, CurationFilterOptions, CurationExtraStatuses, Filters } from './CurationPage.types'
+import { CurationSortOptions } from 'modules/curations/types'
 import './CurationPage.css'
 
 const PAGE_SIZE = 12
@@ -17,11 +29,73 @@ const ALL_ASSIGNEES_KEY = 'all'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
-    sortBy: SortBy.MOST_RELEVANT,
+    sortBy: CurationSortOptions.MOST_RELEVANT,
     filterBy: CurationExtraStatuses.ALL_STATUS,
-    assigneeFilter: ALL_ASSIGNEES_KEY,
+    assignee: ALL_ASSIGNEES_KEY,
     searchText: '',
     page: 1
+  }
+
+  // the mount if needed if the user comes from another page and they are already connected
+  componentDidMount() {
+    const { onFetchCollections, wallet, isLoadingCommittee, isCommitteeMember } = this.props
+    if (wallet && !isLoadingCommittee && isCommitteeMember) {
+      onFetchCollections({ page: 1, limit: PAGE_SIZE, isPublished: true, sort: CurationSortOptions.MOST_RELEVANT })
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { onFetchCollections, wallet, isLoadingCommittee, isCommitteeMember } = this.props
+    // fetch collections once the committee value is resolved is connected
+    if (wallet && !isLoadingCommittee && isCommitteeMember && prevProps.isCommitteeMember !== isCommitteeMember) {
+      onFetchCollections({ page: 1, limit: PAGE_SIZE, isPublished: true, sort: CurationSortOptions.MOST_RELEVANT })
+    }
+  }
+
+  getFetchParams = (overrides?: FetchCollectionsParams) => {
+    const { assignee, filterBy, page, searchText, sortBy } = this.state
+    return {
+      page,
+      limit: PAGE_SIZE,
+      assignee: assignee !== ALL_ASSIGNEES_KEY ? assignee : undefined,
+      status: filterBy !== CurationExtraStatuses.ALL_STATUS ? filterBy : undefined,
+      q: searchText ? searchText : undefined,
+      sort: sortBy,
+      isPublished: true,
+      ...overrides
+    }
+  }
+
+  fetchCollections = () => {
+    const { onFetchCollections } = this.props
+    onFetchCollections(this.getFetchParams())
+  }
+
+  updateParam = <K extends keyof State>(newState: Pick<State, K>) => {
+    this.setState(newState, this.fetchCollections)
+  }
+
+  handleSortChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    this.updateParam({ sortBy: value as CurationSortOptions, page: 1 })
+  }
+
+  handleStatusChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    this.updateParam({ filterBy: `${value}` as Filters, page: 1 })
+  }
+
+  handleAssigneeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    this.updateParam({ assignee: `${value}`, page: 1 })
+  }
+
+  handleSearchChange = (value: string) => {
+    const { searchText } = this.state
+    if (value !== searchText) {
+      this.updateParam({ searchText: value, page: 1 })
+    }
+  }
+
+  handlePageChange = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
+    this.updateParam({ page: +props.activePage! })
   }
 
   renderSortDropdown = () => {
@@ -31,17 +105,17 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         direction="left"
         value={sortBy}
         options={[
-          { value: SortBy.MOST_RELEVANT, text: t('curation_page.order.most_relevant') },
-          { value: SortBy.NEWEST, text: t('global.order.newest') },
-          { value: SortBy.NAME_ASC, text: t('global.order.name_asc') },
-          { value: SortBy.NAME_DESC, text: t('global.order.name_desc') }
+          { value: CurationSortOptions.MOST_RELEVANT, text: t('curation_page.order.most_relevant') },
+          { value: CurationSortOptions.NEWEST, text: t('global.order.newest') },
+          { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') },
+          { value: CurationSortOptions.NAME_DESC, text: t('global.order.name_desc') }
         ]}
-        onChange={(_event, { value }) => this.setState({ sortBy: value as SortBy })}
+        onChange={this.handleSortChange}
       />
     )
   }
 
-  renderFilterDropdown = () => {
+  renderStatusFilterDropdown = () => {
     const { filterBy } = this.state
     return (
       <Dropdown
@@ -54,19 +128,19 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           { value: CurationFilterOptions.APPROVED, text: t('curation_page.filter.approved') },
           { value: CurationFilterOptions.REJECTED, text: t('curation_page.filter.rejected') }
         ]}
-        onChange={(_event, { value }) => this.setState({ filterBy: value as Filters })}
+        onChange={this.handleStatusChange}
       />
     )
   }
 
   renderAssigneeFilterDropdown = () => {
     const { committeeMembers, wallet } = this.props
-    const { assigneeFilter } = this.state
+    const { assignee } = this.state
     return (
       <Dropdown
         className="assignees"
         direction="left"
-        value={assigneeFilter}
+        value={assignee}
         options={[
           { value: ALL_ASSIGNEES_KEY, text: t('curation_page.filter.all_assignees') },
           ...committeeMembers
@@ -83,100 +157,18 @@ export default class CurationPage extends React.PureComponent<Props, State> {
               text: <Profile textOnly address={address} />
             }))
         ]}
-        onChange={(_event, { value }) => this.setState({ assigneeFilter: `${value}` })}
+        onChange={this.handleAssigneeChange}
       />
     )
   }
 
-  sortAndFilter = () => {
-    const { collections, curationsByCollectionId } = this.props
-    const { filterBy, sortBy, searchText, assigneeFilter } = this.state
-
-    return collections
-      .filter(
-        collection =>
-          collection.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          collection.owner.toLowerCase().includes(searchText.toLowerCase())
-      )
-      .filter(collection => {
-        const curation = curationsByCollectionId[collection.id]
-        const curationState = getCollectionCurationState(collection, curation)
-
-        switch (filterBy) {
-          case CurationFilterOptions.APPROVED:
-            return curationState === CurationStatus.APPROVED
-          case CurationFilterOptions.REJECTED:
-            return curationState === CurationStatus.REJECTED
-          case CurationFilterOptions.UNDER_REVIEW:
-            return curationState === CurationStatus.UNDER_REVIEW
-          case CurationFilterOptions.TO_REVIEW:
-            return curationState === CurationStatus.TO_REVIEW
-          case CurationFilterOptions.ALL_STATUS:
-          default:
-            return true
-        }
-      })
-      .filter(collection => {
-        const curation = curationsByCollectionId[collection.id]
-        if (assigneeFilter !== ALL_ASSIGNEES_KEY) {
-          return curation && curation.assignee === assigneeFilter
-        }
-        return true
-      })
-      .sort((collectionA, collectionB) => {
-        const curationA = curationsByCollectionId[collectionA.id]
-        const curationB = curationsByCollectionId[collectionB.id]
-
-        switch (sortBy) {
-          case SortBy.MOST_RELEVANT: {
-            const curationRelevanceOrder = [
-              CurationStatus.TO_REVIEW,
-              CurationStatus.UNDER_REVIEW,
-              CurationStatus.APPROVED,
-              CurationStatus.REJECTED,
-              CurationStatus.DISABLED
-            ]
-            const curationAState = getCollectionCurationState(collectionA, curationA)
-            const curationBState = getCollectionCurationState(collectionB, curationB)
-            return curationRelevanceOrder.indexOf(curationAState) - curationRelevanceOrder.indexOf(curationBState)
-          }
-          case SortBy.NEWEST: {
-            const dateA = curationA ? curationA.createdAt : collectionA.createdAt
-            const dateB = curationB ? curationB.createdAt : collectionB.createdAt
-
-            return dateA < dateB ? 1 : -1
-          }
-          case SortBy.NAME_ASC: {
-            return collectionA.name.toLowerCase() < collectionB.name.toLowerCase() ? 1 : -1
-          }
-          case SortBy.NAME_DESC: {
-            return collectionA.name.toLowerCase() > collectionB.name.toLowerCase() ? 1 : -1
-          }
-
-          default: {
-            return 0
-          }
-        }
-      })
-  }
-
-  paginate = (collections: Collection[]) => {
-    const { page } = this.state
-    return collections.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  }
-
-  handleSearchChange = (value: string): void => {
-    this.setState({ searchText: value })
-  }
-
   renderPage() {
-    const { collections, curationsByCollectionId } = this.props
+    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData } = this.props
     const { page, searchText } = this.state
-
-    const sortedAndFiltered = this.sortAndFilter()
-    const total = sortedAndFiltered.length
-    const totalPages = Math.ceil(total / PAGE_SIZE)
-    const paginatedCollections = this.paginate(sortedAndFiltered)
+    const totalCurations = paginationData?.total
+    const totalPages = paginationData?.totalPages
+    const paginatedCollections = collections
+    const isLoading = isLoadingCollectionsData || isLoadingCommittee || !paginationData
 
     return (
       <>
@@ -184,76 +176,88 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           <Container>
             <Row>
               <Column>
-                <Row className="text-filter-row">
-                  <TextFilter
-                    placeholder={t('curation_page.search_placeholder', { count: collections.length })}
-                    value={searchText}
-                    onChange={this.handleSearchChange}
-                  />
-                </Row>
-              </Column>
-              <Column align="right">
-                {collections.length > 1 ? (
-                  <Row>
-                    {this.renderAssigneeFilterDropdown()}
-                    {this.renderFilterDropdown()}
-                    {this.renderSortDropdown()}
+                {paginationData ? (
+                  <Row className="text-filter-row">
+                    <TextFilter
+                      placeholder={t('curation_page.search_placeholder', { count: totalCurations })}
+                      value={searchText}
+                      onChange={this.handleSearchChange}
+                    />
                   </Row>
                 ) : null}
+              </Column>
+              <Column align="right">
+                <Row>
+                  {this.renderAssigneeFilterDropdown()}
+                  {this.renderStatusFilterDropdown()}
+                  {this.renderSortDropdown()}
+                </Row>
               </Column>
             </Row>
           </Container>
         </div>
-        <Container>
-          <Section>
-            <Table basic="very">
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>{t('collection_row.collection')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('collection_row.type')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('collection_row.owner')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('collection_row.date')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('collection_row.status')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('collection_row.assignee')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('collection_row.discussion')}</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
-
-              <Table.Body>
+        {isLoading ? (
+          <Loader active size="large" />
+        ) : (
+          <Container>
+            <Section>
+              <Table basic="very">
                 {collections.length > 0 ? (
-                  paginatedCollections.map(collection => (
-                    <CollectionRow key={collection.id} collection={collection} curation={curationsByCollectionId[collection.id] || null} />
-                  ))
-                ) : (
-                  <Empty height={200}>
-                    <div>
-                      <T id="curation_page.empty_collections" />
-                    </div>
-                  </Empty>
-                )}
-              </Table.Body>
-            </Table>
-          </Section>
-          {totalPages > 1 && (
-            <Pagination
-              className="pagination"
-              firstItem={null}
-              lastItem={null}
-              totalPages={totalPages}
-              activePage={page}
-              onPageChange={(_event, props) => this.setState({ page: +props.activePage! })}
-            />
-          )}
-        </Container>
+                  <>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.HeaderCell>{t('collection_row.collection')}</Table.HeaderCell>
+                        <Table.HeaderCell>{t('collection_row.type')}</Table.HeaderCell>
+                        <Table.HeaderCell>{t('collection_row.owner')}</Table.HeaderCell>
+                        <Table.HeaderCell>{t('collection_row.date')}</Table.HeaderCell>
+                        <Table.HeaderCell>{t('collection_row.status')}</Table.HeaderCell>
+                        <Table.HeaderCell>{t('collection_row.assignee')}</Table.HeaderCell>
+                        <Table.HeaderCell>{t('collection_row.discussion')}</Table.HeaderCell>
+                      </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                      {paginatedCollections.map(collection => (
+                        <CollectionRow
+                          key={collection.id}
+                          collection={collection}
+                          curation={curationsByCollectionId[collection.id] || null}
+                        />
+                      ))}
+                    </Table.Body>
+                  </>
+                ) : null}
+              </Table>
+
+              {collections.length === 0 ? (
+                <Empty height={200}>
+                  <div>
+                    <T id="curation_page.empty_collections" />
+                  </div>
+                </Empty>
+              ) : null}
+            </Section>
+            {!!totalPages && totalPages > 1 && (
+              <Pagination
+                className="pagination"
+                firstItem={null}
+                lastItem={null}
+                totalPages={totalPages}
+                activePage={page}
+                onPageChange={this.handlePageChange}
+              />
+            )}
+          </Container>
+        )}
       </>
     )
   }
 
   render() {
-    const { isCommitteeMember, isConnecting, isLoading } = this.props
-
+    const { isCommitteeMember, isConnecting, isLoadingCommittee } = this.props
+    const isLoadingTopLevel = isConnecting || isLoadingCommittee
     return (
-      <LoggedInDetailPage className="CurationPage" activeTab={NavigationTab.CURATION} isLoading={isConnecting || isLoading}>
+      <LoggedInDetailPage className="CurationPage" activeTab={NavigationTab.CURATION} isLoading={isLoadingTopLevel}>
         {isCommitteeMember ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )

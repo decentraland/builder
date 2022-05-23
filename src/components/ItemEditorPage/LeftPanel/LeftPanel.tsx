@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader } from 'decentraland-ui'
+import { Loader, Tabs } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { sortByName } from 'lib/sort'
 import { isThirdParty } from 'lib/urn'
@@ -11,15 +11,39 @@ import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
 import Collections from './Collections'
-import { Props } from './LeftPanel.types'
+import { LEFT_PANEL_PAGE_SIZE } from '../constants'
+import { Props, State, ItemEditorTabs } from './LeftPanel.types'
 import './LeftPanel.css'
 
-export const LEFT_PANEL_PAGE_SIZE = 50
+export const TP_TRESHOLD_TO_REVIEW = 0.01
 const INITIAL_PAGE = 1
 
-export default class LeftPanel extends React.PureComponent<Props> {
+export default class LeftPanel extends React.PureComponent<Props, State> {
   state = {
-    itemsPage: [INITIAL_PAGE]
+    pages: [INITIAL_PAGE],
+    currentTab: ItemEditorTabs.COLLECTIONS
+  }
+
+  fetchResource() {
+    const { address, onFetchCollections, onFetchOrphanItems, isReviewing } = this.props
+    const { pages } = this.state
+    if (address && !isReviewing) {
+      const page = pages[pages.length - 1] // fetch new last page added, the previous ones were already fetched
+      const fetchFn = this.isCollectionTabActive() ? onFetchCollections : onFetchOrphanItems
+      fetchFn(address, { limit: LEFT_PANEL_PAGE_SIZE, page })
+    }
+  }
+
+  componentDidMount() {
+    this.fetchResource()
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { isConnected, address } = this.props
+    // fetch only if this was triggered by a connecting event
+    if (address && isConnected && isConnected !== prevProps.isConnected) {
+      this.fetchResource()
+    }
   }
 
   getItems(collection: Collection | null, collectionItems: Item[]) {
@@ -33,19 +57,51 @@ export default class LeftPanel extends React.PureComponent<Props> {
   }
 
   loadNextPage = (isLoading: boolean) => {
-    const { totalItems } = this.props
-    const { itemsPage } = this.state
-    const totalPages = Math.ceil(totalItems! / LEFT_PANEL_PAGE_SIZE)
-    if (!itemsPage.includes(totalPages) && !isLoading) {
-      const lastPage = itemsPage[itemsPage.length - 1]
-      this.setState({ itemsPage: [...itemsPage, lastPage + 1] })
+    const { pages } = this.state
+    const { totalItems, totalCollections, selectedCollectionId } = this.props
+    const totalResources = this.isCollectionTabActive() ? totalCollections : totalItems
+    const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
+    if (!pages.includes(totalPages) && !isLoading) {
+      const lastPage = pages[pages.length - 1]
+      this.setState({ pages: [...pages, lastPage + 1] }, selectedCollectionId ? undefined : this.fetchResource)
     }
+  }
+
+  loadPage = (page: number) => {
+    this.setState({ pages: [page] }, this.fetchResource)
+  }
+
+  loadRandomPage = (currentItems: Item[]) => {
+    const { pages } = this.state
+    const { totalItems, totalCollections, onSetReviewedItems } = this.props
+    const totalResources = this.isCollectionTabActive() ? totalCollections : totalItems
+    const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
+    let randomPage
+    while (!randomPage) {
+      randomPage = Math.floor(Math.random() * totalPages)
+      if (pages.includes(randomPage)) {
+        randomPage = null
+      }
+    }
+    onSetReviewedItems(currentItems)
+    this.setState({ pages: [randomPage] }, this.fetchResource)
+  }
+
+  handleTabChange = (tab: ItemEditorTabs) => {
+    this.setState({ currentTab: tab, pages: [INITIAL_PAGE] }, this.fetchResource)
+  }
+
+  isCollectionTabActive = () => {
+    const { selectedCollectionId } = this.props
+    const { currentTab } = this.state
+    return currentTab === ItemEditorTabs.COLLECTIONS && !selectedCollectionId
   }
 
   render() {
     const {
       items: allItems,
       totalItems,
+      totalCollections,
       collections,
       selectedItemId,
       selectedCollectionId,
@@ -54,21 +110,26 @@ export default class LeftPanel extends React.PureComponent<Props> {
       isReviewing,
       isConnected,
       onSetItems,
-      onSetCollection
+      onSetCollection,
+      isLoading: isLoadingOrphanItems
     } = this.props
-    const { itemsPage } = this.state
+    const { pages } = this.state
+    const showTabs = !selectedCollectionId
+    const showCollections = this.isCollectionTabActive() && !selectedCollectionId
+    const showItems = !this.isCollectionTabActive() || selectedCollectionId
     return (
       <div className="LeftPanel">
         {isConnected ? (
           <CollectionProvider
             id={selectedCollectionId}
-            itemsPage={itemsPage}
+            itemsPage={pages}
             itemsPageSize={LEFT_PANEL_PAGE_SIZE}
             status={isReviewing ? CurationStatus.PENDING : undefined}
           >
             {({ collection, paginatedItems: collectionItems, isLoading }) => {
               const items = this.getItems(collection, collectionItems)
-              const showLoader = isLoading && items.length === 0
+              const isCollectionTab = this.isCollectionTabActive()
+              const showLoader = isLoading && ((isCollectionTab && collections.length === 0) || (!isCollectionTab && items.length === 0))
               if (showLoader) {
                 return <Loader size="massive" active />
               }
@@ -98,27 +159,43 @@ export default class LeftPanel extends React.PureComponent<Props> {
               return (
                 <>
                   <Header />
-                  {selectedCollectionId ? null : (
+                  {showTabs ? (
+                    <Tabs isFullscreen>
+                      <Tabs.Tab active={isCollectionTab} onClick={() => this.handleTabChange(ItemEditorTabs.COLLECTIONS)}>
+                        {t('collections_page.collections')}
+                      </Tabs.Tab>
+                      <Tabs.Tab active={!isCollectionTab} onClick={() => this.handleTabChange(ItemEditorTabs.ORPHAN_ITEMS)}>
+                        {t('item_editor.left_panel.items')}
+                      </Tabs.Tab>
+                    </Tabs>
+                  ) : null}
+                  {showCollections ? (
                     <Collections
                       collections={collections}
+                      totalCollections={totalCollections || collections.length}
                       items={allItems}
                       hasHeader={items.length > 0}
                       selectedCollectionId={selectedCollectionId}
                       onSetCollection={onSetCollection}
+                      onLoadNextPage={() => this.loadNextPage(isLoading)}
+                      isLoading={isLoading}
                     />
-                  )}
-                  <Items
-                    items={!collection || !isThirdParty(collection.urn) ? items.sort(sortByName) : items}
-                    totalItems={totalItems || items.length}
-                    hasHeader={!selectedCollectionId && collections.length > 0}
-                    selectedItemId={selectedItemId}
-                    selectedCollectionId={selectedCollectionId}
-                    visibleItems={visibleItems}
-                    bodyShape={bodyShape}
-                    onSetItems={onSetItems}
-                    onLoadNextPage={() => this.loadNextPage(isLoading)}
-                    isLoading={isLoading}
-                  />
+                  ) : null}
+                  {showItems ? (
+                    <Items
+                      items={!collection || !isThirdParty(collection.urn) ? items.sort(sortByName) : items}
+                      totalItems={totalItems || items.length}
+                      hasHeader={!selectedCollectionId && collections.length > 0}
+                      selectedItemId={selectedItemId}
+                      selectedCollectionId={selectedCollectionId}
+                      visibleItems={visibleItems}
+                      bodyShape={bodyShape}
+                      onSetItems={onSetItems}
+                      isLoading={isLoading || isLoadingOrphanItems}
+                      onLoadRandomPage={() => this.loadRandomPage(items)}
+                      onLoadPage={this.loadPage}
+                    />
+                  ) : null}
                 </>
               )
             }}
