@@ -4,14 +4,12 @@ import { MapStateProps } from './Routes.types'
 import { withRouter } from 'react-router'
 
 import Routes from './Routes'
+import { getIsMaintenanceEnabled } from 'modules/features/selectors'
 
-const mapState = (_: RootState): MapStateProps => ({})
+const mapState = (state: RootState): MapStateProps => ({
+  inMaintenance: getIsMaintenanceEnabled(state)
+})
 
 const mapDispatch = (_: any) => ({})
 
-export default withRouter(
-  connect(
-    mapState,
-    mapDispatch
-  )(Routes)
-)
+export default withRouter(connect(mapState, mapDispatch)(Routes))
