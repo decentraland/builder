@@ -5,6 +5,7 @@ import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form }
 import { BigNumber } from 'ethers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { fromWei } from 'web3x/utils'
 import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
@@ -104,20 +105,20 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
                   <div className="element-content">
-                    {Currency.USD} {fromWei(priceUSD!, 'ether')}
+                    {Currency.USD} {toFixedMANAValue(fromWei(priceUSD!, 'ether'))}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd', { currency: Currency.USD })}</div>
                   <div className="element-content">
-                    {Currency.USD} {fromWei(totalPriceUSD!, 'ether')}
+                    {Currency.USD} {toFixedMANAValue(fromWei(totalPriceUSD!, 'ether'))}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
                   <div className="element-content">
                     <Mana network={Network.MATIC} size="medium">
-                      {fromWei(totalPrice!, 'ether')}
+                      {toFixedMANAValue(fromWei(totalPrice!, 'ether'))}
                     </Mana>
                   </div>
                 </div>
