@@ -8,6 +8,7 @@ import { StorageState } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { TranslationState } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { ToastState } from 'decentraland-dapps/dist/modules/toast/reducer'
 import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
+import { FeaturesState } from 'decentraland-dapps/dist/modules/features/reducer'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
@@ -73,6 +74,7 @@ export type RootState = {
   wallet: WalletState
   collectionCuration: CollectionCurationState
   itemCuration: ItemCurationState
+  features: FeaturesState
 }
 
 export type RootStore = Store<RootState>
