@@ -1,6 +1,13 @@
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { isThirdPartyManager, getWalletThirdParties, getCollectionThirdParty, getItemThirdParty } from './selectors'
+import { DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST } from './actions'
+import {
+  isThirdPartyManager,
+  getWalletThirdParties,
+  getCollectionThirdParty,
+  getItemThirdParty,
+  isDeployingBatchedThirdPartyItems
+} from './selectors'
 import { ThirdParty } from './types'
 
 describe('Third Party selectors', () => {
@@ -203,6 +210,42 @@ describe('Third Party selectors', () => {
 
       it('should return the third party that matches the given id', () => {
         expect(getItemThirdParty(state, item)).toEqual(thirdParty2)
+      })
+    })
+  })
+
+  describe('when getting if a batched set of third party items is being deployed', () => {
+    let state: RootState
+
+    describe('when the batched items are being deployed', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [{ type: DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST }]
+          }
+        }
+      })
+
+      it('should return true', () => {
+        expect(isDeployingBatchedThirdPartyItems(state)).toBe(true)
+      })
+    })
+
+    describe('when the batched items are not being deployed', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: []
+          }
+        }
+      })
+
+      it('should return false', () => {
+        expect(isDeployingBatchedThirdPartyItems(state)).toBe(false)
       })
     })
   })
