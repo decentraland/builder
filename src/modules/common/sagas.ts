@@ -1,6 +1,7 @@
 import { all } from 'redux-saga/effects'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { BuilderClient } from '@dcl/builder-client'
+import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 
 import { createProfileSaga } from 'decentraland-dapps/dist/modules/profile/sagas'
 import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
@@ -40,7 +41,6 @@ import { BuilderAPI } from 'lib/api/builder'
 import { entitySaga } from 'modules/entity/sagas'
 import { collectionCurationSaga } from 'modules/curations/collectionCuration/sagas'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
-import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL })
 
