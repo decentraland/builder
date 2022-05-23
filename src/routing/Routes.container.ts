@@ -1,10 +1,9 @@
 import { connect } from 'react-redux'
-import { RootState } from 'modules/common/types'
-import { MapStateProps } from './Routes.types'
 import { withRouter } from 'react-router'
-
-import Routes from './Routes'
+import { RootState } from 'modules/common/types'
 import { getIsMaintenanceEnabled } from 'modules/features/selectors'
+import { MapStateProps } from './Routes.types'
+import Routes from './Routes'
 
 const mapState = (state: RootState): MapStateProps => ({
   inMaintenance: getIsMaintenanceEnabled(state)
