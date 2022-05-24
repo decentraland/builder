@@ -1,4 +1,6 @@
 import { createSelector } from 'reselect'
+import { ChainId } from '@dcl/schemas'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { RootState } from 'modules/common/types'
@@ -10,6 +12,7 @@ import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCollectionThirdParty, getData as getThirdParties } from 'modules/thirdParty/selectors'
 import { getThirdPartyForCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { getIsRaritiesWithOracleEnabled } from 'modules/features/selectors'
 import { isEqual } from 'lib/address'
 import { isThirdParty } from 'lib/urn'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
@@ -141,4 +144,15 @@ export const hasViewAndEditRights = (state: RootState, address: string, collecti
   const thirdParty = isThirdParty(collection.urn) ? getCollectionThirdParty(state, collection) : null
   const isTPManager = thirdParty && isUserManagerOfThirdParty(address, thirdParty)
   return isTPManager || canManageCollectionItems(collection, address)
+}
+
+/**
+ * Returns the corresponding rarities contract depending on if the rarities with oracle
+ * feature flag is enabled or not.
+ */
+export const getRaritiesContract = (state: RootState, chainId: ChainId) => {
+  const useRaritiesWithOracle = getIsRaritiesWithOracleEnabled(state)
+  const contractName = useRaritiesWithOracle ? ContractName.RaritiesWithOracle : ContractName.Rarities
+
+  return getContract(contractName, chainId)
 }
