@@ -1,5 +1,4 @@
 import { env, utils } from 'decentraland-commons'
-import { select } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -7,7 +6,6 @@ import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
-import { getIsRaritiesWithOracleEnabled } from 'modules/features/selectors'
 import { Collection, Access, Mint, CollectionType } from './types'
 
 export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
@@ -136,14 +134,4 @@ export function isTPCollection(collection: Collection): boolean {
 
 export function getCollectionFactoryContract(chainId: ChainId) {
   return getContract(ContractName.CollectionFactoryV3, chainId)
-}
-
-export function* getRaritiesContract(chainId: ChainId) {
-  const enabled: boolean = yield select(getIsRaritiesWithOracleEnabled)
-
-  if (enabled) {
-    return getContract(ContractName.RaritiesWithOracle, chainId)
-  }
-
-  return getContract(ContractName.Rarities, chainId)
 }
