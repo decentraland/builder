@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Color4, Wearable } from 'decentraland-ecs'
-import { PreviewEmote, WearableBodyShape, WearableDefinition, WearableCategory, Locale } from '@dcl/schemas'
+import { PreviewEmote, WearableBodyShape, WearableDefinition, WearableCategory, Locale, EmoteCategory } from '@dcl/schemas'
 import { Dropdown, DropdownProps, Popup, Icon, Loader, Center } from 'decentraland-ui'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -44,7 +44,7 @@ function toWearable(item: Item): WearableDefinition {
     emoteDataV0:
       item.type === ItemType.EMOTE
         ? {
-            loop: true
+            loop: ((item.data.category as unknown) as EmoteCategory) === EmoteCategory.LOOP
           }
         : undefined
   }
