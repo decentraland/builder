@@ -146,6 +146,10 @@ export const hasViewAndEditRights = (state: RootState, address: string, collecti
   return isTPManager || canManageCollectionItems(collection, address)
 }
 
+/**
+ * Returns the corresponding rarities contract depending on if the rarities with oracle
+ * feature flag is enabled or not.
+ */
 export const getRaritiesContract = (state: RootState, chainId: ChainId) => {
   const useRaritiesWithOracle = getIsRaritiesWithOracleEnabled(state)
   const contractName = useRaritiesWithOracle ? ContractName.RaritiesWithOracle : ContractName.Rarities
