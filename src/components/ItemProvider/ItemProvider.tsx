@@ -9,10 +9,9 @@ export default class ItemProvider extends React.PureComponent<Props> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate() {
     const { id, item, onFetchItem, isConnected } = this.props
-    const idChanged = id && id !== prevProps.id
-    if (isConnected && id && (idChanged || !item)) {
+    if (isConnected && id && !item) {
       onFetchItem(id)
     }
   }
