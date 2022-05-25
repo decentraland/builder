@@ -1,4 +1,4 @@
-import { Locale, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { Locale, WearableBodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
 import { Color4, Wearable } from 'decentraland-ecs'
 import { Item, ItemType } from 'modules/item/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
@@ -268,9 +268,10 @@ describe('when converting an item', () => {
   describe('when using the toBase64 util', () => {
     it('should return the base64 encoded wearable definition for that item', () => {
       const base64 = toBase64(item)
-      expect(base64).toBe(
-        'eyJpZCI6ImFuSXRlbSIsIm5hbWUiOiJBbiBJdGVtIiwidGh1bWJuYWlsIjoidGh1bWJuYWlsLnBuZyIsImltYWdlIjoidGh1bWJuYWlsLnBuZyIsImRlc2NyaXB0aW9uIjoiVGhpcyBpcyBhbiBpdGVtIiwiaTE4biI6W3siY29kZSI6ImVuIiwidGV4dCI6IkFuIEl0ZW0ifV0sImRhdGEiOnsiY2F0ZWdvcnkiOiJoYXQiLCJoaWRlcyI6W10sInJlcGxhY2VzIjpbXSwidGFncyI6W10sInJlcHJlc2VudGF0aW9ucyI6W3siYm9keVNoYXBlcyI6WyJ1cm46ZGVjZW50cmFsYW5kOm9mZi1jaGFpbjpiYXNlLWF2YXRhcnM6QmFzZU1hbGUiXSwibWFpbkZpbGUiOiJtb2RlbC5nbGIiLCJjb250ZW50cyI6W3sia2V5IjoibW9kZWwuZ2xiIiwidXJsIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxL3YxL3N0b3JhZ2UvY29udGVudHMvYmF6aGFzaDEifSx7ImtleSI6InRleHR1cmUucG5nIiwidXJsIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxL3YxL3N0b3JhZ2UvY29udGVudHMvYmF6aGFzaDIifV0sIm92ZXJyaWRlSGlkZXMiOltdLCJvdmVycmlkZVJlcGxhY2VzIjpbXX1dfX0='
-      )
+      const ascii = atob(base64)
+      const parsed: WearableDefinition = JSON.parse(ascii)
+      const wearable = toWearable(item)
+      expect(parsed).toEqual(wearable)
     })
   })
 })
