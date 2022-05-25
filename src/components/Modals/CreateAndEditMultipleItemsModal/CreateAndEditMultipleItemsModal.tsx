@@ -13,6 +13,7 @@ import { EngineType, getModelData } from 'lib/getModelData'
 import { getExtension } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
 import { convertImageIntoWearableThumbnail, dataURLToBlob, getImageType } from 'modules/media/utils'
+import { ImageType } from 'modules/media/types'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
 import { generateCatalystImage } from 'modules/item/utils'
@@ -28,7 +29,6 @@ import {
   State
 } from './CreateAndEditMultipleItemsModal.types'
 import styles from './CreateAndEditMultipleItemsModal.module.css'
-import { ImageType } from 'modules/media/types'
 
 const REACT_APP_WEARABLES_ZIP_INFRA_URL = env.get('REACT_APP_WEARABLES_ZIP_INFRA_URL', '')
 const AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY = 4
