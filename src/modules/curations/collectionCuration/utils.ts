@@ -1,11 +1,11 @@
 import { Collection } from 'modules/collection/types'
-import { hasReviews } from 'modules/collection/utils'
+import { hasReviews, isTPCollection } from 'modules/collection/utils'
 import { CurationStatus } from '../types'
 import { CollectionCuration } from './types'
 
 export const getCollectionCurationState = (collection: Collection, curation: CollectionCuration | null) => {
   if (collection.isApproved) {
-    if (!curation || curation.status === 'approved') {
+    if (!curation || curation.status === 'approved' || isTPCollection(collection)) {
       return CurationStatus.APPROVED
     } else if (curation.status === 'rejected') {
       return CurationStatus.REJECTED
