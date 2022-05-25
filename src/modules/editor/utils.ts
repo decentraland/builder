@@ -1,4 +1,6 @@
-import { Wearable } from 'decentraland-ecs'
+import { Color4, Wearable } from 'decentraland-ecs'
+import { EmoteCategory, Locale, WearableBodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
+import { Item, ItemType } from 'modules/item/types'
 import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
@@ -8,7 +10,6 @@ import { Vector3 } from 'modules/models/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { base64ArrayBuffer } from './base64'
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
@@ -261,4 +262,61 @@ export function filterWearables(wearables: Wearable[], category: WearableCategor
       wearable.category === category &&
       wearable.representations.some(representation => representation.bodyShapes.some(_bodyShape => _bodyShape === bodyShape))
   )
+}
+
+/**
+ * Given a color return the hex value
+ *
+ * @param color - a Color4 value
+ */
+export function toHex(color: Color4) {
+  return color
+    .toHexString()
+    .slice(1, 7)
+    .toLowerCase()
+}
+
+/**
+ * Given an item convert it to a wearable definition
+ *
+ * @param item - an Item
+ */
+export function toWearable(item: Item): WearableDefinition {
+  return {
+    id: item.id,
+    name: item.name,
+    thumbnail: item.thumbnail,
+    image: item.thumbnail,
+    description: item.description,
+    i18n: [
+      {
+        code: Locale.EN,
+        text: item.name
+      }
+    ],
+    data: {
+      ...item.data,
+      category: item.data.category as WearableCategory,
+      representations: item.data.representations.map(representation => ({
+        ...representation,
+        contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
+      }))
+    },
+    emoteDataV0:
+      item.type === ItemType.EMOTE
+        ? {
+            loop: ((item.data.category as unknown) as EmoteCategory) === EmoteCategory.LOOP
+          }
+        : undefined
+  }
+}
+
+/**
+ * Given an item return the base64 of its wearable definition
+ *
+ * @param item - an Item
+ */
+export function toBase64(item: Item): string {
+  const wearable = toWearable(item)
+  return btoa(JSON.stringify(wearable))
 }

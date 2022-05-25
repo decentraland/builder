@@ -1,6 +1,7 @@
 import { Address } from 'web3x/address'
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { utils } from 'decentraland-commons'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
@@ -35,7 +36,6 @@ import {
   EmoteCategory,
   EmoteData
 } from './types'
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -311,7 +311,7 @@ export function isModelCategory(category: WearableCategory) {
 }
 
 export function getModelCategories() {
-  return Object.values(WearableCategory).filter(category => typeof category === 'string' && isModelCategory(category)) as WearableCategory[]
+  return (WearableCategory.schema.enum as WearableCategory[]).filter(category => isModelCategory(category))
 }
 
 export function getSkinHiddenCategories() {

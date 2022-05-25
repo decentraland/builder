@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
@@ -6,7 +7,6 @@ import { Project } from 'modules/project/types'
 import { Gizmo, OpenEditorOptions, PreviewType } from './types'
 import { Item } from 'modules/item/types'
 import { Color4, Wearable } from 'decentraland-ecs'
-import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 // Bind keyboard shortcuts
 

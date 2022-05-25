@@ -1,4 +1,5 @@
 import { Color4, Wearable } from 'decentraland-ecs'
+import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
@@ -62,7 +63,6 @@ import {
 } from './actions'
 import { Gizmo } from './types'
 import { pickRandom, filterWearables } from './utils'
-import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 export type EditorState = {
   gizmo: Gizmo

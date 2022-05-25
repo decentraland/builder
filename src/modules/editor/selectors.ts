@@ -16,9 +16,9 @@ import { Asset } from 'modules/asset/types'
 import { ItemState } from 'modules/item/reducer'
 import { getData } from 'modules/item/selectors'
 import { Item } from 'modules/item/types'
+import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 import { SelectedBaseWearablesByBodyShape } from './types'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
-import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 
 const getLoading = (state: RootState) => getState(state).loading
 export const getState = (state: RootState) => state.editor

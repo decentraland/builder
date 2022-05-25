@@ -1,9 +1,19 @@
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
-import { Wearable } from 'decentraland-ecs'
+import { Locale, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { Color4, Wearable } from 'decentraland-ecs'
+import { Item, ItemType } from 'modules/item/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
 import { convertWearable, wearable, catalystWearable } from 'specs/editor'
 import { CatalystWearable, PatchedWearable } from './types'
-import { extractBaseUrl, extractHash, filterWearables, fromCatalystWearableToWearable, patchWearables } from './utils'
+import {
+  extractBaseUrl,
+  extractHash,
+  filterWearables,
+  fromCatalystWearableToWearable,
+  patchWearables,
+  toBase64,
+  toHex,
+  toWearable
+} from './utils'
 
 describe('when extracting the base URL of a wearable', () => {
   describe("and the URL doesn't contain the /content/content path with a hash", () => {
@@ -176,6 +186,91 @@ describe('when patching wearables', () => {
       expect(patchedWearable.hides).toContain(WearableCategory.EYEWEAR)
       expect(patchedWearable.representations[0].overrideHides).toContain(WearableCategory.HAT)
       expect(patchedWearable.representations[0].overrideHides).toContain(WearableCategory.EYEWEAR)
+    })
+  })
+})
+
+describe('when passing a Color4 to the toHex util', () => {
+  let red: Color4
+  let blue: Color4
+  let green: Color4
+  beforeAll(() => {
+    red = new Color4(1, 0, 0, 0)
+    blue = new Color4(0, 1, 0, 0)
+    green = new Color4(0, 0, 1, 0)
+  })
+  it('should return the corresponding hex value for that color', () => {
+    expect(toHex(red)).toBe('ff0000')
+    expect(toHex(blue)).toBe('00ff00')
+    expect(toHex(green)).toBe('0000ff')
+  })
+})
+
+describe('when converting an item', () => {
+  let item: Item
+  beforeAll(() => {
+    item = ({
+      id: 'anItem',
+      name: 'An Item',
+      description: 'This is an item',
+      contents: {
+        'model.glb': 'bazhash1',
+        'texture.png': 'bazhash2',
+        'thumbnail.png': 'bazhash3',
+        'image.png': 'bazhash4'
+      },
+      type: ItemType.WEARABLE,
+      data: {
+        category: WearableCategory.HAT,
+        hides: [],
+        replaces: [],
+        tags: [],
+        representations: [
+          {
+            bodyShapes: [WearableBodyShape.MALE],
+            mainFile: 'model.glb',
+            contents: ['model.glb', 'texture.png'],
+            overrideHides: [],
+            overrideReplaces: []
+          }
+        ]
+      },
+      thumbnail: 'thumbnail.png'
+    } as unknown) as Item
+  })
+  describe('when using the toWearable util', () => {
+    it('should return the wearable definition corresponding to that item', () => {
+      const wearable = toWearable(item)
+      expect(wearable.id).toBe('anItem')
+      expect(wearable.name).toBe('An Item')
+      expect(wearable.thumbnail).toBe('thumbnail.png')
+      expect(wearable.i18n).toEqual([
+        {
+          code: Locale.EN,
+          text: 'An Item'
+        }
+      ])
+      expect(wearable.data.category).toBe(WearableCategory.HAT)
+      expect(wearable.data.hides).toEqual([])
+      expect(wearable.data.replaces).toEqual([])
+      expect(wearable.data.tags).toEqual([])
+      expect(wearable.data.representations).toHaveLength(1)
+      expect(wearable.data.representations[0].mainFile).toBe('model.glb')
+      expect(wearable.data.representations[0].contents).toHaveLength(2)
+      expect(wearable.data.representations[0].contents[0].key).toBe('model.glb')
+      expect(wearable.data.representations[0].contents[0].url).toMatch(new RegExp('/storage/contents/bazhash1$'))
+      expect(wearable.data.representations[0].contents[1].key).toBe('texture.png')
+      expect(wearable.data.representations[0].contents[1].url).toMatch(new RegExp('/storage/contents/bazhash2$'))
+      expect(wearable.data.representations[0].overrideHides).toEqual([])
+      expect(wearable.data.representations[0].overrideReplaces).toEqual([])
+    })
+  })
+  describe('when using the toBase64 util', () => {
+    it('should return the base64 encoded wearable definition for that item', () => {
+      const base64 = toBase64(item)
+      expect(base64).toBe(
+        'eyJpZCI6ImFuSXRlbSIsIm5hbWUiOiJBbiBJdGVtIiwidGh1bWJuYWlsIjoidGh1bWJuYWlsLnBuZyIsImltYWdlIjoidGh1bWJuYWlsLnBuZyIsImRlc2NyaXB0aW9uIjoiVGhpcyBpcyBhbiBpdGVtIiwiaTE4biI6W3siY29kZSI6ImVuIiwidGV4dCI6IkFuIEl0ZW0ifV0sImRhdGEiOnsiY2F0ZWdvcnkiOiJoYXQiLCJoaWRlcyI6W10sInJlcGxhY2VzIjpbXSwidGFncyI6W10sInJlcHJlc2VudGF0aW9ucyI6W3siYm9keVNoYXBlcyI6WyJ1cm46ZGVjZW50cmFsYW5kOm9mZi1jaGFpbjpiYXNlLWF2YXRhcnM6QmFzZU1hbGUiXSwibWFpbkZpbGUiOiJtb2RlbC5nbGIiLCJjb250ZW50cyI6W3sia2V5IjoibW9kZWwuZ2xiIiwidXJsIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxL3YxL3N0b3JhZ2UvY29udGVudHMvYmF6aGFzaDEifSx7ImtleSI6InRleHR1cmUucG5nIiwidXJsIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAxL3YxL3N0b3JhZ2UvY29udGVudHMvYmF6aGFzaDIifV0sIm92ZXJyaWRlSGlkZXMiOltdLCJvdmVycmlkZVJlcGxhY2VzIjpbXX1dfX0='
+      )
     })
   })
 })

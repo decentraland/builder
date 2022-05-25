@@ -1,58 +1,15 @@
 import * as React from 'react'
 import { Color4, Wearable } from 'decentraland-ecs'
-import { PreviewEmote, WearableBodyShape, WearableDefinition, WearableCategory, Locale, EmoteCategory } from '@dcl/schemas'
+import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { Dropdown, DropdownProps, Popup, Icon, Loader, Center } from 'decentraland-ui'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
-import { Item, ItemType } from 'modules/item/types'
-import { getContentsStorageUrl } from 'lib/api/builder'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
-
-const isString = (value: any): value is string => typeof value === 'string'
-const emotes = Object.values(PreviewEmote).filter(isString) as string[]
-const colorToHex = (color: Color4) =>
-  color
-    .toHexString()
-    .slice(1, 7)
-    .toLowerCase()
-
-function toWearable(item: Item): WearableDefinition {
-  return {
-    id: item.id,
-    name: item.name,
-    thumbnail: item.thumbnail,
-    image: item.thumbnail,
-    description: item.description,
-    i18n: [
-      {
-        code: Locale.EN,
-        text: item.name
-      }
-    ],
-    data: {
-      ...item.data,
-      category: item.data.category as WearableCategory,
-      representations: item.data.representations.map(representation => ({
-        ...representation,
-        contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
-      }))
-    },
-    emoteDataV0:
-      item.type === ItemType.EMOTE
-        ? {
-            loop: ((item.data.category as unknown) as EmoteCategory) === EmoteCategory.LOOP
-          }
-        : undefined
-  }
-}
-function toBase64(item: Item): string {
-  const wearable = toWearable(item)
-  return btoa(JSON.stringify(wearable))
-}
+import { toBase64, toHex } from 'modules/editor/utils'
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
@@ -65,6 +22,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     if (!bodyShapeBaseWearables) {
       onFetchBaseWearables()
     }
+
+    // Setting the editor as loading as soon as it mounts. It will be turned of by the WearablePreview component once it's ready.
     this.setState({ isLoading: true })
   }
 
@@ -132,9 +91,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           profile="default"
           bodyShape={bodyShape}
           emote={emote}
-          skin={colorToHex(skinColor)}
-          eyes={colorToHex(eyeColor)}
-          hair={colorToHex(hairColor)}
+          skin={toHex(skinColor)}
+          eyes={toHex(eyeColor)}
+          hair={toHex(hairColor)}
           autoRotateSpeed={0}
           urns={
             selectedBaseWearables
@@ -170,7 +129,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
                   <Dropdown
                     className="avatar-animation"
                     value={emote}
-                    options={emotes.map(value => ({ value, text: t(`emotes.${value}`) }))}
+                    options={PreviewEmote.schema.enum.map((value: PreviewEmote) => ({ value, text: t(`emotes.${value}`) }))}
                     onChange={this.handleAnimationChange}
                   />
                 </div>

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -67,7 +68,6 @@ import {
   ItemAssetJson
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
