@@ -13,3 +13,11 @@ export type RawMedia = {
   south: Blob | null
   west: Blob | null
 }
+
+export enum ImageType {
+  PNG = 'image/png',
+  GIF = 'image/gif',
+  JPEG = 'image/jpeg',
+  BMP = 'image/bmp',
+  UNKOWN = 'image/unknown'
+}

@@ -185,6 +185,7 @@
   "create_single_item_modal": {
     "title": "新物品",
     "add_representation": "添加{bodyShape}",
+    "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
     "name_label": "给您的新商品起个名字",
     "category_label": "这个项目是什么类别？",
     "category_placeholder": "选择一个类别",
@@ -225,11 +226,12 @@
       "finished_partial_successfully_subtitle": "您已更新 {number_of_items} 个项目，但 {number_of_failed_items} 个失败。请查看提供的 URN",
       "saved_items_table_title": "更新项目"
     },
+    "wrong_thumbnail_format": "thumbnail.png 文件未格式化为 PNG 图像。",
     "wrong_file_extension": "文件扩展名不正确。",
     "asset_file_not_found": "找不到asset.json 文件。",
     "thumbnail_file_not_generated": "无法生成 thumbnail.png 文件。",
-    "not_saved_items_table_title": "Invalid items",
-    "cancelled_items_table_title": "Cancelled items",
+    "not_saved_items_table_title": "无效的可穿戴设备",
+    "cancelled_items_table_title": "取消的可穿戴设备",
     "invalid_urn": "asset.json 文件包含此集合的无效 URN",
     "invalid_title": "无效的",
     "valid_title": "有效的档案",

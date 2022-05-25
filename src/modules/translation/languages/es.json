@@ -193,6 +193,7 @@
   "create_single_item_modal": {
     "title": "Nuevo item",
     "add_representation": "Agregar representación de {bodyShape}",
+    "wrong_thumbnail_format": "El thumbnail provisto no es una imagen PNG",
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
@@ -233,6 +234,7 @@
       "finished_partial_successfully_subtitle": "Agregaste {number_of_items} items pero {number_of_failed_items} fallaron. Por favor revise las URNs subidas",
       "saved_items_table_title": "Items actualizados"
     },
+    "wrong_thumbnail_format": "El archivo thumbnail.png no tiene el formato de una imagen PNG.",
     "wrong_file_extension": "La extensión del artchivo no es correcta.",
     "asset_file_not_found": "El archivo asset.json no se encontró.",
     "thumbnail_file_not_generated": "El archivo thumbnail.png no pudo ser generado.",

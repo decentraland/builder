@@ -189,7 +189,8 @@
   },
   "create_single_item_modal": {
     "title": "New Item",
-    "add_representation": "Add {bodyShape} Repesentation",
+    "add_representation": "Add {bodyShape} Representation",
+    "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
     "name_label": "Enter a name for your item",
     "category_label": "What's the category of this item?",
     "category_placeholder": "Select a category",
@@ -230,6 +231,7 @@
       "finished_partial_successfully_subtitle": "You've updated {number_of_items} items but {number_of_failed_items} failed. Please review the URNs provided",
       "saved_items_table_title": "Updated items"
     },
+    "wrong_thumbnail_format": "The thumbnail.png file is not formatted as a PNG image.",
     "wrong_file_extension": "File extension is not correct.",
     "asset_file_not_found": "The asset.json file was not found.",
     "thumbnail_file_not_generated": "The thumbnail.png file couldn't be generated.",
