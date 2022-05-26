@@ -273,5 +273,13 @@ describe('when converting an item', () => {
       const wearable = toWearable(item)
       expect(parsed).toEqual(wearable)
     })
+    it('should work with items that use emojis', () => {
+      const itemWithEmojis: Item = { ...item, name: 'Item with emoji 🍉', description: 'Description with emoji 🍉' }
+      const base64 = toBase64(itemWithEmojis)
+      const ascii = atob(base64)
+      const parsed: WearableDefinition = JSON.parse(ascii)
+      expect(parsed.name).toEqual('Item with emoji ')
+      expect(parsed.description).toEqual('Description with emoji ')
+    })
   })
 })

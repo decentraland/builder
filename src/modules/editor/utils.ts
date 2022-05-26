@@ -318,5 +318,7 @@ export function toWearable(item: Item): WearableDefinition {
  */
 export function toBase64(item: Item): string {
   const wearable = toWearable(item)
-  return btoa(JSON.stringify(wearable))
+  const stringified = JSON.stringify(wearable)
+  const sanitized = stringified.replace(/[\u0250-\ue007]/g, '')
+  return btoa(sanitized)
 }
