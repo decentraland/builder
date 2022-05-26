@@ -108,7 +108,6 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
       if (!loadedFile.wearable) {
         throw new Error(t('create_and_edit_multiple_items_modal.asset_file_not_found'))
       }
-      console.log('Loaded wearable', loadedFile.wearable)
 
       const itemFactory = new ItemFactory<Blob>().fromConfig(loadedFile.wearable!, loadedFile.content)
 
@@ -186,11 +185,9 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
       }
 
       const builtItem = await itemFactory.build()
-      console.log('Built item', builtItem.item)
       if (!this.isCreating()) {
         builtItem.item = omit(builtItem.item, ['id'])
       }
-      console.log('Is editing', builtItem.item.id, !this.isCreating())
 
       // Generate catalyst image as part of the item
       const catalystImage = await generateCatalystImage(builtItem.item, { thumbnail: builtItem.newContent[THUMBNAIL_PATH] })
