@@ -19,5 +19,5 @@ export enum ImageType {
   GIF = 'image/gif',
   JPEG = 'image/jpeg',
   BMP = 'image/bmp',
-  UNKOWN = 'image/unknown'
+  UNKNOWN = 'image/unknown'
 }

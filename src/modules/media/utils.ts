@@ -113,6 +113,6 @@ export async function getImageType(image: Blob): Promise<ImageType> {
     case 'ffd8':
       return ImageType.JPEG
     default:
-      return ImageType.UNKOWN
+      return ImageType.UNKNOWN
   }
 }
