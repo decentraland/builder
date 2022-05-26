@@ -12,7 +12,8 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { getExtension } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
-import { convertImageIntoWearableThumbnail, dataURLToBlob } from 'modules/media/utils'
+import { convertImageIntoWearableThumbnail, dataURLToBlob, getImageType } from 'modules/media/utils'
+import { ImageType } from 'modules/media/types'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
 import { generateCatalystImage } from 'modules/item/utils'
@@ -124,6 +125,11 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
         thumbnail = await dataURLToBlob(data.image)
         if (!thumbnail) {
           throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
+        }
+      } else {
+        const thumbnailImageType = await getImageType(thumbnail)
+        if (thumbnailImageType !== ImageType.PNG) {
+          throw new Error(t('create_and_edit_multiple_items_modal.wrong_thumbnail_format'))
         }
       }
 

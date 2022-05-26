@@ -18,7 +18,8 @@ import {
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName } from 'modules/asset/utils'
-import { blobToDataURL, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
+import { blobToDataURL, getImageType, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
+import { ImageType } from 'modules/media/types'
 import {
   ITEM_EXTENSIONS,
   THUMBNAIL_PATH,
@@ -481,6 +482,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     if (files && files.length > 0) {
       const file = files[0]
+      const imageType = await getImageType(file)
+      if (imageType !== ImageType.PNG) {
+        this.setState({ error: t('create_single_item_modal.wrong_thumbnail_format') })
+        return
+      }
+      this.setState({ error: undefined })
+
       const resizedFile = await resizeImage(file)
       const thumbnail = URL.createObjectURL(resizedFile)
 
@@ -716,7 +724,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderDetailsView() {
     const { onClose, metadata, error, isLoading } = this.props
-    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
+    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity, error: stateError } = this.state
 
     const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
@@ -736,7 +744,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                     {isRepresentation ? null : (
                       <>
                         <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
-                        <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                        <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
                       </>
                     )}
                   </div>
@@ -808,6 +816,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                   {(metadata && metadata.changeItemFile) || isRepresentation ? t('global.save') : t('global.create')}
                 </Button>
               </Row>
+              {stateError ? (
+                <Row className="error" align="right">
+                  <p className="danger-text">{stateError}</p>
+                </Row>
+              ) : null}
               {error ? (
                 <Row className="error" align="right">
                   <p className="danger-text">{error}</p>

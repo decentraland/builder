@@ -1,6 +1,7 @@
 import { WearableCategory } from '@dcl/schemas'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { makeContentFile, getCID } from 'modules/deployment/utils'
+import { ImageType } from './types'
 
 export function isDataUrl(url: string): boolean {
   return url.startsWith('data:')
@@ -57,6 +58,7 @@ export async function blobToDataURL(blob: Blob): Promise<string> {
 export async function convertImageIntoWearableThumbnail(blob: Blob, category: WearableCategory = WearableCategory.EYES): Promise<string> {
   // load blob into image
   const image = new Image()
+
   const promiseOfALoadedImage = new Promise(resolve => {
     image.onload = () => resolve(image)
   })
@@ -90,4 +92,27 @@ export async function convertImageIntoWearableThumbnail(blob: Blob, category: We
 
   // return image
   return canvas.toDataURL()
+}
+
+/**
+ * Returns the true type of an image by using the first two bytes of the image data.
+ *
+ * @param blob - The blob of the image.
+ */
+export async function getImageType(image: Blob): Promise<ImageType> {
+  const dv = new DataView(await image.arrayBuffer(), 0, 5)
+  var hexSixteenBytesValue = dv.getUint8(0).toString(16) + dv.getUint8(1).toString(16)
+
+  switch (hexSixteenBytesValue) {
+    case '8950':
+      return ImageType.PNG
+    case '4749':
+      return ImageType.GIF
+    case '424d':
+      return ImageType.BMP
+    case 'ffd8':
+      return ImageType.JPEG
+    default:
+      return ImageType.UNKNOWN
+  }
 }
