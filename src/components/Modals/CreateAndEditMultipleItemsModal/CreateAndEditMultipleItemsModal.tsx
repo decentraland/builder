@@ -105,15 +105,16 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
       const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
 
       // Multiple files must contain an asset file
-      if (!loadedFile.asset) {
+      if (!loadedFile.wearable) {
         throw new Error(t('create_and_edit_multiple_items_modal.asset_file_not_found'))
       }
-      const itemFactory = new ItemFactory<Blob>().fromAsset(loadedFile.asset!, loadedFile.content)
+
+      const itemFactory = new ItemFactory<Blob>().fromConfig(loadedFile.wearable!, loadedFile.content)
 
       let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
 
       if (!thumbnail) {
-        const modelPath = loadedFile.asset.representations[0].mainFile
+        const modelPath = loadedFile.wearable.data.representations[0].mainFile
         const url = URL.createObjectURL(loadedFile.content[modelPath])
         const data = await getModelData(url, {
           width: 1024,
@@ -158,8 +159,8 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
         decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
         decodedCollectionUrn.thirdPartyCollectionId
       ) {
-        const decodedUrn: DecodedURN<any> | null = loadedFile.asset.urn ? decodeURN(loadedFile.asset.urn) : null
-        if (loadedFile.asset.urn && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY) {
+        const decodedUrn: DecodedURN<any> | null = loadedFile.wearable.id ? decodeURN(loadedFile.wearable.id) : null
+        if (loadedFile.wearable.id && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY) {
           const { thirdPartyName, thirdPartyCollectionId } = decodedUrn
           if (
             (thirdPartyCollectionId && thirdPartyCollectionId !== decodedCollectionUrn.thirdPartyCollectionId) ||
