@@ -13,6 +13,7 @@ export const DEFAULT_ITEMS_PAGE_SIZE = 50
 export type Props = {
   id: string | null
   collection: Collection | null
+  paginatedCollections: Collection[]
   items: Item[]
   paginatedItems: Item[]
   itemsPage?: number | number[]
@@ -32,6 +33,7 @@ export type Props = {
     onFetchCollectionItemsPages
   }: {
     collection: Collection | null
+    paginatedCollections: Collection[]
     items: Item[]
     paginatedItems: Item[]
     curation: CollectionCuration | null
@@ -45,7 +47,7 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'id' | 'collection' | 'items' | 'isLoading' | 'isConnected' | 'curation' | 'itemCurations' | 'paginatedItems'
+  'id' | 'collection' | 'items' | 'isLoading' | 'isConnected' | 'curation' | 'itemCurations' | 'paginatedItems' | 'paginatedCollections'
 >
 export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems'>
 export type MapDispatch = Dispatch<FetchCollectionRequestAction | FetchCollectionItemsRequestAction>

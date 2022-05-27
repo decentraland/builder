@@ -39,32 +39,22 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { isConnected, address } = this.props
-    // fetch only if this was triggered by a connecting event
-    if (address && isConnected && isConnected !== prevProps.isConnected) {
+    const { isConnected, address, selectedCollectionId } = this.props
+    // fetch only if this was triggered by a connecting event or if th selectedCollection changes
+    if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {
       this.fetchResource()
+    }
+    if (prevProps.selectedCollectionId !== selectedCollectionId) {
+      this.setState({ pages: [INITIAL_PAGE] })
     }
   }
 
   getItems(collection: Collection | null, collectionItems: Item[]) {
     const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
-      return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing
-        ? collectionItems.filter(item => item.isPublished)
-        : collectionItems
+      return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing ? collectionItems : collectionItems
     }
     return orphanItems
-  }
-
-  loadNextPage = (isLoading: boolean) => {
-    const { pages } = this.state
-    const { totalItems, totalCollections, selectedCollectionId } = this.props
-    const totalResources = this.isCollectionTabActive() ? totalCollections : totalItems
-    const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
-    if (!pages.includes(totalPages) && !isLoading) {
-      const lastPage = pages[pages.length - 1]
-      this.setState({ pages: [...pages, lastPage + 1] }, selectedCollectionId ? undefined : this.fetchResource)
-    }
   }
 
   loadPage = (page: number) => {
@@ -126,7 +116,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
             itemsPageSize={LEFT_PANEL_PAGE_SIZE}
             status={isReviewing ? CurationStatus.PENDING : undefined}
           >
-            {({ collection, paginatedItems: collectionItems, isLoading }) => {
+            {({ paginatedCollections, collection, paginatedItems: collectionItems, isLoading }) => {
               const items = this.getItems(collection, collectionItems)
               const isCollectionTab = this.isCollectionTabActive()
               const showLoader = isLoading && ((isCollectionTab && collections.length === 0) || (!isCollectionTab && items.length === 0))
@@ -171,13 +161,13 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                   ) : null}
                   {showCollections ? (
                     <Collections
-                      collections={collections}
+                      collections={paginatedCollections}
                       totalCollections={totalCollections || collections.length}
                       items={allItems}
                       hasHeader={items.length > 0}
                       selectedCollectionId={selectedCollectionId}
                       onSetCollection={onSetCollection}
-                      onLoadNextPage={() => this.loadNextPage(isLoading)}
+                      onLoadPage={this.loadPage}
                       isLoading={isLoading}
                     />
                   ) : null}

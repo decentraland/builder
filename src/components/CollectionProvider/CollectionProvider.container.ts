@@ -6,7 +6,7 @@ import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getPaginatedCollectionItems, getLoading as getLoadingItems, getCollectionItems } from 'modules/item/selectors'
 import { fetchCollectionItemsRequest, FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
-import { getLoading, getCollection } from 'modules/collection/selectors'
+import { getLoading, getCollection, getPaginatedCollections } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_REQUEST, fetchCollectionRequest } from 'modules/collection/actions'
 import { getItemCurations, getLoading as getLoadingItemCurations } from 'modules/curations/itemCuration/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionProvider.types'
@@ -19,6 +19,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const collection = id ? getCollection(state, id) : null
   const items = collection ? getCollectionItems(state, collection.id) : []
   const paginatedItems = collection ? getPaginatedCollectionItems(state, collection.id, ownProps.itemsPageSize || DEFAULT_PAGE_SIZE) : []
+  const paginatedCollections = getPaginatedCollections(state, ownProps.itemsPageSize || DEFAULT_PAGE_SIZE) ?? []
   const itemCurations = collection ? getItemCurations(state, collection.id) : []
   const curation = id ? getCuration(state, id) : null
   return {
@@ -26,6 +27,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     collection,
     items,
     paginatedItems,
+    paginatedCollections,
     itemCurations,
     curation,
     isConnected: isConnected(state),

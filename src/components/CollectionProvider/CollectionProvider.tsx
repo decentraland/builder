@@ -46,13 +46,24 @@ export default class CollectionProvider extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, items, paginatedItems, curation, itemCurations, isLoading, children, onFetchCollectionItems } = this.props
+    const {
+      collection,
+      paginatedCollections,
+      items,
+      paginatedItems,
+      curation,
+      itemCurations,
+      isLoading,
+      children,
+      onFetchCollectionItems
+    } = this.props
     return (
       <>
         {children({
           collection,
           items,
           paginatedItems,
+          paginatedCollections,
           curation,
           itemCurations,
           isLoading,
