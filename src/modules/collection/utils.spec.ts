@@ -191,10 +191,10 @@ describe('when getting the threshold of items to review for a TP collection', ()
   })
   describe('and the collection somewhere in betwen of the 1% and the max percentage', () => {
     beforeEach(() => {
-      totalItems = 10000
+      totalItems = 10001
     })
     it('should return the minimum quantity to review', () => {
-      expect(getTPThresholdToReview(totalItems)).toBe(totalItems * TP_TRESHOLD_TO_REVIEW)
+      expect(getTPThresholdToReview(totalItems)).toBe(Math.ceil(totalItems * TP_TRESHOLD_TO_REVIEW))
     })
   })
   describe('and the collection has more than the maxium to review', () => {
