@@ -688,8 +688,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       // Open the ApprovalFlowModal with the items to be approved
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
-      console.log('Root from the server: ', root)
-      console.log('Root from the client: ', tree.merkleRoot)
       if (root !== tree.merkleRoot) {
         const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
         const slot: Slot = {
