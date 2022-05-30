@@ -7,6 +7,7 @@ import { isEqual, includes } from 'lib/address'
 import { decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
 import { Collection, Access, Mint, CollectionType } from './types'
+import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
 
 export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
 
@@ -134,4 +135,15 @@ export function isTPCollection(collection: Collection): boolean {
 
 export function getCollectionFactoryContract(chainId: ChainId) {
   return getContract(ContractName.CollectionFactoryV3, chainId)
+}
+
+export const getTPThresholdToReview = (totalItems: number) => {
+  // Reference: https://governance.decentraland.org/proposal/?id=f69c4d40-aaaf-11ec-87a7-6d2a41508231
+  // Max to review, 300 items, min to review is 50 or 1% of the collection
+  if (totalItems < MIN_TP_ITEMS_TO_REVIEW) {
+    return totalItems
+  } else if (totalItems >= MIN_TP_ITEMS_TO_REVIEW && totalItems * TP_TRESHOLD_TO_REVIEW < MAX_TP_ITEMS_TO_REVIEW) {
+    return Math.max(MIN_TP_ITEMS_TO_REVIEW, Math.ceil(totalItems * TP_TRESHOLD_TO_REVIEW))
+  }
+  return Math.min(Math.ceil(totalItems * TP_TRESHOLD_TO_REVIEW), MAX_TP_ITEMS_TO_REVIEW)
 }

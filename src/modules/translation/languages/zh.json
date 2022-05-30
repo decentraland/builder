@@ -1271,6 +1271,7 @@
     "top_panel": {
       "reviewed_counter": "点评可穿戴设备：{count}/{threshold}",
       "items_pending_to_review": "有待审核的项目",
+      "not_enough_items_to_curate_more": "该系列没有更多要整理的项目",
       "approve": "批准",
       "reject": "拒绝",
       "enable": "使",

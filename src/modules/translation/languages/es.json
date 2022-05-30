@@ -1287,6 +1287,7 @@
     "top_panel": {
       "reviewed_counter": "Items revisados: {count}/{threshold}",
       "items_pending_to_review": "Hay items pendientes de ser revisados",
+      "not_enough_items_to_curate_more": "La colección no tiene más items a revisar",
       "approve": "Aprobar",
       "reject": "Rechazar",
       "enable": "Habilitar",
