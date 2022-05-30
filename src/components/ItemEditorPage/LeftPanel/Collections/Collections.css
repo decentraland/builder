@@ -17,7 +17,10 @@
   margin-bottom: 16px;
 }
 
-.Collections .ui.loader {
-  top: 100%;
-  margin-top: 15px;
+.Collections .ui.pagination.menu {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 16px;
 }

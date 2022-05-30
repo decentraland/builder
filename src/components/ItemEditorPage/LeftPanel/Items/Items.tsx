@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { List } from 'react-virtualized'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { isThirdParty } from 'lib/urn'
 import { Section, Loader, Tabs, Button, Icon, Pagination, PaginationProps, Header, Modal, Checkbox } from 'decentraland-ui'
@@ -9,7 +8,6 @@ import { TP_TRESHOLD_TO_REVIEW } from '../LeftPanel'
 import { LEFT_PANEL_PAGE_SIZE } from '../../constants'
 import SidebarItem from './SidebarItem'
 import { Props, State, ItemPanelTabs } from './Items.types'
-import 'react-virtualized/styles.css' // only needs to be imported once
 import './Items.css'
 
 const INITIAL_PAGE_STATE = {
@@ -19,7 +17,6 @@ const INITIAL_PAGE_STATE = {
 }
 
 export default class Items extends React.PureComponent<Props, State> {
-  listRef: List | null = null
   state: State = {
     items: this.props.items,
     reviewed: [],
@@ -281,8 +278,8 @@ export default class Items extends React.PureComponent<Props, State> {
 
   render() {
     const { items } = this.state
-    const { totalItems } = this.props
-    if (items.length === 0 || !totalItems) return null
+    const { totalItems, isLoading } = this.props
+    if ((items.length === 0 || !totalItems) && isLoading) return <Loader active size="large" />
 
     return (
       <Section className="Items">

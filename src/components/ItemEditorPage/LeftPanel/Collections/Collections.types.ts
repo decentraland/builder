@@ -3,8 +3,7 @@ import { setCollection } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 
 export type State = {
-  collections: Collection[]
-  resolveNextPagePromise: (() => void) | null
+  currentPage: number
 }
 
 export type Props = {
@@ -15,5 +14,5 @@ export type Props = {
   items: Item[]
   hasHeader: boolean
   onSetCollection: typeof setCollection
-  onLoadNextPage: () => void
+  onLoadPage: (page: number) => void
 }
