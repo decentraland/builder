@@ -71,12 +71,13 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   handleTabChange = (tab: TABS) => {
-    const { page } = this.state
-    const { onFetchOrphanItems, address } = this.props
-    if (tab === TABS.ITEMS && address) {
-      onFetchOrphanItems(address, { page, limit: PAGE_SIZE })
-    }
-    this.setState({ currentTab: tab, page: 1 })
+    const { onFetchOrphanItems, onFetchCollections, address } = this.props
+    this.setState({ currentTab: tab, page: 1 }, () => {
+      const fetchFn = tab === TABS.ITEMS ? onFetchOrphanItems : onFetchCollections
+      if (address) {
+        fetchFn(address, { page: 1, limit: PAGE_SIZE })
+      }
+    })
   }
 
   renderGrid() {
@@ -215,7 +216,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
             </Tabs>
             <Row height={30}>
               <Column>
-                <Row>{!isLoadingItems && count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
+                <Row>{!isLoadingItems && !!count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
               </Column>
             </Row>
           </Container>
