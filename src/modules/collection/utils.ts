@@ -145,5 +145,5 @@ export const getTPThresholdToReview = (totalItems: number) => {
   } else if (totalItems >= MIN_TP_ITEMS_TO_REVIEW && totalItems * TP_TRESHOLD_TO_REVIEW < MAX_TP_ITEMS_TO_REVIEW) {
     return Math.max(MIN_TP_ITEMS_TO_REVIEW, Math.ceil(totalItems * TP_TRESHOLD_TO_REVIEW))
   }
-  return Math.min(Math.floor(totalItems * TP_TRESHOLD_TO_REVIEW), MAX_TP_ITEMS_TO_REVIEW)
+  return Math.min(Math.ceil(totalItems * TP_TRESHOLD_TO_REVIEW), MAX_TP_ITEMS_TO_REVIEW)
 }
