@@ -173,20 +173,36 @@ describe('when getting the threshold of items to review for a TP collection', ()
       expect(getTPThresholdToReview(totalItems)).toBe(totalItems)
     })
   })
-  describe('and the collection has more than the minium but less than the maximun', () => {
+  describe('and the collection has more than the minium to review', () => {
     beforeEach(() => {
-      totalItems = MAX_TP_ITEMS_TO_REVIEW - 10
+      totalItems = MIN_TP_ITEMS_TO_REVIEW + 10
     })
     it('should return the minimum quantity to review', () => {
       expect(getTPThresholdToReview(totalItems)).toBe(MIN_TP_ITEMS_TO_REVIEW)
     })
   })
-  describe('and the collection has more than the maxium to review', () => {
+  describe('and the collection somewhere in betwen of the minimun and the minimum percentage', () => {
+    beforeEach(() => {
+      totalItems = 500
+    })
+    it('should return the minimum quantity to review', () => {
+      expect(getTPThresholdToReview(totalItems)).toBe(50)
+    })
+  })
+  describe('and the collection somewhere in betwen of the 1% and the max percentage', () => {
     beforeEach(() => {
       totalItems = 10000
     })
-    it('should return the minum percentage to review of the collection', () => {
+    it('should return the minimum quantity to review', () => {
       expect(getTPThresholdToReview(totalItems)).toBe(totalItems * TP_TRESHOLD_TO_REVIEW)
+    })
+  })
+  describe('and the collection has more than the maxium to review', () => {
+    beforeEach(() => {
+      totalItems = 35000 // the 1% es greater than the max value to review
+    })
+    it('should return the minum percentage to review of the collection', () => {
+      expect(getTPThresholdToReview(totalItems)).toBe(MAX_TP_ITEMS_TO_REVIEW)
     })
   })
 })
