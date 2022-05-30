@@ -15,7 +15,6 @@ import { LEFT_PANEL_PAGE_SIZE } from '../constants'
 import { Props, State, ItemEditorTabs } from './LeftPanel.types'
 import './LeftPanel.css'
 
-export const TP_TRESHOLD_TO_REVIEW = 0.01
 const INITIAL_PAGE = 1
 
 export default class LeftPanel extends React.PureComponent<Props, State> {
@@ -101,7 +100,8 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       isConnected,
       onSetItems,
       onSetCollection,
-      isLoading: isLoadingOrphanItems
+      isLoading: isLoadingOrphanItems,
+      onSetReviewedItems
     } = this.props
     const { pages } = this.state
     const showTabs = !selectedCollectionId
@@ -184,6 +184,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       isLoading={isLoading || isLoadingOrphanItems}
                       onLoadRandomPage={() => this.loadRandomPage(items)}
                       onLoadPage={this.loadPage}
+                      onSetReviewedItems={onSetReviewedItems}
                     />
                   ) : null}
                 </>

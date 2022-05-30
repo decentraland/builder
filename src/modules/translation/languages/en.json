@@ -1275,6 +1275,7 @@
     "top_panel": {
       "reviewed_counter": "Reviewed wearables: {count}/{threshold}",
       "items_pending_to_review": "There are items pending to review",
+      "not_enough_items_to_curate_more": "The collection doesn't have more items to curate",
       "approve": "Approve",
       "reject": "Reject",
       "enable": "Enable",
