@@ -1250,7 +1250,6 @@ describe('when executing the TP approval flow', () => {
           '1b'
       }
       contentHashes = { [syncedItem.id]: syncedItem.currentContentHash!, [unsyncedItem.id]: unsyncedItem.currentContentHash! }
-      itemsToApprove = [syncedItem, unsyncedItem]
     })
 
     const deployData = getDeployDataMock()
@@ -1266,7 +1265,8 @@ describe('when executing the TP approval flow', () => {
             '3574da0ebfb1eaac261698b057b342e52ea53f85287272cea471a4cda41e3466' +
             '1b'
         }
-        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: [syncedItem, unsyncedItem] })
+        itemsToApprove = [syncedItem, unsyncedItem]
+        ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: itemsToApprove })
       })
 
       it('should throw an error if itemsToApprove length is different than the cheque qty', () => {
@@ -1344,7 +1344,7 @@ describe('when executing the TP approval flow', () => {
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.DEPLOY_TP,
               collection: TPCollection,
-              items: [unsyncedItem],
+              items: itemsToApprove,
               hashes: contentHashes,
               tree: merkleTree
             } as ApprovalFlowModalMetadata)
@@ -1361,16 +1361,18 @@ describe('when executing the TP approval flow', () => {
     })
 
     describe('when sending a valid cheque', () => {
-      let secondPageItems = [getItemMock(TPCollection, { isApproved: true }), getItemMock(TPCollection, { isApproved: true })]
-      let allItemsToApprove = [syncedItem, unsyncedItem, ...secondPageItems]
+      let secondPageItems: Item[]
+      let allItemsToApprove: Item[]
       let itemCurations: ItemCuration[]
 
       beforeEach(() => {
+        secondPageItems = [getItemMock(TPCollection, { isApproved: true }), getItemMock(TPCollection, { isApproved: true })]
+        allItemsToApprove = [syncedItem, unsyncedItem, ...secondPageItems]
         ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({ results: [syncedItem, unsyncedItem] })
         ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({
           results: secondPageItems
         })
-        itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
+        itemCurations = allItemsToApprove.map(item => getItemCurationMock(item))
       })
 
       it('should fetch all the items needed to be approved, including the 2nd page of the pagination', () => {
@@ -1399,12 +1401,11 @@ describe('when executing the TP approval flow', () => {
         const merkleTree = generateTree(Object.values(contentHashes))
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
-            [select(getPaginationData, TPCollection.id), { total: totalItems }],
+            [select(getPaginationData, TPCollection.id), { total: 80 }],
             [
               call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
               { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
             ],
-            [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
             [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }]
           ])
           .dispatch(initiateTPApprovalFlow(TPCollection))
@@ -1417,7 +1418,7 @@ describe('when executing the TP approval flow', () => {
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
-              items: itemsToApprove,
+              items: allItemsToApprove,
               collection: TPCollection,
               merkleTreeRoot: merkleTree.merkleRoot,
               slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
@@ -1428,7 +1429,7 @@ describe('when executing the TP approval flow', () => {
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.DEPLOY_TP,
               collection: TPCollection,
-              items: [unsyncedItem],
+              items: allItemsToApprove,
               tree: merkleTree,
               hashes: contentHashes
             } as ApprovalFlowModalMetadata)
@@ -1464,7 +1465,6 @@ describe('when executing the TP approval flow', () => {
                 call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
                 { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
               ],
-              [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [delay(1000), 0]
             ])
             .dispatch(initiateTPApprovalFlow(TPCollection))
@@ -1488,7 +1488,7 @@ describe('when executing the TP approval flow', () => {
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.DEPLOY_TP,
                 collection: TPCollection,
-                items: [unsyncedItem],
+                items: itemsToApprove,
                 tree: merkleTree,
                 hashes: contentHashes
               } as ApprovalFlowModalMetadata)
@@ -1520,7 +1520,6 @@ describe('when executing the TP approval flow', () => {
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
-              [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), Promise.reject(new Error(error))]
             ])
             .dispatch(initiateTPApprovalFlow(TPCollection))
@@ -1559,8 +1558,7 @@ describe('when executing the TP approval flow', () => {
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
-              [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
-              [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }]
+              [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]
             ])
             .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
@@ -1623,12 +1621,12 @@ describe('when executing the TP approval flow', () => {
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.DEPLOY_TP,
                 collection: TPCollection,
-                items: [unsyncedItem],
+                items: itemsToApprove,
                 tree: merkleTree,
                 hashes: contentHashes
               } as ApprovalFlowModalMetadata)
             )
-            .dispatch(deployBatchedThirdPartyItemsFailure([unsyncedItem], deployError))
+            .dispatch(deployBatchedThirdPartyItemsFailure(itemsToApprove, deployError))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.ERROR,

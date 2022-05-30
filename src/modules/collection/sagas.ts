@@ -653,7 +653,11 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const pages = getArrayOfPagesFromTotal(Math.ceil(paginatedData.total / BATCH_SIZE))
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
       const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = pages.map((page: number) => () =>
-        legacyBuilderClient.fetchCollectionItems(collection.id, { page, limit: BATCH_SIZE, status: CurationStatus.PENDING })
+        legacyBuilderClient.fetchCollectionItems(collection.id, {
+          page,
+          limit: BATCH_SIZE,
+          status: CurationStatus.PENDING
+        })
       ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
       const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
       const itemsToApprove = allItemPages.flatMap(result => result.results)
