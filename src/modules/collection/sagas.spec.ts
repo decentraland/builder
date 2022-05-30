@@ -69,7 +69,6 @@ import {
   SAVE_COLLECTION_SUCCESS,
   SAVE_COLLECTION_FAILURE,
   initiateTPApprovalFlow,
-  finishTPApprovalFlow,
   fetchCollectionsRequest,
   fetchCollectionsSuccess,
   approveCollectionSuccess
@@ -167,7 +166,6 @@ beforeEach(() => {
     lockCollection: jest.fn(),
     saveTOS: jest.fn(),
     fetchApprovalData: jest.fn(),
-    updateItemCurationStatus: jest.fn(),
     fetchCollectionItems: jest.fn(),
     fetchCollections: jest.fn()
   } as unknown) as BuilderAPI
@@ -1299,7 +1297,6 @@ describe('when executing the TP approval flow', () => {
     describe('when the cheque was already consumed', () => {
       beforeEach(() => {
         ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: itemsToApprove })
-        ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValueOnce({})
       })
 
       it('should complete the flow doing the review without a cheque, deploy and update the item curations steps', () => {
@@ -1374,7 +1371,6 @@ describe('when executing the TP approval flow', () => {
           results: secondPageItems
         })
         itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
-        ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValueOnce(itemCurations[0]).mockResolvedValueOnce(itemCurations[1])
       })
 
       it('should fetch all the items needed to be approved, including the 2nd page of the pagination', () => {
@@ -1437,8 +1433,7 @@ describe('when executing the TP approval flow', () => {
               hashes: contentHashes
             } as ApprovalFlowModalMetadata)
           )
-          .dispatch(deployBatchedThirdPartyItemsSuccess([deployData]))
-          .put(finishTPApprovalFlow(TPCollection, itemsToApprove, itemCurations))
+          .dispatch(deployBatchedThirdPartyItemsSuccess(TPCollection, itemCurations))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.SUCCESS,
@@ -1451,19 +1446,14 @@ describe('when executing the TP approval flow', () => {
       describe('when fetching the third party to check if the merkle root is updated takes more than one retry', () => {
         let merkleTree: ReturnType<typeof generateTree>
         let parsedSignature: ReturnType<typeof ethers.utils.splitSignature>
-        let itemCurations: ItemCuration[]
 
         beforeEach(() => {
           merkleTree = generateTree(Object.values(contentHashes))
           parsedSignature = ethers.utils.splitSignature(cheque.signature)
-          itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
           ;((mockBuilderClient.getThirdParty as unknown) as jest.Mock<BuilderClient['getThirdParty']>)
             .mockResolvedValueOnce({ root: '0x' } as never)
             .mockResolvedValueOnce({ root: merkleTree.merkleRoot } as never)
           itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
-          ;(mockBuilder.updateItemCurationStatus as jest.Mock)
-            .mockResolvedValueOnce(itemCurations[0])
-            .mockResolvedValueOnce(itemCurations[1])
         })
 
         it('should complete the flow doing the review, waiting for the merkle root to be updated, deploy and update the item curations', () => {
@@ -1503,8 +1493,7 @@ describe('when executing the TP approval flow', () => {
                 hashes: contentHashes
               } as ApprovalFlowModalMetadata)
             )
-            .dispatch(deployBatchedThirdPartyItemsSuccess([deployData]))
-            .put(finishTPApprovalFlow(TPCollection, itemsToApprove, itemCurations))
+            .dispatch(deployBatchedThirdPartyItemsSuccess(TPCollection, itemCurations))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.SUCCESS,

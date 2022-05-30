@@ -237,15 +237,15 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
         throw new Error('Invalid Identity')
       }
 
-      const promisesOfItemsBeingDeployed: (() => Promise<DeploymentPreparationData>)[] = items.map((item: Item) => async () => {
+      const promisesOfItemsBeingDeployed: (() => Promise<ItemCuration>)[] = items.map((item: Item) => async () => {
         const entity: DeploymentPreparationData = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
         await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
-        return entity
+        return builder.updateItemCurationStatus(item.id, CurationStatus.APPROVED)
       })
 
-      const deployedEntities: DeploymentPreparationData[] = yield call([queue, 'addAll'], promisesOfItemsBeingDeployed)
+      const deployedItemsCurations: ItemCuration[] = yield call([queue, 'addAll'], promisesOfItemsBeingDeployed)
 
-      yield put(deployBatchedThirdPartyItemsSuccess(deployedEntities))
+      yield put(deployBatchedThirdPartyItemsSuccess(collection, deployedItemsCurations))
     } catch (error) {
       queue.clear()
       yield put(deployBatchedThirdPartyItemsFailure(items, error.message))
