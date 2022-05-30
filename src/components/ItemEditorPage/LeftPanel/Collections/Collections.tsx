@@ -21,6 +21,8 @@ export default class Collections extends React.PureComponent<Props, State> {
     const { currentPage } = this.state
     if (collections.length === 0) return null
 
+    const totalPages = Math.ceil(totalCollections / LEFT_PANEL_PAGE_SIZE)
+
     return isLoading ? (
       <Loader size="small" active />
     ) : (
@@ -35,14 +37,16 @@ export default class Collections extends React.PureComponent<Props, State> {
               onSetCollection={onSetCollection}
             />
           ))}
-          <Pagination
-            siblingRange={0}
-            firstItem={null}
-            lastItem={null}
-            totalPages={Math.ceil(totalCollections / LEFT_PANEL_PAGE_SIZE)}
-            activePage={currentPage}
-            onPageChange={this.handlePageChange}
-          />
+          {totalPages > 1 ? (
+            <Pagination
+              siblingRange={0}
+              firstItem={null}
+              lastItem={null}
+              totalPages={totalPages}
+              activePage={currentPage}
+              onPageChange={this.handlePageChange}
+            />
+          ) : null}
         </Section>
       </>
     )

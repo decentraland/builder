@@ -114,16 +114,17 @@ export default class Items extends React.PureComponent<Props, State> {
   renderTabPagination = (total: number) => {
     const { currentTab, currentPages } = this.state
     const currentPage = currentPages[currentTab]
-    return (
+    const totalPages = Math.ceil(total / LEFT_PANEL_PAGE_SIZE)
+    return totalPages > 1 ? (
       <Pagination
         siblingRange={0}
         firstItem={null}
         lastItem={null}
-        totalPages={Math.ceil(total / LEFT_PANEL_PAGE_SIZE)}
+        totalPages={totalPages}
         activePage={currentPage}
         onPageChange={this.handlePageChange}
       />
-    )
+    ) : null
   }
 
   renderPaginationStats = (total: number) => {
