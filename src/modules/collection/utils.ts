@@ -140,9 +140,9 @@ export function getCollectionFactoryContract(chainId: ChainId) {
 export const getTPThresholdToReview = (totalItems: number) => {
   // Reference: https://governance.decentraland.org/proposal/?id=f69c4d40-aaaf-11ec-87a7-6d2a41508231
   // Max to review, 300 items, min to review is 50 or 1% of the collection
-  if (totalItems! < MIN_TP_ITEMS_TO_REVIEW) {
+  if (totalItems < MIN_TP_ITEMS_TO_REVIEW) {
     return totalItems
-  } else if (totalItems! > MIN_TP_ITEMS_TO_REVIEW && totalItems! < MAX_TP_ITEMS_TO_REVIEW) {
+  } else if (totalItems > MIN_TP_ITEMS_TO_REVIEW && totalItems < MAX_TP_ITEMS_TO_REVIEW) {
     return MIN_TP_ITEMS_TO_REVIEW
   }
   return Math.min(Math.floor(totalItems! * TP_TRESHOLD_TO_REVIEW), MAX_TP_ITEMS_TO_REVIEW)
