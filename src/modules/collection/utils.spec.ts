@@ -181,7 +181,7 @@ describe('when getting the threshold of items to review for a TP collection', ()
       expect(getTPThresholdToReview(totalItems)).toBe(MIN_TP_ITEMS_TO_REVIEW)
     })
   })
-  describe('and the collection somewhere in betwen of the minimun and the minimum percentage', () => {
+  describe('and the collection has an amount of items somewhere in between of the minimum amount of items and the minimum percentage', () => {
     beforeEach(() => {
       totalItems = 500
     })
@@ -189,7 +189,7 @@ describe('when getting the threshold of items to review for a TP collection', ()
       expect(getTPThresholdToReview(totalItems)).toBe(50)
     })
   })
-  describe('and the collection somewhere in betwen of the 1% and the max percentage', () => {
+  describe('and the collection has an amount of items somewhere in between the 1% and the max percentage', () => {
     beforeEach(() => {
       totalItems = 10001
     })
