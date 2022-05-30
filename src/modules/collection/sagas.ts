@@ -668,19 +668,19 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         legacyBuilderClient.fetchCollectionItems(collection.id, { page, limit: BATCH_SIZE, status: CurationStatus.PENDING })
       ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
       const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-      const itemsToApprove = allItemPages.flatMap(result => result.results)
+      const itemsWithPendingCurations = allItemPages.flatMap(result => result.results)
 
-      if (!itemsToApprove.length) {
+      if (!itemsWithPendingCurations.length) {
         throw Error('Error fetching items to approve')
       }
-      const { cheque, content_hashes: contentHashes, chequeWasConsumed }: ItemApprovalData = yield call(
+      const { cheque, content_hashes: contentHashes, chequeWasConsumed, root }: ItemApprovalData = yield call(
         [legacyBuilderClient, 'fetchApprovalData'],
         collection.id
       )
 
       // 3. Compute the merkle tree root & create slot to consume
       const tree = generateTree(Object.values(contentHashes))
-      const amountOfItemsToPublish = itemsToApprove.filter(item => !item.isApproved).length
+      const amountOfItemsToPublish = itemsWithPendingCurations.filter(item => !item.isApproved).length
 
       if (cheque.qty < amountOfItemsToPublish) {
         throw Error('Invalid qty of items to approve in the cheque')
@@ -688,7 +688,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       // Open the ApprovalFlowModal with the items to be approved
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
-      if (itemsToApprove.length > 0) {
+      console.log('Root from the server: ', root)
+      console.log('Root from the client: ', tree.merkleRoot)
+      if (root !== tree.merkleRoot) {
         const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
         const slot: Slot = {
           qty: cheque.qty,
@@ -700,7 +702,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS> = {
           view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
-          items: itemsToApprove,
+          items: itemsWithPendingCurations,
           collection,
           merkleTreeRoot: tree.merkleRoot,
           slots: chequeWasConsumed ? [] : [slot]
@@ -728,7 +730,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
 
-      const itemsToDeploy = itemsToApprove.filter(item => item.catalystContentHash !== item.currentContentHash)
+      const itemsToDeploy = itemsWithPendingCurations.filter(item => item.catalystContentHash !== item.currentContentHash)
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
       if (itemsToDeploy.length > 0) {
@@ -763,10 +765,10 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       }
 
       // 6. If the collection was approved but it had a pending curation, approve the curation
-      const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemsToApprove, CurationStatus.APPROVED)
+      const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemsWithPendingCurations, CurationStatus.APPROVED)
 
       // 7. Success 🎉
-      yield put(finishTPApprovalFlow(collection, itemsToApprove, newItemsCurations))
+      yield put(finishTPApprovalFlow(collection, itemsWithPendingCurations, newItemsCurations))
 
       yield put(
         openModal('ApprovalFlowModal', {
