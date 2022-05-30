@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { isThirdParty } from 'lib/urn'
-import { Section, Loader, Tabs, Button, Icon, Pagination, PaginationProps, Header, Modal, Checkbox } from 'decentraland-ui'
+import { Section, Loader, Tabs, Button, Icon, Pagination, PaginationProps, Header, Modal, Checkbox, Popup } from 'decentraland-ui'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
 import { TP_TRESHOLD_TO_REVIEW } from '../LeftPanel'
@@ -25,6 +25,11 @@ export default class Items extends React.PureComponent<Props, State> {
     reviewedTabPage: 1,
     showGetMoreSamplesModal: false,
     doNotShowSamplesModalAgain: false
+  }
+
+  componentDidMount() {
+    const { items, onSetReviewedItems } = this.props
+    onSetReviewedItems(items)
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -187,18 +192,32 @@ export default class Items extends React.PureComponent<Props, State> {
     const { isLoading, totalItems } = this.props
     const { currentTab, reviewed } = this.state
     let headerInnerContent
+    const notEnoughItemsToAskMore = !!totalItems && (totalItems < LEFT_PANEL_PAGE_SIZE || reviewed.length === totalItems)
     switch (currentTab) {
       case ItemPanelTabs.TO_REVIEW:
         headerInnerContent = (
-          <Button
-            disabled={isLoading || (!!totalItems && reviewed.length === totalItems)}
-            primary
-            className="random-sample-button"
-            onClick={this.handleGetRandomSampleClick}
-          >
-            <Icon name="random" />
-            {t('item_editor.left_panel.get_random_sample')}
-          </Button>
+          <Popup
+            content={t('item_editor.top_panel.not_enough_items_to_curate_more')}
+            disabled={!notEnoughItemsToAskMore}
+            position="bottom center"
+            trigger={
+              <div>
+                <Button
+                  disabled={isLoading || notEnoughItemsToAskMore}
+                  primary
+                  className="random-sample-button"
+                  onClick={this.handleGetRandomSampleClick}
+                >
+                  <Icon name="random" />
+                  {t('item_editor.left_panel.get_random_sample')}
+                </Button>
+              </div>
+            }
+            hideOnScroll={true}
+            on="hover"
+            inverted
+            flowing
+          />
         )
         break
       case ItemPanelTabs.REVIEWED:

@@ -6,9 +6,8 @@ import { Collection } from 'modules/collection/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationStatus } from 'modules/curations/types'
-import { getCollectionType, hasReviews, isTPCollection } from 'modules/collection/utils'
+import { getCollectionType, getTPThresholdToReview, hasReviews, isTPCollection } from 'modules/collection/utils'
 import JumpIn from 'components/JumpIn'
-import { TP_TRESHOLD_TO_REVIEW } from '../LeftPanel/LeftPanel'
 import ConfirmApprovalModal from './ConfirmApprovalModal'
 import RejectionModal from './RejectionModal'
 import { RejectionType } from './RejectionModal/RejectionModal.types'
@@ -36,7 +35,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
   renderPage = (collection: Collection) => {
-    const { items, itemCurations, curation } = this.props
+    const { items, itemCurations, curation, totalItems } = this.props
     const { showRejectionModal, showApproveConfirmModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -54,7 +53,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         </div>
         <div className="actions">
           <span className="button-container">
-            {isTPCollection(collection)
+            {isTPCollection(collection) && totalItems !== undefined
               ? this.renderTPButtons(collection, curation, itemCurations)
               : this.renderButtons(collection, curation)}
           </span>
@@ -78,11 +77,6 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         )}
       </>
     )
-  }
-
-  getThresholdToReview = () => {
-    const { totalItems } = this.props
-    return Math.floor(totalItems! * TP_TRESHOLD_TO_REVIEW)
   }
 
   renderButton = (type: ButtonType, collection: Collection, curation: CollectionCuration | null) => {
@@ -115,7 +109,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
     const isPrimary = type === ButtonType.APPROVE || type === ButtonType.ENABLE
     const isApproveButtonPopupDisabled =
-      !isTPCollection(collection) || (!!totalItems && reviewedItems.length >= this.getThresholdToReview())
+      !isTPCollection(collection) || (!!totalItems && reviewedItems.length >= getTPThresholdToReview(totalItems))
     return (
       <Popup
         content={t('item_editor.top_panel.items_pending_to_review')}
@@ -130,7 +124,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
                 isTPCollection(collection) &&
                 type === ButtonType.APPROVE &&
                 !!totalItems &&
-                reviewedItems.length < this.getThresholdToReview()
+                reviewedItems.length < getTPThresholdToReview(totalItems)
               }
             >
               {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)}
@@ -146,13 +140,13 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderTPButtons = (collection: Collection, collectionCuration: CollectionCuration | null, itemCurations: ItemCuration[] | null) => {
-    const { reviewedItems } = this.props
+    const { reviewedItems, totalItems } = this.props
     const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
     return (
       <>
         <Header sub>
-          {t('item_editor.top_panel.reviewed_counter', { count: reviewedItems.length, threshold: this.getThresholdToReview() })}
-          {reviewedItems.length >= this.getThresholdToReview() ? <Icon name="check circle" /> : null}
+          {t('item_editor.top_panel.reviewed_counter', { count: reviewedItems.length, threshold: getTPThresholdToReview(totalItems!) })}
+          {reviewedItems.length >= getTPThresholdToReview(totalItems!) ? <Icon name="check circle" /> : null}
         </Header>
         {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration) : null}
         {this.renderButton(ButtonType.REJECT, collection, collectionCuration)}

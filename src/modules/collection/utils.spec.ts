@@ -4,7 +4,8 @@ import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { Collection, CollectionType } from 'modules/collection/types'
 import { Mint } from './types'
-import { getTotalAmountOfMintedItems, isLocked, getCollectionType, isTPCollection } from './utils'
+import { getTotalAmountOfMintedItems, isLocked, getCollectionType, isTPCollection, getTPThresholdToReview } from './utils'
+import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
 
 jest.mock('modules/item/export')
 jest.mock('decentraland-commons')
@@ -158,6 +159,34 @@ describe('when checking if a collection is of type third party', () => {
 
     it('should return true', () => {
       expect(isTPCollection(collection)).toBe(true)
+    })
+  })
+})
+
+describe('when getting the threshold of items to review for a TP collection', () => {
+  let totalItems: number
+  describe('and the collection has less than the minimum items to review', () => {
+    beforeEach(() => {
+      totalItems = MIN_TP_ITEMS_TO_REVIEW - 10
+    })
+    it('should return the total amount of items', () => {
+      expect(getTPThresholdToReview(totalItems)).toBe(totalItems)
+    })
+  })
+  describe('and the collection has more than the minium but less than the maximun', () => {
+    beforeEach(() => {
+      totalItems = MAX_TP_ITEMS_TO_REVIEW - 10
+    })
+    it('should return the minimum quantity to review', () => {
+      expect(getTPThresholdToReview(totalItems)).toBe(MIN_TP_ITEMS_TO_REVIEW)
+    })
+  })
+  describe('and the collection has more than the maxium to review', () => {
+    beforeEach(() => {
+      totalItems = 10000
+    })
+    it('should return the minum percentage to review of the collection', () => {
+      expect(getTPThresholdToReview(totalItems)).toBe(totalItems * TP_TRESHOLD_TO_REVIEW)
     })
   })
 })
