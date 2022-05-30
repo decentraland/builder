@@ -533,10 +533,52 @@ describe('when handling the batched deployment of third party items', () => {
     })
   })
 
-  describe('when all of the items to be deployed are successfully deployed', () => {
+  describe('when one of the item curations of an item fails to be updated', () => {
     beforeEach(() => {
       ;((buildTPItemEntity as unknown) as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
+      ;((mockedCatalystClient.deployEntity as unknown) as jest.Mock).mockResolvedValueOnce(0)
+      ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockRejectedValueOnce(new Error('Failed to update'))
+      ;((Authenticator.signPayload as unknown) as jest.Mock<typeof Authenticator.signPayload>).mockResolvedValueOnce({
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'somePayload',
+        signature: {}
+      } as never)
+    })
+
+    it('should put a failure action with the error that occurred when updating the item curation', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+        .provide([[call(getIdentity), auth]])
+        .put(deployBatchedThirdPartyItemsFailure(items, 'Failed to update'))
+        .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when all of the items to be deployed are successfully deployed', () => {
+    let itemCurations: ItemCuration[]
+
+    beforeEach(() => {
+      itemCurations = [
+        {
+          id: 'id',
+          itemId: 'itemId',
+          createdAt: 0,
+          status: CurationStatus.APPROVED,
+          updatedAt: 0,
+          contentHash: 'aHash'
+        },
+        {
+          id: 'anotherId',
+          itemId: 'anotherItemId',
+          createdAt: 0,
+          status: CurationStatus.APPROVED,
+          updatedAt: 0,
+          contentHash: 'aHash'
+        }
+      ]
+      ;((buildTPItemEntity as unknown) as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
       ;((mockedCatalystClient.deployEntity as unknown) as jest.Mock).mockResolvedValueOnce(0).mockResolvedValueOnce(1)
+      ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValueOnce(itemCurations[0]).mockResolvedValueOnce(itemCurations[1])
       ;((Authenticator.signPayload as unknown) as jest.Mock<typeof Authenticator.signPayload>).mockResolvedValueOnce({
         type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
         payload: 'somePayload',
@@ -547,7 +589,7 @@ describe('when handling the batched deployment of third party items', () => {
     it('should put the success action with the deployment preparation data', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([[call(getIdentity), auth]])
-        .put(deployBatchedThirdPartyItemsSuccess(deploymentData))
+        .put(deployBatchedThirdPartyItemsSuccess(collection, itemCurations))
         .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))
         .run({ silenceTimeout: true })
     })

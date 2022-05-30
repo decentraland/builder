@@ -1,5 +1,4 @@
 import { action } from 'typesafe-actions'
-import { DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
@@ -140,9 +139,10 @@ export const deployBatchedThirdPartyItemsRequest = (
   hashes: Record<string, string>
 ) => action(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, { items, collection, tree, hashes })
 
-export const deployBatchedThirdPartyItemsSuccess = (entities: DeploymentPreparationData[]) =>
+export const deployBatchedThirdPartyItemsSuccess = (collection: Collection, itemCurations: ItemCuration[]) =>
   action(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS, {
-    entities
+    collection,
+    itemCurations
   })
 export const deployBatchedThirdPartyItemsFailure = (items: Item[], error: string) =>
   action(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE, { items, error })

@@ -4,7 +4,6 @@ import {
   fetchThirdPartiesRequest,
   fetchThirdPartiesSuccess,
   fetchThirdPartiesFailure,
-  // DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
   deployBatchedThirdPartyItemsRequest,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
   deployBatchedThirdPartyItemsSuccess,
@@ -82,7 +81,7 @@ describe('when reducing an DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS action', () 
     expect(
       thirdPartyReducer(
         { ...INITIAL_STATE, error: 'someError', loading: [{ type: DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS }] },
-        deployBatchedThirdPartyItemsSuccess([])
+        deployBatchedThirdPartyItemsSuccess({} as Collection, [])
       )
     ).toStrictEqual({
       ...INITIAL_STATE,
