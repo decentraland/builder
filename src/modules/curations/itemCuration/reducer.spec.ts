@@ -340,21 +340,35 @@ describe('when an action of type FETCH_ITEM_CURATION_FAILURE is called', () => {
 describe('when an action of type FINISH_TP_APPROVAL_FLOW is called', () => {
   let collection: Collection
   let itemCurations: ItemCuration[]
+  let state: ItemCurationState
+  let currentDate: Date
+
   beforeEach(() => {
     collection = { id: 'collectionId' } as Collection
-    itemCurations = [getMockItemCuration({ createdAt: 1 }), getMockItemCuration({ createdAt: 2 })]
-  })
-  it('should replace the old curation for the new one', () => {
-    const state = {
+    itemCurations = [
+      getMockItemCuration({ createdAt: 1, updatedAt: 1, status: CurationStatus.PENDING }),
+      getMockItemCuration({ createdAt: 2, updatedAt: 1, status: CurationStatus.APPROVED })
+    ]
+    state = {
       ...INITIAL_STATE,
       data: {
-        collectionId: []
+        collectionId: itemCurations
       }
     }
-    expect(itemCurationReducer(state, finishTPApprovalFlow(collection, [], itemCurations))).toStrictEqual({
+    currentDate = new Date()
+    jest.useFakeTimers('modern')
+    jest.setSystemTime(currentDate)
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
+  it('should optimistically update pending item curations to be approved', () => {
+    expect(itemCurationReducer(state, finishTPApprovalFlow(collection))).toStrictEqual({
       ...state,
       data: {
-        collectionId: itemCurations
+        collectionId: [{ ...itemCurations[0], updatedAt: currentDate.getTime(), status: CurationStatus.APPROVED }, itemCurations[1]]
       }
     })
   })

@@ -124,7 +124,6 @@ import {
 } from 'modules/curations/collectionCuration/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
-import { ItemCuration } from 'modules/curations/itemCuration/types'
 import {
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
@@ -613,16 +612,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     return allItems.filter(item => item.collectionId === collection.id)
   }
 
-  function* updateItemCurationsStatus(items: Item[], status: CurationStatus) {
-    const REQUESTS_BATCH_SIZE = 5
-    const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
-    const promisesOfUpdatedCurations: (() => Promise<ItemCuration>)[] = items.map((item: Item) => () =>
-      legacyBuilderClient.updateItemCurationStatus(item.id, status)
-    ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
-    const newItemCuration: PaginatedResource<Item>[] = yield call([queue, 'addAll'], promisesOfUpdatedCurations)
-    return newItemCuration
-  }
-
   function* getStandardItemsAndEntitiesToDeploy(collection: Collection) {
     const itemsToDeploy: Item[] = []
     const entitiesToDeploy: DeploymentPreparationData[] = []
@@ -762,11 +751,19 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         }
       }
 
+      yield put(
+        openModal('ApprovalFlowModal', {
+          view: ApprovalFlowModalView.LOADING,
+          title: t('approval_flow.update-curations.title'),
+          subtitle: t('approval_flow.update-curations.subtitle')
+        })
+      )
+
       // 6. If the collection was approved but it had a pending curation, approve the curation
-      const newItemsCurations: ItemCuration[] = yield call(updateItemCurationsStatus, itemsToApprove, CurationStatus.APPROVED)
+      yield call([legacyBuilderClient, 'approveTPCollection'], collection.id)
 
       // 7. Success 🎉
-      yield put(finishTPApprovalFlow(collection, itemsToApprove, newItemsCurations))
+      yield put(finishTPApprovalFlow(collection))
 
       yield put(
         openModal('ApprovalFlowModal', {

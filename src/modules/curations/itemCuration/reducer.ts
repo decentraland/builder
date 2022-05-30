@@ -20,6 +20,7 @@ import {
   PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
   PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
 } from 'modules/thirdParty/actions'
+import { CurationStatus } from '../types'
 import {
   FETCH_ITEM_CURATIONS_REQUEST,
   FETCH_ITEM_CURATIONS_SUCCESS,
@@ -92,13 +93,17 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
       }
     }
     case FINISH_TP_APPROVAL_FLOW: {
-      const { collection, itemCurations } = action.payload
+      const { collection } = action.payload
+      const time = Date.now()
 
       return {
         ...state,
         data: {
           ...state.data,
-          [collection.id]: [...itemCurations]
+          // Optimistically update all pending item curations of the collection
+          [collection.id]: state.data[collection.id].map(curation =>
+            curation.status === CurationStatus.PENDING ? { ...curation, updatedAt: time, status: CurationStatus.APPROVED } : curation
+          )
         }
       }
     }

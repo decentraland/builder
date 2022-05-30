@@ -3,7 +3,6 @@ import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { FetchCollectionsParams } from 'lib/api/builder'
 import { PaginationStats } from 'lib/api/pagination'
-import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { Collection, Mint, Access } from './types'
 
@@ -197,8 +196,7 @@ export const INITIATE_TP_APPROVAL_FLOW = 'Initiate TP Approval Flow'
 export const FINISH_TP_APPROVAL_FLOW = 'Finish TP Approval Flow'
 
 export const initiateTPApprovalFlow = (collection: Collection) => action(INITIATE_TP_APPROVAL_FLOW, { collection })
-export const finishTPApprovalFlow = (collection: Collection, approvedItems: Item[], itemCurations: ItemCuration[]) =>
-  action(FINISH_TP_APPROVAL_FLOW, { collection, approvedItems, itemCurations })
+export const finishTPApprovalFlow = (collection: Collection) => action(FINISH_TP_APPROVAL_FLOW, { collection })
 
 export type InitiateTPApprovalFlowAction = ReturnType<typeof initiateTPApprovalFlow>
 export type FinishTPApprovalFlowAction = ReturnType<typeof finishTPApprovalFlow>

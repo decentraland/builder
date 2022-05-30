@@ -1493,6 +1493,10 @@
     "success": {
       "title": "Collection Approved!",
       "subtitle": "Thank you for revieweing this collection"
+    },
+    "update-curations": {
+      "title": "Updating item curations",
+      "subtitle": "Please wait while we update the item curations..."
     }
   }
 }

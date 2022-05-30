@@ -52,7 +52,6 @@ import {
   REVIEW_THIRD_PARTY_SUCCESS
 } from 'modules/thirdParty/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
-import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { PaginatedResource, PaginationStats } from 'lib/api/pagination'
@@ -149,14 +148,6 @@ const getPaginationDataMock = (): PaginationStats => ({
   total: 1
 })
 
-const getItemCurationMock = (item: Item, props: Partial<ItemCuration> = {}): ItemCuration =>
-  ({
-    id: 'anItemCuration',
-    itemId: item.id,
-    status: CurationStatus.PENDING,
-    ...props
-  } as ItemCuration)
-
 let mockBuilder: BuilderAPI
 let mockBuilderClient: BuilderClient
 let mockCatalyst: CatalystClient
@@ -169,7 +160,8 @@ beforeEach(() => {
     fetchApprovalData: jest.fn(),
     updateItemCurationStatus: jest.fn(),
     fetchCollectionItems: jest.fn(),
-    fetchCollections: jest.fn()
+    fetchCollections: jest.fn(),
+    approveTPCollection: jest.fn()
   } as unknown) as BuilderAPI
   mockCatalyst = ({} as unknown) as CatalystClient
   mockBuilderClient = ({
@@ -1299,7 +1291,6 @@ describe('when executing the TP approval flow', () => {
     describe('when the cheque was already consumed', () => {
       beforeEach(() => {
         ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: itemsToApprove })
-        ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValueOnce({})
       })
 
       it('should complete the flow doing the review without a cheque, deploy and update the item curations steps', () => {
@@ -1325,7 +1316,8 @@ describe('when executing the TP approval flow', () => {
               }),
               { success: {} }
             ],
-            [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }]
+            [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
+            [call([mockBuilder, 'approveTPCollection'], TPCollection.id), Promise.resolve()]
           ])
           .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
@@ -1355,6 +1347,13 @@ describe('when executing the TP approval flow', () => {
           .dispatch(deployEntitiesSuccess([deployData]))
           .put(
             openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.LOADING,
+              title: t('approval_flow.update-curations.title'),
+              subtitle: t('approval_flow.update-curations.subtitle')
+            } as ApprovalFlowModalMetadata)
+          )
+          .put(
+            openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.SUCCESS,
               collection: TPCollection
             } as ApprovalFlowModalMetadata)
@@ -1366,15 +1365,12 @@ describe('when executing the TP approval flow', () => {
     describe('when sending a valid cheque', () => {
       let secondPageItems = [getItemMock(TPCollection, { isApproved: true }), getItemMock(TPCollection, { isApproved: true })]
       let allItemsToApprove = [syncedItem, unsyncedItem, ...secondPageItems]
-      let itemCurations: ItemCuration[]
 
       beforeEach(() => {
         ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({ results: [syncedItem, unsyncedItem] })
         ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValueOnce({
           results: secondPageItems
         })
-        itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
-        ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValueOnce(itemCurations[0]).mockResolvedValueOnce(itemCurations[1])
       })
 
       it('should fetch all the items needed to be approved, including the 2nd page of the pagination', () => {
@@ -1383,7 +1379,11 @@ describe('when executing the TP approval flow', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: 80 }],
-            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: false }]
+            [
+              call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+              { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
+            ],
+            [call([mockBuilder, 'approveTPCollection'], TPCollection.id), Promise.resolve()]
           ])
           .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
@@ -1409,7 +1409,8 @@ describe('when executing the TP approval flow', () => {
               { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
             ],
             [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
-            [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }]
+            [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
+            [call([mockBuilder, 'approveTPCollection'], TPCollection.id), Promise.resolve()]
           ])
           .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
@@ -1438,7 +1439,14 @@ describe('when executing the TP approval flow', () => {
             } as ApprovalFlowModalMetadata)
           )
           .dispatch(deployBatchedThirdPartyItemsSuccess([deployData]))
-          .put(finishTPApprovalFlow(TPCollection, itemsToApprove, itemCurations))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.LOADING,
+              title: t('approval_flow.update-curations.title'),
+              subtitle: t('approval_flow.update-curations.subtitle')
+            } as ApprovalFlowModalMetadata)
+          )
+          .put(finishTPApprovalFlow(TPCollection))
           .put(
             openModal('ApprovalFlowModal', {
               view: ApprovalFlowModalView.SUCCESS,
@@ -1451,19 +1459,13 @@ describe('when executing the TP approval flow', () => {
       describe('when fetching the third party to check if the merkle root is updated takes more than one retry', () => {
         let merkleTree: ReturnType<typeof generateTree>
         let parsedSignature: ReturnType<typeof ethers.utils.splitSignature>
-        let itemCurations: ItemCuration[]
 
         beforeEach(() => {
           merkleTree = generateTree(Object.values(contentHashes))
           parsedSignature = ethers.utils.splitSignature(cheque.signature)
-          itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
           ;((mockBuilderClient.getThirdParty as unknown) as jest.Mock<BuilderClient['getThirdParty']>)
             .mockResolvedValueOnce({ root: '0x' } as never)
             .mockResolvedValueOnce({ root: merkleTree.merkleRoot } as never)
-          itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
-          ;(mockBuilder.updateItemCurationStatus as jest.Mock)
-            .mockResolvedValueOnce(itemCurations[0])
-            .mockResolvedValueOnce(itemCurations[1])
         })
 
         it('should complete the flow doing the review, waiting for the merkle root to be updated, deploy and update the item curations', () => {
@@ -1475,7 +1477,8 @@ describe('when executing the TP approval flow', () => {
                 { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
               ],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
-              [delay(1000), 0]
+              [delay(1000), 0],
+              [call([mockBuilder, 'approveTPCollection'], TPCollection.id), Promise.resolve()]
             ])
             .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
@@ -1504,7 +1507,14 @@ describe('when executing the TP approval flow', () => {
               } as ApprovalFlowModalMetadata)
             )
             .dispatch(deployBatchedThirdPartyItemsSuccess([deployData]))
-            .put(finishTPApprovalFlow(TPCollection, itemsToApprove, itemCurations))
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.LOADING,
+                title: t('approval_flow.update-curations.title'),
+                subtitle: t('approval_flow.update-curations.subtitle')
+              } as ApprovalFlowModalMetadata)
+            )
+            .put(finishTPApprovalFlow(TPCollection))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.SUCCESS,
@@ -1645,6 +1655,61 @@ describe('when executing the TP approval flow', () => {
                 view: ApprovalFlowModalView.ERROR,
                 collection: TPCollection,
                 error: deployError
+              } as ApprovalFlowModalMetadata)
+            )
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('when the approval request fails', () => {
+        it('should open the modal in an error state', () => {
+          const parsedSignature = ethers.utils.splitSignature(cheque.signature)
+          const merkleTree = generateTree(Object.values(contentHashes))
+          const approveError = 'Approval Error'
+
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+            .provide([
+              [select(getPaginationData, TPCollection.id), { total: totalItems }],
+              [
+                call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+                { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
+              ],
+              [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
+              [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }],
+              [call([mockBuilder, 'approveTPCollection'], TPCollection.id), Promise.reject(new Error(approveError))]
+            ])
+            .dispatch(initiateTPApprovalFlow(TPCollection))
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.LOADING,
+                collection: TPCollection
+              } as ApprovalFlowModalMetadata)
+            )
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+                items: itemsToApprove,
+                collection: TPCollection,
+                merkleTreeRoot: merkleTree.merkleRoot,
+                slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
+              } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
+            )
+            .dispatch(reviewThirdPartySuccess())
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.DEPLOY_TP,
+                collection: TPCollection,
+                items: [unsyncedItem],
+                tree: merkleTree,
+                hashes: contentHashes
+              } as ApprovalFlowModalMetadata)
+            )
+            .dispatch(deployBatchedThirdPartyItemsSuccess([deployData]))
+            .put(
+              openModal('ApprovalFlowModal', {
+                view: ApprovalFlowModalView.ERROR,
+                collection: TPCollection,
+                error: approveError
               } as ApprovalFlowModalMetadata)
             )
             .run({ silenceTimeout: true })

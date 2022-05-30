@@ -829,6 +829,10 @@ export class BuilderAPI extends BaseAPI {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation })
   }
 
+  approveTPCollection(collectionId: string): Promise<void> {
+    return this.request('post', `/collections/${collectionId}/approve`)
+  }
+
   async updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {
     const curation: RemoteItemCuration = await this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
     return fromRemoteItemCuration(curation)

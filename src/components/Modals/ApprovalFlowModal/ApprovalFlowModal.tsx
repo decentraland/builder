@@ -41,9 +41,14 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
   }
 
   renderLoadingView() {
+    const { metadata } = this.props
+
     return (
       <>
-        <ModalNavigation title={t('approval_flow.loading.title')} subtitle={t('approval_flow.loading.subtitle')} />
+        <ModalNavigation
+          title={metadata.title ?? t('approval_flow.loading.title')}
+          subtitle={metadata.subtitle ?? t('approval_flow.loading.subtitle')}
+        />
         <ModalContent className="loading">
           <Center>
             <Loader active size="huge" />

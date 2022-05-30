@@ -29,16 +29,20 @@ export enum ApprovalFlowModalView {
 export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = ApprovalFlowModalView> = {
   view: V
   collection: Collection
-} & (V extends ApprovalFlowModalView.RESCUE
+} & (V extends ApprovalFlowModalView.LOADING
+  ? { title?: string; subtitle?: string }
+  : V extends ApprovalFlowModalView.RESCUE
   ? { items: Item[]; contentHashes: string[] }
   : V extends ApprovalFlowModalView.DEPLOY
   ? { items: Item[]; entities: DeploymentPreparationData[] }
   : V extends ApprovalFlowModalView.CONSUME_TP_SLOTS
   ? { slots: Slot[]; merkleTreeRoot: MerkleDistributorInfo['merkleRoot']; items: Item[] }
   : V extends ApprovalFlowModalView.DEPLOY_TP
-  ? { items: Item[]; collection: Collection; tree: MerkleDistributorInfo; hashes: Record<string, string> }
+  ? { items: Item[]; tree: MerkleDistributorInfo; hashes: Record<string, string> }
   : V extends ApprovalFlowModalView.ERROR
   ? { error: string }
+  : V extends ApprovalFlowModalView.APPROVE
+  ? { collection: Collection }
   : {})
 
 export type Props = ModalProps & {

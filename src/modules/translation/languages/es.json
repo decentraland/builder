@@ -1508,6 +1508,10 @@
     "success": {
       "title": "Colección Aprobada!",
       "subtitle": "Gracias por revisar esta colleción"
+    },
+    "update-curations": {
+      "title": "Actualizando las curaciones de items",
+      "subtitle": "Por favor espera mientras actualizamos las curaciones de items..."
     }
   }
 }

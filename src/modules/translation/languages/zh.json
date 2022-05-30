@@ -1475,23 +1475,27 @@
       "more_items": "还有 {count} 个其他 {count，复数，一个 {item} 其他 {items}}",
       "confirm": "确认"
     },
-    "上传": {
+    "upload": {
       "title": "上传文件",
       "subtitle": "请上传项目内容",
-      "确认": "上传"
+      "confirm": "上传"
     },
-    "批准": {
+    "approve": {
       "title": "启用收藏",
       "subtitle": "请启用要铸造的集合",
-      "确认": "启用"
+      "confirm": "启用"
     },
-    "错误": {
+    "error": {
       "title": "错误",
       "subtitle": "出了点问题......"
     },
-    "成功": {
+    "success": {
       "title": "收藏已获批准！",
       "subtitle": "感谢您查看此合集"
+    },
+    "update-curations": {
+      "title": "更新项目策展",
+      "subtitle": "请稍候，我们正在更新项目策展..."
     }
   }
 }
