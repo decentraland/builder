@@ -715,16 +715,12 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       }
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
-
-      const itemsToDeploy = itemsToApprove.filter(item => item.catalystContentHash !== item.currentContentHash)
-
-      // 5. If any, open the modal in the DEPLOY step and wait for actions
-      if (itemsToDeploy.length > 0) {
+      if (itemsToApprove.length > 0) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY_TP> = {
           view: ApprovalFlowModalView.DEPLOY_TP,
           collection,
           tree,
-          items: itemsToDeploy,
+          items: itemsToApprove,
           hashes: contentHashes
         }
 
