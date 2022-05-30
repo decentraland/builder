@@ -18,13 +18,13 @@ import {
   pushChangesThirdPartyItemsRequest,
   pushChangesThirdPartyItemsSuccess,
   publishAndPushChangesThirdPartyItemsFailure,
-  publishAndPushChangesThirdPartyItemsSuccess
+  publishAndPushChangesThirdPartyItemsSuccess,
+  deployBatchedThirdPartyItemsSuccess
 } from 'modules/thirdParty/actions'
 import { CurationStatus } from '../types'
 import { ItemCuration } from './types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { mockedItem } from 'specs/item'
-import { finishTPApprovalFlow } from 'modules/collection/actions'
 
 const getMockItemCuration = (props: Partial<ItemCuration> = {}): ItemCuration => ({
   id: 'id',
@@ -337,7 +337,7 @@ describe('when an action of type FETCH_ITEM_CURATION_FAILURE is called', () => {
   })
 })
 
-describe('when an action of type FINISH_TP_APPROVAL_FLOW is called', () => {
+describe('when an action of type DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS is called', () => {
   let collection: Collection
   let itemCurations: ItemCuration[]
   beforeEach(() => {
@@ -351,7 +351,7 @@ describe('when an action of type FINISH_TP_APPROVAL_FLOW is called', () => {
         collectionId: []
       }
     }
-    expect(itemCurationReducer(state, finishTPApprovalFlow(collection, [], itemCurations))).toStrictEqual({
+    expect(itemCurationReducer(state, deployBatchedThirdPartyItemsSuccess(collection, itemCurations))).toStrictEqual({
       ...state,
       data: {
         collectionId: itemCurations
