@@ -26,7 +26,6 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-        env:
       - name: Publish
         uses: menduz/oddish-action@master
         with:
