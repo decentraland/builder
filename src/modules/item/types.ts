@@ -162,6 +162,7 @@ export type ItemApprovalData = {
   cheque: Cheque
   content_hashes: Record<string, string>
   chequeWasConsumed: boolean
+  root: string | null
 }
 
 export type Item<T = ItemType.WEARABLE> = BaseItem & {

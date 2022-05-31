@@ -53,6 +53,7 @@ import {
 } from 'modules/thirdParty/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { Cheque } from 'modules/thirdParty/types'
 import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { PaginatedResource, PaginationStats } from 'lib/api/pagination'
@@ -1208,6 +1209,34 @@ describe('when saving a collection', () => {
 })
 
 describe('when executing the TP approval flow', () => {
+  let itemsToApprove: Item[]
+  let itemCurations: ItemCuration[]
+  let TPCollection: Collection
+  let syncedItem: Item
+  let unsyncedItem: Item
+  let contentHashes: ItemApprovalData['content_hashes']
+  let cheque: Cheque
+
+  beforeEach(() => {
+    TPCollection = getTPCollectionMock()
+    syncedItem = getItemMock(TPCollection, { currentContentHash: 'QmSynced' })
+    unsyncedItem = getItemMock(TPCollection, {
+      id: 'anotherItem',
+      catalystContentHash: 'QmOldContentHash',
+      currentContentHash: 'notQmOldContentHash',
+      contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
+    })
+    contentHashes = { [syncedItem.id]: syncedItem.currentContentHash!, [unsyncedItem.id]: unsyncedItem.currentContentHash! }
+    cheque = {
+      qty: 2,
+      salt: '0xsalt',
+      signature:
+        '0x0ba9770fd8778383f6d56faadc71e17b75f0d6e3ff0a408d5e6c4cee3bd70a16' +
+        '3574da0ebfb1eaac261698b057b342e52ea53f85287272cea471a4cda41e3466' +
+        '1b'
+    }
+  })
+
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
       const collection = getTPCollectionMock({ isPublished: false })
@@ -1225,35 +1254,18 @@ describe('when executing the TP approval flow', () => {
   })
 
   describe('when a collection has not been approved yet', () => {
-    const TPCollection = getTPCollectionMock()
-    const syncedItem = getItemMock(TPCollection, { currentContentHash: 'QmSynced' })
-    const unsyncedItem = getItemMock(TPCollection, {
-      id: 'anotherItem',
-      catalystContentHash: 'QmOldContentHash',
-      currentContentHash: 'notQmOldContentHash',
-      contents: { 'thumbnail.png': 'QmNewThumbnailHash' }
-    })
-    const updatedItem: Item = {
-      ...unsyncedItem,
-      catalystContentHash: 'QmNewContentHash'
-    }
-    let cheque: ItemApprovalData['cheque']
-    let contentHashes: ItemApprovalData['content_hashes']
-    let itemsToApprove: Item[]
-    beforeEach(() => {
-      cheque = {
-        qty: 2,
-        salt: '0xsalt',
-        signature:
-          '0x0ba9770fd8778383f6d56faadc71e17b75f0d6e3ff0a408d5e6c4cee3bd70a16' +
-          '3574da0ebfb1eaac261698b057b342e52ea53f85287272cea471a4cda41e3466' +
-          '1b'
-      }
-      contentHashes = { [syncedItem.id]: syncedItem.currentContentHash!, [unsyncedItem.id]: unsyncedItem.currentContentHash! }
-    })
-
-    const deployData = getDeployDataMock()
+    const defaultMerkleRoot = 'aMerkleRoot'
     const totalItems = 45
+    let updatedItem: Item
+    let deployData: DeploymentPreparationData
+
+    beforeEach(() => {
+      deployData = getDeployDataMock()
+      updatedItem = {
+        ...unsyncedItem,
+        catalystContentHash: 'QmNewContentHash'
+      }
+    })
 
     describe('when sending an invalid cheque', () => {
       beforeEach(() => {
@@ -1273,7 +1285,7 @@ describe('when executing the TP approval flow', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: totalItems }],
-            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]
+            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, root: defaultMerkleRoot }]
           ])
           .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
@@ -1296,6 +1308,7 @@ describe('when executing the TP approval flow', () => {
 
     describe('when the cheque was already consumed', () => {
       beforeEach(() => {
+        itemsToApprove = [syncedItem, unsyncedItem]
         ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: itemsToApprove })
       })
 
@@ -1304,7 +1317,10 @@ describe('when executing the TP approval flow', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: totalItems }],
-            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: true }],
+            [
+              call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+              { cheque, content_hashes: contentHashes, chequeWasConsumed: true, root: defaultMerkleRoot }
+            ],
             [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
             [
               race({
@@ -1363,7 +1379,6 @@ describe('when executing the TP approval flow', () => {
     describe('when sending a valid cheque', () => {
       let secondPageItems: Item[]
       let allItemsToApprove: Item[]
-      let itemCurations: ItemCuration[]
 
       beforeEach(() => {
         secondPageItems = [getItemMock(TPCollection, { isApproved: true }), getItemMock(TPCollection, { isApproved: true })]
@@ -1381,7 +1396,10 @@ describe('when executing the TP approval flow', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: 80 }],
-            [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, chequeWasConsumed: false }]
+            [
+              call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+              { cheque, content_hashes: contentHashes, chequeWasConsumed: false, root: defaultMerkleRoot }
+            ]
           ])
           .dispatch(initiateTPApprovalFlow(TPCollection))
           .put(
@@ -1404,7 +1422,7 @@ describe('when executing the TP approval flow', () => {
             [select(getPaginationData, TPCollection.id), { total: 80 }],
             [
               call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
-              { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
+              { cheque, content_hashes: contentHashes, chequeWasConsumed: false, root: defaultMerkleRoot }
             ],
             [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }]
           ])
@@ -1463,7 +1481,7 @@ describe('when executing the TP approval flow', () => {
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [
                 call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
-                { cheque, content_hashes: contentHashes, chequeWasConsumed: false }
+                { cheque, content_hashes: contentHashes, chequeWasConsumed: false, root: defaultMerkleRoot }
               ],
               [delay(1000), 0]
             ])
@@ -1519,7 +1537,10 @@ describe('when executing the TP approval flow', () => {
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
-              [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
+              [
+                call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+                { cheque, content_hashes: contentHashes, root: defaultMerkleRoot }
+              ],
               [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), Promise.reject(new Error(error))]
             ])
             .dispatch(initiateTPApprovalFlow(TPCollection))
@@ -1558,7 +1579,10 @@ describe('when executing the TP approval flow', () => {
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
-              [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }]
+              [
+                call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+                { cheque, content_hashes: contentHashes, root: defaultMerkleRoot }
+              ]
             ])
             .dispatch(initiateTPApprovalFlow(TPCollection))
             .put(
@@ -1596,7 +1620,10 @@ describe('when executing the TP approval flow', () => {
           return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
-              [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes }],
+              [
+                call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+                { cheque, content_hashes: contentHashes, root: defaultMerkleRoot }
+              ],
               [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
               [call([mockBuilderClient, 'getThirdParty'], extractThirdPartyId(TPCollection.urn)), { root: merkleTree.merkleRoot }]
             ])
@@ -1636,6 +1663,63 @@ describe('when executing the TP approval flow', () => {
             )
             .run({ silenceTimeout: true })
         })
+      })
+    })
+  })
+
+  describe('when the collection has already been approved', () => {
+    beforeEach(() => {
+      itemsToApprove = [syncedItem, unsyncedItem]
+      itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
+      ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue({ results: itemsToApprove })
+    })
+
+    describe('and the merkle root in the blockchain is the same as the computed one', () => {
+      it('should omit the procedure to approve the items in the blockchain', () => {
+        const merkleTree = generateTree(Object.values(contentHashes))
+        const parsedSignature = ethers.utils.splitSignature(cheque.signature)
+
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+          .provide([
+            [select(getPaginationData, TPCollection.id), { total: 40 }],
+            [
+              call([mockBuilder, 'fetchApprovalData'], TPCollection.id),
+              { cheque, content_hashes: contentHashes, root: merkleTree.merkleRoot }
+            ]
+          ])
+          .dispatch(initiateTPApprovalFlow(TPCollection))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.LOADING,
+              collection: TPCollection
+            } as ApprovalFlowModalMetadata)
+          )
+          .not.put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
+              items: itemsToApprove,
+              collection: TPCollection,
+              merkleTreeRoot: merkleTree.merkleRoot,
+              slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
+            } as ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS>)
+          )
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.DEPLOY_TP,
+              collection: TPCollection,
+              items: itemsToApprove,
+              tree: merkleTree,
+              hashes: contentHashes
+            } as ApprovalFlowModalMetadata)
+          )
+          .dispatch(deployBatchedThirdPartyItemsSuccess(TPCollection, itemCurations))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.SUCCESS,
+              collection: TPCollection
+            })
+          )
+          .run({ silenceTimeout: true })
       })
     })
   })

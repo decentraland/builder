@@ -660,19 +660,19 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         })
       ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
       const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
-      const itemsToApprove = allItemPages.flatMap(result => result.results)
+      const itemsWithPendingCurations = allItemPages.flatMap(result => result.results)
 
-      if (!itemsToApprove.length) {
+      if (!itemsWithPendingCurations.length) {
         throw Error('Error fetching items to approve')
       }
-      const { cheque, content_hashes: contentHashes, chequeWasConsumed }: ItemApprovalData = yield call(
+      const { cheque, content_hashes: contentHashes, chequeWasConsumed, root }: ItemApprovalData = yield call(
         [legacyBuilderClient, 'fetchApprovalData'],
         collection.id
       )
 
       // 3. Compute the merkle tree root & create slot to consume
       const tree = generateTree(Object.values(contentHashes))
-      const amountOfItemsToPublish = itemsToApprove.filter(item => !item.isApproved).length
+      const amountOfItemsToPublish = itemsWithPendingCurations.filter(item => !item.isApproved).length
 
       if (cheque.qty < amountOfItemsToPublish) {
         throw Error('Invalid qty of items to approve in the cheque')
@@ -680,7 +680,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       // Open the ApprovalFlowModal with the items to be approved
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
-      if (itemsToApprove.length > 0) {
+      if (root !== tree.merkleRoot) {
         const { r, s, v } = ethers.utils.splitSignature(cheque.signature)
         const slot: Slot = {
           qty: cheque.qty,
@@ -692,7 +692,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.CONSUME_TP_SLOTS> = {
           view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
-          items: itemsToApprove,
+          items: itemsWithPendingCurations,
           collection,
           merkleTreeRoot: tree.merkleRoot,
           slots: chequeWasConsumed ? [] : [slot]
@@ -719,12 +719,12 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       }
 
       // 5. If any, open the modal in the DEPLOY step and wait for actions
-      if (itemsToApprove.length > 0) {
+      if (itemsWithPendingCurations.length > 0) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY_TP> = {
           view: ApprovalFlowModalView.DEPLOY_TP,
           collection,
           tree,
-          items: itemsToApprove,
+          items: itemsWithPendingCurations,
           hashes: contentHashes
         }
 
