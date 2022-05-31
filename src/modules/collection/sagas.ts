@@ -678,9 +678,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         throw Error('Invalid qty of items to approve in the cheque')
       }
 
-      console.log('Root value', root)
-      console.log('Tree root', tree.merkleRoot)
-
       // Open the ApprovalFlowModal with the items to be approved
       // 4. Make the transaction to the contract (update of the merkle tree root with the signature and its parameters)
       if (root !== tree.merkleRoot) {
