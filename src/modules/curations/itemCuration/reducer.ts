@@ -1,6 +1,7 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { FinishTPApprovalFlowAction, FINISH_TP_APPROVAL_FLOW } from 'modules/collection/actions'
 import {
+  DeployBatchedThirdPartyItemsSuccessAction,
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
   PublishAndPushChangesThirdPartyItemsFailureAction,
   PublishAndPushChangesThirdPartyItemsRequestAction,
   PublishAndPushChangesThirdPartyItemsSuccessAction,
@@ -64,7 +65,7 @@ type CurationReducerAction =
   | PublishAndPushChangesThirdPartyItemsRequestAction
   | PublishAndPushChangesThirdPartyItemsSuccessAction
   | PublishAndPushChangesThirdPartyItemsFailureAction
-  | FinishTPApprovalFlowAction
+  | DeployBatchedThirdPartyItemsSuccessAction
 
 export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, action: CurationReducerAction): ItemCurationState {
   switch (action.type) {
@@ -91,7 +92,7 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         error: null
       }
     }
-    case FINISH_TP_APPROVAL_FLOW: {
+    case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS: {
       const { collection, itemCurations } = action.payload
 
       return {

@@ -106,7 +106,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       // Multiple files must contain an asset file
       if (!loadedFile.wearable) {
-        throw new Error(t('create_and_edit_multiple_items_modal.asset_file_not_found'))
+        throw new Error(t('create_and_edit_multiple_items_modal.wearable_file_not_found'))
       }
 
       const itemFactory = new ItemFactory<Blob>().fromConfig(loadedFile.wearable!, loadedFile.content)
