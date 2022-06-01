@@ -5,6 +5,7 @@
     "env": {
       "NODE_PATH": "src",
       "NODE_ENV": "development",
+      "GEN_STATIC_LOCAL": "true",
       "PUBLIC_URL": "/",
       "REACT_APP_CHAIN_ID": "3",
       "REACT_APP_LOCAL_STORAGE_KEY": "builder",
