@@ -39,12 +39,7 @@ fs.writeFileSync('./public/package.json', JSON.stringify(publicPackageJson, null
 
 function getPublicUrls() {
   if (!process.env.GEN_STATIC_LOCAL) {
-    if (process.env.VERCEL_URL) {
-      return {
-        PUBLIC_URL: ``
-      }
-    }
-    if (process.env.CI) {
+    if (process.env.CI && !process.env.VERCEL_URL) {
       // master/main branch, also releases
       return {
         PUBLIC_URL: `https://cdn.decentraland.org/${packageJson.name}/${packageJson.version}`
