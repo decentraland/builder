@@ -1,6 +1,8 @@
 const fs = require('fs')
 const dotenv = require('dotenv')
 
+dotenv.config()
+
 let ENV_CONTENT = {}
 
 if (fs.existsSync('.env')) {
@@ -38,15 +40,24 @@ fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2))
 fs.writeFileSync('./public/package.json', JSON.stringify(publicPackageJson, null, 2))
 
 function getPublicUrls() {
-  if (!process.env.GEN_STATIC_LOCAL) {
-    if (process.env.CI && !process.env.VERCEL_URL) {
-      // master/main branch, also releases
-      return {
-        PUBLIC_URL: `https://cdn.decentraland.org/${packageJson.name}/${packageJson.version}`
-      }
+  const isStatic = !!process.env.GEN_STATIC_LOCAL
+  const isCI = !!process.env.CI
+  const isVercel = isCI && !!process.env.VERCEL_URL
+  const isCDN = !isStatic && isCI && !isVercel
+  console.log('is static', isStatic)
+  console.log('is CI', isCI)
+  console.log('is Vercel', isVercel)
+  console.log('is CDN', isCDN)
+  if (isCDN) {
+    // master/main branch, also releases
+    const cdnUrl = `https://cdn.decentraland.org/${packageJson.name}/${packageJson.version}`
+    console.log(`Using CDN as public url: "${cdnUrl}"`)
+    return {
+      PUBLIC_URL: cdnUrl
     }
   }
   // localhost
+  console.log(`Using empty pubic url`)
   return {
     PUBLIC_URL: ``
   }
