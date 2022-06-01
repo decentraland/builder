@@ -42,7 +42,7 @@ fs.writeFileSync('./public/package.json', JSON.stringify(publicPackageJson, null
 function getPublicUrls() {
   const isStatic = !!process.env.GEN_STATIC_LOCAL
   const isCI = !!process.env.CI
-  const isVercel = isCI && !!process.env.VERCEL_URL
+  const isVercel = isCI && !!process.env.VERCEL
   const isCDN = !isStatic && isCI && !isVercel
   console.log('is static', isStatic)
   console.log('is CI', isCI)
