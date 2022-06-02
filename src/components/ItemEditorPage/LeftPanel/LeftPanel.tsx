@@ -51,7 +51,9 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   getItems(collection: Collection | null, collectionItems: Item[]) {
     const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
-      return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing ? collectionItems : collectionItems
+      return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing
+        ? collectionItems.filter(item => item.isPublished)
+        : collectionItems
     }
     return orphanItems
   }
