@@ -23,6 +23,7 @@ export type Props = {
   totalItems: number | null
   selectedItemId: string | null
   selectedCollectionId: string | null
+  isReviewing: boolean
   visibleItems: Item[]
   hasHeader: boolean
   bodyShape: WearableBodyShape

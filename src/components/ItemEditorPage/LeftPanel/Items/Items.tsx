@@ -91,9 +91,9 @@ export default class Items extends React.PureComponent<Props, State> {
     onLoadPage(+props.activePage!)
   }
 
-  getAreTPItems = () => {
-    const { items } = this.props
-    return items[0] ? isThirdParty(items[0].urn) : false
+  getIsReviewingTPItems = () => {
+    const { items, isReviewing } = this.props
+    return items[0] ? isThirdParty(items[0].urn) && isReviewing : false
   }
 
   renderSidebarItem = (item: Item) => {
@@ -146,7 +146,7 @@ export default class Items extends React.PureComponent<Props, State> {
   renderTabContent = () => {
     const { items: propItems, isLoading, totalItems } = this.props
     const { items: stateItems, reviewed, currentTab, currentPages } = this.state
-    const areTPItems = this.getAreTPItems()
+    const areTPItems = this.getIsReviewingTPItems()
     const currentPage = currentPages[currentTab]
     switch (currentTab) {
       case ItemPanelTabs.TO_REVIEW:
@@ -303,7 +303,7 @@ export default class Items extends React.PureComponent<Props, State> {
 
     return (
       <Section className="Items">
-        {this.getAreTPItems() ? (
+        {this.getIsReviewingTPItems() ? (
           <>
             {this.renderTabs()}
             {this.renderTabHeader()}

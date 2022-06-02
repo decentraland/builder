@@ -178,6 +178,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       hasHeader={!selectedCollectionId && collections.length > 0}
                       selectedItemId={selectedItemId}
                       selectedCollectionId={selectedCollectionId}
+                      isReviewing={isReviewing}
                       visibleItems={visibleItems}
                       bodyShape={bodyShape}
                       onSetItems={onSetItems}
