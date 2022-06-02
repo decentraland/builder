@@ -1,5 +1,6 @@
+import { WearableBodyShape } from '@dcl/schemas'
 import { setItems } from 'modules/editor/actions'
-import { Item, WearableBodyShape } from 'modules/item/types'
+import { Item } from 'modules/item/types'
 
 export enum ItemPanelTabs {
   TO_REVIEW = 'to-review',

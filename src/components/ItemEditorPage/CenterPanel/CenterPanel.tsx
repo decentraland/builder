@@ -1,24 +1,30 @@
 import * as React from 'react'
 import { Color4, Wearable } from 'decentraland-ecs'
-import { Dropdown, DropdownProps, Popup, Icon } from 'decentraland-ui'
+import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { Dropdown, DropdownProps, Popup, Icon, Loader, Center } from 'decentraland-ui'
+import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import ViewPort from 'components/ViewPort'
-import { AvatarAnimation, PreviewType } from 'modules/editor/types'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
-import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 import AvatarColorDropdown from './AvatarColorDropdown'
+import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
-import AvatarWearableDropdown from './AvatarWearableDropdown'
+import { toBase64, toHex } from 'modules/editor/utils'
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
-    isShowingAvatarAttributes: false
+    isShowingAvatarAttributes: false,
+    isLoading: false
   }
 
-  componentWillUnmount() {
-    const { onClose } = this.props
-    onClose()
+  componentDidMount() {
+    const { selectedBaseWearables: bodyShapeBaseWearables, onFetchBaseWearables } = this.props
+    if (!bodyShapeBaseWearables) {
+      onFetchBaseWearables()
+    }
+
+    // Setting the editor as loading as soon as it mounts. It will be turned of by the WearablePreview component once it's ready.
+    this.setState({ isLoading: true })
   }
 
   handleToggleShowingAvatarAttributes = () => {
@@ -32,7 +38,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
 
   handleAnimationChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const { onSetAvatarAnimation } = this.props
-    onSetAvatarAnimation(value as AvatarAnimation)
+    onSetAvatarAnimation(value as PreviewEmote)
   }
 
   handleSkinColorChange = (color: Color4) => {
@@ -76,12 +82,39 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { bodyShape, skinColor, eyeColor, hairColor, avatarAnimation, bodyShapeBaseWearables } = this.props
-    const { isShowingAvatarAttributes } = this.state
+    const { bodyShape, skinColor, eyeColor, hairColor, emote, selectedBaseWearables, visibleItems } = this.props
+    const { isShowingAvatarAttributes, isLoading } = this.state
 
     return (
       <div className="CenterPanel">
-        <ViewPort type={PreviewType.WEARABLE} />
+        <WearablePreview
+          profile="default"
+          bodyShape={bodyShape}
+          emote={emote}
+          skin={toHex(skinColor)}
+          eyes={toHex(eyeColor)}
+          hair={toHex(hairColor)}
+          autoRotateSpeed={0}
+          urns={
+            selectedBaseWearables
+              ? (Object.values(selectedBaseWearables)
+                  .map(wearable => (wearable ? wearable.id : null))
+                  .filter(urn => urn !== null) as string[])
+              : []
+          }
+          hotreload
+          base64s={visibleItems.map(toBase64)}
+          transparentBackground
+          wheelZoom={1.5}
+          wheelStart={100}
+          onUpdate={() => this.setState({ isLoading: true })}
+          onLoad={() => this.setState({ isLoading: false })}
+        />
+        {isLoading && (
+          <Center>
+            <Loader active />
+          </Center>
+        )}
         <div className="footer">
           <div className="options">
             <div className={`option ${isShowingAvatarAttributes ? 'active' : ''}`} onClick={this.handleToggleShowingAvatarAttributes}>
@@ -95,8 +128,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
                 <div className="avatar-animation-dropdown-wrapper option">
                   <Dropdown
                     className="avatar-animation"
-                    value={avatarAnimation}
-                    options={Object.values(AvatarAnimation).map(value => ({ value, text: t(`avatar_animations.${value}`) }))}
+                    value={emote}
+                    options={PreviewEmote.schema.enum.map((value: PreviewEmote) => ({ value, text: t(`emotes.${value}`) }))}
                     onChange={this.handleAnimationChange}
                   />
                 </div>
@@ -146,9 +179,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               />
             </div>
             <div className="dropdown-container">
-              {bodyShapeBaseWearables && (
+              {selectedBaseWearables && (
                 <AvatarWearableDropdown
-                  wearable={bodyShapeBaseWearables[WearableCategory.HAIR]}
+                  wearable={selectedBaseWearables[WearableCategory.HAIR]}
                   category={WearableCategory.HAIR}
                   bodyShape={bodyShape}
                   label={t('wearable.category.hair')}
@@ -158,9 +191,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               )}
             </div>
             <div className="dropdown-container">
-              {bodyShapeBaseWearables && (
+              {selectedBaseWearables && (
                 <AvatarWearableDropdown
-                  wearable={bodyShapeBaseWearables[WearableCategory.FACIAL_HAIR]}
+                  wearable={selectedBaseWearables[WearableCategory.FACIAL_HAIR]}
                   category={WearableCategory.FACIAL_HAIR}
                   bodyShape={bodyShape}
                   label={t('wearable.category.facial_hair')}
@@ -170,9 +203,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               )}
             </div>
             <div className="dropdown-container">
-              {bodyShapeBaseWearables && (
+              {selectedBaseWearables && (
                 <AvatarWearableDropdown
-                  wearable={bodyShapeBaseWearables[WearableCategory.UPPER_BODY]}
+                  wearable={selectedBaseWearables[WearableCategory.UPPER_BODY]}
                   category={WearableCategory.UPPER_BODY}
                   bodyShape={bodyShape}
                   label={t('wearable.category.upper_body')}
@@ -181,9 +214,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               )}
             </div>
             <div className="dropdown-container">
-              {bodyShapeBaseWearables && (
+              {selectedBaseWearables && (
                 <AvatarWearableDropdown
-                  wearable={bodyShapeBaseWearables[WearableCategory.LOWER_BODY]}
+                  wearable={selectedBaseWearables[WearableCategory.LOWER_BODY]}
                   category={WearableCategory.LOWER_BODY}
                   bodyShape={bodyShape}
                   label={t('wearable.category.lower_body')}

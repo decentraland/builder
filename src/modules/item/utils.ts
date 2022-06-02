@@ -1,6 +1,7 @@
 import { Address } from 'web3x/address'
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { utils } from 'decentraland-commons'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
@@ -18,12 +19,10 @@ import {
   ItemRarity,
   ItemType,
   WearableData,
-  WearableBodyShape,
   BodyShapeType,
   RARITY_MAX_SUPPLY,
   RARITY_COLOR_LIGHT,
   RARITY_COLOR,
-  WearableCategory,
   WearableBodyShapeType,
   IMAGE_CATEGORIES,
   THUMBNAIL_PATH,
@@ -312,7 +311,7 @@ export function isModelCategory(category: WearableCategory) {
 }
 
 export function getModelCategories() {
-  return Object.values(WearableCategory).filter(category => isModelCategory(category))
+  return (WearableCategory.schema.enum as WearableCategory[]).filter(category => isModelCategory(category))
 }
 
 export function getSkinHiddenCategories() {

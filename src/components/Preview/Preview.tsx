@@ -91,20 +91,17 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     }
   }
 
-  getLoadingText(): string {
-    const { isLoadingEditor, isLoadingBaseWearables } = this.props
-    if (isLoadingBaseWearables && isLoadingEditor) {
-      return t('editor_preview.loading_unity_and_base_wearables')
-    } else if (isLoadingBaseWearables && !isLoadingEditor) {
-      return t('editor_preview.loading_base_wearables')
-    } else {
-      return t('editor_preview.loading_unity')
+  getLoadingText() {
+    const { isLoadingEditor } = this.props
+    if (isLoadingEditor) {
+      return isLoadingEditor ? t('editor_preview.loading_unity') : null
     }
+    return null
   }
 
   render() {
-    const { isLoadingEditor, connectDropTarget, isLoadingBaseWearables } = this.props
-    const isLoadingResources = isLoadingEditor || isLoadingBaseWearables
+    const { isLoadingEditor, connectDropTarget } = this.props
+    const isLoadingResources = isLoadingEditor
 
     return connectDropTarget(
       <div className="Preview-wrapper">

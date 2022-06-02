@@ -137,15 +137,19 @@
     "wearable": "Vestimenta",
     "smart_wearable": "Vestimenta Interactiva"
   },
-  "avatar_animations": {
-    "idle": "Nada",
-    "wave": "Saludar",
-    "fistpump": "Festejar",
-    "robot": "Bailar",
-    "raiseHand": "Alzar Mano",
+  "emotes": {
+    "idle": "Inactivo",
     "clap": "Aplaudir",
-    "money": "Tirar Billetes",
-    "kiss": "Tirar Besos"
+    "dab": "Dab",
+    "dance": "Bailar",
+    "fashion": "Probar Ropa",
+    "fashion-2": "Chic",
+    "fashion-3": "Fashionista",
+    "fashion-4": "Spotlight",
+    "money": "Dinero",
+    "love": "Amor",
+    "head-explode": "Cabeza Explotando",
+    "fist-pump": "Bomba de puño"
   },
   "create_collection_modal": {
     "title": "Nueva Colección",
@@ -1468,8 +1472,6 @@
     "unsynced": "Desincronizado"
   },
   "editor_preview": {
-    "loading_unity_and_base_wearables": "Cargando Unity y Wearables base...",
-    "loading_base_wearables": "Cargando Wearables base...",
     "loading_unity": "Cargando Unity..."
   },
   "approval_flow": {

@@ -2,17 +2,16 @@ import { connect } from 'react-redux'
 
 import { openEditor } from 'modules/editor/actions'
 import { RootState } from 'modules/common/types'
-import { isLoadingBaseWearables, isReady } from 'modules/editor/selectors'
+import { isReady } from 'modules/editor/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { dropItem } from 'modules/scene/actions'
-import { OpenEditorOptions, PreviewType } from 'modules/editor/types'
-import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './Preview.types'
+import { OpenEditorOptions } from 'modules/editor/types'
+import { MapStateProps, MapDispatch, MapDispatchProps } from './Preview.types'
 import Preview from './Preview'
 
-const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
+const mapState = (state: RootState): MapStateProps => {
   return {
     isLoadingEditor: !isReady(state),
-    isLoadingBaseWearables: ownProps.type === PreviewType.WEARABLE && isLoadingBaseWearables(state),
     project: getCurrentProject(state)!
   }
 }

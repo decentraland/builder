@@ -1,4 +1,6 @@
-import { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
+import { Color4, Wearable } from 'decentraland-ecs'
+import { EmoteCategory, Locale, WearableBodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
+import { Item, ItemType } from 'modules/item/types'
 import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
@@ -6,11 +8,7 @@ import { getContentsStorageUrl } from 'lib/api/builder'
 import { capitalize } from 'lib/text'
 import { Vector3 } from 'modules/models/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
-import { TRANSPARENT_PIXEL } from 'lib/getModelData'
-import { toLegacyURN } from 'lib/urnLegacy'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
-import { getMetrics } from 'components/AssetImporter/utils'
-import { Item, WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { base64ArrayBuffer } from './base64'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
@@ -143,67 +141,6 @@ export function areEqualTransforms(
   )
 }
 
-export function createAvatarProject(): Project {
-  return {
-    id: 'avatar-project',
-    title: 'Avatar',
-    description: 'Dummy project for the Avatar Editor',
-    thumbnail: TRANSPARENT_PIXEL,
-    sceneId: 'avatar-scene',
-    layout: {
-      rows: 1,
-      cols: 1
-    },
-    isPublic: false,
-    ethAddress: null,
-    createdAt: new Date().toString(),
-    updatedAt: new Date().toString()
-  }
-}
-
-export function createAvatarScene(): Scene {
-  return {
-    id: 'avatar-scene',
-    assets: {},
-    components: {},
-    entities: {},
-    ground: null,
-    limits: getMetrics(),
-    metrics: getMetrics()
-  }
-}
-
-export function toWearable(item: Item) {
-  return {
-    // @TODO: remove toLegacyURN when unity build accepts urn
-    id: toLegacyURN(item.id) + '/' + item.updatedAt, // we add the updatedAt suffix to bust the cache
-    type: 'wearable',
-    category: item.data.category!,
-    baseUrl: getContentsStorageUrl(),
-    representations: item.data.representations.map<BodyShapeRespresentation>(representation => ({
-      bodyShapes: representation.bodyShapes.map(toLegacyURN),
-      mainFile: representation.mainFile,
-      contents: Object.values(representation.contents).map(path => ({
-        file: path,
-        hash: item.contents[path]
-      })),
-      overrideReplaces: representation.overrideReplaces,
-      overrideHides: representation.overrideHides
-    })),
-    replaces: item.data.replaces,
-    hides: item.data.hides,
-    tags: item.data.tags
-  } as Wearable
-}
-
-export function mergeWearables(avatar: Wearable[], apply: Wearable[]) {
-  const wearables: Record<string, Wearable> = {}
-  for (const wearable of [...avatar, ...apply]) {
-    wearables[wearable.category || wearable.id] = wearable
-  }
-  return Object.values(wearables)
-}
-
 /**
  * Makes runtime changes to wearable objects before sending them to the ECS scene. This is because we are using an outdated version of the ECS,
  * and certain tweaks need to be made in order to make the up-to-date wearables work on it.
@@ -325,4 +262,63 @@ export function filterWearables(wearables: Wearable[], category: WearableCategor
       wearable.category === category &&
       wearable.representations.some(representation => representation.bodyShapes.some(_bodyShape => _bodyShape === bodyShape))
   )
+}
+
+/**
+ * Given a color return the hex value
+ *
+ * @param color - a Color4 value
+ */
+export function toHex(color: Color4) {
+  return color
+    .toHexString()
+    .slice(1, 7)
+    .toLowerCase()
+}
+
+/**
+ * Given an item convert it to a wearable definition
+ *
+ * @param item - an Item
+ */
+export function toWearable(item: Item): WearableDefinition {
+  return {
+    id: item.id,
+    name: item.name,
+    thumbnail: item.thumbnail,
+    image: item.thumbnail,
+    description: item.description,
+    i18n: [
+      {
+        code: Locale.EN,
+        text: item.name
+      }
+    ],
+    data: {
+      ...item.data,
+      category: item.data.category as WearableCategory,
+      representations: item.data.representations.map(representation => ({
+        ...representation,
+        contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
+      }))
+    },
+    emoteDataV0:
+      item.type === ItemType.EMOTE
+        ? {
+            loop: ((item.data.category as unknown) as EmoteCategory) === EmoteCategory.LOOP
+          }
+        : undefined
+  }
+}
+
+/**
+ * Given an item return the base64 of its wearable definition
+ *
+ * @param item - an Item
+ */
+export function toBase64(item: Item): string {
+  const wearable = toWearable(item)
+  const stringified = JSON.stringify(wearable)
+  const sanitized = stringified.replace(/[\u0250-\ue007]/g, '')
+  return btoa(sanitized)
 }

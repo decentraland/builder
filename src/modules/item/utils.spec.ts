@@ -1,4 +1,5 @@
-import { Item, ItemMetadataType, ItemType, WearableBodyShape, WearableCategory, WearableRepresentation } from './types'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { Item, ItemMetadataType, ItemType, WearableRepresentation } from './types'
 import { buildItemMetadata, buildZipContents, toThirdPartyContractItems, areEqualArrays, areEqualRepresentations, groupsOf } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {

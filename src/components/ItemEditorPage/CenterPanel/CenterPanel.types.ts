@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux'
 import { Color4, Wearable } from 'decentraland-ecs'
+import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import {
-  closeEditor,
   CloseEditorAction,
-  setAvatarAnimation,
-  SetAvatarAnimationAction,
+  setEmote,
+  SetEmoteAction,
   setBodyShape,
   SetBodyShapeAction,
   setSkinColor,
@@ -14,46 +14,55 @@ import {
   setHairColor,
   SetHairColorAction,
   setBaseWearable,
-  SetBaseWearableAction
+  SetBaseWearableAction,
+  fetchBaseWearablesRequest,
+  FetchBaseWearablesRequestAction
 } from 'modules/editor/actions'
-import { AvatarAnimation } from 'modules/editor/types'
-import { Item, WearableBodyShape, WearableCategory } from 'modules/item/types'
+import { Item } from 'modules/item/types'
 
 export type Props = {
   bodyShape: WearableBodyShape
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4
-  avatarAnimation: AvatarAnimation
-  bodyShapeBaseWearables: Record<WearableCategory, Wearable | null> | null
+  emote: PreviewEmote
+  selectedBaseWearables: Record<WearableCategory, Wearable | null> | null
   visibleItems: Item[]
   onSetBodyShape: typeof setBodyShape
-  onSetAvatarAnimation: typeof setAvatarAnimation
+  onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
   onSetEyeColor: typeof setEyeColor
   onSetHairColor: typeof setHairColor
   onSetBaseWearable: typeof setBaseWearable
-  onClose: typeof closeEditor
+  onFetchBaseWearables: typeof fetchBaseWearablesRequest
 }
 
 export type State = {
   isShowingAvatarAttributes: boolean
+  isLoading: boolean
 }
 
 export type MapStateProps = Pick<
   Props,
-  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'avatarAnimation' | 'visibleItems' | 'bodyShapeBaseWearables'
+  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'emote' | 'visibleItems' | 'selectedBaseWearables'
 >
 export type MapDispatchProps = Pick<
   Props,
-  'onClose' | 'onSetBodyShape' | 'onSetAvatarAnimation' | 'onSetSkinColor' | 'onSetEyeColor' | 'onSetHairColor' | 'onSetBaseWearable'
+  | 'onSetBodyShape'
+  | 'onSetAvatarAnimation'
+  | 'onSetSkinColor'
+  | 'onSetEyeColor'
+  | 'onSetHairColor'
+  | 'onSetBaseWearable'
+  | 'onFetchBaseWearables'
 >
 export type MapDispatch = Dispatch<
   | CloseEditorAction
   | SetBodyShapeAction
-  | SetAvatarAnimationAction
+  | SetEmoteAction
   | SetSkinColorAction
   | SetEyeColorAction
   | SetHairColorAction
   | SetBaseWearableAction
+  | FetchBaseWearablesRequestAction
 >

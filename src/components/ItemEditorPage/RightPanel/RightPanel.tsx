@@ -2,7 +2,7 @@ import * as React from 'react'
 import equal from 'fast-deep-equal'
 import { utils } from 'decentraland-commons'
 import { Loader, Dropdown, Button } from 'decentraland-ui'
-import { Network } from '@dcl/schemas'
+import { Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -29,7 +29,6 @@ import {
   ITEM_DESCRIPTION_MAX_LENGTH,
   ITEM_NAME_MAX_LENGTH,
   THUMBNAIL_PATH,
-  WearableCategory,
   WearableData
 } from 'modules/item/types'
 import Collapsable from './Collapsable'

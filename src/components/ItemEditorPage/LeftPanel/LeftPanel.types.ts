@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
+import { WearableBodyShape } from '@dcl/schemas'
 import { Collection } from 'modules/collection/types'
-import { Item, WearableBodyShape } from 'modules/item/types'
+import { Item } from 'modules/item/types'
 import { setItems, SetItemsAction } from 'modules/editor/actions'
 import { fetchCollectionsRequest, FetchCollectionsRequestAction } from 'modules/collection/actions'
 import {

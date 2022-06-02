@@ -1,10 +1,11 @@
 import { action } from 'typesafe-actions'
+import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
-import { AvatarAnimation, Gizmo, OpenEditorOptions, PreviewType } from './types'
-import { Item, WearableBodyShape, WearableCategory } from 'modules/item/types'
+import { Gizmo, OpenEditorOptions, PreviewType } from './types'
+import { Item } from 'modules/item/types'
 import { Color4, Wearable } from 'decentraland-ecs'
 
 // Bind keyboard shortcuts
@@ -222,11 +223,11 @@ export const setBodyShape = (bodyShape: WearableBodyShape) => action(SET_BODY_SH
 export type SetBodyShapeAction = ReturnType<typeof setBodyShape>
 
 // Set avatar animation
-export const SET_AVATAR_ANIMATION = 'Set avatar animation'
+export const SET_EMOTE = 'Set emote'
 
-export const setAvatarAnimation = (animation: AvatarAnimation) => action(SET_AVATAR_ANIMATION, { animation })
+export const setEmote = (emote: PreviewEmote) => action(SET_EMOTE, { emote })
 
-export type SetAvatarAnimationAction = ReturnType<typeof setAvatarAnimation>
+export type SetEmoteAction = ReturnType<typeof setEmote>
 
 // Set skin color
 export const SET_SKIN_COLOR = 'Set skin color'
@@ -256,14 +257,6 @@ export const setBaseWearable = (category: WearableCategory, bodyShape: WearableB
   action(SET_BASE_WEARABLE, { category, bodyShape, wearable })
 
 export type SetBaseWearableAction = ReturnType<typeof setBaseWearable>
-
-// Update wearables
-export const UPDATE_AVATAR = 'Update avatar'
-
-export const updateAvatar = (wearables: Wearable[], skinColor: Color4, eyeColor: Color4, hairColor: Color4, animation?: AvatarAnimation) =>
-  action(UPDATE_AVATAR, { wearables, animation, skinColor, eyeColor, hairColor })
-
-export type UpdateAvatarAction = ReturnType<typeof updateAvatar>
 
 // Fetch Base Wearables
 

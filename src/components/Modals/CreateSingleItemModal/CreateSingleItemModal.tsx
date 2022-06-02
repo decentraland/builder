@@ -2,6 +2,7 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
+import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -24,9 +25,7 @@ import {
   ITEM_EXTENSIONS,
   THUMBNAIL_PATH,
   Item,
-  WearableBodyShape,
   BodyShapeType,
-  WearableCategory,
   ItemRarity,
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
