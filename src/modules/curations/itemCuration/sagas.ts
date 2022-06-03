@@ -51,7 +51,7 @@ export function* itemCurationSaga(builder: BuilderAPI) {
       let itemCurations: ItemCuration[] = []
       if (items && items.length > 0) {
         const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
-        const promisesOfCurationsToFetch: (() => Promise<ItemCuration[]>)[] = chunk(items!, MAX_ITEM_CURATIONS).map(chunkOfItems => () =>
+        const promisesOfCurationsToFetch: (() => Promise<ItemCuration[]>)[] = chunk(items, MAX_ITEM_CURATIONS).map(chunkOfItems => () =>
           builder.fetchItemCurations(
             collectionId,
             chunkOfItems.map(item => item.id)
