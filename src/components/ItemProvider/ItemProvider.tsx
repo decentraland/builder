@@ -8,9 +8,8 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     const { id, item, onFetchItem, isConnected } = this.props
-    const { loadedItemId } = this.state
 
-    if (isConnected && id && !item && loadedItemId !== id) {
+    if (isConnected && id && !item) {
       this.setState({ loadedItemId: id }, () => onFetchItem(id))
     }
   }
