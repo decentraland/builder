@@ -176,6 +176,15 @@ function buildItemEntityMetadata(collection: Collection, item: Item): StandardCa
     catalystItem.emoteDataV0 = {
       loop: (item.data as EmoteData).category === EmoteCategory.LOOP
     }
+    // add missing properties from wearable schema so catalyst wont reject the deployment
+    catalystItem.data.category = WearableCategory.HAT
+    catalystItem.data.hides = []
+    catalystItem.data.replaces = []
+    catalystItem.data.representations = catalystItem.data.representations.map(representation => ({
+      ...representation,
+      overrideHides: [],
+      overrideReplaces: []
+    }))
   }
 
   return catalystItem
