@@ -13,6 +13,10 @@ export type Props = {
   onFetchItem: typeof fetchItemRequest
 }
 
+export type State = {
+  loadedItemId: string | undefined
+}
+
 export type MapStateProps = Pick<Props, 'isConnected' | 'id' | 'item' | 'collection' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onFetchItem'>
 export type MapDispatch = Dispatch<FetchItemRequestAction>
