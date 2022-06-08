@@ -34,21 +34,36 @@ afterEach(() => {
 
 describe('when fetching item curations', () => {
   describe('when the api request fails', () => {
+    beforeEach(() => {
+      ;(mockBuilder.fetchItemCurations as jest.Mock).mockRejectedValueOnce(new Error(mockErrorMessage))
+    })
+
     it('should put the fetch item curations fail action with an error', () => {
       return expectSaga(itemCurationSaga, mockBuilder)
-        .provide([[call([mockBuilder, mockBuilder.fetchItemCurations], mockCollectionId, []), throwError(new Error(mockErrorMessage))]])
         .put(fetchItemCurationsFailure(mockErrorMessage))
-        .dispatch(fetchItemCurationsRequest(mockCollectionId, []))
+        .dispatch(fetchItemCurationsRequest(mockCollectionId, [{ id: 'anItemId' } as Item]))
         .run({ silenceTimeout: true })
     })
   })
 
   describe('when the api request succeeds', () => {
+    let items: Item[]
+    let allItemCurations: ItemCuration[]
+
+    beforeEach(() => {
+      items = Array.from({ length: 60 }, (_, i) => ({ id: `itemId-${i}` } as Item))
+      const fstChunkOfItemCurations: ItemCuration[] = Array.from({ length: 30 }, (_, i) => ({ id: `itemId-${i}` } as ItemCuration))
+      const sndChunkOfItemCurations: ItemCuration[] = Array.from({ length: 30 }, (_, i) => ({ id: `itemId-${i + 30}` } as ItemCuration))
+      allItemCurations = [...fstChunkOfItemCurations, ...sndChunkOfItemCurations]
+      ;(mockBuilder.fetchItemCurations as jest.Mock)
+        .mockResolvedValueOnce(fstChunkOfItemCurations)
+        .mockResolvedValueOnce(sndChunkOfItemCurations)
+    })
+
     it('should put the fetch item curations success action with the item curations', () => {
       return expectSaga(itemCurationSaga, mockBuilder)
-        .provide([[call([mockBuilder, mockBuilder.fetchItemCurations], mockCollectionId, []), [{}]]])
-        .put(fetchItemCurationsSuccess(mockCollectionId, [{}] as any[]))
-        .dispatch(fetchItemCurationsRequest(mockCollectionId, []))
+        .put(fetchItemCurationsSuccess(mockCollectionId, allItemCurations))
+        .dispatch(fetchItemCurationsRequest(mockCollectionId, items))
         .run({ silenceTimeout: true })
     })
   })

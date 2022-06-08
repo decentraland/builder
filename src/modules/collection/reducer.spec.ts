@@ -1,7 +1,8 @@
 import { fetchTransactionSuccess } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { PaginationStats } from 'lib/api/pagination'
+import { closeAllModals, closeModal } from 'modules/modal/actions'
 import { fetchCollectionsSuccess, PUBLISH_COLLECTION_SUCCESS } from './actions'
-import { collectionReducer as reducer } from './reducer'
+import { collectionReducer as reducer, CollectionState } from './reducer'
 import { Collection } from './types'
 import { toCollectionObject } from './utils'
 
@@ -90,5 +91,23 @@ describe('when FETCH_COLLECTIONS_SUCCESS', () => {
         totalPages: mockedPaginationStats.pages
       }
     })
+  })
+})
+
+describe('when a modal is closed', () => {
+  it('should clear the error', () => {
+    const initialState = {
+      error: 'Some error'
+    } as CollectionState
+    expect(reducer(initialState, closeModal('PublishCollectionModal')).error).toBe(null)
+  })
+})
+
+describe('when all modals are closed', () => {
+  it('should clear the error', () => {
+    const initialState = {
+      error: 'Some error'
+    } as CollectionState
+    expect(reducer(initialState, closeAllModals()).error).toBe(null)
   })
 })

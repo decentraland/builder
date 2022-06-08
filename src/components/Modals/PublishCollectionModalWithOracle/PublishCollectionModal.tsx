@@ -51,7 +51,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderFirstStep = () => {
-    const { items, wallet, onClose, rarities, error, isFetchingItems, isFetchingRarities } = this.props
+    const { items, wallet, onClose, rarities, itemError, isFetchingItems, isFetchingRarities } = this.props
 
     // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
     // as reference for the prices is enough.
@@ -123,13 +123,13 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 </div>
               </div>
               <p className="estimate-notice">{t('publish_collection_modal_with_oracle.estimate_notice')}</p>
-              {error && (
+              {itemError && (
                 <>
                   <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
-                  <p className="rarities-error-sub error">{error}</p>
+                  <p className="rarities-error-sub error">{itemError}</p>
                 </>
               )}
-              <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA || !!error}>
+              <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA || !!itemError}>
                 {t('global.next')}
               </Button>
               {hasInsufficientMANA && (
@@ -190,11 +190,11 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderThirdStep = () => {
-    const { isPublishLoading, unsyncedCollectionError, onClose } = this.props
+    const { isPublishLoading, unsyncedCollectionError, collectionError, onClose } = this.props
     const { email, emailFocus } = this.state
     const hasValidEmail = emailRegex.test(email ?? '')
     const showEmailError = !hasValidEmail && !emailFocus && email !== undefined && email !== ''
-
+    const error = unsyncedCollectionError || collectionError
     return (
       <Form onSubmit={this.handlePublish}>
         <ModalNavigation title={t('publish_collection_modal_with_oracle.title_tos')} onClose={onClose} />
@@ -233,11 +233,11 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           />
         </Modal.Content>
         <Modal.Actions className="third-step-footer">
-          <Button primary fluid disabled={!hasValidEmail || isPublishLoading || !!unsyncedCollectionError} loading={isPublishLoading}>
+          <Button primary fluid disabled={!hasValidEmail || isPublishLoading || !!error} loading={isPublishLoading}>
             {t('global.publish')}
           </Button>
           <p>{t('publish_collection_modal_with_oracle.accept_by_publishing')}</p>
-          {unsyncedCollectionError && <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>}
+          {error && <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>}
         </Modal.Actions>
       </Form>
     )
