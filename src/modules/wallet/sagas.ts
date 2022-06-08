@@ -1,7 +1,6 @@
 import { all, takeEvery, put } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
 import { ContractName } from 'decentraland-transactions'
-import { env } from 'decentraland-commons'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import {
   CHANGE_ACCOUNT,
@@ -13,11 +12,12 @@ import {
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { fetchAuthorizationsRequest } from 'decentraland-dapps/dist/modules/authorization/actions'
 import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
+import { config } from 'config'
 import { buildManaAuthorization } from 'lib/mana'
 import { TRANSACTIONS_API_URL } from './utils'
 
 const baseWalletSaga = createWalletSaga({
-  CHAIN_ID: env.get('REACT_APP_CHAIN_ID') || ChainId.ETHEREUM_MAINNET,
+  CHAIN_ID: config.get('CHAIN_ID') || ChainId.ETHEREUM_MAINNET,
   POLL_INTERVAL: 0,
   TRANSACTIONS_API_URL
 })
@@ -39,9 +39,7 @@ function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountA
   const authorizations: Authorization[] = []
 
   try {
-    if (env.get('REACT_APP_FF_WEARABLES')) {
-      authorizations.push(buildManaAuthorization(wallet.address, chainId, ContractName.CollectionManager))
-    }
+    authorizations.push(buildManaAuthorization(wallet.address, chainId, ContractName.CollectionManager))
 
     yield put(fetchAuthorizationsRequest(authorizations))
   } catch (error) {}

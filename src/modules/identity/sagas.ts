@@ -6,8 +6,8 @@ import { bufferToHex } from 'web3x/utils'
 import { Account } from 'web3x/account'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
-import { env } from 'decentraland-commons'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { config } from 'config'
 import {
   CONNECT_WALLET_SUCCESS,
   CONNECT_WALLET_FAILURE,
@@ -69,7 +69,7 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
       privateKey: bufferToHex(account.privateKey)
     }
 
-    const expiration = Number(env.get('REACT_APP_IDENTITY_EXPIRATION_MINUTES', ONE_MONTH_IN_MINUTES))
+    const expiration = Number(config.get('IDENTITY_EXPIRATION_MINUTES', ONE_MONTH_IN_MINUTES.toString()))
 
     const personal = new Personal(eth.provider)
 

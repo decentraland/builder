@@ -1,11 +1,11 @@
+import { config } from 'config'
 import * as contentHash from 'content-hash'
-import { env } from 'decentraland-commons'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Land } from 'modules/land/types'
 import { getSelection, getCenter, getExplorerURL } from 'modules/land/utils'
 import { blobToCID } from 'modules/media/utils'
 
-export const IPFS_URL = env.get('REACT_APP_IPFS_URL', '')
+export const IPFS_URL = config.get('IPFS_URL', '')
 
 const INDEX_FILE_PATH = 'index.html'
 

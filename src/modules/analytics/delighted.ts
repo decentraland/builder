@@ -1,9 +1,9 @@
 import { delay, call } from 'redux-saga/effects'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 
 const DELIGHTED_DELAY = 180 * 1000
-const DELIGHTED_API_KEY = env.get('REACT_APP_DELIGHTED_API_KEY', '')
+const DELIGHTED_API_KEY = config.get('DELIGHTED_API_KEY', '')
 const isEnabled = !!DELIGHTED_API_KEY
 
 if (isEnabled) {

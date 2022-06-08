@@ -1,12 +1,12 @@
 import { gql } from 'apollo-boost'
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 import { createClient } from './graph'
 import { parcelFields, estateFields, ParcelFields, Land, LandType, RoleType, EstateFields, Authorization } from 'modules/land/types'
 import { coordsToId } from 'modules/land/utils'
 import { isZero } from 'lib/address'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 
-export const LAND_MANAGER_URL = env.get('REACT_APP_LAND_MANAGER_URL', '')
+export const LAND_MANAGER_URL = config.get('LAND_MANAGER_URL', '')
 
 const auth = createClient(LAND_MANAGER_URL)
 
