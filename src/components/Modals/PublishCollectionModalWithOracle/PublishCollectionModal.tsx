@@ -1,11 +1,10 @@
 import * as React from 'react'
+import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { env } from 'decentraland-commons'
 import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
-import { BigNumber } from 'ethers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { fromWei } from 'web3x/utils'
 import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
@@ -65,15 +64,15 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     if (refRarity) {
       priceUSD = refRarity.prices!.USD
 
-      totalPrice = BigNumber.from(refRarity.prices!.MANA)
+      totalPrice = ethers.BigNumber.from(refRarity.prices!.MANA)
         .mul(items.length)
         .toString()
 
-      totalPriceUSD = BigNumber.from(priceUSD)
+      totalPriceUSD = ethers.BigNumber.from(priceUSD)
         .mul(items.length)
         .toString()
 
-      hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(fromWei(totalPrice, 'ether'))
+      hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPrice))
     }
 
     return (

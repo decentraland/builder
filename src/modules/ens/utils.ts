@@ -1,15 +1,14 @@
+import { ethers } from 'ethers'
 import { Entity } from 'dcl-catalyst-commons'
-import { Address } from 'web3x/address'
-import { fromWei } from 'web3x/utils'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
-import { DCLRegistrar } from 'contracts/DCLRegistrar'
+import { DCLRegistrar__factory } from 'contracts'
 import { Land } from 'modules/land/types'
+import { getSigner } from 'modules/wallet/utils'
 import { REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { ENS } from './types'
-import { getEth } from 'modules/wallet/utils'
 
-export const PRICE_IN_WEI = 100000000000000000000 // 100 MANA
-export const PRICE = fromWei(PRICE_IN_WEI.toString(), 'ether')
+export const PRICE_IN_WEI = '100000000000000000000' // 100 MANA
+export const PRICE = ethers.utils.formatEther(PRICE_IN_WEI)
 export const MAX_NAME_SIZE = 15
 export const MIN_NAME_SIZE = 2
 
@@ -41,9 +40,9 @@ export async function isNameAvailable(name: string): Promise<boolean> {
   if (!name) {
     return false
   }
-  const eth = await getEth()
-  const contractDCLRegistrar = new DCLRegistrar(eth!, Address.fromString(REGISTRAR_ADDRESS))
-  return contractDCLRegistrar.methods.available(name).call()
+  const signer: ethers.Signer = await getSigner()
+  const contractDCLRegistrar = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+  return contractDCLRegistrar.available(name)
 }
 
 export function hasNameMinLength(name: string): boolean {
@@ -63,11 +62,11 @@ export function isEmpty(ens: ENS) {
 }
 
 export function isResolverEmpty(ens: ENS) {
-  return ens.resolver === Address.ZERO.toString()
+  return ens.resolver === ethers.constants.AddressZero
 }
 
 export function isContentEmpty(ens: ENS) {
-  return ens.content === Address.ZERO.toString()
+  return ens.content === ethers.constants.AddressZero
 }
 
 export function isEqualContent(ens: ENS, land: Land) {

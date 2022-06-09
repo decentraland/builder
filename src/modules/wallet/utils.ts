@@ -1,7 +1,5 @@
-import { call, select } from 'redux-saga/effects'
-import { PopulatedTransaction } from 'ethers'
-import { Eth } from 'web3x/eth'
-import { LegacyProviderAdapter } from 'web3x/providers'
+import { select } from 'redux-saga/effects'
+import { ethers } from 'ethers'
 import { env } from 'decentraland-commons'
 import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -9,27 +7,36 @@ import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet
 
 export const TRANSACTIONS_API_URL = env.get<string | undefined>('REACT_APP_TRANSACTIONS_API_URL')
 
-export async function getEth(): Promise<Eth> {
+export async function getEth(): Promise<ethers.providers.Web3Provider> {
   const provider: Provider | null = await getConnectedProvider()
+
   if (!provider) {
     throw new Error('Could not get a valid connected Wallet')
   }
 
-  return new Eth(new LegacyProviderAdapter(provider as any))
+  return new ethers.providers.Web3Provider(provider)
 }
 
 export function* getWallet() {
-  const eth: Eth = yield call(getEth)
-
   const wallet: Wallet | null = yield select(getBaseWallet)
   if (!wallet) {
     throw new Error('Could not get current wallet from state')
   }
 
-  return [wallet, eth]
+  return wallet
 }
 
-export async function getMethodData(populatedTransactionPromise: Promise<PopulatedTransaction>) {
+export async function getSigner(): Promise<ethers.Signer> {
+  const provider = await getConnectedProvider()
+  if (!provider) {
+    throw new Error('Could not connect to provider')
+  }
+
+  const eth = new ethers.providers.Web3Provider(provider)
+  return eth.getSigner()
+}
+
+export async function getMethodData(populatedTransactionPromise: Promise<ethers.PopulatedTransaction>) {
   const populatedTransaction = await populatedTransactionPromise
   return populatedTransaction.data!
 }

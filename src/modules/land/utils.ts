@@ -1,12 +1,10 @@
+import { ethers } from 'ethers'
 import { Coord } from 'react-tile-map'
 import { env } from 'decentraland-commons'
 import { Color } from 'decentraland-ui'
-import { Eth } from 'web3x/eth'
-import { Address } from 'web3x/address'
-import { getEth } from 'modules/wallet/utils'
+import { getSigner } from 'modules/wallet/utils'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
-import { EstateRegistry } from 'contracts/EstateRegistry'
-import { LANDRegistry } from 'contracts/LANDRegistry'
+import { LANDRegistry__factory, EstateRegistry__factory } from 'contracts'
 import { isZero } from 'lib/address'
 import { Land, LandTile, LandType, RoleType } from './types'
 
@@ -60,21 +58,21 @@ export const getSelection = (land: Land) =>
   land.type === LandType.PARCEL ? [{ x: land.x!, y: land.y! }] : land.parcels!.map(parcel => ({ x: parcel.x, y: parcel.y }))
 
 export const getUpdateOperator = async (land: Land) => {
-  const eth: Eth = await getEth()
+  const signer: ethers.Signer = await getSigner()
 
   try {
     switch (land.type) {
       case LandType.PARCEL: {
-        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const tokenId = await landRegistry.methods.encodeTokenId(land.x!, land.y!).call()
-        const updateOperator = await landRegistry.methods.updateOperator(tokenId).call()
+        const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
+        const tokenId = await landRegistry.encodeTokenId(land.x!, land.y!)
+        const updateOperator = await landRegistry.updateOperator(tokenId)
         const address = updateOperator.toString()
         return isZero(address) ? null : address
       }
 
       case LandType.ESTATE: {
-        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const updateOperator = await estateRegistry.methods.updateOperator(land.id).call()
+        const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
+        const updateOperator = await estateRegistry.updateOperator(land.id)
         const address = updateOperator.toString()
         return isZero(address) ? null : address
       }

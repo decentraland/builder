@@ -1,7 +1,4 @@
-import { Eth, SendTx } from 'web3x/eth'
-import { Address } from 'web3x/address'
-import { TransactionReceipt } from 'web3x/formatters'
-import { Contract, providers } from 'ethers'
+import { ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
@@ -11,12 +8,9 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 
-import { ENS as ENSContract } from 'contracts/ENS'
-import { ENSResolver } from 'contracts/ENSResolver'
+import { ENS__factory, ENSResolver__factory, DCLController__factory, ERC20__factory } from 'contracts'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
-import { DCLController } from 'contracts/DCLController'
-import { ERC20 as MANAToken } from 'contracts/ERC20'
-import { getWallet } from 'modules/wallet/utils'
+import { getSigner, getWallet } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { ipfs } from 'lib/api/ipfs'
 import { getLands } from 'modules/land/selectors'
@@ -78,39 +72,40 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
   const { name, land } = action.payload
   const subdomain = name.toLowerCase() + '.dcl.eth'
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
     const address = wallet.address
     const nodehash = namehash(subdomain)
-    const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
+    const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
 
-    const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
+    const resolverAddress: string = yield call(() => ensContract.resolver(nodehash))
 
-    if (resolverAddress.toString() === Address.ZERO.toString()) {
+    if (resolverAddress.toString() === ethers.constants.AddressZero) {
       yield put(
         fetchENSSuccess({
           name,
           address,
           subdomain,
-          resolver: Address.ZERO.toString(),
-          content: Address.ZERO.toString()
+          resolver: ethers.constants.AddressZero,
+          content: ethers.constants.AddressZero
         })
       )
       return
     }
 
-    const resolverContract = new ENSResolver(eth, resolverAddress)
+    const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
     const ipfsHash: string = yield call(() => ipfs.uploadRedirectionFile(land))
     const landHash = contentHash.fromIpfs(ipfsHash)
 
-    const currentContent: string = yield call(() => resolverContract.methods.contenthash(nodehash).call())
-    if (currentContent === Address.ZERO.toString()) {
+    const currentContent: string = yield call(() => resolverContract.contenthash(nodehash))
+    if (currentContent === ethers.constants.AddressZero) {
       yield put(
         fetchENSSuccess({
           address,
           name,
           subdomain,
           resolver: resolverAddress.toString(),
-          content: Address.ZERO.toString(),
+          content: ethers.constants.AddressZero,
           ipfsHash
         })
       )
@@ -138,7 +133,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
         name,
         subdomain,
         resolver: ENS_RESOLVER_ADDRESS,
-        content: currentContent || Address.ZERO.toString(),
+        content: currentContent || ethers.constants.AddressZero,
         landId: ''
       })
     )
@@ -151,18 +146,15 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
 function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
   const { ens } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
     const nodehash = namehash(ens.subdomain)
-    const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
+    const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
 
-    const txHash: string = yield call(() =>
-      ensContract.methods
-        .setResolver(nodehash, Address.fromString(ENS_RESOLVER_ADDRESS))
-        .send({ from })
-        .getTxHash()
-    )
-    yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from.toString(), wallet.chainId, txHash))
+    const transaction: ethers.ContractTransaction = yield call(() => ensContract.setResolver(nodehash, ENS_RESOLVER_ADDRESS))
+
+    yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from, wallet.chainId, transaction.hash))
   } catch (error) {
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.RESOLVER }
     yield put(setENSResolverFailure(ens, ensError))
@@ -172,8 +164,9 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
 function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
   const { ens, land } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
 
     let content = ''
 
@@ -181,19 +174,14 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
       const ipfsHash: string = yield call(() => ipfs.uploadRedirectionFile(land))
       content = `0x${contentHash.fromIpfs(ipfsHash)}`
     } else {
-      content = Address.ZERO.toString()
+      content = ethers.constants.AddressZero
     }
 
     const nodehash = namehash(ens.subdomain)
-    const resolverContract = new ENSResolver(eth, Address.fromString(ENS_RESOLVER_ADDRESS))
+    const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
 
-    const txHash: string = yield call(() =>
-      resolverContract.methods
-        .setContenthash(nodehash, content)
-        .send({ from })
-        .getTxHash()
-    )
-    yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, txHash))
+    const transaction: ethers.ContractTransaction = yield call(() => resolverContract.setContenthash(nodehash, content))
+    yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, transaction.hash))
 
     if (!land) {
       yield put(closeModal('UnsetENSContentModal'))
@@ -210,7 +198,7 @@ function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestA
     const chainId = getChainIdByNetwork(Network.ETHEREUM)
     const contract = getContract(ContractName.MANAToken, chainId)
     const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
-    const mana = new Contract(contract.address, contract.abi, new providers.Web3Provider(provider))
+    const mana = new ethers.Contract(contract.address, contract.abi, new ethers.providers.Web3Provider(provider))
     const allowance: string = yield call(mana.allowance, from, CONTROLLER_ADDRESS)
     const authorization: Authorization = { allowance }
 
@@ -231,9 +219,10 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
       landHashes.push({ hash: `0x${landHash}`, id: land.id })
     }
 
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
     const address = wallet.address
-    const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
+    const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
     const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
     const ensList: ENS[] = yield call(() =>
@@ -245,12 +234,12 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
           let content: string = ''
 
           const nodehash = namehash(subdomain)
-          const resolverAddress: Address = await ensContract.methods.resolver(nodehash).call()
+          const resolverAddress: string = await ensContract.resolver(nodehash)
           const resolver = resolverAddress.toString()
 
-          if (resolver !== Address.ZERO.toString()) {
-            const resolverContract = new ENSResolver(eth, resolverAddress)
-            content = await resolverContract.methods.contenthash(nodehash).call()
+          if (resolver !== ethers.constants.AddressZero) {
+            const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
+            content = await resolverContract.contenthash(nodehash)
 
             const land = landHashes.find(lh => lh.hash === content)
             if (land) {
@@ -282,21 +271,21 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
 function* handleClaimNameRequest(action: ClaimNameRequestAction) {
   const { name } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
 
-    const controllerContract = new DCLController(eth, Address.fromString(CONTROLLER_ADDRESS))
-    const tx: SendTx<TransactionReceipt> = yield call(() => controllerContract.methods.register(name, from).send({ from }))
-    const txHash: string = yield call(() => tx.getTxHash())
+    const controllerContract = DCLController__factory.connect(CONTROLLER_ADDRESS, signer)
+    const transaction: ethers.ContractTransaction = yield call(() => controllerContract.register(name, from))
 
     const ens: ENS = {
       address: wallet.address,
       name: name,
       subdomain: getDomainFromName(name),
-      resolver: Address.ZERO.toString(),
-      content: Address.ZERO.toString()
+      resolver: ethers.constants.AddressZero,
+      content: ethers.constants.AddressZero
     }
-    yield put(claimNameSuccess(ens, name, wallet.address, wallet.chainId, txHash))
+    yield put(claimNameSuccess(ens, name, wallet.address, wallet.chainId, transaction.hash))
     yield put(closeModal('ClaimNameFatFingerModal'))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
@@ -307,18 +296,14 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
 function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
   const { allowance } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
-    const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
+    const manaContract = ERC20__factory.connect(MANA_ADDRESS, signer)
 
-    const txHash: string = yield call(() =>
-      manaContract.methods
-        .approve(Address.fromString(CONTROLLER_ADDRESS), allowance)
-        .send({ from })
-        .getTxHash()
-    )
+    const transaction: ethers.ContractTransaction = yield call(() => manaContract.approve(CONTROLLER_ADDRESS, allowance))
 
-    yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, txHash))
+    yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(allowClaimManaFailure(ensError))

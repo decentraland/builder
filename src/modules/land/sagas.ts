@@ -1,5 +1,5 @@
-import { Eth } from 'web3x/eth'
-import { Address } from 'web3x/address'
+import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
+import { ethers } from 'ethers'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,
@@ -7,7 +7,6 @@ import {
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
 import {
   FETCH_LANDS_REQUEST,
   FetchLandsRequestAction,
@@ -44,13 +43,12 @@ import {
   setUpdateManagerFailure
 } from './actions'
 import { manager } from 'lib/api/manager'
-import { LANDRegistry } from 'contracts/LANDRegistry'
+import { LANDRegistry__factory, EstateRegistry__factory } from 'contracts'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
-import { EstateRegistry } from 'contracts/EstateRegistry'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
-import { getWallet } from 'modules/wallet/utils'
+import { getSigner, getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization } from './types'
 
@@ -70,30 +68,21 @@ export function* landSaga() {
 function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
   const { address, isApproved, type } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
-    const manager = Address.fromString(address)
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
+    const manager = address
     switch (type) {
       case LandType.PARCEL: {
-        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const txHash: string = yield call(() =>
-          landRegistry.methods
-            .setUpdateManager(from, manager, isApproved)
-            .send({ from })
-            .getTxHash()
-        )
-        yield put(setUpdateManagerSuccess(address, type, isApproved, wallet.chainId, txHash))
+        const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
+        const transaction: ethers.ContractTransaction = yield call(() => landRegistry.setUpdateManager(from, manager, isApproved))
+        yield put(setUpdateManagerSuccess(address, type, isApproved, wallet.chainId, transaction.hash))
         break
       }
       case LandType.ESTATE: {
-        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const txHash: string = yield call(() =>
-          estateRegistry.methods
-            .setUpdateManager(from, manager, isApproved)
-            .send({ from })
-            .getTxHash()
-        )
-        yield put(setUpdateManagerSuccess(address, type, isApproved, wallet.chainId, txHash))
+        const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
+        const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.setUpdateManager(from, manager, isApproved))
+        yield put(setUpdateManagerSuccess(address, type, isApproved, wallet.chainId, transaction.hash))
         break
       }
     }
@@ -110,18 +99,14 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     if (land.type !== LandType.ESTATE) {
       throw new Error(`Invalid LandType: "${land.type}"`)
     }
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
-    const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-    const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-    const tokenIds: string[] = yield all(land.parcels!.map(parcel => landRegistry.methods.encodeTokenId(parcel.x, parcel.y).call()))
-    const txHash: string = yield call(() =>
-      estateRegistry.methods
-        .transferManyLands(land.id, tokenIds, from)
-        .send({ from })
-        .getTxHash()
-    )
-    yield put(dissolveEstateSuccess(land, wallet.chainId, txHash))
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
+    const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
+    const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
+    const tokenIds: string[] = yield all(land.parcels!.map(parcel => landRegistry.encodeTokenId(parcel.x, parcel.y)))
+    const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.transferManyLands(land.id, tokenIds, from))
+    yield put(dissolveEstateSuccess(land, wallet.chainId, transaction.hash))
     yield put(closeModal('DissolveModal'))
     yield put(push(locations.activity()))
   } catch (error) {
@@ -132,19 +117,15 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
 function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
   const { name, description, coords } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
     const [xs, ys] = splitCoords(coords)
-    const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+    const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
     const metadata = buildMetadata(name, description)
-    const txHash: string = yield call(() =>
-      landRegistry.methods
-        .createEstateWithMetadata(xs, ys, from, metadata)
-        .send({ from })
-        .getTxHash()
-    )
+    const transaction: ethers.ContractTransaction = yield call(() => landRegistry.createEstateWithMetadata(xs, ys, from, metadata))
 
-    yield put(createEstateSuccess(name, description, coords, wallet.chainId, txHash))
+    yield put(createEstateSuccess(name, description, coords, wallet.chainId, transaction.hash))
     yield put(closeModal('EstateEditorModal'))
     yield put(push(locations.activity()))
   } catch (error) {
@@ -155,31 +136,22 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
 function* handleEditEstateRequest(action: EditEstateRequestAction) {
   const { land, toAdd, toRemove } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
-    const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
+    const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
 
     if (toAdd.length > 0) {
       const [xsToAdd, ysToAdd] = splitCoords(toAdd)
-      const txHash: string = yield call(() =>
-        landRegistry.methods
-          .transferManyLandToEstate(xsToAdd, ysToAdd, land.id)
-          .send({ from })
-          .getTxHash()
-      )
-      yield put(editEstateSuccess(land, toAdd, 'add', wallet.chainId, txHash))
+      const transaction: ethers.ContractTransaction = yield call(() => landRegistry.transferManyLandToEstate(xsToAdd, ysToAdd, land.id))
+      yield put(editEstateSuccess(land, toAdd, 'add', wallet.chainId, transaction.hash))
     }
 
     if (toRemove.length > 0) {
-      const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-      const tokenIds: string[] = yield all(toRemove.map(({ x, y }) => landRegistry.methods.encodeTokenId(x, y).call()))
-      const txHash: string = yield call(() =>
-        estateRegistry.methods
-          .transferManyLands(land.id, tokenIds, from)
-          .send({ from })
-          .getTxHash()
-      )
-      yield put(editEstateSuccess(land, toRemove, 'remove', wallet.chainId, txHash))
+      const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
+      const tokenIds: ethers.BigNumber[] = yield all(toRemove.map(({ x, y }) => landRegistry.encodeTokenId(x, y)))
+      const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.transferManyLands(land.id, tokenIds, from))
+      yield put(editEstateSuccess(land, toRemove, 'remove', wallet.chainId, transaction.hash))
     }
     yield put(closeModal('EstateEditorModal'))
     yield put(push(locations.activity()))
@@ -192,32 +164,22 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
   const { land, address } = action.payload
 
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
-    const operator = address ? Address.fromString(address) : Address.ZERO
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const operator = address ? address : ethers.constants.AddressZero
 
     switch (land.type) {
       case LandType.PARCEL: {
-        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const tokenId: string = yield call(() => landRegistry.methods.encodeTokenId(land.x!, land.y!).call())
-        const txHash: string = yield call(() =>
-          landRegistry.methods
-            .setUpdateOperator(tokenId, operator)
-            .send({ from })
-            .getTxHash()
-        )
-        yield put(setOperatorSuccess(land, address, wallet.chainId, txHash))
+        const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
+        const tokenId: ethers.BigNumber = yield call(() => landRegistry.encodeTokenId(land.x!, land.y!))
+        const transaction: ethers.ContractTransaction = yield call(() => landRegistry.setUpdateOperator(tokenId, operator))
+        yield put(setOperatorSuccess(land, address, wallet.chainId, transaction.hash))
         break
       }
       case LandType.ESTATE: {
-        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const txHash: string = yield call(() =>
-          estateRegistry.methods
-            .setUpdateOperator(land.id, operator)
-            .send({ from })
-            .getTxHash()
-        )
-        yield put(setOperatorSuccess(land, address, wallet.chainId, txHash))
+        const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
+        const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.setUpdateOperator(land.id, operator))
+        yield put(setOperatorSuccess(land, address, wallet.chainId, transaction.hash))
         break
       }
       default:
@@ -235,30 +197,20 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
   const metadata = buildMetadata(name, description)
 
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
 
     switch (land.type) {
       case LandType.PARCEL: {
-        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const txHash: string = yield call(() =>
-          landRegistry.methods
-            .updateLandData(land.x!, land.y!, metadata)
-            .send({ from })
-            .getTxHash()
-        )
-        yield put(editLandSuccess(land, name, description, wallet.chainId, txHash))
+        const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
+        const transaction: ethers.ContractTransaction = yield call(() => landRegistry.updateLandData(land.x!, land.y!, metadata))
+        yield put(editLandSuccess(land, name, description, wallet.chainId, transaction.hash))
         break
       }
       case LandType.ESTATE: {
-        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const txHash: string = yield call(() =>
-          estateRegistry.methods
-            .updateMetadata(land.id, metadata)
-            .send({ from })
-            .getTxHash()
-        )
-        yield put(editLandSuccess(land, name, description, wallet.chainId, txHash))
+        const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
+        const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.updateMetadata(land.id, metadata))
+        yield put(editLandSuccess(land, name, description, wallet.chainId, transaction.hash))
         break
       }
       default:
@@ -274,32 +226,23 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
   const { land, address } = action.payload
 
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
-    const to = Address.fromString(address)
+    const wallet: Wallet = yield getWallet()
+    const signer: ethers.Signer = yield getSigner()
+    const from = wallet.address
+    const to = address
 
     switch (land.type) {
       case LandType.PARCEL: {
-        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const id: string = yield call(() => landRegistry.methods.encodeTokenId(land.x!, land.y!).call())
-        const txHash: string = yield call(() =>
-          landRegistry.methods
-            .transferFrom(from, to, id)
-            .send({ from })
-            .getTxHash()
-        )
-        yield put(transferLandSuccess(land, address, wallet.chainId, txHash))
+        const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
+        const id: ethers.BigNumber = yield call(() => landRegistry.encodeTokenId(land.x!, land.y!))
+        const transaction: ethers.ContractTransaction = yield call(() => landRegistry.transferFrom(from, to, id))
+        yield put(transferLandSuccess(land, address, wallet.chainId, transaction.hash))
         break
       }
       case LandType.ESTATE: {
-        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const txHash: string = yield call(() =>
-          estateRegistry.methods
-            .transferFrom(from, to, land.id)
-            .send({ from })
-            .getTxHash()
-        )
-        yield put(transferLandSuccess(land, address, wallet.chainId, txHash))
+        const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
+        const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.transferFrom(from, to, land.id))
+        yield put(transferLandSuccess(land, address, wallet.chainId, transaction.hash))
         break
       }
       default:

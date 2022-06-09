@@ -504,7 +504,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleRejectCollectionRequest(action: RejectCollectionRequestAction) {
     const { collection } = action.payload
     try {
-      const [wallet]: [Wallet] = yield getWallet()
+      const wallet: Wallet = yield getWallet()
       const maticChainId = wallet.networks.MATIC.chainId
 
       const txHash: string = yield changeCollectionStatus(collection, false)
