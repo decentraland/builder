@@ -2,7 +2,6 @@ import { Address } from 'web3x/address'
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
 import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
-import { utils } from 'decentraland-commons'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -180,7 +179,8 @@ export function getMetadata(item: Item) {
 
 export function toItemObject(items: Item[]) {
   return items.reduce((obj, item) => {
-    obj[item.id] = utils.omit<Item>(item, ['collection'])
+    const { collection, ...itemWithoutCollection } = item as Item & { collection?: Collection }
+    obj[item.id] = itemWithoutCollection
     return obj
   }, {} as Record<string, Item>)
 }

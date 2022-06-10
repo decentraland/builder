@@ -1,6 +1,5 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
-import { utils } from 'decentraland-commons'
 import { Loader, Dropdown, Button } from 'decentraland-ui'
 import { Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
@@ -267,8 +266,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   hasStateItemChanged(state: Partial<State>, item: Item) {
-    const editableItemAttributes = ['name', 'description', 'rarity', 'data']
-    return !equal(utils.pick<Item>(state, editableItemAttributes), utils.pick(item, editableItemAttributes))
+    return (
+      state.name !== item.name || state.description !== item.description || state.rarity !== item.rarity || !equal(state.data, item.data)
+    )
   }
 
   asCategorySelect(type: ItemType, values: WearableCategory[]) {

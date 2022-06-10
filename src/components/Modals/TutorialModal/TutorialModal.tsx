@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { env } from 'decentraland-commons'
 import { Button, Close } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -12,7 +11,7 @@ import { getSlides } from './slides'
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
 
-const PUBLIC_URL = env.get('PUBLIC_URL')
+const PUBLIC_URL = process.env.PUBLIC_URL
 const localStorage = getLocalStorage()
 
 // Segment Events

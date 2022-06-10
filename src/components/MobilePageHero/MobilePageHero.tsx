@@ -2,12 +2,11 @@ import * as React from 'react'
 import isMobile from 'ismobilejs'
 import { Hero, Button, Form, Field } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { env } from 'decentraland-commons'
 
 import { Props } from './MobilePageHero.types'
 import './MobilePageHero.css'
 
-const PUBLIC_URL = env.get('PUBLIC_URL')
+const PUBLIC_URL = process.env.PUBLIC_URL
 
 export default class MobilePageHero extends React.PureComponent<Props> {
   handleSubmit = () => {

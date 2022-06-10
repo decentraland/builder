@@ -8,7 +8,6 @@ import { getTotalAmountOfMintedItems, isLocked, getCollectionType, isTPCollectio
 import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
 
 jest.mock('modules/item/export')
-jest.mock('decentraland-commons')
 
 beforeEach(() => {
   jest.clearAllMocks()
