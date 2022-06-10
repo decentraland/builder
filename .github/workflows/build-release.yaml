@@ -27,7 +27,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NODE_PATH: 'src' # If your build requires secrets, here you can map your repo's secrets into your build env vars
+          NODE_PATH: 'src'
+          NODE_OPTIONS: '--max-old-space-size=8192'
       - name: Publish
         uses: menduz/oddish-action@master
         with:
