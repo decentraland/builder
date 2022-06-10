@@ -1,7 +1,7 @@
 import React from 'react'
-import { env } from 'decentraland-commons'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { config } from 'config'
 
 import { NEW_ASSET_PACKS, isSameAssetPack } from 'modules/ui/sidebar/utils'
 import Icon from 'components/Icon'
@@ -9,7 +9,7 @@ import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
 import './AssetPackList.css'
 
-const PROMO_URL = env.get('REACT_APP_PROMO_URL')
+const PROMO_URL = config.get('PROMO_URL')
 
 export default class AssetPackList extends React.PureComponent<Props> {
   analytics = getAnalytics()

@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { env } from 'decentraland-commons'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { ProviderType } from '@dcl/schemas'
 import { Loader, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { config } from 'config'
 import Icon from 'components/Icon'
 import { ShareTarget } from 'modules/ui/share/types'
 import WalletLoginModal from '../WalletLoginModal'
@@ -12,7 +12,7 @@ import { Props, ShareModalType, State } from './ShareModal.types'
 
 import './ShareModal.css'
 
-const SHARE_SCENE_URL = env.get('REACT_APP_SHARE_SCENE_URL', '')
+const SHARE_SCENE_URL = config.get('SHARE_SCENE_URL', '')
 
 export default class ShareModal extends React.PureComponent<Props, State> {
   state: State = {

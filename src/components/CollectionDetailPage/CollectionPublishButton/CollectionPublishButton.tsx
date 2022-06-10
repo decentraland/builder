@@ -3,7 +3,6 @@ import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Popup } from 'decentraland-ui'
-import { env } from 'decentraland-commons'
 import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName } from 'decentraland-transactions'
@@ -24,10 +23,10 @@ const CollectionPublishButton = (props: Props) => {
   }, [])
 
   const hasExceededMaxItemsLimit = items.length > MAX_ITEMS
-  const isPublishDisabled = useMemo(
-    () => !env.get('REACT_APP_FF_WEARABLES_PUBLISH') || items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit,
-    [items, hasExceededMaxItemsLimit]
-  )
+  const isPublishDisabled = useMemo(() => items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit, [
+    items,
+    hasExceededMaxItemsLimit
+  ])
 
   const getAuthorization = (): Authorization => {
     return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)

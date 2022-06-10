@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { Network } from '@dcl/schemas'
-import { env } from 'decentraland-commons'
-import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import { BigNumber } from 'ethers'
+import { Network } from '@dcl/schemas'
+import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { config } from 'config'
 import { fromWei } from 'web3x/utils'
 import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
@@ -149,7 +149,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                     id="publish_collection_modal_with_oracle.get_mana"
                     values={{
                       link: (
-                        <a href={env.get('REACT_APP_ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
+                        <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
                           Account
                         </a>
                       )

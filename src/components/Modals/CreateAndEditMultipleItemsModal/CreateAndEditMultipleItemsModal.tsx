@@ -3,12 +3,12 @@ import * as React from 'react'
 import uuid from 'uuid'
 import { FileTooBigError, ItemFactory, loadFile, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
-import { env } from 'decentraland-commons'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { omit } from 'decentraland-commons/dist/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { config } from 'config'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { getExtension } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
@@ -30,7 +30,7 @@ import {
 } from './CreateAndEditMultipleItemsModal.types'
 import styles from './CreateAndEditMultipleItemsModal.module.css'
 
-const REACT_APP_WEARABLES_ZIP_INFRA_URL = env.get('REACT_APP_WEARABLES_ZIP_INFRA_URL', '')
+const WEARABLES_ZIP_INFRA_URL = config.get('WEARABLES_ZIP_INFRA_URL', '')
 const AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY = 4
 
 export default class CreateAndEditMultipleItemsModal extends React.PureComponent<Props, State> {
@@ -381,13 +381,13 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
             onDropRejected={this.handleRejectedFiles}
             acceptedExtensions={['.zip']}
             moreInformation={
-              REACT_APP_WEARABLES_ZIP_INFRA_URL ? (
+              WEARABLES_ZIP_INFRA_URL ? (
                 <span>
                   <T
                     id="create_and_edit_multiple_items_modal.import_information"
                     values={{
                       link: (
-                        <a rel="noopener noreferrer" target="_blank" href={REACT_APP_WEARABLES_ZIP_INFRA_URL}>
+                        <a rel="noopener noreferrer" target="_blank" href={WEARABLES_ZIP_INFRA_URL}>
                           {t('create_and_edit_multiple_items_modal.import_information_link_label')}
                         </a>
                       )

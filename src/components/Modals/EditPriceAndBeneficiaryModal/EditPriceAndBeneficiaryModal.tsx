@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Address } from 'web3x/address'
 import { fromWei, toWei } from 'web3x/utils'
 import { Network } from '@dcl/schemas'
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 import {
   ModalNavigation,
   ModalContent,
@@ -26,7 +26,7 @@ import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
 
-const MIN_SALE_VALUE = fromWei(env.get('REACT_APP_MIN_SALE_VALUE_IN_WEI', '0'), 'ether')
+const MIN_SALE_VALUE = fromWei(config.get('MIN_SALE_VALUE_IN_WEI', '0')!, 'ether')
 
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
   state: State = {

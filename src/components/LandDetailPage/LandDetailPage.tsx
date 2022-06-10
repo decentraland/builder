@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { env } from 'decentraland-commons'
 import { LandType, Land, RoleType } from 'modules/land/types'
 import { Deployment } from 'modules/deployment/types'
 import { coordsToId, hoverStrokeByRole, hoverFillByRole } from 'modules/land/utils'
@@ -166,15 +165,13 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                               <Dropdown.Divider />
                             </>
                           ) : null}
-                          {env.get('REACT_APP_FF_ENS') ? (
-                            <>
-                              <Dropdown.Item
-                                text={t('land_detail_page.assign_name')}
-                                onClick={() => onNavigate(locations.landSelectENS(land.id))}
-                              />
-                              <Dropdown.Divider />
-                            </>
-                          ) : null}
+                          <>
+                            <Dropdown.Item
+                              text={t('land_detail_page.assign_name')}
+                              onClick={() => onNavigate(locations.landSelectENS(land.id))}
+                            />
+                            <Dropdown.Divider />
+                          </>
                           <Dropdown.Item
                             text={t('land_detail_page.set_operator')}
                             onClick={() => onNavigate(locations.landOperator(land.id))}
@@ -228,7 +225,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               </>
             )}
           </Section>
-          {env.get('REACT_APP_FF_ENS') && ensList.length > 0 ? (
+          {ensList.length > 0 ? (
             <Section size="large">
               <Header sub>
                 <Row>
