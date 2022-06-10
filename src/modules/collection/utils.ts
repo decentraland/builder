@@ -1,7 +1,7 @@
-import { env, utils } from 'decentraland-commons'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { config } from 'config'
 import { locations } from 'routing/locations'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, isThirdParty, URNType } from 'lib/urn'
@@ -43,8 +43,8 @@ export function getExplorerURL({ collection, item_ids }: { collection?: Collecti
   if (!collection && !item_ids) {
     throw new Error('Either a collection or item ids must be specified to get the explorer url')
   }
-  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '')
-  const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
+  const EXPLORER_URL = config.get('EXPLORER_URL', '')
+  const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
   let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=ropsten&DEBUG_MODE=true`
 
   if (collection) {
@@ -57,7 +57,7 @@ export function getExplorerURL({ collection, item_ids }: { collection?: Collecti
 }
 
 export function getCollectionBaseURI() {
-  return env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
+  return config.get('ERC721_COLLECTION_BASE_URI', '')
 }
 
 export function getCollectionType(collection: Collection): CollectionType {
@@ -81,7 +81,8 @@ export function getCollectionSymbol(collection: Collection) {
 
 export function toCollectionObject(collections: Collection[]) {
   return collections.reduce((obj, collection) => {
-    obj[collection.id] = utils.omit<Collection>(collection, ['items'])
+    const { items: _, ...rest } = collection as Collection & { items?: any[] }
+    obj[collection.id] = rest
     return obj
   }, {} as Record<string, Collection>)
 }

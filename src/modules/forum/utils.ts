@@ -1,5 +1,5 @@
-import { env } from 'decentraland-commons'
 import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
+import { config } from 'config'
 import { Item } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { locations } from 'routing/locations'
@@ -7,7 +7,7 @@ import { getThumbnailURL } from 'modules/item/utils'
 import { shorten } from 'lib/address'
 import { ForumPost } from './types'
 
-const MARKETPLACE_WEB_URL = env.get('REACT_APP_MARKETPLACE_WEB_URL', '')
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 
 export function buildCollectionForumPost(collection: Collection, items: Item[], ownerName: string = ''): ForumPost {
   const collectionURL = window.location.origin + locations.itemEditor({ collectionId: collection.id })

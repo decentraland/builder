@@ -1,14 +1,14 @@
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 import { isDevelopment, environment } from 'lib/environment'
 
 let _rollbarConfig = {
-  accessToken: env.get('REACT_APP_ROLLBAR_ACCESS_TOKEN', ''),
+  accessToken: config.get('ROLLBAR_ACCESS_TOKEN', ''),
   captureUncaught: true,
   payload: {
     environment,
     client: {
       javascript: {
-        code_version: env.get('REACT_APP_VERSION', '')
+        code_version: config.get('VERSION', '')
       }
     }
   },
