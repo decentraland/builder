@@ -50,7 +50,7 @@ function getPublicUrls() {
   console.log('is CDN', isCDN)
   if (isCDN) {
     // master/main branch, also releases
-    const cdnUrl = `https://cdn.decentraland.org/${packageJson.name}/${packageJson.version}`
+    const cdnUrl = `https://cdn.decentraland.org/${publicPackageJson.name}/${publicPackageJson.version}`
     console.log(`Using CDN as public url: "${cdnUrl}"`)
     return {
       PUBLIC_URL: cdnUrl

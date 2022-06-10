@@ -1,6 +1,6 @@
 {
-  "name": "builder",
-  "version": "2.17.1",
+  "name": "@dcl/builder-site",
+  "version": "0.0.0-development",
   "private": true,
   "dependencies": {
     "@babylonjs/core": "^4.2.0",
