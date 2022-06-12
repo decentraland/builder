@@ -336,11 +336,7 @@ function getCategories(contents: Record<string, any> | undefined = {}) {
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
   const ignoreCategories = new Set([WearableCategory.HEAD, WearableCategory.BODY_SHAPE])
 
-  let categories = getCategories(contents).filter(category => !ignoreCategories.has(category))
-
-  categories = categories.filter(category => category !== WearableCategory.SKIN)
-
-  return categories
+  return getCategories(contents).filter(category => !ignoreCategories.has(category))
 }
 
 export function getEmoteCategories() {
