@@ -3,7 +3,6 @@ import { DropTarget } from 'react-dnd'
 import Lottie from 'react-lottie'
 import { config } from 'config'
 
-import { env } from 'decentraland-commons'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
 import { PreviewType } from 'modules/editor/types'
@@ -15,7 +14,7 @@ import './Preview.css'
 
 const editorWindow = window as EditorWindow
 const unityDebugParams = config.get('UNITY_DEBUG_PARAMS')
-const PUBLIC_URL = env.get('PUBLIC_URL')
+const PUBLIC_URL = process.env.PUBLIC_URL
 
 let canvas: HTMLCanvasElement | null = null
 let isDCLInitialized: boolean = false
