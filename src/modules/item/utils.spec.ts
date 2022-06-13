@@ -1,6 +1,14 @@
 import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { Item, ItemMetadataType, ItemType, WearableRepresentation } from './types'
-import { buildItemMetadata, buildZipContents, toThirdPartyContractItems, areEqualArrays, areEqualRepresentations, groupsOf } from './utils'
+import {
+  buildItemMetadata,
+  buildZipContents,
+  toThirdPartyContractItems,
+  areEqualArrays,
+  areEqualRepresentations,
+  groupsOf,
+  getWearableCategories
+} from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
   let items: Item[]
@@ -161,6 +169,42 @@ describe('when getting the groups of an array', () => {
         [1, 2],
         [3, 4]
       ])
+    })
+  })
+})
+
+describe('when getting wearable categories', () => {
+  describe('when a model file name is provided in contents', () => {
+    it('should return all categories inluding non model', () => {
+      const categories = getWearableCategories({
+        ['model.glb']: {}
+      })
+
+      expect(categories).toEqual([
+        'facial_hair',
+        'hair',
+        'upper_body',
+        'lower_body',
+        'feet',
+        'earring',
+        'eyewear',
+        'hat',
+        'helmet',
+        'mask',
+        'tiara',
+        'top_head',
+        'skin'
+      ])
+    })
+  })
+
+  describe('when a model file name is not provided in contents', () => {
+    it('should return non model categories', () => {
+      const categories = getWearableCategories({
+        ['image.png']: {}
+      })
+
+      expect(categories).toEqual(['eyebrows', 'eyes', 'mouth'])
     })
   })
 })
