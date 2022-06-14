@@ -1,5 +1,5 @@
 import { CatalystClient } from 'dcl-catalyst-client'
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { utils } from 'decentraland-commons'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'

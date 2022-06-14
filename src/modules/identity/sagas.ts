@@ -1,7 +1,7 @@
 import { takeLatest, put, select, call } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { replace, getLocation } from 'connected-react-router'
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { env } from 'decentraland-commons'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {

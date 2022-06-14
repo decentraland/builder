@@ -1,7 +1,7 @@
 import { all, call, put, takeEvery } from 'redux-saga/effects'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { getIdentity } from 'modules/identity/utils'
 import {
   deployEntitiesFailure,
