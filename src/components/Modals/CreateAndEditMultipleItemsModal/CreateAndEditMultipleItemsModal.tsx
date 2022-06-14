@@ -1,12 +1,11 @@
 import PQueue from 'p-queue'
 import * as React from 'react'
 import uuid from 'uuid'
-import { FileTooBigError, ItemFactory, loadFile, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
+import { FileTooBigError, ItemFactory, loadFile, LocalItem, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { omit } from 'decentraland-commons/dist/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
 import { EngineType, getModelData } from 'lib/getModelData'
@@ -186,7 +185,8 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       const builtItem = await itemFactory.build()
       if (!this.isCreating()) {
-        builtItem.item = omit(builtItem.item, ['id'])
+        const { id: _id, ...itemWithoutId } = builtItem.item
+        builtItem.item = itemWithoutId as LocalItem
       }
 
       // Generate catalyst image as part of the item

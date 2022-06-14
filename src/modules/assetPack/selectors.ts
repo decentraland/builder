@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { env } from 'decentraland-commons'
 import { RootState } from 'modules/common/types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { AssetPackState } from './reducer'
@@ -17,7 +16,7 @@ export const getData = createSelector<RootState, AssetPackState, string | undefi
     assetPacks[COLLECTIBLE_ASSET_PACK_ID] = {
       id: COLLECTIBLE_ASSET_PACK_ID,
       title: 'Collectibles',
-      thumbnail: `${env.get('PUBLIC_URL')}/images/nft-icon.png`,
+      thumbnail: `${process.env.PUBLIC_URL}/images/nft-icon.png`,
       ethAddress: address || null,
       assets: []
     }

@@ -18,11 +18,11 @@ import { migrations } from 'modules/migrations/manifest'
 import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
-import { utils } from 'decentraland-commons'
 
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
 
-const sceneJson: SceneDefinition = utils.omit(sceneJsonSample, ['communications', 'policy'])
+const { communications: _communications, policy: _policy, ...sceneWithoutOutdatedProperties } = sceneJsonSample
+const sceneJson: SceneDefinition = sceneWithoutOutdatedProperties
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
