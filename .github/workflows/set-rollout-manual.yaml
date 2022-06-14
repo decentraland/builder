@@ -1,4 +1,4 @@
-name: Set delivery rollout - Manual
+name: Set rollout - Manual
 
 on:
   workflow_dispatch:
@@ -16,6 +16,10 @@ on:
           - .zone
           - .today
           - .org
+      rolloutPercentage:
+        description: 'The percentage for this rollout'
+        required: true
+        default: '100'
 
 jobs:
   set-manual-rollout:
@@ -38,4 +42,4 @@ jobs:
           # Rollout information
           deploymentDomain: builder.decentraland${{ github.event.inputs.deploymentDomain }}
           deploymentName: '_site'
-          percentage: 100
+          percentage: ${{ github.event.inputs.rolloutPercentage }}
