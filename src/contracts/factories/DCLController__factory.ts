@@ -2,9 +2,19 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type { DCLController, DCLControllerInterface } from "../DCLController";
+import { Contract, Signer } from "ethers";
+import { Provider } from "ethers/providers";
+
+import { DCLController } from "../DCLController";
+
+export class DCLController__factory {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): DCLController {
+    return new Contract(address, _abi, signerOrProvider) as DCLController;
+  }
+}
 
 const _abi = [
   {
@@ -243,16 +253,3 @@ const _abi = [
     type: "function",
   },
 ];
-
-export class DCLController__factory {
-  static readonly abi = _abi;
-  static createInterface(): DCLControllerInterface {
-    return new utils.Interface(_abi) as DCLControllerInterface;
-  }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): DCLController {
-    return new Contract(address, _abi, signerOrProvider) as DCLController;
-  }
-}

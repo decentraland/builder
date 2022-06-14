@@ -2,9 +2,16 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type { ENS, ENSInterface } from "../ENS";
+import { Contract, Signer } from "ethers";
+import { Provider } from "ethers/providers";
+
+import { ENS } from "../ENS";
+
+export class ENS__factory {
+  static connect(address: string, signerOrProvider: Signer | Provider): ENS {
+    return new Contract(address, _abi, signerOrProvider) as ENS;
+  }
+}
 
 const _abi = [
   {
@@ -207,13 +214,3 @@ const _abi = [
     type: "event",
   },
 ];
-
-export class ENS__factory {
-  static readonly abi = _abi;
-  static createInterface(): ENSInterface {
-    return new utils.Interface(_abi) as ENSInterface;
-  }
-  static connect(address: string, signerOrProvider: Signer | Provider): ENS {
-    return new Contract(address, _abi, signerOrProvider) as ENS;
-  }
-}

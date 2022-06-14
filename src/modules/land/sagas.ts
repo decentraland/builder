@@ -43,7 +43,8 @@ import {
   setUpdateManagerFailure
 } from './actions'
 import { manager } from 'lib/api/manager'
-import { LANDRegistry__factory, EstateRegistry__factory } from 'contracts'
+import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory'
+import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
