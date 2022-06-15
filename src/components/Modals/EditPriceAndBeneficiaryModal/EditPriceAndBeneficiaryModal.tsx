@@ -47,7 +47,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   handleIsFreeToggle = () => {
     const isFree = !this.state.isFree
-    const beneficiary = isFree ? constants.AddressZero : undefined
+    const beneficiary = isFree ? ethers.constants.AddressZero : undefined
     const price = isFree ? '0' : undefined
     this.setState({ isFree, price, beneficiary })
   }
