@@ -1,7 +1,7 @@
 import { AxiosRequestConfig, AxiosError } from 'axios'
-import { env } from 'decentraland-commons'
 import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
+import { config } from 'config'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
@@ -25,7 +25,7 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
 
-export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
+export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 
 export const getContentsStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`

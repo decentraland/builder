@@ -1,9 +1,9 @@
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { Atlas, AtlasTile } from 'decentraland-ui'
 import { FETCH_TILES_REQUEST, FetchTilesRequestAction, fetchTilesSuccess, fetchTilesFailure } from './actions'
 
-export const MARKETPLACE_URL = env.get('REACT_APP_MARKETPLACE_URL', '')
+export const MARKETPLACE_URL = config.get('MARKETPLACE_URL', '')
 
 export function* tileSaga() {
   yield takeEvery(FETCH_TILES_REQUEST, handleFetchTilesRequest)

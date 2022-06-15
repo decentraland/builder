@@ -1,8 +1,8 @@
 import { gql } from 'apollo-boost'
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 import { createClient } from './graph'
 
-export const MARKETPLACE_URL = env.get('REACT_APP_MARKETPLACE_GRAPH_URL', '')
+export const MARKETPLACE_URL = config.get('MARKETPLACE_GRAPH_URL', '')
 const graphClient = createClient(MARKETPLACE_URL)
 
 const BATCH_SIZE = 1000

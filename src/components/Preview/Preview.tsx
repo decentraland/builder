@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { DropTarget } from 'react-dnd'
 import Lottie from 'react-lottie'
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 
-import { PreviewType } from 'modules/editor/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
+import { PreviewType } from 'modules/editor/types'
 import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props, State } from './Preview.types'
@@ -13,7 +13,8 @@ import animationData from './loader.json'
 import './Preview.css'
 
 const editorWindow = window as EditorWindow
-const unityDebugParams = env.get('REACT_APP_UNITY_DEBUG_PARAMS')
+const unityDebugParams = config.get('UNITY_DEBUG_PARAMS')
+const PUBLIC_URL = process.env.PUBLIC_URL
 
 let canvas: HTMLCanvasElement | null = null
 let isDCLInitialized: boolean = false
@@ -75,7 +76,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     try {
       isDCLInitialized = true
       ;(window as any).devicePixelRatio = 1 // without this unity blows up majestically 💥🌈🦄🔥🤷🏼‍♂️
-      await editorWindow.editor.initEngine(this.canvasContainer.current, '/unity/Build/unity.json')
+      await editorWindow.editor.initEngine(this.canvasContainer.current, PUBLIC_URL + '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()
         canvas && canvas.classList.add('dcl-canvas')

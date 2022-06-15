@@ -1,8 +1,8 @@
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 import { ContentServiceScene } from 'modules/deployment/types'
 
-export const PEER_URL = env.get('REACT_APP_PEER_URL', '')
+export const PEER_URL = config.get('PEER_URL', '')
 
 export const getCatalystContentUrl = (hash: string = '') => `${PEER_URL}/content/contents/${hash}`
 

@@ -2,8 +2,8 @@ import { takeLatest, put, select, call } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
-import { env } from 'decentraland-commons'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { config } from 'config'
 import {
   CONNECT_WALLET_SUCCESS,
   CONNECT_WALLET_FAILURE,
@@ -65,7 +65,7 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
       privateKey: ethers.utils.hexlify(account.privateKey)
     }
 
-    const expiration = Number(env.get('REACT_APP_IDENTITY_EXPIRATION_MINUTES', ONE_MONTH_IN_MINUTES))
+    const expiration = Number(config.get('IDENTITY_EXPIRATION_MINUTES', ONE_MONTH_IN_MINUTES.toString()))
 
     const signer = eth.getSigner()
 

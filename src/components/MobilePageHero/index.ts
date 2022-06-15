@@ -1,3 +1,3 @@
-import HomePageHero from './MobilePageHero'
+import MobilePageHero from './MobilePageHero'
 
-export default HomePageHero
+export default MobilePageHero

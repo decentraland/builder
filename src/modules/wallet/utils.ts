@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 import { select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { env } from 'decentraland-commons'
+=======
+import { call, select } from 'redux-saga/effects'
+import { PopulatedTransaction } from 'ethers'
+import { Eth } from 'web3x/eth'
+import { LegacyProviderAdapter } from 'web3x/providers'
+>>>>>>> master
 import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { config } from 'config'
 
-export const TRANSACTIONS_API_URL = env.get<string | undefined>('REACT_APP_TRANSACTIONS_API_URL')
+export const TRANSACTIONS_API_URL = config.get('TRANSACTIONS_API_URL')
 
 export async function getEth(): Promise<ethers.providers.Web3Provider> {
   const provider: Provider | null = await getConnectedProvider()

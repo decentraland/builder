@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
-import { env } from 'decentraland-commons'
 import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { config } from 'config'
 import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
@@ -50,7 +50,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderFirstStep = () => {
-    const { items, wallet, onClose, rarities, error, isFetchingItems, isFetchingRarities } = this.props
+    const { items, wallet, onClose, rarities, itemError, isFetchingItems, isFetchingRarities } = this.props
 
     // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
     // as reference for the prices is enough.
@@ -64,11 +64,13 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     if (refRarity) {
       priceUSD = refRarity.prices!.USD
 
-      totalPrice = ethers.BigNumber.from(refRarity.prices!.MANA)
+      totalPrice = ethers
+        .BigNumber(refRarity.prices!.MANA)
         .mul(items.length)
         .toString()
 
-      totalPriceUSD = ethers.BigNumber.from(priceUSD)
+      totalPriceUSD = ethers
+        .BigNumber(priceUSD)
         .mul(items.length)
         .toString()
 
@@ -88,7 +90,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               <p>
                 {t('publish_collection_modal_with_oracle.items_breakdown_title', {
                   count: items.length,
-                  publicationFee: fromWei(priceUSD!, 'ether'),
+                  publicationFee: ethers.utils.formatEther(priceUSD!),
                   currency: Currency.USD
                 })}
               </p>
@@ -103,32 +105,32 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
                   <div className="element-content">
-                    {Currency.USD} {fromWei(priceUSD!, 'ether')}
+                    {Currency.USD} {ethers.utils.formatEther(priceUSD!)}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd', { currency: Currency.USD })}</div>
                   <div className="element-content">
-                    {Currency.USD} {fromWei(totalPriceUSD!, 'ether')}
+                    {Currency.USD} {ethers.utils.formatEther(totalPriceUSD!)}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
                   <div className="element-content">
                     <Mana network={Network.MATIC} size="medium">
-                      {fromWei(totalPrice!, 'ether')}
+                      {ethers.utils.formatEther(totalPrice!)}
                     </Mana>
                   </div>
                 </div>
               </div>
               <p className="estimate-notice">{t('publish_collection_modal_with_oracle.estimate_notice')}</p>
-              {error && (
+              {itemError && (
                 <>
                   <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
-                  <p className="rarities-error-sub error">{error}</p>
+                  <p className="rarities-error-sub error">{itemError}</p>
                 </>
               )}
-              <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA || !!error}>
+              <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA || !!itemError}>
                 {t('global.next')}
               </Button>
               {hasInsufficientMANA && (
@@ -148,7 +150,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                     id="publish_collection_modal_with_oracle.get_mana"
                     values={{
                       link: (
-                        <a href={env.get('REACT_APP_ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
+                        <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
                           Account
                         </a>
                       )
@@ -189,11 +191,11 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderThirdStep = () => {
-    const { isPublishLoading, unsyncedCollectionError, onClose } = this.props
+    const { isPublishLoading, unsyncedCollectionError, collectionError, onClose } = this.props
     const { email, emailFocus } = this.state
     const hasValidEmail = emailRegex.test(email ?? '')
     const showEmailError = !hasValidEmail && !emailFocus && email !== undefined && email !== ''
-
+    const error = unsyncedCollectionError || collectionError
     return (
       <Form onSubmit={this.handlePublish}>
         <ModalNavigation title={t('publish_collection_modal_with_oracle.title_tos')} onClose={onClose} />
@@ -232,11 +234,11 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           />
         </Modal.Content>
         <Modal.Actions className="third-step-footer">
-          <Button primary fluid disabled={!hasValidEmail || isPublishLoading || !!unsyncedCollectionError} loading={isPublishLoading}>
+          <Button primary fluid disabled={!hasValidEmail || isPublishLoading || !!error} loading={isPublishLoading}>
             {t('global.publish')}
           </Button>
           <p>{t('publish_collection_modal_with_oracle.accept_by_publishing')}</p>
-          {unsyncedCollectionError && <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>}
+          {error && <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>}
         </Modal.Actions>
       </Form>
     )

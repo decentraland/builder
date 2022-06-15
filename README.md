@@ -26,7 +26,7 @@ The front-end connects to these services via URLs set via environment variables.
 
 You'll need Create an `.env` file on the [`root`](https://github.com/decentraland/builder/tree/master) folder and fill it following the `.env.example` file found there.
 
-You will need to specify `NODE_PATH` to be `src/` and you can check the [contract addresses](https://raw.githubusercontent.com/decentraland/contracts/gh-pages/addresses.json) for values like `REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS`.
+You will need to specify `NODE_PATH` to be `src`.
 
 Here are the basic requirements to run the project:
 
@@ -34,17 +34,4 @@ Here are the basic requirements to run the project:
 # .env
 
 NODE_PATH=src
-
-REACT_APP_BUILDER_SERVER_URL=https://builder-api.decentraland.org/v1
-REACT_APP_MARKETPLACE_URL=https://api.decentraland.org/v1
-
-# Third party
-
-REACT_APP_SEGMENT_API_KEY=
-REACT_APP_INTERCOM_APP_ID=
-REACT_APP_ROLLBAR_ACCESS_TOKEN=
-
-# Contracts
-
-REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS=0x0f5d2fb29fb7d3cfee444a200298f468908cc942
 ```

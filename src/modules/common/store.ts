@@ -6,7 +6,7 @@ import { createBrowserHistory } from 'history'
 import { BuilderClient } from '@dcl/builder-client'
 
 import { CatalystClient } from 'dcl-catalyst-client'
-import { env } from 'decentraland-commons'
+import { config } from 'config'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/transaction/middleware'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
@@ -68,7 +68,7 @@ const loggerMiddleware = createLogger({
 })
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   migrations,
-  storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
+  storageKey: config.get('LOCAL_STORAGE_KEY', 'builder'),
   paths: [
     ['project', 'data'],
     ['scene', 'present'],
@@ -133,7 +133,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   }
 })
 const transactionMiddleware = createTransactionMiddleware()
-const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))
+const analyticsMiddleware = createAnalyticsMiddleware(config.get('SEGMENT_API_KEY'))
 
 const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware, transactionMiddleware]
 

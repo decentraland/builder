@@ -1,8 +1,8 @@
 import { ethers } from 'ethers'
 import { Coord } from 'react-tile-map'
-import { env } from 'decentraland-commons'
 import { Color } from 'decentraland-ui'
 import { getSigner } from 'modules/wallet/utils'
+import { config } from 'config'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory'
 import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
@@ -156,6 +156,6 @@ export function locateNextLand(landTiles: Record<string, LandTile>, currentLandI
 }
 
 export function getExplorerURL(x: string | number, y: string | number) {
-  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '')
+  const EXPLORER_URL = config.get('EXPLORER_URL', '')
   return `${EXPLORER_URL}?position=${coordsToId(x, y)}`
 }

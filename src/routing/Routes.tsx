@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { Center, Page, Responsive } from 'decentraland-ui'
-import { env } from 'decentraland-commons'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -41,6 +40,7 @@ import CurationPage from 'components/CurationPage'
 import { isDevelopment } from 'lib/environment'
 
 import { Props, State } from './Routes.types'
+import { config } from 'config'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -113,26 +113,17 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.activity()} component={ActivityPage} />
             <Route exact path={locations.settings()} component={SettingsPage} />
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
-            {env.get('REACT_APP_FF_ENS')
-              ? [
-                  <Route exact key={1} path={locations.ens()} component={ENSListPage} />,
-                  <Route exact key={2} path={locations.claimENS()} component={ClaimENSPage} />,
-                  <Route exact key={3} path={locations.landSelectENS()} component={LandSelectENSPage} />,
-                  <Route exact key={4} path={locations.landAssignENS()} component={LandAssignENSPage} />,
-                  <Route exact key={5} path={locations.ensSelectLand()} component={ENSSelectLandPage} />
-                ]
-              : null}
-            {env.get('REACT_APP_FF_WEARABLES')
-              ? [
-                  <Route exact key={1} path={locations.collections()} component={CollectionsPage} />,
-                  <Route exact key={2} path={locations.itemDetail()} component={ItemDetailPage} />,
-                  <Route exact key={3} path={locations.collectionDetail()} component={CollectionDetailPage} />,
-                  <Route exact key={4} path={locations.itemEditor()} component={ItemEditorPage} />,
-                  <Route exact key={5} path={locations.curation()} component={CurationPage} />
-                ]
-              : null}
+            <Route exact key={1} path={locations.ens()} component={ENSListPage} />,
+            <Route exact key={2} path={locations.claimENS()} component={ClaimENSPage} />,
+            <Route exact key={3} path={locations.landSelectENS()} component={LandSelectENSPage} />,
+            <Route exact key={4} path={locations.landAssignENS()} component={LandAssignENSPage} />,
+            <Route exact key={5} path={locations.ensSelectLand()} component={ENSSelectLandPage} />
+            <Route exact key={1} path={locations.collections()} component={CollectionsPage} />,
+            <Route exact key={2} path={locations.itemDetail()} component={ItemDetailPage} />,
+            <Route exact key={3} path={locations.collectionDetail()} component={CollectionDetailPage} />,
+            <Route exact key={4} path={locations.itemEditor()} component={ItemEditorPage} />,
+            <Route exact key={5} path={locations.curation()} component={CurationPage} />
             <Route exact key={1} path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />
-
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>
@@ -141,7 +132,7 @@ export default class Routes extends React.Component<Props, State> {
   }
 
   renderIntercom() {
-    const APP_ID = env.get('REACT_APP_INTERCOM_APP_ID', '')
+    const APP_ID = config.get('INTERCOM_APP_ID', '')
     return <Intercom appId={APP_ID} settings={{ alignment: 'right' }} />
   }
 

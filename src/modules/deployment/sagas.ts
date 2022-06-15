@@ -1,7 +1,6 @@
 import { CatalystClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
-import { utils } from 'decentraland-commons'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
 import { getData as getDeployments } from 'modules/deployment/selectors'
@@ -69,7 +68,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     const rawProject: Project | null = yield select(getCurrentProject)
 
     if (rawProject && rawProject.id === projectId) {
-      const project: Omit<Project, 'thumbnail'> = utils.omit(rawProject, ['thumbnail'])
+      const { thumbnail: _thumbnail, ...project } = rawProject
 
       try {
         yield put(setProgress(ProgressStage.NONE, 1))
