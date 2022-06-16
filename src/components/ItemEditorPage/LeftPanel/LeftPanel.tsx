@@ -24,9 +24,10 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   fetchResource() {
-    const { address, onFetchCollections, onFetchOrphanItems, isReviewing } = this.props
+    const { address, onFetchCollections, onFetchOrphanItems, isReviewing, selectedCollectionId } = this.props
     const { pages } = this.state
-    if (address && !isReviewing) {
+    // this is for the items editor base view, if a collection is selected, the logic will be handled in the collection provider
+    if (address && !isReviewing && !selectedCollectionId) {
       const page = pages[pages.length - 1] // fetch new last page added, the previous ones were already fetched
       const fetchFn = this.isCollectionTabActive() ? onFetchCollections : onFetchOrphanItems
       fetchFn(address, { limit: LEFT_PANEL_PAGE_SIZE, page })
@@ -41,7 +42,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     const { isConnected, address, selectedCollectionId } = this.props
     // fetch only if this was triggered by a connecting event or if th selectedCollection changes
     if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {
-      this.fetchResource()
+      this.setState({ pages: [INITIAL_PAGE] }, this.fetchResource)
     }
     if (prevProps.selectedCollectionId !== selectedCollectionId) {
       this.setState({ pages: [INITIAL_PAGE] })
