@@ -2,19 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer } from "ethers";
-import { Provider } from "ethers/providers";
-
-import { ENSResolver } from "../ENSResolver";
-
-export class ENSResolver__factory {
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ENSResolver {
-    return new Contract(address, _abi, signerOrProvider) as ENSResolver;
-  }
-}
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type { ENSResolver, ENSResolverInterface } from "../ENSResolver";
 
 const _abi = [
   {
@@ -858,3 +848,16 @@ const _abi = [
     type: "event",
   },
 ];
+
+export class ENSResolver__factory {
+  static readonly abi = _abi;
+  static createInterface(): ENSResolverInterface {
+    return new utils.Interface(_abi) as ENSResolverInterface;
+  }
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): ENSResolver {
+    return new Contract(address, _abi, signerOrProvider) as ENSResolver;
+  }
+}

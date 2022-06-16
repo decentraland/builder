@@ -2,19 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer } from "ethers";
-import { Provider } from "ethers/providers";
-
-import { EstateRegistry } from "../EstateRegistry";
-
-export class EstateRegistry__factory {
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): EstateRegistry {
-    return new Contract(address, _abi, signerOrProvider) as EstateRegistry;
-  }
-}
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type {
+  EstateRegistry,
+  EstateRegistryInterface,
+} from "../EstateRegistry";
 
 const _abi = [
   {
@@ -1279,3 +1272,16 @@ const _abi = [
     type: "event",
   },
 ];
+
+export class EstateRegistry__factory {
+  static readonly abi = _abi;
+  static createInterface(): EstateRegistryInterface {
+    return new utils.Interface(_abi) as EstateRegistryInterface;
+  }
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): EstateRegistry {
+    return new Contract(address, _abi, signerOrProvider) as EstateRegistry;
+  }
+}

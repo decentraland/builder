@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 import { select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { env } from 'decentraland-commons'
-=======
-import { call, select } from 'redux-saga/effects'
-import { PopulatedTransaction } from 'ethers'
-import { Eth } from 'web3x/eth'
-import { LegacyProviderAdapter } from 'web3x/providers'
->>>>>>> master
 import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'

@@ -2,19 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer } from "ethers";
-import { Provider } from "ethers/providers";
-
-import { ERC721CollectionV2 } from "../ERC721CollectionV2";
-
-export class ERC721CollectionV2__factory {
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ERC721CollectionV2 {
-    return new Contract(address, _abi, signerOrProvider) as ERC721CollectionV2;
-  }
-}
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type {
+  ERC721CollectionV2,
+  ERC721CollectionV2Interface,
+} from "../ERC721CollectionV2";
 
 const _abi = [
   {
@@ -1633,3 +1626,16 @@ const _abi = [
     type: "function",
   },
 ];
+
+export class ERC721CollectionV2__factory {
+  static readonly abi = _abi;
+  static createInterface(): ERC721CollectionV2Interface {
+    return new utils.Interface(_abi) as ERC721CollectionV2Interface;
+  }
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): ERC721CollectionV2 {
+    return new Contract(address, _abi, signerOrProvider) as ERC721CollectionV2;
+  }
+}
