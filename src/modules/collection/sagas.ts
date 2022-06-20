@@ -172,7 +172,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeLatest(INITIATE_TP_APPROVAL_FLOW, handleInitiateTPItemsApprovalFlow)
 
   function isPaginated(response: PaginatedResource<Collection> | Collection[]): response is PaginatedResource<Collection> {
-    return (<PaginatedResource<Collection>>response).results !== undefined
+    return (response as PaginatedResource<Collection>).results !== undefined
   }
 
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {

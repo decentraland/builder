@@ -45,7 +45,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
 
     return (
       <span className="trigger">
-        <img src={asset.thumbnail} />
+        <img src={asset.thumbnail} alt={asset.name} />
         <span className="text">{value}</span>
       </span>
     )

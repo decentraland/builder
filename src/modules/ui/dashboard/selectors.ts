@@ -68,15 +68,13 @@ export const getProjects = createSelector<RootState, number, SortBy, DataByKey<P
     return Object.values(projects)
       .sort((a, b) => {
         switch (sortBy) {
-          case SortBy.NEWEST: {
-            return +new Date(a.createdAt) > +new Date(b.createdAt) ? -1 : 1
-          }
-          case SortBy.NAME: {
+          case SortBy.NAME:
             return a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
-          }
-          case SortBy.SIZE: {
+          case SortBy.SIZE:
             return a.layout.rows * a.layout.cols > b.layout.cols * b.layout.rows ? -1 : 1
-          }
+          case SortBy.NEWEST:
+          default:
+            return +new Date(a.createdAt) > +new Date(b.createdAt) ? -1 : 1
         }
       })
       .slice(offset, offset + limit)

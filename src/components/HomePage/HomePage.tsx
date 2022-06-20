@@ -81,7 +81,7 @@ export default class HomePage extends React.PureComponent<Props> {
               values={{
                 br: <br />,
                 sign_in: (
-                  <a href="#" onClick={this.handleLogin}>
+                  <a href={locations.signIn()} onClick={this.handleLogin}>
                     {t('user_menu.sign_in')}
                   </a>
                 )
@@ -99,15 +99,15 @@ export default class HomePage extends React.PureComponent<Props> {
             values={{
               br: <br />,
               link: (
-                <a
-                  href="#"
+                <span
+                  className="link"
                   onClick={event => {
                     event.preventDefault()
                     this.handleOpenCreateModal()
                   }}
                 >
                   {t('global.click_here')}
-                </a>
+                </span>
               )
             }}
           />

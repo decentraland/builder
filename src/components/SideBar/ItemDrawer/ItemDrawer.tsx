@@ -67,7 +67,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
                 id="itemdrawer.opensea_credit"
                 values={{
                   link: (
-                    <a href="https://opensea.io" target="_blank" rel="no:opener no:referrer">
+                    <a href="https://opensea.io" target="_blank" rel="noopener noreferrer">
                       OpenSea
                     </a>
                   )

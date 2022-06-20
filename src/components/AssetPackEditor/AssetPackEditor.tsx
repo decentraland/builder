@@ -208,7 +208,7 @@ export default class AssetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
       <div className="AssetPackEditor">
         <div className="assetpack">
           <div className="thumbnail">
-            {assetPack.thumbnail && <img src={thumbnail} />}
+            {assetPack.thumbnail && <img src={thumbnail} alt={assetPack.title} />}
             <Icon name="camera" onClick={this.handleOpenFileDialog} />
             <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnail} accept="image/png, image/jpeg" />
           </div>

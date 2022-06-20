@@ -35,14 +35,9 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
       classes += ' unpublished'
     }
 
-    return (
-      <Popup
-        position="bottom left"
-        content={tooltip}
-        trigger={<a className={classes} href={getExplorerURL(x, y)} target="_blank" rel="no:opener no:referrer" />}
-        on="hover"
-        inverted
-      />
-    )
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    const trigger = <a className={classes} href={getExplorerURL(x, y)} target="_blank" rel="noopener noreferrer" />
+
+    return <Popup position="bottom left" content={tooltip} trigger={trigger} on="hover" inverted />
   }
 }

@@ -226,7 +226,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
         )}
         {parcelCount !== 0 && (
           <div className={'thumbnail' + (hasPlacement ? ' disable-rotate' : '')}>
-            <img src={media ? media[rotation] : ''} />
+            <img src={media ? media[rotation] : ''} alt={rotation} />
             <div className="rotate anticlockwise" onClick={this.handleRotate(ANTICLOCKWISE_ROTATION)}>
               <Icon name="rotate-left" />
             </div>

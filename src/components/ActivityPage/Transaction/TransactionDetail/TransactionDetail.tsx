@@ -23,12 +23,12 @@ const getHref = (tx: Transaction) => {
 const Image = (props: Props) => {
   const { selection, address, collectionId, item, slotsToyBuy } = props
 
-  if (selection) {
-    const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
-    const selectedStrokeLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff0044', scale: 1.4 } : null), [set])
-    const selectedFillLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff9990', scale: 1.2 } : null), [set])
-    const [x, y] = useMemo(() => (selection ? getCenter(selection) : [0, 0]), [selection])
+  const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
+  const selectedStrokeLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff0044', scale: 1.4 } : null), [set])
+  const selectedFillLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff9990', scale: 1.2 } : null), [set])
+  const [x, y] = useMemo(() => (selection ? getCenter(selection) : [0, 0]), [selection])
 
+  if (selection) {
     return <Atlas x={x} y={y} layers={[selectedStrokeLayer, selectedFillLayer]} width={48} height={48} size={9} isDraggable={false} />
   } else if (address) {
     return <Profile address={address!} size="huge" imageOnly />

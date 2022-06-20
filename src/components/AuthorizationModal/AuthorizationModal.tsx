@@ -20,7 +20,7 @@ const AuthorizationModal = (props: Props) => {
 
   const handleAuthorizationChange = useCallback(
     (_, data: CheckboxProps) => (data.checked ? onGrant(authorization) : onRevoke(authorization)),
-    []
+    [onGrant, onRevoke, authorization]
   )
 
   return (

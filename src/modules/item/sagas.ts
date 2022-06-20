@@ -226,7 +226,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     try {
       const promisesOfItemsToSave: (() => Promise<void>)[] = []
 
-      for (const [_index, builtFile] of builtFiles.entries()) {
+      for (const builtFile of builtFiles) {
         promisesOfItemsToSave.push(async () => {
           try {
             const remoteItem: RemoteItem = await builder.upsertItem(builtFile.item, builtFile.newContent)
@@ -600,7 +600,7 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
     const newContents: Record<string, Blob> = yield Promise.all(
       Object.entries(entityContentsAsMap).map<Promise<[string, Blob]>>(async ([key, hash]) => [
         key,
-        await fetch(getCatalystContentUrl(hash)).then(res => res.blob())
+        await window.fetch(getCatalystContentUrl(hash)).then(res => res.blob())
       ])
     ).then(res =>
       res.reduce<Record<string, Blob>>((contents, [key, blob]) => {

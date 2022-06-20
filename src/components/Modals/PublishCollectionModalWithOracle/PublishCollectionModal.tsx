@@ -64,13 +64,11 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     if (refRarity) {
       priceUSD = refRarity.prices!.USD
 
-      totalPrice = ethers
-        .BigNumber(refRarity.prices!.MANA)
+      totalPrice = ethers.BigNumber.from(refRarity.prices!.MANA)
         .mul(items.length)
         .toString()
 
-      totalPriceUSD = ethers
-        .BigNumber(priceUSD)
+      totalPriceUSD = ethers.BigNumber.from(priceUSD)
         .mul(items.length)
         .toString()
 
@@ -94,7 +92,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                   currency: Currency.USD
                 })}
               </p>
-              <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener">
+              <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener noreferrer">
                 {t('publish_collection_modal_with_oracle.learn_more')}
               </a>
               <div className="price-breakdown-container">

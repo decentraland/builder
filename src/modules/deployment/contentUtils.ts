@@ -1,7 +1,7 @@
 import { hashV1 } from '@dcl/hashing'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { NO_CACHE_HEADERS } from 'lib/headers'
-const toBuffer = require('blob-to-buffer')
+import { default as toBuffer } from 'blob-to-buffer'
 
 export const FILE_NAME_BLACKLIST = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 

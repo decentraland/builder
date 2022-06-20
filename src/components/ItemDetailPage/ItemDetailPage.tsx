@@ -63,7 +63,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
       <>
         <Section>
           <Row>
-            <Back onClick={() => onNavigate(locations.collectionDetail(item.collectionId))} />
+            <Back absolute onClick={() => onNavigate(locations.collections())} />
             <Narrow>
               <Row className="page-header">
                 <Column>

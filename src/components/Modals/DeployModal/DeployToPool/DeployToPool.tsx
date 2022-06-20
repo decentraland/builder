@@ -98,7 +98,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
     return (
       <div className="DeployToPool success">
-        <img src={media ? media.preview : ''} className="preview" />
+        <img src={media ? media.preview : ''} alt={t('global.project')} className="preview" />
         <Header size="large" className="modal-title">
           {t('deployment_modal.pool.success.title')}
         </Header>

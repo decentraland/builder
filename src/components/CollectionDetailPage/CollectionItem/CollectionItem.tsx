@@ -13,7 +13,7 @@ import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
-import * as styles from './CollectionItem.module.css'
+import styles from './CollectionItem.module.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
   handleEditPriceAndBeneficiary = () => {

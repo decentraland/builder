@@ -8,7 +8,7 @@ import styles from './OptionsDropdown.module.css'
 const OptionsDropdown = (props: Props) => {
   const { options, className } = props
   const classes = [styles.OptionsDropdown]
-  if (classes) {
+  if (className) {
     classes.push(className)
   }
 

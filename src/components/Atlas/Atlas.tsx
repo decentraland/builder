@@ -76,7 +76,7 @@ const Atlas: React.FC<Props> = props => {
               })
             )
         : [props.x, props.y],
-    [landId, isEstate, selection]
+    [props.x, props.y, landId, isEstate, selection]
   )
 
   const shouldShowLayer = (tile?: LandTile, showOwner?: boolean, showOperator?: boolean) => {
@@ -129,7 +129,7 @@ const Atlas: React.FC<Props> = props => {
         setShowPopup(false)
       }
     },
-    [hoveredLand, showPopup, landTiles]
+    [hoveredLand, showPopup, landTiles, hasPopup, selection]
   )
 
   const handleClick = useCallback(

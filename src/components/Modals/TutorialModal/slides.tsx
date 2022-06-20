@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export const getSlides = () => [

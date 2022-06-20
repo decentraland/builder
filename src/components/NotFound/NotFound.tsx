@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Center } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 

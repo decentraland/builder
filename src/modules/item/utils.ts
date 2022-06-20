@@ -58,7 +58,7 @@ export function getBodyShapeType(item: Item): BodyShapeType {
   } else if (hasFemale) {
     return BodyShapeType.FEMALE
   } else {
-    throw new Error(`Couldn\'t find a valid representation: ${JSON.stringify(item.data.representations, null, 2)}`)
+    throw new Error(`Couldn't find a valid representation: ${JSON.stringify(item.data.representations, null, 2)}`)
   }
 }
 

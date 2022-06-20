@@ -200,7 +200,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
         <p className="modal-subtitle">{t('deployment_modal.land.confirmation.description')}</p>
 
         <div className="details">
-          <img src={media ? media.preview : ''} />
+          <img src={media ? media.preview : ''} alt={project.title} />
 
           <div className="details-row">
             <div className="detail">
