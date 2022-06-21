@@ -26,13 +26,11 @@ MockMessageBus.emitter.setMaxListeners(1000)
 // BEGIN DRAGONS
 declare var provide: (name: string, value: any) => void
 declare var load: (id: string) => Promise<any>
-try {
-  eval(require('raw-loader!./amd-loader.js.raw').default)
-  eval(`self.provide = function(name, value) { self[name] = value }`)
-  eval(`self.load = function(id) { return new Promise(resolve => define('load', [id + '/item'], item => resolve(item.default))) }`)
-  Object.keys(ECS).forEach(key => provide(key, (ECS as any)[key]))
-  provide('MessageBus', MockMessageBus)
-} catch (error) {}
+eval(require('raw-loader!./amd-loader.js.raw').default)
+eval(`self.provide = function(name, value) { self[name] = value }`)
+eval(`self.load = function(id) { return new Promise(resolve => define('load', [id + '/item'], item => resolve(item.default))) }`)
+Object.keys(ECS).forEach(key => provide(key, (ECS as any)[key]))
+provide('MessageBus', MockMessageBus)
 // END DRAGONS
 
 let scriptBaseUrl: string | null = null

@@ -600,7 +600,7 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
     const newContents: Record<string, Blob> = yield Promise.all(
       Object.entries(entityContentsAsMap).map<Promise<[string, Blob]>>(async ([key, hash]) => [
         key,
-        await window.fetch(getCatalystContentUrl(hash)).then(res => res.blob())
+        await fetch(getCatalystContentUrl(hash)).then(res => res.blob())
       ])
     ).then(res =>
       res.reduce<Record<string, Blob>>((contents, [key, blob]) => {

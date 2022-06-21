@@ -1,5 +1,5 @@
 {
-  "name": "ejecteable",
+  "name": "@dcl/builder-site",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,7 +24,6 @@
     "cids": "^0.7.2",
     "connected-react-router": "^6.9.2",
     "content-hash": "^2.5.2",
-    "crypto-browserify": "^3.12.0",
     "date-fns": "^2.28.0",
     "dcl-scene-writer": "^1.1.2",
     "decentraland": "^3.3.0",
@@ -41,9 +40,7 @@
     "ismobilejs": "^1.1.1",
     "jszip": "^3.2.1",
     "mousetrap": "^1.6.2",
-    "os-browserify": "^0.3.0",
     "p-queue": "^6.6.2",
-    "path-browserify": "^1.0.1",
     "pull-stream": "^3.6.12",
     "raw-loader": "^4.0.2",
     "rc-slider": "^8.7.1",
@@ -72,7 +69,6 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@semantic-ui-react/css-patch": "^1.0.0",
     "@types/blob-to-buffer": "^1.2.0",
     "@types/file-saver": "^2.0.0",
     "@types/interface-datastore": "^1.0.0",
@@ -81,7 +77,7 @@
     "@types/rc-slider": "^8.6.5",
     "@types/react": "^16.7.18",
     "@types/react-copy-to-clipboard": "^4.3.0",
-    "@types/react-dom": "^18.0.5",
+    "@types/react-dom": "^17.0.5",
     "@types/react-lottie": "^1.2.3",
     "@types/react-router": "^5.1.18",
     "@types/react-router-dom": "^5.3.3",
@@ -98,7 +94,7 @@
     "typescript": "^4.6.4"
   },
   "scripts": {
-    "postinstall": "semantic-ui-css-patch && node ./scripts/postinstall.js",
+    "postinstall": "node ./scripts/postinstall.js",
     "test": "react-scripts test",
     "test:coverage": "npm run test -- --coverage",
     "eject": "react-scripts eject",
