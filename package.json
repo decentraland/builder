@@ -131,6 +131,9 @@
       "^.*/modules/curations/collectionCuration/toasts.*$": "identity-obj-proxy"
     }
   },
+  "engines": {
+    "node": ">= 16.0.0"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
