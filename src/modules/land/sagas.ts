@@ -167,7 +167,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
   try {
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
-    const operator = address ? address : ethers.constants.AddressZero
+    const operator = address ?? ethers.constants.AddressZero
 
     switch (land.type) {
       case LandType.PARCEL: {
