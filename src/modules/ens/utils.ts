@@ -1,9 +1,9 @@
 import { ethers } from 'ethers'
 import { Entity } from 'dcl-catalyst-commons'
+import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { Land } from 'modules/land/types'
-import { getSigner } from 'modules/wallet/utils'
 import { REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { ENS } from './types'
 

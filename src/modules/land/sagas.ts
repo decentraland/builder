@@ -6,6 +6,7 @@ import {
   ConnectWalletSuccessAction,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
   FETCH_LANDS_REQUEST,
@@ -49,7 +50,7 @@ import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/c
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
-import { getSigner, getWallet } from 'modules/wallet/utils'
+import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization } from './types'
 

@@ -26,16 +26,6 @@ export function* getWallet() {
   return wallet
 }
 
-export async function getSigner(): Promise<ethers.Signer> {
-  const provider = await getConnectedProvider()
-  if (!provider) {
-    throw new Error('Could not connect to provider')
-  }
-
-  const eth = new ethers.providers.Web3Provider(provider)
-  return eth.getSigner()
-}
-
 export async function getMethodData(populatedTransactionPromise: Promise<ethers.PopulatedTransaction>) {
   const populatedTransaction = await populatedTransactionPromise
   return populatedTransaction.data!
