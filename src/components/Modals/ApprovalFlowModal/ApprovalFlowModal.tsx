@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Modal } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Center, Loader, Message, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
+import { Button, Center, Loader, Message, ModalActions, ModalContent, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import ItemImage from 'components/ItemImage'
 import { formatBytes } from 'lib/number'
 import { extractThirdPartyId } from 'lib/urn'
@@ -224,6 +224,20 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     )
   }
 
+  private renderProgressBar() {
+    const { TPDeployItemsProgress: progress } = this.props
+    return (
+      <>
+        <ModalNavigation title={t('approval_flow.upload.title')} subtitle={t('approval_flow.upload.subtitle')} />
+        <Modal.Content>
+          <div className="progressBarContainer">
+            <Progress percent={progress} className="progressBar" progress />
+          </div>
+        </Modal.Content>
+      </>
+    )
+  }
+
   renderDeployView() {
     const { onClose, metadata, onDeployItems, isDeployingItems } = this.props
     const { items, entities } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY>
@@ -349,6 +363,9 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         break
       case ApprovalFlowModalView.DEPLOY_TP:
         content = this.renderDeployThirdPartyView()
+        break
+      case ApprovalFlowModalView.DEPLOYING_TP:
+        content = this.renderProgressBar()
         break
       case ApprovalFlowModalView.APPROVE:
         content = this.renderApproveView()

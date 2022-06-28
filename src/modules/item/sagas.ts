@@ -369,7 +369,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)
     }
-    if (isThirdParty(item.urn)) {
+    if (isThirdParty(item.urn) && item.isPublished) {
       yield put(fetchItemCurationRequest(item.collectionId!, item.id))
     }
   }

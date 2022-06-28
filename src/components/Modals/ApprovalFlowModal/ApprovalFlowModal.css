@@ -44,3 +44,33 @@
   margin-left: 32px;
   margin-right: 32px;
 }
+
+.ui.modal.ApprovalFlowModal .progressBarContainer {
+  padding-left: 100px;
+  padding-right: 100px;
+  width: 100%;
+}
+
+.ui.modal.ApprovalFlowModal .progressBarLabel {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ui.modal.ApprovalFlowModal .progressBarLabel {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ui.modal.ApprovalFlowModal .progressBar:global(.ui.progress) :global(.label) {
+  color: white;
+}
+
+.ui.modal.ApprovalFlowModal .progressBar:global(.ui.progress) :global(.bar) {
+  background-color: var(--primary);
+  border-radius: 10px;
+}
+
+.ui.modal.ApprovalFlowModal .progressBar:global(.ui.progress) {
+  border-radius: 10px;
+  background-color: #37333d;
+}

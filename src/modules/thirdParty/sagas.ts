@@ -1,17 +1,20 @@
 import PQueue from 'p-queue'
+import { channel } from 'redux-saga'
 import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { Contract, providers } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { BuilderAPI } from 'lib/api/builder'
+import { ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
+import { updateApprovalFlowProgress } from 'modules/ui/tpApprovalFlow/action'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
 import { getIdentity } from 'modules/identity/utils'
@@ -66,6 +69,7 @@ export function* getContractInstance(
 }
 
 export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
+  const approvalFlowProgressChannel = channel()
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, handleDeployBatchedThirdPartyItemsRequest)
   yield takeEvery(FETCH_THIRD_PARTIES_REQUEST, handleFetchThirdPartiesRequest)
@@ -75,6 +79,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
   yield takeLatest(REVIEW_THIRD_PARTY_REQUEST, handleReviewThirdPartyRequest)
+  yield takeEvery(approvalFlowProgressChannel, handleUpdateApprovalFlowProgress)
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -225,6 +230,10 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     }
   }
 
+  function* handleUpdateApprovalFlowProgress(action: { progress: number }) {
+    yield put(updateApprovalFlowProgress(action.progress))
+  }
+
   function* handleDeployBatchedThirdPartyItemsRequest(action: DeployBatchedThirdPartyItemsRequestAction) {
     const { items, collection, tree, hashes } = action.payload
     const REQUESTS_BATCH_SIZE = 5
@@ -237,9 +246,18 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
         throw new Error('Invalid Identity')
       }
 
+      yield put(
+        openModal('ApprovalFlowModal', {
+          view: ApprovalFlowModalView.DEPLOYING_TP
+        })
+      )
+
       const promisesOfItemsBeingDeployed: (() => Promise<ItemCuration>)[] = items.map((item: Item) => async () => {
         const entity: DeploymentPreparationData = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
         await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
+        approvalFlowProgressChannel.put({
+          progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100)
+        })
         return builder.updateItemCurationStatus(item.id, CurationStatus.APPROVED)
       })
 

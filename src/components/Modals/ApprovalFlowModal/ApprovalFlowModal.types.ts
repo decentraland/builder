@@ -21,6 +21,7 @@ export enum ApprovalFlowModalView {
   CONSUME_TP_SLOTS = 'consume_tp_slots',
   DEPLOY = 'deploy',
   DEPLOY_TP = 'deploy_third_party',
+  DEPLOYING_TP = 'deploying_third_party',
   APPROVE = 'approve',
   SUCCESS = 'success',
   ERROR = 'error'
@@ -52,6 +53,7 @@ export type Props = ModalProps & {
   isDeployingItems: boolean
   isConfirmingApproveTx: boolean
   isAwaitingApproveTx: boolean
+  TPDeployItemsProgress: number
 }
 
 export type State = {
@@ -61,7 +63,12 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'isConfirmingRescueTx' | 'isConfirmingReviewThirdPartyTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'
+  | 'isConfirmingRescueTx'
+  | 'isConfirmingReviewThirdPartyTx'
+  | 'isDeployingItems'
+  | 'isAwaitingApproveTx'
+  | 'isConfirmingApproveTx'
+  | 'TPDeployItemsProgress'
 >
 export type MapDispatchProps = Pick<
   Props,
