@@ -254,10 +254,16 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       const promisesOfItemsBeingDeployed: (() => Promise<ItemCuration>)[] = items.map((item: Item) => async () => {
         const entity: DeploymentPreparationData = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
-        await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
-        approvalFlowProgressChannel.put({
-          progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100)
-        })
+        try {
+          await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity!, entity.entityId) })
+          approvalFlowProgressChannel.put({
+            progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100)
+          })
+        } catch (error) {
+          queue.pause()
+          queue.clear()
+          throw error
+        }
         return builder.updateItemCurationStatus(item.id, CurationStatus.APPROVED)
       })
 
