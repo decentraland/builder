@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -168,7 +168,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                           <Row>
                             <Column className="link">
                               {ens.landId ? (
-                                <a target="_blank" href={`https://${ens.subdomain}.link`}>
+                                <a target="_blank" href={`https://${ens.subdomain}.link`} rel="noopener noreferrer">
                                   {ens.subdomain} <Icon name="right-round-arrow" />
                                 </a>
                               ) : null}

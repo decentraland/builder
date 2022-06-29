@@ -1,5 +1,6 @@
 {
   "extends": ["dcl-tslint-config-standard", "tslint-plugin-prettier"],
+
   "rules": {
     "quotemark": false,
     "no-commented-out-code": false,
@@ -13,4 +14,3 @@
     "exclude": ["src/contracts/*.ts", "node_modules/**/*.ts", "./**/*.js"]
   }
 }
-

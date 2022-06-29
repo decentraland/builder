@@ -10,7 +10,7 @@ export const ASSET_MANIFEST = 'asset.json'
   This RegEx searches for the beginning of the smart item's bundle, it's a comment that contains '! "src/game.ts" <commit-hash>'
   We split the code and take everything that comes AFTER this comment
 */
-export const CODE_SEPARATOR = /\/\*! \"src(\/|\\)([A-z0-9|\/|\\|\-|_])*\.ts\" [a-f0-9]+ \*\//
+export const CODE_SEPARATOR = /\/\*! "src(\/|\\)([A-z0-9|/|\\|\-|_])*\.ts" [a-f0-9]+ \*\//
 
 /* 
   This separator searches for the end of the smart item's bundle, before the source maps start.
@@ -78,7 +78,7 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
      * Into this:
      * define("namespace/myModule")
      */
-    text = text.replace(/define\(\\?\"([\w]*)/g, (match, moduleName) => {
+    text = text.replace(/define\(\\?"([\w]*)/g, (match, moduleName) => {
       let code = match.slice(0, -moduleName.length) // remove previous module name
       code += `${namespace}/${moduleName}` // add namespaced module name
       return code
@@ -90,9 +90,9 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
      * Into this:
      * ["require", "exports", "namespace/myDependency"]
      */
-    text = text.replace(/\[\\?\"require\\?\", \\?\"exports\\?\", ([\w|\\|\/|\"|,|\s|@]*)/g, (match, dependencies) => {
+    text = text.replace(/\[\\?"require\\?", \\?"exports\\?", ([\w|\\|/|"|,|\s|@]*)/g, (match, dependencies) => {
       let code = match.slice(0, -dependencies.length) // remove previous dependencies
-      const newDependencies = dependencies.replace(/\\?\"(\w.*?)\\?\"/g, `\\\"${namespace}/$1\\\"`) // adds the namespace to each dependency
+      const newDependencies = dependencies.replace(/\\?"(\w.*?)\\?"/g, `\\"${namespace}/$1\\"`) // adds the namespace to each dependency
       return code + newDependencies
     })
 

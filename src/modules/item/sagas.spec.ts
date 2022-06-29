@@ -22,7 +22,6 @@ import { fetchItemCurationRequest } from 'modules/curations/itemCuration/actions
 import { downloadZip } from 'lib/zip'
 import { BuilderAPI } from 'lib/api/builder'
 import { PaginatedResource } from 'lib/api/pagination'
-import util from 'util'
 import {
   resetItemFailure,
   resetItemRequest,
@@ -456,8 +455,6 @@ describe('when handling the save item success action', () => {
 
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
-    util.inspect.defaultOptions.depth = 7
-
     it('should put a setPriceAndBeneficiarySuccess action', () => {
       const collection = {
         id: 'aCollection'
@@ -565,10 +562,6 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
 describe('when resetting an item to the state found in the catalyst', () => {
   const originalFetch = window.fetch
 
-  window.fetch = jest.fn().mockResolvedValue({
-    blob: () => Promise.resolve(blob)
-  })
-
   const itemId = 'itemId'
 
   let itemsById: any
@@ -577,6 +570,10 @@ describe('when resetting an item to the state found in the catalyst', () => {
   let replacedContents: any
 
   beforeEach(() => {
+    window.fetch = jest.fn().mockResolvedValue({
+      blob: () => Promise.resolve(blob)
+    })
+
     itemsById = {
       [itemId]: {
         name: 'changed name',

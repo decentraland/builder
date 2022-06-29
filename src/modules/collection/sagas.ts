@@ -172,7 +172,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeLatest(INITIATE_TP_APPROVAL_FLOW, handleInitiateTPItemsApprovalFlow)
 
   function isPaginated(response: PaginatedResource<Collection> | Collection[]): response is PaginatedResource<Collection> {
-    return (<PaginatedResource<Collection>>response).results !== undefined
+    return (response as PaginatedResource<Collection>).results !== undefined
   }
 
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
@@ -504,7 +504,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleRejectCollectionRequest(action: RejectCollectionRequestAction) {
     const { collection } = action.payload
     try {
-      const [wallet]: [Wallet] = yield getWallet()
+      const wallet: Wallet = yield getWallet()
       const maticChainId = wallet.networks.MATIC.chainId
 
       const txHash: string = yield changeCollectionStatus(collection, false)

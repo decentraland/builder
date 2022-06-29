@@ -739,7 +739,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               <Row className="details">
                 <Column className="preview" width={192} grow={false}>
                   <div className="thumbnail-container">
-                    <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
+                    <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} alt={title} />
                     {isRepresentation ? null : (
                       <>
                         <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />

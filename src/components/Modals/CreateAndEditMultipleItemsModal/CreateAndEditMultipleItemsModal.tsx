@@ -1,5 +1,5 @@
-import PQueue from 'p-queue'
 import * as React from 'react'
+import PQueue from 'p-queue'
 import uuid from 'uuid'
 import { FileTooBigError, ItemFactory, loadFile, LocalItem, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'

@@ -1,4 +1,4 @@
-import { Authenticator } from 'dcl-crypto'
+import { Authenticator } from '@dcl/crypto'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootStore } from 'modules/common/types'
 import { getData } from 'modules/identity/selectors'

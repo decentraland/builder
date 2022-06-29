@@ -1,4 +1,3 @@
-import { Address } from 'web3x/address'
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
 import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
@@ -59,7 +58,7 @@ export function getBodyShapeType(item: Item): BodyShapeType {
   } else if (hasFemale) {
     return BodyShapeType.FEMALE
   } else {
-    throw new Error(`Couldn\'t find a valid representation: ${JSON.stringify(item.data.representations, null, 2)}`)
+    throw new Error(`Couldn't find a valid representation: ${JSON.stringify(item.data.representations, null, 2)}`)
   }
 }
 
@@ -356,7 +355,7 @@ export function getOverridesCategories(contents: Record<string, any> | undefined
 }
 
 export function isFree(item: Item) {
-  return item.price === '0' && item.beneficiary === Address.ZERO.toString()
+  return item.price === '0' && item.beneficiary === constants.AddressZero
 }
 
 export function isImageFile(fileName: string) {

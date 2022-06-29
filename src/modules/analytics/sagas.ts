@@ -71,7 +71,7 @@ export function* analyticsSaga() {
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
 
-function* handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
+function handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
   const { items } = action.payload
   track('Publish TP Item', { items })
 }
@@ -180,7 +180,7 @@ function* handleSync(_: SyncAction) {
   }
 }
 
-function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
+function handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   const { wallet } = action.payload
   const analytics = getAnalytics()
 

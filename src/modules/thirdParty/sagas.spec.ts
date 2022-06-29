@@ -6,7 +6,7 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { select } from 'redux-saga-test-plan/matchers'
-import { AuthIdentity, Authenticator, AuthLinkType } from 'dcl-crypto'
+import { AuthIdentity, Authenticator, AuthLinkType } from '@dcl/crypto'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { loginSuccess } from 'modules/identity/actions'
@@ -45,7 +45,7 @@ import { thirdPartySaga } from './sagas'
 import { getPublishItemsSignature } from './utils'
 
 jest.mock('modules/item/export')
-jest.mock('dcl-crypto')
+jest.mock('@dcl/crypto')
 
 const mockBuilder = ({
   fetchThirdParties: jest.fn(),

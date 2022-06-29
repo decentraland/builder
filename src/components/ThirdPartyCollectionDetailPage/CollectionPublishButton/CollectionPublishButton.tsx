@@ -56,12 +56,12 @@ const CollectionPublishButton = (props: Props) => {
       action = PublishButtonAction.PUBLISH_AND_PUSH_CHANGES
     }
     return action
-  }, [itemsStatus])
+  }, [itemCurations, itemsStatus, items])
 
   const handleOnClick = useCallback(() => {
     const itemIds = items.map(item => item.id)
     onClick(collection.id, itemIds, buttonAction)
-  }, [collection, items, buttonAction])
+  }, [collection, items, buttonAction, onClick])
 
   const itemsTryingToPublish = useMemo(
     () => items.filter(item => !itemCurations?.find(itemCuration => itemCuration.itemId === item.id)).length,

@@ -1,9 +1,4 @@
-// @ts-ignore
-import Dockerfile from '!raw-loader!decentraland/samples/ecs/Dockerfile'
-// @ts-ignore
-import builderChannelRaw from 'raw-loader!decentraland-builder-scripts/lib/channel'
-// @ts-ignore
-import builderInventoryRaw from 'raw-loader!decentraland-builder-scripts/lib/inventory'
+/* eslint-disable import/no-webpack-loader-syntax */
 import * as ECS from 'decentraland-ecs'
 import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import packageJson from 'decentraland/samples/ecs/package.json'
@@ -18,6 +13,10 @@ import { migrations } from 'modules/migrations/manifest'
 import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
+
+const Dockerfile = require('!raw-loader!decentraland/samples/ecs/Dockerfile').default
+const builderChannelRaw = require('raw-loader!decentraland-builder-scripts/lib/channel').default
+const builderInventoryRaw = require('raw-loader!decentraland-builder-scripts/lib/inventory').default
 
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
 
@@ -200,7 +199,7 @@ export async function createGameFile(args: { project: Project; scene: Scene; rot
   // SCRIPTS SECTION
   if (scripts.size > 0) {
     if (isDeploy) {
-      const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw')
+      const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw').default
 
       // create executeScripts function
       let executeScripts = 'async function executeScripts() {'
@@ -292,8 +291,9 @@ export async function createGameFile(args: { project: Project; scene: Scene; rot
 }
 
 export function createGameFileBundle(gameFile: string): string {
-  const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw')
-  const amd = require('!raw-loader!../../ecsScene/amd-loader.js.raw')
+  const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw').default
+  const amd = require('!raw-loader!../../ecsScene/amd-loader.js.raw').default
+
   const code = `// ECS
 ${ecs}
 // AMD

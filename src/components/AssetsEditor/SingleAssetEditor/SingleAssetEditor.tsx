@@ -104,7 +104,7 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
     return (
       <div className="SingleAssetEditor">
         <div className="left-column">
-          <img src={asset.thumbnail} className={hasGroundCategory ? 'ground' : ''} />
+          <img src={asset.thumbnail} className={hasGroundCategory ? 'ground' : ''} alt={asset.name} />
           <span className="metric triangles">
             <Icon name="triangles" />
             {asset.metrics.triangles} {t('metrics.triangles')}

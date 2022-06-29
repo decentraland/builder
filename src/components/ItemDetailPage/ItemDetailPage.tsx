@@ -1,9 +1,9 @@
 import * as React from 'react'
+import { ethers } from 'ethers'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Section, Row, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
-import { fromWei } from 'web3x/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
@@ -159,7 +159,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   {item.price ? (
                     <Section>
                       <div className="subtitle">{t('item.price')}</div>
-                      <div className="value">{fromWei(item.price, 'ether')}</div>
+                      <div className="value">{ethers.utils.formatEther(item.price)}</div>
                     </Section>
                   ) : null}
                   {item.beneficiary ? (

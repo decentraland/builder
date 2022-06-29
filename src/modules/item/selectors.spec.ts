@@ -189,9 +189,10 @@ describe('Item selectors', () => {
   describe('when getting status', () => {
     const itemId = 'anItemId'
     const collectionId = 'aCollectionId'
-    mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
 
     beforeEach(() => {
+      mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
+
       state = {
         collectionCuration: {
           data: {},

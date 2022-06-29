@@ -78,7 +78,7 @@ export default class TopBar extends React.PureComponent<Props> {
       isPreviewing,
       isUploading,
       isSidebarOpen,
-      selectedEntityIds: selectedEntityIds,
+      selectedEntityIds,
       enabledTools,
       isLoading,
       onReset,

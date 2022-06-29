@@ -145,13 +145,6 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 
     switch (thumbnailType) {
       case ThumbnailType.FRONT: {
-        const directional = new DirectionalLight(0xffffff, 0.8)
-        directional.position.set(center.x + 1, center.y + 1, center.z)
-        directional.lookAt(center)
-        scene.add(directional)
-        break
-      }
-      case ThumbnailType.FRONT: {
         const directional = new DirectionalLight(0xffffff, 1)
         directional.position.set(center.x + 0, center.y + 1, center.z + 0)
         directional.lookAt(center)

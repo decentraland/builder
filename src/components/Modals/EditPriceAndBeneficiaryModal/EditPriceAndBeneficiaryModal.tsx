@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { Address } from 'web3x/address'
-import { fromWei, toWei } from 'web3x/utils'
+import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { config } from 'config'
 import {
@@ -26,7 +25,7 @@ import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
 
-const MIN_SALE_VALUE = fromWei(config.get('MIN_SALE_VALUE_IN_WEI', '0')!, 'ether')
+const MIN_SALE_VALUE = ethers.utils.formatEther(config.get('MIN_SALE_VALUE_IN_WEI', '0'))
 
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -48,7 +47,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   handleIsFreeToggle = () => {
     const isFree = !this.state.isFree
-    const beneficiary = isFree ? Address.ZERO.toString() : undefined
+    const beneficiary = isFree ? ethers.constants.AddressZero : undefined
     const price = isFree ? '0' : undefined
     this.setState({ isFree, price, beneficiary })
   }
@@ -72,7 +71,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   handleSubmit = () => {
     const { item, onSave, onSetPriceAndBeneficiary } = this.props
     const { price, beneficiary } = this.state
-    const priceInWei = toWei(price!, 'ether')
+    const priceInWei = ethers.utils.parseEther(price!).toString()
 
     if (item!.isPublished) {
       onSetPriceAndBeneficiary(item.id, priceInWei, beneficiary!)
@@ -88,7 +87,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   getItemPrice() {
     const { item } = this.props
-    return item.price ? fromWei(item.price, 'ether') : undefined
+    return item.price ? ethers.utils.formatEther(item.price) : undefined
   }
 
   isDisabled() {
@@ -105,7 +104,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   isValidPrice() {
     const { price, beneficiary } = this.state
     const numberPrice = Number(price)
-    return Number(numberPrice) > 0 || (numberPrice === 0 && beneficiary === Address.ZERO.toString())
+    return Number(numberPrice) > 0 || (numberPrice === 0 && beneficiary === ethers.constants.AddressZero)
   }
 
   isPriceTooLow() {

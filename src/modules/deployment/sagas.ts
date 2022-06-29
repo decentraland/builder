@@ -1,5 +1,5 @@
 import { CatalystClient } from 'dcl-catalyst-client'
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'

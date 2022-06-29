@@ -24,7 +24,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
 
   componentDidMount() {
     if (unityDebugParams) {
-      history.replaceState('', 'Unity Debug', `?${unityDebugParams}`)
+      window.history.replaceState('', 'Unity Debug', `?${unityDebugParams}`)
     }
 
     if (!isDCLInitialized) {

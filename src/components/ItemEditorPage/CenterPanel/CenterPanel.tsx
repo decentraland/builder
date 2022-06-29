@@ -4,12 +4,12 @@ import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { Dropdown, DropdownProps, Popup, Icon, Loader, Center } from 'decentraland-ui'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
-import { toBase64, toHex } from 'modules/editor/utils'
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {

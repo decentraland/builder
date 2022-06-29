@@ -1,5 +1,5 @@
-import { call, takeEvery, takeLatest } from '@redux-saga/core/effects'
 import PQueue from 'p-queue'
+import { call, takeEvery, takeLatest } from '@redux-saga/core/effects'
 import { BuilderAPI } from 'lib/api/builder'
 import { FetchCollectionItemsSuccessAction, FETCH_COLLECTION_ITEMS_SUCCESS } from 'modules/item/actions'
 import { isThirdParty } from 'lib/urn'

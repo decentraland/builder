@@ -1,3 +1,4 @@
+/* eslint-disable import/no-webpack-loader-syntax */
 import { Color4, Wearable } from 'decentraland-ecs'
 import { EmoteCategory, Locale, WearableBodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
 import { Item, ItemType } from 'modules/item/types'
@@ -11,7 +12,7 @@ import { getSkinHiddenCategories } from 'modules/item/utils'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { base64ArrayBuffer } from './base64'
 
-const script = require('raw-loader!../../ecsScene/scene.js')
+const script = require('raw-loader!../../ecsScene/scene.js').default
 
 export const THUMBNAIL_WIDTH = 984
 export const THUMBNAIL_HEIGHT = 728
