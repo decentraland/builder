@@ -371,8 +371,8 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   return item
 }
 
-function toRemoteCollection(collection: Collection): RemoteCollection {
-  const remoteCollection: RemoteCollection = {
+function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'created_at' | 'updated_at'> {
+  const remoteCollection: Omit<RemoteCollection, 'created_at' | 'updated_at'> = {
     id: collection.id,
     name: collection.name,
     eth_address: collection.owner,
@@ -385,9 +385,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     managers: collection.managers,
     forum_link: collection.forumLink || null,
     lock: collection.lock ? new Date(collection.lock) : null,
-    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null,
-    created_at: new Date(collection.createdAt),
-    updated_at: new Date(collection.updatedAt)
+    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null
   }
 
   return remoteCollection
