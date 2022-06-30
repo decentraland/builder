@@ -92,7 +92,7 @@ export function canSeeCollection(collection: Collection, address: string) {
 }
 
 export function sortCollectionByCreatedAt(collectionA: Collection, collectionB: Collection) {
-  return collectionB.createdAt && collectionA.createdAt ? collectionB.createdAt - collectionA.createdAt : 0
+  return collectionB.createdAt - collectionA.createdAt
 }
 
 export function isOwner(collection: Collection, address?: string) {

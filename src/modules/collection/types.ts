@@ -15,8 +15,8 @@ export type Collection = {
   forumLink?: string
   lock?: number
   reviewedAt?: number
-  createdAt?: number
-  updatedAt?: number
+  createdAt: number
+  updatedAt: number
 }
 
 export enum CollectionType {

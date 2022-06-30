@@ -241,7 +241,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
-    const { collection: {createdAt, updatedAt, ...collection} } = action.payload
+    const { collection } = action.payload
     try {
       if (!isValidText(collection.name)) {
         throw new Error(yield call(t, 'sagas.collection.invalid_character'))
