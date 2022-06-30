@@ -82,8 +82,8 @@ export type RemoteCollection = {
   forum_link: string | null
   lock: Date | null
   reviewed_at: Date | null
-  created_at: Date
-  updated_at: Date
+  created_at: Date | null
+  updated_at: Date | null
   item_count?: string
 }
 
@@ -386,8 +386,8 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     forum_link: collection.forumLink || null,
     lock: collection.lock ? new Date(collection.lock) : null,
     reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null,
-    created_at: new Date(collection.createdAt),
-    updated_at: new Date(collection.updatedAt)
+    created_at: collection.createdAt ? new Date(collection.createdAt) : null,
+    updated_at: collection.updatedAt ? new Date(collection.updatedAt) : null
   }
 
   return remoteCollection
@@ -407,8 +407,8 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     forumLink: remoteCollection.forum_link || undefined,
     lock: remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
     reviewedAt: remoteCollection.reviewed_at ? +new Date(remoteCollection.reviewed_at) : undefined,
-    createdAt: +new Date(remoteCollection.created_at),
-    updatedAt: +new Date(remoteCollection.updated_at)
+    createdAt: remoteCollection.created_at ? +new Date(remoteCollection.created_at) : undefined,
+    updatedAt: remoteCollection.updated_at ? +new Date(remoteCollection.updated_at) : undefined
   }
 
   if (remoteCollection.salt) collection.salt = remoteCollection.salt
