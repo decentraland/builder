@@ -1637,7 +1637,7 @@ describe('when executing the TP approval flow', () => {
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
-                items: itemsToApprove,
+                items: [syncedItem, unsyncedItem],
                 collection: TPCollection,
                 merkleTreeRoot: merkleTree.merkleRoot,
                 slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
@@ -1648,12 +1648,12 @@ describe('when executing the TP approval flow', () => {
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.DEPLOY_TP,
                 collection: TPCollection,
-                items: itemsToApprove,
+                items: [syncedItem, unsyncedItem],
                 tree: merkleTree,
                 hashes: contentHashes
               } as ApprovalFlowModalMetadata)
             )
-            .dispatch(deployBatchedThirdPartyItemsFailure(itemsToApprove, deployError))
+            .dispatch(deployBatchedThirdPartyItemsFailure([], deployError))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.ERROR,

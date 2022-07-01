@@ -124,6 +124,8 @@ import {
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationStatus } from 'modules/curations/types'
 import {
+  DeployBatchedThirdPartyItemsFailureAction,
+  DeployBatchedThirdPartyItemsSuccessAction,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
   ReviewThirdPartyFailureAction,
@@ -734,7 +736,11 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         const {
           failure,
           cancel
-        }: { success: DeployEntitiesSuccessAction; failure: DeployEntitiesFailureAction; cancel: CloseModalAction } = yield race({
+        }: {
+          success: DeployBatchedThirdPartyItemsSuccessAction
+          failure: DeployBatchedThirdPartyItemsFailureAction
+          cancel: CloseModalAction
+        } = yield race({
           success: take(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS),
           failure: take(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE),
           cancel: take(CLOSE_MODAL)
@@ -742,7 +748,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
         // If failure show error and exit flow
         if (failure) {
-          throw new Error(failure.payload.error)
+          throw new Error(failure.payload.errorMessage)
 
           // If cancel exit flow
         } else if (cancel) {
