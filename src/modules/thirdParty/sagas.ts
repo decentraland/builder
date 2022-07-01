@@ -14,7 +14,13 @@ import { ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/Appro
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
-import { updateApprovalFlowProgress } from 'modules/ui/tpApprovalFlow/action'
+import { updateApprovalFlowProgress } from 'modules/ui/thirdparty/action'
+import {
+  ThirdPartyBuildEntityError,
+  ThirdPartyCurationUpdateError,
+  ThirdPartyDeploymentError,
+  ThirdPartyError
+} from 'modules/collection/utils'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
 import { getIdentity } from 'modules/identity/utils'
@@ -239,40 +245,51 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const REQUESTS_BATCH_SIZE = 5
 
     let queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
-    try {
-      const identity: AuthIdentity | undefined = yield call(getIdentity)
+    const errors: ThirdPartyError[] = []
+    const identity: AuthIdentity | undefined = yield call(getIdentity)
 
-      if (!identity) {
-        throw new Error('Invalid Identity')
-      }
+    if (!identity) {
+      yield put(deployBatchedThirdPartyItemsFailure(errors, 'Invalid Identity'))
+      return
+    }
 
-      yield put(
-        openModal('ApprovalFlowModal', {
-          view: ApprovalFlowModalView.DEPLOYING_TP
-        })
-      )
-
-      const promisesOfItemsBeingDeployed: (() => Promise<ItemCuration>)[] = items.map((item: Item) => async () => {
-        const entity: DeploymentPreparationData = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
+    yield put(
+      openModal('ApprovalFlowModal', {
+        view: ApprovalFlowModalView.DEPLOYING_TP
+      })
+    )
+    const promisesOfItemsBeingDeployed: (() => Promise<ItemCuration | void>)[] = items.map((item: Item) => async () => {
+      let entity: DeploymentPreparationData
+      try {
+        entity = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
         try {
           await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity!, entity.entityId) })
           approvalFlowProgressChannel.put({
             progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100)
           })
+          let updatedCuration: ItemCuration
+          try {
+            updatedCuration = await builder.updateItemCurationStatus(item.id, CurationStatus.APPROVED)
+            return updatedCuration
+          } catch (error) {
+            errors.push(new ThirdPartyCurationUpdateError(item))
+            return Promise.resolve()
+          }
         } catch (error) {
-          queue.pause()
-          queue.clear()
-          throw error
+          errors.push(new ThirdPartyDeploymentError(item))
+          return Promise.resolve()
         }
-        return builder.updateItemCurationStatus(item.id, CurationStatus.APPROVED)
-      })
+      } catch (error) {
+        errors.push(new ThirdPartyBuildEntityError(item))
+        return Promise.resolve()
+      }
+    })
 
-      const deployedItemsCurations: ItemCuration[] = yield call([queue, 'addAll'], promisesOfItemsBeingDeployed)
-
+    const deployedItemsCurations: ItemCuration[] = yield call([queue, 'addAll'], promisesOfItemsBeingDeployed)
+    if (errors.length) {
+      yield put(deployBatchedThirdPartyItemsFailure(errors))
+    } else {
       yield put(deployBatchedThirdPartyItemsSuccess(collection, deployedItemsCurations))
-    } catch (error) {
-      queue.clear()
-      yield put(deployBatchedThirdPartyItemsFailure(items, error.message))
     }
   }
 }

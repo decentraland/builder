@@ -6,6 +6,7 @@ import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { Slot, ThirdParty } from './types'
+import { ThirdPartyError } from 'modules/collection/utils'
 
 // Fetch Third Party Records
 
@@ -144,8 +145,8 @@ export const deployBatchedThirdPartyItemsSuccess = (collection: Collection, item
     collection,
     itemCurations
   })
-export const deployBatchedThirdPartyItemsFailure = (items: Item[], error: string) =>
-  action(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE, { items, error })
+export const deployBatchedThirdPartyItemsFailure = (errors: ThirdPartyError[], errorMessage?: string) =>
+  action(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE, { errors, errorMessage })
 
 export type DeployBatchedThirdPartyItemsRequestAction = ReturnType<typeof deployBatchedThirdPartyItemsRequest>
 export type DeployBatchedThirdPartyItemsSuccessAction = ReturnType<typeof deployBatchedThirdPartyItemsSuccess>

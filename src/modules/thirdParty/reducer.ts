@@ -1,5 +1,6 @@
 import { FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { ThirdPartyError } from 'modules/collection/utils'
 import {
   FetchThirdPartiesRequestAction,
   FetchThirdPartiesSuccessAction,
@@ -27,13 +28,15 @@ export type ThirdPartyState = {
   itemSlotPrice: number | null
   loading: LoadingState
   error: string | null
+  errors: ThirdPartyError[]
 }
 
 export const INITIAL_STATE: ThirdPartyState = {
   data: {},
   itemSlotPrice: null,
   loading: [],
-  error: null
+  error: null,
+  errors: []
 }
 
 type ThirdPartyReducerAction =
@@ -95,13 +98,19 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: null
       }
     }
-    case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE:
     case FETCH_THIRD_PARTIES_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
+      }
+    }
+    case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        errors: action.payload.errors
       }
     }
 

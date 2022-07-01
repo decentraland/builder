@@ -148,3 +148,25 @@ export const getTPThresholdToReview = (totalItems: number) => {
   }
   return Math.min(Math.ceil(totalItems * TP_TRESHOLD_TO_REVIEW), MAX_TP_ITEMS_TO_REVIEW)
 }
+
+export class ThirdPartyBuildEntityError extends Error {
+  constructor(public item: Item) {
+    super('Failed to upload file')
+    this.item = item
+  }
+}
+export class ThirdPartyDeploymentError extends Error {
+  constructor(public item: Item) {
+    super('Failed to deploy file')
+    this.item = item
+  }
+}
+
+export class ThirdPartyCurationUpdateError extends Error {
+  constructor(public item: Item) {
+    super('Failed to update curation')
+    this.item = item
+  }
+}
+
+export type ThirdPartyError = ThirdPartyBuildEntityError | ThirdPartyDeploymentError

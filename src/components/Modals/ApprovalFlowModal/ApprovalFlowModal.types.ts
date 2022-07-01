@@ -14,6 +14,7 @@ import {
   ReviewThirdPartyRequestAction
 } from 'modules/thirdParty/actions'
 import { Slot } from 'modules/thirdParty/types'
+import { ThirdPartyError } from 'modules/collection/utils'
 
 export enum ApprovalFlowModalView {
   LOADING = 'loading',
@@ -39,7 +40,7 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
   : V extends ApprovalFlowModalView.DEPLOY_TP
   ? { items: Item[]; collection: Collection; tree: MerkleDistributorInfo; hashes: Record<string, string> }
   : V extends ApprovalFlowModalView.ERROR
-  ? { error: string }
+  ? { error: string, errors?: Error[] }
   : {})
 
 export type Props = ModalProps & {
@@ -54,6 +55,7 @@ export type Props = ModalProps & {
   isConfirmingApproveTx: boolean
   isAwaitingApproveTx: boolean
   TPDeployItemsProgress: number
+  errors: ThirdPartyError[]
 }
 
 export type State = {
@@ -69,6 +71,7 @@ export type MapStateProps = Pick<
   | 'isAwaitingApproveTx'
   | 'isConfirmingApproveTx'
   | 'TPDeployItemsProgress'
+  | 'errors'
 >
 export type MapDispatchProps = Pick<
   Props,

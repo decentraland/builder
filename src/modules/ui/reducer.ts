@@ -4,8 +4,8 @@ import { dashboardReducer as dashboard, DashboardState } from './dashboard/reduc
 import { collectionReducer as collection, CollectionState } from './collection/reducer'
 import { landReducer as land, LandState } from './land/reducer'
 import { CreateMultipleItemsState, createMultipleItemsReducer as createMultipleItems } from './createMultipleItems/reducer'
-import { TPApprovalFlowReducer as tpApprovalFlow } from './tpApprovalFlow/reducer'
-import { TPApprovalFlowState } from './tpApprovalFlow/reducer'
+import { TPApprovalFlowReducer as tpApprovalFlow } from './thirdparty/reducer'
+import { TPApprovalFlowState } from './thirdparty/reducer'
 
 export type UIState = {
   sidebar: SidebarState

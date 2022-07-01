@@ -74,3 +74,11 @@
   border-radius: 10px;
   background-color: #37333d;
 }
+
+.ui.modal.ApprovalFlowModal .error-container {
+  max-width: 75%;
+}
+
+.ui.modal.ApprovalFlowModal .error-container .urn {
+  font-size: 12px;
+}
