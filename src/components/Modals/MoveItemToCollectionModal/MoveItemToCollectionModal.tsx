@@ -29,7 +29,7 @@ export default class MoveItemToCollectionModal extends React.PureComponent<Props
           <CollectionDropdown
             value={collection}
             onChange={this.handleChangeCollection}
-            filter={collection => !isTPCollection(collection)}
+            filter={collection => !isTPCollection(collection) && !collection.isPublished}
           />
         </ModalContent>
         <ModalActions>
