@@ -308,8 +308,8 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
   }
 }
 
-function toRemoteItem(item: Item): RemoteItem {
-  const remoteItem: RemoteItem = {
+function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'> {
+  const remoteItem: Omit<RemoteItem, 'created_at' | 'updated_at'> = {
     id: item.id,
     name: item.name,
     description: item.description || '',
@@ -332,8 +332,6 @@ function toRemoteItem(item: Item): RemoteItem {
     content_hash: item.blockchainContentHash,
     local_content_hash: item.currentContentHash,
     catalyst_content_hash: item.catalystContentHash,
-    created_at: new Date(item.createdAt),
-    updated_at: new Date(item.updatedAt)
   }
 
   return remoteItem
