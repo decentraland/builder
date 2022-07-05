@@ -8,6 +8,7 @@ export type Props = {
   value?: Collection
   placeholder?: string
   filter?: (collection: Collection) => boolean
+  isCollectionPublished?: boolean
   onChange: (collection: Collection) => void
   isDisabled?: boolean
   onFetchCollections: typeof fetchCollectionsRequest
