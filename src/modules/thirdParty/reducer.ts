@@ -110,7 +110,8 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        errors: action.payload.errors
+        errors: action.payload.errors,
+        error: action.payload.errorMessage || null
       }
     }
 

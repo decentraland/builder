@@ -40,7 +40,7 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
   : V extends ApprovalFlowModalView.DEPLOY_TP
   ? { items: Item[]; collection: Collection; tree: MerkleDistributorInfo; hashes: Record<string, string> }
   : V extends ApprovalFlowModalView.ERROR
-  ? { error: string, errors?: Error[] }
+  ? { error: string }
   : {})
 
 export type Props = ModalProps & {

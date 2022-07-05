@@ -40,7 +40,8 @@ describe('when an action of type FETCH_THIRD_PARTIES_SUCCESS is called', () => {
       data: {},
       loading: [fetchThirdPartiesRequest()],
       error: 'Some Error',
-      itemSlotPrice: 1
+      itemSlotPrice: 1,
+      errors: []
     }
 
     expect(thirdPartyReducer(state, fetchThirdPartiesSuccess([thirdParty]))).toStrictEqual({
@@ -49,6 +50,7 @@ describe('when an action of type FETCH_THIRD_PARTIES_SUCCESS is called', () => {
       },
       loading: [],
       error: null,
+      errors: [],
       itemSlotPrice: 1
     })
   })
@@ -86,7 +88,7 @@ describe('when reducing an DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS action', () 
     ).toStrictEqual({
       ...INITIAL_STATE,
       loading: [],
-      error: null
+      error: null,
     })
   })
 })
