@@ -20,7 +20,7 @@ const CollectionPublishButton = (props: Props) => {
 
   useEffect(() => {
     onInit()
-  }, [])
+  }, [onInit])
 
   const hasExceededMaxItemsLimit = items.length > MAX_ITEMS
   const isPublishDisabled = useMemo(() => items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit, [

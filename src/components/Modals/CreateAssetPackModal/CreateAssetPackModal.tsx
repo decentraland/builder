@@ -30,15 +30,20 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   getDefaultAssetPackName() {
-    const { assetPacks } = this.props
     const defaultName = t('asset_pack.default_name')
     let name = defaultName
     let suffix = 2
-    while (assetPacks.some(assetPack => assetPack.title === name)) {
+
+    while (this.hasAssetPack(name)) {
       name = t('asset_pack.default_name_suffix', { suffix })
       suffix++
     }
     return name
+  }
+
+  hasAssetPack(name: string) {
+    const { assetPacks } = this.props
+    return assetPacks.some(assetPack => assetPack.title === name)
   }
 
   getAssetPack() {

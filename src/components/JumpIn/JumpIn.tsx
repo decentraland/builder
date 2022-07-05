@@ -21,6 +21,7 @@ export default class JumpIn extends React.PureComponent<Props> {
       throw new Error('You need to supply at least one of the available props')
     }
 
-    return <a className={`JumpIn ${size}`} target="_blank" rel="no:opener no:referrer" href={url} />
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    return <a className={`JumpIn ${size}`} target="_blank" rel="noopener noreferrer" href={url} />
   }
 }

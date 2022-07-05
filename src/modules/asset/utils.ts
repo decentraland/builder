@@ -22,7 +22,7 @@ export function cleanAssetName(fileName: string) {
 
   if (matches && matches.length) {
     const matched = matches[1]
-    out = matched.replace(/[\.\-\_]/g, ' ')
+    out = matched.replace(/[.\-_]/g, ' ')
   }
 
   return (out.charAt(0).toUpperCase() + out.slice(1)).slice(0, MAX_NAME_LENGTH)

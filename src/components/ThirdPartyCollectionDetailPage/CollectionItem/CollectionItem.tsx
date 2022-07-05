@@ -12,7 +12,7 @@ import { getExplorerURL } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
-import * as styles from './CollectionItem.module.css'
+import styles from './CollectionItem.module.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
   handleCheckboxChange = (_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) => {

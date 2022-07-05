@@ -1,7 +1,7 @@
 import PQueue from 'p-queue'
 import { channel } from 'redux-saga'
 import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { Contract, providers } from 'ethers'
 import { ChainId, Network } from '@dcl/schemas'

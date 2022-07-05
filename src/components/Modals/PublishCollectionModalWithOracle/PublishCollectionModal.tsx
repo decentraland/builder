@@ -1,11 +1,10 @@
 import * as React from 'react'
-import { BigNumber } from 'ethers'
+import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
-import { fromWei } from 'web3x/utils'
 import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
@@ -65,15 +64,15 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     if (refRarity) {
       priceUSD = refRarity.prices!.USD
 
-      totalPrice = BigNumber.from(refRarity.prices!.MANA)
+      totalPrice = ethers.BigNumber.from(refRarity.prices!.MANA)
         .mul(items.length)
         .toString()
 
-      totalPriceUSD = BigNumber.from(priceUSD)
+      totalPriceUSD = ethers.BigNumber.from(priceUSD)
         .mul(items.length)
         .toString()
 
-      hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(fromWei(totalPrice, 'ether'))
+      hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPrice))
     }
 
     return (
@@ -89,11 +88,11 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               <p>
                 {t('publish_collection_modal_with_oracle.items_breakdown_title', {
                   count: items.length,
-                  publicationFee: fromWei(priceUSD!, 'ether'),
+                  publicationFee: ethers.utils.formatEther(priceUSD!),
                   currency: Currency.USD
                 })}
               </p>
-              <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener">
+              <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener noreferrer">
                 {t('publish_collection_modal_with_oracle.learn_more')}
               </a>
               <div className="price-breakdown-container">
@@ -104,20 +103,20 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
                   <div className="element-content">
-                    {Currency.USD} {fromWei(priceUSD!, 'ether')}
+                    {Currency.USD} {ethers.utils.formatEther(priceUSD!)}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd', { currency: Currency.USD })}</div>
                   <div className="element-content">
-                    {Currency.USD} {fromWei(totalPriceUSD!, 'ether')}
+                    {Currency.USD} {ethers.utils.formatEther(totalPriceUSD!)}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
                   <div className="element-content">
                     <Mana network={Network.MATIC} size="medium">
-                      {fromWei(totalPrice!, 'ether')}
+                      {ethers.utils.formatEther(totalPrice!)}
                     </Mana>
                   </div>
                 </div>

@@ -18,6 +18,7 @@ export default class VideoModal extends React.PureComponent<ModalProps> {
             src={`https://www.youtube-nocookie.com/embed/${t('video_modal.youtube_id')}`}
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            title={t('video_modal.title')}
             allowFullScreen
           />
         </Modal.Content>

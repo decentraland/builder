@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { AuthIdentity } from 'dcl-crypto'
+import { AuthIdentity } from '@dcl/crypto'
 import { isConnecting, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'

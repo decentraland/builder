@@ -1,11 +1,7 @@
 import { takeLatest, put, select, call } from 'redux-saga/effects'
-import { Eth } from 'web3x/eth'
-import { Personal } from 'web3x/personal'
-import { Address } from 'web3x/address'
-import { bufferToHex } from 'web3x/utils'
-import { Account } from 'web3x/account'
+import { ethers } from 'ethers'
 import { replace, getLocation } from 'connected-react-router'
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { config } from 'config'
 import {
@@ -60,21 +56,21 @@ export function* identitySaga() {
 function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
   const address = action.payload.address.toLowerCase()
   try {
-    const eth: Eth = yield call(getEth)
-    const account = Account.create()
+    const eth: ethers.providers.Web3Provider = yield call(getEth)
+    const account = ethers.Wallet.createRandom()
 
     const payload = {
       address: account.address.toString(),
-      publicKey: bufferToHex(account.publicKey),
-      privateKey: bufferToHex(account.privateKey)
+      publicKey: ethers.utils.hexlify(account.publicKey),
+      privateKey: ethers.utils.hexlify(account.privateKey)
     }
 
     const expiration = Number(config.get('IDENTITY_EXPIRATION_MINUTES', ONE_MONTH_IN_MINUTES.toString()))
 
-    const personal = new Personal(eth.provider)
+    const signer = eth.getSigner()
 
     const identity: AuthIdentity = yield Authenticator.initializeAuthChain(address, payload, expiration, message =>
-      personal.sign(message, Address.fromString(address), '')
+      signer.signMessage(message)
     )
 
     yield put(generateIdentitySuccess(address, identity))

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Page } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -11,13 +11,13 @@ import { Props } from './NotFoundPage.types'
 import './NotFoundPage.css'
 
 export default function NotFoundPage(props: Props) {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const analytics = getAnalytics()
     analytics.track('Not found page', {})
 
-    setIsLoading(false);
+    setIsLoading(false)
   }, [])
 
   function handleClick() {

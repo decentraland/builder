@@ -32,7 +32,7 @@ export default class ItemDropdown extends React.PureComponent<Props> {
     const { value, placeholder } = this.props
     return value ? (
       <Row className="selected-item">
-        <img src={getThumbnailURL(value)} />
+        <img src={getThumbnailURL(value)} alt={value.name} />
         <div className="name">{value.name}</div>
       </Row>
     ) : options.length > 0 ? (

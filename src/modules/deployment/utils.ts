@@ -1,17 +1,18 @@
 import path from 'path'
 import uuid from 'uuid'
+import CID from 'cids'
+import toBuffer from 'blob-to-buffer'
+import pull from 'pull-stream'
+import { MemoryDatastore } from 'interface-datastore'
 import { EntityContentItemReference } from 'dcl-catalyst-commons'
-const CID = require('cids')
-const MemoryDatastore = require('interface-datastore').MemoryDatastore
-const pull = require('pull-stream')
-const Importer = require('ipfs-unixfs-engine').Importer
-const toBuffer = require('blob-to-buffer')
 import { Asset } from 'modules/asset/types'
 import { ContentIdentifier, ContentServiceFile, ContentManifest, Deployment, DeploymentStatus, SceneDefinition } from './types'
 import { Project } from 'modules/project/types'
 import { Scene, ComponentType } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
+
+const Importer = require('ipfs-unixfs-engine').Importer
 
 export const UNPUBLISHED_PROJECT_ID = 'unpublished-project'
 

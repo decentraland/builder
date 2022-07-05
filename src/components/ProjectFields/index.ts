@@ -1,7 +1,9 @@
 import TitleField from './TitleField'
 import DescriptionField from './DescriptionField'
 
-export default {
+const components = {
   Title: TitleField,
   Description: DescriptionField
 }
+
+export default components

@@ -308,8 +308,8 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
   }
 }
 
-function toRemoteItem(item: Item): RemoteItem {
-  const remoteItem: RemoteItem = {
+function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'> {
+  const remoteItem: Omit<RemoteItem, 'created_at' | 'updated_at'> = {
     id: item.id,
     name: item.name,
     description: item.description || '',
@@ -332,8 +332,6 @@ function toRemoteItem(item: Item): RemoteItem {
     content_hash: item.blockchainContentHash,
     local_content_hash: item.currentContentHash,
     catalyst_content_hash: item.catalystContentHash,
-    created_at: new Date(item.createdAt),
-    updated_at: new Date(item.updatedAt)
   }
 
   return remoteItem
@@ -371,8 +369,8 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   return item
 }
 
-function toRemoteCollection(collection: Collection): RemoteCollection {
-  const remoteCollection: RemoteCollection = {
+function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'created_at' | 'updated_at'> {
+  const remoteCollection: Omit<RemoteCollection, 'created_at' | 'updated_at'> = {
     id: collection.id,
     name: collection.name,
     eth_address: collection.owner,
@@ -385,9 +383,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     managers: collection.managers,
     forum_link: collection.forumLink || null,
     lock: collection.lock ? new Date(collection.lock) : null,
-    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null,
-    created_at: new Date(collection.createdAt),
-    updated_at: new Date(collection.updatedAt)
+    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null
   }
 
   return remoteCollection

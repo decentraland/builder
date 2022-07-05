@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Card, Confirm } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -11,11 +11,11 @@ import './ItemCard.css'
 
 const ItemCard = (props: Props) => {
   const { item, onDeleteItem, onOpenModal } = props
-  const [isDeleting, setIsDeleting] = React.useState(false)
-  const handleCancelDeleteItem = React.useCallback(() => setIsDeleting(false), [setIsDeleting])
-  const handleDeleteConfirmation = React.useCallback(() => setIsDeleting(true), [setIsDeleting])
-  const handleMoveToCollection = React.useCallback(() => onOpenModal('MoveItemToCollectionModal'), [])
-  const handleDeleteItem = React.useCallback(() => {
+  const [isDeleting, setIsDeleting] = useState(false)
+  const handleCancelDeleteItem = useCallback(() => setIsDeleting(false), [setIsDeleting])
+  const handleDeleteConfirmation = useCallback(() => setIsDeleting(true), [setIsDeleting])
+  const handleMoveToCollection = useCallback(() => onOpenModal('MoveItemToCollectionModal'), [onOpenModal])
+  const handleDeleteItem = useCallback(() => {
     setIsDeleting(false)
     onDeleteItem()
   }, [setIsDeleting, onDeleteItem])

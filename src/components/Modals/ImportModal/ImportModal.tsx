@@ -47,14 +47,15 @@ export default class ImportModal extends React.PureComponent<Props, State> {
       }
     }
 
+    const project = file.manifest.project
     return (
-      <div className="project-card" key={file.manifest.project.id}>
+      <div className="project-card" key={project.id}>
         <div className="close-button" onClick={() => this.handleRemoveProject(file.id)}>
           <Icon name="close" />
         </div>
-        <img src={file.manifest.project.thumbnail} />
-        <span className="title" title={file.manifest.project.title}>
-          {file.manifest.project.title}
+        <img src={project.thumbnail} alt={project.title} />
+        <span className="title" title={project.title}>
+          {project.title}
         </span>
       </div>
     )

@@ -1,9 +1,9 @@
 import React from 'react'
+import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Grid, Dropdown, Icon, Button, Mana } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
-import { fromWei } from 'web3x/utils'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isFree, canMintItem, canManageItem, getMaxSupply } from 'modules/item/utils'
@@ -13,7 +13,7 @@ import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
-import * as styles from './CollectionItem.module.css'
+import styles from './CollectionItem.module.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
   handleEditPriceAndBeneficiary = () => {
@@ -54,7 +54,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
             t('global.free')
           ) : (
             <Mana className={styles.mana} network={Network.MATIC}>
-              {fromWei(item.price, 'ether')}
+              {ethers.utils.formatEther(item.price)}
             </Mana>
           )}
         </div>

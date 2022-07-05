@@ -1,4 +1,3 @@
-import React from 'react'
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { AssignModalOperationType } from 'components/Modals/EditCurationAssigneeModal/EditCurationAssigneeModal.types'
 import Profile from 'components/Profile'
