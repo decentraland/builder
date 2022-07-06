@@ -306,7 +306,7 @@ export function toWearable(item: Item): WearableDefinition {
     emoteDataV0:
       item.type === ItemType.EMOTE
         ? {
-            loop: false
+            loop: false // we are setting this as false for now since all the emotes we have created are not looped, eventually this will be configurable via UI
           }
         : undefined
   }
