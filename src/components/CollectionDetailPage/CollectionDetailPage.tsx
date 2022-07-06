@@ -66,7 +66,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
 
   hasAccess() {
     const { wallet, collection } = this.props
-    return collection !== null && canSeeCollection(collection, wallet.address)
+    return wallet !== null && collection !== null && canSeeCollection(collection, wallet.address)
   }
 
   renderPage(items: Item[]) {
