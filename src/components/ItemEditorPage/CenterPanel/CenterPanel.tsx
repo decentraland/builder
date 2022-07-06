@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Color4, Wearable } from 'decentraland-ecs'
-import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
 import { Dropdown, DropdownProps, Popup, Icon, Loader, Center } from 'decentraland-ui'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -33,7 +33,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
 
   handleBodyShapeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const { onSetBodyShape } = this.props
-    onSetBodyShape(value as WearableBodyShape)
+    onSetBodyShape(value as BodyShape)
   }
 
   handleAnimationChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
@@ -56,7 +56,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     onSetHairColor(color)
   }
 
-  handleWearableChange = (category: WearableCategory, bodyShape: WearableBodyShape, wearable: Wearable | null) => {
+  handleWearableChange = (category: WearableCategory, bodyShape: BodyShape, wearable: Wearable | null) => {
     const { onSetBaseWearable } = this.props
     onSetBaseWearable(category, bodyShape, wearable)
   }
@@ -88,13 +88,13 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     return (
       <div className="CenterPanel">
         <WearablePreview
+          id="wearable-editor"
           profile="default"
           bodyShape={bodyShape}
           emote={emote}
           skin={toHex(skinColor)}
           eyes={toHex(eyeColor)}
           hair={toHex(hairColor)}
-          autoRotateSpeed={0}
           urns={
             selectedBaseWearables
               ? (Object.values(selectedBaseWearables)
@@ -102,9 +102,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
                   .filter(urn => urn !== null) as string[])
               : []
           }
-          hotreload
           base64s={visibleItems.map(toBase64)}
-          transparentBackground
+          disableAutoRotate
+          disableBackground
           wheelZoom={1.5}
           wheelStart={100}
           onUpdate={() => this.setState({ isLoading: true })}
@@ -146,8 +146,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
                 {...this.getDropdownAttributes(
                   bodyShape,
                   [
-                    { value: WearableBodyShape.MALE, text: t('body_shapes.male') },
-                    { value: WearableBodyShape.FEMALE, text: t('body_shapes.female') }
+                    { value: BodyShape.MALE, text: t('body_shapes.male') },
+                    { value: BodyShape.FEMALE, text: t('body_shapes.female') }
                   ],
                   t('wearable.category.body_shape')
                 )}

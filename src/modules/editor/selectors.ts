@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { Wearable } from 'decentraland-ecs'
-import { WearableBodyShape } from '@dcl/schemas'
+import { BodyShape } from '@dcl/schemas'
 
 import { RootState } from 'modules/common/types'
 import { ComponentType, Scene } from 'modules/scene/types'
@@ -45,7 +45,7 @@ export const getSelectedBaseWearablesByBodyShape = (state: RootState): SelectedB
   getState(state).selectedBaseWearablesByBodyShape
 export const getSelectedBaseWearables = createSelector<
   RootState,
-  WearableBodyShape,
+  BodyShape,
   SelectedBaseWearablesByBodyShape | null,
   Record<string, Wearable | null> | null
 >(getBodyShape, getSelectedBaseWearablesByBodyShape, (bodyShape, selectedWearablesByBodyShape) =>

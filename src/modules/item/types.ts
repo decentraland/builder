@@ -1,5 +1,5 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
-import { ThirdPartyWearable, StandardWearable, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, Wearable, WearableCategory } from '@dcl/schemas'
 import { ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
@@ -56,7 +56,7 @@ export enum WearableBodyShapeType {
 }
 
 export type WearableRepresentation = {
-  bodyShapes: WearableBodyShape[]
+  bodyShapes: BodyShape[]
   mainFile: string
   contents: string[]
   overrideReplaces: WearableCategory[]
@@ -64,7 +64,7 @@ export type WearableRepresentation = {
 }
 
 export type EmoteRepresentation = {
-  bodyShapes: WearableBodyShape[]
+  bodyShapes: BodyShape[]
   mainFile: string
   contents: string[]
 }
@@ -124,11 +124,11 @@ type BaseItem = {
   updatedAt: number
 }
 
-export type StandardCatalystItem = StandardWearable & {
+export type StandardCatalystItem = Wearable & {
   emoteDataV0?: { loop: boolean }
 }
 
-export type CatalystItem = StandardCatalystItem | ThirdPartyWearable
+export type CatalystItem = Wearable
 
 export type ItemApprovalData = {
   cheque: Cheque
