@@ -1,4 +1,4 @@
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { Item, ItemMetadataType, ItemType, WearableRepresentation } from './types'
 import {
   buildItemMetadata,
@@ -23,7 +23,7 @@ describe('when transforming third party items to be sent to a contract method', 
         description: '',
         data: {
           category: WearableCategory.EARRING,
-          representations: [{ bodyShapes: [WearableBodyShape.MALE] }]
+          representations: [{ bodyShapes: [BodyShape.MALE] }]
         },
         urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id1:token-id2',
         contents: {}
@@ -35,7 +35,7 @@ describe('when transforming third party items to be sent to a contract method', 
         description: 'a second description',
         data: {
           category: WearableCategory.EYEBROWS,
-          representations: [{ bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE] }]
+          representations: [{ bodyShapes: [BodyShape.MALE, BodyShape.FEMALE] }]
         },
         urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id2:token-idb',
         contents: {}
@@ -47,7 +47,7 @@ describe('when transforming third party items to be sent to a contract method', 
         description: 'real cool',
         data: {
           category: WearableCategory.FEET,
-          representations: [{ bodyShapes: [WearableBodyShape.FEMALE] }]
+          representations: [{ bodyShapes: [BodyShape.FEMALE] }]
         },
         urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id1:token-id1',
         contents: {}
@@ -106,7 +106,7 @@ describe('when comparing two arrays', () => {
 
 describe('when comparing two representations', () => {
   const male: WearableRepresentation = {
-    bodyShapes: [WearableBodyShape.MALE],
+    bodyShapes: [BodyShape.MALE],
     contents: ['male.glb'],
     mainFile: 'male.glb',
     overrideHides: [],
@@ -114,7 +114,7 @@ describe('when comparing two representations', () => {
   }
 
   const female: WearableRepresentation = {
-    bodyShapes: [WearableBodyShape.FEMALE],
+    bodyShapes: [BodyShape.FEMALE],
     contents: ['female.glb'],
     mainFile: 'female.glb',
     overrideHides: [],

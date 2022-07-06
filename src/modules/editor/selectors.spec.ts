@@ -1,5 +1,5 @@
 import { RouterState } from 'connected-react-router'
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
 import { ItemState } from 'modules/item/reducer'
 import { Item } from 'modules/item/types'
@@ -109,13 +109,13 @@ describe('when getting the selected base wearables', () => {
       editor: {
         ...state.editor,
         selectedBaseWearablesByBodyShape: {
-          [WearableBodyShape.FEMALE]: {
+          [BodyShape.FEMALE]: {
             [WearableCategory.HAIR]: wearable,
             [WearableCategory.FACIAL_HAIR]: null,
             [WearableCategory.UPPER_BODY]: wearable,
             [WearableCategory.LOWER_BODY]: wearable
           },
-          [WearableBodyShape.MALE]: {
+          [BodyShape.MALE]: {
             [WearableCategory.HAIR]: wearable,
             [WearableCategory.FACIAL_HAIR]: wearable,
             [WearableCategory.UPPER_BODY]: wearable,

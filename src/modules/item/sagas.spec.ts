@@ -6,7 +6,7 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { call, select, take, race } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
-import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -472,7 +472,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
           category: WearableCategory.HAT,
           representations: [
             {
-              bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE],
+              bodyShapes: [BodyShape.MALE, BodyShape.FEMALE],
               contents: ['model.glb', 'texture.png'],
               mainFile: 'model.glb',
               overrideHides: [],
@@ -586,7 +586,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
           category: WearableCategory.MASK,
           representations: [
             {
-              bodyShapes: [WearableBodyShape.FEMALE],
+              bodyShapes: [BodyShape.FEMALE],
               contents: ['changed content'],
               mainFile: 'changed mainFile',
               overrideReplaces: [WearableCategory.MASK],
@@ -618,7 +618,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
             category: WearableCategory.HAT,
             representations: [
               {
-                bodyShapes: [WearableBodyShape.MALE],
+                bodyShapes: [BodyShape.MALE],
                 contents: ['content'],
                 mainFile: 'mainFile',
                 overrideReplaces: [WearableCategory.HAT],
@@ -641,7 +641,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
         category: WearableCategory.HAT,
         representations: [
           {
-            bodyShapes: [WearableBodyShape.MALE],
+            bodyShapes: [BodyShape.MALE],
             contents: ['content'],
             mainFile: 'mainFile',
             overrideReplaces: [WearableCategory.HAT],
@@ -1065,7 +1065,7 @@ describe('when handling the rescue items request action', () => {
         category: WearableCategory.EARRING,
         representations: [
           {
-            bodyShapes: [WearableBodyShape.MALE]
+            bodyShapes: [BodyShape.MALE]
           }
         ]
       },

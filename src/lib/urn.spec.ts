@@ -1,4 +1,4 @@
-import { ChainId, Network, WearableBodyShape } from '@dcl/schemas'
+import { ChainId, Network, BodyShape } from '@dcl/schemas'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { buildThirdPartyURN, buildCatalystItemURN, decodeURN, URNType, URNProtocol, extractThirdPartyTokenId, isThirdParty } from './urn'
@@ -178,7 +178,7 @@ describe('when checking if a collection is a third party', () => {
 
   describe('when checking a base avatar URN', () => {
     beforeEach(() => {
-      urn = WearableBodyShape.FEMALE.toString()
+      urn = BodyShape.FEMALE.toString()
     })
 
     it('should return false', () => {
