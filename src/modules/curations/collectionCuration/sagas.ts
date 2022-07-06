@@ -37,6 +37,7 @@ import {
   setCollectionCurationAssigneeSuccess,
   SET_COLLECTION_CURATION_ASSIGNEE_REQUEST
 } from './actions'
+import { getCuration } from './selectors'
 import { getSuccessfulAssignmentToastBody } from './toasts'
 import { CollectionCuration } from './types'
 
@@ -70,9 +71,10 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
 
   function* handlePushCurationRequest(action: PushCollectionCurationRequestAction) {
     const { collectionId } = action.payload
+    const curation: CollectionCuration | undefined = yield select(getCuration, collectionId)
 
     try {
-      yield call([builder, builder.pushCuration], collectionId)
+      yield call([builder, builder.pushCuration], collectionId, curation?.assignee)
       yield put(pushCollectionCurationSuccess())
       yield put(fetchCollectionCurationRequest(collectionId))
     } catch (error) {

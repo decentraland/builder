@@ -24,6 +24,7 @@ import {
 } from './actions'
 
 import { collectionCurationSaga } from './sagas'
+import { getCuration } from './selectors'
 import { CollectionCuration } from './types'
 
 jest.mock('./toasts', () => {
@@ -95,7 +96,10 @@ describe('when pushing a curation a new curation', () => {
   describe('when the api request fails', () => {
     it('should put the push curation fail action with an error', () => {
       return expectSaga(collectionCurationSaga, mockBuilder)
-        .provide([[call([mockBuilder, mockBuilder.pushCuration], mockCollectionId), throwError(new Error(mockErrorMessage))]])
+        .provide([
+          [select(getCuration, mockCollectionId), undefined],
+          [call([mockBuilder, mockBuilder.pushCuration], mockCollectionId, undefined), throwError(new Error(mockErrorMessage))]
+        ])
         .put(pushCollectionCurationFailure(mockErrorMessage))
         .dispatch(pushCollectionCurationRequest(mockCollectionId))
         .run({ silenceTimeout: true })
@@ -103,9 +107,18 @@ describe('when pushing a curation a new curation', () => {
   })
 
   describe('when the api request succeeds', () => {
+    let mockOldCuration: CollectionCuration
+    beforeEach(() => {
+      mockOldCuration = {
+        assignee: '0xcuratorAddress'
+      } as CollectionCuration
+    })
     it('should put the push curation success and fetch curation request', () => {
       return expectSaga(collectionCurationSaga, mockBuilder)
-        .provide([[call([mockBuilder, mockBuilder.pushCuration], mockCollectionId), {}]])
+        .provide([
+          [select(getCuration, mockCollectionId), mockOldCuration],
+          [call([mockBuilder, mockBuilder.pushCuration], mockCollectionId), {}]
+        ])
         .put(pushCollectionCurationSuccess())
         .put(fetchCollectionCurationRequest(mockCollectionId))
         .dispatch(pushCollectionCurationRequest(mockCollectionId))
