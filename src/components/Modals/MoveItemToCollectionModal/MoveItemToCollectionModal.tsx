@@ -33,7 +33,7 @@ export default class MoveItemToCollectionModal extends React.PureComponent<Props
           />
         </ModalContent>
         <ModalActions>
-          <Button primary onClick={() => collection && onSubmit(item, collection.id)} loading={isLoading} disabled={!item}>
+          <Button primary onClick={() => collection && onSubmit(item, collection.id)} loading={isLoading} disabled={!item || !collection}>
             {t('move_item_to_collection_modal.confirm')}
           </Button>
         </ModalActions>
