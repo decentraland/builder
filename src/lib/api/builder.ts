@@ -683,7 +683,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections(address?: string, params?: FetchCollectionsParams) {
     const remoteCollections = address
-      ? await this.request('get', `/${address}/collections`, params)
+      ? await this.request('get', `/${address}/collections`, toRemoteCollectionQueryParameters(params))
       : await this.request('get', '/collections', toRemoteCollectionQueryParameters(params))
 
     const { limit, page } = params || {}
