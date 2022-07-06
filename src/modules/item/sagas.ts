@@ -451,6 +451,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     yield put(saveItemRequest(newItem, {}))
     yield take(SAVE_ITEM_SUCCESS)
     yield put(closeModal('AddExistingItemModal'))
+    const address: string = yield select(getAddress)
+    yield put(fetchItemsRequest(address))
   }
 
   function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
