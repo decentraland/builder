@@ -30,7 +30,7 @@ export default class MoveItemToCollectionModal extends React.PureComponent<Props
             value={collection}
             onChange={this.handleChangeCollection}
             filter={collection => !isTPCollection(collection) && !collection.isPublished}
-            isCollectionPublished={false}
+            fetchCollectionParams={{ isPublished: false }}
           />
         </ModalContent>
         <ModalActions>

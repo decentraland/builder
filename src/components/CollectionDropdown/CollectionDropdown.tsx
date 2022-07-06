@@ -6,9 +6,9 @@ import './CollectionDropdown.css'
 
 export default class CollectionDropdown extends React.PureComponent<Props> {
   componentDidMount() {
-    const { address, isCollectionPublished, onFetchCollections } = this.props
+    const { address, onFetchCollections, fetchCollectionParams } = this.props
     if (address) {
-      onFetchCollections(address, {isPublished: isCollectionPublished})
+      onFetchCollections(address, fetchCollectionParams)
     }
   }
 
