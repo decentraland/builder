@@ -1,4 +1,4 @@
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { Wearable } from 'decentraland-ecs'
 import { CatalystWearable } from 'modules/editor/types'
 
@@ -58,7 +58,7 @@ export const catalystWearable: CatalystWearable = {
     category: WearableCategory.EYEWEAR,
     representations: [
       {
-        bodyShapes: ['urn:decentraland:off-chain:base-avatars:BaseMale' as WearableBodyShape],
+        bodyShapes: ['urn:decentraland:off-chain:base-avatars:BaseMale' as BodyShape],
         mainFile: 'M_Eyewear_AviatorStyle.glb',
         overrideReplaces: [],
         overrideHides: [],
@@ -83,7 +83,7 @@ export const catalystWearable: CatalystWearable = {
   updatedAt: 1637005585914
 }
 
-export function convertWearable(wearable: Wearable, category: WearableCategory, bodyShape: WearableBodyShape): Wearable {
+export function convertWearable(wearable: Wearable, category: WearableCategory, bodyShape: BodyShape): Wearable {
   return {
     ...wearable,
     category,

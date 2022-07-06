@@ -1,4 +1,4 @@
-import { ChainId, WearableBodyShape } from '@dcl/schemas'
+import { ChainId, BodyShape } from '@dcl/schemas'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item } from 'modules/item/types'
@@ -101,7 +101,7 @@ describe('when getting the collection type', () => {
 
   describe('when the collection has a base avatar URN', () => {
     beforeEach(() => {
-      collection = { id: 'aCollection', urn: WearableBodyShape.FEMALE.toString() } as Collection
+      collection = { id: 'aCollection', urn: BodyShape.FEMALE.toString() } as Collection
     })
 
     it('should return false', () => {

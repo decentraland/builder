@@ -2,7 +2,7 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -236,7 +236,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           updatedAt: +new Date()
         }
 
-        const wearableBodyShape = bodyShape === BodyShapeType.MALE ? WearableBodyShape.MALE : WearableBodyShape.FEMALE
+        const wearableBodyShape = bodyShape === BodyShapeType.MALE ? BodyShape.MALE : BodyShape.FEMALE
         const representationIndex = pristineItem.data.representations.findIndex(
           (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
         )
@@ -594,7 +594,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     // add male representation
     if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
-        bodyShapes: [WearableBodyShape.MALE],
+        bodyShapes: [BodyShape.MALE],
         mainFile: this.prefixContentName(BodyShapeType.MALE, model),
         contents: Object.keys(contents.male),
         overrideHides: [],
@@ -605,7 +605,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     // add female representation
     if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
-        bodyShapes: [WearableBodyShape.FEMALE],
+        bodyShapes: [BodyShape.FEMALE],
         mainFile: this.prefixContentName(BodyShapeType.FEMALE, model),
         contents: Object.keys(contents.female),
         overrideHides: [],

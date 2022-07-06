@@ -1,4 +1,4 @@
-import { WearableBodyShape } from '@dcl/schemas'
+import { BodyShape } from '@dcl/schemas'
 import { setItems } from 'modules/editor/actions'
 import { Item } from 'modules/item/types'
 
@@ -27,7 +27,7 @@ export type Props = {
   isReviewing: boolean
   visibleItems: Item[]
   hasHeader: boolean
-  bodyShape: WearableBodyShape
+  bodyShape: BodyShape
   onSetItems: typeof setItems
   onLoadRandomPage: () => void
   onLoadPage: (page: number) => void

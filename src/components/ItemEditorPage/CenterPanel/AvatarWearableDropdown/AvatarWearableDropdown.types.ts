@@ -1,13 +1,13 @@
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { Wearable } from 'decentraland-ecs'
 
 export type Props = {
   wearable: Wearable | null
   category: WearableCategory
-  bodyShape: WearableBodyShape
+  bodyShape: BodyShape
   label: string
   isNullable?: boolean
-  onChange: (category: WearableCategory, bodyShape: WearableBodyShape, wearable: Wearable | null) => void
+  onChange: (category: WearableCategory, bodyShape: BodyShape, wearable: Wearable | null) => void
   baseWearables: Wearable[]
 }
 

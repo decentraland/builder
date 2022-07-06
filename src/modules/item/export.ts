@@ -1,4 +1,4 @@
-import { Locale, Rarity, ThirdPartyWearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
+import { Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { EntityType } from 'dcl-catalyst-commons'
@@ -106,7 +106,7 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityValues: Omit<ThirdPartyWearable, 'merkleProof'>) {
+function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityValues: Omit<Wearable, 'merkleProof'>) {
   const hashingKeys = Object.keys(entityValues)
   const { index, proof } = tree.proofs[entityHash]
   return {
@@ -117,7 +117,7 @@ function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityV
   }
 }
 
-function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): ThirdPartyWearable {
+function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): Wearable {
   if (!item.urn) {
     throw new Error('Item does not have URN')
   }

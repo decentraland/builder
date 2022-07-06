@@ -1,6 +1,6 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 import { Color4, Wearable } from 'decentraland-ecs'
-import { EmoteCategory, Locale, WearableBodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
+import { Locale, BodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
 import { Item, ItemType } from 'modules/item/types'
 import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
@@ -257,7 +257,7 @@ export function fromCatalystWearableToWearable(catalystWearable: CatalystWearabl
  * @param category - The category to filter by.
  * @param bodyShape - The body shape to filter by.
  */
-export function filterWearables(wearables: Wearable[], category: WearableCategory, bodyShape: WearableBodyShape): Wearable[] {
+export function filterWearables(wearables: Wearable[], category: WearableCategory, bodyShape: BodyShape): Wearable[] {
   return wearables.filter(
     wearable =>
       wearable.category === category &&
@@ -306,7 +306,7 @@ export function toWearable(item: Item): WearableDefinition {
     emoteDataV0:
       item.type === ItemType.EMOTE
         ? {
-            loop: ((item.data.category as unknown) as EmoteCategory) === EmoteCategory.LOOP
+            loop: false // we are setting this as false for now since all the emotes we have created are not looped, eventually this will be configurable via UI
           }
         : undefined
   }

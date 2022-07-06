@@ -1,4 +1,4 @@
-import { Locale, WearableBodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
+import { Locale, BodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
 import { Color4, Wearable } from 'decentraland-ecs'
 import { Item, ItemType } from 'modules/item/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
@@ -56,32 +56,32 @@ describe('when filtering wearables', () => {
     })
 
     it('should return an empty list', () => {
-      expect(filterWearables(wearables, WearableCategory.EARRING, WearableBodyShape.MALE)).toEqual([])
+      expect(filterWearables(wearables, WearableCategory.EARRING, BodyShape.MALE)).toEqual([])
     })
   })
 
   describe("and the list of wearables doesn't contain one with the specified body shape or category", () => {
     beforeEach(() => {
       wearables = [
-        convertWearable(wearable, WearableCategory.EARRING, WearableBodyShape.FEMALE),
-        convertWearable(wearable, WearableCategory.LOWER_BODY, WearableBodyShape.MALE)
+        convertWearable(wearable, WearableCategory.EARRING, BodyShape.FEMALE),
+        convertWearable(wearable, WearableCategory.LOWER_BODY, BodyShape.MALE)
       ]
     })
 
     it('should return an empty list', () => {
-      expect(filterWearables(wearables, WearableCategory.EARRING, WearableBodyShape.MALE)).toEqual([])
+      expect(filterWearables(wearables, WearableCategory.EARRING, BodyShape.MALE)).toEqual([])
     })
   })
 
   describe('and the list of wearables contains some wearables with the specified body shape or category', () => {
-    let matchingWearable = convertWearable(wearable, WearableCategory.EARRING, WearableBodyShape.MALE)
+    let matchingWearable = convertWearable(wearable, WearableCategory.EARRING, BodyShape.MALE)
 
     beforeEach(() => {
-      wearables = [matchingWearable, convertWearable(wearable, WearableCategory.EARRING, WearableBodyShape.FEMALE)]
+      wearables = [matchingWearable, convertWearable(wearable, WearableCategory.EARRING, BodyShape.FEMALE)]
     })
 
     it('should return a list with the matching wearables', () => {
-      expect(filterWearables(wearables, WearableCategory.EARRING, WearableBodyShape.MALE)).toEqual([matchingWearable])
+      expect(filterWearables(wearables, WearableCategory.EARRING, BodyShape.MALE)).toEqual([matchingWearable])
     })
   })
 })
@@ -227,7 +227,7 @@ describe('when converting an item', () => {
         tags: [],
         representations: [
           {
-            bodyShapes: [WearableBodyShape.MALE],
+            bodyShapes: [BodyShape.MALE],
             mainFile: 'model.glb',
             contents: ['model.glb', 'texture.png'],
             overrideHides: [],
