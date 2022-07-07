@@ -3,6 +3,7 @@ import { getLocation, push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
+import { ethers } from 'ethers'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { call, select, take, race } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
@@ -14,7 +15,7 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
-import { getMethodData } from 'modules/wallet/utils'
+import { getMethodData, getProperty } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
@@ -458,6 +459,21 @@ describe('when handling the save item success action', () => {
 
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
+    let mockEthers: jest.SpyInstance
+
+    beforeEach(() => {
+      mockEthers = jest.spyOn(ethers, 'Contract')
+      mockEthers.mockImplementationOnce(() => ({
+        items: () => ({
+          metadata: 'metadata'
+        })
+      }))
+    })
+
+    afterAll(() => {
+      mockEthers.mockRestore()
+    })
+
     it('should put a setPriceAndBeneficiarySuccess action', () => {
       const collection = {
         id: 'aCollection'
@@ -494,6 +510,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
           [select(getItems), [item]],
           [select(getCollections), [collection]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+          [matchers.call.fn(getProperty), { metadata: 'metadata' }],
           [matchers.call.fn(sendTransaction), Promise.resolve('0xhash')]
         ])
         .put(setPriceAndBeneficiarySuccess({ ...item, price, beneficiary }, ChainId.MATIC_MAINNET, '0xhash'))

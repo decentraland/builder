@@ -1,5 +1,5 @@
 import PQueue from 'p-queue'
-import { Contract } from 'ethers'
+import { Contract, providers } from 'ethers'
 import { getLocation, push, replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
@@ -10,7 +10,7 @@ import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import {
@@ -102,7 +102,7 @@ import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
 import { waitForTx } from 'modules/transaction/utils'
-import { getMethodData } from 'modules/wallet/utils'
+import { getMethodData, getProperty } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize, reHashOlderContents } from './export'
@@ -392,9 +392,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       const newItem = { ...item, price, beneficiary, updatedAt: Date.now() }
 
-      const metadata = getMetadata(newItem)
       const chainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
       const contract = { ...getContract(ContractName.ERC721CollectionV2, chainId), address: collection.contractAddress! }
+      // Get the item metadata from the blockchain to avoid modifications when updating the price or the beneficiary.
+      const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
+      const implementation = new Contract(contract.address, contract.abi, new providers.Web3Provider(provider))
+      const { metadata } = yield call(getProperty, implementation.items(item.tokenId))
       const txHash: string = yield call(sendTransaction, contract, collection =>
         collection.editItemsData([newItem.tokenId!], [newItem.price!], [newItem.beneficiary!], [metadata])
       )
