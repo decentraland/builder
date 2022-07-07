@@ -1,6 +1,6 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteCategory, EmoteDataADR74, WearableCategory } from '@dcl/schemas'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -30,9 +30,7 @@ import {
   ThirdPartyContractItem,
   ItemMetadataType,
   WearableRepresentation,
-  GenerateImageOptions,
-  EmoteCategory,
-  EmoteData
+  GenerateImageOptions
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -162,7 +160,7 @@ export function getMetadata(item: Item) {
       return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
     case ItemType.EMOTE: {
-      const data = item.data as EmoteData
+      const data = (item.data as unknown) as EmoteDataADR74
       const bodyShapeTypes = getBodyShapes(item)
         .map(toWearableBodyShapeType)
         .join(',')
@@ -339,7 +337,7 @@ export function getWearableCategories(contents: Record<string, any> | undefined 
 }
 
 export function getEmoteCategories() {
-  return Object.values(EmoteCategory)
+  return EmoteCategory.schema.enum as EmoteCategory[]
 }
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {

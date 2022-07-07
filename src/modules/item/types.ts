@@ -1,5 +1,5 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
-import { BodyShape, Wearable, WearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
 import { ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
@@ -31,10 +31,6 @@ export enum ItemRarity {
   RARE = 'rare',
   UNCOMMON = 'uncommon',
   COMMON = 'common'
-}
-export enum EmoteCategory {
-  SIMPLE = 'simple',
-  LOOP = 'loop'
 }
 
 export enum ItemMetadataType {
@@ -99,12 +95,6 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
   [ItemRarity.COMMON]: 100000
 }
 
-export type EmoteData = {
-  category?: EmoteCategory
-  representations: WearableRepresentation[]
-  tags: string[]
-}
-
 export type WearableData = {
   category?: WearableCategory
   representations: WearableRepresentation[]
@@ -122,10 +112,6 @@ type BaseItem = {
   metrics: ModelMetrics
   createdAt: number
   updatedAt: number
-}
-
-export type StandardCatalystItem = Wearable & {
-  emoteDataV0?: { loop: boolean }
 }
 
 export type CatalystItem = Wearable
@@ -153,7 +139,7 @@ export type Item<T = ItemType.WEARABLE> = BaseItem & {
   blockchainContentHash: string | null
   currentContentHash: string | null
   catalystContentHash: string | null
-  data: T extends ItemType.WEARABLE ? WearableData : EmoteData
+  data: T extends ItemType.WEARABLE ? WearableData : EmoteDataADR74
 }
 
 export enum Currency {
