@@ -1322,7 +1322,7 @@ describe('when handling the delete item success action', () => {
   })
 })
 
-describe('when handling the save item success action', () => {
+describe('when handling the save item curation success action', () => {
   let item: Item
   beforeEach(() => {
     item = { ...mockedItem }
