@@ -463,8 +463,15 @@ export function isEmoteSynced(item: Item, entity: Entity) {
     throw new Error('Item must be EMOTE')
   }
 
+  // check if metadata has the new schema from ADR 74
+  const isADR74 = 'emoteDataADR74' in entity.metadata
+  if (!isADR74) {
+    return false
+  }
+
   // check if metadata is synced
   const catalystItem = entity.metadata! as Emote
+
   const hasMetadataChanged =
     item.name !== catalystItem.name ||
     item.description !== catalystItem.description ||
