@@ -1317,7 +1317,7 @@ describe('when handling the save item success action', () => {
       ])
       .put(fetchItemCurationRequest(item.collectionId!, item.id))
       .dispatch(
-        saveItemSuccess({ ...item, urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' }, {})
+        saveItemSuccess({ ...item, isPublished: true ,urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' }, {})
       )
       .run({ silenceTimeout: true })
   })
