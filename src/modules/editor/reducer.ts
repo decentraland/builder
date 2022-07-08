@@ -1,5 +1,5 @@
 import { Color4, Wearable } from 'decentraland-ecs'
-import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { PreviewEmote, BodyShape, WearableCategory } from '@dcl/schemas'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
@@ -82,13 +82,13 @@ export type EditorState = {
     progress: number
     total: number
   }
-  bodyShape: WearableBodyShape
+  bodyShape: BodyShape
   emote: PreviewEmote
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4
   baseWearables: Wearable[]
-  selectedBaseWearablesByBodyShape: Record<WearableBodyShape, Record<string, Wearable | null>> | null
+  selectedBaseWearablesByBodyShape: Record<BodyShape, Record<string, Wearable | null>> | null
   visibleItemIds: string[]
   loading: LoadingState
   fetchingBaseWearablesError: string | null
@@ -112,7 +112,7 @@ export const INITIAL_STATE: EditorState = {
     progress: 0,
     total: 0
   },
-  bodyShape: pickRandom([WearableBodyShape.MALE, WearableBodyShape.FEMALE]),
+  bodyShape: pickRandom([BodyShape.MALE, BodyShape.FEMALE]),
   emote: PreviewEmote.IDLE,
   skinColor: pickRandom(getSkinColors()),
   eyeColor: pickRandom(getEyeColors()),
@@ -311,7 +311,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         selectedBaseWearablesByBodyShape: {
-          ...(state.selectedBaseWearablesByBodyShape ?? ({} as Record<WearableBodyShape, Record<string, Wearable | null>>)),
+          ...(state.selectedBaseWearablesByBodyShape ?? ({} as Record<BodyShape, Record<string, Wearable | null>>)),
           [bodyShape]: {
             ...state.selectedBaseWearablesByBodyShape![bodyShape],
             [category]: wearable
@@ -342,17 +342,17 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         loading: loadingReducer(state.loading, action),
         // Initialize the selectedBaseWearables randomly
         selectedBaseWearablesByBodyShape: {
-          [WearableBodyShape.FEMALE]: {
-            [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, WearableBodyShape.FEMALE)),
+          [BodyShape.FEMALE]: {
+            [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, BodyShape.FEMALE)),
             [WearableCategory.FACIAL_HAIR]: null,
-            [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, WearableBodyShape.FEMALE)),
-            [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, WearableBodyShape.FEMALE))
+            [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, BodyShape.FEMALE)),
+            [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, BodyShape.FEMALE))
           },
-          [WearableBodyShape.MALE]: {
-            [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, WearableBodyShape.MALE)),
-            [WearableCategory.FACIAL_HAIR]: pickRandom(filterWearables(wearables, WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE)),
-            [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, WearableBodyShape.MALE)),
-            [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, WearableBodyShape.MALE))
+          [BodyShape.MALE]: {
+            [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, BodyShape.MALE)),
+            [WearableCategory.FACIAL_HAIR]: pickRandom(filterWearables(wearables, WearableCategory.FACIAL_HAIR, BodyShape.MALE)),
+            [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, BodyShape.MALE)),
+            [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, BodyShape.MALE))
           }
         }
       }

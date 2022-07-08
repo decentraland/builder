@@ -1,4 +1,4 @@
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { Wearable } from 'decentraland-ecs'
 import { anotherWearable, convertWearable, wearable } from 'specs/editor'
 import { fetchBaseWearablesFailure, fetchBaseWearablesRequest, fetchBaseWearablesSuccess, setBaseWearable } from './actions'
@@ -17,19 +17,19 @@ describe('when reducing the action that sets the selected base wearable', () => 
     state = {
       ...state,
       selectedBaseWearablesByBodyShape: {
-        [WearableBodyShape.FEMALE]: {
+        [BodyShape.FEMALE]: {
           [anotherWearable.category]: anotherWearable
         }
-      } as Record<WearableBodyShape, Record<string, Wearable | null>>
+      } as Record<BodyShape, Record<string, Wearable | null>>
     }
   })
 
   it('should return a state with the new wearable set with the given category and body shape', () => {
-    expect(editorReducer(state, setBaseWearable(wearable.category as WearableCategory, WearableBodyShape.MALE, wearable))).toEqual({
+    expect(editorReducer(state, setBaseWearable(wearable.category as WearableCategory, BodyShape.MALE, wearable))).toEqual({
       ...state,
       selectedBaseWearablesByBodyShape: {
         ...state.selectedBaseWearablesByBodyShape,
-        [WearableBodyShape.MALE]: {
+        [BodyShape.MALE]: {
           [wearable.category]: wearable
         }
       }
@@ -58,13 +58,13 @@ describe('when reducing the action that signals a successful fetching of the bas
   let wearables: Wearable[]
 
   beforeEach(() => {
-    femaleHairWearable = convertWearable(wearable, WearableCategory.HAIR, WearableBodyShape.FEMALE)
-    femaleUpperBodyWearable = convertWearable(wearable, WearableCategory.UPPER_BODY, WearableBodyShape.FEMALE)
-    femaleLowerBodyWearable = convertWearable(wearable, WearableCategory.LOWER_BODY, WearableBodyShape.FEMALE)
-    maleHairWearable = convertWearable(wearable, WearableCategory.HAIR, WearableBodyShape.MALE)
-    maleFacialHairWearable = convertWearable(wearable, WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE)
-    maleUpperBodyWearable = convertWearable(wearable, WearableCategory.UPPER_BODY, WearableBodyShape.MALE)
-    maleLowerBodyWearable = convertWearable(wearable, WearableCategory.LOWER_BODY, WearableBodyShape.MALE)
+    femaleHairWearable = convertWearable(wearable, WearableCategory.HAIR, BodyShape.FEMALE)
+    femaleUpperBodyWearable = convertWearable(wearable, WearableCategory.UPPER_BODY, BodyShape.FEMALE)
+    femaleLowerBodyWearable = convertWearable(wearable, WearableCategory.LOWER_BODY, BodyShape.FEMALE)
+    maleHairWearable = convertWearable(wearable, WearableCategory.HAIR, BodyShape.MALE)
+    maleFacialHairWearable = convertWearable(wearable, WearableCategory.FACIAL_HAIR, BodyShape.MALE)
+    maleUpperBodyWearable = convertWearable(wearable, WearableCategory.UPPER_BODY, BodyShape.MALE)
+    maleLowerBodyWearable = convertWearable(wearable, WearableCategory.LOWER_BODY, BodyShape.MALE)
     wearables = [
       femaleHairWearable,
       femaleUpperBodyWearable,
@@ -83,13 +83,13 @@ describe('when reducing the action that signals a successful fetching of the bas
       loading: [],
       baseWearables: wearables,
       selectedBaseWearablesByBodyShape: {
-        [WearableBodyShape.FEMALE]: {
+        [BodyShape.FEMALE]: {
           [WearableCategory.HAIR]: femaleHairWearable,
           [WearableCategory.FACIAL_HAIR]: null,
           [WearableCategory.UPPER_BODY]: femaleUpperBodyWearable,
           [WearableCategory.LOWER_BODY]: femaleLowerBodyWearable
         },
-        [WearableBodyShape.MALE]: {
+        [BodyShape.MALE]: {
           [WearableCategory.HAIR]: maleHairWearable,
           [WearableCategory.FACIAL_HAIR]: maleFacialHairWearable,
           [WearableCategory.UPPER_BODY]: maleUpperBodyWearable,

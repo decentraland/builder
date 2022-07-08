@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { Color4, Wearable } from 'decentraland-ecs'
-import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
 import {
   CloseEditorAction,
   setEmote,
@@ -21,7 +21,7 @@ import {
 import { Item } from 'modules/item/types'
 
 export type Props = {
-  bodyShape: WearableBodyShape
+  bodyShape: BodyShape
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4

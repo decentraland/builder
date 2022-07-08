@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { FetchCollectionsParams } from 'lib/api/builder'
 import { fetchCollectionsRequest, FetchCollectionsRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 
@@ -8,6 +9,7 @@ export type Props = {
   value?: Collection
   placeholder?: string
   filter?: (collection: Collection) => boolean
+  fetchCollectionParams?: FetchCollectionsParams
   onChange: (collection: Collection) => void
   isDisabled?: boolean
   onFetchCollections: typeof fetchCollectionsRequest
