@@ -443,6 +443,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   function* handleSetCollection(action: SetCollectionAction) {
     const { item, collectionId } = action.payload
     const newItem = { ...item }
+    const address: string = yield select(getAddress)
     if (collectionId === null) {
       delete newItem.collectionId
     } else {
@@ -450,8 +451,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
     yield put(saveItemRequest(newItem, {}))
     yield take(SAVE_ITEM_SUCCESS)
-    yield put(closeModal('AddExistingItemModal'))
-    const address: string = yield select(getAddress)
     yield put(fetchItemsRequest(address))
   }
 
