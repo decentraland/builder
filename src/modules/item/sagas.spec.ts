@@ -50,9 +50,11 @@ import {
   fetchCollectionItemsFailure,
   deleteItemSuccess,
   fetchItemsRequest,
+  fetchItemsSuccess,
   fetchRaritiesRequest,
   fetchRaritiesSuccess,
-  fetchRaritiesFailure
+  fetchRaritiesFailure,
+  setCollection
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import { BuiltFile, Currency, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
@@ -70,7 +72,8 @@ const builderAPI = ({
   saveItemContents: jest.fn(),
   fetchContents: jest.fn(),
   fetchCollectionItems: jest.fn(),
-  fetchRarities: jest.fn()
+  fetchRarities: jest.fn(),
+  fetchItems: jest.fn()
 } as unknown) as BuilderAPI
 
 let builderClient: BuilderClient
@@ -1389,6 +1392,47 @@ describe('when handling the fetch of rarities', () => {
         .provide([[call([builderAPI, builderAPI.fetchRarities]), Promise.reject(new Error('Failed to fetch rarities'))]])
         .dispatch(fetchRaritiesRequest())
         .put(fetchRaritiesFailure('Failed to fetch rarities'))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the setCollection action', () => {
+  describe('and the item is moved to the selected collection', () => {
+    let paginationData: PaginatedResource<Item>
+    beforeEach(() => {
+      paginationData = { total: 0, limit: 20, page: 1, pages: 1, results: [] }
+      ;(builderAPI.fetchItems as jest.Mock).mockReturnValue(paginationData)
+    })
+
+    it('should put a fetch address items success action to fetch the same page again', () => {
+      const collection = {
+        id: 'aCollection'
+      } as Collection
+
+      const item = { ...mockedItem }
+
+      const catalystImageHash = 'someHash'
+
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getAddress), mockAddress],
+          [select(getLocation), { pathname: locations.collections() }],
+          [select(getOpenModals), { AddExistingItemModal: true }],
+          [select(getItem, item.id), item],
+          [select(getCollection, collection.id), collection],
+          [matchers.call.fn(reHashOlderContents), {}],
+          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: catalystImageHash, content: blob })],
+          [matchers.call.fn(calculateFinalSize), Promise.resolve(1)]
+        ])
+        .put(
+          fetchItemsSuccess(
+            paginationData.results,
+            { limit: paginationData.limit, page: paginationData.page, pages: paginationData.pages, total: paginationData.total },
+            mockAddress
+          )
+        )
+        .dispatch(setCollection(item, collection.id))
         .run({ silenceTimeout: true })
     })
   })
