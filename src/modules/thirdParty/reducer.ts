@@ -58,7 +58,9 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
     case FETCH_THIRD_PARTIES_REQUEST: {
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
+        error: null,
+        errors: []
       }
     }
     case FETCH_THIRD_PARTIES_SUCCESS: {

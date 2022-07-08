@@ -2,11 +2,11 @@ import { action } from 'typesafe-actions'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { ThirdPartyError } from 'modules/collection/utils'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
 import { Slot, ThirdParty } from './types'
-import { ThirdPartyError } from 'modules/collection/utils'
 
 // Fetch Third Party Records
 

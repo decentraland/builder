@@ -1,5 +1,7 @@
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { Collection } from 'modules/collection/types'
+import { ThirdPartyBuildEntityError, ThirdPartyDeploymentError, ThirdPartyError } from 'modules/collection/utils'
+import { mockedItem } from 'specs/item'
 import {
   fetchThirdPartiesRequest,
   fetchThirdPartiesSuccess,
@@ -88,22 +90,27 @@ describe('when reducing an DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS action', () 
     ).toStrictEqual({
       ...INITIAL_STATE,
       loading: [],
-      error: null,
+      error: null
     })
   })
 })
 
 describe('when reducing an DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE action', () => {
+  let errors: ThirdPartyError[]
+  beforeEach(() => {
+    errors = [new ThirdPartyDeploymentError(mockedItem), new ThirdPartyBuildEntityError(mockedItem)]
+  })
   it('should remove the corresponding request action from the loading state and set the error', () => {
     expect(
       thirdPartyReducer(
         { ...INITIAL_STATE, loading: [{ type: DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE }] },
-        deployBatchedThirdPartyItemsFailure([], 'error')
+        deployBatchedThirdPartyItemsFailure(errors, 'error')
       )
     ).toStrictEqual({
       ...INITIAL_STATE,
       loading: [],
-      error: 'error'
+      error: 'error',
+      errors
     })
   })
 })

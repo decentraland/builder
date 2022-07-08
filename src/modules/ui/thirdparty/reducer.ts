@@ -1,23 +1,23 @@
 import { APPROVAL_FLOW_UPDATE_PROGRESS, UpdateApporvalFlowProgressAction } from './action'
 
-export type TPApprovalFlowState = {
-  progress: number
+export type ThirdPartyState = {
+  approvalFlowUpdateProgress: number
 }
 
-export const INITIAL_STATE: TPApprovalFlowState = {
-  progress: 0
+export const INITIAL_STATE: ThirdPartyState = {
+  approvalFlowUpdateProgress: 0
 }
 
-type TPApprovalFlowReducerAction = UpdateApporvalFlowProgressAction
+type ThirdPartyReducerAction = UpdateApporvalFlowProgressAction
 
-export const TPApprovalFlowReducer = (state = INITIAL_STATE, action: TPApprovalFlowReducerAction): TPApprovalFlowState => {
+export const ThirdPartyReducer = (state = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState => {
   switch (action.type) {
     case APPROVAL_FLOW_UPDATE_PROGRESS: {
       const { progress } = action.payload
 
       return {
         ...state,
-        progress
+        approvalFlowUpdateProgress: progress
       }
     }
     default:

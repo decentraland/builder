@@ -1637,7 +1637,7 @@ describe('when executing the TP approval flow', () => {
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.CONSUME_TP_SLOTS,
-                items: [syncedItem, unsyncedItem],
+                items: itemsToApprove,
                 collection: TPCollection,
                 merkleTreeRoot: merkleTree.merkleRoot,
                 slots: [{ qty: cheque.qty, salt: cheque.salt, sigR: parsedSignature.r, sigS: parsedSignature.s, sigV: parsedSignature.v }]
@@ -1648,7 +1648,7 @@ describe('when executing the TP approval flow', () => {
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.DEPLOY_TP,
                 collection: TPCollection,
-                items: [syncedItem, unsyncedItem],
+                items: itemsToApprove,
                 tree: merkleTree,
                 hashes: contentHashes
               } as ApprovalFlowModalMetadata)

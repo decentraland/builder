@@ -1,5 +1,5 @@
 import { RootState } from 'modules/common/types'
 
-const getState = (state: RootState) => state.ui.tpApprovalFlow
+const getState = (state: RootState) => state.ui.thirdParty
 
-export const getProgress = (state: RootState) => getState(state).progress
+export const getApporvalFlowUpdateProgress = (state: RootState) => getState(state).approvalFlowUpdateProgress

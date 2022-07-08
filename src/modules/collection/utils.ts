@@ -151,13 +151,13 @@ export const getTPThresholdToReview = (totalItems: number) => {
 
 export class ThirdPartyBuildEntityError extends Error {
   constructor(public item: Item) {
-    super('Failed to upload file')
+    super("Failed to download the entity's contents")
     this.item = item
   }
 }
 export class ThirdPartyDeploymentError extends Error {
   constructor(public item: Item) {
-    super('Failed to deploy file')
+    super('Failed to deploy the entity')
     this.item = item
   }
 }

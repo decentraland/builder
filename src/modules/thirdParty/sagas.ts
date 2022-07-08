@@ -273,16 +273,14 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
             return updatedCuration
           } catch (error) {
             errors.push(new ThirdPartyCurationUpdateError(item))
-            return Promise.resolve()
           }
         } catch (error) {
           errors.push(new ThirdPartyDeploymentError(item))
-          return Promise.resolve()
         }
       } catch (error) {
         errors.push(new ThirdPartyBuildEntityError(item))
-        return Promise.resolve()
       }
+      return Promise.resolve()
     })
 
     const deployedItemsCurations: ItemCuration[] = yield call([queue, 'addAll'], promisesOfItemsBeingDeployed)

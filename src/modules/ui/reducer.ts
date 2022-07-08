@@ -4,8 +4,8 @@ import { dashboardReducer as dashboard, DashboardState } from './dashboard/reduc
 import { collectionReducer as collection, CollectionState } from './collection/reducer'
 import { landReducer as land, LandState } from './land/reducer'
 import { CreateMultipleItemsState, createMultipleItemsReducer as createMultipleItems } from './createMultipleItems/reducer'
-import { TPApprovalFlowReducer as tpApprovalFlow } from './thirdparty/reducer'
-import { TPApprovalFlowState } from './thirdparty/reducer'
+import { ThirdPartyReducer as thirdParty } from './thirdparty/reducer'
+import { ThirdPartyState } from './thirdparty/reducer'
 
 export type UIState = {
   sidebar: SidebarState
@@ -13,7 +13,7 @@ export type UIState = {
   collection: CollectionState
   land: LandState
   createMultipleItems: CreateMultipleItemsState
-  tpApprovalFlow: TPApprovalFlowState
+  thirdParty: ThirdPartyState
 }
 
 export const uiReducer = combineReducers({
@@ -22,5 +22,5 @@ export const uiReducer = combineReducers({
   collection,
   land,
   createMultipleItems,
-  tpApprovalFlow
+  thirdParty
 })

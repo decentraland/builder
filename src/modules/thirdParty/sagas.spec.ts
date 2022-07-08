@@ -40,7 +40,12 @@ import { CurationStatus } from 'modules/curations/types'
 import { getIdentity } from 'modules/identity/utils'
 import { buildTPItemEntity } from 'modules/item/export'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
-import { ThirdPartyCurationUpdateError, ThirdPartyDeploymentError, ThirdPartyError } from 'modules/collection/utils'
+import {
+  ThirdPartyBuildEntityError,
+  ThirdPartyCurationUpdateError,
+  ThirdPartyDeploymentError,
+  ThirdPartyError
+} from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
 import { thirdPartySaga } from './sagas'
 import { getPublishItemsSignature } from './utils'
@@ -53,7 +58,8 @@ const mockBuilder = ({
   fetchThirdPartyAvailableSlots: jest.fn(),
   publishTPCollection: jest.fn(),
   pushItemCuration: jest.fn(),
-  updateItemCurationStatus: jest.fn()
+  updateItemCurationStatus: jest.fn(),
+  fetchContents: jest.fn()
 } as any) as BuilderAPI
 
 const mockedCatalystClient = ({
@@ -512,6 +518,27 @@ describe('when handling the batched deployment of third party items', () => {
     })
   })
 
+  describe('when the items to be deployed failed to build the entities', () => {
+    let errors: ThirdPartyError[]
+    beforeEach(() => {
+      ;((buildTPItemEntity as unknown) as jest.Mock).mockRejectedValue(new Error('Failed to fetch contents'))
+      ;((Authenticator.signPayload as unknown) as jest.Mock<typeof Authenticator.signPayload>).mockResolvedValueOnce({
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'somePayload',
+        signature: {}
+      } as never)
+      errors = [new ThirdPartyBuildEntityError(items[0]), new ThirdPartyBuildEntityError(items[1])]
+    })
+
+    it('should put a failure action with the errors that occurred when deploying', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+        .provide([[call(getIdentity), auth]])
+        .put(deployBatchedThirdPartyItemsFailure(errors))
+        .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))
+        .run({ silenceTimeout: true })
+    })
+  })
+
   describe('when some one of the items to be deployed failed to do so', () => {
     let errors: ThirdPartyError[]
     beforeEach(() => {
@@ -527,7 +554,7 @@ describe('when handling the batched deployment of third party items', () => {
       errors = [new ThirdPartyDeploymentError(items[0])]
     })
 
-    it('should put a failure action with the error that occurred when deploying', () => {
+    it('should put a failure action with the errors that occurred when deploying', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([[call(getIdentity), auth]])
         .put(deployBatchedThirdPartyItemsFailure(errors))
@@ -550,7 +577,7 @@ describe('when handling the batched deployment of third party items', () => {
       errors = [new ThirdPartyCurationUpdateError(items[0])]
     })
 
-    it('should put a failure action with the error that occurred when updating the item curation', () => {
+    it('should put a failure action with the errors that occurred when updating the item curation', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([[call(getIdentity), auth]])
         .put(deployBatchedThirdPartyItemsFailure(errors))
