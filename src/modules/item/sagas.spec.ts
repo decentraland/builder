@@ -460,7 +460,7 @@ describe('when handling the save item success action', () => {
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
     let mockEthers: jest.SpyInstance
-    let contractInstanceMock: { items: (tokenId: string) => {} }
+    let contractInstanceMock: { items: () => {} }
 
     beforeEach(() => {
       mockEthers = jest.spyOn(ethers, 'Contract')
@@ -478,7 +478,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       mockEthers.mockRestore()
     })
 
-    it('should put a setPriceAndBeneficiarySuccess action', () => {
+    it('should put a setPriceAndBeneficiarySuccess action', async () => {
       const collection = {
         id: 'aCollection'
       } as Collection
@@ -510,15 +510,11 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       const price = '1000'
       const beneficiary = '0xpepe'
 
-      expectSaga(itemSaga, builderAPI, builderClient)
+      await expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
-          [
-            matchers.call.fn(contractInstanceMock.items as ethers.ContractFunction),
-            Promise.resolve(contractInstanceMock.items(item.tokenId!))
-          ],
           [matchers.call.fn(sendTransaction), Promise.resolve('0xhash')]
         ])
         .put(setPriceAndBeneficiarySuccess({ ...item, price, beneficiary }, ChainId.MATIC_MAINNET, '0xhash'))
