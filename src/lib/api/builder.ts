@@ -308,8 +308,8 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
   }
 }
 
-function toRemoteItem(item: Item): RemoteItem {
-  const remoteItem: RemoteItem = {
+function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'> {
+  const remoteItem: Omit<RemoteItem, 'created_at' | 'updated_at'> = {
     id: item.id,
     name: item.name,
     description: item.description || '',
@@ -331,9 +331,7 @@ function toRemoteItem(item: Item): RemoteItem {
     contents: item.contents,
     content_hash: item.blockchainContentHash,
     local_content_hash: item.currentContentHash,
-    catalyst_content_hash: item.catalystContentHash,
-    created_at: new Date(item.createdAt),
-    updated_at: new Date(item.updatedAt)
+    catalyst_content_hash: item.catalystContentHash
   }
 
   return remoteItem
@@ -684,9 +682,8 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCollections(address?: string, params?: FetchCollectionsParams) {
-    const remoteCollections = address
-      ? await this.request('get', `/${address}/collections`, params)
-      : await this.request('get', '/collections', toRemoteCollectionQueryParameters(params))
+    const url = address ? `/${address}/collections` : '/collections'
+    const remoteCollections = await this.request('get', url, toRemoteCollectionQueryParameters(params))
 
     const { limit, page } = params || {}
     if (page && limit && remoteCollections.results) {

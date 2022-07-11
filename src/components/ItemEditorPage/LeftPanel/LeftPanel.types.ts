@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { WearableBodyShape } from '@dcl/schemas'
+import { BodyShape } from '@dcl/schemas'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { setItems, SetItemsAction } from 'modules/editor/actions'
@@ -29,7 +29,7 @@ export type Props = {
   selectedCollectionId: string | null
   visibleItems: Item[]
   isReviewing: boolean
-  bodyShape: WearableBodyShape
+  bodyShape: BodyShape
   isLoading: boolean
   onSetItems: typeof setItems
   onSetCollection: typeof setCollection

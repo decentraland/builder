@@ -1653,7 +1653,7 @@ describe('when executing the TP approval flow', () => {
                 hashes: contentHashes
               } as ApprovalFlowModalMetadata)
             )
-            .dispatch(deployBatchedThirdPartyItemsFailure(itemsToApprove, deployError))
+            .dispatch(deployBatchedThirdPartyItemsFailure([], deployError))
             .put(
               openModal('ApprovalFlowModal', {
                 view: ApprovalFlowModalView.ERROR,

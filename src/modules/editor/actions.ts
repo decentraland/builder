@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { PreviewEmote, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { PreviewEmote, BodyShape, WearableCategory } from '@dcl/schemas'
 
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
@@ -218,7 +218,7 @@ export type SetItemsAction = ReturnType<typeof setItems>
 // Set body shape
 export const SET_BODY_SHAPE = 'Set body shape'
 
-export const setBodyShape = (bodyShape: WearableBodyShape) => action(SET_BODY_SHAPE, { bodyShape })
+export const setBodyShape = (bodyShape: BodyShape) => action(SET_BODY_SHAPE, { bodyShape })
 
 export type SetBodyShapeAction = ReturnType<typeof setBodyShape>
 
@@ -253,7 +253,7 @@ export type SetHairColorAction = ReturnType<typeof setHairColor>
 // Set default wearable
 export const SET_BASE_WEARABLE = 'Set base wearable'
 
-export const setBaseWearable = (category: WearableCategory, bodyShape: WearableBodyShape, wearable: Wearable | null) =>
+export const setBaseWearable = (category: WearableCategory, bodyShape: BodyShape, wearable: Wearable | null) =>
   action(SET_BASE_WEARABLE, { category, bodyShape, wearable })
 
 export type SetBaseWearableAction = ReturnType<typeof setBaseWearable>

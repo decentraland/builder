@@ -1,4 +1,4 @@
-import { WearableBodyShape } from '@dcl/schemas'
+import { BodyShape } from '@dcl/schemas'
 import { Color4 } from 'decentraland-ecs'
 
 export function getSkinColors() {
@@ -45,7 +45,7 @@ export function getEyeColors() {
 }
 
 export const extraAvatarWearablesIds = {
-  [WearableBodyShape.MALE]: [
+  [BodyShape.MALE]: [
     'urn:decentraland:off-chain:base-avatars:BaseMale',
     'urn:decentraland:off-chain:base-avatars:eyebrows_00',
     'urn:decentraland:off-chain:base-avatars:eyes_00',
@@ -54,7 +54,7 @@ export const extraAvatarWearablesIds = {
     'urn:decentraland:off-chain:base-avatars:mouth_00',
     'urn:decentraland:off-chain:base-avatars:green_hoodie'
   ],
-  [WearableBodyShape.FEMALE]: [
+  [BodyShape.FEMALE]: [
     'urn:decentraland:off-chain:base-avatars:BaseFemale',
     'urn:decentraland:off-chain:base-avatars:f_eyebrows_00',
     'urn:decentraland:off-chain:base-avatars:f_eyes_00',

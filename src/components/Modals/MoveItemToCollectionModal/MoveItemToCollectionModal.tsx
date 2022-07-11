@@ -29,11 +29,12 @@ export default class MoveItemToCollectionModal extends React.PureComponent<Props
           <CollectionDropdown
             value={collection}
             onChange={this.handleChangeCollection}
-            filter={collection => !isTPCollection(collection)}
+            filter={collection => !isTPCollection(collection) && !collection.isPublished}
+            fetchCollectionParams={{ isPublished: false }}
           />
         </ModalContent>
         <ModalActions>
-          <Button primary onClick={() => collection && onSubmit(item, collection.id)} loading={isLoading} disabled={!item}>
+          <Button primary onClick={() => collection && onSubmit(item, collection.id)} loading={isLoading} disabled={!item || !collection}>
             {t('move_item_to_collection_modal.confirm')}
           </Button>
         </ModalActions>
