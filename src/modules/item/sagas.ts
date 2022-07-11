@@ -102,7 +102,7 @@ import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
 import { waitForTx } from 'modules/transaction/utils'
-import { getMethodData, getProperty } from 'modules/wallet/utils'
+import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize, reHashOlderContents } from './export'
@@ -397,7 +397,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       // Get the item metadata from the blockchain to avoid modifications when updating the price or the beneficiary.
       const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
       const implementation = new Contract(contract.address, contract.abi, new providers.Web3Provider(provider))
-      const { metadata } = yield call(getProperty, implementation.items(item.tokenId))
+      const { metadata } = yield call(implementation.items, item.tokenId)
       const txHash: string = yield call(sendTransaction, contract, collection =>
         collection.editItemsData([newItem.tokenId!], [newItem.price!], [newItem.beneficiary!], [metadata])
       )

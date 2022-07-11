@@ -30,7 +30,3 @@ export async function getMethodData(populatedTransactionPromise: Promise<ethers.
   const populatedTransaction = await populatedTransactionPromise
   return populatedTransaction.data!
 }
-
-export async function getProperty(propertyPromise: Promise<ethers.ContractFunction>) {
-  return await propertyPromise
-}
