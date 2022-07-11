@@ -4,6 +4,7 @@ import { Network } from '@dcl/schemas'
 import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { config } from 'config'
 import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
@@ -93,7 +94,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               <p>
                 {t('publish_collection_modal_with_oracle.items_breakdown_title', {
                   count: items.length,
-                  publicationFee: ethers.utils.formatEther(priceUSD!),
+                  publicationFee: toFixedMANAValue(ethers.utils.formatEther(priceUSD!)),
                   currency: Currency.USD
                 })}
               </p>
@@ -108,20 +109,20 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
                   <div className="element-content">
-                    {Currency.USD} {ethers.utils.formatEther(priceUSD!)}
+                    {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD!))}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd', { currency: Currency.USD })}</div>
                   <div className="element-content">
-                    {Currency.USD} {ethers.utils.formatEther(totalPriceUSD!)}
+                    {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD!))}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
                   <div className="element-content">
                     <Mana network={Network.MATIC} size="medium">
-                      {ethers.utils.formatEther(totalPrice!)}
+                      {toFixedMANAValue(ethers.utils.formatEther(totalPrice!))}
                     </Mana>
                   </div>
                 </div>
