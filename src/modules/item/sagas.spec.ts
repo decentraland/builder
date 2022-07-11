@@ -460,15 +460,15 @@ describe('when handling the save item success action', () => {
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
     let mockEthers: jest.SpyInstance
-    let contractInstanceMock: { items: () => {} }
+    let contractInstanceMock: { items: (tokenId: string) => {} }
 
     beforeEach(() => {
       mockEthers = jest.spyOn(ethers, 'Contract')
 
       contractInstanceMock = {
-        items: jest.fn().mockReturnValue(() => ({
+        items: jest.fn().mockReturnValue({
           metadata: 'metadata'
-        }))
+        })
       }
 
       mockEthers.mockReturnValue(contractInstanceMock)
@@ -485,6 +485,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
 
       const item = {
         id: 'anItem',
+        tokenId: 'aTokenId',
         name: 'valid name',
         description: 'valid description',
         collectionId: collection.id,
@@ -514,14 +515,17 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
           [select(getItems), [item]],
           [select(getCollections), [collection]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
-          [matchers.call.fn(contractInstanceMock.items as ethers.ContractFunction), Promise.resolve(contractInstanceMock.items())],
+          [
+            matchers.call.fn(contractInstanceMock.items as ethers.ContractFunction),
+            Promise.resolve(contractInstanceMock.items(item.tokenId!))
+          ],
           [matchers.call.fn(sendTransaction), Promise.resolve('0xhash')]
         ])
         .put(setPriceAndBeneficiarySuccess({ ...item, price, beneficiary }, ChainId.MATIC_MAINNET, '0xhash'))
         .dispatch(setPriceAndBeneficiaryRequest(item.id, price, beneficiary))
         .run({ silenceTimeout: true })
 
-      expect(contractInstanceMock.items).toHaveBeenCalled()
+      expect(contractInstanceMock.items).toHaveBeenCalledWith(item.tokenId)
     })
 
     describe("and the itemId doesn't match any existing item", () => {
@@ -1343,7 +1347,10 @@ describe('when handling the save item curation success action', () => {
       ])
       .put(fetchItemCurationRequest(item.collectionId!, item.id))
       .dispatch(
-        saveItemSuccess({ ...item, isPublished: true ,urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' }, {})
+        saveItemSuccess(
+          { ...item, isPublished: true, urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' },
+          {}
+        )
       )
       .run({ silenceTimeout: true })
   })
