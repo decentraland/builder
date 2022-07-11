@@ -1,5 +1,5 @@
 import { ItemType, RemoteItem } from '@dcl/builder-client'
-import { Rarity, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { Rarity, BodyShape, WearableCategory } from '@dcl/schemas'
 import { Item, ItemRarity } from 'modules/item/types'
 import { fromRemoteItem } from './transformations'
 
@@ -27,7 +27,7 @@ describe('when converting a RemoteItem into an Item', () => {
         category: WearableCategory.HAT,
         representations: [
           {
-            bodyShapes: [WearableBodyShape.MALE],
+            bodyShapes: [BodyShape.MALE],
             mainFile: 'model.glb',
             contents: ['model.glb'],
             overrideHides: [WearableCategory.FEET],
@@ -71,7 +71,7 @@ describe('when converting a RemoteItem into an Item', () => {
         category: WearableCategory.HAT,
         representations: [
           {
-            bodyShapes: [WearableBodyShape.MALE],
+            bodyShapes: [BodyShape.MALE],
             mainFile: 'model.glb',
             contents: ['model.glb'],
             overrideHides: [WearableCategory.FEET],

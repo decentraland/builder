@@ -1,4 +1,4 @@
-import { WearableBodyShape } from '@dcl/schemas'
+import { BodyShape } from '@dcl/schemas'
 import { Item } from 'modules/item/types'
 
 export type Props = {
@@ -6,6 +6,6 @@ export type Props = {
   isVisible: boolean
   isSelected: boolean
   selectedCollectionId: string | null
-  bodyShape: WearableBodyShape
+  bodyShape: BodyShape
   onClick: (item: Item) => void
 }

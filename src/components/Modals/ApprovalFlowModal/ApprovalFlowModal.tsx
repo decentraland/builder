@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Modal } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Center, Loader, Message, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
+import { Button, Center, Loader, Message, ModalActions, ModalContent, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import ItemImage from 'components/ItemImage'
 import { formatBytes } from 'lib/number'
 import { extractThirdPartyId } from 'lib/urn'
@@ -224,6 +224,20 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     )
   }
 
+  private renderProgressBar() {
+    const { TPDeployItemsProgress: progress } = this.props
+    return (
+      <>
+        <ModalNavigation title={t('approval_flow.upload.title')} subtitle={t('approval_flow.upload.subtitle')} />
+        <Modal.Content>
+          <div className="progressBarContainer">
+            <Progress percent={progress} className="progressBar" progress />
+          </div>
+        </Modal.Content>
+      </>
+    )
+  }
+
   renderDeployView() {
     const { onClose, metadata, onDeployItems, isDeployingItems } = this.props
     const { items, entities } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY>
@@ -299,12 +313,42 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
   }
 
   renderErrorView() {
-    const { onClose, metadata } = this.props
+    const { onClose, metadata, errors } = this.props
     const { error } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR>
     return (
       <>
         <ModalNavigation title={t('approval_flow.error.title')} subtitle={t('approval_flow.error.subtitle')} onClose={onClose} />
-        <ModalContent className="error">{error}</ModalContent>
+        <ModalContent className="error">
+          <>
+            {error}
+            {errors?.length ? (
+              <>
+                <Table basic="very">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell width={11}>{t('global.name')}</Table.HeaderCell>
+                      <Table.HeaderCell>{t('approval_flow.error.title')}</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {errors.map(error => (
+                      <Table.Row key={error.item.id} className="item">
+                        <Table.Cell className="name">
+                          <ItemImage item={error.item} />
+                          <div className="error-container">
+                            <span>{error.item.name}</span>
+                            <p className="urn">{error.item.urn}</p>
+                          </div>
+                        </Table.Cell>
+                        <Table.Cell>{error.message}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table>
+              </>
+            ) : null}
+          </>
+        </ModalContent>
         <ModalActions>
           <Button secondary onClick={onClose}>
             {t('global.close')}
@@ -349,6 +393,9 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         break
       case ApprovalFlowModalView.DEPLOY_TP:
         content = this.renderDeployThirdPartyView()
+        break
+      case ApprovalFlowModalView.DEPLOYING_TP:
+        content = this.renderProgressBar()
         break
       case ApprovalFlowModalView.APPROVE:
         content = this.renderApproveView()

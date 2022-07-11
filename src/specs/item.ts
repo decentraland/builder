@@ -1,5 +1,5 @@
 import { LocalItem, Rarity, WearableCategory as LocalItemWearableCategory, RemoteItem } from '@dcl/builder-client'
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { Item, ItemRarity, ItemType } from 'modules/item/types'
 
 export const mockedItem: Item = {
@@ -31,7 +31,7 @@ export const mockedItem: Item = {
     category: WearableCategory.HAT,
     representations: [
       {
-        bodyShapes: [WearableBodyShape.MALE],
+        bodyShapes: [BodyShape.MALE],
         mainFile: 'anItemContent.glb',
         contents: ['anItemContent.glb'],
         overrideReplaces: [],
@@ -67,7 +67,7 @@ export const mockedLocalItem: LocalItem = {
     category: LocalItemWearableCategory.HAT,
     representations: [
       {
-        bodyShapes: [WearableBodyShape.MALE],
+        bodyShapes: [BodyShape.MALE],
         mainFile: 'anItemContent.glb',
         contents: ['anItemContent.glb', 'thumbnail.png'],
         overrideReplaces: [],
@@ -108,7 +108,7 @@ export const mockedRemoteItem: RemoteItem = {
     category: LocalItemWearableCategory.HAT,
     representations: [
       {
-        bodyShapes: [WearableBodyShape.MALE],
+        bodyShapes: [BodyShape.MALE],
         mainFile: 'anItemContent.glb',
         contents: ['anItemContent.glb'],
         overrideReplaces: [],

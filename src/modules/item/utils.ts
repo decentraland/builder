@@ -1,6 +1,6 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -49,8 +49,8 @@ export function getMaxSupplyForRarity(rarity: ItemRarity) {
 
 export function getBodyShapeType(item: Item): BodyShapeType {
   const bodyShapes = getBodyShapes(item)
-  const hasMale = bodyShapes.includes(WearableBodyShape.MALE)
-  const hasFemale = bodyShapes.includes(WearableBodyShape.FEMALE)
+  const hasMale = bodyShapes.includes(BodyShape.MALE)
+  const hasFemale = bodyShapes.includes(BodyShape.FEMALE)
   if (hasMale && hasFemale) {
     return BodyShapeType.BOTH
   } else if (hasMale) {
@@ -62,8 +62,8 @@ export function getBodyShapeType(item: Item): BodyShapeType {
   }
 }
 
-export function getBodyShapes(item: Item): WearableBodyShape[] {
-  const bodyShapes = new Set<WearableBodyShape>()
+export function getBodyShapes(item: Item): BodyShape[] {
+  const bodyShapes = new Set<BodyShape>()
   for (const representation of item.data.representations) {
     for (const bodyShape of representation.bodyShapes) {
       bodyShapes.add(bodyShape)
@@ -84,20 +84,20 @@ export function getMissingBodyShapeType(item: Item) {
   return null
 }
 
-export function hasBodyShape(item: Item, bodyShape: WearableBodyShape) {
+export function hasBodyShape(item: Item, bodyShape: BodyShape) {
   return item.data.representations.some(representation => representation.bodyShapes.includes(bodyShape))
 }
 
-export function toWearableBodyShapeType(wearableBodyShape: WearableBodyShape) {
-  // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" (WearableBodyShape.MALE) and we just want the "BaseMale" part
+export function toWearableBodyShapeType(wearableBodyShape: BodyShape) {
+  // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" (BodyShape.MALE) and we just want the "BaseMale" part
   return decodeURN(wearableBodyShape).suffix as WearableBodyShapeType
 }
 
-export function toBodyShapeType(wearableBodyShape: WearableBodyShape): BodyShapeType {
+export function toBodyShapeType(wearableBodyShape: BodyShape): BodyShapeType {
   switch (wearableBodyShape) {
-    case WearableBodyShape.MALE:
+    case BodyShape.MALE:
       return BodyShapeType.MALE
-    case WearableBodyShape.FEMALE:
+    case BodyShape.FEMALE:
       return BodyShapeType.FEMALE
   }
 }

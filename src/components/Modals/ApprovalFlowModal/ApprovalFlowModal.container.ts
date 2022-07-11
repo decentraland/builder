@@ -7,8 +7,9 @@ import { getLoading as getLoadingCollectionActions } from 'modules/collection/se
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { approveCollectionRequest, APPROVE_COLLECTION_REQUEST, APPROVE_COLLECTION_SUCCESS } from 'modules/collection/actions'
 import { rescueItemsRequest, RESCUE_ITEMS_REQUEST } from 'modules/item/actions'
-import { isDeployingBatchedThirdPartyItems } from 'modules/thirdParty/selectors'
+import { getErrors, isDeployingBatchedThirdPartyItems } from 'modules/thirdParty/selectors'
 import { deployEntitiesRequest, DEPLOY_ENTITIES_REQUEST } from 'modules/entity/actions'
+import { getApporvalFlowUpdateProgress } from 'modules/ui/thirdparty/selectors'
 import { deployBatchedThirdPartyItemsRequest, reviewThirdPartyRequest, REVIEW_THIRD_PARTY_REQUEST } from 'modules/thirdParty/actions'
 import ApprovalFlowModal from './ApprovalFlowModal'
 
@@ -24,7 +25,9 @@ const mapState = (state: RootState): MapStateProps => {
     isDeployingItems:
       loadingEntityActions.some(action => action.type === DEPLOY_ENTITIES_REQUEST) || isDeployingBatchedThirdPartyItems(state),
     isConfirmingApproveTx: loadingCollectionActions.some(action => action.type === APPROVE_COLLECTION_REQUEST),
-    isAwaitingApproveTx: pendingTransactions.some(tx => tx.actionType === APPROVE_COLLECTION_SUCCESS)
+    isAwaitingApproveTx: pendingTransactions.some(tx => tx.actionType === APPROVE_COLLECTION_SUCCESS),
+    TPDeployItemsProgress: getApporvalFlowUpdateProgress(state),
+    errors: getErrors(state),
   }
 }
 
