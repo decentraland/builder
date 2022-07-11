@@ -9,6 +9,7 @@ import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
+import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 
 export default class PublishCollectionModal extends React.PureComponent<Props, State> {
   state: State = { step: 1, email: undefined, emailFocus: false }
@@ -88,7 +89,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               <p>
                 {t('publish_collection_modal_with_oracle.items_breakdown_title', {
                   count: items.length,
-                  publicationFee: ethers.utils.formatEther(priceUSD!),
+                  publicationFee: toFixedMANAValue(ethers.utils.formatEther(priceUSD!)),
                   currency: Currency.USD
                 })}
               </p>
@@ -103,20 +104,20 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.fee_per_item')}</div>
                   <div className="element-content">
-                    {Currency.USD} {ethers.utils.formatEther(priceUSD!)}
+                    {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD!))}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_usd', { currency: Currency.USD })}</div>
                   <div className="element-content">
-                    {Currency.USD} {ethers.utils.formatEther(totalPriceUSD!)}
+                    {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD!))}
                   </div>
                 </div>
                 <div className="element">
                   <div className="element-header">{t('publish_collection_modal_with_oracle.total_in_mana')}</div>
                   <div className="element-content">
                     <Mana network={Network.MATIC} size="medium">
-                      {ethers.utils.formatEther(totalPrice!)}
+                      {toFixedMANAValue(ethers.utils.formatEther(totalPrice!))}
                     </Mana>
                   </div>
                 </div>
