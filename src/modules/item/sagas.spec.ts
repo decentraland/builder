@@ -474,7 +474,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       mockEthers.mockReturnValue(contractInstanceMock)
     })
 
-    afterAll(() => {
+    afterEach(() => {
       mockEthers.mockRestore()
     })
 
