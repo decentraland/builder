@@ -3,6 +3,7 @@ import { getLocation, push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
+import { ethers } from 'ethers'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { call, select, take, race } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
@@ -458,13 +459,33 @@ describe('when handling the save item success action', () => {
 
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
-    it('should put a setPriceAndBeneficiarySuccess action', () => {
+    let mockEthers: jest.SpyInstance
+    let contractInstanceMock: { items: () => {} }
+
+    beforeEach(() => {
+      mockEthers = jest.spyOn(ethers, 'Contract')
+
+      contractInstanceMock = {
+        items: jest.fn().mockReturnValue({
+          metadata: 'metadata'
+        })
+      }
+
+      mockEthers.mockReturnValue(contractInstanceMock)
+    })
+
+    afterEach(() => {
+      mockEthers.mockRestore()
+    })
+
+    it('should put a setPriceAndBeneficiarySuccess action', async () => {
       const collection = {
         id: 'aCollection'
       } as Collection
 
       const item = {
         id: 'anItem',
+        tokenId: 'aTokenId',
         name: 'valid name',
         description: 'valid description',
         collectionId: collection.id,
@@ -489,7 +510,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       const price = '1000'
       const beneficiary = '0xpepe'
 
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      await expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
@@ -499,6 +520,8 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
         .put(setPriceAndBeneficiarySuccess({ ...item, price, beneficiary }, ChainId.MATIC_MAINNET, '0xhash'))
         .dispatch(setPriceAndBeneficiaryRequest(item.id, price, beneficiary))
         .run({ silenceTimeout: true })
+
+      expect(contractInstanceMock.items).toHaveBeenCalledWith(item.tokenId)
     })
 
     describe("and the itemId doesn't match any existing item", () => {
@@ -1305,7 +1328,7 @@ describe('when handling the delete item success action', () => {
   })
 })
 
-describe('when handling the save item success action', () => {
+describe('when handling the save item curation success action', () => {
   let item: Item
   beforeEach(() => {
     item = { ...mockedItem }
@@ -1320,7 +1343,10 @@ describe('when handling the save item success action', () => {
       ])
       .put(fetchItemCurationRequest(item.collectionId!, item.id))
       .dispatch(
-        saveItemSuccess({ ...item, isPublished: true ,urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' }, {})
+        saveItemSuccess(
+          { ...item, isPublished: true, urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection' },
+          {}
+        )
       )
       .run({ silenceTimeout: true })
   })
