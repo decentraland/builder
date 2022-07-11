@@ -15,7 +15,7 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
-import { getMethodData, getProperty } from 'modules/wallet/utils'
+import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
@@ -460,21 +460,25 @@ describe('when handling the save item success action', () => {
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
     let mockEthers: jest.SpyInstance
+    let contractInstanceMock: { items: () => {} }
 
     beforeEach(() => {
       mockEthers = jest.spyOn(ethers, 'Contract')
-      mockEthers.mockImplementationOnce(() => ({
-        items: () => ({
+
+      contractInstanceMock = {
+        items: jest.fn().mockImplementation(() => ({
           metadata: 'metadata'
-        })
-      }))
+        }))
+      }
+
+      mockEthers.mockImplementation(() => contractInstanceMock)
     })
 
     afterAll(() => {
       mockEthers.mockRestore()
     })
 
-    it('should put a setPriceAndBeneficiarySuccess action', () => {
+    it.only('should put a setPriceAndBeneficiarySuccess action', () => {
       const collection = {
         id: 'aCollection'
       } as Collection
@@ -505,17 +509,19 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       const price = '1000'
       const beneficiary = '0xpepe'
 
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
-          [matchers.call.fn(getProperty), { metadata: 'metadata' }],
+          [matchers.call.fn(contractInstanceMock.items as ethers.ContractFunction), Promise.resolve(contractInstanceMock.items())],
           [matchers.call.fn(sendTransaction), Promise.resolve('0xhash')]
         ])
         .put(setPriceAndBeneficiarySuccess({ ...item, price, beneficiary }, ChainId.MATIC_MAINNET, '0xhash'))
         .dispatch(setPriceAndBeneficiaryRequest(item.id, price, beneficiary))
         .run({ silenceTimeout: true })
+
+      expect(contractInstanceMock.items).toHaveBeenCalled()
     })
 
     describe("and the itemId doesn't match any existing item", () => {
