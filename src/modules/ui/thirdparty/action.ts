@@ -1,8 +1,10 @@
 import { action } from 'typesafe-actions'
+import { ThirdPartyAction } from './types'
 
-// TP Approval Flow
-export const APPROVAL_FLOW_UPDATE_PROGRESS = '[Update progress] Approval flow '
+// Update TP Action progress
+export const THIRD_PARTY_ACTION_UPDATE_PROGRESS = '[Update progress] Third Party Action'
 
-export const updateApprovalFlowProgress = (progress: number) => action(APPROVAL_FLOW_UPDATE_PROGRESS, { progress })
+export const updateThirdPartyActionProgress = (progress: number, tpAction: ThirdPartyAction) =>
+  action(THIRD_PARTY_ACTION_UPDATE_PROGRESS, { progress, action: tpAction })
 
-export type UpdateApporvalFlowProgressAction = ReturnType<typeof updateApprovalFlowProgress>
+export type UpdateThirdPartyProgressAction = ReturnType<typeof updateThirdPartyActionProgress>
