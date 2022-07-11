@@ -466,19 +466,19 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       mockEthers = jest.spyOn(ethers, 'Contract')
 
       contractInstanceMock = {
-        items: jest.fn().mockImplementation(() => ({
+        items: jest.fn().mockReturnValue(() => ({
           metadata: 'metadata'
         }))
       }
 
-      mockEthers.mockImplementation(() => contractInstanceMock)
+      mockEthers.mockReturnValue(contractInstanceMock)
     })
 
     afterAll(() => {
       mockEthers.mockRestore()
     })
 
-    it.only('should put a setPriceAndBeneficiarySuccess action', () => {
+    it('should put a setPriceAndBeneficiarySuccess action', () => {
       const collection = {
         id: 'aCollection'
       } as Collection
