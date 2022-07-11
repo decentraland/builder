@@ -4,12 +4,12 @@ import { Network } from '@dcl/schemas'
 import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { config } from 'config'
 import { Currency, Rarity } from 'modules/item/types'
 import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
-import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 
 export default class PublishCollectionModal extends React.PureComponent<Props, State> {
   state: State = { step: 1, email: undefined, emailFocus: false }
