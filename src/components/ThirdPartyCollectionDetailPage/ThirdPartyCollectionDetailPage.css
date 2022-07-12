@@ -163,3 +163,14 @@
   color: var(--text);
   padding: 12px;
 }
+
+.ThirdPartyCollectionDetailPage .ui.dropdown.synced-status-list {
+  margin-left: auto;
+  margin-bottom: 25px;
+  padding-left: 7px;
+}
+
+.ThirdPartyCollectionDetailPage > .ui.container > .dcl.narrow {
+  display: flex;
+  flex-direction: column;
+}
