@@ -89,8 +89,18 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     )
   }
 
+  renderUseAsAliasButton(ens: ENS, hasProfileCreated: boolean) {
+    return (
+      <div className="popup-button">
+        <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.name)} disabled={!hasProfileCreated}>
+          {t('ens_list_page.button.use_as_alias')}
+        </Button>
+      </div>
+    )
+  }
+
   renderEnsList() {
-    const { ensList } = this.props
+    const { ensList, hasProfileCreated } = this.props
     const { page } = this.state
 
     const total = ensList.length
@@ -179,9 +189,13 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                           <Row>
                             {!this.isAlias(ens) ? (
                               <Column align="right">
-                                <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.name)}>
-                                  {t('ens_list_page.button.use_as_alias')}
-                                </Button>
+                                <Popup
+                                  content={t('ens_list_page.not_profile_created')}
+                                  position="top center"
+                                  on="hover"
+                                  disabled={hasProfileCreated}
+                                  trigger={this.renderUseAsAliasButton(ens, hasProfileCreated)}
+                                />
                               </Column>
                             ) : null}
                             {!ens.landId ? (
