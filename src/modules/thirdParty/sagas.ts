@@ -60,7 +60,11 @@ import {
   deployBatchedThirdPartyItemsSuccess,
   deployBatchedThirdPartyItemsFailure,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
-  DeployBatchedThirdPartyItemsRequestAction
+  DeployBatchedThirdPartyItemsRequestAction,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
 } from './actions'
 import { getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
@@ -87,6 +91,15 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
   yield takeLatest(REVIEW_THIRD_PARTY_REQUEST, handleReviewThirdPartyRequest)
   yield takeEvery(actionProgressChannel, handleUpdateApprovalFlowProgress)
+  yield takeEvery(
+    [
+      PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+      PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+      PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+      PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE
+    ],
+    resetThirdPartyProgressAction
+  )
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -158,6 +171,13 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     } catch (error) {
       yield put(publishThirdPartyItemsFailure(error.message))
     }
+  }
+
+  function* resetThirdPartyProgressAction() {
+    actionProgressChannel.put({
+      progress: 0,
+      tpAction: ThirdPartyAction.PUSH_CHANGES
+    })
   }
 
   function* pushChangesToThirdPartyItems(items: Item[]) {
