@@ -174,7 +174,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
   }
 
   function* resetThirdPartyProgressAction() {
-    actionProgressChannel.put({
+    yield actionProgressChannel.put({
       progress: 0,
       tpAction: ThirdPartyAction.PUSH_CHANGES
     })
