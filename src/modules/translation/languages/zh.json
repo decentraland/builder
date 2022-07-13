@@ -1437,6 +1437,10 @@
     "deploy_item_failure": {
       "title": "项目错误",
       "body": "无法从 \"{collectionName}\" 上传项目 \"{itemName}\"。{br}商品尺寸过大，允许的最大尺寸为 {size}"
+    },
+    "third_party_action_failure": {
+      "title": "错误",
+      "body": "发生错误。请稍后再试。"
     }
   },
   "sagas": {
