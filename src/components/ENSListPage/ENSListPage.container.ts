@@ -8,7 +8,7 @@ import { isLoggingIn, isLoggedIn } from 'modules/identity/selectors'
 import { FETCH_ENS_LIST_REQUEST } from 'modules/ens/actions'
 import { getLands, getLoading as getLandsLoading } from 'modules/land/selectors'
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
-import { getName } from 'modules/profile/selectors'
+import { getAvatar, getName } from 'modules/profile/selectors'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ENSListPage.types'
 import ENSListPage from './ENSListPage'
@@ -18,6 +18,7 @@ const mapState = (state: RootState): MapStateProps => ({
   address: getAddress(state),
   ensList: getENSByWallet(state),
   lands: getLands(state),
+  hasProfileCreated: getAvatar(state) !== null,
   isLoading:
     isLoadingType(getLandsLoading(state), FETCH_LANDS_REQUEST) ||
     isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) ||
