@@ -447,7 +447,8 @@
     },
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
     "items": "{count} {count, plural, one {resultado} other {resultados}}",
-    "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado"
+    "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado",
+    "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias."
   },
   "error_page": {
     "or": "o intentar",
