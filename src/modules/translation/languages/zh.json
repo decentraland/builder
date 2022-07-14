@@ -243,7 +243,6 @@
     "upload_items_button": "上传可穿戴物品",
     "only_valid_items_info": "只会上传有效的项目",
     "done_button": "完成",
-
     "importing_files_progress_label": "加工项目",
     "uploading_items_progress_label": "上传 {number_of_items} 个项目",
     "import_information_link_label": "点击这里",
@@ -446,7 +445,8 @@
     },
     "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
     "items": "{count}结果",
-    "alias_popup": "您的个人资料正在使用此名称，但仍可以分配"
+    "alias_popup": "您的个人资料正在使用此名称，但仍可以分配",
+    "not_profile_created": "您需要先进入世界才能设置别名。"
   },
   "estate_editor": {
     "title_edit": "编辑产业",
