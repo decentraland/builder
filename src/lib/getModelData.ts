@@ -11,7 +11,8 @@ import {
   DirectionalLight,
   AmbientLight,
   RectAreaLight,
-  MeshStandardMaterial
+  MeshStandardMaterial,
+  Material
 } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
@@ -81,7 +82,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 
   try {
     // load model
-    let materials = 0
+    let materials = new Set<string>()
     let bodies = 0
     let colliderTriangles = 0
     const loader = new GLTFLoader(manager)
@@ -90,7 +91,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       if (node instanceof Mesh) {
         bodies++
         if (node.material) {
-          materials++
+          materials.add((node.material as Material).name)
         }
         if (node.name.includes('_collider')) {
           if (node.geometry instanceof Geometry) {
@@ -173,7 +174,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     // return data
     const info: ModelMetrics = {
       triangles: renderer.info.render.triangles + colliderTriangles,
-      materials,
+      materials: materials.size,
       textures: renderer.info.memory.textures,
       meshes: renderer.info.memory.geometries,
       bodies,
