@@ -19,8 +19,10 @@ const CollectionPublishButton = (props: Props) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   useEffect(() => {
-    onInit()
-  }, [onInit])
+    if (collection.isPublished) {
+      onInit()
+    }
+  }, [collection, onInit])
 
   const hasExceededMaxItemsLimit = items.length > MAX_ITEMS
   const isPublishDisabled = useMemo(() => items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit, [

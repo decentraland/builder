@@ -1,20 +1,23 @@
 import PQueue from 'p-queue'
 import { channel } from 'redux-saga'
 import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
-import { Authenticator, AuthIdentity } from '@dcl/crypto'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { Contract, providers } from 'ethers'
+import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
+import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { ToastType } from 'decentraland-ui'
 import { BuilderAPI } from 'lib/api/builder'
 import { ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
-import { updateApprovalFlowProgress } from 'modules/ui/thirdparty/action'
+import { updateThirdPartyActionProgress } from 'modules/ui/thirdparty/action'
 import {
   ThirdPartyBuildEntityError,
   ThirdPartyCurationUpdateError,
@@ -26,6 +29,7 @@ import { CurationStatus } from 'modules/curations/types'
 import { getIdentity } from 'modules/identity/utils'
 import { buildTPItemEntity } from 'modules/item/export'
 import { waitForTx } from 'modules/transaction/utils'
+import { ThirdPartyAction } from 'modules/ui/thirdparty/types'
 import {
   FETCH_THIRD_PARTIES_REQUEST,
   fetchThirdPartiesRequest,
@@ -59,7 +63,11 @@ import {
   deployBatchedThirdPartyItemsSuccess,
   deployBatchedThirdPartyItemsFailure,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
-  DeployBatchedThirdPartyItemsRequestAction
+  DeployBatchedThirdPartyItemsRequestAction,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
 } from './actions'
 import { getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
@@ -75,7 +83,7 @@ export function* getContractInstance(
 }
 
 export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
-  const approvalFlowProgressChannel = channel()
+  const actionProgressChannel = channel()
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, handleDeployBatchedThirdPartyItemsRequest)
   yield takeEvery(FETCH_THIRD_PARTIES_REQUEST, handleFetchThirdPartiesRequest)
@@ -85,7 +93,16 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
   yield takeLatest(REVIEW_THIRD_PARTY_REQUEST, handleReviewThirdPartyRequest)
-  yield takeEvery(approvalFlowProgressChannel, handleUpdateApprovalFlowProgress)
+  yield takeEvery(actionProgressChannel, handleUpdateApprovalFlowProgress)
+  yield takeEvery(
+    [
+      PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+      PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+      PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+      PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE
+    ],
+    resetThirdPartyProgressAction
+  )
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
@@ -142,6 +159,18 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return { newItems, newItemCurations }
   }
 
+  function* showActionErrorToast() {
+    yield put(
+      showToast({
+        type: ToastType.ERROR,
+        title: t('toast.third_party_action_failure.title'),
+        body: t('toast.third_party_action_failure.body'),
+        timeout: 6000,
+        closable: true
+      })
+    )
+  }
+
   function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
     const { thirdParty, items } = action.payload
     try {
@@ -153,10 +182,19 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
       )
 
       yield put(publishThirdPartyItemsSuccess(thirdParty.id, collectionId, newItems, newItemCurations))
-      yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
+      yield showActionErrorToast()
       yield put(publishThirdPartyItemsFailure(error.message))
+    } finally {
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
+  }
+
+  function* resetThirdPartyProgressAction() {
+    yield actionProgressChannel.put({
+      progress: 0,
+      tpAction: ThirdPartyAction.PUSH_CHANGES
+    })
   }
 
   function* pushChangesToThirdPartyItems(items: Item[]) {
@@ -167,6 +205,10 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const queue = new PQueue({ concurrency: MAX_CONCURRENT_REQUESTS })
     const promisesOfItemsBeingUpdated: (() => Promise<ItemCuration>)[] = items.map((item: Item) => {
       const curation = itemCurations.find(itemCuration => itemCuration.itemId === item.id)
+      actionProgressChannel.put({
+        progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100),
+        tpAction: ThirdPartyAction.PUSH_CHANGES
+      })
       if (curation?.status === CurationStatus.PENDING) {
         return () => builder.updateItemCurationStatus(item.id, CurationStatus.PENDING)
       }
@@ -185,9 +227,11 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const collectionId = getCollectionId(items)
       const newItemsCurations: ItemCuration[] = yield call(pushChangesToThirdPartyItems, items)
       yield put(pushChangesThirdPartyItemsSuccess(collectionId, newItemsCurations))
-      yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
+      yield showActionErrorToast()
       yield put(pushChangesThirdPartyItemsFailure(error.message))
+    } finally {
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
   }
 
@@ -209,9 +253,11 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
       yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
-      yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
+      yield showActionErrorToast()
       yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
+    } finally {
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
   }
 
@@ -236,8 +282,8 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     }
   }
 
-  function* handleUpdateApprovalFlowProgress(action: { progress: number }) {
-    yield put(updateApprovalFlowProgress(action.progress))
+  function* handleUpdateApprovalFlowProgress(action: { progress: number; tpAction: ThirdPartyAction }) {
+    yield put(updateThirdPartyActionProgress(action.progress, action.tpAction))
   }
 
   function* handleDeployBatchedThirdPartyItemsRequest(action: DeployBatchedThirdPartyItemsRequestAction) {
@@ -264,8 +310,9 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
         entity = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
         try {
           await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity!, entity.entityId) })
-          approvalFlowProgressChannel.put({
-            progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100)
+          actionProgressChannel.put({
+            progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100),
+            tpAction: ThirdPartyAction.APPROVE_COLLECTION
           })
           let updatedCuration: ItemCuration
           try {

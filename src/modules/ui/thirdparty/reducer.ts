@@ -1,23 +1,30 @@
-import { APPROVAL_FLOW_UPDATE_PROGRESS, UpdateApporvalFlowProgressAction } from './action'
+import { THIRD_PARTY_ACTION_UPDATE_PROGRESS, UpdateThirdPartyProgressAction } from './action'
+import { ThirdPartyAction } from './types'
 
 export type ThirdPartyState = {
-  approvalFlowUpdateProgress: number
+  progress: Record<ThirdPartyAction, number>
 }
 
 export const INITIAL_STATE: ThirdPartyState = {
-  approvalFlowUpdateProgress: 0
+  progress: {
+    [ThirdPartyAction.APPROVE_COLLECTION]: 0,
+    [ThirdPartyAction.PUSH_CHANGES]: 0
+  }
 }
 
-type ThirdPartyReducerAction = UpdateApporvalFlowProgressAction
+type ThirdPartyReducerAction = UpdateThirdPartyProgressAction
 
 export const ThirdPartyReducer = (state = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState => {
   switch (action.type) {
-    case APPROVAL_FLOW_UPDATE_PROGRESS: {
-      const { progress } = action.payload
+    case THIRD_PARTY_ACTION_UPDATE_PROGRESS: {
+      const { progress, action: thirdPartyAction } = action.payload
 
       return {
         ...state,
-        approvalFlowUpdateProgress: progress
+        progress: {
+          ...state.progress,
+          [thirdPartyAction]: progress
+        }
       }
     }
     default:

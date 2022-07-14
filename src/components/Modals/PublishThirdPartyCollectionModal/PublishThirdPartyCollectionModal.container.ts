@@ -10,8 +10,10 @@ import {
   PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST
 } from 'modules/thirdParty/actions'
 import { getCollection } from 'modules/collection/selectors'
-import { getLoading, getCollectionItems, getStatusForItemIds } from 'modules/item/selectors'
+import { getCollectionItems, getStatusForItemIds } from 'modules/item/selectors'
+import { getLoading as getItemCurationLoading } from 'modules/curations/itemCuration/selectors'
 import { getItemCurations } from 'modules/curations/itemCuration/selectors'
+import { getPushChangesUpdateProgress } from 'modules/ui/thirdparty/selectors'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './PublishThirdPartyCollectionModal.types'
 import PublishCollectionModal from './PublishThirdPartyCollectionModal'
 
@@ -28,12 +30,13 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     itemCurations,
     thirdParty: collection ? getCollectionThirdParty(state, collection) : null,
     isPublishLoading:
-      isLoadingType(getLoading(state), PUBLISH_THIRD_PARTY_ITEMS_REQUEST) ||
-      isLoadingType(getLoading(state), PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST),
+      isLoadingType(getItemCurationLoading(state), PUBLISH_THIRD_PARTY_ITEMS_REQUEST) ||
+      isLoadingType(getItemCurationLoading(state), PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST),
     itemsStatus: getStatusForItemIds(
       state,
       items.map(i => i.id)
-    )
+    ),
+    pushChangesProgress: getPushChangesUpdateProgress(state)
   }
 }
 
