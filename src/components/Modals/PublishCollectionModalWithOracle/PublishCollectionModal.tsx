@@ -80,10 +80,15 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
       <>
         <ModalNavigation title={t('publish_collection_modal_with_oracle.title')} onClose={onClose} />
         <Modal.Content className="first-step">
-          {isFetchingItems || isFetchingRarities || !refRarity ? (
+          {isFetchingItems || isFetchingRarities ? (
             <div className="loader-wrapper">
               <Loader size="big" active={isFetchingItems || isFetchingRarities} />
             </div>
+          ) : !!itemError || !refRarity ? (
+            <>
+              <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
+              <p className="rarities-error-sub error">{itemError}</p>
+            </>
           ) : (
             <>
               <p>
@@ -123,12 +128,6 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 </div>
               </div>
               <p className="estimate-notice">{t('publish_collection_modal_with_oracle.estimate_notice')}</p>
-              {itemError && (
-                <>
-                  <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
-                  <p className="rarities-error-sub error">{itemError}</p>
-                </>
-              )}
               <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA || !!itemError}>
                 {t('global.next')}
               </Button>

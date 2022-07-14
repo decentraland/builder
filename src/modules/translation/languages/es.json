@@ -1459,6 +1459,10 @@
     "deploy_item_failure": {
       "title": "Error en el Item",
       "body": "Error al cargar el item \"{itemName}\" de \"{collectionName}\".{br}El tamaño del item es demasiado grande y el tamaño máximo permitido es {size} "
+    },
+    "third_party_action_failure": {
+      "title": "Error",
+      "body": "Algo salió mal... Vuelve a intentarlo más tarde."
     }
   },
   "sagas": {
