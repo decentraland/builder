@@ -280,23 +280,23 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     total
                   })}
                 </div>
+                <Dropdown
+                  className="synced-status-list"
+                  direction="left"
+                  value={this.state.filters.synced}
+                  placeholder={t('third_party_collection_detail_page.synced_filter.all')}
+                  defaultSelectedLabel={t('third_party_collection_detail_page.synced_filter.all')}
+                  defaultValue={this.state.filters.synced}
+                  options={[
+                    { value: undefined, text: t('third_party_collection_detail_page.synced_filter.all') },
+                    { value: true, text: t('third_party_collection_detail_page.synced_filter.synced') },
+                    { value: false, text: t('third_party_collection_detail_page.synced_filter.unsynced') }
+                  ]}
+                  onChange={(_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+                    this.setState({ filters: { synced: value as boolean } })
+                  }}
+                />
               </div>
-              <Dropdown
-                className="synced-status-list"
-                direction="left"
-                value={this.state.filters.synced}
-                placeholder={t('third_party_collection_detail_page.synced_filter.all')}
-                defaultSelectedLabel={t('third_party_collection_detail_page.synced_filter.all')}
-                defaultValue={this.state.filters.synced}
-                options={[
-                  { value: undefined, text: t('third_party_collection_detail_page.synced_filter.all') },
-                  { value: true, text: t('third_party_collection_detail_page.synced_filter.synced') },
-                  { value: false, text: t('third_party_collection_detail_page.synced_filter.unsynced') }
-                ]}
-                onChange={(_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-                  this.setState({ filters: { synced: value as boolean } })
-                }}
-              />
 
               {selectedItemsCount > 0 ? (
                 <div className="selection-info">
@@ -332,7 +332,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     <Grid.Column>{t('global.category')}</Grid.Column>
                     <Grid.Column>{t('global.body_shape')}</Grid.Column>
                     <Grid.Column>URN ID</Grid.Column>
-                    <Grid.Column></Grid.Column>
+                    <Grid.Column width={3}> {t('collection_row.status')} </Grid.Column>
+                    <Grid.Column width={1}></Grid.Column>
                   </Grid.Row>
                 </Grid>
 

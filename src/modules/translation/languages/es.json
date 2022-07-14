@@ -1104,9 +1104,15 @@
     "exceeds_available_slots": "Estas excediendo la cantidad de slots disponibles. Podrás pedir más slots a la DAO através de una propuesta",
     "cant_publish_and_push_changes": "Estas tratando de publicar {count} {count, plural, un {item} other {items}} y subir cambios al mismo tiempo. Deselecciona los items a publicar para poder subir cambios",
     "synced_filter": {
-      "all": "Todos",
+      "all": "Todos los items",
       "synced": "Sincronizados",
       "unsynced": "No sincronizados"
+    },
+    "synced_statuses": {
+      "unpublished": "Listos para publicar",
+      "under_review": "Bajo revisión",
+      "synced": "Sincronizado",
+      "unsynced": "No sincronizado"
     }
   },
   "collection_detail_page": {

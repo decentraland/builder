@@ -1093,7 +1093,13 @@
     "exceeds_available_slots": "You're exceeding the amount of available slots. Create a proposal in the DAO to add more slots",
     "cant_publish_and_push_changes": "You're trying to publish {count} {count, plural, one {item} other {items}} and push changes at the same time. Unselect the items to publish to able to push changes",
     "synced_filter": {
-      "all": "All",
+      "all": "All items",
+      "synced": "Synced",
+      "unsynced": "Unsynced"
+    },
+    "synced_statuses": {
+      "unpublished": "Ready for published",
+      "under_review": "Under Review",
       "synced": "Synced",
       "unsynced": "Unsynced"
     }

@@ -6,7 +6,7 @@ import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { decodeURN, URNType } from 'lib/urn'
 import ItemStatus from 'components/ItemStatus'
-import { WearableData } from 'modules/item/types'
+import { SyncStatus, WearableData } from 'modules/item/types'
 import { getBodyShapeType } from 'modules/item/utils'
 import { getExplorerURL } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -56,8 +56,22 @@ export default class CollectionItem extends React.PureComponent<Props> {
     return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY ? decodedURN.thirdPartyTokenId : ''
   }
 
+  getStatusIcon() {
+    const { status } = this.props
+    switch (status) {
+      case SyncStatus.UNDER_REVIEW:
+        return <Icon name="clock outline" />
+      case SyncStatus.SYNCED:
+        return <Icon name="check circle outline" />
+      case SyncStatus.UNSYNCED:
+        return <Icon name="exclamation circle" />
+      default:
+        return null
+    }
+  }
+
   render() {
-    const { item, selected } = this.props
+    const { item, selected, status } = this.props
     const data = item.data as WearableData
 
     return (
@@ -80,7 +94,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
           <Grid.Column className={styles.column}>
             <div>{this.getTokenId()}</div>
           </Grid.Column>
-          <Grid.Column className={styles.column}>
+          <Grid.Column width={3} className={`${styles.column} ${styles.statusColumn} ${styles[status]}`}>
+            {this.getStatusIcon()}
+            <div>{t(`third_party_collection_detail_page.synced_statuses.${status}`)}</div>
+          </Grid.Column>
+          <Grid.Column width={1} className={styles.column}>
             <div className={styles.itemActions}>
               <Dropdown
                 trigger={
