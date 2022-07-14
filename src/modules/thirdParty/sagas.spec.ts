@@ -7,6 +7,8 @@ import { expectSaga } from 'redux-saga-test-plan'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { select } from 'redux-saga-test-plan/matchers'
 import { AuthIdentity, Authenticator, AuthLinkType } from '@dcl/crypto'
+import { ToastType } from 'decentraland-ui'
+import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { loginSuccess } from 'modules/identity/actions'
@@ -208,7 +210,7 @@ describe('when publishing third party items', () => {
       errorMessage = 'Some Error Message'
     })
 
-    it('should put the publish third party items fail action with an error', () => {
+    it('should put the publish third party items fail action with an error, show the error toast and close the modal', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([
           [select(getCollection, item.collectionId), collection],
@@ -218,6 +220,8 @@ describe('when publishing third party items', () => {
             throwError(new Error(errorMessage))
           ]
         ])
+        .put(closeModal('PublishThirdPartyCollectionModal'))
+        .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
         .put(publishThirdPartyItemsFailure(errorMessage))
         .dispatch(publishThirdPartyItemsRequest(thirdParty, [item]))
         .run({ silenceTimeout: true })
@@ -293,7 +297,7 @@ describe('when pushing changes to third party items', () => {
       ]
     })
 
-    it('should put the push changes third party items fail action with an error and reset the progress', () => {
+    it('should put the push changes third party items fail action with an error, show the error toast, close the modal and reset the progress', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([
           [select(getItemCurations, item.collectionId), itemCurations],
@@ -301,6 +305,8 @@ describe('when pushing changes to third party items', () => {
         ])
         .put(pushChangesThirdPartyItemsFailure('Some item curations were not pushed'))
         .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
+        .put(closeModal('PublishThirdPartyCollectionModal'))
+        .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
         .dispatch(pushChangesThirdPartyItemsRequest([item]))
         .run({ silenceTimeout: true })
     })
@@ -405,7 +411,7 @@ describe('when publishing & pushing changes to third party items', () => {
   })
 
   describe('when the publish items fails', () => {
-    it('should put the publish & push changes failure action and reset the progress', () => {
+    it('should put the publish & push changes failure action, show the error toast, close the modal and reset the progress', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
@@ -414,6 +420,8 @@ describe('when publishing & pushing changes to third party items', () => {
             throwError(new Error(errorMessage))
           ]
         ])
+        .put(closeModal('PublishThirdPartyCollectionModal'))
+        .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
         .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem]))

@@ -1,14 +1,17 @@
 import PQueue from 'p-queue'
 import { channel } from 'redux-saga'
 import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
-import { Authenticator, AuthIdentity } from '@dcl/crypto'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { Contract, providers } from 'ethers'
+import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
+import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { ToastType } from 'decentraland-ui'
 import { BuilderAPI } from 'lib/api/builder'
 import { ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -156,6 +159,18 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return { newItems, newItemCurations }
   }
 
+  function* showActionErrorToast() {
+    yield put(
+      showToast({
+        type: ToastType.ERROR,
+        title: t('toast.third_party_action_failure.title'),
+        body: t('toast.third_party_action_failure.body'),
+        timeout: 6000,
+        closable: true
+      })
+    )
+  }
+
   function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
     const { thirdParty, items } = action.payload
     try {
@@ -167,9 +182,11 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
       )
 
       yield put(publishThirdPartyItemsSuccess(thirdParty.id, collectionId, newItems, newItemCurations))
-      yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
+      yield showActionErrorToast()
       yield put(publishThirdPartyItemsFailure(error.message))
+    } finally {
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
   }
 
@@ -210,9 +227,11 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const collectionId = getCollectionId(items)
       const newItemsCurations: ItemCuration[] = yield call(pushChangesToThirdPartyItems, items)
       yield put(pushChangesThirdPartyItemsSuccess(collectionId, newItemsCurations))
-      yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
+      yield showActionErrorToast()
       yield put(pushChangesThirdPartyItemsFailure(error.message))
+    } finally {
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
   }
 
@@ -234,9 +253,11 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
       yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
-      yield put(closeModal('PublishThirdPartyCollectionModal'))
     } catch (error) {
+      yield showActionErrorToast()
       yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
+    } finally {
+      yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
   }
 
