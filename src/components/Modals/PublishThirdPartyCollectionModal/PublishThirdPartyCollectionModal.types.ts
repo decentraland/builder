@@ -28,13 +28,17 @@ export type Props = ModalProps & {
   itemCurations: ItemCuration[]
   itemsStatus: Record<string, SyncStatus>
   isPublishLoading: boolean
+  pushChangesProgress: number
   onPublish: typeof publishThirdPartyItemsRequest
   onPushChanges: typeof pushChangesThirdPartyItemsRequest
   onPublishAndPushChanges: typeof publishAndPushChangesThirdPartyItemsRequest
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'collection' | 'items' | 'thirdParty' | 'isPublishLoading' | 'itemsStatus' | 'itemCurations'>
+export type MapStateProps = Pick<
+  Props,
+  'collection' | 'items' | 'thirdParty' | 'isPublishLoading' | 'itemsStatus' | 'itemCurations' | 'pushChangesProgress'
+>
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPushChanges' | 'onPublishAndPushChanges'>
 export type MapDispatch = Dispatch<
   PublishThirdPartyItemsRequestAction | PushChangesThirdPartyItemsRequestAction | PublishAndPushChangesThirdPartyItemsRequestAction

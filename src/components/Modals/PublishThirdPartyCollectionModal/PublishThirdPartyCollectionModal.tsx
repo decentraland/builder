@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ModalNavigation, Button } from 'decentraland-ui'
+import { ModalNavigation, Button, Progress } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getItemsToPublish, getItemsWithChanges } from 'modules/item/utils'
@@ -69,6 +69,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
     const {
       isPublishLoading,
       onClose,
+      pushChangesProgress,
       metadata: { action }
     } = this.props
 
@@ -76,15 +77,25 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
       <Modal className="PublishThirdPartyCollectionModal" size="tiny" onClose={onClose}>
         <ModalNavigation title={t('publish_third_party_collection_modal.title')} onClose={onClose} />
         <Modal.Content>
-          <div>{this.getModalDescriptionText()}</div>
-          <br />
-          <Button primary fluid loading={isPublishLoading} onClick={this.handleSubmit}>
-            {getTPButtonActionLabel(action)}
-          </Button>
-          <br />
-          <Button secondary fluid onClick={onClose}>
-            {t('global.cancel')}
-          </Button>
+          {isPublishLoading && [PublishButtonAction.PUSH_CHANGES, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(action) ? (
+            <>
+              <div className="progressBarContainer">
+                <Progress percent={pushChangesProgress} className="progressBar" progress />
+              </div>
+            </>
+          ) : (
+            <>
+              <div>{this.getModalDescriptionText()}</div>
+              <br />
+              <Button primary fluid loading={isPublishLoading} onClick={this.handleSubmit}>
+                {getTPButtonActionLabel(action)}
+              </Button>
+              <br />
+              <Button secondary fluid onClick={onClose}>
+                {t('global.cancel')}
+              </Button>
+            </>
+          )}
         </Modal.Content>
       </Modal>
     )

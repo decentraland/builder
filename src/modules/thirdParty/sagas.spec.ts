@@ -48,6 +48,8 @@ import {
   ThirdPartyDeploymentError,
   ThirdPartyError
 } from 'modules/collection/utils'
+import { updateThirdPartyActionProgress } from 'modules/ui/thirdparty/action'
+import { ThirdPartyAction } from 'modules/ui/thirdparty/types'
 import { Item } from 'modules/item/types'
 import { thirdPartySaga } from './sagas'
 import { getPublishItemsSignature } from './utils'
@@ -295,13 +297,14 @@ describe('when pushing changes to third party items', () => {
       ]
     })
 
-    it('should put the push changes third party items fail action with an error, show the error toast and close the modal', () => {
+    it('should put the push changes third party items fail action with an error, show the error toast, close the modal and reset the progress', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([
           [select(getItemCurations, item.collectionId), itemCurations],
           [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), throwError(new Error('Error'))]
         ])
         .put(pushChangesThirdPartyItemsFailure('Some item curations were not pushed'))
+        .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
         .dispatch(pushChangesThirdPartyItemsRequest([item]))
@@ -353,10 +356,12 @@ describe('when pushing changes to third party items', () => {
       ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[1])
     })
 
-    it('should put the push changes success action with the updated item curations and close the PublishThirdPartyCollectionModal modal', () => {
+    it('should put the push changes success action with the updated item curations, close the PublishThirdPartyCollectionModal modal and reset the progress', () => {
       const anotherItem = { ...mockedItem, id: 'anotherItemId' }
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([[select(getItemCurations, item.collectionId), itemCurations]])
+        .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES))
+        .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .put(pushChangesThirdPartyItemsSuccess(item.collectionId!, updatedItemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .dispatch(pushChangesThirdPartyItemsRequest([item, anotherItem]))
@@ -406,7 +411,7 @@ describe('when publishing & pushing changes to third party items', () => {
   })
 
   describe('when the publish items fails', () => {
-    it('should put the publish & push changes failure action, show the error toast and close the modal', () => {
+    it('should put the publish & push changes failure action, show the error toast, close the modal and reset the progress', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
@@ -418,6 +423,7 @@ describe('when publishing & pushing changes to third party items', () => {
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
         .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
+        .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem]))
         .run({ silenceTimeout: true })
     })
@@ -457,12 +463,13 @@ describe('when publishing & pushing changes to third party items', () => {
       ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[0])
     })
 
-    it('should put the publish & push changes success action and the fetch available slots request', () => {
+    it('should put the publish & push changes success action, the fetch available slots request and reset the progress', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
           [select(getItemCurations, item.collectionId), itemCurations]
         ])
+        .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .put(publishAndPushChangesThirdPartyItemsSuccess(item.collectionId!, publishResponse, [...itemCurations, updatedItemCurations[0]]))
         .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
