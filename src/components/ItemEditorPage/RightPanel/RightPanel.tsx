@@ -381,11 +381,13 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
                           </>
                         )}
-                        <div className="metrics">
-                          <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
-                          <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
-                          <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
-                        </div>
+                        {item.type === ItemType.WEARABLE && ( // TODO: Show emotes data
+                          <div className="metrics">
+                            <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
+                            <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
+                            <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </Collapsable>

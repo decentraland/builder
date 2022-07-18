@@ -45,19 +45,20 @@
 
 .CollectionDetailPage .dcl.row.actions > .ui.button.action-button {
   margin-left: 24px;
-  border: 1px solid var(--gray);
-  padding: 8px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 5px;
+  padding: 9px 20px;
   white-space: nowrap;
 }
 
-.CollectionDetailPage .actions .ui.button.action-button + .ui.dropdown {
-  margin-left: 0;
+.CollectionDetailPage .left.actions .ui.dropdown {
+  margin-left: 8px;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 5px;
 }
 
 .CollectionDetailPage .actions .ui.button.action-button > .text {
-  color: var(--text);
+  color: var(--primary);
 }
 
 .CollectionDetailPage .actions .ui.button.compact {
@@ -106,4 +107,30 @@
   height: 16px;
   margin-bottom: 6px;
   margin-right: 12px;
+}
+
+.CollectionDetailPage .empty-collection-title {
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 26px;
+  color: white;
+  padding-bottom: 8px;
+  display: inline-block;
+}
+
+.CollectionDetailPage .ui.basic.button.empty-action-button {
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 5px;
+  padding: 8px 58px;
+  margin-top: 32px;
+  color: #ff2d55;
+}
+
+.CollectionDetailPage .ui.basic.button.empty-action-button span {
+  color: #ff2d55;
+  font-weight: 600;
+}
+
+.CollectionDetailPage .ui.container .dcl.back {
+  position: absolute;
 }

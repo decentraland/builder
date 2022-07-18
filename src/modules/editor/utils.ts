@@ -1,7 +1,8 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 import { Color4, Wearable } from 'decentraland-ecs'
-import { Locale, BodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
+import { Locale, BodyShape, WearableCategory, WearableDefinition, EmoteCategory, Rarity } from '@dcl/schemas'
 import { Item, ItemType } from 'modules/item/types'
+import { Emote } from '@dcl/schemas/dist/platform/item/emote/emote'
 import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
@@ -303,12 +304,36 @@ export function toWearable(item: Item): WearableDefinition {
         contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
       }))
     },
-    emoteDataV0:
-      item.type === ItemType.EMOTE
-        ? {
-            loop: false // we are setting this as false for now since all the emotes we have created are not looped, eventually this will be configurable via UI
-          }
-        : undefined
+    emoteDataV0: undefined
+  }
+}
+
+/**
+ * Given an item convert it to an emote definition
+ *
+ * @param item - an Item
+ */
+export function toEmote(item: Item<ItemType.EMOTE>): Emote {
+  return {
+    rarity: Rarity.COMMON,
+    collectionAddress: '',
+    id: item.id,
+    name: item.name,
+    thumbnail: item.thumbnail,
+    image: item.thumbnail,
+    description: item.description,
+    i18n: [
+      {
+        code: Locale.EN,
+        text: item.name
+      }
+    ],
+    emoteDataADR74: {
+      ...item.data,
+      category: item.data.category as EmoteCategory,
+      representations: item.data.representations,
+      loop: item.data.loop
+    }
   }
 }
 
