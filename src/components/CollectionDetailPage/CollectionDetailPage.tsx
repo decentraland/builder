@@ -146,6 +146,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                       </>
                     ) : null}
 
+                    {items.length ? (
+                      <Button basic className="action-button" disabled={isLocked} onClick={this.handleNewItem}>
+                        <span className="text">{t('collection_detail_page.add_item')}</span>
+                      </Button>
+                    ) : null}
                     <Button basic className="action-button" disabled={isLocked || !items.length} onClick={this.handleNavigateToEditor}>
                       <span className="text">{t('collection_detail_page.preview')}</span>
                     </Button>
