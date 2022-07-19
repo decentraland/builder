@@ -10,6 +10,7 @@ import { EntityState } from 'modules/entity/reducer'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { getItemCurationsByItemId } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
 import { getItemThirdParty } from 'modules/thirdParty/selectors'
@@ -123,7 +124,12 @@ const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStat
   return SyncStatus.UNPUBLISHED
 }
 
-const getStatusForStandard = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
+const getStatusForStandard = (
+  item: Item,
+  collectionCuration: CollectionCuration | null,
+  entity: Entity,
+  isEmotesFeatureFlagOn: boolean
+): SyncStatus => {
   let status: SyncStatus
   if (!item.isPublished) {
     status = SyncStatus.UNPUBLISHED
@@ -132,7 +138,7 @@ const getStatusForStandard = (item: Item, collectionCuration: CollectionCuration
   } else {
     if (!entity) {
       status = SyncStatus.LOADING
-    } else if (areSynced(item, entity)) {
+    } else if (areSynced(item, entity, isEmotesFeatureFlagOn)) {
       status = SyncStatus.SYNCED
     } else {
       status = SyncStatus.UNSYNCED
@@ -147,18 +153,25 @@ export const getStatusByItemId = createSelector<
   EntityState['data'],
   Record<string, CollectionCuration>,
   Record<string, ItemCuration>,
+  boolean,
   Record<string, SyncStatus>
 >(
   state => getItems(state),
   state => getEntityByItemId(state),
   state => getCurationsByCollectionId(state),
   getItemCurationsByItemId,
-  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
+  state => getIsEmotesFlowEnabled(state),
+  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId, isEmotesFeatureFlagOn) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
       statusByItemId[item.id] = isThirdParty(item.urn)
         ? getStatusForTP(item, itemCurationByItemId[item.id])
-        : getStatusForStandard(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
+        : getStatusForStandard(
+            item,
+            item.collectionId ? curationsByCollectionId[item.collectionId] : null,
+            entitiesByItemId[item.id],
+            isEmotesFeatureFlagOn
+          )
     }
     return statusByItemId
   }
