@@ -89,7 +89,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <Back absolute onClick={this.handleGoBack} />
             <Narrow>
               <Row>
-                <Column className="header-column">
+                <Column grow={false} className="name-container">
                   {isLocked ? (
                     <Header size="huge" className="name">
                       {collection.isPublished && <CollectionStatus collection={collection} />}
@@ -146,7 +146,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                       </>
                     ) : null}
 
-                    {items.length ? (
+                    {items.length && !collection.isPublished ? (
                       <Button basic className="action-button" disabled={isLocked} onClick={this.handleNewItem}>
                         <span className="text">{t('collection_detail_page.add_item')}</span>
                       </Button>
