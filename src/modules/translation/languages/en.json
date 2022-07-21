@@ -174,7 +174,11 @@
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triangle} other {triangles}}",
     "materials": "{count} {count, plural, one {material} other {materials}}",
-    "textures": "{count} {count, plural, one {texture} other {textures}}"
+    "textures": "{count} {count, plural, one {texture} other {textures}}",
+    "sequences": "{count} {count, plural, one {sequence} other {sequences}}",
+    "duration": "{count} {count, plural, one {second} other {seconds}}",
+    "frames": "{count} {count, plural, one {frame} other {frames}}",
+    "fps": "{count} {count, plural, one {fps} other {fps}}"
   },
   "claim_ens_page": {
     "title": "Claim a unique Name",
@@ -193,13 +197,17 @@
   },
   "create_single_item_modal": {
     "title": "New Item",
+    "title_emote": "New Emote",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
     "name_label": "Enter a name for your item",
     "category_label": "What's the category of this item?",
     "category_placeholder": "Select a category",
+    "play_mode_label": "Play mode",
+    "play_mode_placeholder": "Select a play mode",
     "rarity_label": "How rare is this item?",
     "rarity_placeholder": "Select a rarity",
+    "rarity_learn_more_about": "{learn_more} about rarities",
     "representation_label": "Select the body shape for your item",
     "existing_item": "Is this part of an existing item?",
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
@@ -213,7 +221,8 @@
       "missing_model_file": "Couldn't find a valid model file.",
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}."
-    }
+    },
+    "emote_notice": "Emotes are available for all body shapes."
   },
   "create_and_edit_multiple_items_modal": {
     "create": {

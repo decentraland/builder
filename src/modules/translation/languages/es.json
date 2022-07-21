@@ -177,7 +177,11 @@
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triángulo} other {triángulos}}",
     "materials": "{count} {count, plural, one {material} other {materiales}}",
-    "textures": "{count} {count, plural, one {textura} other {texturas}}"
+    "textures": "{count} {count, plural, one {textura} other {texturas}}",
+    "sequences": "{count} {count, plural, one {sequence} other {sequences}}",
+    "duration": "{count} {count, plural, one {segundo} other {segundos}}",
+    "frames": "{count} {count, plural, one {fotograma} other {fotogramas}}",
+    "fps": "{count} {count, plural, one {fps} other {fps}}"
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre único",
@@ -196,13 +200,17 @@
   },
   "create_single_item_modal": {
     "title": "Nuevo item",
+    "title_emote": "Nueva Animación",
     "add_representation": "Agregar representación de {bodyShape}",
     "wrong_thumbnail_format": "El thumbnail provisto no es una imagen PNG",
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
+    "play_mode_label": "Modo de ejecución",
+    "play_mode_placeholder": "Selecciona un modo de ejecución",
     "rarity_label": "Cuál es la rareza de este item?",
     "rarity_placeholder": "Selecciona una rareza",
+    "rarity_learn_more_about": "{learn_more} acerca de las rarezas",
     "representation_label": "Selecciona el tipo de cuerpo para tu item",
     "existing_item": "Es parte de un item existente?",
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
@@ -216,7 +224,8 @@
       "missing_model_file": "No se pudo encontrar un archivo de modelo válido.",
       "invalid_content_path": "La ruta \"{path}\" es inválida para la propiedad \"{name}\", el archivo no existe.",
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}."
-    }
+    },
+    "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
