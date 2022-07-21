@@ -16,7 +16,7 @@ import {
 } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { ModelMetrics } from 'modules/models/types'
+import { ModelEmoteMetrics, ModelMetrics } from 'modules/models/types'
 import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
 import { ItemType } from 'modules/item/types'
 
@@ -174,14 +174,14 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     document.body.removeChild(renderer.domElement)
 
     // return data
-    let info: any = {
+    let info = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials: materials.size,
       textures: renderer.info.memory.textures,
       meshes: renderer.info.memory.geometries,
       bodies,
       entities: 1
-    }
+    } as ModelMetrics | ModelEmoteMetrics
 
     if (isEmote) {
       const duration = gltf.animations[0].duration
@@ -190,9 +190,9 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       info = {
         ...info,
         sequences: gltf.animations.length,
-        duration: duration.toFixed(2),
+        duration,
         frames: frames,
-        fps: (frames / duration).toFixed(2)
+        fps: frames / duration
       }
     }
 

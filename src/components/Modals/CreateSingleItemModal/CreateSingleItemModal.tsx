@@ -820,9 +820,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         return (
           <div className="metrics">
             <div className="metric materials">{t('model_metrics.sequences', { count: (metrics as ModelEmoteMetrics).sequences })}</div>
-            <div className="metric materials">{t('model_metrics.duration', { count: (metrics as ModelEmoteMetrics).duration })}</div>
+            <div className="metric materials">
+              {t('model_metrics.duration', { count: (metrics as ModelEmoteMetrics).duration.toFixed(2) })}
+            </div>
             <div className="metric materials">{t('model_metrics.frames', { count: (metrics as ModelEmoteMetrics).frames })}</div>
-            <div className="metric materials">{t('model_metrics.fps', { count: (metrics as ModelEmoteMetrics).fps })}</div>
+            <div className="metric materials">{t('model_metrics.fps', { count: (metrics as ModelEmoteMetrics).fps.toFixed(2) })}</div>
           </div>
         )
       }
@@ -838,7 +840,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   isValid(): boolean {
-    const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation, type } = this.state
+    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type } = this.state
     const { collection } = this.props
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
 
@@ -848,6 +850,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       required = [item]
     } else if (belongsToAThirdPartyCollection) {
       required = [name, thumbnail, metrics, bodyShape, category]
+    } else if (type === ItemType.EMOTE) {
+      required = [name, thumbnail, metrics, category, playMode, rarity, type]
     } else {
       required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
     }
