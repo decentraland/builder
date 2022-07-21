@@ -149,3 +149,16 @@
   color: var(--text-on-secondary);
   background-color: var(--secondary-text);
 }
+
+.CreateSingleItemModal .importer-thumbnail-container .WearablePreview {
+  display: none;
+}
+
+.CreateSingleItemModal .thumbnail-step-container {
+  width: 100%;
+  height: 365px;
+}
+
+.CreateSingleItemModal .thumbnail-actions.dcl.row.grow.shrink {
+  justify-content: space-between;
+}

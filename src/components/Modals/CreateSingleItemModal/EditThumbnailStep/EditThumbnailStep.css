@@ -1,0 +1,93 @@
+.EditThumbnailStep .zoom-controls {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 52px;
+}
+
+.EditThumbnailStep .ui.button.zoom-control {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  min-width: unset;
+  background-color: rgba(0, 0, 0, 0.64) !important;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.EditThumbnailStep .ui.button.zoom-control i.icon {
+  margin: 0 !important;
+}
+
+.EditThumbnailStep .ui.button.zoom-in-control {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  min-width: unset;
+}
+
+.EditThumbnailStep .ui.button.play-control {
+  width: 56px;
+  height: 44px;
+  padding: 0;
+  min-width: unset;
+  margin-right: 16px;
+}
+
+.EditThumbnailStep .ui.button.play-control .play.icon {
+  padding-bottom: 18px;
+  padding-left: 3px;
+}
+
+.EditThumbnailStep .Preview canvas {
+  background: rgba(22, 20, 26, 0.48);
+}
+
+.EditThumbnailStep .dcl.sliderfield p {
+  display: none;
+}
+
+.EditThumbnailStep .play-controls {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.EditThumbnailStep .dcl.sliderfield-wrapper .dcl.sliderfield-track,
+.EditThumbnailStep .dcl.sliderfield-wrapper .dcl.sliderfield-mark {
+  background-color: #736e7d;
+}
+
+.EditThumbnailStep input[type='range'] {
+  width: 100%;
+  background: none;
+}
+
+.EditThumbnailStep input[type='range'] {
+  -webkit-appearance: none;
+}
+
+.EditThumbnailStep input[type='range']:focus {
+  outline: none;
+}
+
+.EditThumbnailStep input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 10px;
+  background-color: #736e7d;
+  overflow: visible;
+  cursor: pointer;
+  padding-bottom: 5px;
+  margin-top: -4px;
+}
+
+.EditThumbnailStep input[type='range']::-webkit-slider-runnable-track {
+  width: 300px;
+  height: 15px;
+  background: rgba(115, 110, 125, 0.32);
+  border: none;
+  border-radius: 10px;
+}

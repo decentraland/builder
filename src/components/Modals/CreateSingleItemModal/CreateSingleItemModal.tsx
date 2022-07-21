@@ -2,7 +2,7 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import { BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, IPreviewController, WearableCategory, WearableWithBlobs } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -14,7 +14,8 @@ import {
   Header,
   InputOnChangeData,
   SelectField,
-  DropdownProps
+  DropdownProps,
+  WearablePreview
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -57,7 +58,8 @@ import {
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
-import { getThumbnailType, validateEnum, validatePath } from './utils'
+import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep.container'
+import { getThumbnailType, toWearableWithBlobs, validateEnum, validatePath } from './utils'
 import {
   Props,
   State,
@@ -72,6 +74,7 @@ import './CreateSingleItemModal.css'
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
+  previewRef = React.createRef<IPreviewController | null>()
 
   getInitialState() {
     const { metadata } = this.props
@@ -105,6 +108,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     return state
+  }
+
+  componentDidUpdate(_prevProps: Props, prevState: State) {
+    const { thumbnail, file, type, isLoading } = this.state
+    if ((!prevState.thumbnail || !prevState.type) && thumbnail && file && type && !isLoading) {
+      this.setState({ view: CreateItemView.DETAILS })
+    }
   }
 
   /**
@@ -223,7 +233,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         delete sortedContents.all[THUMBNAIL_PATH]
       } else if (pristineItem && changeItemFile) {
         item = {
-          ...(pristineItem as Item),
+          ...pristineItem,
           data: {
             ...pristineItem.data,
             replaces: [],
@@ -388,23 +398,24 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     const file = acceptedFiles[0]
+    // this.setState({ file })
     const extension = getExtension(file.name)
 
     try {
-      this.setState({ isLoading: true })
+      this.setState({ isLoading: true, file })
 
       if (!extension) {
         throw new WrongExtensionError()
       }
 
       const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
-      const [thumbnail, model, metrics, contents, type, assetJson] = await handler(file)
+      const [, model, metrics, contents, type, assetJson] = await handler(file)
 
       this.setState({
         id: changeItemFile ? item!.id : uuid.v4(),
-        view: CreateItemView.DETAILS,
+        // view: CreateItemView.DETAILS,
         name: changeItemFile ? item!.name : cleanAssetName(file.name),
-        thumbnail,
+        // thumbnail,
         model,
         metrics,
         contents,
@@ -631,6 +642,51 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return t('create_single_item_modal.title')
   }
 
+  handleFileLoad = () => {
+    console.log('handling file first')
+    const controller = WearablePreview.createController('thumbnail-picker')
+
+    this.setState({ previewController: controller })
+
+    controller?.scene.getScreenshot(1024, 1024).then(screenshot => {
+      return this.setState({ thumbnail: screenshot })
+    })
+  }
+
+  getWearablePreviewComponent = () => {
+    const { file } = this.state
+    console.log('file1: ', file)
+    return (
+      <WearablePreview
+        id="thumbnail-picker"
+        blob={file ? this.toWearableWithBlobs(file, true) : undefined}
+        profile="default"
+        disableBackground
+        disableAutoRotate
+        disableFace
+        disableDefaultWearables
+        skin="000000"
+        wheelZoom={2}
+        onLoad={this.handleFileLoad}
+      />
+    )
+  }
+
+  wearablePreviewComponent = (
+    <WearablePreview
+      id="thumbnail-picker"
+      blob={this.state.file ? toWearableWithBlobs(this.state.file, true) : undefined}
+      profile="default"
+      disableBackground
+      disableAutoRotate
+      disableFace
+      disableDefaultWearables
+      skin="000000"
+      wheelZoom={2}
+      onLoad={this.handleFileLoad}
+    />
+  )
+
   renderImportView() {
     const { onClose, metadata } = this.props
     const { changeItemFile } = metadata as CreateSingleItemModalMetadata
@@ -653,6 +709,24 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             onDropAccepted={this.handleDropAccepted}
             onDropRejected={this.handleDropRejected}
           />
+          <div className="importer-thumbnail-container">
+            {this.wearablePreviewComponent}
+            {/* {this.getWearablePreviewComponent()} */}
+
+            {/* <WearablePreview
+              id="thumbnail-picker"
+              blob={file ? this.toWearableWithBlobs(file, true) : undefined}
+              profile="default"
+              disableBackground
+              disableAutoRotate
+              disableFace
+              disableDefaultWearables
+              skin="000000"
+              wheelZoom={2}
+              onLoad={this.handleFileLoad}
+              onError={error => console.log(error)}
+            /> */}
+          </div>
         </Modal.Content>
       </>
     )
@@ -722,8 +796,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderDetailsView() {
-    const { onClose, metadata, error, isLoading } = this.props
-    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity, error: stateError } = this.state
+    const { onClose, metadata, error, isLoading, isEmotesFeatureFlagOn } = this.props
+    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity, error: stateError, type } = this.state
 
     const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
@@ -734,7 +808,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
-          <Form onSubmit={this.handleSubmit} disabled={isDisabled}>
+          <Form
+            onSubmit={isEmotesFeatureFlagOn ? () => this.setState({ view: CreateItemView.THUMBNAIL }) : this.handleSubmit}
+            disabled={isDisabled}
+          >
             <Column>
               <Row className="details">
                 <Column className="preview" width={192} grow={false}>
@@ -747,7 +824,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                       </>
                     )}
                   </div>
-                  {metrics ? (
+                  {metrics && type === ItemType.WEARABLE ? (
                     <div className="metrics">
                       <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
                       <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
@@ -812,7 +889,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               </Row>
               <Row className="actions" align="right">
                 <Button primary disabled={isDisabled} loading={isLoading}>
-                  {(metadata && metadata.changeItemFile) || isRepresentation ? t('global.save') : t('global.create')}
+                  {(metadata && metadata.changeItemFile) || isRepresentation
+                    ? t('global.save')
+                    : isEmotesFeatureFlagOn
+                    ? t('global.next')
+                    : t('global.create')}
                 </Button>
               </Row>
               {stateError ? (
@@ -829,6 +910,24 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           </Form>
         </Modal.Content>
       </>
+    )
+  }
+
+  renderThumbnailView() {
+    const { onClose } = this.props
+    const { file } = this.state
+    console.log('file in renderThumbnailView: ', file);
+    // const { previewController } = this.state
+    return (
+      <EditThumbnailStep
+        blob={file ? toWearableWithBlobs(file, true) : undefined}
+        // wearablePreviewComponent={this.wearablePreviewComponent}
+        // wearablePreviewController={previewController}
+        title={this.renderModalTitle()}
+        onBack={() => this.setState({ view: CreateItemView.DETAILS })}
+        onScreenshot={screenshot => this.setState({ thumbnail: screenshot })}
+        onClose={onClose}
+      />
     )
   }
 
@@ -853,8 +952,42 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         return this.renderImportView()
       case CreateItemView.DETAILS:
         return this.renderDetailsView()
+      case CreateItemView.THUMBNAIL:
+        return this.renderThumbnailView()
       default:
         return null
+    }
+  }
+
+  toWearableWithBlobs = (file: File, isEmote = false): WearableWithBlobs => {
+    return {
+      id: 'some-id',
+      name: '',
+      description: '',
+      image: '',
+      thumbnail: '',
+      i18n: [],
+      data: {
+        category: WearableCategory.HAT,
+        hides: [],
+        replaces: [],
+        tags: [],
+        representations: [
+          {
+            bodyShapes: [BodyShape.MALE, BodyShape.FEMALE],
+            mainFile: 'model.glb',
+            contents: [
+              {
+                key: 'model.glb',
+                blob: file
+              }
+            ],
+            overrideHides: [],
+            overrideReplaces: []
+          }
+        ]
+      },
+      emoteDataV0: isEmote ? { loop: false } : undefined
     }
   }
 
