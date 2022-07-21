@@ -87,6 +87,8 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     let colliderTriangles = 0
     const loader = new GLTFLoader(manager)
     const gltf = await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject))
+    const isEmote = gltf.animations.length > 0
+
     gltf.scene.traverse(node => {
       if (node instanceof Mesh) {
         bodies++
@@ -172,7 +174,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     document.body.removeChild(renderer.domElement)
 
     // return data
-    const info: ModelMetrics = {
+    let info: any = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials: materials.size,
       textures: renderer.info.memory.textures,
@@ -180,9 +182,24 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       bodies,
       entities: 1
     }
-    const image = engine === EngineType.THREE ? renderer.domElement.toDataURL() : await getScreenshot(url, options)
 
-    return { info, image, type: ItemType.WEARABLE }
+    if (isEmote) {
+      const duration = gltf.animations[0].duration
+      const frames = gltf.animations[0].tracks[0].times.length - 1
+
+      info = {
+        ...info,
+        sequences: gltf.animations.length,
+        duration: duration.toFixed(2),
+        frames: frames,
+        fps: (frames / duration).toFixed(2)
+      }
+    }
+
+    const image =
+      engine === EngineType.THREE ? renderer.domElement.toDataURL() : !isEmote ? await getScreenshot(url, options) : TRANSPARENT_PIXEL
+
+    return { info, image, type: !isEmote ? ItemType.WEARABLE : ItemType.EMOTE }
   } catch (error) {
     // could not render model, default to 0 metrics and default thumnail
     const info: ModelMetrics = {
