@@ -37,6 +37,11 @@ export enum EmoteCategory {
   LOOP = 'loop'
 }
 
+export enum EmotePlayMode {
+  SIMPLE = 'simple',
+  LOOP = 'loop'
+}
+
 export enum ItemMetadataType {
   WEARABLE = 'w',
   SMART_WEARABLE = 'sw',
@@ -101,6 +106,7 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
 
 export type EmoteData = {
   category?: EmoteCategory
+  playMode?: EmotePlayMode
   representations: WearableRepresentation[]
   tags: string[]
 }

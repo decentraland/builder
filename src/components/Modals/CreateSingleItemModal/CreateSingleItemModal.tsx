@@ -32,7 +32,8 @@ import {
   WearableRepresentation,
   MODEL_EXTENSIONS,
   IMAGE_EXTENSIONS,
-  ItemType
+  ItemType,
+  EmotePlayMode
 } from 'modules/item/types'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -53,7 +54,8 @@ import {
   resizeImage,
   isImageCategory,
   getMaxSupplyForRarity,
-  getEmoteCategories
+  getEmoteCategories,
+  getEmotePlayModes
 } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
@@ -470,6 +472,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     this.setState({ rarity })
   }
 
+  handlePlayModeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    const playMode = value as EmotePlayMode
+    this.setState({ playMode })
+  }
+
   handleOpenThumbnailDialog = () => {
     if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
@@ -702,10 +709,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         ) : null}
         <SelectField
           required
-          label={t(type === ItemType.WEARABLE ? 'create_single_item_modal.category_label' : 'create_single_item_modal.play_mode_label')}
-          placeholder={t(
-            type === ItemType.WEARABLE ? 'create_single_item_modal.category_placeholder' : 'create_single_item_modal.play_mode_placeholder'
-          )}
+          label={t('create_single_item_modal.category_label')}
+          placeholder={t('create_single_item_modal.category_placeholder')}
           value={categories.includes(category!) ? category : undefined}
           options={categories.map(value => ({ value, text: t(`${type}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
@@ -778,9 +783,20 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderEmoteDetails() {
+    const { playMode, type } = this.state
+    const playModes: string[] = getEmotePlayModes()
+
     return (
       <>
         {this.renderFields()}
+        <SelectField
+          required
+          label={t('create_single_item_modal.play_mode_label')}
+          placeholder={t('create_single_item_modal.play_mode_placeholder')}
+          value={playModes.includes(playMode!) ? playMode : undefined}
+          options={playModes.map(value => ({ value, text: t(`${type}.play_mode.${value}`) }))}
+          onChange={this.handlePlayModeChange}
+        />
         <div className="dcl select-field">
           <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" className="" />} />
         </div>

@@ -1391,6 +1391,10 @@
     "category": {
       "simple": "Simple",
       "loop": "Loop"
+    },
+    "play_mode": {
+      "simple": "Simple",
+      "loop": "Bucle"
     }
   },
   "wearable": {

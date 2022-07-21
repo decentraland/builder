@@ -32,6 +32,7 @@ import {
   WearableRepresentation,
   GenerateImageOptions,
   EmoteCategory,
+  EmotePlayMode,
   EmoteData
 } from './types'
 
@@ -340,6 +341,10 @@ export function getWearableCategories(contents: Record<string, any> | undefined 
 
 export function getEmoteCategories() {
   return Object.values(EmoteCategory)
+}
+
+export function getEmotePlayModes() {
+  return Object.values(EmotePlayMode)
 }
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
