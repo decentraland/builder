@@ -40,7 +40,7 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
-import { ModelMetrics } from 'modules/models/types'
+import { ModelEmoteMetrics, ModelMetrics } from 'modules/models/types'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -803,10 +803,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       } else {
         return (
           <div className="metrics">
-            <div className="metric materials">{t('model_metrics.sequences', { count: (metrics as any).sequences })}</div>
-            <div className="metric materials">{t('model_metrics.duration', { count: (metrics as any).duration })}</div>
-            <div className="metric materials">{t('model_metrics.frames', { count: (metrics as any).frames })}</div>
-            <div className="metric materials">{t('model_metrics.fps', { count: (metrics as any).fps })}</div>
+            <div className="metric materials">{t('model_metrics.sequences', { count: (metrics as ModelEmoteMetrics).sequences })}</div>
+            <div className="metric materials">{t('model_metrics.duration', { count: (metrics as ModelEmoteMetrics).duration })}</div>
+            <div className="metric materials">{t('model_metrics.frames', { count: (metrics as ModelEmoteMetrics).frames })}</div>
+            <div className="metric materials">{t('model_metrics.fps', { count: (metrics as ModelEmoteMetrics).fps })}</div>
           </div>
         )
       }
