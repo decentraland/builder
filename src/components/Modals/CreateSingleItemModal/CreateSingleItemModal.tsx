@@ -702,7 +702,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               <T
                 id="create_single_item_modal.rarity_learn_more_about"
                 values={{
-                  learn_more: <a href="/">{t('global.learn_more')}</a>
+                  learn_more: (
+                    <a
+                      href="https://docs.decentraland.org/decentraland/wearables-editor-user-guide/#rarity"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('global.learn_more')}
+                    </a>
+                  )
                 }}
               />
             </p>
