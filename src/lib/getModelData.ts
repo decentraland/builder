@@ -174,14 +174,14 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     document.body.removeChild(renderer.domElement)
 
     // return data
-    let info = {
+    let info: ModelMetrics | ModelEmoteMetrics = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials: materials.size,
       textures: renderer.info.memory.textures,
       meshes: renderer.info.memory.geometries,
       bodies,
       entities: 1
-    } as ModelMetrics | ModelEmoteMetrics
+    }
 
     if (isEmote) {
       const duration = gltf.animations[0].duration

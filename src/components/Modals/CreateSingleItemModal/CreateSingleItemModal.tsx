@@ -412,6 +412,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         metrics,
         contents,
         type,
+        bodyShape: type === ItemType.EMOTE ? BodyShapeType.BOTH : undefined,
         error: '',
         category: isRepresentation ? category : undefined,
         isLoading: false,
