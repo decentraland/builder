@@ -8,7 +8,7 @@
 }
 
 .CollectionDetailPage .header-row .ui.header.name {
-  max-width: calc(100% - 40px);
+  max-width: calc(100% - 58px);
   line-height: 29px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -132,4 +132,8 @@
 
 .CollectionDetailPage .ui.container .dcl.back {
   position: absolute;
+}
+
+.CollectionDetailPage .dcl.column.left.shrink.name-container {
+  max-width: 57%;
 }
