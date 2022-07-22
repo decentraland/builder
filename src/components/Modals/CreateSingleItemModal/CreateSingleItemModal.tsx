@@ -398,7 +398,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     const file = acceptedFiles[0]
-    // this.setState({ file })
     const extension = getExtension(file.name)
 
     try {
@@ -413,9 +412,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
       this.setState({
         id: changeItemFile ? item!.id : uuid.v4(),
-        // view: CreateItemView.DETAILS,
         name: changeItemFile ? item!.name : cleanAssetName(file.name),
-        // thumbnail,
         model,
         metrics,
         contents,
@@ -629,7 +626,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderModalTitle = () => {
     const isAddingRepresentation = this.isAddingRepresentation()
-    const { bodyShape } = this.state
+    const { bodyShape, view } = this.state
     const { metadata } = this.props
     if (isAddingRepresentation) {
       return t('create_single_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
@@ -639,11 +636,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return t('create_single_item_modal.change_item_file')
     }
 
-    return t('create_single_item_modal.title')
+    return view === CreateItemView.THUMBNAIL ? t('create_single_item_modal.thumbnail_step_title') : t('create_single_item_modal.title')
   }
 
   handleFileLoad = () => {
-    console.log('handling file first')
     const controller = WearablePreview.createController('thumbnail-picker')
 
     this.setState({ previewController: controller })
@@ -655,7 +651,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   getWearablePreviewComponent = () => {
     const { file } = this.state
-    console.log('file1: ', file)
     return (
       <WearablePreview
         id="thumbnail-picker"
@@ -709,24 +704,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             onDropAccepted={this.handleDropAccepted}
             onDropRejected={this.handleDropRejected}
           />
-          <div className="importer-thumbnail-container">
-            {this.wearablePreviewComponent}
-            {/* {this.getWearablePreviewComponent()} */}
-
-            {/* <WearablePreview
-              id="thumbnail-picker"
-              blob={file ? this.toWearableWithBlobs(file, true) : undefined}
-              profile="default"
-              disableBackground
-              disableAutoRotate
-              disableFace
-              disableDefaultWearables
-              skin="000000"
-              wheelZoom={2}
-              onLoad={this.handleFileLoad}
-              onError={error => console.log(error)}
-            /> */}
-          </div>
+          <div className="importer-thumbnail-container">{this.wearablePreviewComponent}</div>
         </Modal.Content>
       </>
     )
@@ -809,7 +787,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <Form
-            onSubmit={isEmotesFeatureFlagOn ? () => this.setState({ view: CreateItemView.THUMBNAIL }) : this.handleSubmit}
+            onSubmit={
+              isEmotesFeatureFlagOn && type === ItemType.EMOTE ? () => this.setState({ view: CreateItemView.THUMBNAIL }) : this.handleSubmit
+            }
             disabled={isDisabled}
           >
             <Column>
@@ -916,16 +896,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   renderThumbnailView() {
     const { onClose } = this.props
     const { file } = this.state
-    console.log('file in renderThumbnailView: ', file);
-    // const { previewController } = this.state
     return (
       <EditThumbnailStep
         blob={file ? toWearableWithBlobs(file, true) : undefined}
-        // wearablePreviewComponent={this.wearablePreviewComponent}
-        // wearablePreviewController={previewController}
         title={this.renderModalTitle()}
         onBack={() => this.setState({ view: CreateItemView.DETAILS })}
-        onScreenshot={screenshot => this.setState({ thumbnail: screenshot })}
+        onSave={screenshot => this.setState({ thumbnail: screenshot, view: CreateItemView.DETAILS })}
         onClose={onClose}
       />
     )

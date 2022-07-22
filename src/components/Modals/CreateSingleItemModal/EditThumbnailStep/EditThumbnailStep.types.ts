@@ -11,23 +11,31 @@ export enum CreateItemView {
   THUMBNAIL = 'thumbnail'
 }
 
+export enum ControlOptionAction {
+  ZOOM_IN,
+  ZOOM_OUT,
+  DISABLE_AUTOROTATE
+}
+
 export type Props = {
   title: string
   blob?: WearableWithBlobs
   wearablePreviewComponent?: React.ReactNode
   wearablePreviewController?: IPreviewController
-  onScreenshot: (screenshot: string) => void
+  onSave: (screenshot: string) => void
   onBack: () => void
   onClose: () => void
 }
 
 export type State = {
-  previewController?: IPreviewController
   length?: number
   hasBeenUpdated: boolean
-  frame: number,
-  isPlaying: boolean,
-} & Pick<WearablePreviewProps, 'zoom'>
+  frame: number
+  isPlaying: boolean
+  playingIntervalId?: NodeJS.Timer
+  previewController?: IPreviewController
+  blob?: WearableWithBlobs
+} & Pick<WearablePreviewProps, 'zoom' | 'disableAutoRotate'>
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string

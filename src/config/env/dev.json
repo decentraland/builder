@@ -4,7 +4,7 @@
   "EMAIL_SERVER_URL": "https://decentraland.org/subscribe",
   "PEER_URL": "https://peer.decentraland.zone",
   "ERC721_COLLECTION_BASE_URI": "https://peer.decentraland.zone/lambdas/collections/standard/erc721/",
-  "BUILDER_SERVER_URL": "https://builder-api.decentraland.io/v1",
+  "BUILDER_SERVER_URL": "http://localhost:5000/v1",
   "MARKETPLACE_URL": "https://api.decentraland.io/v1",
   "MARKETPLACE_WEB_URL": "https://market.decentraland.io",
   "LAND_MANAGER_URL": "https://api.thegraph.com/subgraphs/name/decentraland/land-manager-ropsten",

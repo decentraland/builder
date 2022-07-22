@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 52px;
+  top: 12px;
+  left: 12px;
 }
 
 .EditThumbnailStep .ui.button.zoom-control {
@@ -51,7 +52,13 @@
 
 .EditThumbnailStep .play-controls {
   display: flex;
-  margin-bottom: 16px;
+  margin: 16px 0;
+}
+
+.EditThumbnailStep .rotate-control {
+  position: absolute;
+  bottom: 92px;
+  left: 12px;
 }
 
 .EditThumbnailStep .dcl.sliderfield-wrapper .dcl.sliderfield-track,

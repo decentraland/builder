@@ -193,6 +193,7 @@
   },
   "create_single_item_modal": {
     "title": "New Item",
+    "thumbnail_step_title": "Edit Thumbnail",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
     "name_label": "Enter a name for your item",
