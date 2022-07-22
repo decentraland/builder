@@ -2,7 +2,7 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import { BodyShape, IPreviewController, WearableCategory } from '@dcl/schemas'
+import { BodyShape, WearableCategory } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -649,7 +649,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       this.setState({ thumbnail: screenshot })
     })
   }
-
 
   // WearablePreview component to take the initial screenshot
   wearablePreviewComponent = (
