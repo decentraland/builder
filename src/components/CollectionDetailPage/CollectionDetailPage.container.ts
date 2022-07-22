@@ -7,6 +7,7 @@ import { getCollectionId } from 'modules/location/selectors'
 import { getCollection, isOnSaleLoading, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
+import { getCollectionItems } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionDetailPage.types'
 import CollectionDetailPage from './CollectionDetailPage'
 
@@ -18,6 +19,7 @@ const mapState = (state: RootState): MapStateProps => {
     wallet: getWallet(state)!,
     collection,
     isOnSaleLoading: isOnSaleLoading(state),
+    items: getCollectionItems(state, collectionId),
     isLoading:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST)
