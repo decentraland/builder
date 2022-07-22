@@ -33,7 +33,6 @@ export function validateEnum(name: keyof ItemAssetJson, assetJson: ItemAssetJson
 }
 
 export function toWearableWithBlobs(file: File, isEmote = false): WearableWithBlobs {
-  console.log('file: ', file)
   return {
     id: 'some-id',
     name: '',

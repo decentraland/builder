@@ -78,6 +78,8 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
   handleSave = async () => {
     const { onSave } = this.props
     const { previewController } = this.state
+    await previewController?.emote.pause()
+    this.clearPlayingInterval()
     await previewController?.scene.getScreenshot(1024, 1024).then(screenshot => onSave(screenshot))
   }
 
@@ -121,11 +123,11 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
   }
 
   handlePlayPause = async () => {
-    const { previewController, frame, length, isPlaying, playingIntervalId } = this.state
+    const { previewController, frame, length, isPlaying } = this.state
     if (isPlaying) {
       await previewController?.emote.pause()
-      clearInterval(playingIntervalId)
-      this.setState({ playingIntervalId: undefined, isPlaying: false })
+      this.clearPlayingInterval()
+      this.setState({ isPlaying: false })
     } else {
       await previewController?.emote.play()
       if (length && frame === length * 100) {
@@ -145,7 +147,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { onClose, onBack, title } = this.props
+    const { onClose, onBack, title, isLoading } = this.props
     const { blob, length, frame, isPlaying, hasBeenUpdated } = this.state
 
     return (
@@ -209,7 +211,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
           {hasBeenUpdated ? (
             <Row className="thumbnail-actions">
               <Button onClick={onBack}>{t('global.back')}</Button>
-              <Button primary onClick={this.handleSave}>
+              <Button primary loading={isLoading} onClick={this.handleSave}>
                 {t('global.save')}
               </Button>
             </Row>

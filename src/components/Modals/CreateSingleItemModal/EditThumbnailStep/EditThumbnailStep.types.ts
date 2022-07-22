@@ -17,6 +17,7 @@ export enum ControlOptionAction {
 
 export type Props = {
   title: string
+  isLoading: boolean
   blob?: WearableWithBlobs
   wearablePreviewComponent?: React.ReactNode
   wearablePreviewController?: IPreviewController

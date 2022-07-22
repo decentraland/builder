@@ -877,15 +877,20 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
+  handleOnScreenshotTaken = (screenshot: string) => {
+    this.setState({ thumbnail: screenshot, isLoading: true }, this.handleSubmit)
+  }
+
   renderThumbnailView() {
     const { onClose } = this.props
-    const { file } = this.state
+    const { file, isLoading } = this.state
     return (
       <EditThumbnailStep
+        isLoading={!!isLoading}
         blob={file ? toWearableWithBlobs(file, true) : undefined}
         title={this.renderModalTitle()}
         onBack={() => this.setState({ view: CreateItemView.DETAILS })}
-        onSave={screenshot => this.setState({ thumbnail: screenshot, view: CreateItemView.DETAILS })}
+        onSave={this.handleOnScreenshotTaken}
         onClose={onClose}
       />
     )
