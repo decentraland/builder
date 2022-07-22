@@ -8,7 +8,6 @@
 }
 
 .CollectionDetailPage .header-row .ui.header.name {
-  max-width: calc(100% - 58px);
   line-height: 29px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -66,6 +65,14 @@
 
 .CollectionDetailPage .actions .popup-button {
   margin-left: 16px;
+}
+
+.CollectionDetailPage .dcl.row.left.actions.grow.shrink {
+  margin-left: 12px;
+}
+
+.CollectionDetailPage .actions-container {
+  margin-left: auto;
 }
 
 .CollectionDetailPage .Notice {
@@ -135,5 +142,5 @@
 }
 
 .CollectionDetailPage .dcl.column.left.shrink.name-container {
-  max-width: 57%;
+  min-width: 0;
 }

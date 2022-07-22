@@ -104,7 +104,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     </Row>
                   )}
                 </Column>
-                <Column align="right" shrink={false} grow={false}>
+                <Column align="right" className="actions-container" shrink={false} grow={false}>
                   <Row className="actions">
                     {collection.isPublished ? (
                       <>
