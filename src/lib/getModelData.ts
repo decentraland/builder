@@ -197,9 +197,9 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     }
 
     const image =
-      engine === EngineType.THREE ? renderer.domElement.toDataURL() : !isEmote ? await getScreenshot(url, options) : TRANSPARENT_PIXEL
+      engine === EngineType.THREE ? renderer.domElement.toDataURL() : isEmote ? TRANSPARENT_PIXEL : await getScreenshot(url, options)
 
-    return { info, image, type: !isEmote ? ItemType.WEARABLE : ItemType.EMOTE }
+    return { info, image, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   } catch (error) {
     // could not render model, default to 0 metrics and default thumnail
     const info: ModelMetrics = {
