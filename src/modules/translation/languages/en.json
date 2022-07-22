@@ -178,7 +178,7 @@
     "sequences": "{count} {count, plural, one {sequence} other {sequences}}",
     "duration": "{count} {count, plural, one {second} other {seconds}}",
     "frames": "{count} {count, plural, one {frame} other {frames}}",
-    "fps": "{count} {count, plural, one {fps} other {fps}}"
+    "fps": "{count} fps"
   },
   "claim_ens_page": {
     "title": "Claim a unique Name",

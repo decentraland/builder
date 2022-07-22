@@ -181,7 +181,7 @@
     "sequences": "{count} {count, plural, one {sequence} other {sequences}}",
     "duration": "{count} {count, plural, one {segundo} other {segundos}}",
     "frames": "{count} {count, plural, one {fotograma} other {fotogramas}}",
-    "fps": "{count} {count, plural, one {fps} other {fps}}"
+    "fps": "{count} fps"
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre único",

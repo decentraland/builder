@@ -95,7 +95,10 @@
         "duplicated": "重复资产",
         "duplicated_asset": "{name}：此资产包中已经有一个名为\"{existingAsset}\"的资产，其ID为\"{id}\"，请将\"{newAsset}\"的ID更改为另一种",
         "invalid": "无效资产",
-        "max_file_size": "{name}: 文件大小超过{max}mb的限制"
+        "max_file_size": "{name}: 文件大小超过{max}mb的限制",
+        "missing_extension": "{name}: 缺少文件扩展名",
+        "missing_model": "{name}: 缺少 3D 模型 (.gltf 或者 .glb)",
+        "scene_file": "{name}: 不允许导出场景"
       },
       "title_edit": "创造Asset Pack"
     },
@@ -169,7 +172,11 @@
   "model_metrics": {
     "triangles": "{count}个三角形",
     "materials": "{count}个材料",
-    "textures": "{count}个纹理"
+    "textures": "{count}个纹理",
+    "sequences": "{count}序列",
+    "duration": "{count}秒",
+    "frames": "{count}帧",
+    "fps": "{count}fps"
   },
   "claim_ens_page": {
     "title": "索取唯一名称",
@@ -188,11 +195,14 @@
   },
   "create_single_item_modal": {
     "title": "新物品",
+    "title_emote": "新表情",
     "add_representation": "添加{bodyShape}",
     "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
     "name_label": "给您的新商品起个名字",
     "category_label": "这个项目是什么类别？",
     "category_placeholder": "选择一个类别",
+    "play_mode_label": "游戏模式",
+    "play_mode_placeholder": "选择播放模式",
     "rarity_label": "这件商品有多稀有？",
     "rarity_placeholder": "选择稀有",
     "representation_label": "选择您的项目的身体形状",
@@ -208,7 +218,8 @@
       "missing_model_file": "找不到有效的模型文件。",
       "invalid_content_path": "属性 \"{name}\" 的无效路径 \"{path}\"，找不到文件。",
       "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。"
-    }
+    },
+    "emote_notice": "表情适用于所有体型。"
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
@@ -1363,6 +1374,10 @@
   },
   "emote": {
     "category": {
+      "simple": "简单的",
+      "loop": "环形"
+    },
+    "play_mode": {
       "simple": "简单的",
       "loop": "环形"
     }
