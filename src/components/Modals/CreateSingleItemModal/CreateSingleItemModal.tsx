@@ -2,7 +2,7 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import { BodyShape, IPreviewController, WearableCategory, WearableWithBlobs } from '@dcl/schemas'
+import { BodyShape, IPreviewController, WearableCategory } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -58,8 +58,8 @@ import {
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
-import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep.container'
-import { getThumbnailType, toWearableWithBlobs, validateEnum, validatePath } from './utils'
+import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
+import { getThumbnailType, THUMBNAIL_WIDTH, toWearableWithBlobs, validateEnum, validatePath } from './utils'
 import {
   Props,
   State,
@@ -70,6 +70,7 @@ import {
   ItemAssetJson
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
+import { THUMBNAIL_HEIGHT } from 'modules/editor/utils'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -112,6 +113,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   componentDidUpdate(_prevProps: Props, prevState: State) {
     const { thumbnail, file, type, isLoading } = this.state
+    // when the thumbnail is loaded and the file & type are already computed, we proceed to the Details view
     if ((!prevState.thumbnail || !prevState.type) && thumbnail && file && type && !isLoading) {
       this.setState({ view: CreateItemView.DETAILS })
     }
@@ -644,27 +646,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     this.setState({ previewController: controller })
 
-    controller?.scene.getScreenshot(1024, 1024).then(screenshot => {
-      return this.setState({ thumbnail: screenshot })
+    controller?.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT).then(screenshot => {
+      this.setState({ thumbnail: screenshot })
     })
-  }
-
-  getWearablePreviewComponent = () => {
-    const { file } = this.state
-    return (
-      <WearablePreview
-        id="thumbnail-picker"
-        blob={file ? this.toWearableWithBlobs(file, true) : undefined}
-        profile="default"
-        disableBackground
-        disableAutoRotate
-        disableFace
-        disableDefaultWearables
-        skin="000000"
-        wheelZoom={2}
-        onLoad={this.handleFileLoad}
-      />
-    )
   }
 
   wearablePreviewComponent = (
@@ -932,38 +916,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         return this.renderThumbnailView()
       default:
         return null
-    }
-  }
-
-  toWearableWithBlobs = (file: File, isEmote = false): WearableWithBlobs => {
-    return {
-      id: 'some-id',
-      name: '',
-      description: '',
-      image: '',
-      thumbnail: '',
-      i18n: [],
-      data: {
-        category: WearableCategory.HAT,
-        hides: [],
-        replaces: [],
-        tags: [],
-        representations: [
-          {
-            bodyShapes: [BodyShape.MALE, BodyShape.FEMALE],
-            mainFile: 'model.glb',
-            contents: [
-              {
-                key: 'model.glb',
-                blob: file
-              }
-            ],
-            overrideHides: [],
-            overrideReplaces: []
-          }
-        ]
-      },
-      emoteDataV0: isEmote ? { loop: false } : undefined
     }
   }
 

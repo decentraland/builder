@@ -122,7 +122,6 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
 
   handlePlayPause = async () => {
     const { previewController, frame, length, isPlaying, playingIntervalId } = this.state
-    // const isPlaying = await previewController?.emote.isPlaying()
     if (isPlaying) {
       await previewController?.emote.pause()
       clearInterval(playingIntervalId)

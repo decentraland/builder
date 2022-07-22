@@ -3,6 +3,9 @@ import { ThumbnailType } from 'lib/getModelData'
 import { InvalidContentPath, InvalidEnumValue } from 'modules/item/errors'
 import { ItemAssetJson } from './CreateSingleItemModal.types'
 
+export const THUMBNAIL_WIDTH = 1024
+export const THUMBNAIL_HEIGTH = 1024
+
 export const getThumbnailType = (category: WearableCategory) => {
   switch (category) {
     case WearableCategory.EYEBROWS:
@@ -30,7 +33,7 @@ export function validateEnum(name: keyof ItemAssetJson, assetJson: ItemAssetJson
 }
 
 export function toWearableWithBlobs(file: File, isEmote = false): WearableWithBlobs {
-  console.log('file: ', file);
+  console.log('file: ', file)
   return {
     id: 'some-id',
     name: '',

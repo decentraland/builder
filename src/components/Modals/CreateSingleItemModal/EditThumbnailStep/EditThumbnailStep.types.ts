@@ -1,7 +1,5 @@
-import { Dispatch } from 'redux'
 import { WearablePreviewProps } from 'decentraland-ui'
 import { IPreviewController, WearableWithBlobs } from '@dcl/schemas'
-import { SaveItemRequestAction } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 import React from 'react'
 
@@ -44,9 +42,4 @@ export type CreateSingleItemModalMetadata = {
   changeItemFile?: boolean
 }
 
-export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
-
 export type OwnProps = Pick<Props, 'wearablePreviewComponent' | 'wearablePreviewController'>
-// export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isEmotesFeatureFlagOn'>
-// export type MapDispatchProps = Pick<Props, 'onSave'>
-export type MapDispatch = Dispatch<SaveItemRequestAction>
