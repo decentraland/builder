@@ -58,6 +58,7 @@ import {
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
+import { THUMBNAIL_HEIGHT } from 'modules/editor/utils'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
 import { getThumbnailType, THUMBNAIL_WIDTH, toWearableWithBlobs, validateEnum, validatePath } from './utils'
 import {
@@ -70,12 +71,10 @@ import {
   ItemAssetJson
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
-import { THUMBNAIL_HEIGHT } from 'modules/editor/utils'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
-  previewRef = React.createRef<IPreviewController | null>()
 
   getInitialState() {
     const { metadata } = this.props
@@ -651,6 +650,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     })
   }
 
+
+  // WearablePreview component to take the initial screenshot
   wearablePreviewComponent = (
     <WearablePreview
       id="thumbnail-picker"
