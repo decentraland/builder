@@ -852,11 +852,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               </Row>
               <Row className="actions" align="right">
                 <Button primary disabled={isDisabled} loading={isLoading}>
-                  {(metadata && metadata.changeItemFile) || isRepresentation
-                    ? t('global.save')
-                    : isEmotesFeatureFlagOn
-                    ? t('global.next')
-                    : t('global.create')}
+                  {(metadata && metadata.changeItemFile) || isRepresentation ? t('global.save') : t('global.create')}
                 </Button>
               </Row>
               {stateError ? (
