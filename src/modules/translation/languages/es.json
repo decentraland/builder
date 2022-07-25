@@ -1410,8 +1410,14 @@
       "miscellaneous": "Misceláneos"
     },
     "play_mode": {
-      "simple": "Simple",
-      "loop": "Bucle"
+      "simple": {
+        "text": "Reproducir una vez",
+        "description": "Una vez activada, la animación se reproducirá una vez y volverá a la posición inicial."
+      },
+      "loop": {
+        "text": "Bucle",
+        "description": "Una vez activada, la animacion se reproducirá en bucle hasta que el jugador haga un movimiento."
+      }
     }
   },
   "wearable": {

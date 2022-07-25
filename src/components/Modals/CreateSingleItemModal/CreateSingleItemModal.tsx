@@ -900,10 +900,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         {this.renderFields()}
         <SelectField
           required
+          className="hasDescription"
           label={t('create_single_item_modal.play_mode_label')}
           placeholder={t('create_single_item_modal.play_mode_placeholder')}
           value={playModes.includes(playMode!) ? playMode : undefined}
-          options={playModes.map(value => ({ value, text: t(`${type}.play_mode.${value}`) }))}
+          options={playModes.map(value => ({
+            value,
+            text: t(`${type}.play_mode.${value}.text`),
+            description: t(`${type}.play_mode.${value}.description`)
+          }))}
           onChange={this.handlePlayModeChange}
         />
         <div className="dcl select-field">
@@ -928,12 +933,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       } else {
         return (
           <div className="metrics">
-            <div className="metric materials">{t('model_metrics.sequences', { count: (metrics as ModelEmoteMetrics).sequences })}</div>
-            <div className="metric materials">
+            <div className="metric circle">{t('model_metrics.sequences', { count: (metrics as ModelEmoteMetrics).sequences })}</div>
+            <div className="metric circle">
               {t('model_metrics.duration', { count: (metrics as ModelEmoteMetrics).duration.toFixed(2) })}
             </div>
-            <div className="metric materials">{t('model_metrics.frames', { count: (metrics as ModelEmoteMetrics).frames })}</div>
-            <div className="metric materials">{t('model_metrics.fps', { count: (metrics as ModelEmoteMetrics).fps.toFixed(2) })}</div>
+            <div className="metric circle">{t('model_metrics.frames', { count: (metrics as ModelEmoteMetrics).frames })}</div>
+            <div className="metric circle">{t('model_metrics.fps', { count: (metrics as ModelEmoteMetrics).fps.toFixed(2) })}</div>
           </div>
         )
       }
