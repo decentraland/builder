@@ -34,7 +34,8 @@ export type State = {
   playingIntervalId?: NodeJS.Timer
   previewController?: IPreviewController
   blob?: WearableWithBlobs
-} & Pick<WearablePreviewProps, 'zoom' | 'disableAutoRotate'>
+  zoom: number
+} & Pick<WearablePreviewProps, 'disableAutoRotate'>
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string

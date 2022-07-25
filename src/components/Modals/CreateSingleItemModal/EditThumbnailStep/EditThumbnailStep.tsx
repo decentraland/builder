@@ -7,17 +7,21 @@ import BuilderIcon from 'components/Icon'
 import { ControlOptionAction, Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
 
-const DEFAULT_ZOOM = 3
+const DEFAULT_ZOOM = 2
+const MAX_ZOOM = 3
+const MIN_ZOOM = 0.5
+const ANIMATION_INTERVAL = 1
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
   previewRef = React.createRef<WearablePreview>()
   state: State = {
+    zoom: DEFAULT_ZOOM,
     blob: this.props.blob,
     previewController: this.props.wearablePreviewController,
     hasBeenUpdated: false,
     frame: 0,
     isPlaying: false,
-    disableAutoRotate: false
+    disableAutoRotate: true
   }
 
   clearPlayingInterval = () => {
@@ -58,10 +62,10 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     let max = length * 100
     let intervalId: NodeJS.Timer
     intervalId = setInterval(() => {
-      counter += 50
+      counter += ANIMATION_INTERVAL
       const nextValue = counter >= max ? max : counter
       this.setState({ frame: nextValue, isPlaying: nextValue === max ? false : true, playingIntervalId: intervalId })
-    }, 500)
+    }, ANIMATION_INTERVAL * 10)
   }
 
   handleFileLoad = async () => {
@@ -90,13 +94,19 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
       const newOptions: PreviewOptions = { blob }
       switch (action) {
         case ControlOptionAction.ZOOM_IN: {
-          const newZoom = (zoom || DEFAULT_ZOOM) + 1
+          const newZoom = zoom! + 0.5
+          if (newZoom > MAX_ZOOM) {
+            return
+          }
           this.setState({ zoom: newZoom })
           newOptions.zoom = newZoom
           break
         }
         case ControlOptionAction.ZOOM_OUT: {
-          const newZoom = (zoom || DEFAULT_ZOOM) - 1
+          const newZoom = zoom! - 0.5
+          if (newZoom < MIN_ZOOM) {
+            return
+          }
           this.setState({ zoom: newZoom })
           newOptions.zoom = newZoom
           break
@@ -161,9 +171,10 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
                 id="preview"
                 blob={blob}
                 profile="default"
-                background="16141A7A"
+                background="1d1b22"
                 disableFace
                 disableDefaultWearables
+                disableAutoRotate
                 skin="000000"
                 wheelZoom={2}
                 onLoad={this.handleFileLoad}
@@ -192,7 +203,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
                   className="rotate-control"
                   onClick={() => this.handleControlActionChange(ControlOptionAction.DISABLE_AUTOROTATE)}
                 >
-                  <BuilderIcon name="rotate" />
+                  <BuilderIcon name="rotate-control" />
                 </Button>
 
                 <div className="play-controls">
