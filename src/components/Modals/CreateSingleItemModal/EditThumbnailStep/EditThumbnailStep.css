@@ -124,3 +124,7 @@
   cursor: pointer;
   background: rgba(115, 110, 125, 0.32);
 }
+
+.EditThumbnailStep .WearablePreview {
+ background: #1d1b22;
+}

@@ -479,7 +479,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOpenThumbnailDialog = () => {
-    if (this.thumbnailInput.current) {
+    const { isEmotesFeatureFlagOn } = this.props
+    const { type } = this.state
+    if (isEmotesFeatureFlagOn && type === ItemType.EMOTE) {
+      this.setState({ view: CreateItemView.THUMBNAIL })
+    } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
   }
@@ -770,12 +774,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
-          <Form
-            onSubmit={
-              isEmotesFeatureFlagOn && type === ItemType.EMOTE ? () => this.setState({ view: CreateItemView.THUMBNAIL }) : this.handleSubmit
-            }
-            disabled={isDisabled}
-          >
+          <Form onSubmit={this.handleSubmit} disabled={isDisabled}>
             <Column>
               <Row className="details">
                 <Column className="preview" width={192} grow={false}>
@@ -878,7 +877,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOnScreenshotTaken = (screenshot: string) => {
-    this.setState({ thumbnail: screenshot, isLoading: true }, this.handleSubmit)
+    this.setState({ thumbnail: screenshot, isLoading: true }, () => this.setState({ view: CreateItemView.DETAILS }))
   }
 
   renderThumbnailView() {

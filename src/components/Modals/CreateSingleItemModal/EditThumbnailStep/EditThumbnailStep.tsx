@@ -10,7 +10,7 @@ import './EditThumbnailStep.css'
 const DEFAULT_ZOOM = 2
 const MAX_ZOOM = 3
 const MIN_ZOOM = 0.5
-const ANIMATION_INTERVAL = 1
+const ANIMATION_INTERVAL_PERCENTAGE = 0.1
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
   previewRef = React.createRef<WearablePreview>()
@@ -62,10 +62,10 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     let max = length * 100
     let intervalId: NodeJS.Timer
     intervalId = setInterval(() => {
-      counter += ANIMATION_INTERVAL
+      counter += ANIMATION_INTERVAL_PERCENTAGE * length
       const nextValue = counter >= max ? max : counter
       this.setState({ frame: nextValue, isPlaying: nextValue === max ? false : true, playingIntervalId: intervalId })
-    }, ANIMATION_INTERVAL * 10)
+    }, ANIMATION_INTERVAL_PERCENTAGE * length * 10)
   }
 
   handleFileLoad = async () => {
@@ -171,7 +171,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
                 id="preview"
                 blob={blob}
                 profile="default"
-                background="1d1b22"
+                disableBackground
                 disableFace
                 disableDefaultWearables
                 disableAutoRotate
