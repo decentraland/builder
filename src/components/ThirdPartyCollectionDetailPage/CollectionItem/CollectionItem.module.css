@@ -36,6 +36,19 @@
   display: flex !important;
 }
 
+.statusColumn {
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.statusColumn.synced {
+  color: #34ce76;
+}
+
+.statusColumn.unsynced {
+  color: #FC9965;
+}
+
 .avatarColumn {
   align-items: center;
   padding-left: 10px !important;

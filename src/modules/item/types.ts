@@ -33,6 +33,11 @@ export enum ItemRarity {
   COMMON = 'common'
 }
 
+export enum EmotePlayMode {
+  SIMPLE = 'simple',
+  LOOP = 'loop'
+}
+
 export enum ItemMetadataType {
   WEARABLE = 'w',
   SMART_WEARABLE = 'sw',

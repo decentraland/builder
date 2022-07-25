@@ -34,6 +34,7 @@ export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/proje
 export type FetchCollectionsParams = {
   assignee?: string
   status?: CurationStatus
+  synced?: boolean
   sort?: CurationSortOptions
   q?: string
   isPublished?: boolean
@@ -650,7 +651,7 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteItem(remoteItem)
   }
 
-  async fetchCollectionItems(collectionId: string, options: { page?: number; limit?: number; status?: CurationStatus } = {}) {
+  async fetchCollectionItems(collectionId: string, options: FetchCollectionsParams = {}) {
     const { page, limit } = options
     const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, options)
     if (page && limit && remoteResponse.results) {
