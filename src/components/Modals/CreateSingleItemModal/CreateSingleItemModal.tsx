@@ -2,7 +2,8 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import { BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteCategory, EmoteDataADR74, WearableCategory } from '@dcl/schemas'
+import { WearableData } from '@dcl/builder-client'
 import {
   ModalNavigation,
   Row,
@@ -185,10 +186,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         isRepresentation,
         item: editedItem,
         category,
+        playMode,
         rarity
       } = this.state as StateData
 
-      let item: Item
+      let item: Item<ItemType.WEARABLE | ItemType.EMOTE>
 
       const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
       const blob = dataURLToBlob(thumbnail)
@@ -265,13 +267,32 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         }
 
         // create item to save
+        let data: WearableData | EmoteDataADR74
+
+        if (type === ItemType.WEARABLE) {
+          data = {
+            category: category as WearableCategory,
+            replaces: [],
+            hides: [],
+            tags: [],
+            representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
+          } as WearableData
+        } else {
+          data = {
+            category: category as EmoteCategory,
+            representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
+            tags: [],
+            loop: playMode === EmotePlayMode.LOOP
+          } as EmoteDataADR74
+        }
+
         item = {
           id,
           name,
           urn,
           description: description || '',
           thumbnail: THUMBNAIL_PATH,
-          type: type as ItemType.WEARABLE,
+          type,
           collectionId,
           totalSupply: 0,
           isPublished: false,
@@ -281,13 +302,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           currentContentHash: null,
           catalystContentHash: null,
           rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
-          data: {
-            category: category as WearableCategory,
-            replaces: [],
-            hides: [],
-            tags: [],
-            representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
-          },
+          data,
           owner: address!,
           metrics,
           contents: await computeHashes(sortedContents.all),
@@ -296,7 +311,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         }
       }
 
-      onSave(item, sortedContents.all)
+      onSave(item as Item, sortedContents.all)
     }
   }
 
