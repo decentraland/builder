@@ -762,7 +762,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderDetailsView() {
-    const { onClose, metadata, error, isLoading, isEmotesFeatureFlagOn } = this.props
+    const { onClose, metadata, error, isLoading } = this.props
     const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity, error: stateError, type } = this.state
 
     const isDisabled = this.isDisabled()
