@@ -243,7 +243,6 @@
     "upload_items_button": "上传可穿戴物品",
     "only_valid_items_info": "只会上传有效的项目",
     "done_button": "完成",
-
     "importing_files_progress_label": "加工项目",
     "uploading_items_progress_label": "上传 {number_of_items} 个项目",
     "import_information_link_label": "点击这里",
@@ -446,7 +445,8 @@
     },
     "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
     "items": "{count}结果",
-    "alias_popup": "您的个人资料正在使用此名称，但仍可以分配"
+    "alias_popup": "您的个人资料正在使用此名称，但仍可以分配",
+    "not_profile_created": "您需要先进入世界才能设置别名。"
   },
   "estate_editor": {
     "title_edit": "编辑产业",
@@ -1082,7 +1082,18 @@
     "cant_publish": "此集合仍在审核中，一旦该过程结束，您将能够发布更多项目",
     "cant_publish_items": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}}。目前还有其他人正在审查中",
     "exceeds_available_slots": "您超出了可用插槽的数量。在 DAO 中创建提案以添加更多插槽",
-    "cant_publish_and_push_changes": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}} 并同时推送更改。取消选择要发布的项目以推送更改"
+    "cant_publish_and_push_changes": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}} 并同时推送更改。取消选择要发布的项目以推送更改",
+    "synced_filter": {
+      "all": "所有项目",
+      "synced": "同步的",
+      "unsynced": "不同步"
+    },
+    "synced_statuses": {
+      "unpublished": "准备发布",
+      "under_review": "审查中",
+      "synced": "同步",
+      "unsynced": "未同步"
+    }
   },
   "collection_detail_page": {
     "new_item": "新物品",

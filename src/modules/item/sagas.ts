@@ -92,11 +92,10 @@ import { fetchItemCurationRequest } from 'modules/curations/itemCuration/actions
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
-import { BuilderAPI as LegacyBuilderAPI } from 'lib/api/builder'
+import { BuilderAPI as LegacyBuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { DEFAULT_PAGE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
-import { CurationStatus } from 'modules/curations/types'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
@@ -173,14 +172,15 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
-  function* fetchCollectionItemsWithBatch(collectionId: string, pagesToFetch: number[], limit?: number, status?: CurationStatus) {
+  function* fetchCollectionItemsWithBatch(collectionId: string, pagesToFetch: number[], options: FetchCollectionsParams) {
     const REQUEST_BATCH_SIZE = 10
     const queue = new PQueue({ concurrency: REQUEST_BATCH_SIZE })
     const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = []
     pagesToFetch.forEach(page => {
-      promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, { page, limit, status }))
+      promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, { page, ...options }))
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
+    const { limit } = options
     const paginationStats =
       allItemPages[0].total !== undefined
         ? { limit, page: allItemPages[0].page, pages: allItemPages[0].pages, total: allItemPages[0].total }
@@ -191,7 +191,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
-    const { collectionId, page = DEFAULT_PAGE, limit, overridePaginationData, status } = action.payload
+    const { collectionId, overridePaginationData, options } = action.payload
+    const { page = DEFAULT_PAGE, ...restOfOptions } = options
     const isFetchingMultiplePages = Array.isArray(page)
 
     try {
@@ -199,8 +200,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         fetchCollectionItemsWithBatch,
         collectionId,
         isFetchingMultiplePages ? page : [page],
-        limit,
-        status
+        restOfOptions
       )
       yield put(fetchCollectionItemsSuccess(collectionId, items, overridePaginationData ? paginationStats : undefined))
     } catch (error) {
