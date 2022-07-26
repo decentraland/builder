@@ -174,7 +174,11 @@
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triangle} other {triangles}}",
     "materials": "{count} {count, plural, one {material} other {materials}}",
-    "textures": "{count} {count, plural, one {texture} other {textures}}"
+    "textures": "{count} {count, plural, one {texture} other {textures}}",
+    "sequences": "{count} {count, plural, one {sequence} other {sequences}}",
+    "duration": "{count} {count, plural, one {second} other {seconds}}",
+    "frames": "{count} {count, plural, one {frame} other {frames}}",
+    "fps": "{count} fps"
   },
   "claim_ens_page": {
     "title": "Claim a unique Name",
@@ -194,13 +198,17 @@
   "create_single_item_modal": {
     "title": "New Item",
     "thumbnail_step_title": "Edit Thumbnail",
+    "title_emote": "New Emote",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
     "name_label": "Enter a name for your item",
     "category_label": "What's the category of this item?",
     "category_placeholder": "Select a category",
+    "play_mode_label": "Play mode",
+    "play_mode_placeholder": "Select a play mode",
     "rarity_label": "How rare is this item?",
     "rarity_placeholder": "Select a rarity",
+    "rarity_learn_more_about": "{learn_more} about rarities",
     "representation_label": "Select the body shape for your item",
     "existing_item": "Is this part of an existing item?",
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
@@ -214,7 +222,8 @@
       "missing_model_file": "Couldn't find a valid model file.",
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}."
-    }
+    },
+    "emote_notice": "Emotes are available for all body shapes."
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
@@ -443,7 +452,8 @@
     },
     "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
     "items": "{count} {count, plural, one {result} other {results}}",
-    "alias_popup": "This name is being used by your profile but it can still be assigned"
+    "alias_popup": "This name is being used by your profile but it can still be assigned",
+    "not_profile_created": "You need to get into the world first to set an alias."
   },
   "error_page": {
     "or": "or try",
@@ -1092,7 +1102,18 @@
     "cant_publish": "This collection is still under review, once that process ends you'll be able to publish more items",
     "cant_publish_items": "You're trying to publish {count} {count, plural, one {item} other {items}}. There are others under review right now",
     "exceeds_available_slots": "You're exceeding the amount of available slots. Create a proposal in the DAO to add more slots",
-    "cant_publish_and_push_changes": "You're trying to publish {count} {count, plural, one {item} other {items}} and push changes at the same time. Unselect the items to publish to able to push changes"
+    "cant_publish_and_push_changes": "You're trying to publish {count} {count, plural, one {item} other {items}} and push changes at the same time. Unselect the items to publish to able to push changes",
+    "synced_filter": {
+      "all": "All items",
+      "synced": "Synced",
+      "unsynced": "Unsynced"
+    },
+    "synced_statuses": {
+      "unpublished": "Ready for published",
+      "under_review": "Under Review",
+      "synced": "Synced",
+      "unsynced": "Unsynced"
+    }
   },
   "collection_detail_page": {
     "new_item": "New Item",
@@ -1359,6 +1380,10 @@
   },
   "emote": {
     "category": {
+      "simple": "Simple",
+      "loop": "Loop"
+    },
+    "play_mode": {
       "simple": "Simple",
       "loop": "Loop"
     }

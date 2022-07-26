@@ -4,9 +4,9 @@ import { DEFAULT_ITEMS_PAGE_SIZE, DEFAULT_ITEMS_PAGE, Props } from './Collection
 
 export default class CollectionProvider extends React.PureComponent<Props> {
   fetchCollectionItems(itemsPage: number | number[] = DEFAULT_ITEMS_PAGE) {
-    const { id, onFetchCollectionItems, itemsPageSize, status } = this.props
+    const { id, onFetchCollectionItems, itemsPageSize, fetchOptions } = this.props
     if (id) {
-      onFetchCollectionItems(id, { page: itemsPage, limit: itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE, status })
+      onFetchCollectionItems(id, { page: itemsPage, limit: itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE, ...fetchOptions })
     }
   }
 
@@ -19,7 +19,7 @@ export default class CollectionProvider extends React.PureComponent<Props> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { id, isConnected, collection, itemsPage, onFetchCollection } = this.props
+    const { id, isConnected, collection, itemsPage, fetchOptions, onFetchCollection } = this.props
     const justFinishedConnecting = !prevProps.isConnected && isConnected
     if (id && justFinishedConnecting) {
       onFetchCollection(id)
@@ -37,7 +37,8 @@ export default class CollectionProvider extends React.PureComponent<Props> {
 
     // logic to fetch the new pages requested
     const hasChangedPage = !equal(itemsPage, prevProps.itemsPage)
-    if (id && itemsPage && hasChangedPage) {
+    const hasChangeFilter = !equal(fetchOptions, prevProps.fetchOptions)
+    if (id && ((itemsPage && hasChangedPage) || hasChangeFilter)) {
       const prevPages = prevProps.itemsPage
       this.fetchCollectionItems(
         Array.isArray(itemsPage) && Array.isArray(prevPages) ? itemsPage.filter(page => !prevPages?.includes(page)) : itemsPage

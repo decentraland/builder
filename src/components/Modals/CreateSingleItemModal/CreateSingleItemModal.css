@@ -166,3 +166,28 @@
 .CreateSingleItemModal .thumbnail-actions.dcl.row.grow.shrink {
   justify-content: space-between;
 }
+
+.CreateSingleItemModal .ui.message.info {
+  background-color: var(--modal);
+  margin-bottom: 24px;
+}
+
+.CreateSingleItemModal .ui.message.info > .Icon.alert {
+  height: 18px;
+  width: 18px;
+  background-size: 200px;
+}
+
+.CreateSingleItemModal .ui.message.info > .Icon.alert {
+  margin-right: 8px;
+}
+
+.CreateSingleItemModal .ui.message.info .content p {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.CreateSingleItemModal p.rarity.learn-more {
+  margin-top: -20px;
+}

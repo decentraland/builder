@@ -29,7 +29,8 @@ import {
   ThirdPartyContractItem,
   ItemMetadataType,
   WearableRepresentation,
-  GenerateImageOptions
+  GenerateImageOptions,
+  EmotePlayMode
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -337,6 +338,10 @@ export function getWearableCategories(contents: Record<string, any> | undefined 
 
 export function getEmoteCategories() {
   return EmoteCategory.schema.enum as EmoteCategory[]
+}
+
+export function getEmotePlayModes() {
+  return Object.values(EmotePlayMode)
 }
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {

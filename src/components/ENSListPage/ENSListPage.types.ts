@@ -13,6 +13,7 @@ export type Props = {
   alias?: string | null
   ensList: ENS[]
   lands: Land[]
+  hasProfileCreated: boolean
   isLoggedIn: boolean
   isLoading: boolean
   onNavigate: (path: string) => void
@@ -24,6 +25,6 @@ export type State = {
   sortBy: SortBy
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'alias' | 'ensList' | 'lands' | 'isLoading' | 'isLoggedIn'>
+export type MapStateProps = Pick<Props, 'address' | 'alias' | 'ensList' | 'lands' | 'hasProfileCreated' | 'isLoading' | 'isLoggedIn'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
 export type MapDispatch = Dispatch

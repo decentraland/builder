@@ -177,7 +177,11 @@
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triángulo} other {triángulos}}",
     "materials": "{count} {count, plural, one {material} other {materiales}}",
-    "textures": "{count} {count, plural, one {textura} other {texturas}}"
+    "textures": "{count} {count, plural, one {textura} other {texturas}}",
+    "sequences": "{count} {count, plural, one {sequence} other {sequences}}",
+    "duration": "{count} {count, plural, one {segundo} other {segundos}}",
+    "frames": "{count} {count, plural, one {fotograma} other {fotogramas}}",
+    "fps": "{count} fps"
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre único",
@@ -197,13 +201,17 @@
   "create_single_item_modal": {
     "title": "Nuevo item",
     "thumbnail_step_title": "Editar el thumbnail",
+    "title_emote": "Nueva Animación",
     "add_representation": "Agregar representación de {bodyShape}",
     "wrong_thumbnail_format": "El thumbnail provisto no es una imagen PNG",
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
+    "play_mode_label": "Modo de ejecución",
+    "play_mode_placeholder": "Selecciona un modo de ejecución",
     "rarity_label": "Cuál es la rareza de este item?",
     "rarity_placeholder": "Selecciona una rareza",
+    "rarity_learn_more_about": "{learn_more} acerca de las rarezas",
     "representation_label": "Selecciona el tipo de cuerpo para tu item",
     "existing_item": "Es parte de un item existente?",
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
@@ -217,7 +225,8 @@
       "missing_model_file": "No se pudo encontrar un archivo de modelo válido.",
       "invalid_content_path": "La ruta \"{path}\" es inválida para la propiedad \"{name}\", el archivo no existe.",
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}."
-    }
+    },
+    "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
@@ -448,7 +457,8 @@
     },
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
     "items": "{count} {count, plural, one {resultado} other {resultados}}",
-    "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado"
+    "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado",
+    "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias."
   },
   "error_page": {
     "or": "o intentar",
@@ -1103,7 +1113,18 @@
     "cant_publish": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás publicar más items",
     "cant_publish_items": "Estas tratando de publicar {count} {count, plural, un {item} other {items}}. Hay otro que se encuentran bajo revisión en este momento",
     "exceeds_available_slots": "Estas excediendo la cantidad de slots disponibles. Podrás pedir más slots a la DAO através de una propuesta",
-    "cant_publish_and_push_changes": "Estas tratando de publicar {count} {count, plural, un {item} other {items}} y subir cambios al mismo tiempo. Deselecciona los items a publicar para poder subir cambios"
+    "cant_publish_and_push_changes": "Estas tratando de publicar {count} {count, plural, un {item} other {items}} y subir cambios al mismo tiempo. Deselecciona los items a publicar para poder subir cambios",
+    "synced_filter": {
+      "all": "Todos los items",
+      "synced": "Sincronizados",
+      "unsynced": "No sincronizados"
+    },
+    "synced_statuses": {
+      "unpublished": "Listos para publicar",
+      "under_review": "Bajo revisión",
+      "synced": "Sincronizado",
+      "unsynced": "No sincronizado"
+    }
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
@@ -1376,6 +1397,10 @@
     "category": {
       "simple": "Simple",
       "loop": "Loop"
+    },
+    "play_mode": {
+      "simple": "Simple",
+      "loop": "Bucle"
     }
   },
   "wearable": {

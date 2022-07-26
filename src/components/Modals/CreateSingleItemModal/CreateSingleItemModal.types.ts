@@ -28,6 +28,7 @@ export type StateData = {
   description: string
   type: ItemType
   category: string
+  playMode?: string
   rarity: ItemRarity
   bodyShape: BodyShapeType
   thumbnail: string

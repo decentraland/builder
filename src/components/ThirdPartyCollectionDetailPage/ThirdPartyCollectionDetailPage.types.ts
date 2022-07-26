@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
+import { FetchCollectionsParams } from 'lib/api/builder'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
@@ -39,6 +40,7 @@ export type State = {
   page: number
   shouldFetchAllPages: boolean
   showSelectAllPages: boolean
+  filters: Pick<FetchCollectionsParams, 'synced'>
 }
 
 export type MapStateProps = Pick<
