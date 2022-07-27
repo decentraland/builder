@@ -7,6 +7,13 @@ export type ModelMetrics = {
   textures: number
 }
 
+export type ModelEmoteMetrics = ModelMetrics & {
+  sequences: number
+  duration: number
+  frames: number
+  fps: number
+}
+
 export type Vector3 = { x: number; y: number; z: number }
 
 export type Quaternion = { x: number; y: number; z: number; w: number }
