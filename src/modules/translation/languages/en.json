@@ -198,6 +198,7 @@
   "create_single_item_modal": {
     "title": "New Item",
     "title_emote": "New Emote",
+    "title_set_price": "Set Price",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
     "name_label": "Enter a name for your item",
@@ -524,6 +525,7 @@
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
+    "skip": "Skip",
     "submit": "Submit",
     "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions",

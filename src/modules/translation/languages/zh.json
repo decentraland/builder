@@ -196,6 +196,7 @@
   "create_single_item_modal": {
     "title": "新物品",
     "title_emote": "新表情",
+    "title_set_price": "设定价格",
     "add_representation": "添加{bodyShape}",
     "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
     "name_label": "给您的新商品起个名字",
@@ -514,6 +515,7 @@
     "read_more": "阅读更多",
     "retry_tx": "重试",
     "save": "保存",
+    "skip": "跳过",
     "send": "发送",
     "share": "分享",
     "sign_in_required": "您需要{link}才能访问此页面。",
