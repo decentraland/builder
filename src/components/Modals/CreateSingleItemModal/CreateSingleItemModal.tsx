@@ -20,6 +20,7 @@ import {
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { locations } from 'routing/locations'
 import { cleanAssetName } from 'modules/asset/utils'
 import { blobToDataURL, getImageType, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
@@ -61,6 +62,7 @@ import {
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
+import EditPriceAndBeneficiaryModal from './EditPriceAndBeneficiaryModal/EditPriceAndBeneficiaryModal'
 import { getThumbnailType, validateEnum, validatePath } from './utils'
 import {
   Props,
@@ -80,7 +82,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   getInitialState() {
     const { metadata } = this.props
 
-    const state: State = { view: CreateItemView.IMPORT }
+    const state: State = { view: CreateItemView.IMPORT, playMode: EmotePlayMode.SIMPLE }
     if (!metadata) {
       return state
     }
@@ -93,6 +95,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       state.name = item.name
       state.description = item.description
       state.item = item
+      state.type = item.type
       state.collectionId = item.collectionId
       state.bodyShape = getBodyShapeType(item)
       state.category = item.data.category
@@ -109,6 +112,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     return state
+  }
+
+  componentDidUpdate(_prevProps: Props, prevState: State) {
+    const { isLoading } = this.props
+    const { item, view } = this.state
+    // when the emote is saved, we proceed to the Set Price view
+    if (prevState.type === ItemType.EMOTE && view === CreateItemView.DETAILS && item?.updatedAt && !isLoading) {
+      this.setState({ view: CreateItemView.SET_PRICE })
+    }
   }
 
   /**
@@ -192,126 +204,133 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
       let item: Item<ItemType.WEARABLE | ItemType.EMOTE>
 
-      const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
-      const blob = dataURLToBlob(thumbnail)
-      const hasCustomThumbnail = THUMBNAIL_PATH in contents
-      if (blob && !hasCustomThumbnail) {
-        contents[THUMBNAIL_PATH] = blob
-      }
+      try {
+        this.setState({ isLoading: true })
 
-      const sortedContents = this.sortContent(bodyShape, contents)
-
-      // Add this item as a representation of an existing item
-      if ((isRepresentation || addRepresentation) && editedItem) {
-        const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
-        item = {
-          ...editedItem,
-          data: {
-            ...editedItem.data,
-            representations: [
-              ...editedItem.data.representations,
-              // add new representation
-              ...this.buildRepresentations(bodyShape, model, sortedContents)
-            ],
-            replaces: [...editedItem.data.replaces],
-            hides: [...editedItem.data.hides],
-            tags: [...editedItem.data.tags]
-          },
-          contents: {
-            ...editedItem.contents,
-            ...hashedContents
-          },
-          updatedAt: +new Date()
+        const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
+        const blob = dataURLToBlob(thumbnail)
+        const hasCustomThumbnail = THUMBNAIL_PATH in contents
+        if (blob && !hasCustomThumbnail) {
+          contents[THUMBNAIL_PATH] = blob
         }
 
-        // Do not change the thumbnail when adding a new representation
-        delete sortedContents.all[THUMBNAIL_PATH]
-      } else if (pristineItem && changeItemFile) {
-        item = {
-          ...(pristineItem as Item),
-          data: {
-            ...pristineItem.data,
-            replaces: [],
-            hides: [],
-            category: category as WearableCategory
-          },
-          name,
-          metrics,
-          contents: await computeHashes(sortedContents.all),
-          updatedAt: +new Date()
-        }
+        const sortedContents = this.sortContent(bodyShape, contents)
 
-        const wearableBodyShape = bodyShape === BodyShapeType.MALE ? BodyShape.MALE : BodyShape.FEMALE
-        const representationIndex = pristineItem.data.representations.findIndex(
-          (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
-        )
-        const pristineBodyShape = getBodyShapeType(pristineItem)
-        const representations = this.buildRepresentations(bodyShape, model, sortedContents)
-        if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
-          // Unisex or Representation changed
-          item.data.representations = representations
+        // Add this item as a representation of an existing item
+        if ((isRepresentation || addRepresentation) && editedItem) {
+          const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
+          item = {
+            ...editedItem,
+            data: {
+              ...editedItem.data,
+              representations: [
+                ...editedItem.data.representations,
+                // add new representation
+                ...this.buildRepresentations(bodyShape, model, sortedContents)
+              ],
+              replaces: [...editedItem.data.replaces],
+              hides: [...editedItem.data.hides],
+              tags: [...editedItem.data.tags]
+            },
+            contents: {
+              ...editedItem.contents,
+              ...hashedContents
+            },
+            updatedAt: +new Date()
+          }
+
+          // Do not change the thumbnail when adding a new representation
+          delete sortedContents.all[THUMBNAIL_PATH]
+        } else if (pristineItem && changeItemFile) {
+          item = {
+            ...(pristineItem as Item),
+            data: {
+              ...pristineItem.data,
+              replaces: [],
+              hides: [],
+              category: category as WearableCategory
+            },
+            name,
+            metrics,
+            contents: await computeHashes(sortedContents.all),
+            updatedAt: +new Date()
+          }
+
+          const wearableBodyShape = bodyShape === BodyShapeType.MALE ? BodyShape.MALE : BodyShape.FEMALE
+          const representationIndex = pristineItem.data.representations.findIndex(
+            (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
+          )
+          const pristineBodyShape = getBodyShapeType(pristineItem)
+          const representations = this.buildRepresentations(bodyShape, model, sortedContents)
+          if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
+            // Unisex or Representation changed
+            item.data.representations = representations
+          } else {
+            // Edited representation
+            item.data.representations[representationIndex] = representations[0]
+          }
         } else {
-          // Edited representation
-          item.data.representations[representationIndex] = representations[0]
-        }
-      } else {
-        // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
-        let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
-        let urn: string | undefined
-        if (
-          decodedCollectionUrn &&
-          decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
-          decodedCollectionUrn.thirdPartyCollectionId
-        ) {
-          urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+          // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
+          let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
+          let urn: string | undefined
+          if (
+            decodedCollectionUrn &&
+            decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
+            decodedCollectionUrn.thirdPartyCollectionId
+          ) {
+            urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+          }
+
+          // create item to save
+          let data: WearableData | EmoteDataADR74
+
+          if (type === ItemType.WEARABLE) {
+            data = {
+              category: category as WearableCategory,
+              replaces: [],
+              hides: [],
+              tags: [],
+              representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
+            } as WearableData
+          } else {
+            data = {
+              category: category as EmoteCategory,
+              representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
+              tags: [],
+              loop: playMode === EmotePlayMode.LOOP
+            } as EmoteDataADR74
+          }
+
+          item = {
+            id,
+            name,
+            urn,
+            description: description || '',
+            thumbnail: THUMBNAIL_PATH,
+            type,
+            collectionId,
+            totalSupply: 0,
+            isPublished: false,
+            isApproved: false,
+            inCatalyst: false,
+            blockchainContentHash: null,
+            currentContentHash: null,
+            catalystContentHash: null,
+            rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
+            data,
+            owner: address!,
+            metrics,
+            contents: await computeHashes(sortedContents.all),
+            createdAt: +new Date(),
+            updatedAt: +new Date()
+          }
         }
 
-        // create item to save
-        let data: WearableData | EmoteDataADR74
-
-        if (type === ItemType.WEARABLE) {
-          data = {
-            category: category as WearableCategory,
-            replaces: [],
-            hides: [],
-            tags: [],
-            representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
-          } as WearableData
-        } else {
-          data = {
-            category: category as EmoteCategory,
-            representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
-            tags: [],
-            loop: playMode === EmotePlayMode.LOOP
-          } as EmoteDataADR74
-        }
-
-        item = {
-          id,
-          name,
-          urn,
-          description: description || '',
-          thumbnail: THUMBNAIL_PATH,
-          type,
-          collectionId,
-          totalSupply: 0,
-          isPublished: false,
-          isApproved: false,
-          inCatalyst: false,
-          blockchainContentHash: null,
-          currentContentHash: null,
-          catalystContentHash: null,
-          rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
-          data,
-          owner: address!,
-          metrics,
-          contents: await computeHashes(sortedContents.all),
-          createdAt: +new Date(),
-          updatedAt: +new Date()
-        }
+        onSave(item as Item, sortedContents.all)
+        this.setState({ item: { ...(item as Item) }, isLoading: false })
+      } catch (error) {
+        this.setState({ error: error.message, isLoading: false })
       }
-
-      onSave(item as Item, sortedContents.all)
     }
   }
 
@@ -950,12 +969,29 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
+  renderSetPrice() {
+    const { isLoading, onClose, onNavigate, onSave } = this.props
+    const { item } = this.state
+    return (
+      <EditPriceAndBeneficiaryModal
+        isLoading={!!isLoading}
+        item={item!}
+        title={'Set price'}
+        onClose={onClose}
+        onSave={onSave}
+        onSkip={() => onNavigate(locations.itemDetail(item!.id))}
+      />
+    )
+  }
+
   renderView() {
     switch (this.state.view) {
       case CreateItemView.IMPORT:
         return this.renderImportView()
       case CreateItemView.DETAILS:
         return this.renderDetailsView()
+      case CreateItemView.SET_PRICE:
+        return this.renderSetPrice()
       default:
         return null
     }

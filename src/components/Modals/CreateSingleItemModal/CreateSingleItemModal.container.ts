@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
@@ -21,7 +22,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSave: (item, contents) => dispatch(saveItemRequest(item, contents))
+  onSave: (item, contents) => dispatch(saveItemRequest(item, contents)),
+  onNavigate: path => dispatch(push(path))
 })
 
 export default connect(mapState, mapDispatch)(CreateSingleItemModal)

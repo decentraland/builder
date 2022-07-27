@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { CallHistoryMethodAction } from 'connected-react-router'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
@@ -7,7 +8,8 @@ import { BodyShapeType, Item, ItemRarity, ItemType } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
-  DETAILS = 'details'
+  DETAILS = 'details',
+  SET_PRICE = 'setPrice'
 }
 
 export type Props = ModalProps & {
@@ -17,6 +19,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   collection: Collection | null
   onSave: typeof saveItemRequest
+  onNavigate: (path: string) => void
 }
 
 export type StateData = {
@@ -53,5 +56,5 @@ export type SortedContent = { male: Record<string, Blob>; female: Record<string,
 
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection'>
-export type MapDispatchProps = Pick<Props, 'onSave'>
-export type MapDispatch = Dispatch<SaveItemRequestAction>
+export type MapDispatchProps = Pick<Props, 'onSave' | 'onNavigate'>
+export type MapDispatch = Dispatch<SaveItemRequestAction | CallHistoryMethodAction>
