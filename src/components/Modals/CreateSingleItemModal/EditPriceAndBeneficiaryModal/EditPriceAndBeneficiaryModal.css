@@ -42,7 +42,7 @@
 
 .CreateSingleItemModal .checkbox.make-it-free, .CreateSingleItemModal .checkbox.beneficiary {
   margin-top: -2em;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
   display: flex;
   align-items: center;
 }
