@@ -1,3 +1,4 @@
+import { hashV1 } from '@dcl/hashing'
 import { WearableCategory } from '@dcl/schemas'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { makeContentFile, getCID } from 'modules/deployment/utils'
@@ -28,10 +29,14 @@ export async function objectURLToBlob(objectURL: string): Promise<Blob> {
   return fetch(objectURL, { headers: NO_CACHE_HEADERS }).then(res => res.blob())
 }
 
+export async function blobToHash(blob: Blob, path: string) {
+  const file = await makeContentFile(path, blob)
+  return hashV1(file.content)
+}
+
 export async function blobToCID(blob: Blob, path: string) {
   const file = await makeContentFile(path, blob)
-  const cid = await getCID([file], false)
-  return cid
+  return getCID([file])
 }
 
 export function isRemoteURL(url: string) {
