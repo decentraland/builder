@@ -192,7 +192,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               </Card>
             ) : null}
             <Row className="actions" align="right">
-              <Button loading={isLoading} onClick={onSkip}>
+              <Button loading={isLoading} onClick={onSkip} type="button">
                 {t('global.skip')}
               </Button>
               <NetworkButton primary disabled={this.isDisabled()} loading={isLoading} network={Network.MATIC}>
