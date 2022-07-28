@@ -29,5 +29,5 @@ export type EditPriceAndBeneficiaryModalMetadata = {
 
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = Pick<Props, 'item' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onSave' | 'onSetPriceAndBeneficiary' | 'onSkip'>
+export type MapDispatchProps = Pick<Props, 'onSave' | 'onSetPriceAndBeneficiary'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | SetPriceAndBeneficiaryRequestAction>

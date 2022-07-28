@@ -62,7 +62,7 @@ import {
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
-import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal/EditPriceAndBeneficiaryModal'
+import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import { getThumbnailType, validateEnum, validatePath } from './utils'
 import {
   Props,
@@ -970,17 +970,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderSetPrice() {
-    const { isLoading, onClose, onSave, onNavigate, onSetPriceAndBeneficiary } = this.props
+    const { onClose, onNavigate } = this.props
     const { item } = this.state
     return (
       <EditPriceAndBeneficiaryModal
-        isLoading={!!isLoading}
-        item={item!}
+        name={'EditPriceAndBeneficiaryModal'}
         metadata={{ itemId: item!.id }}
         onClose={onClose}
-        onSave={onSave}
-        onSetPriceAndBeneficiary={onSetPriceAndBeneficiary}
-        name={'EditPriceAndBeneficiaryModal'}
         onSkip={() => onNavigate(locations.itemDetail(item!.id))}
       />
     )
