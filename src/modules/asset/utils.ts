@@ -46,7 +46,7 @@ export function revokeMappingsObjectURL(mappings: Record<string, string>) {
   }
 }
 
-export async function getContentsCID(asset: RawAsset): Promise<Record<string, string>> {
+export async function getContentsHash(asset: RawAsset): Promise<Record<string, string>> {
   const { contents } = asset
   const out: Record<string, string> = {}
 

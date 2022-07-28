@@ -1,6 +1,6 @@
 import { FullAssetPack, MixedAssetPack } from './types'
 import { RawAssetContents, Asset, RawAsset } from 'modules/asset/types'
-import { getContentsCID } from 'modules/asset/utils'
+import { getContentsHash } from 'modules/asset/utils'
 import { dataURLToBlob, isDataUrl, blobToHash } from 'modules/media/utils'
 import { getContentsStorageUrl } from 'lib/api/builder'
 
@@ -28,7 +28,7 @@ export async function convertToFullAssetPack(
     }
 
     if (!isIgnored) {
-      newAsset.contents = await getContentsCID(asset as RawAsset)
+      newAsset.contents = await getContentsHash(asset as RawAsset)
     } else {
       newAsset.contents = (asset as Asset).contents
     }
