@@ -38,7 +38,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     const { item } = this.props
     if (item) {
       this.state = {
-        ...this.state,
+        isFree: item.beneficiary === ethers.constants.AddressZero,
         price: this.getItemPrice(),
         beneficiary: item.beneficiary || item.owner
       }
