@@ -12,8 +12,8 @@ import {
   FieldProps,
   Mana,
   Card,
-  Row,
-  Checkbox
+  Checkbox,
+  ModalActions
 } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -191,15 +191,15 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                 </Card.Content>
               </Card>
             ) : null}
-            <Row className="actions" align="right">
-              <Button loading={isLoading} onClick={onSkip} type="button">
-                {t('global.skip')}
-              </Button>
-              <NetworkButton primary disabled={this.isDisabled()} loading={isLoading} network={Network.MATIC}>
-                {t('global.save')}
-              </NetworkButton>
-            </Row>
           </ModalContent>
+          <ModalActions>
+            <NetworkButton primary disabled={this.isDisabled()} loading={isLoading} network={Network.MATIC}>
+              {t('global.save')}
+            </NetworkButton>
+            <Button secondary loading={isLoading} onClick={onSkip} type="button">
+              {t('global.skip')}
+            </Button>
+          </ModalActions>
         </Form>
       </>
     )

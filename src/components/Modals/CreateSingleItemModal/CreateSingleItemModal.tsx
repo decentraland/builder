@@ -976,7 +976,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       <EditPriceAndBeneficiaryModal
         isLoading={!!isLoading}
         item={item!}
-        title={'Set price'}
+        title={t('create_single_item_modal.title_set_price')}
         onClose={onClose}
         onSave={onSave}
         onSkip={() => onNavigate(locations.itemDetail(item!.id))}
