@@ -198,7 +198,6 @@
   "create_single_item_modal": {
     "title": "New Item",
     "title_emote": "New Emote",
-    "title_set_price": "Set Price",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
     "name_label": "Enter a name for your item",
@@ -1192,7 +1191,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Set price and address for \"{name}\"",
+    "title": "Set price",
     "for_me": "I'm the beneficiary",
     "free": "Make it free",
     "price_label": "Price",

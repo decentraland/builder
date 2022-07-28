@@ -14,6 +14,7 @@ export type Props = ModalProps & {
   metadata: EditPriceAndBeneficiaryModalMetadata
   onSave: typeof saveItemRequest
   onSetPriceAndBeneficiary: typeof setPriceAndBeneficiaryRequest
+  onSkip?: () => void
 }
 
 export type State = {
@@ -28,5 +29,5 @@ export type EditPriceAndBeneficiaryModalMetadata = {
 
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = Pick<Props, 'item' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onSave' | 'onSetPriceAndBeneficiary'>
+export type MapDispatchProps = Pick<Props, 'onSave' | 'onSetPriceAndBeneficiary' | 'onSkip'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | SetPriceAndBeneficiaryRequestAction>

@@ -3,7 +3,12 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
-import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
+import {
+  saveItemRequest,
+  SaveItemRequestAction,
+  setPriceAndBeneficiaryRequest,
+  SetPriceAndBeneficiaryRequestAction
+} from 'modules/item/actions'
 import { BodyShapeType, Item, ItemRarity, ItemType } from 'modules/item/types'
 
 export enum CreateItemView {
@@ -20,6 +25,7 @@ export type Props = ModalProps & {
   collection: Collection | null
   onSave: typeof saveItemRequest
   onNavigate: (path: string) => void
+  onSetPriceAndBeneficiary: typeof setPriceAndBeneficiaryRequest
 }
 
 export type StateData = {
@@ -56,5 +62,5 @@ export type SortedContent = { male: Record<string, Blob>; female: Record<string,
 
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection'>
-export type MapDispatchProps = Pick<Props, 'onSave' | 'onNavigate'>
-export type MapDispatch = Dispatch<SaveItemRequestAction | CallHistoryMethodAction>
+export type MapDispatchProps = Pick<Props, 'onSave' | 'onNavigate' | 'onSetPriceAndBeneficiary'>
+export type MapDispatch = Dispatch<SaveItemRequestAction | CallHistoryMethodAction | SetPriceAndBeneficiaryRequestAction>

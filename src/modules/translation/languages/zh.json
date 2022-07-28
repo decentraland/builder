@@ -196,7 +196,6 @@
   "create_single_item_modal": {
     "title": "新物品",
     "title_emote": "新表情",
-    "title_set_price": "设定价格",
     "add_representation": "添加{bodyShape}",
     "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
     "name_label": "给您的新商品起个名字",
@@ -1185,7 +1184,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "设置{name}的价格和地址",
+    "title": "设定价格",
     "for_me": "我是受益人",
     "free": "免费",
     "price_label": "价格",

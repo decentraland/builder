@@ -201,7 +201,6 @@
   "create_single_item_modal": {
     "title": "Nuevo item",
     "title_emote": "Nueva Animación",
-    "title_set_price": "Agregar Precio",
     "add_representation": "Agregar representación de {bodyShape}",
     "wrong_thumbnail_format": "El thumbnail provisto no es una imagen PNG",
     "name_label": "Ponle un nombre a tu item",
@@ -1203,7 +1202,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Asignar un precio y un beneficiario para \"{name}\"",
+    "title": "Asignar un precio",
     "for_me": "Soy el beneficiario",
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
