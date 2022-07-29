@@ -18,6 +18,7 @@ import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { fetchItemCurationRequest } from 'modules/curations/itemCuration/actions'
 import { downloadZip } from 'lib/zip'
@@ -1380,7 +1381,8 @@ describe('when handling the save item curation success action', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
         [select(getLocation), { pathname: locations.collections() }],
-        [select(getOpenModals), { CreateSingleItemModal: true }]
+        [select(getOpenModals), { CreateSingleItemModal: true }],
+        [select(getIsEmotesFlowEnabled), true]
       ])
       .put(push(locations.itemEditor({ itemId: item.id })))
       .dispatch(saveItemSuccess(item, {}))

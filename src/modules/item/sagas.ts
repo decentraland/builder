@@ -95,6 +95,7 @@ import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { DEFAULT_PAGE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
@@ -356,17 +357,20 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
     const openModals: ModalState = yield select(getOpenModals)
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    const isEmotesFeatureFlagOn: boolean = yield select(getIsEmotesFlowEnabled)
     const { item } = action.payload
     if (openModals['EditItemURNModal']) {
       yield put(closeModal('EditItemURNModal'))
     } else if (openModals['EditPriceAndBeneficiaryModal']) {
       yield put(closeModal('EditPriceAndBeneficiaryModal'))
-    } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections() && item.type === ItemType.WEARABLE) {
-      // Redirect to the newly created item detail
-      yield put(push(locations.itemDetail(item.id)))
-    } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections() && item.type === ItemType.EMOTE) {
+    } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections()) {
       // Redirect to the item editor
-      yield put(push(locations.itemEditor({ itemId: item.id })))
+      if (isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
+        yield put(push(locations.itemEditor({ itemId: item.id })))
+      } else {
+        // Redirect to the newly created item details
+        yield put(push(locations.itemDetail(item.id)))
+      }
     }
     const collectionId = item.collectionId!
     // Fetch the the collection items again, we don't know where the item is going to be in the pagination data

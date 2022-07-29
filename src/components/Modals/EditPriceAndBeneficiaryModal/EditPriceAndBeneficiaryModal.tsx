@@ -82,6 +82,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
         price: priceInWei,
         beneficiary
       }
+      // Send itemSortedContents if this modal was opened from CreateSingleItem modal.
       onSave(newItem, itemSortedContents ?? {})
     }
   }
