@@ -73,7 +73,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     const controller = WearablePreview.createController('preview')
     const length = await controller.emote.getLength()
     // the emotes are being loaded twice, this is a workaround to just use the 2nd time
-    if (hasBeenUpdated && !currentLength) {
+    if (length > 0 && hasBeenUpdated && !currentLength) {
       this.setState({ length, previewController: controller, isPlaying: true })
       this.trackFrame(length)
     }
@@ -174,6 +174,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
                 disableBackground
                 disableFace
                 disableDefaultWearables
+                disableDefaultEmotes
                 disableAutoRotate
                 skin="000000"
                 wheelZoom={2}
