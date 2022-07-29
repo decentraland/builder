@@ -361,13 +361,17 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(closeModal('EditItemURNModal'))
     } else if (openModals['EditPriceAndBeneficiaryModal']) {
       yield put(closeModal('EditPriceAndBeneficiaryModal'))
+    } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections() && item.type === ItemType.WEARABLE) {
+      // Redirect to the newly created item detail
+      yield put(push(locations.itemDetail(item.id)))
     } else if (
       openModals['CreateSingleItemModal'] &&
       location.pathname === locations.collections() &&
-      (item.type === ItemType.WEARABLE || (item.type === ItemType.EMOTE && item.beneficiary))
+      item.type === ItemType.EMOTE &&
+      item.beneficiary
     ) {
-      // Redirect to the newly created item detail
-      yield put(push(locations.itemDetail(item.id)))
+      // Redirect to the item editor
+      yield put(push(locations.itemEditor({ itemId: item.id })))
     }
     const collectionId = item.collectionId!
     // Fetch the the collection items again, we don't know where the item is going to be in the pagination data

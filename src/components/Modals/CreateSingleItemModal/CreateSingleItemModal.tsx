@@ -977,7 +977,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         name={'EditPriceAndBeneficiaryModal'}
         metadata={{ itemId: item!.id }}
         onClose={onClose}
-        onSkip={() => onNavigate(locations.itemDetail(item!.id))}
+        onSkip={() => onNavigate(locations.itemEditor({ itemId: item!.id }))}
       />
     )
   }
