@@ -416,9 +416,11 @@ describe('when handling the save item request action', () => {
 
 describe('when handling the save item success action', () => {
   let item: Item
+
   beforeEach(() => {
     item = { ...mockedItem }
   })
+
   describe('and the location is the TP detail page', () => {
     describe('and the new item will be in the same page', () => {
       let paginationData: ItemPaginationData
@@ -453,6 +455,57 @@ describe('when handling the save item success action', () => {
           .put(push(locations.thirdPartyCollectionDetail(item.collectionId!, { page: newPageNumber })))
           .dispatch(saveItemSuccess(item, contents))
           .run({ silenceTimeout: true })
+      })
+    })
+  })
+
+  describe('and the location is the Collection page', () => {
+    describe('and the CreateSingleItemModal is opened', () => {
+      describe('and the item type is wearable', () => {
+        it('should put a location change to the item detail', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.collections() }],
+              [select(getOpenModals), { CreateSingleItemModal: true }]
+            ])
+            .put(push(locations.itemDetail(item.id)))
+            .dispatch(saveItemSuccess(item, {}))
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('and the item type is emote', () => {
+        beforeEach(() => {
+          item = { ...item, type: ItemType.EMOTE }
+        })
+
+        describe('and the FF EmotesFlow is enabled', () => {
+          it('should put a location change to the item editor', () => {
+            return expectSaga(itemSaga, builderAPI, builderClient)
+              .provide([
+                [select(getLocation), { pathname: locations.collections() }],
+                [select(getOpenModals), { CreateSingleItemModal: true }],
+                [select(getIsEmotesFlowEnabled), true]
+              ])
+              .put(push(locations.itemEditor({ itemId: item.id })))
+              .dispatch(saveItemSuccess(item, {}))
+              .run({ silenceTimeout: true })
+          })
+        })
+
+        describe('and the FF EmotesFlow is disabled', () => {
+          it('should put a location change to the item detail', () => {
+            return expectSaga(itemSaga, builderAPI, builderClient)
+              .provide([
+                [select(getLocation), { pathname: locations.collections() }],
+                [select(getOpenModals), { CreateSingleItemModal: true }],
+                [select(getIsEmotesFlowEnabled), false]
+              ])
+              .put(push(locations.itemDetail(item.id)))
+              .dispatch(saveItemSuccess(item, {}))
+              .run({ silenceTimeout: true })
+          })
+        })
       })
     })
   })
@@ -1371,20 +1424,6 @@ describe('when handling the save item curation success action', () => {
         [select(getOpenModals), { CreateSingleItemModal: true }]
       ])
       .put(push(locations.itemDetail(item.id)))
-      .dispatch(saveItemSuccess(item, {}))
-      .run({ silenceTimeout: true })
-  })
-
-  it('should put a location change to the item editor if the CreateSingleItemModal was opened and the location was /collections and item type is emote', () => {
-    item.type = ItemType.EMOTE
-
-    return expectSaga(itemSaga, builderAPI, builderClient)
-      .provide([
-        [select(getLocation), { pathname: locations.collections() }],
-        [select(getOpenModals), { CreateSingleItemModal: true }],
-        [select(getIsEmotesFlowEnabled), true]
-      ])
-      .put(push(locations.itemEditor({ itemId: item.id })))
       .dispatch(saveItemSuccess(item, {}))
       .run({ silenceTimeout: true })
   })
