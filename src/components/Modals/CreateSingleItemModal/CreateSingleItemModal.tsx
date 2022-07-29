@@ -315,7 +315,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             }
           }
 
-          // The Emote will be save on the set price step
+          // The Emote will be saved on the set price step
           if (item.type === ItemType.WEARABLE) {
             onSave(item as Item, sortedContents.all)
           } else {
