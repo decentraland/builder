@@ -364,12 +364,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections() && item.type === ItemType.WEARABLE) {
       // Redirect to the newly created item detail
       yield put(push(locations.itemDetail(item.id)))
-    } else if (
-      openModals['CreateSingleItemModal'] &&
-      location.pathname === locations.collections() &&
-      item.type === ItemType.EMOTE &&
-      item.beneficiary
-    ) {
+    } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections() && item.type === ItemType.EMOTE) {
       // Redirect to the item editor
       yield put(push(locations.itemEditor({ itemId: item.id })))
     }

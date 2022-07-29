@@ -20,7 +20,6 @@ import {
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { locations } from 'routing/locations'
 import { cleanAssetName } from 'modules/asset/utils'
 import { blobToDataURL, getImageType, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
@@ -112,15 +111,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     return state
-  }
-
-  componentDidUpdate(_prevProps: Props, prevState: State) {
-    const { isLoading } = this.props
-    const { item, view } = this.state
-    // when the emote is saved, we proceed to the Set Price view
-    if (prevState.type === ItemType.EMOTE && view === CreateItemView.DETAILS && item?.updatedAt && !isLoading) {
-      this.setState({ view: CreateItemView.SET_PRICE })
-    }
   }
 
   /**
@@ -326,8 +316,17 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           }
         }
 
-        onSave(item as Item, sortedContents.all)
-        this.setState({ item: { ...(item as Item) }, isLoading: false })
+        // The Emote will be save on the set price step
+        if (item.type === ItemType.WEARABLE || this.state.view === CreateItemView.SET_PRICE) {
+          onSave(item as Item, sortedContents.all)
+        }
+
+        this.setState({
+          item: { ...(item as Item) },
+          itemSortedContents: sortedContents.all,
+          view: CreateItemView.SET_PRICE,
+          isLoading: false
+        })
       } catch (error) {
         this.setState({ error: error.message, isLoading: false })
       }
@@ -970,14 +969,16 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderSetPrice() {
-    const { onClose, onNavigate } = this.props
-    const { item } = this.state
+    const { onClose } = this.props
+    const { item, itemSortedContents } = this.state
     return (
       <EditPriceAndBeneficiaryModal
         name={'EditPriceAndBeneficiaryModal'}
         metadata={{ itemId: item!.id }}
+        item={item!}
+        itemSortedContents={itemSortedContents}
         onClose={onClose}
-        onSkip={() => onNavigate(locations.itemEditor({ itemId: item!.id }))}
+        onSkip={this.handleSubmit}
       />
     )
   }

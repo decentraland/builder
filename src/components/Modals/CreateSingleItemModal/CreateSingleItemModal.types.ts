@@ -37,6 +37,7 @@ export type StateData = {
   contents: Record<string, Blob>
   isRepresentation: boolean
   item: Item
+  itemSortedContents: Record<string, Blob>
   collectionId: string
   isLoading: boolean
   error: string

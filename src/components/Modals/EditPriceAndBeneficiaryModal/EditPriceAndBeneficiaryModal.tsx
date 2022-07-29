@@ -70,7 +70,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   handleSubmit = () => {
-    const { item, onSave, onSetPriceAndBeneficiary } = this.props
+    const { item, itemSortedContents, onSave, onSetPriceAndBeneficiary } = this.props
     const { price, beneficiary } = this.state
     const priceInWei = ethers.utils.parseEther(price!).toString()
 
@@ -82,7 +82,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
         price: priceInWei,
         beneficiary
       }
-      onSave(newItem, {})
+      onSave(newItem, itemSortedContents ?? {})
     }
   }
 
