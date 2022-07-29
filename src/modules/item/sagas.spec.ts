@@ -1374,7 +1374,7 @@ describe('when handling the save item curation success action', () => {
       .run({ silenceTimeout: true })
   })
 
-  it.only('should put a location change to the item editor if the CreateSingleItemModal was opened and the location was /collections and item type is emote', () => {
+  it('should put a location change to the item editor if the CreateSingleItemModal was opened and the location was /collections and item type is emote', () => {
     item.type = ItemType.EMOTE
 
     return expectSaga(itemSaga, builderAPI, builderClient)
