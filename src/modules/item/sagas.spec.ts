@@ -1374,6 +1374,19 @@ describe('when handling the save item curation success action', () => {
       .run({ silenceTimeout: true })
   })
 
+  it.only('should put a location change to the item editor if the CreateSingleItemModal was opened and the location was /collections and item type is emote', () => {
+    item.type = ItemType.EMOTE
+
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .provide([
+        [select(getLocation), { pathname: locations.collections() }],
+        [select(getOpenModals), { CreateSingleItemModal: true }]
+      ])
+      .put(push(locations.itemEditor({ itemId: item.id })))
+      .dispatch(saveItemSuccess(item, {}))
+      .run({ silenceTimeout: true })
+  })
+
   it('should not put a location change to the item detail if the CreateSingleItemModal was opened and the location was not /collections', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
