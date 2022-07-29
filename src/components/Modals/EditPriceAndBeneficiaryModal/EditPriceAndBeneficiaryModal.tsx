@@ -12,7 +12,8 @@ import {
   InputOnChangeData,
   FieldProps,
   Mana,
-  Card
+  Card,
+  Checkbox
 } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -121,6 +122,8 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     const { name, isLoading, onClose, onSkip } = this.props
     const { isFree, price = '', beneficiary = '' } = this.state
 
+    const isGift = this.isGift()
+
     return (
       <Modal name={name} size="tiny" onClose={onClose}>
         <ModalNavigation title={t('edit_price_and_beneficiary_modal.title')} onClose={onClose} />
@@ -137,9 +140,15 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                 error={!!price && !this.isValidPrice()}
               />
               <Mana network={Network.MATIC} inline />
-              <Button basic type="button" onClick={this.handleIsFreeToggle} active={isFree}>
+              <div className="checkbox make-it-free">
+                <Checkbox
+                  className="item-checkbox"
+                  checked={isFree}
+                  onClick={(_event: React.MouseEvent<HTMLInputElement>) => this.handleIsFreeToggle()}
+                />
+                &nbsp;
                 {t('edit_price_and_beneficiary_modal.free')}
-              </Button>
+              </div>
             </div>
             <Field
               label={
@@ -157,6 +166,15 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               onChange={this.handleBeneficiaryChange}
               error={!!beneficiary && !this.isValidBeneficiary()}
             />
+            <div className="checkbox beneficiary">
+              <Checkbox
+                className="item-checkbox"
+                checked={!isGift}
+                onClick={(_event: React.MouseEvent<HTMLInputElement>) => this.handleIsGiftToggle()}
+              />
+              &nbsp;
+              {t('edit_price_and_beneficiary_modal.for_me')}
+            </div>
             {this.isPriceTooLow() ? (
               <Card fluid className="min-price-notice">
                 <Card.Content>

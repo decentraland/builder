@@ -55,3 +55,11 @@
   width: 100%;
   margin: 1em 0 0;
 }
+
+.EditPriceAndBeneficiaryModal .checkbox.make-it-free,
+.EditPriceAndBeneficiaryModal .checkbox.beneficiary {
+  margin-top: -2em;
+  margin-bottom: 1em;
+  display: flex;
+  align-items: center;
+}
