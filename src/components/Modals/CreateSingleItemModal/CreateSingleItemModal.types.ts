@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
@@ -19,7 +18,6 @@ export type Props = ModalProps & {
   isLoading: boolean
   collection: Collection | null
   onSave: typeof saveItemRequest
-  onNavigate: (path: string) => void
 }
 
 export type StateData = {
@@ -37,12 +35,11 @@ export type StateData = {
   contents: Record<string, Blob>
   isRepresentation: boolean
   item: Item
-  itemSortedContents: Record<string, Blob>
   collectionId: string
   isLoading: boolean
   error: string
 }
-export type State = { view: CreateItemView } & Partial<StateData>
+export type State = { view: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string
@@ -57,5 +54,5 @@ export type SortedContent = { male: Record<string, Blob>; female: Record<string,
 
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection'>
-export type MapDispatchProps = Pick<Props, 'onSave' | 'onNavigate'>
-export type MapDispatch = Dispatch<SaveItemRequestAction | CallHistoryMethodAction>
+export type MapDispatchProps = Pick<Props, 'onSave'>
+export type MapDispatch = Dispatch<SaveItemRequestAction>
