@@ -195,6 +195,7 @@
   },
   "create_single_item_modal": {
     "title": "新物品",
+    "thumbnail_step_title": "编辑缩略图",
     "title_emote": "新表情",
     "add_representation": "添加{bodyShape}",
     "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
