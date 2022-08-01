@@ -95,6 +95,7 @@ import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { DEFAULT_PAGE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
@@ -105,7 +106,7 @@ import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize, reHashOlderContents } from './export'
-import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData } from './types'
+import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, ItemType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
@@ -356,14 +357,21 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
     const openModals: ModalState = yield select(getOpenModals)
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    const isEmotesFeatureFlagOn: boolean = yield select(getIsEmotesFlowEnabled)
+    const { item } = action.payload
     if (openModals['EditItemURNModal']) {
       yield put(closeModal('EditItemURNModal'))
+    } else if (openModals['EditPriceAndBeneficiaryModal']) {
+      yield put(closeModal('EditPriceAndBeneficiaryModal'))
     } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections()) {
-      // Redirect to the newly created item detail
-      const { item } = action.payload
-      yield put(push(locations.itemDetail(item.id)))
+      // Redirect to the item editor
+      if (isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
+        yield put(push(locations.itemEditor({ itemId: item.id })))
+      } else {
+        // Redirect to the newly created item details
+        yield put(push(locations.itemDetail(item.id)))
+      }
     }
-    const { item } = action.payload
     const collectionId = item.collectionId!
     // Fetch the the collection items again, we don't know where the item is going to be in the pagination data
     if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
@@ -454,6 +462,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
     yield put(saveItemRequest(newItem, {}))
     yield take(SAVE_ITEM_SUCCESS)
+    yield put(closeModal('MoveItemToCollectionModal'))
     yield put(fetchItemsRequest(address))
   }
 

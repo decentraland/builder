@@ -525,6 +525,7 @@
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
+    "skip": "Skip",
     "submit": "Submit",
     "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions",
@@ -1191,7 +1192,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Set price and address for \"{name}\"",
+    "title": "Set price",
     "for_me": "I'm the beneficiary",
     "free": "Make it free",
     "price_label": "Price",

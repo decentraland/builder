@@ -30,6 +30,7 @@
 
 .CollectionDetailPage .ui.toggle.on-sale {
   text-transform: uppercase;
+  margin-right: 16px;
 }
 
 .CollectionDetailPage .ui.toggle.on-sale > label {

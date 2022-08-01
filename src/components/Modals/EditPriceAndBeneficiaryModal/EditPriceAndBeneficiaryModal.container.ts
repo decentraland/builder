@@ -16,7 +16,7 @@ import EditPriceAndBeneficiaryModal from './EditPriceAndBeneficiaryModal'
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { itemId } = ownProps.metadata
   const items = getAuthorizedItems(state)
-  const item = items.find(item => item.id === itemId)!
+  const item = ownProps.item ?? items.find(item => item.id === itemId)!
 
   return {
     item,

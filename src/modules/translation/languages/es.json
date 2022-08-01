@@ -523,6 +523,7 @@
     "read_more": "Leer más",
     "retry_tx": "Re Enviar",
     "save": "Salvar",
+    "skip": "Saltar",
     "send": "Enviar",
     "share": "Compartir",
     "sign_in_required": "Debes {link} para acceder a esta página.",
@@ -1202,7 +1203,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Asignar un precio y un beneficiario para \"{name}\"",
+    "title": "Asignar un precio",
     "for_me": "Soy el beneficiario",
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
