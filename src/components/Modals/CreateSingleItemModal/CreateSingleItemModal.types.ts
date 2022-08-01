@@ -7,7 +7,8 @@ import { BodyShapeType, Item, ItemRarity, ItemType } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
-  DETAILS = 'details'
+  DETAILS = 'details',
+  SET_PRICE = 'setPrice'
 }
 
 export type Props = ModalProps & {
@@ -38,7 +39,7 @@ export type StateData = {
   isLoading: boolean
   error: string
 }
-export type State = { view: CreateItemView } & Partial<StateData>
+export type State = { view: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string
