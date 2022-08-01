@@ -363,13 +363,15 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(closeModal('EditItemURNModal'))
     } else if (openModals['EditPriceAndBeneficiaryModal']) {
       yield put(closeModal('EditPriceAndBeneficiaryModal'))
-    } else if (openModals['CreateSingleItemModal'] && location.pathname === locations.collections()) {
-      // Redirect to the item editor
+    } else if (openModals['CreateSingleItemModal']) {
       if (isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
+        // Redirect to the item editor
         yield put(push(locations.itemEditor({ itemId: item.id })))
-      } else {
+      } else if (location.pathname === locations.collections()) {
         // Redirect to the newly created item details
         yield put(push(locations.itemDetail(item.id)))
+      } else {
+        yield put(closeModal('CreateSingleItemModal'))
       }
     }
     const collectionId = item.collectionId!
