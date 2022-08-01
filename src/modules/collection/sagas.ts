@@ -259,7 +259,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
         const from: string = yield select(getAddress)
         const maticChainId = getChainIdByNetwork(Network.MATIC)
-        const rarities: ContractData = yield select(state => getRaritiesContract(state, maticChainId))
+        const rarities: ContractData = getRaritiesContract(maticChainId)
         const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
 
         const provider: Provider = yield call(getNetworkProvider, maticChainId)
