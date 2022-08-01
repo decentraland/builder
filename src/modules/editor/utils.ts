@@ -1,6 +1,6 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 import { Color4, Wearable } from 'decentraland-ecs'
-import { Locale, BodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
+import { Locale, BodyShape, WearableCategory, WearableDefinition, EmoteCategory, EmoteDefinition } from '@dcl/schemas'
 import { Item, ItemType } from 'modules/item/types'
 import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
@@ -303,12 +303,37 @@ export function toWearable(item: Item): WearableDefinition {
         contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
       }))
     },
-    emoteDataV0:
-      item.type === ItemType.EMOTE
-        ? {
-            loop: false // we are setting this as false for now since all the emotes we have created are not looped, eventually this will be configurable via UI
-          }
-        : undefined
+    emoteDataV0: undefined
+  }
+}
+
+/**
+ * Given an item convert it to an emote definition
+ *
+ * @param item - an Item
+ */
+export function toEmote(item: Item<ItemType.EMOTE>): EmoteDefinition {
+  return {
+    id: item.id,
+    name: item.name,
+    thumbnail: item.thumbnail,
+    image: item.thumbnail,
+    description: item.description,
+    i18n: [
+      {
+        code: Locale.EN,
+        text: item.name
+      }
+    ],
+    emoteDataADR74: {
+      ...item.data,
+      category: item.data.category as EmoteCategory,
+      representations: item.data.representations.map(representation => ({
+        ...representation,
+        contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
+      })),
+      loop: item.data.loop
+    }
   }
 }
 
@@ -317,8 +342,8 @@ export function toWearable(item: Item): WearableDefinition {
  *
  * @param item - an Item
  */
-export function toBase64(item: Item): string {
-  const wearable = toWearable(item)
+export function toBase64(item: Item | Item<ItemType.EMOTE>): string {
+  const wearable = item.type === ItemType.EMOTE ? toEmote(item as Item<ItemType.EMOTE>) : toWearable(item as Item)
   const stringified = JSON.stringify(wearable)
   const sanitized = stringified.replace(/[\u0250-\ue007]/g, '')
   return btoa(sanitized)

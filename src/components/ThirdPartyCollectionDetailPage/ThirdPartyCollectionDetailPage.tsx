@@ -15,7 +15,9 @@ import {
   PaginationProps,
   Checkbox,
   CheckboxProps,
-  Loader
+  Loader,
+  Dropdown,
+  DropdownProps
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ContractName } from 'decentraland-transactions'
@@ -46,7 +48,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     searchText: '',
     page: this.props.currentPage,
     showSelectAllPages: false,
-    shouldFetchAllPages: false
+    shouldFetchAllPages: false,
+    filters: {}
   }
 
   componentDidMount() {
@@ -277,6 +280,22 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     total
                   })}
                 </div>
+                <Dropdown
+                  className="synced-status-list"
+                  direction="left"
+                  value={this.state.filters.synced}
+                  placeholder={t('third_party_collection_detail_page.synced_filter.all')}
+                  defaultSelectedLabel={t('third_party_collection_detail_page.synced_filter.all')}
+                  defaultValue={this.state.filters.synced}
+                  options={[
+                    { value: undefined, text: t('third_party_collection_detail_page.synced_filter.all') },
+                    { value: true, text: t('third_party_collection_detail_page.synced_filter.synced') },
+                    { value: false, text: t('third_party_collection_detail_page.synced_filter.unsynced') }
+                  ]}
+                  onChange={(_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+                    this.setState({ filters: { synced: value as boolean } })
+                  }}
+                />
               </div>
 
               {selectedItemsCount > 0 ? (
@@ -313,7 +332,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     <Grid.Column>{t('global.category')}</Grid.Column>
                     <Grid.Column>{t('global.body_shape')}</Grid.Column>
                     <Grid.Column>URN ID</Grid.Column>
-                    <Grid.Column></Grid.Column>
+                    <Grid.Column width={3}> {t('collection_row.status')} </Grid.Column>
+                    <Grid.Column width={1}></Grid.Column>
                   </Grid.Row>
                 </Grid>
 
@@ -354,12 +374,12 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   }
 
   render() {
-    const { page } = this.state
+    const { page, filters } = this.state
     const { isLoading, collection, thirdParty } = this.props
     const hasAccess = this.hasAccess()
     const shouldRender = hasAccess && collection
     return (
-      <CollectionProvider id={collection?.id} itemsPage={page} itemsPageSize={PAGE_SIZE}>
+      <CollectionProvider id={collection?.id} itemsPage={page} itemsPageSize={PAGE_SIZE} fetchOptions={filters}>
         {({ isLoading: isLoadingCollectionData, items, paginatedItems, onFetchCollectionItemsPages }) => (
           <LoggedInDetailPage
             className="ThirdPartyCollectionDetailPage"

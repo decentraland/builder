@@ -69,6 +69,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
     return wallet !== null && collection !== null && canSeeCollection(collection, wallet.address)
   }
 
+  handleNavigateToEditor = () => {
+    const { collection, items, onNavigate } = this.props
+    collection && onNavigate(getCollectionEditorURL(collection, items))
+  }
+
   renderPage(items: Item[]) {
     const { wallet, isOnSaleLoading } = this.props
     const collection = this.props.collection!
@@ -84,7 +89,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <Back absolute onClick={this.handleGoBack} />
             <Narrow>
               <Row>
-                <Column className="header-column">
+                <Column grow={false} className="name-container">
                   {isLocked ? (
                     <Header size="huge" className="name">
                       {collection.isPublished && <CollectionStatus collection={collection} />}
@@ -99,7 +104,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     </Row>
                   )}
                 </Column>
-                <Column align="right" shrink={false} grow={false}>
+                <Column align="right" className="actions-container" shrink={false} grow={false}>
                   <Row className="actions">
                     {collection.isPublished ? (
                       <>
@@ -139,16 +144,18 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                           <span className="text">{t('collection_detail_page.mint_items')}</span>
                         </Button>
                       </>
-                    ) : (
+                    ) : null}
+
+                    {items.length && !collection.isPublished ? (
                       <Button basic className="action-button" disabled={isLocked} onClick={this.handleNewItem}>
-                        <Icon name="plus" />
-                        <span className="text">{t('collection_detail_page.new_item')}</span>
+                        <span className="text">{t('collection_detail_page.add_item')}</span>
                       </Button>
-                    )}
-
-                    {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
-
+                    ) : null}
+                    <Button basic className="action-button" disabled={isLocked || !items.length} onClick={this.handleNavigateToEditor}>
+                      <span className="text">{t('collection_detail_page.preview')}</span>
+                    </Button>
                     <CollectionPublishButton collection={collection} />
+                    {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
                   </Row>
                 </Column>
               </Row>
@@ -175,9 +182,15 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <div className="empty">
               <div className="sparkles" />
               <div>
-                {t('collection_detail_page.start_adding_items')}
+                <span className="empty-collection-title">{t('collection_detail_page.add_items_title')}</span>
+                <br />
+                {t('collection_detail_page.add_items_subtitle')}
                 <br />
                 {t('collection_detail_page.cant_remove')}
+                <br />
+                <Button basic className="empty-action-button" disabled={isLocked} onClick={this.handleNewItem}>
+                  <span className="text">{t('collection_detail_page.add_item')}</span>
+                </Button>
               </div>
             </div>
           )}

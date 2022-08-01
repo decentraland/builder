@@ -138,6 +138,7 @@ import {
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getRaritiesContract, getWalletCollections } from './selectors'
 import { Collection, CollectionType } from './types'
@@ -618,9 +619,10 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const entitiesToDeploy: DeploymentPreparationData[] = []
     const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
     const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+    const emotesFeatureFlag: boolean = yield select(getIsEmotesFlowEnabled)
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
-      if (!deployedEntity || !areSynced(item, deployedEntity)) {
+      if (!deployedEntity || !areSynced(item, deployedEntity, emotesFeatureFlag)) {
         const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, legacyBuilderClient, collection, item)
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)

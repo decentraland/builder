@@ -2,7 +2,8 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import { BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteCategory, EmoteDataADR74, WearableCategory } from '@dcl/schemas'
+import { WearableData } from '@dcl/builder-client'
 import {
   ModalNavigation,
   Row,
@@ -14,9 +15,11 @@ import {
   Header,
   InputOnChangeData,
   SelectField,
-  DropdownProps
+  DropdownProps,
+  WearablePreview,
+  Message
 } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName } from 'modules/asset/utils'
 import { blobToDataURL, getImageType, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
@@ -31,7 +34,8 @@ import {
   WearableRepresentation,
   MODEL_EXTENSIONS,
   IMAGE_EXTENSIONS,
-  ItemType
+  ItemType,
+  EmotePlayMode
 } from 'modules/item/types'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -39,7 +43,7 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
-import { ModelMetrics } from 'modules/models/types'
+import { ModelEmoteMetrics, ModelMetrics } from 'modules/models/types'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -52,12 +56,16 @@ import {
   resizeImage,
   isImageCategory,
   getMaxSupplyForRarity,
-  getEmoteCategories
+  getEmoteCategories,
+  getEmotePlayModes
 } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
-import { getThumbnailType, validateEnum, validatePath } from './utils'
+import { THUMBNAIL_HEIGHT } from 'modules/editor/utils'
+import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
+import { getThumbnailType, THUMBNAIL_WIDTH, toWearableWithBlobs, validateEnum, validatePath } from './utils'
+import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import {
   Props,
   State,
@@ -76,7 +84,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   getInitialState() {
     const { metadata } = this.props
 
-    const state: State = { view: CreateItemView.IMPORT }
+    const state: State = { view: CreateItemView.IMPORT, playMode: EmotePlayMode.SIMPLE }
     if (!metadata) {
       return state
     }
@@ -89,6 +97,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       state.name = item.name
       state.description = item.description
       state.item = item
+      state.type = item.type
       state.collectionId = item.collectionId
       state.bodyShape = getBodyShapeType(item)
       state.category = item.data.category
@@ -105,6 +114,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     return state
+  }
+
+  componentDidUpdate(_prevProps: Props, prevState: State) {
+    const { thumbnail, file, type, isLoading } = this.state
+    // when the thumbnail is loaded and the file & type are already computed, we proceed to the Details view
+    if ((!prevState.thumbnail || !prevState.type) && thumbnail && file && type && !isLoading) {
+      this.setState({ view: CreateItemView.DETAILS })
+    }
   }
 
   /**
@@ -182,118 +199,149 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         isRepresentation,
         item: editedItem,
         category,
+        playMode,
         rarity
       } = this.state as StateData
 
-      let item: Item
+      if (this.state.view === CreateItemView.DETAILS) {
+        let item: Item<ItemType.WEARABLE | ItemType.EMOTE>
 
-      const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
-      const blob = dataURLToBlob(thumbnail)
-      const hasCustomThumbnail = THUMBNAIL_PATH in contents
-      if (blob && !hasCustomThumbnail) {
-        contents[THUMBNAIL_PATH] = blob
+        try {
+          const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
+          const blob = dataURLToBlob(thumbnail)
+          const hasCustomThumbnail = THUMBNAIL_PATH in contents
+          if (blob && !hasCustomThumbnail) {
+            contents[THUMBNAIL_PATH] = blob
+          }
+
+          const sortedContents = this.sortContent(bodyShape, contents)
+
+          // Add this item as a representation of an existing item
+          if ((isRepresentation || addRepresentation) && editedItem) {
+            const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
+            item = {
+              ...editedItem,
+              data: {
+                ...editedItem.data,
+                representations: [
+                  ...editedItem.data.representations,
+                  // add new representation
+                  ...this.buildRepresentations(bodyShape, model, sortedContents)
+                ],
+                replaces: [...editedItem.data.replaces],
+                hides: [...editedItem.data.hides],
+                tags: [...editedItem.data.tags]
+              },
+              contents: {
+                ...editedItem.contents,
+                ...hashedContents
+              },
+              updatedAt: +new Date()
+            }
+
+            // Do not change the thumbnail when adding a new representation
+            delete sortedContents.all[THUMBNAIL_PATH]
+          } else if (pristineItem && changeItemFile) {
+            item = {
+              ...(pristineItem as Item),
+              data: {
+                ...pristineItem.data,
+                replaces: [],
+                hides: [],
+                category: category as WearableCategory
+              },
+              name,
+              metrics,
+              contents: await computeHashes(sortedContents.all),
+              updatedAt: +new Date()
+            }
+
+            const wearableBodyShape = bodyShape === BodyShapeType.MALE ? BodyShape.MALE : BodyShape.FEMALE
+            const representationIndex = pristineItem.data.representations.findIndex(
+              (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
+            )
+            const pristineBodyShape = getBodyShapeType(pristineItem)
+            const representations = this.buildRepresentations(bodyShape, model, sortedContents)
+            if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
+              // Unisex or Representation changed
+              item.data.representations = representations
+            } else {
+              // Edited representation
+              item.data.representations[representationIndex] = representations[0]
+            }
+          } else {
+            // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
+            let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
+            let urn: string | undefined
+            if (
+              decodedCollectionUrn &&
+              decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
+              decodedCollectionUrn.thirdPartyCollectionId
+            ) {
+              urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+            }
+
+            // create item to save
+            let data: WearableData | EmoteDataADR74
+
+            if (type === ItemType.WEARABLE) {
+              data = {
+                category: category as WearableCategory,
+                replaces: [],
+                hides: [],
+                tags: [],
+                representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
+              } as WearableData
+            } else {
+              data = {
+                category: category as EmoteCategory,
+                representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
+                tags: [],
+                loop: playMode === EmotePlayMode.LOOP
+              } as EmoteDataADR74
+            }
+
+            item = {
+              id,
+              name,
+              urn,
+              description: description || '',
+              thumbnail: THUMBNAIL_PATH,
+              type,
+              collectionId,
+              totalSupply: 0,
+              isPublished: false,
+              isApproved: false,
+              inCatalyst: false,
+              blockchainContentHash: null,
+              currentContentHash: null,
+              catalystContentHash: null,
+              rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
+              data,
+              owner: address!,
+              metrics,
+              contents: await computeHashes(sortedContents.all),
+              createdAt: +new Date(),
+              updatedAt: +new Date()
+            }
+          }
+
+          // The Emote will be saved on the set price step
+          if (item.type === ItemType.WEARABLE) {
+            onSave(item as Item, sortedContents.all)
+          } else {
+            this.setState({
+              item: { ...(item as Item) },
+              itemSortedContents: sortedContents.all,
+              view: CreateItemView.SET_PRICE
+            })
+          }
+        } catch (error) {
+          this.setState({ error: error.message })
+        }
+      } else if (this.state.view === CreateItemView.SET_PRICE && !!this.state.item && !!this.state.itemSortedContents) {
+        onSave(this.state.item, this.state.itemSortedContents)
       }
-
-      const sortedContents = this.sortContent(bodyShape, contents)
-
-      // Add this item as a representation of an existing item
-      if ((isRepresentation || addRepresentation) && editedItem) {
-        const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
-        item = {
-          ...editedItem,
-          data: {
-            ...editedItem.data,
-            representations: [
-              ...editedItem.data.representations,
-              // add new representation
-              ...this.buildRepresentations(bodyShape, model, sortedContents)
-            ],
-            replaces: [...editedItem.data.replaces],
-            hides: [...editedItem.data.hides],
-            tags: [...editedItem.data.tags]
-          },
-          contents: {
-            ...editedItem.contents,
-            ...hashedContents
-          },
-          updatedAt: +new Date()
-        }
-
-        // Do not change the thumbnail when adding a new representation
-        delete sortedContents.all[THUMBNAIL_PATH]
-      } else if (pristineItem && changeItemFile) {
-        item = {
-          ...(pristineItem as Item),
-          data: {
-            ...pristineItem.data,
-            replaces: [],
-            hides: [],
-            category: category as WearableCategory
-          },
-          name,
-          metrics,
-          contents: await computeHashes(sortedContents.all),
-          updatedAt: +new Date()
-        }
-
-        const wearableBodyShape = bodyShape === BodyShapeType.MALE ? BodyShape.MALE : BodyShape.FEMALE
-        const representationIndex = pristineItem.data.representations.findIndex(
-          (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
-        )
-        const pristineBodyShape = getBodyShapeType(pristineItem)
-        const representations = this.buildRepresentations(bodyShape, model, sortedContents)
-        if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
-          // Unisex or Representation changed
-          item.data.representations = representations
-        } else {
-          // Edited representation
-          item.data.representations[representationIndex] = representations[0]
-        }
-      } else {
-        // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
-        let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
-        let urn: string | undefined
-        if (
-          decodedCollectionUrn &&
-          decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
-          decodedCollectionUrn.thirdPartyCollectionId
-        ) {
-          urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
-        }
-
-        // create item to save
-        item = {
-          id,
-          name,
-          urn,
-          description: description || '',
-          thumbnail: THUMBNAIL_PATH,
-          type: type as ItemType.WEARABLE,
-          collectionId,
-          totalSupply: 0,
-          isPublished: false,
-          isApproved: false,
-          inCatalyst: false,
-          blockchainContentHash: null,
-          currentContentHash: null,
-          catalystContentHash: null,
-          rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
-          data: {
-            category: category as WearableCategory,
-            replaces: [],
-            hides: [],
-            tags: [],
-            representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
-          },
-          owner: address!,
-          metrics,
-          contents: await computeHashes(sortedContents.all),
-          createdAt: +new Date(),
-          updatedAt: +new Date()
-        }
-      }
-
-      onSave(item, sortedContents.all)
     }
   }
 
@@ -391,24 +439,23 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const extension = getExtension(file.name)
 
     try {
-      this.setState({ isLoading: true })
+      this.setState({ isLoading: true, file })
 
       if (!extension) {
         throw new WrongExtensionError()
       }
 
       const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
-      const [thumbnail, model, metrics, contents, type, assetJson] = await handler(file)
+      const [, model, metrics, contents, type, assetJson] = await handler(file)
 
       this.setState({
         id: changeItemFile ? item!.id : uuid.v4(),
-        view: CreateItemView.DETAILS,
         name: changeItemFile ? item!.name : cleanAssetName(file.name),
-        thumbnail,
         model,
         metrics,
         contents,
         type,
+        bodyShape: type === ItemType.EMOTE ? BodyShapeType.BOTH : undefined,
         error: '',
         category: isRepresentation ? category : undefined,
         isLoading: false,
@@ -469,8 +516,17 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     this.setState({ rarity })
   }
 
+  handlePlayModeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    const playMode = value as EmotePlayMode
+    this.setState({ playMode })
+  }
+
   handleOpenThumbnailDialog = () => {
-    if (this.thumbnailInput.current) {
+    const { isEmotesFeatureFlagOn } = this.props
+    const { type } = this.state
+    if (isEmotesFeatureFlagOn && type === ItemType.EMOTE) {
+      this.setState({ view: CreateItemView.THUMBNAIL })
+    } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
   }
@@ -618,7 +674,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderModalTitle = () => {
     const isAddingRepresentation = this.isAddingRepresentation()
-    const { bodyShape } = this.state
+    const { bodyShape, type, view } = this.state
     const { metadata } = this.props
     if (isAddingRepresentation) {
       return t('create_single_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
@@ -628,8 +684,38 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return t('create_single_item_modal.change_item_file')
     }
 
-    return t('create_single_item_modal.title')
+    if (type === ItemType.EMOTE) {
+      return t('create_single_item_modal.title_emote')
+    }
+
+    return view === CreateItemView.THUMBNAIL ? t('create_single_item_modal.thumbnail_step_title') : t('create_single_item_modal.title')
   }
+
+  handleFileLoad = () => {
+    const controller = WearablePreview.createController('thumbnail-picker')
+
+    this.setState({ previewController: controller })
+
+    controller?.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT).then(screenshot => {
+      this.setState({ thumbnail: screenshot })
+    })
+  }
+
+  // WearablePreview component to take the initial screenshot
+  wearablePreviewComponent = (
+    <WearablePreview
+      id="thumbnail-picker"
+      blob={this.state.file ? toWearableWithBlobs(this.state.file, true) : undefined}
+      profile="default"
+      disableBackground
+      disableAutoRotate
+      disableFace
+      disableDefaultWearables
+      skin="000000"
+      wheelZoom={2}
+      onLoad={this.handleFileLoad}
+    />
+  )
 
   renderImportView() {
     const { onClose, metadata } = this.props
@@ -653,6 +739,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             onDropAccepted={this.handleDropAccepted}
             onDropRejected={this.handleDropRejected}
           />
+          <div className="importer-thumbnail-container">{this.wearablePreviewComponent}</div>
         </Modal.Content>
       </>
     )
@@ -670,20 +757,38 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       <>
         <Field className="name" label={t('create_single_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
         {(!item || !item.isPublished) && !belongsToAThirdPartyCollection ? (
-          <SelectField
-            label={t('create_single_item_modal.rarity_label')}
-            placeholder={t('create_single_item_modal.rarity_placeholder')}
-            value={rarity}
-            options={rarities.map(value => ({
-              value,
-              label: t(`wearable.supply`, {
-                count: getMaxSupplyForRarity(value),
-                formatted: getMaxSupplyForRarity(value).toLocaleString()
-              }),
-              text: t(`wearable.rarity.${value}`)
-            }))}
-            onChange={this.handleRarityChange}
-          />
+          <>
+            <SelectField
+              label={t('create_single_item_modal.rarity_label')}
+              placeholder={t('create_single_item_modal.rarity_placeholder')}
+              value={rarity}
+              options={rarities.map(value => ({
+                value,
+                label: t(`wearable.supply`, {
+                  count: getMaxSupplyForRarity(value),
+                  formatted: getMaxSupplyForRarity(value).toLocaleString()
+                }),
+                text: t(`wearable.rarity.${value}`)
+              }))}
+              onChange={this.handleRarityChange}
+            />
+            <p className="rarity learn-more">
+              <T
+                id="create_single_item_modal.rarity_learn_more_about"
+                values={{
+                  learn_more: (
+                    <a
+                      href="https://docs.decentraland.org/decentraland/wearables-editor-user-guide/#rarity"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('global.learn_more')}
+                    </a>
+                  )
+                }}
+              />
+            </p>
+          </>
         ) : null}
         <SelectField
           required
@@ -697,6 +802,120 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
+  renderWearableDetails() {
+    const { metadata } = this.props
+    const { bodyShape, isRepresentation, item } = this.state
+    const isAddingRepresentation = this.isAddingRepresentation()
+
+    return (
+      <>
+        {isAddingRepresentation ? null : (
+          <Section>
+            <Header sub>{t('create_single_item_modal.representation_label')}</Header>
+            <Row>
+              {this.renderRepresentation(BodyShapeType.BOTH)}
+              {this.renderRepresentation(BodyShapeType.MALE)}
+              {this.renderRepresentation(BodyShapeType.FEMALE)}
+            </Row>
+          </Section>
+        )}
+        {bodyShape && (!metadata || !metadata.changeItemFile) ? (
+          <>
+            {bodyShape === BodyShapeType.BOTH ? (
+              this.renderFields()
+            ) : (
+              <>
+                {isAddingRepresentation ? null : (
+                  <Section>
+                    <Header sub>{t('create_single_item_modal.existing_item')}</Header>
+                    <Row>
+                      <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
+                        {t('global.yes')}
+                      </div>
+                      <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
+                        {t('global.no')}
+                      </div>
+                    </Row>
+                  </Section>
+                )}
+                {isRepresentation === undefined ? null : isRepresentation ? (
+                  <Section>
+                    <Header sub>
+                      {isAddingRepresentation
+                        ? t('create_single_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+                        : t('create_single_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
+                    </Header>
+                    <ItemDropdown
+                      value={item}
+                      filter={this.filterItemsByBodyShape}
+                      onChange={this.handleItemChange}
+                      isDisabled={isAddingRepresentation}
+                    />
+                  </Section>
+                ) : (
+                  this.renderFields()
+                )}
+              </>
+            )}
+          </>
+        ) : (
+          this.renderFields()
+        )}
+      </>
+    )
+  }
+
+  renderEmoteDetails() {
+    const { playMode, type } = this.state
+    const playModes: string[] = getEmotePlayModes()
+
+    return (
+      <>
+        {this.renderFields()}
+        <SelectField
+          required
+          label={t('create_single_item_modal.play_mode_label')}
+          placeholder={t('create_single_item_modal.play_mode_placeholder')}
+          value={playModes.includes(playMode!) ? playMode : undefined}
+          options={playModes.map(value => ({ value, text: t(`${type}.play_mode.${value}`) }))}
+          onChange={this.handlePlayModeChange}
+        />
+        <div className="dcl select-field">
+          <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" className="" />} />
+        </div>
+      </>
+    )
+  }
+
+  renderMetrics() {
+    const { metrics, type } = this.state
+
+    if (metrics) {
+      if (type === ItemType.WEARABLE) {
+        return (
+          <div className="metrics">
+            <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+            <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+            <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
+          </div>
+        )
+      } else {
+        return (
+          <div className="metrics">
+            <div className="metric materials">{t('model_metrics.sequences', { count: (metrics as ModelEmoteMetrics).sequences })}</div>
+            <div className="metric materials">
+              {t('model_metrics.duration', { count: (metrics as ModelEmoteMetrics).duration.toFixed(2) })}
+            </div>
+            <div className="metric materials">{t('model_metrics.frames', { count: (metrics as ModelEmoteMetrics).frames })}</div>
+            <div className="metric materials">{t('model_metrics.fps', { count: (metrics as ModelEmoteMetrics).fps.toFixed(2) })}</div>
+          </div>
+        )
+      }
+    } else {
+      return null
+    }
+  }
+
   isDisabled(): boolean {
     const { isLoading } = this.props
 
@@ -704,7 +923,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   isValid(): boolean {
-    const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation, type } = this.state
+    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type } = this.state
     const { collection } = this.props
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
 
@@ -714,6 +933,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       required = [item]
     } else if (belongsToAThirdPartyCollection) {
       required = [name, thumbnail, metrics, bodyShape, category]
+    } else if (type === ItemType.EMOTE) {
+      required = [name, thumbnail, metrics, category, playMode, rarity, type]
     } else {
       required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
     }
@@ -723,10 +944,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderDetailsView() {
     const { onClose, metadata, error, isLoading } = this.props
-    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity, error: stateError } = this.state
+    const { thumbnail, isRepresentation, rarity, error: stateError, type } = this.state
 
     const isDisabled = this.isDisabled()
-    const isAddingRepresentation = this.isAddingRepresentation()
     const thumbnailStyle = getBackgroundStyle(rarity)
     const title = this.renderModalTitle()
 
@@ -747,67 +967,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                       </>
                     )}
                   </div>
-                  {metrics ? (
-                    <div className="metrics">
-                      <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-                      <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-                      <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
-                    </div>
-                  ) : null}
+                  {this.renderMetrics()}
                 </Column>
                 <Column className="data" grow={true}>
-                  {isAddingRepresentation ? null : (
-                    <Section>
-                      <Header sub>{t('create_single_item_modal.representation_label')}</Header>
-                      <Row>
-                        {this.renderRepresentation(BodyShapeType.BOTH)}
-                        {this.renderRepresentation(BodyShapeType.MALE)}
-                        {this.renderRepresentation(BodyShapeType.FEMALE)}
-                      </Row>
-                    </Section>
-                  )}
-                  {bodyShape && (!metadata || !metadata.changeItemFile) ? (
-                    <>
-                      {bodyShape === BodyShapeType.BOTH ? (
-                        this.renderFields()
-                      ) : (
-                        <>
-                          {isAddingRepresentation ? null : (
-                            <Section>
-                              <Header sub>{t('create_single_item_modal.existing_item')}</Header>
-                              <Row>
-                                <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
-                                  {t('global.yes')}
-                                </div>
-                                <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
-                                  {t('global.no')}
-                                </div>
-                              </Row>
-                            </Section>
-                          )}
-                          {isRepresentation === undefined ? null : isRepresentation ? (
-                            <Section>
-                              <Header sub>
-                                {isAddingRepresentation
-                                  ? t('create_single_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-                                  : t('create_single_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
-                              </Header>
-                              <ItemDropdown
-                                value={item}
-                                filter={this.filterItemsByBodyShape}
-                                onChange={this.handleItemChange}
-                                isDisabled={isAddingRepresentation}
-                              />
-                            </Section>
-                          ) : (
-                            this.renderFields()
-                          )}
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    this.renderFields()
-                  )}
+                  {type === ItemType.WEARABLE ? this.renderWearableDetails() : this.renderEmoteDetails()}
                 </Column>
               </Row>
               <Row className="actions" align="right">
@@ -832,6 +995,25 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
+  handleOnScreenshotTaken = (screenshot: string) => {
+    this.setState({ thumbnail: screenshot, isLoading: true }, () => this.setState({ view: CreateItemView.DETAILS }))
+  }
+
+  renderThumbnailView() {
+    const { onClose } = this.props
+    const { file, isLoading } = this.state
+    return (
+      <EditThumbnailStep
+        isLoading={!!isLoading}
+        blob={file ? toWearableWithBlobs(file, true) : undefined}
+        title={this.renderModalTitle()}
+        onBack={() => this.setState({ view: CreateItemView.DETAILS })}
+        onSave={this.handleOnScreenshotTaken}
+        onClose={onClose}
+      />
+    )
+  }
+
   renderRepresentation(type: BodyShapeType) {
     const { bodyShape } = this.state
     const { metadata } = this.props
@@ -847,12 +1029,32 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
+  renderSetPrice() {
+    const { onClose } = this.props
+    const { item, itemSortedContents } = this.state
+    return (
+      <EditPriceAndBeneficiaryModal
+        name={'EditPriceAndBeneficiaryModal'}
+        metadata={{ itemId: item!.id }}
+        item={item!}
+        itemSortedContents={itemSortedContents}
+        onClose={onClose}
+        // If the Set Price step is skipped, the item must be saved
+        onSkip={this.handleSubmit}
+      />
+    )
+  }
+
   renderView() {
     switch (this.state.view) {
       case CreateItemView.IMPORT:
         return this.renderImportView()
       case CreateItemView.DETAILS:
         return this.renderDetailsView()
+      case CreateItemView.THUMBNAIL:
+        return this.renderThumbnailView()
+      case CreateItemView.SET_PRICE:
+        return this.renderSetPrice()
       default:
         return null
     }

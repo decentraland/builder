@@ -29,7 +29,8 @@ import {
   ThirdPartyContractItem,
   ItemMetadataType,
   WearableRepresentation,
-  GenerateImageOptions
+  GenerateImageOptions,
+  EmotePlayMode
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -339,6 +340,10 @@ export function getEmoteCategories() {
   return EmoteCategory.schema.enum as EmoteCategory[]
 }
 
+export function getEmotePlayModes() {
+  return Object.values(EmotePlayMode)
+}
+
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
   let overrideCategories = getCategories(contents)
 
@@ -458,14 +463,14 @@ export function isWearableSynced(item: Item, entity: Entity) {
   return true
 }
 
-export function isEmoteSynced(item: Item, entity: Entity) {
+export function isEmoteSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn: boolean) {
   if (item.type !== ItemType.EMOTE) {
     throw new Error('Item must be EMOTE')
   }
 
   // check if metadata has the new schema from ADR 74
   const isADR74 = 'emoteDataADR74' in entity.metadata
-  if (!isADR74) {
+  if (!isADR74 && isEmotesFeatureFlagOn) {
     return false
   }
 
@@ -499,8 +504,8 @@ export function isEmoteSynced(item: Item, entity: Entity) {
   return true
 }
 
-export function areSynced(item: Item, entity: Entity) {
-  return item.type === ItemType.WEARABLE ? isWearableSynced(item, entity) : isEmoteSynced(item, entity)
+export function areSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn: boolean) {
+  return item.type === ItemType.WEARABLE ? isWearableSynced(item, entity) : isEmoteSynced(item, entity, isEmotesFeatureFlagOn)
 }
 
 export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {

@@ -1,11 +1,11 @@
 import { Dispatch } from 'redux'
+import { FetchCollectionsParams } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
 import { fetchCollectionRequest, FetchCollectionRequestAction } from 'modules/collection/actions'
 import { Item } from 'modules/item/types'
 import { fetchCollectionItemsRequest, FetchCollectionItemsRequestAction } from 'modules/item/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
-import { CurationStatus } from 'modules/curations/types'
 
 export const DEFAULT_ITEMS_PAGE = 1
 export const DEFAULT_ITEMS_PAGE_SIZE = 50
@@ -18,7 +18,7 @@ export type Props = {
   paginatedItems: Item[]
   itemsPage?: number | number[]
   itemsPageSize?: number
-  status?: CurationStatus
+  fetchOptions?: Pick<FetchCollectionsParams, 'status' | 'synced'>
   curation: CollectionCuration | null
   itemCurations: ItemCuration[] | null
   isLoading: boolean
