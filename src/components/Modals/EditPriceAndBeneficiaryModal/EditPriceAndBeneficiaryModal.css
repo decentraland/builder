@@ -63,3 +63,12 @@
   display: flex;
   align-items: center;
 }
+
+.EditPriceAndBeneficiaryModal .checkbox.make-it-free {
+  margin-bottom: 24px;
+}
+
+.EditPriceAndBeneficiaryModal .checkbox.make-it-free .item-checkbox,
+.EditPriceAndBeneficiaryModal .checkbox.beneficiary .item-checkbox {
+  margin-right: 8px;
+}
