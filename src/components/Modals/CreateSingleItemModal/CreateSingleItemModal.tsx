@@ -690,16 +690,21 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return view === CreateItemView.THUMBNAIL ? t('create_single_item_modal.thumbnail_step_title') : t('create_single_item_modal.title')
   }
 
-  handleFileLoad = () => {
-    const { weareblePreviewUpdated } = this.state
+  handleFileLoad = async () => {
+    const { weareblePreviewUpdated, type } = this.state
     const controller = WearablePreview.createController('thumbnail-picker')
 
     this.setState({ previewController: controller })
 
-    weareblePreviewUpdated &&
-      controller?.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT).then(screenshot => {
+    if (weareblePreviewUpdated) {
+      if (type === ItemType.EMOTE) {
+        const length = await controller.emote.getLength()
+        await controller.emote.goTo(Math.floor(Math.random() * length))
+      }
+      controller.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT).then(screenshot => {
         this.setState({ thumbnail: screenshot })
       })
+    }
   }
 
   renderWearablePreview = () => {

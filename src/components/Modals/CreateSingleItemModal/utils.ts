@@ -60,6 +60,6 @@ export function toWearableWithBlobs(file: File, isEmote = false): WearableWithBl
         }
       ]
     },
-    ...(isEmote ? { emoteDataV0: isEmote ? { loop: false } : undefined } : {})
+    ...(isEmote ? { emoteDataV0: { loop: false } } : {})
   }
 }
