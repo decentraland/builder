@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { Color4, Wearable } from 'decentraland-ecs'
-import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
+import { BodyShape, IPreviewController, PreviewEmote, WearableCategory } from '@dcl/schemas'
 import {
   CloseEditorAction,
   setEmote,
@@ -16,7 +16,9 @@ import {
   setBaseWearable,
   SetBaseWearableAction,
   fetchBaseWearablesRequest,
-  FetchBaseWearablesRequestAction
+  FetchBaseWearablesRequestAction,
+  setWearablePreviewController,
+  SetWearablePreviewControllerAction
 } from 'modules/editor/actions'
 import { Item } from 'modules/item/types'
 
@@ -28,6 +30,7 @@ export type Props = {
   emote: PreviewEmote
   selectedBaseWearables: Record<WearableCategory, Wearable | null> | null
   visibleItems: Item[]
+  wearableController?: IPreviewController | null
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
@@ -35,6 +38,7 @@ export type Props = {
   onSetHairColor: typeof setHairColor
   onSetBaseWearable: typeof setBaseWearable
   onFetchBaseWearables: typeof fetchBaseWearablesRequest
+  onSetWearablePreviewController: typeof setWearablePreviewController
 }
 
 export type State = {
@@ -44,7 +48,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'emote' | 'visibleItems' | 'selectedBaseWearables'
+  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'emote' | 'visibleItems' | 'selectedBaseWearables' | 'wearableController'
 >
 export type MapDispatchProps = Pick<
   Props,
@@ -55,6 +59,7 @@ export type MapDispatchProps = Pick<
   | 'onSetHairColor'
   | 'onSetBaseWearable'
   | 'onFetchBaseWearables'
+  | 'onSetWearablePreviewController'
 >
 export type MapDispatch = Dispatch<
   | CloseEditorAction
@@ -65,4 +70,5 @@ export type MapDispatch = Dispatch<
   | SetHairColorAction
   | SetBaseWearableAction
   | FetchBaseWearablesRequestAction
+  | SetWearablePreviewControllerAction
 >
