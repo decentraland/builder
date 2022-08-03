@@ -594,7 +594,7 @@ describe('when handling the save item success action', () => {
                 [select(getOpenModals), { CreateSingleItemModal: true }],
                 [select(getIsEmotesFlowEnabled), true]
               ])
-              .put(push(locations.itemEditor({ itemId: item.id })))
+              .put(closeModal('CreateSingleItemModal'))
               .dispatch(saveItemSuccess(item, {}))
               .run({ silenceTimeout: true })
           })

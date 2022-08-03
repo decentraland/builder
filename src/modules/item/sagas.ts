@@ -359,22 +359,27 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
     const isEmotesFeatureFlagOn: boolean = yield select(getIsEmotesFlowEnabled)
     const { item } = action.payload
+    const collectionId = item.collectionId!
     if (openModals['EditItemURNModal']) {
       yield put(closeModal('EditItemURNModal'))
     } else if (openModals['EditPriceAndBeneficiaryModal']) {
       yield put(closeModal('EditPriceAndBeneficiaryModal'))
     } else if (openModals['CreateSingleItemModal']) {
-      if (isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
+      if (location.pathname === locations.collections()) {
+        if (isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
+          // Redirect to the item editor
+          yield put(push(locations.itemEditor({ itemId: item.id })))
+        } else {
+          // Redirect to the newly created item details
+          yield put(push(locations.itemDetail(item.id)))
+        }
+      } else if (location.pathname === locations.collectionDetail(collectionId) && isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
         // Redirect to the item editor
         yield put(push(locations.itemEditor({ itemId: item.id })))
-      } else if (location.pathname === locations.collections()) {
-        // Redirect to the newly created item details
-        yield put(push(locations.itemDetail(item.id)))
       } else {
         yield put(closeModal('CreateSingleItemModal'))
       }
     }
-    const collectionId = item.collectionId!
     // Fetch the the collection items again, we don't know where the item is going to be in the pagination data
     if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)
