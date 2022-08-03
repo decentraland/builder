@@ -1351,6 +1351,8 @@
       "to_review": "回顾",
       "reviewed": "已审核",
       "all_items": "所有项目",
+      "wearable": "可穿戴",
+      "emote": "表情",
       "get_random_sample": "获取随机样本",
       "reviewed_samples_bold": "审查样本： {count}",
       "reviewed_samples": "{reviewed_samples_bold}/{total}",
