@@ -1,11 +1,25 @@
 import * as React from 'react'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { isThirdParty } from 'lib/urn'
-import { Section, Loader, Tabs, Button, Icon, Pagination, PaginationProps, Header, Modal, Checkbox, Popup } from 'decentraland-ui'
-import { Item } from 'modules/item/types'
+import {
+  Section,
+  Loader,
+  Tabs,
+  Button,
+  Icon as DCLIcon,
+  Pagination,
+  PaginationProps,
+  Header,
+  Modal,
+  Checkbox,
+  Popup
+} from 'decentraland-ui'
+import { Item, ItemType } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
 import { TP_TRESHOLD_TO_REVIEW } from 'modules/collection/constants'
 import { LEFT_PANEL_PAGE_SIZE } from '../../constants'
+import Collapsable from 'components/Collapsable'
+import Icon from 'components/Icon'
 import SidebarItem from './SidebarItem'
 import { Props, State, ItemPanelTabs } from './Items.types'
 import './Items.css'
@@ -51,13 +65,29 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   handleClick = (item: Item) => {
-    const { visibleItems, onSetItems, bodyShape } = this.props
+    const { bodyShape, visibleItems, wearableController, isPlayingEmote, onSetItems } = this.props
     if (!hasBodyShape(item, bodyShape)) return
 
-    const newVisibleItemIds = visibleItems.filter(_item => _item.id !== item.id)
+    const newVisibleItemIds = visibleItems.filter(_item => _item.id !== item.id && _item.type !== ItemType.EMOTE)
+
     if (!this.isVisible(item)) {
       newVisibleItemIds.push(item)
     }
+
+    if (item.type === ItemType.EMOTE) {
+      if (this.isVisible(item)) {
+        if (isPlayingEmote) {
+          wearableController?.emote.pause()
+        } else {
+          wearableController?.emote.play()
+        }
+
+        return
+      }
+
+      newVisibleItemIds.push(item)
+    }
+
     onSetItems(newVisibleItemIds)
   }
 
@@ -97,17 +127,39 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   renderSidebarItem = (item: Item) => {
-    const { selectedCollectionId, selectedItemId, bodyShape } = this.props
+    const { selectedCollectionId, selectedItemId, bodyShape, isPlayingEmote } = this.props
     return (
       <SidebarItem
         key={item.id}
         item={item}
         isSelected={selectedItemId === item.id}
         isVisible={this.isVisible(item)}
+        isPlayingEmote={isPlayingEmote}
         selectedCollectionId={selectedCollectionId}
         bodyShape={bodyShape}
         onClick={this.handleClick}
       />
+    )
+  }
+
+  renderCollapsableLabel(itemType: ItemType) {
+    return (
+      <>
+        <Icon name={itemType} />
+        <T id={`item_editor.left_panel.${itemType}`} />
+      </>
+    )
+  }
+
+  renderSidebarCategory = (items: Item[]) => {
+    const wearableItems = items.filter(item => item.type === ItemType.WEARABLE)
+    const emoteItems = items.filter(item => item.type === ItemType.EMOTE)
+
+    return (
+      <>
+        <Collapsable label={this.renderCollapsableLabel(ItemType.WEARABLE)}>{wearableItems.map(this.renderSidebarItem)}</Collapsable>
+        <Collapsable label={this.renderCollapsableLabel(ItemType.EMOTE)}>{emoteItems.map(this.renderSidebarItem)}</Collapsable>
+      </>
     )
   }
 
@@ -148,13 +200,16 @@ export default class Items extends React.PureComponent<Props, State> {
     const { items: stateItems, reviewed, currentTab, currentPages } = this.state
     const areTPItems = this.getIsReviewingTPItems()
     const currentPage = currentPages[currentTab]
+
+    if (isLoading) {
+      return <Loader size="large" active />
+    }
+
     switch (currentTab) {
       case ItemPanelTabs.TO_REVIEW:
-        return isLoading ? (
-          <Loader size="large" active />
-        ) : (
+        return (
           <>
-            {(areTPItems ? stateItems : propItems).map(this.renderSidebarItem)}
+            {this.renderSidebarCategory(areTPItems ? stateItems : propItems)}
             {!areTPItems && totalItems ? this.renderTabPagination(totalItems) : null}
           </>
         )
@@ -163,18 +218,16 @@ export default class Items extends React.PureComponent<Props, State> {
         return (
           <>
             {reviewed.length ? this.renderPaginationStats(reviewed.length) : null}
-            {paginatedItems.map(this.renderSidebarItem)}
+            {this.renderSidebarCategory(paginatedItems)}
             {reviewed.length ? this.renderTabPagination(reviewed.length) : null}
           </>
         )
       }
       case ItemPanelTabs.ALL_ITEMS: {
-        return isLoading ? (
-          <Loader size="large" active />
-        ) : (
+        return (
           <>
             {propItems.length && totalItems ? this.renderPaginationStats(totalItems) : null}
-            {propItems.map(this.renderSidebarItem)}
+            {this.renderSidebarCategory(propItems)}
             {propItems.length && totalItems ? this.renderTabPagination(totalItems) : null}
           </>
         )
@@ -209,7 +262,7 @@ export default class Items extends React.PureComponent<Props, State> {
                   className="random-sample-button"
                   onClick={this.handleGetRandomSampleClick}
                 >
-                  <Icon name="random" />
+                  <DCLIcon name="random" />
                   {t('item_editor.left_panel.get_random_sample')}
                 </Button>
               </div>
