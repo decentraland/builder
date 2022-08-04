@@ -42,8 +42,12 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { items, onSetReviewedItems } = this.props
+    const { items, selectedItemId, onSetItems, onSetReviewedItems } = this.props
+    const initialActiveItem = items.find(item => item.id === selectedItemId)
     onSetReviewedItems(items)
+    if (initialActiveItem) {
+      onSetItems([initialActiveItem])
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -68,12 +72,6 @@ export default class Items extends React.PureComponent<Props, State> {
     const { bodyShape, visibleItems, wearableController, isPlayingEmote, onSetItems } = this.props
     if (!hasBodyShape(item, bodyShape)) return
 
-    const newVisibleItemIds = visibleItems.filter(_item => _item.id !== item.id && _item.type !== ItemType.EMOTE)
-
-    if (!this.isVisible(item)) {
-      newVisibleItemIds.push(item)
-    }
-
     if (item.type === ItemType.EMOTE) {
       if (this.isVisible(item)) {
         if (isPlayingEmote) {
@@ -84,7 +82,11 @@ export default class Items extends React.PureComponent<Props, State> {
 
         return
       }
+    }
 
+    const newVisibleItemIds = visibleItems.filter(_item => _item.id !== item.id)
+
+    if (!this.isVisible(item)) {
       newVisibleItemIds.push(item)
     }
 

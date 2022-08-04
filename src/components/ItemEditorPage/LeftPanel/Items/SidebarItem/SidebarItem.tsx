@@ -19,9 +19,9 @@ class SidebarItem extends React.PureComponent<Props & CollectedProps> {
   }
 
   renderToggleItem() {
-    const { item, isVisible, isSelected, isPlayingEmote } = this.props
+    const { item, isVisible, isPlayingEmote } = this.props
     if (item.type === ItemType.EMOTE) {
-      return <Icon className="toggle-emote" name={isSelected && isPlayingEmote ? 'pause' : 'play'} onClick={this.handleClick} />
+      return <Icon className="toggle-emote" name={isVisible && isPlayingEmote ? 'pause' : 'play'} onClick={this.handleClick} />
     } else {
       return <div className={`toggle ${isVisible ? 'is-visible' : 'is-hidden'}`} onClick={this.handleClick}></div>
     }
