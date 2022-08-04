@@ -155,12 +155,16 @@ export default class Items extends React.PureComponent<Props, State> {
     const wearableItems = items.filter(item => item.type === ItemType.WEARABLE)
     const emoteItems = items.filter(item => item.type === ItemType.EMOTE)
 
-    return (
-      <>
-        <Collapsable label={this.renderCollapsableLabel(ItemType.WEARABLE)}>{wearableItems.map(this.renderSidebarItem)}</Collapsable>
-        <Collapsable label={this.renderCollapsableLabel(ItemType.EMOTE)}>{emoteItems.map(this.renderSidebarItem)}</Collapsable>
-      </>
-    )
+    if (wearableItems.length === 0 || emoteItems.length === 0) {
+      return items.map(this.renderSidebarItem)
+    } else {
+      return (
+        <>
+          <Collapsable label={this.renderCollapsableLabel(ItemType.WEARABLE)}>{wearableItems.map(this.renderSidebarItem)}</Collapsable>
+          <Collapsable label={this.renderCollapsableLabel(ItemType.EMOTE)}>{emoteItems.map(this.renderSidebarItem)}</Collapsable>
+        </>
+      )
+    }
   }
 
   renderTabPagination = (total: number) => {
