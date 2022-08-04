@@ -35,7 +35,12 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const { selectedCollectionId, selectedItemId } = this.props
     this.fetchResource()
+
+    if (!selectedCollectionId && selectedItemId) {
+      this.setState({ currentTab: ItemEditorTabs.ORPHAN_ITEMS })
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
