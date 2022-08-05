@@ -1397,7 +1397,15 @@
   "emote": {
     "category": {
       "simple": "Simple",
-      "loop": "Loop"
+      "loop": "Loop",
+      "dance": "Baile",
+      "stunt": "Truco",
+      "greetings": "Saludos",
+      "fun": "Divertido",
+      "poses": "Poses",
+      "reactions": "Reacciones",
+      "horror": "Horror",
+      "miscellaneous": "Misceláneos"
     },
     "play_mode": {
       "simple": "Simple",

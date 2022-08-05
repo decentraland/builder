@@ -1382,7 +1382,15 @@
   "emote": {
     "category": {
       "simple": "Simple",
-      "loop": "Loop"
+      "loop": "Loop",
+      "dance": "Dance",
+      "stunt": "Stunt",
+      "greetings": "Greetings",
+      "fun": "Fun",
+      "poses": "Poses",
+      "reactions": "Reactions",
+      "horror": "Horror",
+      "miscellaneous": "Miscellaneous"
     },
     "play_mode": {
       "simple": "Simple",
