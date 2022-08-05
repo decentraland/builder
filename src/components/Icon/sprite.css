@@ -82,6 +82,12 @@
 	height: 14px;
 }
 
+.Icon.circle {
+	background: url("icons.svg") 97.26027397260275% 40.90909090909091% no-repeat;
+	width: 8px;
+	height: 8px;
+}
+
 .Icon.close {
 	background: url("icons.svg") 64.28571428571429% 86.5079365079365% no-repeat;
 	width: 14px;
