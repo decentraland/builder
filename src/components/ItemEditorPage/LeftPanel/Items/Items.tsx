@@ -72,8 +72,6 @@ export default class Items extends React.PureComponent<Props, State> {
     const { bodyShape, visibleItems, wearableController, isPlayingEmote, onSetItems } = this.props
     if (!hasBodyShape(item, bodyShape)) return
 
-    let newVisibleItemIds = visibleItems.filter(_item => _item.id !== item.id)
-
     if (item.type === ItemType.EMOTE) {
       if (this.isVisible(item)) {
         if (isPlayingEmote) {
@@ -83,11 +81,10 @@ export default class Items extends React.PureComponent<Props, State> {
         }
 
         return
-      } else {
-        newVisibleItemIds = visibleItems.filter(_item => _item.type !== ItemType.EMOTE)
-        newVisibleItemIds.push(item)
       }
     }
+
+    const newVisibleItemIds = visibleItems.filter(_item => _item.id !== item.id && _item.type !== ItemType.EMOTE)
 
     if (!this.isVisible(item)) {
       newVisibleItemIds.push(item)
