@@ -21,6 +21,7 @@ export type IconName =
   | 'center-camera'
   | 'center-camera'
   | 'chevron-right'
+  | 'circle'
   | 'close'
   | 'cloud-upload'
   | 'delete'
