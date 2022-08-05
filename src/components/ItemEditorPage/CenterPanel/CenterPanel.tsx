@@ -81,7 +81,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  handleWearablePreviewLoad() {
+  handleWearablePreviewLoad = () => {
     const { wearableController, onSetWearablePreviewController } = this.props
 
     if (!wearableController) {
@@ -118,7 +118,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           wheelZoom={1.5}
           wheelStart={100}
           onUpdate={() => this.setState({ isLoading: true })}
-          onLoad={() => this.handleWearablePreviewLoad()}
+          onLoad={this.handleWearablePreviewLoad}
         />
         {isLoading && (
           <Center>
