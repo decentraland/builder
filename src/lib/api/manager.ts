@@ -241,15 +241,11 @@ export class ManagerAPI {
         // Update existing land roles
         savedLand.roles = [...savedLand.roles, land.role].sort()
         savedLand.role = savedLand.roles[0]
-
-        console.log('--------------> ', savedLand.roles)
       } else {
         // Add to the total map
         landsMap[land.id] = land
       }
     }
-
-    console.log('--------------> ', landsMap)
 
     return [Object.values(landsMap), authorizations]
   }
