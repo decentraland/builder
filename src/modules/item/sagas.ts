@@ -375,7 +375,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       } else if (location.pathname === locations.collectionDetail(collectionId) && isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
         // Redirect to the item editor
-        yield put(push(locations.itemEditor({ itemId: item.id })))
+        yield put(push(locations.itemEditor({ collectionId, itemId: item.id })))
       } else {
         yield put(closeModal('CreateSingleItemModal'))
       }
