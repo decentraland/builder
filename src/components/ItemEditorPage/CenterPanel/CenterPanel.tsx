@@ -81,6 +81,16 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     }
   }
 
+  handleWearablePreviewLoad = () => {
+    const { wearableController, onSetWearablePreviewController } = this.props
+
+    if (!wearableController) {
+      onSetWearablePreviewController(WearablePreview.createController('wearable-editor'))
+    }
+
+    this.setState({ isLoading: false })
+  }
+
   render() {
     const { bodyShape, skinColor, eyeColor, hairColor, emote, selectedBaseWearables, visibleItems } = this.props
     const { isShowingAvatarAttributes, isLoading } = this.state
@@ -108,7 +118,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           wheelZoom={1.5}
           wheelStart={100}
           onUpdate={() => this.setState({ isLoading: true })}
-          onLoad={() => this.setState({ isLoading: false })}
+          onLoad={this.handleWearablePreviewLoad}
         />
         {isLoading && (
           <Center>

@@ -1,5 +1,7 @@
 import { Wearable } from 'decentraland-ecs'
 import { takeLatest, select, put, call, delay, take } from 'redux-saga/effects'
+import { eventChannel } from 'redux-saga'
+import { IPreviewController, PreviewEmoteEventType } from '@dcl/schemas'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import {
   updateEditor,
@@ -49,7 +51,9 @@ import {
   SetBodyShapeAction,
   FETCH_BASE_WEARABLES_REQUEST,
   fetchBaseWearablesSuccess,
-  fetchBaseWearablesFailure
+  fetchBaseWearablesFailure,
+  setEmotePlaying,
+  SET_WEARABLE_PREVIEW_CONTROLLER
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -102,7 +106,8 @@ import {
   getEntitiesOutOfBoundaries,
   hasLoadedAssetPacks,
   isMultiselectEnabled,
-  getVisibleItems
+  getVisibleItems,
+  getWearablePreviewController
 } from './selectors'
 import {
   getNewEditorScene,
@@ -132,6 +137,7 @@ export function* editorSaga() {
   yield takeLatest(ZOOM_IN, handleZoomIn)
   yield takeLatest(ZOOM_OUT, handleZoomOut)
   yield takeLatest(RESET_CAMERA, handleResetCamera)
+  yield takeLatest(SET_WEARABLE_PREVIEW_CONTROLLER, handleSetWearablePreviewController)
   yield takeLatest(DROP_ITEM, handleDropItem)
   yield takeLatest(TAKE_SCREENSHOT, handleScreenshot)
   yield takeLatest(SET_EDITOR_READY, handleSetEditorReady)
@@ -463,6 +469,56 @@ function* handleResetCamera() {
   editorWindow.editor.resetCameraZoom()
   editorWindow.editor.setCameraPosition({ x, y: 0, z })
   editorWindow.editor.setCameraRotation((7 * Math.PI) / 4, Math.PI / 6)
+}
+
+function createWearablePreviewChannel(controller: IPreviewController) {
+  return eventChannel(emit => {
+    const eventEmit = (type: string) => {
+      emit(type)
+    }
+
+    const handleEvent = (type: string) => {
+      return controller.emote.events.on(type, () => eventEmit(type))
+    }
+
+    handleEvent(PreviewEmoteEventType.ANIMATION_PLAY)
+    handleEvent(PreviewEmoteEventType.ANIMATION_PAUSE)
+    handleEvent(PreviewEmoteEventType.ANIMATION_END)
+    handleEvent(PreviewEmoteEventType.ANIMATION_LOOP)
+
+    const unsubscribe = () => {
+      controller.emote.events.off(PreviewEmoteEventType.ANIMATION_PLAY, eventEmit)
+      controller.emote.events.off(PreviewEmoteEventType.ANIMATION_PAUSE, eventEmit)
+      controller.emote.events.off(PreviewEmoteEventType.ANIMATION_END, eventEmit)
+      controller.emote.events.off(PreviewEmoteEventType.ANIMATION_LOOP, eventEmit)
+    }
+
+    return unsubscribe
+  })
+}
+
+function* handleSetWearablePreviewController() {
+  const controller: IPreviewController = yield select(getWearablePreviewController)
+  const emotesChannel = createWearablePreviewChannel(controller)
+
+  while (true) {
+    try {
+      const event: string = yield take(emotesChannel)
+      switch (event) {
+        case PreviewEmoteEventType.ANIMATION_PLAY:
+          yield put(setEmotePlaying(true))
+          break
+        case PreviewEmoteEventType.ANIMATION_PAUSE:
+          yield put(setEmotePlaying(false))
+          break
+        case PreviewEmoteEventType.ANIMATION_END:
+          yield put(setEmotePlaying(false))
+          break
+      }
+    } catch (error) {
+      yield put(setEmotePlaying(false))
+    }
+  }
 }
 
 function* handleDropItem(action: DropItemAction) {

@@ -30,6 +30,7 @@ export type IconName =
   | 'edit'
   | 'edit'
   | 'ellipsis'
+  | 'emote'
   | 'export'
   | 'export'
   | 'facebook'
@@ -81,6 +82,7 @@ export type IconName =
   | 'twitter'
   | 'undo'
   | 'view'
+  | 'wearable'
   | 'zoom-in'
   | 'zoom-out'
 
