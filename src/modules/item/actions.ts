@@ -4,7 +4,7 @@ import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transac
 import { PaginationStats } from 'lib/api/pagination'
 import { FetchCollectionsParams } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
-import { BuiltFile, Item, Rarity } from './types'
+import { BuiltFile, Item, ItemType, Rarity } from './types'
 
 // Fetch items
 
@@ -70,9 +70,11 @@ export const SAVE_ITEM_REQUEST = '[Request] Save Item'
 export const SAVE_ITEM_SUCCESS = '[Success] Save Item'
 export const SAVE_ITEM_FAILURE = '[Failure] Save Item'
 
-export const saveItemRequest = (item: Item, contents: Record<string, Blob>) => action(SAVE_ITEM_REQUEST, { item, contents })
-export const saveItemSuccess = (item: Item, contents: Record<string, Blob>) => action(SAVE_ITEM_SUCCESS, { item, contents })
-export const saveItemFailure = (item: Item, contents: Record<string, Blob>, error: string) =>
+export const saveItemRequest = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>, contents: Record<string, Blob>) =>
+  action(SAVE_ITEM_REQUEST, { item, contents })
+export const saveItemSuccess = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>, contents: Record<string, Blob>) =>
+  action(SAVE_ITEM_SUCCESS, { item, contents })
+export const saveItemFailure = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>, contents: Record<string, Blob>, error: string) =>
   action(SAVE_ITEM_FAILURE, { item, contents, error })
 
 export type SaveItemRequestAction = ReturnType<typeof saveItemRequest>

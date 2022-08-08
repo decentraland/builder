@@ -24,6 +24,7 @@ import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
+import { EmoteDataADR74 } from '@dcl/schemas'
 
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 
@@ -59,7 +60,7 @@ export type RemoteItem = {
   is_approved: boolean
   in_catalyst: boolean
   type: ItemType
-  data: WearableData
+  data: WearableData | EmoteDataADR74
   metrics: ModelMetrics
   contents: Record<string, string>
   content_hash: string | null
@@ -309,7 +310,7 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
   }
 }
 
-function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'> {
+function toRemoteItem(item: Item<ItemType.WEARABLE | ItemType.EMOTE>): Omit<RemoteItem, 'created_at' | 'updated_at'> {
   const remoteItem: Omit<RemoteItem, 'created_at' | 'updated_at'> = {
     id: item.id,
     name: item.name,
@@ -339,7 +340,7 @@ function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'>
 }
 
 function fromRemoteItem(remoteItem: RemoteItem) {
-  const item: Item = {
+  const item: Item<ItemType.WEARABLE | ItemType.EMOTE> = {
     id: remoteItem.id,
     name: remoteItem.name,
     thumbnail: remoteItem.thumbnail,
@@ -661,13 +662,13 @@ export class BuilderAPI extends BaseAPI {
     return remoteResponse.map(fromRemoteItem)
   }
 
-  saveItem = async (item: Item, contents: Record<string, Blob>) => {
+  saveItem = async (item: Item<ItemType.WEARABLE | ItemType.EMOTE>, contents: Record<string, Blob>) => {
     await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
     // This has to be done after the PUT above, otherwise it will fail when creating an item, since it wont find it in the DB and return a 404
     await this.saveItemContents(item, contents)
   }
 
-  saveItemContents = async (item: Item, contents: Record<string, Blob>) => {
+  saveItemContents = async (item: Item<ItemType.WEARABLE | ItemType.EMOTE>, contents: Record<string, Blob>) => {
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()
       for (let path in contents) {

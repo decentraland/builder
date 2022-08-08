@@ -174,7 +174,7 @@ export function getMetadata(item: Item) {
   }
 }
 
-export function toItemObject(items: Item[]) {
+export function toItemObject(items: Item<ItemType.WEARABLE | ItemType.EMOTE>[]) {
   return items.reduce((obj, item) => {
     const { collection, ...itemWithoutCollection } = item as Item & { collection?: Collection }
     obj[item.id] = itemWithoutCollection
@@ -182,7 +182,7 @@ export function toItemObject(items: Item[]) {
   }, {} as Record<string, Item>)
 }
 
-export async function generateCatalystImage(item: Item | LocalItem, options?: GenerateImageOptions) {
+export async function generateCatalystImage(item: Item<ItemType.WEARABLE | ItemType.EMOTE> | LocalItem, options?: GenerateImageOptions) {
   const catalystImage = await generateImage(item, options)
   const catalystImageHash = await computeHashFromContent(catalystImage)
   return {
@@ -191,7 +191,10 @@ export async function generateCatalystImage(item: Item | LocalItem, options?: Ge
   }
 }
 
-export async function generateImage(item: Item | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
+export async function generateImage(
+  item: Item<ItemType.WEARABLE | ItemType.EMOTE> | LocalItem,
+  options?: GenerateImageOptions
+): Promise<Blob> {
   // Set default width and height
   const width: number = options?.width ?? 512
   const height: number = options?.height ?? 512
