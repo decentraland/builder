@@ -2,7 +2,6 @@ import { ChainId, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { RootState } from 'modules/common/types'
-import { getIsRaritiesWithOracleEnabled } from 'modules/features/selectors'
 import { SyncStatus } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import {
@@ -21,7 +20,6 @@ jest.mock('decentraland-dapps/dist/lib/eth')
 jest.mock('modules/features/selectors')
 
 const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
-const mockGetIsRaritiesWithOracleEnabled = getIsRaritiesWithOracleEnabled as jest.MockedFunction<typeof getIsRaritiesWithOracleEnabled>
 
 describe('when getting the unsynced error message', () => {
   let state: RootState
@@ -513,55 +511,23 @@ describe('when getting collections paginated', () => {
 describe('when getting the rarities contract', () => {
   let providedChainId: ChainId
 
-  describe('when the function returning if rarities with oracle is enabled returns true', () => {
+  describe('when the provided chain id is mumbai', () => {
     beforeEach(() => {
-      mockGetIsRaritiesWithOracleEnabled.mockReturnValueOnce(true)
+      providedChainId = ChainId.MATIC_MUMBAI
     })
 
-    describe('when the provided chain id is mumbai', () => {
-      beforeEach(() => {
-        providedChainId = ChainId.MATIC_MUMBAI
-      })
-
-      it('should return the RaritiesWithOracle contract for mumbai', () => {
-        expect(getRaritiesContract({} as any, providedChainId)).toEqual(getContract(ContractName.RaritiesWithOracle, ChainId.MATIC_MUMBAI))
-      })
-    })
-
-    describe('when the provided chain id is matic mainnet', () => {
-      beforeEach(() => {
-        providedChainId = ChainId.MATIC_MAINNET
-      })
-
-      it('should return the RaritiesWithOracle contract for matic mainnet', () => {
-        expect(getRaritiesContract({} as any, providedChainId)).toEqual(getContract(ContractName.RaritiesWithOracle, ChainId.MATIC_MAINNET))
-      })
+    it('should return the RaritiesWithOracle contract for mumbai', () => {
+      expect(getRaritiesContract(providedChainId)).toEqual(getContract(ContractName.RaritiesWithOracle, ChainId.MATIC_MUMBAI))
     })
   })
 
-  describe('when the function returning if rarities with oracle is enabled returns false', () => {
+  describe('when the provided chain id is matic mainnet', () => {
     beforeEach(() => {
-      mockGetIsRaritiesWithOracleEnabled.mockReturnValueOnce(false)
+      providedChainId = ChainId.MATIC_MAINNET
     })
 
-    describe('when the provided chain id is mumbai', () => {
-      beforeEach(() => {
-        providedChainId = ChainId.MATIC_MUMBAI
-      })
-
-      it('should return the Rarities contract for mumbai', () => {
-        expect(getRaritiesContract({} as any, providedChainId)).toEqual(getContract(ContractName.Rarities, ChainId.MATIC_MUMBAI))
-      })
-    })
-
-    describe('when the provided chain id is matic mainnet', () => {
-      beforeEach(() => {
-        providedChainId = ChainId.MATIC_MAINNET
-      })
-
-      it('should return the Rarities contract for matic mainnet', () => {
-        expect(getRaritiesContract({} as any, providedChainId)).toEqual(getContract(ContractName.Rarities, ChainId.MATIC_MAINNET))
-      })
+    it('should return the RaritiesWithOracle contract for matic mainnet', () => {
+      expect(getRaritiesContract(providedChainId)).toEqual(getContract(ContractName.RaritiesWithOracle, ChainId.MATIC_MAINNET))
     })
   })
 })
