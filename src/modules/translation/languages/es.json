@@ -564,7 +564,7 @@
     "parcel_plural": "Parcelas",
     "estate_plural": "Estates",
     "none": "Ninguno",
-    "emote": "Emote"
+    "emote": "Animación"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -1366,6 +1366,8 @@
       "to_review": "A revisar",
       "reviewed": "Revisado",
       "all_items": "Todos los items",
+      "wearable": "Vestimentas",
+      "emote": "Animaciones",
       "get_random_sample": "Obtener muestra aleatoria",
       "reviewed_samples_bold": "Muestras revisadas: {count}",
       "reviewed_samples": "{reviewed_samples_bold}/{total}",

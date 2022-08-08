@@ -30,7 +30,7 @@ import {
   THUMBNAIL_PATH,
   WearableData
 } from 'modules/item/types'
-import Collapsable from './Collapsable'
+import Collapsable from 'components/Collapsable'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -354,8 +354,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       </Dropdown>
                     ) : null}
                   </div>
-                  <Collapsable item={item} label={t('item_editor.right_panel.details')}>
-                    {item => (
+                  <Collapsable label={t('item_editor.right_panel.details')}>
+                    {item ? (
                       <div className="details">
                         {canEditItemMetadata ? (
                           <>
@@ -389,10 +389,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           </div>
                         )}
                       </div>
-                    )}
+                    ) : null}
                   </Collapsable>
-                  <Collapsable item={item} label={t('item_editor.right_panel.basics')}>
-                    {item => (
+                  <Collapsable label={t('item_editor.right_panel.basics')}>
+                    {item ? (
                       <>
                         <Input
                           itemId={item.id}
@@ -429,10 +429,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           />
                         )}
                       </>
-                    )}
+                    ) : null}
                   </Collapsable>
-                  <Collapsable item={item} label={t('item_editor.right_panel.overrides')}>
-                    {item => (
+                  <Collapsable label={t('item_editor.right_panel.overrides')}>
+                    {item ? (
                       <>
                         <MultiSelect<WearableCategory>
                           itemId={item.id}
@@ -461,12 +461,12 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           onChange={this.handleChangeHides}
                         />
                       </>
-                    )}
+                    ) : null}
                   </Collapsable>
-                  <Collapsable item={item} label={t('item_editor.right_panel.tags')}>
-                    {item => (
+                  <Collapsable label={t('item_editor.right_panel.tags')}>
+                    {item ? (
                       <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
-                    )}
+                    ) : null}
                   </Collapsable>
                   {isDirty ? (
                     <div className="edit-buttons">

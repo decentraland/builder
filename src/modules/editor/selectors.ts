@@ -37,6 +37,8 @@ export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
 export const getBodyShape = (state: RootState) => getState(state).bodyShape
 export const getEmote = (state: RootState) => getState(state).emote
+export const getWearablePreviewController = (state: RootState) => getState(state).wearablePreviewController
+export const isPlayingEmote = (state: RootState) => getState(state).isPlayingEmote
 export const getSkinColor = (state: RootState) => getState(state).skinColor
 export const getEyeColor = (state: RootState) => getState(state).eyeColor
 export const getHairColor = (state: RootState) => getState(state).hairColor

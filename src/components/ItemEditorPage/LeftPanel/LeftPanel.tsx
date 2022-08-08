@@ -35,7 +35,12 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const { selectedCollectionId, selectedItemId } = this.props
     this.fetchResource()
+
+    if (!selectedCollectionId && selectedItemId) {
+      this.setState({ currentTab: ItemEditorTabs.ORPHAN_ITEMS })
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -100,7 +105,9 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       visibleItems,
       bodyShape,
       isReviewing,
+      isPlayingEmote,
       isConnected,
+      wearableController,
       onSetItems,
       onSetCollection,
       isLoading: isLoadingOrphanItems,
@@ -182,9 +189,11 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       selectedItemId={selectedItemId}
                       selectedCollectionId={selectedCollectionId}
                       isReviewing={isReviewing}
+                      isPlayingEmote={isPlayingEmote}
                       visibleItems={visibleItems}
                       bodyShape={bodyShape}
                       onSetItems={onSetItems}
+                      wearableController={wearableController}
                       isLoading={isLoading || isLoadingOrphanItems}
                       onLoadRandomPage={() => this.loadRandomPage(items)}
                       onLoadPage={this.loadPage}

@@ -1351,6 +1351,8 @@
       "to_review": "To review",
       "reviewed": "Reviewed",
       "all_items": "All items",
+      "wearable": "Wearables",
+      "emote": "Emotes",
       "get_random_sample": "Get Random Sample",
       "reviewed_samples_bold": "Reviewed samples: {count}",
       "reviewed_samples": "{reviewed_samples_bold}/{total}",

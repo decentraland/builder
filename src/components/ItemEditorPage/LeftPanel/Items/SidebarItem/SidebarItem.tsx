@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { DragSource } from 'react-dnd'
-import { Popup } from 'decentraland-ui'
+import { Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
 import ItemStatus from 'components/ItemStatus'
+import { ItemType } from 'modules/item/types'
 import { getMissingBodyShapeType, hasBodyShape } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { collect, CollectedProps, sidebarItemSource, SIDEBAR_ITEM_SOURCE } from './SidebarItem.dnd'
@@ -17,8 +18,17 @@ class SidebarItem extends React.PureComponent<Props & CollectedProps> {
     onClick(item)
   }
 
+  renderToggleItem() {
+    const { item, isVisible, isPlayingEmote } = this.props
+    if (item.type === ItemType.EMOTE) {
+      return <Icon className="toggle-emote" name={isVisible && isPlayingEmote ? 'pause' : 'play'} onClick={this.handleClick} />
+    } else {
+      return <div className={`toggle ${isVisible ? 'is-visible' : 'is-hidden'}`} onClick={this.handleClick}></div>
+    }
+  }
+
   render() {
-    const { item, isSelected, isVisible, selectedCollectionId, bodyShape, connectDragSource, isDragging } = this.props
+    const { item, isSelected, selectedCollectionId, bodyShape, connectDragSource, isDragging } = this.props
     return connectDragSource(
       <div className={`SidebarItem ${isSelected ? 'is-selected' : ''} ${isDragging ? 'is-dragging' : ''}`}>
         <Link to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined })}>
@@ -33,7 +43,7 @@ class SidebarItem extends React.PureComponent<Props & CollectedProps> {
             })}
             disabled={hasBodyShape(item, bodyShape)}
             position="top center"
-            trigger={<div className={`toggle ${isVisible ? 'is-visible' : 'is-hidden'}`} onClick={this.handleClick}></div>}
+            trigger={this.renderToggleItem()}
           />
         </Link>
       </div>
