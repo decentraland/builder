@@ -43,6 +43,7 @@ export type StateData = {
   error: string
   file: File
   previewController?: IPreviewController
+  weareblePreviewUpdated: boolean
 }
 export type State = { view: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
 

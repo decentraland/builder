@@ -4,7 +4,7 @@ import { InvalidContentPath, InvalidEnumValue } from 'modules/item/errors'
 import { ItemAssetJson } from './CreateSingleItemModal.types'
 
 export const THUMBNAIL_WIDTH = 1024
-export const THUMBNAIL_HEIGTH = 1024
+export const THUMBNAIL_HEIGHT = 1024
 
 export const getThumbnailType = (category: WearableCategory) => {
   switch (category) {
@@ -60,6 +60,6 @@ export function toWearableWithBlobs(file: File, isEmote = false): WearableWithBl
         }
       ]
     },
-    emoteDataV0: isEmote ? { loop: false } : undefined
+    ...(isEmote ? { emoteDataV0: { loop: false } } : {})
   }
 }
