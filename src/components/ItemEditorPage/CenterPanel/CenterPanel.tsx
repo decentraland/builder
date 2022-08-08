@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { Color4, Wearable } from 'decentraland-ecs'
 import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
-import { Dropdown, DropdownProps, Popup, Icon, Loader, Center } from 'decentraland-ui'
+import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls } from 'decentraland-ui'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { ItemType } from 'modules/item/types'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import AvatarColorDropdown from './AvatarColorDropdown'
@@ -94,6 +95,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   render() {
     const { bodyShape, skinColor, eyeColor, hairColor, emote, selectedBaseWearables, visibleItems } = this.props
     const { isShowingAvatarAttributes, isLoading } = this.state
+    const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE)
 
     return (
       <div className="CenterPanel">
@@ -119,7 +121,13 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           wheelStart={100}
           onUpdate={() => this.setState({ isLoading: true })}
           onLoad={this.handleWearablePreviewLoad}
+          disableDefaultEmotes={isRenderingAnEmote}
         />
+        {isRenderingAnEmote ? (
+          <div className="emote-controls-container">
+            <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" />
+          </div>
+        ) : null}
         {isLoading && (
           <Center>
             <Loader active />
@@ -130,21 +138,23 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             <div className={`option ${isShowingAvatarAttributes ? 'active' : ''}`} onClick={this.handleToggleShowingAvatarAttributes}>
               <Icon name="user" />
             </div>
-            <Popup
-              content={t('item_editor.center_panel.disabled_animation_dropdown')}
-              disabled
-              position="top center"
-              trigger={
-                <div className="avatar-animation-dropdown-wrapper option">
-                  <Dropdown
-                    className="avatar-animation"
-                    value={emote}
-                    options={PreviewEmote.schema.enum.map((value: PreviewEmote) => ({ value, text: t(`emotes.${value}`) }))}
-                    onChange={this.handleAnimationChange}
-                  />
-                </div>
-              }
-            />
+            {isRenderingAnEmote ? null : (
+              <Popup
+                content={t('item_editor.center_panel.disabled_animation_dropdown')}
+                disabled
+                position="top center"
+                trigger={
+                  <div className="avatar-animation-dropdown-wrapper option">
+                    <Dropdown
+                      className="avatar-animation"
+                      value={emote}
+                      options={PreviewEmote.schema.enum.map((value: PreviewEmote) => ({ value, text: t(`emotes.${value}`) }))}
+                      onChange={this.handleAnimationChange}
+                    />
+                  </div>
+                }
+              />
+            )}
           </div>
           <div className={`avatar-attributes ${isShowingAvatarAttributes ? 'active' : ''}`}>
             <div className="dropdown-container">
