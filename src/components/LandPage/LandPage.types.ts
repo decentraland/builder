@@ -15,6 +15,7 @@ export type Props = {
 export type State = {
   showOwner: boolean
   showOperator: boolean
+  showTenant: boolean
   page: number
   selectedLand: number
 }

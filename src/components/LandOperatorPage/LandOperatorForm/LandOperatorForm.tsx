@@ -4,7 +4,7 @@ import { Form, Field, Row, Button, InputOnChangeData } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
-import { getUpdateOperator } from 'modules/land/utils'
+import { getUpdateOperator, hasAnyRole } from 'modules/land/utils'
 import { locations } from 'routing/locations'
 import { Props, State } from './LandOperatorForm.types'
 import './LandOperatorForm.css'
@@ -56,7 +56,8 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
 
     const isRevokable = editing && isEqual(address, initial)
     const hasError = !loading && !!address && !isValid(address)
-    const isDisabled = loading || !dirty || ((isEqual(address, initial) || hasError) && !revoked) || land.role !== RoleType.OWNER
+    const isDisabled =
+      loading || !dirty || ((isEqual(address, initial) || hasError) && !revoked) || !hasAnyRole(land, [RoleType.OWNER, RoleType.TENANT])
 
     const classes = []
     if (revoked) {

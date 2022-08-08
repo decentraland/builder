@@ -18,6 +18,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
   state: State = {
     showOwner: true,
     showOperator: true,
+    showTenant: true,
     page: 1,
     selectedLand: 0
   }
@@ -30,7 +31,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
 
   renderLand() {
     const { view, onSetView } = this.props
-    const { page, showOwner, showOperator, selectedLand } = this.state
+    const { page, showOwner, showOperator, showTenant, selectedLand } = this.state
 
     const filteredLands = this.getFilteredLands()
 
@@ -68,14 +69,13 @@ export default class LandPage extends React.PureComponent<Props, State> {
                   <Popup
                     trigger={
                       <Radio
-                        className="owner-checkbox"
                         value="owner"
                         checked={showOwner}
                         onClick={() => this.setState({ showOwner: !showOwner })}
-                        label={t('land_page.owner')}
+                        label={t(`roles.${RoleType.OWNER}`)}
                       />
                     }
-                    content="These are lands you own."
+                    content={t('land_page.owner_explanation')}
                   />
                   <Popup
                     trigger={
@@ -84,11 +84,24 @@ export default class LandPage extends React.PureComponent<Props, State> {
                         value="operator"
                         checked={showOperator}
                         onClick={() => this.setState({ showOperator: !showOperator })}
-                        label={t('land_page.operator')}
+                        label={t(`roles.${RoleType.OPERATOR}`)}
                       />
                     }
-                    className="operator-popup"
-                    content={<div>{t('land_page.owner_permission')}</div>}
+                    className="radio-popup"
+                    content={<div>{t('land_page.operator_explanation')}</div>}
+                  />
+                  <Popup
+                    trigger={
+                      <Radio
+                        className="tenant-checkbox"
+                        value="tentant"
+                        checked={showTenant}
+                        onClick={() => this.setState({ showTenant: !showTenant })}
+                        label={t(`roles.${RoleType.TENANT}`)}
+                      />
+                    }
+                    className="radio-popup"
+                    content={<div>{t('land_page.tenant_explanation')}</div>}
                   />
                   <Chip className="grid" icon="table" isActive={view === LandPageView.GRID} onClick={() => onSetView(LandPageView.GRID)} />
                   <Chip className="atlas" icon="pin" isActive={view === LandPageView.ATLAS} onClick={() => onSetView(LandPageView.ATLAS)} />
@@ -104,17 +117,17 @@ export default class LandPage extends React.PureComponent<Props, State> {
                 <Table basic="very">
                   <Table.Header>
                     <Table.Row>
-                      <Table.HeaderCell width="4">{t('land_page.name')}</Table.HeaderCell>
-                      <Table.HeaderCell width="2">{t('land_page.coords')}</Table.HeaderCell>
-                      <Table.HeaderCell width="2">{t('land_page.owner')}</Table.HeaderCell>
-                      <Table.HeaderCell width="4">{t('land_page.operators')}</Table.HeaderCell>
-                      <Table.HeaderCell width="4">{t('land_page.online_scenes')}</Table.HeaderCell>
+                      <Table.HeaderCell width="3">{t('land_page.name')}</Table.HeaderCell>
+                      <Table.HeaderCell width="2">{t('land_page.coordinates')}</Table.HeaderCell>
+                      <Table.HeaderCell width="2">{t('land_page.role')}</Table.HeaderCell>
+                      <Table.HeaderCell width="4">{t('land_page.operated_by')}</Table.HeaderCell>
+                      <Table.HeaderCell width="3">{t('land_page.online_scenes')}</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
 
                   <Table.Body>
-                    {filteredLands.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(land => (
-                      <TableRow land={land} />
+                    {filteredLands.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((land, index) => (
+                      <TableRow key={index} land={land} />
                     ))}
                   </Table.Body>
                 </Table>
@@ -143,13 +156,16 @@ export default class LandPage extends React.PureComponent<Props, State> {
 
   getFilteredLands() {
     const { lands } = this.props
-    const { showOwner, showOperator } = this.state
+    const { showOwner, showOperator, showTenant } = this.state
 
     const filteredLands = lands.filter(land => {
-      if (showOwner && land.role === RoleType.OWNER) {
+      if (showOwner && land.roles.includes(RoleType.OWNER)) {
         return true
       }
-      if (showOperator && land.role === RoleType.OPERATOR) {
+      if (showOperator && land.roles.includes(RoleType.OPERATOR)) {
+        return true
+      }
+      if (showTenant && land.roles.includes(RoleType.TENANT)) {
         return true
       }
       return false

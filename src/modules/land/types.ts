@@ -7,13 +7,15 @@ export enum LandType {
 }
 
 export enum RoleType {
-  OWNER = 'owner',
-  OPERATOR = 'operator'
+  OWNER = 1,
+  TENANT = 2,
+  OPERATOR = 3
 }
 
 export type Land = {
   id: string
   type: LandType
+  roles: RoleType[]
   role: RoleType
   x?: number
   y?: number

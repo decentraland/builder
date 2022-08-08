@@ -566,6 +566,11 @@
     "none": "Ninguno",
     "emote": "Animación"
   },
+  "roles": {
+    "1": "Dueño",
+    "2": "Operator",
+    "3": "Inquilino"
+  },
   "navigation": {
     "scenes": "Escenas",
     "land": "Tierras",
@@ -663,15 +668,15 @@
   },
   "land_page": {
     "name": "Nombre",
-    "coords": "Coords",
-    "owner": "Dueño",
-    "operator": "Operador",
-    "operators": "Operadores",
+    "coordinates": "Coordenadas",
+    "operated_by": "Operado por",
     "type": "Tipo",
     "online_scenes": "Escenas Online",
     "none": "Ninguna",
     "results": "{count} {count, plural, one {resultado} other {resultados}}",
-    "owner_permission": "Estas son tierras que no son tuyas, pero donde tienes permiso"
+    "owner_explanation": "Estas son tierras que te pertenecen",
+    "operator_explanation": "Estas son tierras que no son tuyas, pero donde tienes permiso",
+    "tenant_explanation": "Estas son tierras que no son tuyas, pero donde tienes una renta"
   },
   "land_detail_page": {
     "transfer": "Transferir",
@@ -686,7 +691,7 @@
     "assigned_names": "Nombres asignados",
     "description": "Descripción",
     "owner": "Dueño",
-    "operators": "Operadores",
+    "operated_by": "Operado por",
     "total_land": "Tierras Totales",
     "empty_land": "Tierras Vacias",
     "unset_ens_content": {

@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { Table, Column, Row } from 'decentraland-ui'
-
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Atlas } from 'components/Atlas'
 import Profile from 'components/Profile'
+import { locations } from 'routing/locations'
+import { isEqual } from 'lib/address'
 import InlineList from '../InlineList'
 import { coordsToId, getCoords, LAND_POOL_ADDRESS } from 'modules/land/utils'
-import { isEqual } from 'lib/address'
-import { locations } from 'routing/locations'
 import { Props } from './TableRow.types'
 import './TableRow.css'
 
@@ -34,9 +34,7 @@ export default class TableRow extends React.PureComponent<Props> {
           </Row>
         </Table.Cell>
         <Table.Cell>{coordsToId(coords.x, coords.y)}</Table.Cell>
-        <Table.Cell>
-          <Profile address={land.owner} />
-        </Table.Cell>
+        <Table.Cell>{t(`roles.${land.role}`)}</Table.Cell>
         <Table.Cell>
           <InlineList
             list={land.operators.sort(sortLandPoolLast).map(operator => (

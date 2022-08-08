@@ -124,7 +124,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                     <JumpIn land={land} />
                   </Row>
                 </Column>
-                {land.role === RoleType.OWNER ? (
+                {land.roles.includes(RoleType.OWNER) ? (
                   <Column className="actions" align="right">
                     <Row>
                       <Button basic onClick={() => onNavigate(locations.landTransfer(land.id))}>
@@ -180,6 +180,23 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                       </Dropdown>
                     </Row>
                   </Column>
+                ) : land.roles.includes(RoleType.TENANT) ? (
+                  <Dropdown
+                    trigger={
+                      <Button basic>
+                        <Icon name="ellipsis horizontal" />
+                      </Button>
+                    }
+                    inline
+                    direction="left"
+                  >
+                    <Dropdown.Menu>
+                      <Dropdown.Item
+                        text={t('land_detail_page.set_operator')}
+                        onClick={() => onNavigate(locations.landOperator(land.id))}
+                      />
+                    </Dropdown.Menu>
+                  </Dropdown>
                 ) : null}
               </Row>
             </Narrow>
@@ -246,11 +263,12 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             </Section>
           ) : null}
           <Section className="data">
+            <Stats title={t('land_detail_page.role')}>{t(`roles.${land.role}`)}</Stats>
             <Stats title={t('land_detail_page.owner')}>
               <Profile address={land.owner} size="large" />
             </Stats>
             {land.operators.length > 0 ? (
-              <Stats title={t('land_detail_page.operators')} className="operators">
+              <Stats title={t('land_detail_page.operated_by')} className="operators">
                 <Row>
                   {land.operators.map(operator => (
                     <Profile address={operator} size="large" />

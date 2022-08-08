@@ -5,13 +5,20 @@ import { parcelFields, estateFields, ParcelFields, Land, LandType, RoleType, Est
 import { coordsToId } from 'modules/land/utils'
 import { isZero } from 'lib/address'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
+import { rental } from './rentals'
 
-export const LAND_MANAGER_URL = config.get('LAND_MANAGER_URL', '')
+export const LAND_MANAGER_GRAPH_URL = config.get('LAND_MANAGER_GRAPH_URL', '')
 
-const auth = createClient(LAND_MANAGER_URL)
+const authGraphClient = createClient(LAND_MANAGER_GRAPH_URL)
 
 const getLandQuery = () => gql`
-  query Land($address: Bytes) {
+  query Land($address: Bytes, $tokenIds: [String!]) {
+    tenantParcels: parcels(first: 1000, where: { tokenId_in: $tokenIds }) {
+      ...parcelFields
+    }
+    tenantEstates: estates(first: 1000, where: { id_in: $tokenIds }) {
+      ...estateFields
+    }
     ownerParcels: parcels(first: 1000, where: { estate: null, owner: $address }) {
       ...parcelFields
     }
@@ -48,6 +55,9 @@ const getLandQuery = () => gql`
 `
 
 type LandQueryResult = {
+  tenantParcels: ParcelFields[]
+  tenantEstates: EstateFields[]
+
   ownerParcels: ParcelFields[]
   ownerEstates: EstateFields[]
   updateOperatorParcels: ParcelFields[]
@@ -67,6 +77,7 @@ const fromParcel = (parcel: ParcelFields, role: RoleType) => {
     id,
     name: (parcel.data && parcel.data.name) || `Parcel ${id}`,
     type: LandType.PARCEL,
+    roles: [role],
     role,
     description: (parcel.data && parcel.data.description) || null,
     x: parseInt(parcel.x, 10),
@@ -89,6 +100,7 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
     id,
     name: (estate.data && estate.data.name) || `Estate ${id}`,
     type: LandType.ESTATE,
+    roles: [role],
     role,
     description: (estate.data && estate.data.description) || null,
     size: estate.size,
@@ -111,10 +123,13 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 export class ManagerAPI {
   fetchLand = async (_address: string): Promise<[Land[], Authorization[]]> => {
     const address = _address.toLowerCase()
-    const { data } = await auth.query<LandQueryResult>({
+
+    const tenantTokenIds = await rental.fetchTokenIdsByTenant(address)
+    const { data } = await authGraphClient.query<LandQueryResult>({
       query: getLandQuery(),
       variables: {
-        address
+        address,
+        tokenIds: tenantTokenIds
       }
     })
 
@@ -130,12 +145,20 @@ export class ManagerAPI {
       lands.push(fromEstate(estate, RoleType.OWNER))
     }
 
-    // parcels and estats that I operate
+    // parcels and estates that I operate
     for (const parcel of data.updateOperatorParcels) {
       lands.push(fromParcel(parcel, RoleType.OPERATOR))
     }
     for (const estate of data.updateOperatorEstates) {
       lands.push(fromEstate(estate, RoleType.OPERATOR))
+    }
+
+    // parcels and estates that I've rented
+    for (const parcel of data.tenantParcels) {
+      lands.push(fromParcel(parcel, RoleType.TENANT))
+    }
+    for (const estate of data.tenantEstates) {
+      lands.push(fromEstate(estate, RoleType.TENANT))
     }
 
     // addresses I gave UpdateManager permission are operators of all my lands
@@ -201,17 +224,34 @@ export class ManagerAPI {
       }
     }
 
-    return [
-      lands
-        // remove empty estates
-        .filter(land => land.type === LandType.PARCEL || land.parcels!.length > 0)
-        // remove duplicated and zero address operators
-        .map(land => {
-          land.operators = Array.from(new Set(land.operators)).filter(address => !isZero(address))
-          return land
-        }),
-      authorizations
-    ]
+    const landsMap: Record<string, Land> = {}
+
+    for (const land of lands) {
+      // Remove empty estates
+      if (land.type === LandType.ESTATE && land.parcels!.length <= 0) {
+        continue
+      }
+
+      // Remove duplicated and zero address operators
+      land.operators = Array.from(new Set(land.operators)).filter(address => !isZero(address))
+
+      const savedLand = landsMap[land.id]
+
+      if (savedLand) {
+        // Update existing land roles
+        savedLand.roles = [...savedLand.roles, land.role].sort()
+        savedLand.role = savedLand.roles[0]
+
+        console.log('--------------> ', savedLand.roles)
+      } else {
+        // Add to the total map
+        landsMap[land.id] = land
+      }
+    }
+
+    console.log('--------------> ', landsMap)
+
+    return [Object.values(landsMap), authorizations]
   }
 }
 

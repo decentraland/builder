@@ -558,6 +558,11 @@
     "none": "没有任何",
     "emote": "表情"
   },
+  "roles": {
+    "1": "持有者",
+    "2": "操作者",
+    "3": "租户"
+  },
   "navigation": {
     "scenes": "场景",
     "land": "土地",
@@ -648,15 +653,15 @@
   },
   "land_page": {
     "name": "名称",
-    "coords": "座标",
-    "owner": "持有者",
-    "operator": "操作者",
-    "operators": "操作者",
+    "coordinates": "坐标",
+    "operated_by": "经营者",
     "type": "类型",
     "online_scenes": "在线场景",
     "none": "无",
     "results": "{count}个结果",
-    "owner_permission": "这些是您不拥有的土地，但所有者授予您使用它们的许可。"
+    "owner_explanation": "这些是你拥有的土地。",
+    "operator_explanation": "这些是您不拥有的土地，但所有者授予您使用它们的许可。",
+    "tenant_explanation": "这些土地不属于你，但你已经租用了。"
   },
   "land_detail_page": {
     "transfer": "转移",
@@ -672,7 +677,7 @@
     "assigned_names": "分配名称",
     "description": "描述",
     "owner": "持有者",
-    "operators": "操作者",
+    "operated_by": "经营者",
     "total_land": "总土地",
     "empty_land": "空地",
     "unset_ens_content": {

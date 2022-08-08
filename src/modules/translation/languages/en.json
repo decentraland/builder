@@ -563,6 +563,11 @@
     "none": "None",
     "emote": "Emote"
   },
+  "roles": {
+    "1": "Owner",
+    "2": "Tenant",
+    "3": "Operator"
+  },
   "navigation": {
     "scenes": "Scenes",
     "land": "Land",
@@ -683,15 +688,16 @@
   },
   "land_page": {
     "name": "Name",
-    "coords": "Coords",
-    "owner": "Owner",
-    "operator": "Operator",
-    "operators": "Operators",
+    "coordinates": "Coordinates",
+    "role": "Role",
+    "operated_by": "Operated by",
     "type": "Type",
     "online_scenes": "Online Scenes",
     "none": "None",
     "results": "{count} {count, plural, one {result} other {results}}",
-    "owner_permission": "These are lands you don't own, but the owner gave you permission to use them."
+    "owner_explanation": "These are lands you own.",
+    "operator_explanation": "These are lands you don't own, but the owner gave you permission to use them.",
+    "tenant_explanation": "These are lands you don't own, but you've rented."
   },
   "land_detail_page": {
     "transfer": "Transfer",
@@ -705,8 +711,9 @@
     "add_scene": "Add Scene",
     "assigned_names": "Assigned names",
     "description": "Description",
+    "role": "Role",
     "owner": "Owner",
-    "operators": "Operators",
+    "operated_by": "Operated by",
     "total_land": "Total Land",
     "empty_land": "Empty Land",
     "unset_ens_content": {

@@ -9,7 +9,7 @@ export function createClient(url: string) {
 
   const client = new ApolloClient({
     link,
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({ addTypename: false }),
     defaultOptions: {
       query: {
         fetchPolicy: 'no-cache'
