@@ -32,6 +32,7 @@ import {
   THUMBNAIL_PATH,
   WearableData
 } from 'modules/item/types'
+import { ModelEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
 import Input from './Input'
 import Select from './Select'
@@ -396,11 +397,27 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
                           </>
                         )}
-                        {item.type === ItemType.WEARABLE && ( // TODO: Show emotes data
+                        {item.type === ItemType.WEARABLE && (
                           <div className="metrics">
                             <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
                             <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
                             <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
+                          </div>
+                        )}
+                        {item.type === ItemType.EMOTE && (
+                          <div className="metrics">
+                            <div className="metric circle">
+                              {t('model_metrics.sequences', { count: (item.metrics as ModelEmoteMetrics).sequences })}
+                            </div>
+                            <div className="metric circle">
+                              {t('model_metrics.duration', { count: (item.metrics as ModelEmoteMetrics).duration })}
+                            </div>
+                            <div className="metric circle">
+                              {t('model_metrics.frames', { count: (item.metrics as ModelEmoteMetrics).frames })}
+                            </div>
+                            <div className="metric circle">
+                              {t('model_metrics.fps', { count: (item.metrics as ModelEmoteMetrics).fps })}
+                            </div>
                           </div>
                         )}
                       </div>
