@@ -84,6 +84,6 @@ export type RawAsset = {
 }
 
 /**
- * A Record that maps `assetId` to a Record of `{ [cid: string]: Blob }`
+ * A Record that maps `assetId` to a Record of `{ [cid: string]: Blob }` with each cid being a hash
  */
 export type RawAssetContents = Record<string, Record<string, Blob>>
