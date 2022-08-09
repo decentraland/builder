@@ -110,6 +110,10 @@
   background-image: url(../../../images/textures.svg);
 }
 
+.RightPanel .details .metrics .metric.circle {
+  background-image: url(../../../images/circle.svg);
+}
+
 .RightPanel > .header > .ui.dropdown {
   position: absolute;
   right: 0px;

@@ -32,6 +32,7 @@ import {
   THUMBNAIL_PATH,
   WearableData
 } from 'modules/item/types'
+import { dataURLToBlob } from 'modules/media/utils'
 import { ModelEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
 import Input from './Input'
@@ -224,9 +225,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOpenThumbnailDialog = () => {
-    if (this.thumbnailInput.current) {
+    const { selectedItem, isEmotesFeatureFlagOn, onOpenModal } = this.props
+
+    if (isEmotesFeatureFlagOn && selectedItem?.type === ItemType.EMOTE) {
+      onOpenModal('CreateSingleItemModal', { item: selectedItem, editThumbnail: true, onSaveThumbnail: this.handleEmoteThumbnailChange })
+    } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
+  }
+
+  handleEmoteThumbnailChange = async (thumbnail: string) => {
+    const blob = dataURLToBlob(thumbnail)
+    this.setState({ thumbnail, contents: { [THUMBNAIL_PATH]: blob! }, isDirty: true })
   }
 
   handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -288,6 +298,27 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   asRaritySelect(values: ItemRarity[]) {
     return values.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))
+  }
+
+  renderMetrics(item: Item) {
+    if (item.type === ItemType.WEARABLE) {
+      return (
+        <div className="metrics">
+          <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
+          <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
+          <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
+        </div>
+      )
+    } else {
+      return (
+        <div className="metrics">
+          <div className="metric circle">{t('model_metrics.sequences', { count: (item.metrics as ModelEmoteMetrics).sequences })}</div>
+          <div className="metric circle">{t('model_metrics.duration', { count: (item.metrics as ModelEmoteMetrics).duration })}</div>
+          <div className="metric circle">{t('model_metrics.frames', { count: (item.metrics as ModelEmoteMetrics).frames })}</div>
+          <div className="metric circle">{t('model_metrics.fps', { count: (item.metrics as ModelEmoteMetrics).fps })}</div>
+        </div>
+      )
+    }
   }
 
   render() {
@@ -397,29 +428,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
                           </>
                         )}
-                        {item.type === ItemType.WEARABLE && (
-                          <div className="metrics">
-                            <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
-                            <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
-                            <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
-                          </div>
-                        )}
-                        {item.type === ItemType.EMOTE && (
-                          <div className="metrics">
-                            <div className="metric circle">
-                              {t('model_metrics.sequences', { count: (item.metrics as ModelEmoteMetrics).sequences })}
-                            </div>
-                            <div className="metric circle">
-                              {t('model_metrics.duration', { count: (item.metrics as ModelEmoteMetrics).duration })}
-                            </div>
-                            <div className="metric circle">
-                              {t('model_metrics.frames', { count: (item.metrics as ModelEmoteMetrics).frames })}
-                            </div>
-                            <div className="metric circle">
-                              {t('model_metrics.fps', { count: (item.metrics as ModelEmoteMetrics).fps })}
-                            </div>
-                          </div>
-                        )}
+                        {this.renderMetrics(item)}
                       </div>
                     ) : null}
                   </Collapsable>
@@ -504,9 +513,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       {item ? (
                         <Select<EmotePlayMode>
                           itemId={item.id}
-                          // className="hasDescription"
                           label={t('create_single_item_modal.play_mode_label')}
-                          // placeholder={t('create_single_item_modal.play_mode_placeholder')}
                           value={(data as EmoteDataADR74)!.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
                           options={playModes.map(value => ({
                             value,
