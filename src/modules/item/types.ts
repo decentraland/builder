@@ -147,6 +147,8 @@ export type Item<T = ItemType.WEARABLE> = BaseItem & {
   data: T extends ItemType.WEARABLE ? WearableData : EmoteDataADR74
 }
 
+export const isEmoteData = (data: WearableData | EmoteDataADR74): data is EmoteDataADR74 => (data as EmoteDataADR74).loop !== undefined
+
 export enum Currency {
   MANA = 'MANA',
   USD = 'USD'

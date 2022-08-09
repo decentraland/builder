@@ -1138,7 +1138,17 @@
     "locked": "Locked",
     "publish_reason_max_items": "A collection can be published with a max amount of {maxItems} items.",
     "publish_reason_no_items": "You need to add at least one item to publish your collection.",
-    "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set."
+    "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set.",
+    "emotes": "Emotes",
+    "wearables": "Wearables",
+    "table": {
+      "item": "Item",
+      "rarity": "Rarity",
+      "category": "Category",
+      "price": "Price",
+      "play_mode": "Play Mode",
+      "status": "Status"
+    }
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
@@ -1435,6 +1445,15 @@
       "upper_body": "Upper Body",
       "skin": "Skin"
     }
+  },
+  "rarity_description": {
+    "unique": "Grail-like: One-of-a-kind",
+    "mythic": "For the lucky few: max 10",
+    "legendary": "Limited supply: max 100",
+    "epic": "Max supply: 1000",
+    "rare": "Max supply: 5000",
+    "uncommon": "Max supply: 10,000",
+    "common": "Max supply: 100,000"
   },
   "time": {
     "hours": "{amount}h",

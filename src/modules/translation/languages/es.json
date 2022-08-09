@@ -1149,7 +1149,17 @@
     "locked": "Bloqueada",
     "publish_reason_max_items": "Las colecciones pueden publicarse con un máximo de  {maxItems} items.",
     "publish_reason_no_items": "Debes agregar al menos un item para publicar tu colección.",
-    "publish_reason_items_not_complete": "Todos los items deben estar completos para publicar tu colección, comprueba que todas sus propiedades estén establecidas."
+    "publish_reason_items_not_complete": "Todos los items deben estar completos para publicar tu colección, comprueba que todas sus propiedades estén establecidas.",
+    "emotes": "Animaciones",
+    "wearables": "Vestimentas",
+    "table": {
+      "item": "Item",
+      "rarity": "Rareza",
+      "category": "Categoria",
+      "price": "Precio",
+      "play_mode": "Modo de Reproducción",
+      "status": "Estado"
+    }
   },
   "collection_context_menu": {
     "add_existing_item": "Agregar item existente",
@@ -1450,6 +1460,15 @@
       "upper_body": "Torso",
       "skin": "Skin"
     }
+  },
+  "rarity_description": {
+    "unique": "Único en su tipo: uno solo en existencia",
+    "mythic": "Para algunos pocos: máximo 10",
+    "legendary": "Edición limitada: máximo 100",
+    "epic": "Suministro máximo: 1000",
+    "rare": "Suministro máximo: 5000",
+    "uncommon": "Suministro máximo: 10.000",
+    "common": "Suministro máximo: 100.000"
   },
   "time": {
     "hours": "{amount}h",

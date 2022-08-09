@@ -145,3 +145,18 @@
 .CollectionDetailPage .dcl.column.left.shrink.name-container {
   min-width: 0;
 }
+
+.CollectionDetailPage .Icon.wearable,
+.CollectionDetailPage .Icon.emote {
+  margin-right: 12px;
+  filter: brightness(100);
+}
+
+.CollectionDetailPage .dcl.tab {
+  display: inline-flex;
+  align-items: center;
+}
+
+.CollectionDetailPage .dcl.tabs.fullscreen .ui.container {
+  border-bottom: 1px solid rgba(115, 110, 125, 0.32);
+}
