@@ -52,6 +52,8 @@ export type CreateSingleItemModalMetadata = {
   item?: Item
   addRepresentation?: boolean
   changeItemFile?: boolean
+  editThumbnail?: boolean
+  onSaveThumbnail?: void
 }
 
 export type ItemAssetJson = Pick<State, 'name' | 'description' | 'category' | 'rarity' | 'thumbnail' | 'model' | 'bodyShape'>
