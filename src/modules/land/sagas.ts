@@ -52,7 +52,9 @@ import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
 import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
-import { Land, LandType, Authorization } from './types'
+import { Land, LandType, Authorization, RoleType } from './types'
+import { Rentals__factory } from 'contracts'
+import { RENTALS_ADDRESS } from 'scripts/data'
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
@@ -174,13 +176,27 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
       case LandType.PARCEL: {
         const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
         const tokenId: ethers.BigNumber = yield call(() => landRegistry.encodeTokenId(land.x!, land.y!))
-        const transaction: ethers.ContractTransaction = yield call(() => landRegistry.setUpdateOperator(tokenId, operator))
+        let transaction: ethers.ContractTransaction
+
+        if (land.role === RoleType.TENANT) {
+          const rentals = Rentals__factory.connect(RENTALS_ADDRESS, signer)
+          transaction = yield call(() => rentals.setOperator(LAND_REGISTRY_ADDRESS, tokenId, operator))
+        } else {
+          transaction = yield call(() => landRegistry.setUpdateOperator(tokenId, operator))
+        }
         yield put(setOperatorSuccess(land, address, wallet.chainId, transaction.hash))
         break
       }
       case LandType.ESTATE: {
         const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
-        const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.setUpdateOperator(land.id, operator))
+        let transaction: ethers.ContractTransaction
+
+        if (land.role === RoleType.TENANT) {
+          const rentals = Rentals__factory.connect(RENTALS_ADDRESS, signer)
+          transaction = yield call(() => rentals.setOperator(ESTATE_REGISTRY_ADDRESS, land.id, operator))
+        } else {
+          transaction = yield call(() => estateRegistry.setUpdateOperator(land.id, operator))
+        }
         yield put(setOperatorSuccess(land, address, wallet.chainId, transaction.hash))
         break
       }
