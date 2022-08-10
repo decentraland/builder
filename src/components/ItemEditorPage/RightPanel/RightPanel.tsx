@@ -234,9 +234,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  handleEmoteThumbnailChange = async (thumbnail: string) => {
-    const blob = dataURLToBlob(thumbnail)
-    this.setState({ thumbnail, contents: { [THUMBNAIL_PATH]: blob! }, isDirty: true })
+  handleEmoteThumbnailChange = (thumbnail: string) => {
+    const blob = dataURLToBlob(thumbnail)!
+    this.setState({ thumbnail, contents: { [THUMBNAIL_PATH]: blob }, isDirty: true })
   }
 
   handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
