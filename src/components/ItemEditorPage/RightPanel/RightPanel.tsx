@@ -33,7 +33,7 @@ import {
   WearableData
 } from 'modules/item/types'
 import { dataURLToBlob } from 'modules/media/utils'
-import { ModelEmoteMetrics } from 'modules/models/types'
+import { ModelMetrics, ModelEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
 import Input from './Input'
 import Select from './Select'
@@ -302,20 +302,22 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   renderMetrics(item: Item) {
     if (item.type === ItemType.WEARABLE) {
+      const metrics = item.metrics as ModelMetrics
       return (
         <div className="metrics">
-          <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
-          <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
-          <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
+          <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+          <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+          <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
         </div>
       )
     } else {
+      const metrics = item.metrics as ModelEmoteMetrics
       return (
         <div className="metrics">
-          <div className="metric circle">{t('model_metrics.sequences', { count: (item.metrics as ModelEmoteMetrics).sequences })}</div>
-          <div className="metric circle">{t('model_metrics.duration', { count: (item.metrics as ModelEmoteMetrics).duration })}</div>
-          <div className="metric circle">{t('model_metrics.frames', { count: (item.metrics as ModelEmoteMetrics).frames })}</div>
-          <div className="metric circle">{t('model_metrics.fps', { count: (item.metrics as ModelEmoteMetrics).fps })}</div>
+          <div className="metric circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+          <div className="metric circle">{t('model_metrics.duration', { count: metrics.duration })}</div>
+          <div className="metric circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
+          <div className="metric circle">{t('model_metrics.fps', { count: metrics.fps })}</div>
         </div>
       )
     }
