@@ -77,7 +77,6 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
                 />
               )
             })}
-            {/* <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop /> */}
           </div>
         </Modal.Content>
       </>
