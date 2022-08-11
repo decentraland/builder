@@ -1,6 +1,6 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { BodyShape, Emote, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -475,20 +475,21 @@ export function isEmoteSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn:
   }
 
   // check if metadata is synced
-  const catalystItem = entity.metadata! as Emote
+  const catalystItem = entity.metadata
+  const catalystItemMetadataData = isADR74 ? entity.metadata.emoteDataADR74 : entity.metadata.data
 
   const hasMetadataChanged =
     item.name !== catalystItem.name ||
     item.description !== catalystItem.description ||
-    (item.data.category as string) !== catalystItem.emoteDataADR74.category ||
-    item.data.tags.toString() !== catalystItem.emoteDataADR74.tags.toString()
+    (item.data.category as string) !== catalystItemMetadataData.category ||
+    item.data.tags.toString() !== catalystItemMetadataData.tags.toString()
 
   if (hasMetadataChanged) {
     return false
   }
 
   // check if representations are synced
-  if (!areEqualRepresentations(item.data.representations, catalystItem.emoteDataADR74.representations as WearableRepresentation[])) {
+  if (!areEqualRepresentations(item.data.representations, catalystItemMetadataData.representations as WearableRepresentation[])) {
     return false
   }
 
