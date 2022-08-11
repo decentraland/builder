@@ -19,7 +19,7 @@ import { isEqual } from 'lib/address'
 import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
 import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
-import { Item, SyncStatus, Rarity, CatalystItem } from './types'
+import { Item, SyncStatus, Rarity, CatalystItem, ItemType } from './types'
 import { areSynced, canSeeItem, isOwner } from './utils'
 
 export const getState = (state: RootState) => state.item
@@ -81,6 +81,12 @@ export const getPaginatedCollectionItems = (state: RootState, collectionId: stri
 export const getRarities = (state: RootState): Rarity[] => {
   return getState(state).rarities
 }
+
+export const getWearables = createSelector<RootState, Item[], Item[]>(getItems, items =>
+  items.filter(item => item.type === ItemType.WEARABLE)
+)
+
+export const getEmotes = createSelector<RootState, Item[], Item[]>(getItems, items => items.filter(item => item.type === ItemType.EMOTE))
 
 export const getItemsByURN = createSelector<RootState, Item[], Record<string, Collection>, Record<string, Item>>(
   state => getItems(state),

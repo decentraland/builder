@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
 import { Color4, Wearable } from 'decentraland-ecs'
 import { BodyShape, IPreviewController, PreviewEmote, WearableCategory } from '@dcl/schemas'
+import { Collection } from 'modules/collection/types'
 import {
   CloseEditorAction,
   setEmote,
@@ -18,11 +19,14 @@ import {
   fetchBaseWearablesRequest,
   FetchBaseWearablesRequestAction,
   setWearablePreviewController,
-  SetWearablePreviewControllerAction
+  SetWearablePreviewControllerAction,
+  SetItemsAction,
+  setItems
 } from 'modules/editor/actions'
 import { Item } from 'modules/item/types'
 
 export type Props = {
+  collection: Collection | undefined
   bodyShape: BodyShape
   skinColor: Color4
   eyeColor: Color4
@@ -31,6 +35,7 @@ export type Props = {
   selectedBaseWearables: Record<WearableCategory, Wearable | null> | null
   visibleItems: Item[]
   wearableController?: IPreviewController | null
+  emotesFromCollection?: Item[]
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
@@ -39,6 +44,7 @@ export type Props = {
   onSetBaseWearable: typeof setBaseWearable
   onFetchBaseWearables: typeof fetchBaseWearablesRequest
   onSetWearablePreviewController: typeof setWearablePreviewController
+  onSetItems: typeof setItems
 }
 
 export type State = {
@@ -48,7 +54,16 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'emote' | 'visibleItems' | 'selectedBaseWearables' | 'wearableController'
+  | 'bodyShape'
+  | 'collection'
+  | 'skinColor'
+  | 'eyeColor'
+  | 'hairColor'
+  | 'emote'
+  | 'visibleItems'
+  | 'selectedBaseWearables'
+  | 'wearableController'
+  | 'emotesFromCollection'
 >
 export type MapDispatchProps = Pick<
   Props,
@@ -60,6 +75,7 @@ export type MapDispatchProps = Pick<
   | 'onSetBaseWearable'
   | 'onFetchBaseWearables'
   | 'onSetWearablePreviewController'
+  | 'onSetItems'
 >
 export type MapDispatch = Dispatch<
   | CloseEditorAction
@@ -71,4 +87,5 @@ export type MapDispatch = Dispatch<
   | SetBaseWearableAction
   | FetchBaseWearablesRequestAction
   | SetWearablePreviewControllerAction
+  | SetItemsAction
 >
