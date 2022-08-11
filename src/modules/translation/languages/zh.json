@@ -1131,7 +1131,17 @@
     "locked": "锁定",
     "publish_reason_max_items": "可以发布包含最多 {maxItems} 个项目的集合。",
     "publish_reason_no_items": "您需要添加至少一项才能发布您的收藏。",
-    "publish_reason_items_not_complete": "所有项目必须完整才能发布您的收藏，检查是否设置了所有属性。"
+    "publish_reason_items_not_complete": "所有项目必须完整才能发布您的收藏，检查是否设置了所有属性。",
+    "emotes": "表情",
+    "wearables": "可穿戴设备",
+    "table": {
+      "item": "物品",
+      "rarity": "稀有度",
+      "category": "类别",
+      "price": "价格",
+      "play_mode": "游戏模式",
+      "status": "地位"
+    }
   },
   "collection_context_menu": {
     "add_existing_item": "添加现有项目",
@@ -1435,6 +1445,15 @@
       "upper_body": "上半身",
       "skin": "皮肤"
     }
+  },
+  "rarity_tooltip": {
+    "unique": "像圣杯一样：独一无二",
+    "mythic": "给幸运的人：最多10个",
+    "legendary": "限量供应：最多100个",
+    "epic": "最大供应量：1000个",
+    "rare": "最大供应量：5000个",
+    "uncommon": "最大供应量：10,000个",
+    "common": "最大供应量：100,000个"
   },
   "time": {
     "hours": "{amount}小时",
