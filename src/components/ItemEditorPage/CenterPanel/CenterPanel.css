@@ -43,6 +43,16 @@
   line-height: 16px;
 }
 
+.CenterPanel .footer .ui.dropdown > .menu > .header {
+  color: var(--light-gray);
+  font-size: 15px;
+  line-height: 24px;
+  padding: 10px 16px !important;
+  margin: 0;
+  font-weight: normal;
+  min-width: 210px;
+}
+
 .CenterPanel .footer .avatar-attributes {
   display: flex;
   flex-wrap: wrap;
@@ -83,7 +93,7 @@
 }
 
 .CenterPanel .EmoteControls {
-  padding: 0
+  padding: 0;
 }
 
 .CenterPanel .EmoteControls .frame-control {
