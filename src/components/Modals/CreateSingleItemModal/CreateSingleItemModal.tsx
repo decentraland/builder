@@ -410,7 +410,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   isAddingRepresentation = () => {
     const { metadata } = this.props
-    return !!(metadata && metadata.item && !metadata.changeItemFile && !metadata.editThumbnail)
+    return !!(metadata && metadata.item && !metadata.changeItemFile)
   }
 
   filterItemsByBodyShape = (item: Item) => {
@@ -486,10 +486,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     if (metadata && metadata.changeItemFile) {
       return t('create_single_item_modal.change_item_file')
-    }
-
-    if (metadata && metadata.editThumbnail) {
-      return t('create_single_item_modal.thumbnail_step_title')
     }
 
     if (type === ItemType.EMOTE) {
@@ -830,29 +826,19 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOnScreenshotTaken = (screenshot: string) => {
-    const { metadata, onClose } = this.props
-
-    this.setState({ thumbnail: screenshot, isLoading: true }, () => {
-      if (metadata?.editThumbnail) {
-        metadata.onSaveThumbnail(screenshot)
-        onClose()
-      } else {
-        this.setState({ view: CreateItemView.DETAILS })
-      }
-    })
+    this.setState({ thumbnail: screenshot, isLoading: true }, () => this.setState({ view: CreateItemView.DETAILS }))
   }
 
   renderThumbnailView() {
-    const { metadata, onClose } = this.props
+    const { onClose } = this.props
     const { file, isLoading } = this.state
-    const backView = metadata?.editThumbnail ? CreateItemView.IMPORT : CreateItemView.DETAILS
 
     return (
       <EditThumbnailStep
         isLoading={!!isLoading}
         blob={file ? toWearableWithBlobs(file, true) : undefined}
         title={this.renderModalTitle()}
-        onBack={() => this.setState({ view: backView })}
+        onBack={() => this.setState({ view: CreateItemView.DETAILS })}
         onSave={this.handleOnScreenshotTaken}
         onClose={onClose}
       />
