@@ -39,6 +39,7 @@ import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
+import EditThumbnailModal from './EditThumbnailModal/EditThumbnailModal'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
@@ -90,7 +91,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       contents: {},
       data: undefined,
       hasItem: false,
-      isDirty: false
+      isDirty: false,
+      isEditThumbnailModalOpen: false
     }
   }
 
@@ -225,10 +227,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOpenThumbnailDialog = () => {
-    const { selectedItem, isEmotesFeatureFlagOn, onOpenModal } = this.props
+    const { selectedItem, isEmotesFeatureFlagOn } = this.props
 
     if (isEmotesFeatureFlagOn && selectedItem?.type === ItemType.EMOTE) {
-      onOpenModal('CreateSingleItemModal', { item: selectedItem, editThumbnail: true, onSaveThumbnail: this.handleEmoteThumbnailChange })
+      this.setState({ isEditThumbnailModalOpen: true })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
@@ -236,7 +238,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   handleEmoteThumbnailChange = (thumbnail: string) => {
     const blob = dataURLToBlob(thumbnail)!
-    this.setState({ thumbnail, contents: { [THUMBNAIL_PATH]: blob }, isDirty: true })
+    this.setState({ thumbnail, contents: { [THUMBNAIL_PATH]: blob }, isDirty: true, isEditThumbnailModalOpen: false })
   }
 
   handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -324,8 +326,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, isDownloading, error } = this.props
-    const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
+    const { selectedItemId, selectedItem, address, isConnected, isDownloading, error } = this.props
+    const { name, description, thumbnail, rarity, data, isDirty, hasItem, isEditThumbnailModalOpen } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
 
@@ -550,6 +552,15 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             }}
           </ItemProvider>
         ) : null}
+        {isEditThumbnailModalOpen && (
+          <EditThumbnailModal
+            name="RightPanelEditThumbnailModal"
+            open
+            item={selectedItem}
+            onSaveThumbnail={this.handleEmoteThumbnailChange}
+            onClose={() => this.setState({ isEditThumbnailModalOpen: false })}
+          />
+        )}
       </div>
     )
   }
