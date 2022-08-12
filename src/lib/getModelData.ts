@@ -16,7 +16,7 @@ import {
 } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { ModelEmoteMetrics, ModelMetrics } from 'modules/models/types'
+import { Metrics } from 'modules/models/types'
 import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
 import { ItemType } from 'modules/item/types'
 
@@ -174,7 +174,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     document.body.removeChild(renderer.domElement)
 
     // return data
-    let info: ModelMetrics | ModelEmoteMetrics = {
+    let info: Metrics = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials: materials.size,
       textures: renderer.info.memory.textures,
@@ -188,7 +188,6 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       const frames = gltf.animations[0].tracks[0].times.length - 1
 
       info = {
-        ...info,
         sequences: gltf.animations.length,
         duration,
         frames: frames,
@@ -202,7 +201,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     return { info, image, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   } catch (error) {
     // could not render model, default to 0 metrics and default thumnail
-    const info: ModelMetrics = {
+    const info = {
       triangles: 0,
       materials: 0,
       textures: 0,
