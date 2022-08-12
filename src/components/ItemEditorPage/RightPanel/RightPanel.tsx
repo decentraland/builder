@@ -10,6 +10,7 @@ import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import Icon from 'components/Icon'
+import EditThumbnailModal from 'components/Modals/EditThumbnailModal/EditThumbnailModal'
 import {
   getMissingBodyShapeType,
   getRarities,
@@ -39,7 +40,6 @@ import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
-import EditThumbnailModal from './EditThumbnailModal/EditThumbnailModal'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
