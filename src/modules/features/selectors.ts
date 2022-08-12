@@ -22,3 +22,5 @@ export const getIsEmotesFlowEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsRentalsEnabled = (state: RootState) => getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.RENTALS)

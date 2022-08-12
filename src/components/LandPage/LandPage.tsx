@@ -48,6 +48,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
       selectedX = x
       selectedY = y
     }
+
     return (
       <>
         <div className="filters">
@@ -117,10 +118,10 @@ export default class LandPage extends React.PureComponent<Props, State> {
                 <Table basic="very">
                   <Table.Header>
                     <Table.Row>
-                      <Table.HeaderCell width="5">{t('land_page.name')}</Table.HeaderCell>
-                      <Table.HeaderCell width="2">{t('land_page.role')}</Table.HeaderCell>
+                      <Table.HeaderCell width="4">{t('land_page.name')}</Table.HeaderCell>
+                      <Table.HeaderCell width="4">{t('land_page.role')}</Table.HeaderCell>
                       <Table.HeaderCell width="4">{t('land_page.operated_by')}</Table.HeaderCell>
-                      <Table.HeaderCell width="3">{t('land_page.online_scenes')}</Table.HeaderCell>
+                      <Table.HeaderCell width="4">{t('land_page.online_scenes')}</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
 

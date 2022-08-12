@@ -666,6 +666,11 @@
     },
     "success": "Gracias, ¡Te mantendremos al tanto!"
   },
+  "rental_period": {
+    "period_over": "Período de renta terminado",
+    "operator_permissions": "Tendrás permisos de Operador hasta que el dueño pida su tierra",
+    "ends_in": "Termina en"
+  },
   "land_page": {
     "name": "Nombre",
     "coordinates": "Coordenadas",
@@ -793,7 +798,8 @@
   },
   "popups": {
     "metrics_help": "¡Ver métricas aquí!",
-    "shortcuts_help": "¡Ver atajos aquí!"
+    "shortcuts_help": "¡Ver atajos aquí!",
+    "its_you": "¡Eres tú!"
   },
   "project_card": {
     "items": "objetos",

@@ -1,5 +1,6 @@
-import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, all, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
+import { push } from 'connected-react-router'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,
@@ -43,18 +44,18 @@ import {
   setUpdateManagerSuccess,
   setUpdateManagerFailure
 } from './actions'
+import { locations } from 'routing/locations'
 import { manager } from 'lib/api/manager'
+import { rental } from 'lib/api/rentals'
 import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory'
 import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
-import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
-import { push } from 'connected-react-router'
-import { locations } from 'routing/locations'
+import { Rentals__factory } from 'contracts/factories/Rentals__factory'
+import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS, RENTALS_ADDRESS } from 'modules/common/contracts'
+import { getIsRentalsEnabled } from 'modules/features/selectors'
 import { closeModal } from 'modules/modal/actions'
 import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
-import { Land, LandType, Authorization, RoleType } from './types'
-import { Rentals__factory } from 'contracts'
-import { RENTALS_ADDRESS } from 'scripts/data'
+import { Land, LandType, Authorization, Rental, RoleType } from './types'
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
@@ -275,8 +276,13 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
 function* handleFetchLandRequest(action: FetchLandsRequestAction) {
   const { address } = action.payload
   try {
-    const [land, authorizations]: [Land[], Authorization[]] = yield call(() => manager.fetchLand(address))
-    yield put(fetchLandsSuccess(address, land, authorizations))
+    const isRentalsEnabled: boolean = yield select(getIsRentalsEnabled)
+
+    const rentals: Rental[] = isRentalsEnabled ? yield call(() => rental.fetchTokenIdsByTenant(address)) : []
+    const tenantTokenIds = rentals.map(rental => rental.tokenId)
+
+    const [land, authorizations]: [Land[], Authorization[]] = yield call(() => manager.fetchLand(address, tenantTokenIds))
+    yield put(fetchLandsSuccess(address, land, authorizations, rentals))
   } catch (error) {
     yield put(fetchLandsFailure(address, error.message))
   }

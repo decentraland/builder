@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Table, Column, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Atlas } from 'components/Atlas'
-import Profile from 'components/Profile'
 import { locations } from 'routing/locations'
 import { isEqual } from 'lib/address'
+import { Atlas } from 'components/Atlas'
+import Profile from 'components/Profile'
+import RentalPeriod from 'components/RentalPeriod'
 import InlineList from '../InlineList'
 import { coordsToId, getCoords, LAND_POOL_ADDRESS } from 'modules/land/utils'
 import { Props } from './TableRow.types'
@@ -21,8 +22,9 @@ const sortLandPoolLast = (a: string, b: string) => {
 
 export default class TableRow extends React.PureComponent<Props> {
   render() {
-    const { land, deployments, onNavigate } = this.props
+    const { land, deployments, rental, onNavigate } = this.props
     const { x, y } = getCoords(land)
+
     return (
       <Table.Row className="TableRow" onClick={() => onNavigate(locations.landDetail(land.id))}>
         <Table.Cell>
@@ -31,11 +33,19 @@ export default class TableRow extends React.PureComponent<Props> {
               <Atlas landId={land.id} width={45} height={45} isDraggable={false} size={9} />
             </Column>
             <Column className="name">
-              <span>{land.name}</span> <span style={{ color: 'var(--secondary-text)' }}>{coordsToId(x, y)}</span>
+              <div>
+                {land.name} <span className="secondary-text">{coordsToId(x, y)}</span>
+              </div>
             </Column>
           </Row>
         </Table.Cell>
-        <Table.Cell>{t(`roles.${land.role}`)}</Table.Cell>
+        <Table.Cell>
+          <div>
+            {t(`roles.${land.role}`)}
+            &nbsp;
+            {rental ? <RentalPeriod rental={rental} /> : null}
+          </div>
+        </Table.Cell>
         <Table.Cell>
           <InlineList
             list={land.operators.sort(sortLandPoolLast).map(operator => (

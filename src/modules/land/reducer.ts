@@ -7,11 +7,12 @@ import {
   FETCH_LANDS_SUCCESS,
   FETCH_LANDS_FAILURE
 } from './actions'
-import { Land, Authorization } from './types'
+import { Land, Authorization, Rental } from './types'
 
 export type LandState = {
   data: Record<string, Land[]>
   authorizations: Authorization[]
+  rentals: Rental[]
   loading: LoadingState
   error: string | null
 }
@@ -19,6 +20,7 @@ export type LandState = {
 const INITIAL_STATE: LandState = {
   data: {},
   authorizations: [],
+  rentals: [],
   loading: [],
   error: null
 }
@@ -31,17 +33,19 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
       return {
         ...state,
         authorizations: [],
+        rentals: [],
         loading: loadingReducer(state.loading, action)
       }
     }
     case FETCH_LANDS_SUCCESS: {
-      const { address, lands, authorizations } = action.payload
+      const { address, lands, authorizations, rentals } = action.payload
       return {
         data: {
           ...state.data,
           [address]: lands
         },
         authorizations,
+        rentals,
         loading: loadingReducer(state.loading, action),
         error: null
       }

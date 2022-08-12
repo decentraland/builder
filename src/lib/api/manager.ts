@@ -1,22 +1,21 @@
 import { gql } from 'apollo-boost'
 import { config } from 'config'
-import { createClient } from './graph'
 import { parcelFields, estateFields, ParcelFields, Land, LandType, RoleType, EstateFields, Authorization } from 'modules/land/types'
 import { coordsToId } from 'modules/land/utils'
 import { isZero } from 'lib/address'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
-import { rental } from './rentals'
+import { createClient } from './graph'
 
 export const LAND_MANAGER_GRAPH_URL = config.get('LAND_MANAGER_GRAPH_URL', '')
 
 const authGraphClient = createClient(LAND_MANAGER_GRAPH_URL)
 
 const getLandQuery = () => gql`
-  query Land($address: Bytes, $tokenIds: [String!]) {
-    tenantParcels: parcels(first: 1000, where: { tokenId_in: $tokenIds }) {
+  query Land($address: Bytes, $tenantTokenIds: [String!]) {
+    tenantParcels: parcels(first: 1000, where: { tokenId_in: $tenantTokenIds }) {
       ...parcelFields
     }
-    tenantEstates: estates(first: 1000, where: { id_in: $tokenIds }) {
+    tenantEstates: estates(first: 1000, where: { id_in: $tenantTokenIds }) {
       ...estateFields
     }
     ownerParcels: parcels(first: 1000, where: { estate: null, owner: $address }) {
@@ -75,7 +74,8 @@ const fromParcel = (parcel: ParcelFields, role: RoleType) => {
 
   const result: Land = {
     id,
-    name: (parcel.data && parcel.data.name) || `Parcel ${id}`,
+    tokenId: parcel.tokenId,
+    name: (parcel.data && parcel.data.name) || 'Parcel',
     type: LandType.PARCEL,
     roles: [role],
     role,
@@ -98,6 +98,7 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 
   const result: Land = {
     id,
+    tokenId: id,
     name: (estate.data && estate.data.name) || `Estate ${id}`,
     type: LandType.ESTATE,
     roles: [role],
@@ -121,16 +122,14 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 }
 
 export class ManagerAPI {
-  fetchLand = async (_address: string): Promise<[Land[], Authorization[]]> => {
+  fetchLand = async (_address: string, tenantTokenIds: string[] = []): Promise<[Land[], Authorization[]]> => {
     const address = _address.toLowerCase()
 
-    const rentals = await rental.fetchTokenIdsByTenant(address)
-    const rentalTokenIds = rentals.map(rental => rental.tokenId)
     const { data } = await authGraphClient.query<LandQueryResult>({
       query: getLandQuery(),
       variables: {
         address,
-        tokenIds: rentalTokenIds
+        tenantTokenIds
       }
     })
 

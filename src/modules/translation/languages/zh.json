@@ -651,6 +651,11 @@
     },
     "success": "谢谢，我们会与您联系!"
   },
+  "rental_period": {
+    "period_over": "租期结束",
+    "operator_permissions": "在所有者收回土地之前，您将拥有操作员权限",
+    "ends_in": "结束于"
+  },
   "land_page": {
     "name": "名称",
     "coordinates": "坐标",
@@ -779,7 +784,8 @@
   },
   "popups": {
     "metrics_help": "查看场景指标",
-    "shortcuts_help": "在此查看快捷键"
+    "shortcuts_help": "在此查看快捷键",
+    "its_you": "是你"
   },
   "project_card": {
     "items": "模型",

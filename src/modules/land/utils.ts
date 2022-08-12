@@ -7,7 +7,7 @@ import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/c
 import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory'
 import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
 import { isZero } from 'lib/address'
-import { Land, LandTile, LandType, RoleType } from './types'
+import { Land, LandTile, LandType, Rental, RoleType } from './types'
 
 export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 export const MAX_PARCELS_PER_TX = 20
@@ -145,6 +145,17 @@ export const splitCoords = (coords: Coord[]): [number[], number[]] => {
   return [xs, ys]
 }
 
+export function getLandType(contractAddress: string): LandType {
+  switch (contractAddress.toLowerCase()) {
+    case LAND_REGISTRY_ADDRESS:
+      return LandType.PARCEL
+    case ESTATE_REGISTRY_ADDRESS:
+      return LandType.ESTATE
+    default:
+      throw new Error(`Could not derive land type from contract address "${contractAddress}"`)
+  }
+}
+
 export const buildMetadata = (name: string, description = '') => {
   return `0,"${name.replace(/"/g, '\\"')}","${description.replace(/"/g, '\\"')}",`
 }
@@ -165,6 +176,10 @@ export function getExplorerURL(x: string | number, y: string | number) {
   return `${EXPLORER_URL}?position=${coordsToId(x, y)}`
 }
 
-export function hasAnyRole(land: Land, roles: RoleType[]) {
+export function hasAnyRole(land: Land, roles: RoleType[]): boolean {
   return land.roles.some(role => roles.includes(role))
+}
+
+export function findRental(land: Land, rentals: Rental[]): Rental | null {
+  return rentals.find(rental => rental.type === land.type && rental.tokenId === land.tokenId) || null
 }

@@ -686,6 +686,11 @@
     "subtitle": "Sorry, we couldn't find the Scene you were looking for",
     "title": "404"
   },
+  "rental_period": {
+    "period_over": "Rental Period Over",
+    "operator_permissions": "You will have Operator permissions until the Owner claims the Land back",
+    "ends_in": "Ends in"
+  },
   "land_page": {
     "name": "Name",
     "coordinates": "Coordinates",
@@ -785,7 +790,8 @@
   },
   "popups": {
     "metrics_help": "See metrics here!",
-    "shortcuts_help": "See shortcuts here!"
+    "shortcuts_help": "See shortcuts here!",
+    "its_you": "It's you!"
   },
   "project_card": {
     "items": "items",
