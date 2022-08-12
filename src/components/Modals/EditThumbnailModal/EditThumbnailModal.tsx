@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'decentraland-ui'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ImportStep from 'components/Modals/CreateSingleItemModal/ImportStep/ImportStep'
 import EditThumbnailStep from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep'
@@ -8,7 +8,7 @@ import { toWearableWithBlobs } from 'components/Modals/CreateSingleItemModal/uti
 import { Props, State } from './EditThumbnailModal.types'
 import './EditThumbnailModal.css'
 
-export default class EditThumbNailModal extends React.PureComponent<Props, State> {
+export default class EditThumbnailModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
 
   getInitialState(): State {
@@ -20,11 +20,19 @@ export default class EditThumbNailModal extends React.PureComponent<Props, State
     }
   }
 
-  handleDropAccepted = async (acceptedFileProps: AcceptedFileProps) => {
+  handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     this.setState({
       file: acceptedFileProps.file!,
       view: CreateItemView.THUMBNAIL
     })
+  }
+
+  handleOnSaveThumbnail = (thumbnail: string) => {
+    const { metadata, onClose } = this.props
+    const { onSaveThumbnail } = metadata
+
+    onSaveThumbnail(thumbnail)
+    onClose()
   }
 
   renderModalTitle() {
@@ -32,7 +40,7 @@ export default class EditThumbNailModal extends React.PureComponent<Props, State
   }
 
   renderThumbnailView() {
-    const { onClose, onSaveThumbnail } = this.props
+    const { onClose } = this.props
     const { file, isLoading } = this.state
 
     return (
@@ -41,7 +49,7 @@ export default class EditThumbNailModal extends React.PureComponent<Props, State
         blob={file ? toWearableWithBlobs(file, true) : undefined}
         title={this.renderModalTitle()}
         onBack={() => this.setState({ view: CreateItemView.IMPORT })}
-        onSave={onSaveThumbnail}
+        onSave={this.handleOnSaveThumbnail}
         onClose={onClose}
       />
     )
@@ -65,10 +73,10 @@ export default class EditThumbNailModal extends React.PureComponent<Props, State
   }
 
   render() {
-    const { name, open, onClose } = this.props
+    const { name, onClose } = this.props
 
     return (
-      <Modal name={name} open={open} onClose={onClose} className="EditThumbnailModal">
+      <Modal name={name} onClose={onClose}>
         {this.renderView()}
       </Modal>
     )

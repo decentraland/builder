@@ -1,11 +1,7 @@
-import { Item } from 'modules/item/types'
+import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 
-export type Props = {
-  item: Item | null
-  name: string
-  open: boolean
-  onSaveThumbnail: (thumbnail: string) => void
-  onClose: () => void
+export type Props = ModalProps & {
+  metadata: EditThumbnailModalMetadata
 }
 
 export type State = {
@@ -13,4 +9,8 @@ export type State = {
   file: File | null
   error: string
   isLoading: boolean
+}
+
+export type EditThumbnailModalMetadata = {
+  onSaveThumbnail: (thumbnail: string) => void
 }
