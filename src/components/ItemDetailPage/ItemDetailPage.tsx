@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
+import { areEmoteMetrics } from 'modules/models/types'
 import { Item } from 'modules/item/types'
 import { isThirdParty } from 'lib/urn'
 import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, isFree } from 'modules/item/utils'
@@ -54,6 +55,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   renderPage(item: Item, collection: Collection | null) {
     const { onNavigate } = this.props
     const data = item.data as WearableData
+    const metrics = item.metrics
 
     const missingBodyShape = getMissingBodyShapeType(item)
     const isLocked = collection && isCollectionLocked(collection)
@@ -121,7 +123,17 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           {!collection ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
 
           <div className="item-data">
-            <ItemImage item={item} hasBadge={true} />
+            <div>
+              <ItemImage item={item} hasBadge={true} />
+              {areEmoteMetrics(metrics) ? (
+                <ul className="metrics">
+                  <li className="metric materials">{t('model_metrics.sequences', { count: metrics.sequences })}</li>
+                  <li className="metric materials">{t('model_metrics.duration', { count: Number(metrics.duration.toFixed(2)) })}</li>
+                  <li className="metric materials">{t('model_metrics.frames', { count: metrics.frames })}</li>
+                  <li className="metric materials">{t('model_metrics.fps', { count: Number(metrics.fps.toFixed(2)) })}</li>
+                </ul>
+              ) : null}
+            </div>
             <div className="sections">
               {item.isPublished && (
                 <Section>

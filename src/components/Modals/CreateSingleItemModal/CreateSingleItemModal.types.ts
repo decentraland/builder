@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { IPreviewController } from '@dcl/schemas'
-import { ModelMetrics } from 'modules/models/types'
+import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 import { BodyShapeType, Item, ItemRarity, ItemType } from 'modules/item/types'
@@ -34,7 +34,7 @@ export type StateData = {
   bodyShape: BodyShapeType
   thumbnail: string
   model: string
-  metrics: ModelMetrics
+  metrics: Metrics
   contents: Record<string, Blob>
   isRepresentation: boolean
   item: Item
