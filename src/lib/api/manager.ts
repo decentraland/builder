@@ -124,12 +124,13 @@ export class ManagerAPI {
   fetchLand = async (_address: string): Promise<[Land[], Authorization[]]> => {
     const address = _address.toLowerCase()
 
-    const tenantTokenIds = await rental.fetchTokenIdsByTenant(address)
+    const rentals = await rental.fetchTokenIdsByTenant(address)
+    const rentalTokenIds = rentals.map(rental => rental.tokenId)
     const { data } = await authGraphClient.query<LandQueryResult>({
       query: getLandQuery(),
       variables: {
         address,
-        tokenIds: tenantTokenIds
+        tokenIds: rentalTokenIds
       }
     })
 

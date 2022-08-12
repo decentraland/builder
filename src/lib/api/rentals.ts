@@ -10,7 +10,7 @@ const rentalsGraphClient = createClient(RENTALS_GRAPH_URL)
 const getRentalsByTenantQuery = () => gql`
   query Rentals($tenant: Bytes, $today: BigInt!) {
     rentals(where: { tenant: $tenant, endsAt_lt: $today, ownerHasClaimedAsset: false }) {
-      tokenId
+      ...rentalFields
     }
   }
   ${rentalFields()}
@@ -26,7 +26,7 @@ export class RentalAPI {
       }
     })
 
-    return data.rentals.map(rental => rental.tokenId)
+    return data.rentals
   }
 }
 
