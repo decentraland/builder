@@ -52,7 +52,6 @@ export type CreateSingleItemModalMetadata = {
   item?: Item
   addRepresentation?: boolean
   changeItemFile?: boolean
-  editThumbnail?: boolean
   onSaveThumbnail?: void
 }
 
@@ -60,6 +59,10 @@ export type ItemAssetJson = Pick<State, 'name' | 'description' | 'category' | 'r
 
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 
+export type AcceptedFileProps = Pick<
+  State,
+  'id' | 'name' | 'file' | 'model' | 'metrics' | 'contents' | 'type' | 'bodyShape' | 'category' | 'thumbnail'
+>
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isEmotesFeatureFlagOn'>
 export type MapDispatchProps = Pick<Props, 'onSave'>

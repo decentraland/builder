@@ -1,7 +1,5 @@
 import * as React from 'react'
-import { basename } from 'path'
 import uuid from 'uuid'
-import JSZip from 'jszip'
 import { BodyShape, EmoteCategory, EmoteDataADR74, WearableCategory } from '@dcl/schemas'
 import { WearableData } from '@dcl/builder-client'
 import {
@@ -21,19 +19,15 @@ import {
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { cleanAssetName } from 'modules/asset/utils'
-import { blobToDataURL, getImageType, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
+import { getImageType, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
 import {
-  ITEM_EXTENSIONS,
   THUMBNAIL_PATH,
   Item,
   BodyShapeType,
   ItemRarity,
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
-  MODEL_EXTENSIONS,
-  IMAGE_EXTENSIONS,
   ItemType,
   EmotePlayMode
 } from 'modules/item/types'
@@ -50,20 +44,15 @@ import {
   getRarities,
   getWearableCategories,
   getBackgroundStyle,
-  isModelPath,
   isImageFile,
-  MAX_FILE_SIZE,
   resizeImage,
-  isImageCategory,
   getMaxSupplyForRarity,
   getEmoteCategories,
   getEmotePlayModes
 } from 'modules/item/utils'
-import ItemImport from 'components/ItemImport'
-import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
-import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
+import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
-import { getThumbnailType, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, toWearableWithBlobs, validateEnum, validatePath } from './utils'
+import { getThumbnailType, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, toWearableWithBlobs } from './utils'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import {
   Props,
@@ -72,7 +61,7 @@ import {
   CreateSingleItemModalMetadata,
   StateData,
   SortedContent,
-  ItemAssetJson
+  AcceptedFileProps
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
 
@@ -118,14 +107,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   componentDidUpdate(_prevProps: Props, prevState: State) {
     const { thumbnail, file, type, isLoading } = this.state
     // when the thumbnail is loaded and the file & type are already computed, we proceed to the Details view
-    if ((!prevState.thumbnail || !prevState.type) && thumbnail && file && type && !isLoading && !_prevProps.metadata?.editThumbnail) {
+    if ((!prevState.thumbnail || !prevState.type) && thumbnail && file && type && !isLoading) {
       this.setState({ view: CreateItemView.DETAILS })
-    } else if (file && type && !isLoading && _prevProps.metadata?.editThumbnail) {
-      if (type === ItemType.EMOTE) {
-        this.handleOpenThumbnailDialog()
-      } else {
-        this.handleDropRejected([file])
-      }
     }
   }
 
@@ -350,151 +333,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
   }
 
-  /**
-   * Unzip files and processes the model files.
-   * One of the models will be taken into consideration if multiple models are uploaded.
-   *
-   * @param file - The ZIP file.
-   */
-  handleZippedModelFiles = async (file: File) => {
-    const zip: JSZip = await JSZip.loadAsync(file)
-    const fileNames: string[] = []
-
-    zip.forEach(fileName => {
-      if (!basename(fileName).startsWith('.')) {
-        fileNames.push(fileName)
-      }
+  handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
+    this.setState({
+      ...acceptedFileProps
     })
-
-    // asset.json contains data to populate parts of the state
-    const assetJsonPath = fileNames.find(path => basename(path) === ASSET_MANIFEST)
-    let assetJson: ItemAssetJson | undefined
-
-    if (assetJsonPath) {
-      const assetRaw = zip.file(assetJsonPath)
-      const content = await assetRaw.async('text')
-      assetJson = JSON.parse(content)
-    }
-
-    const modelPath = fileNames.find(isModelPath)
-
-    const files = await Promise.all(
-      fileNames
-        .map(fileName => zip.file(fileName))
-        .filter(file => !!file)
-        .map(async file => {
-          const blob = await file.async('blob')
-
-          if (blob.size > MAX_FILE_SIZE) {
-            throw new FileTooBigError()
-          }
-
-          return {
-            name: file.name,
-            blob
-          }
-        })
-    )
-
-    const contents = files.reduce<Record<string, Blob>>((contents, file) => {
-      contents[file.name] = file.blob
-      return contents
-    }, {})
-
-    if (!modelPath) {
-      throw new MissingModelFileError()
-    }
-
-    const result = await this.processModel(modelPath, contents)
-
-    return [...result, assetJson] as const
-  }
-
-  /**
-   * Processes a model file.
-   *
-   * @param file - The model file.
-   */
-  handleModelFile = async (file: File) => {
-    if (file.size > MAX_FILE_SIZE) {
-      throw new FileTooBigError()
-    }
-
-    const modelPath = file.name
-    const contents = {
-      [modelPath]: file
-    }
-
-    return this.processModel(modelPath, contents)
-  }
-
-  handleDropAccepted = async (acceptedFiles: File[]) => {
-    const { metadata } = this.props
-    const { isRepresentation, category } = this.state
-
-    let changeItemFile = false
-    let item = null
-
-    if (metadata) {
-      changeItemFile = metadata.changeItemFile
-      item = metadata.item
-    }
-
-    const file = acceptedFiles[0]
-    const extension = getExtension(file.name)
-
-    try {
-      this.setState({ isLoading: true, file })
-
-      if (!extension) {
-        throw new WrongExtensionError()
-      }
-
-      const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
-      const [, model, metrics, contents, type, assetJson] = await handler(file)
-
-      this.setState({
-        id: changeItemFile ? item!.id : uuid.v4(),
-        name: changeItemFile ? item!.name : cleanAssetName(file.name),
-        model,
-        metrics,
-        contents,
-        type,
-        bodyShape: type === ItemType.EMOTE ? BodyShapeType.BOTH : undefined,
-        error: '',
-        category: isRepresentation ? category : undefined,
-        isLoading: false,
-        ...(await this.getAssetJsonProps(assetJson, contents))
-      })
-    } catch (error) {
-      this.setState({ error: error.message, isLoading: false })
-    }
-  }
-
-  async getAssetJsonProps(assetJson: ItemAssetJson = {}, contents: Record<string, Blob> = {}): Promise<ItemAssetJson> {
-    const { thumbnail, ...props } = assetJson
-
-    // sanizite
-    validatePath('thumbnail', assetJson, contents)
-    validatePath('model', assetJson, contents)
-    validateEnum('rarity', assetJson, Object.values(ItemRarity))
-    validateEnum('category', assetJson, Object.values(WearableCategory))
-    validateEnum('bodyShape', assetJson, Object.values(BodyShapeType))
-
-    if (thumbnail && thumbnail in contents) {
-      return {
-        ...props,
-        thumbnail: await blobToDataURL(contents[thumbnail])
-      }
-    }
-
-    return props
-  }
-
-  handleDropRejected = async (rejectedFiles: File[]) => {
-    console.warn('rejected', rejectedFiles)
-    const error = new InvalidFilesError()
-    this.setState({ error: error.message })
   }
 
   handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
@@ -575,49 +417,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { bodyShape } = this.state
     const { metadata } = this.props
     return getMissingBodyShapeType(item) === bodyShape && metadata.collectionId === item.collectionId
-  }
-
-  async processModel(
-    model: string,
-    contents: Record<string, Blob>
-  ): Promise<[string, string, ModelMetrics, Record<string, Blob>, ItemType]> {
-    let thumbnail: string = ''
-    let metrics: ModelMetrics
-    let type = ItemType.WEARABLE
-
-    if (isImageFile(model)) {
-      metrics = {
-        triangles: 100,
-        materials: 1,
-        textures: 1,
-        meshes: 1,
-        bodies: 1,
-        entities: 1
-      }
-
-      thumbnail = await convertImageIntoWearableThumbnail(
-        contents[THUMBNAIL_PATH] || contents[model],
-        this.state.category as WearableCategory
-      )
-    } else {
-      const url = URL.createObjectURL(contents[model])
-      const data = await getModelData(url, {
-        width: 1024,
-        height: 1024,
-        extension: getExtension(model) || undefined,
-        engine: EngineType.BABYLON
-      })
-      URL.revokeObjectURL(url)
-
-      // for some reason the renderer reports 2x the amount of textures for wearble items
-      data.info.textures = Math.round(data.info.textures / 2)
-
-      thumbnail = data.image
-      metrics = data.info
-      type = data.type
-    }
-
-    return [thumbnail, model, metrics, contents, type]
   }
 
   /**
@@ -754,30 +553,20 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderImportView() {
-    const { onClose, metadata } = this.props
-    const { changeItemFile } = metadata as CreateSingleItemModalMetadata
-    const { isRepresentation, category, error } = this.state
+    const { metadata, onClose } = this.props
+    const { isRepresentation, category } = this.state
     const title = this.renderModalTitle()
 
     return (
-      <>
-        <ModalNavigation title={title} onClose={onClose} />
-        <Modal.Content>
-          <ItemImport
-            error={error}
-            acceptedExtensions={
-              isRepresentation || changeItemFile
-                ? isImageCategory(category! as WearableCategory)
-                  ? IMAGE_EXTENSIONS
-                  : MODEL_EXTENSIONS
-                : ITEM_EXTENSIONS
-            }
-            onDropAccepted={this.handleDropAccepted}
-            onDropRejected={this.handleDropRejected}
-          />
-          <div className="importer-thumbnail-container">{this.renderWearablePreview()}</div>
-        </Modal.Content>
-      </>
+      <ImportStep
+        category={category! as WearableCategory}
+        metadata={metadata}
+        title={title}
+        wearablePreviewComponent={<div className="importer-thumbnail-container">{this.renderWearablePreview()}</div>}
+        isRepresentation={!!isRepresentation}
+        onDropAccepted={this.handleDropAccepted}
+        onClose={onClose}
+      />
     )
   }
 
