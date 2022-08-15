@@ -1,5 +1,5 @@
 import { Color4, Wearable } from 'decentraland-ecs'
-import { PreviewEmote, BodyShape, WearableCategory } from '@dcl/schemas'
+import { PreviewEmote, BodyShape, WearableCategory, IPreviewController } from '@dcl/schemas'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
@@ -46,6 +46,10 @@ import {
   SET_ITEMS,
   SetEmoteAction,
   SET_EMOTE,
+  SetEmotePlayingAction,
+  SET_EMOTE_PLAYING,
+  SetWearablePreviewControllerAction,
+  SET_WEARABLE_PREVIEW_CONTROLLER,
   SetSkinColorAction,
   SET_SKIN_COLOR,
   SetEyeColorAction,
@@ -84,6 +88,8 @@ export type EditorState = {
   }
   bodyShape: BodyShape
   emote: PreviewEmote
+  wearablePreviewController: IPreviewController | null
+  isPlayingEmote: boolean
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4
@@ -114,6 +120,8 @@ export const INITIAL_STATE: EditorState = {
   },
   bodyShape: pickRandom([BodyShape.MALE, BodyShape.FEMALE]),
   emote: PreviewEmote.IDLE,
+  wearablePreviewController: null,
+  isPlayingEmote: false,
   skinColor: pickRandom(getSkinColors()),
   eyeColor: pickRandom(getEyeColors()),
   hairColor: pickRandom(getHairColors()),
@@ -144,6 +152,8 @@ export type EditorReducerAction =
   | ToggleMultiselectionAction
   | SetBodyShapeAction
   | SetEmoteAction
+  | SetEmotePlayingAction
+  | SetWearablePreviewControllerAction
   | SetItemsAction
   | DeleteItemSuccessAction
   | SetSkinColorAction
@@ -286,6 +296,18 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         emote: action.payload.emote
+      }
+    }
+    case SET_EMOTE_PLAYING: {
+      return {
+        ...state,
+        isPlayingEmote: action.payload.isPlayingEmote
+      }
+    }
+    case SET_WEARABLE_PREVIEW_CONTROLLER: {
+      return {
+        ...state,
+        wearablePreviewController: action.payload.controller
       }
     }
     case SET_SKIN_COLOR: {

@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { IPreviewController } from '@dcl/schemas'
 import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
@@ -7,7 +8,9 @@ import { BodyShapeType, Item, ItemRarity, ItemType } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
-  DETAILS = 'details'
+  DETAILS = 'details',
+  THUMBNAIL = 'thumbnail',
+  SET_PRICE = 'setPrice'
 }
 
 export type Props = ModalProps & {
@@ -16,6 +19,7 @@ export type Props = ModalProps & {
   error: string | null
   isLoading: boolean
   collection: Collection | null
+  isEmotesFeatureFlagOn: boolean
   onSave: typeof saveItemRequest
 }
 
@@ -25,6 +29,7 @@ export type StateData = {
   description: string
   type: ItemType
   category: string
+  playMode?: string
   rarity: ItemRarity
   bodyShape: BodyShapeType
   thumbnail: string
@@ -36,8 +41,11 @@ export type StateData = {
   collectionId: string
   isLoading: boolean
   error: string
+  file: File
+  previewController?: IPreviewController
+  weareblePreviewUpdated: boolean
 }
-export type State = { view: CreateItemView } & Partial<StateData>
+export type State = { view: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string
@@ -50,7 +58,11 @@ export type ItemAssetJson = Pick<State, 'name' | 'description' | 'category' | 'r
 
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 
+export type AcceptedFileProps = Pick<
+  State,
+  'id' | 'name' | 'file' | 'model' | 'metrics' | 'contents' | 'type' | 'bodyShape' | 'category' | 'thumbnail'
+>
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection'>
+export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isEmotesFeatureFlagOn'>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

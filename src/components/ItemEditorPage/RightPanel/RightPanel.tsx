@@ -1,7 +1,7 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
 import { Loader, Dropdown, Button } from 'decentraland-ui'
-import { Network, WearableCategory } from '@dcl/schemas'
+import { EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -17,11 +17,14 @@ import {
   getOverridesCategories,
   isOwner,
   resizeImage,
-  getEmoteCategories
+  getEmoteCategories,
+  getEmotePlayModes
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import {
+  EmotePlayMode,
+  isEmoteData,
   Item,
   ItemRarity,
   ItemType,
@@ -30,7 +33,9 @@ import {
   THUMBNAIL_PATH,
   WearableData
 } from 'modules/item/types'
-import Collapsable from './Collapsable'
+import { dataURLToBlob } from 'modules/media/utils'
+import { ModelMetrics, ModelEmoteMetrics } from 'modules/models/types'
+import Collapsable from 'components/Collapsable'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -120,13 +125,21 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   handleChangeCategory = (category: WearableCategory) => {
     let data: WearableData = {
-      ...this.state.data!,
+      ...(this.state.data as WearableData)!,
       category
     }
     // when changing the category to SKIN we hide everything else
     if (category === WearableCategory.SKIN) {
       data = this.setReplaces(data, [])
       data = this.setHides(data, [])
+    }
+    this.setState({ data, isDirty: this.isDirty({ data }) })
+  }
+
+  handlePlayModeChange = (playMode: EmotePlayMode) => {
+    let data: EmoteDataADR74 = {
+      ...(this.state.data as EmoteDataADR74)!,
+      loop: playMode === EmotePlayMode.LOOP
     }
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
@@ -143,7 +156,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleChangeReplaces = (replaces: WearableCategory[]) => {
-    const data = this.setReplaces(this.state.data!, replaces)
+    const data = this.setReplaces((this.state.data as WearableData)!, replaces)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
@@ -159,7 +172,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleChangeHides = (hides: WearableCategory[]) => {
-    const data = this.setHides(this.state.data!, hides)
+    const data = this.setHides((this.state.data as WearableData)!, hides)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
@@ -186,7 +199,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         name,
         description,
         rarity,
-        data: data!,
+        data: (data as WearableData)!,
         contents: itemContents
       }
       onSaveItem(item, contents)
@@ -213,9 +226,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOpenThumbnailDialog = () => {
-    if (this.thumbnailInput.current) {
+    const { selectedItem, isEmotesFeatureFlagOn, onOpenModal } = this.props
+
+    if (isEmotesFeatureFlagOn && selectedItem?.type === ItemType.EMOTE) {
+      onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange })
+    } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
+  }
+
+  handleEmoteThumbnailChange = (thumbnail: string) => {
+    const blob = dataURLToBlob(thumbnail)!
+    this.setState({ thumbnail, contents: { [THUMBNAIL_PATH]: blob }, isDirty: true })
   }
 
   handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -279,10 +301,34 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return values.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))
   }
 
+  renderMetrics(item: Item) {
+    if (item.type === ItemType.WEARABLE) {
+      const metrics = item.metrics as ModelMetrics
+      return (
+        <div className="metrics">
+          <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+          <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+          <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
+        </div>
+      )
+    } else {
+      const metrics = item.metrics as ModelEmoteMetrics
+      return (
+        <div className="metrics">
+          <div className="metric circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+          <div className="metric circle">{t('model_metrics.duration', { count: metrics.duration })}</div>
+          <div className="metric circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
+          <div className="metric circle">{t('model_metrics.fps', { count: metrics.fps })}</div>
+        </div>
+      )
+    }
+  }
+
   render() {
     const { selectedItemId, address, isConnected, isDownloading, error } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
+    const playModes = getEmotePlayModes()
 
     return (
       <div className="RightPanel">
@@ -294,7 +340,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
               let actionableCategories: string[] = item
                 ? item.type === ItemType.WEARABLE
-                  ? getOverridesCategories(item.contents, data?.category)
+                  ? getOverridesCategories(item.contents, (data as WearableData)?.category)
                   : getEmoteCategories()
                 : []
               const wearableCategories = item
@@ -308,7 +354,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               let replaces: WearableCategory[] = []
               let hides: WearableCategory[] = []
 
-              if (data) {
+              if (data && !isEmoteData(data)) {
                 hides = data.hides ? data.hides.filter(category => actionableCategories.includes(category)) : []
                 replaces = data.replaces ? data.replaces.filter(category => actionableCategories.includes(category)) : []
                 hidesCategories = actionableCategories.filter(
@@ -354,8 +400,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       </Dropdown>
                     ) : null}
                   </div>
-                  <Collapsable item={item} label={t('item_editor.right_panel.details')}>
-                    {item => (
+                  <Collapsable label={t('item_editor.right_panel.details')}>
+                    {item ? (
                       <div className="details">
                         {canEditItemMetadata ? (
                           <>
@@ -381,16 +427,12 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
                           </>
                         )}
-                        <div className="metrics">
-                          <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
-                          <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
-                          <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
-                        </div>
+                        {this.renderMetrics(item)}
                       </div>
-                    )}
+                    ) : null}
                   </Collapsable>
-                  <Collapsable item={item} label={t('item_editor.right_panel.basics')}>
-                    {item => (
+                  <Collapsable label={t('item_editor.right_panel.basics')}>
+                    {item ? (
                       <>
                         <Input
                           itemId={item.id}
@@ -408,14 +450,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                           onChange={this.handleChangeDescription}
                         />
-                        <Select<WearableCategory>
-                          itemId={item.id}
-                          label={t('global.category')}
-                          value={data!.category}
-                          options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
-                          disabled={!canEditItemMetadata}
-                          onChange={this.handleChangeCategory}
-                        />
+                        {item.type === ItemType.WEARABLE && (
+                          <Select<WearableCategory>
+                            itemId={item.id}
+                            label={t('global.category')}
+                            value={(data as WearableData)!.category}
+                            options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
+                            disabled={!canEditItemMetadata}
+                            onChange={this.handleChangeCategory}
+                          />
+                        )}
                         {!(item.urn && isThirdParty(item.urn)) && (
                           <Select<ItemRarity>
                             itemId={item.id}
@@ -427,44 +471,62 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           />
                         )}
                       </>
-                    )}
+                    ) : null}
                   </Collapsable>
-                  <Collapsable item={item} label={t('item_editor.right_panel.overrides')}>
-                    {item => (
-                      <>
-                        <MultiSelect<WearableCategory>
+                  {item?.type === ItemType.WEARABLE && (
+                    <Collapsable label={t('item_editor.right_panel.overrides')}>
+                      {item ? (
+                        <>
+                          <MultiSelect<WearableCategory>
+                            itemId={item.id}
+                            label={t('item_editor.right_panel.replaces')}
+                            info={t('item_editor.right_panel.replaces_info')}
+                            value={replaces}
+                            options={this.asCategorySelect(item.type, overrideCategories)}
+                            disabled={!canEditItemMetadata || this.isSkin()}
+                            onChange={this.handleChangeReplaces}
+                          />
+                          <MultiSelect<WearableCategory>
+                            itemId={item.id}
+                            label={t('item_editor.right_panel.hides')}
+                            info={t('item_editor.right_panel.hides_info')}
+                            value={hides}
+                            options={this.asCategorySelect(
+                              item.type,
+                              // Workaround for https://github.com/decentraland/builder/issues/2068
+                              // This will only show the body shape option if the item is currenlty hiding it.
+                              // Once removed, the option cannot be selected again
+                              hides.some(c => c === WearableCategory.BODY_SHAPE)
+                                ? hidesCategories
+                                : hidesCategories.filter(c => c !== WearableCategory.BODY_SHAPE)
+                            )}
+                            disabled={!canEditItemMetadata}
+                            onChange={this.handleChangeHides}
+                          />
+                        </>
+                      ) : null}
+                    </Collapsable>
+                  )}
+                  {item?.type === ItemType.EMOTE && (
+                    <Collapsable label={t('item_editor.right_panel.animation')}>
+                      {item ? (
+                        <Select<EmotePlayMode>
                           itemId={item.id}
-                          label={t('item_editor.right_panel.replaces')}
-                          info={t('item_editor.right_panel.replaces_info')}
-                          value={replaces}
-                          options={this.asCategorySelect(item.type, overrideCategories)}
-                          disabled={!canEditItemMetadata || this.isSkin()}
-                          onChange={this.handleChangeReplaces}
+                          label={t('create_single_item_modal.play_mode_label')}
+                          value={(data as EmoteDataADR74)!.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
+                          options={playModes.map(value => ({
+                            value,
+                            text: t(`emote.play_mode.${value}.text`)
+                          }))}
+                          onChange={this.handlePlayModeChange}
                         />
-                        <MultiSelect<WearableCategory>
-                          itemId={item.id}
-                          label={t('item_editor.right_panel.hides')}
-                          info={t('item_editor.right_panel.hides_info')}
-                          value={hides}
-                          options={this.asCategorySelect(
-                            item.type,
-                            // Workaround for https://github.com/decentraland/builder/issues/2068
-                            // This will only show the body shape option if the item is currenlty hiding it.
-                            // Once removed, the option cannot be selected again
-                            hides.some(c => c === WearableCategory.BODY_SHAPE)
-                              ? hidesCategories
-                              : hidesCategories.filter(c => c !== WearableCategory.BODY_SHAPE)
-                          )}
-                          disabled={!canEditItemMetadata}
-                          onChange={this.handleChangeHides}
-                        />
-                      </>
-                    )}
-                  </Collapsable>
-                  <Collapsable item={item} label={t('item_editor.right_panel.tags')}>
-                    {item => (
+                      ) : null}
+                    </Collapsable>
+                  )}
+                  <Collapsable label={t('item_editor.right_panel.tags')}>
+                    {item ? (
                       <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
-                    )}
+                    ) : null}
                   </Collapsable>
                   {isDirty ? (
                     <div className="edit-buttons">

@@ -177,7 +177,11 @@
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triángulo} other {triángulos}}",
     "materials": "{count} {count, plural, one {material} other {materiales}}",
-    "textures": "{count} {count, plural, one {textura} other {texturas}}"
+    "textures": "{count} {count, plural, one {textura} other {texturas}}",
+    "sequences": "{count} {count, plural, one {sequence} other {sequences}}",
+    "duration": "{count} {count, plural, one {segundo} other {segundos}}",
+    "frames": "{count} {count, plural, one {fotograma} other {fotogramas}}",
+    "fps": "{count} fps"
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre único",
@@ -196,13 +200,18 @@
   },
   "create_single_item_modal": {
     "title": "Nuevo item",
+    "thumbnail_step_title": "Editar el thumbnail",
+    "title_emote": "Nueva Animación",
     "add_representation": "Agregar representación de {bodyShape}",
     "wrong_thumbnail_format": "El thumbnail provisto no es una imagen PNG",
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
+    "play_mode_label": "Modo de ejecución",
+    "play_mode_placeholder": "Selecciona un modo de ejecución",
     "rarity_label": "Cuál es la rareza de este item?",
     "rarity_placeholder": "Selecciona una rareza",
+    "rarity_learn_more_about": "{learn_more} acerca de las rarezas",
     "representation_label": "Selecciona el tipo de cuerpo para tu item",
     "existing_item": "Es parte de un item existente?",
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
@@ -216,7 +225,8 @@
       "missing_model_file": "No se pudo encontrar un archivo de modelo válido.",
       "invalid_content_path": "La ruta \"{path}\" es inválida para la propiedad \"{name}\", el archivo no existe.",
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}."
-    }
+    },
+    "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
@@ -513,6 +523,7 @@
     "read_more": "Leer más",
     "retry_tx": "Re Enviar",
     "save": "Salvar",
+    "skip": "Saltar",
     "send": "Enviar",
     "share": "Compartir",
     "sign_in_required": "Debes {link} para acceder a esta página.",
@@ -553,7 +564,7 @@
     "parcel_plural": "Parcelas",
     "estate_plural": "Estates",
     "none": "Ninguno",
-    "emote": "Emote"
+    "emote": "Animación"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -1123,6 +1134,11 @@
     "set_on_sale_popup": "Esto permitirá que tu colección sea vendida en el Mercado de Decentraland.",
     "unset_on_sale_popup": "Esta colección está en venta en el Mercado de Decentraland.",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
+    "preview": "Preview",
+    "add_item": "Agregar Item",
+    "add_items_title": "Se ve bien!",
+    "add_items_subtitle": "Ahora puede comenzar a agregar items a su colección",
+    "add_items_subtitle_extensions": "Formatos aceptados: ZIP, GLTF, GLB, PNG.",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
@@ -1133,7 +1149,17 @@
     "locked": "Bloqueada",
     "publish_reason_max_items": "Las colecciones pueden publicarse con un máximo de  {maxItems} items.",
     "publish_reason_no_items": "Debes agregar al menos un item para publicar tu colección.",
-    "publish_reason_items_not_complete": "Todos los items deben estar completos para publicar tu colección, comprueba que todas sus propiedades estén establecidas."
+    "publish_reason_items_not_complete": "Todos los items deben estar completos para publicar tu colección, comprueba que todas sus propiedades estén establecidas.",
+    "emotes": "Animaciones",
+    "wearables": "Vestimentas",
+    "table": {
+      "item": "Item",
+      "rarity": "Rareza",
+      "category": "Categoria",
+      "price": "Precio",
+      "play_mode": "Modo de Reproducción",
+      "status": "Estado"
+    }
   },
   "collection_context_menu": {
     "add_existing_item": "Agregar item existente",
@@ -1187,7 +1213,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Asignar un precio y un beneficiario para \"{name}\"",
+    "title": "Asignar un precio",
     "for_me": "Soy el beneficiario",
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
@@ -1350,6 +1376,8 @@
       "to_review": "A revisar",
       "reviewed": "Revisado",
       "all_items": "Todos los items",
+      "wearable": "Vestimentas",
+      "emote": "Animaciones",
       "get_random_sample": "Obtener muestra aleatoria",
       "reviewed_samples_bold": "Muestras revisadas: {count}",
       "reviewed_samples": "{reviewed_samples_bold}/{total}",
@@ -1372,6 +1400,7 @@
       "replaces_info": "Cuando un usuario equipa tu item, cualquier otro item de la categoría que selecciones no estará equipado. Los usuarios deben volver a equiparlos después de retirar tu item.",
       "hides": "Oculta",
       "hides_info": "Cuando un usuario equipa tu item, cualquier otro item de la categoría que selecciones permanecerá equipado, pero no se renderizará. Los usuarios solo verán reaparecer sus otros elementos después de eliminar su elemento.",
+      "animation": "Animación",
       "tags": "Etiquetas",
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
@@ -1381,7 +1410,25 @@
   "emote": {
     "category": {
       "simple": "Simple",
-      "loop": "Loop"
+      "loop": "Loop",
+      "dance": "Baile",
+      "stunt": "Truco",
+      "greetings": "Saludos",
+      "fun": "Divertido",
+      "poses": "Poses",
+      "reactions": "Reacciones",
+      "horror": "Horror",
+      "miscellaneous": "Misceláneos"
+    },
+    "play_mode": {
+      "simple": {
+        "text": "Reproducir una vez",
+        "description": "Una vez activada, la animación se reproducirá una vez y volverá a la posición inicial."
+      },
+      "loop": {
+        "text": "Loop",
+        "description": "Una vez activada, la animacion se reproducirá en loop hasta que el jugador haga un movimiento."
+      }
     }
   },
   "wearable": {
@@ -1420,6 +1467,15 @@
       "upper_body": "Torso",
       "skin": "Skin"
     }
+  },
+  "rarity_description": {
+    "unique": "Único en su tipo: uno solo en existencia",
+    "mythic": "Para algunos pocos: máximo 10",
+    "legendary": "Edición limitada: máximo 100",
+    "epic": "Suministro máximo: 1000",
+    "rare": "Suministro máximo: 5000",
+    "uncommon": "Suministro máximo: 10.000",
+    "common": "Suministro máximo: 100.000"
   },
   "time": {
     "hours": "{amount}h",

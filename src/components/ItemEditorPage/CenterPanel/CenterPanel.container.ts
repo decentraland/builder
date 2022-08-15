@@ -7,7 +7,8 @@ import {
   setEyeColor,
   setHairColor,
   setSkinColor,
-  fetchBaseWearablesRequest
+  fetchBaseWearablesRequest,
+  setWearablePreviewController
 } from 'modules/editor/actions'
 import {
   getEmote,
@@ -16,7 +17,8 @@ import {
   getEyeColor,
   getHairColor,
   getSkinColor,
-  getVisibleItems
+  getVisibleItems,
+  getWearablePreviewController
 } from 'modules/editor/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CenterPanel.types'
 import CenterPanel from './CenterPanel'
@@ -31,7 +33,8 @@ const mapState = (state: RootState): MapStateProps => {
     eyeColor: getEyeColor(state),
     hairColor: getHairColor(state),
     emote: getEmote(state),
-    visibleItems: getVisibleItems(state)
+    visibleItems: getVisibleItems(state),
+    wearableController: getWearablePreviewController(state)
   }
 }
 
@@ -42,7 +45,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetEyeColor: color => dispatch(setEyeColor(color)),
   onSetHairColor: color => dispatch(setHairColor(color)),
   onSetBaseWearable: (category, bodyShape, wearable) => dispatch(setBaseWearable(category, bodyShape, wearable)),
-  onFetchBaseWearables: () => dispatch(fetchBaseWearablesRequest())
+  onFetchBaseWearables: () => dispatch(fetchBaseWearablesRequest()),
+  onSetWearablePreviewController: controller => dispatch(setWearablePreviewController(controller))
 })
 
 export default connect(mapState, mapDispatch)(CenterPanel)

@@ -1,5 +1,5 @@
 import { CollectionType } from 'modules/collection/types'
-import { PaginationOptions, injectPagination, injectParams } from './utils'
+import { PaginationOptions, injectPagination, injectParams, CollectionDetailOptions } from './utils'
 
 type ItemEditorParams = { itemId?: string; collectionId?: string; isReviewing?: string }
 
@@ -28,12 +28,16 @@ export const locations = {
   sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
   collections: () => '/collections',
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
-  collectionDetail: (collectionId = ':collectionId', type: CollectionType = CollectionType.DECENTRALAND) => {
+  collectionDetail: (
+    collectionId = ':collectionId',
+    type: CollectionType = CollectionType.DECENTRALAND,
+    options?: CollectionDetailOptions
+  ) => {
     switch (type) {
       case CollectionType.DECENTRALAND:
-        return `/collections/${collectionId}`
+        return injectParams(`/collections/${collectionId}`, { tab: 'tab' }, options)
       case CollectionType.THIRD_PARTY:
-        return locations.thirdPartyCollectionDetail(collectionId)
+        return injectParams(locations.thirdPartyCollectionDetail(collectionId), { tab: 'tab' }, options)
       default:
         throw new Error(`Invalid collection type ${type}`)
     }

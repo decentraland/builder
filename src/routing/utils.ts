@@ -1,4 +1,8 @@
+import { ItemType } from 'modules/item/types'
+
 export type PaginationOptions = { page?: number; sortBy?: string; sortOrder?: 'asc' | 'desc' }
+
+export type CollectionDetailOptions = { tab: ItemType }
 
 export function injectParams(location: string, keys: { [key: string]: string } = {}, options?: { [key: string]: any }) {
   if (!options) {
