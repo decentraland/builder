@@ -419,48 +419,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return getMissingBodyShapeType(item) === bodyShape && metadata.collectionId === item.collectionId
   }
 
-  async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, Metrics, Record<string, Blob>, ItemType]> {
-    let thumbnail: string = ''
-    let metrics: Metrics
-    let type = ItemType.WEARABLE
-
-    if (isImageFile(model)) {
-      metrics = {
-        triangles: 100,
-        materials: 1,
-        textures: 1,
-        meshes: 1,
-        bodies: 1,
-        entities: 1
-      }
-
-      thumbnail = await convertImageIntoWearableThumbnail(
-        contents[THUMBNAIL_PATH] || contents[model],
-        this.state.category as WearableCategory
-      )
-    } else {
-      const url = URL.createObjectURL(contents[model])
-      const data = await getModelData(url, {
-        width: 1024,
-        height: 1024,
-        extension: getExtension(model) || undefined,
-        engine: EngineType.BABYLON
-      })
-      URL.revokeObjectURL(url)
-
-      // for some reason the renderer reports 2x the amount of textures for wearble items
-      if (!areEmoteMetrics(data.info)) {
-        data.info.textures = Math.round(data.info.textures / 2)
-      }
-
-      thumbnail = data.image
-      metrics = data.info
-      type = data.type
-    }
-
-    return [thumbnail, model, metrics, contents, type]
-  }
-
   /**
    * Updates the item's thumbnail if the user changes the category of the item.
    *
