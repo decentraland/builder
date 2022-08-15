@@ -1099,7 +1099,7 @@
       "unsynced": "Unsynced"
     },
     "synced_statuses": {
-      "unpublished": "Ready for published",
+      "unpublished": "Ready to publish",
       "under_review": "Under Review",
       "synced": "Synced",
       "unsynced": "Unsynced"
