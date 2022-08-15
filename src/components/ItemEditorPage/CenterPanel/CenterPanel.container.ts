@@ -23,10 +23,10 @@ import {
   getVisibleItems,
   getWearablePreviewController
 } from 'modules/editor/selectors'
-import { getSelectedCollectionId } from 'modules/location/selectors'
+import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CenterPanel.types'
 import CenterPanel from './CenterPanel'
-import { getEmotes } from 'modules/item/selectors'
+import { getEmotes, getItem } from 'modules/item/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   let collection: Collection | undefined
@@ -35,11 +35,15 @@ const mapState = (state: RootState): MapStateProps => {
     const collections = getCollections(state)
     collection = collections.find(collection => collection.id === collectionId)
   }
+  const selectedItemId = getSelectedItemId(state) || ''
+  const selectedItem = getItem(state, selectedItemId)
   const bodyShape = getBodyShape(state)
   const selectedBaseWearablesByBodyShape = getSelectedBaseWearablesByBodyShape(state)
+
   return {
     bodyShape,
     collection,
+    selectedItem,
     selectedBaseWearables: selectedBaseWearablesByBodyShape ? selectedBaseWearablesByBodyShape[bodyShape] : null,
     skinColor: getSkinColor(state),
     eyeColor: getEyeColor(state),

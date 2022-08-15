@@ -33,6 +33,7 @@ export type Props = {
   hairColor: Color4
   emote: PreviewEmote
   selectedBaseWearables: Record<WearableCategory, Wearable | null> | null
+  selectedItem: Item | null
   visibleItems: Item[]
   wearableController?: IPreviewController | null
   emotesFromCollection?: Item[]
@@ -62,6 +63,7 @@ export type MapStateProps = Pick<
   | 'emote'
   | 'visibleItems'
   | 'selectedBaseWearables'
+  | 'selectedItem'
   | 'wearableController'
   | 'emotesFromCollection'
 >

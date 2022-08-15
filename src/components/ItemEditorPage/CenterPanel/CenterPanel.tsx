@@ -99,20 +99,45 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     this.setState({ isLoading: false })
   }
 
+  renderEmotesSelector = () => {
+    const { collection, emotesFromCollection } = this.props
+
+    return (
+      <Popup
+        content={t('item_editor.center_panel.disabled_animation_dropdown')}
+        disabled
+        position="top center"
+        trigger={
+          <div className="avatar-animation-dropdown-wrapper option">
+            <Dropdown className="avatar-animation" text={t('item_editor.center_panel.play_emote')}>
+              <Dropdown.Menu>
+                {collection && (
+                  <>
+                    <Dropdown.Header content={t('item_editor.center_panel.from_collection')} />
+                    <Dropdown.Divider />
+                    {emotesFromCollection?.map(value => (
+                      <Dropdown.Item value={value.id} text={value.name} onClick={this.handleAnimationChange} />
+                    ))}
+                    <Dropdown.Divider />
+                    <Dropdown.Header content={t('global.default')} />
+                    <Dropdown.Divider />
+                  </>
+                )}
+                {PreviewEmote.schema.enum.map((value: PreviewEmote) => (
+                  <Dropdown.Item value={value} text={t(`emotes.${value}`)} onClick={this.handleAnimationChange} />
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        }
+      />
+    )
+  }
+
   render() {
-    const {
-      bodyShape,
-      collection,
-      emotesFromCollection,
-      skinColor,
-      eyeColor,
-      hairColor,
-      emote,
-      selectedBaseWearables,
-      visibleItems
-    } = this.props
+    const { bodyShape, skinColor, eyeColor, hairColor, emote, selectedBaseWearables, selectedItem, visibleItems } = this.props
     const { isShowingAvatarAttributes, isLoading } = this.state
-    const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE)
+    const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE) && selectedItem?.type === ItemType.EMOTE
 
     return (
       <div className="CenterPanel">
@@ -155,36 +180,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             <div className={`option ${isShowingAvatarAttributes ? 'active' : ''}`} onClick={this.handleToggleShowingAvatarAttributes}>
               <Icon name="user" />
             </div>
-            {isRenderingAnEmote ? null : (
-              <Popup
-                content={t('item_editor.center_panel.disabled_animation_dropdown')}
-                disabled
-                position="top center"
-                trigger={
-                  <div className="avatar-animation-dropdown-wrapper option">
-                    <Dropdown className="avatar-animation" text={t('item_editor.center_panel.play_emote')} value={emote}>
-                      <Dropdown.Menu>
-                        {collection && (
-                          <>
-                            <Dropdown.Header content={t('item_editor.center_panel.from_collection')} />
-                            <Dropdown.Divider />
-                            {emotesFromCollection?.map(value => (
-                              <Dropdown.Item value={value.id} text={value.name} onClick={this.handleAnimationChange} />
-                            ))}
-                            <Dropdown.Divider />
-                            <Dropdown.Header content={t('global.default')} />
-                            <Dropdown.Divider />
-                          </>
-                        )}
-                        {PreviewEmote.schema.enum.map((value: PreviewEmote) => (
-                          <Dropdown.Item value={value} text={t(`emotes.${value}`)} onClick={this.handleAnimationChange} />
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </div>
-                }
-              />
-            )}
+            {isRenderingAnEmote ? null : this.renderEmotesSelector()}
           </div>
           <div className={`avatar-attributes ${isShowingAvatarAttributes ? 'active' : ''}`}>
             <div className="dropdown-container">
