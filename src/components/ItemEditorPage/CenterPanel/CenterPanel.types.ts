@@ -36,7 +36,8 @@ export type Props = {
   selectedItem: Item | null
   visibleItems: Item[]
   wearableController?: IPreviewController | null
-  emotesFromCollection?: Item[]
+  emotesFromCollection: Item[]
+  isPlayingEmote: boolean
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
@@ -66,6 +67,7 @@ export type MapStateProps = Pick<
   | 'selectedItem'
   | 'wearableController'
   | 'emotesFromCollection'
+  | 'isPlayingEmote'
 >
 export type MapDispatchProps = Pick<
   Props,

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Color4, Wearable } from 'decentraland-ecs'
 import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
-import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps } from 'decentraland-ui'
+import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps, Button } from 'decentraland-ui'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ItemType } from 'modules/item/types'
@@ -39,14 +39,16 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
 
   handleAnimationChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownItemProps) => {
     const { emotesFromCollection, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
-    const emoteFromCollection = emotesFromCollection?.find(emote => emote.id === value)
+    const emoteFromCollection = emotesFromCollection.find(emote => emote.id === value)
+    const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
+
     if (emoteFromCollection) {
-      const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
       newVisibleItems.push(emoteFromCollection)
-      onSetItems(newVisibleItems)
     } else {
       onSetAvatarAnimation(value as PreviewEmote)
     }
+
+    onSetItems(newVisibleItems)
   }
 
   handleSkinColorChange = (color: Color4) => {
@@ -99,9 +101,59 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     this.setState({ isLoading: false })
   }
 
-  renderEmotesSelector = () => {
-    const { collection, emotesFromCollection } = this.props
+  handlePlayEmote = () => {
+    const { wearableController, isPlayingEmote } = this.props
 
+    if (isPlayingEmote) {
+      wearableController?.emote.pause()
+    } else {
+      wearableController?.emote.play()
+    }
+  }
+
+  renderEmotePlayButton = () => {
+    const { isPlayingEmote } = this.props
+    const icon = isPlayingEmote ? 'stop' : 'play'
+    const text = isPlayingEmote ? t('item_editor.center_panel.stop') : t('item_editor.center_panel.play_emote')
+
+    return (
+      <Button icon onClick={this.handlePlayEmote}>
+        <Icon name={icon} />
+        <span>{text}</span>
+      </Button>
+    )
+  }
+
+  renderEmoteDropdownButton = () => {
+    const { emotesFromCollection, isPlayingEmote } = this.props
+    const hasEmotes = emotesFromCollection.length > 0
+
+    if (isPlayingEmote) return null
+
+    return (
+      <Dropdown className="avatar-animation button icon" floating>
+        <Dropdown.Menu>
+          {hasEmotes && (
+            <>
+              <Dropdown.Header content={t('item_editor.center_panel.from_collection')} />
+              <Dropdown.Divider />
+              {emotesFromCollection.map(value => (
+                <Dropdown.Item key={value.id} value={value.id} text={value.name} onClick={this.handleAnimationChange} />
+              ))}
+              <Dropdown.Divider />
+              <Dropdown.Header content={t('global.default')} />
+              <Dropdown.Divider />
+            </>
+          )}
+          {PreviewEmote.schema.enum.map((value: PreviewEmote) => (
+            <Dropdown.Item key={value} value={value} text={t(`emotes.${value}`)} onClick={this.handleAnimationChange} />
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    )
+  }
+
+  renderEmoteSelector = () => {
     return (
       <Popup
         content={t('item_editor.center_panel.disabled_animation_dropdown')}
@@ -109,25 +161,10 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
         position="top center"
         trigger={
           <div className="avatar-animation-dropdown-wrapper option">
-            <Dropdown className="avatar-animation" text={t('item_editor.center_panel.play_emote')}>
-              <Dropdown.Menu>
-                {collection && (
-                  <>
-                    <Dropdown.Header content={t('item_editor.center_panel.from_collection')} />
-                    <Dropdown.Divider />
-                    {emotesFromCollection?.map(value => (
-                      <Dropdown.Item value={value.id} text={value.name} onClick={this.handleAnimationChange} />
-                    ))}
-                    <Dropdown.Divider />
-                    <Dropdown.Header content={t('global.default')} />
-                    <Dropdown.Divider />
-                  </>
-                )}
-                {PreviewEmote.schema.enum.map((value: PreviewEmote) => (
-                  <Dropdown.Item value={value} text={t(`emotes.${value}`)} onClick={this.handleAnimationChange} />
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
+            <Button.Group>
+              {this.renderEmotePlayButton()}
+              {this.renderEmoteDropdownButton()}
+            </Button.Group>
           </div>
         }
       />
@@ -180,7 +217,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             <div className={`option ${isShowingAvatarAttributes ? 'active' : ''}`} onClick={this.handleToggleShowingAvatarAttributes}>
               <Icon name="user" />
             </div>
-            {isRenderingAnEmote ? null : this.renderEmotesSelector()}
+            {isRenderingAnEmote ? null : this.renderEmoteSelector()}
           </div>
           <div className={`avatar-attributes ${isShowingAvatarAttributes ? 'active' : ''}`}>
             <div className="dropdown-container">

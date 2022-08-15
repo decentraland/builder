@@ -21,7 +21,8 @@ import {
   getHairColor,
   getSkinColor,
   getVisibleItems,
-  getWearablePreviewController
+  getWearablePreviewController,
+  isPlayingEmote
 } from 'modules/editor/selectors'
 import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CenterPanel.types'
@@ -39,6 +40,7 @@ const mapState = (state: RootState): MapStateProps => {
   const selectedItem = getItem(state, selectedItemId)
   const bodyShape = getBodyShape(state)
   const selectedBaseWearablesByBodyShape = getSelectedBaseWearablesByBodyShape(state)
+  const emotesFromCollection = getEmotes(state).filter(emote => emote.collectionId === collectionId)
 
   return {
     bodyShape,
@@ -51,7 +53,8 @@ const mapState = (state: RootState): MapStateProps => {
     emote: getEmote(state),
     visibleItems: getVisibleItems(state),
     wearableController: getWearablePreviewController(state),
-    emotesFromCollection: getEmotes(state)
+    emotesFromCollection,
+    isPlayingEmote: isPlayingEmote(state)
   }
 }
 
