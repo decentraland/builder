@@ -68,6 +68,10 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     this.setState({ pages: [page] }, this.fetchResource)
   }
 
+  getRandomPage = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
   loadRandomPage = (currentItems: Item[]) => {
     const { pages } = this.state
     const { totalItems, totalCollections, onSetReviewedItems } = this.props
@@ -75,7 +79,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
     let randomPage
     while (!randomPage) {
-      randomPage = Math.floor(Math.random() * totalPages)
+      randomPage = this.getRandomPage(1, totalPages)
       if (pages.includes(randomPage)) {
         randomPage = null
       }
