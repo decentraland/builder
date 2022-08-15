@@ -56,6 +56,15 @@ export type CreateSingleItemModalMetadata = {
 
 export type ItemAssetJson = Pick<State, 'name' | 'description' | 'category' | 'rarity' | 'thumbnail' | 'model' | 'bodyShape'>
 
+export type ModelData = {
+  type: ItemType
+  thumbnail: string
+  model: string
+  metrics: Metrics
+  contents: Record<string, Blob>
+  assetJson?: ItemAssetJson
+}
+
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 
 export type AcceptedFileProps = Pick<

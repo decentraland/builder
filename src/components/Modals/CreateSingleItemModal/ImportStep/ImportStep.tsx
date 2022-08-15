@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { basename } from 'path'
 import uuid from 'uuid'
-import JSZip from 'jszip'
+import { loadFile } from '@dcl/builder-client'
 import { WearableCategory } from '@dcl/schemas'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -12,9 +11,8 @@ import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFi
 import { BodyShapeType, IMAGE_EXTENSIONS, ItemRarity, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
 import { isImageCategory, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
-import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import ItemImport from 'components/ItemImport'
-import { ItemAssetJson } from '../CreateSingleItemModal.types'
+import { ItemAssetJson, ModelData } from '../CreateSingleItemModal.types'
 import { validateEnum, validatePath } from '../utils'
 import { Props, State } from './ImportStep.types'
 
@@ -35,56 +33,32 @@ export default class ImportStep extends React.PureComponent<Props, State> {
    *
    * @param file - The ZIP file.
    */
-  handleZippedModelFiles = async (file: File) => {
-    const zip: JSZip = await JSZip.loadAsync(file)
-    const fileNames: string[] = []
+  handleZippedModelFiles = async (file: File): Promise<ModelData> => {
+    const loadedFile = await loadFile(file.name, file)
+    const { wearable, content } = loadedFile
 
-    zip.forEach(fileName => {
-      if (!basename(fileName).startsWith('.')) {
-        fileNames.push(fileName)
-      }
-    })
-
-    // asset.json contains data to populate parts of the state
-    const assetJsonPath = fileNames.find(path => basename(path) === ASSET_MANIFEST)
     let assetJson: ItemAssetJson | undefined
+    let modelPath: string | undefined
 
-    if (assetJsonPath) {
-      const assetRaw = zip.file(assetJsonPath)
-      const content = await assetRaw.async('text')
-      assetJson = JSON.parse(content)
+    // wearable.json contains data to populate parts of the state
+    if (wearable) {
+      modelPath = getModelPath(wearable.data.representations)
+      assetJson = {
+        name: wearable.name,
+        description: wearable.description,
+        rarity: wearable.rarity,
+        category: wearable.data.category,
+        bodyShape: getBodyShapeType(wearable as Item)
+      }
+    } else {
+      modelPath = Object.keys(content).find(isModelPath)
     }
-
-    const modelPath = fileNames.find(isModelPath)
-
-    const files = await Promise.all(
-      fileNames
-        .map(fileName => zip.file(fileName))
-        .filter(file => !!file)
-        .map(async file => {
-          const blob = await file.async('blob')
-
-          if (blob.size > MAX_FILE_SIZE) {
-            throw new FileTooBigError()
-          }
-
-          return {
-            name: file.name,
-            blob
-          }
-        })
-    )
-
-    const contents = files.reduce<Record<string, Blob>>((contents, file) => {
-      contents[file.name] = file.blob
-      return contents
-    }, {})
 
     if (!modelPath) {
       throw new MissingModelFileError()
     }
 
-    const result = await this.processModel(modelPath, contents)
+    const result = await this.processModel(modelPath, content)
 
     return { ...result, assetJson }
   }
