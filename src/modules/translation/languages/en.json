@@ -1385,6 +1385,7 @@
       "replaces_info": "When a user equips your item, any other items in the category you select will be unequipped. Users must reequip them after removing your item.",
       "hides": "Hides",
       "hides_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
+      "animation": "Animation",
       "tags": "Tags",
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
@@ -1405,8 +1406,14 @@
       "miscellaneous": "Miscellaneous"
     },
     "play_mode": {
-      "simple": "Simple",
-      "loop": "Loop"
+      "simple": {
+        "text": "Play Once",
+        "description": "Once triggered, the emote will play once and return to the default pose."
+      },
+      "loop": {
+        "text": "Loop",
+        "description": "Once triggered, the emote will play in loop until the player moves."
+      }
     }
   },
   "wearable": {

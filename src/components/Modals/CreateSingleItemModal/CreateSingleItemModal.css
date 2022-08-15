@@ -68,6 +68,10 @@
   background-image: url(../../../images/textures.svg);
 }
 
+.CreateSingleItemModal .preview .metric.circle {
+  background-image: url(../../../images/circle.svg);
+}
+
 .CreateSingleItemModal .actions {
   margin-top: 24px;
   width: 100%;
@@ -165,6 +169,22 @@
 
 .CreateSingleItemModal .thumbnail-actions.dcl.row.grow.shrink {
   justify-content: space-between;
+}
+
+.CreateSingleItemModal .ui.dropdown.upward .menu {
+  background-color: var(--smart-grey);
+}
+
+.CreateSingleItemModal .ui.dropdown.hasDescription .menu > .item {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.CreateSingleItemModal .ui.dropdown.hasDescription .menu > .item > .description {
+  color: var(--text);
+  font-weight: 300;
+  font-size: 14px;
+  margin: 0 0 0 0em;
 }
 
 .CreateSingleItemModal .ui.message.info {

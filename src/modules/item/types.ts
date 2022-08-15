@@ -1,6 +1,6 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
 import { BodyShape, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
-import { ModelMetrics } from 'modules/models/types'
+import { ModelEmoteMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
 export enum EntityHashingType {
@@ -114,7 +114,7 @@ type BaseItem = {
   thumbnail: string
   description: string
   rarity?: ItemRarity
-  metrics: ModelMetrics
+  metrics: ModelMetrics | ModelEmoteMetrics
   createdAt: number
   updatedAt: number
 }
