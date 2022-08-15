@@ -7,12 +7,16 @@ export type ModelMetrics = {
   textures: number
 }
 
-export type ModelEmoteMetrics = ModelMetrics & {
+export type AnimationMetrics = {
   sequences: number
   duration: number
   frames: number
   fps: number
 }
+
+export type Metrics = ModelMetrics | AnimationMetrics
+
+export const areEmoteMetrics = (metrics: Metrics): metrics is AnimationMetrics => !!(metrics as AnimationMetrics).fps
 
 export type Vector3 = { x: number; y: number; z: number }
 

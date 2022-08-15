@@ -93,8 +93,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     const canMint = canMintCollectionItems(collection, wallet.address)
     const isOnSale = isCollectionOnSale(collection, wallet)
     const isLocked = isCollectionLocked(collection)
-    const filteredItems = items.filter(item => item.type === tab)
-    const showShowTabs = items.some(item => item.type === ItemType.WEARABLE) && items.some(item => item.type === ItemType.EMOTE)
+    const hasEmotes = items.some(item => item.type === ItemType.EMOTE)
+    const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
+    const hasOnlyEmotes = hasEmotes && !hasWearables
+    const filteredItems = items.filter(item => (hasOnlyEmotes ? item.type === ItemType.EMOTE : item.type === tab))
+    const showShowTabs = hasEmotes && hasWearables
 
     return (
       <>

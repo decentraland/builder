@@ -11,6 +11,7 @@ import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
 import { Asset, GROUND_CATEGORY, RawAsset } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
+import { ModelMetrics } from 'modules/models/types'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH, MAX_FILE_SIZE } from 'modules/asset/utils'
 import { getModelData, ThumbnailType } from 'lib/getModelData'
@@ -267,7 +268,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           revokeMappingsObjectURL(mappings)
 
           outFile.asset.thumbnail = image
-          outFile.asset.metrics = info
+          outFile.asset.metrics = info as ModelMetrics
 
           const existingAsset = assetPack.assets.find(asset => asset.id === outFile!.asset.id)
 
