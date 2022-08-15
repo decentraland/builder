@@ -22,7 +22,7 @@ const sortLandPoolLast = (a: string, b: string) => {
 export default class TableRow extends React.PureComponent<Props> {
   render() {
     const { land, deployments, onNavigate } = this.props
-    const coords = getCoords(land)
+    const { x, y } = getCoords(land)
     return (
       <Table.Row className="TableRow" onClick={() => onNavigate(locations.landDetail(land.id))}>
         <Table.Cell>
@@ -30,10 +30,11 @@ export default class TableRow extends React.PureComponent<Props> {
             <Column width={67} grow={false} shrink={false}>
               <Atlas landId={land.id} width={45} height={45} isDraggable={false} size={9} />
             </Column>
-            <Column className="name">{land.name}</Column>
+            <Column className="name">
+              <span>{land.name}</span> <span style={{ color: 'var(--secondary-text)' }}>{coordsToId(x, y)}</span>
+            </Column>
           </Row>
         </Table.Cell>
-        <Table.Cell>{coordsToId(coords.x, coords.y)}</Table.Cell>
         <Table.Cell>{t(`roles.${land.role}`)}</Table.Cell>
         <Table.Cell>
           <InlineList

@@ -15,7 +15,8 @@
 }
 
 .LandDetailPage .dcl.stats.operators .Profile {
-  display: inline-block;
+  display: flex;
+  align-items: center;
   margin-right: 20px;
 }
 
