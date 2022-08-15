@@ -65,6 +65,14 @@
   min-width: 210px;
 }
 
+.CenterPanel .footer .ui.dropdown > .menu {
+  padding-top: 0;
+}
+
+.CenterPanel .footer .ui.dropdown > .menu > .divider {
+  margin: 0;
+}
+
 .CenterPanel .footer .avatar-attributes {
   display: flex;
   flex-wrap: wrap;

@@ -131,7 +131,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     if (isPlayingEmote) return null
 
     return (
-      <Dropdown className="avatar-animation button icon" floating>
+      <Dropdown className="avatar-animation button icon" floating scrolling>
         <Dropdown.Menu>
           {hasEmotes && (
             <>
