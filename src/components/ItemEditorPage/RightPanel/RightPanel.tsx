@@ -24,6 +24,7 @@ import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import {
   EmotePlayMode,
+  isEmoteData,
   Item,
   ItemRarity,
   ItemType,
@@ -353,13 +354,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               let replaces: WearableCategory[] = []
               let hides: WearableCategory[] = []
 
-              if (data) {
-                hides = (data as WearableData).hides
-                  ? (data as WearableData).hides.filter(category => actionableCategories.includes(category))
-                  : []
-                replaces = (data as WearableData).replaces
-                  ? (data as WearableData).replaces.filter(category => actionableCategories.includes(category))
-                  : []
+              if (data && !isEmoteData(data)) {
+                hides = data.hides ? data.hides.filter(category => actionableCategories.includes(category)) : []
+                replaces = data.replaces ? data.replaces.filter(category => actionableCategories.includes(category)) : []
                 hidesCategories = actionableCategories.filter(
                   category => !replaces.includes(category as WearableCategory)
                 ) as WearableCategory[]
