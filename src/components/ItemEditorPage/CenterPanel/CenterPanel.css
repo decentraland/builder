@@ -37,6 +37,18 @@
   color: var(--text);
 }
 
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
+  background-color: var(--light-gray);
+  font-size: 11px;
+  line-height: 16px;
+  min-width: 29.5px;
+  padding: 0;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.dropdown {
+  font-size: 16px;
+}
+
 .CenterPanel .footer .ui.dropdown > .text {
   color: var(--text);
   font-size: 11px;
