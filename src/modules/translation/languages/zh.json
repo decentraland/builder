@@ -1374,7 +1374,11 @@
       "empty_collection": "空集合，先添加一些项目！"
     },
     "center_panel": {
-      "disabled_animation_dropdown": "需要至少可见一个项目才能选择头像动画"
+      "disabled_animation_dropdown": "需要至少可见一个项目才能选择头像动画",
+      "play_emote": "玩表情",
+      "stop": "停止",
+      "from_collection": "从收藏",
+      "default": "默认"
     },
     "right_panel": {
       "properties": "物产",

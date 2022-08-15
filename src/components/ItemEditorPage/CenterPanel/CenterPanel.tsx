@@ -141,7 +141,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
                 <Dropdown.Item key={value.id} value={value.id} text={value.name} onClick={this.handleAnimationChange} />
               ))}
               <Dropdown.Divider />
-              <Dropdown.Header content={t('global.default')} />
+              <Dropdown.Header content={t('item_editor.center_panel.default')} />
               <Dropdown.Divider />
             </>
           )}

@@ -496,7 +496,6 @@
     "buy": "buy",
     "continue": "Continue",
     "create": "Create",
-    "default": "Default",
     "dismiss": "Dismiss",
     "done": "done",
     "email": "email",
@@ -1377,7 +1376,9 @@
     "center_panel": {
       "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation",
       "play_emote": "Play Emote",
-      "from_collection": "From Collection"
+      "stop": "Stop",
+      "from_collection": "From Collection",
+      "default": "Default"
     },
     "right_panel": {
       "properties": "Properties",
