@@ -96,8 +96,6 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     const canBuildEstate = parcelsAvailableToBuildEstates[land.id]
     const isAtlasClickable = showTooltip && hovered && hovered.projectId && hovered.projectId in projects
 
-    console.log('Rental', rental)
-
     return (
       <>
         {hovered && showTooltip ? (
