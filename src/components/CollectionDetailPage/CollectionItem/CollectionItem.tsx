@@ -97,18 +97,15 @@ export default class CollectionItem extends React.PureComponent<Props> {
         <Table.Cell className={styles.column}>{data.category ? <div>{t(`${item.type}.category.${data.category}`)}</div> : null}</Table.Cell>
         {item.type === ItemType.EMOTE && isEmoteData(data) ? (
           <Table.Cell className={styles.column}>
-            {data.category ? <div>{t(`emote.play_mode.${data.loop ? 'loop' : 'simple'}`)}</div> : null}
+            {data.category ? <div>{t(`emote.play_mode.${data.loop ? 'loop' : 'simple'}.text`)}</div> : null}
           </Table.Cell>
         ) : null}
         <Table.Cell className={styles.column}>{this.renderPrice()}</Table.Cell>
         {item.isPublished ? (
           <Table.Cell className={styles.column}>
-            <>
-              <div>
-                {item.totalSupply}/{getMaxSupply(item)}
-              </div>
-              <div className={styles.subtitle}>{t('item.supply')}</div>
-            </>
+            <div>
+              {item.totalSupply}/{getMaxSupply(item)}
+            </div>
           </Table.Cell>
         ) : null}
         <Table.Cell>

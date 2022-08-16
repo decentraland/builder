@@ -6,21 +6,12 @@ import { WearableCategory } from '@dcl/schemas'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getExtension } from 'lib/file'
-import { EngineType, getModelData } from 'lib/getModelData'
+import { EngineType, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName } from 'modules/asset/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
-import {
-  BodyShapeType,
-  IMAGE_EXTENSIONS,
-  ItemRarity,
-  ItemType,
-  ITEM_EXTENSIONS,
-  MODEL_EXTENSIONS,
-  THUMBNAIL_PATH
-} from 'modules/item/types'
-import { isImageCategory, isImageFile, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
-import { blobToDataURL, convertImageIntoWearableThumbnail } from 'modules/media/utils'
-import { areEmoteMetrics, Metrics } from 'modules/models/types'
+import { BodyShapeType, IMAGE_EXTENSIONS, ItemRarity, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
+import { isImageCategory, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
+import { blobToDataURL } from 'modules/media/utils'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import ItemImport from 'components/ItemImport'
 import { ItemAssetJson } from '../CreateSingleItemModal.types'
@@ -95,7 +86,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
     const result = await this.processModel(modelPath, contents)
 
-    return [...result, assetJson] as const
+    return { ...result, assetJson }
   }
 
   /**
@@ -113,7 +104,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       [modelPath]: file
     }
 
-    return this.processModel(modelPath, contents)
+    return { ...(await this.processModel(modelPath, contents)), assetJson: undefined }
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
@@ -138,16 +129,15 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       }
 
       const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
-      const [, model, metrics, contents, type, assetJson] = await handler(file)
+      const { model, contents, type, assetJson } = await handler(file)
 
       onDropAccepted({
         id: changeItemFile ? item!.id : uuid.v4(),
         name: changeItemFile ? item!.name : cleanAssetName(file.name),
         file,
-        model,
-        metrics,
-        contents,
         type,
+        model,
+        contents,
         bodyShape: type === ItemType.EMOTE ? BodyShapeType.BOTH : undefined,
         category: isRepresentation ? category : undefined,
         ...(await this.getAssetJsonProps(assetJson, contents))
@@ -184,44 +174,20 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     this.setState({ error: error.message })
   }
 
-  async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, Metrics, Record<string, Blob>, ItemType]> {
-    const { category } = this.props
-    let thumbnail: string = ''
-    let metrics: Metrics
-    let type = ItemType.WEARABLE
+  async processModel(
+    model: string,
+    contents: Record<string, Blob>
+  ): Promise<{ model: string; contents: Record<string, Blob>; type: ItemType }> {
+    const url = URL.createObjectURL(contents[model])
+    const isEmote = await getIsEmote(url, {
+      width: 1024,
+      height: 1024,
+      extension: getExtension(model) || undefined,
+      engine: EngineType.BABYLON
+    })
+    URL.revokeObjectURL(url)
 
-    if (isImageFile(model)) {
-      metrics = {
-        triangles: 100,
-        materials: 1,
-        textures: 1,
-        meshes: 1,
-        bodies: 1,
-        entities: 1
-      }
-
-      thumbnail = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], category as WearableCategory)
-    } else {
-      const url = URL.createObjectURL(contents[model])
-      const data = await getModelData(url, {
-        width: 1024,
-        height: 1024,
-        extension: getExtension(model) || undefined,
-        engine: EngineType.BABYLON
-      })
-      URL.revokeObjectURL(url)
-
-      // for some reason the renderer reports 2x the amount of textures for wearble items
-      if (!areEmoteMetrics(data.info)) {
-        data.info.textures = Math.round(data.info.textures / 2)
-      }
-
-      thumbnail = data.image
-      metrics = data.info
-      type = data.type
-    }
-
-    return [thumbnail, model, metrics, contents, type]
+    return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 
   render() {
