@@ -1,6 +1,7 @@
 import { BodyShape, WearableCategory, WearableWithBlobs } from '@dcl/schemas'
 import { ThumbnailType } from 'lib/getModelData'
 import { InvalidContentPath, InvalidEnumValue } from 'modules/item/errors'
+import { isImageFile, isModelFile } from 'modules/item/utils'
 import { ItemAssetJson } from './CreateSingleItemModal.types'
 
 export const THUMBNAIL_WIDTH = 1024
@@ -32,7 +33,19 @@ export function validateEnum(name: keyof ItemAssetJson, assetJson: ItemAssetJson
   }
 }
 
-export function toWearableWithBlobs(file: File, isEmote = false): WearableWithBlobs {
+export function toWearableWithBlobs({
+  contents,
+  file,
+  isEmote = false
+}: {
+  contents?: Record<string, Blob>
+  file?: File
+  isEmote: boolean
+}): WearableWithBlobs {
+  const mainFile = contents && Object.keys(contents).find(content => isImageFile(content) || isModelFile(content))
+  if (contents && !mainFile) {
+    throw Error('Not valid main content')
+  }
   return {
     id: 'some-id',
     name: '',
@@ -48,13 +61,17 @@ export function toWearableWithBlobs(file: File, isEmote = false): WearableWithBl
       representations: [
         {
           bodyShapes: [BodyShape.MALE, BodyShape.FEMALE],
-          mainFile: 'model.glb',
-          contents: [
-            {
-              key: 'model.glb',
-              blob: file
-            }
-          ],
+          mainFile: mainFile || 'model.glb',
+          contents: contents
+            ? Object.entries(contents).map(([key, value]) => ({ key, blob: value }))
+            : file
+            ? [
+                {
+                  key: 'model.glb',
+                  blob: file
+                }
+              ]
+            : [],
           overrideHides: [],
           overrideReplaces: []
         }

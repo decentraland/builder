@@ -16,9 +16,13 @@ import {
 } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { Metrics } from 'modules/models/types'
+import { IPreviewController, WearableCategory } from '@dcl/schemas'
+import { Metrics, ModelMetrics } from 'modules/models/types'
+import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
+import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from 'components/Modals/CreateSingleItemModal/utils'
+import { isImageFile } from 'modules/item/utils'
+import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
-import { ItemType } from 'modules/item/types'
 
 // transparent 1x1 pixel
 export const TRANSPARENT_PIXEL =
@@ -87,7 +91,6 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     let colliderTriangles = 0
     const loader = new GLTFLoader(manager)
     const gltf = await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject))
-    const isEmote = gltf.animations.length > 0
 
     gltf.scene.traverse(node => {
       if (node instanceof Mesh) {
@@ -174,7 +177,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     document.body.removeChild(renderer.domElement)
 
     // return data
-    let info: Metrics = {
+    const info: ModelMetrics = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials: materials.size,
       textures: renderer.info.memory.textures,
@@ -182,23 +185,9 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       bodies,
       entities: 1
     }
+    const image = engine === EngineType.THREE ? renderer.domElement.toDataURL() : await getScreenshot(url, options)
 
-    if (isEmote) {
-      const duration = gltf.animations[0].duration
-      const frames = gltf.animations[0].tracks[0].times.length - 1
-
-      info = {
-        sequences: gltf.animations.length,
-        duration,
-        frames: frames,
-        fps: frames / duration
-      }
-    }
-
-    const image =
-      engine === EngineType.THREE ? renderer.domElement.toDataURL() : isEmote ? TRANSPARENT_PIXEL : await getScreenshot(url, options)
-
-    return { info, image, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
+    return { info, image, type: ItemType.WEARABLE }
   } catch (error) {
     // could not render model, default to 0 metrics and default thumnail
     const info = {
@@ -216,4 +205,77 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     }
     return { info, image, type }
   }
+}
+
+export async function loadGltf(url: string, options: Partial<Options> = {}) {
+  // add defaults to options
+  const { width, height } = {
+    ...defaults,
+    ...options
+  }
+
+  // setup renderer
+  const renderer = new WebGLRenderer({ alpha: true })
+  renderer.setSize(width, height, false)
+  renderer.domElement.style.visibility = 'hidden'
+  document.body.appendChild(renderer.domElement)
+
+  const loader = new GLTFLoader()
+  // const loader = new GLTFLoader(manager)
+  return await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject))
+}
+
+// export function
+
+export async function getIsEmote(url: string, options: Partial<Options> = {}) {
+  const gltf = await loadGltf(url, options)
+  return gltf.animations.length > 0
+}
+
+export async function getItemData({
+  type,
+  model,
+  wearablePreviewController,
+  contents,
+  category
+}: {
+  type: ItemType
+  model: string
+  wearablePreviewController?: IPreviewController
+  contents: Record<string, Blob>
+  category?: string
+}) {
+  let info: Metrics
+  let image
+  if (isImageFile(model)) {
+    info = {
+      triangles: 100,
+      materials: 1,
+      textures: 1,
+      meshes: 1,
+      bodies: 1,
+      entities: 1
+    }
+    image = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], category as WearableCategory)
+  } else {
+    if (!wearablePreviewController) {
+      throw Error('WearablePreview controller needed')
+    }
+    if (type === ItemType.EMOTE) {
+      const gltf = await loadGltf(URL.createObjectURL(contents[model]))
+      const duration = gltf.animations[0].duration
+      const frames = gltf.animations[0].tracks[0].times.length - 1
+
+      info = {
+        sequences: gltf.animations.length,
+        duration,
+        frames: frames,
+        fps: frames / duration
+      }
+    }
+    info = await wearablePreviewController.scene.getMetrics()
+    image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+  }
+
+  return { info, image }
 }
