@@ -272,8 +272,9 @@ export async function getItemData({
         frames: frames,
         fps: frames / duration
       }
+    } else {
+      info = await wearablePreviewController.scene.getMetrics()
     }
-    info = await wearablePreviewController.scene.getMetrics()
     image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
   }
 
