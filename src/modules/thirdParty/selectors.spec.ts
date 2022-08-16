@@ -137,7 +137,7 @@ describe('Third Party selectors', () => {
     describe("and the collection doesn't have a valid third party URN", () => {
       beforeEach(() => {
         collection = {
-          urn: 'urn:decentraland:ropsten:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+          urn: 'urn:decentraland:goerli:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
         } as Collection
       })
 
@@ -180,7 +180,7 @@ describe('Third Party selectors', () => {
     describe("and the item doesn't have a valid third party URN", () => {
       beforeEach(() => {
         item = {
-          urn: 'urn:decentraland:ropsten:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+          urn: 'urn:decentraland:goerli:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
         } as any
       })
 

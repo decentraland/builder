@@ -5,7 +5,7 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
  * urn:decentraland:
  *   (?<protocol>
  *     mainnet|
- *     ropsten|
+ *     goerli|
  *     matic|
  *     mumbai|
  *     off-chain
@@ -28,7 +28,7 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
  *   )
  */
 const baseMatcher = 'urn:decentraland'
-const protocolMatcher = '(?<protocol>mainnet|ropsten|matic|mumbai|off-chain)'
+const protocolMatcher = '(?<protocol>mainnet|goerli|matic|mumbai|off-chain)'
 const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty)'
 
 const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
@@ -42,7 +42,7 @@ const urnRegExp = new RegExp(
 
 export enum URNProtocol {
   MAINNET = 'mainnet',
-  ROPSTEN = 'ropsten',
+  GOERLI = 'goerli',
   MATIC = 'matic',
   MUMBAI = 'mumbai',
   OFF_CHAIN = 'off-chain'
