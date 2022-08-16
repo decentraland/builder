@@ -139,7 +139,7 @@ describe('when checking if a collection is of type third party', () => {
     beforeEach(() => {
       collection = {
         id: 'aCollection',
-        urn: 'urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8'
+        urn: 'urn:decentraland:goerli:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8'
       } as Collection
     })
 
