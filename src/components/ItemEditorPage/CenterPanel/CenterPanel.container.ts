@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { PreviewEmote } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
 import { getCollections } from 'modules/collection/selectors'
@@ -24,10 +25,11 @@ import {
   getWearablePreviewController,
   isPlayingEmote
 } from 'modules/editor/selectors'
+import { getEmotes, getItem } from 'modules/item/selectors'
+import { ItemType } from 'modules/item/types'
 import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CenterPanel.types'
 import CenterPanel from './CenterPanel'
-import { getEmotes, getItem } from 'modules/item/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   let collection: Collection | undefined
@@ -40,7 +42,10 @@ const mapState = (state: RootState): MapStateProps => {
   const selectedItem = getItem(state, selectedItemId)
   const bodyShape = getBodyShape(state)
   const selectedBaseWearablesByBodyShape = getSelectedBaseWearablesByBodyShape(state)
+  const visibleItems = getVisibleItems(state)
   const emotesFromCollection = getEmotes(state).filter(emote => emote.collectionId === collectionId)
+  const emote = getEmote(state)
+  const isPLayingIdleEmote = !visibleItems.some(item => item.type === ItemType.EMOTE) && emote === PreviewEmote.IDLE
 
   return {
     bodyShape,
@@ -50,11 +55,11 @@ const mapState = (state: RootState): MapStateProps => {
     skinColor: getSkinColor(state),
     eyeColor: getEyeColor(state),
     hairColor: getHairColor(state),
-    emote: getEmote(state),
-    visibleItems: getVisibleItems(state),
+    emote,
+    visibleItems,
     wearableController: getWearablePreviewController(state),
     emotesFromCollection,
-    isPlayingEmote: isPlayingEmote(state)
+    isPlayingEmote: isPLayingIdleEmote ? false : isPlayingEmote(state)
   }
 }
 
