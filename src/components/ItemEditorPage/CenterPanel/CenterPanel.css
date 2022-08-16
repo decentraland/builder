@@ -37,16 +37,27 @@
   color: var(--text);
 }
 
-.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
-  background-color: var(--light-gray);
-  font-size: 11px;
-  line-height: 16px;
-  min-width: 29.5px;
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option {
   padding: 0;
 }
 
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
+  background-color: var(--light-gray);
+  font-size: 15px;
+  line-height: 17px;
+  min-width: 29.5px;
+  transform: translateY(0px);
+  padding: 6px 12px;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button span {
+  margin-left: 5px;
+}
+
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.dropdown {
-  font-size: 16px;
+  border-left-style: solid;
+  border-left-width: thin;
+  font-size: 20px;
 }
 
 .CenterPanel .footer .ui.dropdown > .text {
