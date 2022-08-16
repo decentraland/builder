@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
-import { Section, Row, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
+import { Section, Row, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps, Tabs, Table } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -14,7 +14,7 @@ import {
   isOwner
 } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
-import { Item } from 'modules/item/types'
+import { Item, ItemType } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
@@ -23,14 +23,19 @@ import Back from 'components/Back'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionContextMenu from './CollectionContextMenu'
+import { Props, State } from './CollectionDetailPage.types'
 import CollectionItem from './CollectionItem'
-import { Props } from './CollectionDetailPage.types'
 
 import './CollectionDetailPage.css'
+import { CollectionType } from 'modules/collection/types'
 
 const STORAGE_KEY = 'dcl-collection-notice'
 
-export default class CollectionDetailPage extends React.PureComponent<Props> {
+export default class CollectionDetailPage extends React.PureComponent<Props, State> {
+  state: State = {
+    tab: this.props.tab || ItemType.WEARABLE
+  }
+
   handleMintItems = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('MintItemsModal', { collectionId: collection!.id })
@@ -69,13 +74,30 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
     return wallet !== null && collection !== null && canSeeCollection(collection, wallet.address)
   }
 
+  handleNavigateToEditor = () => {
+    const { collection, items, onNavigate } = this.props
+    collection && onNavigate(getCollectionEditorURL(collection, items))
+  }
+
+  handleTabChange = (tab: ItemType) => {
+    const { onNavigate, collection } = this.props
+    this.setState({ tab })
+    onNavigate(locations.collectionDetail(collection!.id, CollectionType.DECENTRALAND, { tab }))
+  }
+
   renderPage(items: Item[]) {
+    const { tab } = this.state
     const { wallet, isOnSaleLoading } = this.props
     const collection = this.props.collection!
 
     const canMint = canMintCollectionItems(collection, wallet.address)
     const isOnSale = isCollectionOnSale(collection, wallet)
     const isLocked = isCollectionLocked(collection)
+    const hasEmotes = items.some(item => item.type === ItemType.EMOTE)
+    const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
+    const hasOnlyEmotes = hasEmotes && !hasWearables
+    const filteredItems = items.filter(item => (hasOnlyEmotes ? item.type === ItemType.EMOTE : item.type === tab))
+    const showShowTabs = hasEmotes && hasWearables
 
     return (
       <>
@@ -84,7 +106,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <Back absolute onClick={this.handleGoBack} />
             <Narrow>
               <Row>
-                <Column className="header-column">
+                <Column grow={false} className="name-container">
                   {isLocked ? (
                     <Header size="huge" className="name">
                       {collection.isPublished && <CollectionStatus collection={collection} />}
@@ -99,7 +121,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     </Row>
                   )}
                 </Column>
-                <Column align="right" shrink={false} grow={false}>
+                <Column align="right" className="actions-container" shrink={false} grow={false}>
                   <Row className="actions">
                     {collection.isPublished ? (
                       <>
@@ -139,16 +161,18 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                           <span className="text">{t('collection_detail_page.mint_items')}</span>
                         </Button>
                       </>
-                    ) : (
+                    ) : null}
+
+                    {items.length && !collection.isPublished ? (
                       <Button basic className="action-button" disabled={isLocked} onClick={this.handleNewItem}>
-                        <Icon name="plus" />
-                        <span className="text">{t('collection_detail_page.new_item')}</span>
+                        <span className="text">{t('collection_detail_page.add_item')}</span>
                       </Button>
-                    )}
-
-                    {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
-
+                    ) : null}
+                    <Button basic className="action-button" disabled={isLocked || !items.length} onClick={this.handleNavigateToEditor}>
+                      <span className="text">{t('collection_detail_page.preview')}</span>
+                    </Button>
                     <CollectionPublishButton collection={collection} />
+                    {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
                   </Row>
                 </Column>
               </Row>
@@ -165,19 +189,51 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             />
           </Notice>
 
+          {showShowTabs ? (
+            <Tabs isFullscreen>
+              <Tabs.Tab active={tab === ItemType.WEARABLE} onClick={() => this.handleTabChange(ItemType.WEARABLE)}>
+                <BuilderIcon name="wearable" />
+                {t('collection_detail_page.wearables')}
+              </Tabs.Tab>
+              <Tabs.Tab active={tab === ItemType.EMOTE} onClick={() => this.handleTabChange(ItemType.EMOTE)}>
+                <BuilderIcon name="emote" />
+                {t('collection_detail_page.emotes')}
+              </Tabs.Tab>
+            </Tabs>
+          ) : null}
+
           {this.hasItems(items) ? (
-            <div className="collection-items">
-              {items.map(item => (
-                <CollectionItem key={item.id} collection={collection} item={item} />
-              ))}
-            </div>
+            <Table basic="very">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>{t('collection_detail_page.table.item')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
+                  {tab === ItemType.EMOTE ? <Table.HeaderCell>{t('collection_detail_page.table.play_mode')}</Table.HeaderCell> : null}
+                  <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('collection_detail_page.table.status')}</Table.HeaderCell>
+                  <Table.HeaderCell></Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {filteredItems.map(item => (
+                  <CollectionItem key={item.id} collection={collection} item={item} />
+                ))}
+              </Table.Body>
+            </Table>
           ) : (
             <div className="empty">
               <div className="sparkles" />
               <div>
-                {t('collection_detail_page.start_adding_items')}
+                <span className="empty-collection-title">{t('collection_detail_page.add_items_title')}</span>
+                <br />
+                {t('collection_detail_page.add_items_subtitle')}
                 <br />
                 {t('collection_detail_page.cant_remove')}
+                <br />
+                <Button basic className="empty-action-button" disabled={isLocked} onClick={this.handleNewItem}>
+                  <span className="text">{t('collection_detail_page.add_item')}</span>
+                </Button>
               </div>
             </div>
           )}

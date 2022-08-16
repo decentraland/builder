@@ -3,7 +3,7 @@ import { RootState } from 'modules/common/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getSelectedCollectionId, getSelectedItemId, isReviewing } from 'modules/location/selectors'
-import { getBodyShape, getVisibleItems } from 'modules/editor/selectors'
+import { getBodyShape, getVisibleItems, getWearablePreviewController, isPlayingEmote } from 'modules/editor/selectors'
 import { getItems, getLoading, getPaginatedWalletOrphanItems, getPaginationData, getWalletOrphanItems } from 'modules/item/selectors'
 import { fetchCollectionsRequest } from 'modules/collection/actions'
 import { getAuthorizedCollections, getPaginationData as getCollectionsPaginationData } from 'modules/collection/selectors'
@@ -37,8 +37,10 @@ const mapState = (state: RootState): MapStateProps => {
     selectedCollectionId,
     visibleItems: getVisibleItems(state),
     bodyShape: getBodyShape(state),
+    wearableController: getWearablePreviewController(state),
     isReviewing: isReviewing(state),
-    isLoading: isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST)
+    isLoading: isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST),
+    isPlayingEmote: isPlayingEmote(state)
   }
 }
 

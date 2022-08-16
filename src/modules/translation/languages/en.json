@@ -174,7 +174,11 @@
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triangle} other {triangles}}",
     "materials": "{count} {count, plural, one {material} other {materials}}",
-    "textures": "{count} {count, plural, one {texture} other {textures}}"
+    "textures": "{count} {count, plural, one {texture} other {textures}}",
+    "sequences": "{count} {count, plural, one {sequence} other {sequences}}",
+    "duration": "{count} {count, plural, one {second} other {seconds}}",
+    "frames": "{count} {count, plural, one {frame} other {frames}}",
+    "fps": "{count} fps"
   },
   "claim_ens_page": {
     "title": "Claim a unique Name",
@@ -193,13 +197,18 @@
   },
   "create_single_item_modal": {
     "title": "New Item",
+    "thumbnail_step_title": "Edit Thumbnail",
+    "title_emote": "New Emote",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
     "name_label": "Enter a name for your item",
     "category_label": "What's the category of this item?",
     "category_placeholder": "Select a category",
+    "play_mode_label": "Play mode",
+    "play_mode_placeholder": "Select a play mode",
     "rarity_label": "How rare is this item?",
     "rarity_placeholder": "Select a rarity",
+    "rarity_learn_more_about": "{learn_more} about rarities",
     "representation_label": "Select the body shape for your item",
     "existing_item": "Is this part of an existing item?",
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
@@ -213,7 +222,8 @@
       "missing_model_file": "Couldn't find a valid model file.",
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}."
-    }
+    },
+    "emote_notice": "Emotes are available for all body shapes."
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
@@ -515,6 +525,7 @@
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
+    "skip": "Skip",
     "submit": "Submit",
     "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions",
@@ -1099,7 +1110,7 @@
       "unsynced": "Unsynced"
     },
     "synced_statuses": {
-      "unpublished": "Ready for published",
+      "unpublished": "Ready to publish",
       "under_review": "Under Review",
       "synced": "Synced",
       "unsynced": "Unsynced"
@@ -1112,6 +1123,11 @@
     "set_on_sale_popup": "This will allow your collection to be sold in the Decentraland Marketplace.",
     "unset_on_sale_popup": "This collection is on sale in the Decentraland Marketplace.",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
+    "preview": "Preview",
+    "add_item": "Add Item",
+    "add_items_title": "Looking good!",
+    "add_items_subtitle": "Now you can start adding items to your collection",
+    "add_items_subtitle_extensions": "Accepted files are ZIP, GLTF, GLB, PNG.",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing your collection.",
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
@@ -1122,7 +1138,17 @@
     "locked": "Locked",
     "publish_reason_max_items": "A collection can be published with a max amount of {maxItems} items.",
     "publish_reason_no_items": "You need to add at least one item to publish your collection.",
-    "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set."
+    "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set.",
+    "emotes": "Emotes",
+    "wearables": "Wearables",
+    "table": {
+      "item": "Item",
+      "rarity": "Rarity",
+      "category": "Category",
+      "price": "Price",
+      "play_mode": "Play Mode",
+      "status": "Status"
+    }
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
@@ -1176,7 +1202,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Set price and address for \"{name}\"",
+    "title": "Set price",
     "for_me": "I'm the beneficiary",
     "free": "Make it free",
     "price_label": "Price",
@@ -1335,6 +1361,8 @@
       "to_review": "To review",
       "reviewed": "Reviewed",
       "all_items": "All items",
+      "wearable": "Wearables",
+      "emote": "Emotes",
       "get_random_sample": "Get Random Sample",
       "reviewed_samples_bold": "Reviewed samples: {count}",
       "reviewed_samples": "{reviewed_samples_bold}/{total}",
@@ -1357,6 +1385,7 @@
       "replaces_info": "When a user equips your item, any other items in the category you select will be unequipped. Users must reequip them after removing your item.",
       "hides": "Hides",
       "hides_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
+      "animation": "Animation",
       "tags": "Tags",
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
@@ -1366,7 +1395,25 @@
   "emote": {
     "category": {
       "simple": "Simple",
-      "loop": "Loop"
+      "loop": "Loop",
+      "dance": "Dance",
+      "stunt": "Stunt",
+      "greetings": "Greetings",
+      "fun": "Fun",
+      "poses": "Poses",
+      "reactions": "Reactions",
+      "horror": "Horror",
+      "miscellaneous": "Miscellaneous"
+    },
+    "play_mode": {
+      "simple": {
+        "text": "Play Once",
+        "description": "Once triggered, the emote will play once and return to the default pose."
+      },
+      "loop": {
+        "text": "Loop",
+        "description": "Once triggered, the emote will play in loop until the player moves."
+      }
     }
   },
   "wearable": {
@@ -1405,6 +1452,15 @@
       "upper_body": "Upper Body",
       "skin": "Skin"
     }
+  },
+  "rarity_description": {
+    "unique": "Grail-like: One-of-a-kind",
+    "mythic": "For the lucky few: max 10",
+    "legendary": "Limited supply: max 100",
+    "epic": "Max supply: 1000",
+    "rare": "Max supply: 5000",
+    "uncommon": "Max supply: 10,000",
+    "common": "Max supply: 100,000"
   },
   "time": {
     "hours": "{amount}h",

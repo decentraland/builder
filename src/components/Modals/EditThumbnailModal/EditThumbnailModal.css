@@ -1,0 +1,21 @@
+.ui.modal.EditThumbnailModal > .content {
+  margin-bottom: 32px;
+}
+
+.EditThumbnailModal .error {
+  margin-top: 15px;
+  width: 100%;
+}
+
+.EditThumbnailModal .thumbnail-step-container {
+  width: 100%;
+  height: 440px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.EditThumbnailModal .thumbnail-actions.dcl.row.grow.shrink {
+  justify-content: space-between;
+}

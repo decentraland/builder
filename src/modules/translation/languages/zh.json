@@ -95,7 +95,10 @@
         "duplicated": "重复资产",
         "duplicated_asset": "{name}：此资产包中已经有一个名为\"{existingAsset}\"的资产，其ID为\"{id}\"，请将\"{newAsset}\"的ID更改为另一种",
         "invalid": "无效资产",
-        "max_file_size": "{name}: 文件大小超过{max}mb的限制"
+        "max_file_size": "{name}: 文件大小超过{max}mb的限制",
+        "missing_extension": "{name}: 缺少文件扩展名",
+        "missing_model": "{name}: 缺少 3D 模型 (.gltf 或者 .glb)",
+        "scene_file": "{name}: 不允许导出场景"
       },
       "title_edit": "创造Asset Pack"
     },
@@ -169,7 +172,11 @@
   "model_metrics": {
     "triangles": "{count}个三角形",
     "materials": "{count}个材料",
-    "textures": "{count}个纹理"
+    "textures": "{count}个纹理",
+    "sequences": "{count}序列",
+    "duration": "{count}秒",
+    "frames": "{count}帧",
+    "fps": "{count}fps"
   },
   "claim_ens_page": {
     "title": "索取唯一名称",
@@ -188,11 +195,15 @@
   },
   "create_single_item_modal": {
     "title": "新物品",
+    "thumbnail_step_title": "编辑缩略图",
+    "title_emote": "新表情",
     "add_representation": "添加{bodyShape}",
     "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
     "name_label": "给您的新商品起个名字",
     "category_label": "这个项目是什么类别？",
     "category_placeholder": "选择一个类别",
+    "play_mode_label": "游戏模式",
+    "play_mode_placeholder": "选择播放模式",
     "rarity_label": "这件商品有多稀有？",
     "rarity_placeholder": "选择稀有",
     "representation_label": "选择您的项目的身体形状",
@@ -208,7 +219,8 @@
       "missing_model_file": "找不到有效的模型文件。",
       "invalid_content_path": "属性 \"{name}\" 的无效路径 \"{path}\"，找不到文件。",
       "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。"
-    }
+    },
+    "emote_notice": "表情适用于所有体型。"
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
@@ -503,6 +515,7 @@
     "read_more": "阅读更多",
     "retry_tx": "重试",
     "save": "保存",
+    "skip": "跳过",
     "send": "发送",
     "share": "分享",
     "sign_in_required": "您需要{link}才能访问此页面。",
@@ -1103,6 +1116,11 @@
     "unset_on_sale_popup": "该系列在 Decentraland 市场上有售。",
     "publish": "发布",
     "notice": "凉爽的！ 现在，您可以开始处理项目了。 {editor_link}打开编辑器，或在任何项目上单击“编辑”按钮。",
+    "preview": "预习",
+    "add_item": "添加项目",
+    "add_items_title": "看起来不错！",
+    "add_items_subtitle": "现在您可以开始将项目添加到您的收藏中",
+    "add_items_subtitle_extensions": "接受的文件是 ZIP、GLTF、GLB、PNG。",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
@@ -1113,7 +1131,17 @@
     "locked": "锁定",
     "publish_reason_max_items": "可以发布包含最多 {maxItems} 个项目的集合。",
     "publish_reason_no_items": "您需要添加至少一项才能发布您的收藏。",
-    "publish_reason_items_not_complete": "所有项目必须完整才能发布您的收藏，检查是否设置了所有属性。"
+    "publish_reason_items_not_complete": "所有项目必须完整才能发布您的收藏，检查是否设置了所有属性。",
+    "emotes": "表情",
+    "wearables": "可穿戴设备",
+    "table": {
+      "item": "物品",
+      "rarity": "稀有度",
+      "category": "类别",
+      "price": "价格",
+      "play_mode": "游戏模式",
+      "status": "地位"
+    }
   },
   "collection_context_menu": {
     "add_existing_item": "添加现有项目",
@@ -1167,7 +1195,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "设置{name}的价格和地址",
+    "title": "设定价格",
     "for_me": "我是受益人",
     "free": "免费",
     "price_label": "价格",
@@ -1333,6 +1361,8 @@
       "to_review": "回顾",
       "reviewed": "已审核",
       "all_items": "所有项目",
+      "wearable": "可穿戴",
+      "emote": "表情",
       "get_random_sample": "获取随机样本",
       "reviewed_samples_bold": "审查样本： {count}",
       "reviewed_samples": "{reviewed_samples_bold}/{total}",
@@ -1355,6 +1385,7 @@
       "replaces_info": "当用户装备您的物品时，您选择的类别中的其他任何物品都将被取消装备。 用户删除物品后必须重新装备它们。",
       "hides": "皮",
       "hides_info": "当用户装备您的物品时，您选择的类别中的所有其他物品将保持装备状态，但不会被渲染。 用户仅会在删除您的商品后看到他们的其他商品。 ",
+      "animation": "动画",
       "tags": "标签",
       "select_placeholder": "选择一个选项",
       "request_for_changes": "要求变更",
@@ -1364,7 +1395,25 @@
   "emote": {
     "category": {
       "simple": "简单的",
-      "loop": "环形"
+      "loop": "环形",
+      "dance": "舞蹈",
+      "stunt": "特技",
+      "greetings": "问候",
+      "fun": "乐趣",
+      "poses": "姿势",
+      "reactions": "反应",
+      "horror": "恐怖",
+      "miscellaneous": "各种各样的"
+    },
+    "play_mode": {
+      "simple": {
+        "text": "玩一次",
+        "description": "触发后，表情将播放一次并返回默认姿势。"
+      },
+      "loop": {
+        "text": "环形",
+        "description": "触发后，表情将循环播放，直到玩家移动。"
+      }
     }
   },
   "wearable": {
@@ -1403,6 +1452,15 @@
       "upper_body": "上半身",
       "skin": "皮肤"
     }
+  },
+  "rarity_tooltip": {
+    "unique": "像圣杯一样：独一无二",
+    "mythic": "给幸运的人：最多10个",
+    "legendary": "限量供应：最多100个",
+    "epic": "最大供应量：1000个",
+    "rare": "最大供应量：5000个",
+    "uncommon": "最大供应量：10,000个",
+    "common": "最大供应量：100,000个"
   },
   "time": {
     "hours": "{amount}小时",

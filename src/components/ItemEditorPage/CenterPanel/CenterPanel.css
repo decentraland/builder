@@ -2,6 +2,8 @@
   position: relative;
   flex: 1 1 auto;
   background-color: #4c4852;
+  display: flex;
+  flex-direction: column;
 }
 
 .CenterPanel .WearablePreview {
@@ -66,4 +68,34 @@
 
 .CenterPanel .footer .ui.dropdown .menu {
   background-color: var(--smart-grey);
+}
+
+.CenterPanel .emote-controls-container {
+  position: relative;
+  bottom: 53px;
+  margin: 0 16px;
+}
+
+.CenterPanel .emote-controls {
+  padding: 4px;
+  background: #242129;
+  position: relative;
+}
+
+.CenterPanel .EmoteControls {
+  padding: 0
+}
+
+.CenterPanel .EmoteControls .frame-control {
+  margin: 4px;
+  margin-left: 0;
+}
+
+.CenterPanel .EmoteControls .ui.button.play-control {
+  width: 65px;
+  height: 51px;
+}
+
+.CenterPanel .EmoteControls .ui.button.play-control:hover {
+  transform: none;
 }

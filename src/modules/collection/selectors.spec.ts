@@ -2,7 +2,7 @@ import { ChainId, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { RootState } from 'modules/common/types'
-import { SyncStatus } from 'modules/item/types'
+import { ItemType, SyncStatus } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import {
   getAuthorizedCollections,
@@ -99,6 +99,7 @@ describe('when getting status by item id', () => {
         data: {
           '0': {
             id: '0',
+            type: ItemType.WEARABLE,
             collectionId: '0',
             tokenId: 'aTokenId',
             isPublished: true,
@@ -118,6 +119,7 @@ describe('when getting status by item id', () => {
           },
           '1': {
             id: '1',
+            type: ItemType.WEARABLE,
             collectionId: '0',
             tokenId: 'anotherTokenId',
             isPublished: true,
@@ -137,6 +139,7 @@ describe('when getting status by item id', () => {
           },
           '2': {
             id: '2',
+            type: ItemType.WEARABLE,
             collectionId: '1',
             isPublished: true
           }

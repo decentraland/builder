@@ -1,10 +1,5 @@
-.EditPriceAndBeneficiaryModal.ui.modal .dcl.modal-navigation-title {
-  padding-right: 15px;
-}
-
-.EditPriceAndBeneficiaryModal.ui.modal .actions .ui.active.button {
-  background-color: rgba(var(--bluish-steel-raw), 0.8);
-  color: var(--text-on-secondary);
+.EditPriceAndBeneficiaryModal.ui.modal {
+  padding: 16px 32px 38px;
 }
 
 .EditPriceAndBeneficiaryModal .ui.form .price-field {
@@ -25,6 +20,17 @@
   padding-left: 18px;
 }
 
+.EditPriceAndBeneficiaryModal .ui.form .price-field > .ui.button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .price-field > .ui.active.button {
+  background-color: rgba(var(--bluish-steel-raw), 0.8) !important;
+  color: var(--text-on-secondary) !important;
+}
+
 .EditPriceAndBeneficiaryModal .info {
   width: 11px;
   height: 11px;
@@ -38,4 +44,31 @@
 .EditPriceAndBeneficiaryModal .ui.card.min-price-notice .dcl.mana {
   display: inline !important;
   color: var(--text);
+}
+
+.EditPriceAndBeneficiaryModal .ui.form > .actions {
+  width: auto;
+  flex-wrap: wrap;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form > .actions > button {
+  width: 100%;
+  margin: 1em 0 0;
+}
+
+.EditPriceAndBeneficiaryModal .checkbox.make-it-free,
+.EditPriceAndBeneficiaryModal .checkbox.beneficiary {
+  margin-top: -2em;
+  margin-bottom: 1em;
+  display: flex;
+  align-items: center;
+}
+
+.EditPriceAndBeneficiaryModal .checkbox.make-it-free {
+  margin-bottom: 24px;
+}
+
+.EditPriceAndBeneficiaryModal .checkbox.make-it-free .item-checkbox,
+.EditPriceAndBeneficiaryModal .checkbox.beneficiary .item-checkbox {
+  margin-right: 8px;
 }

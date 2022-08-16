@@ -1,6 +1,6 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
-import { BodyShape, Wearable, WearableCategory } from '@dcl/schemas'
-import { ModelMetrics } from 'modules/models/types'
+import { BodyShape, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
+import { AnimationMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
 export enum EntityHashingType {
@@ -32,7 +32,8 @@ export enum ItemRarity {
   UNCOMMON = 'uncommon',
   COMMON = 'common'
 }
-export enum EmoteCategory {
+
+export enum EmotePlayMode {
   SIMPLE = 'simple',
   LOOP = 'loop'
 }
@@ -99,12 +100,6 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
   [ItemRarity.COMMON]: 100000
 }
 
-export type EmoteData = {
-  category?: EmoteCategory
-  representations: WearableRepresentation[]
-  tags: string[]
-}
-
 export type WearableData = {
   category?: WearableCategory
   representations: WearableRepresentation[]
@@ -124,10 +119,6 @@ type BaseItem = {
   updatedAt: number
 }
 
-export type StandardCatalystItem = Wearable & {
-  emoteDataV0?: { loop: boolean }
-}
-
 export type CatalystItem = Wearable
 
 export type ItemApprovalData = {
@@ -137,7 +128,7 @@ export type ItemApprovalData = {
   root: string | null
 }
 
-export type Item<T = ItemType.WEARABLE> = BaseItem & {
+export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
   type: ItemType
   owner: string
   collectionId?: string
@@ -153,8 +144,11 @@ export type Item<T = ItemType.WEARABLE> = BaseItem & {
   blockchainContentHash: string | null
   currentContentHash: string | null
   catalystContentHash: string | null
-  data: T extends ItemType.WEARABLE ? WearableData : EmoteData
+  data: T extends ItemType.WEARABLE ? WearableData : EmoteDataADR74
+  metrics: T extends ItemType.WEARABLE ? ModelMetrics : AnimationMetrics
 }
+
+export const isEmoteData = (data: WearableData | EmoteDataADR74): data is EmoteDataADR74 => (data as EmoteDataADR74).loop !== undefined
 
 export enum Currency {
   MANA = 'MANA',

@@ -12,3 +12,13 @@ export const getIsMaintenanceEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsEmotesFlowEnabled = (state: RootState) => {
+  // As this is called by the routes component which is rendered when the user enters the application,
+  // Features might have not yet been requested and will throw in that case.
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_EMOTE_FLOW)
+  } catch (e) {
+    return false
+  }
+}
