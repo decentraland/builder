@@ -87,7 +87,8 @@
     "concurrently": "^7.2.2",
     "dcl-tslint-config-standard": "^1.1.0",
     "decentraland-rpc": "^3.1.8",
-    "prettier": "^1.19.1",
+    "husky": "^8.0.1",
+    "prettier": "^2.7.1",
     "react-error-overlay": "6.0.9",
     "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^4.6.4"
@@ -105,7 +106,14 @@
     "build:scene": "decentraland-compiler buildScene.json",
     "bundle:svg": "npx svg-sprite -D src/components/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg",
     "build:contracts": "typechain --target ethers-v5 --out-dir src/contracts src/contracts/*.json",
-    "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'"
+    "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'",
+    "check:prettier": "prettier -c 'src/**/*.{js,ts,json,yml,md,tsx,html,css}'",
+    "check:code": "eslint src/**/*.{js,ts,tsx}",
+    "pre-commit:check:prettier": "prettier --write -c",
+    "pre-commit:check:code": "eslint",
+    "pre-commit:check:ts": "tslint --project tsconfig.json -e '*.json' -c tslint.json",
+    "fix:prettier": "prettier --write ./src",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "ignorePatterns": "src/ecsScene/scene.js",
@@ -115,7 +123,9 @@
     ]
   },
   "eslintIgnore": [
-    "src/ecsScene/scene.js"
+    "src/ecsScene/scene.js",
+    "package.json",
+    "package-lock.json"
   ],
   "jest": {
     "moduleNameMapper": {
