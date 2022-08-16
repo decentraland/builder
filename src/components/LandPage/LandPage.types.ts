@@ -6,8 +6,9 @@ import { setLandPageView, SetLandPageViewAction } from 'modules/ui/land/actions'
 
 export type Props = {
   lands: Land[]
-  isLoading: boolean
   view: LandPageView
+  isLoading: boolean
+  isRentalsEnabled: boolean
   onNavigate: (path: string) => void
   onSetView: typeof setLandPageView
 }
@@ -20,6 +21,6 @@ export type State = {
   selectedLand: number
 }
 
-export type MapStateProps = Pick<Props, 'lands' | 'isLoading' | 'view'>
+export type MapStateProps = Pick<Props, 'lands' | 'view' | 'isLoading' | 'isRentalsEnabled'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onSetView'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | SetLandPageViewAction>
