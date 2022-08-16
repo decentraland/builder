@@ -1,6 +1,6 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { BodyShape, EmoteCategory, EmoteDataADR74, WearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
 import { WearableData } from '@dcl/builder-client'
 import {
   ModalNavigation,
@@ -37,7 +37,7 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
-import { ModelEmoteMetrics, ModelMetrics } from 'modules/models/types'
+import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -528,12 +528,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           skin: '000000',
           wheelZoom: 2
         }
-      : {
-          zoom: 1.5,
-          offsetX: -0.5,
-          offsetY: 0.5,
-          offsetZ: 0.25
-        }
+      : {}
 
     return (
       <WearablePreview
@@ -541,6 +536,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         blob={blob}
         disableBackground
         disableAutoRotate
+        projection={PreviewProjection.ORTHOGRAPHIC}
         {...wearablePreviewExtraOptions}
         onUpdate={() => this.setState({ weareblePreviewUpdated: true })}
         onLoad={this.handleFileLoad}
@@ -714,26 +710,24 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderMetrics() {
-    const { metrics, type } = this.state
+    const { metrics } = this.state
 
     if (metrics) {
-      if (type === ItemType.WEARABLE) {
+      if (areEmoteMetrics(metrics)) {
         return (
           <div className="metrics">
-            <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-            <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-            <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
+            <div className="metric circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+            <div className="metric circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
+            <div className="metric circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
+            <div className="metric circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
           </div>
         )
       } else {
         return (
           <div className="metrics">
-            <div className="metric circle">{t('model_metrics.sequences', { count: (metrics as ModelEmoteMetrics).sequences })}</div>
-            <div className="metric circle">
-              {t('model_metrics.duration', { count: (metrics as ModelEmoteMetrics).duration.toFixed(2) })}
-            </div>
-            <div className="metric circle">{t('model_metrics.frames', { count: (metrics as ModelEmoteMetrics).frames })}</div>
-            <div className="metric circle">{t('model_metrics.fps', { count: (metrics as ModelEmoteMetrics).fps.toFixed(2) })}</div>
+            <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+            <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+            <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
           </div>
         )
       }
@@ -753,7 +747,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { collection } = this.props
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
 
-    let required: (string | ModelMetrics | Item | undefined)[]
+    let required: (string | Metrics | Item | undefined)[]
 
     if (isRepresentation) {
       required = [item]

@@ -34,7 +34,7 @@ import {
   WearableData
 } from 'modules/item/types'
 import { dataURLToBlob } from 'modules/media/utils'
-import { ModelMetrics, ModelEmoteMetrics } from 'modules/models/types'
+import { areEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
 import Input from './Input'
 import Select from './Select'
@@ -302,23 +302,22 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   renderMetrics(item: Item) {
-    if (item.type === ItemType.WEARABLE) {
-      const metrics = item.metrics as ModelMetrics
-      return (
-        <div className="metrics">
-          <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-          <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-          <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
-        </div>
-      )
-    } else {
-      const metrics = item.metrics as ModelEmoteMetrics
+    const metrics = item.metrics
+    if (areEmoteMetrics(metrics)) {
       return (
         <div className="metrics">
           <div className="metric circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
           <div className="metric circle">{t('model_metrics.duration', { count: metrics.duration })}</div>
           <div className="metric circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
           <div className="metric circle">{t('model_metrics.fps', { count: metrics.fps })}</div>
+        </div>
+      )
+    } else {
+      return (
+        <div className="metrics">
+          <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+          <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+          <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
         </div>
       )
     }

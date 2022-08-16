@@ -20,7 +20,7 @@ import {
 } from 'modules/item/types'
 import { isImageCategory, isImageFile, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
 import { blobToDataURL, convertImageIntoWearableThumbnail } from 'modules/media/utils'
-import { ModelMetrics } from 'modules/models/types'
+import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import ItemImport from 'components/ItemImport'
 import { ItemAssetJson } from '../CreateSingleItemModal.types'
@@ -184,13 +184,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     this.setState({ error: error.message })
   }
 
-  async processModel(
-    model: string,
-    contents: Record<string, Blob>
-  ): Promise<[string, string, ModelMetrics, Record<string, Blob>, ItemType]> {
+  async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, Metrics, Record<string, Blob>, ItemType]> {
     const { category } = this.props
     let thumbnail: string = ''
-    let metrics: ModelMetrics
+    let metrics: Metrics
     let type = ItemType.WEARABLE
 
     if (isImageFile(model)) {
@@ -215,7 +212,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       URL.revokeObjectURL(url)
 
       // for some reason the renderer reports 2x the amount of textures for wearble items
-      data.info.textures = Math.round(data.info.textures / 2)
+      if (!areEmoteMetrics(data.info)) {
+        data.info.textures = Math.round(data.info.textures / 2)
+      }
 
       thumbnail = data.image
       metrics = data.info

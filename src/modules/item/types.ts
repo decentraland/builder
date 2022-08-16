@@ -1,6 +1,6 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
 import { BodyShape, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
-import { ModelEmoteMetrics, ModelMetrics } from 'modules/models/types'
+import { AnimationMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
 export enum EntityHashingType {
@@ -114,7 +114,7 @@ type BaseItem = {
   thumbnail: string
   description: string
   rarity?: ItemRarity
-  metrics: ModelMetrics | ModelEmoteMetrics
+  metrics: ModelMetrics
   createdAt: number
   updatedAt: number
 }
@@ -128,7 +128,7 @@ export type ItemApprovalData = {
   root: string | null
 }
 
-export type Item<T = ItemType.WEARABLE> = BaseItem & {
+export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
   type: ItemType
   owner: string
   collectionId?: string
@@ -145,6 +145,7 @@ export type Item<T = ItemType.WEARABLE> = BaseItem & {
   currentContentHash: string | null
   catalystContentHash: string | null
   data: T extends ItemType.WEARABLE ? WearableData : EmoteDataADR74
+  metrics: T extends ItemType.WEARABLE ? ModelMetrics : AnimationMetrics
 }
 
 export const isEmoteData = (data: WearableData | EmoteDataADR74): data is EmoteDataADR74 => (data as EmoteDataADR74).loop !== undefined
