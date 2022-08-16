@@ -602,7 +602,7 @@ describe('Item selectors', () => {
     describe("when the item doesn't belong to a third party", () => {
       beforeEach(() => {
         address = '0x0'
-        item.urn = 'urn:decentraland:ropsten:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8:0'
+        item.urn = 'urn:decentraland:goerli:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8:0'
       })
 
       describe('and the item has a collection', () => {
