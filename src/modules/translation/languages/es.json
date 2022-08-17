@@ -695,6 +695,7 @@
     "add_scene": "Agregar Escena",
     "assigned_names": "Nombres asignados",
     "description": "Descripción",
+    "role": "Rol",
     "owner": "Dueño",
     "operated_by": "Operado por",
     "total_land": "Tierras Totales",
