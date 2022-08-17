@@ -46,7 +46,7 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
     return (
       <EditThumbnailStep
         isLoading={isLoading}
-        blob={file ? toWearableWithBlobs(file, true) : undefined}
+        blob={file ? toWearableWithBlobs({ file, isEmote: true }) : undefined}
         title={this.renderModalTitle()}
         onBack={() => this.setState({ view: CreateItemView.IMPORT })}
         onSave={this.handleOnSaveThumbnail}

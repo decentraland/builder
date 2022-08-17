@@ -6,8 +6,8 @@ import { BuilderAPI } from 'lib/api/builder'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { Item, IMAGE_PATH, THUMBNAIL_PATH, ItemType, EntityHashingType } from './types'
-import { generateCatalystImage, generateImage } from './utils'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, ItemType, EntityHashingType, isEmoteItemType } from './types'
+import { EMPTY_ITEM_METRICS, generateCatalystImage, generateImage } from './utils'
 
 /**
  * Checks if a hash was generated using an older algorithm.
@@ -174,7 +174,7 @@ function buildWearableEntityMetadata(collection: Collection, item: Item): Wearab
   return catalystItem
 }
 
-function buildEmoteEntityMetadata(collection: Collection, item: Item): Emote {
+function buildEmoteEntityMetadata(collection: Collection, item: Item<ItemType.EMOTE>): Emote {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published')
   }
@@ -191,11 +191,11 @@ function buildEmoteEntityMetadata(collection: Collection, item: Item): Emote {
       category: EmoteCategory.POSES,
       representations: item.data.representations,
       tags: item.data.tags,
-      loop: false
+      loop: item.data.loop
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
-    metrics: item.metrics
+    metrics: EMPTY_ITEM_METRICS
   }
 
   return catalystItem
@@ -211,7 +211,7 @@ async function buildItemEntityContent(item: Item): Promise<Record<string, string
   return contents
 }
 
-async function buildItemEntityBlobs(item: Item, legacyBuilderClient: BuilderAPI): Promise<Record<string, Blob>> {
+async function buildItemEntityBlobs(item: Item | Item<ItemType.EMOTE>, legacyBuilderClient: BuilderAPI): Promise<Record<string, Blob>> {
   const [files, image] = await Promise.all([
     legacyBuilderClient.fetchContents(item.contents),
     !item.contents[IMAGE_PATH] ? generateImage(item) : null
@@ -224,20 +224,23 @@ export async function buildItemEntity(
   client: CatalystClient,
   legacyBuilderClient: BuilderAPI,
   collection: Collection,
-  item: Item,
+  item: Item | Item<ItemType.EMOTE>,
   tree?: MerkleDistributorInfo,
   itemHash?: string
 ): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item, legacyBuilderClient)
   const files = await makeContentFiles(blobs)
-  const metadata =
-    tree && itemHash
-      ? buildTPItemEntityMetadata(item, itemHash, tree)
-      : item.type === ItemType.WEARABLE
-      ? buildWearableEntityMetadata(collection, item)
-      : buildEmoteEntityMetadata(collection, item)
+  let metadata
+  const isEmote = isEmoteItemType(item)
+  if (isEmote) {
+    metadata = buildEmoteEntityMetadata(collection, item)
+  } else if (tree && itemHash) {
+    metadata = buildTPItemEntityMetadata(item, itemHash, tree)
+  } else {
+    metadata = buildWearableEntityMetadata(collection, item)
+  }
   return client.buildEntity({
-    type: item.type === ItemType.WEARABLE ? EntityType.WEARABLE : EntityType.EMOTE,
+    type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,
     pointers: [metadata.id],
     metadata,
     files,
@@ -272,8 +275,7 @@ export async function buildStandardWearableContentHash(
 ): Promise<string> {
   const hashes = await buildItemEntityContent(item)
   const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
-  const metadata =
-    item.type === ItemType.WEARABLE ? buildWearableEntityMetadata(collection, item) : buildEmoteEntityMetadata(collection, item)
+  const metadata = isEmoteItemType(item) ? buildEmoteEntityMetadata(collection, item) : buildWearableEntityMetadata(collection, item)
   if (hashingType === EntityHashingType.V0) {
     return (await calculateMultipleHashesADR32LegacyQmHash(content, metadata)).hash
   } else {

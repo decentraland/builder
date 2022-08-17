@@ -31,7 +31,7 @@ import {
   ItemType,
   EmotePlayMode
 } from 'modules/item/types'
-import { EngineType, getModelData } from 'lib/getModelData'
+import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
@@ -52,7 +52,7 @@ import {
 } from 'modules/item/utils'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
-import { getThumbnailType, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, toWearableWithBlobs } from './utils'
+import { getThumbnailType, toWearableWithBlobs } from './utils'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import {
   Props,
@@ -333,10 +333,20 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
   }
 
+  getMetricsAndScreenshot = async () => {
+    const { type, previewController, model, contents, category } = this.state
+    if (type && model && contents) {
+      const data = await getItemData({ wearablePreviewController: previewController, type, model, contents, category })
+      this.setState({ metrics: data.info, thumbnail: data.image })
+    }
+  }
+
   handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
-    this.setState({
-      ...acceptedFileProps
-    })
+    const { bodyShape, ...acceptedProps } = acceptedFileProps
+    this.setState(prevState => ({
+      bodyShape: bodyShape || prevState.bodyShape,
+      ...acceptedProps
+    }))
   }
 
   handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
@@ -489,35 +499,39 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     if (type === ItemType.EMOTE) {
-      return t('create_single_item_modal.title_emote')
+      return view === CreateItemView.THUMBNAIL
+        ? t('create_single_item_modal.thumbnail_step_title')
+        : t('create_single_item_modal.title_emote')
     }
 
     return view === CreateItemView.THUMBNAIL ? t('create_single_item_modal.thumbnail_step_title') : t('create_single_item_modal.title')
   }
 
   handleFileLoad = async () => {
-    const { weareblePreviewUpdated, type } = this.state
-    const controller = WearablePreview.createController('thumbnail-picker')
+    const { weareblePreviewUpdated, type, model } = this.state
+    // if model is an image, the wearable preview won't be needed
+    if (model && isImageFile(model)) {
+      this.getMetricsAndScreenshot()
+      return
+    }
 
+    const controller = WearablePreview.createController('thumbnail-picker')
     this.setState({ previewController: controller })
 
     if (weareblePreviewUpdated) {
+      this.getMetricsAndScreenshot()
       if (type === ItemType.EMOTE) {
         const length = await controller.emote.getLength()
         await controller.emote.goTo(Math.floor(Math.random() * length))
       }
-      controller.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT).then(screenshot => {
-        this.setState({ thumbnail: screenshot })
-      })
     }
   }
 
   renderWearablePreview = () => {
-    const { file, type } = this.state
+    const { type, contents } = this.state
     const isEmote = type === ItemType.EMOTE
-    const blob = file ? toWearableWithBlobs(file, isEmote) : undefined
-
-    if (!blob || !type) {
+    const blob = contents ? toWearableWithBlobs({ contents, isEmote }) : undefined
+    if (!blob) {
       return null
     }
     const wearablePreviewExtraOptions = isEmote
@@ -546,12 +560,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderImportView() {
     const { metadata, onClose } = this.props
-    const { isRepresentation, category } = this.state
+    const { category, isRepresentation } = this.state
     const title = this.renderModalTitle()
 
     return (
       <ImportStep
-        category={category! as WearableCategory}
+        category={category as WearableCategory}
         metadata={metadata}
         title={title}
         wearablePreviewComponent={<div className="importer-thumbnail-container">{this.renderWearablePreview()}</div>}
@@ -825,12 +839,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderThumbnailView() {
     const { onClose } = this.props
-    const { file, isLoading } = this.state
+    const { isLoading, contents } = this.state
 
     return (
       <EditThumbnailStep
         isLoading={!!isLoading}
-        blob={file ? toWearableWithBlobs(file, true) : undefined}
+        blob={contents ? toWearableWithBlobs({ contents, isEmote: true }) : undefined}
         title={this.renderModalTitle()}
         onBack={() => this.setState({ view: CreateItemView.DETAILS })}
         onSave={this.handleOnScreenshotTaken}
