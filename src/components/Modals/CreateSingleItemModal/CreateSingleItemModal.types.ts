@@ -54,22 +54,22 @@ export type CreateSingleItemModalMetadata = {
   changeItemFile?: boolean
 }
 
-export type ItemAssetJson = Pick<State, 'name' | 'description' | 'category' | 'rarity' | 'thumbnail' | 'model' | 'bodyShape'>
-
 export type ModelData = {
   type: ItemType
-  thumbnail: string
   model: string
-  metrics: Metrics
   contents: Record<string, Blob>
-  assetJson?: ItemAssetJson
+}
+
+export type ZipModelData = ModelData & {
+  thumbnail: string
+  metrics: Metrics
 }
 
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 
 export type AcceptedFileProps = Pick<
   State,
-  'id' | 'name' | 'file' | 'model' | 'metrics' | 'contents' | 'type' | 'bodyShape' | 'category' | 'thumbnail'
+  'id' | 'name' | 'description' | 'rarity' | 'file' | 'model' | 'metrics' | 'contents' | 'type' | 'bodyShape' | 'category' | 'thumbnail'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isEmotesFeatureFlagOn'>
