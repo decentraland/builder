@@ -1,8 +1,7 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-import { findRental } from 'modules/land/utils'
 import { RootState } from 'modules/common/types'
-import { getDeploymentsByLandId, getRentals } from 'modules/land/selectors'
+import { getDeploymentsByLandId, getRentalForLand } from 'modules/land/selectors'
 import { MapDispatch, MapDispatchProps, MapStateProps, OwnProps } from './TableRow.types'
 import TableRow from './TableRow'
 
@@ -12,8 +11,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const deploymentsByLandId = getDeploymentsByLandId(state)
   const deployments = deploymentsByLandId[land.id] || []
 
-  const rentals = getRentals(state)
-  const rental = findRental(land, rentals)
+  const rental = getRentalForLand(state, land)
 
   return {
     deployments,
