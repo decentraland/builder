@@ -4,6 +4,7 @@ import { BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory } 
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
+import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { computeHashFromContent } from 'modules/deployment/contentUtils'
@@ -32,7 +33,6 @@ import {
   GenerateImageOptions,
   EmotePlayMode
 } from './types'
-import { ModelMetrics } from 'modules/models/types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -192,7 +192,7 @@ export async function generateCatalystImage(item: Item | LocalItem, options?: Ge
   }
 }
 
-export async function generateImage(item: Item | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
+export async function generateImage(item: Item | Item<ItemType.EMOTE> | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
   // Set default width and height
   const width: number = options?.width ?? 512
   const height: number = options?.height ?? 512
@@ -563,13 +563,11 @@ export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, S
   )
 }
 
-export const isItemEmote = (item: Item) => item.type === ItemType.EMOTE
-
 export const EMPTY_ITEM_METRICS: ModelMetrics = {
   triangles: 0,
   materials: 0,
+  textures: 0,
   meshes: 0,
   bodies: 0,
-  entities: 0,
-  textures: 0
+  entities: 1
 }
