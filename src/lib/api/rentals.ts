@@ -26,8 +26,8 @@ function fromRentalFields(fields: RentalFields): Rental {
     lessor: fields.lessor,
     tenant: fields.tenant,
     operator: fields.operator,
-    startedAt: fromUnixTime(fields.startedAt),
-    endsAt: fromUnixTime(fields.endsAt)
+    startedAt: fromUnixTime(+fields.startedAt),
+    endsAt: fromUnixTime(+fields.endsAt)
   }
 }
 

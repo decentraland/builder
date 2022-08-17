@@ -1,8 +1,15 @@
 import { getCurrentLocale, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import formatDistanceToNowI18N from 'date-fns/formatDistanceToNow'
+import formatDistanceI18N from 'date-fns/formatDistance'
 import en from 'date-fns/locale/en-US'
 import es from 'date-fns/locale/es'
 import zh from 'date-fns/locale/zh-CN'
+
+type Options = {
+  includeSeconds?: boolean
+  addSuffix?: boolean
+  locale?: Locale
+}
 
 const locales: Record<string, Locale> = {
   en,
@@ -13,21 +20,12 @@ const locales: Record<string, Locale> = {
   'zh-CN': zh
 }
 
-export function formatDistanceToNow(
-  date: number | Date,
-  options: {
-    includeSeconds?: boolean
-    addSuffix?: boolean
-    locale?: Locale
-  } = {}
-) {
-  const locale = locales[getCurrentLocale().locale]
+export function formatDistanceToNow(date: number | Date, options: Options = {}) {
+  return formatDistanceToNowI18N(date, includeLocale(options))
+}
 
-  if (locale) {
-    options.locale = locale
-  }
-
-  return formatDistanceToNowI18N(date, options)
+export function formatDistance(date: Date | number, baseDate: Date | number, options: Options = {}) {
+  return formatDistanceI18N(date, baseDate, includeLocale(options))
 }
 
 export function formatTime(seconds: number) {
@@ -38,4 +36,9 @@ export function formatTime(seconds: number) {
   } else {
     return t('time.seconds', { amount: Math.round(seconds) })
   }
+}
+
+function includeLocale(options: Options): Options {
+  const locale = locales[getCurrentLocale().locale]
+  return locale ? { ...options, locale } : { ...options }
 }
