@@ -94,7 +94,7 @@ import {
   SAVE_ITEM_FAILURE,
   SET_ITEMS_TOKEN_ID_SUCCESS
 } from 'modules/item/actions'
-import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
+import { areSynced, EMPTY_ITEM_METRICS, isItemEmote, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
@@ -623,7 +623,10 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity, emotesFeatureFlag)) {
-        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, legacyBuilderClient, collection, item)
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, legacyBuilderClient, collection, {
+          ...item,
+          metrics: isItemEmote(item) ? EMPTY_ITEM_METRICS : item.metrics
+        })
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }

@@ -40,6 +40,7 @@ import {
   approveCollectionCurationRequest,
   approveCollectionCurationSuccess
 } from 'modules/curations/collectionCuration/actions'
+import { EMPTY_ITEM_METRICS } from 'modules/item/utils'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   deployBatchedThirdPartyItemsFailure,
@@ -114,6 +115,7 @@ const getItemMock = (collection: Collection, props: Partial<Item> = {}): Item =>
       tags: [] as string[],
       representations: [] as WearableRepresentation[]
     },
+    metrics: EMPTY_ITEM_METRICS,
     ...props
   } as Item)
 
