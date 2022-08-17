@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost'
 import { config } from 'config'
-import { fromUnix } from 'lib/date'
+import fromUnixTime from 'date-fns/fromUnixTime'
 import { Rental, RentalFields, rentalFields } from 'modules/land/types'
 import { getLandType } from 'modules/land/utils'
 import { createClient } from './graph'
@@ -26,8 +26,8 @@ function fromRentalFields(fields: RentalFields): Rental {
     lessor: fields.lessor,
     tenant: fields.tenant,
     operator: fields.operator,
-    startedAt: fromUnix(fields.startedAt),
-    endsAt: fromUnix(fields.endsAt)
+    startedAt: fromUnixTime(fields.startedAt),
+    endsAt: fromUnixTime(fields.endsAt)
   }
 }
 

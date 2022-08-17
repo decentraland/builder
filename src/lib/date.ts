@@ -39,7 +39,3 @@ export function formatTime(seconds: number) {
     return t('time.seconds', { amount: Math.round(seconds) })
   }
 }
-
-export function fromUnix(timestamp: number | string): Date {
-  return new Date(Number(timestamp) * 1000)
-}
