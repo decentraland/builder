@@ -130,6 +130,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
       const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
       const { model, contents, type, assetJson } = await handler(file)
+      const isEmote = type === ItemType.EMOTE
 
       onDropAccepted({
         id: changeItemFile ? item!.id : uuid.v4(),
@@ -138,7 +139,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         type,
         model,
         contents,
-        bodyShape: type === ItemType.EMOTE ? BodyShapeType.BOTH : undefined,
+        bodyShape: isEmote ? BodyShapeType.BOTH : undefined,
         category: isRepresentation ? category : undefined,
         ...(await this.getAssetJsonProps(assetJson, contents))
       })
