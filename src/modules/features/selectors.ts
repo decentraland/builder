@@ -3,8 +3,8 @@ import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
 import { FeatureName } from './types'
 
-// As this is called by the routes component which is rendered when the user enters the application,
-// Features might have not yet been requested and will throw in that case.
+// These methods might be called before the features have been requested.
+// In that case the method will throw, so we just return false
 
 export const getIsMaintenanceEnabled = (state: RootState) => {
   try {
