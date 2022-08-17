@@ -148,6 +148,9 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
   metrics: T extends ItemType.WEARABLE ? ModelMetrics : AnimationMetrics
 }
 
+export const isEmoteItemType = (item: Item | Item<ItemType.EMOTE>): item is Item<ItemType.EMOTE> =>
+  (item as Item<ItemType.EMOTE>).type === ItemType.EMOTE
+
 export const isEmoteData = (data: WearableData | EmoteDataADR74): data is EmoteDataADR74 => (data as EmoteDataADR74).loop !== undefined
 
 export enum Currency {

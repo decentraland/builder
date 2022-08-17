@@ -209,7 +209,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                   <Table.HeaderCell>{t('collection_detail_page.table.item')}</Table.HeaderCell>
                   <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
                   <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
-                  {tab === ItemType.EMOTE ? <Table.HeaderCell>{t('collection_detail_page.table.play_mode')}</Table.HeaderCell> : null}
+                  {tab === ItemType.EMOTE || hasOnlyEmotes ? <Table.HeaderCell>{t('collection_detail_page.table.play_mode')}</Table.HeaderCell> : null}
                   <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
                   {collection.isPublished ? <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell> : null}
                   <Table.HeaderCell>{t('collection_detail_page.table.status')}</Table.HeaderCell>
