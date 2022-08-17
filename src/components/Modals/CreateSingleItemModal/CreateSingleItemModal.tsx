@@ -344,13 +344,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { type, previewController, model, contents, category } = this.state
     if (type && model && contents) {
       const data = await getItemData({ wearablePreviewController: previewController, type, model, contents, category })
-      this.setState({ metrics: data.info, thumbnail: data.image })
+      this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false })
     }
   }
 
   handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     const { bodyShape, ...acceptedProps } = acceptedFileProps
     this.setState((prevState) => ({
+      isLoading: true,
       bodyShape: bodyShape || prevState.bodyShape,
       ...acceptedProps,
     }))
@@ -567,7 +568,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderImportView() {
     const { metadata, onClose } = this.props
-    const { category, isRepresentation } = this.state
+    const { category, isLoading, isRepresentation } = this.state
     const title = this.renderModalTitle()
 
     return (
@@ -576,6 +577,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         metadata={metadata}
         title={title}
         wearablePreviewComponent={<div className="importer-thumbnail-container">{this.renderWearablePreview()}</div>}
+        isLoading={!!isLoading}
         isRepresentation={!!isRepresentation}
         onDropAccepted={this.handleDropAccepted}
         onClose={onClose}
