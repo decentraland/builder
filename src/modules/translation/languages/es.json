@@ -563,6 +563,7 @@
     "total": "Total",
     "parcel_plural": "Parcelas",
     "estate_plural": "Estates",
+    "role": "Rol",
     "none": "Ninguno",
     "emote": "Animación"
   },
@@ -672,12 +673,10 @@
     "ends_in": "Termina en"
   },
   "land_page": {
-    "name": "Nombre",
     "coordinates": "Coordenadas",
     "operated_by": "Operado por",
     "type": "Tipo",
     "online_scenes": "Escenas Online",
-    "none": "Ninguna",
     "results": "{count} {count, plural, one {resultado} other {resultados}}",
     "owner_explanation": "Estas son tierras que te pertenecen",
     "operator_explanation": "Estas son tierras que no son tuyas, pero donde tienes permiso",
@@ -691,11 +690,9 @@
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",
     "online_scenes": "Escenas Online",
-    "none": "Ninguna",
     "add_scene": "Agregar Escena",
     "assigned_names": "Nombres asignados",
     "description": "Descripción",
-    "role": "Rol",
     "owner": "Dueño",
     "operated_by": "Operado por",
     "total_land": "Tierras Totales",

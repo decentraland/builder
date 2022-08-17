@@ -223,7 +223,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
           <Section size="large">
             <Header sub>{t('land_detail_page.online_scenes')}</Header>
             {deployments.length === 0 ? (
-              <Empty height={100}>{t('land_detail_page.none')}</Empty>
+              <Empty height={100}>{t('global.none')}</Empty>
             ) : (
               <>
                 <div className="deployments">
@@ -264,7 +264,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             </Section>
           ) : null}
           <Section className="data">
-            <Stats title={t('land_detail_page.role')} className="role">
+            <Stats title={t('global.role')} className="role">
               <Header>{t(`roles.${land.role}`)}</Header>
               {rental ? <RentalPeriod rental={rental} /> : null}
             </Stats>

@@ -560,6 +560,7 @@
     "total": "Total",
     "parcel_plural": "Parcels",
     "estate_plural": "Estates",
+    "role": "Role",
     "none": "None",
     "emote": "Emote"
   },
@@ -692,13 +693,10 @@
     "ends_in": "Ends in"
   },
   "land_page": {
-    "name": "Name",
     "coordinates": "Coordinates",
-    "role": "Role",
     "operated_by": "Operated by",
     "type": "Type",
     "online_scenes": "Online Scenes",
-    "none": "None",
     "results": "{count} {count, plural, one {result} other {results}}",
     "owner_explanation": "These are lands you own.",
     "operator_explanation": "These are lands you don't own, but the owner gave you permission to use them.",
@@ -712,11 +710,9 @@
     "add_or_remove_parcels": "Add Or Remove Parcels",
     "dissolve_estate": "Dissolve Estate",
     "online_scenes": "Online Scenes",
-    "none": "None",
     "add_scene": "Add Scene",
     "assigned_names": "Assigned names",
     "description": "Description",
-    "role": "Role",
     "owner": "Owner",
     "operated_by": "Operated by",
     "total_land": "Total Land",

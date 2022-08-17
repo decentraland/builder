@@ -49,7 +49,7 @@ export default class Popup extends React.PureComponent<Props> {
               {deployments.length > 3 ? <p>+{t('list.more', { count: deployments.length - 3 })}</p> : null}
             </>
           ) : (
-            <div className="no-scenes">{t('land_page.none')}</div>
+            <div className="no-scenes">{t('global.none')}</div>
           )}
         </Section>
       </div>
