@@ -32,6 +32,7 @@ import {
   GenerateImageOptions,
   EmotePlayMode
 } from './types'
+import { ModelMetrics } from 'modules/models/types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -560,4 +561,15 @@ export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, S
       itemCurations?.find(itemCuration => itemCuration.itemId === item.id)
     )
   )
+}
+
+export const isItemEmote = (item: Item) => item.type === ItemType.EMOTE
+
+export const EMPTY_ITEM_METRICS: ModelMetrics = {
+  triangles: 0,
+  materials: 0,
+  meshes: 0,
+  bodies: 0,
+  entities: 0,
+  textures: 0
 }
