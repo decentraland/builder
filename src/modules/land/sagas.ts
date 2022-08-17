@@ -181,7 +181,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
 
         if (land.role === RoleType.TENANT) {
           const rentals = Rentals__factory.connect(RENTALS_ADDRESS, signer)
-          transaction = yield call(() => rentals.setOperator(LAND_REGISTRY_ADDRESS, tokenId, operator))
+          transaction = yield call([rentals, 'setOperator'], LAND_REGISTRY_ADDRESS, tokenId, operator)
         } else {
           transaction = yield call(() => landRegistry.setUpdateOperator(tokenId, operator))
         }
@@ -194,7 +194,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
 
         if (land.role === RoleType.TENANT) {
           const rentals = Rentals__factory.connect(RENTALS_ADDRESS, signer)
-          transaction = yield call(() => rentals.setOperator(ESTATE_REGISTRY_ADDRESS, land.id, operator))
+          transaction = yield call([rentals, 'setOperator'], ESTATE_REGISTRY_ADDRESS, land.id, operator)
         } else {
           transaction = yield call(() => estateRegistry.setUpdateOperator(land.id, operator))
         }
@@ -278,7 +278,7 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
   try {
     const isRentalsEnabled: boolean = yield select(getIsRentalsEnabled)
 
-    const rentals: Rental[] = isRentalsEnabled ? yield call(() => rental.fetchTokenIdsByTenant(address)) : []
+    const rentals: Rental[] = isRentalsEnabled ? yield call([rental, 'fetchTokenIdsByTenant'], address) : []
     const tenantTokenIds = rentals.map(rental => rental.tokenId)
 
     const [land, authorizations]: [Land[], Authorization[]] = yield call(() => manager.fetchLand(address, tenantTokenIds))
