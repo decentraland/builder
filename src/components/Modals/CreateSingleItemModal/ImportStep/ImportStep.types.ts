@@ -1,6 +1,6 @@
+import React from 'react'
 import { WearableCategory } from '@dcl/schemas'
 import { Item } from 'modules/item/types'
-import React from 'react'
 import { AcceptedFileProps } from '../CreateSingleItemModal.types'
 
 export type Props = {

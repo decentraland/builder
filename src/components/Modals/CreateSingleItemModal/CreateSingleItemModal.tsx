@@ -342,9 +342,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
-    this.setState({
-      ...acceptedFileProps
-    })
+    const { bodyShape, ...acceptedProps } = acceptedFileProps
+    this.setState(prevState => ({
+      bodyShape: bodyShape || prevState.bodyShape,
+      ...acceptedProps
+    }))
   }
 
   handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
@@ -558,12 +560,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderImportView() {
     const { metadata, onClose } = this.props
-    const { isRepresentation, category } = this.state
+    const { category, isRepresentation } = this.state
     const title = this.renderModalTitle()
 
     return (
       <ImportStep
-        category={category! as WearableCategory}
+        category={category as WearableCategory}
         metadata={metadata}
         title={title}
         wearablePreviewComponent={<div className="importer-thumbnail-container">{this.renderWearablePreview()}</div>}
