@@ -10,6 +10,7 @@ import { EntityState } from 'modules/entity/reducer'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { getItemCurationsByItemId } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
 import { getItemThirdParty } from 'modules/thirdParty/selectors'
@@ -18,7 +19,7 @@ import { isEqual } from 'lib/address'
 import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
 import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
-import { Item, SyncStatus, Rarity, CatalystItem } from './types'
+import { Item, SyncStatus, Rarity, CatalystItem, ItemType } from './types'
 import { areSynced, canSeeItem, isOwner } from './utils'
 
 export const getState = (state: RootState) => state.item
@@ -81,6 +82,12 @@ export const getRarities = (state: RootState): Rarity[] => {
   return getState(state).rarities
 }
 
+export const getWearables = createSelector<RootState, Item[], Item[]>(getItems, items =>
+  items.filter(item => item.type === ItemType.WEARABLE)
+)
+
+export const getEmotes = createSelector<RootState, Item[], Item[]>(getItems, items => items.filter(item => item.type === ItemType.EMOTE))
+
 export const getItemsByURN = createSelector<RootState, Item[], Record<string, Collection>, Record<string, Item>>(
   state => getItems(state),
   state => getCollectionData(state),
@@ -123,7 +130,12 @@ const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStat
   return SyncStatus.UNPUBLISHED
 }
 
-const getStatusForStandard = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
+const getStatusForStandard = (
+  item: Item,
+  collectionCuration: CollectionCuration | null,
+  entity: Entity,
+  isEmotesFeatureFlagOn: boolean
+): SyncStatus => {
   let status: SyncStatus
   if (!item.isPublished) {
     status = SyncStatus.UNPUBLISHED
@@ -132,7 +144,7 @@ const getStatusForStandard = (item: Item, collectionCuration: CollectionCuration
   } else {
     if (!entity) {
       status = SyncStatus.LOADING
-    } else if (areSynced(item, entity)) {
+    } else if (areSynced(item, entity, isEmotesFeatureFlagOn)) {
       status = SyncStatus.SYNCED
     } else {
       status = SyncStatus.UNSYNCED
@@ -147,18 +159,25 @@ export const getStatusByItemId = createSelector<
   EntityState['data'],
   Record<string, CollectionCuration>,
   Record<string, ItemCuration>,
+  boolean,
   Record<string, SyncStatus>
 >(
   state => getItems(state),
   state => getEntityByItemId(state),
   state => getCurationsByCollectionId(state),
   getItemCurationsByItemId,
-  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
+  state => getIsEmotesFlowEnabled(state),
+  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId, isEmotesFeatureFlagOn) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
       statusByItemId[item.id] = isThirdParty(item.urn)
         ? getStatusForTP(item, itemCurationByItemId[item.id])
-        : getStatusForStandard(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
+        : getStatusForStandard(
+            item,
+            item.collectionId ? curationsByCollectionId[item.collectionId] : null,
+            entitiesByItemId[item.id],
+            isEmotesFeatureFlagOn
+          )
     }
     return statusByItemId
   }

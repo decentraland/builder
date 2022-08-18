@@ -1,9 +1,10 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
+import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { computeHashFromContent } from 'modules/deployment/contentUtils'
@@ -25,14 +26,12 @@ import {
   IMAGE_CATEGORIES,
   THUMBNAIL_PATH,
   InitializeItem,
-  CatalystItem,
   SyncStatus,
   ThirdPartyContractItem,
   ItemMetadataType,
   WearableRepresentation,
   GenerateImageOptions,
-  EmoteCategory,
-  EmoteData
+  EmotePlayMode
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -162,7 +161,7 @@ export function getMetadata(item: Item) {
       return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
     case ItemType.EMOTE: {
-      const data = item.data as EmoteData
+      const data = (item.data as unknown) as EmoteDataADR74
       const bodyShapeTypes = getBodyShapes(item)
         .map(toWearableBodyShapeType)
         .join(',')
@@ -193,7 +192,7 @@ export async function generateCatalystImage(item: Item | LocalItem, options?: Ge
   }
 }
 
-export async function generateImage(item: Item | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
+export async function generateImage(item: Item | Item<ItemType.EMOTE> | LocalItem, options?: GenerateImageOptions): Promise<Blob> {
   // Set default width and height
   const width: number = options?.width ?? 512
   const height: number = options?.height ?? 512
@@ -339,7 +338,11 @@ export function getWearableCategories(contents: Record<string, any> | undefined 
 }
 
 export function getEmoteCategories() {
-  return Object.values(EmoteCategory)
+  return EmoteCategory.schema.enum as EmoteCategory[]
+}
+
+export function getEmotePlayModes() {
+  return Object.values(EmotePlayMode)
 }
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
@@ -425,21 +428,21 @@ export function areEqualRepresentations(a: WearableRepresentation[], b: Wearable
   return true
 }
 
-export function areSynced(item: Item, entity: Entity) {
+export function isWearableSynced(item: Item, entity: Entity) {
+  if (item.type !== ItemType.WEARABLE) {
+    throw new Error('Item must be WEARABLE')
+  }
+
   // check if metadata is synced
-  const catalystItem = entity.metadata! as CatalystItem
+  const catalystItem = entity.metadata! as Wearable
   const hasMetadataChanged =
-    item.type === ItemType.WEARABLE
-      ? item.name !== catalystItem.name ||
-        item.description !== catalystItem.description ||
-        item.data.category !== catalystItem.data.category ||
-        item.data.hides.toString() !== catalystItem.data.hides.toString() ||
-        item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
-        item.data.tags.toString() !== catalystItem.data.tags.toString()
-      : item.name !== catalystItem.name ||
-        item.description !== catalystItem.description ||
-        item.data.category !== catalystItem.data.category ||
-        item.data.tags.toString() !== catalystItem.data.tags.toString()
+    item.name !== catalystItem.name ||
+    item.description !== catalystItem.description ||
+    item.data.category !== catalystItem.data.category ||
+    item.data.hides.toString() !== catalystItem.data.hides.toString() ||
+    item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
+    item.data.tags.toString() !== catalystItem.data.tags.toString()
+
   if (hasMetadataChanged) {
     return false
   }
@@ -459,6 +462,52 @@ export function areSynced(item: Item, entity: Entity) {
   }
 
   return true
+}
+
+export function isEmoteSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn: boolean) {
+  if (item.type !== ItemType.EMOTE) {
+    throw new Error('Item must be EMOTE')
+  }
+
+  // check if metadata has the new schema from ADR 74
+  const isADR74 = 'emoteDataADR74' in entity.metadata
+  if (!isADR74 && isEmotesFeatureFlagOn) {
+    return false
+  }
+
+  // check if metadata is synced
+  const catalystItem = entity.metadata
+  const catalystItemMetadataData = isADR74 ? entity.metadata.emoteDataADR74 : entity.metadata.data
+
+  const hasMetadataChanged =
+    item.name !== catalystItem.name ||
+    item.description !== catalystItem.description ||
+    (item.data.category as string) !== catalystItemMetadataData.category ||
+    item.data.tags.toString() !== catalystItemMetadataData.tags.toString()
+
+  if (hasMetadataChanged) {
+    return false
+  }
+
+  // check if representations are synced
+  if (!areEqualRepresentations(item.data.representations, catalystItemMetadataData.representations as WearableRepresentation[])) {
+    return false
+  }
+
+  // check if contents are synced
+  const contents = entity.content!.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
+  for (const path in item.contents) {
+    const hash = item.contents[path]
+    if (contents.get(path) !== hash) {
+      return false
+    }
+  }
+
+  return true
+}
+
+export function areSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn: boolean) {
+  return item.type === ItemType.WEARABLE ? isWearableSynced(item, entity) : isEmoteSynced(item, entity, isEmotesFeatureFlagOn)
 }
 
 export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {
@@ -512,4 +561,13 @@ export const getItemsWithChanges = (items: Item[], itemsStatus: Record<string, S
       itemCurations?.find(itemCuration => itemCuration.itemId === item.id)
     )
   )
+}
+
+export const EMPTY_ITEM_METRICS: ModelMetrics = {
+  triangles: 0,
+  materials: 0,
+  textures: 0,
+  meshes: 0,
+  bodies: 0,
+  entities: 1
 }

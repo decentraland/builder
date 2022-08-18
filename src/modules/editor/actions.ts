@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { PreviewEmote, BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, IPreviewController, PreviewEmote, WearableCategory } from '@dcl/schemas'
 
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
@@ -224,10 +224,16 @@ export type SetBodyShapeAction = ReturnType<typeof setBodyShape>
 
 // Set avatar animation
 export const SET_EMOTE = 'Set emote'
+export const SET_EMOTE_PLAYING = 'Set emote playing'
+export const SET_WEARABLE_PREVIEW_CONTROLLER = 'Set wearable preview controller'
 
 export const setEmote = (emote: PreviewEmote) => action(SET_EMOTE, { emote })
+export const setEmotePlaying = (isPlayingEmote: boolean) => action(SET_EMOTE_PLAYING, { isPlayingEmote })
+export const setWearablePreviewController = (controller: IPreviewController) => action(SET_WEARABLE_PREVIEW_CONTROLLER, { controller })
 
 export type SetEmoteAction = ReturnType<typeof setEmote>
+export type SetEmotePlayingAction = ReturnType<typeof setEmotePlaying>
+export type SetWearablePreviewControllerAction = ReturnType<typeof setWearablePreviewController>
 
 // Set skin color
 export const SET_SKIN_COLOR = 'Set skin color'

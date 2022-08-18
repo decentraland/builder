@@ -1,7 +1,7 @@
 .itemImage {
-  min-width: 64px;
-  max-width: 64px;
-  height: 64px;
+  min-width: 48px;
+  max-width: 48px;
+  height: 48px;
   padding: 5px;
   margin-right: 24px;
 }
@@ -14,11 +14,6 @@
   font-size: 15px !important;
   font-weight: normal;
   line-height: 0;
-}
-
-.grid:hover .action {
-  display: inherit !important;
-  margin-left: 5px;
 }
 
 .grid {
@@ -37,19 +32,18 @@
   font-size: 15px;
 }
 
-.column {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center;
-}
-
 .avatarColumn {
   align-items: center;
   flex-direction: inherit !important;
 }
 
+.avatarContainer {
+  display: flex;
+}
+
 .info {
   width: calc(100% - 80px);
+  display: flex;
 }
 
 .nameWrapper {
@@ -57,11 +51,25 @@
   align-items: center;
 }
 
+.badgeContainer {
+  margin-left: 8px;
+}
+
+.badge {
+  background-color: #37333d;
+}
+
+.badge::before {
+  filter: none;
+}
+
 .name {
   font-size: 15px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
 }
 
 .linkAction {
@@ -81,12 +89,7 @@
   width: 100%;
 }
 
-.action {
-  display: none !important;
-}
-
 .done {
-  text-align: right;
   color: rgb(var(--light-blue-raw));
 }
 

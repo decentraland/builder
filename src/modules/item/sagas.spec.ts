@@ -11,13 +11,16 @@ import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { fetchItemCurationRequest } from 'modules/curations/itemCuration/actions'
 import { downloadZip } from 'lib/zip'
@@ -63,7 +66,6 @@ import { calculateFinalSize, reHashOlderContents } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 let blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -414,10 +416,16 @@ describe('when handling the save item request action', () => {
 })
 
 describe('when handling the save item success action', () => {
+  let collection: Collection
   let item: Item
+
   beforeEach(() => {
-    item = { ...mockedItem }
+    collection = {
+      id: 'aCollection'
+    } as Collection
+    item = { ...mockedItem, collectionId: collection.id }
   })
+
   describe('and the location is the TP detail page', () => {
     describe('and the new item will be in the same page', () => {
       let paginationData: ItemPaginationData
@@ -452,6 +460,159 @@ describe('when handling the save item success action', () => {
           .put(push(locations.thirdPartyCollectionDetail(item.collectionId!, { page: newPageNumber })))
           .dispatch(saveItemSuccess(item, contents))
           .run({ silenceTimeout: true })
+      })
+    })
+  })
+
+  describe('and the location is the Collection page', () => {
+    describe('and the CreateSingleItemModal is opened', () => {
+      describe('and the item type is wearable', () => {
+        it('should put a location change to the item detail', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.collections() }],
+              [select(getOpenModals), { CreateSingleItemModal: true }]
+            ])
+            .put(push(locations.itemDetail(item.id)))
+            .dispatch(saveItemSuccess(item, {}))
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('and the item type is emote', () => {
+        beforeEach(() => {
+          item = { ...item, type: ItemType.EMOTE }
+        })
+
+        describe('and the FF EmotesFlow is enabled', () => {
+          it('should put a location change to the item editor', () => {
+            return expectSaga(itemSaga, builderAPI, builderClient)
+              .provide([
+                [select(getLocation), { pathname: locations.collections() }],
+                [select(getOpenModals), { CreateSingleItemModal: true }],
+                [select(getIsEmotesFlowEnabled), true]
+              ])
+              .put(push(locations.itemEditor({ itemId: item.id })))
+              .dispatch(saveItemSuccess(item, {}))
+              .run({ silenceTimeout: true })
+          })
+        })
+
+        describe('and the FF EmotesFlow is disabled', () => {
+          it('should put a location change to the item detail', () => {
+            return expectSaga(itemSaga, builderAPI, builderClient)
+              .provide([
+                [select(getLocation), { pathname: locations.collections() }],
+                [select(getOpenModals), { CreateSingleItemModal: true }],
+                [select(getIsEmotesFlowEnabled), false]
+              ])
+              .put(push(locations.itemDetail(item.id)))
+              .dispatch(saveItemSuccess(item, {}))
+              .run({ silenceTimeout: true })
+          })
+        })
+      })
+    })
+  })
+
+  describe('and the location is the Collection detail page', () => {
+    describe('and the CreateSingleItemModal is opened', () => {
+      describe('and the item type is wearable', () => {
+        it('should close the modal CreateSingleItemModal', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
+              [select(getOpenModals), { CreateSingleItemModal: true }]
+            ])
+            .put(closeModal('CreateSingleItemModal'))
+            .dispatch(saveItemSuccess(item, {}))
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('and the item type is emote', () => {
+        beforeEach(() => {
+          item = { ...item, type: ItemType.EMOTE }
+        })
+
+        describe('and the FF EmotesFlow is enabled', () => {
+          it('should put a location change to the item editor', () => {
+            return expectSaga(itemSaga, builderAPI, builderClient)
+              .provide([
+                [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
+                [select(getOpenModals), { CreateSingleItemModal: true }],
+                [select(getIsEmotesFlowEnabled), true]
+              ])
+              .put(push(locations.itemEditor({ collectionId: collection.id, itemId: item.id })))
+              .dispatch(saveItemSuccess(item, {}))
+              .run({ silenceTimeout: true })
+          })
+        })
+
+        describe('and the FF EmotesFlow is disabled', () => {
+          it('should close the modal CreateSingleItemModal', () => {
+            return expectSaga(itemSaga, builderAPI, builderClient)
+              .provide([
+                [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
+                [select(getOpenModals), { CreateSingleItemModal: true }],
+                [select(getIsEmotesFlowEnabled), false]
+              ])
+              .put(closeModal('CreateSingleItemModal'))
+              .dispatch(saveItemSuccess(item, {}))
+              .run({ silenceTimeout: true })
+          })
+        })
+      })
+    })
+  })
+
+  describe('and the location is the Item editor page', () => {
+    describe('and the CreateSingleItemModal is opened', () => {
+      describe('and the item type is wearable', () => {
+        it('should close the modal CreateSingleItemModal', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.itemEditor() }],
+              [select(getOpenModals), { CreateSingleItemModal: true }]
+            ])
+            .put(closeModal('CreateSingleItemModal'))
+            .dispatch(saveItemSuccess(item, {}))
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('and the item type is emote', () => {
+        beforeEach(() => {
+          item = { ...item, type: ItemType.EMOTE }
+        })
+
+        describe('and the FF EmotesFlow is enabled', () => {
+          it('should put a location change to the item editor', () => {
+            return expectSaga(itemSaga, builderAPI, builderClient)
+              .provide([
+                [select(getLocation), { pathname: locations.itemEditor() }],
+                [select(getOpenModals), { CreateSingleItemModal: true }],
+                [select(getIsEmotesFlowEnabled), true]
+              ])
+              .put(closeModal('CreateSingleItemModal'))
+              .dispatch(saveItemSuccess(item, {}))
+              .run({ silenceTimeout: true })
+          })
+        })
+
+        describe('and the FF EmotesFlow is disabled', () => {
+          it('should close the modal CreateSingleItemModal', () => {
+            return expectSaga(itemSaga, builderAPI, builderClient)
+              .provide([
+                [select(getLocation), { pathname: locations.itemEditor() }],
+                [select(getOpenModals), { CreateSingleItemModal: true }],
+                [select(getIsEmotesFlowEnabled), false]
+              ])
+              .put(closeModal('CreateSingleItemModal'))
+              .dispatch(saveItemSuccess(item, {}))
+              .run({ silenceTimeout: true })
+          })
+        })
       })
     })
   })

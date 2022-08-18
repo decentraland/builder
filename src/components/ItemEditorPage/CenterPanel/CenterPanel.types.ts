@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
 import { Color4, Wearable } from 'decentraland-ecs'
-import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
+import { BodyShape, IPreviewController, PreviewEmote, WearableCategory } from '@dcl/schemas'
+import { Collection } from 'modules/collection/types'
 import {
   CloseEditorAction,
   setEmote,
@@ -16,18 +17,27 @@ import {
   setBaseWearable,
   SetBaseWearableAction,
   fetchBaseWearablesRequest,
-  FetchBaseWearablesRequestAction
+  FetchBaseWearablesRequestAction,
+  setWearablePreviewController,
+  SetWearablePreviewControllerAction,
+  SetItemsAction,
+  setItems
 } from 'modules/editor/actions'
 import { Item } from 'modules/item/types'
 
 export type Props = {
+  collection: Collection | undefined
   bodyShape: BodyShape
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4
   emote: PreviewEmote
   selectedBaseWearables: Record<WearableCategory, Wearable | null> | null
+  selectedItem: Item | null
   visibleItems: Item[]
+  wearableController?: IPreviewController | null
+  emotesFromCollection: Item[]
+  isPlayingEmote: boolean
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
@@ -35,6 +45,8 @@ export type Props = {
   onSetHairColor: typeof setHairColor
   onSetBaseWearable: typeof setBaseWearable
   onFetchBaseWearables: typeof fetchBaseWearablesRequest
+  onSetWearablePreviewController: typeof setWearablePreviewController
+  onSetItems: typeof setItems
 }
 
 export type State = {
@@ -44,7 +56,18 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'emote' | 'visibleItems' | 'selectedBaseWearables'
+  | 'bodyShape'
+  | 'collection'
+  | 'skinColor'
+  | 'eyeColor'
+  | 'hairColor'
+  | 'emote'
+  | 'visibleItems'
+  | 'selectedBaseWearables'
+  | 'selectedItem'
+  | 'wearableController'
+  | 'emotesFromCollection'
+  | 'isPlayingEmote'
 >
 export type MapDispatchProps = Pick<
   Props,
@@ -55,6 +78,8 @@ export type MapDispatchProps = Pick<
   | 'onSetHairColor'
   | 'onSetBaseWearable'
   | 'onFetchBaseWearables'
+  | 'onSetWearablePreviewController'
+  | 'onSetItems'
 >
 export type MapDispatch = Dispatch<
   | CloseEditorAction
@@ -65,4 +90,6 @@ export type MapDispatch = Dispatch<
   | SetHairColorAction
   | SetBaseWearableAction
   | FetchBaseWearablesRequestAction
+  | SetWearablePreviewControllerAction
+  | SetItemsAction
 >

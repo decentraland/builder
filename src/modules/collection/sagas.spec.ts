@@ -18,7 +18,7 @@ import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Mod
 import { getEntityByItemId, getItems, getData as getItemsById, getPaginationData, getWalletItems } from 'modules/item/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
 import { getCollection } from 'modules/collection/selectors'
-import { EntityHashingType, Item, ItemApprovalData } from 'modules/item/types'
+import { EntityHashingType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
 import { openModal, closeModal, CLOSE_MODAL } from 'modules/modal/actions'
 import { mockedItem } from 'specs/item'
 import {
@@ -40,6 +40,7 @@ import {
   approveCollectionCurationRequest,
   approveCollectionCurationSuccess
 } from 'modules/curations/collectionCuration/actions'
+import { EMPTY_ITEM_METRICS } from 'modules/item/utils'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import {
   deployBatchedThirdPartyItemsFailure,
@@ -98,6 +99,7 @@ const getTPCollectionMock = (props: Partial<Collection> = {}): Collection =>
 const getItemMock = (collection: Collection, props: Partial<Item> = {}): Item =>
   ({
     id: 'anItem',
+    type: ItemType.WEARABLE,
     collectionId: collection.id,
     name: 'An Item',
     description: 'This is an item',
@@ -113,6 +115,7 @@ const getItemMock = (collection: Collection, props: Partial<Item> = {}): Item =>
       tags: [] as string[],
       representations: [] as WearableRepresentation[]
     },
+    metrics: EMPTY_ITEM_METRICS,
     ...props
   } as Item)
 

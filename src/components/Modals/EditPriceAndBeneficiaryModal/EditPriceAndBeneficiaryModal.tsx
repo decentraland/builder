@@ -12,7 +12,8 @@ import {
   InputOnChangeData,
   FieldProps,
   Mana,
-  Card
+  Card,
+  Checkbox
 } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -38,7 +39,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     const { item } = this.props
     if (item) {
       this.state = {
-        ...this.state,
+        isFree: item.beneficiary === ethers.constants.AddressZero,
         price: this.getItemPrice(),
         beneficiary: item.beneficiary || item.owner
       }
@@ -69,7 +70,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   handleSubmit = () => {
-    const { item, onSave, onSetPriceAndBeneficiary } = this.props
+    const { item, itemSortedContents, onSave, onSetPriceAndBeneficiary } = this.props
     const { price, beneficiary } = this.state
     const priceInWei = ethers.utils.parseEther(price!).toString()
 
@@ -81,7 +82,8 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
         price: priceInWei,
         beneficiary
       }
-      onSave(newItem, {})
+      // Send itemSortedContents if this modal was opened from CreateSingleItem modal.
+      onSave(newItem, itemSortedContents ?? {})
     }
   }
 
@@ -118,27 +120,14 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   render() {
-    const { name, item, isLoading, onClose } = this.props
+    const { name, isLoading, onClose, onSkip } = this.props
     const { isFree, price = '', beneficiary = '' } = this.state
 
     const isGift = this.isGift()
 
     return (
       <Modal name={name} size="tiny" onClose={onClose}>
-        <ModalNavigation
-          title={t('edit_price_and_beneficiary_modal.title', { name: item.name })}
-          subtitle={
-            <div className="actions">
-              <Button size="mini" onClick={this.handleIsGiftToggle} active={!isGift}>
-                {t('edit_price_and_beneficiary_modal.for_me')}
-              </Button>
-              <Button size="mini" onClick={this.handleIsFreeToggle} active={isFree}>
-                {t('edit_price_and_beneficiary_modal.free')}
-              </Button>
-            </div>
-          }
-          onClose={onClose}
-        />
+        <ModalNavigation title={t('edit_price_and_beneficiary_modal.title')} onClose={onClose} />
 
         <Form onSubmit={this.handleSubmit}>
           <ModalContent>
@@ -152,6 +141,15 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                 error={!!price && !this.isValidPrice()}
               />
               <Mana network={Network.MATIC} inline />
+              <div className="checkbox make-it-free">
+                <Checkbox
+                  className="item-checkbox"
+                  checked={isFree}
+                  onClick={(_event: React.MouseEvent<HTMLInputElement>) => this.handleIsFreeToggle()}
+                />
+                &nbsp;
+                {t('edit_price_and_beneficiary_modal.free')}
+              </div>
             </div>
             <Field
               label={
@@ -169,6 +167,15 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               onChange={this.handleBeneficiaryChange}
               error={!!beneficiary && !this.isValidBeneficiary()}
             />
+            <div className="checkbox beneficiary">
+              <Checkbox
+                className="item-checkbox"
+                checked={!isGift}
+                onClick={(_event: React.MouseEvent<HTMLInputElement>) => this.handleIsGiftToggle()}
+              />
+              &nbsp;
+              {t('edit_price_and_beneficiary_modal.for_me')}
+            </div>
             {this.isPriceTooLow() ? (
               <Card fluid className="min-price-notice">
                 <Card.Content>
@@ -192,8 +199,13 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
           </ModalContent>
           <ModalActions>
             <NetworkButton primary disabled={this.isDisabled()} loading={isLoading} network={Network.MATIC}>
-              {t('global.submit')}
+              {t('global.save')}
             </NetworkButton>
+            {!!onSkip && (
+              <Button secondary loading={isLoading} onClick={onSkip} type="button">
+                {t('global.skip')}
+              </Button>
+            )}
           </ModalActions>
         </Form>
       </Modal>

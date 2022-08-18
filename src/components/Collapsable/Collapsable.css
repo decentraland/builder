@@ -11,6 +11,8 @@
 }
 
 .Collapsable > .header > .label {
+  display: flex;
+  align-items: center;
   flex: 1 0 auto;
   color: var(--secondary-text);
   text-transform: uppercase;
@@ -20,7 +22,7 @@
 
 .Collapsable > .header > .handle {
   flex: none;
-  background-image: url(../../../../images/caret.svg);
+  background-image: url(../../images/caret.svg);
   background-repeat: no-repeat;
   background-position: center;
   width: 18px;

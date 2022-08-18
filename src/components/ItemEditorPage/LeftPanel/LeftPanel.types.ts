@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { BodyShape } from '@dcl/schemas'
+import { BodyShape, IPreviewController } from '@dcl/schemas'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { setItems, SetItemsAction } from 'modules/editor/actions'
@@ -31,6 +31,8 @@ export type Props = {
   isReviewing: boolean
   bodyShape: BodyShape
   isLoading: boolean
+  isPlayingEmote: boolean
+  wearableController: IPreviewController | null
   onSetItems: typeof setItems
   onSetCollection: typeof setCollection
   onFetchOrphanItems: typeof fetchItemsRequest
@@ -55,9 +57,11 @@ export type MapStateProps = Pick<
   | 'selectedCollectionId'
   | 'visibleItems'
   | 'bodyShape'
+  | 'wearableController'
   | 'isConnected'
   | 'isReviewing'
   | 'isLoading'
+  | 'isPlayingEmote'
 >
 export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onSetCollection' | 'onFetchOrphanItems' | 'onFetchCollections'>
 export type MapDispatch = Dispatch<

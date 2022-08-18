@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { EmoteDataADR74 } from '@dcl/schemas'
 import {
   deleteItemRequest,
   DeleteItemRequestAction,
@@ -23,6 +24,7 @@ export type Props = {
   isConnected: boolean
   isDownloading: boolean
   isCommitteeMember: boolean
+  isEmotesFeatureFlagOn: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
@@ -36,7 +38,7 @@ export type State = {
   thumbnail: string
   rarity?: ItemRarity
   contents: Record<string, Blob>
-  data?: WearableData
+  data?: WearableData | EmoteDataADR74
   hasItem: boolean
   isDirty: boolean
 }
@@ -51,6 +53,7 @@ export type MapStateProps = Pick<
   | 'isConnected'
   | 'isDownloading'
   | 'isCommitteeMember'
+  | 'isEmotesFeatureFlagOn'
   | 'canEditSelectedItem'
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>

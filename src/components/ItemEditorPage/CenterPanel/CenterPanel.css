@@ -2,6 +2,8 @@
   position: relative;
   flex: 1 1 auto;
   background-color: #4c4852;
+  display: flex;
+  flex-direction: column;
 }
 
 .CenterPanel .WearablePreview {
@@ -35,10 +37,51 @@
   color: var(--text);
 }
 
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option {
+  padding: 0;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
+  background-color: var(--light-gray);
+  font-size: 15px;
+  line-height: 17px;
+  min-width: 29.5px;
+  transform: translateY(0px);
+  padding: 6px 12px;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button span {
+  margin-left: 5px;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.dropdown {
+  border-left-style: solid;
+  border-left-width: thin;
+  font-size: 20px;
+}
+
 .CenterPanel .footer .ui.dropdown > .text {
   color: var(--text);
   font-size: 11px;
   line-height: 16px;
+}
+
+.CenterPanel .footer .ui.dropdown > .menu > .header {
+  color: var(--light-gray);
+  font-size: 15px;
+  line-height: 24px;
+  padding: 10px 16px !important;
+  margin: 0;
+  font-weight: normal;
+  min-width: 210px;
+}
+
+.CenterPanel .footer .ui.dropdown > .menu {
+  padding-top: 0;
+}
+
+.CenterPanel .footer .ui.dropdown > .menu > .divider {
+  margin: 0;
 }
 
 .CenterPanel .footer .avatar-attributes {
@@ -66,4 +109,34 @@
 
 .CenterPanel .footer .ui.dropdown .menu {
   background-color: var(--smart-grey);
+}
+
+.CenterPanel .emote-controls-container {
+  position: relative;
+  bottom: 53px;
+  margin: 0 16px;
+}
+
+.CenterPanel .emote-controls {
+  padding: 4px;
+  background: #242129;
+  position: relative;
+}
+
+.CenterPanel .EmoteControls {
+  padding: 0;
+}
+
+.CenterPanel .EmoteControls .frame-control {
+  margin: 4px;
+  margin-left: 0;
+}
+
+.CenterPanel .EmoteControls .ui.button.play-control {
+  width: 65px;
+  height: 51px;
+}
+
+.CenterPanel .EmoteControls .ui.button.play-control:hover {
+  transform: none;
 }
