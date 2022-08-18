@@ -26,7 +26,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return {
       id: '',
       error: '',
-      isLoading: false,
+      isLoading: false
     }
   }
 
@@ -40,14 +40,14 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const zip: JSZip = await JSZip.loadAsync(file)
     const fileNames: string[] = []
 
-    zip.forEach((fileName) => {
+    zip.forEach(fileName => {
       if (!basename(fileName).startsWith('.')) {
         fileNames.push(fileName)
       }
     })
 
     // asset.json contains data to populate parts of the state
-    const assetJsonPath = fileNames.find((path) => basename(path) === ASSET_MANIFEST)
+    const assetJsonPath = fileNames.find(path => basename(path) === ASSET_MANIFEST)
     let assetJson: ItemAssetJson | undefined
 
     if (assetJsonPath) {
@@ -60,9 +60,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
     const files = await Promise.all(
       fileNames
-        .map((fileName) => zip.file(fileName))
-        .filter((file) => !!file)
-        .map(async (file) => {
+        .map(fileName => zip.file(fileName))
+        .filter(file => !!file)
+        .map(async file => {
           const blob = await file.async('blob')
 
           if (blob.size > MAX_FILE_SIZE) {
@@ -71,7 +71,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
           return {
             name: file.name,
-            blob,
+            blob
           }
         })
     )
@@ -102,7 +102,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
     const modelPath = file.name
     const contents = {
-      [modelPath]: file,
+      [modelPath]: file
     }
 
     return { ...(await this.processModel(modelPath, contents)), assetJson: undefined }
@@ -142,7 +142,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         contents,
         bodyShape: isEmote ? BodyShapeType.BOTH : undefined,
         category: isRepresentation ? category : undefined,
-        ...(await this.getAssetJsonProps(assetJson, contents)),
+        ...(await this.getAssetJsonProps(assetJson, contents))
       })
       this.setState({ error: '', isLoading: false })
     } catch (error) {
@@ -163,7 +163,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     if (thumbnail && thumbnail in contents) {
       return {
         ...props,
-        thumbnail: await blobToDataURL(contents[thumbnail]),
+        thumbnail: await blobToDataURL(contents[thumbnail])
       }
     }
 
@@ -185,7 +185,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       width: 1024,
       height: 1024,
       extension: getExtension(model) || undefined,
-      engine: EngineType.BABYLON,
+      engine: EngineType.BABYLON
     })
     URL.revokeObjectURL(url)
 

@@ -15,7 +15,7 @@ import {
   SelectField,
   DropdownProps,
   WearablePreview,
-  Message,
+  Message
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -29,7 +29,7 @@ import {
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
   ItemType,
-  EmotePlayMode,
+  EmotePlayMode
 } from 'modules/item/types'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -48,7 +48,7 @@ import {
   resizeImage,
   getMaxSupplyForRarity,
   getEmoteCategories,
-  getEmotePlayModes,
+  getEmotePlayModes
 } from 'modules/item/utils'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
@@ -61,7 +61,7 @@ import {
   CreateSingleItemModalMetadata,
   StateData,
   SortedContent,
-  AcceptedFileProps,
+  AcceptedFileProps
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
 
@@ -195,7 +195,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         item: editedItem,
         category,
         playMode,
-        rarity,
+        rarity
       } = this.state as StateData
 
       if (this.state.view === CreateItemView.DETAILS) {
@@ -221,17 +221,17 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 representations: [
                   ...editedItem.data.representations,
                   // add new representation
-                  ...this.buildRepresentations(bodyShape, model, sortedContents),
+                  ...this.buildRepresentations(bodyShape, model, sortedContents)
                 ],
                 replaces: [...editedItem.data.replaces],
                 hides: [...editedItem.data.hides],
-                tags: [...editedItem.data.tags],
+                tags: [...editedItem.data.tags]
               },
               contents: {
                 ...editedItem.contents,
-                ...hashedContents,
+                ...hashedContents
               },
-              updatedAt: +new Date(),
+              updatedAt: +new Date()
             }
 
             // Do not change the thumbnail when adding a new representation
@@ -243,12 +243,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 ...pristineItem.data,
                 replaces: [],
                 hides: [],
-                category: category as WearableCategory,
+                category: category as WearableCategory
               },
               name,
               metrics,
               contents: await computeHashes(sortedContents.all),
-              updatedAt: +new Date(),
+              updatedAt: +new Date()
             }
 
             const wearableBodyShape = bodyShape === BodyShapeType.MALE ? BodyShape.MALE : BodyShape.FEMALE
@@ -285,14 +285,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 replaces: [],
                 hides: [],
                 tags: [],
-                representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
+                representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
               } as WearableData
             } else {
               data = {
                 category: category as EmoteCategory,
                 representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
                 tags: [],
-                loop: playMode === EmotePlayMode.LOOP,
+                loop: playMode === EmotePlayMode.LOOP
               } as EmoteDataADR74
             }
 
@@ -317,7 +317,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               metrics,
               contents: await computeHashes(sortedContents.all),
               createdAt: +new Date(),
-              updatedAt: +new Date(),
+              updatedAt: +new Date()
             }
           }
 
@@ -328,7 +328,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             this.setState({
               item: { ...(item as Item) },
               itemSortedContents: sortedContents.all,
-              view: CreateItemView.SET_PRICE,
+              view: CreateItemView.SET_PRICE
             })
           }
         } catch (error) {
@@ -350,10 +350,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     const { bodyShape, ...acceptedProps } = acceptedFileProps
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       isLoading: true,
       bodyShape: bodyShape || prevState.bodyShape,
-      ...acceptedProps,
+      ...acceptedProps
     }))
   }
 
@@ -416,8 +416,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         thumbnail,
         contents: {
           ...contents,
-          [THUMBNAIL_PATH]: file,
-        },
+          [THUMBNAIL_PATH]: file
+        }
       })
     }
   }
@@ -457,7 +457,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           height: 1024,
           thumbnailType: getThumbnailType(category),
           extension: (model && getExtension(model)) || undefined,
-          engine: EngineType.BABYLON,
+          engine: EngineType.BABYLON
         })
         thumbnail = image
         URL.revokeObjectURL(url)
@@ -476,7 +476,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         mainFile: this.prefixContentName(BodyShapeType.MALE, model),
         contents: Object.keys(contents.male),
         overrideHides: [],
-        overrideReplaces: [],
+        overrideReplaces: []
       })
     }
 
@@ -487,7 +487,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         mainFile: this.prefixContentName(BodyShapeType.FEMALE, model),
         contents: Object.keys(contents.female),
         overrideHides: [],
-        overrideReplaces: [],
+        overrideReplaces: []
       })
     }
 
@@ -548,7 +548,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           disableFace: true,
           disableDefaultWearables: true,
           skin: '000000',
-          wheelZoom: 2,
+          wheelZoom: 2
         }
       : {}
 
@@ -602,13 +602,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               label={t('create_single_item_modal.rarity_label')}
               placeholder={t('create_single_item_modal.rarity_placeholder')}
               value={rarity}
-              options={rarities.map((value) => ({
+              options={rarities.map(value => ({
                 value,
                 label: t(`wearable.supply`, {
                   count: getMaxSupplyForRarity(value),
-                  formatted: getMaxSupplyForRarity(value).toLocaleString(),
+                  formatted: getMaxSupplyForRarity(value).toLocaleString()
                 }),
-                text: t(`wearable.rarity.${value}`),
+                text: t(`wearable.rarity.${value}`)
               }))}
               onChange={this.handleRarityChange}
             />
@@ -624,7 +624,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                     >
                       {t('global.learn_more')}
                     </a>
-                  ),
+                  )
                 }}
               />
             </p>
@@ -635,7 +635,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           label={t('create_single_item_modal.category_label')}
           placeholder={t('create_single_item_modal.category_placeholder')}
           value={categories.includes(category!) ? category : undefined}
-          options={categories.map((value) => ({ value, text: t(`${type}.category.${value}`) }))}
+          options={categories.map(value => ({ value, text: t(`${type}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
       </>
@@ -718,10 +718,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           label={t('create_single_item_modal.play_mode_label')}
           placeholder={t('create_single_item_modal.play_mode_placeholder')}
           value={playModes.includes(playMode!) ? playMode : undefined}
-          options={playModes.map((value) => ({
+          options={playModes.map(value => ({
             value,
             text: t(`${type}.play_mode.${value}.text`),
-            description: t(`${type}.play_mode.${value}.description`),
+            description: t(`${type}.play_mode.${value}.description`)
           }))}
           onChange={this.handlePlayModeChange}
         />
@@ -782,7 +782,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
     }
 
-    return required.every((prop) => prop !== undefined)
+    return required.every(prop => prop !== undefined)
   }
 
   renderDetailsView() {

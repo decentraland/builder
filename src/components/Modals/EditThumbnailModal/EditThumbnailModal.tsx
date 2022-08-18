@@ -16,14 +16,14 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
       view: CreateItemView.IMPORT,
       file: null,
       error: '',
-      isLoading: false,
+      isLoading: false
     }
   }
 
   handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     this.setState({
       file: acceptedFileProps.file!,
-      view: CreateItemView.THUMBNAIL,
+      view: CreateItemView.THUMBNAIL
     })
   }
 
