@@ -843,7 +843,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOnScreenshotTaken = (screenshot: string) => {
-    this.setState({ thumbnail: screenshot, isLoading: true }, () => this.setState({ view: CreateItemView.DETAILS }))
+    this.setState({ thumbnail: screenshot }, () => this.setState({ view: CreateItemView.DETAILS }))
   }
 
   renderThumbnailView() {
