@@ -104,21 +104,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return state
   }
 
-  componentDidUpdate(_prevProps: Props, prevState: State) {
-    const { isEmotesFeatureFlagOn } = this.props
-    const { thumbnail, file, type, isLoading } = this.state
-    // when the thumbnail is loaded and the file & type are already computed
-    if ((!prevState.thumbnail || !prevState.type) && thumbnail && file && type && !isLoading) {
-      if (isEmotesFeatureFlagOn && type === ItemType.EMOTE) {
-        //  if type is emote, we proceed to the Thumbnail view
-        this.setState({ view: CreateItemView.THUMBNAIL })
-      } else {
-        //  if type is wearable, we proceed to the Detail view
-        this.setState({ view: CreateItemView.DETAILS })
-      }
-    }
-  }
-
   /**
    * Prefixes the content name by adding the adding the body shape name to it.
    *
@@ -341,10 +326,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   getMetricsAndScreenshot = async () => {
+    const { isEmotesFeatureFlagOn } = this.props
     const { type, previewController, model, contents, category } = this.state
     if (type && model && contents) {
+      const view = isEmotesFeatureFlagOn && type === ItemType.EMOTE ? CreateItemView.THUMBNAIL : CreateItemView.DETAILS
       const data = await getItemData({ wearablePreviewController: previewController, type, model, contents, category })
-      this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false })
+      this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
+        this.setState({ view })
+      })
     }
   }
 
