@@ -56,9 +56,8 @@ export const defaults: Options = {
   thumbnailType: ThumbnailType.DEFAULT
 }
 
-export async function getModelData(url: string, options: Partial<Options> = {}) {
-  // add defaults to options
-  const { width, height, mappings, engine, thumbnailType } = {
+async function loadGltf(url: string, options: Partial<Options> = {}) {
+  const { width, height, mappings } = {
     ...defaults,
     ...options
   }
@@ -83,14 +82,27 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       return url
     })
   }
+  const loader = new GLTFLoader(manager)
+  return { renderer, gltf: await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject)) }
+}
+
+export async function getModelData(url: string, options: Partial<Options> = {}) {
+  // add defaults to options
+  const { width, height, mappings, engine, thumbnailType } = {
+    ...defaults,
+    ...options
+  }
 
   try {
     // load model
     let materials = new Set<string>()
     let bodies = 0
     let colliderTriangles = 0
-    const loader = new GLTFLoader(manager)
-    const gltf = await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject))
+    const { gltf, renderer } = await loadGltf(url, {
+      width,
+      height,
+      mappings
+    })
 
     gltf.scene.traverse(node => {
       if (node instanceof Mesh) {
@@ -207,28 +219,8 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
   }
 }
 
-export async function loadGltf(url: string, options: Partial<Options> = {}) {
-  // add defaults to options
-  const { width, height } = {
-    ...defaults,
-    ...options
-  }
-
-  // setup renderer
-  const renderer = new WebGLRenderer({ alpha: true })
-  renderer.setSize(width, height, false)
-  renderer.domElement.style.visibility = 'hidden'
-  document.body.appendChild(renderer.domElement)
-
-  const loader = new GLTFLoader()
-  // const loader = new GLTFLoader(manager)
-  return await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject))
-}
-
-// export function
-
 export async function getIsEmote(url: string, options: Partial<Options> = {}) {
-  const gltf = await loadGltf(url, options)
+  const { gltf } = await loadGltf(url, options)
   return gltf.animations.length > 0
 }
 
@@ -262,7 +254,7 @@ export async function getItemData({
       throw Error('WearablePreview controller needed')
     }
     if (type === ItemType.EMOTE) {
-      const gltf = await loadGltf(URL.createObjectURL(contents[model]))
+      const { gltf } = await loadGltf(URL.createObjectURL(contents[model]))
       const duration = gltf.animations[0].duration
       const frames = gltf.animations[0].tracks[0].times.length - 1
 
