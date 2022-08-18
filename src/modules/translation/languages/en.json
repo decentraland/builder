@@ -1374,7 +1374,11 @@
       "empty_collection": "Empty collection, add some items first!"
     },
     "center_panel": {
-      "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation"
+      "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation",
+      "play_emote": "Play Emote",
+      "stop": "Stop",
+      "from_collection": "From Collection",
+      "default": "Default"
     },
     "right_panel": {
       "properties": "Properties",

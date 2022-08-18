@@ -730,10 +730,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       if (areEmoteMetrics(metrics)) {
         return (
           <div className="metrics">
-            <div className="metric materials">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
-            <div className="metric materials">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
-            <div className="metric materials">{t('model_metrics.frames', { count: metrics.frames })}</div>
-            <div className="metric materials">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
+            <div className="metric circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+            <div className="metric circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
+            <div className="metric circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
+            <div className="metric circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
           </div>
         )
       } else {
