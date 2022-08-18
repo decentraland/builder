@@ -22,6 +22,7 @@ export type State = {
   price?: string
   beneficiary?: string
   isFree: boolean
+  isOwnerBeneficiary: boolean
 }
 
 export type EditPriceAndBeneficiaryModalMetadata = {

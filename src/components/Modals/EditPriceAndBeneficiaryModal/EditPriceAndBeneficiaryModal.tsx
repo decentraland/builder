@@ -30,7 +30,8 @@ const MIN_SALE_VALUE = ethers.utils.formatEther(config.get('MIN_SALE_VALUE_IN_WE
 
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
   state: State = {
-    isFree: false
+    isFree: false,
+    isOwnerBeneficiary: false
   }
 
   constructor(props: Props) {
@@ -38,26 +39,24 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
     const { item } = this.props
     if (item) {
+      const isFree = item.beneficiary === ethers.constants.AddressZero
       this.state = {
-        isFree: item.beneficiary === ethers.constants.AddressZero,
+        isFree,
         price: this.getItemPrice(),
-        beneficiary: item.beneficiary || item.owner
+        beneficiary: isFree ? '' : item.beneficiary || item.owner,
+        isOwnerBeneficiary: item.beneficiary === item.owner
       }
     }
   }
 
-  handleIsFreeToggle = () => {
+  handleIsFreeToggle = (_event: React.MouseEvent<HTMLInputElement>) => {
     const isFree = !this.state.isFree
-    const beneficiary = isFree ? ethers.constants.AddressZero : undefined
-    const price = isFree ? '0' : undefined
-    this.setState({ isFree, price, beneficiary })
+    this.setState({ isFree, isOwnerBeneficiary: isFree ? false : this.state.isOwnerBeneficiary })
   }
 
-  handleIsGiftToggle = () => {
-    const { item } = this.props
-    const beneficiary = this.isGift() ? item.owner : undefined
-    const price = this.getItemPrice()
-    this.setState({ beneficiary, price, isFree: false })
+  handleIsOwnerBeneficiary = (_event: React.MouseEvent<HTMLInputElement>) => {
+    const isOwnerBeneficiary = !this.state.isOwnerBeneficiary
+    this.setState({ isOwnerBeneficiary, isFree: isOwnerBeneficiary ? false : this.state.isFree })
   }
 
   handlePriceChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
@@ -71,8 +70,9 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   handleSubmit = () => {
     const { item, itemSortedContents, onSave, onSetPriceAndBeneficiary } = this.props
-    const { price, beneficiary } = this.state
-    const priceInWei = ethers.utils.parseEther(price!).toString()
+    const { price, isFree } = this.state
+    const priceInWei = ethers.utils.parseEther(isFree ? '0' : price!).toString()
+    const beneficiary = this.getBeneficiary()
 
     if (item!.isPublished) {
       onSetPriceAndBeneficiary(item.id, priceInWei, beneficiary!)
@@ -87,6 +87,19 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     }
   }
 
+  getBeneficiary() {
+    const { item } = this.props
+    const { beneficiary, isFree, isOwnerBeneficiary } = this.state
+
+    if (isFree) {
+      return ethers.constants.AddressZero
+    } else if (isOwnerBeneficiary) {
+      return item.owner
+    } else {
+      return beneficiary!
+    }
+  }
+
   getItemPrice() {
     const { item } = this.props
     return item.price ? ethers.utils.formatEther(item.price) : undefined
@@ -97,16 +110,10 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     return !this.isValidPrice() || !this.isValidBeneficiary() || isLoading
   }
 
-  isGift() {
-    const { item } = this.props
-    const { beneficiary } = this.state
-    return beneficiary !== item.owner
-  }
-
   isValidPrice() {
-    const { price, beneficiary } = this.state
+    const { price, isFree } = this.state
     const numberPrice = Number(price)
-    return Number(numberPrice) > 0 || (numberPrice === 0 && beneficiary === ethers.constants.AddressZero)
+    return Number(numberPrice) > 0 || isFree
   }
 
   isPriceTooLow() {
@@ -115,15 +122,13 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   isValidBeneficiary() {
-    const { beneficiary = '' } = this.state
-    return isValid(beneficiary)
+    return isValid(this.getBeneficiary())
   }
 
   render() {
     const { name, isLoading, onClose, onSkip } = this.props
-    const { isFree, price = '', beneficiary = '' } = this.state
-
-    const isGift = this.isGift()
+    const { isFree, isOwnerBeneficiary, price = '' } = this.state
+    const beneficiary = this.getBeneficiary()
 
     return (
       <Modal name={name} size="tiny" onClose={onClose}>
@@ -135,18 +140,14 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               <Field
                 label={t('edit_price_and_beneficiary_modal.price_label', { minPrice: MIN_SALE_VALUE })}
                 placeholder={100}
-                value={price}
+                value={isFree ? '0.0' : price}
                 onChange={this.handlePriceChange}
                 disabled={isFree}
                 error={!!price && !this.isValidPrice()}
               />
               <Mana network={Network.MATIC} inline />
               <div className="checkbox make-it-free">
-                <Checkbox
-                  className="item-checkbox"
-                  checked={isFree}
-                  onClick={(_event: React.MouseEvent<HTMLInputElement>) => this.handleIsFreeToggle()}
-                />
+                <Checkbox className="item-checkbox" checked={isFree} onClick={this.handleIsFreeToggle} />
                 &nbsp;
                 {t('edit_price_and_beneficiary_modal.free')}
               </div>
@@ -163,16 +164,12 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               type="address"
               placeholder="0x..."
               value={beneficiary}
-              disabled={isFree}
+              disabled={isFree || isOwnerBeneficiary}
               onChange={this.handleBeneficiaryChange}
               error={!!beneficiary && !this.isValidBeneficiary()}
             />
             <div className="checkbox beneficiary">
-              <Checkbox
-                className="item-checkbox"
-                checked={!isGift}
-                onClick={(_event: React.MouseEvent<HTMLInputElement>) => this.handleIsGiftToggle()}
-              />
+              <Checkbox className="item-checkbox" checked={isOwnerBeneficiary} onClick={this.handleIsOwnerBeneficiary} />
               &nbsp;
               {t('edit_price_and_beneficiary_modal.for_me')}
             </div>
