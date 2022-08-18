@@ -8,6 +8,7 @@ export type Props = {
   metadata?: CreateSingleItemModalMetadata
   title: string
   wearablePreviewComponent?: React.ReactNode
+  isLoading: boolean
   isRepresentation?: boolean
   onDropAccepted: (acceptedFileProps: AcceptedFileProps) => void
   onDropRejected?: (files: File[]) => Promise<void>

@@ -17,6 +17,7 @@ import ItemImport from 'components/ItemImport'
 import { ItemAssetJson } from '../CreateSingleItemModal.types'
 import { validateEnum, validatePath } from '../utils'
 import { Props, State } from './ImportStep.types'
+import './ImportStep.css'
 
 export default class ImportStep extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -192,7 +193,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { category, metadata, title, wearablePreviewComponent, isRepresentation, onClose } = this.props
+    const { category, metadata, title, wearablePreviewComponent, isLoading, isRepresentation, onClose } = this.props
     const { error } = this.state
 
     return (
@@ -201,6 +202,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         <Modal.Content className="ImportStep">
           <ItemImport
             error={error}
+            isLoading={isLoading}
             acceptedExtensions={
               isRepresentation || metadata?.changeItemFile
                 ? isImageCategory(category!)
