@@ -88,7 +88,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
     }
   }
 
-  renderPage(item: Item, collection: Collection | null, isLoadingItem: boolean) {
+  renderPage(item: Item, collection: Collection | null) {
     const { onNavigate } = this.props
     const data = item.data as WearableData
     const metrics = item.metrics
@@ -292,7 +292,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
       <ItemProvider id={itemId}>
         {(item, collection, isLoadingItem) => (
           <LoggedInDetailPage className="ItemDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading || isLoadingItem}>
-            {hasAccess && item ? this.renderPage(item, collection, isLoadingItem) : <NotFound />}
+            {hasAccess && item ? this.renderPage(item, collection) : <NotFound />}
           </LoggedInDetailPage>
         )}
       </ItemProvider>
