@@ -324,7 +324,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, isDownloading, error } = this.props
+    const { selectedItemId, address, isConnected, isDownloading, error, isEmotePlayModeFeatureFlagOn } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
@@ -506,7 +506,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       ) : null}
                     </Collapsable>
                   )}
-                  {item?.type === ItemType.EMOTE && (
+                  {isEmotePlayModeFeatureFlagOn && item?.type === ItemType.EMOTE && (
                     <Collapsable label={t('item_editor.right_panel.animation')}>
                       {item ? (
                         <Select<EmotePlayMode>

@@ -20,6 +20,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   collection: Collection | null
   isEmotesFeatureFlagOn: boolean
+  isEmotePlayModeFeatureFlagOn: boolean
   onSave: typeof saveItemRequest
 }
 
@@ -72,6 +73,9 @@ export type AcceptedFileProps = Pick<
   'id' | 'name' | 'description' | 'rarity' | 'file' | 'model' | 'metrics' | 'contents' | 'type' | 'bodyShape' | 'category' | 'thumbnail'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isEmotesFeatureFlagOn'>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'error' | 'isLoading' | 'collection' | 'isEmotesFeatureFlagOn' | 'isEmotePlayModeFeatureFlagOn'
+>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>
