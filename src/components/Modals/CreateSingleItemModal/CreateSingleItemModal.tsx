@@ -332,7 +332,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       const view = isEmotesFeatureFlagOn && type === ItemType.EMOTE ? CreateItemView.THUMBNAIL : CreateItemView.DETAILS
       const data = await getItemData({ wearablePreviewController: previewController, type, model, contents, category })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
-        this.setState({ view })
+        this.setState({ view, fromView: CreateItemView.IMPORT })
       })
     }
   }
@@ -379,7 +379,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { isEmotesFeatureFlagOn } = this.props
     const { type } = this.state
     if (isEmotesFeatureFlagOn && type === ItemType.EMOTE) {
-      this.setState({ view: CreateItemView.THUMBNAIL })
+      this.setState({ fromView: CreateItemView.DETAILS, view: CreateItemView.THUMBNAIL })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
@@ -840,14 +840,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderThumbnailView() {
     const { onClose } = this.props
-    const { isLoading, contents } = this.state
+    const { isLoading, contents, fromView } = this.state
 
     return (
       <EditThumbnailStep
         isLoading={!!isLoading}
         blob={contents ? toWearableWithBlobs({ contents, isEmote: true }) : undefined}
         title={this.renderModalTitle()}
-        onBack={() => this.setState({ view: CreateItemView.DETAILS })}
+        onBack={() => this.setState({ view: fromView! })}
         onSave={this.handleOnScreenshotTaken}
         onClose={onClose}
       />

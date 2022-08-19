@@ -46,7 +46,7 @@ export type StateData = {
   previewController?: IPreviewController
   weareblePreviewUpdated: boolean
 }
-export type State = { view: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
+export type State = { view: CreateItemView; fromView?: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string
