@@ -29,3 +29,11 @@ export const getIsRentalsEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsEmotePlayModeEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.EMOTE_PLAY_MODE)
+  } catch (e) {
+    return false
+  }
+}
