@@ -97,6 +97,10 @@ export default class ImportModal extends React.PureComponent<Props, State> {
       try {
         const zip: JSZip = await JSZip.loadAsync(file)
         const contentRaw = zip.file(EXPORT_PATH.MANIFEST_FILE)
+        if (!contentRaw) {
+          throw new Error('Invalid project')
+        }
+
         const content = await contentRaw.async('text')
         const req = new Response(content)
         const parsed: Manifest = await req.json()

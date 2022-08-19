@@ -15,7 +15,7 @@ import { convertImageIntoWearableThumbnail, dataURLToBlob, getImageType } from '
 import { ImageType } from 'modules/media/types'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
-import { generateCatalystImage } from 'modules/item/utils'
+import { generateCatalystImage, getModelPath } from 'modules/item/utils'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
 import {
@@ -113,7 +113,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
       let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
 
       if (!thumbnail) {
-        const modelPath = loadedFile.wearable.data.representations[0].mainFile
+        const modelPath = getModelPath(loadedFile.wearable.data.representations)
         const url = URL.createObjectURL(loadedFile.content[modelPath])
         const data = await getModelData(url, {
           width: 1024,
@@ -122,7 +122,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
           engine: EngineType.BABYLON
         })
         URL.revokeObjectURL(url)
-        thumbnail = await dataURLToBlob(data.image)
+        thumbnail = dataURLToBlob(data.image)
         if (!thumbnail) {
           throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
         }

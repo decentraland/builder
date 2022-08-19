@@ -1,8 +1,6 @@
 import { BodyShape, WearableCategory, WearableWithBlobs } from '@dcl/schemas'
 import { ThumbnailType } from 'lib/getModelData'
-import { InvalidContentPath, InvalidEnumValue } from 'modules/item/errors'
 import { isImageFile, isModelFile } from 'modules/item/utils'
-import { ItemAssetJson } from './CreateSingleItemModal.types'
 
 export const THUMBNAIL_WIDTH = 1024
 export const THUMBNAIL_HEIGHT = 1024
@@ -17,19 +15,6 @@ export const getThumbnailType = (category: WearableCategory) => {
       return ThumbnailType.FRONT
     default:
       return ThumbnailType.DEFAULT
-  }
-}
-
-export function validatePath(path: keyof ItemAssetJson, assetJson: ItemAssetJson, contents: Record<string, Blob>) {
-  if (assetJson[path] && !(assetJson[path]! in contents)) {
-    throw new InvalidContentPath(assetJson[path]!, path)
-  }
-}
-
-export function validateEnum(name: keyof ItemAssetJson, assetJson: ItemAssetJson, values: any[] = []) {
-  const value = assetJson[name]
-  if (value && !values.includes(value)) {
-    throw new InvalidEnumValue(value!, values, name)
   }
 }
 

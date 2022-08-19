@@ -83,6 +83,10 @@ export function getMissingBodyShapeType(item: Item) {
   return null
 }
 
+export function getModelPath(representations: WearableRepresentation[]) {
+  return representations[0].mainFile
+}
+
 export function hasBodyShape(item: Item, bodyShape: BodyShape) {
   return item.data.representations.some(representation => representation.bodyShapes.includes(bodyShape))
 }
@@ -297,7 +301,7 @@ export function getThumbnailURL(item: Item) {
 }
 
 export function getRarities() {
-  return Object.values(ItemRarity)
+  return ItemRarity.schema.enum as ItemRarity[]
 }
 
 export function isImageCategory(category: WearableCategory) {
