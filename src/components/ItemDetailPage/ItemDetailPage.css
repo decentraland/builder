@@ -251,7 +251,8 @@
   padding: 0;
 }
 
-.ItemDetailPage .ui.disabled.dropdown, .ItemDetailPage .ui.dropdown .menu>.disabled.item {
+.ItemDetailPage .ui.disabled.dropdown,
+.ItemDetailPage .ui.dropdown .menu > .disabled.item {
   pointer-events: all;
 }
 

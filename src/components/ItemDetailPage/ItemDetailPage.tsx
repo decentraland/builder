@@ -120,12 +120,18 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
               {areEmoteMetrics(metrics) ? (
                 <div className="metrics">
                   <div className="subtitle">{t('item_detail_page.properties')}</div>
-                  <div className="metric materials">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
-                  <div className="metric materials">{t('model_metrics.duration', { count: Number(metrics.duration.toFixed(2)) })}</div>
-                  <div className="metric materials">{t('model_metrics.frames', { count: metrics.frames })}</div>
-                  <div className="metric materials">{t('model_metrics.fps', { count: Number(metrics.fps.toFixed(2)) })}</div>
+                  <div className="metric">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+                  <div className="metric">{t('model_metrics.duration', { count: Number(metrics.duration.toFixed(2)) })}</div>
+                  <div className="metric">{t('model_metrics.frames', { count: metrics.frames })}</div>
+                  <div className="metric">{t('model_metrics.fps', { count: Number(metrics.fps.toFixed(2)) })}</div>
                 </div>
-              ) : null}
+              ) : (
+                <div className="metrics">
+                  <div className="metric">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+                  <div className="metric">{t('model_metrics.materials', { count: metrics.materials })}</div>
+                  <div className="metric">{t('model_metrics.textures', { count: metrics.textures })}</div>
+                </div>
+              )}
               <div className="details">
                 <div className="subtitle">{t('item_detail_page.details')}</div>
                 {item.isPublished && (
