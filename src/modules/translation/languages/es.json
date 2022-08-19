@@ -563,8 +563,14 @@
     "total": "Total",
     "parcel_plural": "Parcelas",
     "estate_plural": "Estates",
+    "role": "Rol",
     "none": "Ninguno",
     "emote": "Animación"
+  },
+  "roles": {
+    "1": "Dueño",
+    "2": "Operador",
+    "3": "Inquilino"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -661,17 +667,20 @@
     },
     "success": "Gracias, ¡Te mantendremos al tanto!"
   },
+  "rental_period": {
+    "period_over": "Período de renta terminado",
+    "operator_permissions": "Tendrás permisos de Operador hasta que el dueño pida su tierra",
+    "ends_in": "Termina en"
+  },
   "land_page": {
-    "name": "Nombre",
-    "coords": "Coords",
-    "owner": "Dueño",
-    "operator": "Operador",
-    "operators": "Operadores",
+    "coordinates": "Coordenadas",
+    "operated_by": "Operado por",
     "type": "Tipo",
     "online_scenes": "Escenas Online",
-    "none": "Ninguna",
     "results": "{count} {count, plural, one {resultado} other {resultados}}",
-    "owner_permission": "Estas son tierras que no son tuyas, pero donde tienes permiso"
+    "owner_explanation": "Estas son tierras que te pertenecen",
+    "operator_explanation": "Estas son tierras que no son tuyas, pero donde tienes permiso",
+    "tenant_explanation": "Estas son tierras que no son tuyas, pero donde tienes una renta"
   },
   "land_detail_page": {
     "transfer": "Transferir",
@@ -681,12 +690,11 @@
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",
     "online_scenes": "Escenas Online",
-    "none": "Ninguna",
     "add_scene": "Agregar Escena",
     "assigned_names": "Nombres asignados",
     "description": "Descripción",
     "owner": "Dueño",
-    "operators": "Operadores",
+    "operated_by": "Operado por",
     "total_land": "Tierras Totales",
     "empty_land": "Tierras Vacias",
     "unset_ens_content": {
@@ -788,7 +796,8 @@
   },
   "popups": {
     "metrics_help": "¡Ver métricas aquí!",
-    "shortcuts_help": "¡Ver atajos aquí!"
+    "shortcuts_help": "¡Ver atajos aquí!",
+    "its_you": "¡Eres tú!"
   },
   "project_card": {
     "items": "objetos",

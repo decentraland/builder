@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { Table, Column, Row } from 'decentraland-ui'
-
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { locations } from 'routing/locations'
+import { isEqual } from 'lib/address'
 import { Atlas } from 'components/Atlas'
 import Profile from 'components/Profile'
+import RentalPeriod from 'components/RentalPeriod'
 import InlineList from '../InlineList'
 import { coordsToId, getCoords, LAND_POOL_ADDRESS } from 'modules/land/utils'
-import { isEqual } from 'lib/address'
-import { locations } from 'routing/locations'
 import { Props } from './TableRow.types'
 import './TableRow.css'
 
@@ -21,8 +22,9 @@ const sortLandPoolLast = (a: string, b: string) => {
 
 export default class TableRow extends React.PureComponent<Props> {
   render() {
-    const { land, deployments, onNavigate } = this.props
-    const coords = getCoords(land)
+    const { land, deployments, rental, onNavigate } = this.props
+    const { x, y } = getCoords(land)
+
     return (
       <Table.Row className="TableRow" onClick={() => onNavigate(locations.landDetail(land.id))}>
         <Table.Cell>
@@ -30,12 +32,19 @@ export default class TableRow extends React.PureComponent<Props> {
             <Column width={67} grow={false} shrink={false}>
               <Atlas landId={land.id} width={45} height={45} isDraggable={false} size={9} />
             </Column>
-            <Column className="name">{land.name}</Column>
+            <Column className="name">
+              <div>
+                {land.name} <span className="secondary-text">{coordsToId(x, y)}</span>
+              </div>
+            </Column>
           </Row>
         </Table.Cell>
-        <Table.Cell>{coordsToId(coords.x, coords.y)}</Table.Cell>
         <Table.Cell>
-          <Profile address={land.owner} />
+          <div>
+            {t(`roles.${land.role}`)}
+            &nbsp;
+            {rental ? <RentalPeriod rental={rental} /> : null}
+          </div>
         </Table.Cell>
         <Table.Cell>
           <InlineList

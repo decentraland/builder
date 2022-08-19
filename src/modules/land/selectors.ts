@@ -16,12 +16,16 @@ export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
 export const getAuthorizations = (state: RootState) => getState(state).authorizations
+export const getRentals = (state: RootState) => getState(state).rentals
 export const getLands = createSelector<RootState, string | undefined, Record<string, Land[]>, Land[]>(
   getAddress,
   getData,
   (address, data) => (address && address in data ? data[address] : [])
 )
 export const isLoading = (state: RootState) => isLoadingType(getLoading(state), FETCH_LANDS_REQUEST)
+
+export const getRentalForLand = (state: RootState, land: Land) =>
+  getRentals(state).find(rental => rental.type === land.type && rental.tokenId === land.tokenId) || null
 
 export const getCoordsByEstateId = createSelector<RootState, Record<string, AtlasTile>, Record<string, string[]>>(getTiles, tiles => {
   const result: Record<string, string[]> = {}

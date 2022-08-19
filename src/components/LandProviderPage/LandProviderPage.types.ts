@@ -1,7 +1,7 @@
-import { Land } from 'modules/land/types'
+import { Land, Rental } from 'modules/land/types'
 import { Deployment } from 'modules/deployment/types'
 
 export type Props = {
   className?: string
-  children: (land: Land, deployments: Deployment[]) => React.ReactNode
+  children: (land: Land, associations: { deployments: Deployment[]; rental: Rental | null }) => React.ReactNode
 }

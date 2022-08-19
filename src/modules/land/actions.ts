@@ -2,6 +2,7 @@ import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Coord } from 'decentraland-ui'
+import { Rental } from 'modules/land/types'
 import { Land, LandType, Authorization } from './types'
 import { getSelection } from './utils'
 
@@ -10,8 +11,8 @@ export const FETCH_LANDS_SUCCESS = '[Success] Fetch Lands'
 export const FETCH_LANDS_FAILURE = '[Failure] Fetch Lands'
 
 export const fetchLandsRequest = (address: string) => action(FETCH_LANDS_REQUEST, { address })
-export const fetchLandsSuccess = (address: string, lands: Land[], authorizations: Authorization[]) =>
-  action(FETCH_LANDS_SUCCESS, { address, lands, authorizations })
+export const fetchLandsSuccess = (address: string, lands: Land[], authorizations: Authorization[], rentals: Rental[]) =>
+  action(FETCH_LANDS_SUCCESS, { address, lands, authorizations, rentals })
 export const fetchLandsFailure = (address: string, error: string) => action(FETCH_LANDS_FAILURE, { address, error })
 
 export type FetchLandsRequestAction = ReturnType<typeof fetchLandsRequest>

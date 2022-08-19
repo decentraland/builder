@@ -7,13 +7,16 @@ export enum LandType {
 }
 
 export enum RoleType {
-  OWNER = 'owner',
-  OPERATOR = 'operator'
+  OWNER = 1,
+  TENANT = 2,
+  OPERATOR = 3
 }
 
 export type Land = {
   id: string
+  tokenId: string
   type: LandType
+  roles: RoleType[]
   role: RoleType
   x?: number
   y?: number
@@ -95,3 +98,38 @@ export type EstateFields = {
 }
 
 export type LandTile = Tile & { land: Land }
+
+export const rentalFields = () => gql`
+  fragment rentalFields on Rental {
+    id
+    contractAddress
+    tokenId
+    lessor
+    tenant
+    operator
+    startedAt
+    endsAt
+  }
+`
+
+export type RentalFields = {
+  id: string
+  contractAddress: string
+  tokenId: string
+  lessor: string
+  tenant: string
+  operator: string
+  startedAt: string
+  endsAt: string
+}
+
+export type Rental = {
+  id: string
+  type: LandType
+  tokenId: string
+  lessor: string
+  tenant: string
+  operator: string
+  startedAt: Date
+  endsAt: Date
+}
