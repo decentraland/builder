@@ -152,7 +152,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleSubmit = async () => {
-    const { address, metadata, collection, onSave } = this.props
+    const { address, metadata, collection, isEmotePlayModeFeatureFlagOn, onSave } = this.props
     const { id } = this.state
 
     let changeItemFile = false
@@ -277,7 +277,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 category: category as EmoteCategory,
                 representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
                 tags: [],
-                loop: playMode === EmotePlayMode.LOOP
+                loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false
               } as EmoteDataADR74
             }
 
@@ -695,25 +695,28 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderEmoteDetails() {
+    const { isEmotePlayModeFeatureFlagOn } = this.props
     const { playMode, type } = this.state
     const playModes: string[] = getEmotePlayModes()
 
     return (
       <>
         {this.renderFields()}
-        <SelectField
-          required
-          className="hasDescription"
-          label={t('create_single_item_modal.play_mode_label')}
-          placeholder={t('create_single_item_modal.play_mode_placeholder')}
-          value={playModes.includes(playMode!) ? playMode : undefined}
-          options={playModes.map(value => ({
-            value,
-            text: t(`${type}.play_mode.${value}.text`),
-            description: t(`${type}.play_mode.${value}.description`)
-          }))}
-          onChange={this.handlePlayModeChange}
-        />
+        {isEmotePlayModeFeatureFlagOn && (
+          <SelectField
+            required
+            className="hasDescription"
+            label={t('create_single_item_modal.play_mode_label')}
+            placeholder={t('create_single_item_modal.play_mode_placeholder')}
+            value={playModes.includes(playMode!) ? playMode : undefined}
+            options={playModes.map(value => ({
+              value,
+              text: t(`${type}.play_mode.${value}.text`),
+              description: t(`${type}.play_mode.${value}.description`)
+            }))}
+            onChange={this.handlePlayModeChange}
+          />
+        )}
         <div className="dcl select-field">
           <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" className="" />} />
         </div>
