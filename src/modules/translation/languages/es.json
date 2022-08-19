@@ -1398,7 +1398,11 @@
       "empty_collection": "La colección está vacía, ¡agrega algunos items primero!"
     },
     "center_panel": {
-      "disabled_animation_dropdown": "Tiene que haber al menos un item visible para poder activar una animacion"
+      "disabled_animation_dropdown": "Tiene que haber al menos un item visible para poder activar una animacion",
+      "play_emote": "Reproducir Animación",
+      "stop": "Parar",
+      "from_collection": "Desde la Colección",
+      "default": "Predeterminadas"
     },
     "right_panel": {
       "properties": "Propiedades",

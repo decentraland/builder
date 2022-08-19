@@ -104,14 +104,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return state
   }
 
-  componentDidUpdate(_prevProps: Props, prevState: State) {
-    const { thumbnail, file, type, isLoading } = this.state
-    // when the thumbnail is loaded and the file & type are already computed, we proceed to the Details view
-    if ((!prevState.thumbnail || !prevState.type) && thumbnail && file && type && !isLoading) {
-      this.setState({ view: CreateItemView.DETAILS })
-    }
-  }
-
   /**
    * Prefixes the content name by adding the adding the body shape name to it.
    *
@@ -334,16 +326,21 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   getMetricsAndScreenshot = async () => {
+    const { isEmotesFeatureFlagOn } = this.props
     const { type, previewController, model, contents, category } = this.state
     if (type && model && contents) {
+      const view = isEmotesFeatureFlagOn && type === ItemType.EMOTE ? CreateItemView.THUMBNAIL : CreateItemView.DETAILS
       const data = await getItemData({ wearablePreviewController: previewController, type, model, contents, category })
-      this.setState({ metrics: data.info, thumbnail: data.image })
+      this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
+        this.setState({ view })
+      })
     }
   }
 
   handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     const { bodyShape, ...acceptedProps } = acceptedFileProps
     this.setState(prevState => ({
+      isLoading: true,
       bodyShape: bodyShape || prevState.bodyShape,
       ...acceptedProps
     }))
@@ -560,7 +557,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderImportView() {
     const { metadata, onClose } = this.props
-    const { category, isRepresentation } = this.state
+    const { category, isLoading, isRepresentation } = this.state
     const title = this.renderModalTitle()
 
     return (
@@ -569,6 +566,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         metadata={metadata}
         title={title}
         wearablePreviewComponent={<div className="importer-thumbnail-container">{this.renderWearablePreview()}</div>}
+        isLoading={!!isLoading}
         isRepresentation={!!isRepresentation}
         onDropAccepted={this.handleDropAccepted}
         onClose={onClose}
@@ -730,10 +728,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       if (areEmoteMetrics(metrics)) {
         return (
           <div className="metrics">
-            <div className="metric materials">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
-            <div className="metric materials">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
-            <div className="metric materials">{t('model_metrics.frames', { count: metrics.frames })}</div>
-            <div className="metric materials">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
+            <div className="metric circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+            <div className="metric circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
+            <div className="metric circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
+            <div className="metric circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
           </div>
         )
       } else {
@@ -834,7 +832,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOnScreenshotTaken = (screenshot: string) => {
-    this.setState({ thumbnail: screenshot, isLoading: true }, () => this.setState({ view: CreateItemView.DETAILS }))
+    this.setState({ thumbnail: screenshot }, () => this.setState({ view: CreateItemView.DETAILS }))
   }
 
   renderThumbnailView() {

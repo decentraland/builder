@@ -7,7 +7,7 @@ import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getExtension } from 'lib/file'
 import { EngineType, getIsEmote } from 'lib/getModelData'
-import { cleanAssetName } from 'modules/asset/utils'
+import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, ItemRarity, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
 import { isImageCategory, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
@@ -17,6 +17,7 @@ import ItemImport from 'components/ItemImport'
 import { ItemAssetJson } from '../CreateSingleItemModal.types'
 import { validateEnum, validatePath } from '../utils'
 import { Props, State } from './ImportStep.types'
+import './ImportStep.css'
 
 export default class ImportStep extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -181,6 +182,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   ): Promise<{ model: string; contents: Record<string, Blob>; type: ItemType }> {
     const url = URL.createObjectURL(contents[model])
     const isEmote = await getIsEmote(url, {
+      mappings: rawMappingsToObjectURL(contents),
       width: 1024,
       height: 1024,
       extension: getExtension(model) || undefined,
@@ -192,7 +194,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { category, metadata, title, wearablePreviewComponent, isRepresentation, onClose } = this.props
+    const { category, metadata, title, wearablePreviewComponent, isLoading, isRepresentation, onClose } = this.props
     const { error } = this.state
 
     return (
@@ -201,6 +203,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         <Modal.Content className="ImportStep">
           <ItemImport
             error={error}
+            isLoading={isLoading}
             acceptedExtensions={
               isRepresentation || metadata?.changeItemFile
                 ? isImageCategory(category!)
