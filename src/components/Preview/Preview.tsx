@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DropTarget } from 'react-dnd'
-import Lottie from 'lottie-react'
+import Lottie from 'react-lottie'
 import { config } from 'config'
 
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -109,12 +109,15 @@ class Preview extends React.Component<Props & CollectedProps, State> {
         {isLoadingResources && (
           <div className="overlay">
             <Lottie
-              loop={true}
-              autoplay={true}
-              animationData={animationData}
-              style={{
-                height: 100,
-                width: 100
+              height={100}
+              width={100}
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: animationData,
+                rendererSettings: {
+                  preserveAspectRatio: 'xMidYMid slice'
+                }
               }}
             />
             <div id="progress-bar" className="progress ingame">
