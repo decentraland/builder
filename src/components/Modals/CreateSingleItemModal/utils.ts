@@ -27,7 +27,9 @@ export function toWearableWithBlobs({
   file?: File
   isEmote: boolean
 }): WearableWithBlobs {
-  const mainFile = contents && Object.keys(contents).find(content => isImageFile(content) || isModelFile(content))
+  const mainGLBFile = contents && Object.keys(contents).find(content => isModelFile(content))
+  const mainPNGFile = contents && Object.keys(contents).find(content => isImageFile(content))
+  const mainFile = mainGLBFile || mainPNGFile
   if (contents && !mainFile) {
     throw Error('Not valid main content')
   }

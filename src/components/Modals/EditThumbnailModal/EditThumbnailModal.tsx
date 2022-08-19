@@ -57,8 +57,9 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
 
   renderImportView() {
     const { onClose } = this.props
+    const { isLoading } = this.state
 
-    return <ImportStep title={this.renderModalTitle()} onDropAccepted={this.handleDropAccepted} onClose={onClose} />
+    return <ImportStep title={this.renderModalTitle()} isLoading={isLoading} onDropAccepted={this.handleDropAccepted} onClose={onClose} />
   }
 
   renderView() {
