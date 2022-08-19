@@ -140,7 +140,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               <Field
                 label={t('edit_price_and_beneficiary_modal.price_label', { minPrice: MIN_SALE_VALUE })}
                 placeholder={100}
-                value={isFree ? '0.0' : price}
+                value={isFree ? 0 : price}
                 onChange={this.handlePriceChange}
                 disabled={isFree}
                 error={!!price && !this.isValidPrice()}
