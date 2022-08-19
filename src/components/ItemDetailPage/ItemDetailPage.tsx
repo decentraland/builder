@@ -1,32 +1,36 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { Section, Row, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
+import { Section, Row, Narrow, Button, Dropdown, Icon, Mana, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Link } from 'react-router-dom'
-
+import { Network } from '@dcl/schemas'
 import { locations } from 'routing/locations'
-import { WearableData } from 'modules/item/types'
+import { ItemType, THUMBNAIL_PATH, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { areEmoteMetrics } from 'modules/models/types'
 import { Item } from 'modules/item/types'
 import { isThirdParty } from 'lib/urn'
-import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, isFree } from 'modules/item/utils'
+import { shorten } from 'lib/address'
+import { getMaxSupply, getMissingBodyShapeType, isFree, resizeImage, getThumbnailURL } from 'modules/item/utils'
 import { getCollectionType, isLocked as isCollectionLocked } from 'modules/collection/utils'
+import { dataURLToBlob } from 'modules/media/utils'
+import { computeHashes } from 'modules/deployment/contentUtils'
+import ItemBadge from 'components/ItemBadge'
 import Notice from 'components/Notice'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
-import ItemStatus from 'components/ItemStatus'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import Back from 'components/Back'
-import { Props } from './ItemDetailPage.types'
+import { Props, State } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
 
 const STORAGE_KEY = 'dcl-item-notice'
 
-export default class ItemDetailPage extends React.PureComponent<Props> {
+export default class ItemDetailPage extends React.PureComponent<Props, State> {
+  thumbnailInput = React.createRef<HTMLInputElement>()
   handleEditItem = () => {
     const { item, onNavigate } = this.props
     onNavigate(locations.itemEditor({ itemId: item!.id, collectionId: item!.collectionId }))
@@ -37,14 +41,13 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     onDelete(item!)
   }
 
-  handleChangeItemFile = () => {
+  handleEditRepresentation = () => {
     const { item, onOpenModal } = this.props
-    onOpenModal('CreateSingleItemModal', { item, changeItemFile: true })
-  }
-
-  handleAddRepresentationToItem = () => {
-    const { item, onOpenModal } = this.props
-    onOpenModal('CreateSingleItemModal', { item, addRepresentation: true })
+    if (item && getMissingBodyShapeType(item)) {
+      onOpenModal('CreateSingleItemModal', { item, addRepresentation: true })
+    } else {
+      onOpenModal('CreateSingleItemModal', { item, changeItemFile: true })
+    }
   }
 
   handleEditURN = () => {
@@ -52,12 +55,44 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     onOpenModal('EditItemURNModal', { item })
   }
 
-  renderPage(item: Item, collection: Collection | null) {
+  handleEmoteThumbnailChange = async (thumbnail: string) => {
+    const { onSaveItem, item } = this.props
+    const blob = dataURLToBlob(thumbnail)!
+    onSaveItem({ ...item, contents: { ...item?.contents, ...(await computeHashes({ [THUMBNAIL_PATH]: blob })) } } as Item, {
+      [THUMBNAIL_PATH]: blob
+    })
+  }
+
+  handleOpenThumbnailDialog = () => {
+    const { item, onOpenModal, isEmotesFeatureFlagOn } = this.props
+
+    if (isEmotesFeatureFlagOn && item?.type === ItemType.EMOTE) {
+      onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange, item })
+    } else if (this.thumbnailInput.current) {
+      this.thumbnailInput.current.click()
+    }
+  }
+
+  handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { onSaveItem, item } = this.props
+    const { files } = event.target
+
+    if (files && files.length > 0) {
+      const file = files[0]
+      const resizedFile = await resizeImage(file)
+      const thumbnail = URL.createObjectURL(resizedFile)
+      const blob = dataURLToBlob(thumbnail)
+      if (blob) {
+        onSaveItem(item as Item, { ...item?.contents, [THUMBNAIL_PATH]: blob })
+      }
+    }
+  }
+
+  renderPage(item: Item, collection: Collection | null, isLoadingItem: boolean) {
     const { onNavigate } = this.props
     const data = item.data as WearableData
     const metrics = item.metrics
 
-    const missingBodyShape = getMissingBodyShapeType(item)
     const isLocked = collection && isCollectionLocked(collection)
     const hasActions = !isLocked
 
@@ -66,26 +101,95 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
         <Section>
           <Row>
             <Back onClick={() => onNavigate(locations.collectionDetail(item.collectionId))} />
-            <Narrow>
-              <Row className="page-header">
-                <Column>
-                  <Row className="header-row">
-                    <Header className="name" size="huge">
-                      <ItemStatus item={item} />
-                      {item.name}
-                    </Header>
-                  </Row>
-                </Column>
-                <Column align="right" shrink={false} grow={false}>
-                  <Row className="actions">
-                    <Button primary compact onClick={this.handleEditItem}>
-                      {t('global.open_in_editor')}
-                    </Button>
+          </Row>
+        </Section>
+        <Narrow>
+          {!collection && !item.collectionId ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
 
+          <div className="item-data">
+            <div>
+              <ItemImage item={item} hasBadge hasRarityBadge />
+              <div>
+                <Button primary onClick={this.handleOpenThumbnailDialog}>
+                  <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                  <Icon name="camera" />
+                  {t('item_detail_page.edit_thumbnail')}
+                </Button>
+              </div>
+
+              {areEmoteMetrics(metrics) ? (
+                <div className="metrics">
+                  <div className="subtitle">{t('item_detail_page.properties')}</div>
+                  <div className="metric materials">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+                  <div className="metric materials">{t('model_metrics.duration', { count: Number(metrics.duration.toFixed(2)) })}</div>
+                  <div className="metric materials">{t('model_metrics.frames', { count: metrics.frames })}</div>
+                  <div className="metric materials">{t('model_metrics.fps', { count: Number(metrics.fps.toFixed(2)) })}</div>
+                </div>
+              ) : null}
+              <div className="details">
+                <div className="subtitle">{t('item_detail_page.details')}</div>
+                {item.isPublished && (
+                  <div>
+                    <div className="subtitle">{t('item_detail_page.details_info.id')}</div>
+                    <div className="value">#{item.tokenId}</div>
+                  </div>
+                )}
+                {data.category ? (
+                  <div>
+                    <div className="subtitle">{t('item.category')}</div>
+                    <div className="value">{t(`${item.type}.category.${data.category}`)}</div>
+                  </div>
+                ) : null}
+                {item.isPublished && item.rarity ? (
+                  <div>
+                    <div className="subtitle">{t('item.supply')}</div>
+                    <div className="value">
+                      {item.totalSupply}/{getMaxSupply(item)}
+                    </div>
+                  </div>
+                ) : null}
+                {collection ? (
+                  <div>
+                    <div className="subtitle">{t('item.collection')}</div>
+                    <Link className="collection-link" to={locations.collectionDetail(collection.id, getCollectionType(collection))}>
+                      {collection.name}
+                    </Link>
+                  </div>
+                ) : null}
+                {item.urn ? (
+                  <div>
+                    <div className="subtitle">{t('global.urn')}</div>
+                    <div className="value urn">
+                      <span>
+                        {item.urn}
+                        <CopyToClipboard text={item.urn!}>
+                          <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
+                        </CopyToClipboard>
+                      </span>
+                      <div className="urn-actions">
+                        {isThirdParty(item.urn) ? (
+                          <span className="link" onClick={this.handleEditURN}>
+                            {t('item.edit_urn')}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+            <div className="cards-container">
+              <div className="card">
+                <div className="title-card-container">
+                  <div className="title">{item.name}</div>
+                  <div>
+                    <Button inverted size="small" onClick={this.handleEditItem}>
+                      {t('collection_detail_page.preview')}
+                    </Button>
                     {hasActions ? (
                       <Dropdown
                         trigger={
-                          <Button basic>
+                          <Button basic className="more-actions-button">
                             <Icon name="ellipsis horizontal" />
                           </Button>
                         }
@@ -93,129 +197,87 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                         direction="left"
                       >
                         <Dropdown.Menu>
-                          {missingBodyShape ? (
-                            <Dropdown.Item
-                              text={t('item_detail_page.add_representation', {
-                                bodyShape: t(`body_shapes.${missingBodyShape}`).toLowerCase()
-                              })}
-                              onClick={this.handleAddRepresentationToItem}
-                            />
-                          ) : (
-                            <Dropdown.Item text={t('item_detail_page.change_item_file')} onClick={this.handleChangeItemFile} />
-                          )}
-                          {!item.isPublished ? (
-                            <ConfirmDelete
-                              name={item.name}
-                              onDelete={this.handleDeleteItem}
-                              trigger={<Dropdown.Item text={t('global.delete')} />}
-                            />
-                          ) : null}
+                          <ConfirmDelete
+                            name={item.name}
+                            onDelete={this.handleDeleteItem}
+                            trigger={
+                              item.isPublished ? (
+                                <Popup
+                                  content={t('item_detail_page.delete_published_item')}
+                                  position="right center"
+                                  trigger={<Dropdown.Item disabled text={t('global.delete')} />}
+                                  hideOnScroll={true}
+                                  on="hover"
+                                  inverted
+                                  flowing
+                                />
+                              ) : (
+                                <Dropdown.Item text={t('global.delete')} />
+                              )
+                            }
+                          />
                         </Dropdown.Menu>
                       </Dropdown>
                     ) : null}
-                  </Row>
-                </Column>
-              </Row>
-            </Narrow>
-          </Row>
-        </Section>
-        <Narrow>
-          {!collection ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
-
-          <div className="item-data">
-            <div>
-              <ItemImage item={item} hasBadge={true} />
-              {areEmoteMetrics(metrics) ? (
-                <ul className="metrics">
-                  <li className="metric materials">{t('model_metrics.sequences', { count: metrics.sequences })}</li>
-                  <li className="metric materials">{t('model_metrics.duration', { count: Number(metrics.duration.toFixed(2)) })}</li>
-                  <li className="metric materials">{t('model_metrics.frames', { count: metrics.frames })}</li>
-                  <li className="metric materials">{t('model_metrics.fps', { count: Number(metrics.fps.toFixed(2)) })}</li>
-                </ul>
-              ) : null}
-            </div>
-            <div className="sections">
-              {item.isPublished && (
-                <Section>
-                  <div className="subtitle">{t('item.blockchain_id')}</div>
-                  <div className="value">{item.tokenId}</div>
-                </Section>
-              )}
-              {data.category ? (
-                <Section>
-                  <div className="subtitle">{t('item.category')}</div>
-                  <div className="value">{t(`${item.type}.category.${data.category}`)}</div>
-                </Section>
-              ) : null}
-              <Section>
-                <div className="subtitle">{t('item.representation')}</div>
-                <div className="value">
-                  {getBodyShapes(item)
-                    .map(bodyShape => t(`body_shapes.${toBodyShapeType(bodyShape)}`))
-                    .join(', ')}
+                  </div>
                 </div>
-              </Section>
-              {item.rarity ? (
-                <Section>
-                  <div className="subtitle">{t('item.rarity')}</div>
-                  <div className="value">{item.rarity}</div>
-                </Section>
-              ) : null}
-              {isFree(item) ? (
-                <Section>
-                  <div className="subtitle">{t('item.price')}</div>
-                  <div className="value">{t('global.free')}</div>
-                </Section>
-              ) : (
-                <>
-                  {item.price ? (
+                <div className="data">{item.description}</div>
+              </div>
+
+              <div className="card">
+                <div className="title">{t('item_detail_page.selling.title')}</div>
+                <div className="data">
+                  {isFree(item) ? (
                     <Section>
                       <div className="subtitle">{t('item.price')}</div>
-                      <div className="value">{ethers.utils.formatEther(item.price)}</div>
+                      <div className="value">{t('global.free')}</div>
                     </Section>
-                  ) : null}
-                  {item.beneficiary ? (
+                  ) : item.price ? (
                     <Section>
-                      <div className="subtitle">{t('item.beneficiary')}</div>
-                      <div className="value">{item.beneficiary}</div>
+                      <div className="subtitle">{t('item.price')}</div>
+                      {item.price ? <Mana network={Network.MATIC}>{ethers.utils.formatEther(item.price)}</Mana> : '-'}
                     </Section>
                   ) : null}
-                </>
-              )}
-              {item.urn ? (
-                <Section>
-                  <div className="subtitle">{t('global.urn')}</div>
-                  <div className="value urn">
-                    {item.urn}
+                  <Section>
+                    <div className="subtitle">{t('item.beneficiary')}</div>
+                    {item.beneficiary ? <div className="value">{shorten(item.beneficiary)}</div> : '-'}
+                  </Section>
+                </div>
+              </div>
 
-                    <div className="urn-actions">
-                      {isThirdParty(item.urn) ? (
-                        <span className="link" onClick={this.handleEditURN}>
-                          {t('item.edit_urn')}
-                        </span>
-                      ) : null}
-                      <CopyToClipboard text={item.urn!}>
-                        <span className="link">{t('item.copy_urn')}</span>
-                      </CopyToClipboard>
+              {item.type === ItemType.WEARABLE ? (
+                <div className="card">
+                  <div className="title-card-container">
+                    <div className="title">{t('item_detail_page.representations.title')}</div>
+                    <Button className="edit-button" inverted size="small" onClick={this.handleEditRepresentation}>
+                      {t('global.edit')}
+                    </Button>
+                  </div>
+                  <div className="data">
+                    <div className="representations-container">
+                      {item.data.representations.map(representation => (
+                        <div key={representation.mainFile} className="representation">
+                          <img className="item-image" src={getThumbnailURL(item)} alt={item.name} />
+                          {representation.mainFile}
+                          {<ItemBadge item={item} bodyShape={representation.bodyShapes[0]} />}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </Section>
+                </div>
               ) : null}
-              {item.isPublished && item.rarity ? (
-                <Section>
-                  <div className="subtitle">{t('item.supply')}</div>
-                  <div className="value">
-                    {item.totalSupply}/{getMaxSupply(item)}
+
+              {item.data.tags.length ? (
+                <div className="card">
+                  <div className="title">{t('item_detail_page.tags.title')}</div>
+                  <div className="data">
+                    {item.data.tags.map(tag => (
+                      <span className="tag" key={tag}>
+                        {tag}
+                      </span>
+                    ))}
                   </div>
-                </Section>
-              ) : null}
-              {collection ? (
-                <Section>
-                  <div className="subtitle">{t('item.collection')}</div>
-                  <div className="value">
-                    <Link to={locations.collectionDetail(collection.id, getCollectionType(collection))}>{collection.name}</Link>
-                  </div>
-                </Section>
+                </div>
               ) : null}
             </div>
           </div>
@@ -230,7 +292,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
       <ItemProvider id={itemId}>
         {(item, collection, isLoadingItem) => (
           <LoggedInDetailPage className="ItemDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading || isLoadingItem}>
-            {hasAccess && item ? this.renderPage(item, collection) : <NotFound />}
+            {hasAccess && item ? this.renderPage(item, collection, isLoadingItem) : <NotFound />}
           </LoggedInDetailPage>
         )}
       </ItemProvider>

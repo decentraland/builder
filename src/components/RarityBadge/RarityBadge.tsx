@@ -6,10 +6,10 @@ import { Rarity } from '@dcl/schemas'
 import { Props } from './RarityBadge.types'
 import styles from './RarityBadge.module.css'
 
-const RarityBadge = ({ rarity, size, withTooltip }: Props) => {
+const RarityBadge = ({ className, rarity, size, withTooltip }: Props) => {
   const trigger = (
     <div
-      className={classnames([styles.badge, styles[size]])}
+      className={classnames([styles.badge, styles[size], className])}
       style={{
         backgroundColor: Rarity.getColor((rarity as unknown) as Rarity)
       }}

@@ -1080,9 +1080,25 @@
     "you": "you"
   },
   "item_detail_page": {
+    "details_info": {
+      "id": "Id"
+    },
+    "selling": {
+      "title": "Selling"
+    },
+    "representations": {
+      "title": "Representations"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "details": "Details",
+    "edit_thumbnail": "Edit Thumbnail",
+    "properties": "Properties",
     "notice": "You need to add your items to a collection before you can publish them",
     "add_representation": "Add {bodyShape} representation",
-    "change_item_file": "Edit representation"
+    "change_item_file": "Edit representation",
+    "delete_published_item": "You can't delete a published item"
   },
   "third_party_collection_detail_page": {
     "notice": "Each published item takes 1 Slot. Create a draft-proposal in the DAO to ask for more slots",
@@ -1146,6 +1162,7 @@
       "rarity": "Rarity",
       "category": "Category",
       "price": "Price",
+      "supply": "Supply",
       "play_mode": "Play Mode",
       "status": "Status"
     }
