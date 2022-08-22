@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { toBase64 } from 'modules/editor/utils'
 import ImportStep from 'components/Modals/CreateSingleItemModal/ImportStep/ImportStep'
 import EditThumbnailStep from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep'
 import { AcceptedFileProps, CreateItemView } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
@@ -13,7 +14,7 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
 
   getInitialState(): State {
     return {
-      view: CreateItemView.IMPORT,
+      view: this.props.metadata.item ? CreateItemView.THUMBNAIL : CreateItemView.IMPORT,
       file: null,
       error: '',
       isLoading: false
@@ -40,17 +41,27 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
   }
 
   renderThumbnailView() {
-    const { onClose } = this.props
+    const {
+      onClose,
+      metadata: { item }
+    } = this.props
     const { file, isLoading } = this.state
+
+    let wearablePreviewProp
+    if (file) {
+      wearablePreviewProp = { blob: toWearableWithBlobs({ file, isEmote: true }) }
+    } else if (item) {
+      wearablePreviewProp = { base64s: [toBase64(item)] }
+    }
 
     return (
       <EditThumbnailStep
         isLoading={isLoading}
-        blob={file ? toWearableWithBlobs({ file, isEmote: true }) : undefined}
         title={this.renderModalTitle()}
         onBack={() => this.setState({ view: CreateItemView.IMPORT })}
         onSave={this.handleOnSaveThumbnail}
         onClose={onClose}
+        {...wearablePreviewProp}
       />
     )
   }

@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { PreviewMessageType, PreviewOptions, sendMessage } from '@dcl/schemas'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalNavigation, WearablePreview, Row, Button, Icon, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import BuilderIcon from 'components/Icon'
 import { ControlOptionAction, Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
 
@@ -157,7 +156,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { onClose, onBack, title, isLoading } = this.props
+    const { onClose, onBack, title, isLoading, base64s } = this.props
     const { blob, length, frame, isPlaying, hasBeenUpdated } = this.state
 
     return (
@@ -165,24 +164,22 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content className="EditThumbnailStep">
           <div className="thumbnail-step-container">
-            {blob ? (
-              <WearablePreview
-                ref={this.previewRef}
-                id="preview"
-                blob={blob}
-                profile="default"
-                disableBackground
-                disableFace
-                disableDefaultWearables
-                disableDefaultEmotes
-                disableAutoRotate
-                skin="000000"
-                wheelZoom={2}
-                onLoad={this.handleFileLoad}
-                onError={error => console.log(error)}
-                onUpdate={() => this.setState({ hasBeenUpdated: true })}
-              />
-            ) : null}
+            <WearablePreview
+              ref={this.previewRef}
+              id="preview"
+              blob={blob}
+              base64s={base64s}
+              profile="default"
+              disableBackground
+              disableFace
+              disableDefaultWearables
+              disableDefaultEmotes
+              disableAutoRotate
+              skin="000000"
+              wheelZoom={2}
+              onLoad={this.handleFileLoad}
+              onUpdate={() => this.setState({ hasBeenUpdated: true })}
+            />
             {hasBeenUpdated ? (
               <>
                 <div className="zoom-controls">
@@ -199,13 +196,6 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
                     <Icon name="minus" />
                   </Button>
                 </div>
-                <Button
-                  basic
-                  className="rotate-control"
-                  onClick={() => this.handleControlActionChange(ControlOptionAction.DISABLE_AUTOROTATE)}
-                >
-                  <BuilderIcon name="rotate-control" />
-                </Button>
 
                 <div className="play-controls">
                   <Button className="zoom-control play-control" onClick={this.handlePlayPause}>

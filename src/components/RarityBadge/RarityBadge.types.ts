@@ -6,6 +6,7 @@ export type Props = {
   category: WearableCategory
   size: 'medium' | 'small'
   withTooltip: boolean
+  className?: string
 }
 
 export type OwnProps = Pick<Props, 'rarity' | 'category'>

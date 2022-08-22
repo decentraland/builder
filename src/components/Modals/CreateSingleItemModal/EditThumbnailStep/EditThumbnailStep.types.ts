@@ -19,6 +19,7 @@ export type Props = {
   title: string
   isLoading: boolean
   blob?: WearableWithBlobs
+  base64s?: string[]
   wearablePreviewComponent?: React.ReactNode
   wearablePreviewController?: IPreviewController
   onSave: (screenshot: string) => void

@@ -623,7 +623,17 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity, emotesFeatureFlag)) {
-        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, legacyBuilderClient, collection, item)
+        //TODO: @Emotes remove emotesFeatureFlag once launched
+        const entity: DeploymentPreparationData = yield call(
+          buildItemEntity,
+          catalyst,
+          legacyBuilderClient,
+          collection,
+          item,
+          undefined,
+          undefined,
+          emotesFeatureFlag
+        )
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }

@@ -226,18 +226,20 @@ export async function buildItemEntity(
   collection: Collection,
   item: Item | Item<ItemType.EMOTE>,
   tree?: MerkleDistributorInfo,
-  itemHash?: string
+  itemHash?: string,
+  emotesFeatureFlag = false
 ): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item, legacyBuilderClient)
   const files = await makeContentFiles(blobs)
   let metadata
-  const isEmote = isEmoteItemType(item)
+  const isEmote = emotesFeatureFlag && isEmoteItemType(item) //TODO: @Emotes remove this FF once launched
   if (isEmote) {
     metadata = buildEmoteEntityMetadata(collection, item)
   } else if (tree && itemHash) {
-    metadata = buildTPItemEntityMetadata(item, itemHash, tree)
+    metadata = buildTPItemEntityMetadata(item as Item, itemHash, tree)
   } else {
-    metadata = buildWearableEntityMetadata(collection, item)
+    // Emotes will be deployed as Wearables ultil they are released
+    metadata = buildWearableEntityMetadata(collection, item as Item)
   }
   return client.buildEntity({
     type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,

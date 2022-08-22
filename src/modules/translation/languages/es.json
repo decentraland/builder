@@ -1100,9 +1100,25 @@
     "you": "usted"
   },
   "item_detail_page": {
+    "details_info": {
+      "id": "Id"
+    },
+    "selling": {
+      "title": "Vendiendo"
+    },
+    "representations": {
+      "title": "Representaciones"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "details": "Detalles",
+    "edit_thumbnail": "Editar Thumbnail",
+    "properties": "Propiedades",
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
     "add_representation": "Agregar representación de {bodyShape}",
-    "change_item_file": "Editar representación"
+    "change_item_file": "Editar representación",
+    "delete_published_item": "No se puede borrar un item publicado"
   },
   "third_party_collection_detail_page": {
     "notice": "Cada item publicado toma un Slot. Crear un borrador de propuesta en el DAO para solicitar más slots",
@@ -1166,6 +1182,7 @@
       "rarity": "Rareza",
       "category": "Categoria",
       "price": "Precio",
+      "supply": "Suministro",
       "play_mode": "Modo de Reproducción",
       "status": "Estado"
     }

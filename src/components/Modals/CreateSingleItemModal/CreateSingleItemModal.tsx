@@ -330,7 +330,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { type, previewController, model, contents, category } = this.state
     if (type && model && contents) {
       const view = isEmotesFeatureFlagOn && type === ItemType.EMOTE ? CreateItemView.THUMBNAIL : CreateItemView.DETAILS
-      const data = await getItemData({ wearablePreviewController: previewController, type, model, contents, category })
+      const data = await getItemData({
+        wearablePreviewController: previewController,
+        type,
+        model,
+        contents,
+        category,
+        isEmotesFeatureFlagOn
+      })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
         this.setState({ view, fromView: CreateItemView.IMPORT })
       })

@@ -7,19 +7,25 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { id, item, onFetchItem, isConnected } = this.props
+    const { id, item, onFetchItem, onFetchCollection, isConnected, collection } = this.props
 
     if (isConnected && id && !item) {
       this.setState({ loadedItemId: id }, () => onFetchItem(id))
     }
+    if (isConnected && id && item?.collectionId && !collection) {
+      onFetchCollection(item.collectionId!)
+    }
   }
 
   componentDidUpdate() {
-    const { id, item, onFetchItem, isConnected } = this.props
+    const { id, item, collection, onFetchItem, onFetchCollection, isConnected } = this.props
     const { loadedItemId } = this.state
 
     if (isConnected && id && !item && loadedItemId !== id) {
       this.setState({ loadedItemId: id }, () => onFetchItem(id))
+    }
+    if (isConnected && id && item?.collectionId && !collection) {
+      onFetchCollection(item.collectionId!)
     }
   }
 

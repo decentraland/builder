@@ -1,6 +1,8 @@
 import * as React from 'react'
 
+import { WearableCategory } from '@dcl/schemas'
 import { getBackgroundStyle, getThumbnailURL } from 'modules/item/utils'
+import RarityBadge from 'components/RarityBadge'
 import ItemBadge from 'components/ItemBadge'
 import { SmartBadge } from 'components/SmartBadge'
 import { ItemMetadataType } from 'modules/item/types'
@@ -15,18 +17,23 @@ export default class ItemImage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { className, item, src, hasBadge, badgeSize } = this.props
+    const { className, item, src, hasBadge, badgeSize, hasRarityBadge } = this.props
     const isSmart = getItemMetadataType(item) === ItemMetadataType.SMART_WEARABLE
 
     return (
       <div className={`ItemImage is-image image-wrapper ${className}`} style={getBackgroundStyle(item.rarity)}>
         <img className="item-image" src={src || getThumbnailURL(item)} alt={item.name} />
-        {hasBadge ? (
-          <>
-            <ItemBadge item={item} size={badgeSize}></ItemBadge>
-            {isSmart ? <SmartBadge size={badgeSize} /> : null}
-          </>
-        ) : null}
+        <div className="badges-container">
+          {hasRarityBadge && item.rarity && item.data.category ? (
+            <RarityBadge className="rarity-badge" category={item.data.category as WearableCategory} rarity={item.rarity} />
+          ) : null}
+          {hasBadge ? (
+            <>
+              <ItemBadge item={item} size={badgeSize}></ItemBadge>
+              {isSmart ? <SmartBadge size={badgeSize} /> : null}
+            </>
+          ) : null}
+        </div>
       </div>
     )
   }
