@@ -232,7 +232,7 @@ function buildLegacyEmoteEntityMetadata(
     data: {
       hides: [],
       replaces: [],
-      category: 'simple' as WearableCategory,
+      category: 'dance' as WearableCategory,
       representations: item.data.representations.map(representation => ({ ...representation, overrideReplaces: [], overrideHides: [] })),
       tags: item.data.tags
     },
