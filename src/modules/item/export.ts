@@ -242,7 +242,7 @@ export async function buildItemEntity(
     metadata = buildWearableEntityMetadata(collection, item as Item)
   }
   return client.buildEntity({
-    type: isEmote && emotesFeatureFlag ? EntityType.EMOTE : EntityType.WEARABLE,
+    type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,
     pointers: [metadata.id],
     metadata,
     files,
