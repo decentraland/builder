@@ -826,7 +826,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const emotesFeatureFlag: boolean = yield select(getIsEmotesFlowEnabled)
 
       for (const item of items) {
-        if (true) {
+        if (!item.currentContentHash) {
           const v0ContentHash: string = yield call(
             buildStandardWearableContentHash,
             collection,
@@ -847,11 +847,10 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
             itemsToRescue.push(item)
             contentHashes.push(v1ContentHash)
           }
+        } else if (item.currentContentHash !== item.blockchainContentHash) {
+          itemsToRescue.push(item)
+          contentHashes.push(item.currentContentHash)
         }
-        //  else if (item.currentContentHash !== item.blockchainContentHash) {
-        //   itemsToRescue.push(item)
-        //   contentHashes.push(item.currentContentHash)
-        // }
       }
 
       // 3. If any, open the modal in the rescue step and wait for actions
