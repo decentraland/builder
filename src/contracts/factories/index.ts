@@ -9,3 +9,4 @@ export { ERC20__factory } from "./ERC20__factory";
 export { ERC721CollectionV2__factory } from "./ERC721CollectionV2__factory";
 export { EstateRegistry__factory } from "./EstateRegistry__factory";
 export { LANDRegistry__factory } from "./LANDRegistry__factory";
+export { Rentals__factory } from "./Rentals__factory";

@@ -1,21 +1,17 @@
 import * as React from 'react'
-import { basename } from 'path'
 import uuid from 'uuid'
-import JSZip from 'jszip'
-import { WearableCategory } from '@dcl/schemas'
+import { loadFile, WearableConfig } from '@dcl/builder-client'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getExtension } from 'lib/file'
 import { EngineType, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
-import { BodyShapeType, IMAGE_EXTENSIONS, ItemRarity, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
-import { isImageCategory, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
+import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
+import { getBodyShapeType, getModelPath, isImageCategory, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
-import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import ItemImport from 'components/ItemImport'
-import { ItemAssetJson } from '../CreateSingleItemModal.types'
-import { validateEnum, validatePath } from '../utils'
+import { AcceptedFileProps, ModelData } from '../CreateSingleItemModal.types'
 import { Props, State } from './ImportStep.types'
 import './ImportStep.css'
 
@@ -36,58 +32,26 @@ export default class ImportStep extends React.PureComponent<Props, State> {
    *
    * @param file - The ZIP file.
    */
-  handleZippedModelFiles = async (file: File) => {
-    const zip: JSZip = await JSZip.loadAsync(file)
-    const fileNames: string[] = []
+  handleZippedModelFiles = async (file: File): Promise<{ modelData: ModelData; wearable?: WearableConfig }> => {
+    const loadedFile = await loadFile(file.name, file)
+    const { wearable, content } = loadedFile
 
-    zip.forEach(fileName => {
-      if (!basename(fileName).startsWith('.')) {
-        fileNames.push(fileName)
-      }
-    })
+    let modelPath: string | undefined
 
-    // asset.json contains data to populate parts of the state
-    const assetJsonPath = fileNames.find(path => basename(path) === ASSET_MANIFEST)
-    let assetJson: ItemAssetJson | undefined
-
-    if (assetJsonPath) {
-      const assetRaw = zip.file(assetJsonPath)
-      const content = await assetRaw.async('text')
-      assetJson = JSON.parse(content)
+    if (wearable) {
+      modelPath = getModelPath(wearable.data.representations)
+    } else {
+      modelPath = Object.keys(content).find(isModelPath)
     }
-
-    const modelPath = fileNames.find(isModelPath)
-
-    const files = await Promise.all(
-      fileNames
-        .map(fileName => zip.file(fileName))
-        .filter(file => !!file)
-        .map(async file => {
-          const blob = await file.async('blob')
-
-          if (blob.size > MAX_FILE_SIZE) {
-            throw new FileTooBigError()
-          }
-
-          return {
-            name: file.name,
-            blob
-          }
-        })
-    )
-
-    const contents = files.reduce<Record<string, Blob>>((contents, file) => {
-      contents[file.name] = file.blob
-      return contents
-    }, {})
 
     if (!modelPath) {
       throw new MissingModelFileError()
     }
 
-    const result = await this.processModel(modelPath, contents)
-
-    return { ...result, assetJson }
+    return {
+      modelData: await this.processModel(modelPath, content),
+      wearable
+    }
   }
 
   /**
@@ -95,7 +59,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
    *
    * @param file - The model file.
    */
-  handleModelFile = async (file: File) => {
+  handleModelFile = async (file: File): Promise<ModelData> => {
     if (file.size > MAX_FILE_SIZE) {
       throw new FileTooBigError()
     }
@@ -105,7 +69,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       [modelPath]: file
     }
 
-    return { ...(await this.processModel(modelPath, contents)), assetJson: undefined }
+    return this.processModel(modelPath, contents)
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
@@ -129,45 +93,62 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         throw new WrongExtensionError()
       }
 
-      const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
-      const { model, contents, type, assetJson } = await handler(file)
-      const isEmote = type === ItemType.EMOTE
-
-      onDropAccepted({
+      let acceptedFileProps: AcceptedFileProps = {
         id: changeItemFile ? item!.id : uuid.v4(),
         name: changeItemFile ? item!.name : cleanAssetName(file.name),
         file,
-        type,
-        model,
-        contents,
-        bodyShape: isEmote ? BodyShapeType.BOTH : undefined,
-        category: isRepresentation ? category : undefined,
-        ...(await this.getAssetJsonProps(assetJson, contents))
+        category: isRepresentation ? category : undefined
+      }
+
+      if (extension === '.zip') {
+        const { modelData, wearable } = await this.handleZippedModelFiles(file)
+        const { type, model, contents } = modelData
+
+        acceptedFileProps = {
+          ...acceptedFileProps,
+          type,
+          model,
+          contents
+        }
+
+        if (wearable) {
+          let thumbnail: string | undefined
+
+          if (thumbnail && thumbnail in modelData.contents) {
+            thumbnail = await blobToDataURL(modelData.contents[thumbnail])
+          }
+
+          acceptedFileProps = {
+            ...acceptedFileProps,
+            thumbnail,
+            name: wearable.name,
+            description: wearable.description,
+            rarity: wearable.rarity,
+            category: wearable.data.category,
+            bodyShape: getBodyShapeType(wearable as Item)
+          }
+        }
+      } else {
+        const { type, model, contents } = await this.handleModelFile(file)
+
+        acceptedFileProps = {
+          ...acceptedFileProps,
+          type,
+          model,
+          contents
+        }
+      }
+
+      const isEmote = acceptedFileProps.type === ItemType.EMOTE
+
+      onDropAccepted({
+        ...acceptedFileProps,
+        bodyShape: isEmote ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
       })
       this.setState({ error: '', isLoading: false })
     } catch (error) {
       this.setState({ error: error.message, isLoading: false })
     }
-  }
-
-  async getAssetJsonProps(assetJson: ItemAssetJson = {}, contents: Record<string, Blob> = {}): Promise<ItemAssetJson> {
-    const { thumbnail, ...props } = assetJson
-
-    // sanizite
-    validatePath('thumbnail', assetJson, contents)
-    validatePath('model', assetJson, contents)
-    validateEnum('rarity', assetJson, Object.values(ItemRarity))
-    validateEnum('category', assetJson, Object.values(WearableCategory))
-    validateEnum('bodyShape', assetJson, Object.values(BodyShapeType))
-
-    if (thumbnail && thumbnail in contents) {
-      return {
-        ...props,
-        thumbnail: await blobToDataURL(contents[thumbnail])
-      }
-    }
-
-    return props
   }
 
   handleDropRejected = async (rejectedFiles: File[]) => {
@@ -176,10 +157,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     this.setState({ error: error.message })
   }
 
-  async processModel(
-    model: string,
-    contents: Record<string, Blob>
-  ): Promise<{ model: string; contents: Record<string, Blob>; type: ItemType }> {
+  async processModel(model: string, contents: Record<string, Blob>): Promise<ModelData> {
     const url = URL.createObjectURL(contents[model])
     const isEmote = await getIsEmote(url, {
       mappings: rawMappingsToObjectURL(contents),

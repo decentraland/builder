@@ -1,5 +1,5 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
-import { BodyShape, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteDataADR74, Wearable, WearableCategory, Rarity as ItemRarity } from '@dcl/schemas'
 import { AnimationMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
@@ -21,16 +21,6 @@ export enum SyncStatus {
   LOADING = 'loading', // contract deployed and approved, but entitiy not loaded yet from catalyst
   UNSYNCED = 'unsynced', // contract deployed and approved, but contents in catalyst (entity) are different from contents on builder (item)
   SYNCED = 'synced' // contract deployed and approved, and contents in catalyst === contents on builder
-}
-
-export enum ItemRarity {
-  UNIQUE = 'unique',
-  MYTHIC = 'mythic',
-  LEGENDARY = 'legendary',
-  EPIC = 'epic',
-  RARE = 'rare',
-  UNCOMMON = 'uncommon',
-  COMMON = 'common'
 }
 
 export enum EmotePlayMode {
@@ -177,5 +167,7 @@ export const ITEM_NAME_MAX_LENGTH = 32
 export const ITEM_DESCRIPTION_MAX_LENGTH = 64
 export const MODEL_EXTENSIONS = ['.zip', '.gltf', '.glb']
 export const IMAGE_EXTENSIONS = ['.zip', '.png']
-export const ITEM_EXTENSIONS = [...MODEL_EXTENSIONS, ...IMAGE_EXTENSIONS]
+export const ITEM_EXTENSIONS = ['.zip', '.gltf', '.glb', '.png']
 export const IMAGE_CATEGORIES = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
+
+export { ItemRarity }

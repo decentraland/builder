@@ -14,8 +14,13 @@
   border-radius: 8px;
 }
 
+.LandDetailPage .dcl.stats.role .ui.header {
+  margin-bottom: 3px;
+}
+
 .LandDetailPage .dcl.stats.operators .Profile {
-  display: inline-block;
+  display: flex;
+  align-items: center;
   margin-right: 20px;
 }
 
@@ -32,7 +37,7 @@
 }
 
 .LandDetailPage .dcl.section.data .dcl.stats {
-  margin-right: 48px;
+  margin-right: 5%;
 }
 
 .LandDetailPage .dcl.section.data .dcl.stats + .dcl.stats {

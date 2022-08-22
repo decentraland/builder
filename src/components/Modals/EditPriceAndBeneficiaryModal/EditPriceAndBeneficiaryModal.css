@@ -2,6 +2,14 @@
   padding: 16px 32px 38px;
 }
 
+.EditPriceAndBeneficiaryModal .ui.form .dcl.field {
+  margin-bottom: 4px;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .dcl.field > .message {
+  display: none;
+}
+
 .EditPriceAndBeneficiaryModal .ui.form .price-field {
   position: relative;
 }
@@ -58,14 +66,9 @@
 
 .EditPriceAndBeneficiaryModal .checkbox.make-it-free,
 .EditPriceAndBeneficiaryModal .checkbox.beneficiary {
-  margin-top: -2em;
-  margin-bottom: 1em;
+  margin-bottom: 32px;
   display: flex;
   align-items: center;
-}
-
-.EditPriceAndBeneficiaryModal .checkbox.make-it-free {
-  margin-bottom: 24px;
 }
 
 .EditPriceAndBeneficiaryModal .checkbox.make-it-free .item-checkbox,

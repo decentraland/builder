@@ -1,5 +1,6 @@
-import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, all, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
+import { push } from 'connected-react-router'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,
@@ -43,16 +44,18 @@ import {
   setUpdateManagerSuccess,
   setUpdateManagerFailure
 } from './actions'
+import { locations } from 'routing/locations'
 import { manager } from 'lib/api/manager'
+import { rental } from 'lib/api/rentals'
 import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory'
 import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
-import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
-import { push } from 'connected-react-router'
-import { locations } from 'routing/locations'
+import { Rentals__factory } from 'contracts/factories/Rentals__factory'
+import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS, RENTALS_ADDRESS } from 'modules/common/contracts'
+import { getIsRentalsEnabled } from 'modules/features/selectors'
 import { closeModal } from 'modules/modal/actions'
 import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
-import { Land, LandType, Authorization } from './types'
+import { Land, LandType, Authorization, Rental, RoleType } from './types'
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
@@ -174,13 +177,27 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
       case LandType.PARCEL: {
         const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
         const tokenId: ethers.BigNumber = yield call(() => landRegistry.encodeTokenId(land.x!, land.y!))
-        const transaction: ethers.ContractTransaction = yield call(() => landRegistry.setUpdateOperator(tokenId, operator))
+        let transaction: ethers.ContractTransaction
+
+        if (land.role === RoleType.TENANT) {
+          const rentals = Rentals__factory.connect(RENTALS_ADDRESS, signer)
+          transaction = yield call([rentals, 'setOperator'], LAND_REGISTRY_ADDRESS, tokenId, operator)
+        } else {
+          transaction = yield call(() => landRegistry.setUpdateOperator(tokenId, operator))
+        }
         yield put(setOperatorSuccess(land, address, wallet.chainId, transaction.hash))
         break
       }
       case LandType.ESTATE: {
         const estateRegistry = EstateRegistry__factory.connect(ESTATE_REGISTRY_ADDRESS, signer)
-        const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.setUpdateOperator(land.id, operator))
+        let transaction: ethers.ContractTransaction
+
+        if (land.role === RoleType.TENANT) {
+          const rentals = Rentals__factory.connect(RENTALS_ADDRESS, signer)
+          transaction = yield call([rentals, 'setOperator'], ESTATE_REGISTRY_ADDRESS, land.id, operator)
+        } else {
+          transaction = yield call(() => estateRegistry.setUpdateOperator(land.id, operator))
+        }
         yield put(setOperatorSuccess(land, address, wallet.chainId, transaction.hash))
         break
       }
@@ -259,8 +276,13 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
 function* handleFetchLandRequest(action: FetchLandsRequestAction) {
   const { address } = action.payload
   try {
-    const [land, authorizations]: [Land[], Authorization[]] = yield call(() => manager.fetchLand(address))
-    yield put(fetchLandsSuccess(address, land, authorizations))
+    const isRentalsEnabled: boolean = yield select(getIsRentalsEnabled)
+
+    const rentals: Rental[] = isRentalsEnabled ? yield call([rental, 'fetchTokenIdsByTenant'], address) : []
+    const tenantTokenIds = rentals.map(rental => rental.tokenId)
+
+    const [land, authorizations]: [Land[], Authorization[]] = yield call(() => manager.fetchLand(address, tenantTokenIds))
+    yield put(fetchLandsSuccess(address, land, authorizations, rentals))
   } catch (error) {
     yield put(fetchLandsFailure(address, error.message))
   }

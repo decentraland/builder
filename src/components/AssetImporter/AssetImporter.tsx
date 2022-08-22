@@ -113,7 +113,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     let manifestParsed: Asset | null = null
 
     if (manifestPath) {
-      const manifestRaw = zip.file(manifestPath)
+      const manifestRaw = zip.file(manifestPath)!
       const content = await manifestRaw.async('text')
       manifestParsed = JSON.parse(content)
     }
@@ -138,7 +138,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     const files = await Promise.all(
       fileNames
         .map(fileName => zip.file(fileName))
-        .filter(file => !!file)
+        .filter((file): file is JSZip.JSZipObject => file !== null)
         .map(async file => {
           const blob = await file.async('blob')
 

@@ -8,7 +8,7 @@ export default class InlineList extends React.PureComponent<Props> {
 
     switch (list.length) {
       case 0:
-        return null
+        return t('global.none')
       case 1:
         return list[0]
       case 2:

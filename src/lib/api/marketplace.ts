@@ -2,8 +2,8 @@ import { gql } from 'apollo-boost'
 import { config } from 'config'
 import { createClient } from './graph'
 
-export const MARKETPLACE_URL = config.get('MARKETPLACE_GRAPH_URL', '')
-const graphClient = createClient(MARKETPLACE_URL)
+export const MARKETPLACE_GRAPH_URL = config.get('MARKETPLACE_GRAPH_URL', '')
+const marketplaceGraphClient = createClient(MARKETPLACE_GRAPH_URL)
 
 const BATCH_SIZE = 1000
 
@@ -38,7 +38,7 @@ export class MarketplaceAPI {
     let offset = 0
     let nextPage = true
     while (nextPage) {
-      const { data } = await graphClient.query<SubdomainQueryResult>({
+      const { data } = await marketplaceGraphClient.query<SubdomainQueryResult>({
         query: getSubdomainQuery(),
         variables: { owner, offset }
       })

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { LandType, Land, RoleType } from 'modules/land/types'
+import { LandType, Land, RoleType, Rental } from 'modules/land/types'
 import { Deployment } from 'modules/deployment/types'
 import { coordsToId, hoverStrokeByRole, hoverFillByRole } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
@@ -10,6 +10,7 @@ import LandProviderPage from 'components/LandProviderPage'
 import Back from 'components/Back'
 import Profile from 'components/Profile'
 import JumpIn from 'components/JumpIn'
+import RentalPeriod from 'components/RentalPeriod'
 import ENSChip from './ENSChip'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
@@ -87,7 +88,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     return occupiedTotal
   }
 
-  renderDetail(land: Land, deployments: Deployment[]) {
+  renderDetail(land: Land, deployments: Deployment[], rental: Rental | null) {
     const { ensList, parcelsAvailableToBuildEstates, projects, onNavigate, onOpenModal } = this.props
     const { hovered, mouseX, mouseY, showTooltip } = this.state
     const occupiedTotal = this.computeOccupiedLand(land, deployments)
@@ -124,7 +125,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                     <JumpIn land={land} />
                   </Row>
                 </Column>
-                {land.role === RoleType.OWNER ? (
+                {land.roles.includes(RoleType.OWNER) ? (
                   <Column className="actions" align="right">
                     <Row>
                       <Button basic onClick={() => onNavigate(locations.landTransfer(land.id))}>
@@ -180,6 +181,23 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                       </Dropdown>
                     </Row>
                   </Column>
+                ) : land.roles.includes(RoleType.TENANT) ? (
+                  <Dropdown
+                    trigger={
+                      <Button basic>
+                        <Icon name="ellipsis horizontal" />
+                      </Button>
+                    }
+                    inline
+                    direction="left"
+                  >
+                    <Dropdown.Menu>
+                      <Dropdown.Item
+                        text={t('land_detail_page.set_operator')}
+                        onClick={() => onNavigate(locations.landOperator(land.id))}
+                      />
+                    </Dropdown.Menu>
+                  </Dropdown>
                 ) : null}
               </Row>
             </Narrow>
@@ -205,7 +223,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
           <Section size="large">
             <Header sub>{t('land_detail_page.online_scenes')}</Header>
             {deployments.length === 0 ? (
-              <Empty height={100}>{t('land_detail_page.none')}</Empty>
+              <Empty height={100}>{t('global.none')}</Empty>
             ) : (
               <>
                 <div className="deployments">
@@ -246,11 +264,15 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             </Section>
           ) : null}
           <Section className="data">
+            <Stats title={t('global.role')} className="role">
+              <Header>{t(`roles.${land.role}`)}</Header>
+              {rental ? <RentalPeriod rental={rental} /> : null}
+            </Stats>
             <Stats title={t('land_detail_page.owner')}>
               <Profile address={land.owner} size="large" />
             </Stats>
             {land.operators.length > 0 ? (
-              <Stats title={t('land_detail_page.operators')} className="operators">
+              <Stats title={t('land_detail_page.operated_by')} className="operators">
                 <Row>
                   {land.operators.map(operator => (
                     <Profile address={operator} size="large" />
@@ -275,6 +297,10 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    return <LandProviderPage className="LandDetailPage">{(land, projects) => this.renderDetail(land, projects)}</LandProviderPage>
+    return (
+      <LandProviderPage className="LandDetailPage">
+        {(land, { deployments, rental }) => this.renderDetail(land, deployments, rental)}
+      </LandProviderPage>
+    )
   }
 }

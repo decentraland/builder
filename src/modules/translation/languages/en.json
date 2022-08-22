@@ -560,8 +560,14 @@
     "total": "Total",
     "parcel_plural": "Parcels",
     "estate_plural": "Estates",
+    "role": "Role",
     "none": "None",
     "emote": "Emote"
+  },
+  "roles": {
+    "1": "Owner",
+    "2": "Tenant",
+    "3": "Operator"
   },
   "navigation": {
     "scenes": "Scenes",
@@ -681,17 +687,20 @@
     "subtitle": "Sorry, we couldn't find the Scene you were looking for",
     "title": "404"
   },
+  "rental_period": {
+    "period_over": "Rental Period Over",
+    "operator_permissions": "You will have Operator permissions until the Owner claims the Land back",
+    "ends_in": "Ends in"
+  },
   "land_page": {
-    "name": "Name",
-    "coords": "Coords",
-    "owner": "Owner",
-    "operator": "Operator",
-    "operators": "Operators",
+    "coordinates": "Coordinates",
+    "operated_by": "Operated by",
     "type": "Type",
     "online_scenes": "Online Scenes",
-    "none": "None",
     "results": "{count} {count, plural, one {result} other {results}}",
-    "owner_permission": "These are lands you don't own, but the owner gave you permission to use them."
+    "owner_explanation": "These are lands you own.",
+    "operator_explanation": "These are lands you don't own, but the owner gave you permission to use them.",
+    "tenant_explanation": "These are lands you don't own, but you've rented."
   },
   "land_detail_page": {
     "transfer": "Transfer",
@@ -701,12 +710,11 @@
     "add_or_remove_parcels": "Add Or Remove Parcels",
     "dissolve_estate": "Dissolve Estate",
     "online_scenes": "Online Scenes",
-    "none": "None",
     "add_scene": "Add Scene",
     "assigned_names": "Assigned names",
     "description": "Description",
     "owner": "Owner",
-    "operators": "Operators",
+    "operated_by": "Operated by",
     "total_land": "Total Land",
     "empty_land": "Empty Land",
     "unset_ens_content": {
@@ -778,7 +786,8 @@
   },
   "popups": {
     "metrics_help": "See metrics here!",
-    "shortcuts_help": "See shortcuts here!"
+    "shortcuts_help": "See shortcuts here!",
+    "its_you": "It's you!"
   },
   "project_card": {
     "items": "items",

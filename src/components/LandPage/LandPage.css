@@ -103,6 +103,14 @@
   border: 2px solid rgb(var(--luisxvi-violet-raw));
 }
 
-.operator-popup {
+.ui.radio.checkbox.checked.tenant-checkbox input.hidden + label:before,
+.ui.radio.checkbox.checked.tenant-checkbox input.hidden:focus + label:before,
+.ui.radio.checkbox.checked.tenant-checkbox input.hidden + label:after,
+.ui.radio.checkbox.checked.tenant-checkbox input.hidden:focus + label:after {
+  background-color: rgb(var(--millenial-orange-raw));
+  border: 2px solid rgb(var(--millenial-orange-raw));
+}
+
+.radio-popup {
   height: auto !important;
 }

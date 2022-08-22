@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
+import { getIsRentalsEnabled } from 'modules/features/selectors'
 import { getLands, isLoading } from 'modules/land/selectors'
 import { getLandPageView } from 'modules/ui/land/selectors'
 import { setLandPageView } from 'modules/ui/land/actions'
@@ -9,8 +10,9 @@ import LandPage from './LandPage'
 
 const mapState = (state: RootState): MapStateProps => ({
   lands: getLands(state),
+  view: getLandPageView(state),
   isLoading: isLoading(state),
-  view: getLandPageView(state)
+  isRentalsEnabled: getIsRentalsEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

@@ -32,27 +32,32 @@ export const getCenter = (selection: { x: number; y: number }[]) => {
 
 export const colorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: Color.SUMMER_RED,
-  [RoleType.OPERATOR]: Color.LUISXVI_VIOLET
+  [RoleType.OPERATOR]: Color.LUISXVI_VIOLET,
+  [RoleType.TENANT]: Color.MILLENIAL_ORANGE
 }
 
 export const emptyColorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: '#ab2039',
-  [RoleType.OPERATOR]: '#8f1d9b'
+  [RoleType.OPERATOR]: '#8f1d9b',
+  [RoleType.TENANT]: '#8f1d9b'
 }
 
 export const selectionBorderColorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: '#ff8199',
-  [RoleType.OPERATOR]: '#d742e8'
+  [RoleType.OPERATOR]: '#d742e8',
+  [RoleType.TENANT]: '#d742e8'
 }
 
 export const hoverFillByRole = {
   [RoleType.OWNER]: '#ff8199',
-  [RoleType.OPERATOR]: '#d742e8'
+  [RoleType.OPERATOR]: '#d742e8',
+  [RoleType.TENANT]: '#d742e8'
 }
 
 export const hoverStrokeByRole = {
   [RoleType.OWNER]: '#fcc6d1',
-  [RoleType.OPERATOR]: '#ef5eff'
+  [RoleType.OPERATOR]: '#ef5eff',
+  [RoleType.TENANT]: '#ef5eff'
 }
 
 export const getSelection = (land: Land) =>
@@ -140,6 +145,17 @@ export const splitCoords = (coords: Coord[]): [number[], number[]] => {
   return [xs, ys]
 }
 
+export function getLandType(contractAddress: string): LandType {
+  switch (contractAddress.toLowerCase()) {
+    case LAND_REGISTRY_ADDRESS:
+      return LandType.PARCEL
+    case ESTATE_REGISTRY_ADDRESS:
+      return LandType.ESTATE
+    default:
+      throw new Error(`Could not derive land type from contract address "${contractAddress}"`)
+  }
+}
+
 export const buildMetadata = (name: string, description = '') => {
   return `0,"${name.replace(/"/g, '\\"')}","${description.replace(/"/g, '\\"')}",`
 }
@@ -158,4 +174,8 @@ export function locateNextLand(landTiles: Record<string, LandTile>, currentLandI
 export function getExplorerURL(x: string | number, y: string | number) {
   const EXPLORER_URL = config.get('EXPLORER_URL', '')
   return `${EXPLORER_URL}?position=${coordsToId(x, y)}`
+}
+
+export function hasAnyRole(land: Land, roles: RoleType[]): boolean {
+  return land.roles.some(role => roles.includes(role))
 }

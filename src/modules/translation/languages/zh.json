@@ -555,8 +555,14 @@
     "total": "全部的",
     "parcel_plural": "包裹",
     "estate_plural": "庄园",
+    "role": "角色",
     "none": "没有任何",
     "emote": "表情"
+  },
+  "roles": {
+    "1": "持有者",
+    "2": "操作者",
+    "3": "租户"
   },
   "navigation": {
     "scenes": "场景",
@@ -646,17 +652,20 @@
     },
     "success": "谢谢，我们会与您联系!"
   },
+  "rental_period": {
+    "period_over": "租期结束",
+    "operator_permissions": "在所有者收回土地之前，您将拥有操作员权限",
+    "ends_in": "结束于"
+  },
   "land_page": {
-    "name": "名称",
-    "coords": "座标",
-    "owner": "持有者",
-    "operator": "操作者",
-    "operators": "操作者",
+    "coordinates": "坐标",
+    "operated_by": "经营者",
     "type": "类型",
     "online_scenes": "在线场景",
-    "none": "无",
     "results": "{count}个结果",
-    "owner_permission": "这些是您不拥有的土地，但所有者授予您使用它们的许可。"
+    "owner_explanation": "这些是你拥有的土地。",
+    "operator_explanation": "这些是您不拥有的土地，但所有者授予您使用它们的许可。",
+    "tenant_explanation": "这些土地不属于你，但你已经租用了。"
   },
   "land_detail_page": {
     "transfer": "转移",
@@ -667,12 +676,11 @@
     "add_or_remove_parcels": "添加或删除地块",
     "dissolve_estate": "解散产业",
     "online_scenes": "在线场景",
-    "none": "无",
     "add_scene": "添加场景",
     "assigned_names": "分配名称",
     "description": "描述",
     "owner": "持有者",
-    "operators": "操作者",
+    "operated_by": "经营者",
     "total_land": "总土地",
     "empty_land": "空地",
     "unset_ens_content": {
@@ -774,7 +782,8 @@
   },
   "popups": {
     "metrics_help": "查看场景指标",
-    "shortcuts_help": "在此查看快捷键"
+    "shortcuts_help": "在此查看快捷键",
+    "its_you": "是你"
   },
   "project_card": {
     "items": "模型",

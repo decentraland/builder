@@ -152,7 +152,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleSubmit = async () => {
-    const { address, metadata, collection, onSave } = this.props
+    const { address, metadata, collection, isEmotePlayModeFeatureFlagOn, onSave } = this.props
     const { id } = this.state
 
     let changeItemFile = false
@@ -277,7 +277,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 category: category as EmoteCategory,
                 representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
                 tags: [],
-                loop: playMode === EmotePlayMode.LOOP
+                loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false
               } as EmoteDataADR74
             }
 
@@ -330,9 +330,16 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { type, previewController, model, contents, category } = this.state
     if (type && model && contents) {
       const view = isEmotesFeatureFlagOn && type === ItemType.EMOTE ? CreateItemView.THUMBNAIL : CreateItemView.DETAILS
-      const data = await getItemData({ wearablePreviewController: previewController, type, model, contents, category })
+      const data = await getItemData({
+        wearablePreviewController: previewController,
+        type,
+        model,
+        contents,
+        category,
+        isEmotesFeatureFlagOn
+      })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
-        this.setState({ view })
+        this.setState({ view, fromView: CreateItemView.IMPORT })
       })
     }
   }
@@ -379,7 +386,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { isEmotesFeatureFlagOn } = this.props
     const { type } = this.state
     if (isEmotesFeatureFlagOn && type === ItemType.EMOTE) {
-      this.setState({ view: CreateItemView.THUMBNAIL })
+      this.setState({ fromView: CreateItemView.DETAILS, view: CreateItemView.THUMBNAIL })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
@@ -695,25 +702,28 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderEmoteDetails() {
+    const { isEmotePlayModeFeatureFlagOn } = this.props
     const { playMode, type } = this.state
     const playModes: string[] = getEmotePlayModes()
 
     return (
       <>
         {this.renderFields()}
-        <SelectField
-          required
-          className="hasDescription"
-          label={t('create_single_item_modal.play_mode_label')}
-          placeholder={t('create_single_item_modal.play_mode_placeholder')}
-          value={playModes.includes(playMode!) ? playMode : undefined}
-          options={playModes.map(value => ({
-            value,
-            text: t(`${type}.play_mode.${value}.text`),
-            description: t(`${type}.play_mode.${value}.description`)
-          }))}
-          onChange={this.handlePlayModeChange}
-        />
+        {isEmotePlayModeFeatureFlagOn && (
+          <SelectField
+            required
+            className="hasDescription"
+            label={t('create_single_item_modal.play_mode_label')}
+            placeholder={t('create_single_item_modal.play_mode_placeholder')}
+            value={playModes.includes(playMode!) ? playMode : undefined}
+            options={playModes.map(value => ({
+              value,
+              text: t(`${type}.play_mode.${value}.text`),
+              description: t(`${type}.play_mode.${value}.description`)
+            }))}
+            onChange={this.handlePlayModeChange}
+          />
+        )}
         <div className="dcl select-field">
           <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" className="" />} />
         </div>
@@ -837,14 +847,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderThumbnailView() {
     const { onClose } = this.props
-    const { isLoading, contents } = this.state
+    const { isLoading, contents, fromView } = this.state
 
     return (
       <EditThumbnailStep
         isLoading={!!isLoading}
         blob={contents ? toWearableWithBlobs({ contents, isEmote: true }) : undefined}
         title={this.renderModalTitle()}
-        onBack={() => this.setState({ view: CreateItemView.DETAILS })}
+        onBack={() => this.setState({ view: fromView! })}
         onSave={this.handleOnScreenshotTaken}
         onClose={onClose}
       />
