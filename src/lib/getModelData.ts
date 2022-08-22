@@ -229,13 +229,15 @@ export async function getItemData({
   model,
   wearablePreviewController,
   contents,
-  category
+  category,
+  isEmotesFeatureFlagOn
 }: {
   type: ItemType
   model: string
   wearablePreviewController?: IPreviewController
   contents: Record<string, Blob>
   category?: string
+  isEmotesFeatureFlagOn?: boolean
 }) {
   let info: Metrics
   let image
@@ -253,7 +255,7 @@ export async function getItemData({
     if (!wearablePreviewController) {
       throw Error('WearablePreview controller needed')
     }
-    if (type === ItemType.EMOTE) {
+    if (type === ItemType.EMOTE && isEmotesFeatureFlagOn) {
       const { gltf } = await loadGltf(URL.createObjectURL(contents[model]))
       const duration = gltf.animations[0].duration
       const frames = gltf.animations[0].tracks[0].times.length - 1
