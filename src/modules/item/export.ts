@@ -174,7 +174,7 @@ function buildWearableEntityMetadata(collection: Collection, item: Item): Wearab
   return catalystItem
 }
 
-function buildEmoteEntityMetadata(collection: Collection, item: Item<ItemType.EMOTE>): Emote {
+function buildADR74EmoteEntityMetadata(collection: Collection, item: Item<ItemType.EMOTE>): Emote {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published')
   }
@@ -196,6 +196,52 @@ function buildEmoteEntityMetadata(collection: Collection, item: Item<ItemType.EM
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
     metrics: EMPTY_ITEM_METRICS
+  }
+
+  return catalystItem
+}
+
+function buildLegacyEmoteEntityMetadata(
+  collection: Collection,
+  item: Item<ItemType.EMOTE>
+): Wearable & {
+  emoteDataV0?:
+    | {
+        loop: boolean
+      }
+    | undefined
+} {
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published')
+  }
+
+  // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
+  const catalystItem: Wearable & {
+    emoteDataV0?:
+      | {
+          loop: boolean
+        }
+      | undefined
+  } = {
+    id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
+    name: item.name,
+    description: item.description,
+    collectionAddress: collection.contractAddress!,
+    rarity: (item.rarity! as unknown) as Rarity,
+    i18n: [{ code: Locale.EN, text: item.name }],
+    data: {
+      hides: [],
+      replaces: [],
+      category: 'simple' as WearableCategory,
+      representations: item.data.representations.map(representation => ({ ...representation, overrideReplaces: [], overrideHides: [] })),
+      tags: item.data.tags
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: EMPTY_ITEM_METRICS,
+    emoteDataV0: {
+      loop: false
+    }
   }
 
   return catalystItem
@@ -232,9 +278,9 @@ export async function buildItemEntity(
   const blobs = await buildItemEntityBlobs(item, legacyBuilderClient)
   const files = await makeContentFiles(blobs)
   let metadata
-  const isEmote = emotesFeatureFlag && isEmoteItemType(item) //TODO: @Emotes remove this FF once launched
+  const isEmote = isEmoteItemType(item) //TODO: @Emotes remove this FF once launched
   if (isEmote) {
-    metadata = buildEmoteEntityMetadata(collection, item)
+    metadata = emotesFeatureFlag ? buildADR74EmoteEntityMetadata(collection, item) : buildLegacyEmoteEntityMetadata(collection, item)
   } else if (tree && itemHash) {
     metadata = buildTPItemEntityMetadata(item as Item, itemHash, tree)
   } else {
@@ -242,7 +288,7 @@ export async function buildItemEntity(
     metadata = buildWearableEntityMetadata(collection, item as Item)
   }
   return client.buildEntity({
-    type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,
+    type: isEmote && emotesFeatureFlag ? EntityType.EMOTE : EntityType.WEARABLE,
     pointers: [metadata.id],
     metadata,
     files,
@@ -273,11 +319,16 @@ export async function buildTPItemEntity(
 export async function buildStandardWearableContentHash(
   collection: Collection,
   item: Item,
-  hashingType = EntityHashingType.V1
+  hashingType = EntityHashingType.V1,
+  emotesFeatureFlag = false
 ): Promise<string> {
   const hashes = await buildItemEntityContent(item)
   const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
-  const metadata = isEmoteItemType(item) ? buildEmoteEntityMetadata(collection, item) : buildWearableEntityMetadata(collection, item)
+  const metadata = isEmoteItemType(item)
+    ? emotesFeatureFlag
+      ? buildADR74EmoteEntityMetadata(collection, item)
+      : buildLegacyEmoteEntityMetadata(collection, item)
+    : buildWearableEntityMetadata(collection, item)
   if (hashingType === EntityHashingType.V0) {
     return (await calculateMultipleHashesADR32LegacyQmHash(content, metadata)).hash
   } else {

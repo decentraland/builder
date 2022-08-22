@@ -823,20 +823,35 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         items = yield getItemsFromCollection(collection)
       }
 
+      const emotesFeatureFlag: boolean = yield select(getIsEmotesFlowEnabled)
+
       for (const item of items) {
-        if (!item.currentContentHash) {
-          const v0ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0)
-          const v1ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1)
+        if (true) {
+          const v0ContentHash: string = yield call(
+            buildStandardWearableContentHash,
+            collection,
+            item,
+            EntityHashingType.V0,
+            emotesFeatureFlag
+          )
+          const v1ContentHash: string = yield call(
+            buildStandardWearableContentHash,
+            collection,
+            item,
+            EntityHashingType.V1,
+            emotesFeatureFlag
+          )
 
           // As there could be older hashes in the blockchain, check if both of them are different to see if they need an update
           if (v0ContentHash !== item.blockchainContentHash && v1ContentHash !== item.blockchainContentHash) {
             itemsToRescue.push(item)
             contentHashes.push(v1ContentHash)
           }
-        } else if (item.currentContentHash !== item.blockchainContentHash) {
-          itemsToRescue.push(item)
-          contentHashes.push(item.currentContentHash)
         }
+        //  else if (item.currentContentHash !== item.blockchainContentHash) {
+        //   itemsToRescue.push(item)
+        //   contentHashes.push(item.currentContentHash)
+        // }
       }
 
       // 3. If any, open the modal in the rescue step and wait for actions
