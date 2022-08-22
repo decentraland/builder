@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { fetchCollectionRequest, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { RootState } from 'modules/common/types'
 import { getItemId } from 'modules/location/selectors'
 import { isLoggingIn } from 'modules/identity/selectors'
@@ -29,6 +30,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     isConnected: isConnected(state),
     isLoading:
       isLoadingType(getLoading(state), FETCH_ITEM_REQUEST) ||
+      isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||
       isLoadingType(getLoading(state), SAVE_ITEM_REQUEST) ||
       isLoadingType(getLoading(state), SET_PRICE_AND_BENEFICIARY_REQUEST) ||
       isLoggingIn(state) ||
@@ -37,7 +39,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onFetchItem: id => dispatch(fetchItemRequest(id))
+  onFetchItem: id => dispatch(fetchItemRequest(id)),
+  onFetchCollection: id => dispatch(fetchCollectionRequest(id))
 })
 
 export default connect(mapState, mapDispatch)(ItemProvider)

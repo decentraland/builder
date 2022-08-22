@@ -29,6 +29,11 @@
   display: flex;
 }
 
+.ItemDetailPage .item-data .ui.primary.button {
+  margin-top: 12px;
+  width: 100%;
+}
+
 .ItemDetailPage .sections {
   margin-left: 48px;
   flex: 1;
@@ -53,6 +58,16 @@
 
 .ItemDetailPage .item-data .value.urn {
   text-transform: lowercase;
+  overflow-wrap: anywhere;
+  max-width: 205px;
+}
+
+.ItemDetailPage .item-data .value.urn span {
+  color: #ffffff;
+}
+
+.ItemDetailPage .item-data .value.urn span .icon {
+  margin-left: 7px;
 }
 
 .ItemDetailPage .item-data .urn-actions {
@@ -74,7 +89,173 @@
   margin-right: 12px;
 }
 
-.ItemDetailPage .metrics {
-  padding-left: 20px;
-  padding-top: 12px;
+.ItemDetailPage .metrics,
+.ItemDetailPage .details {
+  margin-top: 16px;
+  border: 2px solid #242129;
+  border-radius: 10px;
+  padding: 21px 24px;
+  padding-top: 5px;
+}
+
+.ItemDetailPage .metrics .subtitle {
+  text-transform: uppercase;
+  color: #736e7d;
+}
+
+.ItemDetailPage .details .subtitle {
+  margin-top: 18px;
+}
+
+.ItemDetailPage .details div {
+  display: flex;
+  flex-direction: column;
+}
+
+.ItemDetailPage .details.dcl.section.medium {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+}
+
+.ItemDetailPage .details span {
+  color: #736e7d;
+}
+
+.ItemDetailPage .details .value {
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 26px;
+  color: #ffffff;
+}
+
+.ItemDetailPage .metrics div {
+  font-size: 17px;
+  margin-top: 18px;
+}
+
+.ItemDetailPage .cards-container {
+  flex: 1;
+}
+
+.ItemDetailPage .card {
+  background: #242129;
+  border-radius: 10px;
+  padding: 24px;
+  margin-left: 24px;
+  margin-bottom: 12px;
+}
+
+.ItemDetailPage .card .title {
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 30px;
+  margin-bottom: 25px;
+}
+
+.ItemDetailPage .card .tag {
+  background: #37333d;
+  mix-blend-mode: normal;
+  border-radius: 16px;
+  color: white;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  margin-right: 8px;
+}
+
+.ItemDetailPage .data {
+  display: flex;
+}
+
+.ItemDetailPage .card .dcl.section.medium {
+  margin-bottom: 0;
+  margin-right: 120px;
+}
+
+.ItemDetailPage input[type='file'] {
+  display: none;
+}
+
+.ItemDetailPage .collection-link {
+  font-size: 17px;
+}
+
+.ItemDetailPage .ui.container .dcl.section.medium .dcl.row.left.grow.shrink {
+  position: absolute;
+}
+
+.ItemDetailPage .title-card-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ItemDetailPage .title-card-container button.ui.button.inverted {
+  height: 32px;
+  color: #ff2d55;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 5px;
+}
+
+.ItemDetailPage .ui.button.basic.more-actions-button {
+  width: 48px;
+  height: 32px;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 5px;
+  margin-left: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.ItemDetailPage .more-actions-button.ui.button:not(.icon) > .icon:not(.button):not(.dropdown) {
+  margin: 0;
+}
+
+.ItemDetailPage .representations-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 8px;
+  width: 100%;
+}
+
+.ItemDetailPage .representations-container .representation {
+  display: flex;
+  padding: 16px;
+  border-bottom: 1px solid rgba(115, 110, 125, 0.4);
+  align-items: center;
+}
+
+.ItemDetailPage .representations-container img {
+  width: 48px;
+  height: 48px;
+  margin-right: 13px;
+  background: rgba(115, 110, 125, 0.24);
+  border-radius: 5px;
+}
+
+.ItemDetailPage .representations-container .representation:last-of-type {
+  border-bottom: none;
+}
+
+.ItemDetailPage .representations-container .ItemBadge {
+  background-color: rgba(115, 110, 125, 0.24);
+  margin-left: auto;
+}
+
+.ItemDetailPage .representations-container .ItemBadge::before {
+  filter: none;
+}
+
+.ItemDetailPage .edit-button.ui.small.inverted.button {
+  min-width: 62px;
+  padding: 0;
+}
+
+.ItemDetailPage .ui.disabled.dropdown,
+.ItemDetailPage .ui.dropdown .menu > .disabled.item {
+  pointer-events: all;
+}
+
+.ItemDetailPage .dropdown .menu > .disabled.item a {
+  cursor: default;
 }
