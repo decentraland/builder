@@ -232,7 +232,7 @@ function buildLegacyEmoteEntityMetadata(
     data: {
       hides: [],
       replaces: [],
-      category: 'hat' as WearableCategory,
+      category: 'hat' as WearableCategory, // Using a Wearable valid category since the catalyst will expect one
       representations: item.data.representations.map(representation => ({ ...representation, overrideReplaces: [], overrideHides: [] })),
       tags: item.data.tags
     },
