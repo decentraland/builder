@@ -255,16 +255,27 @@ export async function getItemData({
     if (!wearablePreviewController) {
       throw Error('WearablePreview controller needed')
     }
-    if (type === ItemType.EMOTE && isEmotesFeatureFlagOn) {
-      const { gltf } = await loadGltf(URL.createObjectURL(contents[model]))
-      const duration = gltf.animations[0].duration
-      const frames = gltf.animations[0].tracks[0].times.length - 1
+    if (type === ItemType.EMOTE) {
+      if (!isEmotesFeatureFlagOn) {
+        info = {
+          triangles: 0,
+          materials: 0,
+          textures: 0,
+          meshes: 0,
+          bodies: 0,
+          entities: 1
+        }
+      } else {
+        const { gltf } = await loadGltf(URL.createObjectURL(contents[model]))
+        const duration = gltf.animations[0].duration
+        const frames = gltf.animations[0].tracks[0].times.length - 1
 
-      info = {
-        sequences: gltf.animations.length,
-        duration,
-        frames: frames,
-        fps: frames / duration
+        info = {
+          sequences: gltf.animations.length,
+          duration,
+          frames: frames,
+          fps: frames / duration
+        }
       }
     } else {
       info = await wearablePreviewController.scene.getMetrics()
