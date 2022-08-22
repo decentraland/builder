@@ -7,7 +7,7 @@
       "NODE_ENV": "development",
       "GEN_STATIC_LOCAL": "true",
       "PUBLIC_URL": "/",
-      "REACT_APP_DCL_DEFAULT_ENV": "prod"
+      "REACT_APP_DCL_DEFAULT_ENV": "dev"
     }
   },
   "routes": [
