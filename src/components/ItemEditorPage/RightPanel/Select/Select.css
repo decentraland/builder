@@ -38,3 +38,20 @@
 .Select.ui.dropdown.inline.blank .handle {
   background-image: url(../../../../images/select-inactive.svg);
 }
+
+.Select.ui.dropdown .menu > .item {
+  display: flex;
+  flex-direction: column-reverse;
+  max-width: 325px;
+}
+
+.Select.ui.dropdown .menu > .item > .description {
+  color: var(--text);
+  font-weight: 300;
+  font-size: 14px;
+  margin: 0 0 0 0em;
+  display: block;
+  word-wrap: break-word;
+  width: 100%;
+  white-space: normal;
+}

@@ -701,29 +701,40 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
-  renderEmoteDetails() {
+  getPlayModeOptions() {
     const { isEmotePlayModeFeatureFlagOn } = this.props
-    const { playMode, type } = this.state
     const playModes: string[] = getEmotePlayModes()
+
+    return playModes.map(value => {
+      const isDisabled = isEmotePlayModeFeatureFlagOn && value === EmotePlayMode.LOOP
+      let text = t(`emote.play_mode.${value}.text`)
+      if (isDisabled) text += `(${t('global.coming_soon')})`
+
+      return {
+        value,
+        text,
+        description: t(`emote.play_mode.${value}.description`),
+        disabled: isDisabled
+      }
+    })
+  }
+
+  renderEmoteDetails() {
+    const { playMode = '' } = this.state
 
     return (
       <>
         {this.renderFields()}
-        {isEmotePlayModeFeatureFlagOn && (
-          <SelectField
-            required
-            className="hasDescription"
-            label={t('create_single_item_modal.play_mode_label')}
-            placeholder={t('create_single_item_modal.play_mode_placeholder')}
-            value={playModes.includes(playMode!) ? playMode : undefined}
-            options={playModes.map(value => ({
-              value,
-              text: t(`${type}.play_mode.${value}.text`),
-              description: t(`${type}.play_mode.${value}.description`)
-            }))}
-            onChange={this.handlePlayModeChange}
-          />
-        )}
+        <SelectField
+          required
+          search={false}
+          className="has-description"
+          label={t('create_single_item_modal.play_mode_label')}
+          placeholder={t('create_single_item_modal.play_mode_placeholder')}
+          value={playMode as EmotePlayMode}
+          options={this.getPlayModeOptions()}
+          onChange={this.handlePlayModeChange}
+        />
         <div className="dcl select-field">
           <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" className="" />} />
         </div>
