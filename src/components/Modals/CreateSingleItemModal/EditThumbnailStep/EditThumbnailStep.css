@@ -37,9 +37,14 @@
   margin-right: 16px;
 }
 
-.EditThumbnailStep .ui.button.play-control .play.icon {
+.EditThumbnailStep .EmoteControls .ui.button.play-control .play.icon {
   padding-bottom: 18px;
   padding-left: 3px;
+}
+
+.EditThumbnailStep .EmoteControls .ui.button.play-control .pause.icon {
+  padding-left: 0;
+  padding-bottom: 16px;
 }
 
 .EditThumbnailStep .Preview canvas {
@@ -67,8 +72,11 @@
 }
 
 .EditThumbnailStep input[type='range'] {
-  width: 100%;
   background: none;
+}
+
+.EditThumbnailStep .play-controls input[type='range'] {
+  width: 100%;
 }
 
 .EditThumbnailStep input[type='range'] {
@@ -79,7 +87,7 @@
   outline: none;
 }
 
-.EditThumbnailStep input[type='range']::-webkit-slider-thumb {
+.EditThumbnailStep .play-controls input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 24px;
   height: 24px;
@@ -89,6 +97,20 @@
   cursor: pointer;
   padding-bottom: 5px;
   margin-top: -4px;
+}
+
+.EditThumbnailStep input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 32px;
+  height: 8px;
+  border-radius: 10px;
+  background: #736e7d;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.16), inset 0px 1px 0px rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  overflow: visible;
+  cursor: pointer;
+  padding-bottom: 5px;
+  margin-top: -3px;
 }
 
 .EditThumbnailStep input[type='range']::-moz-range-thumb {
@@ -109,10 +131,18 @@
   cursor: pointer;
 }
 
-.EditThumbnailStep input[type='range']::-webkit-slider-runnable-track {
+.EditThumbnailStep .play-controls input[type='range']::-webkit-slider-runnable-track {
   width: 300px;
   height: 15px;
   background: rgba(115, 110, 125, 0.32);
+  border: none;
+  border-radius: 10px;
+}
+
+.EditThumbnailStep input[type='range']::-webkit-slider-runnable-track {
+  width: 300px;
+  height: 2px;
+  background: #000000;
   border: none;
   border-radius: 10px;
 }
@@ -126,5 +156,31 @@
 }
 
 .EditThumbnailStep .WearablePreview {
- background: #1d1b22;
+  background: #43404a;
+  height: 364px;
+  border-radius: 8px;
+}
+
+.EditThumbnailStep .y-slider-container {
+  position: absolute;
+  transform: rotate(-90deg);
+  right: -105px;
+  top: 181px;
+  width: 280px;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.EditThumbnailStep .y-slider {
+  width: 229px;
+}
+
+.EditThumbnailStep .y-slider-container i.icon {
+  margin-top: -6px;
+  margin-left: 12px;
+}
+
+.EditThumbnailStep .EmoteControls {
+  padding: 0;
+  bottom: 0;
 }

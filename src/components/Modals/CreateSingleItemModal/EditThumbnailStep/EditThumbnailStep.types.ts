@@ -1,4 +1,3 @@
-import { WearablePreviewProps } from 'decentraland-ui'
 import { IPreviewController, WearableWithBlobs } from '@dcl/schemas'
 import { Item } from 'modules/item/types'
 import React from 'react'
@@ -12,7 +11,8 @@ export enum CreateItemView {
 export enum ControlOptionAction {
   ZOOM_IN,
   ZOOM_OUT,
-  DISABLE_AUTOROTATE
+  PAN_CAMERA_Y,
+  CHANGE_CAMERA_ALPHA
 }
 
 export type Props = {
@@ -28,15 +28,13 @@ export type Props = {
 }
 
 export type State = {
-  length?: number
   hasBeenUpdated: boolean
-  frame: number
-  isPlaying: boolean
   playingIntervalId?: NodeJS.Timer
   previewController?: IPreviewController
   blob?: WearableWithBlobs
   zoom: number
-} & Pick<WearablePreviewProps, 'disableAutoRotate'>
+  offsetY?: number
+}
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string
