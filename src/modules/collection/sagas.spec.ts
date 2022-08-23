@@ -261,8 +261,8 @@ describe('when executing the approval flow', () => {
                 [item.id]: entity
               }
             ],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0), 'QmOldDifferentHash'],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1), newBlockchainHash],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0, false), 'QmOldDifferentHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1, false), newBlockchainHash],
             [delay(1000), void 0],
             [select(getItemsById), { [updatedItem.id]: updatedItem }],
             [select(getCurationsByCollectionId), { [collection.id]: curation }]
@@ -323,8 +323,8 @@ describe('when executing the approval flow', () => {
                 [item.id]: entity
               }
             ],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0), 'QmOldContentHash'],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1), 'aNewHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0, false), 'QmOldContentHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1, false), 'aNewHash'],
             [select(getCurationsByCollectionId), { [collection.id]: curation }]
           ])
           .dispatch(initiateApprovalFlow(collection))
@@ -365,8 +365,8 @@ describe('when executing the approval flow', () => {
                 [item.id]: entity
               }
             ],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0), 'QmOldContentHash'],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1), 'aNewHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0, false), 'QmOldContentHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1, false), 'aNewHash'],
             [select(getCurationsByCollectionId), { [collection.id]: curation }]
           ])
           .dispatch(initiateApprovalFlow(collection))
