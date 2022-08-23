@@ -2,12 +2,11 @@ import { ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { Network } from '@dcl/schemas'
-import { BuilderClient, GetLandRedirectionHashesResult, Redirection, UploadLandRedirectionFileResult } from '@dcl/builder-client'
+import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
@@ -15,11 +14,11 @@ import { DCLController__factory } from 'contracts/factories/DCLController__facto
 import { ERC20__factory } from 'contracts/factories/ERC20__factory'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
-import { getCenter, getExplorerURL, getSelection } from 'modules/land/utils'
+import { getCenter, getSelection } from 'modules/land/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
-import { Land } from 'modules/land/types'
+import { Land, LandType } from 'modules/land/types'
 import { closeModal } from 'modules/modal/actions'
 import {
   FETCH_ENS_REQUEST,
@@ -98,20 +97,9 @@ export function* ensSaga(builderClient: BuilderClient) {
 
       const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
 
-      const redirection: Redirection = {
-        landURL: (function() {
-          const selection = getSelection(land)
-          const [x, y] = getCenter(selection)
-          return getExplorerURL(x, y)
-        })(),
-        i18nCouldNotRedirectMsg: t('ipfs_api.not_redirected'),
-        i18nClickHereMsg: t('global.click_here')
-      }
+      const [x, y] = getCenter(getSelection(land))
 
-      const { ipfsHash, contentHash }: UploadLandRedirectionFileResult = yield call(
-        [builderClient, builderClient.uploadLandRedirectionFile],
-        redirection
-      )
+      const { ipfsHash, contentHash }: LandHashes = yield call([builderClient, builderClient.uploadLandRedirectionFile], { x, y })
 
       const currentContent: string = yield call(() => resolverContract.contenthash(nodehash))
       if (currentContent === ethers.constants.AddressZero) {
@@ -187,20 +175,12 @@ export function* ensSaga(builderClient: BuilderClient) {
       let content = ''
 
       if (land) {
-        const redirection: Redirection = {
-          landURL: (function() {
-            const selection = getSelection(land)
-            const [x, y] = getCenter(selection)
-            return getExplorerURL(x, y)
-          })(),
-          i18nCouldNotRedirectMsg: t('ipfs_api.not_redirected'),
-          i18nClickHereMsg: t('global.click_here')
-        }
+        const [x, y] = getCenter(getSelection(land))
 
-        const { contentHash }: UploadLandRedirectionFileResult = yield call(
-          [builderClient, builderClient.uploadLandRedirectionFile],
-          redirection
-        )
+        const { contentHash }: LandHashes = yield call([builderClient, builderClient.uploadLandRedirectionFile], {
+          x,
+          y
+        })
 
         content = `0x${contentHash}`
       } else {
@@ -242,43 +222,24 @@ export function* ensSaga(builderClient: BuilderClient) {
   function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
+      const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
 
-      const landsWithRedirection: {
-        land: Land
-        redirection: Redirection
-        isSameRedirection: (other: Redirection) => boolean
-      }[] = lands.map(land => {
-        return {
-          land,
-          redirection: {
-            landURL: (function() {
-              const selection = getSelection(land)
-              const [x, y] = getCenter(selection)
-              return getExplorerURL(x, y)
-            })(),
-            i18nCouldNotRedirectMsg: t('ipfs_api.not_redirected'),
-            i18nClickHereMsg: t('global.click_here')
-          },
-          isSameRedirection: function(other: Redirection) {
-            return (
-              this.redirection.landURL === other.landURL &&
-              this.redirection.i18nCouldNotRedirectMsg === other.i18nCouldNotRedirectMsg &&
-              this.redirection.i18nClickHereMsg === other.i18nClickHereMsg
-            )
-          }
-        }
-      })
+      const coordsWithHashesList: (LandCoords & LandHashes)[] = yield call(
+        [builderClient, builderClient.getLandRedirectionHashes],
+        coordsList
+      )
 
       const landHashes: { id: string; hash: string }[] = []
 
-      const redirectionsWithContentHash: GetLandRedirectionHashesResult = yield call(
-        [builderClient, builderClient.getLandRedirectionHashes],
-        landsWithRedirection.map(land => land.redirection)
-      )
+      for (const { x, y, contentHash } of coordsWithHashesList) {
+        const landId = lands.find(land => {
+          if (land.type === LandType.ESTATE) {
+            return land.parcels!.some(parcel => parcel.x === x && parcel.y === y)
+          }
+          return land.x === x && land.y === y
+        })!.id
 
-      for (const redirectionWithContentHash of redirectionsWithContentHash) {
-        const landId = landsWithRedirection.find(land => land.isSameRedirection(redirectionWithContentHash))!.land.id
-        landHashes.push({ hash: `0x${redirectionWithContentHash.contentHash}`, id: landId })
+        landHashes.push({ hash: `0x${contentHash}`, id: landId })
       }
 
       const wallet: Wallet = yield getWallet()
