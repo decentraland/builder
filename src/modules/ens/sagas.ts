@@ -7,6 +7,7 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
@@ -101,7 +102,11 @@ function handleFetchENSRequest(builderClient: BuilderClient) {
 
       const [x, y] = getCenter(getSelection(land))
 
-      const { ipfsHash, contentHash }: LandHashes = yield call([builderClient, builderClient.uploadLandRedirectionFile], { x, y })
+      const { ipfsHash, contentHash }: LandHashes = yield call(
+        [builderClient, builderClient.uploadLandRedirectionFile],
+        { x, y },
+        getCurrentLocale().locale
+      )
 
       const currentContent: string = yield call(() => resolverContract.contenthash(nodehash))
       if (currentContent === ethers.constants.AddressZero) {
@@ -181,10 +186,14 @@ function handleSetENSContentRequest(builderClient: BuilderClient) {
       if (land) {
         const [x, y] = getCenter(getSelection(land))
 
-        const { contentHash }: LandHashes = yield call([builderClient, builderClient.uploadLandRedirectionFile], {
-          x,
-          y
-        })
+        const { contentHash }: LandHashes = yield call(
+          [builderClient, builderClient.uploadLandRedirectionFile],
+          {
+            x,
+            y
+          },
+          getCurrentLocale().locale
+        )
 
         content = `0x${contentHash}`
       } else {
@@ -232,7 +241,8 @@ function handleFetchENSListRequest(builderClient: BuilderClient) {
 
       const coordsWithHashesList: (LandCoords & LandHashes)[] = yield call(
         [builderClient, builderClient.getLandRedirectionHashes],
-        coordsList
+        coordsList,
+        getCurrentLocale().locale
       )
 
       const landHashes: { id: string; hash: string }[] = []
