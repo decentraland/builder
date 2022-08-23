@@ -38,6 +38,7 @@ export type Props = {
   wearableController?: IPreviewController | null
   emotesFromCollection: Item[]
   isPlayingEmote: boolean
+  isImportFilesModalOpen: boolean
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
@@ -68,6 +69,7 @@ export type MapStateProps = Pick<
   | 'wearableController'
   | 'emotesFromCollection'
   | 'isPlayingEmote'
+  | 'isImportFilesModalOpen'
 >
 export type MapDispatchProps = Pick<
   Props,

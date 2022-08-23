@@ -18,6 +18,7 @@
 
 .CenterPanel .footer .options {
   margin-bottom: 16px;
+  display: inline-flex;
 }
 
 .CenterPanel .footer .option {
@@ -139,4 +140,8 @@
 
 .CenterPanel .EmoteControls .ui.button.play-control:hover {
   transform: none;
+}
+
+.CenterPanel.import-files-modal-is-open {
+  pointer-events: none;
 }
