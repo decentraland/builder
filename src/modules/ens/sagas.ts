@@ -58,22 +58,20 @@ import { getDomainFromName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
-  yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest(builderClient))
+  yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
-  yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest(builderClient))
+  yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_ENS_AUTHORIZATION_REQUEST, handleFetchAuthorizationRequest)
-  yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest(builderClient))
+  yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
   yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
   yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
-}
 
-function* handleConnectWallet() {
-  yield put(fetchENSAuthorizationRequest())
-  yield put(fetchENSListRequest())
-}
+  function* handleConnectWallet() {
+    yield put(fetchENSAuthorizationRequest())
+    yield put(fetchENSListRequest())
+  }
 
-function handleFetchENSRequest(builderClient: BuilderClient) {
-  return function*(action: FetchENSRequestAction) {
+  function* handleFetchENSRequest(action: FetchENSRequestAction) {
     const { name, land } = action.payload
     const subdomain = name.toLowerCase() + '.dcl.eth'
     try {
@@ -153,28 +151,26 @@ function handleFetchENSRequest(builderClient: BuilderClient) {
       yield put(fetchENSFailure(ensError))
     }
   }
-}
 
-function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
-  const { ens } = action.payload
-  try {
-    const wallet: Wallet = yield getWallet()
-    const signer: ethers.Signer = yield getSigner()
-    const from = wallet.address
-    const nodehash = namehash(ens.subdomain)
-    const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
+  function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
+    const { ens } = action.payload
+    try {
+      const wallet: Wallet = yield getWallet()
+      const signer: ethers.Signer = yield getSigner()
+      const from = wallet.address
+      const nodehash = namehash(ens.subdomain)
+      const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
 
-    const transaction: ethers.ContractTransaction = yield call(() => ensContract.setResolver(nodehash, ENS_RESOLVER_ADDRESS))
+      const transaction: ethers.ContractTransaction = yield call(() => ensContract.setResolver(nodehash, ENS_RESOLVER_ADDRESS))
 
-    yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from, wallet.chainId, transaction.hash))
-  } catch (error) {
-    const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.RESOLVER }
-    yield put(setENSResolverFailure(ens, ensError))
+      yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from, wallet.chainId, transaction.hash))
+    } catch (error) {
+      const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.RESOLVER }
+      yield put(setENSResolverFailure(ens, ensError))
+    }
   }
-}
 
-function handleSetENSContentRequest(builderClient: BuilderClient) {
-  return function*(action: SetENSContentRequestAction) {
+  function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     const { ens, land } = action.payload
     try {
       const wallet: Wallet = yield getWallet()
@@ -214,27 +210,25 @@ function handleSetENSContentRequest(builderClient: BuilderClient) {
       yield put(setENSContentFailure(ens, land, ensError))
     }
   }
-}
 
-function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestAction) {
-  try {
-    const from: string = yield select(getAddress)
-    const chainId = getChainIdByNetwork(Network.ETHEREUM)
-    const contract = getContract(ContractName.MANAToken, chainId)
-    const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
-    const mana = new ethers.Contract(contract.address, contract.abi, new ethers.providers.Web3Provider(provider))
-    const allowance: string = yield call(mana.allowance, from, CONTROLLER_ADDRESS)
-    const authorization: Authorization = { allowance }
+  function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestAction) {
+    try {
+      const from: string = yield select(getAddress)
+      const chainId = getChainIdByNetwork(Network.ETHEREUM)
+      const contract = getContract(ContractName.MANAToken, chainId)
+      const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
+      const mana = new ethers.Contract(contract.address, contract.abi, new ethers.providers.Web3Provider(provider))
+      const allowance: string = yield call(mana.allowance, from, CONTROLLER_ADDRESS)
+      const authorization: Authorization = { allowance }
 
-    yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))
-  } catch (error) {
-    const allowError: ENSError = { message: error.message }
-    yield put(fetchENSAuthorizationFailure(allowError))
+      yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))
+    } catch (error) {
+      const allowError: ENSError = { message: error.message }
+      yield put(fetchENSAuthorizationFailure(allowError))
+    }
   }
-}
 
-function handleFetchENSListRequest(builderClient: BuilderClient) {
-  return function*(_action: FetchENSListRequestAction) {
+  function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
       const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
@@ -306,46 +300,46 @@ function handleFetchENSListRequest(builderClient: BuilderClient) {
       yield put(fetchENSListFailure(ensError))
     }
   }
-}
 
-function* handleClaimNameRequest(action: ClaimNameRequestAction) {
-  const { name } = action.payload
-  try {
-    const wallet: Wallet = yield getWallet()
-    const signer: ethers.Signer = yield getSigner()
-    const from = wallet.address
+  function* handleClaimNameRequest(action: ClaimNameRequestAction) {
+    const { name } = action.payload
+    try {
+      const wallet: Wallet = yield getWallet()
+      const signer: ethers.Signer = yield getSigner()
+      const from = wallet.address
 
-    const controllerContract = DCLController__factory.connect(CONTROLLER_ADDRESS, signer)
-    const transaction: ethers.ContractTransaction = yield call(() => controllerContract.register(name, from))
+      const controllerContract = DCLController__factory.connect(CONTROLLER_ADDRESS, signer)
+      const transaction: ethers.ContractTransaction = yield call(() => controllerContract.register(name, from))
 
-    const ens: ENS = {
-      address: wallet.address,
-      name: name,
-      subdomain: getDomainFromName(name),
-      resolver: ethers.constants.AddressZero,
-      content: ethers.constants.AddressZero
+      const ens: ENS = {
+        address: wallet.address,
+        name: name,
+        subdomain: getDomainFromName(name),
+        resolver: ethers.constants.AddressZero,
+        content: ethers.constants.AddressZero
+      }
+      yield put(claimNameSuccess(ens, name, wallet.address, wallet.chainId, transaction.hash))
+      yield put(closeModal('ClaimNameFatFingerModal'))
+    } catch (error) {
+      const ensError: ENSError = { message: error.message }
+      yield put(claimNameFailure(ensError))
     }
-    yield put(claimNameSuccess(ens, name, wallet.address, wallet.chainId, transaction.hash))
-    yield put(closeModal('ClaimNameFatFingerModal'))
-  } catch (error) {
-    const ensError: ENSError = { message: error.message }
-    yield put(claimNameFailure(ensError))
   }
-}
 
-function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
-  const { allowance } = action.payload
-  try {
-    const wallet: Wallet = yield getWallet()
-    const signer: ethers.Signer = yield getSigner()
-    const from = wallet.address
-    const manaContract = ERC20__factory.connect(MANA_ADDRESS, signer)
+  function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
+    const { allowance } = action.payload
+    try {
+      const wallet: Wallet = yield getWallet()
+      const signer: ethers.Signer = yield getSigner()
+      const from = wallet.address
+      const manaContract = ERC20__factory.connect(MANA_ADDRESS, signer)
 
-    const transaction: ethers.ContractTransaction = yield call(() => manaContract.approve(CONTROLLER_ADDRESS, allowance))
+      const transaction: ethers.ContractTransaction = yield call(() => manaContract.approve(CONTROLLER_ADDRESS, allowance))
 
-    yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))
-  } catch (error) {
-    const ensError: ENSError = { message: error.message }
-    yield put(allowClaimManaFailure(ensError))
+      yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))
+    } catch (error) {
+      const ensError: ENSError = { message: error.message }
+      yield put(allowClaimManaFailure(ensError))
+    }
   }
 }
