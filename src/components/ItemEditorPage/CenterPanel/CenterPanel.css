@@ -83,14 +83,16 @@
 
 .CenterPanel .footer .ui.dropdown > .menu {
   padding-top: 0;
+  max-width: 222px;
 }
 
 .CenterPanel .footer .ui.dropdown > .menu > .divider {
   margin: 0;
 }
 
-.CenterPanel .footer .ui.dropdown > .menu > .option > .text {
+.CenterPanel .footer .ui.dropdown > .menu > .item {
   text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .CenterPanel .footer .avatar-attributes {
