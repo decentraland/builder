@@ -36,7 +36,7 @@ export type Props = {
   selectedItem: Item | null
   visibleItems: Item[]
   wearableController?: IPreviewController | null
-  emotesFromCollection: Item[]
+  emotes: Item[]
   isPlayingEmote: boolean
   isImportFilesModalOpen: boolean
   onSetBodyShape: typeof setBodyShape
@@ -67,7 +67,7 @@ export type MapStateProps = Pick<
   | 'selectedBaseWearables'
   | 'selectedItem'
   | 'wearableController'
-  | 'emotesFromCollection'
+  | 'emotes'
   | 'isPlayingEmote'
   | 'isImportFilesModalOpen'
 >

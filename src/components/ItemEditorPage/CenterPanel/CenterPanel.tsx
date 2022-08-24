@@ -38,12 +38,12 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   handleAnimationChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownItemProps) => {
-    const { emotesFromCollection, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
-    const emoteFromCollection = emotesFromCollection.find(emote => emote.id === value)
+    const { emotes, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
+    const emote = emotes.find(emote => emote.id === value)
     const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
 
-    if (emoteFromCollection) {
-      newVisibleItems.push(emoteFromCollection)
+    if (emote) {
+      newVisibleItems.push(emote)
     } else {
       onSetAvatarAnimation(value as PreviewEmote)
     }
@@ -125,8 +125,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   renderEmoteDropdownButton = () => {
-    const { emotesFromCollection, isPlayingEmote } = this.props
-    const hasEmotes = emotesFromCollection.length > 0
+    const { emotes, isPlayingEmote } = this.props
+    const hasEmotes = emotes.length > 0
 
     if (isPlayingEmote) return null
 
@@ -137,7 +137,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             <>
               <Dropdown.Header content={t('item_editor.center_panel.from_collection')} />
               <Dropdown.Divider />
-              {emotesFromCollection.map(value => (
+              {emotes.map(value => (
                 <Dropdown.Item key={value.id} value={value.id} text={value.name} onClick={this.handleAnimationChange} />
               ))}
               <Dropdown.Divider />
