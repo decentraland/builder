@@ -42,6 +42,10 @@
   padding: 0;
 }
 
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons {
+  width: 222px;
+}
+
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
   background-color: var(--light-gray);
   font-size: 15px;
@@ -83,6 +87,10 @@
 
 .CenterPanel .footer .ui.dropdown > .menu > .divider {
   margin: 0;
+}
+
+.CenterPanel .footer .ui.dropdown > .menu > .option > .text {
+  text-overflow: ellipsis;
 }
 
 .CenterPanel .footer .avatar-attributes {

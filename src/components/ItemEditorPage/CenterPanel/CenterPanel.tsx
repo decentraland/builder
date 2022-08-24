@@ -125,7 +125,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   renderEmoteDropdownButton = () => {
-    const { emotes, isPlayingEmote } = this.props
+    const { collection, emotes, isPlayingEmote } = this.props
+    const areEmotesFromCollection = !!collection
     const hasEmotes = emotes.length > 0
 
     if (isPlayingEmote) return null
@@ -135,7 +136,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
         <Dropdown.Menu>
           {hasEmotes && (
             <>
-              <Dropdown.Header content={t('item_editor.center_panel.from_collection')} />
+              <Dropdown.Header
+                content={areEmotesFromCollection ? t('item_editor.center_panel.from_collection') : t('item_editor.center_panel.from_items')}
+              />
               <Dropdown.Divider />
               {emotes.map(value => (
                 <Dropdown.Item key={value.id} value={value.id} text={value.name} onClick={this.handleAnimationChange} />
