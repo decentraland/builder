@@ -59,8 +59,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
       _event.preventDefault()
       return
     }
-    const isOwnerBeneficiary = !this.state.isOwnerBeneficiary
-    this.setState({ isOwnerBeneficiary, isFree: isOwnerBeneficiary ? false : this.state.isFree })
+    this.setState({ isOwnerBeneficiary: !this.state.isOwnerBeneficiary })
   }
 
   handlePriceChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
