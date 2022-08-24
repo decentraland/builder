@@ -55,6 +55,10 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   handleIsOwnerBeneficiary = (_event: React.MouseEvent<HTMLInputElement>) => {
+    if (this.state.isFree) {
+      _event.preventDefault()
+      return
+    }
     const isOwnerBeneficiary = !this.state.isOwnerBeneficiary
     this.setState({ isOwnerBeneficiary, isFree: isOwnerBeneficiary ? false : this.state.isFree })
   }
@@ -169,26 +173,34 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               error={!!beneficiary && !this.isValidBeneficiary()}
             />
             <div className="checkbox beneficiary">
-              <Checkbox className="item-checkbox" checked={isOwnerBeneficiary} onClick={this.handleIsOwnerBeneficiary} />
-              &nbsp;
-              {t('edit_price_and_beneficiary_modal.for_me')}
+              <Checkbox
+                className="item-checkbox"
+                disabled={isFree}
+                checked={isOwnerBeneficiary}
+                onClick={this.handleIsOwnerBeneficiary}
+                label={t('edit_price_and_beneficiary_modal.for_me')}
+              />
             </div>
-            {this.isPriceTooLow() ? (
+            {this.isPriceTooLow() || isFree ? (
               <Card fluid className="min-price-notice">
                 <Card.Content>
                   <div>
-                    <T
-                      id="edit_price_and_beneficiary_modal.price_message"
-                      values={{
-                        minPrice: (
-                          <Mana inline network={Network.MATIC}>
-                            {MIN_SALE_VALUE}
-                          </Mana>
-                        ),
-                        token: t(`tokens.${Network.MATIC.toLowerCase()}`),
-                        br: <br />
-                      }}
-                    />
+                    {this.isPriceTooLow() ? (
+                      <T
+                        id="edit_price_and_beneficiary_modal.price_message"
+                        values={{
+                          minPrice: (
+                            <Mana inline network={Network.MATIC}>
+                              {MIN_SALE_VALUE}
+                            </Mana>
+                          ),
+                          token: t(`tokens.${Network.MATIC.toLowerCase()}`),
+                          br: <br />
+                        }}
+                      />
+                    ) : isFree ? (
+                      t('edit_price_and_beneficiary_modal.free_message')
+                    ) : null}
                   </div>
                 </Card.Content>
               </Card>
