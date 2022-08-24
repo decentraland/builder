@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { DragSource } from 'react-dnd'
 import { Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
@@ -8,11 +7,10 @@ import ItemStatus from 'components/ItemStatus'
 import { ItemType } from 'modules/item/types'
 import { getMissingBodyShapeType, hasBodyShape } from 'modules/item/utils'
 import { locations } from 'routing/locations'
-import { collect, CollectedProps, sidebarItemSource, SIDEBAR_ITEM_SOURCE } from './SidebarItem.dnd'
 import { Props } from './SidebarItem.types'
 import './SidebarItem.css'
 
-class SidebarItem extends React.PureComponent<Props & CollectedProps> {
+class SidebarItem extends React.PureComponent<Props> {
   handleClick = () => {
     const { item, onClick } = this.props
     onClick(item)
@@ -28,9 +26,9 @@ class SidebarItem extends React.PureComponent<Props & CollectedProps> {
   }
 
   render() {
-    const { item, isSelected, selectedCollectionId, bodyShape, connectDragSource, isDragging } = this.props
-    return connectDragSource(
-      <div className={`SidebarItem ${isSelected ? 'is-selected' : ''} ${isDragging ? 'is-dragging' : ''}`}>
+    const { item, isSelected, selectedCollectionId, bodyShape } = this.props
+    return (
+      <div className={`SidebarItem ${isSelected ? 'is-selected' : ''}`}>
         <Link to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined })}>
           <ItemImage item={item} />
           <div className="name">
@@ -51,4 +49,4 @@ class SidebarItem extends React.PureComponent<Props & CollectedProps> {
   }
 }
 
-export default DragSource<Props, CollectedProps>(SIDEBAR_ITEM_SOURCE, sidebarItemSource, collect)(SidebarItem)
+export default SidebarItem

@@ -172,12 +172,22 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { bodyShape, skinColor, eyeColor, hairColor, emote, selectedBaseWearables, selectedItem, visibleItems } = this.props
+    const {
+      bodyShape,
+      skinColor,
+      eyeColor,
+      hairColor,
+      emote,
+      selectedBaseWearables,
+      selectedItem,
+      visibleItems,
+      isImportFilesModalOpen
+    } = this.props
     const { isShowingAvatarAttributes, isLoading } = this.state
     const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE) && selectedItem?.type === ItemType.EMOTE
 
     return (
-      <div className="CenterPanel">
+      <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
           id="wearable-editor"
           profile="default"
