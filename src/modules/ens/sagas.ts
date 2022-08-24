@@ -103,7 +103,7 @@ function handleFetchENSRequest(builderClient: BuilderClient) {
       const [x, y] = getCenter(getSelection(land))
 
       const { ipfsHash, contentHash }: LandHashes = yield call(
-        [builderClient, builderClient.uploadLandRedirectionFile],
+        [builderClient, builderClient.createLandRedirectionFile],
         { x, y },
         getCurrentLocale().locale
       )
@@ -187,7 +187,7 @@ function handleSetENSContentRequest(builderClient: BuilderClient) {
         const [x, y] = getCenter(getSelection(land))
 
         const { contentHash }: LandHashes = yield call(
-          [builderClient, builderClient.uploadLandRedirectionFile],
+          [builderClient, builderClient.createLandRedirectionFile],
           {
             x,
             y
