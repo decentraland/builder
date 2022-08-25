@@ -8,7 +8,7 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
-import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { closeAllModals, closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
@@ -360,10 +360,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const isEmotesFeatureFlagOn: boolean = yield select(getIsEmotesFlowEnabled)
     const { item } = action.payload
     const collectionId = item.collectionId!
-    if (openModals['EditItemURNModal']) {
-      yield put(closeModal('EditItemURNModal'))
-    } else if (openModals['EditPriceAndBeneficiaryModal']) {
-      yield put(closeModal('EditPriceAndBeneficiaryModal'))
+    const ItemModals = ['EditItemURNModal', 'EditPriceAndBeneficiaryModal', 'AddExistingItemModal']
+    if (ItemModals.some(modal => openModals[modal])) {
+      yield put(closeAllModals())
     } else if (openModals['CreateSingleItemModal']) {
       if (location.pathname === locations.collections()) {
         if (isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {

@@ -1422,6 +1422,7 @@
       "play_emote": "Reproducir Animación",
       "stop": "Parar",
       "from_collection": "Desde la Colección",
+      "from_items": "Desde los Items",
       "default": "Predeterminadas"
     },
     "right_panel": {

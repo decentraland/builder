@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { PreviewEmote } from '@dcl/schemas'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
 import { getCollections } from 'modules/collection/selectors'
@@ -26,6 +27,7 @@ import {
   getWearablePreviewController,
   isPlayingEmote
 } from 'modules/editor/selectors'
+import { fetchCollectionItemsRequest, fetchItemsRequest } from 'modules/item/actions'
 import { getEmotes, getItem } from 'modules/item/selectors'
 import { ItemType } from 'modules/item/types'
 import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
@@ -33,18 +35,23 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './CenterPanel.type
 import CenterPanel from './CenterPanel'
 
 const mapState = (state: RootState): MapStateProps => {
+  const address = getAddress(state)
   let collection: Collection | undefined
   const collectionId = getSelectedCollectionId(state)
+  // Emotes created by the user
+  let emotes = getEmotes(state)
   if (collectionId) {
     const collections = getCollections(state)
     collection = collections.find(collection => collection.id === collectionId)
+    emotes = emotes.filter(emote => emote.collectionId === collectionId)
+  } else {
+    emotes = emotes.filter(emote => !emote.collectionId)
   }
   const selectedItemId = getSelectedItemId(state) || ''
   const selectedItem = getItem(state, selectedItemId)
   const bodyShape = getBodyShape(state)
   const selectedBaseWearablesByBodyShape = getSelectedBaseWearablesByBodyShape(state)
   const visibleItems = getVisibleItems(state)
-  const emotesFromCollection = getEmotes(state).filter(emote => emote.collectionId === collectionId)
   const emote = getEmote(state)
   const isPLayingIdleEmote = !visibleItems.some(item => item.type === ItemType.EMOTE) && emote === PreviewEmote.IDLE
   /* The library react-dropzone doesn't work as expected when an Iframe is present in the current view.
@@ -54,6 +61,7 @@ const mapState = (state: RootState): MapStateProps => {
   const isImportFilesModalOpen = 'CreateSingleItemModal' in getOpenModals(state)
 
   return {
+    address,
     bodyShape,
     collection,
     selectedItem,
@@ -64,7 +72,7 @@ const mapState = (state: RootState): MapStateProps => {
     emote,
     visibleItems,
     wearableController: getWearablePreviewController(state),
-    emotesFromCollection,
+    emotes,
     isPlayingEmote: isPLayingIdleEmote ? false : isPlayingEmote(state),
     isImportFilesModalOpen
   }
@@ -79,7 +87,9 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetBaseWearable: (category, bodyShape, wearable) => dispatch(setBaseWearable(category, bodyShape, wearable)),
   onFetchBaseWearables: () => dispatch(fetchBaseWearablesRequest()),
   onSetWearablePreviewController: controller => dispatch(setWearablePreviewController(controller)),
-  onSetItems: items => dispatch(setItems(items))
+  onSetItems: items => dispatch(setItems(items)),
+  onFetchOrphanItems: (address, params?) => dispatch(fetchItemsRequest(address, params)),
+  onFetchCollectionItems: (id, params?) => dispatch(fetchCollectionItemsRequest(id, params))
 })
 
 export default connect(mapState, mapDispatch)(CenterPanel)

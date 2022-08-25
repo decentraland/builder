@@ -3,6 +3,10 @@ import equal from 'fast-deep-equal'
 import { DEFAULT_ITEMS_PAGE_SIZE, DEFAULT_ITEMS_PAGE, Props } from './CollectionProvider.types'
 
 export default class CollectionProvider extends React.PureComponent<Props> {
+  state = {
+    initialPage: DEFAULT_ITEMS_PAGE
+  }
+
   fetchCollectionItems(itemsPage: number | number[] = DEFAULT_ITEMS_PAGE) {
     const { id, onFetchCollectionItems, itemsPageSize, fetchOptions } = this.props
     if (id) {
@@ -18,12 +22,39 @@ export default class CollectionProvider extends React.PureComponent<Props> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
-    const { id, isConnected, collection, itemsPage, fetchOptions, onFetchCollection } = this.props
+  componentDidUpdate(prevProps: Props, prevState: any) {
+    const {
+      id,
+      isConnected,
+      collection,
+      items,
+      itemsPage,
+      itemsPageSize,
+      itemSelected,
+      fetchOptions,
+      paginatedItems,
+      onFetchCollection,
+      onChangePage
+    } = this.props
     const justFinishedConnecting = !prevProps.isConnected && isConnected
     if (id && justFinishedConnecting) {
       onFetchCollection(id)
       this.fetchCollectionItems(itemsPage)
+    }
+
+    if (
+      collection &&
+      paginatedItems &&
+      itemSelected &&
+      (this.state.initialPage === DEFAULT_ITEMS_PAGE || prevState.initialPage < this.state.initialPage)
+    ) {
+      if (!paginatedItems.find(item => item.id === itemSelected)) {
+        const totalPages = Math.ceil(items.length / itemsPageSize!)
+        const nextPage = Math.min(totalPages, (itemsPage as number[])!.length + 1)
+        if (Array.isArray(itemsPage) && !itemsPage.includes(nextPage)) {
+          this.setState({ initialPage: nextPage }, () => onChangePage!(nextPage))
+        }
+      }
     }
 
     if (id && id !== prevProps.id) {
@@ -58,12 +89,14 @@ export default class CollectionProvider extends React.PureComponent<Props> {
       children,
       onFetchCollectionItems
     } = this.props
+    const { initialPage } = this.state
     return (
       <>
         {children({
           collection,
           items,
           paginatedItems,
+          initialPage,
           paginatedCollections,
           curation,
           itemCurations,
