@@ -51,14 +51,18 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { items, selectedCollectionId } = this.props
+    const { items, selectedCollectionId, initialPage } = this.props
     const { currentTab } = this.state
     const prevItemIds = prevProps.items.map(prevItem => prevItem.id)
     if (currentTab === ItemPanelTabs.TO_REVIEW && items.some(item => !prevItemIds.includes(item.id))) {
       this.setState({ items })
     }
+    // initialPage only change when a new created item redirects to the item editor
+    else if (currentTab === ItemPanelTabs.TO_REVIEW && initialPage && prevProps.initialPage !== initialPage) {
+      this.setState({ items, currentPages: { ...this.state.currentPages, [currentTab]: initialPage } })
+    }
     // if selectedCollectionId changes, lets clear the items in the state
-    if (selectedCollectionId !== prevProps.selectedCollectionId) {
+    else if (selectedCollectionId !== prevProps.selectedCollectionId) {
       this.setState({ items })
     }
   }
