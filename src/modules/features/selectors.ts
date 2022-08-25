@@ -37,3 +37,11 @@ export const getIsEmotePlayModeEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsNewEmotesPublishEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.PUBLISH_NEW_EMOTES)
+  } catch (e) {
+    return false
+  }
+}
