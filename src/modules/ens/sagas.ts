@@ -142,7 +142,7 @@ export function* ensSaga(builderClient: BuilderClient) {
           name,
           subdomain,
           resolver: ENS_RESOLVER_ADDRESS,
-          content: currentContent || ethers.constants.AddressZero,
+          content: currentContent ?? ethers.constants.AddressZero,
           landId: ''
         })
       )
