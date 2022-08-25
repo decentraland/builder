@@ -19,9 +19,28 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { selectedBaseWearables: bodyShapeBaseWearables, onFetchBaseWearables } = this.props
+    const {
+      address,
+      collection,
+      emotes,
+      selectedBaseWearables: bodyShapeBaseWearables,
+      onFetchBaseWearables,
+      onFetchOrphanItems,
+      onFetchCollectionItems
+    } = this.props
+    const hasEmotesLoaded = emotes.length > 0
+
     if (!bodyShapeBaseWearables) {
       onFetchBaseWearables()
+    }
+
+    // Fetch emotes created by the user to show them in the Play Emote dropdown
+    if (!hasEmotesLoaded) {
+      if (collection) {
+        onFetchCollectionItems(collection.id)
+      } else {
+        onFetchOrphanItems(address!)
+      }
     }
 
     // Setting the editor as loading as soon as it mounts. It will be turned of by the WearablePreview component once it's ready.
