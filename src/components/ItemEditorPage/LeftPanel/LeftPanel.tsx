@@ -63,7 +63,8 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     ) {
       if (!orphanItems.find(item => item.id === selectedItemId)) {
         const totalPages = Math.ceil(totalItems / LEFT_PANEL_PAGE_SIZE)
-        const nextPage = Math.min(totalPages, pages.length + 1)
+        const page = pages[pages.length - 1]
+        const nextPage = Math.min(totalPages, page + 1)
         if (!pages.includes(nextPage)) {
           this.setState({ pages: [nextPage], initialPage: nextPage }, this.fetchResource)
         }
