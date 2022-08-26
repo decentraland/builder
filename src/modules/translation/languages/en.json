@@ -1407,6 +1407,7 @@
       "play_emote": "Play Emote",
       "stop": "Stop",
       "from_collection": "From Collection",
+      "from_items": "From Items",
       "default": "Default"
     },
     "right_panel": {

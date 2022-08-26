@@ -18,9 +18,21 @@ import './LeftPanel.css'
 const INITIAL_PAGE = 1
 
 export default class LeftPanel extends React.PureComponent<Props, State> {
-  state = {
-    pages: [INITIAL_PAGE],
-    currentTab: ItemEditorTabs.COLLECTIONS
+  state: State = this.getInitialState()
+
+  getInitialState() {
+    const { selectedCollectionId, selectedItemId } = this.props
+    let currentTab = ItemEditorTabs.COLLECTIONS
+
+    if (!selectedCollectionId && selectedItemId) {
+      currentTab = ItemEditorTabs.ORPHAN_ITEMS
+    }
+
+    return {
+      pages: [INITIAL_PAGE],
+      currentTab,
+      initialPage: INITIAL_PAGE
+    }
   }
 
   fetchResource() {
@@ -35,22 +47,36 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { selectedCollectionId, selectedItemId } = this.props
     this.fetchResource()
-
-    if (!selectedCollectionId && selectedItemId) {
-      this.setState({ currentTab: ItemEditorTabs.ORPHAN_ITEMS })
-    }
   }
 
-  componentDidUpdate(prevProps: Props) {
-    const { isConnected, address, selectedCollectionId } = this.props
-    // fetch only if this was triggered by a connecting event or if th selectedCollection changes
-    if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {
-      this.setState({ pages: [INITIAL_PAGE] }, this.fetchResource)
-    }
-    if (prevProps.selectedCollectionId !== selectedCollectionId) {
-      this.setState({ pages: [INITIAL_PAGE] })
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { isConnected, address, selectedCollectionId, selectedItemId, orphanItems, totalItems } = this.props
+    const { initialPage, pages } = this.state
+    // when a newly created item redirects to the item editor, iterate over the pages until finding it
+    if (
+      !selectedCollectionId &&
+      address &&
+      selectedItemId &&
+      totalItems &&
+      (initialPage === INITIAL_PAGE || prevState.initialPage < initialPage)
+    ) {
+      if (!orphanItems.find(item => item.id === selectedItemId)) {
+        const totalPages = Math.ceil(totalItems / LEFT_PANEL_PAGE_SIZE)
+        const page = pages[pages.length - 1]
+        const nextPage = Math.min(totalPages, page + 1)
+        if (!pages.includes(nextPage)) {
+          this.setState({ pages: [nextPage], initialPage: nextPage }, this.fetchResource)
+        }
+      }
+    } else {
+      // fetch only if this was triggered by a connecting event or if th selectedCollection changes
+      if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {
+        this.setState({ pages: [INITIAL_PAGE] }, this.fetchResource)
+      }
+      if (prevProps.selectedCollectionId !== selectedCollectionId) {
+        this.setState({ pages: [INITIAL_PAGE] })
+      }
     }
   }
 
@@ -126,14 +152,17 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
         {isConnected ? (
           <CollectionProvider
             id={selectedCollectionId}
+            itemSelected={selectedItemId}
             itemsPage={pages}
             itemsPageSize={LEFT_PANEL_PAGE_SIZE}
             fetchOptions={{ status: isReviewing ? CurationStatus.PENDING : undefined }}
+            onChangePage={page => this.setState({ pages: [page] })}
           >
-            {({ paginatedCollections, collection, paginatedItems: collectionItems, isLoading }) => {
+            {({ paginatedCollections, collection, paginatedItems: collectionItems, initialPage: collectionInitialPage, isLoading }) => {
               const items = this.getItems(collection, collectionItems)
               const isCollectionTab = this.isCollectionTabActive()
               const showLoader = isLoading && ((isCollectionTab && collections.length === 0) || (!isCollectionTab && items.length === 0))
+              const initialPage = selectedCollectionId && collection ? collectionInitialPage : this.state.initialPage
               if (showLoader) {
                 return <Loader size="massive" active />
               }
@@ -198,6 +227,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       bodyShape={bodyShape}
                       onSetItems={onSetItems}
                       wearableController={wearableController}
+                      initialPage={initialPage}
                       isLoading={isLoading || isLoadingOrphanItems}
                       onLoadRandomPage={() => this.loadRandomPage(items)}
                       onLoadPage={this.loadPage}

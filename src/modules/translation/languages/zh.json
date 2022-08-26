@@ -1407,6 +1407,7 @@
       "play_emote": "玩表情",
       "stop": "停止",
       "from_collection": "从收藏",
+      "from_items": "从项目",
       "default": "默认"
     },
     "right_panel": {

@@ -9,6 +9,11 @@ import { Props, State, AddExistingItemModalMetadata } from './AddExistingItemMod
 export default class AddExistingItemModal extends React.PureComponent<Props, State> {
   state: State = {}
 
+  componentDidMount() {
+    const { address, onFetchItems } = this.props
+    onFetchItems(address!)
+  }
+
   handleChangeItem = (item: Item) => {
     this.setState({ item })
   }
