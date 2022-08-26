@@ -44,14 +44,16 @@ export default class CollectionProvider extends React.PureComponent<Props> {
 
     if (
       collection &&
-      paginatedItems &&
+      paginatedItems.length &&
       itemSelected &&
+      Array.isArray(itemsPage) &&
       (this.state.initialPage === DEFAULT_ITEMS_PAGE || prevState.initialPage < this.state.initialPage)
     ) {
       if (!paginatedItems.find(item => item.id === itemSelected)) {
+        const page = itemsPage[itemsPage.length - 1]
         const totalPages = Math.ceil(items.length / itemsPageSize!)
-        const nextPage = Math.min(totalPages, (itemsPage as number[])!.length + 1)
-        if (Array.isArray(itemsPage) && !itemsPage.includes(nextPage)) {
+        const nextPage = Math.min(totalPages, page + 1)
+        if (!itemsPage.includes(nextPage)) {
           this.setState({ initialPage: nextPage }, () => onChangePage!(nextPage))
         }
       }
