@@ -18,6 +18,7 @@
 
 .CenterPanel .footer .options {
   margin-bottom: 16px;
+  display: inline-flex;
 }
 
 .CenterPanel .footer .option {
@@ -39,6 +40,10 @@
 
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option {
   padding: 0;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons {
+  width: 222px;
 }
 
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
@@ -78,10 +83,16 @@
 
 .CenterPanel .footer .ui.dropdown > .menu {
   padding-top: 0;
+  max-width: 222px;
 }
 
 .CenterPanel .footer .ui.dropdown > .menu > .divider {
   margin: 0;
+}
+
+.CenterPanel .footer .ui.dropdown > .menu > .item {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .CenterPanel .footer .avatar-attributes {
@@ -139,4 +150,8 @@
 
 .CenterPanel .EmoteControls .ui.button.play-control:hover {
   transform: none;
+}
+
+.CenterPanel.import-files-modal-is-open {
+  pointer-events: none;
 }

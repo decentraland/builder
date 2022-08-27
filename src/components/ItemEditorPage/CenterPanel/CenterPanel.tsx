@@ -19,9 +19,28 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { selectedBaseWearables: bodyShapeBaseWearables, onFetchBaseWearables } = this.props
+    const {
+      address,
+      collection,
+      emotes,
+      selectedBaseWearables: bodyShapeBaseWearables,
+      onFetchBaseWearables,
+      onFetchOrphanItems,
+      onFetchCollectionItems
+    } = this.props
+    const hasEmotesLoaded = emotes.length > 0
+
     if (!bodyShapeBaseWearables) {
       onFetchBaseWearables()
+    }
+
+    // Fetch emotes created by the user to show them in the Play Emote dropdown
+    if (!hasEmotesLoaded) {
+      if (collection) {
+        onFetchCollectionItems(collection.id)
+      } else {
+        onFetchOrphanItems(address!)
+      }
     }
 
     // Setting the editor as loading as soon as it mounts. It will be turned of by the WearablePreview component once it's ready.
@@ -38,12 +57,12 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   handleAnimationChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownItemProps) => {
-    const { emotesFromCollection, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
-    const emoteFromCollection = emotesFromCollection.find(emote => emote.id === value)
+    const { emotes, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
+    const emote = emotes.find(emote => emote.id === value)
     const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
 
-    if (emoteFromCollection) {
-      newVisibleItems.push(emoteFromCollection)
+    if (emote) {
+      newVisibleItems.push(emote)
     } else {
       onSetAvatarAnimation(value as PreviewEmote)
     }
@@ -125,8 +144,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   renderEmoteDropdownButton = () => {
-    const { emotesFromCollection, isPlayingEmote } = this.props
-    const hasEmotes = emotesFromCollection.length > 0
+    const { collection, emotes, isPlayingEmote } = this.props
+    const areEmotesFromCollection = !!collection
+    const hasEmotes = emotes.length > 0
 
     if (isPlayingEmote) return null
 
@@ -135,9 +155,11 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
         <Dropdown.Menu>
           {hasEmotes && (
             <>
-              <Dropdown.Header content={t('item_editor.center_panel.from_collection')} />
+              <Dropdown.Header
+                content={areEmotesFromCollection ? t('item_editor.center_panel.from_collection') : t('item_editor.center_panel.from_items')}
+              />
               <Dropdown.Divider />
-              {emotesFromCollection.map(value => (
+              {emotes.map(value => (
                 <Dropdown.Item key={value.id} value={value.id} text={value.name} onClick={this.handleAnimationChange} />
               ))}
               <Dropdown.Divider />
@@ -172,12 +194,22 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { bodyShape, skinColor, eyeColor, hairColor, emote, selectedBaseWearables, selectedItem, visibleItems } = this.props
+    const {
+      bodyShape,
+      skinColor,
+      eyeColor,
+      hairColor,
+      emote,
+      selectedBaseWearables,
+      selectedItem,
+      visibleItems,
+      isImportFilesModalOpen
+    } = this.props
     const { isShowingAvatarAttributes, isLoading } = this.state
     const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE) && selectedItem?.type === ItemType.EMOTE
 
     return (
-      <div className="CenterPanel">
+      <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
           id="wearable-editor"
           profile="default"

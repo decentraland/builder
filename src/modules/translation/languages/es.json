@@ -495,6 +495,7 @@
     "blog_post": "blog post",
     "amount": "Cantidad",
     "cancel": "Cancelar",
+    "coming_soon": "Próximamente",
     "confirm": "Confirmar",
     "add": "Agregar",
     "buy": "Comprar",
@@ -1171,6 +1172,7 @@
     "locked": "Bloqueada",
     "publish_reason_max_items": "Las colecciones pueden publicarse con un máximo de  {maxItems} items.",
     "publish_reason_no_items": "Debes agregar al menos un item para publicar tu colección.",
+    "cant_publish_new_emotes": "Emotes no pueden ser publicados todavia",
     "publish_reason_items_not_complete": "Todos los items deben estar completos para publicar tu colección, comprueba que todas sus propiedades estén establecidas.",
     "emotes": "Animaciones",
     "wearables": "Vestimentas",
@@ -1242,7 +1244,8 @@
     "price_label": "Precio",
     "price_message": "Tenga en cuenta que la cantidad mínima admitida para transacciones sin costo es {minPrice}.{br}{br}Si el item cuesta menos que eso, el comprador deberá cubrir el costo de la transacción en {token}.",
     "beneficiary_label": "Beneficiario",
-    "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección."
+    "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección.",
+    "free_message": "El creador original será el beneficiario de las regalías"
   },
   "confirm_delete": {
     "content": "¿Estás seguro que quieres eliminar \"{name}\"?"
@@ -1416,6 +1419,7 @@
       "play_emote": "Reproducir Animación",
       "stop": "Parar",
       "from_collection": "Desde la Colección",
+      "from_items": "Desde los Items",
       "default": "Predeterminadas"
     },
     "right_panel": {

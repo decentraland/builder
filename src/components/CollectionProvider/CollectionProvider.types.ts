@@ -16,6 +16,7 @@ export type Props = {
   paginatedCollections: Collection[]
   items: Item[]
   paginatedItems: Item[]
+  itemSelected?: string | null
   itemsPage?: number | number[]
   itemsPageSize?: number
   fetchOptions?: Pick<FetchCollectionsParams, 'status' | 'synced'>
@@ -29,6 +30,7 @@ export type Props = {
     paginatedItems,
     curation,
     itemCurations,
+    initialPage,
     isLoading,
     onFetchCollectionItemsPages
   }: {
@@ -38,11 +40,13 @@ export type Props = {
     paginatedItems: Item[]
     curation: CollectionCuration | null
     itemCurations: ItemCuration[] | null
+    initialPage: number
     isLoading: boolean
     onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest
   }) => React.ReactNode
   onFetchCollection: typeof fetchCollectionRequest
   onFetchCollectionItems: typeof fetchCollectionItemsRequest
+  onChangePage?: (page: number) => void
 }
 
 export type MapStateProps = Pick<
@@ -51,4 +55,4 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems'>
 export type MapDispatch = Dispatch<FetchCollectionRequestAction | FetchCollectionItemsRequestAction>
-export type OwnProps = Partial<Pick<Props, 'id' | 'itemsPage' | 'itemsPageSize'>>
+export type OwnProps = Partial<Pick<Props, 'id' | 'itemSelected' | 'itemsPage' | 'itemsPageSize' | 'onChangePage'>>

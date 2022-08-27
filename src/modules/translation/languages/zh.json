@@ -487,6 +487,7 @@
     "back": "返回",
     "blog_post": "博客",
     "cancel": "取消",
+    "coming_soon": "快来了",
     "confirm": "确认",
     "add": "添加",
     "buy": "买",
@@ -1153,6 +1154,7 @@
     "locked": "锁定",
     "publish_reason_max_items": "可以发布包含最多 {maxItems} 个项目的集合。",
     "publish_reason_no_items": "您需要添加至少一项才能发布您的收藏。",
+    "cant_publish_new_emotes": "表情还不能发布",
     "publish_reason_items_not_complete": "所有项目必须完整才能发布您的收藏，检查是否设置了所有属性。",
     "emotes": "表情",
     "wearables": "可穿戴设备",
@@ -1224,7 +1226,8 @@
     "price_label": "价格",
     "price_message": "请记住，无成本交易支持的最低金额是 {minPrice}。{br}{br}如果您的商品价格低于此价格，买家将需要支付 {token} 中的交易费用。",
     "beneficiary_label": "受益人",
-    "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
+    "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。",
+    "free_message": "原始创作者将成为所产生版税的受益人"
   },
   "confirm_delete": {
     "content": "您确定要删除\"{name}\"吗?"
@@ -1401,6 +1404,7 @@
       "play_emote": "玩表情",
       "stop": "停止",
       "from_collection": "从收藏",
+      "from_items": "从项目",
       "default": "默认"
     },
     "right_panel": {

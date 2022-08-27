@@ -175,12 +175,12 @@
   background-color: var(--smart-grey);
 }
 
-.CreateSingleItemModal .ui.dropdown.hasDescription .menu > .item {
+.CreateSingleItemModal .ui.dropdown.has-description .menu > .item {
   display: flex;
   flex-direction: column-reverse;
 }
 
-.CreateSingleItemModal .ui.dropdown.hasDescription .menu > .item > .description {
+.CreateSingleItemModal .ui.dropdown.has-description .menu > .item > .description {
   color: var(--text);
   font-weight: 300;
   font-size: 14px;

@@ -1,5 +1,5 @@
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { setCollection, SetCollectionAction } from 'modules/item/actions'
+import { fetchItemsRequest, FetchItemsRequestAction, setCollection, SetCollectionAction } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 import { Dispatch } from 'redux'
 
@@ -9,14 +9,16 @@ export type State = {
 
 export type Props = ModalProps & {
   metadata: AddExistingItemModalMetadata
+  address: string | undefined
   isLoading: boolean
   onSubmit: typeof setCollection
+  onFetchItems: typeof fetchItemsRequest
 }
 
 export type AddExistingItemModalMetadata = {
   collectionId: string
 }
 
-export type MapStateProps = Pick<Props, 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onSubmit'>
-export type MapDispatch = Dispatch<SetCollectionAction>
+export type MapStateProps = Pick<Props, 'address' | 'isLoading'>
+export type MapDispatchProps = Pick<Props, 'onSubmit' | 'onFetchItems'>
+export type MapDispatch = Dispatch<SetCollectionAction | FetchItemsRequestAction>

@@ -1,15 +1,12 @@
 import * as React from 'react'
-import { PreviewMessageType, PreviewOptions, sendMessage } from '@dcl/schemas'
+import { ModalNavigation, WearablePreview, Row, Button, Icon, Loader, EmoteControls } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { ModalNavigation, WearablePreview, Row, Button, Icon, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { ControlOptionAction, Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
 
 const DEFAULT_ZOOM = 2
-const MAX_ZOOM = 3
-const MIN_ZOOM = 0.5
-const ANIMATION_INTERVAL_PERCENTAGE = 0.1
+const ZOOM_DELTA = 0.1
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
   previewRef = React.createRef<WearablePreview>()
@@ -17,25 +14,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     zoom: DEFAULT_ZOOM,
     blob: this.props.blob,
     previewController: this.props.wearablePreviewController,
-    hasBeenUpdated: false,
-    frame: 0,
-    isPlaying: false,
-    disableAutoRotate: true
-  }
-
-  clearPlayingInterval = () => {
-    const { playingIntervalId } = this.state
-    if (playingIntervalId) {
-      clearInterval(playingIntervalId)
-      this.setState({ playingIntervalId: undefined })
-    }
-  }
-
-  componentDidUpdate(_prevProps: Props, prevState: State) {
-    const { isPlaying } = this.state
-    if (prevState.isPlaying && !isPlaying) {
-      this.clearPlayingInterval()
-    }
+    hasBeenUpdated: false
   }
 
   componentWillUnmount() {
@@ -45,36 +24,13 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     }
   }
 
-  restart = () => {
-    const { length } = this.state
-    this.clearPlayingInterval()
-    this.setState({ isPlaying: true, frame: 0 }, () => length && this.trackFrame(length))
-  }
-
-  trackFrame = (length: number, currentFrame?: number) => {
-    const { isPlaying, playingIntervalId } = this.state
-    if (isPlaying && playingIntervalId) {
-      return
-    }
-
-    let counter = currentFrame || 0
-    let max = length * 100
-    let intervalId: NodeJS.Timer
-    intervalId = setInterval(() => {
-      counter += ANIMATION_INTERVAL_PERCENTAGE * length
-      const nextValue = counter >= max ? max : counter
-      this.setState({ frame: nextValue, isPlaying: nextValue === max ? false : true, playingIntervalId: intervalId })
-    }, ANIMATION_INTERVAL_PERCENTAGE * length * 10)
-  }
-
   handleFileLoad = async () => {
-    const { hasBeenUpdated, length: currentLength } = this.state
+    const { hasBeenUpdated } = this.state
     const controller = WearablePreview.createController('preview')
     const length = await controller.emote.getLength()
     // the emotes are being loaded twice, this is a workaround to just use the 2nd time
-    if (length > 0 && hasBeenUpdated && !currentLength) {
-      this.setState({ length, previewController: controller, isPlaying: true })
-      this.trackFrame(length)
+    if (length > 0 && hasBeenUpdated) {
+      this.setState({ previewController: controller })
     }
   }
 
@@ -82,48 +38,31 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     const { onSave } = this.props
     const { previewController } = this.state
     await previewController?.emote.pause()
-    this.clearPlayingInterval()
     await previewController?.scene.getScreenshot(1024, 1024).then(screenshot => onSave(screenshot))
   }
 
-  handleControlActionChange = (action: ControlOptionAction) => {
-    const { zoom, disableAutoRotate, blob } = this.state
+  handleControlActionChange = async (action: ControlOptionAction, value?: number) => {
+    const { previewController } = this.state
     const iframeContentWindow = this.previewRef.current?.iframe?.contentWindow
     if (iframeContentWindow) {
-      const newOptions: PreviewOptions = { blob }
+      await previewController?.emote.pause()
       switch (action) {
+        case ControlOptionAction.PAN_CAMERA_Y: {
+          this.setState({ offsetY: value })
+          await previewController?.scene.panCamera({ y: value! * -1 })
+          break
+        }
         case ControlOptionAction.ZOOM_IN: {
-          const newZoom = zoom! + 0.5
-          if (newZoom > MAX_ZOOM) {
-            return
-          }
-          this.setState({ zoom: newZoom })
-          newOptions.zoom = newZoom
+          await previewController?.scene.changeZoom(ZOOM_DELTA)
           break
         }
         case ControlOptionAction.ZOOM_OUT: {
-          const newZoom = zoom! - 0.5
-          if (newZoom < MIN_ZOOM) {
-            return
-          }
-          this.setState({ zoom: newZoom })
-          newOptions.zoom = newZoom
-          break
-        }
-        case ControlOptionAction.DISABLE_AUTOROTATE: {
-          const newRotationState = !disableAutoRotate
-          this.setState({ disableAutoRotate: newRotationState })
-          newOptions.disableAutoRotate = newRotationState
+          await previewController?.scene.changeZoom(-ZOOM_DELTA)
           break
         }
         default:
           break
       }
-
-      sendMessage(iframeContentWindow, PreviewMessageType.UPDATE, {
-        options: newOptions
-      })
-      this.restart() // when changing options, the animation starts again. See if we can fix this later
     }
   }
 
@@ -131,33 +70,9 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     this.setState(prevState => ({ zoom: (prevState.zoom || DEFAULT_ZOOM) - 1 }))
   }
 
-  handlePlayPause = async () => {
-    const { previewController, frame, length, isPlaying } = this.state
-    if (isPlaying) {
-      await previewController?.emote.pause()
-      this.clearPlayingInterval()
-      this.setState({ isPlaying: false })
-    } else {
-      await previewController?.emote.play()
-      if (length && frame === length * 100) {
-        this.setState({ frame: 0, isPlaying: true }, () => this.trackFrame(length)) // it's at the end, let's go back to the first frame
-      } else {
-        length && this.trackFrame(length, frame)
-      }
-    }
-  }
-
-  handleFrameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { previewController } = this.state
-    const value = Number(e.target.value)
-    this.setState({ frame: value, isPlaying: false })
-    await previewController?.emote.pause()
-    await previewController?.emote.goTo(value / 100)
-  }
-
   render() {
     const { onClose, onBack, title, isLoading, base64s } = this.props
-    const { blob, length, frame, isPlaying, hasBeenUpdated } = this.state
+    const { blob, hasBeenUpdated } = this.state
 
     return (
       <>
@@ -196,28 +111,34 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
                     <Icon name="minus" />
                   </Button>
                 </div>
+                <div className="y-slider-container">
+                  <Icon className="arrows alternate horizontal" />
+                  <input
+                    step={0.1}
+                    min={-2}
+                    max={2}
+                    type="range"
+                    className="y-slider"
+                    onChange={e => this.handleControlActionChange(ControlOptionAction.PAN_CAMERA_Y, Number(e.target.value))}
+                  ></input>
+                </div>
 
                 <div className="play-controls">
-                  <Button className="zoom-control play-control" onClick={this.handlePlayPause}>
-                    <Icon name={isPlaying ? 'pause' : 'play'} />
-                  </Button>
-                  {length ? (
-                    <input type="range" value={frame} max={length * 100} min={0} step="1" onChange={this.handleFrameChange} />
-                  ) : null}
+                  <EmoteControls className="emote-controls" wearablePreviewId="preview" />
                 </div>
               </>
             ) : (
               <Loader active size="large" />
             )}
           </div>
-          {hasBeenUpdated ? (
-            <Row className="thumbnail-actions">
-              <Button onClick={onBack}>{t('global.back')}</Button>
-              <Button primary loading={isLoading} onClick={this.handleSave}>
-                {t('global.save')}
-              </Button>
-            </Row>
-          ) : null}
+          <Row className="thumbnail-actions">
+            <Button disabled={!hasBeenUpdated} onClick={onBack}>
+              {t('global.back')}
+            </Button>
+            <Button disabled={!hasBeenUpdated} primary loading={isLoading} onClick={this.handleSave}>
+              {t('global.save')}
+            </Button>
+          </Row>
         </Modal.Content>
       </>
     )

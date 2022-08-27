@@ -491,6 +491,7 @@
     "amount": "Amount",
     "cancel": "Cancel",
     "close": "Close",
+    "coming_soon": "Coming Soon",
     "confirm": "Confirm",
     "add": "Add",
     "buy": "buy",
@@ -1160,6 +1161,7 @@
     "locked": "Locked",
     "publish_reason_max_items": "A collection can be published with a max amount of {maxItems} items.",
     "publish_reason_no_items": "You need to add at least one item to publish your collection.",
+    "cant_publish_new_emotes": "Emotes can not be published yet",
     "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set.",
     "emotes": "Emotes",
     "wearables": "Wearables",
@@ -1231,7 +1233,8 @@
     "price_label": "Price",
     "price_message": "Keep in mind that the minimun amount supported for costless transactions is {minPrice}.{br}{br}If your item costs less than that, the buyer will need to cover the transaction cost in {token}.",
     "beneficiary_label": "Beneficiary",
-    "beneficiary_popup": "This is the wallet address that will receive MANA when the item is sold for the first time and Royalties when it is resold. You can set a different beneficiary address for each item in a collection."
+    "beneficiary_popup": "This is the wallet address that will receive MANA when the item is sold for the first time and Royalties when it is resold. You can set a different beneficiary address for each item in a collection.",
+    "free_message": "The original Creator will be the Beneficiary for the generated Royalties"
   },
   "confirm_delete": {
     "content": "Are you sure you want to delete \"{name}\"?"
@@ -1401,6 +1404,7 @@
       "play_emote": "Play Emote",
       "stop": "Stop",
       "from_collection": "From Collection",
+      "from_items": "From Items",
       "default": "Default"
     },
     "right_panel": {

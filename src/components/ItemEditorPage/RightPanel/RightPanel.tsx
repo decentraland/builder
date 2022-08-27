@@ -229,7 +229,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const { selectedItem, isEmotesFeatureFlagOn, onOpenModal } = this.props
 
     if (isEmotesFeatureFlagOn && selectedItem?.type === ItemType.EMOTE) {
-      onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange })
+      onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange, item: selectedItem })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
@@ -301,6 +301,23 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return values.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))
   }
 
+  asPlayModeSelect(values: EmotePlayMode[]) {
+    const { isEmotePlayModeFeatureFlagOn } = this.props
+
+    return values.map(value => {
+      const isDisabled = isEmotePlayModeFeatureFlagOn && value === EmotePlayMode.LOOP
+      let text = t(`emote.play_mode.${value}.text`)
+      if (isDisabled) text += `(${t('global.coming_soon')})`
+
+      return {
+        value,
+        text,
+        description: t(`emote.play_mode.${value}.description`),
+        disabled: isDisabled
+      }
+    })
+  }
+
   renderMetrics(item: Item) {
     const metrics = item.metrics
     if (areEmoteMetrics(metrics)) {
@@ -324,7 +341,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, isDownloading, error, isEmotePlayModeFeatureFlagOn } = this.props
+    const { selectedItemId, address, isConnected, isDownloading, error } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
@@ -506,17 +523,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       ) : null}
                     </Collapsable>
                   )}
-                  {isEmotePlayModeFeatureFlagOn && item?.type === ItemType.EMOTE && (
+                  {item?.type === ItemType.EMOTE && (
                     <Collapsable label={t('item_editor.right_panel.animation')}>
                       {item ? (
                         <Select<EmotePlayMode>
                           itemId={item.id}
                           label={t('create_single_item_modal.play_mode_label')}
                           value={(data as EmoteDataADR74)!.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
-                          options={playModes.map(value => ({
-                            value,
-                            text: t(`emote.play_mode.${value}.text`)
-                          }))}
+                          options={this.asPlayModeSelect(playModes)}
                           onChange={this.handlePlayModeChange}
                         />
                       ) : null}

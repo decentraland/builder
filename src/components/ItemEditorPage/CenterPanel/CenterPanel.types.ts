@@ -23,9 +23,16 @@ import {
   SetItemsAction,
   setItems
 } from 'modules/editor/actions'
+import {
+  fetchCollectionItemsRequest,
+  FetchCollectionItemsRequestAction,
+  fetchItemsRequest,
+  FetchItemsRequestAction
+} from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 
 export type Props = {
+  address?: string
   collection: Collection | undefined
   bodyShape: BodyShape
   skinColor: Color4
@@ -36,8 +43,9 @@ export type Props = {
   selectedItem: Item | null
   visibleItems: Item[]
   wearableController?: IPreviewController | null
-  emotesFromCollection: Item[]
+  emotes: Item[]
   isPlayingEmote: boolean
+  isImportFilesModalOpen: boolean
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
@@ -45,6 +53,8 @@ export type Props = {
   onSetHairColor: typeof setHairColor
   onSetBaseWearable: typeof setBaseWearable
   onFetchBaseWearables: typeof fetchBaseWearablesRequest
+  onFetchOrphanItems: typeof fetchItemsRequest
+  onFetchCollectionItems: typeof fetchCollectionItemsRequest
   onSetWearablePreviewController: typeof setWearablePreviewController
   onSetItems: typeof setItems
 }
@@ -56,6 +66,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
+  | 'address'
   | 'bodyShape'
   | 'collection'
   | 'skinColor'
@@ -66,8 +77,9 @@ export type MapStateProps = Pick<
   | 'selectedBaseWearables'
   | 'selectedItem'
   | 'wearableController'
-  | 'emotesFromCollection'
+  | 'emotes'
   | 'isPlayingEmote'
+  | 'isImportFilesModalOpen'
 >
 export type MapDispatchProps = Pick<
   Props,
@@ -78,6 +90,8 @@ export type MapDispatchProps = Pick<
   | 'onSetHairColor'
   | 'onSetBaseWearable'
   | 'onFetchBaseWearables'
+  | 'onFetchOrphanItems'
+  | 'onFetchCollectionItems'
   | 'onSetWearablePreviewController'
   | 'onSetItems'
 >
@@ -90,6 +104,8 @@ export type MapDispatch = Dispatch<
   | SetHairColorAction
   | SetBaseWearableAction
   | FetchBaseWearablesRequestAction
+  | FetchItemsRequestAction
+  | FetchCollectionItemsRequestAction
   | SetWearablePreviewControllerAction
   | SetItemsAction
 >
