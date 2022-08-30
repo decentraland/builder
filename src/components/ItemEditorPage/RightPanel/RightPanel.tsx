@@ -125,7 +125,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   handleChangeCategory = (category: WearableCategory | EmoteCategory) => {
     let data
-    if (this.state.data && isEmoteData(this.state.data)) {
+    if (isEmoteData(this.state.data!)) {
       data = {
         ...this.state.data,
         category
