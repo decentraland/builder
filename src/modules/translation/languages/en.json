@@ -748,9 +748,6 @@
     "click_to_claim_new_name": "{click_here} to claim a new name",
     "name_assigned": "This name has been assigned to this land"
   },
-  "ipfs_api": {
-    "not_redirected": "If you are not redirected"
-  },
   "claim_name_fat_finger_modal": {
     "title": "Please confirm your new name",
     "description": "You have chosen {name}. Re-enter your name to confirm your selection.",
