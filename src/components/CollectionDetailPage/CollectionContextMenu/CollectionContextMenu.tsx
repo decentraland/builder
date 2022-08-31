@@ -5,6 +5,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
 import { RoleType } from 'modules/collection/types'
 import { getExplorerURL, isOwner as isCollectionOwner, isLocked } from 'modules/collection/utils'
+import { ItemType } from 'modules/item/types'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
 import styles from './CollectionContextMenu.module.css'
@@ -18,8 +19,12 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
   }
 
   handleNavigateToExplorer = () => {
-    const { collection } = this.props
-    this.navigateTo(getExplorerURL({ collection }), '_blank')
+    const { collection, items, isEmotesFeatureFlagOn } = this.props
+    const explorerLink = getExplorerURL({
+      collection,
+      hasNewEmotes: isEmotesFeatureFlagOn && items.some(item => item.type === ItemType.EMOTE)
+    })
+    this.navigateTo(explorerLink, '_blank')
   }
 
   handlePostToForum = () => {
