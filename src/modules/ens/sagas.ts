@@ -232,12 +232,10 @@ export function* ensSaga(builderClient: BuilderClient) {
     try {
       const lands: Land[] = yield select(getLands)
       const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
-
-      const coordsWithHashesList: (LandCoords & LandHashes)[] = yield call(
-        [builderClient, builderClient.getLandRedirectionHashes],
-        coordsList,
-        getCurrentLocale().locale
-      )
+      const coordsWithHashesList: (LandCoords & LandHashes)[] =
+        coordsList.length > 0
+          ? yield call([builderClient, builderClient.getLandRedirectionHashes], coordsList, getCurrentLocale().locale)
+          : []
 
       const landHashes: { id: string; hash: string }[] = []
 
@@ -293,7 +291,6 @@ export function* ensSaga(builderClient: BuilderClient) {
           })
         )
       )
-
       yield put(fetchENSListSuccess(ensList))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
