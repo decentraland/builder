@@ -720,7 +720,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return playModes.map(value => {
       const isDisabled = isEmotePlayModeFeatureFlagOn && value === EmotePlayMode.LOOP
       let text = t(`emote.play_mode.${value}.text`)
-      if (isDisabled) text += `(${t('global.coming_soon')})`
+      if (isDisabled) text = `${text} (${t('global.coming_soon')})`
 
       return {
         value,
