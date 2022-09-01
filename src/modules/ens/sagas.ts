@@ -230,9 +230,9 @@ export function* ensSaga(builderClient: BuilderClient) {
 
   function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     try {
-      let lands: Land[] = yield select(getLands)
+      const lands: Land[] = yield select(getLands)
       const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
-      let coordsWithHashesList: (LandCoords & LandHashes)[] =
+      const coordsWithHashesList: (LandCoords & LandHashes)[] =
         coordsList.length > 0
           ? yield call([builderClient, builderClient.getLandRedirectionHashes], coordsList, getCurrentLocale().locale)
           : []
