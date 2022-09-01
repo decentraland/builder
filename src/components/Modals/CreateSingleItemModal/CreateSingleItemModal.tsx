@@ -195,6 +195,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           }
 
           const sortedContents = this.sortContent(bodyShape, contents)
+          const representations = this.buildRepresentations(bodyShape, model, sortedContents)
 
           // Add this item as a representation of an existing item
           if ((isRepresentation || addRepresentation) && editedItem) {
@@ -206,7 +207,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 representations: [
                   ...editedItem.data.representations,
                   // add new representation
-                  ...this.buildRepresentations(bodyShape, model, sortedContents)
+                  ...representations
                 ],
                 replaces: [...editedItem.data.replaces],
                 hides: [...editedItem.data.hides],
@@ -222,14 +223,26 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             // Do not change the thumbnail when adding a new representation
             delete sortedContents.all[THUMBNAIL_PATH]
           } else if (pristineItem && changeItemFile) {
-            item = {
-              ...(pristineItem as Item),
-              data: {
+            let data: WearableData | EmoteDataADR74
+
+            if (type === ItemType.WEARABLE) {
+              data = {
                 ...pristineItem.data,
                 replaces: [],
                 hides: [],
                 category: category as WearableCategory
-              },
+              } as WearableData
+            } else {
+              data = {
+                ...pristineItem.data,
+                loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false,
+                category: category as EmoteCategory
+              } as EmoteDataADR74
+            }
+
+            item = {
+              ...pristineItem,
+              data,
               name,
               metrics,
               contents: await computeHashes(sortedContents.all),
@@ -241,7 +254,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
             )
             const pristineBodyShape = getBodyShapeType(pristineItem)
-            const representations = this.buildRepresentations(bodyShape, model, sortedContents)
             if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
               // Unisex or Representation changed
               item.data.representations = representations
@@ -270,14 +282,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 replaces: [],
                 hides: [],
                 tags: [],
-                representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
+                representations: [...representations]
               } as WearableData
             } else {
               data = {
                 category: category as EmoteCategory,
-                representations: [...this.buildRepresentations(bodyShape, model, sortedContents)],
+                loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false,
                 tags: [],
-                loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false
+                representations: [...representations]
               } as EmoteDataADR74
             }
 
