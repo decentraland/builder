@@ -97,7 +97,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         id: changeItemFile ? item!.id : uuid.v4(),
         name: changeItemFile ? item!.name : cleanAssetName(file.name),
         file,
-        category: isRepresentation ? category : undefined
+        category: isRepresentation || changeItemFile ? category : undefined
       }
 
       if (extension === '.zip') {
