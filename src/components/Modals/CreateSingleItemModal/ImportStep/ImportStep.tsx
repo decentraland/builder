@@ -8,7 +8,7 @@ import { EngineType, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
-import { getBodyShapeType, getModelPath, isImageCategory, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
+import { getBodyShapeType, getModelPath, isImageCategory, isImageFile, isModelFile, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import ItemImport from 'components/ItemImport'
 import { AcceptedFileProps, ModelData } from '../CreateSingleItemModal.types'
@@ -24,6 +24,29 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       error: '',
       isLoading: false
     }
+  }
+
+  getModelFileName = (modelPath: string) => {
+    return modelPath.split('/').pop()!
+  }
+
+  // Extract the models and images content from subfolders to the root level
+  cleanContentModelKeys = (contents: Record<string, Blob>) => {
+    return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
+      if (key.indexOf('/') !== -1) {
+        if (isModelFile(key)) {
+          const newKeykey = this.getModelFileName(key)
+          newContents[newKeykey] = contents[key]
+        } else if (isImageFile(key)) {
+          const newKeykey = this.getModelFileName(key)
+          newContents[newKeykey] = contents[key]
+        }
+      } else {
+        newContents[key] = contents[key]
+      }
+
+      return newContents
+    }, {})
   }
 
   /**
@@ -49,7 +72,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     }
 
     return {
-      modelData: await this.processModel(modelPath, content),
+      modelData: await this.processModel(this.getModelFileName(modelPath), this.cleanContentModelKeys(content)),
       wearable
     }
   }
