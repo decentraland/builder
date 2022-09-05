@@ -57,7 +57,7 @@ import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDomainFromName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient) {
-  yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
+  yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
@@ -66,7 +66,7 @@ export function* ensSaga(builderClient: BuilderClient) {
   yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
   yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
 
-  function* handleConnectWallet() {
+  function* handleFetchLandsSuccess() {
     yield put(fetchENSAuthorizationRequest())
     yield put(fetchENSListRequest())
   }
