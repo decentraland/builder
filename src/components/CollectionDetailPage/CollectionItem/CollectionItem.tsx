@@ -37,7 +37,8 @@ export default class CollectionItem extends React.PureComponent<Props> {
   }
 
   handleNavigateToEditor = () => {
-    const { onNavigate, item } = this.props
+    const { onNavigate, item, onSetItems } = this.props
+    onSetItems([item])
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
   }
 
