@@ -1,7 +1,7 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
 import { Loader, Dropdown, Button } from 'decentraland-ui'
-import { EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
+import { EmoteCategory, EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -123,15 +123,23 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ rarity, isDirty: this.isDirty({ rarity }) })
   }
 
-  handleChangeCategory = (category: WearableCategory) => {
-    let data: WearableData = {
-      ...(this.state.data as WearableData)!,
-      category
-    }
-    // when changing the category to SKIN we hide everything else
-    if (category === WearableCategory.SKIN) {
-      data = this.setReplaces(data, [])
-      data = this.setHides(data, [])
+  handleChangeCategory = (category: WearableCategory | EmoteCategory) => {
+    let data
+    if (isEmoteData(this.state.data!)) {
+      data = {
+        ...this.state.data,
+        category
+      } as EmoteDataADR74
+    } else {
+      data = {
+        ...this.state.data,
+        category
+      } as WearableData
+      // when changing the category to SKIN we hide everything else
+      if (category === WearableCategory.SKIN) {
+        data = this.setReplaces(data, [])
+        data = this.setHides(data, [])
+      }
     }
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
@@ -307,7 +315,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return values.map(value => {
       const isDisabled = isEmotePlayModeFeatureFlagOn && value === EmotePlayMode.LOOP
       let text = t(`emote.play_mode.${value}.text`)
-      if (isDisabled) text += `(${t('global.coming_soon')})`
+      if (isDisabled) text = `${text} (${t('global.coming_soon')})`
 
       return {
         value,
@@ -466,16 +474,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                           onChange={this.handleChangeDescription}
                         />
-                        {item.type === ItemType.WEARABLE && (
-                          <Select<WearableCategory>
-                            itemId={item.id}
-                            label={t('global.category')}
-                            value={(data as WearableData)!.category}
-                            options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
-                            disabled={!canEditItemMetadata}
-                            onChange={this.handleChangeCategory}
-                          />
-                        )}
+
+                        <Select<WearableCategory | EmoteCategory>
+                          itemId={item.id}
+                          label={t('global.category')}
+                          value={data!.category}
+                          options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
+                          disabled={!canEditItemMetadata}
+                          onChange={this.handleChangeCategory}
+                        />
+
                         {!(item.urn && isThirdParty(item.urn)) && (
                           <Select<ItemRarity>
                             itemId={item.id}
@@ -531,6 +539,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           label={t('create_single_item_modal.play_mode_label')}
                           value={(data as EmoteDataADR74)!.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
                           options={this.asPlayModeSelect(playModes)}
+                          disabled={!canEditItemMetadata}
                           onChange={this.handlePlayModeChange}
                         />
                       ) : null}

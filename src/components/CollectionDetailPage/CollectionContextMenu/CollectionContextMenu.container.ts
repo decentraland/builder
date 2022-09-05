@@ -7,6 +7,7 @@ import { deleteCollectionRequest } from 'modules/collection/actions'
 import { getName } from 'modules/profile/selectors'
 import { openModal } from 'modules/modal/actions'
 import { createCollectionForumPostRequest, CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { getLoading } from 'modules/collection/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
 import { MapDispatchProps, MapDispatch, MapStateProps, OwnProps } from './CollectionContextMenu.types'
@@ -16,7 +17,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   wallet: getWallet(state)!,
   items: getCollectionItems(state, ownProps.collection.id),
   name: getName(state) || '',
-  isForumPostLoading: isLoadingType(getLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST)
+  isForumPostLoading: isLoadingType(getLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST),
+  isEmotesFeatureFlagOn: getIsEmotesFlowEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

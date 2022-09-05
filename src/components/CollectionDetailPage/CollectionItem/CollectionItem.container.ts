@@ -5,11 +5,13 @@ import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { setCollection } from 'modules/item/actions'
 import { setItems } from 'modules/editor/actions'
+import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './CollectionItem.types'
 import CollectionItem from './CollectionItem'
 
 const mapState = (state: RootState): MapStateProps => ({
   ethAddress: getAddress(state),
+  isEmotesFeatureFlagOn: getIsEmotesFlowEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

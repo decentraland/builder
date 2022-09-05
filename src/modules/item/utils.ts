@@ -468,7 +468,7 @@ export function isWearableSynced(item: Item, entity: Entity) {
   return true
 }
 
-export function isEmoteSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn: boolean) {
+export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity, isEmotesFeatureFlagOn: boolean) {
   if (item.type !== ItemType.EMOTE) {
     throw new Error('Item must be EMOTE')
   }
@@ -482,19 +482,26 @@ export function isEmoteSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn:
   // check if metadata is synced
   const catalystItem = entity.metadata
   const catalystItemMetadataData = isADR74 ? entity.metadata.emoteDataADR74 : entity.metadata.data
+  const data = item.data as EmoteDataADR74
 
   const hasMetadataChanged =
     item.name !== catalystItem.name ||
     item.description !== catalystItem.description ||
-    (item.data.category as string) !== catalystItemMetadataData.category ||
-    item.data.tags.toString() !== catalystItemMetadataData.tags.toString()
+    data.category !== catalystItemMetadataData.category ||
+    data.loop !== catalystItemMetadataData.loop ||
+    data.tags.toString() !== catalystItemMetadataData.tags.toString()
 
   if (hasMetadataChanged) {
     return false
   }
 
   // check if representations are synced
-  if (!areEqualRepresentations(item.data.representations, catalystItemMetadataData.representations as WearableRepresentation[])) {
+  if (
+    !areEqualRepresentations(
+      data.representations as WearableRepresentation[],
+      catalystItemMetadataData.representations as WearableRepresentation[]
+    )
+  ) {
     return false
   }
 

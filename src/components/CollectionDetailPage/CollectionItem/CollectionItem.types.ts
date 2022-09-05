@@ -10,6 +10,7 @@ export type Props = {
   ethAddress?: string
   collection: Collection
   item: Item
+  isEmotesFeatureFlagOn: boolean
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
   onRemoveFromCollection: typeof setCollection

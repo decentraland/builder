@@ -714,9 +714,6 @@
     "click_to_claim_new_name": "{click_here}申请新名称",
     "name_assigned": "这个名字已经分配给这片土地"
   },
-  "ipfs_api": {
-    "not_redirected": "如果您未重定向"
-  },
   "claim_name_fat_finger_modal": {
     "title": "请确认您的新名字",
     "description": "您已选择{name}。重新输入您的姓名以确认您的选择。",
@@ -1407,6 +1404,7 @@
       "play_emote": "玩表情",
       "stop": "停止",
       "from_collection": "从收藏",
+      "from_items": "从项目",
       "default": "默认"
     },
     "right_panel": {

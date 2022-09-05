@@ -43,6 +43,7 @@ export type Props = {
 export type State = {
   currentTab: ItemEditorTabs
   pages: number[]
+  initialPage: number
 }
 
 export type MapStateProps = Pick<

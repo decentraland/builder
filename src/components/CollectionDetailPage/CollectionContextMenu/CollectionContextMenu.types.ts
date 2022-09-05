@@ -13,6 +13,7 @@ export type Props = {
   items: Item[]
   name: string
   isForumPostLoading: boolean
+  isEmotesFeatureFlagOn: boolean
   onOpenModal: typeof openModal
   onPostToForum: typeof createCollectionForumPostRequest
   onDelete: typeof deleteCollectionRequest
@@ -20,7 +21,7 @@ export type Props = {
 }
 
 export type OwnProps = Pick<Props, 'collection'>
-export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'name' | 'isForumPostLoading'>
+export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'name' | 'isForumPostLoading' | 'isEmotesFeatureFlagOn'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onPostToForum' | 'onDelete'>
 export type MapDispatch = Dispatch<
   CallHistoryMethodAction | OpenModalAction | CreateCollectionForumPostRequestAction | DeleteCollectionRequestAction
