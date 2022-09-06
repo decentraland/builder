@@ -48,7 +48,8 @@ import {
   resizeImage,
   getMaxSupplyForRarity,
   getEmoteCategories,
-  getEmotePlayModes
+  getEmotePlayModes,
+  getBodyShapeTypeFromContents
 } from 'modules/item/utils'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
@@ -151,8 +152,170 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return { male, female, all }
   }
 
+  sortContentZipBothBodyShape = (contents: Record<string, Blob>): SortedContent => {
+    let male: Record<string, Blob> = {},
+      female: Record<string, Blob> = {}
+    Object.keys(contents).forEach((key: string) => {
+      if (key.startsWith('male/')) {
+        male[key] = contents[key]
+      } else if (key.startsWith('female/')) {
+        female[key] = contents[key]
+      }
+    })
+    const all = { [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH], ...male, ...female }
+    return { male, female, all }
+  }
+
+  createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
+    const { address, collection, isEmotesFeatureFlagOn, isEmotePlayModeFeatureFlagOn, onSave } = this.props
+    const { id, name, description, type, metrics, collectionId, category, playMode, rarity } = this.state as StateData
+
+    const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
+    // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
+    let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
+    let urn: string | undefined
+    if (
+      decodedCollectionUrn &&
+      decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
+      decodedCollectionUrn.thirdPartyCollectionId
+    ) {
+      urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+    }
+
+    // create item to save
+    let data: WearableData | EmoteDataADR74
+
+    if (type === ItemType.WEARABLE) {
+      data = {
+        category: category as WearableCategory,
+        replaces: [],
+        hides: [],
+        tags: [],
+        representations: [...representations]
+      } as WearableData
+    } else {
+      data = {
+        category: category as EmoteCategory,
+        loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false,
+        tags: [],
+        representations: [...representations]
+      } as EmoteDataADR74
+    }
+
+    const item = {
+      id,
+      name,
+      urn,
+      description: description || '',
+      thumbnail: THUMBNAIL_PATH,
+      type,
+      collectionId,
+      totalSupply: 0,
+      isPublished: false,
+      isApproved: false,
+      inCatalyst: false,
+      blockchainContentHash: null,
+      currentContentHash: null,
+      catalystContentHash: null,
+      rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
+      data,
+      owner: address!,
+      metrics,
+      contents: await computeHashes(sortedContents.all),
+      createdAt: +new Date(),
+      updatedAt: +new Date()
+    }
+
+    // The Emote will be saved on the set price step
+    if (isEmotesFeatureFlagOn && type === ItemType.EMOTE) {
+      this.setState({
+        item: { ...(item as Item) },
+        itemSortedContents: sortedContents.all,
+        view: CreateItemView.THUMBNAIL,
+        fromView: CreateItemView.THUMBNAIL
+      })
+    } else {
+      onSave(item as Item, sortedContents.all)
+    }
+  }
+
+  addItemRepresentation = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
+    const { onSave } = this.props
+    const { bodyShape, item: editedItem } = this.state as StateData
+    const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
+    const item = {
+      ...editedItem,
+      data: {
+        ...editedItem.data,
+        representations: [
+          ...editedItem.data.representations,
+          // add new representation
+          ...representations
+        ],
+        replaces: [...editedItem.data.replaces],
+        hides: [...editedItem.data.hides],
+        tags: [...editedItem.data.tags]
+      },
+      contents: {
+        ...editedItem.contents,
+        ...hashedContents
+      },
+      updatedAt: +new Date()
+    }
+
+    // Do not change the thumbnail when adding a new representation
+    delete sortedContents.all[THUMBNAIL_PATH]
+    onSave(item, sortedContents.all)
+  }
+
+  modifyItem = async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
+    const { isEmotePlayModeFeatureFlagOn, onSave } = this.props
+    const { name, bodyShape, type, metrics, category, playMode } = this.state as StateData
+
+    let data: WearableData | EmoteDataADR74
+
+    if (type === ItemType.WEARABLE) {
+      data = {
+        ...pristineItem.data,
+        replaces: [],
+        hides: [],
+        category: category as WearableCategory
+      } as WearableData
+    } else {
+      data = {
+        ...pristineItem.data,
+        loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false,
+        category: category as EmoteCategory
+      } as EmoteDataADR74
+    }
+
+    const item = {
+      ...pristineItem,
+      data,
+      name,
+      metrics,
+      contents: await computeHashes(sortedContents.all),
+      updatedAt: +new Date()
+    }
+
+    const wearableBodyShape = bodyShape === BodyShapeType.MALE ? BodyShape.MALE : BodyShape.FEMALE
+    const representationIndex = pristineItem.data.representations.findIndex(
+      (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
+    )
+    const pristineBodyShape = getBodyShapeType(pristineItem)
+    if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
+      // Unisex or Representation changed
+      item.data.representations = representations
+    } else {
+      // Edited representation
+      item.data.representations[representationIndex] = representations[0]
+    }
+
+    onSave(item as Item, sortedContents.all)
+  }
+
   handleSubmit = async () => {
-    const { address, metadata, collection, isEmotesFeatureFlagOn, isEmotePlayModeFeatureFlagOn, onSave } = this.props
+    const { metadata, onSave } = this.props
     const { id } = this.state
 
     let changeItemFile = false
@@ -166,168 +329,32 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     if (id && this.isValid()) {
-      const {
-        name,
-        description,
-        model,
-        thumbnail,
-        bodyShape,
-        contents,
-        type,
-        metrics,
-        collectionId,
-        isRepresentation,
-        item: editedItem,
-        category,
-        playMode,
-        rarity
-      } = this.state as StateData
+      const { thumbnail, contents, bodyShape, type, model, isRepresentation, item: editedItem } = this.state as StateData
 
       if (this.state.view === CreateItemView.DETAILS) {
-        let item: Item<ItemType.WEARABLE | ItemType.EMOTE>
-
         try {
-          const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
           const blob = dataURLToBlob(thumbnail)
           const hasCustomThumbnail = THUMBNAIL_PATH in contents
           if (blob && !hasCustomThumbnail) {
             contents[THUMBNAIL_PATH] = blob
           }
 
-          const sortedContents = this.sortContent(bodyShape, contents)
-          const representations = this.buildRepresentations(bodyShape, model, sortedContents)
+          const sortedContents =
+            type === ItemType.WEARABLE && getBodyShapeTypeFromContents(contents) === BodyShapeType.BOTH
+              ? this.sortContentZipBothBodyShape(contents)
+              : this.sortContent(bodyShape, contents)
+          const representations =
+            type === ItemType.WEARABLE && getBodyShapeTypeFromContents(contents) === BodyShapeType.BOTH
+              ? this.buildRepresentationsZipBothBodyshape(model, sortedContents)
+              : this.buildRepresentations(bodyShape, model, sortedContents)
 
           // Add this item as a representation of an existing item
           if ((isRepresentation || addRepresentation) && editedItem) {
-            const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
-            item = {
-              ...editedItem,
-              data: {
-                ...editedItem.data,
-                representations: [
-                  ...editedItem.data.representations,
-                  // add new representation
-                  ...representations
-                ],
-                replaces: [...editedItem.data.replaces],
-                hides: [...editedItem.data.hides],
-                tags: [...editedItem.data.tags]
-              },
-              contents: {
-                ...editedItem.contents,
-                ...hashedContents
-              },
-              updatedAt: +new Date()
-            }
-
-            // Do not change the thumbnail when adding a new representation
-            delete sortedContents.all[THUMBNAIL_PATH]
+            await this.addItemRepresentation(sortedContents, representations)
           } else if (pristineItem && changeItemFile) {
-            let data: WearableData | EmoteDataADR74
-
-            if (type === ItemType.WEARABLE) {
-              data = {
-                ...pristineItem.data,
-                replaces: [],
-                hides: [],
-                category: category as WearableCategory
-              } as WearableData
-            } else {
-              data = {
-                ...pristineItem.data,
-                loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false,
-                category: category as EmoteCategory
-              } as EmoteDataADR74
-            }
-
-            item = {
-              ...pristineItem,
-              data,
-              name,
-              metrics,
-              contents: await computeHashes(sortedContents.all),
-              updatedAt: +new Date()
-            }
-
-            const wearableBodyShape = bodyShape === BodyShapeType.MALE ? BodyShape.MALE : BodyShape.FEMALE
-            const representationIndex = pristineItem.data.representations.findIndex(
-              (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
-            )
-            const pristineBodyShape = getBodyShapeType(pristineItem)
-            if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
-              // Unisex or Representation changed
-              item.data.representations = representations
-            } else {
-              // Edited representation
-              item.data.representations[representationIndex] = representations[0]
-            }
+            await this.modifyItem(pristineItem, sortedContents, representations)
           } else {
-            // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
-            let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
-            let urn: string | undefined
-            if (
-              decodedCollectionUrn &&
-              decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
-              decodedCollectionUrn.thirdPartyCollectionId
-            ) {
-              urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
-            }
-
-            // create item to save
-            let data: WearableData | EmoteDataADR74
-
-            if (type === ItemType.WEARABLE) {
-              data = {
-                category: category as WearableCategory,
-                replaces: [],
-                hides: [],
-                tags: [],
-                representations: [...representations]
-              } as WearableData
-            } else {
-              data = {
-                category: category as EmoteCategory,
-                loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false,
-                tags: [],
-                representations: [...representations]
-              } as EmoteDataADR74
-            }
-
-            item = {
-              id,
-              name,
-              urn,
-              description: description || '',
-              thumbnail: THUMBNAIL_PATH,
-              type,
-              collectionId,
-              totalSupply: 0,
-              isPublished: false,
-              isApproved: false,
-              inCatalyst: false,
-              blockchainContentHash: null,
-              currentContentHash: null,
-              catalystContentHash: null,
-              rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
-              data,
-              owner: address!,
-              metrics,
-              contents: await computeHashes(sortedContents.all),
-              createdAt: +new Date(),
-              updatedAt: +new Date()
-            }
-          }
-
-          // The Emote will be saved on the set price step
-          if (isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
-            this.setState({
-              item: { ...(item as Item) },
-              itemSortedContents: sortedContents.all,
-              view: CreateItemView.THUMBNAIL,
-              fromView: CreateItemView.THUMBNAIL
-            })
-          } else {
-            onSave(item as Item, sortedContents.all)
+            await this.createItem(sortedContents, representations)
           }
         } catch (error) {
           this.setState({ error: error.message })
@@ -498,6 +525,31 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         overrideReplaces: []
       })
     }
+
+    return representations
+  }
+
+  buildRepresentationsZipBothBodyshape(_model: string, contents: SortedContent): WearableRepresentation[] {
+    const representations: WearableRepresentation[] = []
+
+    // add male representation
+
+    representations.push({
+      bodyShapes: [BodyShape.MALE],
+      mainFile: Object.keys(contents.male).pop()!,
+      contents: Object.keys(contents.male),
+      overrideHides: [],
+      overrideReplaces: []
+    })
+
+    // add female representation
+    representations.push({
+      bodyShapes: [BodyShape.FEMALE],
+      mainFile: Object.keys(contents.female).pop()!,
+      contents: Object.keys(contents.female),
+      overrideHides: [],
+      overrideReplaces: []
+    })
 
     return representations
   }
