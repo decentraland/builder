@@ -61,6 +61,29 @@ export function getBodyShapeType(item: Item): BodyShapeType {
   }
 }
 
+export function getBodyShapeTypeFromContents(contents: Record<string, Blob>) {
+  let hasMale = false,
+    hasFemale = false
+
+  Object.keys(contents).forEach((key: string) => {
+    if (key.startsWith('male/')) {
+      hasMale = true
+    } else if (key.startsWith('female/')) {
+      hasFemale = true
+    }
+  })
+
+  if (hasMale && hasFemale) {
+    return BodyShapeType.BOTH
+  } else if (hasMale) {
+    return BodyShapeType.MALE
+  } else if (hasFemale) {
+    return BodyShapeType.FEMALE
+  } else {
+    return null
+  }
+}
+
 export function getBodyShapes(item: Item): BodyShape[] {
   const bodyShapes = new Set<BodyShape>()
   for (const representation of item.data.representations) {
@@ -85,6 +108,10 @@ export function getMissingBodyShapeType(item: Item) {
 
 export function getModelPath(representations: WearableRepresentation[]) {
   return representations[0].mainFile
+}
+
+export function getModelFileName(modelPath: string) {
+  return modelPath.split('/').pop()!
 }
 
 export function hasBodyShape(item: Item, bodyShape: BodyShape) {
