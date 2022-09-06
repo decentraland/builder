@@ -345,7 +345,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               : this.sortContent(bodyShape, contents)
           const representations =
             type === ItemType.WEARABLE && getBodyShapeTypeFromContents(contents) === BodyShapeType.BOTH
-              ? this.buildRepresentationsZipBothBodyshape(model, sortedContents)
+              ? this.buildRepresentationsZipBothBodyshape(sortedContents)
               : this.buildRepresentations(bodyShape, model, sortedContents)
 
           // Add this item as a representation of an existing item
@@ -529,7 +529,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return representations
   }
 
-  buildRepresentationsZipBothBodyshape(_model: string, contents: SortedContent): WearableRepresentation[] {
+  buildRepresentationsZipBothBodyshape(contents: SortedContent): WearableRepresentation[] {
     const representations: WearableRepresentation[] = []
 
     // add male representation
