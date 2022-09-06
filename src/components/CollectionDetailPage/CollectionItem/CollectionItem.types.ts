@@ -17,6 +17,6 @@ export type Props = {
   onSetItems: typeof setItems
 }
 
-export type MapStateProps = Pick<Props, 'ethAddress'>
+export type MapStateProps = Pick<Props, 'ethAddress' | 'isEmotesFeatureFlagOn'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onRemoveFromCollection' | 'onSetItems'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | SetCollectionAction | SetItemsAction>
