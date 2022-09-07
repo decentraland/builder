@@ -107,12 +107,10 @@
     "bundle:svg": "npx svg-sprite -D src/components/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg",
     "build:contracts": "typechain --target ethers-v5 --out-dir src/contracts src/contracts/*.json",
     "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'",
+    "check:code": "eslint . --max-warnings=0",
     "check:prettier": "prettier -c 'src/**/*.{js,ts,json,yml,md,tsx,html,css}'",
-    "check:code": "eslint src/**/*.{js,ts,tsx}",
-    "pre-commit:check:prettier": "prettier --write -c",
-    "pre-commit:check:code": "eslint",
-    "pre-commit:check:ts": "tslint --project tsconfig.json -e '*.json' -c tslint.json",
-    "fix:prettier": "prettier --write ./src",
+    "fix:code": "npm run check:code -- --fix",
+    "fix:prettier": "prettier --write 'src/**/*.{js,ts,json,yml,md,tsx,html,css}'",
     "prepare": "husky install"
   },
   "eslintConfig": {
