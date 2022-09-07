@@ -188,7 +188,7 @@ function buildADR74EmoteEntityMetadata(collection: Collection, item: Item<ItemTy
     rarity: (item.rarity! as unknown) as Rarity,
     i18n: [{ code: Locale.EN, text: item.name }],
     emoteDataADR74: {
-      category: EmoteCategory.POSES,
+      category: item.data.category,
       representations: item.data.representations,
       tags: item.data.tags,
       loop: item.data.loop
