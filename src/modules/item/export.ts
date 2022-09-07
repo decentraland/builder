@@ -1,4 +1,4 @@
-import { Emote, EmoteCategory, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
+import { Emote, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
@@ -188,7 +188,7 @@ function buildADR74EmoteEntityMetadata(collection: Collection, item: Item<ItemTy
     rarity: (item.rarity! as unknown) as Rarity,
     i18n: [{ code: Locale.EN, text: item.name }],
     emoteDataADR74: {
-      category: EmoteCategory.POSES,
+      category: item.data.category,
       representations: item.data.representations,
       tags: item.data.tags,
       loop: item.data.loop
