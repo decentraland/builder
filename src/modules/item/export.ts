@@ -1,4 +1,4 @@
-import { Emote, EmoteCategory, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
+import { Emote, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
