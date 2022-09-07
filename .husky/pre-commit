@@ -1,26 +1,11 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | { grep -E '(js|ts|tsx|json|yml|md|html|css)$' || true; })
-
-if [ -z "$FILES" ]; then
-    exit 0
-fi
-
 echo "Running prettier"
-npm run pre-commit:check:prettier -- $FILES
+npm run fix:prettier
 
-FILES=$(echo $FILES | { grep -E '(js|ts|tsx)$' || true; })
-TS_FILES=$(echo $FILES | { grep -E '(ts|tsx)$' || true; })
+echo "Running lints"
+npm run fix:code
 
-if [[ ! -z "$FILES" ]];then
-    echo "Running lints"
-    npm run pre-commit:check:code -- $FILES
-
-    if [[ ! -z "$TS_FILES" ]];then
-        npm run pre-commit:check:ts -- $TS_FILES
-    fi
-
-    echo "Running tests"
-    CI=true npm run test -- --all --silent
-fi
+echo "Running tests"
+CI=true npm run test -- --all --silent
