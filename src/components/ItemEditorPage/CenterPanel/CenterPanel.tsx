@@ -111,20 +111,25 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   handleWearablePreviewLoad = () => {
-    const { wearableController, onSetWearablePreviewController } = this.props
+    // const { wearableController, onSetWearablePreviewController } = this.props
+    const { onSetWearablePreviewController } = this.props
 
-    if (!wearableController) {
-      onSetWearablePreviewController(WearablePreview.createController('wearable-editor'))
-    }
+    // if (!wearableController) {
+    onSetWearablePreviewController(WearablePreview.createController('wearable-editor'))
+    // }
 
     this.setState({ isLoading: false })
   }
 
   handlePlayEmote = () => {
     const { wearableController, isPlayingEmote } = this.props
+    // const { wearableController, isPlayingEmote, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
+    // const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
 
     if (isPlayingEmote) {
-      wearableController?.emote.pause()
+      wearableController?.emote.stop()
+      // onSetAvatarAnimation(PreviewEmote.IDLE)
+      // onSetItems(newVisibleItems)
     } else {
       wearableController?.emote.play()
     }
@@ -211,6 +216,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
+          baseUrl="http://localhost:3001"
           id="wearable-editor"
           profile="default"
           bodyShape={bodyShape}
