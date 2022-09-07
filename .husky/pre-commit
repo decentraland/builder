@@ -6,6 +6,3 @@ npm run fix:prettier
 
 echo "Running lints"
 npm run fix:code
-
-echo "Running tests"
-CI=true npm run test -- --all --silent
