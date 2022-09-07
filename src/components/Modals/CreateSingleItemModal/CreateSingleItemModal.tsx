@@ -871,14 +871,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (item && itemSortedContents) {
       const blob = dataURLToBlob(screenshot)
 
-      const sortedContents = {
-        ...itemSortedContents,
-        [THUMBNAIL_PATH]: blob!
-      }
+      itemSortedContents[THUMBNAIL_PATH] = blob!
+      item.contents = await computeHashes(itemSortedContents)
 
-      this.setState({ itemSortedContents: sortedContents, item: { ...item, contents: await computeHashes(sortedContents) } }, () =>
-        this.setState({ view })
-      )
+      this.setState({ itemSortedContents, item }, () => this.setState({ view }))
     } else {
       this.setState({ thumbnail: screenshot }, () => this.setState({ view }))
     }
