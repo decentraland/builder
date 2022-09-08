@@ -256,7 +256,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                   <div className="title-card-container">
                     <div className="title">{t('item_detail_page.representations.title')}</div>
                     <Button className="edit-button" inverted size="small" onClick={this.handleEditRepresentation}>
-                      {t('global.edit')}
+                      {getMissingBodyShapeType(item) ? t('global.add') : t('global.edit')}
                     </Button>
                   </div>
                   <div className="data">

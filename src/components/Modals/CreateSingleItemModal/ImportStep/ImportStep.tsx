@@ -3,12 +3,23 @@ import uuid from 'uuid'
 import { loadFile, WearableConfig } from '@dcl/builder-client'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
 import { EngineType, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
-import { getBodyShapeType, getModelPath, isImageCategory, isModelPath, MAX_FILE_SIZE } from 'modules/item/utils'
+import {
+  getBodyShapeType,
+  getBodyShapeTypeFromContents,
+  getModelPath,
+  getModelFileNameFromSubfolder,
+  isImageCategory,
+  isImageFile,
+  isModelFile,
+  isModelPath,
+  MAX_FILE_SIZE
+} from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import ItemImport from 'components/ItemImport'
 import { AcceptedFileProps, ModelData } from '../CreateSingleItemModal.types'
@@ -24,6 +35,26 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       error: '',
       isLoading: false
     }
+  }
+
+  // Extract the models and images content from subfolders to the root level
+  cleanContentModelKeys = (contents: Record<string, Blob>, bodyShapeType?: BodyShapeType) => {
+    return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
+      if (key.indexOf('/') !== -1) {
+        if (contents[key].size === 0) {
+          return newContents
+        } else if (isModelFile(key) && bodyShapeType !== BodyShapeType.BOTH) {
+          const newKeykey = getModelFileNameFromSubfolder(key)
+          newContents[newKeykey] = contents[key]
+          return newContents
+        } else if (isImageFile(key)) {
+          return newContents
+        }
+      }
+
+      newContents[key] = contents[key]
+      return newContents
+    }, {})
   }
 
   /**
@@ -126,6 +157,22 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             rarity: wearable.rarity,
             category: wearable.data.category,
             bodyShape: getBodyShapeType(wearable as Item)
+          }
+        } else {
+          /** If the .zip file doesn't contain an asset.json file,
+           * this method processes the contents by cleaning the empty keys
+           * and extracting the models to the root level if there's just one body shape representation
+           */
+          acceptedFileProps.bodyShape = getBodyShapeTypeFromContents(contents) as BodyShapeType
+          if (acceptedFileProps.bodyShape !== BodyShapeType.BOTH) {
+            acceptedFileProps.model = getModelFileNameFromSubfolder(model)
+            acceptedFileProps.contents = this.cleanContentModelKeys(contents)
+          } else {
+            if (!isRepresentation) {
+              acceptedFileProps.contents = this.cleanContentModelKeys(contents, BodyShapeType.BOTH)
+            } else {
+              throw new Error(t('create_single_item_modal.error.invalid_model_files_representation'))
+            }
           }
         }
       } else {

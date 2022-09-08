@@ -218,7 +218,8 @@
       "invalid_files": "文件似乎无效或损坏，请检查并重试。",
       "missing_model_file": "找不到有效的模型文件。",
       "invalid_content_path": "属性 \"{name}\" 的无效路径 \"{path}\"，找不到文件。",
-      "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。"
+      "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。",
+      "invalid_model_files_representation": "该文件似乎有多个表示，请查看它们并重试。"
     },
     "emote_notice": "表情适用于所有体型。"
   },
