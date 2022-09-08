@@ -158,6 +158,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             bodyShape: getBodyShapeType(wearable as Item)
           }
         } else {
+          /** If the .zip file doesn't contain an asset.json file,
+           * this method processes the contents by cleaning the empty keys
+           * and extracting the models to the root level if there's just one body shape representation
+           */
           acceptedFileProps.bodyShape = getBodyShapeTypeFromContents(contents) as BodyShapeType
           if (acceptedFileProps.bodyShape !== BodyShapeType.BOTH) {
             acceptedFileProps.model = getModelFileNameFromSubfolder(model)
