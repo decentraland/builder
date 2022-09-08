@@ -111,25 +111,20 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   handleWearablePreviewLoad = () => {
-    // const { wearableController, onSetWearablePreviewController } = this.props
     const { onSetWearablePreviewController } = this.props
 
-    // if (!wearableController) {
     onSetWearablePreviewController(WearablePreview.createController('wearable-editor'))
-    // }
 
     this.setState({ isLoading: false })
   }
 
   handlePlayEmote = () => {
-    const { wearableController, isPlayingEmote } = this.props
-    // const { wearableController, isPlayingEmote, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
-    // const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
+    const { wearableController, isPlayingEmote, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
+    const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
 
     if (isPlayingEmote) {
-      wearableController?.emote.stop()
-      // onSetAvatarAnimation(PreviewEmote.IDLE)
-      // onSetItems(newVisibleItems)
+      onSetAvatarAnimation(PreviewEmote.IDLE)
+      onSetItems(newVisibleItems)
     } else {
       wearableController?.emote.play()
     }
