@@ -110,7 +110,7 @@ export function getModelPath(representations: WearableRepresentation[]) {
   return representations[0].mainFile
 }
 
-export function getModelFileName(modelPath: string) {
+export function getModelFileNameFromSubfolder(modelPath: string) {
   return modelPath.split('/').pop()!
 }
 

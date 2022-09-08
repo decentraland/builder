@@ -12,7 +12,7 @@ import {
   getBodyShapeType,
   getBodyShapeTypeFromContents,
   getModelPath,
-  getModelFileName,
+  getModelFileNameFromSubfolder,
   isImageCategory,
   isImageFile,
   isModelFile,
@@ -43,7 +43,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         if (contents[key].size === 0) {
           return newContents
         } else if (isModelFile(key) && bodyShapeType !== BodyShapeType.BOTH) {
-          const newKeykey = getModelFileName(key)
+          const newKeykey = getModelFileNameFromSubfolder(key)
           newContents[newKeykey] = contents[key]
           return newContents
         } else if (isImageFile(key)) {
@@ -160,7 +160,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         } else {
           acceptedFileProps.bodyShape = getBodyShapeTypeFromContents(contents) as BodyShapeType
           if (acceptedFileProps.bodyShape !== BodyShapeType.BOTH) {
-            acceptedFileProps.model = getModelFileName(model)
+            acceptedFileProps.model = getModelFileNameFromSubfolder(model)
             acceptedFileProps.contents = this.cleanContentModelKeys(contents)
           } else {
             acceptedFileProps.contents = this.cleanContentModelKeys(contents, BodyShapeType.BOTH)
