@@ -47,6 +47,11 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
   }
 
+  componentWillUnmount() {
+    const { onSetWearablePreviewController } = this.props
+    onSetWearablePreviewController(null)
+  }
+
   handleToggleShowingAvatarAttributes = () => {
     this.setState({ isShowingAvatarAttributes: !this.state.isShowingAvatarAttributes })
   }
@@ -111,9 +116,11 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   handleWearablePreviewLoad = () => {
-    const { onSetWearablePreviewController } = this.props
+    const { wearableController, onSetWearablePreviewController } = this.props
 
-    onSetWearablePreviewController(WearablePreview.createController('wearable-editor'))
+    if (!wearableController) {
+      onSetWearablePreviewController(WearablePreview.createController('wearable-editor'))
+    }
 
     this.setState({ isLoading: false })
   }

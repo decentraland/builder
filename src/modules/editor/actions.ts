@@ -229,7 +229,8 @@ export const SET_WEARABLE_PREVIEW_CONTROLLER = 'Set wearable preview controller'
 
 export const setEmote = (emote: PreviewEmote) => action(SET_EMOTE, { emote })
 export const setEmotePlaying = (isPlayingEmote: boolean) => action(SET_EMOTE_PLAYING, { isPlayingEmote })
-export const setWearablePreviewController = (controller: IPreviewController) => action(SET_WEARABLE_PREVIEW_CONTROLLER, { controller })
+export const setWearablePreviewController = (controller: IPreviewController | null) =>
+  action(SET_WEARABLE_PREVIEW_CONTROLLER, { controller })
 
 export type SetEmoteAction = ReturnType<typeof setEmote>
 export type SetEmotePlayingAction = ReturnType<typeof setEmotePlaying>
