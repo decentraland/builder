@@ -221,7 +221,8 @@
       "invalid_files": "Files seem to be invalid or broken, please review them and try again.",
       "missing_model_file": "Couldn't find a valid model file.",
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
-      "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}."
+      "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}.",
+      "invalid_model_files_representation": "The file seems to have more than one representation, please review them and try again."
     },
     "emote_notice": "Emotes are available for all body shapes."
   },

@@ -3,6 +3,7 @@ import uuid from 'uuid'
 import { loadFile, WearableConfig } from '@dcl/builder-client'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
 import { EngineType, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
@@ -167,7 +168,11 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             acceptedFileProps.model = getModelFileNameFromSubfolder(model)
             acceptedFileProps.contents = this.cleanContentModelKeys(contents)
           } else {
-            acceptedFileProps.contents = this.cleanContentModelKeys(contents, BodyShapeType.BOTH)
+            if (!isRepresentation) {
+              acceptedFileProps.contents = this.cleanContentModelKeys(contents, BodyShapeType.BOTH)
+            } else {
+              throw new Error(t('create_single_item_modal.error.invalid_model_files_representation'))
+            }
           }
         }
       } else {
