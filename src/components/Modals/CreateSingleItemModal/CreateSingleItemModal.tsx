@@ -152,13 +152,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return { male, female, all }
   }
 
-  sortContentZipBothBodyShape = (contents: Record<string, Blob>): SortedContent => {
+  sortContentZipBothBodyShape = (bodyShape: BodyShapeType, contents: Record<string, Blob>): SortedContent => {
     let male: Record<string, Blob> = {},
       female: Record<string, Blob> = {}
     Object.keys(contents).forEach((key: string) => {
-      if (key.startsWith('male/')) {
+      if (key.startsWith('male/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE)) {
         male[key] = contents[key]
-      } else if (key.startsWith('female/')) {
+      } else if (key.startsWith('female/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE)) {
         female[key] = contents[key]
       }
     })
@@ -341,11 +341,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
           const sortedContents =
             type === ItemType.WEARABLE && getBodyShapeTypeFromContents(contents) === BodyShapeType.BOTH
-              ? this.sortContentZipBothBodyShape(contents)
+              ? this.sortContentZipBothBodyShape(bodyShape, contents)
               : this.sortContent(bodyShape, contents)
           const representations =
             type === ItemType.WEARABLE && getBodyShapeTypeFromContents(contents) === BodyShapeType.BOTH
-              ? this.buildRepresentationsZipBothBodyshape(sortedContents)
+              ? this.buildRepresentationsZipBothBodyshape(bodyShape, sortedContents)
               : this.buildRepresentations(bodyShape, model, sortedContents)
 
           // Add this item as a representation of an existing item
@@ -529,27 +529,30 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return representations
   }
 
-  buildRepresentationsZipBothBodyshape(contents: SortedContent): WearableRepresentation[] {
+  buildRepresentationsZipBothBodyshape(bodyShape: BodyShapeType, contents: SortedContent): WearableRepresentation[] {
     const representations: WearableRepresentation[] = []
 
     // add male representation
-
-    representations.push({
-      bodyShapes: [BodyShape.MALE],
-      mainFile: Object.keys(contents.male).pop()!,
-      contents: Object.keys(contents.male),
-      overrideHides: [],
-      overrideReplaces: []
-    })
+    if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.BOTH) {
+      representations.push({
+        bodyShapes: [BodyShape.MALE],
+        mainFile: Object.keys(contents.male).pop()!,
+        contents: Object.keys(contents.male),
+        overrideHides: [],
+        overrideReplaces: []
+      })
+    }
 
     // add female representation
-    representations.push({
-      bodyShapes: [BodyShape.FEMALE],
-      mainFile: Object.keys(contents.female).pop()!,
-      contents: Object.keys(contents.female),
-      overrideHides: [],
-      overrideReplaces: []
-    })
+    if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.BOTH) {
+      representations.push({
+        bodyShapes: [BodyShape.FEMALE],
+        mainFile: Object.keys(contents.female).pop()!,
+        contents: Object.keys(contents.female),
+        overrideHides: [],
+        overrideReplaces: []
+      })
+    }
 
     return representations
   }
