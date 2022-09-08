@@ -864,10 +864,20 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
-  handleOnScreenshotTaken = (screenshot: string) => {
-    const { fromView } = this.state
+  handleOnScreenshotTaken = async (screenshot: string) => {
+    const { fromView, itemSortedContents, item } = this.state
     const view = fromView === CreateItemView.DETAILS ? CreateItemView.DETAILS : CreateItemView.SET_PRICE
-    this.setState({ thumbnail: screenshot }, () => this.setState({ view }))
+
+    if (item && itemSortedContents) {
+      const blob = dataURLToBlob(screenshot)
+
+      itemSortedContents[THUMBNAIL_PATH] = blob!
+      item.contents = await computeHashes(itemSortedContents)
+
+      this.setState({ itemSortedContents, item }, () => this.setState({ view }))
+    } else {
+      this.setState({ thumbnail: screenshot }, () => this.setState({ view }))
+    }
   }
 
   renderThumbnailView() {
