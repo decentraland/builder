@@ -211,7 +211,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
-          baseUrl="http://localhost:3001"
           id="wearable-editor"
           profile="default"
           bodyShape={bodyShape}
