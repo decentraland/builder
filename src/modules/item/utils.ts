@@ -65,13 +65,13 @@ export function getBodyShapeTypeFromContents(contents: Record<string, Blob>) {
   let hasMale = false,
     hasFemale = false
 
-  Object.keys(contents).forEach((key: string) => {
+  for (const key in contents) {
     if (key.startsWith('male/')) {
       hasMale = true
     } else if (key.startsWith('female/')) {
       hasFemale = true
     }
-  })
+  }
 
   if (hasMale && hasFemale) {
     return BodyShapeType.BOTH

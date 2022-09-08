@@ -155,13 +155,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   sortContentZipBothBodyShape = (bodyShape: BodyShapeType, contents: Record<string, Blob>): SortedContent => {
     let male: Record<string, Blob> = {},
       female: Record<string, Blob> = {}
-    Object.keys(contents).forEach((key: string) => {
+    for (const key in contents) {
       if (key.startsWith('male/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE)) {
         male[key] = contents[key]
       } else if (key.startsWith('female/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE)) {
         female[key] = contents[key]
       }
-    })
+    }
     const all = { [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH], ...male, ...female }
     return { male, female, all }
   }
