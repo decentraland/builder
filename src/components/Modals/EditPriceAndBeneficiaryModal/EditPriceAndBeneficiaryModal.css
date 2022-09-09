@@ -28,6 +28,11 @@
   padding-left: 18px;
 }
 
+.EditPriceAndBeneficiaryModal .ui.form .price-field .dcl.field .ui.input input::placeholder {
+  color: var(--secondary-text);
+}
+
+
 .EditPriceAndBeneficiaryModal .ui.form .price-field > .ui.button {
   position: absolute;
   top: 0;
@@ -66,6 +71,7 @@
 
 .EditPriceAndBeneficiaryModal .checkbox.make-it-free,
 .EditPriceAndBeneficiaryModal .checkbox.beneficiary {
+  margin-top: 8px;
   margin-bottom: 32px;
   display: flex;
   align-items: center;
