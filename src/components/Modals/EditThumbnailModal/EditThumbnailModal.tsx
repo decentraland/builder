@@ -36,6 +36,18 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
     onClose()
   }
 
+  handleOnBack = () => {
+    const {
+      metadata: { item },
+      onClose
+    } = this.props
+    if (item) {
+      onClose()
+    } else {
+      this.setState({ view: CreateItemView.IMPORT })
+    }
+  }
+
   renderModalTitle() {
     return t('create_single_item_modal.thumbnail_step_title')
   }
@@ -58,7 +70,7 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
       <EditThumbnailStep
         isLoading={isLoading}
         title={this.renderModalTitle()}
-        onBack={() => this.setState({ view: CreateItemView.IMPORT })}
+        onBack={this.handleOnBack}
         onSave={this.handleOnSaveThumbnail}
         onClose={onClose}
         {...wearablePreviewProp}
