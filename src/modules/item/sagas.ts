@@ -93,7 +93,7 @@ import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/
 import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
-import { DEFAULT_PAGE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
 import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { getItemId } from 'modules/location/selectors'
@@ -355,6 +355,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
+    const address: string = yield select(getAddress)
     const openModals: ModalState = yield select(getOpenModals)
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
     const isEmotesFeatureFlagOn: boolean = yield select(getIsEmotesFlowEnabled)
@@ -376,6 +377,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         // Redirect to the item editor
         yield put(push(locations.itemEditor({ collectionId, itemId: item.id })))
       } else {
+        if (collectionId) {
+          yield put(fetchCollectionItemsRequest(collectionId, { page: DEFAULT_PAGE, limit: DEFAULT_PAGE_SIZE }))
+        } else {
+          yield put(fetchItemsRequest(address, { page: DEFAULT_PAGE, limit: DEFAULT_PAGE_SIZE }))
+        }
         yield put(closeModal('CreateSingleItemModal'))
       }
     }
