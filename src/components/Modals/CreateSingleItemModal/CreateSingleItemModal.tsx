@@ -444,14 +444,16 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       }
       this.setState({ error: undefined })
 
-      const resizedFile = await resizeImage(file)
-      const thumbnail = URL.createObjectURL(resizedFile)
+      const smallThumbnailBlob = await resizeImage(file)
+      const bigThumbnailBlob = await resizeImage(file, 1024, 1024)
+
+      const thumbnail = URL.createObjectURL(smallThumbnailBlob)
 
       this.setState({
         thumbnail,
         contents: {
           ...contents,
-          [THUMBNAIL_PATH]: file
+          [THUMBNAIL_PATH]: bigThumbnailBlob
         }
       })
     }
