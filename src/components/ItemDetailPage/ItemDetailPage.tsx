@@ -79,11 +79,13 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
 
     if (files && files.length > 0) {
       const file = files[0]
-      const resizedFile = await resizeImage(file)
-      const thumbnail = URL.createObjectURL(resizedFile)
-      const blob = dataURLToBlob(thumbnail)
-      if (blob) {
-        onSaveItem(item as Item, { ...item?.contents, [THUMBNAIL_PATH]: blob })
+      const blob = await resizeImage(file, 1024, 1024)
+      if (blob && item) {
+        item.contents = {
+          ...item.contents,
+          ...(await computeHashes({ [THUMBNAIL_PATH]: blob }))
+        }
+        onSaveItem(item as Item, { [THUMBNAIL_PATH]: blob })
       }
     }
   }
