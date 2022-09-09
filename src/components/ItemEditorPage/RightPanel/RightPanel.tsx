@@ -253,12 +253,13 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
     if (files && files.length > 0) {
       const file = files[0]
-      const resizedFile = await resizeImage(file)
-      const thumbnail = URL.createObjectURL(resizedFile)
+      const smallThumbnailBlob = await resizeImage(file)
+      const bigThumbnailBlob = await resizeImage(file, 1024, 1024)
+      const thumbnail = URL.createObjectURL(smallThumbnailBlob)
 
       this.setState({
         thumbnail,
-        contents: { [THUMBNAIL_PATH]: file },
+        contents: { [THUMBNAIL_PATH]: bigThumbnailBlob },
         isDirty: true
       })
     }
