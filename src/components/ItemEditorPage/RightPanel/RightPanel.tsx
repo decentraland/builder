@@ -435,12 +435,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <div className="thumbnail-container">
                               <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
                               <div className="thumbnail-edit-container">
-                                <input
-                                  type="file"
-                                  ref={this.thumbnailInput}
-                                  onChange={this.handleThumbnailChange}
-                                  accept="image/png, image/jpeg"
-                                />
+                                <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
                                 <div className="thumbnail-edit-background"></div>
                                 <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
                               </div>

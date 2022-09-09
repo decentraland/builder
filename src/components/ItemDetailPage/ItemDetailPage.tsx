@@ -113,7 +113,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
               <ItemImage item={item} hasBadge hasRarityBadge />
               <div>
                 <Button primary onClick={this.handleOpenThumbnailDialog}>
-                  <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                  <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
                   <Icon name="camera" />
                   {t('item_detail_page.edit_thumbnail')}
                 </Button>
