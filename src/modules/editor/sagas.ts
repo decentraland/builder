@@ -484,13 +484,11 @@ function createWearablePreviewChannel(controller: IPreviewController) {
     handleEvent(PreviewEmoteEventType.ANIMATION_PLAY)
     handleEvent(PreviewEmoteEventType.ANIMATION_PAUSE)
     handleEvent(PreviewEmoteEventType.ANIMATION_END)
-    handleEvent(PreviewEmoteEventType.ANIMATION_LOOP)
 
     const unsubscribe = () => {
       controller.emote.events.off(PreviewEmoteEventType.ANIMATION_PLAY, eventEmit)
       controller.emote.events.off(PreviewEmoteEventType.ANIMATION_PAUSE, eventEmit)
       controller.emote.events.off(PreviewEmoteEventType.ANIMATION_END, eventEmit)
-      controller.emote.events.off(PreviewEmoteEventType.ANIMATION_LOOP, eventEmit)
     }
 
     return unsubscribe
@@ -499,24 +497,27 @@ function createWearablePreviewChannel(controller: IPreviewController) {
 
 function* handleSetWearablePreviewController() {
   const controller: IPreviewController = yield select(getWearablePreviewController)
-  const emotesChannel = createWearablePreviewChannel(controller)
 
-  while (true) {
-    try {
-      const event: string = yield take(emotesChannel)
-      switch (event) {
-        case PreviewEmoteEventType.ANIMATION_PLAY:
-          yield put(setEmotePlaying(true))
-          break
-        case PreviewEmoteEventType.ANIMATION_PAUSE:
-          yield put(setEmotePlaying(false))
-          break
-        case PreviewEmoteEventType.ANIMATION_END:
-          yield put(setEmotePlaying(false))
-          break
+  if (controller) {
+    const emotesChannel = createWearablePreviewChannel(controller)
+
+    while (true) {
+      try {
+        const event: string = yield take(emotesChannel)
+        switch (event) {
+          case PreviewEmoteEventType.ANIMATION_PLAY:
+            yield put(setEmotePlaying(true))
+            break
+          case PreviewEmoteEventType.ANIMATION_PAUSE:
+            yield put(setEmotePlaying(false))
+            break
+          case PreviewEmoteEventType.ANIMATION_END:
+            yield put(setEmotePlaying(false))
+            break
+        }
+      } catch (error) {
+        yield put(setEmotePlaying(false))
       }
-    } catch (error) {
-      yield put(setEmotePlaying(false))
     }
   }
 }

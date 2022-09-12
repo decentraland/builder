@@ -47,6 +47,11 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
   }
 
+  componentWillUnmount() {
+    const { onSetWearablePreviewController } = this.props
+    onSetWearablePreviewController(null)
+  }
+
   handleToggleShowingAvatarAttributes = () => {
     this.setState({ isShowingAvatarAttributes: !this.state.isShowingAvatarAttributes })
   }
@@ -121,10 +126,12 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   handlePlayEmote = () => {
-    const { wearableController, isPlayingEmote } = this.props
+    const { wearableController, isPlayingEmote, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
+    const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
 
     if (isPlayingEmote) {
-      wearableController?.emote.pause()
+      onSetAvatarAnimation(PreviewEmote.IDLE)
+      onSetItems(newVisibleItems)
     } else {
       wearableController?.emote.play()
     }
