@@ -263,7 +263,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
         />
-        {!isLoading && (
+        {isRenderingAnEmote ? (
           <div className="zoom-controls">
             <Button className="zoom-control zoom-in-control" onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_IN)}>
               <Icon name="plus" />
@@ -272,7 +272,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               <Icon name="minus" />
             </Button>
           </div>
-        )}
+        ) : null}
         {isRenderingAnEmote ? (
           <div className="emote-controls-container">
             <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" />
