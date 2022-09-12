@@ -273,17 +273,17 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             </Button>
           </div>
         ) : null}
-        {isRenderingAnEmote ? (
-          <div className="emote-controls-container">
-            <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" />
-          </div>
-        ) : null}
         {isLoading && (
           <Center>
             <Loader active />
           </Center>
         )}
         <div className="footer">
+          {isRenderingAnEmote ? (
+            <div className="emote-controls-container">
+              <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" />
+            </div>
+          ) : null}
           <div className="options">
             <div className={`option ${isShowingAvatarAttributes ? 'active' : ''}`} onClick={this.handleToggleShowingAvatarAttributes}>
               <Icon name="user" />
