@@ -253,12 +253,13 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
     if (files && files.length > 0) {
       const file = files[0]
-      const resizedFile = await resizeImage(file)
-      const thumbnail = URL.createObjectURL(resizedFile)
+      const smallThumbnailBlob = await resizeImage(file)
+      const bigThumbnailBlob = await resizeImage(file, 1024, 1024)
+      const thumbnail = URL.createObjectURL(smallThumbnailBlob)
 
       this.setState({
         thumbnail,
-        contents: { [THUMBNAIL_PATH]: file },
+        contents: { [THUMBNAIL_PATH]: bigThumbnailBlob },
         isDirty: true
       })
     }
@@ -434,12 +435,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <div className="thumbnail-container">
                               <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
                               <div className="thumbnail-edit-container">
-                                <input
-                                  type="file"
-                                  ref={this.thumbnailInput}
-                                  onChange={this.handleThumbnailChange}
-                                  accept="image/png, image/jpeg"
-                                />
+                                <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
                                 <div className="thumbnail-edit-background"></div>
                                 <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
                               </div>
