@@ -651,12 +651,17 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
-    const { collection } = this.props
+    const { collection, isNewEmotesPublishEnabled } = this.props
     const { name, category, rarity, contents, item, type } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const rarities = getRarities()
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
+
+    const raritiesLink =
+      isNewEmotesPublishEnabled && type === ItemType.EMOTE
+        ? 'https://docs.decentraland.org/emotes/emotes/#rarity'
+        : 'https://docs.decentraland.org/decentraland/wearables-editor-user-guide/#rarity'
 
     return (
       <>
@@ -682,11 +687,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 id="create_single_item_modal.rarity_learn_more_about"
                 values={{
                   learn_more: (
-                    <a
-                      href="https://docs.decentraland.org/decentraland/wearables-editor-user-guide/#rarity"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={raritiesLink} target="_blank" rel="noopener noreferrer">
                       {t('global.learn_more')}
                     </a>
                   )
