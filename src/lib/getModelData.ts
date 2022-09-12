@@ -220,7 +220,8 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 }
 
 export async function getIsEmote(url: string, options: Partial<Options> = {}) {
-  const { gltf } = await loadGltf(url, options)
+  const { gltf, renderer } = await loadGltf(url, options)
+  document.body.removeChild(renderer.domElement)
   return gltf.animations.length > 0
 }
 
@@ -266,7 +267,8 @@ export async function getItemData({
           entities: 1
         }
       } else {
-        const { gltf } = await loadGltf(URL.createObjectURL(contents[model]))
+        const { gltf, renderer } = await loadGltf(URL.createObjectURL(contents[model]))
+        document.body.removeChild(renderer.domElement)
         const duration = gltf.animations[0].duration
         const frames = gltf.animations[0].tracks[0].times.length - 1
 

@@ -91,6 +91,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               disableDefaultEmotes
               disableAutoRotate
               skin="000000"
+              zoom={100}
               wheelZoom={2}
               onLoad={this.handleFileLoad}
               onUpdate={() => this.setState({ hasBeenUpdated: true })}
