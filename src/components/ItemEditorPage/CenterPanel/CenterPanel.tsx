@@ -7,6 +7,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ItemType } from 'modules/item/types'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
+import { ControlOptionAction } from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep.types'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
@@ -125,6 +126,27 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     this.setState({ isLoading: false })
   }
 
+  handleControlActionChange = async (action: ControlOptionAction) => {
+    const { wearableController } = this.props
+    const ZOOM_DELTA = 0.1
+
+    if (wearableController) {
+      await wearableController?.emote.pause()
+      switch (action) {
+        case ControlOptionAction.ZOOM_IN: {
+          await wearableController?.scene.changeZoom(ZOOM_DELTA)
+          break
+        }
+        case ControlOptionAction.ZOOM_OUT: {
+          await wearableController?.scene.changeZoom(-ZOOM_DELTA)
+          break
+        }
+        default:
+          break
+      }
+    }
+  }
+
   handlePlayEmote = () => {
     const { wearableController, isPlayingEmote, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
     const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
@@ -241,6 +263,16 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
         />
+        {!isLoading && (
+          <div className="zoom-controls">
+            <Button className="zoom-control zoom-in-control" onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_IN)}>
+              <Icon name="plus" />
+            </Button>
+            <Button className="zoom-control zoom-out-control" onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_OUT)}>
+              <Icon name="minus" />
+            </Button>
+          </div>
+        )}
         {isRenderingAnEmote ? (
           <div className="emote-controls-container">
             <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" />
