@@ -163,7 +163,7 @@
   right: 12px;
 }
 
-.CenterPanel .ui.button.zoom-control {
+.CenterPanel .zoom-controls > .ui.button.zoom-control {
   width: 32px;
   height: 32px;
   padding: 0;
@@ -175,11 +175,11 @@
   align-items: center;
 }
 
-.CenterPanel .ui.button.zoom-control i.icon {
+.CenterPanel .zoom-controls > .ui.button.zoom-control i.icon {
   margin: 0 !important;
 }
 
-.CenterPanel .ui.button.zoom-in-control {
+.CenterPanel .zoom-controls > .ui.button.zoom-in-control {
   width: 32px;
   height: 32px;
   padding: 0;
