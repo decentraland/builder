@@ -571,7 +571,8 @@ describe('when handling the save item success action', () => {
                 [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
                 [select(getIsEmotesFlowEnabled), false],
-                [select(getAddress), mockAddress]
+                [select(getAddress), mockAddress],
+                [select(getPaginationData, item.collectionId!), { currentPage: 1, limit: 10 }]
               ])
               .put(closeModal('CreateSingleItemModal'))
               .dispatch(saveItemSuccess(item, {}))
@@ -583,6 +584,11 @@ describe('when handling the save item success action', () => {
   })
 
   describe('and the location is the Item editor page', () => {
+    let paginationData: ItemPaginationData
+    beforeEach(() => {
+      paginationData = { currentPage: 1, limit: 1, total: 1, ids: [item.id], totalPages: 1 }
+    })
+
     describe('and the CreateSingleItemModal is opened', () => {
       describe('and the item type is wearable', () => {
         it('should close the modal CreateSingleItemModal', () => {
@@ -590,8 +596,10 @@ describe('when handling the save item success action', () => {
             .provide([
               [select(getLocation), { pathname: locations.itemEditor() }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
-              [select(getAddress), mockAddress]
+              [select(getAddress), mockAddress],
+              [select(getPaginationData, item.collectionId!), { ...paginationData }]
             ])
+            .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
             .put(closeModal('CreateSingleItemModal'))
             .dispatch(saveItemSuccess(item, {}))
             .run({ silenceTimeout: true })
@@ -604,14 +612,16 @@ describe('when handling the save item success action', () => {
         })
 
         describe('and the FF EmotesFlow is enabled', () => {
-          it('should put a location change to the item editor', () => {
+          it('should close the modal CreateSingleItemModal', () => {
             return expectSaga(itemSaga, builderAPI, builderClient)
               .provide([
                 [select(getLocation), { pathname: locations.itemEditor() }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
                 [select(getIsEmotesFlowEnabled), true],
-                [select(getAddress), mockAddress]
+                [select(getAddress), mockAddress],
+                [select(getPaginationData, item.collectionId!), { ...paginationData }]
               ])
+              .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
               .put(closeModal('CreateSingleItemModal'))
               .dispatch(saveItemSuccess(item, {}))
               .run({ silenceTimeout: true })
@@ -625,8 +635,10 @@ describe('when handling the save item success action', () => {
                 [select(getLocation), { pathname: locations.itemEditor() }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
                 [select(getIsEmotesFlowEnabled), false],
-                [select(getAddress), mockAddress]
+                [select(getAddress), mockAddress],
+                [select(getPaginationData, item.collectionId!), { ...paginationData }]
               ])
+              .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
               .put(closeModal('CreateSingleItemModal'))
               .dispatch(saveItemSuccess(item, {}))
               .run({ silenceTimeout: true })
@@ -1562,7 +1574,8 @@ describe('when handling the save item curation success action', () => {
       .provide([
         [select(getLocation), { pathname: locations.collectionDetail('id') }],
         [select(getOpenModals), { CreateSingleItemModal: true }],
-        [select(getAddress), mockAddress]
+        [select(getAddress), mockAddress],
+        [select(getPaginationData, mockAddress), { currentPage: 1, limit: 10 }]
       ])
       .not.put(push(locations.itemDetail(item.id)))
       .dispatch(saveItemSuccess(item, {}))
