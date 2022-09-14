@@ -355,6 +355,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
+    const address: string = yield select(getAddress)
     const openModals: ModalState = yield select(getOpenModals)
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
     const isEmotesFeatureFlagOn: boolean = yield select(getIsEmotesFlowEnabled)
@@ -376,6 +377,16 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         // Redirect to the item editor
         yield put(push(locations.itemEditor({ collectionId, itemId: item.id })))
       } else {
+        // When creating a Wearable/Emote in the itemEditor, reload the left panel to show the new item created
+        if (location.pathname === locations.itemEditor()) {
+          if (collectionId) {
+            const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
+            yield put(fetchCollectionItemsRequest(collectionId, { page: paginationData.currentPage, limit: paginationData.limit }))
+          } else {
+            const paginationData: ItemPaginationData = yield select(getPaginationData, address)
+            yield put(fetchItemsRequest(address, { page: paginationData.currentPage, limit: paginationData.limit }))
+          }
+        }
         yield put(closeModal('CreateSingleItemModal'))
       }
     }

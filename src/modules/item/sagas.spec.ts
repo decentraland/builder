@@ -217,6 +217,7 @@ describe('when handling the save item request action', () => {
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
+            [select(getAddress), mockAddress],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -249,6 +250,7 @@ describe('when handling the save item request action', () => {
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
+            [select(getAddress), mockAddress],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -276,6 +278,7 @@ describe('when handling the save item request action', () => {
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
+            [select(getAddress), mockAddress],
             [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -305,6 +308,7 @@ describe('when handling the save item request action', () => {
               select(getItem, item.id),
               { ...item, contents: { ...item.contents, [IMAGE_PATH]: item.contents[IMAGE_PATH] }, rarity: ItemRarity.COMMON }
             ],
+            [select(getAddress), mockAddress],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -332,6 +336,7 @@ describe('when handling the save item request action', () => {
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
+            [select(getAddress), mockAddress],
             [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -353,6 +358,7 @@ describe('when handling the save item request action', () => {
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
+            [select(getAddress), mockAddress],
             [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -374,6 +380,7 @@ describe('when handling the save item request action', () => {
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
+            [select(getAddress), mockAddress],
             [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, {}))
@@ -404,6 +411,7 @@ describe('when handling the save item request action', () => {
             [select(getLocation), { pathname: 'notTPdetailPage' }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), item],
+            [select(getAddress), mockAddress],
             [call(calculateFinalSize, itemWithNewHashes, newContents, builderAPI), Promise.resolve(1)],
             [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve()]
           ])
@@ -437,7 +445,8 @@ describe('when handling the save item success action', () => {
           .provide([
             [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
             [select(getOpenModals), { EditItemURNModal: true }],
-            [select(getPaginationData, item.collectionId!), paginationData]
+            [select(getPaginationData, item.collectionId!), paginationData],
+            [select(getAddress), mockAddress]
           ])
           .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
           .dispatch(saveItemSuccess(item, contents))
@@ -455,7 +464,8 @@ describe('when handling the save item success action', () => {
           .provide([
             [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
             [select(getOpenModals), { EditItemURNModal: true }],
-            [select(getPaginationData, item.collectionId!), paginationData]
+            [select(getPaginationData, item.collectionId!), paginationData],
+            [select(getAddress), mockAddress]
           ])
           .put(push(locations.thirdPartyCollectionDetail(item.collectionId!, { page: newPageNumber })))
           .dispatch(saveItemSuccess(item, contents))
@@ -471,7 +481,8 @@ describe('when handling the save item success action', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
               [select(getLocation), { pathname: locations.collections() }],
-              [select(getOpenModals), { CreateSingleItemModal: true }]
+              [select(getOpenModals), { CreateSingleItemModal: true }],
+              [select(getAddress), mockAddress]
             ])
             .put(push(locations.itemDetail(item.id)))
             .dispatch(saveItemSuccess(item, {}))
@@ -490,7 +501,8 @@ describe('when handling the save item success action', () => {
               .provide([
                 [select(getLocation), { pathname: locations.collections() }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), true]
+                [select(getIsEmotesFlowEnabled), true],
+                [select(getAddress), mockAddress]
               ])
               .put(push(locations.itemEditor({ itemId: item.id })))
               .dispatch(saveItemSuccess(item, {}))
@@ -504,7 +516,8 @@ describe('when handling the save item success action', () => {
               .provide([
                 [select(getLocation), { pathname: locations.collections() }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), false]
+                [select(getIsEmotesFlowEnabled), false],
+                [select(getAddress), mockAddress]
               ])
               .put(push(locations.itemDetail(item.id)))
               .dispatch(saveItemSuccess(item, {}))
@@ -522,7 +535,8 @@ describe('when handling the save item success action', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
               [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
-              [select(getOpenModals), { CreateSingleItemModal: true }]
+              [select(getOpenModals), { CreateSingleItemModal: true }],
+              [select(getAddress), mockAddress]
             ])
             .put(closeModal('CreateSingleItemModal'))
             .dispatch(saveItemSuccess(item, {}))
@@ -541,7 +555,8 @@ describe('when handling the save item success action', () => {
               .provide([
                 [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), true]
+                [select(getIsEmotesFlowEnabled), true],
+                [select(getAddress), mockAddress]
               ])
               .put(push(locations.itemEditor({ collectionId: collection.id, itemId: item.id })))
               .dispatch(saveItemSuccess(item, {}))
@@ -555,7 +570,9 @@ describe('when handling the save item success action', () => {
               .provide([
                 [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), false]
+                [select(getIsEmotesFlowEnabled), false],
+                [select(getAddress), mockAddress],
+                [select(getPaginationData, item.collectionId!), { currentPage: 1, limit: 10 }]
               ])
               .put(closeModal('CreateSingleItemModal'))
               .dispatch(saveItemSuccess(item, {}))
@@ -567,14 +584,22 @@ describe('when handling the save item success action', () => {
   })
 
   describe('and the location is the Item editor page', () => {
+    let paginationData: ItemPaginationData
+    beforeEach(() => {
+      paginationData = { currentPage: 1, limit: 1, total: 1, ids: [item.id], totalPages: 1 }
+    })
+
     describe('and the CreateSingleItemModal is opened', () => {
       describe('and the item type is wearable', () => {
         it('should close the modal CreateSingleItemModal', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
               [select(getLocation), { pathname: locations.itemEditor() }],
-              [select(getOpenModals), { CreateSingleItemModal: true }]
+              [select(getOpenModals), { CreateSingleItemModal: true }],
+              [select(getAddress), mockAddress],
+              [select(getPaginationData, item.collectionId!), { ...paginationData }]
             ])
+            .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
             .put(closeModal('CreateSingleItemModal'))
             .dispatch(saveItemSuccess(item, {}))
             .run({ silenceTimeout: true })
@@ -587,13 +612,16 @@ describe('when handling the save item success action', () => {
         })
 
         describe('and the FF EmotesFlow is enabled', () => {
-          it('should put a location change to the item editor', () => {
+          it('should close the modal CreateSingleItemModal', () => {
             return expectSaga(itemSaga, builderAPI, builderClient)
               .provide([
                 [select(getLocation), { pathname: locations.itemEditor() }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), true]
+                [select(getIsEmotesFlowEnabled), true],
+                [select(getAddress), mockAddress],
+                [select(getPaginationData, item.collectionId!), { ...paginationData }]
               ])
+              .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
               .put(closeModal('CreateSingleItemModal'))
               .dispatch(saveItemSuccess(item, {}))
               .run({ silenceTimeout: true })
@@ -606,8 +634,11 @@ describe('when handling the save item success action', () => {
               .provide([
                 [select(getLocation), { pathname: locations.itemEditor() }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), false]
+                [select(getIsEmotesFlowEnabled), false],
+                [select(getAddress), mockAddress],
+                [select(getPaginationData, item.collectionId!), { ...paginationData }]
               ])
+              .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
               .put(closeModal('CreateSingleItemModal'))
               .dispatch(saveItemSuccess(item, {}))
               .run({ silenceTimeout: true })
@@ -1500,7 +1531,8 @@ describe('when handling the save item curation success action', () => {
       .provide([
         [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
         [select(getOpenModals), { EditItemURNModal: true }],
-        [select(getPaginationData, item.collectionId!), {}]
+        [select(getPaginationData, item.collectionId!), {}],
+        [select(getAddress), mockAddress]
       ])
       .put(fetchItemCurationRequest(item.collectionId!, item.id))
       .dispatch(
@@ -1517,7 +1549,8 @@ describe('when handling the save item curation success action', () => {
       .provide([
         [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
         [select(getOpenModals), { EditItemURNModal: true }],
-        [select(getPaginationData, item.collectionId!), {}]
+        [select(getPaginationData, item.collectionId!), {}],
+        [select(getAddress), mockAddress]
       ])
       .not.put(fetchItemCurationRequest(item.collectionId!, item.id))
       .dispatch(saveItemSuccess(item, {}))
@@ -1528,7 +1561,8 @@ describe('when handling the save item curation success action', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
         [select(getLocation), { pathname: locations.collections() }],
-        [select(getOpenModals), { CreateSingleItemModal: true }]
+        [select(getOpenModals), { CreateSingleItemModal: true }],
+        [select(getAddress), mockAddress]
       ])
       .put(push(locations.itemDetail(item.id)))
       .dispatch(saveItemSuccess(item, {}))
@@ -1539,7 +1573,9 @@ describe('when handling the save item curation success action', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
         [select(getLocation), { pathname: locations.collectionDetail('id') }],
-        [select(getOpenModals), { CreateSingleItemModal: true }]
+        [select(getOpenModals), { CreateSingleItemModal: true }],
+        [select(getAddress), mockAddress],
+        [select(getPaginationData, mockAddress), { currentPage: 1, limit: 10 }]
       ])
       .not.put(push(locations.itemDetail(item.id)))
       .dispatch(saveItemSuccess(item, {}))
