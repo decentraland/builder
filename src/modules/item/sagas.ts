@@ -381,10 +381,14 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         if (location.pathname === locations.itemEditor()) {
           if (collectionId) {
             const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
-            yield put(fetchCollectionItemsRequest(collectionId, { page: paginationData.currentPage, limit: paginationData.limit }))
+            if (paginationData) {
+              yield put(fetchCollectionItemsRequest(collectionId, { page: paginationData.currentPage, limit: paginationData.limit }))
+            }
           } else {
             const paginationData: ItemPaginationData = yield select(getPaginationData, address)
-            yield put(fetchItemsRequest(address, { page: paginationData.currentPage, limit: paginationData.limit }))
+            if (paginationData) {
+              yield put(fetchItemsRequest(address, { page: paginationData.currentPage, limit: paginationData.limit }))
+            }
           }
         }
         yield put(closeModal('CreateSingleItemModal'))
