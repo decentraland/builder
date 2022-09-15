@@ -53,7 +53,7 @@ import {
 } from 'modules/item/utils'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
-import { getThumbnailType, toWearableWithBlobs } from './utils'
+import { getThumbnailType, toEmoteWithBlobs } from './utils'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import {
   Props,
@@ -603,7 +603,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   renderWearablePreview = () => {
     const { type, contents } = this.state
     const isEmote = type === ItemType.EMOTE
-    const blob = contents ? toWearableWithBlobs({ contents, isEmote }) : undefined
+    const blob = contents ? toEmoteWithBlobs({ contents }) : undefined
     if (!blob) {
       return null
     }
@@ -620,7 +620,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return (
       <WearablePreview
         id="thumbnail-picker"
-        blob={blob}
+        blob={blob as any}
         disableBackground
         disableAutoRotate
         projection={PreviewProjection.ORTHOGRAPHIC}
@@ -945,7 +945,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return (
       <EditThumbnailStep
         isLoading={!!isLoading}
-        blob={contents ? toWearableWithBlobs({ contents, isEmote: true }) : undefined}
+        blob={contents ? toEmoteWithBlobs({ contents }) : undefined}
         title={this.renderModalTitle()}
         onBack={() => this.setState({ view: CreateItemView.DETAILS })}
         onSave={this.handleOnScreenshotTaken}

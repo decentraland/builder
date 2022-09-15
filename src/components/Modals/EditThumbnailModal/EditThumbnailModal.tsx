@@ -5,7 +5,7 @@ import { toBase64 } from 'modules/editor/utils'
 import ImportStep from 'components/Modals/CreateSingleItemModal/ImportStep/ImportStep'
 import EditThumbnailStep from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep'
 import { AcceptedFileProps, CreateItemView } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
-import { toWearableWithBlobs } from 'components/Modals/CreateSingleItemModal/utils'
+import { toEmoteWithBlobs } from 'components/Modals/CreateSingleItemModal/utils'
 import { Props, State } from './EditThumbnailModal.types'
 import './EditThumbnailModal.css'
 
@@ -61,7 +61,7 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
 
     let wearablePreviewProp
     if (file) {
-      wearablePreviewProp = { blob: toWearableWithBlobs({ file, isEmote: true }) }
+      wearablePreviewProp = { blob: toEmoteWithBlobs({ file }) }
     } else if (item) {
       wearablePreviewProp = { base64s: [toBase64(item)] }
     }
