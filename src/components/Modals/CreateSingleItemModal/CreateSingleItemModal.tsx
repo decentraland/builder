@@ -167,7 +167,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { address, collection, isEmotesFeatureFlagOn, isEmotePlayModeFeatureFlagOn, onSave } = this.props
+    const { address, collection, isEmotesFeatureFlagOn, onSave } = this.props
     const { id, name, description, type, metrics, collectionId, category, playMode, rarity } = this.state as StateData
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
@@ -196,7 +196,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     } else {
       data = {
         category: category as EmoteCategory,
-        loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false,
+        loop: playMode === EmotePlayMode.LOOP,
         tags: [],
         representations: [...representations]
       } as EmoteDataADR74
@@ -269,7 +269,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   modifyItem = async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { isEmotePlayModeFeatureFlagOn, onSave } = this.props
+    const { onSave } = this.props
     const { name, bodyShape, type, metrics, category, playMode } = this.state as StateData
 
     let data: WearableData | EmoteDataADR74
@@ -284,7 +284,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     } else {
       data = {
         ...pristineItem.data,
-        loop: isEmotePlayModeFeatureFlagOn ? playMode === EmotePlayMode.LOOP : false,
+        loop: playMode === EmotePlayMode.LOOP,
         category: category as EmoteCategory
       } as EmoteDataADR74
     }
