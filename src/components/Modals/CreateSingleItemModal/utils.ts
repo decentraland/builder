@@ -60,9 +60,7 @@ export function toWearableWithBlobs({ contents, file }: { contents?: Record<stri
 }
 
 export function toEmoteWithBlobs({ contents, file }: { contents?: Record<string, Blob>; file?: File }): EmoteWithBlobs {
-  const mainGLBFile = contents && Object.keys(contents).find(content => isModelFile(content))
-  const mainPNGFile = contents && Object.keys(contents).find(content => isImageFile(content))
-  const mainFile = mainGLBFile || mainPNGFile
+  const mainFile = contents && Object.keys(contents).find(content => isModelFile(content))
   if (contents && !mainFile) {
     throw Error('Not valid main content')
   }
