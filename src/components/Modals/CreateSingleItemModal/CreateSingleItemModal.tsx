@@ -620,7 +620,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return (
       <WearablePreview
         id="thumbnail-picker"
-        blob={blob as any}
+        blob={blob}
         disableBackground
         disableAutoRotate
         projection={PreviewProjection.ORTHOGRAPHIC}
