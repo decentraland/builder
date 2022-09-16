@@ -1,4 +1,4 @@
-import { EmoteWithBlobs, IPreviewController, WearableWithBlobs } from '@dcl/schemas'
+import { EmoteWithBlobs, IPreviewController } from '@dcl/schemas'
 import { Item } from 'modules/item/types'
 import React from 'react'
 
@@ -18,7 +18,7 @@ export enum ControlOptionAction {
 export type Props = {
   title: string
   isLoading: boolean
-  blob?: WearableWithBlobs | EmoteWithBlobs
+  blob?: EmoteWithBlobs
   base64s?: string[]
   wearablePreviewComponent?: React.ReactNode
   wearablePreviewController?: IPreviewController
@@ -31,7 +31,7 @@ export type State = {
   hasBeenUpdated: boolean
   playingIntervalId?: NodeJS.Timer
   previewController?: IPreviewController
-  blob?: WearableWithBlobs | EmoteWithBlobs
+  blob?: EmoteWithBlobs
   zoom: number
   offsetY?: number
 }
