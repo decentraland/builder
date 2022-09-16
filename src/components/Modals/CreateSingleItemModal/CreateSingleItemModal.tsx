@@ -53,7 +53,7 @@ import {
 } from 'modules/item/utils'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
-import { getThumbnailType, toEmoteWithBlobs } from './utils'
+import { getThumbnailType, toEmoteWithBlobs, toWearableWithBlobs } from './utils'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import {
   Props,
@@ -603,7 +603,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   renderWearablePreview = () => {
     const { type, contents } = this.state
     const isEmote = type === ItemType.EMOTE
-    const blob = contents ? toEmoteWithBlobs({ contents }) : undefined
+    const blob = contents ? (isEmote ? toEmoteWithBlobs({ contents }) : toWearableWithBlobs({ contents })) : undefined
     if (!blob) {
       return null
     }
