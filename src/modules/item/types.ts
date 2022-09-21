@@ -18,8 +18,8 @@ export enum ItemType {
 export enum SyncStatus {
   UNPUBLISHED = 'unpublished', // contract not deployed yet
   UNDER_REVIEW = 'under_review', // contract deployed, but not approved yet
-  LOADING = 'loading', // contract deployed and approved, but entitiy not loaded yet from catalyst
   UNSYNCED = 'unsynced', // contract deployed and approved, but contents in catalyst (entity) are different from contents on builder (item)
+  LOADING = 'loading', // contract deployed and approved, but entitiy not loaded yet from catalyst
   SYNCED = 'synced' // contract deployed and approved, and contents in catalyst === contents on builder
 }
 

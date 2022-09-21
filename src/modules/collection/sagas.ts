@@ -101,7 +101,7 @@ import { BuilderAPI } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
-import { EntityHashingType, Item, ItemApprovalData } from 'modules/item/types'
+import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
 import {
   getEntityByItemId,
@@ -826,7 +826,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const emotesFeatureFlag: boolean = yield select(getIsEmotesFlowEnabled)
 
       for (const item of items) {
-        if (!item.currentContentHash) {
+        // TODO: There's an issue with how hashes are computed in the server for the emotes, force the emotes hashes to be re-computed
+        if (!item.currentContentHash || isEmoteItemType(item)) {
           const v0ContentHash: string = yield call(
             buildStandardWearableContentHash,
             collection,
