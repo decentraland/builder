@@ -270,7 +270,6 @@ export async function getItemData({
         const { gltf, renderer } = await loadGltf(URL.createObjectURL(contents[model]))
         document.body.removeChild(renderer.domElement)
         const animation = gltf.animations[0]
-        const duration = animation.duration
         let frames = 0
         for (let i = 0; i < animation.tracks.length; i++) {
           const track = animation.tracks[i]
@@ -279,9 +278,9 @@ export async function getItemData({
 
         info = {
           sequences: gltf.animations.length,
-          duration,
-          frames: frames,
-          fps: frames / duration
+          duration: animation.duration,
+          frames,
+          fps: frames / animation.duration
         }
       }
     } else {
