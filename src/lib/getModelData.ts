@@ -269,14 +269,18 @@ export async function getItemData({
       } else {
         const { gltf, renderer } = await loadGltf(URL.createObjectURL(contents[model]))
         document.body.removeChild(renderer.domElement)
-        const duration = gltf.animations[0].duration
-        const frames = gltf.animations[0].tracks[0].times.length - 1
+        const animation = gltf.animations[0]
+        let frames = 0
+        for (let i = 0; i < animation.tracks.length; i++) {
+          const track = animation.tracks[i]
+          frames = Math.max(frames, track.times.length)
+        }
 
         info = {
           sequences: gltf.animations.length,
-          duration,
-          frames: frames,
-          fps: frames / duration
+          duration: animation.duration,
+          frames,
+          fps: frames / animation.duration
         }
       }
     } else {
