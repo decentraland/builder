@@ -61,6 +61,7 @@ export type Props = {
 
 export type State = {
   isShowingAvatarAttributes: boolean
+  showSceneBoundaries: boolean
   isLoading: boolean
 }
 
