@@ -182,9 +182,9 @@ export function buildEmoteMetada(
   description: string,
   category: string,
   bodyShapeTypes: string,
-  playMode: string
+  loop: number
 ): string {
-  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${playMode}`
+  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}`
 }
 
 // Metadata looks like this:
@@ -211,15 +211,7 @@ export function getMetadata(item: Item) {
       if (!data.category) {
         throw new Error(`Unknown item category "${item.data}"`)
       }
-      return buildEmoteMetada(
-        1,
-        getItemMetadataType(item),
-        item.name,
-        item.description,
-        data.category,
-        bodyShapeTypes,
-        data.loop ? 'loop' : 'simple'
-      )
+      return buildEmoteMetada(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes, data.loop ? 1 : 0)
     }
     default:
       throw new Error(`Unknown item.type "${item.type}"`)
