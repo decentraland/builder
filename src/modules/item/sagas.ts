@@ -95,7 +95,6 @@ import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
-import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
@@ -358,7 +357,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const address: string = yield select(getAddress)
     const openModals: ModalState = yield select(getOpenModals)
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
-    const isEmotesFeatureFlagOn: boolean = yield select(getIsEmotesFlowEnabled)
     const { item } = action.payload
     const collectionId = item.collectionId!
     const ItemModals = ['EditItemURNModal', 'EditPriceAndBeneficiaryModal', 'AddExistingItemModal']
@@ -366,14 +364,14 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(closeAllModals())
     } else if (openModals['CreateSingleItemModal']) {
       if (location.pathname === locations.collections()) {
-        if (isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
+        if (item.type === ItemType.EMOTE) {
           // Redirect to the item editor
           yield put(push(locations.itemEditor({ itemId: item.id })))
         } else {
           // Redirect to the newly created item details
           yield put(push(locations.itemDetail(item.id)))
         }
-      } else if (location.pathname === locations.collectionDetail(collectionId) && isEmotesFeatureFlagOn && item.type === ItemType.EMOTE) {
+      } else if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
         // Redirect to the item editor
         yield put(push(locations.itemEditor({ collectionId, itemId: item.id })))
       } else {

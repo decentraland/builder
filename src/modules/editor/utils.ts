@@ -302,8 +302,7 @@ export function toWearable(item: Item): WearableDefinition {
         ...representation,
         contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
       }))
-    },
-    emoteDataV0: undefined
+    }
   }
 }
 

@@ -230,15 +230,13 @@ export async function getItemData({
   model,
   wearablePreviewController,
   contents,
-  category,
-  isEmotesFeatureFlagOn
+  category
 }: {
   type: ItemType
   model: string
   wearablePreviewController?: IPreviewController
   contents: Record<string, Blob>
   category?: string
-  isEmotesFeatureFlagOn?: boolean
 }) {
   let info: Metrics
   let image
@@ -257,31 +255,20 @@ export async function getItemData({
       throw Error('WearablePreview controller needed')
     }
     if (type === ItemType.EMOTE) {
-      if (!isEmotesFeatureFlagOn) {
-        info = {
-          triangles: 0,
-          materials: 0,
-          textures: 0,
-          meshes: 0,
-          bodies: 0,
-          entities: 1
-        }
-      } else {
-        const { gltf, renderer } = await loadGltf(URL.createObjectURL(contents[model]))
-        document.body.removeChild(renderer.domElement)
-        const animation = gltf.animations[0]
-        let frames = 0
-        for (let i = 0; i < animation.tracks.length; i++) {
-          const track = animation.tracks[i]
-          frames = Math.max(frames, track.times.length)
-        }
+      const { gltf, renderer } = await loadGltf(URL.createObjectURL(contents[model]))
+      document.body.removeChild(renderer.domElement)
+      const animation = gltf.animations[0]
+      let frames = 0
+      for (let i = 0; i < animation.tracks.length; i++) {
+        const track = animation.tracks[i]
+        frames = Math.max(frames, track.times.length)
+      }
 
-        info = {
-          sequences: gltf.animations.length,
-          duration: animation.duration,
-          frames,
-          fps: frames / animation.duration
-        }
+      info = {
+        sequences: gltf.animations.length,
+        duration: animation.duration,
+        frames,
+        fps: frames / animation.duration
       }
     } else {
       info = await wearablePreviewController.scene.getMetrics()

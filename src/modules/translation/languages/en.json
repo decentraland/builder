@@ -1162,7 +1162,6 @@
     "locked": "Locked",
     "publish_reason_max_items": "A collection can be published with a max amount of {maxItems} items.",
     "publish_reason_no_items": "You need to add at least one item to publish your collection.",
-    "cant_publish_new_emotes": "Emotes can not be published yet",
     "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set.",
     "emotes": "Emotes",
     "wearables": "Wearables",

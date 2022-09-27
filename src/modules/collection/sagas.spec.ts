@@ -261,8 +261,8 @@ describe('when executing the approval flow', () => {
                 [item.id]: entity
               }
             ],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0, false), 'QmOldDifferentHash'],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1, false), newBlockchainHash],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0), 'QmOldDifferentHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1), newBlockchainHash],
             [delay(1000), void 0],
             [select(getItemsById), { [updatedItem.id]: updatedItem }],
             [select(getCurationsByCollectionId), { [collection.id]: curation }]
@@ -323,8 +323,8 @@ describe('when executing the approval flow', () => {
                 [item.id]: entity
               }
             ],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0, false), 'QmOldContentHash'],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1, false), 'aNewHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0), 'QmOldContentHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1), 'aNewHash'],
             [select(getCurationsByCollectionId), { [collection.id]: curation }]
           ])
           .dispatch(initiateApprovalFlow(collection))
@@ -365,8 +365,8 @@ describe('when executing the approval flow', () => {
                 [item.id]: entity
               }
             ],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0, false), 'QmOldContentHash'],
-            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1, false), 'aNewHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0), 'QmOldContentHash'],
+            [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1), 'aNewHash'],
             [select(getCurationsByCollectionId), { [collection.id]: curation }]
           ])
           .dispatch(initiateApprovalFlow(collection))
@@ -420,7 +420,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined, false), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -505,7 +505,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined, false), deployData],
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
           [select(getCurationsByCollectionId), { [collection.id]: curation }]
         ])
         .dispatch(initiateApprovalFlow(collection))
@@ -668,7 +668,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined, false), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -747,7 +747,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined, false), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -835,7 +835,7 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined, false), deployData],
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
           [select(getCurationsByCollectionId), { [collection.id]: curation }]
         ])
         .dispatch(initiateApprovalFlow(collection))

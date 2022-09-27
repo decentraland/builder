@@ -167,7 +167,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { address, collection, isEmotesFeatureFlagOn, onSave } = this.props
+    const { address, collection, onSave } = this.props
     const { id, name, description, type, metrics, collectionId, category, playMode, rarity } = this.state as StateData
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
@@ -227,7 +227,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     // The Emote will be saved on the set price step
-    if (isEmotesFeatureFlagOn && type === ItemType.EMOTE) {
+    if (type === ItemType.EMOTE) {
       this.setState({
         item: { ...(item as Item) },
         itemSortedContents: sortedContents.all,
@@ -366,7 +366,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   getMetricsAndScreenshot = async () => {
-    const { isEmotesFeatureFlagOn } = this.props
     const { type, previewController, model, contents, category } = this.state
     if (type && model && contents) {
       const data = await getItemData({
@@ -374,8 +373,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         type,
         model,
         contents,
-        category,
-        isEmotesFeatureFlagOn
+        category
       })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
         this.setState({ view: CreateItemView.DETAILS })
@@ -422,9 +420,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOpenThumbnailDialog = () => {
-    const { isEmotesFeatureFlagOn } = this.props
     const { type } = this.state
-    if (isEmotesFeatureFlagOn && type === ItemType.EMOTE) {
+    if (type === ItemType.EMOTE) {
       this.setState({ fromView: CreateItemView.DETAILS, view: CreateItemView.THUMBNAIL })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
@@ -651,7 +648,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
-    const { collection, isNewEmotesPublishEnabled } = this.props
+    const { collection } = this.props
     const { name, category, rarity, contents, item, type } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
@@ -659,7 +656,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
 
     const raritiesLink =
-      isNewEmotesPublishEnabled && type === ItemType.EMOTE
+      type === ItemType.EMOTE
         ? 'https://docs.decentraland.org/emotes/emotes/#rarity'
         : 'https://docs.decentraland.org/decentraland/wearables-editor-user-guide/#rarity'
 
@@ -866,7 +863,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderDetailsView() {
-    const { onClose, metadata, error, isLoading, isEmotesFeatureFlagOn } = this.props
+    const { onClose, metadata, error, isLoading } = this.props
     const { thumbnail, isRepresentation, rarity, error: stateError, type } = this.state
 
     const isDisabled = this.isDisabled()
@@ -900,7 +897,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 <Button primary disabled={isDisabled} loading={isLoading}>
                   {(metadata && metadata.changeItemFile) || isRepresentation
                     ? t('global.save')
-                    : isEmotesFeatureFlagOn && type === ItemType.EMOTE
+                    : type === ItemType.EMOTE
                     ? t('global.next')
                     : t('global.create')}
                 </Button>

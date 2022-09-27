@@ -21,10 +21,9 @@ export type Props = {
   onOpenModal: typeof openModal
   onDelete: typeof deleteItemRequest
   onSaveItem: typeof saveItemRequest
-  isEmotesFeatureFlagOn: boolean
   hasAccess: boolean
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'itemId' | 'item' | 'collection' | 'isLoading' | 'hasAccess' | 'isEmotesFeatureFlagOn'>
+export type MapStateProps = Pick<Props, 'wallet' | 'itemId' | 'item' | 'collection' | 'isLoading' | 'hasAccess'>
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onNavigate' | 'onDelete' | 'onOpenModal'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | CallHistoryMethodAction | DeleteItemRequestAction | OpenModalAction>

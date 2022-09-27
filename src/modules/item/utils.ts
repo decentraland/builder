@@ -495,14 +495,14 @@ export function isWearableSynced(item: Item, entity: Entity) {
   return true
 }
 
-export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity, isEmotesFeatureFlagOn: boolean) {
+export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity) {
   if (item.type !== ItemType.EMOTE) {
     throw new Error('Item must be EMOTE')
   }
 
   // check if metadata has the new schema from ADR 74
   const isADR74 = 'emoteDataADR74' in entity.metadata
-  if (!isADR74 && isEmotesFeatureFlagOn) {
+  if (!isADR74) {
     return false
   }
 
@@ -544,8 +544,8 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity,
   return true
 }
 
-export function areSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn: boolean) {
-  return item.type === ItemType.WEARABLE ? isWearableSynced(item, entity) : isEmoteSynced(item, entity, isEmotesFeatureFlagOn)
+export function areSynced(item: Item, entity: Entity) {
+  return item.type === ItemType.WEARABLE ? isWearableSynced(item, entity) : isEmoteSynced(item, entity)
 }
 
 export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {
