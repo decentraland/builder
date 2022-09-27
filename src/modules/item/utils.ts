@@ -175,6 +175,18 @@ export function buildItemMetadata(
   return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}`
 }
 
+export function buildEmoteMetada(
+  version: number,
+  type: ItemMetadataType,
+  name: string,
+  description: string,
+  category: string,
+  bodyShapeTypes: string,
+  loop: number
+): string {
+  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}`
+}
+
 // Metadata looks like this:
 // - Common: version:item_type:representation_id
 // - Wearables: version:item_type:representation_id:category:bodyshapes
@@ -199,7 +211,7 @@ export function getMetadata(item: Item) {
       if (!data.category) {
         throw new Error(`Unknown item category "${item.data}"`)
       }
-      return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
+      return buildEmoteMetada(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes, data.loop ? 1 : 0)
     }
     default:
       throw new Error(`Unknown item.type "${item.type}"`)
