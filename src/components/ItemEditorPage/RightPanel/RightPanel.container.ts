@@ -8,7 +8,7 @@ import { isOwner } from 'modules/item/utils'
 import { getSelectedItemId } from 'modules/location/selectors'
 import { getCollection, hasViewAndEditRights } from 'modules/collection/selectors'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
-import { getIsEmotePlayModeEnabled, getIsEmotesFlowEnabled } from 'modules/features/selectors'
+import { getIsEmotePlayModeEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './RightPanel.types'
 import RightPanel from './RightPanel'
 
@@ -31,7 +31,6 @@ const mapState = (state: RootState): MapStateProps => {
     isConnected: isConnected(state),
     isDownloading: isDownloading(state),
     isCommitteeMember: isWalletCommitteeMember(state),
-    isEmotesFeatureFlagOn: getIsEmotesFlowEnabled(state),
     isEmotePlayModeFeatureFlagOn: getIsEmotePlayModeEnabled(state)
   }
 }

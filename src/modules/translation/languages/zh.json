@@ -1155,7 +1155,6 @@
     "locked": "锁定",
     "publish_reason_max_items": "可以发布包含最多 {maxItems} 个项目的集合。",
     "publish_reason_no_items": "您需要添加至少一项才能发布您的收藏。",
-    "cant_publish_new_emotes": "表情还不能发布",
     "publish_reason_items_not_complete": "所有项目必须完整才能发布您的收藏，检查是否设置了所有属性。",
     "emotes": "表情",
     "wearables": "可穿戴设备",

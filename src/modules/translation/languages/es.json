@@ -1173,7 +1173,6 @@
     "locked": "Bloqueada",
     "publish_reason_max_items": "Las colecciones pueden publicarse con un máximo de  {maxItems} items.",
     "publish_reason_no_items": "Debes agregar al menos un item para publicar tu colección.",
-    "cant_publish_new_emotes": "Emotes no pueden ser publicados todavia",
     "publish_reason_items_not_complete": "Todos los items deben estar completos para publicar tu colección, comprueba que todas sus propiedades estén establecidas.",
     "emotes": "Animaciones",
     "wearables": "Vestimentas",

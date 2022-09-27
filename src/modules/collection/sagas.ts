@@ -138,7 +138,6 @@ import {
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
-import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getRaritiesContract, getWalletCollections } from './selectors'
 import { Collection, CollectionType } from './types'
@@ -619,11 +618,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const entitiesToDeploy: DeploymentPreparationData[] = []
     const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
     const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
-    const emotesFeatureFlag: boolean = yield select(getIsEmotesFlowEnabled)
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
-      if (!deployedEntity || !areSynced(item, deployedEntity, emotesFeatureFlag)) {
-        //TODO: @Emotes remove emotesFeatureFlag once launched
+      if (!deployedEntity || !areSynced(item, deployedEntity)) {
         const entity: DeploymentPreparationData = yield call(
           buildItemEntity,
           catalyst,
@@ -631,8 +628,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           collection,
           item,
           undefined,
-          undefined,
-          emotesFeatureFlag
+          undefined
         )
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
@@ -823,25 +819,11 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         items = yield getItemsFromCollection(collection)
       }
 
-      const emotesFeatureFlag: boolean = yield select(getIsEmotesFlowEnabled)
-
       for (const item of items) {
         // TODO: There's an issue with how hashes are computed in the server for the emotes, force the emotes hashes to be re-computed
         if (!item.currentContentHash || isEmoteItemType(item)) {
-          const v0ContentHash: string = yield call(
-            buildStandardWearableContentHash,
-            collection,
-            item,
-            EntityHashingType.V0,
-            emotesFeatureFlag
-          )
-          const v1ContentHash: string = yield call(
-            buildStandardWearableContentHash,
-            collection,
-            item,
-            EntityHashingType.V1,
-            emotesFeatureFlag
-          )
+          const v0ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V0)
+          const v1ContentHash: string = yield call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1)
 
           // As there could be older hashes in the blockchain, check if both of them are different to see if they need an update
           if (v0ContentHash !== item.blockchainContentHash && v1ContentHash !== item.blockchainContentHash) {

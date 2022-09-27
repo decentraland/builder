@@ -10,13 +10,12 @@ export type Props = {
   ethAddress?: string
   collection: Collection
   item: Item
-  isEmotesFeatureFlagOn: boolean
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
   onRemoveFromCollection: typeof setCollection
   onSetItems: typeof setItems
 }
 
-export type MapStateProps = Pick<Props, 'ethAddress' | 'isEmotesFeatureFlagOn'>
+export type MapStateProps = Pick<Props, 'ethAddress'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onRemoveFromCollection' | 'onSetItems'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | SetCollectionAction | SetItemsAction>
