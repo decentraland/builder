@@ -20,7 +20,6 @@ import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
-import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
 import { fetchItemCurationRequest } from 'modules/curations/itemCuration/actions'
 import { downloadZip } from 'lib/zip'
@@ -495,34 +494,16 @@ describe('when handling the save item success action', () => {
           item = { ...item, type: ItemType.EMOTE }
         })
 
-        describe('and the FF EmotesFlow is enabled', () => {
-          it('should put a location change to the item editor', () => {
-            return expectSaga(itemSaga, builderAPI, builderClient)
-              .provide([
-                [select(getLocation), { pathname: locations.collections() }],
-                [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), true],
-                [select(getAddress), mockAddress]
-              ])
-              .put(push(locations.itemEditor({ itemId: item.id })))
-              .dispatch(saveItemSuccess(item, {}))
-              .run({ silenceTimeout: true })
-          })
-        })
-
-        describe('and the FF EmotesFlow is disabled', () => {
-          it('should put a location change to the item detail', () => {
-            return expectSaga(itemSaga, builderAPI, builderClient)
-              .provide([
-                [select(getLocation), { pathname: locations.collections() }],
-                [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), false],
-                [select(getAddress), mockAddress]
-              ])
-              .put(push(locations.itemDetail(item.id)))
-              .dispatch(saveItemSuccess(item, {}))
-              .run({ silenceTimeout: true })
-          })
+        it('should put a location change to the item editor', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.collections() }],
+              [select(getOpenModals), { CreateSingleItemModal: true }],
+              [select(getAddress), mockAddress]
+            ])
+            .put(push(locations.itemEditor({ itemId: item.id })))
+            .dispatch(saveItemSuccess(item, {}))
+            .run({ silenceTimeout: true })
         })
       })
     })
@@ -549,35 +530,16 @@ describe('when handling the save item success action', () => {
           item = { ...item, type: ItemType.EMOTE }
         })
 
-        describe('and the FF EmotesFlow is enabled', () => {
-          it('should put a location change to the item editor', () => {
-            return expectSaga(itemSaga, builderAPI, builderClient)
-              .provide([
-                [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
-                [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), true],
-                [select(getAddress), mockAddress]
-              ])
-              .put(push(locations.itemEditor({ collectionId: collection.id, itemId: item.id })))
-              .dispatch(saveItemSuccess(item, {}))
-              .run({ silenceTimeout: true })
-          })
-        })
-
-        describe('and the FF EmotesFlow is disabled', () => {
-          it('should close the modal CreateSingleItemModal', () => {
-            return expectSaga(itemSaga, builderAPI, builderClient)
-              .provide([
-                [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
-                [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), false],
-                [select(getAddress), mockAddress],
-                [select(getPaginationData, item.collectionId!), { currentPage: 1, limit: 10 }]
-              ])
-              .put(closeModal('CreateSingleItemModal'))
-              .dispatch(saveItemSuccess(item, {}))
-              .run({ silenceTimeout: true })
-          })
+        it('should put a location change to the item editor', () => {
+          return expectSaga(itemSaga, builderAPI, builderClient)
+            .provide([
+              [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
+              [select(getOpenModals), { CreateSingleItemModal: true }],
+              [select(getAddress), mockAddress]
+            ])
+            .put(push(locations.itemEditor({ collectionId: collection.id, itemId: item.id })))
+            .dispatch(saveItemSuccess(item, {}))
+            .run({ silenceTimeout: true })
         })
       })
     })
@@ -617,7 +579,6 @@ describe('when handling the save item success action', () => {
               .provide([
                 [select(getLocation), { pathname: locations.itemEditor() }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), true],
                 [select(getAddress), mockAddress],
                 [select(getPaginationData, item.collectionId!), { ...paginationData }]
               ])
@@ -634,7 +595,6 @@ describe('when handling the save item success action', () => {
               .provide([
                 [select(getLocation), { pathname: locations.itemEditor() }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
-                [select(getIsEmotesFlowEnabled), false],
                 [select(getAddress), mockAddress],
                 [select(getPaginationData, item.collectionId!), { ...paginationData }]
               ])
