@@ -24,11 +24,8 @@ export default class CollectionItem extends React.PureComponent<Props> {
   }
 
   handleNavigateToExplorer = () => {
-    const { item, isEmotesFeatureFlagOn } = this.props
-    const newWindow = window.open(
-      getExplorerURL({ item_ids: [item.id], hasNewEmotes: isEmotesFeatureFlagOn && item.type === ItemType.EMOTE }),
-      '_blank'
-    )
+    const { item } = this.props
+    const newWindow = window.open(getExplorerURL({ item_ids: [item.id] }), '_blank')
     if (newWindow) {
       newWindow.focus()
     }

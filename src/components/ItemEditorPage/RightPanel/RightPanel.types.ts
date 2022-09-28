@@ -24,7 +24,6 @@ export type Props = {
   isConnected: boolean
   isDownloading: boolean
   isCommitteeMember: boolean
-  isEmotesFeatureFlagOn: boolean
   isEmotePlayModeFeatureFlagOn: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
@@ -54,7 +53,6 @@ export type MapStateProps = Pick<
   | 'isConnected'
   | 'isDownloading'
   | 'isCommitteeMember'
-  | 'isEmotesFeatureFlagOn'
   | 'isEmotePlayModeFeatureFlagOn'
   | 'canEditSelectedItem'
 >

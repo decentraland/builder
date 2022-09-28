@@ -234,9 +234,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOpenThumbnailDialog = () => {
-    const { selectedItem, isEmotesFeatureFlagOn, onOpenModal } = this.props
+    const { selectedItem, onOpenModal } = this.props
 
-    if (isEmotesFeatureFlagOn && selectedItem?.type === ItemType.EMOTE) {
+    if (selectedItem?.type === ItemType.EMOTE) {
       onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange, item: selectedItem })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
