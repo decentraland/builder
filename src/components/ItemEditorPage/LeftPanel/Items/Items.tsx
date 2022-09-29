@@ -42,20 +42,20 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { items, selectedItemId, onSetItems, onSetReviewedItems } = this.props
-    const initialActiveItem = items.find(item => item.id === selectedItemId)
+    const { items, onSetReviewedItems } = this.props
     onSetReviewedItems(items)
-    if (initialActiveItem) {
-      onSetItems([initialActiveItem])
-    }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { items, selectedCollectionId, initialPage } = this.props
+    const { items, selectedCollectionId, initialPage, selectedItemId, onSetItems } = this.props
     const { currentTab } = this.state
     const prevItemIds = prevProps.items.map(prevItem => prevItem.id)
     if (currentTab === ItemPanelTabs.TO_REVIEW && items.some(item => !prevItemIds.includes(item.id))) {
+      const initialActiveItem = items.find(item => item.id === selectedItemId)
       this.setState({ items })
+      if (initialActiveItem) {
+        onSetItems([initialActiveItem])
+      }
     }
     // initialPage only change when a new created item redirects to the item editor
     else if (currentTab === ItemPanelTabs.TO_REVIEW && initialPage && prevProps.initialPage !== initialPage) {
