@@ -182,9 +182,9 @@ export function buildEmoteMetada(
   description: string,
   category: string,
   bodyShapeTypes: string,
-  loop: number
+  _loop: number
 ): string {
-  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}`
+  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}`
 }
 
 // Metadata looks like this:
