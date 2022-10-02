@@ -232,7 +232,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       selectedBaseWearables,
       selectedItem,
       visibleItems,
-      isImportFilesModalOpen
+      isImportFilesModalOpen,
+      wearableController
     } = this.props
     const { isShowingAvatarAttributes, isLoading } = this.state
     const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE) && selectedItem?.type === ItemType.EMOTE
@@ -279,9 +280,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           </Center>
         )}
         <div className="footer">
-          {isRenderingAnEmote ? (
+          {isRenderingAnEmote && !isLoading && wearableController ? (
             <div className="emote-controls-container">
-              <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" />
+              <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" wearablePreviewController={wearableController} />
             </div>
           ) : null}
           <div className="options">
