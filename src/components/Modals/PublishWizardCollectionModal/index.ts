@@ -1,0 +1,3 @@
+import PublishWizardCollectionModal from './PublishWizardCollectionModal.container'
+
+export default PublishWizardCollectionModal

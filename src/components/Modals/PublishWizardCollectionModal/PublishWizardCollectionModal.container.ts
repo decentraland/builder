@@ -1,0 +1,42 @@
+import { connect } from 'react-redux'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { RootState } from 'modules/common/types'
+import { getIsNewEmotesPublishEnabled } from 'modules/features/selectors'
+import {
+  getCollection,
+  getLoading as getCollectionLoading,
+  getUnsyncedCollectionError,
+  getError as getCollectionError,
+} from 'modules/collection/selectors'
+import { getLoading as getItemLoading, getCollectionItems, getError as getItemError } from 'modules/item/selectors'
+import { publishCollectionRequest, PUBLISH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
+import { getRarities } from 'modules/item/selectors'
+import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './PublishWizardCollectionModal.types'
+import PublishWizardCollectionModal from './PublishWizardCollectionModal'
+
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
+  const { collectionId } = ownProps.metadata
+
+  return {
+    wallet: getWallet(state),
+    collection: getCollection(state, collectionId),
+    items: getCollectionItems(state, collectionId),
+    rarities: getRarities(state),
+    unsyncedCollectionError: getUnsyncedCollectionError(state),
+    isPublishLoading: isLoadingType(getCollectionLoading(state), PUBLISH_COLLECTION_REQUEST),
+    isFetchingItems: isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST),
+    isFetchingRarities: isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST),
+    isNewEmotesPublishFlagOn: getIsNewEmotesPublishEnabled(state),
+    itemError: getItemError(state),
+    collectionError: getCollectionError(state),
+  }
+}
+
+const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onPublish: (collection, items, email) => dispatch(publishCollectionRequest(collection, items, email)),
+  onFetchRarities: () => dispatch(fetchRaritiesRequest()),
+})
+
+export default connect(mapState, mapDispatch)(PublishWizardCollectionModal)
