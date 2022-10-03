@@ -22,10 +22,11 @@ const CollectionPublishButton = (props: Props) => {
     authorizations,
     status,
     hasPendingCuration,
+    isNewEmotesPublishFlagOn,
+    isNewPublishWizardFlowFlagOn,
     onPublish,
     onPush,
     onInit,
-    isNewEmotesPublishFlagOn
   } = props
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
@@ -36,10 +37,10 @@ const CollectionPublishButton = (props: Props) => {
   }, [collection, onInit])
 
   const hasExceededMaxItemsLimit = items.length > MAX_ITEMS
-  const isTryingToPublishEmotesButCant = useMemo(() => items.some(item => item.type === ItemType.EMOTE) && !isNewEmotesPublishFlagOn, [
-    isNewEmotesPublishFlagOn,
-    items
-  ])
+  const isTryingToPublishEmotesButCant = useMemo(
+    () => items.some((item) => item.type === ItemType.EMOTE) && !isNewEmotesPublishFlagOn,
+    [isNewEmotesPublishFlagOn, items]
+  )
 
   const isPublishDisabled = useMemo(
     () => isTryingToPublishEmotesButCant || items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit,
@@ -52,7 +53,7 @@ const CollectionPublishButton = (props: Props) => {
 
   const handlePublish = () => {
     const hasAuth = hasAuthorization(authorizations, getAuthorization())
-    if (hasAuth) onPublish()
+    if (hasAuth) onPublish(isNewPublishWizardFlowFlagOn)
     setIsAuthModalOpen(!hasAuth)
   }
 
@@ -93,7 +94,9 @@ const CollectionPublishButton = (props: Props) => {
       let reason: string
 
       if (items.length > MAX_ITEMS) {
-        reason = t('collection_detail_page.publish_reason_max_items', { maxItems: MAX_ITEMS })
+        reason = t('collection_detail_page.publish_reason_max_items', {
+          maxItems: MAX_ITEMS,
+        })
       } else if (items.length === 0) {
         reason = t('collection_detail_page.publish_reason_no_items')
       } else if (isTryingToPublishEmotesButCant) {
