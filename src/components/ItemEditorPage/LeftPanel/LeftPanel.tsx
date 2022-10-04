@@ -6,7 +6,7 @@ import { isThirdParty } from 'lib/urn'
 import { Collection, CollectionType } from 'modules/collection/types'
 import { CurationStatus } from 'modules/curations/types'
 import { getCollectionType } from 'modules/collection/utils'
-import { Item } from 'modules/item/types'
+import { Item, ItemType } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
@@ -51,7 +51,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { isConnected, address, selectedCollectionId, selectedItemId, orphanItems, totalItems } = this.props
+    const { isConnected, address, selectedCollectionId, selectedItemId, orphanItems, totalItems, visibleItems, onSetItems } = this.props
     const { initialPage, pages } = this.state
     // when a newly created item redirects to the item editor, iterate over the pages until finding it
     if (
@@ -69,6 +69,9 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
           this.setState({ pages: [nextPage], initialPage: nextPage }, this.fetchResource)
         }
       }
+    } else if (prevProps.selectedItemId && selectedItemId && prevProps.selectedItemId !== selectedItemId) {
+      const items = visibleItems.filter((item) => item.type !== ItemType.EMOTE)
+      onSetItems(items)
     } else {
       // fetch only if this was triggered by a connecting event or if th selectedCollection changes
       if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {

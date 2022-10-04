@@ -42,8 +42,12 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { items, onSetReviewedItems } = this.props
+    const { items, selectedItemId, onSetItems, onSetReviewedItems } = this.props
     onSetReviewedItems(items)
+    const initialActiveItem = items.find(item => item.id === selectedItemId)
+    if (initialActiveItem) {
+      onSetItems([initialActiveItem])
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
