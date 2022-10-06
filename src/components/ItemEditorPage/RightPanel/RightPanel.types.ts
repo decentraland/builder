@@ -25,7 +25,7 @@ export type Props = {
   isDownloading: boolean
   isCommitteeMember: boolean
   isEmotePlayModeFeatureFlagOn: boolean
-  isMvmfEnabled: boolean
+  isMVMFEnabled: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
@@ -56,7 +56,7 @@ export type MapStateProps = Pick<
   | 'isCommitteeMember'
   | 'isEmotePlayModeFeatureFlagOn'
   | 'canEditSelectedItem'
-  | 'isMvmfEnabled'
+  | 'isMVMFEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>
 export type MapDispatch = Dispatch<

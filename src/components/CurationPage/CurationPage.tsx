@@ -190,7 +190,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderPage() {
-    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData, isMvmfEnabled } = this.props
+    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData, isMVMFEnabled } = this.props
     const { page, searchText } = this.state
     const totalCurations = paginationData?.total
     const totalPages = paginationData?.totalPages
@@ -215,7 +215,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right">
                 <Row>
-                  {isMvmfEnabled ? this.renderMvmfFilterToggle() : null}
+                  {isMVMFEnabled ? this.renderMvmfFilterToggle() : null}
                   {this.renderAssigneeFilterDropdown()}
                   {this.renderStatusFilterDropdown()}
                   {this.renderSortDropdown()}
