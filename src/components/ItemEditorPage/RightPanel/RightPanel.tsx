@@ -547,7 +547,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     {item ? (
                       <>
                         <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
-                        {isMVMFEnabled && canEditItemMetadata ? (
+                        {isMVMFEnabled && canEditItemMetadata && (
                           <p className="event-tag">
                             {t('item_editor.right_panel.event_tag', {
                               event_tag: <span>{MVMF_TAG}</span>,
@@ -555,7 +555,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               learn_more: <a href="#">{t('global.learn_more')}</a>
                             })}
                           </p>
-                        ) : null}
+                        )}
                       </>
                     ) : null}
                   </Collapsable>
