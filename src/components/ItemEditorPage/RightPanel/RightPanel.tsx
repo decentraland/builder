@@ -43,6 +43,8 @@ import Tags from './Tags'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
+const MVMF_TAG = 'MVMF22'
+
 export default class RightPanel extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
   state: State = this.getInitialState()
@@ -548,8 +550,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         {isMVMFEnabled && canEditItemMetadata ? (
                           <p className="event-tag">
                             {t('item_editor.right_panel.event_tag', {
-                              event_tag: <span>MVMF22</span>,
-                              event_name: <span>Metaverse Festival</span>,
+                              event_tag: <span>{MVMF_TAG}</span>,
+                              event_name: <span>{t('item_editor.right_panel.mvmf')}</span>,
                               learn_more: <a href="#">{t('global.learn_more')}</a>
                             })}
                           </p>

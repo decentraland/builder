@@ -28,7 +28,7 @@ import './CurationPage.css'
 
 const PAGE_SIZE = 12
 const ALL_ASSIGNEES_KEY = 'all'
-const MVMF_TAG = 'mvmf22'
+const MVMF_TAG = 'MVMF22'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {

@@ -1435,6 +1435,7 @@
       "animation": "Animación",
       "tags": "Etiquetas",
       "event_tag": "Usa la etiqueta {event_tag} si quieres incluir este item en el {event_name}. {learn_more}",
+      "mvmf": "Metaverse Festival",
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"

@@ -30,7 +30,7 @@ export const getIsEmotePlayModeEnabled = (state: RootState) => {
   }
 }
 
-export const getIsMvmfEnabled = (state: RootState) => {
+export const getIsMVMFEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.MVMF)
   } catch (e) {

@@ -1420,6 +1420,7 @@
       "animation": "动画",
       "tags": "标签",
       "event_tag": "如果您想将此项目包含在 {event_tag} 中，请使用 {event_name} 标签。{learn_more}",
+      "mvmf": "元节",
       "select_placeholder": "选择一个选项",
       "request_for_changes": "要求变更",
       "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权"
