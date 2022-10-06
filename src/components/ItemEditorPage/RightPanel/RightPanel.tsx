@@ -350,7 +350,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, isDownloading, error } = this.props
+    const { selectedItemId, address, isConnected, isDownloading, error, isMvmfEnabled } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
@@ -543,7 +543,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                   )}
                   <Collapsable label={t('item_editor.right_panel.tags')}>
                     {item ? (
-                      <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
+                      <>
+                        <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
+                        {isMvmfEnabled ? (
+                          <p className="event-tag">
+                            {t('item_editor.right_panel.event_tag', {
+                              event_tag: <span>MVMF22</span>,
+                              event_name: <span>Metaverse Festival</span>,
+                              learn_more: <a href="#">{t('global.learn_more')}</a>
+                            })}
+                          </p>
+                        ) : null}
+                      </>
                     ) : null}
                   </Collapsable>
                   {isDirty ? (

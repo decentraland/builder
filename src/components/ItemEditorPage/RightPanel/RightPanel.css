@@ -157,3 +157,18 @@
   top: auto;
   left: auto;
 }
+
+.RightPanel .event-tag {
+  color: var(--secondary-text);
+}
+
+.RightPanel .event-tag span {
+  color: var(--text-on-primary);
+  font-weight: 600;
+}
+
+.RightPanel .event-tag a {
+  color: var(--text-on-primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
