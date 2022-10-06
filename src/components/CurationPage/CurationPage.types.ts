@@ -25,6 +25,7 @@ export type Props = {
   isConnecting: boolean
   isLoadingCollectionsData: boolean
   isLoadingCommittee: boolean
+  isMvmfEnabled: boolean
   onNavigate: (path: string) => void
   onFetchCollections: (params?: FetchCollectionsParams) => ReturnType<Dispatch<FetchCollectionsRequestAction>>
 }
@@ -32,7 +33,8 @@ export type Props = {
 export type State = {
   page: number
   sortBy: CurationSortOptions
-  filterBy: Filters
+  filterByStatus: Filters
+  filterByTags: string[]
   assignee: string
   searchText: string
 }
@@ -48,6 +50,7 @@ export type MapStateProps = Pick<
   | 'isConnecting'
   | 'isLoadingCollectionsData'
   | 'isLoadingCommittee'
+  | 'isMvmfEnabled'
 >
 
 export type MapDispatchProps = Pick<Props, 'onFetchCollections'>
