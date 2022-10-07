@@ -166,3 +166,33 @@
 .CollectionsPage .dcl.tabs .ui.container {
   margin-bottom: 20px;
 }
+
+.CollectionsPage .event-banner {
+  width: 1064px !important;
+  height: 100px !important;
+  margin: 24px 0 !important;
+  padding: 0 24px;
+  display: flex !important;
+  background-image: url('../../images/img-banner-small.png');
+}
+
+.CollectionsPage .event-banner .event-banner-text {
+  display: flex;
+  flex-direction: column;
+  color: #000;
+  align-self: center;
+}
+
+.CollectionsPage .event-banner .title {
+  font-size: 21px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.CollectionsPage .event-banner .event-banner-cta {
+  align-self: center;
+}
+
+.CollectionsPage .event-banner .cta {
+  width: 150px;
+}
