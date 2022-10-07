@@ -12,8 +12,7 @@ import {
   Tabs,
   Loader,
   Pagination,
-  PaginationProps,
-  Advertisement
+  PaginationProps
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -21,6 +20,7 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
 import Chip from 'components/Chip'
+import EventBanner from 'components/EventBanner'
 import { locations } from 'routing/locations'
 import { CollectionPageView } from 'modules/ui/collection/types'
 import ItemCard from './ItemCard'
@@ -122,28 +122,6 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     )
   }
 
-  renderEventBanner() {
-    return (
-      <Advertisement className="event-banner" unit="large leaderboard">
-        <div className="event-banner-text">
-          <span className="title">{t('event_banner.small.title')}</span>
-          <span className="subtitle">
-            {t('event_banner.small.subtitle', {
-              event_category: <b>{t('event_banner.event_category')}</b>,
-              event_tag: <b>{t('event_banner.event_tag')}</b>,
-              event_date_deadline: <b>{t('event_banner.event_date_deadline')}</b>
-            })}
-          </span>
-        </div>
-        <div className="event-banner-cta">
-          <Button className="cta" size="medium" href="https://decentraland.org/blog/announcements/">
-            {t('event_banner.small.cta')}
-          </Button>
-        </div>
-      </Advertisement>
-    )
-  }
-
   isCollectionTabActive = () => {
     const { currentTab } = this.state
     return currentTab === TABS.COLLECTIONS
@@ -173,8 +151,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
       isThirdPartyManager,
       onSetView,
       isLoadingItems,
-      isLoadingCollections,
-      isMVMFEnabled
+      isLoadingCollections
     } = this.props
     const { page } = this.state
     const totalCollections = collectionsPaginationData?.total
@@ -184,7 +161,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
     return (
       <>
-        {isMVMFEnabled && this.renderEventBanner()}
+        <EventBanner />
         <div className="filters">
           <Container>
             <Tabs isFullscreen>
