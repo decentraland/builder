@@ -552,7 +552,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             {t('item_editor.right_panel.event_tag', {
                               event_tag: <span>{MVMF_TAG}</span>,
                               event_name: <span>{t('item_editor.right_panel.mvmf')}</span>,
-                              learn_more: <a href="#">{t('global.learn_more')}</a>
+                              learn_more: (
+                                <a href="https://decentraland.org/blog/announcements/" target="_blank" rel="noopener noreferrer">
+                                  {t('global.learn_more')}
+                                </a>
+                              )
                             })}
                           </p>
                         )}
