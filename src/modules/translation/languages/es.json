@@ -679,6 +679,8 @@
     "operated_by": "Operado por",
     "type": "Tipo",
     "online_scenes": "Escenas Online",
+    "owner": "Dueño",
+    "operators": "Operadores",
     "results": "{count} {count, plural, one {resultado} other {resultados}}",
     "owner_explanation": "Estas son tierras que te pertenecen",
     "operator_explanation": "Estas son tierras que no son tuyas, pero donde tienes permiso",
