@@ -1603,5 +1603,15 @@
       "title": "Collection Approved!",
       "subtitle": "Thank you for revieweing this collection"
     }
+  },
+  "event_banner": {
+    "small": {
+      "title": "Get Ready for the metaverse festival!",
+      "subtitle": "This year's category is... {event_category}! Submit your wearables and emotes using the #{event_tag} before {event_date_deadline} and they will be featured on the Marketplace during the whole event.",
+      "cta": "Learn More"
+    },
+    "event_category": "Cyberpunk Meets Nature realness",
+    "event_tag": "MVMF22",
+    "event_date_deadline": "October 27th"
   }
 }
