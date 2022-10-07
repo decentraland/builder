@@ -1617,6 +1617,16 @@
     "success": {
       "title": "Colección Aprobada!",
       "subtitle": "Gracias por revisar esta colleción"
+    },
+    "event_banner": {
+      "small": {
+        "title": "Prepárate para el festival del metaverso!",
+        "subtitle": "Este año la categoria es... {event_category}! Envia tus wearables y emotes usando el #{event_tag} antes del {event_date_deadline} y apareceran destacados en el Marketplace durante todo el evento.",
+        "cta": "Más información"
+      },
+      "event_category": "Cyberpunk Meets Nature realness",
+      "event_tag": "MVMF22",
+      "event_date_deadline": "27 de Octubre"
     }
   }
 }

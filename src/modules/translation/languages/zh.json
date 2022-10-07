@@ -1603,5 +1603,15 @@
       "title": "收藏已获批准！",
       "subtitle": "感谢您查看此合集"
     }
+  },
+  "event_banner": {
+    "small": {
+      "title": "准备好迎接元节!",
+      "subtitle": "今年的类别是... {event_category}! 在 {event_date_deadline} 之前使用#{event_tag} 提交您的可穿戴设备和表情，它们将在整个活动期间出现在市场上。",
+      "cta": "更多"
+    },
+    "event_category": "Cyberpunk Meets Nature realness",
+    "event_tag": "MVMF22",
+    "event_date_deadline": "10月27日"
   }
 }
