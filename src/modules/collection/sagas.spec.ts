@@ -1823,4 +1823,24 @@ describe('when handling the fetch of collections', () => {
         .run({ silenceTimeout: true })
     })
   })
+
+  describe('and tag filter is sent', () => {
+    let mockedFetchParameters: FetchCollectionsParams
+    beforeEach(() => {
+      collection = getCollectionMock()
+      mockedFetchParameters = {
+        tag: ['TAG']
+      }
+    })
+    it('should put the success action with the collections filtered by item tag', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .provide([
+          [select(getWalletItems), []],
+          [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), [collection]]
+        ])
+        .put(fetchCollectionsSuccess([collection], undefined))
+        .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters))
+        .run({ silenceTimeout: true })
+    })
+  })
 })

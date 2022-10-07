@@ -11,7 +11,9 @@ import {
   Table,
   DropdownProps,
   PaginationProps,
-  Loader
+  Loader,
+  Radio,
+  CheckboxProps
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchCollectionsParams } from 'lib/api/builder'
@@ -26,11 +28,13 @@ import './CurationPage.css'
 
 const PAGE_SIZE = 12
 const ALL_ASSIGNEES_KEY = 'all'
+const MVMF_TAG = 'MVMF22'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
     sortBy: CurationSortOptions.MOST_RELEVANT,
-    filterBy: CurationExtraStatuses.ALL_STATUS,
+    filterByStatus: CurationExtraStatuses.ALL_STATUS,
+    filterByTags: [],
     assignee: ALL_ASSIGNEES_KEY,
     searchText: '',
     page: 1
@@ -53,14 +57,15 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   getFetchParams = (overrides?: FetchCollectionsParams) => {
-    const { assignee, filterBy, page, searchText, sortBy } = this.state
+    const { assignee, filterByStatus, page, searchText, sortBy, filterByTags } = this.state
     return {
       page,
       limit: PAGE_SIZE,
       assignee: assignee !== ALL_ASSIGNEES_KEY ? assignee : undefined,
-      status: filterBy !== CurationExtraStatuses.ALL_STATUS ? filterBy : undefined,
+      status: filterByStatus !== CurationExtraStatuses.ALL_STATUS ? filterByStatus : undefined,
       q: searchText ? searchText : undefined,
       sort: sortBy,
+      tag: filterByTags.length > 0 ? filterByTags : undefined,
       isPublished: true,
       ...overrides
     }
@@ -80,7 +85,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   handleStatusChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-    this.updateParam({ filterBy: `${value}` as Filters, page: 1 })
+    this.updateParam({ filterByStatus: `${value}` as Filters, page: 1 })
   }
 
   handleAssigneeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
@@ -96,6 +101,15 @@ export default class CurationPage extends React.PureComponent<Props, State> {
 
   handlePageChange = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
     this.updateParam({ page: +props.activePage! })
+  }
+
+  handleOnMvmfToggleChange = (_event: React.FormEvent<HTMLInputElement>, checkboxProps: CheckboxProps) => {
+    const { checked } = checkboxProps
+    if (checked) {
+      this.updateParam({ filterByTags: [...this.state.filterByTags, MVMF_TAG] })
+    } else {
+      this.updateParam({ filterByTags: [...this.state.filterByTags.filter(tag => tag !== MVMF_TAG)] })
+    }
   }
 
   renderSortDropdown = () => {
@@ -116,11 +130,11 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderStatusFilterDropdown = () => {
-    const { filterBy } = this.state
+    const { filterByStatus } = this.state
     return (
       <Dropdown
         direction="left"
-        value={filterBy}
+        value={filterByStatus}
         options={[
           { value: CurationFilterOptions.ALL_STATUS, text: t('curation_page.filter.all_status') },
           { value: CurationFilterOptions.UNDER_REVIEW, text: t('curation_page.filter.under_review') },
@@ -162,8 +176,21 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     )
   }
 
+  renderMvmfFilterToggle = () => {
+    const { filterByTags } = this.state
+    return (
+      <Radio
+        toggle
+        className="filterByMvmfTag"
+        checked={filterByTags.includes(MVMF_TAG)}
+        onChange={this.handleOnMvmfToggleChange}
+        label={t('curation_page.filter.mvmf_collections').toUpperCase()}
+      />
+    )
+  }
+
   renderPage() {
-    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData } = this.props
+    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData, isMVMFEnabled } = this.props
     const { page, searchText } = this.state
     const totalCurations = paginationData?.total
     const totalPages = paginationData?.totalPages
@@ -188,6 +215,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right">
                 <Row>
+                  {isMVMFEnabled ? this.renderMvmfFilterToggle() : null}
                   {this.renderAssigneeFilterDropdown()}
                   {this.renderStatusFilterDropdown()}
                   {this.renderSortDropdown()}

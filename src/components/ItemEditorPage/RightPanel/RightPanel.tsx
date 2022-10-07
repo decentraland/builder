@@ -43,6 +43,8 @@ import Tags from './Tags'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
+const MVMF_TAG = 'MVMF22'
+
 export default class RightPanel extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
   state: State = this.getInitialState()
@@ -350,7 +352,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, isDownloading, error } = this.props
+    const { selectedItemId, address, isConnected, isDownloading, error, isMVMFEnabled } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
@@ -543,7 +545,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                   )}
                   <Collapsable label={t('item_editor.right_panel.tags')}>
                     {item ? (
-                      <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
+                      <>
+                        <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
+                        {isMVMFEnabled && canEditItemMetadata && (
+                          <p className="event-tag">
+                            {t('item_editor.right_panel.event_tag', {
+                              event_tag: <span>{MVMF_TAG}</span>,
+                              event_name: <span>{t('item_editor.right_panel.mvmf')}</span>,
+                              learn_more: <a href="#">{t('global.learn_more')}</a>
+                            })}
+                          </p>
+                        )}
+                      </>
                     ) : null}
                   </Collapsable>
                   {isDirty ? (
