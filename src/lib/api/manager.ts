@@ -10,6 +10,7 @@ export const LAND_MANAGER_GRAPH_URL = config.get('LAND_MANAGER_GRAPH_URL', '')
 
 const authGraphClient = createClient(LAND_MANAGER_GRAPH_URL)
 
+// TheGraph has a limit of a maximum of 1000 results per entity per query
 const MAX_RESULTS = 1000
 
 const getLandQuery = (skip = 0) => gql`
