@@ -19,6 +19,7 @@
   font-size: 21px;
   font-weight: bold;
   margin-bottom: 8px;
+  text-transform: uppercase;
 }
 
 .EventBanner .event-banner-cta {
