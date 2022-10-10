@@ -125,16 +125,7 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 
 function isMax(result: LandQueryResult) {
   // true if any result length matches the MAX_RESULTS constant
-  return (
-    result.tenantParcels.length >= MAX_RESULTS ||
-    result.tenantEstates.length >= MAX_RESULTS ||
-    result.ownerParcels.length >= MAX_RESULTS ||
-    result.ownerEstates.length >= MAX_RESULTS ||
-    result.updateOperatorParcels.length >= MAX_RESULTS ||
-    result.updateOperatorEstates.length >= MAX_RESULTS ||
-    result.ownerAuthorizations.length >= MAX_RESULTS ||
-    result.operatorAuthorizations.length >= MAX_RESULTS
-  )
+  return Object.values(result).some(value => value.length >= MAX_RESULTS)
 }
 
 export class ManagerAPI {
