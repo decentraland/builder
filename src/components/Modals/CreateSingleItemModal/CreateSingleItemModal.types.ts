@@ -42,6 +42,7 @@ export type StateData = {
   isLoading: boolean
   error: string
   file: File
+  hasScreenshotTaken?: boolean
   previewController?: IPreviewController
   weareblePreviewUpdated: boolean
 }
@@ -69,7 +70,19 @@ export type SortedContent = { male: Record<string, Blob>; female: Record<string,
 
 export type AcceptedFileProps = Pick<
   State,
-  'id' | 'name' | 'description' | 'rarity' | 'file' | 'model' | 'metrics' | 'contents' | 'type' | 'bodyShape' | 'category' | 'thumbnail'
+  | 'id'
+  | 'name'
+  | 'description'
+  | 'rarity'
+  | 'file'
+  | 'model'
+  | 'metrics'
+  | 'contents'
+  | 'type'
+  | 'bodyShape'
+  | 'category'
+  | 'thumbnail'
+  | 'hasScreenshotTaken'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isEmotePlayModeFeatureFlagOn'>
