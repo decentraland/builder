@@ -12,6 +12,7 @@
   flex-direction: column;
   color: black;
   align-self: center;
+  margin-right: 24px;
 }
 
 .EventBanner .title {
