@@ -20,6 +20,7 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
 import Chip from 'components/Chip'
+import EventBanner from 'components/EventBanner'
 import { locations } from 'routing/locations'
 import { CollectionPageView } from 'modules/ui/collection/types'
 import ItemCard from './ItemCard'
@@ -160,6 +161,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
     return (
       <>
+        <EventBanner />
         <div className="filters">
           <Container>
             <Tabs isFullscreen>

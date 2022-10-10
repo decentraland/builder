@@ -4,5 +4,5 @@ export enum FeatureName {
   PUBLISH_NEW_EMOTES = 'publish-new-emotes',
   RENTALS = 'rentals',
   EMOTE_PLAY_MODE = 'emote-play-mode',
-  MVMF = 'mvmf-2022'
+  MVMF = 'mvmf-2022-announcement'
 }
