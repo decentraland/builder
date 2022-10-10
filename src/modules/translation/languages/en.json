@@ -699,6 +699,8 @@
     "operated_by": "Operated by",
     "type": "Type",
     "online_scenes": "Online Scenes",
+    "owner": "Owner",
+    "operators": "Operators",
     "results": "{count} {count, plural, one {result} other {results}}",
     "owner_explanation": "These are lands you own.",
     "operator_explanation": "These are lands you don't own, but the owner gave you permission to use them.",

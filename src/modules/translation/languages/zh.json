@@ -664,6 +664,8 @@
     "operated_by": "经营者",
     "type": "类型",
     "online_scenes": "在线场景",
+    "owner": "所有者",
+    "operators": "运营商",
     "results": "{count}个结果",
     "owner_explanation": "这些是你拥有的土地。",
     "operator_explanation": "这些是您不拥有的土地，但所有者授予您使用它们的许可。",
