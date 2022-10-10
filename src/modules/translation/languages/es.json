@@ -1621,7 +1621,7 @@
     "event_banner": {
       "small": {
         "title": "Prepárate para el festival del metaverso!",
-        "subtitle": "Este año la categoria es... {event_category}! Envia tus wearables y emotes usando el #{event_tag} antes del {event_date_deadline} y apareceran destacados en el Marketplace durante todo el evento.",
+        "subtitle": "Envia tus wearables y emotes usando el {event_tag} antes del {event_date_deadline} y apareceran destacados en el Marketplace durante todo el evento.",
         "cta": "Más información"
       },
       "event_category": "Cyberpunk Meets Nature realness",

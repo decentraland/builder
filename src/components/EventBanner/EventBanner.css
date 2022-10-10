@@ -12,12 +12,14 @@
   flex-direction: column;
   color: black;
   align-self: center;
+  margin-right: 24px;
 }
 
 .EventBanner .title {
   font-size: 21px;
   font-weight: bold;
   margin-bottom: 8px;
+  text-transform: uppercase;
 }
 
 .EventBanner .event-banner-cta {
