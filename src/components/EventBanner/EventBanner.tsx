@@ -1,5 +1,5 @@
 import React from 'react'
-import { Advertisement, Button } from 'decentraland-ui'
+import { Advertisement } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './EventBanner.types'
 import './EventBanner.css'
@@ -18,9 +18,9 @@ const EventBanner = ({ isMVMFEnabled }: Props) => {
         </span>
       </div>
       <div className="event-banner-cta">
-        <Button className="cta" size="medium" href="https://decentraland.org/blog/announcements/">
+        <a className="cta ui button medium" href="https://decentraland.org/blog/announcements/" target="_blank" rel="noopener noreferrer">
           {t('event_banner.small.cta')}
-        </Button>
+        </a>
       </div>
     </Advertisement>
   ) : null
