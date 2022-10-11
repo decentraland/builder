@@ -699,6 +699,8 @@
     "operated_by": "Operated by",
     "type": "Type",
     "online_scenes": "Online Scenes",
+    "owner": "Owner",
+    "operators": "Operators",
     "results": "{count} {count, plural, one {result} other {results}}",
     "owner_explanation": "These are lands you own.",
     "operator_explanation": "These are lands you don't own, but the owner gave you permission to use them.",
@@ -1030,7 +1032,8 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "under_review": "Under Review",
-      "to_review": "To Review"
+      "to_review": "To Review",
+      "mvmf_collections": "Metaverse Festival Collections"
     },
     "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
@@ -1418,6 +1421,8 @@
       "hides_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
       "animation": "Animation",
       "tags": "Tags",
+      "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name}. {learn_more}",
+      "mvmf": "Metaverse Festival",
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum"
@@ -1600,5 +1605,15 @@
       "title": "Collection Approved!",
       "subtitle": "Thank you for revieweing this collection"
     }
+  },
+  "event_banner": {
+    "small": {
+      "title": "Get Ready for the metaverse festival!",
+      "subtitle": "Submit your wearables and emotes using the {event_tag} before {event_date_deadline} and they will be featured on the Marketplace during the whole event.",
+      "cta": "Learn More"
+    },
+    "event_category": "Cyberpunk Meets Nature realness",
+    "event_tag": "MVMF22",
+    "event_date_deadline": "October 27th"
   }
 }

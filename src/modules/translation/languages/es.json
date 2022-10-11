@@ -679,6 +679,8 @@
     "operated_by": "Operado por",
     "type": "Tipo",
     "online_scenes": "Escenas Online",
+    "owner": "Dueño",
+    "operators": "Operadores",
     "results": "{count} {count, plural, one {resultado} other {resultados}}",
     "owner_explanation": "Estas son tierras que te pertenecen",
     "operator_explanation": "Estas son tierras que no son tuyas, pero donde tienes permiso",
@@ -1043,7 +1045,8 @@
       "approved": "Aprobado",
       "rejected": "Rechazado",
       "under_review": "Bajo revisión",
-      "to_review": "A revisar"
+      "to_review": "A revisar",
+      "mvmf_collections": "Colecciones del Metaverse Festival"
     },
     "search_placeholder": "Busca entre {count} {count, plural, one {resultado} other {resultados} por nombre o por la dirección del dueño...",
     "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
@@ -1433,6 +1436,8 @@
       "hides_info": "Cuando un usuario equipa tu item, cualquier otro item de la categoría que selecciones permanecerá equipado, pero no se renderizará. Los usuarios solo verán reaparecer sus otros elementos después de eliminar su elemento.",
       "animation": "Animación",
       "tags": "Etiquetas",
+      "event_tag": "Usa la etiqueta {event_tag} si quieres incluir este item en el {event_name}. {learn_more}",
+      "mvmf": "Metaverse Festival",
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"
@@ -1614,6 +1619,16 @@
     "success": {
       "title": "Colección Aprobada!",
       "subtitle": "Gracias por revisar esta colleción"
+    },
+    "event_banner": {
+      "small": {
+        "title": "Prepárate para el festival del metaverso!",
+        "subtitle": "Envia tus wearables y emotes usando el {event_tag} antes del {event_date_deadline} y apareceran destacados en el Marketplace durante todo el evento.",
+        "cta": "Más información"
+      },
+      "event_category": "Cyberpunk Meets Nature realness",
+      "event_tag": "MVMF22",
+      "event_date_deadline": "27 de Octubre"
     }
   }
 }

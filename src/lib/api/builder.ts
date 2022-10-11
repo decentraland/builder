@@ -38,6 +38,7 @@ export type FetchCollectionsParams = {
   sort?: CurationSortOptions
   q?: string
   isPublished?: boolean
+  tag?: string[]
   page?: number
   limit?: number
 }
@@ -440,11 +441,47 @@ function fromRemoteItemCuration(remoteCuration: RemoteItemCuration): ItemCuratio
 }
 
 const toRemoteCollectionQueryParameters = (params?: FetchCollectionsParams) => {
-  const { isPublished, ...rest } = params || {}
-  return {
-    is_published: isPublished,
-    ...rest
+  const queryParams = new URLSearchParams()
+
+  if (params?.isPublished) {
+    queryParams.append('is_published', `${params.isPublished}`)
   }
+
+  if (params?.assignee) {
+    queryParams.append('assignee', params.assignee)
+  }
+
+  if (params?.status) {
+    queryParams.append('status', params.status)
+  }
+
+  if (params?.synced) {
+    queryParams.append('synced', `${params.synced}`)
+  }
+
+  if (params?.sort) {
+    queryParams.append('sort', params.sort)
+  }
+
+  if (params?.q) {
+    queryParams.append('q', params.q)
+  }
+
+  if (params?.page) {
+    queryParams.append('page', `${params.page}`)
+  }
+
+  if (params?.limit) {
+    queryParams.append('limit', `${params.limit}`)
+  }
+
+  if (params?.tag && params.tag.length > 0) {
+    for (const tag of params.tag) {
+      queryParams.append('tag', tag)
+    }
+  }
+
+  return queryParams
 }
 
 export type PoolDeploymentAdditionalFields = {

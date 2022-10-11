@@ -10,38 +10,41 @@ export const LAND_MANAGER_GRAPH_URL = config.get('LAND_MANAGER_GRAPH_URL', '')
 
 const authGraphClient = createClient(LAND_MANAGER_GRAPH_URL)
 
-const getLandQuery = () => gql`
+// TheGraph has a limit of a maximum of 1000 results per entity per query
+const MAX_RESULTS = 1000
+
+const getLandQuery = (skip = 0) => gql`
   query Land($address: Bytes, $tenantTokenIds: [String!]) {
-    tenantParcels: parcels(first: 1000, where: { tokenId_in: $tenantTokenIds }) {
+    tenantParcels: parcels(first: ${MAX_RESULTS}, skip: ${skip}, where: { tokenId_in: $tenantTokenIds }) {
       ...parcelFields
     }
-    tenantEstates: estates(first: 1000, where: { id_in: $tenantTokenIds }) {
+    tenantEstates: estates(first: ${MAX_RESULTS}, skip: ${skip}, where: { id_in: $tenantTokenIds }) {
       ...estateFields
     }
-    ownerParcels: parcels(first: 1000, where: { estate: null, owner: $address }) {
+    ownerParcels: parcels(first: ${MAX_RESULTS}, skip: ${skip}, where: { estate: null, owner: $address }) {
       ...parcelFields
     }
-    ownerEstates: estates(first: 1000, where: { owner: $address }) {
+    ownerEstates: estates(first: ${MAX_RESULTS}, skip: ${skip}, where: { owner: $address }) {
       ...estateFields
     }
-    updateOperatorParcels: parcels(first: 1000, where: { updateOperator: $address }) {
+    updateOperatorParcels: parcels(first: ${MAX_RESULTS}, skip: ${skip}, where: { updateOperator: $address }) {
       ...parcelFields
     }
-    updateOperatorEstates: estates(first: 1000, where: { updateOperator: $address }) {
+    updateOperatorEstates: estates(first: ${MAX_RESULTS}, skip: ${skip}, where: { updateOperator: $address }) {
       ...estateFields
     }
-    ownerAuthorizations: authorizations(first: 1000, where: { owner: $address, type: "UpdateManager" }) {
+    ownerAuthorizations: authorizations(first: ${MAX_RESULTS}, skip: ${skip}, where: { owner: $address, type: "UpdateManager" }) {
       operator
       isApproved
       tokenAddress
     }
-    operatorAuthorizations: authorizations(first: 1000, where: { operator: $address, type: "UpdateManager" }) {
+    operatorAuthorizations: authorizations(first: ${MAX_RESULTS}, skip: ${skip}, where: { operator: $address, type: "UpdateManager" }) {
       owner {
         address
-        parcels(first: 1000, where: { estate: null }) {
+        parcels(first: ${MAX_RESULTS}, skip: ${skip}, where: { estate: null }) {
           ...parcelFields
         }
-        estates(first: 1000) {
+        estates(first: ${MAX_RESULTS}) {
           ...estateFields
         }
       }
@@ -56,7 +59,6 @@ const getLandQuery = () => gql`
 type LandQueryResult = {
   tenantParcels: ParcelFields[]
   tenantEstates: EstateFields[]
-
   ownerParcels: ParcelFields[]
   ownerEstates: EstateFields[]
   updateOperatorParcels: ParcelFields[]
@@ -121,12 +123,17 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
   return result
 }
 
+function isMax(result: LandQueryResult) {
+  // true if any result length matches the MAX_RESULTS constant
+  return Object.values(result).some(value => value.length >= MAX_RESULTS)
+}
+
 export class ManagerAPI {
-  fetchLand = async (_address: string, tenantTokenIds: string[] = []): Promise<[Land[], Authorization[]]> => {
+  fetchLand = async (_address: string, tenantTokenIds: string[] = [], skip = 0): Promise<[Land[], Authorization[]]> => {
     const address = _address.toLowerCase()
 
     const { data } = await authGraphClient.query<LandQueryResult>({
-      query: getLandQuery(),
+      query: getLandQuery(skip),
       variables: {
         address,
         tenantTokenIds
@@ -247,7 +254,16 @@ export class ManagerAPI {
       }
     }
 
-    return [Object.values(landsMap), authorizations]
+    // check if we need to fetch more results
+    if (isMax(data)) {
+      // merge results recursively
+      const [moreLands, moreAuthorizations] = await this.fetchLand(address, tenantTokenIds, skip + MAX_RESULTS)
+      const landResults = [...Object.values(landsMap), ...moreLands]
+      const authoriazationResults = [...authorizations, ...moreAuthorizations]
+      return [landResults, authoriazationResults]
+    } else {
+      return [Object.values(landsMap), authorizations]
+    }
   }
 }
 

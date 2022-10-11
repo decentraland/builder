@@ -664,6 +664,8 @@
     "operated_by": "经营者",
     "type": "类型",
     "online_scenes": "在线场景",
+    "owner": "所有者",
+    "operators": "运营商",
     "results": "{count}个结果",
     "owner_explanation": "这些是你拥有的土地。",
     "operator_explanation": "这些是您不拥有的土地，但所有者授予您使用它们的许可。",
@@ -1024,7 +1026,8 @@
       "approved": "已批准",
       "rejected": "拒绝了",
       "under_review": "审查中",
-      "to_review": "回顾"
+      "to_review": "回顾",
+      "mvmf_collections": "元界节日合集"
     },
     "search_placeholder": "按名称或所有者地址在 {count} 个结果之间搜索...",
     "collections": "{count} {count, plural, one {个合集} other {个收藏}}",
@@ -1418,6 +1421,8 @@
       "hides_info": "当用户装备您的物品时，您选择的类别中的所有其他物品将保持装备状态，但不会被渲染。 用户仅会在删除您的商品后看到他们的其他商品。 ",
       "animation": "动画",
       "tags": "标签",
+      "event_tag": "如果您想将此项目包含在 {event_tag} 中，请使用 {event_name} 标签。{learn_more}",
+      "mvmf": "元节",
       "select_placeholder": "选择一个选项",
       "request_for_changes": "要求变更",
       "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权"
@@ -1600,5 +1605,15 @@
       "title": "收藏已获批准！",
       "subtitle": "感谢您查看此合集"
     }
+  },
+  "event_banner": {
+    "small": {
+      "title": "准备好迎接元节!",
+      "subtitle": "在 {event_date_deadline} 之前使用{event_tag} 提交您的可穿戴设备和表情，它们将在整个活动期间出现在市场上。",
+      "cta": "更多"
+    },
+    "event_category": "Cyberpunk Meets Nature realness",
+    "event_tag": "MVMF22",
+    "event_date_deadline": "10月27日"
   }
 }

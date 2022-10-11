@@ -1,0 +1,37 @@
+.EventBanner {
+  width: 1064px !important;
+  height: 100px !important;
+  margin: 24px 0 !important;
+  padding: 0 24px;
+  display: flex !important;
+  background-image: url('../../images/img-banner-small.png');
+}
+
+.EventBanner .event-banner-text {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  align-self: center;
+  margin-right: 24px;
+}
+
+.EventBanner .title {
+  font-size: 21px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.EventBanner .event-banner-cta {
+  align-self: center;
+}
+
+.EventBanner .cta {
+  width: 150px;
+}
+
+@media (max-width: 1064px) {
+  .EventBanner {
+    width: 100% !important;
+  }
+}
