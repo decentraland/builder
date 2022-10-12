@@ -18,7 +18,14 @@ const EventBanner = ({ isMVMFEnabled }: Props) => {
         </span>
       </div>
       <div className="event-banner-cta">
-        <Button className="cta" size="medium" href="https://decentraland.org/blog/announcements/">
+        <Button
+          className="cta"
+          size="medium"
+          as="a"
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://decentraland.org/blog/announcements/"
+        >
           {t('event_banner.small.cta')}
         </Button>
       </div>
