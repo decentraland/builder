@@ -554,7 +554,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               event_name: <span>{t('item_editor.right_panel.mvmf')}</span>,
                               learn_more: (
                                 <a
-                                  href="https://events.decentraland.org/event/?id=7148716b-ff25-4d5f-8267-55fed7ab15bc"
+                                  href="https://decentraland.org/blog/announcements/emotes-contest-prepare-your-best-moves-for-the-metaverse-music-festival/"
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
