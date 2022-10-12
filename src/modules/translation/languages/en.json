@@ -1608,8 +1608,8 @@
   },
   "event_banner": {
     "small": {
-      "title": "Get Ready for the metaverse festival!",
-      "subtitle": "Submit your wearables and emotes using the {event_tag} before {event_date_deadline} and they will be featured on the Marketplace during the whole event.",
+      "title": "Get ready for the Metaverse Music Festival!",
+      "subtitle": "Add the {event_tag} tag to your festival-themed Wearables & Emotes before {event_date_deadline} {enter} and they'll be featured in a special Festival tab on the Marketplace during the event!",
       "cta": "Learn More"
     },
     "event_category": "Cyberpunk Meets Nature realness",

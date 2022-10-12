@@ -13,7 +13,8 @@ const EventBanner = ({ isMVMFEnabled }: Props) => {
           {t('event_banner.small.subtitle', {
             event_category: <b>{t('event_banner.event_category')}</b>,
             event_tag: <b>#{t('event_banner.event_tag')}</b>,
-            event_date_deadline: <b>{t('event_banner.event_date_deadline')}</b>
+            event_date_deadline: <b>{t('event_banner.event_date_deadline')}</b>,
+            enter: <br />
           })}
         </span>
       </div>

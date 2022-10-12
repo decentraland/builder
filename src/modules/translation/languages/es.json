@@ -1619,16 +1619,16 @@
     "success": {
       "title": "Colección Aprobada!",
       "subtitle": "Gracias por revisar esta colleción"
-    },
-    "event_banner": {
-      "small": {
-        "title": "Prepárate para el festival del metaverso!",
-        "subtitle": "Envia tus wearables y emotes usando el {event_tag} antes del {event_date_deadline} y apareceran destacados en el Marketplace durante todo el evento.",
-        "cta": "Más información"
-      },
-      "event_category": "Cyberpunk Meets Nature realness",
-      "event_tag": "MVMF22",
-      "event_date_deadline": "25 de Octubre"
     }
+  },
+  "event_banner": {
+    "small": {
+      "title": "Prepárate para el Metaverse Music Festival!",
+      "subtitle": "Agrega el tag {event_tag} a sus Wearables y Emotes tematicos del Festival antes del {event_date_deadline} {enter} y aparecerán en una sección especial para el Festival en el Marketplace durante todo el evento!",
+      "cta": "Más información"
+    },
+    "event_category": "Cyberpunk Meets Nature realness",
+    "event_tag": "MVMF22",
+    "event_date_deadline": "25 de Octubre"
   }
 }
