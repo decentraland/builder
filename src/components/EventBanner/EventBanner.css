@@ -5,6 +5,7 @@
   padding: 0 32px;
   display: flex !important;
   background-image: url('../../images/mvmf-1064x100.gif');
+  border-radius: 10px;
 }
 
 .EventBanner .event-banner-text {
@@ -24,15 +25,10 @@
 }
 
 .EventBanner .subtitle {
-  max-width: 480px;
   text-align: justify;
   overflow-wrap: break-word;
 }
 
 .EventBanner .event-banner-cta {
   align-self: center;
-}
-
-.EventBanner .cta {
-  width: 150px;
 }

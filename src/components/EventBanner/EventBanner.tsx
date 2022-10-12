@@ -13,7 +13,8 @@ const EventBanner = ({ isMVMFEnabled }: Props) => {
           {t('event_banner.small.subtitle', {
             event_category: <b>{t('event_banner.event_category')}</b>,
             event_tag: <b>#{t('event_banner.event_tag')}</b>,
-            event_date_deadline: <b>{t('event_banner.event_date_deadline')}</b>
+            event_date_deadline: <b>{t('event_banner.event_date_deadline')}</b>,
+            enter: <br />
           })}
         </span>
       </div>
@@ -24,7 +25,7 @@ const EventBanner = ({ isMVMFEnabled }: Props) => {
           as="a"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://decentraland.org/blog/announcements/"
+          href="https://events.decentraland.org/event/?id=7148716b-ff25-4d5f-8267-55fed7ab15bc"
         >
           {t('event_banner.small.cta')}
         </Button>
