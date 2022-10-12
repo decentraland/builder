@@ -4,13 +4,13 @@
   margin: 24px 0 !important;
   padding: 0 32px;
   display: flex !important;
-  background-image: url('../../images/img-banner-small.png');
+  background-image: url('../../images/mvmf-1064x100.gif');
 }
 
 .EventBanner .event-banner-text {
   display: flex;
   flex-direction: column;
-  color: black;
+  color: white;
   align-self: center;
   margin-right: 24px;
   flex-grow: 1;
