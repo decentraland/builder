@@ -25,7 +25,7 @@ const EventBanner = ({ isMVMFEnabled }: Props) => {
           as="a"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://decentraland.org/blog/announcements/"
+          href="https://events.decentraland.org/event/?id=7148716b-ff25-4d5f-8267-55fed7ab15bc"
         >
           {t('event_banner.small.cta')}
         </Button>
