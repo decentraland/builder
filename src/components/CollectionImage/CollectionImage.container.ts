@@ -11,10 +11,12 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { collectionId } = ownProps
   const itemCount = getCollection(state, collectionId)?.itemCount
   const items = getCollectionItems(state, collectionId)
+  const collection = getCollection(state, collectionId)
   const isLoading = !!getLoadingItem(state).find(
     action => action.type === FETCH_COLLECTION_ITEMS_REQUEST && action.payload.collectionId === collectionId
   )
   return {
+    collection,
     items,
     itemCount,
     isLoading: isLoadingType(getLoadingItem(state), FETCH_ITEMS_REQUEST) || isLoading
