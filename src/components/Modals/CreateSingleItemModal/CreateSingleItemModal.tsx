@@ -73,7 +73,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   getInitialState() {
     const { metadata } = this.props
 
-    const state: State = { view: CreateItemView.IMPORT, playMode: EmotePlayMode.SIMPLE, weareblePreviewUpdated: false }
+    const state: State = {
+      view: CreateItemView.IMPORT,
+      playMode: EmotePlayMode.SIMPLE,
+      weareblePreviewUpdated: false,
+      hasScreenshotTaken: false
+    }
     if (!metadata) {
       return state
     }
@@ -168,7 +173,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
     const { address, collection, onSave } = this.props
-    const { id, name, description, type, metrics, collectionId, category, playMode, rarity } = this.state as StateData
+    const { id, name, description, type, metrics, collectionId, category, playMode, rarity, hasScreenshotTaken } = this.state as StateData
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
     // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
@@ -231,7 +236,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       this.setState({
         item: { ...(item as Item) },
         itemSortedContents: sortedContents.all,
-        view: CreateItemView.THUMBNAIL,
+        view: hasScreenshotTaken ? CreateItemView.SET_PRICE : CreateItemView.THUMBNAIL,
         fromView: CreateItemView.THUMBNAIL
       })
     } else {
@@ -929,9 +934,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       itemSortedContents[THUMBNAIL_PATH] = blob!
       item.contents = await computeHashes(itemSortedContents)
 
-      this.setState({ itemSortedContents, item }, () => this.setState({ view }))
+      this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => this.setState({ view }))
     } else {
-      this.setState({ thumbnail: screenshot }, () => this.setState({ view }))
+      this.setState({ thumbnail: screenshot, hasScreenshotTaken: true }, () => this.setState({ view }))
     }
   }
 
