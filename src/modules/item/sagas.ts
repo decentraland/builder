@@ -102,6 +102,7 @@ import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
 import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
+import { setItems } from 'modules/editor/actions'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { calculateFinalSize, reHashOlderContents } from './export'
@@ -366,6 +367,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (location.pathname === locations.collections()) {
         if (item.type === ItemType.EMOTE) {
           // Redirect to the item editor
+          yield put(setItems([item]))
           yield put(push(locations.itemEditor({ itemId: item.id })))
         } else {
           // Redirect to the newly created item details
@@ -373,10 +375,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       } else if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
         // Redirect to the item editor
+        yield put(setItems([item]))
         yield put(push(locations.itemEditor({ collectionId, itemId: item.id })))
       } else {
         // When creating a Wearable/Emote in the itemEditor, reload the left panel to show the new item created
         if (location.pathname === locations.itemEditor()) {
+          yield put(setItems([item]))
           if (collectionId) {
             const paginationData: ItemPaginationData | undefined = yield select(getPaginationData, collectionId)
             yield put(

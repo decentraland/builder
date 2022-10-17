@@ -1,9 +1,9 @@
 .EventBanner {
-  width: 100% !important;
-  height: 100px !important;
-  margin: 24px 0 !important;
+  width: 100%;
+  height: 100px;
+  margin: 24px 0;
   padding: 0 32px;
-  display: flex !important;
+  display: flex;
   background-image: url('../../images/mvmf-1064x100.gif');
   border-radius: 10px;
 }

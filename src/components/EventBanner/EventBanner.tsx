@@ -1,12 +1,12 @@
 import React from 'react'
-import { Advertisement, Button } from 'decentraland-ui'
+import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './EventBanner.types'
 import './EventBanner.css'
 
 const EventBanner = ({ isMVMFEnabled }: Props) => {
   return isMVMFEnabled ? (
-    <Advertisement className="EventBanner" unit="large leaderboard">
+    <div className="EventBanner">
       <div className="event-banner-text">
         <span className="title">{t('event_banner.small.title')}</span>
         <span className="subtitle">
@@ -30,7 +30,7 @@ const EventBanner = ({ isMVMFEnabled }: Props) => {
           {t('event_banner.small.cta')}
         </Button>
       </div>
-    </Advertisement>
+    </div>
   ) : null
 }
 
