@@ -1,7 +1,14 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": ["src/contracts/*.ts", "src/ecsScene/scene.js", "scripts/*.js", "package.json", "package-lock.json"],
+  "ignorePatterns": [
+    "src/contracts/*.ts",
+    "src/ecsScene/scene.js",
+    "scripts/*.js",
+    "src/modules/project/export.ts",
+    "package.json",
+    "package-lock.json"
+  ],
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "prettier"],
   "env": {
@@ -21,10 +28,20 @@
       "rules": {
         "@typescript-eslint/no-unnecessary-type-assertion": "error",
         "@typescript-eslint/explicit-module-boundary-types": "off",
-        "@typescript-eslint/no-unused-vars": "error"
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }],
+        "@typescript-eslint/no-unsafe-assignment": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-assignment/
+        "@typescript-eslint/no-unsafe-call": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-call/
+        "@typescript-eslint/no-unsafe-member-access": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-member-access/
+        "@typescript-eslint/no-unsafe-argument": "off" // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-argument/
       },
       "parserOptions": {
         "project": ["./tsconfig.json"]
+      }
+    },
+    {
+      "files": ["*.spec.ts"],
+      "rules": {
+        "@typescript-eslint/unbound-method": "off"
       }
     },
     {
