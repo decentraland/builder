@@ -90,6 +90,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               disableDefaultWearables
               disableDefaultEmotes
               disableAutoRotate
+              showThumbnailBoundaries
               skin="000000"
               zoom={100}
               wheelZoom={2}
