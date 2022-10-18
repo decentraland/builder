@@ -1,8 +1,18 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "Running prettier"
-npm run fix:prettier
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | { grep -E '(js|ts|tsx|json|yml|md|html|css)$' || true; })
 
-echo "Running lints"
-npm run fix:code
+if [ -z "$FILES" ]; then
+    exit 0
+fi
+
+echo "Running prettier"
+npm run pre-commit:fix:prettier -- $FILES
+
+FILES=$(echo $FILES | { grep -E '(js|ts|tsx)$' || true; })
+
+if [[ ! -z "$FILES" ]];then
+    echo "Running lints"
+    npm run pre-commit:fix:code -- $FILES
+fi

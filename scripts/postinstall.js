@@ -24,8 +24,3 @@ const pretty = prettier.format(ecs, {
 })
 console.log(`Saving file to ${targetEcsPath}`)
 fs.writeFileSync(targetEcsPath, pretty, { encoding: 'utf8' })
-
-const isCi = process.env.CI !== undefined
-if (!isCi) {
-  require('husky').install()
-}

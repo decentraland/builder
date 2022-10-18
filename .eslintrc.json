@@ -1,7 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": ["src/contracts/*.ts", "src/ecsScene/scene.js", "package.json", "package-lock.json"],
+  "ignorePatterns": ["src/contracts/*.ts", "src/ecsScene/scene.js", "scripts/*.js", "package.json", "package-lock.json"],
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "prettier"],
   "env": {
@@ -9,11 +9,10 @@
     "es6": true
   },
   "rules": {
-    "@typescript-eslint/no-non-null-assertion": "error",
-    "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/ban-types": "error",
-    "@typescript-eslint/quotemark": "error",
-    "@typescript-eslint/no-commented-out-code": "error"
+    "@typescript-eslint/ban-tslint-comment": "error",
+    "@typescript-eslint/quotes": ["error", "single"],
+    "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }]
   },
   "overrides": [
     {
@@ -21,7 +20,8 @@
       "extends": ["plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking"],
       "rules": {
         "@typescript-eslint/no-unnecessary-type-assertion": "error",
-        "@typescript-eslint/explicit-module-boundary-types": "off"
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-unused-vars": "error"
       },
       "parserOptions": {
         "project": ["./tsconfig.json"]
