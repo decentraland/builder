@@ -113,7 +113,10 @@
     "check:code": "eslint . --max-warnings=0",
     "check:prettier": "prettier -c 'src/**/*.{js,ts,json,yml,md,tsx,html,css}'",
     "fix:code": "npm run check:code -- --fix",
-    "fix:prettier": "prettier --write 'src/**/*.{js,ts,json,yml,md,tsx,html,css}'"
+    "fix:prettier": "prettier --write 'src/**/*.{js,ts,json,yml,md,tsx,html,css}'",
+    "pre-commit:fix:code": "eslint --fix",
+    "pre-commit:fix:prettier": "prettier --write",
+    "prepare": "husky install"
   },
   "jest": {
     "moduleNameMapper": {
