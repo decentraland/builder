@@ -92,7 +92,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
                     <ItemImage item={item} />
                     {item.name}
                   </Table.Cell>
-                  <Table.Cell>{t(`${item.type}.category.${item.data.category}`)}</Table.Cell>
+                  <Table.Cell>{t(`${item.type}.category.${item.data.category!}`)}</Table.Cell>
                   <Table.Cell>
                     {getBodyShapes(item)
                       .map(bodyShape => t(`body_shapes.${toBodyShapeType(bodyShape)}`))
@@ -144,7 +144,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
                     <ItemImage item={item} />
                     {item.name}
                   </Table.Cell>
-                  <Table.Cell>{t('wearable.category.' + item.data.category)}</Table.Cell>
+                  <Table.Cell>{t(`wearable.category.${item.data.category!}`)}</Table.Cell>
                   <Table.Cell>
                     {getBodyShapes(item)
                       .map(bodyShape => t(`body_shapes.${toBodyShapeType(bodyShape)}`))
@@ -376,7 +376,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     const { name, onClose, metadata } = this.props
     const { view } = metadata as ApprovalFlowModalMetadata
     let content: React.ReactNode
-    let size: string = 'small'
+    let size = 'small'
     switch (view) {
       case ApprovalFlowModalView.LOADING:
         content = this.renderLoadingView()
