@@ -1,3 +1,4 @@
 src/contracts
 src/ecsScene
 src/components/Preview/loader.json
+src/modules/analytics/rollbar.ts
