@@ -158,7 +158,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   sortContentZipBothBodyShape = (bodyShape: BodyShapeType, contents: Record<string, Blob>): SortedContent => {
-    let male: Record<string, Blob> = {},
+    const male: Record<string, Blob> = {},
       female: Record<string, Blob> = {}
     for (const key in contents) {
       if (key.startsWith('male/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE)) {
@@ -177,7 +177,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
     // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
-    let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
+    const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
     let urn: string | undefined
     if (
       decodedCollectionUrn &&
@@ -404,13 +404,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     this.setState({ item: item, category: item.data.category, rarity: item.rarity })
   }
 
-  handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+  handleCategoryChange = async (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
     if (this.state.category !== category) {
-      if (this.state.type === ItemType.WEARABLE) {
-        this.updateThumbnailByCategory(category)
-      }
       this.setState({ category })
+      if (this.state.type === ItemType.WEARABLE) {
+        await this.updateThumbnailByCategory(category)
+      }
     }
   }
 
@@ -566,7 +566,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { bodyShape, type, view } = this.state
     const { metadata } = this.props
     if (isAddingRepresentation) {
-      return t('create_single_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+      return t('create_single_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape!}`) })
     }
 
     if (metadata && metadata.changeItemFile) {
@@ -586,7 +586,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { weareblePreviewUpdated, type, model } = this.state
     // if model is an image, the wearable preview won't be needed
     if (model && isImageFile(model)) {
-      this.getMetricsAndScreenshot()
+      await this.getMetricsAndScreenshot()
       return
     }
 
@@ -594,7 +594,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     this.setState({ previewController: controller })
 
     if (weareblePreviewUpdated) {
-      this.getMetricsAndScreenshot()
+      await this.getMetricsAndScreenshot()
       if (type === ItemType.EMOTE) {
         const length = await controller.emote.getLength()
         await controller.emote.goTo(Math.floor(Math.random() * length))
@@ -676,7 +676,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               value={rarity}
               options={rarities.map(value => ({
                 value,
-                label: t(`wearable.supply`, {
+                label: t('wearable.supply', {
                   count: getMaxSupplyForRarity(value),
                   formatted: getMaxSupplyForRarity(value).toLocaleString()
                 }),
@@ -703,7 +703,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           label={t('create_single_item_modal.category_label')}
           placeholder={t('create_single_item_modal.category_placeholder')}
           value={categories.includes(category!) ? category : undefined}
-          options={categories.map(value => ({ value, text: t(`${type}.category.${value}`) }))}
+          options={categories.map(value => ({ value, text: t(`${type!}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
       </>
