@@ -14,9 +14,9 @@ import { entitySaga } from './sagas'
 
 describe('Entity sagas', () => {
   describe('when handling the FETCH_ENTITIES_BY_POINTERS_REQUEST action', () => {
-    const client = ({
+    const client = {
       fetchEntitiesByPointers: jest.fn()
-    } as unknown) as CatalystClient
+    } as unknown as CatalystClient
 
     it('should dispatch a failue action if the client throws', () => {
       const pointers = ['aPointer', 'anotherPointer']
@@ -58,9 +58,9 @@ describe('Entity sagas', () => {
   })
 
   describe('when handling the FETCH_ENTITIES_BY_IDS_REQUEST action', () => {
-    const client = ({
+    const client = {
       fetchEntitiesByIds: jest.fn()
-    } as unknown) as CatalystClient
+    } as unknown as CatalystClient
 
     it('should dispatch a failue action if the client throws', () => {
       const ids = ['QmHash']

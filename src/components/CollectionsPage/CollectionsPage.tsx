@@ -144,15 +144,8 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const {
-      collectionsPaginationData,
-      itemsPaginationData,
-      view,
-      isThirdPartyManager,
-      onSetView,
-      isLoadingItems,
-      isLoadingCollections
-    } = this.props
+    const { collectionsPaginationData, itemsPaginationData, view, isThirdPartyManager, onSetView, isLoadingItems, isLoadingCollections } =
+      this.props
     const { page } = this.state
     const totalCollections = collectionsPaginationData?.total
     const totalItems = itemsPaginationData?.total

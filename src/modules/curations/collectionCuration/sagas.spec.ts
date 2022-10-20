@@ -36,12 +36,12 @@ const mockAddress = '0x6D7227d6F36FC997D53B4646132b3B55D751cc7c'
 const mockCollectionId = 'collectionId'
 const mockErrorMessage = 'Some Error'
 
-const mockBuilder = ({
+const mockBuilder = {
   fetchCurations: jest.fn(),
   fetchCuration: jest.fn(),
   pushCuration: jest.fn(),
   updateCuration: jest.fn()
-} as any) as BuilderAPI
+} as any as BuilderAPI
 
 afterEach(() => {
   jest.clearAllMocks()

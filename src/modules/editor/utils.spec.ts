@@ -74,7 +74,7 @@ describe('when filtering wearables', () => {
   })
 
   describe('and the list of wearables contains some wearables with the specified body shape or category', () => {
-    let matchingWearable = convertWearable(wearable, WearableCategory.EARRING, BodyShape.MALE)
+    const matchingWearable = convertWearable(wearable, WearableCategory.EARRING, BodyShape.MALE)
 
     beforeEach(() => {
       wearables = [matchingWearable, convertWearable(wearable, WearableCategory.EARRING, BodyShape.FEMALE)]
@@ -209,7 +209,7 @@ describe('when passing a Color4 to the toHex util', () => {
 describe('when converting an item', () => {
   let item: Item
   beforeAll(() => {
-    item = ({
+    item = {
       id: 'anItem',
       name: 'An Item',
       description: 'This is an item',
@@ -236,7 +236,7 @@ describe('when converting an item', () => {
         ]
       },
       thumbnail: 'thumbnail.png'
-    } as unknown) as Item
+    } as unknown as Item
   })
   describe('when using the toWearable util', () => {
     it('should return the wearable definition corresponding to that item', () => {

@@ -20,7 +20,7 @@ import { PaginatedResource } from 'lib/api/pagination'
 import { toItemObject } from './utils'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
-const getChainIdByNetworkMock: jest.Mock<typeof getChainIdByNetwork> = (getChainIdByNetwork as unknown) as jest.Mock<
+const getChainIdByNetworkMock: jest.Mock<typeof getChainIdByNetwork> = getChainIdByNetwork as unknown as jest.Mock<
   typeof getChainIdByNetwork
 >
 

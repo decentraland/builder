@@ -14,7 +14,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onClosePreview: () => dispatch(togglePreview(false))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ViewPort)
+export default connect(mapState, mapDispatch)(ViewPort)

@@ -26,10 +26,10 @@ const CollectionPublishButton = (props: Props) => {
 
   const hasExceededMaxItemsLimit = items.length > MAX_ITEMS
 
-  const isPublishDisabled = useMemo(() => items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit, [
-    items,
-    hasExceededMaxItemsLimit
-  ])
+  const isPublishDisabled = useMemo(
+    () => items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit,
+    [items, hasExceededMaxItemsLimit]
+  )
 
   const getAuthorization = (): Authorization => {
     return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)

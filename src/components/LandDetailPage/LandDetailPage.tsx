@@ -66,13 +66,17 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     return !!deployment && !!hovered && hovered.id === deployment.id
   }
 
-  getHoverStrokeLayer = (land: Land): Layer => (x, y) => {
-    return this.isHovered(x, y) ? { color: hoverStrokeByRole[land.role], scale: 1.4 } : null
-  }
+  getHoverStrokeLayer =
+    (land: Land): Layer =>
+    (x, y) => {
+      return this.isHovered(x, y) ? { color: hoverStrokeByRole[land.role], scale: 1.4 } : null
+    }
 
-  getHoverFillLayer = (land: Land): Layer => (x, y) => {
-    return this.isHovered(x, y) ? { color: hoverFillByRole[land.role], scale: 1.2 } : null
-  }
+  getHoverFillLayer =
+    (land: Land): Layer =>
+    (x, y) => {
+      return this.isHovered(x, y) ? { color: hoverFillByRole[land.role], scale: 1.2 } : null
+    }
 
   computeOccupiedLand(land: Land, deployments: Deployment[]) {
     const { landTiles } = this.props

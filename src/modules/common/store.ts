@@ -98,10 +98,10 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     DESTROY_IDENTITY
   ],
   transform: state => {
-    let projects: DataByKey<Project> = {}
-    let scene: DataByKey<Scene> = {}
+    const projects: DataByKey<Project> = {}
+    const scene: DataByKey<Scene> = {}
 
-    for (let id of state.sync.project.localIds) {
+    for (const id of state.sync.project.localIds) {
       const project = state.project.data[id]
       if (!project) continue
       projects[id] = project
@@ -166,7 +166,7 @@ if (isDevelopment) {
   _window.getState = store.getState
 }
 
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
   const syncCount = getLoadingSet(store.getState()).size
   return syncCount > 0 || null
 }

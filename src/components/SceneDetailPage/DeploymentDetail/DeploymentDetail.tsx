@@ -13,13 +13,15 @@ import { Props } from './DeploymentDetail.types'
 import './DeploymentDetail.css'
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
-  getHighlightLayer = (color: Record<RoleType, string>, scale: number): Layer => (x, y) => {
-    const { deployment, landTiles } = this.props
-    const id = coordsToId(x, y)
-    const tile = landTiles[id]
-    if (!tile) return null
-    return deployment.parcels.some(parcel => parcel === id) ? { color: color[tile.land.role], scale } : null
-  }
+  getHighlightLayer =
+    (color: Record<RoleType, string>, scale: number): Layer =>
+    (x, y) => {
+      const { deployment, landTiles } = this.props
+      const id = coordsToId(x, y)
+      const tile = landTiles[id]
+      if (!tile) return null
+      return deployment.parcels.some(parcel => parcel === id) ? { color: color[tile.land.role], scale } : null
+    }
 
   render() {
     const { project, deployment, landTiles, onNavigate, onOpenModal } = this.props

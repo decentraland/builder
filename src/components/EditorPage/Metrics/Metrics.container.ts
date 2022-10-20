@@ -32,7 +32,4 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (_: MapDispatch): MapDispatchProps => ({})
 
-export default connect(
-  mapState,
-  mapDispatch
-)(Metrics)
+export default connect(mapState, mapDispatch)(Metrics)

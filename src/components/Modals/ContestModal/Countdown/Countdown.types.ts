@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 export type State = {
-  timeout: ReturnType<typeof setTimeout> | null,
-  diff: number,
-  days: number,
-  hours: number,
-  minutes: number,
+  timeout: ReturnType<typeof setTimeout> | null
+  diff: number
+  days: number
+  hours: number
+  minutes: number
   seconds: number
 }
 

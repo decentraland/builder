@@ -285,7 +285,11 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
         <div className="footer">
           {isRenderingAnEmote && !isLoading && wearableController ? (
             <div className="emote-controls-container">
-              <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" wearablePreviewController={wearableController} />
+              <EmoteControls
+                className="emote-controls"
+                wearablePreviewId="wearable-editor"
+                wearablePreviewController={wearableController}
+              />
             </div>
           ) : null}
           <div className="options">

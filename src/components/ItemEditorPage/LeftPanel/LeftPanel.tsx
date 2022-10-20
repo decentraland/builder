@@ -70,7 +70,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
         }
       }
     } else if (prevProps.selectedItemId && selectedItemId && prevProps.selectedItemId !== selectedItemId) {
-      const items = visibleItems.filter((item) => item.type !== ItemType.EMOTE)
+      const items = visibleItems.filter(item => item.type !== ItemType.EMOTE)
       onSetItems(items)
     } else {
       // fetch only if this was triggered by a connecting event or if th selectedCollection changes

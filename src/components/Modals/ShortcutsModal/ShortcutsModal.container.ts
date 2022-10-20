@@ -12,7 +12,4 @@ const mapState = (_: RootState): MapStateProps => ({
 
 const mapDispatch = (_: Dispatch): MapDispatchProps => ({})
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ShortcutsModal)
+export default connect(mapState, mapDispatch)(ShortcutsModal)

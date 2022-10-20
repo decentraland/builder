@@ -10,13 +10,11 @@ import {
 // Function that blocks the execution and waits until a tx is mined or it fails
 export function* waitForTx(txHash: string) {
   while (true) {
-    const {
-      success,
-      failure
-    }: { success: FetchTransactionSuccessAction | undefined; failure: FetchTransactionFailureAction | undefined } = yield race({
-      success: take(FETCH_TRANSACTION_SUCCESS),
-      failure: take(FETCH_TRANSACTION_FAILURE)
-    })
+    const { success, failure }: { success: FetchTransactionSuccessAction | undefined; failure: FetchTransactionFailureAction | undefined } =
+      yield race({
+        success: take(FETCH_TRANSACTION_SUCCESS),
+        failure: take(FETCH_TRANSACTION_FAILURE)
+      })
 
     if (success?.payload.transaction.hash === txHash) {
       break
