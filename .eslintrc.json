@@ -10,7 +10,7 @@
     "package-lock.json"
   ],
   "plugins": ["@typescript-eslint"],
-  "extends": ["eslint:recommended", "prettier"],
+  "extends": ["eslint:recommended", "react-app", "react-app/jest", "prettier"],
   "env": {
     "browser": true,
     "es6": true
@@ -18,7 +18,7 @@
   "rules": {
     "@typescript-eslint/ban-types": "error",
     "@typescript-eslint/ban-tslint-comment": "error",
-    "@typescript-eslint/quotes": ["error", "single"],
+    "@typescript-eslint/quotes": ["error", "single", { "avoidEscape": true }],
     "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }]
   },
   "overrides": [
