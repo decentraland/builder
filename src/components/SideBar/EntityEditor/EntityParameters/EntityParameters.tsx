@@ -12,7 +12,7 @@ import SliderField from '../SliderField'
 import { Props } from './EntityParameters.types'
 
 export default class EntityParameters extends React.PureComponent<Props> {
-  handleFieldChange = (id: string, value: any, debounce: boolean = false) => {
+  handleFieldChange = (id: string, value: any, debounce = false) => {
     const values = { ...this.props.values, [id]: value }
     this.props.onChange(values, debounce)
   }
@@ -45,7 +45,7 @@ export default class EntityParameters extends React.PureComponent<Props> {
         )
       }
       case AssetParameterType.ENTITY: {
-        let entityName = values[param.id] as string
+        const entityName = values[param.id] as string
         return (
           <EntityField
             id={parameterId}

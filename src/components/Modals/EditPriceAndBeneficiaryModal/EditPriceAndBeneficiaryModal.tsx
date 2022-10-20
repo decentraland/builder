@@ -77,11 +77,11 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     const priceInWei = ethers.utils.parseEther(isFree ? '0' : price!).toString()
     const beneficiary = this.getBeneficiary()
 
-    if (item!.isPublished) {
-      onSetPriceAndBeneficiary(item.id, priceInWei, beneficiary!)
+    if (item.isPublished) {
+      onSetPriceAndBeneficiary(item.id, priceInWei, beneficiary)
     } else {
       const newItem: Item = {
-        ...item!,
+        ...item,
         price: priceInWei,
         beneficiary
       }

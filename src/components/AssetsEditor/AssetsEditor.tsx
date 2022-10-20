@@ -20,8 +20,8 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
 
   getAssets() {
     const { assetPack, ignoredAssets } = this.props
-    let assets = []
-    for (let asset of assetPack.assets) {
+    const assets = []
+    for (const asset of assetPack.assets) {
       if (ignoredAssets && ignoredAssets.length > 0 && ignoredAssets.includes(asset.id)) {
         continue
       }
@@ -89,7 +89,7 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
 
   getAssetPackErrors = () => {
     let errors: Record<string, Record<string, string>> = {}
-    for (let asset of this.getAssets()) {
+    for (const asset of this.getAssets()) {
       errors = { ...errors, ...this.getErrors(asset) }
     }
     return errors
@@ -161,7 +161,7 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
     const asset = assets[currentAsset]
     const currentAssetError = errors[asset.id]
 
-    let paginationClasses = 'pagination'
+    const paginationClasses = 'pagination'
 
     return (
       <div className="AssetsEditor">

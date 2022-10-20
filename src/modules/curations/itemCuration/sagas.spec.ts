@@ -35,7 +35,7 @@ afterEach(() => {
 describe('when fetching item curations', () => {
   describe('when the api request fails', () => {
     beforeEach(() => {
-      ;(mockBuilder.fetchItemCurations as jest.Mock).mockRejectedValueOnce(new Error(mockErrorMessage))
+      (mockBuilder.fetchItemCurations as jest.Mock).mockRejectedValueOnce(new Error(mockErrorMessage))
     })
 
     it('should put the fetch item curations fail action with an error', () => {

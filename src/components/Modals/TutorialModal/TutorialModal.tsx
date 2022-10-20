@@ -44,7 +44,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
   renderSteps = () => {
     const { step } = this.state
-    let out: JSX.Element[] = []
+    const out: JSX.Element[] = []
 
     for (let i = 0; i < this.slides.length; i++) {
       out.push(<div key={`step-${i}`} className={'step ' + (i === step ? 'active' : '')} onClick={() => this.goToSlide(i)} />)

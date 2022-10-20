@@ -17,7 +17,7 @@ const mapState = (state: RootState): MapStateProps => {
 
   // The presence of both the entity and the script component are guranteed by the ItemDrawer container
   const components = getEntityComponentsByType(state)[entityId]
-  const script = components![ComponentType.Script] as ComponentDefinition<ComponentType.Script>
+  const script = components[ComponentType.Script] as ComponentDefinition<ComponentType.Script>
   const entity = getEntities(state)[entityId]
 
   // TODO: There may not be an Asset if the scene is imported from another account

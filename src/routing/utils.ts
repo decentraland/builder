@@ -74,7 +74,7 @@ export function getValue<V>(value: string | number | null | undefined, defaultVa
   return value
 }
 
-export function getPage(value: string | number | null | undefined, defaultValue: number = 1) {
+export function getPage(value: string | number | null | undefined, defaultValue = 1) {
   if (!value) {
     return defaultValue
   }

@@ -41,13 +41,13 @@ export const getComponentsByEntityId = createSelector<RootState, Scene['entities
   getEntities,
   getComponents,
   (entities, components) => {
-    let out: Record<string, AnyComponent[]> = {}
+    const out: Record<string, AnyComponent[]> = {}
 
-    for (let entityId in entities) {
+    for (const entityId in entities) {
       if (entityId && entities && entityId in entities) {
         const componentReferences = entities[entityId].components
 
-        for (let componentId of componentReferences) {
+        for (const componentId of componentReferences) {
           if (!out[entityId]) {
             out[entityId] = []
           }
@@ -69,7 +69,7 @@ export const getEntityComponentsByType = createSelector<
 >(getEntities, getComponents, (entities, components) => {
   const out: Record<string, Record<ComponentType, AnyComponent>> = {}
 
-  for (let entityId in entities) {
+  for (const entityId in entities) {
     if (entities && entityId in entities) {
       const componentReferences = entities[entityId].components
       for (const componentId of componentReferences) {
@@ -91,7 +91,7 @@ export const getShapesByEntityId = createSelector<RootState, Scene['entities'], 
   (entities, components) => {
     const out: Record<string, ShapeComponent> = {}
 
-    for (let entityId in entities) {
+    for (const entityId in entities) {
       if (entityId && entities && entityId in entities) {
         const componentReferences = entities[entityId].components
         for (const componentId of componentReferences) {
@@ -143,7 +143,7 @@ export const getComponentsByType = createSelector<RootState, Scene | null, Recor
 
     if (scene) {
       const components = scene.components
-      for (let component of Object.values(components)) {
+      for (const component of Object.values(components)) {
         if (!out[component.type]) {
           out[component.type] = []
         }
@@ -161,9 +161,9 @@ export const getGLTFsByAssetId = createSelector<RootState, Scene | null, Record<
     if (!scene) return {}
 
     const componentData = scene.components
-    let res: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
+    const res: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
 
-    for (let key in componentData) {
+    for (const key in componentData) {
       const comp = componentData[key] as ComponentDefinition<ComponentType.GLTFShape>
       if (comp.type === ComponentType.GLTFShape) {
         res[comp.data.assetId] = comp
@@ -180,9 +180,9 @@ export const getCollectiblesByURL = createSelector<RootState, Scene | null, Reco
     if (!scene) return {}
 
     const componentData = scene.components
-    let res: Record<string, ComponentDefinition<ComponentType.NFTShape>> = {}
+    const res: Record<string, ComponentDefinition<ComponentType.NFTShape>> = {}
 
-    for (let key in componentData) {
+    for (const key in componentData) {
       const comp = componentData[key] as ComponentDefinition<ComponentType.NFTShape>
       if (comp.type === ComponentType.NFTShape) {
         res[comp.data.url] = comp

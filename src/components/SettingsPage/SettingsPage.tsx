@@ -67,7 +67,7 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
                   <Blockie seed={wallet.address} scale={12} />
                 </div>
                 <div className="address-container">
-                  <div className="address">{isMobile() ? shorten(wallet.address!) : wallet.address}</div>
+                  <div className="address">{isMobile() ? shorten(wallet.address) : wallet.address}</div>
                   <CopyToClipboard text={wallet.address} onCopy={this.handleOnCopy}>
                     {hasCopiedText ? (
                       <span>{t('settings_page.copied')}</span>

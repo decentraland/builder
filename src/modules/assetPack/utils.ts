@@ -16,7 +16,7 @@ export async function convertToFullAssetPack(
   const fullAssetPack: FullAssetPack = { ...rawAssetPack, assets: [] }
   const rawContents: RawAssetContents = {}
 
-  for (let asset of rawAssetPack.assets) {
+  for (const asset of rawAssetPack.assets) {
     const { contents, thumbnail } = asset
     const isIgnored = ignoredAssets.includes(asset.id)
     rawContents[asset.id] = {}
@@ -60,7 +60,7 @@ export async function convertToFullAssetPack(
 export function getAssetPackFileCount(assetPack: FullAssetPack): number {
   let count = 0
 
-  for (let asset of assetPack.assets) {
+  for (const asset of assetPack.assets) {
     count += Object.keys(asset.contents).length
   }
 
