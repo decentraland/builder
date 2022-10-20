@@ -39,26 +39,13 @@ export function getCollectionEditorURL(collection: Collection, items: Item[]): s
   return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })
 }
 
-export function getExplorerURL({
-  collection,
-  item_ids,
-  hasNewEmotes = false
-}: {
-  collection?: Collection
-  item_ids?: string[]
-  hasNewEmotes?: boolean
-}): string {
+export function getExplorerURL({ collection, item_ids }: { collection?: Collection; item_ids?: string[] }): string {
   if (!collection && !item_ids) {
     throw new Error('Either a collection or item ids must be specified to get the explorer url')
   }
   const EXPLORER_URL = config.get('EXPLORER_URL', '')
   const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
   let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=goerli&DEBUG_MODE=true`
-
-  // TODO: @emotes remove this when kernel and explorer are released. This is temporary so creators and preview the new emotes
-  if (hasNewEmotes) {
-    URL += `&renderer-branch=feat/new-nft-emotes-flow&kernel-branch=feat/fetch-emotes`
-  }
 
   if (collection) {
     URL += `&WITH_COLLECTIONS=${collection.id}`

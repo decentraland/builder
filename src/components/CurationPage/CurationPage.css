@@ -25,3 +25,7 @@
 .ui.dropdown.selected {
   color: var(--primary);
 }
+
+.CurationPage .filters .filterByMvmfTag {
+  margin-right: 16px;
+}

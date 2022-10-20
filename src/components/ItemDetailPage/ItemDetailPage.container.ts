@@ -7,7 +7,6 @@ import { getItemId } from 'modules/location/selectors'
 import { getCollection } from 'modules/collection/selectors'
 import { getItem, getLoading, hasViewAndEditRights } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
-import { getIsEmotesFlowEnabled } from 'modules/features/selectors'
 import { FETCH_ITEMS_REQUEST, DELETE_ITEM_REQUEST, deleteItemRequest, saveItemRequest, SAVE_ITEM_REQUEST } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDetailPage.types'
 import ItemDetailPage from './ItemDetailPage'
@@ -27,8 +26,7 @@ const mapState = (state: RootState): MapStateProps => {
       isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) ||
       isLoadingType(getLoading(state), DELETE_ITEM_REQUEST) ||
       isLoadingType(getLoading(state), SAVE_ITEM_REQUEST),
-    hasAccess: item !== null && hasViewAndEditRights(state, wallet.address, collection, item),
-    isEmotesFeatureFlagOn: getIsEmotesFlowEnabled(state)
+    hasAccess: item !== null && hasViewAndEditRights(state, wallet.address, collection, item)
   }
 }
 

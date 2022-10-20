@@ -13,7 +13,6 @@ export type Props = {
   authorizations: Authorization[]
   status: SyncStatus
   hasPendingCuration: boolean
-  isNewEmotesPublishFlagOn: boolean
   isNewPublishWizardFlowFlagOn: boolean
   onPublish: (newPublishWizardFlow: boolean) => void
   onPush: () => void
@@ -23,7 +22,7 @@ export type Props = {
 export type OwnProps = Pick<Props, 'collection'>
 export type MapStateProps = Pick<
   Props,
-  'wallet' | 'items' | 'authorizations' | 'status' | 'hasPendingCuration' | 'isNewEmotesPublishFlagOn' | 'isNewPublishWizardFlowFlagOn'
+  'wallet' | 'items' | 'authorizations' | 'status' | 'hasPendingCuration' | 'isNewPublishWizardFlowFlagOn'
 >
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPush' | 'onInit'>
 export type MapDispatch = Dispatch<OpenModalAction | FetchCollectionCurationRequestAction>

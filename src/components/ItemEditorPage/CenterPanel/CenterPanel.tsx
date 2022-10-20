@@ -7,6 +7,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ItemType } from 'modules/item/types'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
+import BuilderIcon from 'components/Icon'
 import { ControlOptionAction } from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep.types'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
@@ -15,6 +16,7 @@ import './CenterPanel.css'
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
+    showSceneBoundaries: false,
     isShowingAvatarAttributes: false,
     isLoading: false
   }
@@ -232,9 +234,10 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       selectedBaseWearables,
       selectedItem,
       visibleItems,
-      isImportFilesModalOpen
+      isImportFilesModalOpen,
+      wearableController
     } = this.props
-    const { isShowingAvatarAttributes, isLoading } = this.state
+    const { isShowingAvatarAttributes, showSceneBoundaries, isLoading } = this.state
     const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE) && selectedItem?.type === ItemType.EMOTE
 
     return (
@@ -262,6 +265,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           onUpdate={() => this.setState({ isLoading: true })}
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
+          showSceneBoundaries={showSceneBoundaries}
         />
         {isRenderingAnEmote ? (
           <div className="zoom-controls">
@@ -279,9 +283,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           </Center>
         )}
         <div className="footer">
-          {isRenderingAnEmote ? (
+          {isRenderingAnEmote && !isLoading && wearableController ? (
             <div className="emote-controls-container">
-              <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" />
+              <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" wearablePreviewController={wearableController} />
             </div>
           ) : null}
           <div className="options">
@@ -289,6 +293,12 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               <Icon name="user" />
             </div>
             {isRenderingAnEmote ? null : this.renderEmoteSelector()}
+            <div className={`option ${showSceneBoundaries ? 'active' : ''}`}>
+              <BuilderIcon
+                name="cylinder"
+                onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
+              />
+            </div>
           </div>
           <div className={`avatar-attributes ${isShowingAvatarAttributes ? 'active' : ''}`}>
             <div className="dropdown-container">

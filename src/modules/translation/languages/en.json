@@ -699,6 +699,8 @@
     "operated_by": "Operated by",
     "type": "Type",
     "online_scenes": "Online Scenes",
+    "owner": "Owner",
+    "operators": "Operators",
     "results": "{count} {count, plural, one {result} other {results}}",
     "owner_explanation": "These are lands you own.",
     "operator_explanation": "These are lands you don't own, but the owner gave you permission to use them.",
@@ -1030,7 +1032,8 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "under_review": "Under Review",
-      "to_review": "To Review"
+      "to_review": "To Review",
+      "mvmf_collections": "Metaverse Festival Collections"
     },
     "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
@@ -1162,7 +1165,6 @@
     "locked": "Locked",
     "publish_reason_max_items": "A collection can be published with a max amount of {maxItems} items.",
     "publish_reason_no_items": "You need to add at least one item to publish your collection.",
-    "cant_publish_new_emotes": "Emotes can not be published yet",
     "publish_reason_items_not_complete": "All items must be complete to publish your collection, check if all the properties are set.",
     "emotes": "Emotes",
     "wearables": "Wearables",
@@ -1429,6 +1431,8 @@
       "hides_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
       "animation": "Animation",
       "tags": "Tags",
+      "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name}. {learn_more}",
+      "mvmf": "Metaverse Festival",
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum"
@@ -1611,5 +1615,15 @@
       "title": "Collection Approved!",
       "subtitle": "Thank you for revieweing this collection"
     }
+  },
+  "event_banner": {
+    "small": {
+      "title": "Get ready for the Metaverse Music Festival!",
+      "subtitle": "Add the {event_tag} tag to your festival-themed Wearables & Emotes before {event_date_deadline} {enter} and they'll be featured in a special Festival tab on the Marketplace during the event!",
+      "cta": "Learn More"
+    },
+    "event_category": "Cyberpunk Meets Nature realness",
+    "event_tag": "MVMF22",
+    "event_date_deadline": "October 25"
   }
 }

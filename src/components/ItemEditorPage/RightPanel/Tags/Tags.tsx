@@ -40,7 +40,11 @@ export default class Tags extends React.PureComponent<Props, State> {
   }
 
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === WHITE_SPACE_KEY_CODE || event.keyCode === ENTER_KEY_CODE || event.keyCode === COMMA_KEY_CODE) {
+    if (event.key === '#') {
+      // To avoid misunderstandings, we're forbidding the '#' usage as part of the tags
+      event.preventDefault()
+      return
+    } else if (event.keyCode === WHITE_SPACE_KEY_CODE || event.keyCode === ENTER_KEY_CODE || event.keyCode === COMMA_KEY_CODE) {
       this.handleAdd()
     } else if (event.keyCode === BACKSPACE_KEY_CODE || event.keyCode === ENTER_KEY_CODE) {
       const { draft, value } = this.state

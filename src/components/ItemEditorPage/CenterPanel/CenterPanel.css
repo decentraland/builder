@@ -19,6 +19,8 @@
 .CenterPanel .footer .options {
   margin-bottom: 16px;
   display: inline-flex;
+  width: 100%;
+  /* justify-content: space-between; */
 }
 
 .CenterPanel .footer .option {
@@ -28,6 +30,19 @@
   display: inline-block;
   margin-left: 16px;
   cursor: pointer;
+  display: flex;
+  height: 35px;
+  align-items: center;
+}
+
+.CenterPanel .footer .option .user.icon {
+  margin-bottom: 4px;
+  margin-left: 2px;
+}
+
+.CenterPanel .footer .option:last-of-type {
+  margin-right: 16px;
+  margin-left: auto;
 }
 
 .CenterPanel .footer .option.active {
@@ -44,6 +59,7 @@
 
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons {
   width: 222px;
+  height: 100%;
 }
 
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {

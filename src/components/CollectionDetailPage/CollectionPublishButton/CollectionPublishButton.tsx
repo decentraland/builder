@@ -9,7 +9,7 @@ import { ContractName } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { isComplete } from 'modules/item/utils'
-import { ItemType, SyncStatus } from 'modules/item/types'
+import { SyncStatus } from 'modules/item/types'
 import { buildManaAuthorization } from 'lib/mana'
 import { Props } from './CollectionPublishButton.types'
 import UnderReview from './UnderReview'
@@ -22,11 +22,10 @@ const CollectionPublishButton = (props: Props) => {
     authorizations,
     status,
     hasPendingCuration,
-    isNewEmotesPublishFlagOn,
     isNewPublishWizardFlowFlagOn,
     onPublish,
     onPush,
-    onInit,
+    onInit
   } = props
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
@@ -37,15 +36,11 @@ const CollectionPublishButton = (props: Props) => {
   }, [collection, onInit])
 
   const hasExceededMaxItemsLimit = items.length > MAX_ITEMS
-  const isTryingToPublishEmotesButCant = useMemo(
-    () => items.some((item) => item.type === ItemType.EMOTE) && !isNewEmotesPublishFlagOn,
-    [isNewEmotesPublishFlagOn, items]
-  )
 
-  const isPublishDisabled = useMemo(
-    () => isTryingToPublishEmotesButCant || items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit,
-    [isTryingToPublishEmotesButCant, items, hasExceededMaxItemsLimit]
-  )
+  const isPublishDisabled = useMemo(() => items.length === 0 || !items.every(isComplete) || hasExceededMaxItemsLimit, [
+    items,
+    hasExceededMaxItemsLimit
+  ])
 
   const getAuthorization = (): Authorization => {
     return buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
@@ -95,12 +90,10 @@ const CollectionPublishButton = (props: Props) => {
 
       if (items.length > MAX_ITEMS) {
         reason = t('collection_detail_page.publish_reason_max_items', {
-          maxItems: MAX_ITEMS,
+          maxItems: MAX_ITEMS
         })
       } else if (items.length === 0) {
         reason = t('collection_detail_page.publish_reason_no_items')
-      } else if (isTryingToPublishEmotesButCant) {
-        reason = t('collection_detail_page.cant_publish_new_emotes')
       } else {
         reason = t('collection_detail_page.publish_reason_items_not_complete')
       }

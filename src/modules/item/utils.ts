@@ -175,6 +175,18 @@ export function buildItemMetadata(
   return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}`
 }
 
+export function buildEmoteMetada(
+  version: number,
+  type: ItemMetadataType,
+  name: string,
+  description: string,
+  category: string,
+  bodyShapeTypes: string,
+  loop: number
+): string {
+  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}`
+}
+
 // Metadata looks like this:
 // - Common: version:item_type:representation_id
 // - Wearables: version:item_type:representation_id:category:bodyshapes
@@ -199,7 +211,7 @@ export function getMetadata(item: Item) {
       if (!data.category) {
         throw new Error(`Unknown item category "${item.data}"`)
       }
-      return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
+      return buildEmoteMetada(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes, data.loop ? 1 : 0)
     }
     default:
       throw new Error(`Unknown item.type "${item.type}"`)
@@ -495,14 +507,14 @@ export function isWearableSynced(item: Item, entity: Entity) {
   return true
 }
 
-export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity, isEmotesFeatureFlagOn: boolean) {
+export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity) {
   if (item.type !== ItemType.EMOTE) {
     throw new Error('Item must be EMOTE')
   }
 
   // check if metadata has the new schema from ADR 74
   const isADR74 = 'emoteDataADR74' in entity.metadata
-  if (!isADR74 && isEmotesFeatureFlagOn) {
+  if (!isADR74) {
     return false
   }
 
@@ -544,8 +556,8 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity,
   return true
 }
 
-export function areSynced(item: Item, entity: Entity, isEmotesFeatureFlagOn: boolean) {
-  return item.type === ItemType.WEARABLE ? isWearableSynced(item, entity) : isEmoteSynced(item, entity, isEmotesFeatureFlagOn)
+export function areSynced(item: Item, entity: Entity) {
+  return item.type === ItemType.WEARABLE ? isWearableSynced(item, entity) : isEmoteSynced(item, entity)
 }
 
 export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {

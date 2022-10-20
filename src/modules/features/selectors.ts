@@ -14,14 +14,6 @@ export const getIsMaintenanceEnabled = (state: RootState) => {
   }
 }
 
-export const getIsEmotesFlowEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_EMOTE_FLOW)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsRentalsEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.RENTALS)
@@ -38,9 +30,9 @@ export const getIsEmotePlayModeEnabled = (state: RootState) => {
   }
 }
 
-export const getIsNewEmotesPublishEnabled = (state: RootState) => {
+export const getIsMVMFEnabled = (state: RootState) => {
   try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.PUBLISH_NEW_EMOTES)
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.MVMF)
   } catch (e) {
     return false
   }

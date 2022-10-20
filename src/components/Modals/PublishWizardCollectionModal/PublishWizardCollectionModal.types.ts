@@ -25,16 +25,8 @@ export type Props = ModalProps & {
   unsyncedCollectionError: string | null
   collectionError: string | null
   itemError: string | null
-  isNewEmotesPublishFlagOn: boolean
   onPublish: typeof publishCollectionRequest
   onFetchRarities: typeof fetchRaritiesRequest
-}
-
-export type State = {
-  step: number
-  email?: string
-  emailFocus: boolean
-  collectionName: string
 }
 
 export type PublishCollectionModalMetadata = {
@@ -53,7 +45,6 @@ export type MapStateProps = Pick<
   | 'isFetchingRarities'
   | 'collectionError'
   | 'itemError'
-  | 'isNewEmotesPublishFlagOn'
 >
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onFetchRarities'>
 export type MapDispatch = Dispatch<PublishCollectionRequestAction | FetchRaritiesRequestAction>
