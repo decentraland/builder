@@ -2,10 +2,11 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "ignorePatterns": [
-    "src/contracts/*.ts",
+    "src/contracts/*",
     "src/ecsScene/scene.js",
     "scripts/*.js",
     "src/modules/project/export.ts",
+    "src/modules/analytics/rollbar.ts",
     "package.json",
     "package-lock.json"
   ],

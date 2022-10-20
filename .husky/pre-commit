@@ -7,12 +7,12 @@ if [ -z "$FILES" ]; then
     exit 0
 fi
 
+TS_FILES=$(echo $FILES | { grep -E '(js|ts|tsx)$' || true; })
+
+if [[ ! -z "$TS_FILES" ]];then
+    echo "Running lints"
+    npm run pre-commit:fix:code -- $TS_FILES
+fi
+
 echo "Running prettier"
 npm run pre-commit:fix:prettier -- $FILES
-
-FILES=$(echo $FILES | { grep -E '(js|ts|tsx)$' || true; })
-
-if [[ ! -z "$FILES" ]];then
-    echo "Running lints"
-    npm run pre-commit:fix:code -- $FILES
-fi

@@ -110,7 +110,7 @@
     "bundle:svg": "npx svg-sprite -D src/components/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg",
     "build:contracts": "typechain --target ethers-v5 --out-dir src/contracts src/contracts/*.json",
     "lint": "eslint -c .eslintrc.json --ext .ts src",
-    "check:code": "eslint -c .eslintrc.json --max-warnings=0 src",
+    "check:code": "eslint -c .eslintrc.json src",
     "check:prettier": "prettier --config .prettierrc.json -c 'src/**/*.{js,ts,json,yml,md,tsx,html,css}'",
     "fix:code": "npm run check:code -- --fix",
     "fix:prettier": "npm run check:prettier -- --write",
