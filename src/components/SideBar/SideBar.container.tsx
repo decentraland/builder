@@ -11,7 +11,7 @@ import SideBar from './SideBar'
 
 const mapState = (state: RootState): MapStateProps => {
   const selectedEntityIds = getSelectedEntityIds(state)
-  let hasScript: boolean = false
+  let hasScript = false
 
   if (selectedEntityIds.length === 1) {
     const components = getEntityComponentsByType(state)[selectedEntityIds[0]]

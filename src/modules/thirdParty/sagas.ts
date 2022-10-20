@@ -200,7 +200,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* pushChangesToThirdPartyItems(items: Item[]) {
     const collectionId = getCollectionId(items)
 
-    const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId!)
+    const itemCurations: ItemCuration[] = yield select(getItemCurations, collectionId)
     const MAX_CONCURRENT_REQUESTS = 3
     const queue = new PQueue({ concurrency: MAX_CONCURRENT_REQUESTS })
     const promisesOfItemsBeingUpdated: (() => Promise<ItemCuration>)[] = items.map((item: Item) => {
@@ -290,7 +290,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const { items, collection, tree, hashes } = action.payload
     const REQUESTS_BATCH_SIZE = 5
 
-    let queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
+    const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
     const errors: ThirdPartyError[] = []
     const identity: AuthIdentity | undefined = yield call(getIdentity)
 
@@ -309,7 +309,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
       try {
         entity = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
         try {
-          await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity!, entity.entityId) })
+          await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
           actionProgressChannel.put({
             progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100),
             tpAction: ThirdPartyAction.APPROVE_COLLECTION

@@ -13,7 +13,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       this.setState({ loadedItemId: id }, () => onFetchItem(id))
     }
     if (isConnected && id && item?.collectionId && !collection) {
-      onFetchCollection(item.collectionId!)
+      onFetchCollection(item.collectionId)
     }
   }
 
@@ -25,7 +25,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       this.setState({ loadedItemId: id }, () => onFetchItem(id))
     }
     if (isConnected && id && item?.collectionId && !collection) {
-      onFetchCollection(item.collectionId!)
+      onFetchCollection(item.collectionId)
     }
   }
 

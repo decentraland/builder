@@ -8,11 +8,11 @@ jest.mock('decentraland-dapps/dist/lib/eth')
 afterEach(() => jest.resetAllMocks())
 
 describe('when getting the catalyst item URN', () => {
-  let contractAddress = '0x123123'
-  let tokenId = 'token-id'
+  const contractAddress = '0x123123'
+  const tokenId = 'token-id'
 
   beforeEach(() => {
-    ;(getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
+    (getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
   })
 
   it('should use the supplied data to generate a valid item URN', () => {
@@ -26,11 +26,11 @@ describe('when getting the catalyst item URN', () => {
 })
 
 describe('when building the third party URN', () => {
-  let thirdPartyName = 'some-tp-name'
-  let collectionId = 'the-collection-id'
+  const thirdPartyName = 'some-tp-name'
+  const collectionId = 'the-collection-id'
 
   beforeEach(() => {
-    ;(getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
+    (getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
   })
 
   it('should return a valid third party collection urn', () => {
@@ -45,7 +45,7 @@ describe('when building the third party URN', () => {
   })
 
   describe('when supplying a token id', () => {
-    let tokenId = 'a-wonderful-token-id'
+    const tokenId = 'a-wonderful-token-id'
 
     it('should return a valid third party item urn', () => {
       expect(buildThirdPartyURN(thirdPartyName, collectionId, tokenId)).toBe(
@@ -69,7 +69,7 @@ describe('when decoding an URN', () => {
 
   describe('when the URN is invalid', () => {
     it('should throw an error', () => {
-      let urn = 'invalid things here'
+      const urn = 'invalid things here'
       expect(() => decodeURN(urn)).toThrow('Invalid URN: "invalid things here"')
     })
   })
@@ -110,7 +110,7 @@ describe('when decoding an URN', () => {
   })
 
   describe('when a valid third party', () => {
-    let thirdPartyRecordURN = 'urn:decentraland:matic:collections-thirdparty:crypto-motors'
+    const thirdPartyRecordURN = 'urn:decentraland:matic:collections-thirdparty:crypto-motors'
 
     describe('when third party record urn is used', () => {
       it('should decode and return each group', () => {

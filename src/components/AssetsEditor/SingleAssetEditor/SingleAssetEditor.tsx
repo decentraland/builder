@@ -62,7 +62,7 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
     })
   }
 
-  handleGetThumbnail = async (ground: boolean = false) => {
+  handleGetThumbnail = async (ground = false) => {
     const { asset } = this.props
 
     let mappings: Asset['contents'] | RawAsset['contents']

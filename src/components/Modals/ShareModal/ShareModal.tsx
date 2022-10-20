@@ -153,16 +153,16 @@ export default class ShareModal extends React.PureComponent<Props, State> {
           </div>
           <div className="button-group">
             <a className="button facebook" onClick={this.handleShareWithFacebook} href={this.getFacebookLink()}>
-              <Icon name="facebook" /> {t(`global.share`)}
+              <Icon name="facebook" /> {t('global.share')}
             </a>
             <a className="button twitter" onClick={this.handleShareWithTwitter} href={this.getTwitterLink()}>
-              <Icon name="twitter" /> {t(`global.share`)}
+              <Icon name="twitter" /> {t('global.share')}
             </a>
           </div>
           <div className="copy-group">
             <input ref={this.input} className="copy-input" readOnly={true} value={this.getShareLink()} onFocus={this.handleFocusLink} />
             <CopyToClipboard text={this.getShareLink()} onCopy={this.handleCopyLink}>
-              <span className="copy-button">{copied ? t(`share_modal.copied`) : t(`share_modal.copy`)}</span>
+              <span className="copy-button">{copied ? t('share_modal.copied') : t('share_modal.copy')}</span>
             </CopyToClipboard>
           </div>
         </div>

@@ -34,8 +34,7 @@ export const migrations = {
   },
   '4': (state: RootState) => {
     const shouldMigrateProjects = !!state.project && !!state.project.data
-    /* tslint:disable */
-    return {
+       return {
       ...state,
       project: shouldMigrateProjects
         ? {
@@ -47,8 +46,7 @@ export const migrations = {
           }
         : state.project
     }
-    /* tslint:enable */
-  },
+     },
   '5': (state: RootState) => {
     for (const scene of Object.values((state && state.scene && state.scene.present && state.scene.present.data) || {})) {
       // mutation ahead
@@ -57,7 +55,7 @@ export const migrations = {
     return state
   },
   '6': (state: RootState) => {
-    for (let sceneId in state.scene.present.data) {
+    for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       addEntityName(scene)
     }
@@ -65,42 +63,42 @@ export const migrations = {
     return state
   },
   '7': (state: RootState) => {
-    for (let sceneId in state.scene.present.data) {
+    for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       addAssets(scene)
     }
     return state
   },
   '8': (state: RootState) => {
-    for (let sceneId in state.scene.present.data) {
+    for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       removeScriptSrc(scene)
     }
     return state
   },
   '9': (state: RootState) => {
-    for (let sceneId in state.scene.present.data) {
+    for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       sanitizeEntityName(scene)
     }
     return state
   },
   '10': (state: RootState) => {
-    for (let sceneId in state.scene.present.data) {
+    for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       sanitizeEntityName2(scene)
     }
     return state
   },
   '11': (state: RootState) => {
-    for (let sceneId in state.scene.present.data) {
+    for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       dedupeEntityName(scene)
     }
     return state
   },
   '12': (state: RootState) => {
-    for (let projectId in state.project.data) {
+    for (const projectId in state.project.data) {
       const project = state.project.data[projectId]
       replaceUserIdWithEthAddress(project)
     }

@@ -6,7 +6,7 @@ import { Section, Row, Narrow, Button, Dropdown, Icon, Mana, Popup } from 'decen
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Network } from '@dcl/schemas'
 import { locations } from 'routing/locations'
-import { ItemType, THUMBNAIL_PATH, WearableData } from 'modules/item/types'
+import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { areEmoteMetrics } from 'modules/models/types'
 import { Item } from 'modules/item/types'
@@ -85,14 +85,14 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
           ...item.contents,
           ...(await computeHashes({ [THUMBNAIL_PATH]: blob }))
         }
-        onSaveItem(item as Item, { [THUMBNAIL_PATH]: blob })
+        onSaveItem(item, { [THUMBNAIL_PATH]: blob })
       }
     }
   }
 
   renderPage(item: Item, collection: Collection | null) {
     const { onNavigate } = this.props
-    const data = item.data as WearableData
+    const data = item.data
     const metrics = item.metrics
 
     const isLocked = collection && isCollectionLocked(collection)
@@ -170,7 +170,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                     <div className="value urn">
                       <span>
                         {item.urn}
-                        <CopyToClipboard text={item.urn!}>
+                        <CopyToClipboard text={item.urn}>
                           <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
                         </CopyToClipboard>
                       </span>

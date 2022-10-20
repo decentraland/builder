@@ -23,7 +23,7 @@ export default class SceneStats extends React.PureComponent<Props> {
     }
   }
 
-  renderValue = (value: string | null, defaultValue: string = '0') => {
+  renderValue = (value: string | null, defaultValue = '0') => {
     const { isLoading } = this.props
     return !value && isLoading ? <Loader active size="mini" /> : value ? value : defaultValue
   }

@@ -10,7 +10,7 @@ export const LOAD_POOLS_SUCCESS = '[Success] Load pools'
 export const LOAD_POOLS_FAILURE = '[Failure] Load pools'
 
 export const loadPoolsRequest = (filters: PoolsRequestFilters) => action(LOAD_POOLS_REQUEST, filters)
-export const loadPoolsSuccess = (pools: ModelById<Pool>, total: number = 0) => action(LOAD_POOLS_SUCCESS, { pools, total })
+export const loadPoolsSuccess = (pools: ModelById<Pool>, total = 0) => action(LOAD_POOLS_SUCCESS, { pools, total })
 export const loadPoolsFailure = (error: string) => action(LOAD_POOLS_FAILURE, { error })
 
 export type LoadPoolsRequestAction = ReturnType<typeof loadPoolsRequest>

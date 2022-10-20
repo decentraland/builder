@@ -48,7 +48,7 @@ export function getUniqueNameLegacy(components: AnyComponent[], takenNames: Read
   let attempts = 1
   let rawName = 'entity'
 
-  for (let component of components) {
+  for (const component of components) {
     try {
       if (component.type === ComponentType.GLTFShape) {
         rawName = getGLTFShapeName(component as ComponentDefinition<ComponentType.GLTFShape>)
@@ -71,7 +71,7 @@ export function getUniqueNameLegacy(components: AnyComponent[], takenNames: Read
 export function addEntityName(scene: Scene) {
   const takenNames = new Set<string>()
 
-  for (let entityId in scene.entities) {
+  for (const entityId in scene.entities) {
     const entity = scene.entities[entityId]
     const components = entity.components.map(id => scene.components[id])
     const name = getUniqueNameLegacy(components, takenNames)
@@ -96,7 +96,7 @@ export function removeScriptSrc(scene: Scene) {
 export function sanitizeEntityName(scene: Scene) {
   const takenNames = new Set<string>()
 
-  for (let entityId in scene.entities) {
+  for (const entityId in scene.entities) {
     const entity = scene.entities[entityId]
     if (entity.name.match(/^\d/)) {
       const components = entity.components.map(id => scene.components[id])
@@ -110,7 +110,7 @@ export function sanitizeEntityName(scene: Scene) {
 export function sanitizeEntityName2(scene: Scene) {
   const takenNames = new Set<string>()
 
-  for (let entityId in scene.entities) {
+  for (const entityId in scene.entities) {
     const entity = scene.entities[entityId]
     // If the name is not a letter followed by more letters and numbers, then we need to update it
     if (entity.name.match(/^[A-Za-z][A-Za-z\d]+$/g) === null) {
@@ -124,7 +124,7 @@ export function sanitizeEntityName2(scene: Scene) {
 
 export function dedupeEntityName(scene: Scene) {
   const takenNames = new Set<string>()
-  for (let entityId in scene.entities) {
+  for (const entityId in scene.entities) {
     const entity = scene.entities[entityId]
     const components = entity.components.map(id => scene.components[id])
     const name = getUniqueName(components, takenNames, scene.assets)
@@ -135,8 +135,7 @@ export function dedupeEntityName(scene: Scene) {
 
 export function replaceUserIdWithEthAddress(project: Project) {
   delete (project as any).userId
-  // tslint:disable-next-line
-  if (typeof project.ethAddress === 'undefined') {
+   if (typeof project.ethAddress === 'undefined') {
     project.ethAddress = null
   }
 }

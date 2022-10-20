@@ -431,7 +431,7 @@ describe('when publishing & pushing changes to third party items', () => {
 
   describe('when the publish works fine but push items fails', () => {
     beforeEach(() => {
-      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
+      (mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
       ;(mockBuilder.pushItemCuration as jest.Mock).mockRejectedValue(new Error(errorMessage))
     })
     it('should put the publish & push changes failure action', () => {
@@ -536,7 +536,7 @@ describe('when handling the batched deployment of third party items', () => {
   describe('when the items to be deployed failed to build the entities', () => {
     let errors: ThirdPartyError[]
     beforeEach(() => {
-      ;(buildTPItemEntity as unknown as jest.Mock).mockRejectedValue(new Error('Failed to fetch contents'))
+      (buildTPItemEntity as unknown as jest.Mock).mockRejectedValue(new Error('Failed to fetch contents'))
       ;(Authenticator.signPayload as unknown as jest.Mock<typeof Authenticator.signPayload>).mockResolvedValueOnce({
         type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
         payload: 'somePayload',
@@ -557,7 +557,7 @@ describe('when handling the batched deployment of third party items', () => {
   describe('when some one of the items to be deployed failed to do so', () => {
     let errors: ThirdPartyError[]
     beforeEach(() => {
-      ;(buildTPItemEntity as unknown as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
+      (buildTPItemEntity as unknown as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
       ;(mockedCatalystClient.deployEntity as unknown as jest.Mock)
         .mockResolvedValueOnce(0)
         .mockRejectedValueOnce(new Error('Failed to deploy'))
@@ -581,7 +581,7 @@ describe('when handling the batched deployment of third party items', () => {
   describe('when one of the item curations of an item fails to be updated', () => {
     let errors: ThirdPartyError[]
     beforeEach(() => {
-      ;(buildTPItemEntity as unknown as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
+      (buildTPItemEntity as unknown as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
       ;(mockedCatalystClient.deployEntity as unknown as jest.Mock).mockResolvedValueOnce(0)
       ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockRejectedValueOnce(new Error('Failed to update'))
       ;(Authenticator.signPayload as unknown as jest.Mock<typeof Authenticator.signPayload>).mockResolvedValueOnce({
