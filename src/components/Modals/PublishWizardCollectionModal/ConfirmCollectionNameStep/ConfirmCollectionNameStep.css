@@ -1,0 +1,32 @@
+.ConfirmCollectionNameStep .details {
+  background-color: rgba(var(--dark-raw), 0.48);
+  border-radius: 8px;
+  width: 100%;
+  padding: 20px 24px 84px;
+}
+
+.ConfirmCollectionNameStep .details .title {
+  font-weight: 600;
+}
+
+.ConfirmCollectionNameStep .details .subtitle {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.ConfirmCollectionNameStep .details .description {
+  font-weight: 200;
+}
+
+.ConfirmCollectionNameStep .details .fields .dcl.field {
+  margin-top: 32px;
+}
+
+.ConfirmCollectionNameStep .actions {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.ConfirmCollectionNameStep .actions .button {
+  width: 180px;
+}

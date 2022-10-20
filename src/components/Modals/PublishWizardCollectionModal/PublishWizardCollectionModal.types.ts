@@ -6,6 +6,13 @@ import { Collection } from 'modules/collection/types'
 import { Item, Rarity } from 'modules/item/types'
 import { fetchRaritiesRequest, FetchRaritiesRequestAction } from 'modules/item/actions'
 
+export enum PublishWizardCollectionSteps {
+  CONFIRM_COLLECTION_NAME,
+  CONFIRM_COLLECTION_ITEMS,
+  REVIEW_CONTENT_POLICY,
+  PAY_PUBLICATION_FEE
+}
+
 export type Props = ModalProps & {
   metadata: PublishCollectionModalMetadata
   wallet: Wallet | null
