@@ -1280,7 +1280,17 @@
     "publish": "发布",
     "not_enough_mana": "您没有足够的{symbol} 来发布此收藏集。",
     "get_mana": "您可以使用{link} dapp获得更多信息。",
-    "unsynced_collection": "您尝试发布的集合中的项与服务器上的项存在差异。请刷新浏览器，然后重试。"
+    "unsynced_collection": "您尝试发布的集合中的项与服务器上的项存在差异。请刷新浏览器，然后重试。",
+    "confirm_collection_name_step": {
+      "title": "确认收藏名称",
+      "subtitle": "作品集名称送审后不可修改。",
+      "description": "确保它没有任何拼写错误，并且不包含您不拥有的任何知识产权 (E.g Star Wars, Sailor Moon, etc)",
+      "collection_name_label": "集合名称",
+      "collection_name_confirmation_label": "确认收藏名称",
+      "collection_name_placeholder": "您的收藏名称",
+      "collection_names_different": "集合名称不匹配",
+      "confirm_name": "确认姓名"
+    }
   },
   "sell_collection_modal": {
     "title": "您想出售您的物品吗？",
