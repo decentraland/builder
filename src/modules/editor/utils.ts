@@ -152,9 +152,7 @@ export function patchWearables(wearables: Wearable[]) {
     // 1. if the category is "skin" we need to hide all the other categories
     if (wearable.category === 'skin') {
       const alreadyHidden: string[] = [...((wearable as any).hides || [])] // The typing from decentraland-ecs is wrong and it misses the hides list
-      const hides = Array.from(
-        new Set<string>([...alreadyHidden, ...getSkinHiddenCategories()])
-      )
+      const hides = Array.from(new Set<string>([...alreadyHidden, ...getSkinHiddenCategories()]))
       return {
         ...wearable,
         hides,
@@ -271,10 +269,7 @@ export function filterWearables(wearables: Wearable[], category: WearableCategor
  * @param color - a Color4 value
  */
 export function toHex(color: Color4) {
-  return color
-    .toHexString()
-    .slice(1, 7)
-    .toLowerCase()
+  return color.toHexString().slice(1, 7).toLowerCase()
 }
 
 /**
@@ -326,7 +321,7 @@ export function toEmote(item: Item<ItemType.EMOTE>): EmoteDefinition {
     ],
     emoteDataADR74: {
       ...item.data,
-      category: item.data.category as EmoteCategory,
+      category: item.data.category,
       representations: item.data.representations.map(representation => ({
         ...representation,
         contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))

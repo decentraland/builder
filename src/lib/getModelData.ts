@@ -95,7 +95,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 
   try {
     // load model
-    let materials = new Set<string>()
+    const materials = new Set<string>()
     let bodies = 0
     let colliderTriangles = 0
     const { gltf, renderer } = await loadGltf(url, {
@@ -131,10 +131,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 
     // center camera
     let camera: OrthographicCamera
-    const size = new Box3()
-      .setFromObject(root)
-      .getSize(new Vector3())
-      .length()
+    const size = new Box3().setFromObject(root).getSize(new Vector3()).length()
     root.scale.multiplyScalar(1 / size)
     const center = new Box3().setFromObject(root).getCenter(new Vector3())
     switch (thumbnailType) {

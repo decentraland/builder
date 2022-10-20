@@ -11,7 +11,4 @@ const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onClose: () => dispatch(closeModal('TutorialModal'))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(TutorialModal)
+export default connect(mapState, mapDispatch)(TutorialModal)

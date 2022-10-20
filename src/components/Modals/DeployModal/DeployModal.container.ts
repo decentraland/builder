@@ -13,7 +13,4 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
 
 const mapDispatch = (_: Dispatch): MapDispatchProps => ({})
 
-export default connect(
-  mapState,
-  mapDispatch
-)(DeployModal)
+export default connect(mapState, mapDispatch)(DeployModal)

@@ -152,12 +152,12 @@ describe('when getting the visible items', () => {
     state = {
       ...state,
       router: routerState,
-      item: ({
+      item: {
         data: {
           someId: { id: 'someId' } as Item,
           otherId: { id: 'otherId' } as Item
         }
-      } as unknown) as ItemState,
+      } as unknown as ItemState,
       editor: {
         ...state.editor,
         visibleItemIds: ['someId', 'otherId']
@@ -172,11 +172,11 @@ describe('when getting the visible items', () => {
       state = {
         ...state,
         router: routerState,
-        item: ({
+        item: {
           data: {
             someId: { id: 'someId' } as Item
           }
-        } as unknown) as ItemState,
+        } as unknown as ItemState,
         editor: {
           ...state.editor,
           visibleItemIds: ['someId', 'doesNotExist']
@@ -198,12 +198,12 @@ describe('when getting the visible items', () => {
             search: '?reviewing=true&collection=aCollection'
           }
         },
-        item: ({
+        item: {
           data: {
             someId: { id: 'someId', collectionId: 'aCollection' } as Item,
             otherId: { id: 'otherId', collectionId: 'otherCollection' } as Item
           }
-        } as unknown) as ItemState,
+        } as unknown as ItemState,
         editor: {
           ...state.editor,
           visibleItemIds: ['someId', 'otherId']

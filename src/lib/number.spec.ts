@@ -28,7 +28,7 @@ describe('when formating bytes', () => {
     describe('and 2 decimal numbers', () => {
       it('should return 1.21 KB', () => {
         expect(formatBytes(1234, 2)).toBe('1.21 KB')
-      });
+      })
     })
   })
   describe('having 1048576 bytes as input', () => {

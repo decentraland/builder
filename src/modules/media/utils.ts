@@ -46,8 +46,8 @@ export function isRemoteURL(url: string) {
 export async function blobToDataURL(blob: Blob): Promise<string> {
   return new Promise(resolve => {
     const reader = new FileReader()
-    reader.onload = function(e) {
-      resolve((e!.target as any).result! as string)
+    reader.onload = function (e) {
+      resolve((e.target as any).result! as string)
     }
     reader.readAsDataURL(blob)
   })
@@ -106,7 +106,7 @@ export async function convertImageIntoWearableThumbnail(blob: Blob, category: We
  */
 export async function getImageType(image: Blob): Promise<ImageType> {
   const dv = new DataView(await image.arrayBuffer(), 0, 5)
-  var hexSixteenBytesValue = dv.getUint8(0).toString(16) + dv.getUint8(1).toString(16)
+  const hexSixteenBytesValue = dv.getUint8(0).toString(16) + dv.getUint8(1).toString(16)
 
   switch (hexSixteenBytesValue) {
     case '8950':

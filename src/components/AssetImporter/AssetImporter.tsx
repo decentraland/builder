@@ -22,10 +22,7 @@ import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
 
 export const getSHA256 = (data: string) => {
-  return crypto
-    .createHash('sha256')
-    .update(data)
-    .digest('hex')
+  return crypto.createHash('sha256').update(data).digest('hex')
 }
 
 export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
@@ -48,7 +45,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     return (
       <>
         {files.length === 1 && <div className="single-project">{this.renderFile(files[0])}</div>}
-        {files.length > 1 && <div className="multiple-projects">{(files as ImportedFile[]).map(saved => this.renderFile(saved))} </div>}
+        {files.length > 1 && <div className="multiple-projects">{files.map(saved => this.renderFile(saved))} </div>}
       </>
     )
   }
@@ -159,8 +156,8 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
         })
     )
 
-    let model = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
-    let script = fileNames.find(fileName => fileName.endsWith('.js')) || null
+    const model = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
+    const script = fileNames.find(fileName => fileName.endsWith('.js')) || null
     let contents = files.reduce<Record<string, Blob>>((contents, file) => {
       contents[file.name] = file.blob
       return contents
@@ -233,11 +230,11 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
   handleDropAccepted = async (acceptedFiles: File[]) => {
     const { assetPack } = this.props
     const { files } = this.state
-    let newFiles: Record<string, ImportedFile> = {}
+    const newFiles: Record<string, ImportedFile> = {}
 
     this.setState({ isLoading: true })
 
-    for (let file of acceptedFiles) {
+    for (const file of acceptedFiles) {
       let outFile: ImportedFile | null = null
       const extension = getExtension(file.name)
 
@@ -258,7 +255,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
         }
 
         if (outFile) {
-          let mappings = rawMappingsToObjectURL(outFile.asset.contents)
+          const mappings = rawMappingsToObjectURL(outFile.asset.contents)
           const { image, info } = await getModelData(mappings[outFile.asset.model], {
             mappings,
             thumbnailType: outFile.asset.category === GROUND_CATEGORY ? ThumbnailType.TOP : ThumbnailType.DEFAULT,
@@ -268,7 +265,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           revokeMappingsObjectURL(mappings)
 
           outFile.asset.thumbnail = image
-          outFile.asset.metrics = info as ModelMetrics
+          outFile.asset.metrics = info
 
           const existingAsset = assetPack.assets.find(asset => asset.id === outFile!.asset.id)
 
@@ -287,14 +284,14 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
       } catch (e) {
         outFile = {
           id: uuidv4(),
-          asset: outFile ? outFile!.asset : null,
+          asset: outFile ? outFile.asset : null,
           fileName: file.name,
           error: e.message || t('asset_pack.import.errors.invalid')
         } as ImportedFile
       }
 
       if (outFile) {
-        newFiles[outFile!.id] = outFile
+        newFiles[outFile.id] = outFile
       }
     }
 

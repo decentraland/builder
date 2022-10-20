@@ -66,17 +66,17 @@ import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_T
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
 
-let blob: Blob = new Blob()
+const blob: Blob = new Blob()
 let contents: Record<string, Blob>
 
-const builderAPI = ({
+const builderAPI = {
   saveItem: jest.fn(),
   saveItemContents: jest.fn(),
   fetchContents: jest.fn(),
   fetchCollectionItems: jest.fn(),
   fetchRarities: jest.fn(),
   fetchItems: jest.fn()
-} as unknown) as BuilderAPI
+} as unknown as BuilderAPI
 
 let builderClient: BuilderClient
 
@@ -86,10 +86,10 @@ const mockAddress = '0x6D7227d6F36FC997D53B4646132b3B55D751cc7c'
 
 beforeEach(() => {
   dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => updatedAt)
-  builderClient = ({
+  builderClient = {
     upsertItem: jest.fn(),
     getContentSize: jest.fn()
-  } as unknown) as BuilderClient
+  } as unknown as BuilderClient
   contents = { path: blob }
 })
 
@@ -482,7 +482,7 @@ describe('when handling the save item success action', () => {
       it('should put a fetch collection items success action to fetch the same page again', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
-            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData],
             [select(getAddress), mockAddress]
@@ -501,12 +501,12 @@ describe('when handling the save item success action', () => {
         const newPageNumber = Math.ceil((paginationData.total + paginationData.ids.length) / paginationData.limit)
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
-            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData],
             [select(getAddress), mockAddress]
           ])
-          .put(push(locations.thirdPartyCollectionDetail(item.collectionId!, { page: newPageNumber })))
+          .put(push(locations.thirdPartyCollectionDetail(item.collectionId, { page: newPageNumber })))
           .dispatch(saveItemSuccess(item, contents))
           .run({ silenceTimeout: true })
       })
@@ -796,7 +796,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
       [itemId]: {
         name: 'changed name',
         description: 'changed description',
-        contents: { ['changed key']: 'changed hash', [IMAGE_PATH]: 'catalystImageHash' },
+        contents: { 'changed key': 'changed hash', [IMAGE_PATH]: 'catalystImageHash' },
         data: {
           hides: [WearableCategory.MASK],
           replaces: [WearableCategory.MASK],
@@ -880,7 +880,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
     return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
       .provide([
         [select(getItemsById), itemsById],
-        [saveItemRequest(replacedItem as any, replacedContents), undefined],
+        [saveItemRequest(replacedItem, replacedContents), undefined],
         [select(getEntityByItemId), entitiesByItemId],
         [
           race({
@@ -890,7 +890,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
           { success: {} }
         ]
       ])
-      .put(saveItemRequest(replacedItem as any, replacedContents))
+      .put(saveItemRequest(replacedItem, replacedContents))
       .put(resetItemSuccess(itemId))
       .dispatch(resetItemRequest(itemId))
       .silentRun()
@@ -903,7 +903,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
       return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
         .provide([
           [select(getItemsById), itemsById],
-          [saveItemRequest(replacedItem as any, replacedContents), undefined],
+          [saveItemRequest(replacedItem, replacedContents), undefined],
           [select(getEntityByItemId), entitiesByItemId],
           [
             race({
@@ -915,7 +915,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
             }
           ]
         ])
-        .put(saveItemRequest(replacedItem as any, replacedContents))
+        .put(saveItemRequest(replacedItem, replacedContents))
         .put(resetItemFailure(itemId, saveItemFailureMessage))
         .dispatch(resetItemRequest(itemId))
         .silentRun()
@@ -969,7 +969,7 @@ describe('when handling the downloadItemRequest action', () => {
     it('should throw an error with a message that says the item was not found', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([[select(getItemsById), itemsById]])
-        .put(downloadItemFailure(itemId, `Item not found for itemId="invalid"`))
+        .put(downloadItemFailure(itemId, 'Item not found for itemId="invalid"'))
         .dispatch(downloadItemRequest(itemId))
         .run({ silenceTimeout: true })
     })
@@ -1102,7 +1102,7 @@ describe('when handling the save multiple items requests action', () => {
         it('should request the same page of items if the user is in the TP detail page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
@@ -1120,11 +1120,11 @@ describe('when handling the save multiple items requests action', () => {
           const newPageNumber = Math.ceil((paginationData.total + items.length) / paginationData.limit)
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
-            .put(push(locations.thirdPartyCollectionDetail(items[0].collectionId!, { page: newPageNumber })))
+            .put(push(locations.thirdPartyCollectionDetail(items[0].collectionId, { page: newPageNumber })))
             .dispatch(saveMultipleItemsSuccess(items, savedFiles, []))
             .run({ silenceTimeout: true })
         })
@@ -1141,7 +1141,7 @@ describe('when handling the save multiple items requests action', () => {
     it('should dispatch the update progress action for the non-failing item upload and the success action with the items that failed, the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
-          [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+          [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
           [select(getPaginationData, items[0].collectionId!), paginationData]
         ])
         .put(updateProgressSaveMultipleItems(100))
@@ -1167,7 +1167,7 @@ describe('when handling the save multiple items requests action', () => {
     it('should dispatch the update progress action for the first non-cancelled upsert and the cancelling action with the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
-          [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+          [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
           [select(getPaginationData, items[0].collectionId!), paginationData]
         ])
         .put(
@@ -1197,7 +1197,7 @@ describe('when handling the save multiple items requests action', () => {
         it('should request the same page of items if the user is in the TP detail page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
@@ -1224,11 +1224,11 @@ describe('when handling the save multiple items requests action', () => {
           )
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
-            .put(push(locations.thirdPartyCollectionDetail(items[0].collectionId!, { page: newPageNumber })))
+            .put(push(locations.thirdPartyCollectionDetail(items[0].collectionId, { page: newPageNumber })))
             .dispatch(
               saveMultipleItemsCancelled(
                 Array(SAVE_AND_EDIT_FILES_BATCH_SIZE).fill(items[0]),
@@ -1251,7 +1251,7 @@ describe('when handling the save multiple items requests action', () => {
         it('should request the same page of items if the user is in the TP detail page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId!) }],
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
@@ -1450,7 +1450,7 @@ describe('when handling the delete item success action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getAddress), mockAddress],
-            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData]
           ])
@@ -1470,11 +1470,11 @@ describe('when handling the delete item success action', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
               [select(getAddress), mockAddress],
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
             ])
-            .put(push(locations.thirdPartyCollectionDetail(item.collectionId!, { page: paginationData.currentPage - 1 })))
+            .put(push(locations.thirdPartyCollectionDetail(item.collectionId, { page: paginationData.currentPage - 1 })))
             .dispatch(deleteItemSuccess(item))
             .run({ silenceTimeout: true })
         })
@@ -1489,7 +1489,7 @@ describe('when handling the delete item success action', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
               [select(getAddress), mockAddress],
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
             ])
@@ -1529,7 +1529,7 @@ describe('when handling the save item curation success action', () => {
   it('should put a fetch item curation request action if the item is a TP one', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
-        [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+        [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
         [select(getOpenModals), { EditItemURNModal: true }],
         [select(getPaginationData, item.collectionId!), {}],
         [select(getAddress), mockAddress]
@@ -1547,7 +1547,7 @@ describe('when handling the save item curation success action', () => {
   it('should not put a fetch item curation request action if the item is a standard one', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
-        [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId!) }],
+        [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
         [select(getOpenModals), { EditItemURNModal: true }],
         [select(getPaginationData, item.collectionId!), {}],
         [select(getAddress), mockAddress]

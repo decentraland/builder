@@ -136,8 +136,8 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
     description: item.description,
     i18n: [{ code: Locale.EN, text: item.name }],
     data: {
-      replaces: item.data.replaces as WearableCategory[],
-      hides: item.data.hides as WearableCategory[],
+      replaces: item.data.replaces,
+      hides: item.data.hides,
       tags: item.data.tags,
       category: item.data.category as WearableCategory,
       representations: item.data.representations as WearableRepresentation[]
@@ -161,11 +161,11 @@ function buildWearableEntityMetadata(collection: Collection, item: Item): Wearab
 
   // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
   const catalystItem: Wearable = {
-    id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
+    id: buildCatalystItemURN(collection.contractAddress, item.tokenId),
     name: item.name,
     description: item.description,
-    collectionAddress: collection.contractAddress!,
-    rarity: (item.rarity! as unknown) as Rarity,
+    collectionAddress: collection.contractAddress,
+    rarity: item.rarity! as unknown as Rarity,
     i18n: [{ code: Locale.EN, text: item.name }],
     data: {
       replaces: item.data.replaces,
@@ -189,11 +189,11 @@ function buildADR74EmoteEntityMetadata(collection: Collection, item: Item<ItemTy
 
   // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
   const catalystItem: Emote = {
-    id: buildCatalystItemURN(collection.contractAddress!, item.tokenId!),
+    id: buildCatalystItemURN(collection.contractAddress, item.tokenId),
     name: item.name,
     description: item.description,
-    collectionAddress: collection.contractAddress!,
-    rarity: (item.rarity! as unknown) as Rarity,
+    collectionAddress: collection.contractAddress,
+    rarity: item.rarity! as unknown as Rarity,
     i18n: [{ code: Locale.EN, text: item.name }],
     emoteDataADR74: {
       category: item.data.category,
@@ -243,10 +243,10 @@ export async function buildItemEntity(
   if (isEmote) {
     metadata = buildADR74EmoteEntityMetadata(collection, item)
   } else if (tree && itemHash) {
-    metadata = buildTPItemEntityMetadata(item as Item, itemHash, tree)
+    metadata = buildTPItemEntityMetadata(item, itemHash, tree)
   } else {
     // Emotes will be deployed as Wearables ultil they are released
-    metadata = buildWearableEntityMetadata(collection, item as Item)
+    metadata = buildWearableEntityMetadata(collection, item)
   }
   return client.buildEntity({
     type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,

@@ -12,7 +12,4 @@ const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onImport: (projects: Manifest[]) => dispatch(importProject(projects))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ImportModal)
+export default connect(mapState, mapDispatch)(ImportModal)

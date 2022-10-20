@@ -27,8 +27,8 @@ import { Authorization } from './auth'
 
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 
-export const getContentsStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
-export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
+export const getContentsStorageUrl = (hash = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
+export const getAssetPackStorageUrl = (hash = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
 
 export type FetchCollectionsParams = {
@@ -231,7 +231,7 @@ function fromRemotePool(remotePool: RemotePool): Pool {
 
   if (remotePool.parcels) {
     pool.statistics = {
-      parcels: remotePool.parcels as number,
+      parcels: remotePool.parcels,
       transforms: remotePool.transforms as number,
       gltf_shapes: remotePool.gltf_shapes as number,
       nft_shapes: remotePool.nft_shapes as number,
@@ -563,7 +563,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchProjects() {
-    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', `/projects`)
+    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects')
     return items.map(fromRemoteProject)
   }
 
@@ -577,7 +577,7 @@ export class BuilderAPI extends BaseAPI {
     return { items: items.map(fromRemotePool), total }
   }
 
-  async fetchPoolGroups(activeOnly: boolean = false) {
+  async fetchPoolGroups(activeOnly = false) {
     const items: RemotePoolGroup[] = await this.request('get', '/pools/groups', { activeOnly })
     return items.map(fromPoolGroup)
   }
@@ -630,7 +630,7 @@ export class BuilderAPI extends BaseAPI {
   ) {
     const formData = new FormData()
 
-    for (let path in contents) {
+    for (const path in contents) {
       formData.append(path, contents[path])
     }
 
@@ -671,7 +671,7 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/assetPacks/${assetPack.id}`)
   }
 
-  likePool(pool: string, like: boolean = true) {
+  likePool(pool: string, like = true) {
     const method = like ? 'put' : 'delete'
     return this.request(method, `/pools/${pool}/likes`)
   }
@@ -707,7 +707,7 @@ export class BuilderAPI extends BaseAPI {
   saveItemContents = async (item: Item, contents: Record<string, Blob>) => {
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()
-      for (let path in contents) {
+      for (const path in contents) {
         formData.append(item.contents[path], contents[path])
       }
 
@@ -748,18 +748,11 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async publishTPCollection(collectionId: string, itemIds: string[], cheque: Cheque) {
-    const {
-      collection,
-      items,
-      itemCurations
-    }: { collection: RemoteCollection; items: RemoteItem[]; itemCurations: RemoteItemCuration[] } = await this.request(
-      'post',
-      `/collections/${collectionId}/publish`,
-      {
+    const { collection, items, itemCurations }: { collection: RemoteCollection; items: RemoteItem[]; itemCurations: RemoteItemCuration[] } =
+      await this.request('post', `/collections/${collectionId}/publish`, {
         itemIds,
         cheque
-      }
-    )
+      })
     return {
       collection: fromRemoteCollection(collection),
       items: items.map(fromRemoteItem),
@@ -788,7 +781,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCurations(): Promise<CollectionCuration[]> {
-    const curations: RemoteCollectionCuration[] = await this.request('get', `/curations`)
+    const curations: RemoteCollectionCuration[] = await this.request('get', '/curations')
 
     return curations.map(fromRemoteCollectionCuration)
   }

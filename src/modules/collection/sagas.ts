@@ -230,7 +230,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
     const { item } = action.payload
     if (item.collectionId && !item.isPublished) {
-      const collection: Collection = yield select(getCollection, item.collectionId!)
+      const collection: Collection = yield select(getCollection, item.collectionId)
       yield put(saveCollectionRequest(collection))
     }
   }
@@ -238,7 +238,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleSaveMultipleItemsSuccess(action: SaveMultipleItemsSuccessAction) {
     const { items } = action.payload
     if (items.length > 0 && items[0].collectionId) {
-      const collection: Collection = yield select(getCollection, items[0].collectionId!)
+      const collection: Collection = yield select(getCollection, items[0].collectionId)
       yield put(saveCollectionRequest(collection))
     }
   }
@@ -253,7 +253,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         throw new Error(yield call(t, 'sagas.collection.collection_locked'))
       }
 
-      let data: string = ''
+      let data = ''
 
       if (getCollectionType(collection) === CollectionType.DECENTRALAND) {
         const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
@@ -667,12 +667,13 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const REQUESTS_BATCH_SIZE = 10
       const pages = getArrayOfPagesFromTotal(Math.ceil(paginatedData.total / BATCH_SIZE))
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
-      const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = pages.map((page: number) => () =>
-        legacyBuilderClient.fetchCollectionItems(collection.id, {
-          page,
-          limit: BATCH_SIZE,
-          status: CurationStatus.PENDING
-        })
+      const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = pages.map(
+        (page: number) => () =>
+          legacyBuilderClient.fetchCollectionItems(collection.id, {
+            page,
+            limit: BATCH_SIZE,
+            status: CurationStatus.PENDING
+          })
       ) // TODO: try to convert this to a generator so we can test it's called with the right parameters
       const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
       const itemsWithPendingCurations = allItemPages.flatMap(result => result.results)
@@ -680,10 +681,12 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       if (!itemsWithPendingCurations.length) {
         throw Error('Error fetching items to approve')
       }
-      const { cheque, content_hashes: contentHashes, chequeWasConsumed, root }: ItemApprovalData = yield call(
-        [legacyBuilderClient, 'fetchApprovalData'],
-        collection.id
-      )
+      const {
+        cheque,
+        content_hashes: contentHashes,
+        chequeWasConsumed,
+        root
+      }: ItemApprovalData = yield call([legacyBuilderClient, 'fetchApprovalData'], collection.id)
 
       // 3. Compute the merkle tree root & create slot to consume
       const tree = generateTree(Object.values(contentHashes))
@@ -792,7 +795,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
     try {
       if (!collection.isPublished) {
-        throw new Error(`The collection can't be approved because it's not published`)
+        throw new Error("The collection can't be approved because it's not published")
       }
 
       // 1. Open modal
@@ -945,12 +948,11 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           yield put(approveCollectionCurationRequest(curation.collectionId))
 
           // wait for actions
-          const {
-            failure
-          }: { success: ApproveCollectionCurationSuccessAction; failure: ApproveCollectionCurationFailureAction } = yield race({
-            success: take(APPROVE_COLLECTION_CURATION_SUCCESS),
-            failure: take(APPROVE_COLLECTION_CURATION_FAILURE)
-          })
+          const { failure }: { success: ApproveCollectionCurationSuccessAction; failure: ApproveCollectionCurationFailureAction } =
+            yield race({
+              success: take(APPROVE_COLLECTION_CURATION_SUCCESS),
+              failure: take(APPROVE_COLLECTION_CURATION_FAILURE)
+            })
 
           // if failure show error
           if (failure) {

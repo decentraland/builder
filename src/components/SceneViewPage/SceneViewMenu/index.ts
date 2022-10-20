@@ -1,3 +1,3 @@
-import SceneViewMenu from "./SceneViewMenu.container"
+import SceneViewMenu from './SceneViewMenu.container'
 
 export default SceneViewMenu
