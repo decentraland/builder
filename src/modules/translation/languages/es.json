@@ -1308,6 +1308,12 @@
       "collection_name_placeholder": "Nombre de la Colección",
       "collection_names_different": "El nombre de la Colección no coinciden",
       "confirm_name": "Confirmar Nombre"
+    },
+    "confirm_collection_items_step": {
+      "title": "Confirmar items",
+      "subtitle": "No se pueden agregar ni eliminar items de la colección una vez que se publica.{enter}La rareza de los items tampoco se podra cambiar despues de la publicación.",
+      "description": "Nombre del item, descripción y categorias podran ser modificadas.",
+      "confirm_items": "Confirmar Items"
     }
   },
   "sell_collection_modal": {
