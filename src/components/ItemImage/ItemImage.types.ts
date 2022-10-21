@@ -8,4 +8,5 @@ export type Props = {
   hasBadge?: boolean
   hasRarityBadge?: boolean
   badgeSize?: BadgeProps['size']
+  hasRarityBackground?: boolean
 }

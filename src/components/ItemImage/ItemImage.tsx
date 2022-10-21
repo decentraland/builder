@@ -13,15 +13,19 @@ import './ItemImage.css'
 export default class ItemImage extends React.PureComponent<Props> {
   static defaultProps = {
     className: '',
-    hasBadge: false
+    hasBadge: false,
+    hasRarityBackground: true
   }
 
   render() {
-    const { className, item, src, hasBadge, badgeSize, hasRarityBadge } = this.props
+    const { className, item, src, hasBadge, badgeSize, hasRarityBadge, hasRarityBackground } = this.props
     const isSmart = getItemMetadataType(item) === ItemMetadataType.SMART_WEARABLE
 
     return (
-      <div className={`ItemImage is-image image-wrapper ${className}`} style={getBackgroundStyle(item.rarity)}>
+      <div
+        className={`ItemImage is-image image-wrapper ${className}`}
+        style={hasRarityBackground ? getBackgroundStyle(item.rarity) : { backgroundColor: 'var(--dark-two)' }}
+      >
         <img className="item-image" src={src || getThumbnailURL(item)} alt={item.name} />
         <div className="badges-container">
           {hasRarityBadge && item.rarity && item.data.category ? (
