@@ -206,14 +206,19 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
   async processModel(model: string, contents: Record<string, Blob>): Promise<ModelData> {
     const url = URL.createObjectURL(contents[model])
-    const isEmote = await getIsEmote(url, {
-      mappings: rawMappingsToObjectURL(contents),
-      width: 1024,
-      height: 1024,
-      extension: getExtension(model) || undefined,
-      engine: EngineType.BABYLON
-    })
-    URL.revokeObjectURL(url)
+    const extension = getExtension(model) || undefined
+    let isEmote = false
+
+    if (extension !== '.png') {
+      isEmote = await getIsEmote(url, {
+        mappings: rawMappingsToObjectURL(contents),
+        width: 1024,
+        height: 1024,
+        extension,
+        engine: EngineType.BABYLON
+      })
+      URL.revokeObjectURL(url)
+    }
 
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
