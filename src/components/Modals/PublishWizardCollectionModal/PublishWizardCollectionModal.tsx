@@ -4,6 +4,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
 import ConfirmCollectionNameStep from './ConfirmCollectionNameStep/ConfirmCollectionNameStep'
+import ConfirmCollectionItemsStep from './ConfirmCollectionItemsStep/ConfirmCollectionItemsStep'
 import './PublishWizardCollectionModal.css'
 
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
@@ -26,6 +27,8 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
         return <ConfirmCollectionNameStep collection={collection} onNextStep={onHandleNextStep} />
+      case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
+        return <ConfirmCollectionItemsStep collection={collection} onNextStep={onHandleNextStep} />
       default:
         return null
     }
@@ -34,6 +37,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const renderStepTitle = () => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
+      case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
         return t('publish_collection_modal_with_oracle.title')
       default:
         return null
