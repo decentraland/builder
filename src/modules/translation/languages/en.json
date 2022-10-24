@@ -1295,7 +1295,7 @@
       "collection_name_label": "Collection name",
       "collection_name_confirmation_label": "Confirm Collection name",
       "collection_name_placeholder": "Your collection name",
-      "collection_names_different": "Collection name do not match",
+      "collection_names_different": "Collection name does not match",
       "confirm_name": "Confirm Name"
     },
     "confirm_collection_items_step": {

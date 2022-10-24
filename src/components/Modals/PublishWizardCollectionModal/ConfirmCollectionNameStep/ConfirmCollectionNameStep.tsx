@@ -13,12 +13,9 @@ export const ConfirmCollectionNameStep: React.FC<Pick<Props, 'collection'> & { o
     setCollectionName(value)
   }, [])
 
-  const handleCollectionNameBlur = useCallback(
-    _ => {
-      setError(collection!.name !== collectionName)
-    },
-    [collection, collectionName]
-  )
+  const handleCollectionNameBlur = useCallback(() => {
+    setError(collection!.name !== collectionName)
+  }, [collection, collectionName])
 
   const isDisabled = hasError || !collectionName
 
