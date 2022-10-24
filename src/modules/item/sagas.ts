@@ -105,7 +105,7 @@ import { getMethodData } from 'modules/wallet/utils'
 import { setItems } from 'modules/editor/actions'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
-import { calculateModelFinalSize, calculateThumbnailFinalSize, reHashOlderContents } from './export'
+import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, ItemType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError, ThumbnailFileTooBigError } from './errors'
@@ -339,7 +339,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           legacyBuilder
         )
         // This method will calculate only the thumbnail's final size with a limit of 1MB
-        const finalThumbnailSize: number = yield call(calculateThumbnailFinalSize, thumbnailContent)
+        const finalThumbnailSize: number = yield call(calculateFileSize, thumbnailContent)
         if (finalModelSize > MAX_FILE_SIZE) {
           throw new ItemTooBigError()
         } else if (finalThumbnailSize > MAX_THUMBNAIL_FILE_SIZE) {

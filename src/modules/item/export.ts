@@ -100,8 +100,8 @@ export async function calculateModelFinalSize(
   return imageSize + calculateFilesSize(uniqueFiles)
 }
 
-export function calculateThumbnailFinalSize(thumbnail: Blob): number {
-  return calculateFilesSize([thumbnail])
+export function calculateFileSize(file: Blob): number {
+  return calculateFilesSize([file])
 }
 
 /**
