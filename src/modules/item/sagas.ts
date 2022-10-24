@@ -105,11 +105,19 @@ import { getMethodData } from 'modules/wallet/utils'
 import { setItems } from 'modules/editor/actions'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
-import { calculateFinalSize, reHashOlderContents } from './export'
+import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, ItemType } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
-import { ItemTooBigError } from './errors'
-import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_FILE_SIZE } from './utils'
+import { ItemTooBigError, ThumbnailFileTooBigError } from './errors'
+import {
+  buildZipContents,
+  getMetadata,
+  groupsOf,
+  isValidText,
+  generateCatalystImage,
+  MAX_FILE_SIZE,
+  MAX_THUMBNAIL_FILE_SIZE
+} from './utils'
 import { ItemPaginationData } from './reducer'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
@@ -320,9 +328,22 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       if (Object.keys(contents).length > 0) {
-        const finalSize: number = yield call(calculateFinalSize, item, contents, legacyBuilder)
-        if (finalSize > MAX_FILE_SIZE) {
+        // Extract the thumbnail from the contents to calculate the size using another limit
+        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
+        const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
+        // This will calculate the model's final size without the thumbnail with a limit of 2MB
+        const finalModelSize: number = yield call(
+          calculateModelFinalSize,
+          { ...item, contents: itemContents },
+          modelContents,
+          legacyBuilder
+        )
+        // This method will calculate only the thumbnail's final size with a limit of 1MB
+        const finalThumbnailSize: number = yield call(calculateFileSize, thumbnailContent)
+        if (finalModelSize > MAX_FILE_SIZE) {
           throw new ItemTooBigError()
+        } else if (finalThumbnailSize > MAX_THUMBNAIL_FILE_SIZE) {
+          throw new ThumbnailFileTooBigError()
         }
       }
 
