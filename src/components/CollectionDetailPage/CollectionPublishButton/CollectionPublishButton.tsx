@@ -15,7 +15,18 @@ import { Props } from './CollectionPublishButton.types'
 import UnderReview from './UnderReview'
 
 const CollectionPublishButton = (props: Props) => {
-  const { wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit } = props
+  const {
+    wallet,
+    collection,
+    items,
+    authorizations,
+    status,
+    hasPendingCuration,
+    isNewPublishWizardFlowFlagOn,
+    onPublish,
+    onPush,
+    onInit
+  } = props
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   useEffect(() => {
@@ -37,7 +48,7 @@ const CollectionPublishButton = (props: Props) => {
 
   const handlePublish = () => {
     const hasAuth = hasAuthorization(authorizations, getAuthorization())
-    if (hasAuth) onPublish()
+    if (hasAuth) onPublish(isNewPublishWizardFlowFlagOn)
     setIsAuthModalOpen(!hasAuth)
   }
 
@@ -78,7 +89,9 @@ const CollectionPublishButton = (props: Props) => {
       let reason: string
 
       if (items.length > MAX_ITEMS) {
-        reason = t('collection_detail_page.publish_reason_max_items', { maxItems: MAX_ITEMS })
+        reason = t('collection_detail_page.publish_reason_max_items', {
+          maxItems: MAX_ITEMS
+        })
       } else if (items.length === 0) {
         reason = t('collection_detail_page.publish_reason_no_items')
       } else {

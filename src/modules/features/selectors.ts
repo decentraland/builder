@@ -37,3 +37,11 @@ export const getIsMVMFEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsNewPublishWizardEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_PUBLISH_WIZARD)
+  } catch (e) {
+    return false
+  }
+}

@@ -1287,7 +1287,17 @@
     "accept_by_publishing": "By clicking Publish you are accepting our terms",
     "not_enough_mana": "You don't have enough {symbol} to publish this collection.",
     "get_mana": "You can get more using the {link} dapp.",
-    "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again."
+    "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again.",
+    "confirm_collection_name_step": {
+      "title": "Confirm collection name",
+      "subtitle": "The name of the collection can't be modified after sending it for review.",
+      "description": "Make sure it doesn't have any typos, and it doesn't contain any Intellectual Property you don't own (E.g Star Wars, Sailor Moon, etc)",
+      "collection_name_label": "Collection name",
+      "collection_name_confirmation_label": "Confirm Collection name",
+      "collection_name_placeholder": "Your collection name",
+      "collection_names_different": "Collection names do not match",
+      "confirm_name": "Confirm Name"
+    }
   },
   "publish_third_party_collection_modal": {
     "title": "Publish Linked Items",

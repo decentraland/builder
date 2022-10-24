@@ -13,12 +13,16 @@ export type Props = {
   authorizations: Authorization[]
   status: SyncStatus
   hasPendingCuration: boolean
-  onPublish: () => void
+  isNewPublishWizardFlowFlagOn: boolean
+  onPublish: (newPublishWizardFlow: boolean) => void
   onPush: () => void
   onInit: () => void
 }
 
 export type OwnProps = Pick<Props, 'collection'>
-export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'authorizations' | 'status' | 'hasPendingCuration'>
+export type MapStateProps = Pick<
+  Props,
+  'wallet' | 'items' | 'authorizations' | 'status' | 'hasPendingCuration' | 'isNewPublishWizardFlowFlagOn'
+>
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPush' | 'onInit'>
 export type MapDispatch = Dispatch<OpenModalAction | FetchCollectionCurationRequestAction>
