@@ -61,7 +61,7 @@ import {
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import { BuiltFile, Currency, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
-import { calculateModelFinalSize, calculateThumbnailFinalSize, reHashOlderContents } from './export'
+import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
@@ -147,7 +147,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE + 1)],
-          [matchers.call.fn(calculateThumbnailFinalSize), Promise.resolve(MAX_THUMBNAIL_FILE_SIZE)]
+          [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
         .put(saveItemFailure(item, contents, 'The entire item is too big to be uploaded. The max size for all files is 2MB.'))
         .dispatch(saveItemRequest(item, contents))
@@ -163,7 +163,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE)],
-          [matchers.call.fn(calculateThumbnailFinalSize), Promise.resolve(MAX_THUMBNAIL_FILE_SIZE + 1)]
+          [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE + 1]
         ])
         .put(saveItemFailure(item, contents, 'The thumbnail file is too big to be uploaded. The max size is 1MB.'))
         .dispatch(saveItemRequest(item, contents))
@@ -195,7 +195,7 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [select(getCollection, collection.id), collection],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
-          [matchers.call.fn(calculateThumbnailFinalSize), Promise.resolve(1)]
+          [matchers.call.fn(calculateFileSize), 1]
         ])
         .put(saveItemFailure(item, contents, 'The collection is locked'))
         .dispatch(saveItemRequest(item, contents))
@@ -236,7 +236,7 @@ describe('when handling the save item request action', () => {
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
             [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
-            [matchers.call.fn(calculateThumbnailFinalSize), Promise.resolve(1)],
+            [matchers.call.fn(calculateFileSize), 1],
             [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contentsToSave))
@@ -275,7 +275,7 @@ describe('when handling the save item request action', () => {
               call(calculateModelFinalSize, { ...itemWithCatalystImage, contents: itemContents }, modelContents, builderAPI),
               Promise.resolve(1)
             ],
-            [call(calculateThumbnailFinalSize, thumbnailContent), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
           ])
           .put(saveItemSuccess(itemWithCatalystImage, contentsToSave))
@@ -300,7 +300,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
-            [call(calculateThumbnailFinalSize, thumbnailContent), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -342,7 +342,7 @@ describe('when handling the save item request action', () => {
               call(calculateModelFinalSize, { ...itemWithCatalystImage, contents: itemContents }, modelContents, builderAPI),
               Promise.resolve(1)
             ],
-            [call(calculateThumbnailFinalSize, thumbnailContent), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage), Promise.resolve()]
           ])
           .put(saveItemSuccess(itemWithCatalystImage, newContentsContainingNewCatalystImage))
@@ -367,7 +367,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
-            [call(calculateThumbnailFinalSize, thumbnailContent), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -392,7 +392,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
-            [call(calculateThumbnailFinalSize, thumbnailContent), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -451,7 +451,7 @@ describe('when handling the save item request action', () => {
               call(calculateModelFinalSize, { ...itemWithNewHashes, contents: itemContents }, modelContents, builderAPI),
               Promise.resolve(1)
             ],
-            [call(calculateThumbnailFinalSize, thumbnailContent), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve()]
           ])
           .put(saveItemSuccess(itemWithNewHashes, newContents))
@@ -1647,7 +1647,7 @@ describe('when handling the setCollection action', () => {
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: catalystImageHash, content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
-          [matchers.call.fn(calculateThumbnailFinalSize), Promise.resolve(1)]
+          [matchers.call.fn(calculateFileSize), 1]
         ])
         .put(
           fetchItemsSuccess(
