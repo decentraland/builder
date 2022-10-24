@@ -212,8 +212,9 @@
     "adding_representation": "这将添加为以下项目的{body Shape}",
     "change_item_file": "编辑制图表达",
     "error": {
-      "item_too_big": "整个项目太大，无法上传。 所有文件（包括缩略图）的最大大小为 {size}。",
+      "item_too_big": "整个项目太大，无法上传。 所有文件的最大大小为 {size}。",
       "file_too_big": "该文件太大，无法上传。 最大尺寸为 {size}。",
+      "thumbnail_file_too_big": "缩略图文件太大，无法上传。 最大尺寸为 {size}。",
       "wrong_extension": "该文件的扩展名无效。",
       "invalid_files": "文件似乎无效或损坏，请检查并重试。",
       "missing_model_file": "找不到有效的模型文件。",

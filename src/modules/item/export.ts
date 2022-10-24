@@ -70,7 +70,11 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
  * @param item - An item that contains the old and the new hashed content.
  * @param newContents - The new content that is going to be added to the item.
  */
-export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>, legacyBuilderClient: BuilderAPI): Promise<number> {
+export async function calculateModelFinalSize(
+  item: Item,
+  newContents: Record<string, Blob>,
+  legacyBuilderClient: BuilderAPI
+): Promise<number> {
   const newHashes = await computeHashes(newContents)
   const filesToDownload: Record<string, string> = {}
   for (const fileName in item.contents) {
@@ -94,6 +98,10 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
 
   const uniqueFiles = getUniqueFiles(allHashes, allBlobs)
   return imageSize + calculateFilesSize(uniqueFiles)
+}
+
+export function calculateThumbnailFinalSize(thumbnail: Blob): number {
+  return calculateFilesSize([thumbnail])
 }
 
 /**
