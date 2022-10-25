@@ -30,9 +30,9 @@ export const ConfirmCollectionItemsStep: React.FC<Pick<Props, 'items'> & { onNex
 
   const renderItemsTable = () => {
     return (
-      <Table basic="very" columns={4}>
+      <Table basic="very">
         <Table.Header>
-          <Table.HeaderCell width={5}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
+          <Table.HeaderCell width={7}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
           <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
           <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
           <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
@@ -40,7 +40,7 @@ export const ConfirmCollectionItemsStep: React.FC<Pick<Props, 'items'> & { onNex
         <Table.Body>
           {items.map(item => (
             <Table.Row key={item.id} className="CollectionItem row">
-              <Table.Cell className="avatarColumn">
+              <Table.Cell width={7} className="column avatarColumn">
                 <div className="avatarContainer">
                   <ItemImage className="itemImage" item={item} hasRarityBackground={false} />
                   <div className="info">

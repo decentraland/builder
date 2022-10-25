@@ -2,7 +2,7 @@
   background-color: rgba(var(--dark-raw), 0.48);
   border-radius: 8px;
   width: 100%;
-  padding: 20px 24px 84px;
+  padding: 20px 24px 48px;
   font-size: 15px;
   font-weight: 500;
   line-height: 24px;
@@ -41,6 +41,23 @@
   justify-content: center;
 }
 
+.ConfirmCollectionItemsStep .items tbody {
+  display: block;
+  max-height: 425px;
+  overflow-y: auto;
+}
+
+.ConfirmCollectionItemsStep .items thead,
+.ConfirmCollectionItemsStep .items tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.ConfirmCollectionItemsStep .items thead {
+  width: calc(100% - 1em);
+}
+
 .ConfirmCollectionItemsStep .avatarColumn .avatarContainer {
   display: flex;
   align-items: center;
@@ -53,7 +70,6 @@
 }
 
 .ConfirmCollectionItemsStep .avatarColumn .avatarContainer .info {
-  width: calc(100% - 80px);
   display: flex;
   align-items: center;
 }
