@@ -61,8 +61,8 @@ import {
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import { BuiltFile, Currency, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
-import { calculateFinalSize, reHashOlderContents } from './export'
-import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE } from './utils'
+import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
+import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE } from './utils'
 import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
 
@@ -146,16 +146,27 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [matchers.call.fn(calculateFinalSize), Promise.resolve(MAX_FILE_SIZE + 1)]
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE + 1)],
+          [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(
-          saveItemFailure(
-            item,
-            contents,
-            'The entire item is too big to be uploaded. The max size for all files (including the thumbnail) is 2MB.'
-          )
-        )
+        .put(saveItemFailure(item, contents, 'The entire item is too big to be uploaded. The max size for all files is 2MB.'))
         .dispatch(saveItemRequest(item, contents))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and thumbnail file size is larger than 1MB', () => {
+    it('should put a saveItemFailure action with thumbnail too big message', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getItem, item.id), undefined],
+          [matchers.call.fn(reHashOlderContents), {}],
+          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE)],
+          [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE + 1]
+        ])
+        .put(saveItemFailure(item, { ...contents, [THUMBNAIL_PATH]: blob }, 'The thumbnail file is too big to be uploaded. The max size is 1MB.'))
+        .dispatch(saveItemRequest(item, { ...contents, [THUMBNAIL_PATH]: blob }))
         .run({ silenceTimeout: true })
     })
   })
@@ -183,7 +194,8 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(reHashOlderContents), {}],
           [select(getItem, item.id), undefined],
           [select(getCollection, collection.id), collection],
-          [matchers.call.fn(calculateFinalSize), Promise.resolve(1)]
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
+          [matchers.call.fn(calculateFileSize), 1]
         ])
         .put(saveItemFailure(item, contents, 'The collection is locked'))
         .dispatch(saveItemRequest(item, contents))
@@ -223,7 +235,8 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [matchers.call.fn(calculateFinalSize), Promise.resolve(1)],
+            [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
+            [matchers.call.fn(calculateFileSize), 1],
             [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contentsToSave))
@@ -243,6 +256,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action with the catalyst image', () => {
+        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contentsToSave
+        const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithCatalystImage.contents
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -256,7 +271,11 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateFinalSize, itemWithCatalystImage, contentsToSave, builderAPI), Promise.resolve(1)],
+            [
+              call(calculateModelFinalSize, { ...itemWithCatalystImage, contents: itemContents }, modelContents, builderAPI),
+              Promise.resolve(1)
+            ],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
           ])
           .put(saveItemSuccess(itemWithCatalystImage, contentsToSave))
@@ -271,6 +290,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action without a new catalyst image', () => {
+        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
+        const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -278,7 +299,8 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -298,6 +320,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action with a new catalyst image', () => {
+        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = newContentsContainingNewCatalystImage
+        const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithCatalystImage.contents
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -314,7 +338,11 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateFinalSize, itemWithCatalystImage, newContentsContainingNewCatalystImage, builderAPI), Promise.resolve(1)],
+            [
+              call(calculateModelFinalSize, { ...itemWithCatalystImage, contents: itemContents }, modelContents, builderAPI),
+              Promise.resolve(1)
+            ],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage), Promise.resolve()]
           ])
           .put(saveItemSuccess(itemWithCatalystImage, newContentsContainingNewCatalystImage))
@@ -329,6 +357,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action', () => {
+        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
+        const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -336,7 +366,8 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -351,6 +382,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should save item if it is already published', () => {
+        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
+        const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -358,7 +391,8 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateFinalSize, item, contents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
           .put(saveItemSuccess(item, contents))
@@ -399,6 +433,8 @@ describe('when handling the save item request action', () => {
       })
 
       it("should update the item's content with the new hash and upload the files", () => {
+        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = newContents
+        const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithNewHashes.contents
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [
@@ -411,7 +447,11 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), item],
             [select(getAddress), mockAddress],
-            [call(calculateFinalSize, itemWithNewHashes, newContents, builderAPI), Promise.resolve(1)],
+            [
+              call(calculateModelFinalSize, { ...itemWithNewHashes, contents: itemContents }, modelContents, builderAPI),
+              Promise.resolve(1)
+            ],
+            [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve()]
           ])
           .put(saveItemSuccess(itemWithNewHashes, newContents))
@@ -1606,7 +1646,8 @@ describe('when handling the setCollection action', () => {
           [select(getCollection, collection.id), collection],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: catalystImageHash, content: blob })],
-          [matchers.call.fn(calculateFinalSize), Promise.resolve(1)]
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
+          [matchers.call.fn(calculateFileSize), 1]
         ])
         .put(
           fetchItemsSuccess(
