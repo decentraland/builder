@@ -26,7 +26,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const renderStepView = () => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
-        return <ConfirmCollectionNameStep collection={collection} onNextStep={onHandleNextStep} />
+        return <ConfirmCollectionNameStep collection={collection!} onNextStep={onHandleNextStep} />
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
         return <ConfirmCollectionItemsStep items={items} onNextStep={onHandleNextStep} />
       default:

@@ -8,10 +8,9 @@ import { isFree } from 'modules/item/utils'
 import ItemImage from 'components/ItemImage'
 import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
-import { Props } from '../PublishWizardCollectionModal.types'
 import './ConfirmCollectionItemsStep.css'
 
-export const ConfirmCollectionItemsStep: React.FC<Pick<Props, 'items'> & { onNextStep: () => void }> = props => {
+export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: () => void }> = props => {
   const { items, onNextStep } = props
 
   const renderPrice = (item: Item) => {

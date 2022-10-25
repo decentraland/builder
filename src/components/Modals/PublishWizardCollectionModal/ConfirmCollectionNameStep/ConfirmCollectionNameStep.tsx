@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react'
 import { Button, Column, Field, InputOnChangeData, Modal, Row } from 'decentraland-ui'
-import { Props } from '../PublishWizardCollectionModal.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Collection } from 'modules/collection/types'
 import './ConfirmCollectionNameStep.css'
 
-export const ConfirmCollectionNameStep: React.FC<Pick<Props, 'collection'> & { onNextStep: () => void }> = props => {
+export const ConfirmCollectionNameStep: React.FC<{ collection: Collection; onNextStep: () => void }> = props => {
   const { collection, onNextStep } = props
   const [collectionName, setCollectionName] = useState<string>('')
   const [hasError, setError] = useState<boolean>(false)
@@ -14,7 +14,7 @@ export const ConfirmCollectionNameStep: React.FC<Pick<Props, 'collection'> & { o
   }, [])
 
   const handleCollectionNameBlur = useCallback(() => {
-    setError(collection!.name !== collectionName)
+    setError(collection.name !== collectionName)
   }, [collection, collectionName])
 
   const isDisabled = hasError || !collectionName
@@ -31,7 +31,7 @@ export const ConfirmCollectionNameStep: React.FC<Pick<Props, 'collection'> & { o
               <div className="fields">
                 <Field
                   label={t('publish_collection_modal_with_oracle.confirm_collection_name_step.collection_name_label')}
-                  value={collection?.name}
+                  value={collection.name}
                   disabled={true}
                 />
                 <Field
