@@ -1,22 +1,18 @@
 import React from 'react'
-import { Button, Column, Loader, Mana, Modal, Row, Table } from 'decentraland-ui'
-import { Props } from '../PublishWizardCollectionModal.types'
+import { ethers } from 'ethers'
+import { Network } from '@dcl/schemas'
+import { Button, Column, Mana, Modal, Row, Table } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import CollectionProvider from 'components/CollectionProvider'
 import { Item } from 'modules/item/types'
-
-import './ConfirmCollectionItemsStep.css'
+import { isFree } from 'modules/item/utils'
 import ItemImage from 'components/ItemImage'
 import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
-import { isFree } from 'modules/item/utils'
-import { Network } from '@dcl/schemas'
-import { ethers } from 'ethers'
+import { Props } from '../PublishWizardCollectionModal.types'
+import './ConfirmCollectionItemsStep.css'
 
-const HUGE_PAGE_SIZE = 20
-
-export const ConfirmCollectionItemsStep: React.FC<Pick<Props, 'collection'> & { onNextStep: () => void }> = props => {
-  const { collection, onNextStep } = props
+export const ConfirmCollectionItemsStep: React.FC<Pick<Props, 'items'> & { onNextStep: () => void }> = props => {
+  const { items, onNextStep } = props
 
   const renderPrice = (item: Item) => {
     return (
@@ -32,7 +28,7 @@ export const ConfirmCollectionItemsStep: React.FC<Pick<Props, 'collection'> & { 
     )
   }
 
-  const renderItemsTable = (items: Item[]) => {
+  const renderItemsTable = () => {
     return (
       <Table basic="very" columns={4}>
         <Table.Header>
@@ -80,16 +76,7 @@ export const ConfirmCollectionItemsStep: React.FC<Pick<Props, 'collection'> & { 
                 {t('publish_collection_modal_with_oracle.confirm_collection_items_step.subtitle', { enter: <br /> })}
               </p>
               <p className="description">{t('publish_collection_modal_with_oracle.confirm_collection_items_step.description')}</p>
-              <div className="items">
-                <CollectionProvider id={collection?.id} itemsPage={1} itemsPageSize={HUGE_PAGE_SIZE}>
-                  {({ isLoading, items }) => {
-                    if (isLoading) {
-                      return <Loader active size="medium" inline />
-                    }
-                    return renderItemsTable(items)
-                  }}
-                </CollectionProvider>
-              </div>
+              <div className="items">{renderItemsTable()}</div>
             </Column>
           </Row>
           <Row className="actions" align="right">

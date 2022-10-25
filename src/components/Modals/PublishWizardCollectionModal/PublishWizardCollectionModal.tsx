@@ -8,7 +8,7 @@ import ConfirmCollectionItemsStep from './ConfirmCollectionItemsStep/ConfirmColl
 import './PublishWizardCollectionModal.css'
 
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
-  const { collection, onClose, onFetchRarities } = props
+  const { collection, items, onClose, onFetchRarities } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
         return <ConfirmCollectionNameStep collection={collection} onNextStep={onHandleNextStep} />
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
-        return <ConfirmCollectionItemsStep collection={collection} onNextStep={onHandleNextStep} />
+        return <ConfirmCollectionItemsStep items={items} onNextStep={onHandleNextStep} />
       default:
         return null
     }
