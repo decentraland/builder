@@ -338,12 +338,15 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           modelContents,
           legacyBuilder
         )
-        // This method will calculate only the thumbnail's final size with a limit of 1MB
-        const finalThumbnailSize: number = yield call(calculateFileSize, thumbnailContent)
+        // If a new thumbnail is present, this method will calculate only the thumbnail's final size with a limit of 1MB
+        if (thumbnailContent) {
+          const finalThumbnailSize: number = yield call(calculateFileSize, thumbnailContent)
+          if (finalThumbnailSize > MAX_THUMBNAIL_FILE_SIZE) {
+            throw new ThumbnailFileTooBigError()
+          }
+        }
         if (finalModelSize > MAX_FILE_SIZE) {
           throw new ItemTooBigError()
-        } else if (finalThumbnailSize > MAX_THUMBNAIL_FILE_SIZE) {
-          throw new ThumbnailFileTooBigError()
         }
       }
 
