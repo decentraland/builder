@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 
 import { getBackgroundStyle, getThumbnailURL } from 'modules/item/utils'
 import RarityBadge from 'components/RarityBadge'
@@ -20,7 +21,7 @@ export default class ItemImage extends React.PureComponent<Props> {
     const isSmart = getItemMetadataType(item) === ItemMetadataType.SMART_WEARABLE
 
     return (
-      <div className={`ItemImage is-image image-wrapper ${className ?? ''}`.trim()} style={getBackgroundStyle(item.rarity)}>
+      <div className={classNames('ItemImage', 'is-image', 'image-wrapper', className)} style={getBackgroundStyle(item.rarity)}>
         <img className="item-image" src={src || getThumbnailURL(item)} alt={item.name} />
         <div className="badges-container">
           {hasRarityBadge && item.rarity && item.data.category ? (
