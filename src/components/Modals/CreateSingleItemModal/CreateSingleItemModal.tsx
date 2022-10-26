@@ -404,14 +404,16 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     this.setState({ item: item, category: item.data.category, rarity: item.rarity })
   }
 
-  handleCategoryChange = async (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+  handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
     if (this.state.category !== category) {
       this.setState({ category })
       if (this.state.type === ItemType.WEARABLE) {
-        await this.updateThumbnailByCategory(category)
+        return this.updateThumbnailByCategory(category)
       }
     }
+
+    return
   }
 
   handleRarityChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
@@ -586,8 +588,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { weareblePreviewUpdated, type, model } = this.state
     // if model is an image, the wearable preview won't be needed
     if (model && isImageFile(model)) {
-      await this.getMetricsAndScreenshot()
-      return
+      return this.getMetricsAndScreenshot()
     }
 
     const controller = WearablePreview.createController('thumbnail-picker')
