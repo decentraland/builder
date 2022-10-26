@@ -147,7 +147,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handlePlayModeChange = (playMode: EmotePlayMode) => {
-    let data: EmoteDataADR74 = {
+    const data: EmoteDataADR74 = {
       ...(this.state.data as EmoteDataADR74)!,
       loop: playMode === EmotePlayMode.LOOP
     }
@@ -356,7 +356,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
-              let actionableCategories: string[] = item
+              const actionableCategories: string[] = item
                 ? item.type === ItemType.WEARABLE
                   ? getOverridesCategories(item.contents, (data as WearableData)?.category)
                   : getEmoteCategories()
@@ -386,7 +386,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const downloadButton = isDownloading ? (
                 <Loader active size="tiny" className="donwload-item-loader" />
               ) : (
-                <Icon name="export" className={`download-item-button`} onClick={this.handleDownloadItem} />
+                <Icon name="export" className={'download-item-button'} onClick={this.handleDownloadItem} />
               )
 
               return isLoading ? (
@@ -401,7 +401,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           {getMissingBodyShapeType(item) !== null ? (
                             <Dropdown.Item
                               text={t('item_detail_page.add_representation', {
-                                bodyShape: t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()
+                                bodyShape: t(`body_shapes.${getMissingBodyShapeType(item)!}`).toLowerCase()
                               })}
                               onClick={this.handleAddRepresentationToItem}
                             />

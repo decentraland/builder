@@ -13,14 +13,14 @@ export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 export const MAX_PARCELS_PER_TX = 20
 export const SEPARATOR = ','
 
-export const coordsToId = (x: string | number, y: string | number) => x + SEPARATOR + y
+export const coordsToId = (x: string | number, y: string | number) => `${x}${SEPARATOR}${y}`
 
 export const idToCoords = (id: string) => id.split(SEPARATOR).map(coord => +coord) as [number, number]
 
 export const isCoords = (id: string) => id.includes(SEPARATOR)
 
 export const getCoords = (land: Land): Coord =>
-  land.type === LandType.PARCEL ? { x: land.x!, y: land.y! } : { x: land.parcels![0].x!, y: land.parcels![0].y! }
+  land.type === LandType.PARCEL ? { x: land.x!, y: land.y! } : { x: land.parcels![0].x, y: land.parcels![0].y }
 
 export const getCenter = (selection: { x: number; y: number }[]) => {
   const xs = [...new Set(selection.map(coords => coords.x).sort())]
