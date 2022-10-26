@@ -1,0 +1,95 @@
+.ConfirmCollectionItemsStep .details {
+  background-color: rgba(var(--dark-raw), 0.48);
+  border-radius: 8px;
+  width: 100%;
+  padding: 20px 24px 48px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.ConfirmCollectionItemsStep .details .title {
+  font-weight: 600;
+}
+
+.ConfirmCollectionItemsStep .details .subtitle {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.ConfirmCollectionItemsStep .details .description {
+  font-weight: 400;
+}
+
+.ConfirmCollectionItemsStep .details .fields .dcl.field {
+  margin-top: 32px;
+}
+
+.ConfirmCollectionItemsStep .actions {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.ConfirmCollectionItemsStep .actions .button {
+  width: 180px;
+}
+
+.ConfirmCollectionItemsStep .items {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ConfirmCollectionItemsStep .items tbody {
+  display: block;
+  max-height: 425px;
+  overflow-y: auto;
+}
+
+.ConfirmCollectionItemsStep .items thead,
+.ConfirmCollectionItemsStep .items tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.ConfirmCollectionItemsStep .items thead {
+  width: calc(100% - 1em);
+}
+
+.ConfirmCollectionItemsStep .avatarColumn .avatarContainer {
+  display: flex;
+  align-items: center;
+}
+
+.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .ItemImage {
+  height: 48px;
+  width: 48px;
+  margin-right: 16px;
+}
+
+.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .info {
+  display: flex;
+  align-items: center;
+}
+
+.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .name {
+  margin-right: 8px;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .badge {
+  background-color: #37333d;
+}
+
+.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .badge::before {
+  filter: none;
+}
+
+.ConfirmCollectionItemsStep .column.priceColumn .ui.mana {
+  font-size: 15px;
+}

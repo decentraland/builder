@@ -1296,8 +1296,14 @@
       "collection_name_label": "Collection name",
       "collection_name_confirmation_label": "Confirm Collection name",
       "collection_name_placeholder": "Your collection name",
-      "collection_names_different": "Collection names do not match",
+      "collection_names_different": "Collection name does not match",
       "confirm_name": "Confirm Name"
+    },
+    "confirm_collection_items_step": {
+      "title": "Confirm items",
+      "subtitle": "Items cannot be added or deleted from a collection once it is published.{enter}The rarity of items cannot be changed after publication either.",
+      "description": "Item name, description and categories can be modified.",
+      "confirm_items": "Confirm Items"
     }
   },
   "publish_third_party_collection_modal": {

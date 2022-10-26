@@ -1,9 +1,9 @@
-import { WearableCategory } from '@dcl/schemas'
+import { EmoteCategory, WearableCategory } from '@dcl/schemas'
 import { ItemRarity } from 'modules/item/types'
 
 export type Props = {
   rarity: ItemRarity
-  category: WearableCategory
+  category: WearableCategory | EmoteCategory
   size: 'medium' | 'small'
   withTooltip: boolean
   className?: string
