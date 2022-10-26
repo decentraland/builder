@@ -2,10 +2,10 @@ import React, { useCallback, useState } from 'react'
 import { Button, Checkbox, CheckboxProps, Column, Field, InputOnChangeData, Modal, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { emailRegex } from 'lib/validators'
-import { Props } from '../PublishWizardCollectionModal.types'
+import { Collection } from 'modules/collection/types'
 import './ReviewContentPolicyStep.css'
 
-export const ReviewContentPolicyStep: React.FC<Pick<Props, 'collection'> & { onNextStep: () => void }> = props => {
+export const ReviewContentPolicyStep: React.FC<{ collection: Collection; onNextStep: () => void }> = props => {
   const { collection, onNextStep } = props
   const [emailAddress, setEmailAddress] = useState<string>('')
   const [emailAddressFocus, setEmailAddressFocus] = useState<boolean>(false)
