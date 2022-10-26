@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import classNames from 'classnames'
 import { List, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
 import ConfirmCollectionNameStep from './ConfirmCollectionNameStep/ConfirmCollectionNameStep'
 import ConfirmCollectionItemsStep from './ConfirmCollectionItemsStep/ConfirmCollectionItemsStep'
+import ReviewContentPolicyStep from './ReviewContentPolicyStep/ReviewContentPolicyStep'
 import './PublishWizardCollectionModal.css'
 
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
@@ -29,6 +31,8 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
         return <ConfirmCollectionNameStep collection={collection!} onNextStep={onHandleNextStep} />
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
         return <ConfirmCollectionItemsStep items={items} onNextStep={onHandleNextStep} />
+      case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
+        return <ReviewContentPolicyStep collection={collection!} onNextStep={onHandleNextStep} />
       default:
         return null
     }
@@ -39,6 +43,8 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
         return t('publish_collection_modal_with_oracle.title')
+      case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
+        return t('publish_wizard_collection_modal.title_review_content_policy')
       default:
         return null
     }
@@ -50,7 +56,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
         {Object.values(PublishWizardCollectionSteps)
           .filter(step => !isNaN(Number(step)))
           .map(step => (
-            <List.Item className={`step ${currentStep === step ? 'active' : ''}`.trimEnd()} />
+            <List.Item key={step} className={classNames('step', { active: currentStep === step })} />
           ))}
       </List>
     )

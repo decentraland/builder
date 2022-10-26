@@ -1317,6 +1317,21 @@
       "confirm_items": "Confirmar Items"
     }
   },
+  "publish_wizard_collection_modal": {
+    "title_review_content_policy": "Revisar la política de contenido",
+    "review_content_policy_step": {
+      "title": "Antes de enviar su colección para su revisión, confirme su reconocimiento.",
+      "content_policy_first_condition": "Entiendo que no podré modificar el nombre de la colección y puedo dar fe de que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
+      "content_policy_second_condition": "Entiendo que no podré agregar o eliminar elementos después de que se publique la colección.",
+      "terms_of_use": "Términos de uso",
+      "content_policy": "Política de contenido",
+      "accept_terms_of_use": "Garantizo que los artículos enviados cumplen plenamente con los {terms_of_use_link} y las {content_policy_link}, que reconozco y acepto.",
+      "acknowledge_dao_terms": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a las {content_policy_link} y los {terms_of_use_link}. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo ya que su finalidad es compensar a los curadores por su tiempo y trabajo.",
+      "email_disclousure": "Necesitamos tu email para futuras comunicaciones sobre esta colección.",
+      "email_disclousure_detail": "Solo utilizaremos este email para comunicaciones sobre esta colección en particular.{enter}No estará vinculado a su cuenta.",
+      "continue": "Continar"
+    }
+  },
   "sell_collection_modal": {
     "title": "¿Quieres vender tus items?",
     "turn_on_description": "Al activar esta opción tu colección estará en venta en el mercado de Decentraland.",

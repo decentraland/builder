@@ -1,0 +1,60 @@
+.ReviewContentPolicyStep .details {
+  background-color: rgba(var(--dark-raw), 0.48);
+  border-radius: 8px;
+  width: 100%;
+  padding: 20px 24px 48px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.ReviewContentPolicyStep .details .title {
+  font-weight: 600;
+}
+
+.ReviewContentPolicyStep .details .subtitle {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.ReviewContentPolicyStep .details .description {
+  margin: 0;
+}
+
+.ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container {
+  display: flex;
+  margin-top: 32px;
+  margin-bottom: 46px;
+}
+
+.ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > .ui.checkbox {
+  margin-right: 14px;
+}
+
+.ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > span {
+  text-align: justify;
+}
+
+.ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > span > a {
+  color: var(--white);
+  text-decoration: underline;
+  font-weight: 400;
+}
+
+.ReviewContentPolicyStep .dcl.field {
+  margin-top: 24px;
+}
+
+.ReviewContentPolicyStep .dcl.field .ui.input input {
+  font-size: 15px;
+  padding-bottom: 0;
+}
+
+.ReviewContentPolicyStep .actions {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.ReviewContentPolicyStep .actions .button {
+  width: 180px;
+}

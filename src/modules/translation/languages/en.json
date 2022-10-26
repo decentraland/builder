@@ -1306,6 +1306,21 @@
       "confirm_items": "Confirm Items"
     }
   },
+  "publish_wizard_collection_modal": {
+    "title_review_content_policy": "Review content policy",
+    "review_content_policy_step": {
+      "title": "Before sending your collection for review, please confirm your acknowledgment.",
+      "content_policy_first_condition": "I understand I won't be able to modify the name of the collection, and I can attest that \"{collection_name}\" as a name doesn't violate any Intellectual Property rights.",
+      "content_policy_second_condition": "I understand I won't be able to add or delete items after the collection is published.",
+      "terms_of_use": "Terms of Use",
+      "content_policy": "Content Policy",
+      "accept_terms_of_use": "I warrant that the submitted item(s) are in full compliance with the {terms_of_use_link} and {content_policy_link}, which I acknowledge and accept.",
+      "acknowledge_dao_terms": "I acknowledge that the DAO may refuse to approve the item(s) based on infringements to the {content_policy_link} and {terms_of_use_link}. I also acknowledge that the proposal fee won't be reimbursed in case of rejection since its purpose is to compensate curators for their time and work.",
+      "email_disclousure": "We need your email for future communications about this collection.",
+      "email_disclousure_detail": "We will only use this email for communications about this collection in particular.{enter}It won't be linked to your account.",
+      "continue": "Continue"
+    }
+  },
   "publish_third_party_collection_modal": {
     "title": "Publish Linked Items",
     "publish_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\".",
