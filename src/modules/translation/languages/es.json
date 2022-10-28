@@ -1188,7 +1188,8 @@
       "supply": "Suministro",
       "play_mode": "Modo de Reproducción",
       "status": "Estado"
-    }
+    },
+    "missing_item_price": "Es necesario configurar el precio de una o mas {item_type}."
   },
   "collection_context_menu": {
     "add_existing_item": "Agregar item existente",

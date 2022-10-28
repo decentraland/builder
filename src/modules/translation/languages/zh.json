@@ -1170,7 +1170,8 @@
       "supply": "供应",
       "play_mode": "游戏模式",
       "status": "地位"
-    }
+    },
+    "missing_item_price": "您需要配置一个或多个 {item_type} 的价格。"
   },
   "collection_context_menu": {
     "add_existing_item": "添加现有项目",

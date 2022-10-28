@@ -1177,7 +1177,8 @@
       "supply": "Supply",
       "play_mode": "Play Mode",
       "status": "Status"
-    }
+    },
+    "missing_item_price": "You need to configure the price of one or more {item_type}."
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
