@@ -25,23 +25,21 @@ export const ConfirmCollectionNameStep: React.FC<{ collection: Collection; onNex
         <Column>
           <Row className="details">
             <Column grow={true}>
-              <p className="title">{t('publish_collection_modal_with_oracle.confirm_collection_name_step.title')}</p>
-              <p className="subtitle">{t('publish_collection_modal_with_oracle.confirm_collection_name_step.subtitle')}</p>
-              <p className="description">{t('publish_collection_modal_with_oracle.confirm_collection_name_step.description')}</p>
+              <p className="title">{t('publish_wizard_collection_modal.confirm_collection_name_step.title')}</p>
+              <p className="subtitle">{t('publish_wizard_collection_modal.confirm_collection_name_step.subtitle')}</p>
+              <p className="description">{t('publish_wizard_collection_modal.confirm_collection_name_step.description')}</p>
               <div className="fields">
                 <Field
-                  label={t('publish_collection_modal_with_oracle.confirm_collection_name_step.collection_name_label')}
+                  label={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_label')}
                   value={collection.name}
                   disabled={true}
                 />
                 <Field
-                  label={t('publish_collection_modal_with_oracle.confirm_collection_name_step.collection_name_confirmation_label')}
-                  placeholder={t('publish_collection_modal_with_oracle.confirm_collection_name_step.collection_name_placeholder')}
+                  label={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_confirmation_label')}
+                  placeholder={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_placeholder')}
                   value={collectionName}
                   error={hasError}
-                  message={
-                    hasError ? t('publish_collection_modal_with_oracle.confirm_collection_name_step.collection_names_different') : ''
-                  }
+                  message={hasError ? t('publish_wizard_collection_modal.confirm_collection_name_step.collection_names_different') : ''}
                   onChange={handleCollectionNameChange}
                   onBlur={handleCollectionNameBlur}
                 />
@@ -50,7 +48,7 @@ export const ConfirmCollectionNameStep: React.FC<{ collection: Collection; onNex
           </Row>
           <Row className="actions" align="right">
             <Button className="proceed" primary onClick={onNextStep} disabled={isDisabled}>
-              {t('publish_collection_modal_with_oracle.confirm_collection_name_step.confirm_name')}
+              {t('publish_wizard_collection_modal.confirm_collection_name_step.confirm_name')}
             </Button>
           </Row>
         </Column>

@@ -70,17 +70,15 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
         <Column>
           <Row className="details">
             <Column grow={true}>
-              <p className="title">{t('publish_collection_modal_with_oracle.confirm_collection_items_step.title')}</p>
-              <p className="subtitle">
-                {t('publish_collection_modal_with_oracle.confirm_collection_items_step.subtitle', { enter: <br /> })}
-              </p>
-              <p className="description">{t('publish_collection_modal_with_oracle.confirm_collection_items_step.description')}</p>
+              <p className="title">{t('publish_wizard_collection_modal.confirm_collection_items_step.title')}</p>
+              <p className="subtitle">{t('publish_wizard_collection_modal.confirm_collection_items_step.subtitle', { enter: <br /> })}</p>
+              <p className="description">{t('publish_wizard_collection_modal.confirm_collection_items_step.description')}</p>
               <div className="items">{renderItemsTable()}</div>
             </Column>
           </Row>
           <Row className="actions" align="right">
             <Button className="proceed" primary onClick={onNextStep}>
-              {t('publish_collection_modal_with_oracle.confirm_collection_items_step.confirm_items')}
+              {t('publish_wizard_collection_modal.confirm_collection_items_step.confirm_items')}
             </Button>
           </Row>
         </Column>

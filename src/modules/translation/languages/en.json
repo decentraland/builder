@@ -1288,7 +1288,13 @@
     "accept_by_publishing": "By clicking Publish you are accepting our terms",
     "not_enough_mana": "You don't have enough {symbol} to publish this collection.",
     "get_mana": "You can get more using the {link} dapp.",
-    "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again.",
+    "unsynced_collection": "The collection you are trying to publish is different from the one we have in our servers. Please, refresh the browser and try again."
+  },
+  "publish_wizard_collection_modal": {
+    "title_publish_collection": "Publish Collection",
+    "title_review_content_policy": "Review content policy",
+    "title_pay_publication_fee": "Pay the publication fee",
+    "title_congratulations": "Congratulations!",
     "confirm_collection_name_step": {
       "title": "Confirm collection name",
       "subtitle": "The name of the collection can't be modified after sending it for review.",
@@ -1304,10 +1310,7 @@
       "subtitle": "Items cannot be added or deleted from a collection once it is published.{enter}The rarity of items cannot be changed after publication either.",
       "description": "Item name, description and categories can be modified.",
       "confirm_items": "Confirm Items"
-    }
-  },
-  "publish_wizard_collection_modal": {
-    "title_review_content_policy": "Review content policy",
+    },
     "review_content_policy_step": {
       "title": "Before sending your collection for review, please confirm your acknowledgment.",
       "content_policy_first_condition": "I understand I won't be able to modify the name of the collection, and I can attest that \"{collection_name}\" as a name doesn't violate any Intellectual Property rights.",
@@ -1319,6 +1322,24 @@
       "email_disclousure": "We need your email for future communications about this collection.",
       "email_disclousure_detail": "We will only use this email for communications about this collection in particular.{enter}It won't be linked to your account.",
       "continue": "Continue"
+    },
+    "pay_publication_fee_step": {
+      "title": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}.",
+      "subtitle": "In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publicationFee} per item (paid in MANA).",
+      "learn_more": "Learn more about the publication fee",
+      "quantity": "Quantity",
+      "items": "{count} {count, plural, one {item} other {items}}",
+      "fee_per_item": "Fee per item",
+      "total_in_usd": "Total in {currency}",
+      "total_in_mana": "Total in MANA",
+      "pay": "Pay {value} MANA"
+    },
+    "congratulations_step": {
+      "title": "Your collection is now available for curators to review.",
+      "subtitle": "Any feedback will be sent in the {forum_post} where you and anyone in the community will be able to participate.",
+      "description": "The collection will be published after it is approved by the Curators Committee. Since this is a manual process, it can take a few days. Please be patient and mindful.",
+      "forum_post": "Forum Post",
+      "view_forum_post": "View Forum Post"
     }
   },
   "publish_third_party_collection_modal": {
