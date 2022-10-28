@@ -38,97 +38,95 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
   const hasCollectionError = unsyncedCollectionError || collectionError
 
   return (
-    <>
-      <Modal.Content className="PayPublicationFeeStep">
-        <Column>
-          <Row className="details">
-            <Column grow={true}>
-              <span>
-                {t('publish_wizard_collection_modal.pay_publication_fee_step.title', {
-                  collection_name: <b>{collection.name}</b>,
-                  count: items.length
-                })}
-              </span>
-              <span>
-                {t('publish_wizard_collection_modal.pay_publication_fee_step.subtitle', {
-                  currency: 'USD',
-                  publicationFee: toFixedMANAValue(ethers.utils.formatEther(priceUSD))
-                })}
-              </span>
-              <span className="learn-more">
-                <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener noreferrer">
-                  {t('publish_wizard_collection_modal.pay_publication_fee_step.learn_more')}
-                </a>
-              </span>
-              <div className="price-breakdown-container">
-                <div className="element">
-                  <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.quantity')}</div>
-                  <div className="element-content">
-                    {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: items.length })}
-                  </div>
-                </div>
-                <div className="element">
-                  <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.fee_per_item')}</div>
-                  <div className="element-content">
-                    {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD))}
-                  </div>
-                </div>
-                <div className="element">
-                  <div className="element-header">
-                    {t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_usd', { currency: Currency.USD })}
-                  </div>
-                  <div className="element-content total-amount">
-                    {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
-                  </div>
-                </div>
-                <div className="element">
-                  <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_mana')}</div>
-                  <div className="element-content total-amount">
-                    <Mana network={Network.MATIC} size="small">
-                      {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
-                    </Mana>
-                  </div>
+    <Modal.Content className="PayPublicationFeeStep">
+      <Column>
+        <Row className="details">
+          <Column grow={true}>
+            <span>
+              {t('publish_wizard_collection_modal.pay_publication_fee_step.title', {
+                collection_name: <b>{collection.name}</b>,
+                count: items.length
+              })}
+            </span>
+            <span>
+              {t('publish_wizard_collection_modal.pay_publication_fee_step.subtitle', {
+                currency: 'USD',
+                publicationFee: toFixedMANAValue(ethers.utils.formatEther(priceUSD))
+              })}
+            </span>
+            <span className="learn-more">
+              <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener noreferrer">
+                {t('publish_wizard_collection_modal.pay_publication_fee_step.learn_more')}
+              </a>
+            </span>
+            <div className="price-breakdown-container">
+              <div className="element">
+                <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.quantity')}</div>
+                <div className="element-content">
+                  {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: items.length })}
                 </div>
               </div>
-            </Column>
-          </Row>
-          <Row className="actions" align="right">
-            {!refRarity ? (
-              <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
-            ) : hasInsufficientMANA ? (
-              <small className="not-enough-mana-notice error">
-                {t('publish_collection_modal_with_oracle.not_enough_mana', {
-                  symbol: (
-                    <span>
-                      <Mana network={Network.MATIC} inline /> MANA
-                    </span>
-                  )
-                })}
-                <br />
-                {t('publish_collection_modal_with_oracle.get_mana', {
-                  link: (
-                    <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
-                      Account
-                    </a>
-                  )
-                })}
-              </small>
-            ) : hasCollectionError && !isLoading ? (
-              <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>
-            ) : null}
-            <Button className="proceed" primary onClick={onNextStep} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
-              {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
-                value: (
-                  <Mana network={Network.MATIC} size="medium">
+              <div className="element">
+                <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.fee_per_item')}</div>
+                <div className="element-content">
+                  {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD))}
+                </div>
+              </div>
+              <div className="element">
+                <div className="element-header">
+                  {t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_usd', { currency: Currency.USD })}
+                </div>
+                <div className="element-content total-amount">
+                  {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
+                </div>
+              </div>
+              <div className="element">
+                <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_mana')}</div>
+                <div className="element-content total-amount">
+                  <Mana network={Network.MATIC} size="small">
                     {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
                   </Mana>
+                </div>
+              </div>
+            </div>
+          </Column>
+        </Row>
+        <Row className="actions" align="right">
+          {!refRarity ? (
+            <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
+          ) : hasInsufficientMANA ? (
+            <small className="not-enough-mana-notice error">
+              {t('publish_collection_modal_with_oracle.not_enough_mana', {
+                symbol: (
+                  <span>
+                    <Mana network={Network.MATIC} inline /> MANA
+                  </span>
                 )
               })}
-            </Button>
-          </Row>
-        </Column>
-      </Modal.Content>
-    </>
+              <br />
+              {t('publish_collection_modal_with_oracle.get_mana', {
+                link: (
+                  <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
+                    Account
+                  </a>
+                )
+              })}
+            </small>
+          ) : hasCollectionError && !isLoading ? (
+            <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>
+          ) : null}
+          <Button className="proceed" primary onClick={onNextStep} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
+            {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
+              value: (
+                <Mana network={Network.MATIC} size="medium">
+                  {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
+                </Mana>
+              )
+            })}
+          </Button>
+        </Row>
+      </Column>
+    </Modal.Content>
   )
 }
 
