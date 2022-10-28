@@ -13,7 +13,7 @@ export const CongratulationsStep: React.FC<{ collection: Collection }> = props =
         <Column>
           <Row className="details">
             <Column grow={true}>
-              <i className="highlight-icon"></i>
+              <i className="sparkles"></i>
               <span>{t('publish_wizard_collection_modal.congratulations_step.title')}</span>
               <span>
                 {t('publish_wizard_collection_modal.congratulations_step.subtitle', {

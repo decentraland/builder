@@ -10,17 +10,7 @@ import { MapStateProps } from '../PublishWizardCollectionModal.types'
 import './PayPublicationFeeStep.css'
 
 export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () => void }> = props => {
-  const {
-    collection,
-    items,
-    rarities,
-    wallet,
-    collectionError,
-    unsyncedCollectionError,
-    isPublishLoading,
-    isCreatingForumPost,
-    onNextStep
-  } = props
+  const { collection, items, rarities, wallet, collectionError, unsyncedCollectionError, isLoading, onNextStep } = props
 
   // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
   // as reference for the prices is enough.
@@ -45,8 +35,7 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
     hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPrice))
   }
 
-  const error = unsyncedCollectionError || collectionError
-  const isLoading = isPublishLoading || isCreatingForumPost
+  const hasCollectionError = unsyncedCollectionError || collectionError
 
   return (
     <>
@@ -124,7 +113,7 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
                   )
                 })}
               </small>
-            ) : error ? (
+            ) : hasCollectionError && !isLoading ? (
               <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>
             ) : null}
             <Button className="proceed" primary onClick={onNextStep} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>

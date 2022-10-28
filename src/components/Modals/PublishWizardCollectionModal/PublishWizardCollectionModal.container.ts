@@ -18,19 +18,21 @@ import PublishWizardCollectionModal from './PublishWizardCollectionModal'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { collectionId } = ownProps.metadata
+  const collection = getCollection(state, collectionId)!
+  const isPublishLoading = isLoadingType(getCollectionLoading(state), PUBLISH_COLLECTION_REQUEST)
+  const isFetchingItems = isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST)
+  const isFetchingRarities = isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST)
+  const isCreatingForumPost = isLoadingType(getCollectionLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST)
 
   return {
     wallet: getWallet(state)!,
-    collection: getCollection(state, collectionId)!,
+    collection,
     items: getCollectionItems(state, collectionId),
     rarities: getRarities(state),
     unsyncedCollectionError: getUnsyncedCollectionError(state),
-    isPublishLoading: isLoadingType(getCollectionLoading(state), PUBLISH_COLLECTION_REQUEST),
-    isFetchingItems: isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST),
-    isFetchingRarities: isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST),
-    isCreatingForumPost: isLoadingType(getCollectionLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST),
     itemError: getItemError(state),
-    collectionError: getCollectionError(state)
+    collectionError: getCollectionError(state),
+    isLoading: isPublishLoading || isFetchingItems || isFetchingRarities || isCreatingForumPost || !!collection.lock
   }
 }
 
