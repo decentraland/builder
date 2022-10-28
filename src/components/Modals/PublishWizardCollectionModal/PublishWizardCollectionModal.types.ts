@@ -10,18 +10,20 @@ export enum PublishWizardCollectionSteps {
   CONFIRM_COLLECTION_NAME,
   CONFIRM_COLLECTION_ITEMS,
   REVIEW_CONTENT_POLICY,
-  PAY_PUBLICATION_FEE
+  PAY_PUBLICATION_FEE,
+  COLLECTION_PUBLISHED
 }
 
 export type Props = ModalProps & {
   metadata: PublishCollectionModalMetadata
-  wallet: Wallet | null
-  collection: Collection | null
+  wallet: Wallet
+  collection: Collection
   items: Item[]
   rarities: Rarity[]
   isPublishLoading: boolean
   isFetchingItems: boolean
   isFetchingRarities: boolean
+  isCreatingForumPost: boolean
   unsyncedCollectionError: string | null
   collectionError: string | null
   itemError: string | null
@@ -43,6 +45,7 @@ export type MapStateProps = Pick<
   | 'isPublishLoading'
   | 'isFetchingItems'
   | 'isFetchingRarities'
+  | 'isCreatingForumPost'
   | 'collectionError'
   | 'itemError'
 >
