@@ -774,21 +774,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   getPlayModeOptions() {
-    const { isEmotePlayModeFeatureFlagOn } = this.props
     const playModes: string[] = getEmotePlayModes()
 
-    return playModes.map(value => {
-      const isDisabled = isEmotePlayModeFeatureFlagOn && value === EmotePlayMode.LOOP
-      let text = t(`emote.play_mode.${value}.text`)
-      if (isDisabled) text = `${text} (${t('global.coming_soon')})`
-
-      return {
-        value,
-        text,
-        description: t(`emote.play_mode.${value}.description`),
-        disabled: isDisabled
-      }
-    })
+    return playModes.map(value => ({
+      value,
+      text: t(`emote.play_mode.${value}.text`),
+      description: t(`emote.play_mode.${value}.description`)
+    }))
   }
 
   renderEmoteDetails() {

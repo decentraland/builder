@@ -22,14 +22,6 @@ export const getIsRentalsEnabled = (state: RootState) => {
   }
 }
 
-export const getIsEmotePlayModeEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.EMOTE_PLAY_MODE)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsMVMFEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.MVMF)

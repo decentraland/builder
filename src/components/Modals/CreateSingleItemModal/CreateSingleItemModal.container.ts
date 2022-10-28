@@ -3,7 +3,6 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { saveItemRequest, SAVE_ITEM_REQUEST } from 'modules/item/actions'
-import { getIsEmotePlayModeEnabled } from 'modules/features/selectors'
 import { getLoading, getError } from 'modules/item/selectors'
 import { getCollection } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
@@ -17,8 +16,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     collection,
     address: getAddress(state),
     error: getError(state),
-    isLoading: isLoadingType(getLoading(state), SAVE_ITEM_REQUEST),
-    isEmotePlayModeFeatureFlagOn: getIsEmotePlayModeEnabled(state)
+    isLoading: isLoadingType(getLoading(state), SAVE_ITEM_REQUEST)
   }
 }
 
