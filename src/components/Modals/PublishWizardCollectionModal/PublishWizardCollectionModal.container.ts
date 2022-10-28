@@ -10,6 +10,7 @@ import {
 } from 'modules/collection/selectors'
 import { getLoading as getItemLoading, getCollectionItems, getError as getItemError } from 'modules/item/selectors'
 import { publishCollectionRequest, PUBLISH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { getRarities } from 'modules/item/selectors'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './PublishWizardCollectionModal.types'
@@ -19,14 +20,15 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { collectionId } = ownProps.metadata
 
   return {
-    wallet: getWallet(state),
-    collection: getCollection(state, collectionId),
+    wallet: getWallet(state)!,
+    collection: getCollection(state, collectionId)!,
     items: getCollectionItems(state, collectionId),
     rarities: getRarities(state),
     unsyncedCollectionError: getUnsyncedCollectionError(state),
     isPublishLoading: isLoadingType(getCollectionLoading(state), PUBLISH_COLLECTION_REQUEST),
     isFetchingItems: isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST),
     isFetchingRarities: isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST),
+    isCreatingForumPost: isLoadingType(getCollectionLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST),
     itemError: getItemError(state),
     collectionError: getCollectionError(state)
   }

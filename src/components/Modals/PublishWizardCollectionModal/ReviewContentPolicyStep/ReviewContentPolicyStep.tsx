@@ -5,7 +5,7 @@ import { emailRegex } from 'lib/validators'
 import { Collection } from 'modules/collection/types'
 import './ReviewContentPolicyStep.css'
 
-export const ReviewContentPolicyStep: React.FC<{ collection: Collection; onNextStep: () => void }> = props => {
+export const ReviewContentPolicyStep: React.FC<{ collection: Collection; onNextStep: (value: string) => void }> = props => {
   const { collection, onNextStep } = props
   const [emailAddress, setEmailAddress] = useState<string>('')
   const [emailAddressFocus, setEmailAddressFocus] = useState<boolean>(false)
@@ -125,7 +125,7 @@ export const ReviewContentPolicyStep: React.FC<{ collection: Collection; onNextS
             </Column>
           </Row>
           <Row className="actions" align="right">
-            <Button className="proceed" primary onClick={onNextStep} disabled={isDisabled}>
+            <Button className="proceed" primary onClick={() => onNextStep(emailAddress)} disabled={isDisabled}>
               {t('publish_wizard_collection_modal.review_content_policy_step.continue')}
             </Button>
           </Row>
