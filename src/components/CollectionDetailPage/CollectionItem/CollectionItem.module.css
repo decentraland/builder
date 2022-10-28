@@ -93,6 +93,10 @@
   color: rgb(var(--light-blue-raw));
 }
 
+.incomplete {
+  color: var(--primary);
+}
+
 .check {
   margin-left: 2px;
 }

@@ -118,6 +118,8 @@ export default class CollectionItem extends React.PureComponent<Props> {
             <div className={`${styles.done} ${styles.action}`}>
               {t('collection_item.done')} <Icon className={styles.check} name="check" />
             </div>
+          ) : !item.price ? (
+            <div className={`${styles.incomplete} ${styles.action}`}>{t('collection_item.incomplete')}</div>
           ) : (
             <span onClick={preventDefault(this.handleNavigateToEditor)} className={`link ${styles.linkAction}`}>
               {t('collection_item.edit_item')}

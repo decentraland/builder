@@ -1211,6 +1211,8 @@
   "collection_item": {
     "set_price": "agregar precio",
     "done": "Terminado",
+    "ready_to_publish": "Listo para publicar",
+    "incomplete": "Incompleto",
     "edit_item": "editar",
     "mint_item": "crear",
     "remove_from_collection": "Eliminar de la colección",
