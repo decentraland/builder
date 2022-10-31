@@ -41,7 +41,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
 
   handleShare = () => {
     const { project, onOpenModal } = this.props
-    const projectId = project!.id
+    const projectId = project.id
 
     onOpenModal('ShareModal', {
       type: ShareModalType.POOL,
@@ -49,10 +49,10 @@ export default class ContestModal extends React.PureComponent<Props, State> {
     } as ShareModalMetadata)
   }
 
-  handleSubmit = async () => {
+  handleSubmit = () => {
     const { ethAddress } = this.state
     const { project, onDeployToPool, poolGroup } = this.props
-    const projectId = project!.id
+    const projectId = project.id
     const poolGroupId = poolGroup!.id
 
     if (ethAddress && !ETH_ADDRESS.test(ethAddress)) {
