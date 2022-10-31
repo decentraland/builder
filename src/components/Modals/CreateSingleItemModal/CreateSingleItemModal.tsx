@@ -409,11 +409,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (this.state.category !== category) {
       this.setState({ category })
       if (this.state.type === ItemType.WEARABLE) {
-        return this.updateThumbnailByCategory(category)
+        // As it's not required to wait for the promise, use the void operator to return undefined
+        void this.updateThumbnailByCategory(category)
       }
     }
-
-    return
   }
 
   handleRarityChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
