@@ -10,21 +10,20 @@ export enum PublishWizardCollectionSteps {
   CONFIRM_COLLECTION_NAME,
   CONFIRM_COLLECTION_ITEMS,
   REVIEW_CONTENT_POLICY,
-  PAY_PUBLICATION_FEE
+  PAY_PUBLICATION_FEE,
+  COLLECTION_PUBLISHED
 }
 
 export type Props = ModalProps & {
   metadata: PublishCollectionModalMetadata
-  wallet: Wallet | null
-  collection: Collection | null
+  wallet: Wallet
+  collection: Collection
   items: Item[]
   rarities: Rarity[]
-  isPublishLoading: boolean
-  isFetchingItems: boolean
-  isFetchingRarities: boolean
   unsyncedCollectionError: string | null
   collectionError: string | null
   itemError: string | null
+  isLoading: boolean
   onPublish: typeof publishCollectionRequest
   onFetchRarities: typeof fetchRaritiesRequest
 }
@@ -35,16 +34,7 @@ export type PublishCollectionModalMetadata = {
 
 export type MapStateProps = Pick<
   Props,
-  | 'wallet'
-  | 'collection'
-  | 'items'
-  | 'rarities'
-  | 'unsyncedCollectionError'
-  | 'isPublishLoading'
-  | 'isFetchingItems'
-  | 'isFetchingRarities'
-  | 'collectionError'
-  | 'itemError'
+  'wallet' | 'collection' | 'items' | 'rarities' | 'unsyncedCollectionError' | 'collectionError' | 'itemError' | 'isLoading'
 >
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onFetchRarities'>
 export type MapDispatch = Dispatch<PublishCollectionRequestAction | FetchRaritiesRequestAction>

@@ -10,6 +10,7 @@ import {
 } from 'modules/collection/selectors'
 import { getLoading as getItemLoading, getCollectionItems, getError as getItemError } from 'modules/item/selectors'
 import { publishCollectionRequest, PUBLISH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { getRarities } from 'modules/item/selectors'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './PublishWizardCollectionModal.types'
@@ -17,18 +18,21 @@ import PublishWizardCollectionModal from './PublishWizardCollectionModal'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { collectionId } = ownProps.metadata
+  const collection = getCollection(state, collectionId)!
+  const isPublishLoading = isLoadingType(getCollectionLoading(state), PUBLISH_COLLECTION_REQUEST)
+  const isFetchingItems = isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST)
+  const isFetchingRarities = isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST)
+  const isCreatingForumPost = isLoadingType(getCollectionLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST)
 
   return {
-    wallet: getWallet(state),
-    collection: getCollection(state, collectionId),
+    wallet: getWallet(state)!,
+    collection,
     items: getCollectionItems(state, collectionId),
     rarities: getRarities(state),
     unsyncedCollectionError: getUnsyncedCollectionError(state),
-    isPublishLoading: isLoadingType(getCollectionLoading(state), PUBLISH_COLLECTION_REQUEST),
-    isFetchingItems: isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST),
-    isFetchingRarities: isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST),
     itemError: getItemError(state),
-    collectionError: getCollectionError(state)
+    collectionError: getCollectionError(state),
+    isLoading: isPublishLoading || isFetchingItems || isFetchingRarities || isCreatingForumPost || !!collection.lock
   }
 }
 

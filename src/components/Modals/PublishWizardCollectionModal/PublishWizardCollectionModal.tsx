@@ -7,32 +7,50 @@ import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionMo
 import ConfirmCollectionNameStep from './ConfirmCollectionNameStep/ConfirmCollectionNameStep'
 import ConfirmCollectionItemsStep from './ConfirmCollectionItemsStep/ConfirmCollectionItemsStep'
 import ReviewContentPolicyStep from './ReviewContentPolicyStep/ReviewContentPolicyStep'
+import PayPublicationFeeStep from './PayPublicationFeeStep/PayPublicationFeeStep'
+import CongratulationsStep from './CongratulationsStep/CongratulationsStep'
 import './PublishWizardCollectionModal.css'
 
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
-  const { collection, items, onClose, onFetchRarities } = props
+  const { collection, items, onClose, onFetchRarities, onPublish } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
+  const [emailAddress, setEmailAddress] = useState<string>('')
 
   useEffect(() => {
-    if (!collection) {
-      onClose()
-    }
-
     onFetchRarities()
-  }, [collection, onClose, onFetchRarities])
+  }, [onFetchRarities])
 
-  const onHandleNextStep = () => {
-    setCurrentStep(currentStep + 1)
+  useEffect(() => {
+    if (collection.forumLink) {
+      setCurrentStep(PublishWizardCollectionSteps.COLLECTION_PUBLISHED)
+    }
+  }, [collection.forumLink])
+
+  const handleOnNextStep = () => {
+    setCurrentStep(step => step + 1)
+  }
+
+  const handleOnAcceptContentPolicy = (email: string) => {
+    setEmailAddress(email)
+    handleOnNextStep()
+  }
+
+  const handleOnPublish = () => {
+    onPublish(collection, items, emailAddress)
   }
 
   const renderStepView = () => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
-        return <ConfirmCollectionNameStep collection={collection!} onNextStep={onHandleNextStep} />
+        return <ConfirmCollectionNameStep collection={collection} onNextStep={handleOnNextStep} />
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
-        return <ConfirmCollectionItemsStep items={items} onNextStep={onHandleNextStep} />
+        return <ConfirmCollectionItemsStep items={items} onNextStep={handleOnNextStep} />
       case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
-        return <ReviewContentPolicyStep collection={collection!} onNextStep={onHandleNextStep} />
+        return <ReviewContentPolicyStep collection={collection} onNextStep={handleOnAcceptContentPolicy} />
+      case PublishWizardCollectionSteps.PAY_PUBLICATION_FEE:
+        return <PayPublicationFeeStep {...props} onNextStep={handleOnPublish} />
+      case PublishWizardCollectionSteps.COLLECTION_PUBLISHED:
+        return <CongratulationsStep collection={collection} />
       default:
         return null
     }
@@ -42,19 +60,27 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
-        return t('publish_collection_modal_with_oracle.title')
+        return t('publish_wizard_collection_modal.title_publish_collection')
       case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
         return t('publish_wizard_collection_modal.title_review_content_policy')
+      case PublishWizardCollectionSteps.PAY_PUBLICATION_FEE:
+        return t('publish_wizard_collection_modal.title_pay_publication_fee')
+      case PublishWizardCollectionSteps.COLLECTION_PUBLISHED:
+        return t('publish_wizard_collection_modal.title_congratulations')
       default:
         return null
     }
   }
 
   const renderStepsInicator = () => {
+    if (currentStep === PublishWizardCollectionSteps.COLLECTION_PUBLISHED) {
+      return null
+    }
+
     return (
       <List horizontal className="steps-indicator content">
         {Object.values(PublishWizardCollectionSteps)
-          .filter(step => !isNaN(Number(step)))
+          .filter(step => !isNaN(Number(step)) && step !== PublishWizardCollectionSteps.COLLECTION_PUBLISHED)
           .map(step => (
             <List.Item key={step} className={classNames('step', { active: currentStep === step })} />
           ))}

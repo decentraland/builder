@@ -1283,7 +1283,13 @@
     "publish": "发布",
     "not_enough_mana": "您没有足够的{symbol} 来发布此收藏集。",
     "get_mana": "您可以使用{link} dapp获得更多信息。",
-    "unsynced_collection": "您尝试发布的集合中的项与服务器上的项存在差异。请刷新浏览器，然后重试。",
+    "unsynced_collection": "您尝试发布的集合中的项与服务器上的项存在差异。请刷新浏览器，然后重试。"
+  },
+  "publish_wizard_collection_modal": {
+    "title_publish_collection": "发布收藏",
+    "title_review_content_policy": "审查内容政策",
+    "title_pay_publication_fee": "支付出版费",
+    "title_congratulations": "恭喜！",
     "confirm_collection_name_step": {
       "title": "确认收藏名称",
       "subtitle": "作品集名称送审后不可修改。",
@@ -1299,10 +1305,7 @@
       "subtitle": "项目一旦发布就无法从集合中添加或删除。{enter}项目的稀有度在发布后也无法更改。",
       "description": "可以修改项目名称、描述和类别。",
       "confirm_items": "确认项目"
-    }
-  },
-  "publish_wizard_collection_modal": {
-    "title_review_content_policy": "审查内容政策",
+    },
     "review_content_policy_step": {
       "title": "在发送您的收藏以供审核之前，请确认您的确认。",
       "content_policy_first_condition": "我了解我将无法修改集合的名称，并且我可以证明 \"{collection_name}\" 作为名称不会侵犯任何知识产权。",
@@ -1314,6 +1317,24 @@
       "email_disclousure": "我们需要您的电子邮件，以便将来就该系列进行交流。",
       "email_disclousure_detail": "我们只会将这封电子邮件用于特别是有关此收藏的通信。{enter}它不会与您的帐户相关联。",
       "continue": "继续"
+    },
+    "pay_publication_fee_step": {
+      "title": "您即将发送包含 {count} {count, plural, one {物品} other {项目}} 的集合 \"{collection_name}\" 以供审核。",
+      "subtitle": "为了支持策展人委员会和 DAO 宝藏，每件作品有 {currency} {publicationFee} 的出版费（以 MANA 支付）。",
+      "learn_more": "详细了解发布费",
+      "quantity": "数量",
+      "items": "{count} {count, plural, one {物品} other {项目}}",
+      "fee_per_item": "每件费用",
+      "total_in_usd": "总计 {currency}",
+      "total_in_mana": "总计 MANA",
+      "pay": "支付 {value} MANA"
+    },
+    "congratulations_step": {
+      "title": "您的收藏现在可供策展人查看。",
+      "subtitle": "任何反馈都将在 {forum_post} 中发送，您和社区中的任何人都可以参与其中。",
+      "description": "藏品经策展人委员会批准后出版。 由于这是一个手动过程，因此可能需要几天时间。 请耐心和细心。",
+      "forum_post": "论坛帖子",
+      "view_forum_post": "查看论坛帖子"
     }
   },
   "sell_collection_modal": {

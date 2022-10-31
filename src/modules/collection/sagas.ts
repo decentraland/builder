@@ -140,6 +140,7 @@ import {
 } from 'modules/entity/actions'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getRaritiesContract, getWalletCollections } from './selectors'
+import { getIsNewPublishWizardEnabled } from 'modules/features/selectors'
 import { Collection, CollectionType } from './types'
 import {
   isOwner,
@@ -398,7 +399,11 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       collection = { ...collection, lock: +new Date(lock) }
 
       yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
-      yield put(replace(locations.activity()))
+
+      const isNewPublishWizardFlowFlagOn: boolean = yield select(getIsNewPublishWizardEnabled)
+      if (!isNewPublishWizardFlowFlagOn) {
+        yield put(replace(locations.activity()))
+      }
     } catch (error) {
       yield put(publishCollectionFailure(collection, items, error.message))
     }

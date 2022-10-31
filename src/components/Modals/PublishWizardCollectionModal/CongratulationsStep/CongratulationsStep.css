@@ -1,0 +1,40 @@
+.CongratulationsStep .details {
+  background-color: rgba(var(--dark-raw), 0.48);
+  border-radius: 8px;
+  width: 100%;
+  padding: 20px 24px 48px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: justify;
+}
+
+.CongratulationsStep .sparkles {
+  align-self: center;
+  height: 128px;
+  width: 128px;
+  margin: 50px auto;
+  background-image: url('../../../../images/sparkles.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.CongratulationsStep .details a.forum-post {
+  color: var(--white);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.CongratulationsStep .details .description {
+  margin-top: 24px;
+  margin-bottom: 84px;
+}
+
+.CongratulationsStep .actions {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.CongratulationsStep .actions .button {
+  max-width: 220px;
+}

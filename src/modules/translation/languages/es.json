@@ -1299,7 +1299,13 @@
     "accept_by_publishing": "Al presionar Publish estás aceptando nuestros términos y condiciones",
     "not_enough_mana": "No tienes suficiente {symbol} para publicar la collección.",
     "get_mana": "Puedes obtener más usando la {link} dapp.",
-    "unsynced_collection": "La colección que está intentando publicar tiene diferencias con la que hay en el servidor. Por favor, refresque el navegador e intente de nuevo.",
+    "unsynced_collection": "La colección que está intentando publicar tiene diferencias con la que hay en el servidor. Por favor, refresque el navegador e intente de nuevo."
+  },
+  "publish_wizard_collection_modal": {
+    "title_publish_collection": "Publicar Colección",
+    "title_review_content_policy": "Revisar la política de contenido",
+    "title_pay_publication_fee": "Pagar la tarifa de publicación",
+    "title_congratulations": "Felicidades!",
     "confirm_collection_name_step": {
       "title": "Confirmar nombre de la colección",
       "subtitle": "El nombre de la colección no podra ser modificado despues de ser enviado para su revisión.",
@@ -1311,14 +1317,11 @@
       "confirm_name": "Confirmar Nombre"
     },
     "confirm_collection_items_step": {
-      "title": "Confirmar items",
-      "subtitle": "No se pueden agregar ni eliminar items de la colección una vez que se publica.{enter}La rareza de los items tampoco se podra cambiar despues de la publicación.",
-      "description": "Nombre del item, descripción y categorias podran ser modificadas.",
-      "confirm_items": "Confirmar Items"
-    }
-  },
-  "publish_wizard_collection_modal": {
-    "title_review_content_policy": "Revisar la política de contenido",
+      "title": "Confirmar artículos",
+      "subtitle": "No se pueden agregar ni eliminar artículos de la colección una vez que se publica.{enter}La rareza de los artículos tampoco se podra cambiar despues de la publicación.",
+      "description": "Nombre del artículo, descripción y categorias podran ser modificadas.",
+      "confirm_items": "Confirmar Artículos"
+    },
     "review_content_policy_step": {
       "title": "Antes de enviar su colección para su revisión, confirme su reconocimiento.",
       "content_policy_first_condition": "Entiendo que no podré modificar el nombre de la colección y puedo dar fe de que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
@@ -1330,6 +1333,24 @@
       "email_disclousure": "Necesitamos tu email para futuras comunicaciones sobre esta colección.",
       "email_disclousure_detail": "Solo utilizaremos este email para comunicaciones sobre esta colección en particular.{enter}No estará vinculado a su cuenta.",
       "continue": "Continar"
+    },
+    "pay_publication_fee_step": {
+      "title": "Está por enviar a revisión la colección \"{collection_name}\" que incluye {count} {count, plural, one {artículo} other {artículos}}.",
+      "subtitle": "Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarica de publicación de {currency} {publicationFee} por artículo (pagado en MANA).",
+      "learn_more": "Más información sobre la tarifa de publicación",
+      "quantity": "Cantidad",
+      "items": "{count} {count, plural, one {artículo} other {artículos}}",
+      "fee_per_item": "Tarifa por artículo",
+      "total_in_usd": "Total en {currency}",
+      "total_in_mana": "Total en MANA",
+      "pay": "Pagar {value} MANA"
+    },
+    "congratulations_step": {
+      "title": "Su colección ya esta disponible para ser verificada por los curadores.",
+      "subtitle": "Todos los comentarios seran enviados al {forum_post} donde usted y cualquier miembro de la comunidad podrán participar.",
+      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curadores. Dado que es un proceso manual, podria tomar unos días. Por favor sea paciente y consciente",
+      "forum_post": "Post en el foro",
+      "view_forum_post": "Ver el Post en el foro"
     }
   },
   "sell_collection_modal": {

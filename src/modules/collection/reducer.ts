@@ -227,7 +227,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
             ...state.data[collection.id],
             lock: collection.lock
           }
-        }
+        },
+        loading: loadingReducer(state.loading, action)
       }
     }
     case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS: {
@@ -261,7 +262,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
             ...state.data[collection.id],
             forumLink
           }
-        }
+        },
+        loading: loadingReducer(state.loading, action)
       }
     }
     case FETCH_COLLECTIONS_FAILURE:
