@@ -81,6 +81,10 @@
   line-height: 18px;
 }
 
+.PayPublicationFeeStep .actions .button.loading > .ui.dcl.mana {
+  visibility: hidden;
+}
+
 .PayPublicationFeeStep .error {
   flex: 1 1 0;
 }
