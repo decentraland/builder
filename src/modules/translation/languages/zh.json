@@ -1303,7 +1303,7 @@
     "confirm_collection_items_step": {
       "title": "确认项目",
       "subtitle": "项目一旦发布就无法从集合中添加或删除。{enter}项目的稀有度在发布后也无法更改。",
-      "description": "可以修改项目名称、描述和类别。",
+      "description": "项目名称、描述、类别和价格可以稍后修改。",
       "confirm_items": "确认项目"
     },
     "review_content_policy_step": {

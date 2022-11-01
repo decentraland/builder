@@ -1319,7 +1319,7 @@
     "confirm_collection_items_step": {
       "title": "Confirmar artículos",
       "subtitle": "No se pueden agregar ni eliminar artículos de la colección una vez que se publica.{enter}La rareza de los artículos tampoco se podra cambiar despues de la publicación.",
-      "description": "Nombre del artículo, descripción y categorias podran ser modificadas.",
+      "description": "Nombre del artículo, descripción, categorias y precio podran ser modificadas luego.",
       "confirm_items": "Confirmar Artículos"
     },
     "review_content_policy_step": {
