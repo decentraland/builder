@@ -10,8 +10,8 @@ import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
 import './ConfirmCollectionItemsStep.css'
 
-export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: () => void }> = props => {
-  const { items, onNextStep } = props
+export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: () => void; onPrevStep: () => void }> = props => {
+  const { items, onNextStep, onPrevStep } = props
 
   const renderPrice = (item: Item) => {
     return (
@@ -76,6 +76,9 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
           </Column>
         </Row>
         <Row className="actions" align="right">
+          <Button className="back" secondary onClick={onPrevStep}>
+            {t('global.back')}
+          </Button>
           <Button className="proceed" primary onClick={onNextStep}>
             {t('publish_wizard_collection_modal.confirm_collection_items_step.confirm_items')}
           </Button>
