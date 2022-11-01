@@ -89,7 +89,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   }
 
   return (
-    <Modal className="PublishWizardCollectionModal" size="small" onClose={onClose}>
+    <Modal className="PublishWizardCollectionModal" size="small" onClose={onClose} closeOnDimmerClick={false}>
       <ModalNavigation title={renderStepTitle()} onClose={onClose} />
       {renderStepsInicator()}
       {renderStepView()}
