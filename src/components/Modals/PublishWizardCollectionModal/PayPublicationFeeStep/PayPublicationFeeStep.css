@@ -14,7 +14,7 @@
 }
 
 .PayPublicationFeeStep .details .learn-more > a {
-  color: var(--white);
+  color: white;
   text-decoration: underline;
   font-weight: 400;
 }

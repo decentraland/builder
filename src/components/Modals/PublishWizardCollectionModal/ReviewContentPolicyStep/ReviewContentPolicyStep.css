@@ -36,7 +36,7 @@
 }
 
 .ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > span > a {
-  color: var(--white);
+  color: white;
   text-decoration: underline;
   font-weight: 400;
 }
