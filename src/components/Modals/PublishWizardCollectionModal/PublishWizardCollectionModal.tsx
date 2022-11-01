@@ -54,7 +54,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       case PublishWizardCollectionSteps.PAY_PUBLICATION_FEE:
         return <PayPublicationFeeStep {...props} onNextStep={handleOnPublish} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.COLLECTION_PUBLISHED:
-        return <CongratulationsStep collection={collection} />
+        return <CongratulationsStep collection={collection} onClose={onClose} />
       default:
         return null
     }

@@ -4,8 +4,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import './CongratulationsStep.css'
 
-export const CongratulationsStep: React.FC<{ collection: Collection }> = props => {
-  const { collection } = props
+export const CongratulationsStep: React.FC<{ collection: Collection; onClose: () => void }> = props => {
+  const { collection, onClose } = props
 
   return (
     <Modal.Content className="CongratulationsStep">
@@ -17,7 +17,7 @@ export const CongratulationsStep: React.FC<{ collection: Collection }> = props =
             <span>
               {t('publish_wizard_collection_modal.congratulations_step.subtitle', {
                 forum_post: (
-                  <a className="forum-post" href={collection.forumLink}>
+                  <a className="forum-post" href={collection.forumLink} rel="noopener noreferrer" target="_blank">
                     {t('publish_wizard_collection_modal.congratulations_step.forum_post')}
                   </a>
                 )
@@ -27,7 +27,10 @@ export const CongratulationsStep: React.FC<{ collection: Collection }> = props =
           </Column>
         </Row>
         <Row className="actions" align="right">
-          <Button className="proceed" primary href={collection.forumLink}>
+          <Button className="finish" secondary onClick={onClose}>
+            {t('global.finish')}
+          </Button>
+          <Button className="proceed" primary as="a" href={collection.forumLink} target="_blank" rel="noopener noreferrer">
             {t('publish_wizard_collection_modal.congratulations_step.view_forum_post')}
           </Button>
         </Row>
