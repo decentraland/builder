@@ -31,10 +31,12 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
     return (
       <Table basic="very">
         <Table.Header>
-          <Table.HeaderCell width={7}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
-          <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
-          <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
-          <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
+          <Table.Row>
+            <Table.HeaderCell width={7}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
+          </Table.Row>
         </Table.Header>
         <Table.Body>
           {items.map(item => (
