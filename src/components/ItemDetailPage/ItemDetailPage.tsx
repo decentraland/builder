@@ -279,11 +279,13 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                 <div className="card">
                   <div className="title">{t('item_detail_page.tags.title')}</div>
                   <div className="data">
-                    {item.data.tags.map(tag => (
-                      <span className="tag" key={tag}>
-                        {tag}
-                      </span>
-                    ))}
+                    <div className="tags-container">
+                      {item.data.tags.map(tag => (
+                        <span className="tag" key={tag}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ) : null}
