@@ -45,6 +45,10 @@
   margin-top: 24px;
 }
 
+.ReviewContentPolicyStep .dcl.field.has-label .ui.header {
+  color: white;
+}
+
 .ReviewContentPolicyStep .dcl.field .ui.input input {
   font-size: 15px;
   padding-bottom: 0;
