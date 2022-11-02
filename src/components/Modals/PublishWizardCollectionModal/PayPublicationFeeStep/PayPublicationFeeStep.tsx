@@ -35,7 +35,37 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
     hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPrice))
   }
 
-  const hasCollectionError = unsyncedCollectionError || collectionError
+  const renderErrorMessage = () => {
+    if (!refRarity) {
+      return <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
+    } else if (hasInsufficientMANA) {
+      return (
+        <small className="not-enough-mana-notice error">
+          {t('publish_collection_modal_with_oracle.not_enough_mana', {
+            symbol: (
+              <span>
+                <Mana network={Network.MATIC} inline /> MANA
+              </span>
+            )
+          })}
+          <br />
+          {t('publish_collection_modal_with_oracle.get_mana', {
+            link: (
+              <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
+                Account
+              </a>
+            )
+          })}
+        </small>
+      )
+    } else if (unsyncedCollectionError && !isLoading) {
+      return <p className="error danger-text">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>
+    } else if (collectionError && !isLoading) {
+      return <p className="error danger-text">{collectionError}</p>
+    }
+
+    return null
+  }
 
   return (
     <Modal.Content className="PayPublicationFeeStep">
@@ -92,29 +122,7 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
           </Column>
         </Row>
         <Row className="actions" align="right">
-          {!refRarity ? (
-            <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
-          ) : hasInsufficientMANA ? (
-            <small className="not-enough-mana-notice error">
-              {t('publish_collection_modal_with_oracle.not_enough_mana', {
-                symbol: (
-                  <span>
-                    <Mana network={Network.MATIC} inline /> MANA
-                  </span>
-                )
-              })}
-              <br />
-              {t('publish_collection_modal_with_oracle.get_mana', {
-                link: (
-                  <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
-                    Account
-                  </a>
-                )
-              })}
-            </small>
-          ) : hasCollectionError && !isLoading ? (
-            <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>
-          ) : null}
+          {renderErrorMessage()}
           <Button className="back" secondary onClick={onPrevStep} disabled={isLoading}>
             {t('global.back')}
           </Button>
