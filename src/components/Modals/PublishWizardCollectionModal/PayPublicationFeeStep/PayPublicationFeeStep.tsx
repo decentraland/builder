@@ -9,8 +9,8 @@ import { Currency, Rarity } from 'modules/item/types'
 import { MapStateProps } from '../PublishWizardCollectionModal.types'
 import './PayPublicationFeeStep.css'
 
-export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () => void }> = props => {
-  const { collection, items, rarities, wallet, collectionError, unsyncedCollectionError, isLoading, onNextStep } = props
+export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () => void; onPrevStep: () => void }> = props => {
+  const { collection, items, rarities, wallet, collectionError, unsyncedCollectionError, isLoading, onNextStep, onPrevStep } = props
 
   // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
   // as reference for the prices is enough.
@@ -115,6 +115,9 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
           ) : hasCollectionError && !isLoading ? (
             <p className="error">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>
           ) : null}
+          <Button className="back" secondary onClick={onPrevStep} disabled={isLoading}>
+            {t('global.back')}
+          </Button>
           <Button className="proceed" primary onClick={onNextStep} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
             {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
               value: (

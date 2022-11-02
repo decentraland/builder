@@ -14,7 +14,7 @@
 }
 
 .PayPublicationFeeStep .details .learn-more > a {
-  color: var(--white);
+  color: white;
   text-decoration: underline;
   font-weight: 400;
 }
@@ -78,6 +78,11 @@
 .PayPublicationFeeStep .actions .button > .ui.dcl.mana {
   font-size: 13px;
   font-weight: 600;
+  line-height: 18px;
+}
+
+.PayPublicationFeeStep .actions .button.loading > .ui.dcl.mana {
+  visibility: hidden;
 }
 
 .PayPublicationFeeStep .error {

@@ -30,6 +30,10 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     setCurrentStep(step => step + 1)
   }
 
+  const handleOnPrevStep = () => {
+    setCurrentStep(step => step - 1)
+  }
+
   const handleOnAcceptContentPolicy = (email: string) => {
     setEmailAddress(email)
     handleOnNextStep()
@@ -44,13 +48,13 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
         return <ConfirmCollectionNameStep collection={collection} onNextStep={handleOnNextStep} />
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
-        return <ConfirmCollectionItemsStep items={items} onNextStep={handleOnNextStep} />
+        return <ConfirmCollectionItemsStep items={items} onNextStep={handleOnNextStep} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
-        return <ReviewContentPolicyStep collection={collection} onNextStep={handleOnAcceptContentPolicy} />
+        return <ReviewContentPolicyStep collection={collection} onNextStep={handleOnAcceptContentPolicy} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.PAY_PUBLICATION_FEE:
-        return <PayPublicationFeeStep {...props} onNextStep={handleOnPublish} />
+        return <PayPublicationFeeStep {...props} onNextStep={handleOnPublish} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.COLLECTION_PUBLISHED:
-        return <CongratulationsStep collection={collection} />
+        return <CongratulationsStep collection={collection} onClose={onClose} />
       default:
         return null
     }
@@ -89,7 +93,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   }
 
   return (
-    <Modal className="PublishWizardCollectionModal" size="small" onClose={onClose}>
+    <Modal className="PublishWizardCollectionModal" size="small" onClose={onClose} closeOnDimmerClick={false}>
       <ModalNavigation title={renderStepTitle()} onClose={onClose} />
       {renderStepsInicator()}
       {renderStepView()}

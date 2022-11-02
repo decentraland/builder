@@ -14,7 +14,7 @@ export const ConfirmCollectionNameStep: React.FC<{ collection: Collection; onNex
   }, [])
 
   const handleCollectionNameBlur = useCallback(() => {
-    setError(collection.name !== collectionName)
+    setError(!!collectionName && collection.name !== collectionName)
   }, [collection, collectionName])
 
   const isDisabled = hasError || !collectionName
@@ -33,15 +33,18 @@ export const ConfirmCollectionNameStep: React.FC<{ collection: Collection; onNex
                 value={collection.name}
                 disabled={true}
               />
-              <Field
-                label={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_confirmation_label')}
-                placeholder={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_placeholder')}
-                value={collectionName}
-                error={hasError}
-                message={hasError ? t('publish_wizard_collection_modal.confirm_collection_name_step.collection_names_different') : ''}
-                onChange={handleCollectionNameChange}
-                onBlur={handleCollectionNameBlur}
-              />
+              <div className="confirm-collection-name">
+                <Field
+                  label={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_confirmation_label')}
+                  placeholder={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_placeholder')}
+                  value={collectionName}
+                  error={hasError}
+                  message={hasError ? t('publish_wizard_collection_modal.confirm_collection_name_step.collection_names_different') : ''}
+                  onChange={handleCollectionNameChange}
+                  onBlur={handleCollectionNameBlur}
+                  autoFocus
+                />
+              </div>
             </div>
           </Column>
         </Row>

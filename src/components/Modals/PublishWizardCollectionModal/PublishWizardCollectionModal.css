@@ -17,11 +17,11 @@
   align-items: center;
   justify-content: center;
   color: white;
-  background-color: red;
+  background-color: var(--primary);
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 3px solid red;
+  border: 3px solid var(--primary);
   font-size: 9px;
   font-weight: 600;
   position: relative;
@@ -30,15 +30,15 @@
 
 .PublishWizardCollectionModal .steps-indicator.list .item.step.active::before {
   content: '';
-  background-color: red;
-  border-color: #fff;
+  background-color: var(--primary);
+  border-color: white;
 }
 
 .PublishWizardCollectionModal .steps-indicator.list .item.step.active ~ .item.step::before {
   content: '';
-  background-color: #736e7d;
-  color: #fff;
-  border-color: #736e7d;
+  background-color: var(--light-gray);
+  color: white;
+  border-color: var(--light-gray);
 }
 
 .PublishWizardCollectionModal .steps-indicator.list .item.step::after {
@@ -47,7 +47,7 @@
   position: absolute;
   width: 100%;
   height: 2px;
-  background-color: #736e7d;
+  background-color: var(--light-gray);
   top: 8px;
   z-index: 0;
   visibility: visible;

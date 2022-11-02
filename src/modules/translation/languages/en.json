@@ -1308,7 +1308,7 @@
     "confirm_collection_items_step": {
       "title": "Confirm items",
       "subtitle": "Items cannot be added or deleted from a collection once it is published.{enter}The rarity of items cannot be changed after publication either.",
-      "description": "Item name, description and categories can be modified.",
+      "description": "Item name, description, categories and price can be modified later.",
       "confirm_items": "Confirm Items"
     },
     "review_content_policy_step": {

@@ -36,13 +36,17 @@
 }
 
 .ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > span > a {
-  color: var(--white);
+  color: white;
   text-decoration: underline;
   font-weight: 400;
 }
 
 .ReviewContentPolicyStep .dcl.field {
   margin-top: 24px;
+}
+
+.ReviewContentPolicyStep .dcl.field.has-label .ui.header {
+  color: white;
 }
 
 .ReviewContentPolicyStep .dcl.field .ui.input input {

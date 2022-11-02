@@ -21,6 +21,9 @@
 .ConfirmCollectionNameStep .details .fields .dcl.field {
   margin-top: 32px;
 }
+.ConfirmCollectionNameStep .details .fields .confirm-collection-name .has-label .header {
+  color: white;
+}
 
 .ConfirmCollectionNameStep .actions {
   margin-top: 24px;
