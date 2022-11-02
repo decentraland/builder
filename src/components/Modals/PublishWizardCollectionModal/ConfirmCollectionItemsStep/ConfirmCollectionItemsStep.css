@@ -94,3 +94,7 @@
 .ConfirmCollectionItemsStep .column.priceColumn .ui.mana {
   font-size: 15px;
 }
+
+.ui.visible.popup.price-popup {
+  z-index: 4000;
+}

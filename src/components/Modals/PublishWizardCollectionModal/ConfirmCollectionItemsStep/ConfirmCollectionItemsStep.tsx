@@ -1,7 +1,7 @@
 import React from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
-import { Button, Column, Mana, Modal, Row, Table } from 'decentraland-ui'
+import { Button, Column, Mana, Modal, Popup, Row, Table } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
 import { isFree } from 'modules/item/utils'
@@ -14,13 +14,28 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
   const { items, onNextStep, onPrevStep } = props
 
   const renderPrice = (item: Item) => {
+    const price = ethers.utils.formatEther(item.price!)
+
     return (
       <div>
         {isFree(item) ? (
           t('global.free')
         ) : (
           <Mana className="mana" network={Network.MATIC}>
-            {ethers.utils.formatEther(item.price!)}
+            {price.length > 10 ? (
+              <Popup
+                className="price-popup"
+                content={price}
+                position="top center"
+                trigger={<span>{`${price.slice(0, 3)}...${price.slice(-4)}`}</span>}
+                hideOnScroll
+                on="hover"
+                inverted
+                flowing
+              />
+            ) : (
+              <span>{price}</span>
+            )}
           </Mana>
         )}
       </div>
