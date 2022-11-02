@@ -54,8 +54,8 @@
   table-layout: fixed;
 }
 
-.ConfirmCollectionItemsStep .items thead {
-  width: calc(100% - 1em);
+.ConfirmCollectionItemsStep .items thead.has-scrollbar {
+  width: calc(100% - 10px);
 }
 
 .ConfirmCollectionItemsStep .avatarColumn .avatarContainer {

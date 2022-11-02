@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { Button, Column, Mana, Modal, Popup, Row, Table } from 'decentraland-ui'
@@ -45,8 +46,8 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
   const renderItemsTable = () => {
     return (
       <Table basic="very">
-        <Table.Header>
-          <Table.Row>
+        <Table.Header className={classNames({ 'has-scrollbar': items.length > 5 })}>
+          <Table.Row className="row">
             <Table.HeaderCell width={7}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
             <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
             <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
