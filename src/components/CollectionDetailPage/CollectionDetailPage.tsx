@@ -85,6 +85,18 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     onNavigate(locations.collectionDetail(collection!.id, CollectionType.DECENTRALAND, { tab }))
   }
 
+  renderMisingItemPricePopup(itemType: ItemType) {
+    const itemTypeText = itemType === ItemType.WEARABLE ? t('collection_detail_page.wearables') : t('collection_detail_page.emotes')
+    return (
+      <Popup
+        className="modal-tooltip"
+        content={t('collection_detail_page.missing_item_price', { item_type: itemTypeText.toLowerCase() })}
+        position="top center"
+        trigger={<i aria-hidden="true" className="circle icon tiny"></i>}
+      />
+    )
+  }
+
   renderPage(items: Item[]) {
     const { tab } = this.state
     const { wallet, isOnSaleLoading } = this.props
@@ -95,6 +107,8 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     const isLocked = isCollectionLocked(collection)
     const hasEmotes = items.some(item => item.type === ItemType.EMOTE)
     const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
+    const isEmoteMissingPrice = hasEmotes ? items.some(item => item.type === ItemType.EMOTE && !item.price) : false
+    const isWearableMissingPrice = hasWearables ? items.some(item => item.type === ItemType.WEARABLE && !item.price) : false
     const hasOnlyEmotes = hasEmotes && !hasWearables
     const filteredItems = items.filter(item => (hasOnlyEmotes ? item.type === ItemType.EMOTE : item.type === tab))
     const showShowTabs = hasEmotes && hasWearables
@@ -194,10 +208,12 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
               <Tabs.Tab active={tab === ItemType.WEARABLE} onClick={() => this.handleTabChange(ItemType.WEARABLE)}>
                 <BuilderIcon name="wearable" />
                 {t('collection_detail_page.wearables')}
+                {isWearableMissingPrice ? this.renderMisingItemPricePopup(ItemType.WEARABLE) : null}
               </Tabs.Tab>
               <Tabs.Tab active={tab === ItemType.EMOTE} onClick={() => this.handleTabChange(ItemType.EMOTE)}>
                 <BuilderIcon name="emote" />
                 {t('collection_detail_page.emotes')}
+                {isEmoteMissingPrice ? this.renderMisingItemPricePopup(ItemType.EMOTE) : null}
               </Tabs.Tab>
             </Tabs>
           ) : null}
@@ -209,7 +225,9 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                   <Table.HeaderCell>{t('collection_detail_page.table.item')}</Table.HeaderCell>
                   <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
                   <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
-                  {tab === ItemType.EMOTE || hasOnlyEmotes ? <Table.HeaderCell>{t('collection_detail_page.table.play_mode')}</Table.HeaderCell> : null}
+                  {tab === ItemType.EMOTE || hasOnlyEmotes ? (
+                    <Table.HeaderCell>{t('collection_detail_page.table.play_mode')}</Table.HeaderCell>
+                  ) : null}
                   <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
                   {collection.isPublished ? <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell> : null}
                   <Table.HeaderCell>{t('collection_detail_page.table.status')}</Table.HeaderCell>

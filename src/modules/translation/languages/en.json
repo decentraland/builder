@@ -1177,7 +1177,8 @@
       "supply": "Supply",
       "play_mode": "Play Mode",
       "status": "Status"
-    }
+    },
+    "missing_item_price": "You need to configure the price of one or more {item_type}."
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
@@ -1199,6 +1200,8 @@
   "collection_item": {
     "set_price": "set price",
     "done": "Done",
+    "ready_to_publish": "Ready to publish",
+    "incomplete": "Incomplete",
     "edit_item": "edit",
     "mint_item": "mint",
     "remove_from_collection": "Remove from collection",

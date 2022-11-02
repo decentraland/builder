@@ -1170,7 +1170,8 @@
       "supply": "供应",
       "play_mode": "游戏模式",
       "status": "地位"
-    }
+    },
+    "missing_item_price": "您需要配置一个或多个 {item_type} 的价格。"
   },
   "collection_context_menu": {
     "add_existing_item": "添加现有项目",
@@ -1192,6 +1193,8 @@
   "collection_item": {
     "set_price": "设定价格",
     "done": "完成",
+    "ready_to_publish": "准备发布",
+    "incomplete": "不完整",
     "edit_item": "编辑",
     "mint_item": "铸币",
     "remove_from_collection": "从收藏中删除",

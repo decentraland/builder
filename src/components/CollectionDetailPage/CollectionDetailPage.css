@@ -157,6 +157,11 @@
   align-items: center;
 }
 
+.CollectionDetailPage .dcl.tab i.circle.icon {
+  margin-left: 5px;
+  color: #ff3d61;
+}
+
 .CollectionDetailPage .dcl.tabs.fullscreen .ui.container {
   border-bottom: 1px solid rgba(115, 110, 125, 0.32);
 }
