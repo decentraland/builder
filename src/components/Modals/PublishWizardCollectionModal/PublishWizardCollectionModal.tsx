@@ -14,6 +14,7 @@ import './PublishWizardCollectionModal.css'
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const { collection, items, onClose, onFetchRarities, onPublish } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
+  const [collectionName, setCollectionName] = useState<string>('')
   const [emailAddress, setEmailAddress] = useState<string>('')
 
   useEffect(() => {
@@ -34,6 +35,11 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     setCurrentStep(step => step - 1)
   }
 
+  const handleOnConfirmCollectionName = (confirmedCollectionName: string) => {
+    setCollectionName(confirmedCollectionName)
+    handleOnNextStep()
+  }
+
   const handleOnAcceptContentPolicy = (email: string) => {
     setEmailAddress(email)
     handleOnNextStep()
@@ -46,11 +52,24 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const renderStepView = () => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
-        return <ConfirmCollectionNameStep collection={collection} onNextStep={handleOnNextStep} />
+        return (
+          <ConfirmCollectionNameStep
+            collection={collection}
+            confirmedCollectionName={collectionName}
+            onNextStep={handleOnConfirmCollectionName}
+          />
+        )
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
         return <ConfirmCollectionItemsStep items={items} onNextStep={handleOnNextStep} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
-        return <ReviewContentPolicyStep collection={collection} onNextStep={handleOnAcceptContentPolicy} onPrevStep={handleOnPrevStep} />
+        return (
+          <ReviewContentPolicyStep
+            collection={collection}
+            confirmedEmailAddress={emailAddress}
+            onNextStep={handleOnAcceptContentPolicy}
+            onPrevStep={handleOnPrevStep}
+          />
+        )
       case PublishWizardCollectionSteps.PAY_PUBLICATION_FEE:
         return <PayPublicationFeeStep {...props} onNextStep={handleOnPublish} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.COLLECTION_PUBLISHED:

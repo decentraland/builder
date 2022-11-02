@@ -7,16 +7,17 @@ import './ReviewContentPolicyStep.css'
 
 export const ReviewContentPolicyStep: React.FC<{
   collection: Collection
+  confirmedEmailAddress: string
   onNextStep: (value: string) => void
   onPrevStep: () => void
 }> = props => {
-  const { collection, onNextStep, onPrevStep } = props
-  const [emailAddress, setEmailAddress] = useState<string>('')
+  const { collection, confirmedEmailAddress, onNextStep, onPrevStep } = props
+  const [emailAddress, setEmailAddress] = useState<string>(confirmedEmailAddress)
   const [emailAddressFocus, setEmailAddressFocus] = useState<boolean>(false)
-  const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(false)
-  const [contentPolicySecondConditionChecked, setContentPolicySecondConditionChecked] = useState<boolean>(false)
-  const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(false)
-  const [ackowledgeDaoTermsChecked, setAckowledgeDaoTermsChecked] = useState<boolean>(false)
+  const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(!!confirmedEmailAddress)
+  const [contentPolicySecondConditionChecked, setContentPolicySecondConditionChecked] = useState<boolean>(!!confirmedEmailAddress)
+  const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(!!confirmedEmailAddress)
+  const [ackowledgeDaoTermsChecked, setAckowledgeDaoTermsChecked] = useState<boolean>(!!confirmedEmailAddress)
 
   const handleOnEmailAddressChange = useCallback((_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
     setEmailAddress(value)
@@ -46,8 +47,12 @@ export const ReviewContentPolicyStep: React.FC<{
     setAckowledgeDaoTermsChecked(!!checked)
   }, [])
 
+  const handleOnProceed = () => {
+    onNextStep(emailAddress)
+  }
+
   const hasValidEmail = emailRegex.test(emailAddress)
-  const showEmailError = !hasValidEmail && !emailAddressFocus && emailAddress !== undefined && emailAddress !== ''
+  const showEmailError = !hasValidEmail && !emailAddressFocus && !!emailAddress
 
   const isDisabled =
     !hasValidEmail ||
@@ -132,7 +137,7 @@ export const ReviewContentPolicyStep: React.FC<{
             <Button className="back" secondary onClick={onPrevStep}>
               {t('global.back')}
             </Button>
-            <Button className="proceed" primary onClick={() => onNextStep(emailAddress)} disabled={isDisabled}>
+            <Button className="proceed" primary onClick={handleOnProceed} disabled={isDisabled}>
               {t('publish_wizard_collection_modal.review_content_policy_step.continue')}
             </Button>
           </Row>

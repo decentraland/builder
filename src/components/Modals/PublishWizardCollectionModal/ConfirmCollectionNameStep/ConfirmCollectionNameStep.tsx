@@ -4,20 +4,34 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import './ConfirmCollectionNameStep.css'
 
-export const ConfirmCollectionNameStep: React.FC<{ collection: Collection; onNextStep: () => void }> = props => {
-  const { collection, onNextStep } = props
-  const [collectionName, setCollectionName] = useState<string>('')
-  const [hasError, setError] = useState<boolean>(false)
+export const ConfirmCollectionNameStep: React.FC<{
+  collection: Collection
+  confirmedCollectionName: string
+  onNextStep: (value: string) => void
+}> = props => {
+  const { collection, confirmedCollectionName, onNextStep } = props
+  const [collectionName, setCollectionName] = useState<string>(confirmedCollectionName)
+  const [collectionNameFocus, setCollectionNameFocus] = useState<boolean>(false)
 
   const handleCollectionNameChange = useCallback((_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
     setCollectionName(value)
   }, [])
 
-  const handleCollectionNameBlur = useCallback(() => {
-    setError(!!collectionName && collection.name !== collectionName)
-  }, [collection, collectionName])
+  const handleCollectionNameFocus = useCallback(() => {
+    setCollectionNameFocus(true)
+  }, [])
 
-  const isDisabled = hasError || !collectionName
+  const handleCollectionNameBlur = useCallback(() => {
+    setCollectionNameFocus(false)
+  }, [])
+
+  const handleOnProceed = () => {
+    onNextStep(collectionName)
+  }
+
+  const hasValidCollectionName = collection.name === collectionName
+  const showError = !hasValidCollectionName && !collectionNameFocus && !!collectionName
+  const isDisabled = showError || !hasValidCollectionName
 
   return (
     <Modal.Content className="ConfirmCollectionNameStep">
@@ -38,10 +52,11 @@ export const ConfirmCollectionNameStep: React.FC<{ collection: Collection; onNex
                   label={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_confirmation_label')}
                   placeholder={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_placeholder')}
                   value={collectionName}
-                  error={hasError}
-                  message={hasError ? t('publish_wizard_collection_modal.confirm_collection_name_step.collection_names_different') : ''}
+                  error={showError}
+                  message={showError ? t('publish_wizard_collection_modal.confirm_collection_name_step.collection_names_different') : ''}
                   onChange={handleCollectionNameChange}
                   onBlur={handleCollectionNameBlur}
+                  onFocus={handleCollectionNameFocus}
                   autoFocus
                 />
               </div>
@@ -49,7 +64,7 @@ export const ConfirmCollectionNameStep: React.FC<{ collection: Collection; onNex
           </Column>
         </Row>
         <Row className="actions" align="right">
-          <Button className="proceed" primary onClick={onNextStep} disabled={isDisabled}>
+          <Button className="proceed" primary onClick={handleOnProceed} disabled={isDisabled}>
             {t('publish_wizard_collection_modal.confirm_collection_name_step.confirm_name')}
           </Button>
         </Row>
