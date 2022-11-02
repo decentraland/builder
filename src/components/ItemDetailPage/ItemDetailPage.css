@@ -153,6 +153,12 @@
   margin-bottom: 25px;
 }
 
+.ItemDetailPage .tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
 .ItemDetailPage .card .tag {
   background: #37333d;
   mix-blend-mode: normal;
