@@ -24,7 +24,7 @@ export default class Tools extends React.PureComponent<Props, State> {
     isShortcutPopupOpen: this.isShortcutPopupDismissed()
   }
 
-  _isMounted: boolean = false
+  _isMounted = false
 
   updatePopupPositionDebounced = debounce(() => this.updatePopupPosition(), 200)
 

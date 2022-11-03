@@ -612,7 +612,7 @@ describe('when handling the save item success action', () => {
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
     let mockEthers: jest.SpyInstance
-    let contractInstanceMock: { items: () => {} }
+    let contractInstanceMock: { items: () => Record<string, unknown> }
 
     beforeEach(() => {
       mockEthers = jest.spyOn(ethers, 'Contract')
