@@ -22,7 +22,16 @@ import NotFound from 'components/NotFound'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import CollectionRow from './CollectionRow'
-import { Props, State, CurationFilterOptions, CurationExtraStatuses, Filters } from './CurationPage.types'
+import {
+  Props,
+  State,
+  CurationFilterOptions,
+  CurationExtraStatuses,
+  CurationStatuses,
+  CollectionTypes,
+  CollectionExtraTypes,
+  CollectionFilterOptions
+} from './CurationPage.types'
 import { CurationSortOptions } from 'modules/curations/types'
 import './CurationPage.css'
 
@@ -35,6 +44,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     sortBy: CurationSortOptions.MOST_RELEVANT,
     filterByStatus: CurationExtraStatuses.ALL_STATUS,
     filterByTags: [],
+    filterByType: CollectionExtraTypes.ALL_TYPES,
     assignee: ALL_ASSIGNEES_KEY,
     searchText: '',
     page: 1
@@ -57,12 +67,13 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   getFetchParams = (overrides?: FetchCollectionsParams) => {
-    const { assignee, filterByStatus, page, searchText, sortBy, filterByTags } = this.state
+    const { assignee, filterByStatus, filterByType, page, searchText, sortBy, filterByTags } = this.state
     return {
       page,
       limit: PAGE_SIZE,
       assignee: assignee !== ALL_ASSIGNEES_KEY ? assignee : undefined,
       status: filterByStatus !== CurationExtraStatuses.ALL_STATUS ? filterByStatus : undefined,
+      type: filterByType !== CollectionExtraTypes.ALL_TYPES ? filterByType : undefined,
       q: searchText ? searchText : undefined,
       sort: sortBy,
       tag: filterByTags.length > 0 ? filterByTags : undefined,
@@ -85,7 +96,17 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   handleStatusChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-    this.updateParam({ filterByStatus: `${value as unknown as string}` as Filters, page: 1 })
+    // this.updateParam({ filterByStatus: `${value as unknown as string}` as Filters, page: 1 })
+    this.updateParam({ filterByStatus: `${value}` as CurationStatuses, page: 1 })
+  }
+
+  handleTypeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    this.updateParam({
+      filterByType: `${value}` as CollectionTypes,
+      sortBy: CurationSortOptions.MOST_RELEVANT,
+      filterByStatus: CurationExtraStatuses.ALL_STATUS,
+      page: 1
+    })
   }
 
   handleAssigneeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
@@ -113,7 +134,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderSortDropdown = () => {
-    const { sortBy } = this.state
+    const { sortBy, filterByType } = this.state
     return (
       <Dropdown
         direction="left"
@@ -124,13 +145,30 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') },
           { value: CurationSortOptions.NAME_DESC, text: t('global.order.name_desc') }
         ]}
+        disabled={filterByType !== CollectionFilterOptions.STANDARD}
         onChange={this.handleSortChange}
       />
     )
   }
 
+  renderTypesFilterDropdown = () => {
+    const { filterByType } = this.state
+    return (
+      <Dropdown
+        direction="left"
+        value={filterByType}
+        options={[
+          { value: CollectionExtraTypes.ALL_TYPES, text: t('curation_page.filter.all_types') },
+          { value: CollectionFilterOptions.STANDARD, text: t('curation_page.filter.standard') },
+          { value: CollectionFilterOptions.THIRD_PARTY, text: t('curation_page.filter.third_party') }
+        ]}
+        onChange={this.handleTypeChange}
+      />
+    )
+  }
+
   renderStatusFilterDropdown = () => {
-    const { filterByStatus } = this.state
+    const { filterByStatus, filterByType } = this.state
     return (
       <Dropdown
         direction="left"
@@ -142,6 +180,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           { value: CurationFilterOptions.APPROVED, text: t('curation_page.filter.approved') },
           { value: CurationFilterOptions.REJECTED, text: t('curation_page.filter.rejected') }
         ]}
+        disabled={filterByType !== CollectionFilterOptions.STANDARD}
         onChange={this.handleStatusChange}
       />
     )
@@ -217,6 +256,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
                 <Row>
                   {isMVMFEnabled ? this.renderMvmfFilterToggle() : null}
                   {this.renderAssigneeFilterDropdown()}
+                  {this.renderTypesFilterDropdown()}
                   {this.renderStatusFilterDropdown()}
                   {this.renderSortDropdown()}
                 </Row>

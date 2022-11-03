@@ -1036,12 +1036,15 @@
     "filter": {
       "all_status": "所有状态",
       "all_assignees": "所有受让人",
+      "all_types": "所有类型",
       "not_reviewed": "尚未审核",
       "approved": "已批准",
       "rejected": "拒绝了",
       "under_review": "审查中",
       "to_review": "回顾",
-      "mvmf_collections": "元界节日合集"
+      "mvmf_collections": "元界节日合集",
+      "standard": "标准",
+      "third_party": "链接的"
     },
     "search_placeholder": "按名称或所有者地址在 {count} 个结果之间搜索...",
     "collections": "{count} {count, plural, one {个合集} other {个收藏}}",

@@ -1044,12 +1044,15 @@
     "filter": {
       "all_status": "All status",
       "all_assignees": "All assignees",
+      "all_types": "All types",
       "not_reviewed": "Not reviewed",
       "approved": "Approved",
       "rejected": "Rejected",
       "under_review": "Under Review",
       "to_review": "To Review",
-      "mvmf_collections": "Metaverse Festival Collections"
+      "mvmf_collections": "Metaverse Festival Collections",
+      "standard": "Standard",
+      "third_party": "Linked"
     },
     "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",

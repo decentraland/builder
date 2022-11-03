@@ -20,7 +20,7 @@ export type Collection = {
 }
 
 export enum CollectionType {
-  DECENTRALAND = 'decentraland',
+  STANDARD = 'standard',
   THIRD_PARTY = 'third_party'
 }
 
