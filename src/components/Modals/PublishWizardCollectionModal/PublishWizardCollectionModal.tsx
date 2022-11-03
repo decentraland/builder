@@ -16,6 +16,9 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
   const [collectionName, setCollectionName] = useState<string>('')
   const [emailAddress, setEmailAddress] = useState<string>('')
+  const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(false)
+  const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(false)
+  const [ackowledgeDaoTermsChecked, setAckowledgeDaoTermsChecked] = useState<boolean>(false)
 
   useEffect(() => {
     onFetchRarities()
@@ -37,12 +40,22 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
 
   const handleOnConfirmCollectionName = (confirmedCollectionName: string) => {
     setCollectionName(confirmedCollectionName)
-    handleOnNextStep()
   }
 
-  const handleOnAcceptContentPolicy = (email: string) => {
+  const handleOnChangeEmailAddress = (email: string) => {
     setEmailAddress(email)
-    handleOnNextStep()
+  }
+
+  const handleOnContentPolicyFirstConditionChange = (value: boolean) => {
+    setContentPolicyFirstConditionChecked(value)
+  }
+
+  const handleOnAcceptTermsOfUseChange = (value: boolean) => {
+    setAcceptTermsOfUseChecked(value)
+  }
+
+  const handleOnAckowledgeDaoTermsChange = (value: boolean) => {
+    setAckowledgeDaoTermsChecked(value)
   }
 
   const handleOnPublish = () => {
@@ -56,7 +69,8 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
           <ConfirmCollectionNameStep
             collection={collection}
             confirmedCollectionName={collectionName}
-            onNextStep={handleOnConfirmCollectionName}
+            onChangeCollectionName={handleOnConfirmCollectionName}
+            onNextStep={handleOnNextStep}
           />
         )
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
@@ -66,7 +80,14 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
           <ReviewContentPolicyStep
             collection={collection}
             confirmedEmailAddress={emailAddress}
-            onNextStep={handleOnAcceptContentPolicy}
+            contentPolicyFirstConditionChecked={contentPolicyFirstConditionChecked}
+            acceptTermsOfUseChecked={acceptTermsOfUseChecked}
+            ackowledgeDaoTermsChecked={ackowledgeDaoTermsChecked}
+            onChangeEmailAddress={handleOnChangeEmailAddress}
+            onContentPolicyFirstConditionChange={handleOnContentPolicyFirstConditionChange}
+            onAcceptTermsOfUseChange={handleOnAcceptTermsOfUseChange}
+            onAckowledgeDaoTermsChange={handleOnAckowledgeDaoTermsChange}
+            onNextStep={handleOnNextStep}
             onPrevStep={handleOnPrevStep}
           />
         )

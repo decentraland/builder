@@ -7,15 +7,18 @@ import './ConfirmCollectionNameStep.css'
 export const ConfirmCollectionNameStep: React.FC<{
   collection: Collection
   confirmedCollectionName: string
-  onNextStep: (value: string) => void
+  onChangeCollectionName: (value: string) => void
+  onNextStep: () => void
 }> = props => {
-  const { collection, confirmedCollectionName, onNextStep } = props
-  const [collectionName, setCollectionName] = useState<string>(confirmedCollectionName)
+  const { collection, confirmedCollectionName, onChangeCollectionName, onNextStep } = props
   const [collectionNameFocus, setCollectionNameFocus] = useState<boolean>(false)
 
-  const handleCollectionNameChange = useCallback((_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
-    setCollectionName(value)
-  }, [])
+  const handleCollectionNameChange = useCallback(
+    (_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
+      onChangeCollectionName(value)
+    },
+    [onChangeCollectionName]
+  )
 
   const handleCollectionNameFocus = useCallback(() => {
     setCollectionNameFocus(true)
@@ -25,12 +28,8 @@ export const ConfirmCollectionNameStep: React.FC<{
     setCollectionNameFocus(false)
   }, [])
 
-  const handleOnProceed = () => {
-    onNextStep(collectionName)
-  }
-
-  const hasValidCollectionName = collection.name === collectionName
-  const showError = !hasValidCollectionName && !collectionNameFocus && !!collectionName
+  const hasValidCollectionName = collection.name === confirmedCollectionName
+  const showError = !hasValidCollectionName && !collectionNameFocus && !!confirmedCollectionName
   const isDisabled = showError || !hasValidCollectionName
 
   return (
@@ -51,7 +50,7 @@ export const ConfirmCollectionNameStep: React.FC<{
                 <Field
                   label={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_confirmation_label')}
                   placeholder={t('publish_wizard_collection_modal.confirm_collection_name_step.collection_name_placeholder')}
-                  value={collectionName}
+                  value={confirmedCollectionName}
                   error={showError}
                   message={showError ? t('publish_wizard_collection_modal.confirm_collection_name_step.collection_names_different') : ''}
                   onChange={handleCollectionNameChange}
@@ -64,7 +63,7 @@ export const ConfirmCollectionNameStep: React.FC<{
           </Column>
         </Row>
         <Row className="actions" align="right">
-          <Button className="proceed" primary onClick={handleOnProceed} disabled={isDisabled}>
+          <Button className="proceed" primary onClick={onNextStep} disabled={isDisabled}>
             {t('publish_wizard_collection_modal.confirm_collection_name_step.confirm_name')}
           </Button>
         </Row>

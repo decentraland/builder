@@ -2,26 +2,31 @@ import React, { useCallback, useState } from 'react'
 import { Button, Checkbox, CheckboxProps, Column, Field, InputOnChangeData, Modal, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { emailRegex } from 'lib/validators'
-import { Collection } from 'modules/collection/types'
+import { Props } from './ReviewContentPolicyStep.types'
 import './ReviewContentPolicyStep.css'
 
-export const ReviewContentPolicyStep: React.FC<{
-  collection: Collection
-  confirmedEmailAddress: string
-  onNextStep: (value: string) => void
-  onPrevStep: () => void
-}> = props => {
-  const { collection, confirmedEmailAddress, onNextStep, onPrevStep } = props
-  const [emailAddress, setEmailAddress] = useState<string>(confirmedEmailAddress)
+export const ReviewContentPolicyStep: React.FC<Props> = props => {
+  const {
+    collection,
+    confirmedEmailAddress,
+    contentPolicyFirstConditionChecked,
+    acceptTermsOfUseChecked,
+    ackowledgeDaoTermsChecked,
+    onChangeEmailAddress,
+    onContentPolicyFirstConditionChange,
+    onAcceptTermsOfUseChange,
+    onAckowledgeDaoTermsChange,
+    onNextStep,
+    onPrevStep
+  } = props
   const [emailAddressFocus, setEmailAddressFocus] = useState<boolean>(false)
-  const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(!!confirmedEmailAddress)
-  const [contentPolicySecondConditionChecked, setContentPolicySecondConditionChecked] = useState<boolean>(!!confirmedEmailAddress)
-  const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(!!confirmedEmailAddress)
-  const [ackowledgeDaoTermsChecked, setAckowledgeDaoTermsChecked] = useState<boolean>(!!confirmedEmailAddress)
 
-  const handleOnEmailAddressChange = useCallback((_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
-    setEmailAddress(value)
-  }, [])
+  const handleOnEmailAddressChange = useCallback(
+    (_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
+      onChangeEmailAddress(value)
+    },
+    [onChangeEmailAddress]
+  )
 
   const handleOnEmailAddressFocus = useCallback(() => {
     setEmailAddressFocus(true)
@@ -31,35 +36,31 @@ export const ReviewContentPolicyStep: React.FC<{
     setEmailAddressFocus(false)
   }, [])
 
-  const handleOnContentPolicyFirstConditionChecked = useCallback((_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-    setContentPolicyFirstConditionChecked(!!checked)
-  }, [])
+  const handleOnContentPolicyFirstConditionChecked = useCallback(
+    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
+      onContentPolicyFirstConditionChange(!!checked)
+    },
+    [onContentPolicyFirstConditionChange]
+  )
 
-  const handleOnContentPolicySecondConditionChecked = useCallback((_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-    setContentPolicySecondConditionChecked(!!checked)
-  }, [])
+  const handleOnAcceptTermsOfUseChecked = useCallback(
+    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
+      onAcceptTermsOfUseChange(!!checked)
+    },
+    [onAcceptTermsOfUseChange]
+  )
 
-  const handleOnAcceptTermsOfUseChecked = useCallback((_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-    setAcceptTermsOfUseChecked(!!checked)
-  }, [])
+  const handleOnAckowledgeDaoTermsChecked = useCallback(
+    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
+      onAckowledgeDaoTermsChange(!!checked)
+    },
+    [onAckowledgeDaoTermsChange]
+  )
 
-  const handleOnAckowledgeDaoTermsChecked = useCallback((_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-    setAckowledgeDaoTermsChecked(!!checked)
-  }, [])
+  const hasValidEmail = emailRegex.test(confirmedEmailAddress)
+  const showEmailError = !hasValidEmail && !emailAddressFocus && !!confirmedEmailAddress
 
-  const handleOnProceed = () => {
-    onNextStep(emailAddress)
-  }
-
-  const hasValidEmail = emailRegex.test(emailAddress)
-  const showEmailError = !hasValidEmail && !emailAddressFocus && !!emailAddress
-
-  const isDisabled =
-    !hasValidEmail ||
-    !contentPolicyFirstConditionChecked ||
-    !contentPolicySecondConditionChecked ||
-    !acceptTermsOfUseChecked ||
-    !ackowledgeDaoTermsChecked
+  const isDisabled = !hasValidEmail || !contentPolicyFirstConditionChecked || !acceptTermsOfUseChecked || !ackowledgeDaoTermsChecked
 
   return (
     <>
@@ -95,10 +96,6 @@ export const ReviewContentPolicyStep: React.FC<{
                   </span>
                 </div>
                 <div className="checkbox-container">
-                  <Checkbox checked={contentPolicySecondConditionChecked} onChange={handleOnContentPolicySecondConditionChecked} />
-                  <span>{t('publish_wizard_collection_modal.review_content_policy_step.content_policy_second_condition')}</span>
-                </div>
-                <div className="checkbox-container">
                   <Checkbox checked={ackowledgeDaoTermsChecked} onChange={handleOnAckowledgeDaoTermsChecked} />
                   <span>
                     {t('publish_wizard_collection_modal.review_content_policy_step.acknowledge_dao_terms', {
@@ -124,7 +121,7 @@ export const ReviewContentPolicyStep: React.FC<{
               </p>
               <Field
                 label={t('global.email')}
-                value={emailAddress}
+                value={confirmedEmailAddress}
                 onChange={handleOnEmailAddressChange}
                 onFocus={handleOnEmailAddressFocus}
                 onBlur={handleOnEmailAddressBlur}
@@ -137,7 +134,7 @@ export const ReviewContentPolicyStep: React.FC<{
             <Button className="back" secondary onClick={onPrevStep}>
               {t('global.back')}
             </Button>
-            <Button className="proceed" primary onClick={handleOnProceed} disabled={isDisabled}>
+            <Button className="proceed" primary onClick={onNextStep} disabled={isDisabled}>
               {t('publish_wizard_collection_modal.review_content_policy_step.continue')}
             </Button>
           </Row>
