@@ -80,7 +80,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 175px;
+  max-width: 150px;
 }
 
 .ConfirmCollectionItemsStep .avatarColumn .avatarContainer .badge {
