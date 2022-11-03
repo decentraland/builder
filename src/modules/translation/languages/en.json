@@ -1316,8 +1316,7 @@
     },
     "review_content_policy_step": {
       "title": "Before sending your collection for review, please confirm your acknowledgment.",
-      "content_policy_first_condition": "I understand I won't be able to modify the name of the collection, and I can attest that \"{collection_name}\" as a name doesn't violate any Intellectual Property rights.",
-      "content_policy_second_condition": "I understand I won't be able to add or delete items after the collection is published.",
+      "content_policy_first_condition": "I understand I won't be able to add or delete items, or modify the name of the collection after it is published, and I can attest that \"{collection_name}\" as a name doesn't violate any Intellectual Property rights.",
       "terms_of_use": "Terms of Use",
       "content_policy": "Content Policy",
       "accept_terms_of_use": "I warrant that the submitted item(s) are in full compliance with the {terms_of_use_link} and {content_policy_link}, which I acknowledge and accept.",

@@ -42,17 +42,19 @@
 .PayPublicationFeeStep .price-breakdown-container .element .element-header {
   display: flex;
   font-size: 13px;
+  justify-content: center;
   align-items: center;
+  text-align: center;
   padding: 0.5rem 0 0.5rem 0;
-  text-align: left;
   color: var(--light-gray);
 }
 
 .PayPublicationFeeStep .price-breakdown-container .element .element-content {
   display: flex;
+  justify-content: center;
   align-items: center;
   padding: 1rem 0 1rem 0;
-  text-align: left;
+  text-align: center;
   font-weight: 400;
 }
 

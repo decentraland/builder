@@ -14,7 +14,11 @@ import './PublishWizardCollectionModal.css'
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const { collection, items, onClose, onFetchRarities, onPublish } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
+  const [collectionName, setCollectionName] = useState<string>('')
   const [emailAddress, setEmailAddress] = useState<string>('')
+  const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(false)
+  const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(false)
+  const [ackowledgeDaoTermsChecked, setAckowledgeDaoTermsChecked] = useState<boolean>(false)
 
   useEffect(() => {
     onFetchRarities()
@@ -34,9 +38,24 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     setCurrentStep(step => step - 1)
   }
 
-  const handleOnAcceptContentPolicy = (email: string) => {
+  const handleOnConfirmCollectionName = (confirmedCollectionName: string) => {
+    setCollectionName(confirmedCollectionName)
+  }
+
+  const handleOnChangeEmailAddress = (email: string) => {
     setEmailAddress(email)
-    handleOnNextStep()
+  }
+
+  const handleOnContentPolicyFirstConditionChange = (value: boolean) => {
+    setContentPolicyFirstConditionChecked(value)
+  }
+
+  const handleOnAcceptTermsOfUseChange = (value: boolean) => {
+    setAcceptTermsOfUseChecked(value)
+  }
+
+  const handleOnAckowledgeDaoTermsChange = (value: boolean) => {
+    setAckowledgeDaoTermsChecked(value)
   }
 
   const handleOnPublish = () => {
@@ -46,11 +65,32 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const renderStepView = () => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
-        return <ConfirmCollectionNameStep collection={collection} onNextStep={handleOnNextStep} />
+        return (
+          <ConfirmCollectionNameStep
+            collection={collection}
+            confirmedCollectionName={collectionName}
+            onChangeCollectionName={handleOnConfirmCollectionName}
+            onNextStep={handleOnNextStep}
+          />
+        )
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
         return <ConfirmCollectionItemsStep items={items} onNextStep={handleOnNextStep} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
-        return <ReviewContentPolicyStep collection={collection} onNextStep={handleOnAcceptContentPolicy} onPrevStep={handleOnPrevStep} />
+        return (
+          <ReviewContentPolicyStep
+            collection={collection}
+            confirmedEmailAddress={emailAddress}
+            contentPolicyFirstConditionChecked={contentPolicyFirstConditionChecked}
+            acceptTermsOfUseChecked={acceptTermsOfUseChecked}
+            ackowledgeDaoTermsChecked={ackowledgeDaoTermsChecked}
+            onChangeEmailAddress={handleOnChangeEmailAddress}
+            onContentPolicyFirstConditionChange={handleOnContentPolicyFirstConditionChange}
+            onAcceptTermsOfUseChange={handleOnAcceptTermsOfUseChange}
+            onAckowledgeDaoTermsChange={handleOnAckowledgeDaoTermsChange}
+            onNextStep={handleOnNextStep}
+            onPrevStep={handleOnPrevStep}
+          />
+        )
       case PublishWizardCollectionSteps.PAY_PUBLICATION_FEE:
         return <PayPublicationFeeStep {...props} onNextStep={handleOnPublish} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.COLLECTION_PUBLISHED:

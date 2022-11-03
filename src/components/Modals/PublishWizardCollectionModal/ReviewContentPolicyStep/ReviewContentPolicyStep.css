@@ -28,6 +28,7 @@
 }
 
 .ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > .ui.checkbox {
+  margin-top: 5px;
   margin-right: 14px;
 }
 

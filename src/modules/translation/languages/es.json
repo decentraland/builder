@@ -1327,8 +1327,7 @@
     },
     "review_content_policy_step": {
       "title": "Antes de enviar su colección para su revisión, confirme su reconocimiento.",
-      "content_policy_first_condition": "Entiendo que no podré modificar el nombre de la colección y puedo dar fe de que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
-      "content_policy_second_condition": "Entiendo que no podré agregar o eliminar elementos después de que se publique la colección.",
+      "content_policy_first_condition": "Entiendo que no podré agregar o eliminar artículos, ni modificar el nombre de la colección después de que se publique, y puedo dar fe de que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
       "terms_of_use": "Términos de uso",
       "content_policy": "Política de contenido",
       "accept_terms_of_use": "Garantizo que los artículos enviados cumplen plenamente con los {terms_of_use_link} y las {content_policy_link}, que reconozco y acepto.",

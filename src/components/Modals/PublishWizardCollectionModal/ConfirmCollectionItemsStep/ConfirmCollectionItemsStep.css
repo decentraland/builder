@@ -54,8 +54,8 @@
   table-layout: fixed;
 }
 
-.ConfirmCollectionItemsStep .items thead {
-  width: calc(100% - 1em);
+.ConfirmCollectionItemsStep .items thead.has-scrollbar {
+  width: calc(100% - 10px);
 }
 
 .ConfirmCollectionItemsStep .avatarColumn .avatarContainer {
@@ -80,7 +80,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 175px;
+  max-width: 150px;
 }
 
 .ConfirmCollectionItemsStep .avatarColumn .avatarContainer .badge {
@@ -93,4 +93,8 @@
 
 .ConfirmCollectionItemsStep .column.priceColumn .ui.mana {
   font-size: 15px;
+}
+
+.ui.visible.popup.price-popup {
+  z-index: 4000;
 }

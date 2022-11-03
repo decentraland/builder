@@ -1,7 +1,8 @@
 import React from 'react'
+import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
-import { Button, Column, Mana, Modal, Row, Table } from 'decentraland-ui'
+import { Button, Column, Mana, Modal, Popup, Row, Table } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
 import { isFree } from 'modules/item/utils'
@@ -14,13 +15,28 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
   const { items, onNextStep, onPrevStep } = props
 
   const renderPrice = (item: Item) => {
+    const price = ethers.utils.formatEther(item.price!)
+
     return (
       <div>
         {isFree(item) ? (
           t('global.free')
         ) : (
           <Mana className="mana" network={Network.MATIC}>
-            {ethers.utils.formatEther(item.price!)}
+            {price.length > 10 ? (
+              <Popup
+                className="price-popup"
+                content={price}
+                position="top center"
+                trigger={<span>{`${price.slice(0, 3)}...${price.slice(-4)}`}</span>}
+                hideOnScroll
+                on="hover"
+                inverted
+                flowing
+              />
+            ) : (
+              <span>{price}</span>
+            )}
           </Mana>
         )}
       </div>
@@ -30,11 +46,13 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
   const renderItemsTable = () => {
     return (
       <Table basic="very">
-        <Table.Header>
-          <Table.HeaderCell width={7}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
-          <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
-          <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
-          <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
+        <Table.Header className={classNames({ 'has-scrollbar': items.length > 5 })}>
+          <Table.Row className="row">
+            <Table.HeaderCell width={7}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
+          </Table.Row>
         </Table.Header>
         <Table.Body>
           {items.map(item => (
