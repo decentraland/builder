@@ -269,13 +269,15 @@ export function* ensSaga(builderClient: BuilderClient) {
             const resolver = resolverAddress.toString()
 
             if (resolver !== ethers.constants.AddressZero) {
-              const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
-              content = await resolverContract.contenthash(nodehash)
+              try {
+                const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
+                content = await resolverContract.contenthash(nodehash)
 
-              const land = landHashes.find(lh => lh.hash === content)
-              if (land) {
-                landId = land.id
-              }
+                const land = landHashes.find(lh => lh.hash === content)
+                if (land) {
+                  landId = land.id
+                }
+              } catch (error) {}
             }
 
             const ens: ENS = {
