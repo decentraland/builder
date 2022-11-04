@@ -1046,7 +1046,8 @@
       "standard": "标准",
       "third_party": "链接的"
     },
-    "search_placeholder": "按名称或所有者地址在 {count} 个结果之间搜索...",
+    "search_placeholder": "按名称或所有者地址搜索",
+    "results": "{count} {count，复数，一个{result}其他{results}}",
     "collections": "{count} {count, plural, one {个合集} other {个收藏}}",
     "empty_collections": "尚无要审查的收藏集。",
     "assign_modal": {

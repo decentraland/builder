@@ -13,7 +13,8 @@ import {
   PaginationProps,
   Loader,
   Radio,
-  CheckboxProps
+  CheckboxProps,
+  Header
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchCollectionsParams } from 'lib/api/builder'
@@ -240,19 +241,20 @@ export default class CurationPage extends React.PureComponent<Props, State> {
       <>
         <div className="filters">
           <Container>
+            {paginationData ? (
+              <Row className="text-filter-row">
+                <TextFilter placeholder={t('curation_page.search_placeholder')} value={searchText} onChange={this.handleSearchChange} />
+              </Row>
+            ) : null}
             <Row>
-              <Column>
-                {paginationData ? (
-                  <Row className="text-filter-row">
-                    <TextFilter
-                      placeholder={t('curation_page.search_placeholder', { count: totalCurations })}
-                      value={searchText}
-                      onChange={this.handleSearchChange}
-                    />
-                  </Row>
-                ) : null}
+              <Column grow={false} shrink={false}>
+                <Row>
+                  {!isLoadingCollectionsData && !!totalCurations && totalCurations > 0 && (
+                    <Header sub>{t('collections_page.results', { count: totalCurations })}</Header>
+                  )}
+                </Row>
               </Column>
-              <Column align="right">
+              <Column align="right" shrink={false}>
                 <Row>
                   {isMVMFEnabled ? this.renderMvmfFilterToggle() : null}
                   {this.renderAssigneeFilterDropdown()}

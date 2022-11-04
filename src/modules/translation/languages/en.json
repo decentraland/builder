@@ -1054,7 +1054,8 @@
       "standard": "Standard",
       "third_party": "Linked"
     },
-    "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
+    "search_placeholder": "Search by name or owner address",
+    "results": "{count} {count, plural, one {result} other {results}}",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
     "empty_collections": "There are no collections to review yet.",
     "assign_modal": {
