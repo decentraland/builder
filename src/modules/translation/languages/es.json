@@ -1240,7 +1240,7 @@
   },
   "collection": {
     "type": {
-      "decentraland": "Colección",
+      "standard": "Colección",
       "third_party": "Colección Externa"
     }
   },

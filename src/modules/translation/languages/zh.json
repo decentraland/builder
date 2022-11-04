@@ -1222,7 +1222,7 @@
   },
   "collection": {
     "type": {
-      "decentraland": "采集",
+      "standard": "采集",
       "third_party": "链接的可穿戴设备系列"
     }
   },

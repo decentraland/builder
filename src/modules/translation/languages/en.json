@@ -1231,7 +1231,7 @@
   },
   "collection": {
     "type": {
-      "decentraland": "Collection",
+      "standard": "Collection",
       "third_party": "Linked Wearables Collection"
     }
   },
