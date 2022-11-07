@@ -313,20 +313,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   asPlayModeSelect(values: EmotePlayMode[]) {
-    const { isEmotePlayModeFeatureFlagOn } = this.props
-
-    return values.map(value => {
-      const isDisabled = isEmotePlayModeFeatureFlagOn && value === EmotePlayMode.LOOP
-      let text = t(`emote.play_mode.${value}.text`)
-      if (isDisabled) text = `${text} (${t('global.coming_soon')})`
-
-      return {
-        value,
-        text,
-        description: t(`emote.play_mode.${value}.description`),
-        disabled: isDisabled
-      }
-    })
+    return values.map(value => ({
+      value,
+      text: t(`emote.play_mode.${value}.text`),
+      description: t(`emote.play_mode.${value}.description`)
+    }))
   }
 
   renderMetrics(item: Item) {
