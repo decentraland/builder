@@ -277,7 +277,9 @@ export function* ensSaga(builderClient: BuilderClient) {
                 if (land) {
                   landId = land.id
                 }
-              } catch (error) {}
+              } catch (error) {
+                console.error('Failed to load ens resolver', error)
+              }
             }
 
             const ens: ENS = {
