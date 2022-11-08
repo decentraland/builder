@@ -102,12 +102,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   handleTypeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-    this.updateParam({
-      filterByType: `${value}` as CollectionTypes,
-      sortBy: CurationSortOptions.MOST_RELEVANT,
-      filterByStatus: CurationExtraStatuses.ALL_STATUS,
-      page: 1
-    })
+    this.updateParam({ filterByType: `${value}` as CollectionTypes, page: 1 })
   }
 
   handleAssigneeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
@@ -135,7 +130,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderSortDropdown = () => {
-    const { sortBy, filterByType } = this.state
+    const { sortBy } = this.state
     return (
       <Dropdown
         direction="left"
@@ -146,7 +141,6 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') },
           { value: CurationSortOptions.NAME_DESC, text: t('global.order.name_desc') }
         ]}
-        disabled={filterByType !== CollectionFilterOptions.STANDARD}
         onChange={this.handleSortChange}
       />
     )
@@ -169,7 +163,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderStatusFilterDropdown = () => {
-    const { filterByStatus, filterByType } = this.state
+    const { filterByStatus } = this.state
     return (
       <Dropdown
         direction="left"
@@ -181,7 +175,6 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           { value: CurationFilterOptions.APPROVED, text: t('curation_page.filter.approved') },
           { value: CurationFilterOptions.REJECTED, text: t('curation_page.filter.rejected') }
         ]}
-        disabled={filterByType !== CollectionFilterOptions.STANDARD}
         onChange={this.handleStatusChange}
       />
     )
