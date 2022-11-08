@@ -71,7 +71,7 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
       return renderer.renderAlternative(shortcutDefinition)
     }
 
-    return renderer.renderSimple(shortcutDefinition as SimpleShortcut)
+    return renderer.renderSimple(shortcutDefinition)
   }
 
   renderShortcuts = () => {

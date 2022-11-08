@@ -17,7 +17,7 @@ const unityDebugParams = config.get('UNITY_DEBUG_PARAMS')
 const PUBLIC_URL = process.env.PUBLIC_URL
 
 let canvas: HTMLCanvasElement | null = null
-let isDCLInitialized: boolean = false
+let isDCLInitialized = false
 
 class Preview extends React.Component<Props & CollectedProps, State> {
   canvasContainer = React.createRef<HTMLDivElement>()
@@ -57,7 +57,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     editorWindow.removeEventListener('keydown', this.handleKeyDownEvent)
   }
 
-  handleKeyDownEvent(e: KeyboardEvent) {
+  handleKeyDownEvent = (e: KeyboardEvent) => {
     const unityEvt = convertToUnityKeyboardEvent(e)
     if (unityEvt) {
       editorWindow.editor.onKeyDown(unityEvt)
@@ -75,7 +75,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     }
     try {
       isDCLInitialized = true
-      ;(window as any).devicePixelRatio = 1 // without this unity blows up majestically 💥🌈🦄🔥🤷🏼‍♂️
+      window.devicePixelRatio = 1 // without this unity blows up majestically 💥🌈🦄🔥🤷🏼‍♂️
       await editorWindow.editor.initEngine(this.canvasContainer.current, PUBLIC_URL + '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()

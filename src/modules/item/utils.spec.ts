@@ -177,7 +177,7 @@ describe('when getting wearable categories', () => {
   describe('when a model file name is provided in contents', () => {
     it('should return all categories inluding non model', () => {
       const categories = getWearableCategories({
-        ['model.glb']: {}
+        'model.glb': {}
       })
 
       expect(categories).toEqual([
@@ -201,7 +201,7 @@ describe('when getting wearable categories', () => {
   describe('when a model file name is not provided in contents', () => {
     it('should return non model categories', () => {
       const categories = getWearableCategories({
-        ['image.png']: {}
+        'image.png': {}
       })
 
       expect(categories).toEqual(['eyebrows', 'eyes', 'mouth'])
