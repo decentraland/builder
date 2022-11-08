@@ -22,7 +22,6 @@ const CollectionPublishButton = (props: Props) => {
     authorizations,
     status,
     hasPendingCuration,
-    isNewPublishWizardFlowFlagOn,
     onPublish,
     onPush,
     onInit
@@ -48,7 +47,7 @@ const CollectionPublishButton = (props: Props) => {
 
   const handlePublish = () => {
     const hasAuth = hasAuthorization(authorizations, getAuthorization())
-    if (hasAuth) onPublish(isNewPublishWizardFlowFlagOn)
+    if (hasAuth) onPublish()
     setIsAuthModalOpen(!hasAuth)
   }
 
