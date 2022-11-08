@@ -99,7 +99,7 @@ describe('when a modal is closed', () => {
     const initialState = {
       error: 'Some error'
     } as CollectionState
-    expect(reducer(initialState, closeModal('PublishCollectionModal')).error).toBe(null)
+    expect(reducer(initialState, closeModal('PublishWizardCollectionModal')).error).toBe(null)
   })
 })
 

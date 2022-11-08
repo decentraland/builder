@@ -48,18 +48,3 @@ describe('when getting if maintainance is enabled', () => {
     })
   })
 })
-
-describe('when getting if new publish wizard is enabled', () => {
-  describe('when getIsFeatureEnabled returns true', () => {
-    beforeEach(() => {
-      mockGetIsFeatureEnabled.mockReturnValueOnce(true)
-    })
-
-    it('should return true', () => {
-      const state: RootState = {} as any
-      const result = getIsNewPublishWizardEnabled(state)
-
-      expect(result).toEqual(true)
-    })
-  })
-})
