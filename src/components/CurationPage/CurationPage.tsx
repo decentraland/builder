@@ -40,6 +40,8 @@ const PAGE_SIZE = 12
 const ALL_ASSIGNEES_KEY = 'all'
 const MVMF_TAG = 'MVMF22'
 
+type CustomDropdownProps = { value: string }
+
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
     sortBy: CurationSortOptions.MOST_RELEVANT,
@@ -96,17 +98,16 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     this.updateParam({ sortBy: value as CurationSortOptions, page: 1 })
   }
 
-  handleStatusChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-    // this.updateParam({ filterByStatus: `${value as unknown as string}` as Filters, page: 1 })
+  handleStatusChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: CustomDropdownProps) => {
     this.updateParam({ filterByStatus: `${value}` as CurationStatuses, page: 1 })
   }
 
-  handleTypeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+  handleTypeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: CustomDropdownProps) => {
     this.updateParam({ filterByType: `${value}` as CollectionTypes, page: 1 })
   }
 
-  handleAssigneeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-    this.updateParam({ assignee: `${value as unknown as string}`, page: 1 })
+  handleAssigneeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: CustomDropdownProps) => {
+    this.updateParam({ assignee: `${value}`, page: 1 })
   }
 
   handleSearchChange = (value: string) => {
