@@ -81,7 +81,6 @@ import { Project } from 'modules/project/types'
 import { CatalystWearable, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
 import { getLoading } from 'modules/assetPack/selectors'
 import { GROUND_CATEGORY } from 'modules/asset/types'
-import { RootState } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/constants'
@@ -193,6 +192,7 @@ function* createNewEditorScene(project: Project) {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore: Client api
   yield call([editorWindow.editor, 'handleMessage'], msg)
   yield handleResetCamera()
@@ -225,25 +225,25 @@ function* renderScene(scene: Scene) {
 
 function handleMetricsChange(args: { metrics: ModelMetrics; limits: ModelMetrics }) {
   const { metrics, limits } = args
-  const scene = getCurrentScene(store.getState() as RootState)
+  const scene = getCurrentScene(store.getState())
   if (scene) {
     store.dispatch(updateMetrics(scene.id, metrics, limits))
   }
 }
 
 function handleTransformChange(args: { transforms: { entityId: string; position: Vector3; rotation: Quaternion; scale: Vector3 }[] }) {
-  const bounds: ReturnType<typeof getCurrentBounds> = getCurrentBounds(store.getState() as RootState)
-  const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
+  const bounds: ReturnType<typeof getCurrentBounds> = getCurrentBounds(store.getState())
+  const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState())
 
   if (!project) return
 
-  const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState() as RootState)
+  const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState())
   if (!scene) return
 
-  const entityComponents = getEntityComponentsByType(store.getState() as RootState)
+  const entityComponents = getEntityComponentsByType(store.getState())
   const transformData: { componentId: string; data: ComponentData[ComponentType.Transform] }[] = []
 
-  for (let transformPayload of args.transforms) {
+  for (const transformPayload of args.transforms) {
     let position: Vector3 = { x: 0, y: 0, z: 0 }
     const transform = entityComponents[transformPayload.entityId][ComponentType.Transform] as
       | ComponentDefinition<ComponentType.Transform>
@@ -272,7 +272,7 @@ function handleTransformChange(args: { transforms: { entityId: string; position:
 
 function handleGizmoSelected(args: { gizmoType: Gizmo; entities: string[] }) {
   const { gizmoType, entities } = args
-  const state = store.getState() as RootState
+  const state = store.getState()
   const currentGizmo = getGizmo(state)
   const multiselectionEnabled = isMultiselectEnabled(state)
 
@@ -290,7 +290,7 @@ function handleGizmoSelected(args: { gizmoType: Gizmo; entities: string[] }) {
     if (!multiselectionEnabled) {
       newSelectedEntities = entities
     } else {
-      for (let entityId of entities) {
+      for (const entityId of entities) {
         if (!newSelectedEntities.includes(entityId)) {
           newSelectedEntities.push(entityId)
         } else {
@@ -440,7 +440,7 @@ function* handleSetEditorReady(action: SetEditorReadyAction) {
   if (project) {
     if (isReady) {
       try {
-        let scene: Scene = yield getSceneByProjectId(project.id)
+        const scene: Scene = yield getSceneByProjectId(project.id)
         yield handleEditorReady(scene)
       } catch (error) {
         console.error(error)
@@ -594,7 +594,7 @@ function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
 function* handlePrefetchAsset(action: PrefetchAssetAction) {
   yield call(() => {
     const contentEntries = Object.entries(action.payload.asset.contents)
-    for (let [file, hash] of contentEntries) {
+    for (const [file, hash] of contentEntries) {
       if ((file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) && !file.endsWith(THUMBNAIL_PATH)) {
         editorWindow.editor.preloadFile(`${hash}\t${action.payload.asset.id}/${file}`)
       }
@@ -604,7 +604,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 
 function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   const { entities } = args
-  const state = store.getState() as RootState
+  const state = store.getState()
   const entitiesInState: string[] = getEntitiesOutOfBoundaries(state)
   if (entities.length === 0 && entitiesInState.length === 0) {
     return

@@ -3,10 +3,11 @@
   "parser": "@typescript-eslint/parser",
   "ignorePatterns": [
     "src/contracts/*",
-    "src/ecsScene/scene.js",
+    "src/ecsScene/*",
     "scripts/*.js",
     "src/modules/project/export.ts",
     "src/modules/analytics/rollbar.ts",
+    "src/modules/editor/base64.ts",
     "package.json",
     "package-lock.json"
   ],
@@ -25,7 +26,7 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking"],
+      "extends": ["plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking", "prettier"],
       "rules": {
         "@typescript-eslint/no-unnecessary-type-assertion": "error",
         "@typescript-eslint/explicit-module-boundary-types": "off",
