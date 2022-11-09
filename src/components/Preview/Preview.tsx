@@ -8,7 +8,7 @@ import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
 import { PreviewType } from 'modules/editor/types'
 import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 import { previewTarget, collect, CollectedProps } from './Preview.dnd'
-import { EditorWindow, Props, State } from './Preview.types'
+import { EditorWindow, Props } from './Preview.types'
 import animationData from './loader.json'
 import './Preview.css'
 
@@ -19,7 +19,7 @@ const PUBLIC_URL = process.env.PUBLIC_URL
 let canvas: HTMLCanvasElement | null = null
 let isDCLInitialized = false
 
-class Preview extends React.Component<Props & CollectedProps, State> {
+class Preview extends React.Component<Props & CollectedProps> {
   canvasContainer = React.createRef<HTMLDivElement>()
 
   componentDidMount() {

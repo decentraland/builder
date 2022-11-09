@@ -1,5 +1,3 @@
-import { Dispatch } from 'redux'
-
 import { Category } from 'modules/ui/sidebar/types'
 
 export type Props = {
@@ -9,5 +7,3 @@ export type Props = {
 }
 
 export type MapStateProps = Pick<Props, 'categories' | 'isLoading' | 'hasScript'>
-export type MapDispatchProps = {}
-export type MapDispatch = Dispatch

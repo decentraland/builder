@@ -7,7 +7,7 @@ import { CategoryName } from 'modules/ui/sidebar/utils'
 import { RawAsset, Asset } from 'modules/asset/types'
 import { getModelData, ThumbnailType } from 'lib/getModelData'
 import Icon from 'components/Icon'
-import { Props, State } from './SingleAssetEditor.types'
+import { Props } from './SingleAssetEditor.types'
 import './SingleAssetEditor.css'
 
 const CATEGORY_OPTIONS = [
@@ -18,7 +18,7 @@ const CATEGORY_OPTIONS = [
   { key: 5, text: CategoryName.TILES_CATEGORY, value: CategoryName.TILES_CATEGORY }
 ]
 
-export default class SingleAssetEditor<T extends RawAsset | Asset> extends React.PureComponent<Props<T>, State> {
+export default class SingleAssetEditor<T extends RawAsset | Asset> extends React.PureComponent<Props<T>> {
   handleCategoryChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { asset } = this.props
 

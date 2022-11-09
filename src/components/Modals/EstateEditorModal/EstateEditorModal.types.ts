@@ -25,4 +25,3 @@ export type EstateEditorModalMetadata = {
 export type MapStateProps = Pick<Props, 'landTiles'>
 export type MapDispatchProps = Pick<Props, 'onCreateEstate' | 'onEditEstate'>
 export type MapDispatch = Dispatch<CreateEstateRequestAction | EditEstateRequestAction>
-export type OwnProps = {}

@@ -6,7 +6,7 @@ import { isLoading } from 'modules/assetPack/selectors'
 import { getSelectedEntityIds } from 'modules/editor/selectors'
 import { getEntityComponentsByType } from 'modules/scene/selectors'
 import { ComponentType } from 'modules/scene/types'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './SideBar.types'
+import { MapStateProps } from './SideBar.types'
 import SideBar from './SideBar'
 
 const mapState = (state: RootState): MapStateProps => {
@@ -25,6 +25,4 @@ const mapState = (state: RootState): MapStateProps => {
   }
 }
 
-const mapDispatch = (_: MapDispatch): MapDispatchProps => ({})
-
-export default connect(mapState, mapDispatch)(SideBar)
+export default connect(mapState)(SideBar)

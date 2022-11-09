@@ -12,6 +12,5 @@ export type DissolveModalMetadata = {
   land: Land
 }
 
-export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onDissolve'>
 export type MapDispatch = Dispatch<DissolveEstateRequestAction>

@@ -1,5 +1,3 @@
-import { Dispatch } from 'redux'
-
 import { ModelMetrics } from 'modules/models/types'
 
 export type Props = {
@@ -15,5 +13,3 @@ export type State = {
 }
 
 export type MapStateProps = Props
-export type MapDispatchProps = {}
-export type MapDispatch = Dispatch

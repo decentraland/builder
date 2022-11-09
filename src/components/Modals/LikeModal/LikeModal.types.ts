@@ -5,4 +5,3 @@ export type Props = ModalProps & {
 }
 
 export type MapStateProps = Pick<Props, 'isLoggedIn'>
-export type MapDispatchProps = {}
