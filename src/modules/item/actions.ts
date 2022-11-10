@@ -64,6 +64,20 @@ export type FetchCollectionItemsRequestAction = ReturnType<typeof fetchCollectio
 export type FetchCollectionItemsSuccessAction = ReturnType<typeof fetchCollectionItemsSuccess>
 export type FetchCollectionItemsFailureAction = ReturnType<typeof fetchCollectionItemsFailure>
 
+export const FETCH_COLLECTION_THUMBNAILS_REQUEST = '[Request] Fetch Collection Thumbnails'
+export const FETCH_COLLECTION_THUMBNAILS_SUCCESS = '[Success] Fetch Collection Thumbnails'
+export const FETCH_COLLECTION_THUMBNAILS_FAILURE = '[Failure] Fetch Collection Thumbnails'
+
+export const fetchCollectionThumbnailsRequest = (collectionId: string) => action(FETCH_COLLECTION_THUMBNAILS_REQUEST, { collectionId })
+export const fetchCollectionThumbnailsSuccess = (collectionId: string, items: Item[]) =>
+  action(FETCH_COLLECTION_THUMBNAILS_SUCCESS, { collectionId, items })
+export const fetchCollectionThumbnailsFailure = (collectionId: string, error: string) =>
+  action(FETCH_COLLECTION_THUMBNAILS_FAILURE, { collectionId, error })
+
+export type FetchCollectionThumbnailsRequestAction = ReturnType<typeof fetchCollectionThumbnailsRequest>
+export type FetchCollectionThumbnailsSuccessAction = ReturnType<typeof fetchCollectionThumbnailsSuccess>
+export type FetchCollectionThumbnailsFailureAction = ReturnType<typeof fetchCollectionThumbnailsFailure>
+
 // Save items
 
 export const SAVE_ITEM_REQUEST = '[Request] Save Item'

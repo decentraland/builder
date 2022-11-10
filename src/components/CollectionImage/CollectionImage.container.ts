@@ -3,7 +3,7 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { RootState } from 'modules/common/types'
 import { getCollectionItems, getLoading as getLoadingItem } from 'modules/item/selectors'
 import { getCollection } from 'modules/collection/selectors'
-import { fetchCollectionItemsRequest, FETCH_COLLECTION_ITEMS_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
+import { fetchCollectionThumbnailsRequest, FETCH_COLLECTION_THUMBNAILS_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { OwnProps, MapStateProps, MapDispatch, MapDispatchProps } from './CollectionImage.types'
 import CollectionImage from './CollectionImage'
 
@@ -13,7 +13,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const items = getCollectionItems(state, collectionId)
   const collection = getCollection(state, collectionId)
   const isLoading = !!getLoadingItem(state).find(
-    action => action.type === FETCH_COLLECTION_ITEMS_REQUEST && action.payload.collectionId === collectionId
+    action => action.type === FETCH_COLLECTION_THUMBNAILS_REQUEST && action.payload.collectionId === collectionId
   )
   return {
     collection,
@@ -24,7 +24,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onFetchCollectionItems: (id, options) => dispatch(fetchCollectionItemsRequest(id, { page: options?.page, limit: options?.limit }))
+  onFetchCollectionThumbnailsRequest: id => dispatch(fetchCollectionThumbnailsRequest(id))
 })
 
 export default connect(mapState, mapDispatch)(CollectionImage)
