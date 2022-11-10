@@ -4,6 +4,7 @@ import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
 import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps, Button } from 'decentraland-ui'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { isTPCollection } from 'modules/collection/utils'
 import { ItemType } from 'modules/item/types'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
@@ -39,7 +40,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
 
     // Fetch emotes created by the user to show them in the Play Emote dropdown
     if (!hasEmotesLoaded) {
-      if (collection) {
+      // The TP collections wouldn't have emotes soon, for this reason, we are fetching only standard collections to show in the Play Emote dropdown
+      if (collection && !isTPCollection(collection)) {
         onFetchCollectionItems(collection.id)
       } else {
         onFetchOrphanItems(address!)
@@ -285,7 +287,11 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
         <div className="footer">
           {isRenderingAnEmote && !isLoading && wearableController ? (
             <div className="emote-controls-container">
-              <EmoteControls className="emote-controls" wearablePreviewId="wearable-editor" wearablePreviewController={wearableController} />
+              <EmoteControls
+                className="emote-controls"
+                wearablePreviewId="wearable-editor"
+                wearablePreviewController={wearableController}
+              />
             </div>
           ) : null}
           <div className="options">
