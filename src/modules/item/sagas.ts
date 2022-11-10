@@ -84,7 +84,11 @@ import {
   SaveMultipleItemsSuccessAction,
   SaveMultipleItemsCancelledAction,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
-  fetchItemsRequest
+  fetchItemsRequest,
+  FETCH_COLLECTION_THUMBNAILS_REQUEST,
+  fetchCollectionThumbnailsSuccess,
+  fetchCollectionThumbnailsFailure,
+  FetchCollectionThumbnailsRequestAction
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -129,6 +133,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
+  yield takeEvery(FETCH_COLLECTION_THUMBNAILS_REQUEST, handleFetchCollectionThumbnailsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
   yield takeEvery([SAVE_MULTIPLE_ITEMS_SUCCESS, SAVE_MULTIPLE_ITEMS_CANCELLED], handleSaveMultipleItemsSuccess)
   yield takeEvery(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
@@ -214,6 +219,20 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(fetchCollectionItemsSuccess(collectionId, items, overridePaginationData ? paginationStats : undefined))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, error.message))
+    }
+  }
+
+  function* handleFetchCollectionThumbnailsRequest(action: FetchCollectionThumbnailsRequestAction) {
+    const { collectionId } = action.payload
+
+    try {
+      const { results }: { results: Item[] } = yield call([legacyBuilder, 'fetchCollectionItems'], collectionId, {
+        page: 1,
+        limit: 4
+      })
+      yield put(fetchCollectionThumbnailsSuccess(collectionId, results))
+    } catch (error) {
+      yield put(fetchCollectionThumbnailsFailure(collectionId, error.message))
     }
   }
 
