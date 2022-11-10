@@ -11,6 +11,7 @@ import { Scene, ComponentType } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Importer = require('ipfs-unixfs-engine').Importer
 
 export const UNPUBLISHED_PROJECT_ID = 'unpublished-project'
@@ -55,6 +56,7 @@ export async function getCID(files: ContentServiceFile[]): Promise<string> {
       }),
       importer,
       pull.onEnd(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return importer.flush((err: any, content: any) => {
           if (err) {
             reject(err)

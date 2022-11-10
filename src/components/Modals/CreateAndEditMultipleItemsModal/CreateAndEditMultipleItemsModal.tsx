@@ -252,6 +252,8 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   }
 
   private renderDropZone = (props: DropzoneState) => {
+    // TODO: Upgrade react-dropzone to a newer version to avoid the linting error: unbound-method
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const { open, getRootProps, getInputProps } = props
 
     const validFiles = this.getValidFiles()

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 import { Color4, Wearable } from 'decentraland-ecs'
-import { Locale, BodyShape, WearableCategory, WearableDefinition, EmoteCategory, EmoteDefinition } from '@dcl/schemas'
+import { Locale, BodyShape, WearableCategory, WearableDefinition, EmoteDefinition } from '@dcl/schemas'
 import { Item, ItemType } from 'modules/item/types'
 import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
@@ -12,6 +12,7 @@ import { getSkinHiddenCategories } from 'modules/item/utils'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { base64ArrayBuffer } from './base64'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const script = require('raw-loader!../../ecsScene/scene.js').default
 
 export const THUMBNAIL_WIDTH = 984

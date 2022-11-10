@@ -27,6 +27,7 @@ export const assetSource: DragSourceSpec<Props, AssetCardDragObject> = {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const collect: DragSourceCollector<CollectedProps> = (connect, monitor) => {
   return {

@@ -37,6 +37,7 @@ import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -46,6 +47,7 @@ configureAnalytics({
   }
 })
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   ? // prettier-ignore
@@ -163,6 +165,7 @@ loadStorageMiddleware(store)
 
 if (isDevelopment) {
   const _window = window as any
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   _window.getState = store.getState
 }
 
