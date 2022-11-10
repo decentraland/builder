@@ -42,7 +42,7 @@ export class MarketplaceAPI {
         query: getSubdomainQuery(),
         variables: { owner, offset }
       })
-      page = data.nfts.map(ntf => `${ntf.ens.subdomain.toString()}`)
+      page = data.nfts.map(ntf => ntf.ens.subdomain.toString())
       results = [...results, ...page]
       if (page.length === BATCH_SIZE) {
         offset += BATCH_SIZE
