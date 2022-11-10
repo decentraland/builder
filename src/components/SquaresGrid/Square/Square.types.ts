@@ -3,4 +3,4 @@ export type DefaultProps = {
   size: 'tiny' | 'small' | 'medium' | 'big'
 }
 
-export type Props = DefaultProps & Record<string, unknown>
+export type Props = DefaultProps
