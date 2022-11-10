@@ -6,6 +6,8 @@ import './FileImport.css'
 
 export default class FileImport<T> extends React.Component<Props<T>> {
   renderDropZone = (props: DropzoneState) => {
+    // TODO: Upgrade react-dropzone to a newer version to avoid the linting error: unbound-method
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const { open, isDragActive, getRootProps, getInputProps } = props
     const { items, renderFiles, renderAction, className } = this.props
 
