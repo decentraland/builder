@@ -80,7 +80,7 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
               <>
                 <div className="deployments">
                   {deployments.map(deployment => (
-                    <DeploymentDetail project={project} deployment={deployment} />
+                    <DeploymentDetail key={deployment.id} project={project} deployment={deployment} />
                   ))}
                 </div>
                 <div className="notice">{t('analytics.notice')}</div>

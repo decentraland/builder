@@ -230,7 +230,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderMap = () => {
-    const { ethAddress, media, project, deployments, deploymentsByCoord, landTiles, isLoggedIn } = this.props
+    const { media, project, deployments, deploymentsByCoord, landTiles, isLoggedIn } = this.props
     const deployment = getDeployment(project, deployments)
     return (
       <div className="DeployToLand atlas">
@@ -242,7 +242,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           <Icon name="modal-back" onClick={this.handleBack} />
         </div>
         <LandAtlas
-          ethAddress={ethAddress}
           media={media}
           project={project}
           deploymentsByCoord={deploymentsByCoord}

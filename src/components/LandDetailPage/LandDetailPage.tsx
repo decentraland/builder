@@ -274,8 +274,8 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             {land.operators.length > 0 ? (
               <Stats title={t('land_detail_page.operated_by')} className="operators">
                 <Row>
-                  {land.operators.map(operator => (
-                    <Profile address={operator} size="large" />
+                  {land.operators.map((operator, index) => (
+                    <Profile key={index} address={operator} size="large" />
                   ))}
                 </Row>
               </Stats>

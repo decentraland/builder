@@ -9,6 +9,7 @@ export type Props = Partial<AtlasProps> & {
   landTiles: Record<string, LandTile>
   emptyTiles: Record<string, Tile>
   showOperator?: boolean
+  showTenant?: boolean
   showControls?: boolean
   landId?: string
   showOwner?: boolean
