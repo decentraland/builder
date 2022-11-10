@@ -88,7 +88,7 @@ export function collectionCurationReducer(
         loading: loadingReducer(state.loading, action)
       }
 
-    case FETCH_COLLECTION_CURATIONS_SUCCESS:
+    case FETCH_COLLECTION_CURATIONS_SUCCESS: {
       const { curations } = action.payload
 
       return {
@@ -97,9 +97,9 @@ export function collectionCurationReducer(
         data: curations.reduce((acc, curation) => ({ ...acc, [curation.collectionId]: curation }), {}),
         error: null
       }
-
+    }
     case SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS:
-    case FETCH_COLLECTION_CURATION_SUCCESS:
+    case FETCH_COLLECTION_CURATION_SUCCESS: {
       const { collectionId, curation } = action.payload
 
       const data = { ...state.data }
@@ -116,7 +116,7 @@ export function collectionCurationReducer(
         loading: loadingReducer(state.loading, action),
         error: null
       }
-
+    }
     case APPROVE_COLLECTION_CURATION_SUCCESS: {
       const { collectionId } = action.payload
       return {
@@ -161,7 +161,7 @@ export function collectionCurationReducer(
     case PUSH_COLLECTION_CURATION_FAILURE:
     case REJECT_COLLECTION_CURATION_FAILURE:
     case APPROVE_COLLECTION_CURATION_FAILURE:
-    case SET_COLLECTION_CURATION_ASSIGNEE_FAILURE:
+    case SET_COLLECTION_CURATION_ASSIGNEE_FAILURE: {
       const { error } = action.payload
 
       return {
@@ -169,6 +169,7 @@ export function collectionCurationReducer(
         loading: loadingReducer(state.loading, action),
         error
       }
+    }
     default:
       return state
   }
