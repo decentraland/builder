@@ -1057,6 +1057,7 @@ describe('when handling the save multiple items requests action', () => {
       describe('and the new items will be in the same page', () => {
         let paginationData: ItemPaginationData
         beforeEach(() => {
+          items[0].collectionId = 'aCollection'
           paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
         })
         it('should request the same page of items if the user is in the TP detail page', () => {
@@ -1074,6 +1075,7 @@ describe('when handling the save multiple items requests action', () => {
       describe('and the items will be on a new page', () => {
         let paginationData: ItemPaginationData
         beforeEach(() => {
+          items[0].collectionId = 'aCollection'
           paginationData = { currentPage: 1, limit: 1, total: 1, ids: items.map(item => item.id), totalPages: 1 }
         })
         it('should push the tp detail page location with the new page of items', () => {
@@ -1152,6 +1154,7 @@ describe('when handling the save multiple items requests action', () => {
       describe('and the new items will be in the same page', () => {
         let paginationData: ItemPaginationData
         beforeEach(() => {
+          items[0].collectionId = 'aCollection'
           paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
         })
         it('should request the same page of items if the user is in the TP detail page', () => {
@@ -1176,6 +1179,7 @@ describe('when handling the save multiple items requests action', () => {
       describe('and the items will be on a new page', () => {
         let paginationData: ItemPaginationData
         beforeEach(() => {
+          items[0].collectionId = 'aCollection'
           paginationData = { currentPage: 1, limit: 1, total: 1, ids: items.map(item => item.id), totalPages: 1 }
         })
         it('should push the tp detail page location with the new page of items', () => {
@@ -1206,6 +1210,7 @@ describe('when handling the save multiple items requests action', () => {
       describe('and the new items will be in the same page', () => {
         let paginationData: ItemPaginationData
         beforeEach(() => {
+          items[0].collectionId = 'aCollection'
           paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
         })
         it('should request the same page of items if the user is in the TP detail page', () => {

@@ -4,6 +4,7 @@ import { BuilderAPI } from 'lib/api/builder'
 import { FetchCollectionItemsSuccessAction, FETCH_COLLECTION_ITEMS_SUCCESS } from 'modules/item/actions'
 import { isThirdParty } from 'lib/urn'
 import { put } from 'redux-saga-test-plan/matchers'
+import { Item } from 'modules/item/types'
 import {
   fetchItemCurationFailure,
   FetchItemCurationRequestAction,
@@ -20,7 +21,7 @@ import { ItemCuration } from './types'
 const MAX_ITEM_CURATIONS = 30
 const REQUESTS_BATCH_SIZE = 10
 
-const chunk = (arr: any[], size: number) =>
+const chunk = (arr: Item[], size: number) =>
   Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size))
 
 export function* itemCurationSaga(builder: BuilderAPI) {
@@ -72,7 +73,7 @@ export function* itemCurationSaga(builder: BuilderAPI) {
   function* handleFetchItemCurationRequest(action: FetchItemCurationRequestAction) {
     const { collectionId, itemId } = action.payload
     try {
-      const curation: ItemCuration = yield call([builder, builder.fetchItemCuration], itemId)
+      const curation: ItemCuration = yield call([builder, 'fetchItemCuration'], itemId)
       yield put(fetchItemCurationSuccess(collectionId, curation))
     } catch (error) {
       yield put(fetchItemCurationFailure(error.message))

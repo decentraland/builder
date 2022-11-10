@@ -77,9 +77,9 @@ export default class Items extends React.PureComponent<Props, State> {
     if (item.type === ItemType.EMOTE) {
       if (this.isVisible(item)) {
         if (isPlayingEmote) {
-          wearableController?.emote.pause()
+          wearableController?.emote.pause() as void
         } else {
-          wearableController?.emote.play()
+          wearableController?.emote.play() as void
         }
 
         return

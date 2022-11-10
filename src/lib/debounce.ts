@@ -49,5 +49,7 @@ export const throttle = <T extends (...args: any[]) => any>(fn: T, ms: number) =
       timers[key] = +Date.now()
       return fn(...args) as T
     }
+
+    return null
   }
 }

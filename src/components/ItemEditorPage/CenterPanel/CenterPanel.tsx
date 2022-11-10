@@ -157,7 +157,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       onSetAvatarAnimation(PreviewEmote.IDLE)
       onSetItems(newVisibleItems)
     } else {
-      wearableController?.emote.play()
+      wearableController?.emote.play() as void
     }
   }
 
