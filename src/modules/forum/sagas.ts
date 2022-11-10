@@ -97,9 +97,9 @@ export function* forumSaga(builder: BuilderAPI) {
  *
  * @param action - The failing action.
  */
-function* handleCreateForumPostFailure(_action: CreateCollectionForumPostFailureAction) {
-  // const { collection, forumPost } = action.payload
+function* handleCreateForumPostFailure(action: CreateCollectionForumPostFailureAction) {
+  const { collection, forumPost } = action.payload
 
   yield delay(RETRY_DELAY)
-  // yield put(createCollectionForumPostRequest(collection, forumPost))
+  yield put(createCollectionForumPostRequest(collection, forumPost))
 }
