@@ -42,5 +42,7 @@ function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountA
     authorizations.push(buildManaAuthorization(wallet.address, chainId, ContractName.CollectionManager))
 
     yield put(fetchAuthorizationsRequest(authorizations))
-  } catch (error) {}
+  } catch (error) {
+    console.error(error)
+  }
 }

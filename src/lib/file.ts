@@ -8,7 +8,7 @@ export function truncateFileName(name: string) {
 }
 
 export function getExtension(fileName: string) {
-  const matches = fileName.match(/\.[0-9a-z]+$/i)
+  const matches = /\.[0-9a-z]+$/i.exec(fileName)
   const extension = matches ? matches[0] : null
   return extension
 }

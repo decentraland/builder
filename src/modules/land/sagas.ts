@@ -202,7 +202,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
         break
       }
       default:
-        throw new Error(`Unknown Land Type: ${land.type}`)
+        throw new Error(`Unknown Land Type: ${land.type as unknown as string}`)
     }
     yield put(push(locations.activity()))
   } catch (error) {
@@ -233,7 +233,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
         break
       }
       default:
-        throw new Error(`Unknown Land Type: ${land.type}`)
+        throw new Error(`Unknown Land Type: ${land.type as string}`)
     }
     yield put(push(locations.activity()))
   } catch (error) {
@@ -265,7 +265,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
         break
       }
       default:
-        throw new Error(`Unknown Land Type: ${land.type}`)
+        throw new Error(`Unknown Land Type: ${land.type as string}`)
     }
     yield put(push(locations.activity()))
   } catch (error) {

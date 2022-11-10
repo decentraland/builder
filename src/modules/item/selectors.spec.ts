@@ -106,7 +106,7 @@ describe('Item selectors', () => {
       })
     })
 
-    describe('when the item exists in the state', () => {
+    describe('when the item does not exists in the state', () => {
       it('should return null', () => {
         expect(getItem(state, 'aNonExistaetId')).toBeNull()
       })

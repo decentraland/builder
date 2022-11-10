@@ -10,7 +10,7 @@ export function isDataUrl(url: string): boolean {
 
 export function dataURLToBlob(dataUrl: string): Blob | null {
   const arr = dataUrl.split(',')
-  const boxedMime = arr[0].match(/:(.*?);/)
+  const boxedMime = /:(.*?);/.exec(arr[0])
   if (boxedMime) {
     const bstr = atob(arr[1])
     let n = bstr.length

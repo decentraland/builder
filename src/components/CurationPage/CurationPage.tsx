@@ -85,11 +85,11 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   handleStatusChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-    this.updateParam({ filterByStatus: `${value}` as Filters, page: 1 })
+    this.updateParam({ filterByStatus: `${value as unknown as string}` as Filters, page: 1 })
   }
 
   handleAssigneeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-    this.updateParam({ assignee: `${value}`, page: 1 })
+    this.updateParam({ assignee: `${value as unknown as string}`, page: 1 })
   }
 
   handleSearchChange = (value: string) => {

@@ -36,7 +36,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
             key={assetPack.id}
             id={assetPack.id}
             title={assetPack.title}
-            thumbnail={`${assetPack.thumbnail}?updated_at=${assetPack.updatedAt}`}
+            thumbnail={`${assetPack.thumbnail}?updated_at=${assetPack.updatedAt ?? ''}`}
             onClick={onSelectAssetPack}
             isVisible
             isNew={NEW_ASSET_PACKS.some(name => isSameAssetPack(assetPack.title, name))}
