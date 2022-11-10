@@ -13,14 +13,14 @@ import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './MintIt
 import MintItemsModal from './MintItemsModal'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  let { collectionId, itemIds } = ownProps.metadata
+  const { itemIds } = ownProps.metadata
+  let { collectionId } = ownProps.metadata
 
   if (!collectionId && (!itemIds || itemIds.length === 0)) {
     throw new Error('Invalid collection id or items id to mint')
   }
 
   const ethAddress = getAddress(state)
-  let collection: Collection
   let items: Item[]
   let totalCollectionItems: number
 
@@ -34,7 +34,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     totalCollectionItems = allItems.filter(item => item.collectionId === collectionId).length
   }
 
-  collection = getCollection(state, collectionId)!
+  const collection: Collection = getCollection(state, collectionId)!
 
   const hasUnsyncedItems = (items: Item[]) => items.some(item => UNSYNCED_STATES.has(getStatusByItemId(state)[item.id]))
 

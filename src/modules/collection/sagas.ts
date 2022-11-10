@@ -308,7 +308,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-    let { collection, items, email } = action.payload
+    const { items, email } = action.payload
+    let { collection } = action.payload
     try {
       if (!isLocked(collection)) {
         // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
@@ -667,7 +668,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const REQUESTS_BATCH_SIZE = 10
       const pages = getArrayOfPagesFromTotal(Math.ceil(paginatedData.total / BATCH_SIZE))
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
-      const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = pages.map(
+      const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item> | Item[]>)[] = pages.map(
         (page: number) => () =>
           legacyBuilderClient.fetchCollectionItems(collection.id, {
             page,

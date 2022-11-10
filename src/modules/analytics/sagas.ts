@@ -69,7 +69,7 @@ export function* analyticsSaga() {
   yield takeLatest(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishTPItemSuccess)
 }
 
-const track = (event: string, params: any) => getAnalytics().track(event, params)
+const track = (event: string, params: any) => getAnalytics().track(event, params) as void
 
 function handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
   const { items } = action.payload

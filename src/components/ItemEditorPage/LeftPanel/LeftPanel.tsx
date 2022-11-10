@@ -66,7 +66,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
         const page = pages[pages.length - 1]
         const nextPage = Math.min(totalPages, page + 1)
         if (!pages.includes(nextPage)) {
-          this.setState({ pages: [nextPage], initialPage: nextPage }, this.fetchResource)
+          this.setState({ pages: [nextPage], initialPage: nextPage }, () => this.fetchResource())
         }
       }
     } else if (prevProps.selectedItemId && selectedItemId && prevProps.selectedItemId !== selectedItemId) {
@@ -75,7 +75,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     } else {
       // fetch only if this was triggered by a connecting event or if th selectedCollection changes
       if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {
-        this.setState({ pages: [INITIAL_PAGE] }, this.fetchResource)
+        this.setState({ pages: [INITIAL_PAGE] }, () => this.fetchResource())
       }
       if (prevProps.selectedCollectionId !== selectedCollectionId) {
         this.setState({ pages: [INITIAL_PAGE] })
@@ -94,7 +94,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   loadPage = (page: number) => {
-    this.setState({ pages: [page] }, this.fetchResource)
+    this.setState({ pages: [page] }, () => this.fetchResource())
   }
 
   getRandomPage = (min: number, max: number) => {
@@ -114,11 +114,11 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       }
     }
     onSetReviewedItems(currentItems)
-    this.setState({ pages: [randomPage] }, this.fetchResource)
+    this.setState({ pages: [randomPage] }, () => this.fetchResource())
   }
 
   handleTabChange = (tab: ItemEditorTabs) => {
-    this.setState({ currentTab: tab, pages: [INITIAL_PAGE] }, this.fetchResource)
+    this.setState({ currentTab: tab, pages: [INITIAL_PAGE] }, () => this.fetchResource())
   }
 
   isCollectionTabActive = () => {
