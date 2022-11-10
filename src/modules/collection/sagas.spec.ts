@@ -79,11 +79,6 @@ import { collectionSaga } from './sagas'
 import { Collection } from './types'
 import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
-jest.mock('./utils', () => ({
-  ...jest.requireActual('./utils'),
-  isTPDeployEnabled: jest.fn().mockReturnValue(true)
-}))
-
 const getCollectionMock = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
 

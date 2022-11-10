@@ -7,7 +7,7 @@ import { getLandId } from 'modules/location/selectors'
 import { getLoading, getLands, getDeploymentsByLandId, getRentalForLand } from 'modules/land/selectors'
 import { isLoggingIn } from 'modules/identity/selectors'
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './LandProvider.types'
+import { MapStateProps, OwnProps } from './LandProvider.types'
 import LandProvider from './LandProvider'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
@@ -32,6 +32,4 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   }
 }
 
-const mapDispatch = (_dispatch: MapDispatch): MapDispatchProps => ({})
-
-export default connect(mapState, mapDispatch)(LandProvider)
+export default connect(mapState)(LandProvider)

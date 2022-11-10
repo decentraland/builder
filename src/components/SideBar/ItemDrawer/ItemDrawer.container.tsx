@@ -11,7 +11,7 @@ import {
 } from 'modules/ui/sidebar/selectors'
 import { getCollectibleAssets, isLoading as isLoadingAssets } from 'modules/asset/selectors'
 import { getSelectedEntityIds } from 'modules/editor/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
+import { MapStateProps } from './ItemDrawer.types'
 import ItemDrawer from './ItemDrawer'
 
 const mapState = (state: RootState): MapStateProps => {
@@ -31,6 +31,4 @@ const mapState = (state: RootState): MapStateProps => {
   }
 }
 
-const mapDispatch = (_: MapDispatch): MapDispatchProps => ({})
-
-export default connect(mapState, mapDispatch)(ItemDrawer)
+export default connect(mapState)(ItemDrawer)

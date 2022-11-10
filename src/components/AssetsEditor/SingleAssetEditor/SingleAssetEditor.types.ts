@@ -3,5 +3,3 @@ export type Props<T> = {
   errors: Record<string, string>
   onChange(asset: T): void
 }
-
-export type State = {}

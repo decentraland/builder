@@ -3,11 +3,11 @@ import { Button, Responsive } from 'decentraland-ui'
 
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import UserMenu from 'components/UserMenu'
-import { Props, State } from './SceneViewMenu.types'
+import { Props } from './SceneViewMenu.types'
 
 import './SceneViewMenu.css'
 
-export default class SceneViewMenu extends React.PureComponent<Props, State> {
+export default class SceneViewMenu extends React.PureComponent<Props> {
   handleTryItOut = () => {
     this.props.onTryItOut()
   }
