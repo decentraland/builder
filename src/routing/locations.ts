@@ -39,7 +39,7 @@ export const locations = {
       case CollectionType.THIRD_PARTY:
         return injectParams(locations.thirdPartyCollectionDetail(collectionId), { tab: 'tab' }, options)
       default:
-        throw new Error(`Invalid collection type ${type as string}`)
+        throw new Error(`Invalid collection type ${type as unknown as string}`)
     }
   },
   thirdPartyCollectionDetail: (collectionId = ':collectionId', options?: PaginationOptions) =>

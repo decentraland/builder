@@ -17,7 +17,6 @@ import {
   Item,
   ItemRarity,
   ItemType,
-  WearableData,
   BodyShapeType,
   RARITY_MAX_SUPPLY,
   RARITY_COLOR_LIGHT,
@@ -198,7 +197,7 @@ export function getMetadata(item: Item) {
       const bodyShapeTypes = getBodyShapes(item).map(toWearableBodyShapeType).join(',')
 
       if (!data.category) {
-        throw new Error(`Unknown item category "${item.data}"`)
+        throw new Error(`Unknown item category "${JSON.stringify(item.data)}"`)
       }
       return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
@@ -206,12 +205,12 @@ export function getMetadata(item: Item) {
       const data = item.data as unknown as EmoteDataADR74
       const bodyShapeTypes = getBodyShapes(item).map(toWearableBodyShapeType).join(',')
       if (!data.category) {
-        throw new Error(`Unknown item category "${item.data}"`)
+        throw new Error(`Unknown item category "${JSON.stringify(item.data)}"`)
       }
       return buildEmoteMetada(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes, data.loop ? 1 : 0)
     }
     default:
-      throw new Error(`Unknown item.type "${item.type}"`)
+      throw new Error(`Unknown item.type "${item.type as unknown as string}"`)
   }
 }
 

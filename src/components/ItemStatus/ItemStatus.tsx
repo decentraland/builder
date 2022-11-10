@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Popup } from 'decentraland-ui'
 import { SyncStatus } from 'modules/item/types'
@@ -18,7 +19,7 @@ export default class ItemStatus extends React.PureComponent<Props> {
         className="ItemStatus popup"
         position="top center"
         content={t(`status.${status}`)}
-        trigger={<div className={`ItemStatus orb ${status} ${className}`} title={t(`status.${status}`)} />}
+        trigger={<div className={classNames('ItemStatus', 'orb', status, className)} title={t(`status.${status}`)} />}
         hideOnScroll={true}
         on="hover"
       />

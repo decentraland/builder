@@ -37,7 +37,7 @@ class SidebarItem extends React.PureComponent<Props> {
           </div>
           <Popup
             content={t('item_editor.left_panel.invalid_representation_tooltip', {
-              bodyShape: <b>{t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()}</b>
+              bodyShape: <b>{t(`body_shapes.${getMissingBodyShapeType(item)!}`).toLowerCase()}</b>
             })}
             disabled={hasBodyShape(item, bodyShape)}
             position="top center"

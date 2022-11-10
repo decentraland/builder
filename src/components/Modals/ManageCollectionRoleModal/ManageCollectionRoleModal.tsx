@@ -97,7 +97,7 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
       case RoleType.MINTER:
         return onSetMinters(collection, accessList)
       default:
-        throw new Error(`Invalid role type ${type as string}`)
+        throw new Error(`Invalid role type ${type as unknown as string}`)
     }
   }
 

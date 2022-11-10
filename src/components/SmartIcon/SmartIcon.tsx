@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import './SmartIcon.css'
 
 export type SmartIconProps = {
@@ -12,6 +13,6 @@ export default class SmartIcon extends React.PureComponent<SmartIconProps> {
 
   render() {
     const { className } = this.props
-    return <div className={`SmartIcon ${className}`.trim()} />
+    return <div className={classNames('SmartIcon', className)} />
   }
 }

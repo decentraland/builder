@@ -98,7 +98,7 @@ export function sanitizeEntityName(scene: Scene) {
 
   for (const entityId in scene.entities) {
     const entity = scene.entities[entityId]
-    if (entity.name.match(/^\d/)) {
+    if (/^\d/.exec(entity.name)) {
       const components = entity.components.map(id => scene.components[id])
       const name = getUniqueName(components, takenNames, scene.assets)
       takenNames.add(name)
@@ -135,7 +135,7 @@ export function dedupeEntityName(scene: Scene) {
 
 export function replaceUserIdWithEthAddress(project: Project) {
   delete (project as any).userId
-   if (typeof project.ethAddress === 'undefined') {
+  if (typeof project.ethAddress === 'undefined') {
     project.ethAddress = null
   }
 }

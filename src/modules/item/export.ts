@@ -93,7 +93,9 @@ export async function calculateModelFinalSize(
     try {
       const image = await generateImage(item, { thumbnail: allBlobs[THUMBNAIL_PATH] })
       imageSize = image.size
-    } catch (error) {}
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const uniqueFiles = getUniqueFiles(allHashes, allBlobs)
