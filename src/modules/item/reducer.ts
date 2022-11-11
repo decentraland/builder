@@ -86,7 +86,13 @@ import {
   SAVE_MULTIPLE_ITEMS_SUCCESS,
   CLEAR_SAVE_MULTIPLE_ITEMS,
   SAVE_MULTIPLE_ITEMS_CANCELLED,
-  RescueItemsChunkSuccessAction
+  RescueItemsChunkSuccessAction,
+  FetchCollectionThumbnailsRequestAction,
+  FetchCollectionThumbnailsSuccessAction,
+  FetchCollectionThumbnailsFailureAction,
+  FETCH_COLLECTION_THUMBNAILS_REQUEST,
+  FETCH_COLLECTION_THUMBNAILS_SUCCESS,
+  FETCH_COLLECTION_THUMBNAILS_FAILURE
 } from './actions'
 import {
   PublishThirdPartyItemsSuccessAction,
@@ -130,6 +136,9 @@ type ItemReducerAction =
   | FetchItemRequestAction
   | FetchItemSuccessAction
   | FetchItemFailureAction
+  | FetchCollectionThumbnailsRequestAction
+  | FetchCollectionThumbnailsSuccessAction
+  | FetchCollectionThumbnailsFailureAction
   | SaveItemRequestAction
   | SaveItemSuccessAction
   | SaveItemFailureAction
@@ -179,6 +188,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_RARITIES_REQUEST:
     case FETCH_ITEM_REQUEST:
     case FETCH_COLLECTION_ITEMS_REQUEST:
+    case FETCH_COLLECTION_THUMBNAILS_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
     case SET_PRICE_AND_BENEFICIARY_REQUEST:
     case SAVE_ITEM_REQUEST:
@@ -216,6 +226,18 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               }
             : {})
         },
+        error: null
+      }
+    }
+    case FETCH_COLLECTION_THUMBNAILS_SUCCESS: {
+      const { items } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        loading: loadingReducer(state.loading, action),
         error: null
       }
     }
@@ -259,6 +281,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_ITEMS_FAILURE:
     case FETCH_ITEM_FAILURE:
+    case FETCH_COLLECTION_THUMBNAILS_FAILURE:
     case FETCH_COLLECTION_ITEMS_FAILURE:
     case SET_ITEMS_TOKEN_ID_FAILURE:
     case SET_PRICE_AND_BENEFICIARY_FAILURE:
