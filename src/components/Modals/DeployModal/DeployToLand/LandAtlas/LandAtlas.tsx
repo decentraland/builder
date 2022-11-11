@@ -112,7 +112,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   handleSelectPlacement = () => {
     const { placement } = this.state
     const { onConfirmPlacement } = this.props
-    const overlappedDeployment = this.getOverlappedDeployemnt()
+    const overlappedDeployment = this.getOverlappedDeployment()
     if (placement) {
       overlappedDeployment ? onConfirmPlacement(placement, overlappedDeployment.id) : onConfirmPlacement(placement)
     }
@@ -158,7 +158,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     return input
   }
 
-  getOverlappedDeployemnt = () => {
+  getOverlappedDeployment = () => {
     const { deploymentsByCoord, project } = this.props
     const { placement } = this.state
     if (project && placement) {
@@ -197,7 +197,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const parcelCount = Object.keys(landTiles).length
     const [targetX, targetY] = currentLandId ? idToCoords(currentLandId) : [0, 0]
     const target: Coordinate = { x: targetX, y: targetY }
-    const overlappedDeployment = this.getOverlappedDeployemnt()
+    const overlappedDeployment = this.getOverlappedDeployment()
     const conflictingDeployment =
       overlappedDeployment &&
       deployment &&
@@ -238,6 +238,8 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
         <div className="atlas-container">
           <Atlas
             showControls
+            showOperator
+            showTenant
             onLocateLand={this.handleLocateLand}
             layers={[this.strokeLayer, this.highlightLayer]}
             onHover={this.handleHover}

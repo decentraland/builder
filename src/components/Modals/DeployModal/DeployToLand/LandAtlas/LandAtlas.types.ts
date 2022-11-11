@@ -4,7 +4,6 @@ import { Coordinate, Rotation, Placement, Deployment } from 'modules/deployment/
 import { LandTile } from 'modules/land/types'
 
 export type Props = {
-  ethAddress: string | undefined
   project: Project
   media: Media | null
   isLoggedIn: boolean
