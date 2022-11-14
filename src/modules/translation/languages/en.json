@@ -216,14 +216,15 @@
     "change_item_file": "Edit representation",
     "error": {
       "item_too_big": "The entire item is too big to be uploaded. The max size for all files is {size}.",
-      "file_too_big": "The file is too big to be uploaded. The max size is {size}.",
+      "file_too_big": "The file is too large and can't be uploaded. The max file size limit is {size}.",
       "thumbnail_file_too_big": "The thumbnail file is too big to be uploaded. The max size is {size}.",
       "wrong_extension": "The file has an invalid extension.",
       "invalid_files": "Files seem to be invalid or broken, please review them and try again.",
       "missing_model_file": "Couldn't find a valid model file.",
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}.",
-      "invalid_model_files_representation": "The file seems to have more than one representation, please review them and try again."
+      "invalid_model_files_representation": "The file seems to have more than one representation, please review them and try again.",
+      "emote_duration_too_long": "Your emote exceeds the maximum duration in seconds.{enter}Duration of the emotes has a limit of {duration} seconds. Reduce the duration of the emote and try again."
     },
     "emote_notice": "Emotes are available for all body shapes."
   },
