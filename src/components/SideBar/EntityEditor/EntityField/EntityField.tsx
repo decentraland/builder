@@ -117,9 +117,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
               onClick={this.handleInputClick}
               value={search}
             />
-          ) : (
-            undefined
-          )
+          ) : undefined
         }
         trigger={this.renderTrigger()}
         search={false}

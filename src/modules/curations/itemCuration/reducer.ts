@@ -158,7 +158,7 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
     case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_ITEM_CURATIONS_FAILURE:
-    case FETCH_ITEM_CURATION_FAILURE:
+    case FETCH_ITEM_CURATION_FAILURE: {
       const { error } = action.payload
 
       return {
@@ -166,6 +166,7 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         loading: loadingReducer(state.loading, action),
         error
       }
+    }
     default:
       return state
   }

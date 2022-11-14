@@ -14,7 +14,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSelectCategory: category => dispatch(selectCategory(category))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(CategoryList)
+export default connect(mapState, mapDispatch)(CategoryList)

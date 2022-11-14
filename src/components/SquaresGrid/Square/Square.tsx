@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import classNames from 'classnames'
 import { Props, DefaultProps } from './Square.types'
 import './Square.css'
 
@@ -11,6 +11,6 @@ export default class Square extends React.PureComponent<Props> {
 
   render() {
     const { className, size } = this.props
-    return <div className={`Square ${className} ${size}`} />
+    return <div className={classNames('Square', className, size)} />
   }
 }

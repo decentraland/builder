@@ -17,9 +17,9 @@ export const isLoading: (state: RootState) => boolean = state => getState(state)
 export const getError: (state: RootState) => AssetState['error'] = state => getState(state).error
 
 export const getGroundAssets = createSelector<RootState, AssetState['data'], ModelById<Asset>>(getData, assets => {
-  let out: ModelById<Asset> = {}
+  const out: ModelById<Asset> = {}
 
-  for (let asset of Object.values(assets)) {
+  for (const asset of Object.values(assets)) {
     if (asset.category === GROUND_CATEGORY) {
       out[asset.id] = asset
     }
@@ -31,9 +31,9 @@ export const getGroundAssets = createSelector<RootState, AssetState['data'], Mod
 export const getGroundAsset = (state: RootState, assetId: string) => getGroundAssets(state)[assetId]
 
 export const getCollectibleAssets = createSelector<RootState, AssetState['data'], ModelById<Asset>>(getData, assets => {
-  let out: ModelById<Asset> = {}
+  const out: ModelById<Asset> = {}
 
-  for (let asset of Object.values(assets)) {
+  for (const asset of Object.values(assets)) {
     if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
       out[asset.id] = asset
     }
@@ -46,11 +46,11 @@ export const getDisabledAssets = createSelector<RootState, Record<ComponentType,
   (state: RootState) => getComponentsByType(state),
   getData,
   (components, assets) => {
-    let result: string[] = []
+    const result: string[] = []
     const nfts = components[ComponentType.NFTShape] as ComponentDefinition<ComponentType.NFTShape>[]
     const gltfs = components[ComponentType.GLTFShape] as ComponentDefinition<ComponentType.GLTFShape>[]
 
-    for (let assetId in assets) {
+    for (const assetId in assets) {
       const asset = assets[assetId]
 
       if (isNFT(asset)) {
@@ -75,7 +75,7 @@ export const getDisabledAssets = createSelector<RootState, Record<ComponentType,
 
 export const getAssetsByModel = createSelector<RootState, AssetState['data'], Record<string, Asset>>(getData, assets => {
   const out: Record<string, Asset> = {}
-  for (let id in assets) {
+  for (const id in assets) {
     const asset = assets[id]
     out[asset.model] = asset
   }
@@ -90,10 +90,10 @@ export const getAssetsByEntityName = createSelector<
   Record<string, Asset>
 >(getEntities, getComponentsByEntityId, getData, (entities, componentsByEntity, assets) => {
   const out: Record<string, Asset> = {}
-  for (let entityId in componentsByEntity) {
+  for (const entityId in componentsByEntity) {
     const entity = entities[entityId]
     const components = componentsByEntity[entityId]
-    for (let component of components) {
+    for (const component of components) {
       if (component.type === ComponentType.Script || component.type === ComponentType.GLTFShape) {
         const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
         out[entity.name] = asset
@@ -111,9 +111,9 @@ export const getAssetsWithScriptByEntityName = createSelector<
   Record<string, Asset>
 >(getEntities, getComponentsByEntityId, getData, (entities, componentsByEntity, assets) => {
   const out: Record<string, Asset> = {}
-  for (let entityId in componentsByEntity) {
+  for (const entityId in componentsByEntity) {
     const components = componentsByEntity[entityId]
-    for (let component of components) {
+    for (const component of components) {
       if (component.type === ComponentType.Script) {
         const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
         if (asset && asset.actions.length > 0) {

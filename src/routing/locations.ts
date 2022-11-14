@@ -23,8 +23,8 @@ export const locations = {
   ensSelectLand: (subdomain = ':subdomain') => `/name/${subdomain}/set-land`,
   claimENS: () => '/claim-name',
   landOperator: (landId = ':landId') => `/land/${landId}/operator`,
-  activity: () => `/activity`,
-  settings: () => `/settings`,
+  activity: () => '/activity',
+  settings: () => '/settings',
   sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
   collections: () => '/collections',
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
@@ -39,13 +39,13 @@ export const locations = {
       case CollectionType.THIRD_PARTY:
         return injectParams(locations.thirdPartyCollectionDetail(collectionId), { tab: 'tab' }, options)
       default:
-        throw new Error(`Invalid collection type ${type}`)
+        throw new Error(`Invalid collection type ${type as unknown as string}`)
     }
   },
   thirdPartyCollectionDetail: (collectionId = ':collectionId', options?: PaginationOptions) =>
     injectPagination(`/thirdPartyCollections/${collectionId}`, options),
   itemEditor: (options?: ItemEditorParams) =>
-    injectParams(`/item-editor`, { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing' }, options),
+    injectParams('/item-editor', { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing' }, options),
   ens: () => '/names',
   curation: () => '/curation'
 }

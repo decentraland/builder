@@ -16,7 +16,7 @@ const saveProjectDebounce = debounceByKey(
   SAVE_DEBOUNCE
 )
 
-export function saveProject(key: string, project: Project, scene: Scene, builder: BuilderAPI, debounce: boolean = true) {
+export function saveProject(key: string, project: Project, scene: Scene, builder: BuilderAPI, debounce = true) {
   if (debounce) {
     return saveProjectDebounce(key, project, scene, builder)
   } else {

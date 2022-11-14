@@ -1,4 +1,12 @@
-import { getCurationsByCollectionId, getState, getLoading, getError, getCuration, getCurations, getHasPendingCollectionCuration } from './selectors'
+import {
+  getCurationsByCollectionId,
+  getState,
+  getLoading,
+  getError,
+  getCuration,
+  getCurations,
+  getHasPendingCollectionCuration
+} from './selectors'
 import { INITIAL_STATE } from './reducer'
 import { FETCH_COLLECTION_CURATION_REQUEST } from './actions'
 import { CollectionCuration } from './types'

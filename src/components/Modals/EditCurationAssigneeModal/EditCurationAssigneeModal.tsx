@@ -19,7 +19,7 @@ export default class EditCurationAssigneeModal extends React.PureComponent<Props
   }
 
   handleChangeAssignee = (_event: React.SyntheticEvent<HTMLElement, Event>, target: DropdownProps) => {
-    this.setState({ assignee: `${target.value}` })
+    this.setState({ assignee: `${target.value as unknown as string}` })
   }
 
   handleClose = () => {

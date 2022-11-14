@@ -37,6 +37,7 @@ import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -46,6 +47,7 @@ configureAnalytics({
   }
 })
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   ? // prettier-ignore
@@ -98,10 +100,10 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     DESTROY_IDENTITY
   ],
   transform: state => {
-    let projects: DataByKey<Project> = {}
-    let scene: DataByKey<Scene> = {}
+    const projects: DataByKey<Project> = {}
+    const scene: DataByKey<Scene> = {}
 
-    for (let id of state.sync.project.localIds) {
+    for (const id of state.sync.project.localIds) {
       const project = state.project.data[id]
       if (!project) continue
       projects[id] = project
@@ -163,10 +165,11 @@ loadStorageMiddleware(store)
 
 if (isDevelopment) {
   const _window = window as any
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   _window.getState = store.getState
 }
 
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
   const syncCount = getLoadingSet(store.getState()).size
   return syncCount > 0 || null
 }

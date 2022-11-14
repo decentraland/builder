@@ -159,7 +159,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleFetchRaritiesRequest() {
     try {
-      const rarities: Rarity[] = yield call([legacyBuilder, legacyBuilder.fetchRarities])
+      const rarities: Rarity[] = yield call([legacyBuilder, 'fetchRarities'])
       yield put(fetchRaritiesSuccess(rarities))
     } catch (error) {
       yield put(fetchRaritiesFailure(error.message))
@@ -193,7 +193,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const queue = new PQueue({ concurrency: REQUEST_BATCH_SIZE })
     const promisesOfPagesToFetch: (() => Promise<PaginatedResource<Item>>)[] = []
     pagesToFetch.forEach(page => {
-      promisesOfPagesToFetch.push(() => legacyBuilder.fetchCollectionItems(collectionId, { page, ...options }))
+      promisesOfPagesToFetch.push(
+        () => legacyBuilder.fetchCollectionItems(collectionId, { page, ...options }) as Promise<PaginatedResource<Item>>
+      )
     })
     const allItemPages: PaginatedResource<Item>[] = yield queue.addAll(promisesOfPagesToFetch)
     const { limit } = options
@@ -333,7 +335,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       // Add the old content to be uploaded again with the new hash
       const contents = { ...actionContents, ...oldReHashedContentWithNewHashes }
 
-      const collection: Collection | undefined = item.collectionId ? yield select(getCollection, item.collectionId!) : undefined
+      const collection: Collection | undefined = item.collectionId ? yield select(getCollection, item.collectionId) : undefined
 
       if (collection && isLocked(collection)) {
         throw new Error(t('sagas.collection.collection_locked'))
@@ -392,9 +394,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleSaveMultipleItemsSuccess(action: SaveMultipleItemsSuccessAction) {
     const { items } = action.payload
-    const collectionId = items[0]?.collectionId!
+    const collectionId = items.length > 0 ? items[0].collectionId : null
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
-    if (items.length > 0 && location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+    if (collectionId && location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId, items.length)
     }
   }
@@ -485,7 +487,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const implementation = new Contract(contract.address, contract.abi, new providers.Web3Provider(provider))
       const { metadata } = yield call(implementation.items, item.tokenId)
       const txHash: string = yield call(sendTransaction, contract, collection =>
-        collection.editItemsData([newItem.tokenId!], [newItem.price!], [newItem.beneficiary!], [metadata])
+        collection.editItemsData([newItem.tokenId!], [newItem.price], [newItem.beneficiary], [metadata])
       )
 
       yield put(setPriceAndBeneficiarySuccess(newItem, chainId, txHash))

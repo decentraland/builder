@@ -29,9 +29,9 @@ export function cleanAssetName(fileName: string) {
 }
 
 export function rawMappingsToObjectURL(mappings: Record<string, Blob>) {
-  let out: Record<string, string> = {}
+  const out: Record<string, string> = {}
 
-  for (let key in mappings) {
+  for (const key in mappings) {
     const item = mappings[key]
     out[key] = URL.createObjectURL(item)
   }
@@ -40,7 +40,7 @@ export function rawMappingsToObjectURL(mappings: Record<string, Blob>) {
 }
 
 export function revokeMappingsObjectURL(mappings: Record<string, string>) {
-  for (let key in mappings) {
+  for (const key in mappings) {
     const item = mappings[key]
     URL.revokeObjectURL(item)
   }
@@ -50,7 +50,7 @@ export async function getContentsHash(asset: RawAsset): Promise<Record<string, s
   const { contents } = asset
   const out: Record<string, string> = {}
 
-  for (let filePath of Object.keys(contents)) {
+  for (const filePath of Object.keys(contents)) {
     const file = await makeContentFile(filePath, contents[filePath])
     out[filePath] = await hashV1(file.content)
   }

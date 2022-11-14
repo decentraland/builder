@@ -9,7 +9,7 @@ export function getProjectDimensions(project: Project): string {
 }
 
 export function didUpdateLayout(update: Partial<Project>, project: Project): boolean {
-  let res: boolean = false
+  let res = false
 
   if (update.layout && project.layout) {
     if (update.layout.rows && update.layout.rows !== project.layout.rows) {

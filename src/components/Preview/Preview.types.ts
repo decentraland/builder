@@ -50,8 +50,6 @@ export type Props = Partial<OpenEditorOptions> & {
   project: Project
 }
 
-export type State = {}
-
 export type MapStateProps = Pick<Props, 'isLoadingEditor' | 'project'>
 export type MapDispatchProps = Pick<Props, 'onOpenEditor' | 'onDropItem'>
 export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction | DropItemAction>

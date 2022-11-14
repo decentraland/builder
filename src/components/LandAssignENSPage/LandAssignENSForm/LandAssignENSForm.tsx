@@ -37,8 +37,8 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
     const hasData = hasResolver || hasContent
 
     const hasError = error && error.code === 4001
-    const hasResolverError = hasError && error!.origin === ENSOrigin.RESOLVER
-    const hasContentError = hasError && error!.origin === ENSOrigin.CONTENT
+    const hasResolverError = hasError && error.origin === ENSOrigin.RESOLVER
+    const hasContentError = hasError && error.origin === ENSOrigin.CONTENT
 
     const setResolverButtonClassName = hasResolver && !isWaitingTxSetResolver && !hasResolverError ? 'grey-button' : ''
     const setContentButtonClassName = hasContent && !isWaitingTxSetContent && !hasContentError ? 'grey-button' : ''

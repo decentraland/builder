@@ -108,7 +108,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
         throw new Error(t('create_and_edit_multiple_items_modal.wearable_file_not_found'))
       }
 
-      const itemFactory = new ItemFactory<Blob>().fromConfig(loadedFile.wearable!, loadedFile.content)
+      const itemFactory = new ItemFactory<Blob>().fromConfig(loadedFile.wearable, loadedFile.content)
 
       let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
 
@@ -151,7 +151,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
       }
 
       // Generate or set the correct URN for the items taking into consideration the selected collection
-      let decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
+      const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
 
       if (
         decodedCollectionUrn &&
@@ -252,6 +252,8 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   }
 
   private renderDropZone = (props: DropzoneState) => {
+    // TODO: Upgrade react-dropzone to a newer version to avoid the linting error: unbound-method
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const { open, getRootProps, getInputProps } = props
 
     const validFiles = this.getValidFiles()
@@ -394,9 +396,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
                     }}
                   />
                 </span>
-              ) : (
-                undefined
-              )
+              ) : undefined
             }
           />
         </Modal.Content>

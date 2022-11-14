@@ -49,7 +49,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
               id="root"
               entityName={entity.name}
               parameters={asset.parameters}
-              values={script.data!.values}
+              values={script.data.values}
               onChange={this.handleChange}
             />
           </div>

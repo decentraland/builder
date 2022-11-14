@@ -6,7 +6,7 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_PARCELS_PER_TX } from 'modules/land/utils'
 import { Props } from './DissolveModal.types'
 
-export default class DissolveModal extends React.PureComponent<Props, {}> {
+export default class DissolveModal extends React.PureComponent<Props> {
   handleConfirm = () => {
     const { metadata, onDissolve } = this.props
     onDissolve(metadata.land)

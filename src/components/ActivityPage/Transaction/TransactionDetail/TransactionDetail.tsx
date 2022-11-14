@@ -31,7 +31,7 @@ const Image = (props: Props) => {
   if (selection) {
     return <Atlas x={x} y={y} layers={[selectedStrokeLayer, selectedFillLayer]} width={48} height={48} size={9} isDraggable={false} />
   } else if (address) {
-    return <Profile address={address!} size="huge" imageOnly />
+    return <Profile address={address} size="huge" imageOnly />
   } else if (collectionId) {
     return <CollectionImage collectionId={collectionId} />
   } else if (item) {

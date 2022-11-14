@@ -11,7 +11,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: (path: string) => dispatch(push(path))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ErrorPage)
+export default connect(mapState, mapDispatch)(ErrorPage)

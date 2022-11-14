@@ -21,7 +21,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSave: (id, project) => dispatch(editProject(id, project))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(EditProjectModal)
+export default connect(mapState, mapDispatch)(EditProjectModal)

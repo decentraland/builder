@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getCurrentMetrics, getCurrentLimits } from 'modules/scene/selectors'
-import { MapDispatch, MapDispatchProps, MapStateProps } from './Metrics.types'
+import { MapStateProps } from './Metrics.types'
 import Metrics from './Metrics'
 
 const mapState = (state: RootState): MapStateProps => {
@@ -30,9 +30,4 @@ const mapState = (state: RootState): MapStateProps => {
   }
 }
 
-const mapDispatch = (_: MapDispatch): MapDispatchProps => ({})
-
-export default connect(
-  mapState,
-  mapDispatch
-)(Metrics)
+export default connect(mapState)(Metrics)

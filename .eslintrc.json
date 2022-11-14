@@ -1,0 +1,56 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "ignorePatterns": [
+    "src/contracts/*",
+    "src/ecsScene/*",
+    "scripts/*.js",
+    "src/modules/project/export.ts",
+    "src/modules/analytics/rollbar.ts",
+    "src/modules/editor/base64.ts",
+    "package.json",
+    "package-lock.json"
+  ],
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "react-app", "react-app/jest", "prettier"],
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "rules": {
+    "@typescript-eslint/ban-types": "error",
+    "@typescript-eslint/ban-tslint-comment": "error",
+    "@typescript-eslint/quotes": ["error", "single", { "avoidEscape": true }],
+    "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }]
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking", "prettier"],
+      "rules": {
+        "@typescript-eslint/no-unnecessary-type-assertion": "error",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }],
+        "@typescript-eslint/no-unsafe-assignment": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-assignment/
+        "@typescript-eslint/no-unsafe-call": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-call/
+        "@typescript-eslint/no-unsafe-member-access": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-member-access/
+        "@typescript-eslint/no-unsafe-argument": "off" // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-argument/
+      },
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      }
+    },
+    {
+      "files": ["*.spec.ts"],
+      "rules": {
+        "@typescript-eslint/unbound-method": "off"
+      }
+    },
+    {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { setENSContentRequest, SetENSContentRequestAction } from 'modules/ens/actions'
 
 export type Props = ModalProps & {
-  isLoading: boolean,
+  isLoading: boolean
   onUnsetENSContent: typeof setENSContentRequest
 }
 

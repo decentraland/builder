@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatchProps, OwnProps, MapDispatch } from './EstateEditorModal.types'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './EstateEditorModal.types'
 import EstateEditorModal from './EstateEditorModal'
 import { getLandTiles } from 'modules/land/selectors'
 import { createEstateRequest, editEstateRequest } from 'modules/land/actions'
 
-const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
+const mapState = (state: RootState): MapStateProps => ({
   landTiles: getLandTiles(state)
 })
 

@@ -148,7 +148,7 @@ const Transaction = (props: Props) => {
           selection={selection}
           text={
             <T
-              id={`transaction.edit_estate_${type}`}
+              id={`transaction.edit_estate_${type as unknown as string}`}
               values={{
                 name: <strong>{name}</strong>,
                 count
@@ -186,7 +186,7 @@ const Transaction = (props: Props) => {
               id={isApproved ? 'transaction.set_manager_assigned' : 'transaction.set_manager_revoked'}
               values={{
                 address: <Profile address={address} textOnly />,
-                type: t(`global.${type}_plural`)
+                type: t(`global.${type as unknown as string}_plural`)
               }}
             />
           }

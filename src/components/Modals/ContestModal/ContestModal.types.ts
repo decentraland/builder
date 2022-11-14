@@ -8,7 +8,7 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { deployToPoolRequest, DeployToPoolRequestAction } from 'modules/deployment/actions'
 
 export type Props = ModalProps & {
-  metadata: {}
+  metadata: Record<string, unknown>
   error: string | null
   project: Project
   poolGroup: PoolGroup | null
