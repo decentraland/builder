@@ -12,7 +12,7 @@ export const EMAIL_SERVER_URL = config.get('EMAIL_SERVER_URL', '')
 
 export class NewsletterAPI extends BaseAPI {
   reportEmail = async (email: string, interest: EMAIL_INTEREST) => {
-    await this.request('post', `/`, { email, interest })
+    await this.request('post', '/', { email, interest })
   }
 }
 

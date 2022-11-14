@@ -17,7 +17,6 @@ import {
   Item,
   ItemRarity,
   ItemType,
-  WearableData,
   BodyShapeType,
   RARITY_MAX_SUPPLY,
   RARITY_COLOR_LIGHT,
@@ -194,28 +193,24 @@ export function buildEmoteMetada(
 export function getMetadata(item: Item) {
   switch (item.type) {
     case ItemType.WEARABLE: {
-      const data = item.data as WearableData
-      const bodyShapeTypes = getBodyShapes(item)
-        .map(toWearableBodyShapeType)
-        .join(',')
+      const data = item.data
+      const bodyShapeTypes = getBodyShapes(item).map(toWearableBodyShapeType).join(',')
 
       if (!data.category) {
-        throw new Error(`Unknown item category "${item.data}"`)
+        throw new Error(`Unknown item category "${JSON.stringify(item.data)}"`)
       }
       return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
     case ItemType.EMOTE: {
-      const data = (item.data as unknown) as EmoteDataADR74
-      const bodyShapeTypes = getBodyShapes(item)
-        .map(toWearableBodyShapeType)
-        .join(',')
+      const data = item.data as unknown as EmoteDataADR74
+      const bodyShapeTypes = getBodyShapes(item).map(toWearableBodyShapeType).join(',')
       if (!data.category) {
-        throw new Error(`Unknown item category "${item.data}"`)
+        throw new Error(`Unknown item category "${JSON.stringify(item.data)}"`)
       }
       return buildEmoteMetada(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes, data.loop ? 1 : 0)
     }
     default:
-      throw new Error(`Unknown item.type "${item.type}"`)
+      throw new Error(`Unknown item.type "${item.type as unknown as string}"`)
   }
 }
 
@@ -264,8 +259,8 @@ export async function generateImage(item: Item | Item<ItemType.EMOTE> | LocalIte
 
   // render gradient
   const gradient = context.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width / 1.75)
-  gradient.addColorStop(0, RARITY_COLOR_LIGHT[item.rarity!])
-  gradient.addColorStop(1, RARITY_COLOR[item.rarity!])
+  gradient.addColorStop(0, RARITY_COLOR_LIGHT[item.rarity])
+  gradient.addColorStop(1, RARITY_COLOR[item.rarity])
   context.fillStyle = gradient
   context.fillRect(0, 0, width, height)
 
@@ -478,7 +473,7 @@ export function isWearableSynced(item: Item, entity: Entity) {
   }
 
   // check if metadata is synced
-  const catalystItem = entity.metadata! as Wearable
+  const catalystItem = entity.metadata as Wearable
   const hasMetadataChanged =
     item.name !== catalystItem.name ||
     item.description !== catalystItem.description ||

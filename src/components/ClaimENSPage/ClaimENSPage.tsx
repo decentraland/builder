@@ -21,7 +21,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     isError: false
   }
 
-  handleManaApprove = async () => {
+  handleManaApprove = () => {
     const { allowance, onAllowMana } = this.props
     const manaToAllow = isEnoughClaimMana(allowance) ? 0 : getTokenAmountToApprove()
     onAllowMana(manaToAllow.toString())
@@ -82,7 +82,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
     const isDisabled = !isValid || !isAvailable || !isEnoughMana || !isManaAllowed
 
-    let message: string = ''
+    let message = ''
     if (isError) {
       message = t('claim_ens_page.error_message')
     } else if (!isAvailable) {

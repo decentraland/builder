@@ -198,7 +198,7 @@ function* handleUpdateTransfrom(action: UpdateTransfromAction) {
   const { components } = action.payload
   const newComponents: Scene['components'] = { ...scene.components }
 
-  for (let componentData of components) {
+  for (const componentData of components) {
     if (componentData.componentId in scene.components) {
       newComponents[componentData.componentId] = {
         ...newComponents[componentData.componentId],
@@ -232,7 +232,7 @@ function* handleResetItem(_: ResetItemAction) {
     ...scene.components
   }
 
-  for (let entityId of selectedEntityIds) {
+  for (const entityId of selectedEntityIds) {
     const transform = components[entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
     if (transform) {
       newComponents[transform.id] = {
@@ -262,7 +262,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const newEntities = { ...scene.entities }
   const newEntityIds: string[] = []
 
-  for (let entityId of selectedEntityIds) {
+  for (const entityId of selectedEntityIds) {
     const entityComponents = []
     const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
     const shape = shapes[entityId]
@@ -351,7 +351,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const newEntities = { ...scene.entities }
   const newAssets = { ...scene.assets }
 
-  for (let entityId of selectedEntityIds) {
+  for (const entityId of selectedEntityIds) {
     const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
     const entityComponents = componentsByEntityId[entityId]
     const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []
@@ -366,7 +366,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
       delete newComponents[componentId]
     }
 
-    for (let componentId in newComponents) {
+    for (const componentId in newComponents) {
       const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
       if (component.type === ComponentType.Script) {
         removeEntityReferences(newAssets[component.data.assetId].parameters, component.data.values, scene.entities[entityId].name)
@@ -431,9 +431,9 @@ function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAct
   const assets: ReturnType<typeof getAssets> = yield select(getAssets)
 
   // gather all gltf shapes
-  const gltfShapes = Object.values(scene.components).filter(component => component.type === ComponentType.GLTFShape) as ComponentDefinition<
-    ComponentType.GLTFShape
-  >[]
+  const gltfShapes = Object.values(scene.components).filter(
+    component => component.type === ComponentType.GLTFShape
+  ) as ComponentDefinition<ComponentType.GLTFShape>[]
   for (const gltfShape of gltfShapes) {
     const src = (gltfShape.data as any)['src']
     // if it doesn't have src, we continue
@@ -490,7 +490,7 @@ function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAct
         const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
           ...gltfShape,
           data: {
-            ...gltfShape.data!,
+            ...gltfShape.data,
             assetId: newAsset.id
           }
         }
@@ -568,8 +568,8 @@ function* handleApplyLayout(action: ApplyLayoutAction) {
 
 function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   const assets: DataByKey<Asset> = yield select(getAssets)
-  let sceneComponents = { ...scene.components }
-  let sceneAssets = { ...scene.assets }
+  const sceneComponents = { ...scene.components }
+  const sceneAssets = { ...scene.assets }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
   if (asset) {

@@ -112,7 +112,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     this.props.onClose()
   }
 
-  handleConfirmDeleteAssetPack = async () => {
+  handleConfirmDeleteAssetPack = () => {
     this.setState({
       view: EditAssetPackView.CONFIRM_DELETE
     })
@@ -226,7 +226,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
         />
         <Modal.Content>
           <AssetPackEditor
-            assetPack={assetPack!}
+            assetPack={assetPack}
             remoteAssets={ignoredAssets}
             onChange={this.handleAssetPackChange}
             onSubmit={this.handleAssetPackEditorSubmit}

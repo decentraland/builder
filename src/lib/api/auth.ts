@@ -12,7 +12,7 @@ export class Authorization {
     this.store = store
   }
 
-  createAuthHeaders(method: string = 'get', path: string = '') {
+  createAuthHeaders(method = 'get', path = '') {
     const headers: Record<string, string> = {}
     const state = this.store.getState()
     const address = getAddress(state)
@@ -23,7 +23,7 @@ export class Authorization {
         const endpoint = (method + ':' + path).toLowerCase()
         const authChain = Authenticator.signPayload(identity, endpoint)
         for (let i = 0; i < authChain.length; i++) {
-          headers[AUTH_CHAIN_HEADER_PREFIX + i] = JSON.stringify(authChain[i])
+          headers[`${AUTH_CHAIN_HEADER_PREFIX}${i}`] = JSON.stringify(authChain[i])
         }
       }
     }

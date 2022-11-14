@@ -72,7 +72,7 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
                 <RarityBadge category={item.data.category!} rarity={item.rarity!} size="small" />
               </Table.Cell>
               <Table.Cell className="column">
-                <div>{t(`${item.type}.category.${item.data.category}`)}</div>
+                <div>{t(`${item.type}.category.${item.data.category!}`)}</div>
               </Table.Cell>
               <Table.Cell className="column priceColumn">{renderPrice(item)}</Table.Cell>
             </Table.Row>

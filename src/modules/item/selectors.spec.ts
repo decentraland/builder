@@ -57,7 +57,7 @@ describe('Item selectors', () => {
             pages: 1,
             page: 1
           },
-          [mockAddress!]: {
+          [mockAddress]: {
             ids: [anotherItem.id, yetAnotherItem.id],
             total: 1,
             limit: 5,
@@ -106,7 +106,7 @@ describe('Item selectors', () => {
       })
     })
 
-    describe('when the item exists in the state', () => {
+    describe('when the item does not exists in the state', () => {
       it('should return null', () => {
         expect(getItem(state, 'aNonExistaetId')).toBeNull()
       })
@@ -488,7 +488,7 @@ describe('Item selectors', () => {
       })
 
       it('should return the status by id for a list of item ids', () => {
-        expect(getStatusForItemIds((state as unknown) as RootState, [itemId, anotherItemId])).toEqual({
+        expect(getStatusForItemIds(state as unknown as RootState, [itemId, anotherItemId])).toEqual({
           [itemId]: SyncStatus.UNPUBLISHED,
           [anotherItemId]: SyncStatus.UNDER_REVIEW
         })
@@ -545,11 +545,11 @@ describe('Item selectors', () => {
       describe('and the item has a collection', () => {
         describe('and the user can see the item', () => {
           beforeEach(() => {
-            collection = ({
+            collection = {
               owner: address,
               minters: [],
               managers: []
-            } as any) as Collection
+            } as any as Collection
           })
 
           it('should return true', () => {
@@ -559,11 +559,11 @@ describe('Item selectors', () => {
 
         describe("and the user can't see the item", () => {
           beforeEach(() => {
-            collection = ({
+            collection = {
               owner: 'some-other-address',
               minters: [],
               managers: []
-            } as any) as Collection
+            } as any as Collection
           })
 
           it('should return false', () => {
@@ -608,11 +608,11 @@ describe('Item selectors', () => {
       describe('and the item has a collection', () => {
         describe('and the user can see the item', () => {
           beforeEach(() => {
-            collection = ({
+            collection = {
               owner: address,
               minters: [],
               managers: []
-            } as any) as Collection
+            } as any as Collection
           })
 
           it('should return true', () => {
@@ -622,11 +622,11 @@ describe('Item selectors', () => {
 
         describe("and the user can't see the item", () => {
           beforeEach(() => {
-            collection = ({
+            collection = {
               owner: 'some-other-address',
               minters: [],
               managers: []
-            } as any) as Collection
+            } as any as Collection
           })
 
           it('should return false', () => {

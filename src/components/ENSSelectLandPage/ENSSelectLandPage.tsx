@@ -46,7 +46,7 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
     const { onNavigate, ens } = this.props
     const { selectedLand } = this.state
     if (selectedLand) {
-      onNavigate(locations.landAssignENS(selectedLand!.id, ens!.subdomain))
+      onNavigate(locations.landAssignENS(selectedLand.id, ens!.subdomain))
     }
   }
 

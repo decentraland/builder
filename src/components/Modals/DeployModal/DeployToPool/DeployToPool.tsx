@@ -39,7 +39,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     })
   }
 
-  handleSubmit = async () => {
+  handleSubmit = () => {
     const { project, onDeployToPool } = this.props
     const projectId = project!.id
 

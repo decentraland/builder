@@ -9,7 +9,7 @@ import { ForumPost } from './types'
 
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 
-export function buildCollectionForumPost(collection: Collection, items: Item[], ownerName: string = ''): ForumPost {
+export function buildCollectionForumPost(collection: Collection, items: Item[], ownerName = ''): ForumPost {
   const collectionURL = window.location.origin + locations.itemEditor({ collectionId: collection.id })
 
   // We only post in English

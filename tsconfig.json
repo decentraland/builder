@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "node",
@@ -30,18 +26,14 @@
     "plugins": [
       {
         "name": "tslint-language-service"
+      },
+      {
+        "name": "dcl-tslint-config-standard"
       }
     ],
     "baseUrl": "src",
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src",
-    "src/typings.d.ts",
-    "react-app=env.d.ts",
-    "./node_modules/decentraland-builder-scripts/types.d.ts"
-  ],
-  "exclude": [
-    "src/modules/editor/ecs.js"
-  ]
+  "include": ["src", "src/typings.d.ts", "react-app=env.d.ts", "./node_modules/decentraland-builder-scripts/types.d.ts"],
+  "exclude": ["src/modules/editor/ecs.js"]
 }

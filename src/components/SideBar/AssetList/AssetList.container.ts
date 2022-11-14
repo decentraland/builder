@@ -19,7 +19,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onPrefetchAsset: asset => dispatch(prefetchAsset(asset))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(AssetList)
+export default connect(mapState, mapDispatch)(AssetList)

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { Page, Loader } from 'decentraland-ui'
 
 import Navigation from 'components/Navigation'
@@ -44,7 +45,7 @@ export default class LoggedInDetailPage extends React.PureComponent<Props> {
       <>
         <Navbar isFullscreen />
         {hasNavigation ? <Navigation activeTab={activeTab} isFullscreen={isNavigationFullscreen} /> : null}
-        <Page className={`LoggedInDetailPage ${className}`} isFullscreen={isPageFullscreen}>
+        <Page className={classNames('LoggedInDetailPage', className)} isFullscreen={isPageFullscreen}>
           {isLoading ? this.renderLoading() : null}
           {!isLoggedIn && !isLoading ? this.renderLogin() : null}
           {isLoggedIn && !isLoading ? children : null}

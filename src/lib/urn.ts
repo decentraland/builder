@@ -107,7 +107,7 @@ export function extractThirdPartyTokenId(urn: URN) {
   }
 
   const { thirdPartyCollectionId, thirdPartyTokenId } = decodedURN
-  return `${thirdPartyCollectionId}:${thirdPartyTokenId}`
+  return `${thirdPartyCollectionId ?? ''}:${thirdPartyTokenId ?? ''}`
 }
 
 // TODO: This logic is repeated in collection/util's `getCollectionType`, but being used only for items (item.urn).

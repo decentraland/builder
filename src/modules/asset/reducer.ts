@@ -87,7 +87,7 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
         }
       }
 
-      for (let assetId of Object.keys(state.data)) {
+      for (const assetId of Object.keys(state.data)) {
         const asset = newState.data[assetId]
         if (asset.assetPackId === assetPack.id) {
           delete newState.data[asset.id]

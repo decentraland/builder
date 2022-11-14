@@ -52,7 +52,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
     onDelete(collection)
   }
 
-  navigateTo = (url: string, target: string = '') => {
+  navigateTo = (url: string, target = '') => {
     const newWindow = window.open(url, target)
     if (newWindow) {
       newWindow.focus()
@@ -94,7 +94,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
             </>
           ) : null}
 
-          <CopyToClipboard text={collection.urn!}>
+          <CopyToClipboard text={collection.urn}>
             <Dropdown.Item text={t('collection_context_menu.copy_urn')} />
           </CopyToClipboard>
 

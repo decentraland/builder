@@ -50,7 +50,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   isValid = () => {
     const { project, landTiles } = this.props
     const { rotation, hover } = this.state
-    const projectParcels = getParcelOrientation(project!.layout, hover, rotation)
+    const projectParcels = getParcelOrientation(project.layout, hover, rotation)
 
     if (!hover) return false
 
@@ -60,7 +60,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   isHighlighted = (x: number, y: number) => {
     const { project } = this.props
     const { rotation, hover, placement } = this.state
-    const projectParcels = getParcelOrientation(project!.layout, hover, rotation)
+    const projectParcels = getParcelOrientation(project.layout, hover, rotation)
 
     if (!hover || placement) return false
     return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
@@ -72,7 +72,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
     if (!placement) return null
 
-    const projectParcels = getParcelOrientation(project!.layout, placement.point, placement.rotation)
+    const projectParcels = getParcelOrientation(project.layout, placement.point, placement.rotation)
     return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
   }
 
@@ -151,7 +151,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     this.props.onNoAuthorizedParcels()
   }
 
-  truncateTitle(input: string, max: number = 10) {
+  truncateTitle(input: string, max = 10) {
     if (input.length > max) {
       return input.substring(0, max) + '...'
     }
@@ -257,8 +257,8 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
                   id="deployment_modal.land.map.placement_active"
                   values={{
                     count: rows * cols,
-                    x: placement!.point.x,
-                    y: placement!.point.y
+                    x: placement.point.x,
+                    y: placement.point.y
                   }}
                 />
                 <span className="inline-action" onClick={this.handleResetPlacement}>

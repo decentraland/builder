@@ -78,10 +78,10 @@ export const getEnabledTools = createSelector<
 >(getSelectedEntityIds, getEntities, getComponents, (selectedEntityIds, entities, components) => {
   let isNFT = false
 
-  for (let entityId of selectedEntityIds) {
+  for (const entityId of selectedEntityIds) {
     const entity = entities[entityId]
     if (entity) {
-      for (let componentId of entity.components) {
+      for (const componentId of entity.components) {
         if (components[componentId].type === ComponentType.NFTShape) {
           isNFT = true
           break

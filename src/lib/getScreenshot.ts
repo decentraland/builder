@@ -78,7 +78,7 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   }
 
   // Setup Camera
-  var camera = new TargetCamera('targetCamera', new Vector3(0, 0, 0), scene)
+  const camera = new TargetCamera('targetCamera', new Vector3(0, 0, 0), scene)
   camera.mode = Camera.ORTHOGRAPHIC_CAMERA
   camera.orthoTop = 1
   camera.orthoBottom = -1
@@ -102,17 +102,17 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   camera.attachControl(canvas, true)
 
   // Setup lights
-  var directional = new DirectionalLight('directional', new Vector3(0, 0, 1), scene)
+  const directional = new DirectionalLight('directional', new Vector3(0, 0, 1), scene)
   directional.intensity = 1
-  var top = new HemisphericLight('top', new Vector3(0, -1, 0), scene)
+  const top = new HemisphericLight('top', new Vector3(0, -1, 0), scene)
   top.intensity = 1
-  var bottom = new HemisphericLight('bottom', new Vector3(0, 1, 0), scene)
+  const bottom = new HemisphericLight('bottom', new Vector3(0, 1, 0), scene)
   bottom.intensity = 1
-  var spot = new SpotLight('spot', new Vector3(-2, 2, 2), new Vector3(2, -2, -2), Math.PI / 2, 1000, scene)
+  const spot = new SpotLight('spot', new Vector3(-2, 2, 2), new Vector3(2, -2, -2), Math.PI / 2, 1000, scene)
   spot.intensity = 1
 
   // Setup parent
-  var parent = new Mesh('parent', scene)
+  const parent = new Mesh('parent', scene)
   for (const mesh of scene.meshes) {
     if (mesh !== parent) {
       mesh.setParent(parent)
@@ -121,13 +121,13 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
 
   // Clean up
   for (const materialName of hideMaterialList) {
-    for (let material of scene.materials) {
+    for (const material of scene.materials) {
       if (material.name.toLowerCase().includes(materialName)) {
         material.alpha = 0
         scene.removeMaterial(material)
       }
     }
-    for (let texture of scene.textures) {
+    for (const texture of scene.textures) {
       if (texture.name.toLowerCase().includes(materialName)) {
         texture.dispose()
         scene.removeTexture(texture)

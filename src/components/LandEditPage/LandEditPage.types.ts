@@ -10,6 +10,5 @@ export type State = {
   description?: string
 }
 
-export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onEdit'>
 export type MapDispatch = Dispatch<EditLandRequestAction>

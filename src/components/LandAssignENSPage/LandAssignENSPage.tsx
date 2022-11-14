@@ -14,16 +14,8 @@ export default class LandAssignENSPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const {
-      ens,
-      isLoading,
-      error,
-      isWaitingTxSetContent,
-      isWaitingTxSetResolver,
-      onSetENSResolver,
-      onSetENSContent,
-      onNavigate
-    } = this.props
+    const { ens, isLoading, error, isWaitingTxSetContent, isWaitingTxSetResolver, onSetENSResolver, onSetENSContent, onNavigate } =
+      this.props
 
     return (
       <LandProviderPage>

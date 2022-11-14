@@ -44,7 +44,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
   handleRemoveFromCollection = () => {
     const { item, onRemoveFromCollection } = this.props
-    onRemoveFromCollection(item!, null)
+    onRemoveFromCollection(item, null)
   }
 
   renderPrice() {

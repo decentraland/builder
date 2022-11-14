@@ -27,7 +27,7 @@ const mapState = (state: RootState): MapStateProps => {
     isConfirmingApproveTx: loadingCollectionActions.some(action => action.type === APPROVE_COLLECTION_REQUEST),
     isAwaitingApproveTx: pendingTransactions.some(tx => tx.actionType === APPROVE_COLLECTION_SUCCESS),
     TPDeployItemsProgress: getApprovalFlowUpdateProgress(state),
-    errors: getErrors(state),
+    errors: getErrors(state)
   }
 }
 

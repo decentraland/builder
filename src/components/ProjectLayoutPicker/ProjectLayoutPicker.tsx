@@ -17,8 +17,8 @@ export default class ProjectLayoutPicker extends React.PureComponent<Props, Stat
     let hasMinError = false
 
     if (!hasEmptyFields) {
-      hasMaxError = rows! * cols! > MAX_AREA
-      hasMinError = rows! < 1 || cols! < 1
+      hasMaxError = rows * cols > MAX_AREA
+      hasMinError = rows < 1 || cols < 1
     }
 
     const newLayout: ProjectLayout = {

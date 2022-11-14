@@ -7,7 +7,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './Collec
 import CollectionManagersModal from './CollectionManagersModal'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  let { collectionId } = ownProps.metadata
+  const { collectionId } = ownProps.metadata
 
   if (!collectionId) {
     throw new Error('Invalid collection id to add managers')

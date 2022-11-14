@@ -6,7 +6,7 @@ import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { decodeURN, URNType } from 'lib/urn'
 import ItemStatus from 'components/ItemStatus'
-import { SyncStatus, WearableData } from 'modules/item/types'
+import { SyncStatus } from 'modules/item/types'
 import { getBodyShapeType } from 'modules/item/utils'
 import { getExplorerURL } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -72,7 +72,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
   render() {
     const { item, selected, status } = this.props
-    const data = item.data as WearableData
+    const data = item.data
 
     return (
       <Grid className={`CollectionItem ${styles.grid}`} columns="equal">
