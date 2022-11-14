@@ -1,13 +1,19 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { loadFile, WearableConfig } from '@dcl/builder-client'
-import { ModalNavigation } from 'decentraland-ui'
+import { loadFile, WearableCategory, WearableConfig } from '@dcl/builder-client'
+import { Icon, ModalNavigation, WearablePreview } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
-import { EngineType, getIsEmote } from 'lib/getModelData'
+import { EngineType, getIsEmote, getItemData } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
-import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
+import {
+  FileTooBigError,
+  WrongExtensionError,
+  InvalidFilesError,
+  MissingModelFileError,
+  EmoteDurationTooLongError
+} from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
 import {
   getBodyShapeType,
@@ -18,9 +24,11 @@ import {
   isImageFile,
   isModelFile,
   isModelPath,
-  MAX_FILE_SIZE
+  MAX_FILE_SIZE,
+  MAX_EMOTE_DURATION
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
+import { AnimationMetrics } from 'modules/models/types'
 import ItemImport from 'components/ItemImport'
 import { AcceptedFileProps, ModelData } from '../CreateSingleItemModal.types'
 import { Props, State } from './ImportStep.types'
@@ -100,7 +108,21 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       [modelPath]: file
     }
 
-    return this.processModel(modelPath, contents)
+    const { model, contents: proccessedContent, type } = await this.processModel(modelPath, contents)
+
+    if (type === ItemType.EMOTE) {
+      const data = await getItemData({
+        wearablePreviewController: WearablePreview.createController('wearable-preview'),
+        type,
+        model,
+        contents
+      })
+      if ((data.info as AnimationMetrics).duration > MAX_EMOTE_DURATION) {
+        throw new EmoteDurationTooLongError()
+      }
+    }
+
+    return { model, contents: proccessedContent, type }
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
@@ -223,6 +245,17 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 
+  renderError = () => {
+    const { error } = this.state
+
+    return (
+      <div className="error container">
+        <Icon name="warning sign" />
+        <div className="error message">{error}</div>
+      </div>
+    )
+  }
+
   render() {
     const { category, metadata, title, wearablePreviewComponent, isLoading, isRepresentation, onClose } = this.props
     const { error } = this.state
@@ -231,12 +264,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content className="ImportStep">
+          {error && this.renderError()}
           <ItemImport
-            error={error}
             isLoading={isLoading}
             acceptedExtensions={
               isRepresentation || metadata?.changeItemFile
-                ? isImageCategory(category!)
+                ? isImageCategory(category as WearableCategory)
                   ? IMAGE_EXTENSIONS
                   : MODEL_EXTENSIONS
                 : ITEM_EXTENSIONS
@@ -245,6 +278,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             onDropRejected={this.handleDropRejected}
           />
           {wearablePreviewComponent}
+          <WearablePreview id="wearable-preview" disableBackground disableAutoRotate />
         </Modal.Content>
       </>
     )

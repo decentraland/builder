@@ -640,7 +640,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     return (
       <ImportStep
-        category={category as WearableCategory}
+        category={category as WearableCategory | EmoteCategory}
         metadata={metadata}
         title={title}
         wearablePreviewComponent={<div className="importer-thumbnail-container">{this.renderWearablePreview()}</div>}

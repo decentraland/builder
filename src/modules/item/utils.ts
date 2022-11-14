@@ -36,6 +36,7 @@ import {
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_THUMBNAIL_FILE_SIZE = 1048576 // 1MB
 export const MAX_NFTS_PER_MINT = 50
+export const MAX_EMOTE_DURATION = 10 // seconds
 export const UNSYNCED_STATES = new Set([SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW])
 
 export function getMaxSupply(item: Item) {
