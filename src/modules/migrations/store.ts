@@ -34,7 +34,7 @@ export const migrations = {
   },
   '4': (state: RootState) => {
     const shouldMigrateProjects = !!state.project && !!state.project.data
-       return {
+    return {
       ...state,
       project: shouldMigrateProjects
         ? {
@@ -46,7 +46,7 @@ export const migrations = {
           }
         : state.project
     }
-     },
+  },
   '5': (state: RootState) => {
     for (const scene of Object.values((state && state.scene && state.scene.present && state.scene.present.data) || {})) {
       // mutation ahead

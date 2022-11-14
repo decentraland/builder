@@ -12,7 +12,7 @@ describe('when getting the catalyst item URN', () => {
   const tokenId = 'token-id'
 
   beforeEach(() => {
-    (getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
+    ;(getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
   })
 
   it('should use the supplied data to generate a valid item URN', () => {
@@ -30,7 +30,7 @@ describe('when building the third party URN', () => {
   const collectionId = 'the-collection-id'
 
   beforeEach(() => {
-    (getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
+    ;(getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
   })
 
   it('should return a valid third party collection urn', () => {

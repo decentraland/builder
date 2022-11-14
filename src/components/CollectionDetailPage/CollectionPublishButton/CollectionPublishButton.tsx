@@ -15,18 +15,8 @@ import { Props } from './CollectionPublishButton.types'
 import UnderReview from './UnderReview'
 
 const CollectionPublishButton = (props: Props) => {
-  const {
-    wallet,
-    collection,
-    items,
-    authorizations,
-    status,
-    hasPendingCuration,
-    isNewPublishWizardFlowFlagOn,
-    onPublish,
-    onPush,
-    onInit
-  } = props
+  const { wallet, collection, items, authorizations, status, hasPendingCuration, isNewPublishWizardFlowFlagOn, onPublish, onPush, onInit } =
+    props
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   useEffect(() => {

@@ -24,13 +24,9 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
   if (refRarity) {
     priceUSD = refRarity.prices!.USD
 
-    totalPrice = ethers.BigNumber.from(refRarity.prices!.MANA)
-      .mul(items.length)
-      .toString()
+    totalPrice = ethers.BigNumber.from(refRarity.prices!.MANA).mul(items.length).toString()
 
-    totalPriceUSD = ethers.BigNumber.from(priceUSD)
-      .mul(items.length)
-      .toString()
+    totalPriceUSD = ethers.BigNumber.from(priceUSD).mul(items.length).toString()
 
     hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPrice))
   }
