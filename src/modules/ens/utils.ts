@@ -30,10 +30,9 @@ export function setProfileFromEntity(entity: Entity): Entity {
 }
 
 export async function getDefaultProfileEntity() {
-  const profile = await fetch(PEER_URL + '/content/entities/profile?pointer=default' + Math.floor(Math.random() * 128 + 1)).then(resp =>
-    resp.json()
-  )
-  return profile[0]
+  const req = await fetch(`${PEER_URL}/content/entities/profile?pointer=default${Math.floor(Math.random() * 128 + 1)}`)
+  const profile = await req.json()
+  return profile[0] as Entity
 }
 
 export async function isNameAvailable(name: string): Promise<boolean> {

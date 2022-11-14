@@ -20,7 +20,6 @@ export type Step = {
 
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup'>
-export type MapDispatchProps = {}
 
 export enum DeployModalView {
   NONE = 'NONE',

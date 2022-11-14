@@ -121,13 +121,12 @@ export default class ActionField extends React.PureComponent<Props> {
   }
 
   getActionValues = (action: AssetAction | undefined) => {
-    let values: Record<string, any> = {}
+    const values: Record<string, unknown> = {}
 
     if (action) {
-      values = action.parameters.reduce<any>((values, parameter) => {
+      for (const parameter of action.parameters) {
         values[parameter.id] = parameter.type === AssetParameterType.ACTIONS ? [] : parameter.default
-        return values
-      }, {})
+      }
     }
 
     return values

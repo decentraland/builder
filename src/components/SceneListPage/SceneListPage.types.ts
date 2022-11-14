@@ -21,8 +21,6 @@ export type Props = PoolsRequestFilters & {
   onOpenModal: typeof openModal
 }
 
-export type State = {}
-
 export type MapStateProps = Pick<
   Props,
   'location' | 'pools' | 'poolGroups' | 'total' | 'totalPages' | 'page' | 'sortBy' | 'sortOrder' | 'group' | 'ethAddress' | 'isLoggedIn'

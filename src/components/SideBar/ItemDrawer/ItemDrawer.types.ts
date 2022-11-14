@@ -29,7 +29,3 @@ export type MapStateProps = Pick<
   | 'selectedEntityIds'
   | 'showOnlyAssetsWithScripts'
 >
-export type MapDispatchProps = {}
-export type MapDispatch = {}
-
-export type State = {}

@@ -4,7 +4,7 @@ import { ContentServiceScene } from 'modules/deployment/types'
 
 export const PEER_URL = config.get('PEER_URL', '')
 
-export const getCatalystContentUrl = (hash: string = '') => `${PEER_URL}/content/contents/${hash}`
+export const getCatalystContentUrl = (hash = '') => `${PEER_URL}/content/contents/${hash}`
 
 export class PeerAPI extends BaseAPI {
   fetchScene = async (x: number, y: number) => {

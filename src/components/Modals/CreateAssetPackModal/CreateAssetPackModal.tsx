@@ -155,7 +155,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
           onClose={this.handleClose}
         />
         <Modal.Content>
-          <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditorSubmit} />
+          <AssetsEditor assetPack={assetPack} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditorSubmit} />
         </Modal.Content>
       </>
     )
@@ -173,7 +173,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
         />
         <Modal.Content>
           <AssetPackEditor
-            assetPack={assetPack!}
+            assetPack={assetPack}
             onChange={this.handleAssetPackChange}
             onSubmit={this.handleAssetPackEditorSubmit}
             onReset={this.handleReset}

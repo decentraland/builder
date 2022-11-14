@@ -1,4 +1,3 @@
-import { Dispatch } from 'redux'
 import { DeploymentStatus, Deployment } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 
@@ -14,7 +13,3 @@ export type Props = {
 export type OwnProps = Pick<Props, 'projectId'>
 
 export type MapStateProps = Pick<Props, 'status' | 'project' | 'deployments'>
-
-export type MapDispatchProps = {}
-
-export type MapDispatch = Dispatch

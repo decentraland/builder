@@ -5,7 +5,6 @@ import { Props } from './ConfirmApprovalModal.types'
 import Profile from 'components/Profile'
 import './ConfirmApprovalModal.css'
 
-
 const ConfirmApprovalModal = ({ open, assignee, onConfirm, onClose }: Props) => {
   return (
     <Modal size="tiny" className="ConfirmApprovalModal" open={open}>

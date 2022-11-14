@@ -16,7 +16,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(AssetPackList)
+export default connect(mapState, mapDispatch)(AssetPackList)

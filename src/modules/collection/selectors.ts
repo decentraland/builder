@@ -71,11 +71,12 @@ export const getAuthorizedCollections = createSelector<
     switch (type) {
       case CollectionType.DECENTRALAND:
         return address && canSeeCollection(collection, address)
-      case CollectionType.THIRD_PARTY:
+      case CollectionType.THIRD_PARTY: {
         const thirdParty = getThirdPartyForCollection(thirdParties, collection)
         return address && thirdParty && isUserManagerOfThirdParty(address, thirdParty)
+      }
       default:
-        throw new Error(`Invalid collection type ${type}`)
+        throw new Error(`Invalid collection type ${type as unknown as string}`)
     }
   })
 )

@@ -32,7 +32,6 @@
   color: var(--secondary-text);
 }
 
-
 .EditPriceAndBeneficiaryModal .ui.form .price-field > .ui.button {
   position: absolute;
   top: 0;

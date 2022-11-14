@@ -99,4 +99,3 @@ export type Props = DefaultProps & {
 }
 
 export type MapStateProps = Pick<Props, 'name'>
-export type MapDispatchProps = {}

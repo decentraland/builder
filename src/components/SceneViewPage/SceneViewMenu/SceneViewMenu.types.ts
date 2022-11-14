@@ -5,8 +5,6 @@ export type Props = {
   onTryItOut: () => void
 }
 
-export type State = {}
-
 export type MapStateProps = Pick<Props, 'isLoggedIn'>
 export type MapDispatchProps = Pick<Props, 'onTryItOut'>
 export type MapDispatch = Dispatch

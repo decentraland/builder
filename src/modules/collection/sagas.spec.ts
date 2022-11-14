@@ -4,7 +4,7 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient } from '@dcl/builder-client'
-import { push, replace } from 'connected-react-router'
+import { push } from 'connected-react-router'
 import { ChainId, Network, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
@@ -78,11 +78,6 @@ import {
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
 import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
-
-jest.mock('./utils', () => ({
-  ...jest.requireActual('./utils'),
-  isTPDeployEnabled: jest.fn().mockReturnValue(true)
-}))
 
 const getCollectionMock = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
@@ -165,18 +160,18 @@ let mockBuilderClient: BuilderClient
 let mockCatalyst: CatalystClient
 
 beforeEach(() => {
-  mockBuilder = ({
+  mockBuilder = {
     saveCollection: jest.fn(),
     lockCollection: jest.fn(),
     saveTOS: jest.fn(),
     fetchApprovalData: jest.fn(),
     fetchCollectionItems: jest.fn(),
     fetchCollections: jest.fn()
-  } as unknown) as BuilderAPI
-  mockCatalyst = ({} as unknown) as CatalystClient
-  mockBuilderClient = ({
+  } as unknown as BuilderAPI
+  mockCatalyst = {} as unknown as CatalystClient
+  mockBuilderClient = {
     getThirdParty: jest.fn()
-  } as unknown) as BuilderClient
+  } as unknown as BuilderClient
 })
 
 describe('when executing the approval flow', () => {
@@ -189,7 +184,7 @@ describe('when executing the approval flow', () => {
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.ERROR,
             collection,
-            error: `The collection can't be approved because it's not published`
+            error: "The collection can't be approved because it's not published"
           } as ApprovalFlowModalMetadata)
         )
         .run({ silenceTimeout: true })
@@ -1246,7 +1241,7 @@ describe('when executing the TP approval flow', () => {
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.ERROR,
             collection,
-            error: `The collection can't be approved because it's not published`
+            error: "The collection can't be approved because it's not published"
           } as ApprovalFlowModalMetadata)
         )
         .run({ silenceTimeout: true })
@@ -1469,7 +1464,7 @@ describe('when executing the TP approval flow', () => {
         beforeEach(() => {
           merkleTree = generateTree(Object.values(contentHashes))
           parsedSignature = ethers.utils.splitSignature(cheque.signature)
-          ;((mockBuilderClient.getThirdParty as unknown) as jest.Mock<BuilderClient['getThirdParty']>)
+          ;(mockBuilderClient.getThirdParty as unknown as jest.Mock<BuilderClient['getThirdParty']>)
             .mockResolvedValueOnce({ root: '0x' } as never)
             .mockResolvedValueOnce({ root: merkleTree.merkleRoot } as never)
           itemCurations = itemsToApprove.map(item => getItemCurationMock(item))
@@ -1809,7 +1804,7 @@ describe('when handling the fetch of collections', () => {
       }
     })
 
-    it('should put the success action with the data without pagination information ', () => {
+    it('should put the success action with the data without pagination information', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
         .provide([
           [select(getWalletItems), []],

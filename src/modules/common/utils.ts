@@ -7,7 +7,7 @@ export const takeLatestCancellable = <A extends Action>(
   saga: (...args: any[]) => any,
   ...args: any[]
 ): ForkEffect<never> =>
-  fork(function*() {
+  fork(function* () {
     let lastTask: Task | undefined
     while (true) {
       const action: A = yield take([initializer, cancellable] as ActionPattern<Action<A>>)

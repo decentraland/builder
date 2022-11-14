@@ -18,6 +18,5 @@ export type State = {
   description: string
 }
 
-export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onCreateProject'>
 export type MapDispatch = Dispatch<CreateProjectFromTemplateAction | CallHistoryMethodAction>

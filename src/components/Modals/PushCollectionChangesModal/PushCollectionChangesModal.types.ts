@@ -13,6 +13,6 @@ export type PushCollectionChangesModalMetadata = {
 }
 
 export type MapStateProps = Pick<Props, 'isLoading'>
-export type MapDispatchProps = { onProceed: (collectionId: string) => void }
+export type MapDispatchProps = Pick<Props, 'onProceed'>
 export type MapDispatch = Dispatch<PushCollectionCurationRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

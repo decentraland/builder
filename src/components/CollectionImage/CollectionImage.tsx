@@ -2,7 +2,6 @@ import classNames from 'classnames'
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { isTPCollection } from 'modules/collection/utils'
 import { Item } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionImage.types'
@@ -29,12 +28,11 @@ export default class CollectionImage extends React.PureComponent<Props> {
   }
 
   fetchItemsIfNeeded(itemCount: number) {
-    const { collectionId, items, onFetchCollectionItems, collection } = this.props
+    const { collectionId, items, onFetchCollectionThumbnailsRequest, collection } = this.props
     const needsToFetchMoreImages =
       (itemCount >= MAX_IMAGES_TO_SHOW && items.length < MAX_IMAGES_TO_SHOW) || (itemCount < MAX_IMAGES_TO_SHOW && items.length < itemCount)
     if (collection && needsToFetchMoreImages) {
-      // Fetch all the collection items to show the images and get the entity data for standard collections. For TP is not necessary, just fetch the 4 images needed for the component
-      onFetchCollectionItems(collectionId, { page: 1, limit: isTPCollection(collection) ? MAX_IMAGES_TO_SHOW : itemCount })
+      onFetchCollectionThumbnailsRequest(collectionId)
     }
   }
 

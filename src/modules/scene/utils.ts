@@ -43,7 +43,7 @@ export function cloneEntities(scene: Scene) {
 export function filterEntitiesWithComponent(componentId: string, entities: Scene['entities']): Scene['entities'] {
   const newEntities: Scene['entities'] = {}
 
-  for (let id in entities) {
+  for (const id in entities) {
     const entity = entities[id]
     const index = entity.components.indexOf(componentId)
 
@@ -70,7 +70,7 @@ export function getExceededMetrics(metrics: ModelMetrics, limits: ModelMetrics) 
   return metricsExceeded
 }
 
-export function snapToGrid(position: Vector3, grid: number = 0.5): Vector3 {
+export function snapToGrid(position: Vector3, grid = 0.5): Vector3 {
   return {
     x: Math.round(position.x / grid) * grid,
     y: Math.round(position.y / grid) * grid,
@@ -107,7 +107,7 @@ export function* getSceneByProjectId(
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const pools: ReturnType<typeof getPools> = yield select(getPools)
   const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-  let project = projects[projectId] || pools[projectId]
+  const project = projects[projectId] || pools[projectId]
   let scene = project && scenes[project.sceneId]
 
   if (!scene) {
@@ -129,7 +129,7 @@ export function getEntityName(scene: Scene, entityComponents: EntityDefinition['
   const takenNames = new Set<string>()
   const components = entityComponents.map(id => scene.components[id])
 
-  for (let entityId in scene.entities) {
+  for (const entityId in scene.entities) {
     const entity = scene.entities[entityId]
     takenNames.add(entity.name)
   }
@@ -140,7 +140,7 @@ export function getUniqueName(components: AnyComponent[], takenNames: Readonly<S
   let attempts = 1
   let rawName = 'entity'
 
-  for (let component of components) {
+  for (const component of components) {
     try {
       if (component.type === ComponentType.GLTFShape) {
         const asset = assets[(component as ComponentDefinition<ComponentType.GLTFShape>).data.assetId]
@@ -207,7 +207,7 @@ export function getGLTFShapeName(component: ComponentDefinition<ComponentType.GL
 export function getDefaultValues(entityName: string, parameters: AssetParameter[], assetsByEntityName: Record<string, Asset>) {
   const out: AssetParameterValues = {}
 
-  for (let parameter of parameters) {
+  for (const parameter of parameters) {
     const hasDefault = parameter.default !== undefined && parameter.default !== ''
 
     if (parameter.type === AssetParameterType.ACTIONS) {
@@ -251,7 +251,7 @@ export function getDefaultValues(entityName: string, parameters: AssetParameter[
  * @param newName The entity name that will replace `oldName`
  */
 export function renameEntity(parameters: AssetParameter[], values: AssetParameterValues, oldName: string, newName: string) {
-  for (let parameter of parameters) {
+  for (const parameter of parameters) {
     if (parameter.type === AssetParameterType.ACTIONS) {
       const value = values[parameter.id] as AssetActionValue[] | undefined
       if (value) {
@@ -281,7 +281,7 @@ export function renameEntity(parameters: AssetParameter[], values: AssetParamete
  * @param oldName The entity name
  */
 export function removeEntityReferences(parameters: AssetParameter[], values: AssetParameterValues, entityName: string) {
-  for (let parameter of parameters) {
+  for (const parameter of parameters) {
     if (parameter.type === AssetParameterType.ACTIONS) {
       const value = values[parameter.id] as AssetActionValue[] | undefined
       if (value) {

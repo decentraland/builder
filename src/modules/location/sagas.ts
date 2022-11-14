@@ -62,7 +62,7 @@ export function* handleRedirectToRequest(action: RedirectToRequestAction) {
     const redirectTo: RedirectTo = JSON.parse(decodeURIComponent(encodedRedirectTo))
 
     switch (redirectTo.type) {
-      case RedirectToTypes.COLLECTION_DETAIL_BY_CONTRACT_ADDRESS:
+      case RedirectToTypes.COLLECTION_DETAIL_BY_CONTRACT_ADDRESS: {
         const { success, failure }: { success?: FetchCollectionsSuccessAction; failure?: FetchCollectionsFailureAction } = yield race({
           success: take(FETCH_COLLECTIONS_SUCCESS),
           failure: take(FETCH_COLLECTIONS_FAILURE)
@@ -89,8 +89,9 @@ export function* handleRedirectToRequest(action: RedirectToRequestAction) {
           yield fail(`Could not get collections. ${failure.payload.error}`)
         }
         break
+      }
       default:
-        yield fail(`Invalid redirect to type "${redirectTo.type}"`)
+        yield fail(`Invalid redirect to type "${redirectTo.type as unknown as string}"`)
     }
   } catch (error) {
     yield fail(error.message)

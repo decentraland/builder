@@ -19,9 +19,9 @@ import { buildCollectionNewAssigneePostBody } from './utils'
 
 const mockErrorMessage = 'Some Error'
 
-const mockBuilder = ({
+const mockBuilder = {
   createCollectionNewAssigneeForumPost: jest.fn()
-} as any) as BuilderAPI
+} as any as BuilderAPI
 
 afterEach(() => {
   jest.clearAllMocks()

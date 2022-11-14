@@ -21,7 +21,4 @@ const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onExport: (project: Project) => dispatch(exportProjectRequest(project))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ExportModal)
+export default connect(mapState, mapDispatch)(ExportModal)

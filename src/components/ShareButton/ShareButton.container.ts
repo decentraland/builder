@@ -17,7 +17,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ShareButton)
+export default connect(mapState, mapDispatch)(ShareButton)

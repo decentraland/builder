@@ -1,6 +1,6 @@
 import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
 import { RootState } from 'modules/common/types'
-import { getIsMaintenanceEnabled, getIsNewPublishWizardEnabled } from './selectors'
+import { getIsMaintenanceEnabled } from './selectors'
 
 jest.mock('decentraland-dapps/dist/modules/features/selectors')
 

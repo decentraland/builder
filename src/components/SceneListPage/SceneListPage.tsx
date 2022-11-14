@@ -21,12 +21,12 @@ import Navbar from 'components/Navbar'
 import Back from 'components/Back'
 import { PoolsRequestFilters, SortBy } from 'modules/pool/types'
 
-import { Props, State, filterAttributes } from './SceneListPage.types'
+import { Props, filterAttributes } from './SceneListPage.types'
 import PoolCard from './PoolCard'
 
 import './SceneListPage.css'
 
-export default class SceneListPage extends React.PureComponent<Props, State> {
+export default class SceneListPage extends React.PureComponent<Props> {
   componentDidMount() {
     const { location } = this.props
     const filters = this.getFilters()

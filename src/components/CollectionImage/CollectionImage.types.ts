@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { fetchCollectionItemsRequest, FetchCollectionItemsRequestAction } from 'modules/item/actions'
+import { fetchCollectionThumbnailsRequest, FetchCollectionThumbnailsRequestAction } from 'modules/item/actions'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 
@@ -10,10 +10,10 @@ export type Props = {
   items: Item[]
   itemCount: number | undefined
   isLoading: boolean
-  onFetchCollectionItems: typeof fetchCollectionItemsRequest
+  onFetchCollectionThumbnailsRequest: typeof fetchCollectionThumbnailsRequest
 }
 
 export type MapStateProps = Pick<Props, 'collection' | 'items' | 'itemCount' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onFetchCollectionItems'>
-export type MapDispatch = Dispatch<FetchCollectionItemsRequestAction>
+export type MapDispatchProps = Pick<Props, 'onFetchCollectionThumbnailsRequest'>
+export type MapDispatch = Dispatch<FetchCollectionThumbnailsRequestAction>
 export type OwnProps = Pick<Props, 'collectionId'>

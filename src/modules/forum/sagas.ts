@@ -54,7 +54,7 @@ export function* forumSaga(builder: BuilderAPI) {
           yield put(
             createCollectionForumPostRequest(collection, {
               ...forumPost,
-              title: `${forumPost.title} ${shorten(collection.contractAddress!)}`
+              title: `${forumPost.title!} ${shorten(collection.contractAddress!)}`
             })
           )
           return

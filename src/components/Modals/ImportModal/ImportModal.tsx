@@ -67,7 +67,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
       <>
         {acceptedProjects.length === 1 && <div className="single-project">{this.renderProject(acceptedProjects[0])}</div>}
         {acceptedProjects.length > 1 && (
-          <div className="multiple-projects">{(acceptedProjects as ImportedFile[]).map(saved => this.renderProject(saved))} </div>
+          <div className="multiple-projects">{acceptedProjects.map(saved => this.renderProject(saved))} </div>
         )}
       </>
     )
@@ -91,9 +91,9 @@ export default class ImportModal extends React.PureComponent<Props, State> {
   handleDropAccepted = async (acceptedFiles: File[]) => {
     const { acceptedProjects } = this.state
 
-    let projects = []
+    const projects = []
 
-    for (let file of acceptedFiles) {
+    for (const file of acceptedFiles) {
       try {
         const zip: JSZip = await JSZip.loadAsync(file)
         const contentRaw = zip.file(EXPORT_PATH.MANIFEST_FILE)
@@ -117,7 +117,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         migrated.project.createdAt = new Date().toISOString()
         migrated.project.updatedAt = new Date().toISOString()
 
-        let importedFile: ImportedFile = {
+        const importedFile: ImportedFile = {
           id: uuidv4(),
           fileName: file.name,
           manifest: {

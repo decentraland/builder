@@ -5,7 +5,4 @@ export type Props = ModalProps & {
   shortcuts: ShortcutLayout
 }
 
-export type State = {}
-
 export type MapStateProps = Pick<Props, 'shortcuts'>
-export type MapDispatchProps = {}
