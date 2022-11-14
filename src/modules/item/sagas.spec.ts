@@ -1681,13 +1681,11 @@ describe('when handling the failure of setting token items id', () => {
       id: 'aCollection'
     } as Collection
 
-    const item = { ...mockedItem }
-
-    items = [item]
+    items = [{ ...mockedItem }]
   })
 
   describe('when error code is 401', () => {
-    it('should retry', () => {
+    it('should put the setItemsTokenIdRequest action to retry the request', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [delay(5000), void 0],
@@ -1700,7 +1698,7 @@ describe('when handling the failure of setting token items id', () => {
     })
   })
   describe('when error code is not 401', () => {
-    it('should display a toast message', () => {
+    it('should display a toast message saying that the publishing failed', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [delay(5000), void 0],
