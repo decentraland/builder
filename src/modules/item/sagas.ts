@@ -10,6 +10,9 @@ import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { closeAllModals, closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
+import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
@@ -123,7 +126,6 @@ import {
   MAX_THUMBNAIL_FILE_SIZE
 } from './utils'
 import { ItemPaginationData } from './reducer'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
 
@@ -549,19 +551,31 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const { items: newItems }: { items: Item[] } = yield call(() => legacyBuilder.publishStandardCollection(collection.id))
       yield put(setItemsTokenIdSuccess(newItems))
     } catch (error) {
-      yield put(setItemsTokenIdFailure(collection, items, error.message))
+      yield put(setItemsTokenIdFailure(collection, items, error.message, error.code))
     }
   }
 
   function* handleRetrySetItemsTokenId(action: SetItemsTokenIdFailureAction) {
-    const { collection } = action.payload
+    const { collection, error, errorCode } = action.payload
 
-    yield delay(5000) // wait five seconds
+    if (errorCode === 401) {
+      yield delay(5000) // wait five seconds
 
-    // Refresh data from state
-    const newCollection: Collection = yield select(state => getCollection(state, collection.id))
-    const newItems: Item[] = yield select(state => getCollectionItems(state, collection.id))
-    yield put(setItemsTokenIdRequest(newCollection, newItems))
+      // Refresh data from state
+      const newCollection: Collection = yield select(getCollection, collection.id)
+      const newItems: Item[] = yield select(getCollectionItems, collection.id)
+      yield put(setItemsTokenIdRequest(newCollection, newItems))
+    } else {
+      yield put(
+        showToast({
+          type: ToastType.ERROR,
+          title: t('publish_wizard_collection_modal.publish_failed'),
+          body: error,
+          timeout: 6000,
+          closable: true
+        })
+      )
+    }
   }
 
   function* fetchItemEntities() {

@@ -1298,6 +1298,7 @@
     "title_review_content_policy": "Review content policy",
     "title_pay_publication_fee": "Pay the publication fee",
     "title_congratulations": "Congratulations!",
+    "publish_failed": "Failed to publish",
     "confirm_collection_name_step": {
       "title": "Confirm collection name",
       "subtitle": "The name of the collection can't be modified after sending it for review.",

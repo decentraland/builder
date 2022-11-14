@@ -1309,6 +1309,7 @@
     "title_review_content_policy": "Revisar la política de contenido",
     "title_pay_publication_fee": "Pagar la tarifa de publicación",
     "title_congratulations": "Felicidades!",
+    "publish_failed": "Error al publicar",
     "confirm_collection_name_step": {
       "title": "Confirmar nombre de la colección",
       "subtitle": "El nombre de la colección no podra ser modificado despues de ser enviado para su revisión.",
