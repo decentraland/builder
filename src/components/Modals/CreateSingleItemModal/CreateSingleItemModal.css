@@ -1,4 +1,9 @@
-.ui.modal.CreateSingleItemModal > .content {
+/* This CSS is used to hide the CreateSingleItem modal when setting the price for an Item */
+.CreateSingleItemModalContainer > .ui.page.modals:not(:only-child):nth-child(1) {
+  visibility: hidden !important;
+}
+
+.CreateSingleItemModal.ui.modal > .content {
   margin-bottom: 32px;
 }
 

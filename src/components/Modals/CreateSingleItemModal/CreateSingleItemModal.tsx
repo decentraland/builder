@@ -69,6 +69,7 @@ import './CreateSingleItemModal.css'
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
+  modalContainer = React.createRef<HTMLDivElement>()
 
   getInitialState() {
     const { metadata } = this.props
@@ -973,6 +974,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         item={item!}
         itemSortedContents={itemSortedContents}
         onClose={onClose}
+        mountNode={this.modalContainer.current ?? undefined}
         // If the Set Price step is skipped, the item must be saved
         onSkip={this.handleSubmit}
       />
@@ -997,9 +999,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   render() {
     const { name, onClose } = this.props
     return (
-      <Modal name={name} onClose={onClose}>
-        {this.renderView()}
-      </Modal>
+      <div ref={this.modalContainer} className="CreateSingleItemModalContainer">
+        <Modal name={name} onClose={onClose} mountNode={this.modalContainer.current ?? undefined}>
+          {this.renderView()}
+        </Modal>
+      </div>
     )
   }
 }
