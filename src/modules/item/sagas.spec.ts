@@ -5,7 +5,7 @@ import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { ethers } from 'ethers'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
-import { call, select, take, race } from 'redux-saga/effects'
+import { call, select, take, race, delay } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -57,14 +57,18 @@ import {
   fetchRaritiesRequest,
   fetchRaritiesSuccess,
   fetchRaritiesFailure,
-  setCollection
+  setCollection,
+  setItemsTokenIdFailure,
+  setItemsTokenIdRequest
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import { BuiltFile, Currency, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE } from './utils'
-import { getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
+import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
+import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
+import { ToastType } from 'decentraland-ui'
 
 const blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -1668,6 +1672,46 @@ describe('when handling the setCollection action', () => {
           )
         )
         .dispatch(setCollection(item, collection.id))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the failure of setting token items id', () => {
+  let collection: Collection
+  let items: Item[]
+
+  beforeEach(() => {
+    collection = {
+      id: 'aCollection'
+    } as Collection
+
+    items = [{ ...mockedItem }]
+  })
+
+  describe('when error code is 401', () => {
+    it('should put the setItemsTokenIdRequest action to retry the request', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [delay(5000), void 0],
+          [select(getCollection, collection.id), collection],
+          [select(getCollectionItems, collection.id), items]
+        ])
+        .put(setItemsTokenIdRequest(collection, items))
+        .dispatch(setItemsTokenIdFailure(collection, items, 'error message', 401))
+        .run({ silenceTimeout: true })
+    })
+  })
+  describe('when error code is not 401', () => {
+    it('should display a toast message saying that the publishing failed', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [delay(5000), void 0],
+          [select(getCollection, collection.id), collection],
+          [select(getCollectionItems, collection.id), items]
+        ])
+        .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
+        .dispatch(setItemsTokenIdFailure(collection, items, 'error message', 500))
         .run({ silenceTimeout: true })
     })
   })
