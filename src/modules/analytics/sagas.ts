@@ -42,6 +42,8 @@ import {
   SaveAssetPackFailureAction,
   DeleteAssetPackFailureAction
 } from 'modules/assetPack/actions'
+import { LandTile, Rental } from 'modules/land/types'
+import { getLandTiles, getRentals } from 'modules/land/selectors'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
 
@@ -151,12 +153,20 @@ function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
   track('[Success] Deploy to LAND pool', { project_id: project.id, eth_address: ethAddress })
 }
 
-function* handleDeployToLandSuccess(_: DeployToLandSuccessAction) {
+function* handleDeployToLandSuccess(action: DeployToLandSuccessAction) {
+  const {
+    deployment: { placement }
+  } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
   const ethAddress: string = yield select(getAddress)
+  const rentals: Rental[] = yield select(getRentals)
+  const landTiles: Record<string, LandTile> = yield select(getLandTiles)
+  const landToDeploy = landTiles[`${placement.point.x},${placement.point.y}`]
+  const isRented =
+    landToDeploy && rentals.some(rental => rental.tokenId === landToDeploy.land.tokenId && rental.type === landToDeploy.land.type)
   // Do not change this event name format
-  track('[Success] Deploy to LAND', { project_id: project.id, eth_address: ethAddress })
+  track('[Success] Deploy to LAND', { project_id: project.id, eth_address: ethAddress, isRented })
 }
 
 function* handleClearDeploymentSuccess(_: ClearDeploymentSuccessAction) {
