@@ -164,7 +164,7 @@ function* handleDeployToLandSuccess(action: DeployToLandSuccessAction) {
   const landTiles: Record<string, LandTile> = yield select(getLandTiles)
   const landToDeploy = landTiles[`${placement.point.x},${placement.point.y}`]
   const isRented =
-    landToDeploy && !!rentals.find(rental => rental.tokenId === landToDeploy.land.tokenId && rental.type === landToDeploy.land.type)
+    landToDeploy && rentals.some(rental => rental.tokenId === landToDeploy.land.tokenId && rental.type === landToDeploy.land.type)
   // Do not change this event name format
   track('[Success] Deploy to LAND', { project_id: project.id, eth_address: ethAddress, isRented })
 }
