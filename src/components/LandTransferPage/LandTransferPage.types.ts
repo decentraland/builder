@@ -10,6 +10,5 @@ export type State = {
   isValid: boolean
 }
 
-export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onTransfer'>
 export type MapDispatch = Dispatch<TransferLandRequestAction>

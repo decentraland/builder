@@ -65,10 +65,7 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
     // remove source maps
     if (text.includes(SOURCE_MAPS_SEPARATOR)) {
       const padding = text.trim().endsWith(';') ? 3 : 2
-      const parts = text
-        .trim()
-        .slice(0, -padding)
-        .split(SOURCE_MAPS_SEPARATOR)
+      const parts = text.trim().slice(0, -padding).split(SOURCE_MAPS_SEPARATOR)
       text = parts.shift()! + text.slice(-padding)
     }
 
@@ -78,7 +75,7 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
      * Into this:
      * define("namespace/myModule")
      */
-    text = text.replace(/define\(\\?"([\w]*)/g, (match, moduleName) => {
+    text = text.replace(/define\(\\?"([\w]*)/g, (match, moduleName: string) => {
       let code = match.slice(0, -moduleName.length) // remove previous module name
       code += `${namespace}/${moduleName}` // add namespaced module name
       return code
@@ -91,9 +88,9 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
      * ["require", "exports", "namespace/myDependency"]
      */
     text = text.replace(/\[\\?"require\\?", \\?"exports\\?", ([\w|\\|/|"|,|\s|@]*)/g, (match, dependencies) => {
-      let code = match.slice(0, -dependencies.length) // remove previous dependencies
-      const newDependencies = dependencies.replace(/\\?"(\w.*?)\\?"/g, `\\"${namespace}/$1\\"`) // adds the namespace to each dependency
-      return code + newDependencies
+      const code = match.slice(0, -dependencies.length) // remove previous dependencies
+      const newDependencies: string = dependencies.replace(/\\?"(\w.*?)\\?"/g, `\\"${namespace}/$1\\"`) // adds the namespace to each dependency
+      return `${code}${newDependencies}`
     })
 
     /** Namespace mappings

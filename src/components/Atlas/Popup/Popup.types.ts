@@ -11,6 +11,5 @@ export type Props = {
 }
 
 export type MapStateProps = Pick<Props, 'deployments'>
-export type MapDispatchProps = {}
 export type MapDispatch = Dispatch
 export type OwnProps = Pick<Props, 'x' | 'y' | 'visible' | 'land'>

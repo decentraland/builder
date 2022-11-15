@@ -9,7 +9,7 @@ export type CollectedProps = {
   asset: Asset | null
 }
 
-export const collect: DragLayerCollector<{}, CollectedProps> = monitor => {
+export const collect: DragLayerCollector<Record<string, unknown>, CollectedProps> = monitor => {
   const item: AssetCardDragObject | null = monitor.getItem()
   return {
     currentOffset: monitor.getClientOffset(),

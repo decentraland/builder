@@ -23,6 +23,7 @@ export const previewTarget: DropTargetSpec<Props> = {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const collect: DropTargetCollector<CollectedProps> = (connect, monitor) => {
   return {

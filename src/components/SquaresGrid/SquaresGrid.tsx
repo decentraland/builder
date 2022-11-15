@@ -16,7 +16,7 @@ export default class SquaresGrid extends React.PureComponent<Props> {
     this.props.onClick()
   }
 
-  times(count: number, callback: (index: number) => any) {
+  times(count: number, callback: (index: number) => React.ReactChild) {
     return new Array(count).fill(0).map((_, index) => callback(index))
   }
 

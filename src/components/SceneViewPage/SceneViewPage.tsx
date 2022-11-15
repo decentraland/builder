@@ -10,11 +10,11 @@ import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 import Back from 'components/Back'
 import { PreviewType } from 'modules/editor/types'
-import { Props, State } from './SceneViewPage.types'
+import { Props } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
 
-export default class SceneViewPage extends React.PureComponent<Props, State> {
+export default class SceneViewPage extends React.PureComponent<Props> {
   componentDidMount() {
     const { match, onLoadProject } = this.props
     if (match.params.projectId) {

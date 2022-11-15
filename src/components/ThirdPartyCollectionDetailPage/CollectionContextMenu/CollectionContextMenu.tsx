@@ -46,7 +46,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
     onOpenModal('CreateAndEditMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
   }
 
-  navigateTo = (url: string, target: string = '') => {
+  navigateTo = (url: string, target = '') => {
     const newWindow = window.open(url, target)
     if (newWindow) {
       newWindow.focus()

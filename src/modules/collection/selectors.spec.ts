@@ -202,7 +202,7 @@ describe('when getting status by item id', () => {
         }
       }
     }
-    expect(getStatusByCollectionId((mockState as unknown) as RootState)).toEqual({
+    expect(getStatusByCollectionId(mockState as unknown as RootState)).toEqual({
       '0': SyncStatus.UNSYNCED,
       '1': SyncStatus.UNDER_REVIEW
     })
@@ -439,14 +439,14 @@ describe('when getting the items count by collection', () => {
         contractAddress: 'anotherAddress'
       } as Collection
     ]
-    mockState = ({
+    mockState = {
       collection: {
         data: {
           '0': collections[0],
           '1': collections[1]
         }
       }
-    } as unknown) as RootState
+    } as unknown as RootState
   })
 
   describe('and it has the itemCount field defined', () => {
@@ -477,7 +477,7 @@ describe('when getting collections paginated', () => {
         contractAddress: 'anotherAddress'
       } as Collection
     ]
-    mockState = ({
+    mockState = {
       collection: {
         data: {
           '0': collections[0],
@@ -491,7 +491,7 @@ describe('when getting collections paginated', () => {
           limit: 1
         }
       }
-    } as unknown) as RootState
+    } as unknown as RootState
   })
 
   describe('and it has the pageSize is not specified', () => {

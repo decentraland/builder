@@ -11,7 +11,7 @@ const RarityBadge = ({ className, rarity, size, withTooltip }: Props) => {
     <div
       className={classnames([styles.badge, styles[size], className])}
       style={{
-        backgroundColor: Rarity.getColor((rarity as unknown) as Rarity)
+        backgroundColor: Rarity.getColor(rarity as unknown as Rarity)
       }}
       title={!withTooltip ? t(`rarity_description.${rarity}`) : ''}
     >

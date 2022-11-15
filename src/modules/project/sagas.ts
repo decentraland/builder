@@ -209,7 +209,7 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleImportProject(action: ImportProjectAction) {
     const { projects } = action.payload
 
-    for (let saved of projects) {
+    for (const saved of projects) {
       if (saved.scene && saved.project) {
         yield all([put(createScene(saved.scene)), put(createProject({ ...saved.project, ethAddress: yield select(getAddress) }))])
       }
@@ -236,7 +236,7 @@ export function* projectSaga(builder: BuilderAPI) {
       const projects: Project[] = yield call(() => builder.fetchProjects())
       const record: ModelById<Project> = {}
 
-      for (let project of projects) {
+      for (const project of projects) {
         record[project.id] = project
       }
 

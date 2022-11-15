@@ -74,7 +74,7 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
                   <Checkbox checked={contentPolicyFirstConditionChecked} onChange={handleOnContentPolicyFirstConditionChecked} />
                   <span>
                     {t('publish_wizard_collection_modal.review_content_policy_step.content_policy_first_condition', {
-                      collection_name: <b>{collection!.name}</b>
+                      collection_name: <b>{collection.name}</b>
                     })}
                   </span>
                 </div>

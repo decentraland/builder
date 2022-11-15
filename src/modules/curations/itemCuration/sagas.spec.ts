@@ -23,10 +23,10 @@ const mockCollectionId = 'collectionId'
 const mockItemId = 'itemId'
 const mockErrorMessage = 'Some Error'
 
-const mockBuilder = ({
+const mockBuilder = {
   fetchItemCuration: jest.fn(),
   fetchItemCurations: jest.fn()
-} as any) as BuilderAPI
+} as any as BuilderAPI
 
 afterEach(() => {
   jest.clearAllMocks()

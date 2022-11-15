@@ -32,8 +32,6 @@ export type Props = {
   onBack: () => void
 }
 
-export type State = {}
-
 export type MapStateProps = Pick<
   Props,
   'isPreviewing' | 'isFetching' | 'isLoggedIn' | 'isReady' | 'currentProject' | 'currentPool' | 'currentScene' | 'currentAuthor'

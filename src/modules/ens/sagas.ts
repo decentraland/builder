@@ -101,7 +101,7 @@ export function* ensSaga(builderClient: BuilderClient) {
       const [x, y] = getCenter(getSelection(land))
 
       const { ipfsHash, contentHash }: LandHashes = yield call(
-        [builderClient, builderClient.createLandRedirectionFile],
+        [builderClient, 'createLandRedirectionFile'],
         { x, y },
         getCurrentLocale().locale
       )
@@ -183,7 +183,7 @@ export function* ensSaga(builderClient: BuilderClient) {
         const [x, y] = getCenter(getSelection(land))
 
         const { contentHash }: LandHashes = yield call(
-          [builderClient, builderClient.createLandRedirectionFile],
+          [builderClient, 'createLandRedirectionFile'],
           {
             x,
             y
@@ -233,9 +233,7 @@ export function* ensSaga(builderClient: BuilderClient) {
       const lands: Land[] = yield select(getLands)
       const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
       const coordsWithHashesList: (LandCoords & LandHashes)[] =
-        coordsList.length > 0
-          ? yield call([builderClient, builderClient.getLandRedirectionHashes], coordsList, getCurrentLocale().locale)
-          : []
+        coordsList.length > 0 ? yield call([builderClient, 'getLandRedirectionHashes'], coordsList, getCurrentLocale().locale) : []
 
       const landHashes: { id: string; hash: string }[] = []
 
@@ -262,7 +260,7 @@ export function* ensSaga(builderClient: BuilderClient) {
             const name = data
             const subdomain = `${data.toLowerCase()}.dcl.eth`
             let landId: string | undefined = undefined
-            let content: string = ''
+            let content = ''
 
             const nodehash = namehash(subdomain)
             const resolverAddress: string = await ensContract.resolver(nodehash)

@@ -10,6 +10,5 @@ export type Props = {
   onNavigate: (path: string) => void
 }
 
-export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction>

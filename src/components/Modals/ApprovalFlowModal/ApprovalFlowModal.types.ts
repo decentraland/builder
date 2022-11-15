@@ -41,7 +41,7 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
   ? { items: Item[]; collection: Collection; tree: MerkleDistributorInfo; hashes: Record<string, string> }
   : V extends ApprovalFlowModalView.ERROR
   ? { error: string }
-  : {})
+  : Record<string, unknown>)
 
 export type Props = ModalProps & {
   onRescueItems: typeof rescueItemsRequest

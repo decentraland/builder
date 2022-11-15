@@ -91,6 +91,7 @@ import {
 } from 'modules/curations/collectionCuration/actions'
 import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
 }
@@ -109,6 +110,7 @@ export function trimAsset(action: AddItemAction | DropItemAction | SetGroundActi
 
 function trimProject(action: AnyAction) {
   if (!action.payload.project) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return action.payload
   }
   const { id, layout } = action.payload.project

@@ -25,7 +25,7 @@ export const getDeploymentsByProjectId = createSelector<
   Record<string, Project>,
   Record<string, Deployment[]>
 >(getData, getUserProjects, (deployments, projects) => {
-  let out: Record<string, Deployment[]> = {}
+  const out: Record<string, Deployment[]> = {}
   for (const deployment of Object.values(deployments)) {
     const project = deployment.projectId && deployment.projectId in projects ? projects[deployment.projectId] : null
     if (project) {

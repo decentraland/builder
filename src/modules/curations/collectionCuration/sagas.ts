@@ -51,7 +51,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
 
   function* handleFetchCurationsRequest() {
     try {
-      const curations: CollectionCuration[] = yield call([builder, builder.fetchCurations])
+      const curations: CollectionCuration[] = yield call([builder, 'fetchCurations'])
       yield put(fetchCollectionCurationsSuccess(curations))
     } catch (error) {
       yield put(fetchCollectionCurationsFailure(error.message))
@@ -61,7 +61,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
   function* handleFetchCurationRequest(action: FetchCollectionCurationRequestAction) {
     try {
       const { collectionId } = action.payload
-      const curation: CollectionCuration | undefined = yield call([builder, builder.fetchCuration], collectionId)
+      const curation: CollectionCuration | undefined = yield call([builder, 'fetchCuration'], collectionId)
       yield put(fetchCollectionCurationSuccess(collectionId, curation))
     } catch (error) {
       yield put(fetchCollectionCurationFailure(error.message))
@@ -72,7 +72,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
     const { collectionId } = action.payload
 
     try {
-      yield call([builder, builder.pushCuration], collectionId)
+      yield call([builder, 'pushCuration'], collectionId)
       yield put(pushCollectionCurationSuccess())
       yield put(fetchCollectionCurationRequest(collectionId))
     } catch (error) {
@@ -111,9 +111,9 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
     try {
       let updatedCuration: CollectionCuration
       if (!curation) {
-        updatedCuration = yield call([builder, builder.pushCuration], collectionId, assignee)
+        updatedCuration = yield call([builder, 'pushCuration'], collectionId, assignee)
       } else {
-        updatedCuration = yield call([builder, builder.updateCuration], collectionId, { assignee })
+        updatedCuration = yield call([builder, 'updateCuration'], collectionId, { assignee })
       }
       yield put(setCollectionCurationAssigneeSuccess(collectionId, updatedCuration))
       yield put(

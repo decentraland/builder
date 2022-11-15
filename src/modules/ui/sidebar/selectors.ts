@@ -104,7 +104,7 @@ export const getSideBarCategories = createSelector<
       }
 
       if (disabledAssets.includes(asset.id)) {
-        let newAsset = { ...asset }
+        const newAsset = { ...asset }
         newAsset.isDisabled = true
         categories[asset.category].assets.push(newAsset)
       } else {

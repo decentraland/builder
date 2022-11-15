@@ -7,6 +7,5 @@ export type Props = ModalProps & {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onConnect'>
 export type MapDispatch = Dispatch<LoginRequestAction>

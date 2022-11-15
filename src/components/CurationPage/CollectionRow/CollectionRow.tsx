@@ -19,7 +19,7 @@ import './CollectionRow.css'
 export default class CollectionRow extends React.PureComponent<Props> {
   handleNavigateToForum = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     const { collection } = this.props
-    window.open(collection.forumLink!, '_blank')
+    window.open(collection.forumLink, '_blank')
     event.preventDefault()
     event.stopPropagation()
   }

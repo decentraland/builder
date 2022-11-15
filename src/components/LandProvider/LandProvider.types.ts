@@ -17,6 +17,5 @@ export type Props = {
 }
 
 export type MapStateProps = Pick<Props, 'id' | 'land' | 'deployments' | 'rental' | 'isLoading'>
-export type MapDispatchProps = {}
 export type MapDispatch = Dispatch
 export type OwnProps = Partial<Pick<Props, 'id'>>

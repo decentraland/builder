@@ -49,7 +49,10 @@ export const getQwertyLayout = (): ShortcutLayout => ({
   [Shortcut.TOGGLE_SIDEBAR]: { type: 'simple', value: 'p', title: t('shortcuts.toggle_sidebar') },
   [Shortcut.DELETE_ITEM]: {
     type: 'alternative',
-    value: [{ type: 'simple', value: SpecialKeys.DELETE, title: null }, { type: 'simple', value: SpecialKeys.BACKSPACE, title: null }],
+    value: [
+      { type: 'simple', value: SpecialKeys.DELETE, title: null },
+      { type: 'simple', value: SpecialKeys.BACKSPACE, title: null }
+    ],
     title: t('shortcuts.delete')
   },
   [Shortcut.UNDO]: { type: 'combination', value: [SpecialKeys.OSCTRL, 'z'], title: t('shortcuts.undo') },
@@ -58,12 +61,18 @@ export const getQwertyLayout = (): ShortcutLayout => ({
   [Shortcut.RESET_CAMERA]: { type: 'simple', value: SpecialKeys.SPACE, title: t('shortcuts.reset_camera') },
   [Shortcut.ZOOM_IN]: {
     type: 'alternative',
-    value: [{ type: 'simple', value: '+', title: null }, { type: 'simple', value: '=', title: null }],
+    value: [
+      { type: 'simple', value: '+', title: null },
+      { type: 'simple', value: '=', title: null }
+    ],
     title: t('shortcuts.zoom_in')
   },
   [Shortcut.ZOOM_OUT]: {
     type: 'alternative',
-    value: [{ type: 'simple', value: '-', title: null }, { type: 'simple', value: '_', title: null }],
+    value: [
+      { type: 'simple', value: '-', title: null },
+      { type: 'simple', value: '_', title: null }
+    ],
     title: t('shortcuts.zoom_out')
   },
   [Shortcut.TOGGLE_SNAP_TO_GRID]: {
@@ -214,7 +223,7 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
 
 export abstract class ShortcutRenderer {
   renderCombination(shortcut: ShortcutCombination) {
-    let out: (JSX.Element | string)[] = []
+    const out: (JSX.Element | string)[] = []
 
     for (let i = 0; i < shortcut.value.length; i++) {
       const simple: SimpleShortcut = { type: 'simple', value: shortcut.value[i], title: shortcut.title }
@@ -258,7 +267,7 @@ export abstract class ShortcutRenderer {
   }
 
   renderSimple(shortcut: SimpleShortcut) {
-    let out = []
+    const out = []
 
     if (shortcut.hold) {
       out.push(this.renderHold())

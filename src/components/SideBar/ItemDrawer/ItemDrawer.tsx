@@ -8,10 +8,10 @@ import AssetPackList from '../AssetPackList'
 import AssetList from '../AssetList'
 import NoResults from '../NoResults'
 import WalletSignIn from '../WalletSignIn'
-import { Props, State } from './ItemDrawer.types'
+import { Props } from './ItemDrawer.types'
 import './ItemDrawer.css'
 
-export default class ItemDrawer extends React.PureComponent<Props, State> {
+export default class ItemDrawer extends React.PureComponent<Props> {
   drawerContainer: HTMLElement | null = null
 
   handleResetScroll = () => {

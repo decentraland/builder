@@ -215,7 +215,7 @@ export class ManagerAPI {
     }
 
     // add operators for all my lands
-    let authorizations: Authorization[] = []
+    const authorizations: Authorization[] = []
     for (const operator of landUpdateManagers.values()) {
       authorizations.push({ address: operator, type: LandType.PARCEL })
       const parcels = lands.filter(land => land.type === LandType.PARCEL && land.role === RoleType.OWNER)

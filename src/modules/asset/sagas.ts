@@ -26,7 +26,7 @@ export function* assetSaga(client: BuilderClient) {
 
     try {
       if (!address) {
-        throw new Error(`Invalid address: ${address}`)
+        throw new Error(`Invalid address: ${address as unknown as string}`)
       }
       const assets: Asset[] = []
       const serverNFTs: NFT[] = yield call(getNFTs, address)

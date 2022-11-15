@@ -14,7 +14,4 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = () => ({})
 
-export default connect(
-  mapState,
-  mapDispatch
-)(EntityField)
+export default connect(mapState, mapDispatch)(EntityField)

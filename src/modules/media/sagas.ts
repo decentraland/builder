@@ -41,8 +41,6 @@ export function* handleTakePictures() {
     west: null
   }
 
-  let preview: Blob | null
-
   // Prepare the canvas for recording
   canvas.classList.add('recording')
   editorWindow.editor.resetCameraZoom()
@@ -62,7 +60,7 @@ export function* handleTakePictures() {
   yield put(recordMediaProgress(60))
   screenshots.west = yield takeEditorScreenshot(Rotation.WEST)
   yield put(recordMediaProgress(80))
-  preview = yield takeEditorScreenshot(previewAngle)
+  const preview: Blob | null = yield takeEditorScreenshot(previewAngle)
   yield put(recordMediaProgress(100))
 
   // Cleanup

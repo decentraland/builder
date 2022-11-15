@@ -198,7 +198,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     }
   }
 
-  handleDropRejected = async (rejectedFiles: File[]) => {
+  handleDropRejected = (rejectedFiles: File[]) => {
     console.warn('rejected', rejectedFiles)
     const error = new InvalidFilesError()
     this.setState({ error: error.message })
