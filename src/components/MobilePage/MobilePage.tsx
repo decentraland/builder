@@ -1,22 +1,15 @@
 import * as React from 'react'
-import isMobile from 'ismobilejs'
-import { Button, Hero, Header, Page } from 'decentraland-ui'
+import { Button, Page, List, Container } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import MobilePageHero from 'components/MobilePageHero/MobilePageHero'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
-import { newsletter, EMAIL_INTEREST } from 'lib/api/newsletter'
 
 import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
 
-const localStorage = getLocalStorage()
-
 export default class MobilePage extends React.PureComponent<Props, State> {
   state = {
-    email: '',
     isLoading: false
   }
 
@@ -30,73 +23,55 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     document.body.classList.remove('mobile-body')
   }
 
-  handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const email = event.currentTarget.value
-    this.setState({ email })
-  }
-
   handleSecondaryAction = () => {
     window.open(`mailto:?subject=${t('mobile_page.reminder_subject')}&body=${encodeURIComponent(t('mobile_page.reminder_body'))}`)
   }
 
-  handleOpenVideo = () => window.open('https://youtu.be/H8Fj72JobKo')
-
-  handleSubmit = () => {
-    const { email } = this.state
-
-    this.setState({ isLoading: true })
-
-    this.analytics.identify({ email }, () => {
-      newsletter.reportEmail(email, EMAIL_INTEREST.MOBILE).catch(() => console.error('Unable to submit email, something went wrong!'))
-      localStorage.setItem('mobile-email', email)
-      this.setState({ isLoading: false })
-    })
-  }
-
   render() {
-    const { email, isLoading } = this.state
-    const hasMobileEmail = !!localStorage.getItem('mobile-email')
-
     return (
       <>
         <Navbar isFullscreen isOverlay />
-        <Page isFullscreen>
-          <div className="MobilePage">
-            <MobilePageHero
-              email={email}
-              hasMobileEmail={hasMobileEmail}
-              isLoading={isLoading}
-              onSubmit={this.handleSubmit}
-              onChange={this.handleEmailChange}
-              onWatchVideo={this.handleOpenVideo}
+        <Page isFullscreen className="MobilePage">
+          <Container>
+            <div className="slot-image" />
+            <h2>{t('mobile_page.title')}</h2>
+            <span>{t('mobile_page.list_title')}</span>
+            <List>
+              <List.Item>
+                <div className="icon dress-icon" />
+                <List.Content
+                  content={t('mobile_page.first_paragraph', { bold_text: <b>{t('mobile_page.first_paragraph_bold_text')}</b> })}
+                />
+              </List.Item>
+              <List.Item>
+                <div className="icon tools-icon" />
+                <List.Content
+                  content={t('mobile_page.second_paragraph', { bold_text: <b>{t('mobile_page.second_paragraph_bold_text')}</b> })}
+                />
+              </List.Item>
+              <List.Item>
+                <div className="icon landscape-icon" />
+                <List.Content
+                  content={t('mobile_page.third_paragraph', { bold_text: <b>{t('mobile_page.third_paragraph_bold_text')}</b> })}
+                />
+              </List.Item>
+              <List.Item>
+                <div className="icon cat-icon" />
+                <List.Content
+                  content={t('mobile_page.fourth_paragraph', { bold_text: <b>{t('mobile_page.fourth_paragraph_bold_text')}</b> })}
+                />
+              </List.Item>
+            </List>
+            <Button
+              inverted
+              primary
+              as="a"
+              href="https://docs.decentraland.org/creator"
+              rel="noopener noreferrer"
+              target="_blank"
+              content={t('global.learn_more')}
             />
-
-            <div className="gallery">
-              <Header size="huge" textAlign="center">
-                {t('mobile_page.gallery_title')}
-              </Header>
-              <div className="thumbnail-column">
-                <div className="thumbnail thumb-1" />
-                <div className="thumbnail thumb-2" />
-                <div className="thumbnail thumb-3" />
-                <div className="thumbnail thumb-4" />
-              </div>
-            </div>
-
-            {isMobile().any ? (
-              <Hero className="secondary-hero" centered>
-                <Hero.Header>{t('mobile_page.secondary_hero.title')}</Hero.Header>
-                <Hero.Actions>
-                  <Button primary size="medium" disabled={isLoading} onClick={this.handleSecondaryAction}>
-                    {t('mobile_page.secondary_hero.action')}
-                  </Button>
-                </Hero.Actions>
-                <Hero.Content>
-                  <div className="background" />
-                </Hero.Content>
-              </Hero>
-            ) : null}
-          </div>
+          </Container>
         </Page>
         <Footer />
       </>

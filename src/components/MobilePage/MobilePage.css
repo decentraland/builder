@@ -1,5 +1,71 @@
 .MobilePage {
+  display: flex;
+  align-items: center;
   color: initial;
+}
+
+.MobilePage .ui.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text);
+}
+
+.MobilePage .ui.container .slot-image {
+  margin-top: calc(var(--navbar-height) + 69px);
+  background: url('../../images/tools.svg') no-repeat center;
+  height: 96px;
+  width: 96px;
+}
+
+.MobilePage .ui.container h2 {
+  margin: 28px 90px;
+  text-align: center;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.MobilePage .ui.container span {
+  margin-top: 48px;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--light-gray);
+}
+
+.MobilePage .ui.container .ui.list > .item {
+  display: flex;
+  margin: 16px 24px;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.MobilePage .ui.container .ui.list > .item .content {
+  padding-left: 12px;
+}
+
+.MobilePage .ui.container .ui.list > .item .icon {
+  width: 26px;
+  height: 24px;
+}
+
+.MobilePage .ui.container .ui.list > .item .icon.dress-icon {
+  background: url('../../icons/dress.svg') no-repeat;
+}
+
+.MobilePage .ui.container .ui.list > .item .icon.tools-icon {
+  background: url('../../icons/tools.svg') no-repeat;
+}
+
+.MobilePage .ui.container .ui.list > .item .icon.landscape-icon {
+  background: url('../../icons/landscape.svg') no-repeat;
+}
+
+.MobilePage .ui.container .ui.list > .item .icon.cat-icon {
+  background: url('../../icons/cat.svg') no-repeat;
+}
+
+.MobilePage .ui.container .ui.button {
+  margin-top: 34px;
 }
 
 .MobilePage .ui.form {
