@@ -169,8 +169,8 @@ export const SET_ITEMS_TOKEN_ID_FAILURE = '[Failure] Set Items Token Id'
 
 export const setItemsTokenIdRequest = (collection: Collection, items: Item[]) => action(SET_ITEMS_TOKEN_ID_REQUEST, { collection, items })
 export const setItemsTokenIdSuccess = (items: Item[]) => action(SET_ITEMS_TOKEN_ID_SUCCESS, { items })
-export const setItemsTokenIdFailure = (collection: Collection, items: Item[], error: string) =>
-  action(SET_ITEMS_TOKEN_ID_FAILURE, { collection, items, error })
+export const setItemsTokenIdFailure = (collection: Collection, items: Item[], error: string, errorCode: number) =>
+  action(SET_ITEMS_TOKEN_ID_FAILURE, { collection, items, error, errorCode })
 
 export type SetItemsTokenIdRequestAction = ReturnType<typeof setItemsTokenIdRequest>
 export type SetItemsTokenIdSuccessAction = ReturnType<typeof setItemsTokenIdSuccess>
