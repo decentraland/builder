@@ -4,7 +4,6 @@ import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/sel
 import { RootState } from 'modules/common/types'
 import { fetchCollectionCurationRequest } from 'modules/curations/collectionCuration/actions'
 import { getStatusByCollectionId } from 'modules/collection/selectors'
-import { getIsNewPublishWizardEnabled } from 'modules/features/selectors'
 import { getHasPendingCollectionCuration } from 'modules/curations/collectionCuration/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
@@ -20,8 +19,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     items: getCollectionItems(state, collectionId),
     authorizations: getAuthorizations(state),
     status: statusByCollectionId[collectionId],
-    hasPendingCuration: getHasPendingCollectionCuration(state, collectionId),
-    isNewPublishWizardFlowFlagOn: getIsNewPublishWizardEnabled(state)
+    hasPendingCuration: getHasPendingCollectionCuration(state, collectionId)
   }
 }
 
@@ -29,8 +27,7 @@ const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProp
   const { id: collectionId } = ownProps.collection
 
   return {
-    onPublish: newPublishWizardFlow =>
-      dispatch(openModal(newPublishWizardFlow ? 'PublishWizardCollectionModal' : 'PublishCollectionModal', { collectionId })),
+    onPublish: () => dispatch(openModal('PublishWizardCollectionModal', { collectionId })),
     onPush: () => dispatch(openModal('PushCollectionChangesModal', { collectionId })),
     onInit: () => dispatch(fetchCollectionCurationRequest(collectionId))
   }

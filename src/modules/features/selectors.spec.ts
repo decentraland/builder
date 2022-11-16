@@ -1,6 +1,6 @@
 import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
 import { RootState } from 'modules/common/types'
-import { getIsMaintenanceEnabled, getIsNewPublishWizardEnabled } from './selectors'
+import { getIsMaintenanceEnabled } from './selectors'
 
 jest.mock('decentraland-dapps/dist/modules/features/selectors')
 
@@ -45,21 +45,6 @@ describe('when getting if maintainance is enabled', () => {
       const result = getIsMaintenanceEnabled(state)
 
       expect(result).toEqual(false)
-    })
-  })
-})
-
-describe('when getting if new publish wizard is enabled', () => {
-  describe('when getIsFeatureEnabled returns true', () => {
-    beforeEach(() => {
-      mockGetIsFeatureEnabled.mockReturnValueOnce(true)
-    })
-
-    it('should return true', () => {
-      const state: RootState = {} as any
-      const result = getIsNewPublishWizardEnabled(state)
-
-      expect(result).toEqual(true)
     })
   })
 })

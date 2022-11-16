@@ -4,7 +4,7 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient } from '@dcl/builder-client'
-import { push, replace } from 'connected-react-router'
+import { push } from 'connected-react-router'
 import { ChainId, Network, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
@@ -943,7 +943,6 @@ describe('when publishing a collection', () => {
         ])
         .not.put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .put(replace(locations.activity()))
         .dispatch(publishCollectionRequest(lockedCollection, items, email))
         .run({ silenceTimeout: true })
     })
@@ -1060,7 +1059,6 @@ describe('when publishing a collection', () => {
         .put(saveItemRequest(items[0], {}))
         .put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .put(replace(locations.activity()))
         .dispatch(publishCollectionRequest(collection, items, email))
         .run({ silenceTimeout: true })
     })
@@ -1118,7 +1116,6 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .put(replace(locations.activity()))
         .dispatch(publishCollectionRequest(collection, items, email))
         .run({ silenceTimeout: true })
     })
