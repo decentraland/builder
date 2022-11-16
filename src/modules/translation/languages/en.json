@@ -658,7 +658,17 @@
       "action": "Send yourself a reminder",
       "title": "Want to build something when you get to your computer?"
     },
-    "success": "Thanks, we will keep you posted!"
+    "success": "Thanks, we will keep you posted!",
+    "title": "Builder Tools are only available on desktop",
+    "list_title": "From your computer, you can:",
+    "first_paragraph": "Create, preview and publish {bold_text}.",
+    "first_paragraph_bold_text": "collections of wearables and emotes",
+    "second_paragraph": "Build {bold_text}. You can use free 3D models or upload your own.",
+    "second_paragraph_bold_text": "content for your LAND",
+    "third_paragraph": "Publish scenes, {bold_text} of your LAND.",
+    "third_paragraph_bold_text": "create estates and manage permissions",
+    "fourth_paragraph": "Claim your {bold_text} and assign it to your avatar or parcels.",
+    "fourth_paragraph_bold_text": "unique name"
   },
   "scene_list_page": {
     "projects_title": "Scene Pool",

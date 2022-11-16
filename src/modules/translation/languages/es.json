@@ -668,7 +668,17 @@
       "action": "Enviar recordatorio",
       "title": "¿Quieres comenzar a construir cuando estes en tu PC?"
     },
-    "success": "Gracias, ¡Te mantendremos al tanto!"
+    "success": "Gracias, ¡Te mantendremos al tanto!",
+    "title": "El Builder solo esta disponible para PC",
+    "list_title": "Desde tu PC, tu podras:",
+    "first_paragraph": "Crear, tener una vista previa y publicar {bold_text}.",
+    "first_paragraph_bold_text": "colecciones de wearables y emotes",
+    "second_paragraph": "Crear {bold_text}. Puede usar los modelos 3D gratuitos o subir los suyos propios.",
+    "second_paragraph_bold_text": "contenido para su LAND",
+    "third_paragraph": "Publicar escenas, {bold_text} de su LAND.",
+    "third_paragraph_bold_text": "crear estates y gestionar permisos",
+    "fourth_paragraph": "Reclama tu {bold_text} y asignalo a tus avatar o a parcelas.",
+    "fourth_paragraph_bold_text": "nombre unico"
   },
   "rental_period": {
     "period_over": "Período de renta terminado",
