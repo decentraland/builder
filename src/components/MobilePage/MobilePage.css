@@ -66,6 +66,9 @@
 
 .MobilePage .ui.container .ui.button {
   margin-top: 34px;
+  width: 180px;
+  padding: 7px 45px;
+  border-color: var(--light-gray);
 }
 
 .MobilePage .ui.form {
