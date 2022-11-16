@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Button, Page, List, Container } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 
@@ -9,22 +8,12 @@ import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
 
 export default class MobilePage extends React.PureComponent<Props, State> {
-  state = {
-    isLoading: false
-  }
-
-  analytics = getAnalytics()
-
   componentDidMount() {
     document.body.classList.add('mobile-body')
   }
 
   componentWillUnmount() {
     document.body.classList.remove('mobile-body')
-  }
-
-  handleSecondaryAction = () => {
-    window.open(`mailto:?subject=${t('mobile_page.reminder_subject')}&body=${encodeURIComponent(t('mobile_page.reminder_body'))}`)
   }
 
   render() {
