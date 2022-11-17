@@ -222,6 +222,24 @@ export async function getIsEmote(url: string, options: Partial<Options> = {}) {
   return gltf.animations.length > 0
 }
 
+export async function getEmoteMetrics(blob: Blob) {
+  const { gltf, renderer } = await loadGltf(URL.createObjectURL(blob))
+  document.body.removeChild(renderer.domElement)
+  const animation = gltf.animations[0]
+  let frames = 0
+  for (let i = 0; i < animation.tracks.length; i++) {
+    const track = animation.tracks[i]
+    frames = Math.max(frames, track.times.length)
+  }
+
+  return {
+    sequences: gltf.animations.length,
+    duration: animation.duration,
+    frames,
+    fps: frames / animation.duration
+  }
+}
+
 export async function getItemData({
   type,
   model,
@@ -252,21 +270,7 @@ export async function getItemData({
       throw Error('WearablePreview controller needed')
     }
     if (type === ItemType.EMOTE) {
-      const { gltf, renderer } = await loadGltf(URL.createObjectURL(contents[model]))
-      document.body.removeChild(renderer.domElement)
-      const animation = gltf.animations[0]
-      let frames = 0
-      for (let i = 0; i < animation.tracks.length; i++) {
-        const track = animation.tracks[i]
-        frames = Math.max(frames, track.times.length)
-      }
-
-      info = {
-        sequences: gltf.animations.length,
-        duration: animation.duration,
-        frames,
-        fps: frames / animation.duration
-      }
+      info = await getEmoteMetrics(contents[model])
     } else {
       info = await wearablePreviewController.scene.getMetrics()
     }

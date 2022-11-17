@@ -1,18 +1,19 @@
 import * as React from 'react'
 import uuid from 'uuid'
 import { loadFile, WearableCategory, WearableConfig } from '@dcl/builder-client'
-import { Icon, ModalNavigation, WearablePreview } from 'decentraland-ui'
+import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
-import { EngineType, getIsEmote, getItemData } from 'lib/getModelData'
+import { EngineType, getEmoteMetrics, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
 import {
   FileTooBigError,
   WrongExtensionError,
   InvalidFilesError,
   MissingModelFileError,
-  EmoteDurationTooLongError
+  EmoteDurationTooLongError,
+  InvalidModelFilesRepresentation
 } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
 import {
@@ -111,13 +112,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const { model, contents: proccessedContent, type } = await this.processModel(modelPath, contents)
 
     if (type === ItemType.EMOTE) {
-      const data = await getItemData({
-        wearablePreviewController: WearablePreview.createController('wearable-preview'),
-        type,
-        model,
-        contents
-      })
-      if ((data.info as AnimationMetrics).duration > MAX_EMOTE_DURATION) {
+      const info: AnimationMetrics = await getEmoteMetrics(contents[model])
+      if (info.duration > MAX_EMOTE_DURATION) {
         throw new EmoteDurationTooLongError()
       }
     }
@@ -193,7 +189,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             if (!isRepresentation) {
               acceptedFileProps.contents = this.cleanContentModelKeys(contents, BodyShapeType.BOTH)
             } else {
-              throw new Error(t('create_single_item_modal.error.invalid_model_files_representation'))
+              throw new InvalidModelFilesRepresentation()
             }
           }
         }
@@ -214,7 +210,6 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         ...acceptedFileProps,
         bodyShape: isEmote ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
       })
-      this.setState({ error: '', isLoading: false })
     } catch (error) {
       this.setState({ error: error.message, isLoading: false })
     }
@@ -245,14 +240,17 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 
-  renderError = () => {
-    const { error } = this.state
-
+  renderMoreInformation() {
     return (
-      <div className="error container">
-        <Icon name="warning sign" />
-        <div className="error message">{error}</div>
-      </div>
+      <span>
+        {t('create_single_item_modal.import_information', {
+          link: (
+            <a href="https://docs.decentraland.org/decentraland/creating-wearables/" target="_blank" rel="noopener noreferrer">
+              {t('create_single_item_modal.import_information_link_label')}
+            </a>
+          )
+        })}
+      </span>
     )
   }
 
@@ -264,7 +262,6 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content className="ImportStep">
-          {error && this.renderError()}
           <ItemImport
             isLoading={isLoading}
             acceptedExtensions={
@@ -274,11 +271,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
                   : MODEL_EXTENSIONS
                 : ITEM_EXTENSIONS
             }
+            error={error}
+            moreInformation={this.renderMoreInformation()}
             onDropAccepted={this.handleDropAccepted}
             onDropRejected={this.handleDropRejected}
           />
           {wearablePreviewComponent}
-          <WearablePreview id="wearable-preview" disableBackground disableAutoRotate />
         </Modal.Content>
       </>
     )

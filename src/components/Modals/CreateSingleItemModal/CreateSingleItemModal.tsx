@@ -595,11 +595,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     this.setState({ previewController: controller })
 
     if (weareblePreviewUpdated) {
-      await this.getMetricsAndScreenshot()
       if (type === ItemType.EMOTE) {
         const length = await controller.emote.getLength()
         await controller.emote.goTo(Math.floor(Math.random() * length))
       }
+      return this.getMetricsAndScreenshot()
     }
   }
 
