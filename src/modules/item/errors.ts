@@ -16,9 +16,15 @@ export class ItemTooBigError extends Error {
   }
 }
 
-export class FileTooBigError extends Error {
+export class FileTooBigError extends CustomError {
   constructor() {
-    super(t('create_single_item_modal.error.file_too_big', { size: `${toMB(MAX_FILE_SIZE)}MB` }))
+    super(
+      t('create_single_item_modal.error.file_too_big', {
+        title: createElement('b', null, t('create_single_item_modal.error.file_too_big_title')),
+        enter: createElement('br'),
+        size: `${toMB(MAX_FILE_SIZE)}MB`
+      })
+    )
   }
 }
 
@@ -46,8 +52,20 @@ export class MissingModelFileError extends Error {
   }
 }
 
+export class InvalidModelFilesRepresentation extends Error {
+  constructor() {
+    super(t('create_single_item_modal.error.invalid_model_files_representation'))
+  }
+}
+
 export class EmoteDurationTooLongError extends CustomError {
   constructor() {
-    super(t('create_single_item_modal.error.emote_duration_too_long', { duration: MAX_EMOTE_DURATION, enter: createElement('br') }))
+    super(
+      t('create_single_item_modal.error.emote_duration_too_long', {
+        title: createElement('b', null, t('create_single_item_modal.error.emote_duration_too_long_title')),
+        enter: createElement('br'),
+        duration: MAX_EMOTE_DURATION
+      })
+    )
   }
 }
