@@ -10,7 +10,7 @@ export default class Popup extends React.PureComponent<Props> {
   render() {
     const { x, y, visible, land, deployments, rentals } = this.props
     const rentalAssociated = rentals.find(rental => rental.tokenId === land.tokenId)
-    
+
     return (
       <div className="Popup" style={{ top: y, left: x, opacity: visible ? 1 : 0 }}>
         <Section className="land-name">

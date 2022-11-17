@@ -149,7 +149,15 @@ export default class LandPage extends React.PureComponent<Props, State> {
           </Container>
         ) : (
           <div className="atlas-wrapper">
-            <Atlas className="main" x={selectedX} y={selectedY} showOperator={showOperator} showOwner={showOwner} showTenant={showTenant} hasPopup />
+            <Atlas
+              className="main"
+              x={selectedX}
+              y={selectedY}
+              showOperator={showOperator}
+              showOwner={showOwner}
+              showTenant={showTenant}
+              hasPopup
+            />
           </div>
         )}
       </>
