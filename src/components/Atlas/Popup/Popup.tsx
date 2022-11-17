@@ -8,7 +8,9 @@ import './Popup.css'
 
 export default class Popup extends React.PureComponent<Props> {
   render() {
-    const { x, y, visible, land, deployments } = this.props
+    const { x, y, visible, land, deployments, rentals } = this.props
+    const rentalAssociated = rentals.find(rental => rental.tokenId === land.tokenId)
+    
     return (
       <div className="Popup" style={{ top: y, left: x, opacity: visible ? 1 : 0 }}>
         <Section className="land-name">
@@ -24,7 +26,7 @@ export default class Popup extends React.PureComponent<Props> {
         </Section>
         <Section className="owner">
           <Header sub>{t('land_page.owner')}</Header>
-          <Profile address={land.owner} />
+          <Profile address={rentalAssociated ? rentalAssociated.lessor : land.owner} />
         </Section>
 
         {land.operators.length > 0 ? (

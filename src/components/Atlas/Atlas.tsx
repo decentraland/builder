@@ -83,9 +83,9 @@ const Atlas: React.FC<Props> = props => {
   const shouldShowLayer = (tile?: LandTile, showOwner?: boolean, showOperator?: boolean, showTenant?: boolean) => {
     return (
       !!tile &&
-      ((showOwner && tile.land.role === RoleType.OWNER) ||
-        (showOperator && tile.land.role === RoleType.OPERATOR) ||
-        (showTenant && tile.land.role === RoleType.TENANT))
+      ((!!showOwner && tile.land.role === RoleType.OWNER) ||
+        (!!showOperator && tile.land.role === RoleType.OPERATOR) ||
+        (!!showTenant && tile.land.role === RoleType.TENANT))
     )
   }
 
