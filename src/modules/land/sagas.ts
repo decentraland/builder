@@ -176,14 +176,14 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
     switch (land.type) {
       case LandType.PARCEL: {
         const landRegistry = LANDRegistry__factory.connect(LAND_REGISTRY_ADDRESS, signer)
-        const tokenId: ethers.BigNumber = yield call(() => landRegistry.encodeTokenId(land.x!, land.y!))
+        const tokenId: ethers.BigNumber = yield call([landRegistry, 'encodeTokenId'], land.x!, land.y!)
         let transaction: ethers.ContractTransaction
 
         if (land.role === RoleType.TENANT) {
           const rentals = Rentals__factory.connect(RENTALS_ADDRESS, signer)
-          transaction = yield call([rentals, 'setOperator'], LAND_REGISTRY_ADDRESS, tokenId, operator)
+          transaction = yield call([rentals, 'setUpdateOperator'], [LAND_REGISTRY_ADDRESS], [tokenId], [operator])
         } else {
-          transaction = yield call(() => landRegistry.setUpdateOperator(tokenId, operator))
+          transaction = yield call([landRegistry, 'setUpdateOperator'], tokenId, operator)
         }
         yield put(setOperatorSuccess(land, address, wallet.chainId, transaction.hash))
         break
@@ -194,9 +194,9 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
 
         if (land.role === RoleType.TENANT) {
           const rentals = Rentals__factory.connect(RENTALS_ADDRESS, signer)
-          transaction = yield call([rentals, 'setOperator'], ESTATE_REGISTRY_ADDRESS, land.id, operator)
+          transaction = yield call([rentals, 'setUpdateOperator'], [ESTATE_REGISTRY_ADDRESS], [land.id], [operator])
         } else {
-          transaction = yield call(() => estateRegistry.setUpdateOperator(land.id, operator))
+          transaction = yield call([estateRegistry, 'setUpdateOperator'], land.id, operator)
         }
         yield put(setOperatorSuccess(land, address, wallet.chainId, transaction.hash))
         break
@@ -281,7 +281,7 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
     const rentals: Rental[] = isRentalsEnabled ? yield call([rental, 'fetchTokenIdsByTenant'], address) : []
     const tenantTokenIds = rentals.map(rental => rental.tokenId)
 
-    const [land, authorizations]: [Land[], Authorization[]] = yield call(() => manager.fetchLand(address, tenantTokenIds))
+    const [land, authorizations]: [Land[], Authorization[]] = yield call([manager, 'fetchLand'], address, tenantTokenIds)
     yield put(fetchLandsSuccess(address, land, authorizations, rentals))
   } catch (error) {
     yield put(fetchLandsFailure(address, error.message))
