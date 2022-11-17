@@ -653,7 +653,17 @@
       "action": "发送提醒",
       "title": "当回到电脑前就创作场景?"
     },
-    "success": "谢谢，我们会与您联系!"
+    "success": "谢谢，我们会与您联系!",
+    "title": "构建器工具仅在桌面上可用",
+    "list_title": "从您的计算机，您可以：",
+    "first_paragraph": "创建、预览和发布 {bold_text}。",
+    "first_paragraph_bold_text": "可穿戴设备和表情的集合",
+    "second_paragraph": "构建 {bold_text}。 您可以使用免费的 3D 模型或上传您自己的模型。",
+    "second_paragraph_bold_text": "土地的内容",
+    "third_paragraph": "发布您土地的场景，{bold_text}。",
+    "third_paragraph_bold_text": "创建庄园和管理权限",
+    "fourth_paragraph": "领取您的 {bold_text} 并将其分配给您的头像或包裹。",
+    "fourth_paragraph_bold_text": "唯一名称"
   },
   "rental_period": {
     "period_over": "租期结束",
