@@ -1,0 +1,203 @@
+import * as React from 'react'
+import { Link } from 'react-router-dom'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Row, Header, Icon, Section } from 'decentraland-ui'
+
+import BuilderIcon from 'components/Icon'
+import ProjectCard from 'components/ProjectCard'
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
+import LoadingPage from 'components/LoadingPage'
+import SyncToast from 'components/SyncToast'
+import { SortBy } from 'modules/ui/dashboard/types'
+import Navigation from 'components/Navigation'
+import { NavigationTab } from 'components/Navigation/Navigation.types'
+import { locations } from 'routing/locations'
+import { PaginationOptions } from 'routing/utils'
+import { Props, DefaultProps } from './ScenesPage.types'
+import './ScenesPage.css'
+
+export default class ScenesPage extends React.PureComponent<Props> {
+  static defaultProps: DefaultProps = {
+    projects: []
+  }
+
+  componentWillMount() {
+    const { onLoadFromScenePool } = this.props
+    onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
+  }
+
+  handleOpenImportModal = () => {
+    this.props.onOpenModal('ImportModal')
+  }
+
+  handleOpenCreateModal = () => {
+    this.props.onOpenModal('CustomLayoutModal')
+  }
+
+  renderImportButton = () => {
+    return (
+      <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
+        <BuilderIcon name="import" />
+      </Button>
+    )
+  }
+
+  renderCreateButton = () => {
+    return (
+      <Button basic className="create-scene" onClick={this.handleOpenCreateModal}>
+        <BuilderIcon name="add-active" />
+      </Button>
+    )
+  }
+
+  renderSortDropdown = () => {
+    const { sortBy } = this.props
+    return (
+      <Dropdown
+        direction="left"
+        value={sortBy}
+        options={[
+          { value: SortBy.NEWEST, text: t('scenes_page.sort.newest') },
+          { value: SortBy.NAME, text: t('scenes_page.sort.name') },
+          { value: SortBy.SIZE, text: t('scenes_page.sort.size') }
+        ]}
+        onChange={this.handleDropdownChange}
+      />
+    )
+  }
+
+  renderProjects = () => {
+    const { isLoggedIn, didSync, projects } = this.props
+
+    if (projects.length > 0) {
+      return projects.map(project => <ProjectCard key={project.id} project={project} />)
+    } else if (!isLoggedIn && didSync) {
+      return (
+        <div className="empty-projects">
+          <div>
+            <T
+              id="scenes_page.no_projects_guest"
+              values={{
+                br: <br />,
+                sign_in: (
+                  <a href={locations.signIn()} onClick={this.handleLogin}>
+                    {t('user_menu.sign_in')}
+                  </a>
+                )
+              }}
+            />
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="empty-projects">
+        <div>
+          <T
+            id="scenes_page.no_projects"
+            values={{
+              br: <br />,
+              link: (
+                <span
+                  className="link"
+                  onClick={event => {
+                    event.preventDefault()
+                    this.handleOpenCreateModal()
+                  }}
+                >
+                  {t('global.click_here')}
+                </span>
+              )
+            }}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  handleLogin = () => this.props.onNavigate(locations.signIn())
+
+  handleOpenShowcase = () => this.props.onNavigate(locations.poolSearch())
+
+  handleNavigateToLand = () => this.props.onNavigate(locations.land())
+
+  handleDropdownChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) =>
+    this.paginate({ sortBy: value as SortBy })
+
+  handlePageChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { activePage }: PaginationProps) =>
+    this.paginate({ page: activePage as number })
+
+  paginate = (options: PaginationOptions = {}) => {
+    const { page, sortBy } = this.props
+    this.props.onPageChange({
+      page,
+      sortBy,
+      ...options
+    })
+  }
+
+  render() {
+    const { projects, isFetching, totalPages, page, isLoggingIn, poolList } = this.props
+    if (isLoggingIn || isFetching) {
+      return <LoadingPage />
+    }
+
+    const hasPagination = totalPages > 1
+
+    return (
+      <>
+        <Navbar isFullscreen />
+        <Page isFullscreen className="ScenesPage">
+          <Navigation activeTab={NavigationTab.SCENES}>
+            <SyncToast />
+          </Navigation>
+          <Container>
+            <div className="projects-menu">
+              <div className="items-count">{t('scenes_page.results', { count: projects.length })}</div>
+              <div className="actions">
+                {projects.length > 1 ? this.renderSortDropdown() : null}
+                {this.renderImportButton()}
+                {this.renderCreateButton()}
+              </div>
+            </div>
+            <Section className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
+              <div className="CardList">{this.renderProjects()}</div>
+              {hasPagination ? (
+                <Pagination
+                  firstItem={null}
+                  lastItem={null}
+                  activePage={page}
+                  totalPages={totalPages}
+                  onPageChange={this.handlePageChange}
+                />
+              ) : null}
+            </Section>
+            {poolList ? (
+              <>
+                <Row>
+                  <Row className="scene-pool-menu">
+                    <Header sub>{t('scenes_page.from_scene_pool')}</Header>
+                  </Row>
+                  <Row align="right">
+                    <Link to={locations.poolSearch()}>
+                      <Button basic>
+                        {t('global.view_more')}&nbsp;<Icon name="chevron right"></Icon>
+                      </Button>
+                    </Link>
+                  </Row>
+                </Row>
+                <div className="scene-pool-projects">
+                  {poolList.map(pool => (
+                    <ProjectCard key={pool.id} project={pool} />
+                  ))}
+                </div>
+              </>
+            ) : null}
+          </Container>
+        </Page>
+        <Footer />
+      </>
+    )
+  }
+}

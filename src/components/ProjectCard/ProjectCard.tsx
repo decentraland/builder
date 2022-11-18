@@ -80,9 +80,9 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
           <OptionsDropdown
             className="options-dropdown"
             options={[
-              { text: t('home_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
-              { text: t('home_page.project_actions.export_project'), handler: this.handleExportScene },
-              { text: t('home_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
+              { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
+              { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
+              { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
             ]}
           />
         )}

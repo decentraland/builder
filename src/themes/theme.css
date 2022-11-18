@@ -23,12 +23,12 @@
   * Component variables
   */
 
-  /* HomePage */
-  --homepage-card-width: 246px;
-  --homepage-card-height: 182px;
-  --homepage-card-margin: 26.66px;
+  /* ScenesPage */
+  --scenespage-card-width: 246px;
+  --scenespage-card-height: 182px;
+  --scenespage-card-margin: 26.66px;
 
-  /* HomePage */
+  /* ScenesPage */
   --list-page-card-width: 328px;
   --list-page-card-height: 364px;
   --list-page-card-margin: 20px;
