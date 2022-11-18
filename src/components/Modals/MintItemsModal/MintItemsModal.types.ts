@@ -26,6 +26,7 @@ export type State = {
   items: Item[]
   itemMints: ItemMints
   error: string | null
+  confirm: boolean
 }
 
 export type MapStateProps = Pick<Props, 'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading' | 'hasUnsyncedItems'>

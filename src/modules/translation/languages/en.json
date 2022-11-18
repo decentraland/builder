@@ -1366,7 +1366,11 @@
     "add_item": "Add Item",
     "limit_reached": "You can only mint {max} items per transaction",
     "no_items": "You have no items available to mint for \"{name}\"",
-    "unsynced_warning": "Some items have changes that have not been approved yet."
+    "unsynced_warning": "Some items have changes that have not been approved yet.",
+    "next": "Next",
+    "total_items": "Total items to be minted",
+    "confirm_title":  "You are about to mint {amount} items, each item will be minted to the given address with the provided amount.",
+    "beneficiary": "Beneficiary"
   },
   "reset_item_modal": {
     "title": "Reset Changes",
