@@ -148,20 +148,22 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                     return mintsItemList.map(mintsItem => {
                       const { item, address, amount } = mintsItem
                       return (
-                        <Table.Row key={item?.id} className="CollectionItem row">
-                          <Table.Cell width={5}>
-                            <div className="itemContainer">
-                              {item && <ItemImage item={item} className="itemImage" />}
-                              {item?.name}
-                            </div>
-                          </Table.Cell>
-                          <Table.Cell width={7}>
-                            <span className="beneficary">{address}</span>
-                          </Table.Cell>
-                          <Table.Cell width={2}>
-                            <span className="amountText">{amount}</span>
-                          </Table.Cell>
-                        </Table.Row>
+                        amount && (
+                          <Table.Row key={item?.id} className="CollectionItem row">
+                            <Table.Cell width={5}>
+                              <div className="itemContainer">
+                                {item && <ItemImage item={item} className="itemImage" />}
+                                {item?.name}
+                              </div>
+                            </Table.Cell>
+                            <Table.Cell width={7}>
+                              <span className="beneficary">{address}</span>
+                            </Table.Cell>
+                            <Table.Cell width={2}>
+                              <span className="amountText">{amount}</span>
+                            </Table.Cell>
+                          </Table.Row>
+                        )
                       )
                     })
                   })}
