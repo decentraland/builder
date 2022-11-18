@@ -1,203 +1,108 @@
-import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Row, Header, Icon, Section } from 'decentraland-ui'
-
-import BuilderIcon from 'components/Icon'
-import ProjectCard from 'components/ProjectCard'
+import React from 'react'
+import classNames from 'classnames'
+import { Button, Card, Container, Page } from 'decentraland-ui'
+import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
-import { SortBy } from 'modules/ui/dashboard/types'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { locations } from 'routing/locations'
-import { PaginationOptions } from 'routing/utils'
-import { Props, DefaultProps } from './HomePage.types'
+import { Props } from './HomePage.types'
 import './HomePage.css'
 
-export default class HomePage extends React.PureComponent<Props> {
-  static defaultProps: DefaultProps = {
-    projects: []
+export const LOCALSTORAGE_LAST_VISITED_SECTION_KEY = 'builder-last-visited-section'
+
+const localStorage = getLocalStorage()
+const cards = [NavigationTab.COLLECTIONS, NavigationTab.SCENES, NavigationTab.LAND, NavigationTab.NAMES]
+
+export const HomePage: React.FC<Props> = props => {
+  const { isLoggingIn, onNavigate } = props
+  const lastVisitedSection = localStorage.getItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY)
+
+  const handleOnNavigate = (path: string) => {
+    localStorage.setItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY, path)
+    onNavigate(path)
   }
 
-  componentWillMount() {
-    const { onLoadFromScenePool } = this.props
-    onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
-  }
-
-  handleOpenImportModal = () => {
-    this.props.onOpenModal('ImportModal')
-  }
-
-  handleOpenCreateModal = () => {
-    this.props.onOpenModal('CustomLayoutModal')
-  }
-
-  renderImportButton = () => {
-    return (
-      <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
-        <BuilderIcon name="import" />
-      </Button>
-    )
-  }
-
-  renderCreateButton = () => {
-    return (
-      <Button basic className="create-scene" onClick={this.handleOpenCreateModal}>
-        <BuilderIcon name="add-active" />
-      </Button>
-    )
-  }
-
-  renderSortDropdown = () => {
-    const { sortBy } = this.props
-    return (
-      <Dropdown
-        direction="left"
-        value={sortBy}
-        options={[
-          { value: SortBy.NEWEST, text: t('home_page.sort.newest') },
-          { value: SortBy.NAME, text: t('home_page.sort.name') },
-          { value: SortBy.SIZE, text: t('home_page.sort.size') }
-        ]}
-        onChange={this.handleDropdownChange}
-      />
-    )
-  }
-
-  renderProjects = () => {
-    const { isLoggedIn, didSync, projects } = this.props
-
-    if (projects.length > 0) {
-      return projects.map(project => <ProjectCard key={project.id} project={project} />)
-    } else if (!isLoggedIn && didSync) {
-      return (
-        <div className="empty-projects">
-          <div>
-            <T
-              id="home_page.no_projects_guest"
-              values={{
-                br: <br />,
-                sign_in: (
-                  <a href={locations.signIn()} onClick={this.handleLogin}>
-                    {t('user_menu.sign_in')}
-                  </a>
-                )
-              }}
-            />
-          </div>
-        </div>
-      )
+  const handleOnClickCardCTA = (tab: NavigationTab) => {
+    switch (tab) {
+      case NavigationTab.COLLECTIONS:
+        return handleOnNavigate(locations.collections())
+      case NavigationTab.SCENES:
+        return handleOnNavigate(locations.scenes())
+      case NavigationTab.LAND:
+        return handleOnNavigate(locations.land())
+      case NavigationTab.NAMES:
+        return handleOnNavigate(locations.ens())
+      default:
+        throw new Error('Invalid NavigationTab')
     }
-    return (
-      <div className="empty-projects">
-        <div>
-          <T
-            id="home_page.no_projects"
-            values={{
-              br: <br />,
-              link: (
-                <span
-                  className="link"
-                  onClick={event => {
-                    event.preventDefault()
-                    this.handleOpenCreateModal()
-                  }}
-                >
-                  {t('global.click_here')}
-                </span>
-              )
-            }}
-          />
-        </div>
-      </div>
-    )
   }
 
-  handleLogin = () => this.props.onNavigate(locations.signIn())
-
-  handleOpenShowcase = () => this.props.onNavigate(locations.poolSearch())
-
-  handleNavigateToLand = () => this.props.onNavigate(locations.land())
-
-  handleDropdownChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) =>
-    this.paginate({ sortBy: value as SortBy })
-
-  handlePageChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { activePage }: PaginationProps) =>
-    this.paginate({ page: activePage as number })
-
-  paginate = (options: PaginationOptions = {}) => {
-    const { page, sortBy } = this.props
-    this.props.onPageChange({
-      page,
-      sortBy,
-      ...options
-    })
-  }
-
-  render() {
-    const { projects, isFetching, totalPages, page, isLoggingIn, poolList } = this.props
-    if (isLoggingIn || isFetching) {
-      return <LoadingPage />
+  const getLearnMoreLink = (card: string): string => {
+    switch (card) {
+      case NavigationTab.COLLECTIONS:
+        return 'https://docs.decentraland.org/creator/builder/builder-101/#collections'
+      case NavigationTab.SCENES:
+        return 'https://docs.decentraland.org/creator/builder/builder-101/#scenes'
+      case NavigationTab.LAND:
+        return 'https://docs.decentraland.org/creator/builder/builder-101/#land'
+      case NavigationTab.NAMES:
+        return 'https://docs.decentraland.org/creator/builder/builder-101/#names'
+      default:
+        throw new Error('Invalid Navigation Tab')
     }
-
-    const hasPagination = totalPages > 1
-
-    return (
-      <>
-        <Navbar isFullscreen />
-        <Page isFullscreen className="HomePage">
-          <Navigation activeTab={NavigationTab.SCENES}>
-            <SyncToast />
-          </Navigation>
-          <Container>
-            <div className="projects-menu">
-              <div className="items-count">{t('home_page.results', { count: projects.length })}</div>
-              <div className="actions">
-                {projects.length > 1 ? this.renderSortDropdown() : null}
-                {this.renderImportButton()}
-                {this.renderCreateButton()}
-              </div>
-            </div>
-            <Section className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
-              <div className="CardList">{this.renderProjects()}</div>
-              {hasPagination ? (
-                <Pagination
-                  firstItem={null}
-                  lastItem={null}
-                  activePage={page}
-                  totalPages={totalPages}
-                  onPageChange={this.handlePageChange}
-                />
-              ) : null}
-            </Section>
-            {poolList ? (
-              <>
-                <Row>
-                  <Row className="scene-pool-menu">
-                    <Header sub>{t('home_page.from_scene_pool')}</Header>
-                  </Row>
-                  <Row align="right">
-                    <Link to={locations.poolSearch()}>
-                      <Button basic>
-                        {t('global.view_more')}&nbsp;<Icon name="chevron right"></Icon>
-                      </Button>
-                    </Link>
-                  </Row>
-                </Row>
-                <div className="scene-pool-projects">
-                  {poolList.map(pool => (
-                    <ProjectCard key={pool.id} project={pool} />
-                  ))}
-                </div>
-              </>
-            ) : null}
-          </Container>
-        </Page>
-        <Footer />
-      </>
-    )
   }
+
+  if (isLoggingIn) {
+    return <LoadingPage />
+  }
+
+  if (lastVisitedSection && lastVisitedSection !== locations.root()) {
+    onNavigate(lastVisitedSection)
+  }
+
+  return (
+    <>
+      <Navbar isFullscreen />
+      <Page isFullscreen className="HomePage">
+        <Navigation activeTab={NavigationTab.OVERVIEW}>
+          <SyncToast />
+        </Navigation>
+        <Container>
+          <h1 className="title">Let's build the Metaverse together!</h1>
+          <Card.Group itemsPerRow={4} centered>
+            {cards.map((card, index) => (
+              <Card key={index}>
+                <Card.Content textAlign="center">
+                  <Card.Header>{t(`home_page.${card}.card_title`)}</Card.Header>
+                  <Card.Description>
+                    <p className="card-description">{t(`home_page.${card}.card_description`)}</p>
+                    <div className={classNames('card-image', card)}></div>
+                  </Card.Description>
+                </Card.Content>
+                <Card.Content extra>
+                  <Button primary content={t(`home_page.${card}.cta_label`)} onClick={() => handleOnClickCardCTA(card)} />
+                  <Button
+                    as="a"
+                    basic
+                    content={t('global.learn_more')}
+                    href={getLearnMoreLink(card)}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  />
+                </Card.Content>
+              </Card>
+            ))}
+          </Card.Group>
+        </Container>
+      </Page>
+      <Footer />
+    </>
+  )
 }
+
+export default HomePage
