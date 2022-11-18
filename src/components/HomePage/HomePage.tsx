@@ -73,7 +73,7 @@ export const HomePage: React.FC<Props> = props => {
           <SyncToast />
         </Navigation>
         <Container>
-          <h1 className="title">Let's build the Metaverse together!</h1>
+          <h1 className="title">{t('home_page.title')}</h1>
           <Card.Group itemsPerRow={4} centered>
             {cards.map((card, index) => (
               <Card key={index}>
