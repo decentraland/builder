@@ -20,7 +20,7 @@
   width: 254px;
 }
 
-.HomePage > .ui.container > .ui.cards > .ui.card:nth-child(4) {
+.HomePage > .ui.container > .ui.cards > .ui.card:nth-child(4n) {
   margin-right: 0;
 }
 
