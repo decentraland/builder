@@ -22,7 +22,7 @@
   "RESOLVER_CONTRACT_ADDRESS": "0x4B1488B7a6B320d2D721406204aBc3eeAa9AD329",
   "CONTROLLER_CONTRACT_ADDRESS": "0x6ff05b6271bbed8f16a46e6073d27ad94224e0ac",
   "REGISTRAR_CONTRACT_ADDRESS": "0x6b8da2752827cf926215b43bb8e46fd7b9ddac35",
-  "RENTALS_CONTRACT_ADDRESS": "0xbb2a03bf5f525734cb0536be4be61ba788d7ee01",
+  "RENTALS_CONTRACT_ADDRESS": "0x92159c78f0f4523b9c60382bb888f30f10a46b3b",
   "IPFS_URL": "https://ipfs.infura.io:5001/api/v0/add?pin=false",
   "EXPLORER_URL": "https://play.decentraland.zone",
   "TRANSACTIONS_API_URL": "https://transactions-api.decentraland.zone/v1",

@@ -34,7 +34,7 @@ export declare namespace Rentals {
     contractAddress: PromiseOrValue<string>;
     tokenId: PromiseOrValue<BigNumberish>;
     expiration: PromiseOrValue<BigNumberish>;
-    nonces: [
+    indexes: [
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
@@ -62,7 +62,7 @@ export declare namespace Rentals {
     contractAddress: string;
     tokenId: BigNumber;
     expiration: BigNumber;
-    nonces: [BigNumber, BigNumber, BigNumber];
+    indexes: [BigNumber, BigNumber, BigNumber];
     pricePerDay: BigNumber[];
     maxDays: BigNumber[];
     minDays: BigNumber[];
@@ -75,7 +75,7 @@ export declare namespace Rentals {
     contractAddress: PromiseOrValue<string>;
     tokenId: PromiseOrValue<BigNumberish>;
     expiration: PromiseOrValue<BigNumberish>;
-    nonces: [
+    indexes: [
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
@@ -103,12 +103,24 @@ export declare namespace Rentals {
     contractAddress: string;
     tokenId: BigNumber;
     expiration: BigNumber;
-    nonces: [BigNumber, BigNumber, BigNumber];
+    indexes: [BigNumber, BigNumber, BigNumber];
     pricePerDay: BigNumber;
     rentalDays: BigNumber;
     operator: string;
     fingerprint: string;
     signature: string;
+  };
+
+  export type RentalStruct = {
+    lessor: PromiseOrValue<string>;
+    tenant: PromiseOrValue<string>;
+    endDate: PromiseOrValue<BigNumberish>;
+  };
+
+  export type RentalStructOutput = [string, string, BigNumber] & {
+    lessor: string;
+    tenant: string;
+    endDate: BigNumber;
   };
 }
 
@@ -116,58 +128,64 @@ export interface RentalsInterface extends utils.Interface {
   functions: {
     "acceptListing((address,address,uint256,uint256,uint256[3],uint256[],uint256[],uint256[],address,bytes),address,uint256,uint256,bytes32)": FunctionFragment;
     "acceptOffer((address,address,uint256,uint256,uint256[3],uint256,uint256,address,bytes32,bytes))": FunctionFragment;
-    "assetNonce(address,uint256,address)": FunctionFragment;
-    "bumpAssetNonce(address,uint256)": FunctionFragment;
-    "bumpContractNonce()": FunctionFragment;
-    "bumpSignerNonce()": FunctionFragment;
-    "claim(address,uint256)": FunctionFragment;
-    "contractNonce()": FunctionFragment;
+    "bumpAssetIndex(address,uint256)": FunctionFragment;
+    "bumpContractIndex()": FunctionFragment;
+    "bumpSignerIndex()": FunctionFragment;
+    "claim(address[],uint256[])": FunctionFragment;
     "executeMetaTransaction(address,bytes,bytes)": FunctionFragment;
-    "fee()": FunctionFragment;
-    "feeCollector()": FunctionFragment;
+    "getAssetIndex(address,uint256,address)": FunctionFragment;
+    "getContractIndex()": FunctionFragment;
+    "getFee()": FunctionFragment;
+    "getFeeCollector()": FunctionFragment;
+    "getIsRented(address,uint256)": FunctionFragment;
+    "getNonce(address)": FunctionFragment;
+    "getRental(address,uint256)": FunctionFragment;
+    "getSignerIndex(address)": FunctionFragment;
+    "getToken()": FunctionFragment;
     "initialize(address,address,address,uint256)": FunctionFragment;
-    "isRented(address,uint256)": FunctionFragment;
-    "nonces(address)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
+    "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "rentals(address,uint256)": FunctionFragment;
     "setFee(uint256)": FunctionFragment;
     "setFeeCollector(address)": FunctionFragment;
-    "setOperator(address,uint256,address)": FunctionFragment;
-    "setToken(address)": FunctionFragment;
-    "signerNonce(address)": FunctionFragment;
-    "token()": FunctionFragment;
+    "setManyLandUpdateOperator(address,uint256,uint256[][],address[])": FunctionFragment;
+    "setUpdateOperator(address[],uint256[],address[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "unpause()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "acceptListing"
       | "acceptOffer"
-      | "assetNonce"
-      | "bumpAssetNonce"
-      | "bumpContractNonce"
-      | "bumpSignerNonce"
+      | "bumpAssetIndex"
+      | "bumpContractIndex"
+      | "bumpSignerIndex"
       | "claim"
-      | "contractNonce"
       | "executeMetaTransaction"
-      | "fee"
-      | "feeCollector"
+      | "getAssetIndex"
+      | "getContractIndex"
+      | "getFee"
+      | "getFeeCollector"
+      | "getIsRented"
+      | "getNonce"
+      | "getRental"
+      | "getSignerIndex"
+      | "getToken"
       | "initialize"
-      | "isRented"
-      | "nonces"
       | "onERC721Received"
       | "owner"
+      | "pause"
+      | "paused"
       | "renounceOwnership"
-      | "rentals"
       | "setFee"
       | "setFeeCollector"
-      | "setOperator"
-      | "setToken"
-      | "signerNonce"
-      | "token"
+      | "setManyLandUpdateOperator"
+      | "setUpdateOperator"
       | "transferOwnership"
+      | "unpause"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -185,32 +203,20 @@ export interface RentalsInterface extends utils.Interface {
     values: [Rentals.OfferStruct]
   ): string;
   encodeFunctionData(
-    functionFragment: "assetNonce",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "bumpAssetNonce",
+    functionFragment: "bumpAssetIndex",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "bumpContractNonce",
+    functionFragment: "bumpContractIndex",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "bumpSignerNonce",
+    functionFragment: "bumpSignerIndex",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "claim",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "contractNonce",
-    values?: undefined
+    values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "executeMetaTransaction",
@@ -220,11 +226,40 @@ export interface RentalsInterface extends utils.Interface {
       PromiseOrValue<BytesLike>
     ]
   ): string;
-  encodeFunctionData(functionFragment: "fee", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "feeCollector",
+    functionFragment: "getAssetIndex",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContractIndex",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "getFee", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getFeeCollector",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getIsRented",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getNonce",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRental",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSignerIndex",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(functionFragment: "getToken", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [
@@ -233,14 +268,6 @@ export interface RentalsInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isRented",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nonces",
-    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "onERC721Received",
@@ -252,13 +279,11 @@ export interface RentalsInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "rentals",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "setFee",
@@ -269,26 +294,27 @@ export interface RentalsInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setOperator",
+    functionFragment: "setManyLandUpdateOperator",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
+      PromiseOrValue<BigNumberish>[][],
+      PromiseOrValue<string>[]
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "setToken",
-    values: [PromiseOrValue<string>]
+    functionFragment: "setUpdateOperator",
+    values: [
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<string>[]
+    ]
   ): string;
-  encodeFunctionData(
-    functionFragment: "signerNonce",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(functionFragment: "token", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "acceptListing",
@@ -298,91 +324,105 @@ export interface RentalsInterface extends utils.Interface {
     functionFragment: "acceptOffer",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "assetNonce", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "bumpAssetNonce",
+    functionFragment: "bumpAssetIndex",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "bumpContractNonce",
+    functionFragment: "bumpContractIndex",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "bumpSignerNonce",
+    functionFragment: "bumpSignerIndex",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "contractNonce",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "executeMetaTransaction",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "fee", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "feeCollector",
+    functionFragment: "getAssetIndex",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContractIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getFee", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getFeeCollector",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getIsRented",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getRental", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getSignerIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isRented", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onERC721Received",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "rentals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setFee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setFeeCollector",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setOperator",
+    functionFragment: "setManyLandUpdateOperator",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setToken", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "signerNonce",
+    functionFragment: "setUpdateOperator",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
 
   events: {
     "AssetClaimed(address,uint256,address)": EventFragment;
-    "AssetNonceUpdated(uint256,uint256,address,uint256,address,address)": EventFragment;
+    "AssetIndexUpdated(address,address,uint256,uint256,address)": EventFragment;
     "AssetRented(address,uint256,address,address,address,uint256,uint256,bool,address,bytes)": EventFragment;
-    "ContractNonceUpdated(uint256,uint256,address)": EventFragment;
+    "ContractIndexUpdated(uint256,address)": EventFragment;
     "FeeCollectorUpdated(address,address,address)": EventFragment;
     "FeeUpdated(uint256,uint256,address)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "MetaTransactionExecuted(address,address,bytes)": EventFragment;
-    "OperatorUpdated(address,uint256,address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "SignerNonceUpdated(uint256,uint256,address,address)": EventFragment;
-    "TokenUpdated(address,address,address)": EventFragment;
+    "Paused(address)": EventFragment;
+    "SignerIndexUpdated(address,uint256,address)": EventFragment;
+    "Unpaused(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AssetClaimed"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "AssetNonceUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AssetIndexUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AssetRented"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ContractNonceUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ContractIndexUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FeeCollectorUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FeeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "MetaTransactionExecuted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OperatorUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SignerNonceUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TokenUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SignerIndexUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
 export interface AssetClaimedEventObject {
@@ -397,21 +437,20 @@ export type AssetClaimedEvent = TypedEvent<
 
 export type AssetClaimedEventFilter = TypedEventFilter<AssetClaimedEvent>;
 
-export interface AssetNonceUpdatedEventObject {
-  _from: BigNumber;
-  _to: BigNumber;
+export interface AssetIndexUpdatedEventObject {
+  _signer: string;
   _contractAddress: string;
   _tokenId: BigNumber;
-  _signer: string;
+  _newIndex: BigNumber;
   _sender: string;
 }
-export type AssetNonceUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, string, BigNumber, string, string],
-  AssetNonceUpdatedEventObject
+export type AssetIndexUpdatedEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber, string],
+  AssetIndexUpdatedEventObject
 >;
 
-export type AssetNonceUpdatedEventFilter =
-  TypedEventFilter<AssetNonceUpdatedEvent>;
+export type AssetIndexUpdatedEventFilter =
+  TypedEventFilter<AssetIndexUpdatedEvent>;
 
 export interface AssetRentedEventObject {
   _contractAddress: string;
@@ -443,18 +482,17 @@ export type AssetRentedEvent = TypedEvent<
 
 export type AssetRentedEventFilter = TypedEventFilter<AssetRentedEvent>;
 
-export interface ContractNonceUpdatedEventObject {
-  _from: BigNumber;
-  _to: BigNumber;
+export interface ContractIndexUpdatedEventObject {
+  _newIndex: BigNumber;
   _sender: string;
 }
-export type ContractNonceUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, string],
-  ContractNonceUpdatedEventObject
+export type ContractIndexUpdatedEvent = TypedEvent<
+  [BigNumber, string],
+  ContractIndexUpdatedEventObject
 >;
 
-export type ContractNonceUpdatedEventFilter =
-  TypedEventFilter<ContractNonceUpdatedEvent>;
+export type ContractIndexUpdatedEventFilter =
+  TypedEventFilter<ContractIndexUpdatedEvent>;
 
 export interface FeeCollectorUpdatedEventObject {
   _from: string;
@@ -481,6 +519,13 @@ export type FeeUpdatedEvent = TypedEvent<
 
 export type FeeUpdatedEventFilter = TypedEventFilter<FeeUpdatedEvent>;
 
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
 export interface MetaTransactionExecutedEventObject {
   _userAddress: string;
   _relayerAddress: string;
@@ -494,19 +539,6 @@ export type MetaTransactionExecutedEvent = TypedEvent<
 export type MetaTransactionExecutedEventFilter =
   TypedEventFilter<MetaTransactionExecutedEvent>;
 
-export interface OperatorUpdatedEventObject {
-  _contractAddress: string;
-  _tokenId: BigNumber;
-  _to: string;
-  _sender: string;
-}
-export type OperatorUpdatedEvent = TypedEvent<
-  [string, BigNumber, string, string],
-  OperatorUpdatedEventObject
->;
-
-export type OperatorUpdatedEventFilter = TypedEventFilter<OperatorUpdatedEvent>;
-
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
   newOwner: string;
@@ -519,31 +551,32 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
-export interface SignerNonceUpdatedEventObject {
-  _from: BigNumber;
-  _to: BigNumber;
+export interface PausedEventObject {
+  account: string;
+}
+export type PausedEvent = TypedEvent<[string], PausedEventObject>;
+
+export type PausedEventFilter = TypedEventFilter<PausedEvent>;
+
+export interface SignerIndexUpdatedEventObject {
   _signer: string;
+  _newIndex: BigNumber;
   _sender: string;
 }
-export type SignerNonceUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, string, string],
-  SignerNonceUpdatedEventObject
+export type SignerIndexUpdatedEvent = TypedEvent<
+  [string, BigNumber, string],
+  SignerIndexUpdatedEventObject
 >;
 
-export type SignerNonceUpdatedEventFilter =
-  TypedEventFilter<SignerNonceUpdatedEvent>;
+export type SignerIndexUpdatedEventFilter =
+  TypedEventFilter<SignerIndexUpdatedEvent>;
 
-export interface TokenUpdatedEventObject {
-  _from: string;
-  _to: string;
-  _sender: string;
+export interface UnpausedEventObject {
+  account: string;
 }
-export type TokenUpdatedEvent = TypedEvent<
-  [string, string, string],
-  TokenUpdatedEventObject
->;
+export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
-export type TokenUpdatedEventFilter = TypedEventFilter<TokenUpdatedEvent>;
+export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
 
 export interface Rentals extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -575,7 +608,7 @@ export interface Rentals extends BaseContract {
     acceptListing(
       _listing: Rentals.ListingStruct,
       _operator: PromiseOrValue<string>,
-      _index: PromiseOrValue<BigNumberish>,
+      _conditionIndex: PromiseOrValue<BigNumberish>,
       _rentalDays: PromiseOrValue<BigNumberish>,
       _fingerprint: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -586,34 +619,25 @@ export interface Rentals extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    assetNonce(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    bumpAssetNonce(
+    bumpAssetIndex(
       _contractAddress: PromiseOrValue<string>,
       _tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    bumpContractNonce(
+    bumpContractIndex(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    bumpSignerNonce(
+    bumpSignerIndex(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     claim(
-      _contractAddress: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
+      _contractAddresses: PromiseOrValue<string>[],
+      _tokenIds: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    contractNonce(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     executeMetaTransaction(
       _userAddress: PromiseOrValue<string>,
@@ -622,9 +646,42 @@ export interface Rentals extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    fee(overrides?: CallOverrides): Promise<[BigNumber]>;
+    getAssetIndex(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    feeCollector(overrides?: CallOverrides): Promise<[string]>;
+    getContractIndex(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getFeeCollector(overrides?: CallOverrides): Promise<[string]>;
+
+    getIsRented(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    getNonce(
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getRental(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[Rentals.RentalStructOutput]>;
+
+    getSignerIndex(
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getToken(overrides?: CallOverrides): Promise<[string]>;
 
     initialize(
       _owner: PromiseOrValue<string>,
@@ -633,17 +690,6 @@ export interface Rentals extends BaseContract {
       _fee: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    isRented(
-      _contractAddress: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean] & { result: boolean }>;
-
-    nonces(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     onERC721Received(
       _operator: PromiseOrValue<string>,
@@ -655,21 +701,15 @@ export interface Rentals extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    renounceOwnership(
+    pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    rentals(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, string, BigNumber] & {
-        lessor: string;
-        tenant: string;
-        endDate: BigNumber;
-      }
-    >;
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     setFee(
       _fee: PromiseOrValue<BigNumberish>,
@@ -681,27 +721,27 @@ export interface Rentals extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setOperator(
+    setManyLandUpdateOperator(
       _contractAddress: PromiseOrValue<string>,
       _tokenId: PromiseOrValue<BigNumberish>,
-      _operator: PromiseOrValue<string>,
+      _landTokenIds: PromiseOrValue<BigNumberish>[][],
+      _operators: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setToken(
-      _token: PromiseOrValue<string>,
+    setUpdateOperator(
+      _contractAddresses: PromiseOrValue<string>[],
+      _tokenIds: PromiseOrValue<BigNumberish>[],
+      _operators: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    signerNonce(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    token(overrides?: CallOverrides): Promise<[string]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -709,7 +749,7 @@ export interface Rentals extends BaseContract {
   acceptListing(
     _listing: Rentals.ListingStruct,
     _operator: PromiseOrValue<string>,
-    _index: PromiseOrValue<BigNumberish>,
+    _conditionIndex: PromiseOrValue<BigNumberish>,
     _rentalDays: PromiseOrValue<BigNumberish>,
     _fingerprint: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -720,34 +760,25 @@ export interface Rentals extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  assetNonce(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<BigNumberish>,
-    arg2: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  bumpAssetNonce(
+  bumpAssetIndex(
     _contractAddress: PromiseOrValue<string>,
     _tokenId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  bumpContractNonce(
+  bumpContractIndex(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  bumpSignerNonce(
+  bumpSignerIndex(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   claim(
-    _contractAddress: PromiseOrValue<string>,
-    _tokenId: PromiseOrValue<BigNumberish>,
+    _contractAddresses: PromiseOrValue<string>[],
+    _tokenIds: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  contractNonce(overrides?: CallOverrides): Promise<BigNumber>;
 
   executeMetaTransaction(
     _userAddress: PromiseOrValue<string>,
@@ -756,9 +787,42 @@ export interface Rentals extends BaseContract {
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  fee(overrides?: CallOverrides): Promise<BigNumber>;
+  getAssetIndex(
+    _contractAddress: PromiseOrValue<string>,
+    _tokenId: PromiseOrValue<BigNumberish>,
+    _signer: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-  feeCollector(overrides?: CallOverrides): Promise<string>;
+  getContractIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getFeeCollector(overrides?: CallOverrides): Promise<string>;
+
+  getIsRented(
+    _contractAddress: PromiseOrValue<string>,
+    _tokenId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  getNonce(
+    _signer: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getRental(
+    _contractAddress: PromiseOrValue<string>,
+    _tokenId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<Rentals.RentalStructOutput>;
+
+  getSignerIndex(
+    _signer: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getToken(overrides?: CallOverrides): Promise<string>;
 
   initialize(
     _owner: PromiseOrValue<string>,
@@ -767,17 +831,6 @@ export interface Rentals extends BaseContract {
     _fee: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  isRented(
-    _contractAddress: PromiseOrValue<string>,
-    _tokenId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  nonces(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   onERC721Received(
     _operator: PromiseOrValue<string>,
@@ -789,21 +842,15 @@ export interface Rentals extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  renounceOwnership(
+  pause(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  rentals(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [string, string, BigNumber] & {
-      lessor: string;
-      tenant: string;
-      endDate: BigNumber;
-    }
-  >;
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   setFee(
     _fee: PromiseOrValue<BigNumberish>,
@@ -815,27 +862,27 @@ export interface Rentals extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setOperator(
+  setManyLandUpdateOperator(
     _contractAddress: PromiseOrValue<string>,
     _tokenId: PromiseOrValue<BigNumberish>,
-    _operator: PromiseOrValue<string>,
+    _landTokenIds: PromiseOrValue<BigNumberish>[][],
+    _operators: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setToken(
-    _token: PromiseOrValue<string>,
+  setUpdateOperator(
+    _contractAddresses: PromiseOrValue<string>[],
+    _tokenIds: PromiseOrValue<BigNumberish>[],
+    _operators: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  signerNonce(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  token(overrides?: CallOverrides): Promise<string>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  unpause(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -843,7 +890,7 @@ export interface Rentals extends BaseContract {
     acceptListing(
       _listing: Rentals.ListingStruct,
       _operator: PromiseOrValue<string>,
-      _index: PromiseOrValue<BigNumberish>,
+      _conditionIndex: PromiseOrValue<BigNumberish>,
       _rentalDays: PromiseOrValue<BigNumberish>,
       _fingerprint: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -854,30 +901,21 @@ export interface Rentals extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    assetNonce(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    bumpAssetNonce(
+    bumpAssetIndex(
       _contractAddress: PromiseOrValue<string>,
       _tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    bumpContractNonce(overrides?: CallOverrides): Promise<void>;
+    bumpContractIndex(overrides?: CallOverrides): Promise<void>;
 
-    bumpSignerNonce(overrides?: CallOverrides): Promise<void>;
+    bumpSignerIndex(overrides?: CallOverrides): Promise<void>;
 
     claim(
-      _contractAddress: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
+      _contractAddresses: PromiseOrValue<string>[],
+      _tokenIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
-
-    contractNonce(overrides?: CallOverrides): Promise<BigNumber>;
 
     executeMetaTransaction(
       _userAddress: PromiseOrValue<string>,
@@ -886,9 +924,42 @@ export interface Rentals extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    fee(overrides?: CallOverrides): Promise<BigNumber>;
+    getAssetIndex(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    feeCollector(overrides?: CallOverrides): Promise<string>;
+    getContractIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getFeeCollector(overrides?: CallOverrides): Promise<string>;
+
+    getIsRented(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    getNonce(
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRental(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<Rentals.RentalStructOutput>;
+
+    getSignerIndex(
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getToken(overrides?: CallOverrides): Promise<string>;
 
     initialize(
       _owner: PromiseOrValue<string>,
@@ -897,17 +968,6 @@ export interface Rentals extends BaseContract {
       _fee: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    isRented(
-      _contractAddress: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    nonces(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     onERC721Received(
       _operator: PromiseOrValue<string>,
@@ -919,19 +979,11 @@ export interface Rentals extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+    pause(overrides?: CallOverrides): Promise<void>;
 
-    rentals(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, string, BigNumber] & {
-        lessor: string;
-        tenant: string;
-        endDate: BigNumber;
-      }
-    >;
+    paused(overrides?: CallOverrides): Promise<boolean>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     setFee(
       _fee: PromiseOrValue<BigNumberish>,
@@ -943,63 +995,59 @@ export interface Rentals extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setOperator(
+    setManyLandUpdateOperator(
       _contractAddress: PromiseOrValue<string>,
       _tokenId: PromiseOrValue<BigNumberish>,
-      _operator: PromiseOrValue<string>,
+      _landTokenIds: PromiseOrValue<BigNumberish>[][],
+      _operators: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setToken(
-      _token: PromiseOrValue<string>,
+    setUpdateOperator(
+      _contractAddresses: PromiseOrValue<string>[],
+      _tokenIds: PromiseOrValue<BigNumberish>[],
+      _operators: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
-
-    signerNonce(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    token(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    unpause(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
     "AssetClaimed(address,uint256,address)"(
-      _contractAddress?: null,
-      _tokenId?: null,
+      _contractAddress?: PromiseOrValue<string> | null,
+      _tokenId?: PromiseOrValue<BigNumberish> | null,
       _sender?: null
     ): AssetClaimedEventFilter;
     AssetClaimed(
-      _contractAddress?: null,
-      _tokenId?: null,
+      _contractAddress?: PromiseOrValue<string> | null,
+      _tokenId?: PromiseOrValue<BigNumberish> | null,
       _sender?: null
     ): AssetClaimedEventFilter;
 
-    "AssetNonceUpdated(uint256,uint256,address,uint256,address,address)"(
-      _from?: null,
-      _to?: null,
-      _contractAddress?: null,
-      _tokenId?: null,
-      _signer?: null,
+    "AssetIndexUpdated(address,address,uint256,uint256,address)"(
+      _signer?: PromiseOrValue<string> | null,
+      _contractAddress?: PromiseOrValue<string> | null,
+      _tokenId?: PromiseOrValue<BigNumberish> | null,
+      _newIndex?: null,
       _sender?: null
-    ): AssetNonceUpdatedEventFilter;
-    AssetNonceUpdated(
-      _from?: null,
-      _to?: null,
-      _contractAddress?: null,
-      _tokenId?: null,
-      _signer?: null,
+    ): AssetIndexUpdatedEventFilter;
+    AssetIndexUpdated(
+      _signer?: PromiseOrValue<string> | null,
+      _contractAddress?: PromiseOrValue<string> | null,
+      _tokenId?: PromiseOrValue<BigNumberish> | null,
+      _newIndex?: null,
       _sender?: null
-    ): AssetNonceUpdatedEventFilter;
+    ): AssetIndexUpdatedEventFilter;
 
     "AssetRented(address,uint256,address,address,address,uint256,uint256,bool,address,bytes)"(
-      _contractAddress?: null,
-      _tokenId?: null,
+      _contractAddress?: PromiseOrValue<string> | null,
+      _tokenId?: PromiseOrValue<BigNumberish> | null,
       _lessor?: null,
       _tenant?: null,
       _operator?: null,
@@ -1010,8 +1058,8 @@ export interface Rentals extends BaseContract {
       _signature?: null
     ): AssetRentedEventFilter;
     AssetRented(
-      _contractAddress?: null,
-      _tokenId?: null,
+      _contractAddress?: PromiseOrValue<string> | null,
+      _tokenId?: PromiseOrValue<BigNumberish> | null,
       _lessor?: null,
       _tenant?: null,
       _operator?: null,
@@ -1022,16 +1070,14 @@ export interface Rentals extends BaseContract {
       _signature?: null
     ): AssetRentedEventFilter;
 
-    "ContractNonceUpdated(uint256,uint256,address)"(
-      _from?: null,
-      _to?: null,
+    "ContractIndexUpdated(uint256,address)"(
+      _newIndex?: null,
       _sender?: null
-    ): ContractNonceUpdatedEventFilter;
-    ContractNonceUpdated(
-      _from?: null,
-      _to?: null,
+    ): ContractIndexUpdatedEventFilter;
+    ContractIndexUpdated(
+      _newIndex?: null,
       _sender?: null
-    ): ContractNonceUpdatedEventFilter;
+    ): ContractIndexUpdatedEventFilter;
 
     "FeeCollectorUpdated(address,address,address)"(
       _from?: null,
@@ -1051,29 +1097,19 @@ export interface Rentals extends BaseContract {
     ): FeeUpdatedEventFilter;
     FeeUpdated(_from?: null, _to?: null, _sender?: null): FeeUpdatedEventFilter;
 
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
     "MetaTransactionExecuted(address,address,bytes)"(
-      _userAddress?: null,
-      _relayerAddress?: null,
+      _userAddress?: PromiseOrValue<string> | null,
+      _relayerAddress?: PromiseOrValue<string> | null,
       _functionData?: null
     ): MetaTransactionExecutedEventFilter;
     MetaTransactionExecuted(
-      _userAddress?: null,
-      _relayerAddress?: null,
+      _userAddress?: PromiseOrValue<string> | null,
+      _relayerAddress?: PromiseOrValue<string> | null,
       _functionData?: null
     ): MetaTransactionExecutedEventFilter;
-
-    "OperatorUpdated(address,uint256,address,address)"(
-      _contractAddress?: null,
-      _tokenId?: null,
-      _to?: null,
-      _sender?: null
-    ): OperatorUpdatedEventFilter;
-    OperatorUpdated(
-      _contractAddress?: null,
-      _tokenId?: null,
-      _to?: null,
-      _sender?: null
-    ): OperatorUpdatedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,
@@ -1084,36 +1120,29 @@ export interface Rentals extends BaseContract {
       newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
 
-    "SignerNonceUpdated(uint256,uint256,address,address)"(
-      _from?: null,
-      _to?: null,
-      _signer?: null,
-      _sender?: null
-    ): SignerNonceUpdatedEventFilter;
-    SignerNonceUpdated(
-      _from?: null,
-      _to?: null,
-      _signer?: null,
-      _sender?: null
-    ): SignerNonceUpdatedEventFilter;
+    "Paused(address)"(account?: null): PausedEventFilter;
+    Paused(account?: null): PausedEventFilter;
 
-    "TokenUpdated(address,address,address)"(
-      _from?: null,
-      _to?: null,
+    "SignerIndexUpdated(address,uint256,address)"(
+      _signer?: PromiseOrValue<string> | null,
+      _newIndex?: null,
       _sender?: null
-    ): TokenUpdatedEventFilter;
-    TokenUpdated(
-      _from?: null,
-      _to?: null,
+    ): SignerIndexUpdatedEventFilter;
+    SignerIndexUpdated(
+      _signer?: PromiseOrValue<string> | null,
+      _newIndex?: null,
       _sender?: null
-    ): TokenUpdatedEventFilter;
+    ): SignerIndexUpdatedEventFilter;
+
+    "Unpaused(address)"(account?: null): UnpausedEventFilter;
+    Unpaused(account?: null): UnpausedEventFilter;
   };
 
   estimateGas: {
     acceptListing(
       _listing: Rentals.ListingStruct,
       _operator: PromiseOrValue<string>,
-      _index: PromiseOrValue<BigNumberish>,
+      _conditionIndex: PromiseOrValue<BigNumberish>,
       _rentalDays: PromiseOrValue<BigNumberish>,
       _fingerprint: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1124,34 +1153,25 @@ export interface Rentals extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    assetNonce(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    bumpAssetNonce(
+    bumpAssetIndex(
       _contractAddress: PromiseOrValue<string>,
       _tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    bumpContractNonce(
+    bumpContractIndex(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    bumpSignerNonce(
+    bumpSignerIndex(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     claim(
-      _contractAddress: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
+      _contractAddresses: PromiseOrValue<string>[],
+      _tokenIds: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    contractNonce(overrides?: CallOverrides): Promise<BigNumber>;
 
     executeMetaTransaction(
       _userAddress: PromiseOrValue<string>,
@@ -1160,9 +1180,42 @@ export interface Rentals extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    fee(overrides?: CallOverrides): Promise<BigNumber>;
+    getAssetIndex(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    feeCollector(overrides?: CallOverrides): Promise<BigNumber>;
+    getContractIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getFeeCollector(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getIsRented(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getNonce(
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRental(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getSignerIndex(
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
       _owner: PromiseOrValue<string>,
@@ -1170,17 +1223,6 @@ export interface Rentals extends BaseContract {
       _feeCollector: PromiseOrValue<string>,
       _fee: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    isRented(
-      _contractAddress: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    nonces(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     onERC721Received(
@@ -1193,14 +1235,14 @@ export interface Rentals extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    renounceOwnership(
+    pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    rentals(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setFee(
@@ -1213,27 +1255,27 @@ export interface Rentals extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setOperator(
+    setManyLandUpdateOperator(
       _contractAddress: PromiseOrValue<string>,
       _tokenId: PromiseOrValue<BigNumberish>,
-      _operator: PromiseOrValue<string>,
+      _landTokenIds: PromiseOrValue<BigNumberish>[][],
+      _operators: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setToken(
-      _token: PromiseOrValue<string>,
+    setUpdateOperator(
+      _contractAddresses: PromiseOrValue<string>[],
+      _tokenIds: PromiseOrValue<BigNumberish>[],
+      _operators: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    signerNonce(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    token(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -1242,7 +1284,7 @@ export interface Rentals extends BaseContract {
     acceptListing(
       _listing: Rentals.ListingStruct,
       _operator: PromiseOrValue<string>,
-      _index: PromiseOrValue<BigNumberish>,
+      _conditionIndex: PromiseOrValue<BigNumberish>,
       _rentalDays: PromiseOrValue<BigNumberish>,
       _fingerprint: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1253,34 +1295,25 @@ export interface Rentals extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    assetNonce(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    bumpAssetNonce(
+    bumpAssetIndex(
       _contractAddress: PromiseOrValue<string>,
       _tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    bumpContractNonce(
+    bumpContractIndex(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    bumpSignerNonce(
+    bumpSignerIndex(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     claim(
-      _contractAddress: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
+      _contractAddresses: PromiseOrValue<string>[],
+      _tokenIds: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    contractNonce(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     executeMetaTransaction(
       _userAddress: PromiseOrValue<string>,
@@ -1289,9 +1322,42 @@ export interface Rentals extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    fee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getAssetIndex(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    feeCollector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getContractIndex(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getFeeCollector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getIsRented(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getNonce(
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRental(
+      _contractAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSignerIndex(
+      _signer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
       _owner: PromiseOrValue<string>,
@@ -1299,17 +1365,6 @@ export interface Rentals extends BaseContract {
       _feeCollector: PromiseOrValue<string>,
       _fee: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    isRented(
-      _contractAddress: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    nonces(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     onERC721Received(
@@ -1322,14 +1377,14 @@ export interface Rentals extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    renounceOwnership(
+    pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    rentals(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setFee(
@@ -1342,27 +1397,27 @@ export interface Rentals extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setOperator(
+    setManyLandUpdateOperator(
       _contractAddress: PromiseOrValue<string>,
       _tokenId: PromiseOrValue<BigNumberish>,
-      _operator: PromiseOrValue<string>,
+      _landTokenIds: PromiseOrValue<BigNumberish>[][],
+      _operators: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setToken(
-      _token: PromiseOrValue<string>,
+    setUpdateOperator(
+      _contractAddresses: PromiseOrValue<string>[],
+      _tokenIds: PromiseOrValue<BigNumberish>[],
+      _operators: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    signerNonce(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

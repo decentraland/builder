@@ -8,16 +8,21 @@ import type { Rentals, RentalsInterface } from "../Rentals";
 
 const _abi = [
   {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "_contractAddress",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "_tokenId",
         type: "uint256",
@@ -36,34 +41,28 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "_from",
-        type: "uint256",
+        indexed: true,
+        internalType: "address",
+        name: "_signer",
+        type: "address",
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "_to",
-        type: "uint256",
-      },
-      {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "_contractAddress",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "_tokenId",
         type: "uint256",
       },
       {
         indexed: false,
-        internalType: "address",
-        name: "_signer",
-        type: "address",
+        internalType: "uint256",
+        name: "_newIndex",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -72,20 +71,20 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "AssetNonceUpdated",
+    name: "AssetIndexUpdated",
     type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "_contractAddress",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "_tokenId",
         type: "uint256",
@@ -148,13 +147,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "_from",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "_to",
+        name: "_newIndex",
         type: "uint256",
       },
       {
@@ -164,7 +157,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "ContractNonceUpdated",
+    name: "ContractIndexUpdated",
     type: "event",
   },
   {
@@ -222,12 +215,25 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "uint8",
+        name: "version",
+        type: "uint8",
+      },
+    ],
+    name: "Initialized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: "address",
         name: "_userAddress",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "_relayerAddress",
         type: "address",
@@ -240,37 +246,6 @@ const _abi = [
       },
     ],
     name: "MetaTransactionExecuted",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "address",
-        name: "_contractAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "_tokenId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "_to",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "_sender",
-        type: "address",
-      },
-    ],
-    name: "OperatorUpdated",
     type: "event",
   },
   {
@@ -297,21 +272,28 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "uint256",
-        name: "_from",
-        type: "uint256",
+        internalType: "address",
+        name: "account",
+        type: "address",
       },
+    ],
+    name: "Paused",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "_to",
-        type: "uint256",
-      },
-      {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "_signer",
         type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_newIndex",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -320,7 +302,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "SignerNonceUpdated",
+    name: "SignerIndexUpdated",
     type: "event",
   },
   {
@@ -328,24 +310,12 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "contract IERC20",
-        name: "_from",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "contract IERC20",
-        name: "_to",
-        type: "address",
-      },
-      {
-        indexed: false,
         internalType: "address",
-        name: "_sender",
+        name: "account",
         type: "address",
       },
     ],
-    name: "TokenUpdated",
+    name: "Unpaused",
     type: "event",
   },
   {
@@ -374,7 +344,7 @@ const _abi = [
           },
           {
             internalType: "uint256[3]",
-            name: "nonces",
+            name: "indexes",
             type: "uint256[3]",
           },
           {
@@ -414,7 +384,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "_index",
+        name: "_conditionIndex",
         type: "uint256",
       },
       {
@@ -459,7 +429,7 @@ const _abi = [
           },
           {
             internalType: "uint256[3]",
-            name: "nonces",
+            name: "indexes",
             type: "uint256[3]",
           },
           {
@@ -502,35 +472,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "assetNonce",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "_contractAddress",
         type: "address",
       },
@@ -540,21 +481,21 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "bumpAssetNonce",
+    name: "bumpAssetIndex",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
-    name: "bumpContractNonce",
+    name: "bumpContractIndex",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
-    name: "bumpSignerNonce",
+    name: "bumpSignerIndex",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -562,32 +503,19 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_contractAddress",
-        type: "address",
+        internalType: "address[]",
+        name: "_contractAddresses",
+        type: "address[]",
       },
       {
-        internalType: "uint256",
-        name: "_tokenId",
-        type: "uint256",
+        internalType: "uint256[]",
+        name: "_tokenIds",
+        type: "uint256[]",
       },
     ],
     name: "claim",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "contractNonce",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -620,8 +548,24 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "fee",
+    inputs: [
+      {
+        internalType: "address",
+        name: "_contractAddress",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_signer",
+        type: "address",
+      },
+    ],
+    name: "getAssetIndex",
     outputs: [
       {
         internalType: "uint256",
@@ -634,10 +578,152 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "feeCollector",
+    name: "getContractIndex",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getFee",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getFeeCollector",
     outputs: [
       {
         internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_contractAddress",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "getIsRented",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_signer",
+        type: "address",
+      },
+    ],
+    name: "getNonce",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_contractAddress",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "getRental",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "lessor",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "tenant",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "endDate",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Rentals.Rental",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_signer",
+        type: "address",
+      },
+    ],
+    name: "getSignerIndex",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getToken",
+    outputs: [
+      {
+        internalType: "contract IERC20",
         name: "",
         type: "address",
       },
@@ -671,49 +757,6 @@ const _abi = [
     name: "initialize",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_contractAddress",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "isRented",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "result",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "nonces",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -765,43 +808,29 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "renounceOwnership",
+    name: "pause",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "rentals",
+    inputs: [],
+    name: "paused",
     outputs: [
       {
-        internalType: "address",
-        name: "lessor",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "tenant",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "endDate",
-        type: "uint256",
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -843,12 +872,17 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "address",
-        name: "_operator",
-        type: "address",
+        internalType: "uint256[][]",
+        name: "_landTokenIds",
+        type: "uint256[][]",
+      },
+      {
+        internalType: "address[]",
+        name: "_operators",
+        type: "address[]",
       },
     ],
-    name: "setOperator",
+    name: "setManyLandUpdateOperator",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -856,46 +890,24 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IERC20",
-        name: "_token",
-        type: "address",
+        internalType: "address[]",
+        name: "_contractAddresses",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "_tokenIds",
+        type: "uint256[]",
+      },
+      {
+        internalType: "address[]",
+        name: "_operators",
+        type: "address[]",
       },
     ],
-    name: "setToken",
+    name: "setUpdateOperator",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "signerNonce",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "token",
-    outputs: [
-      {
-        internalType: "contract IERC20",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -907,6 +919,13 @@ const _abi = [
       },
     ],
     name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "unpause",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
