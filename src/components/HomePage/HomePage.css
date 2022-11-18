@@ -2,19 +2,17 @@
   padding-top: 32px;
 }
 
-.HomePage {
-  font-size: 17px;
-}
-
 .HomePage > .ui.container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.HomePage .title {
+.HomePage > .ui.container > .title {
   margin-top: 132px;
   margin-bottom: 40px;
+  font-size: 28px;
+  line-height: 34px;
 }
 
 .HomePage > .ui.container > .ui.cards > .ui.card {
@@ -39,6 +37,8 @@
   margin-top: 32px;
   margin-bottom: 8px;
   height: 30px;
+  font-size: 21px;
+  line-height: 30px;
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-description {
@@ -50,28 +50,29 @@
   color: var(--light-gray);
 }
 
-.HomePage .ui.cards .ui.card .card-image {
+.HomePage .ui.cards .ui.card > .content > .description > .card-image {
   height: 96px;
   width: 96px;
   margin: 40px 79px;
 }
 
-.HomePage .ui.cards .ui.card .card-image.collections {
+.HomePage .ui.cards .ui.card > .content > .description > .card-image.collections {
   background: url('../../images/home-page-collections.svg');
 }
 
-.HomePage .ui.cards .ui.card .card-image.scenes {
+.HomePage .ui.cards .ui.card > .content > .description > .card-image.scenes {
   background: url('../../images/home-page-scenes.svg');
 }
 
-.HomePage .ui.cards .ui.card .card-image.land {
+.HomePage .ui.cards .ui.card > .content > .description > .card-image.land {
   background: url('../../images/home-page-land.svg');
 }
 
-.HomePage .ui.cards .ui.card .card-image.names {
+.HomePage .ui.cards .ui.card > .content > .description > .card-image.names {
   background: url('../../images/home-page-names.svg');
 }
 
-.HomePage .ui.cards .ui.card button {
+.HomePage .ui.cards .ui.card > .content.extra > button {
   padding: 13px 0;
+  margin-bottom: 21px;
 }
