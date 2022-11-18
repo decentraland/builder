@@ -140,7 +140,9 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   <Table.Row className="row">
                     <Table.HeaderCell width={5}>{t('global.item')}</Table.HeaderCell>
                     <Table.HeaderCell width={7}>{t('global.address')}</Table.HeaderCell>
-                    <Table.HeaderCell width={2}>{t('global.amount')}</Table.HeaderCell>
+                    <Table.HeaderCell width={2}>
+                      <span className="amountText">{t('global.amount')}</span>
+                    </Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
