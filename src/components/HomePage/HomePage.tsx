@@ -19,7 +19,7 @@ const localStorage = getLocalStorage()
 const cards = [NavigationTab.COLLECTIONS, NavigationTab.SCENES, NavigationTab.LAND, NavigationTab.NAMES]
 
 export const HomePage: React.FC<Props> = props => {
-  const { isLoggingIn, onNavigate } = props
+  const { isLoggingIn, isLoggedIn, onNavigate } = props
   const lastVisitedSection = localStorage.getItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY)
 
   const handleOnNavigate = (path: string) => {
@@ -61,7 +61,7 @@ export const HomePage: React.FC<Props> = props => {
     return <LoadingPage />
   }
 
-  if (lastVisitedSection && lastVisitedSection !== locations.root()) {
+  if (isLoggedIn && lastVisitedSection && lastVisitedSection !== locations.root()) {
     onNavigate(lastVisitedSection)
   }
 
