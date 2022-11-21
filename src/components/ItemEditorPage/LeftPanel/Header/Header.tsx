@@ -81,7 +81,6 @@ export default class Header extends React.PureComponent<Props> {
         {isLoggedIn ? (
           <Dropdown trigger={<div className="block add" />} inline direction="left">
             <Dropdown.Menu>
-              <Dropdown.Item onClick={this.handleNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
               <Dropdown.Item onClick={this.handleNewCollection}>{t('item_editor.left_panel.actions.new_collection')}</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

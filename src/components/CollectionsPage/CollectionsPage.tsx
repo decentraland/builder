@@ -166,31 +166,29 @@ export default class CollectionsPage extends React.PureComponent<Props> {
               </Tabs.Tab>
               <Column align="right">
                 <Row className="actions">
-                  <Dropdown
-                    trigger={
-                      <Button basic className="create-item">
-                        <Icon name="add-active" />
-                      </Button>
-                    }
-                    inline
-                    direction="left"
-                  >
-                    <Dropdown.Menu>
-                      {this.isCollectionTabActive() ? (
+                  {this.isCollectionTabActive() && (
+                    <Dropdown
+                      trigger={
+                        <Button basic className="create-item">
+                          <Icon name="add-active" />
+                        </Button>
+                      }
+                      inline
+                      direction="left"
+                    >
+                      <Dropdown.Menu>
                         <>
                           <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
-                          {isThirdPartyManager ? (
+                          {isThirdPartyManager && (
                             <Dropdown.Item
                               text={t('collections_page.new_third_party_collection')}
                               onClick={this.handleNewThirdPartyCollection}
                             />
-                          ) : null}
+                          )}
                         </>
-                      ) : (
-                        <Dropdown.Item text={t('collections_page.new_item')} onClick={this.handleNewItem} />
-                      )}
-                    </Dropdown.Menu>
-                  </Dropdown>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  )}
                   <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
                     {t('item_editor.open')}
                   </Button>
