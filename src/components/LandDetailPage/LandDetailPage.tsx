@@ -185,7 +185,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                       </Dropdown>
                     </Row>
                   </Column>
-                ) : land.roles.includes(RoleType.TENANT) ? (
+                ) : land.roles.includes(RoleType.TENANT) && rental && rental.endsAt.getTime() > Date.now() ? (
                   <Dropdown
                     trigger={
                       <Button basic>
