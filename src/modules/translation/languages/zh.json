@@ -1036,14 +1036,18 @@
     "filter": {
       "all_status": "所有状态",
       "all_assignees": "所有受让人",
+      "all_types": "所有类型",
       "not_reviewed": "尚未审核",
       "approved": "已批准",
       "rejected": "拒绝了",
       "under_review": "审查中",
       "to_review": "回顾",
-      "mvmf_collections": "元界节日合集"
+      "mvmf_collections": "元界节日合集",
+      "standard": "标准",
+      "third_party": "链接的"
     },
-    "search_placeholder": "按名称或所有者地址在 {count} 个结果之间搜索...",
+    "search_placeholder": "按名称或所有者地址搜索",
+    "results": "{count} {count，复数，一个{result}其他{results}}",
     "collections": "{count} {count, plural, one {个合集} other {个收藏}}",
     "empty_collections": "尚无要审查的收藏集。",
     "assign_modal": {
@@ -1219,7 +1223,7 @@
   },
   "collection": {
     "type": {
-      "decentraland": "采集",
+      "standard": "采集",
       "third_party": "链接的可穿戴设备系列"
     }
   },

@@ -254,7 +254,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       let data = ''
 
-      if (getCollectionType(collection) === CollectionType.DECENTRALAND) {
+      if (getCollectionType(collection) === CollectionType.STANDARD) {
         const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
         const from: string = yield select(getAddress)
         const maticChainId = getChainIdByNetwork(Network.MATIC)

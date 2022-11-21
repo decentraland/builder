@@ -82,7 +82,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   handleTabChange = (tab: ItemType) => {
     const { onNavigate, collection } = this.props
     this.setState({ tab })
-    onNavigate(locations.collectionDetail(collection!.id, CollectionType.DECENTRALAND, { tab }))
+    onNavigate(locations.collectionDetail(collection!.id, CollectionType.STANDARD, { tab }))
   }
 
   renderMisingItemPricePopup(itemType: ItemType) {

@@ -14,8 +14,8 @@ import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Item, ItemType, ItemRarity, WearableData, Rarity, ItemApprovalData } from 'modules/item/types'
-import { Collection } from 'modules/collection/types'
 import { Account } from 'modules/committee/types'
+import { Collection, CollectionType } from 'modules/collection/types'
 import { Cheque, ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
 import { ForumPost } from 'modules/forum/types'
@@ -35,6 +35,7 @@ export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/proje
 export type FetchCollectionsParams = {
   assignee?: string
   status?: CurationStatus
+  type?: CollectionType
   synced?: boolean
   sort?: CurationSortOptions
   q?: string
@@ -454,6 +455,10 @@ const toRemoteCollectionQueryParameters = (params?: FetchCollectionsParams) => {
 
   if (params?.status) {
     queryParams.append('status', params.status)
+  }
+
+  if (params?.type) {
+    queryParams.append('type', params.type)
   }
 
   if (params?.synced) {
