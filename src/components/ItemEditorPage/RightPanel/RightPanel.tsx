@@ -228,13 +228,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  handleRemoveFromCollection = () => {
-    const { selectedItem, onSetCollection } = this.props
-    if (selectedItem) {
-      onSetCollection(selectedItem, null)
-    }
-  }
-
   handleOpenThumbnailDialog = () => {
     const { selectedItem, onOpenModal } = this.props
 
@@ -405,9 +398,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               })}
                               onClick={this.handleAddRepresentationToItem}
                             />
-                          ) : null}
-                          {item.collectionId ? (
-                            <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
                           ) : null}
                           <ConfirmDelete
                             name={name}

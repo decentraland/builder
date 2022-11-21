@@ -13,6 +13,7 @@ import { isEmoteData, ItemType, WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
 import ItemImage from 'components/ItemImage'
+import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
 import styles from './CollectionItem.module.css'
@@ -42,9 +43,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
   }
 
-  handleRemoveFromCollection = () => {
-    const { item, onRemoveFromCollection } = this.props
-    onRemoveFromCollection(item, null)
+  handleRemoveItem = () => {
+    const { item, onRemoveItem } = this.props
+    onRemoveItem(item)
   }
 
   renderPrice() {
@@ -149,7 +150,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
                       <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
                     ) : null}
                     {!item.isPublished ? (
-                      <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
+                      <ConfirmDelete
+                        name={item.name}
+                        onDelete={this.handleRemoveItem}
+                        trigger={<Dropdown.Item text={t('collection_item.remove_item')} />}
+                      />
                     ) : null}
                     <ResetItemButton itemId={item.id} />
                   </>
