@@ -33,6 +33,7 @@ export type Props = {
   isLoading: boolean
   isPlayingEmote: boolean
   wearableController: IPreviewController | null
+  hasUserOrphanItems: boolean
   onSetItems: typeof setItems
   onSetCollection: typeof setCollection
   onFetchOrphanItems: typeof fetchItemsRequest
@@ -63,6 +64,7 @@ export type MapStateProps = Pick<
   | 'isReviewing'
   | 'isLoading'
   | 'isPlayingEmote'
+  | 'hasUserOrphanItems'
 >
 export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onSetCollection' | 'onFetchOrphanItems' | 'onFetchCollections'>
 export type MapDispatch = Dispatch<

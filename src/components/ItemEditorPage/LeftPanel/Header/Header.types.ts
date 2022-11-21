@@ -8,7 +8,6 @@ import { deleteItemRequest, DeleteItemRequestAction } from 'modules/item/actions
 export type Props = {
   address?: string
   collection?: Collection
-  userHasOrphanItems?: boolean
   isLoggedIn: boolean
   isReviewing: boolean
   onOpenModal: typeof openModal
@@ -16,8 +15,9 @@ export type Props = {
   onDeleteCollection: typeof deleteCollectionRequest
   onDeleteItem: typeof deleteItemRequest
   hasEditRights: boolean
+  hasUserOrphanItems: boolean
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'collection' | 'isLoggedIn' | 'isReviewing' | 'hasEditRights'>
+export type MapStateProps = Pick<Props, 'address' | 'collection' | 'isLoggedIn' | 'isReviewing' | 'hasEditRights' | 'hasUserOrphanItems'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onDeleteCollection' | 'onDeleteItem'>
 export type MapDispatch = Dispatch<OpenModalAction | CallHistoryMethodAction | DeleteCollectionRequestAction | DeleteItemRequestAction>

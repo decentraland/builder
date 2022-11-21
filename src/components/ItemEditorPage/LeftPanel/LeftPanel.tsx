@@ -45,11 +45,26 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const { address, onFetchOrphanItems } = this.props
     this.fetchResource()
+    // TODO: Remove this call when there are no users with orphan items
+    if (address) {
+      onFetchOrphanItems(address, { limit: 1, page: 1 })
+    }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { isConnected, address, selectedCollectionId, selectedItemId, orphanItems, totalItems, visibleItems, onSetItems } = this.props
+    const {
+      isConnected,
+      address,
+      selectedCollectionId,
+      selectedItemId,
+      orphanItems,
+      totalItems,
+      visibleItems,
+      onSetItems,
+      onFetchOrphanItems
+    } = this.props
     const { initialPage, pages } = this.state
     // when a newly created item redirects to the item editor, iterate over the pages until finding it
     if (
@@ -77,6 +92,10 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       }
       if (prevProps.selectedCollectionId !== selectedCollectionId) {
         this.setState({ pages: [INITIAL_PAGE] })
+      }
+      // TODO: Remove this call when there are no users with orphan items
+      if (address && address !== prevProps.address) {
+        onFetchOrphanItems(address, { limit: 1, page: 1 })
       }
     }
   }
@@ -139,14 +158,14 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       isPlayingEmote,
       isConnected,
       wearableController,
+      isLoading: isLoadingOrphanItems,
+      hasUserOrphanItems,
       onSetItems,
       onSetCollection,
-      isLoading: isLoadingOrphanItems,
       onSetReviewedItems
     } = this.props
     const { pages } = this.state
-    const hasOrphanItems = allItems.some(item => item.collectionId === null)
-    const showTabs = !selectedCollectionId && hasOrphanItems
+    const showTabs = !selectedCollectionId && hasUserOrphanItems
     const showCollections = this.isCollectionTabActive() && !selectedCollectionId
     const showItems = !this.isCollectionTabActive() || selectedCollectionId
     return (
@@ -181,7 +200,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
               } else if (items.length === 0 && selectedCollectionId) {
                 return (
                   <>
-                    <Header userHasOrphanItems={hasOrphanItems} />
+                    <Header />
                     <div className="empty">
                       <div className="subtitle">
                         {isReviewing ? t('item_editor.left_panel.no_items_to_review') : t('item_editor.left_panel.empty_collection')}
@@ -193,7 +212,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
 
               return (
                 <>
-                  <Header userHasOrphanItems={hasOrphanItems} />
+                  <Header />
                   {showTabs ? (
                     <Tabs isFullscreen>
                       <Tabs.Tab active={isCollectionTab} onClick={() => this.handleTabChange(ItemEditorTabs.COLLECTIONS)}>

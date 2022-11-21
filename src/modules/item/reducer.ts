@@ -116,6 +116,7 @@ export type ItemState = {
   data: Record<string, Item>
   rarities: Rarity[]
   loading: LoadingState
+  hasUserOrphanItems: boolean
   error: string | null
   pagination: Record<string, ItemPaginationData> | null
 }
@@ -124,6 +125,7 @@ export const INITIAL_STATE: ItemState = {
   data: {},
   rarities: [],
   loading: [],
+  hasUserOrphanItems: false,
   error: null,
   pagination: null
 }
@@ -205,6 +207,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_COLLECTION_ITEMS_SUCCESS: {
       const { paginationIndex, items, paginationStats } = action.payload
       const hasPagination = paginationStats !== undefined
+      const hasUserOrphanItems =
+        action.type === FETCH_ITEMS_SUCCESS ? items.some(item => item.collectionId === undefined) : state.hasUserOrphanItems
       return {
         ...state,
         data: {
@@ -226,6 +230,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               }
             : {})
         },
+        hasUserOrphanItems,
         error: null
       }
     }

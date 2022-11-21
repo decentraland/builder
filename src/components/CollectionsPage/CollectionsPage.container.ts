@@ -7,7 +7,8 @@ import { openModal } from 'modules/modal/actions'
 import {
   getPaginationData as getItemsPaginationData,
   getLoading as getLoadingItems,
-  getPaginatedCollectionItems
+  getPaginatedCollectionItems,
+  hasUserOrphanItems
 } from 'modules/item/selectors'
 import { getLoading as getLoadingCollections, getPaginatedCollections, getPaginationData } from 'modules/collection/selectors'
 import { setCollectionPageView } from 'modules/ui/collection/actions'
@@ -36,7 +37,8 @@ const mapState = (state: RootState): MapStateProps => {
     isThirdPartyManager: isThirdPartyManager(state),
     isLoadingCollections: isLoadingType(getLoadingCollections(state), FETCH_COLLECTIONS_REQUEST),
     isLoadingItems: isLoadingType(getLoadingItems(state), FETCH_ITEMS_REQUEST),
-    isMVMFEnabled: getIsMVMFEnabled(state)
+    isMVMFEnabled: getIsMVMFEnabled(state),
+    hasUserOrphanItems: hasUserOrphanItems(state)
   }
 }
 

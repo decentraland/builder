@@ -39,18 +39,21 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   componentDidMount() {
-    const { onFetchCollections, address } = this.props
+    const { address, onFetchCollections, onFetchOrphanItems } = this.props
     // fetch if already connected
     if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
+      onFetchOrphanItems(address, { page: 1, limit: 1 })
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { onFetchCollections, address } = this.props
+    const { address, onFetchCollections, onFetchOrphanItems } = this.props
     // if it's the first page and it was not connected when mounting
     if (address && address !== prevProps.address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
+      // TODO: Remove this call when there are no users with orphan items
+      onFetchOrphanItems(address, { page: 1, limit: 1 })
     }
   }
 
@@ -189,21 +192,20 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const { collectionsPaginationData, items, itemsPaginationData, view, isLoadingItems, isLoadingCollections } = this.props
+    const { collectionsPaginationData, itemsPaginationData, view, isLoadingItems, isLoadingCollections, hasUserOrphanItems } = this.props
     const { page } = this.state
     const totalCollections = collectionsPaginationData?.total
     const totalItems = itemsPaginationData?.total
     const count = this.isCollectionTabActive() ? totalCollections : totalItems
     const totalPages = this.isCollectionTabActive() ? collectionsPaginationData?.totalPages : itemsPaginationData?.totalPages
-    // TODO: Remove tabs when there are no users with orphan items
-    const hasOrphanItems = items.some(item => item.collectionId === null)
 
     return (
       <>
         <EventBanner />
         <div className="filters">
           <Container>
-            {hasOrphanItems && (
+            {hasUserOrphanItems && (
+              // TODO: Remove tabs when there are no users with orphan items
               <Tabs isFullscreen>
                 <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.COLLECTIONS)}>
                   {t('collections_page.collections')}
@@ -218,7 +220,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
               <Column>
                 <Row>{!isLoadingItems && !!count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
               </Column>
-              {!hasOrphanItems && this.renderRightActions()}
+              {!hasUserOrphanItems && this.renderRightActions()}
             </Row>
           </Container>
         </div>
