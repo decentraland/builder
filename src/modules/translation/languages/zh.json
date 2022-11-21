@@ -213,14 +213,17 @@
     "change_item_file": "编辑制图表达",
     "error": {
       "item_too_big": "整个项目太大，无法上传。 所有文件的最大大小为 {size}。",
-      "file_too_big": "该文件太大，无法上传。 最大尺寸为 {size}。",
-      "thumbnail_file_too_big": "缩略图文件太大，无法上传。 最大尺寸为 {size}。",
+      "file_too_big": "{title}.{enter}文件大小限制为 {size}。减小文件的大小，然后重试。",
+      "file_too_big_title": "文件太大，无法上传",
+      "thumbnail_file_too_big": "文件太大，无法上传。 最大文件大小限制为 {size}。",
       "wrong_extension": "该文件的扩展名无效。",
       "invalid_files": "文件似乎无效或损坏，请检查并重试。",
       "missing_model_file": "找不到有效的模型文件。",
       "invalid_content_path": "属性 \"{name}\" 的无效路径 \"{path}\"，找不到文件。",
       "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。",
-      "invalid_model_files_representation": "该文件似乎有多个表示，请查看它们并重试。"
+      "invalid_model_files_representation": "该文件似乎有多个表示，请查看它们并重试。",
+      "emote_duration_too_long": "{title}.{enter}表情的持续时间限制为 {duration} 秒。{enter}减少表情的持续时间，然后重试。",
+      "emote_duration_too_long_title": "您的表情超过了最长持续时间（以秒为单位）"
     },
     "emote_notice": "表情适用于所有体型。"
   },

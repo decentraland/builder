@@ -10,7 +10,7 @@ fi
 echo "Running prettier"
 npm run pre-commit:fix:prettier -- $FILES
 
-TS_FILES=$(echo $FILES | { grep -E '(js|ts|tsx)$' || true; })
+TS_FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g' | { grep -E '(js|ts|tsx)$' || true; })
 
 if [[ ! -z "$TS_FILES" ]];then
     echo "Running lints"

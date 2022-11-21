@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  border-radius: 6px;
+  border-radius: 8px;
   height: 276px;
   width: 100%;
   background-color: rgba(var(--dark-raw), 0.48);

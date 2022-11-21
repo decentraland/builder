@@ -1,4 +1,8 @@
 .zipInfo {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 32px;
   color: var(--secondary-text);
   display: flex;
   align-items: center;
@@ -17,4 +21,33 @@
 .error {
   margin-top: 15px;
   width: 100%;
+}
+
+.errorContainer {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 24px 30px;
+  margin: 16px;
+  width: calc(100% - 32px);
+  border-radius: 8px;
+  background-color: rgba(115, 110, 125, 0.16);
+  align-items: center;
+  text-align: justify;
+}
+
+.errorMessage {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.errorIcon {
+  margin-right: 24px;
+  height: 48px;
+  width: 48px;
+  background: url('../../icons/alert.svg') no-repeat;
+  background-size: contain;
+  filter: invert(65%) sepia(60%) saturate(599%) hue-rotate(323deg) brightness(104%) contrast(98%); /* #fc9965 */
 }
