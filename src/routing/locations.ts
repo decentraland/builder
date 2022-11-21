@@ -30,11 +30,11 @@ export const locations = {
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
   collectionDetail: (
     collectionId = ':collectionId',
-    type: CollectionType = CollectionType.DECENTRALAND,
+    type: CollectionType = CollectionType.STANDARD,
     options?: CollectionDetailOptions
   ) => {
     switch (type) {
-      case CollectionType.DECENTRALAND:
+      case CollectionType.STANDARD:
         return injectParams(`/collections/${collectionId}`, { tab: 'tab' }, options)
       case CollectionType.THIRD_PARTY:
         return injectParams(locations.thirdPartyCollectionDetail(collectionId), { tab: 'tab' }, options)

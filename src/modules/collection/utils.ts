@@ -68,7 +68,7 @@ export function getCollectionType(collection: Collection): CollectionType {
       return CollectionType.THIRD_PARTY
     case URNType.COLLECTIONS_V2:
     case URNType.BASE_AVATARS:
-      return CollectionType.DECENTRALAND
+      return CollectionType.STANDARD
     default:
       throw new Error(`Tried to get a collection type from an invalid URN: ${collection.urn}`)
   }

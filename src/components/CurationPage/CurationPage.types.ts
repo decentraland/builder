@@ -4,16 +4,24 @@ import { FetchCollectionsParams } from 'lib/api/builder'
 import { FetchCollectionsRequestAction } from 'modules/collection/actions'
 import { CollectionPaginationData } from 'modules/collection/reducer'
 import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
-import { Collection } from 'modules/collection/types'
+import { Collection, CollectionType } from 'modules/collection/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 
 export enum CurationExtraStatuses {
   ALL_STATUS = 'ALL_STATUS'
 }
 
+export enum CollectionExtraTypes {
+  ALL_TYPES = 'ALL_TYPES',
+}
+
 export const CurationFilterOptions = { ...CurationStatus, ...CurationExtraStatuses }
 
-export type Filters = CurationStatus | CurationExtraStatuses
+export const CollectionFilterOptions = { ...CollectionType, ...CollectionExtraTypes }
+
+export type CurationStatuses = CurationStatus | CurationExtraStatuses
+
+export type CollectionTypes = CollectionType | CollectionExtraTypes
 
 export type Props = {
   wallet: Wallet
@@ -33,8 +41,9 @@ export type Props = {
 export type State = {
   page: number
   sortBy: CurationSortOptions
-  filterByStatus: Filters
+  filterByStatus: CurationStatuses
   filterByTags: string[]
+  filterByType: CollectionTypes
   assignee: string
   searchText: string
 }

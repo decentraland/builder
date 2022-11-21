@@ -129,12 +129,12 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   render() {
-    const { name, isLoading, onClose, onSkip } = this.props
+    const { name, isLoading, mountNode, onClose, onSkip } = this.props
     const { isFree, isOwnerBeneficiary, price = '' } = this.state
     const beneficiary = this.getBeneficiary()
 
     return (
-      <Modal name={name} size="tiny" onClose={onClose}>
+      <Modal name={name} size="tiny" onClose={onClose} mountNode={mountNode}>
         <ModalNavigation title={t('edit_price_and_beneficiary_modal.title')} onClose={onClose} />
 
         <Form onSubmit={this.handleSubmit}>

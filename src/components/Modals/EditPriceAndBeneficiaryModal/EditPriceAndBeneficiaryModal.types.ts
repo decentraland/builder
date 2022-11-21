@@ -13,6 +13,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   metadata: EditPriceAndBeneficiaryModalMetadata
   itemSortedContents?: Record<string, Blob>
+  mountNode?: HTMLDivElement | undefined
   onSave: typeof saveItemRequest
   onSetPriceAndBeneficiary: typeof setPriceAndBeneficiaryRequest
   onSkip?: () => void
@@ -29,7 +30,7 @@ export type EditPriceAndBeneficiaryModalMetadata = {
   itemId: string
 }
 
-export type OwnProps = Pick<Props, 'metadata' | 'item'>
+export type OwnProps = Pick<Props, 'metadata' | 'item' | 'mountNode'>
 export type MapStateProps = Pick<Props, 'item' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onSave' | 'onSetPriceAndBeneficiary'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | SetPriceAndBeneficiaryRequestAction>

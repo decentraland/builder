@@ -69,7 +69,7 @@ export const getAuthorizedCollections = createSelector<
   collections.filter(collection => {
     const type = getCollectionType(collection)
     switch (type) {
-      case CollectionType.DECENTRALAND:
+      case CollectionType.STANDARD:
         return address && canSeeCollection(collection, address)
       case CollectionType.THIRD_PARTY: {
         const thirdParty = getThirdPartyForCollection(thirdParties, collection)
