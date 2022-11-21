@@ -8,6 +8,7 @@ import { deleteItemRequest, DeleteItemRequestAction } from 'modules/item/actions
 export type Props = {
   address?: string
   collection?: Collection
+  userHasOrphanItems?: boolean
   isLoggedIn: boolean
   isReviewing: boolean
   onOpenModal: typeof openModal

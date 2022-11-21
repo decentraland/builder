@@ -145,7 +145,8 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       onSetReviewedItems
     } = this.props
     const { pages } = this.state
-    const showTabs = !selectedCollectionId
+    const hasOrphanItems = allItems.some(item => item.collectionId === null)
+    const showTabs = !selectedCollectionId && hasOrphanItems
     const showCollections = this.isCollectionTabActive() && !selectedCollectionId
     const showItems = !this.isCollectionTabActive() || selectedCollectionId
     return (
@@ -180,7 +181,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
               } else if (items.length === 0 && selectedCollectionId) {
                 return (
                   <>
-                    <Header />
+                    <Header userHasOrphanItems={hasOrphanItems} />
                     <div className="empty">
                       <div className="subtitle">
                         {isReviewing ? t('item_editor.left_panel.no_items_to_review') : t('item_editor.left_panel.empty_collection')}
@@ -192,7 +193,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
 
               return (
                 <>
-                  <Header />
+                  <Header userHasOrphanItems={hasOrphanItems} />
                   {showTabs ? (
                     <Tabs isFullscreen>
                       <Tabs.Tab active={isCollectionTab} onClick={() => this.handleTabChange(ItemEditorTabs.COLLECTIONS)}>

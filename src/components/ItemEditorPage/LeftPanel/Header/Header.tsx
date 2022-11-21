@@ -50,7 +50,7 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   renderSelectedCollection() {
-    const { collection, address = '' } = this.props
+    const { collection, address = '', userHasOrphanItems = false } = this.props
     const isOwner = collection && isEqual(collection.owner, address)
     return collection ? (
       <>
@@ -63,7 +63,9 @@ export default class Header extends React.PureComponent<Props> {
             <Dropdown.Menu>
               <Dropdown.Item onClick={this.handleEditName}>{t('item_editor.left_panel.actions.edit_name')}</Dropdown.Item>
               <Dropdown.Item onClick={this.handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
-              <Dropdown.Item onClick={this.handleAddExistingItem}>{t('item_editor.left_panel.actions.add_existing_item')}</Dropdown.Item>
+              {userHasOrphanItems && (
+                <Dropdown.Item onClick={this.handleAddExistingItem}>{t('item_editor.left_panel.actions.add_existing_item')}</Dropdown.Item>
+              )}
               <ConfirmDelete name={collection.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
             </Dropdown.Menu>
           </Dropdown>
