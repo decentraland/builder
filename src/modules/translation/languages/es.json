@@ -1388,7 +1388,7 @@
     "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado.",
     "next": "Siguiente",
     "total_items": "Total de items para mintear",
-    "confirm_title":  "Estas por mintear  {count} {count, plural, un {item} other {items}}, cada item va a ser minteado a la dirección indicada con la cantidad seleccionada.",
+    "confirm_title": "Estas por mintear  {count} {count, plural, un {item} other {items}}, cada item va a ser minteado a la dirección indicada con la cantidad seleccionada.",
     "beneficiary": "Beneficiario"
   },
   "reset_item_modal": {
