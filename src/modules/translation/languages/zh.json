@@ -1392,7 +1392,7 @@
     "unsynced_warning": "有些项目有尚未批准的更改。",
     "next": "下一個",
     "total_items": "要鑄造的總物品",
-    "confirm_title":  "您將要鑄造 {amount} 件物品，每件物品都將以提供的數量鑄造到給定的地址。",
+    "confirm_title":  "您將要鑄造 {count} {count, plural, 一 {Asset} other {Assets}} 件物品，每件物品都將以提供的數量鑄造到給定的地址。",
     "beneficiary": "受益人"
   },
   "reset_item_modal": {

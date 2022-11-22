@@ -3,6 +3,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { mintCollectionItemsRequest, MintCollectionItemsRequestAction } from 'modules/collection/actions'
 import { Collection, Mint } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
+import { View } from './MintItemsModal'
 
 export type Props = ModalProps & {
   ethAddress?: string
@@ -26,7 +27,7 @@ export type State = {
   items: Item[]
   itemMints: ItemMints
   error: string | null
-  confirm: boolean
+  confirm: View
 }
 
 export type MapStateProps = Pick<Props, 'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading' | 'hasUnsyncedItems'>

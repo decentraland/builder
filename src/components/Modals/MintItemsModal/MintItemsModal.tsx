@@ -15,6 +15,11 @@ import { Props, State, ItemMints } from './MintItemsModal.types'
 import MintableItem from './MintableItem'
 import './MintItemsModal.css'
 
+export enum View {
+  MINT = 'MINT',
+  CONFIRM = 'CONFIRM'
+}
+
 export default class MintItemsModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
 
@@ -24,7 +29,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     for (const item of items) {
       itemMints[item.id] = this.buildMints(item)
     }
-    return { items: [], itemMints, error: null, confirm: false }
+    return { items: [], itemMints, error: null, confirm: View.MINT }
   }
 
   buildMints(item: Item): Partial<Mint>[] {
@@ -70,13 +75,12 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
   }
 
   handleAddItems = (item: Item) => {
-    const { items, itemMints } = this.state
     this.setState(prevState => {
       return {
         ...prevState,
-        items: [...items, item],
+        items: [...prevState.items, item],
         itemMints: {
-          ...itemMints,
+          ...prevState.itemMints,
           [item.id]: this.buildMints(item)
         }
       }
@@ -91,6 +95,11 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     return Object.values(this.state.itemMints).every(mints => mints.every(mint => !mint.amount || !mint.address))
   }
 
+  handleView = (newConfirmState: View) =>
+    this.setState(prevState => {
+      return { ...prevState, confirm: newConfirmState }
+    })
+
   render() {
     const { collection, totalCollectionItems, isLoading, hasUnsyncedItems, onClose } = this.props
     const { itemMints, error, confirm } = this.state
@@ -101,14 +110,15 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     const isFull = items.length === totalCollectionItems
     const isDisabled = this.isDisabled()
 
-    const amountItemsValue = Object.values(itemMints).reduce((accumulator, object) => {
-      const totalItemMints = object.reduce((acc, item) => {
-        const amount = item.amount || 0
+    const amountItemsValue = Object.values(itemMints).reduce((accumulator, mints) => {
+      const totalMints = mints.reduce((acc, mint) => {
+        const amount = mint.amount || 0
         return acc + amount
       }, 0)
-      return accumulator + totalItemMints
+      return accumulator + totalMints
     }, 0)
 
+    // ! this function goes inside render to retriger rendering of the item dropdown when the selection of items changes
     const filterAddableItems = (item: Item) => {
       const { collection, items, ethAddress } = this.props
       const { items: selectedItems } = this.state
@@ -128,11 +138,11 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
         <ModalNavigation title={t('mint_items_modal.title')} onClose={onClose} />
         <Modal.Content>
           {hasUnsyncedItems(items) && <p className="unsynced-warning danger-text">{t('mint_items_modal.unsynced_warning')}</p>}
-          {confirm ? (
+          {confirm === View.CONFIRM ? (
             <div className="ConfirmationStepContainer">
               <span>
                 {t('mint_items_modal.confirm_title', {
-                  amount: amountItemsValue
+                  count: amountItemsValue
                 })}
               </span>
               <Table basic="very">
@@ -147,11 +157,11 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                 </Table.Header>
                 <Table.Body>
                   {Object.values(itemMints).map(mintsItemList => {
-                    return mintsItemList.map(mintsItem => {
+                    return mintsItemList.map((mintsItem, index) => {
                       const { item, address, amount } = mintsItem
                       return (
                         amount && (
-                          <Table.Row key={item?.id} className="CollectionItem row">
+                          <Table.Row key={index} className="CollectionItem row">
                             <Table.Cell width={5}>
                               <div className="itemContainer">
                                 {item && <ItemImage item={item} className="itemImage" />}
@@ -173,15 +183,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
               </Table>
 
               <Row className="actions" align="right">
-                <Button
-                  className="back"
-                  secondary
-                  onClick={() =>
-                    this.setState(prevState => {
-                      return { ...prevState, confirm: false }
-                    })
-                  }
-                >
+                <Button className="back" secondary onClick={() => this.handleView(View.MINT)}>
                   {t('global.back')}
                 </Button>
 
@@ -212,15 +214,9 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                     {t('global.cancel')}
                   </Button>
                 ) : (
-                  <NetworkButton
-                    primary
-                    onClick={() => this.setState({ confirm: true })}
-                    loading={isLoading}
-                    disabled={isDisabled || !!error}
-                    network={Network.MATIC}
-                  >
+                  <Button primary onClick={() => this.handleView(View.CONFIRM)} disabled={isDisabled}>
                     {t('mint_items_modal.next')}
-                  </NetworkButton>
+                  </Button>
                 )}
               </ModalActions>
               {error ? (
