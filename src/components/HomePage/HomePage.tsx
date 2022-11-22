@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import classNames from 'classnames'
 import { Button, Card, Container, Page } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
@@ -20,7 +20,13 @@ const cards = [NavigationTab.COLLECTIONS, NavigationTab.SCENES, NavigationTab.LA
 
 export const HomePage: React.FC<Props> = props => {
   const { isLoggingIn, isLoggedIn, onNavigate } = props
-  const lastVisitedSection = localStorage.getItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY)
+
+  useEffect(() => {
+    const lastVisitedSection = localStorage.getItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY)
+    if (isLoggedIn && lastVisitedSection && lastVisitedSection !== locations.root()) {
+      onNavigate(lastVisitedSection)
+    }
+  }, [isLoggedIn, onNavigate])
 
   const handleOnNavigate = (path: string) => {
     localStorage.setItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY, path)
@@ -45,13 +51,13 @@ export const HomePage: React.FC<Props> = props => {
   const getLearnMoreLink = (card: string): string => {
     switch (card) {
       case NavigationTab.COLLECTIONS:
-        return 'https://docs.decentraland.org/creator/builder/builder-101/#collections'
+        return 'https://docs.decentraland.org/creator/wearables/wearables-overview/#collections'
       case NavigationTab.SCENES:
         return 'https://docs.decentraland.org/creator/builder/builder-101/#scenes'
       case NavigationTab.LAND:
-        return 'https://docs.decentraland.org/creator/builder/builder-101/#land'
+        return 'https://docs.decentraland.org/player/market/land-manager/'
       case NavigationTab.NAMES:
-        return 'https://docs.decentraland.org/creator/builder/builder-101/#names'
+        return 'https://decentraland.org/blog/project-updates/manage-names-in-the-builder/'
       default:
         throw new Error('Invalid Navigation Tab')
     }
@@ -59,10 +65,6 @@ export const HomePage: React.FC<Props> = props => {
 
   if (isLoggingIn) {
     return <LoadingPage />
-  }
-
-  if (isLoggedIn && lastVisitedSection && lastVisitedSection !== locations.root()) {
-    onNavigate(lastVisitedSection)
   }
 
   return (
