@@ -3,7 +3,6 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { mintCollectionItemsRequest, MintCollectionItemsRequestAction } from 'modules/collection/actions'
 import { Collection, Mint } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
-import { View } from './MintItemsModal'
 
 export type Props = ModalProps & {
   ethAddress?: string
@@ -22,6 +21,11 @@ export type CreateItemModalMetadata = {
 }
 
 export type ItemMints = Record<string, Partial<Mint>[]> // itemId: Beneficiary[]
+
+export enum View {
+  MINT = 'MINT',
+  CONFIRM = 'CONFIRM'
+}
 
 export type State = {
   items: Item[]

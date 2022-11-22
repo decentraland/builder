@@ -11,14 +11,9 @@ import { Item } from 'modules/item/types'
 import { Mint } from 'modules/collection/types'
 import ItemDropdown from 'components/ItemDropdown'
 import ItemImage from 'components/ItemImage'
-import { Props, State, ItemMints } from './MintItemsModal.types'
+import { Props, State, ItemMints, View } from './MintItemsModal.types'
 import MintableItem from './MintableItem'
 import './MintItemsModal.css'
-
-export enum View {
-  MINT = 'MINT',
-  CONFIRM = 'CONFIRM'
-}
 
 export default class MintItemsModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -95,10 +90,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     return Object.values(this.state.itemMints).every(mints => mints.every(mint => !mint.amount || !mint.address))
   }
 
-  handleView = (newConfirmState: View) =>
-    this.setState(prevState => {
-      return { ...prevState, confirm: newConfirmState }
-    })
+  handleView = (newConfirmState: View) => this.setState({ confirm: newConfirmState })
 
   render() {
     const { collection, totalCollectionItems, isLoading, hasUnsyncedItems, onClose } = this.props
@@ -110,15 +102,15 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     const isFull = items.length === totalCollectionItems
     const isDisabled = this.isDisabled()
 
-    const amountItemsValue = Object.values(itemMints).reduce((accumulator, mints) => {
-      const totalMints = mints.reduce((acc, mint) => {
+    const totalMints = Object.values(itemMints).reduce((accumulator, mints) => {
+      const totalMintsPerItem = mints.reduce((acc, mint) => {
         const amount = mint.amount || 0
         return acc + amount
       }, 0)
-      return accumulator + totalMints
+      return accumulator + totalMintsPerItem
     }, 0)
 
-    // ! this function goes inside render to retriger rendering of the item dropdown when the selection of items changes
+    // ! this function goes inside render to re-trigger the rendering of the item dropdown when the selection of items changes
     const filterAddableItems = (item: Item) => {
       const { collection, items, ethAddress } = this.props
       const { items: selectedItems } = this.state
@@ -142,7 +134,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
             <div className="ConfirmationStepContainer">
               <span>
                 {t('mint_items_modal.confirm_title', {
-                  count: amountItemsValue
+                  count: totalMints
                 })}
               </span>
               <Table basic="very">
