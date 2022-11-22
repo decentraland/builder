@@ -2,6 +2,7 @@ import * as React from 'react'
 import { formatDistance } from 'date-fns'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Info from 'components/Info'
+import { hasRentalPeriodEnded } from 'modules/land/utils'
 import { Props } from './RentalPeriod.types'
 import styles from './RentalPeriod.module.css'
 
@@ -11,7 +12,7 @@ export default class RentalPeriod extends React.PureComponent<Props> {
 
     let period: JSX.Element
 
-    if (rental.endsAt.getTime() < Date.now()) {
+    if (hasRentalPeriodEnded(rental)) {
       period = (
         <>
           <span>{t('rental_period.period_over')}</span>&nbsp;
