@@ -7,7 +7,7 @@ import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/c
 import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory'
 import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
 import { isZero } from 'lib/address'
-import { Land, LandTile, LandType, RoleType } from './types'
+import { Land, LandTile, LandType, Rental, RoleType } from './types'
 
 export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 export const MAX_PARCELS_PER_TX = 20
@@ -178,4 +178,8 @@ export function getExplorerURL(x: string | number, y: string | number) {
 
 export function hasAnyRole(land: Land, roles: RoleType[]): boolean {
   return land.roles.some(role => roles.includes(role))
+}
+
+export function hasRentalPeriodEnded(rental: Rental): boolean {
+  return rental.endsAt.getTime() < Date.now()
 }

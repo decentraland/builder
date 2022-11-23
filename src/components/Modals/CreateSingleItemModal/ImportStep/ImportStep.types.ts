@@ -1,10 +1,10 @@
 import React from 'react'
-import { WearableCategory } from '@dcl/schemas'
+import { EmoteCategory, WearableCategory } from '@dcl/schemas'
 import { Item } from 'modules/item/types'
 import { AcceptedFileProps } from '../CreateSingleItemModal.types'
 
 export type Props = {
-  category?: WearableCategory
+  category?: WearableCategory | EmoteCategory
   metadata?: CreateSingleItemModalMetadata
   title: string
   wearablePreviewComponent?: React.ReactNode

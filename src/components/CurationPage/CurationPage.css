@@ -8,6 +8,12 @@
 
 .CurationPage .filters .text-filter-row {
   width: 100%;
+  box-sizing: border-box;
+  height: 44px;
+  background: var(--shadows);
+  border-radius: 10px;
+  margin-bottom: 24px;
+  padding: 14px 12px;
 }
 
 .CurationPage .pagination {

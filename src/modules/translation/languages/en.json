@@ -214,16 +214,21 @@
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
     "adding_representation": "This will be added as {bodyShape} for the following item",
     "change_item_file": "Edit representation",
+    "import_information": "For more information about uploading wearables or emotes {link}",
+    "import_information_link_label": "click here",
     "error": {
       "item_too_big": "The entire item is too big to be uploaded. The max size for all files is {size}.",
-      "file_too_big": "The file is too big to be uploaded. The max size is {size}.",
+      "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
+      "file_too_big_title": "The file is too large and can't be uploaded",
       "thumbnail_file_too_big": "The thumbnail file is too big to be uploaded. The max size is {size}.",
       "wrong_extension": "The file has an invalid extension.",
       "invalid_files": "Files seem to be invalid or broken, please review them and try again.",
       "missing_model_file": "Couldn't find a valid model file.",
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}.",
-      "invalid_model_files_representation": "The file seems to have more than one representation, please review them and try again."
+      "invalid_model_files_representation": "The file seems to have more than one representation, please review them and try again.",
+      "emote_duration_too_long": "{title}.{enter}Duration of the emotes has a limit of {duration} seconds.{enter}Reduce the duration of the emote and try again.",
+      "emote_duration_too_long_title": "Your emote exceeds the maximum duration in seconds"
     },
     "emote_notice": "Emotes are available for all body shapes."
   },
@@ -1039,14 +1044,18 @@
     "filter": {
       "all_status": "All status",
       "all_assignees": "All assignees",
+      "all_types": "All types",
       "not_reviewed": "Not reviewed",
       "approved": "Approved",
       "rejected": "Rejected",
       "under_review": "Under Review",
       "to_review": "To Review",
-      "mvmf_collections": "Metaverse Festival Collections"
+      "mvmf_collections": "Metaverse Festival Collections",
+      "standard": "Standard",
+      "third_party": "Linked"
     },
-    "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
+    "search_placeholder": "Search by name or owner address",
+    "results": "{count} {count, plural, one {result} other {results}}",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
     "empty_collections": "There are no collections to review yet.",
     "assign_modal": {
@@ -1223,7 +1232,7 @@
   },
   "collection": {
     "type": {
-      "decentraland": "Collection",
+      "standard": "Collection",
       "third_party": "Linked Wearables Collection"
     }
   },

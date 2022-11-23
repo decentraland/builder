@@ -3,7 +3,7 @@ import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Em
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { LandType, Land, RoleType, Rental } from 'modules/land/types'
 import { Deployment } from 'modules/deployment/types'
-import { coordsToId, hoverStrokeByRole, hoverFillByRole } from 'modules/land/utils'
+import { coordsToId, hoverStrokeByRole, hoverFillByRole, hasRentalPeriodEnded } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import { locations } from 'routing/locations'
 import LandProviderPage from 'components/LandProviderPage'
@@ -185,7 +185,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                       </Dropdown>
                     </Row>
                   </Column>
-                ) : land.roles.includes(RoleType.TENANT) ? (
+                ) : land.roles.includes(RoleType.TENANT) && rental && hasRentalPeriodEnded(rental) ? (
                   <Dropdown
                     trigger={
                       <Button basic>

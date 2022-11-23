@@ -1,13 +1,20 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { loadFile, WearableConfig } from '@dcl/builder-client'
+import { loadFile, WearableCategory, WearableConfig } from '@dcl/builder-client'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
-import { EngineType, getIsEmote } from 'lib/getModelData'
+import { EngineType, getEmoteMetrics, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
-import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
+import {
+  FileTooBigError,
+  WrongExtensionError,
+  InvalidFilesError,
+  MissingModelFileError,
+  EmoteDurationTooLongError,
+  InvalidModelFilesRepresentation
+} from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
 import {
   getBodyShapeType,
@@ -18,9 +25,11 @@ import {
   isImageFile,
   isModelFile,
   isModelPath,
-  MAX_FILE_SIZE
+  MAX_FILE_SIZE,
+  MAX_EMOTE_DURATION
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
+import { AnimationMetrics } from 'modules/models/types'
 import ItemImport from 'components/ItemImport'
 import { AcceptedFileProps, ModelData } from '../CreateSingleItemModal.types'
 import { Props, State } from './ImportStep.types'
@@ -100,7 +109,16 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       [modelPath]: file
     }
 
-    return this.processModel(modelPath, contents)
+    const { model, contents: proccessedContent, type } = await this.processModel(modelPath, contents)
+
+    if (type === ItemType.EMOTE) {
+      const info: AnimationMetrics = await getEmoteMetrics(contents[model])
+      if (info.duration > MAX_EMOTE_DURATION) {
+        throw new EmoteDurationTooLongError()
+      }
+    }
+
+    return { model, contents: proccessedContent, type }
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
@@ -171,7 +189,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             if (!isRepresentation) {
               acceptedFileProps.contents = this.cleanContentModelKeys(contents, BodyShapeType.BOTH)
             } else {
-              throw new Error(t('create_single_item_modal.error.invalid_model_files_representation'))
+              throw new InvalidModelFilesRepresentation()
             }
           }
         }
@@ -192,7 +210,6 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         ...acceptedFileProps,
         bodyShape: isEmote ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
       })
-      this.setState({ error: '', isLoading: false })
     } catch (error) {
       this.setState({ error: error.message, isLoading: false })
     }
@@ -223,6 +240,20 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 
+  renderMoreInformation() {
+    return (
+      <span>
+        {t('create_single_item_modal.import_information', {
+          link: (
+            <a href="https://docs.decentraland.org/decentraland/creating-wearables/" target="_blank" rel="noopener noreferrer">
+              {t('create_single_item_modal.import_information_link_label')}
+            </a>
+          )
+        })}
+      </span>
+    )
+  }
+
   render() {
     const { category, metadata, title, wearablePreviewComponent, isLoading, isRepresentation, onClose } = this.props
     const { error } = this.state
@@ -232,15 +263,16 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content className="ImportStep">
           <ItemImport
-            error={error}
             isLoading={isLoading}
             acceptedExtensions={
               isRepresentation || metadata?.changeItemFile
-                ? isImageCategory(category!)
+                ? isImageCategory(category as WearableCategory)
                   ? IMAGE_EXTENSIONS
                   : MODEL_EXTENSIONS
                 : ITEM_EXTENSIONS
             }
+            error={error}
+            moreInformation={this.renderMoreInformation()}
             onDropAccepted={this.handleDropAccepted}
             onDropRejected={this.handleDropRejected}
           />

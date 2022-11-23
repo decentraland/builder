@@ -219,14 +219,17 @@
     "change_item_file": "Editar representación",
     "error": {
       "item_too_big": "El item entero es demasiado grande para cargarlo. El tamaño máximo de todos los archivos es {size}.",
-      "file_too_big": "El archivo es demasiado grande para cargarlo. El tamaño máximo es {size}.",
+      "file_too_big": "{title}.{enter}El límite máximo de tamaño de archivo es {size}. Reduzca el tamaño del archivo e intente nuevamente.",
+      "file_too_big_title": "El archivo es demasiado grande y no se puede cargar",
       "thumbnail_file_too_big": "El archivo thumbnail es demasiado grande para cargarlo. El tamaño maximo es {size}.",
       "wrong_extension": "El archivo tiene una extensión inválida.",
       "invalid_files": "Los archivos parecen no ser válidos o estar dañados. Por favor revíselos y vuelva a intentarlo.",
       "missing_model_file": "No se pudo encontrar un archivo de modelo válido.",
       "invalid_content_path": "La ruta \"{path}\" es inválida para la propiedad \"{name}\", el archivo no existe.",
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}.",
-      "invalid_model_files_representation": "El archivo parece tener más de una representación. Por favor revíselas y vuelva a intentarlo."
+      "invalid_model_files_representation": "El archivo parece tener más de una representación. Por favor revíselas y vuelva a intentarlo.",
+      "emote_duration_too_long": ".{enter}La duración de los emoticones tiene un límite de {duration} segundos.{enter}Reduce la duración del emote e intente nuevamente.",
+      "emote_duration_too_long_title": "El emote supera la duración máxima en segundos"
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
   },
@@ -1052,14 +1055,18 @@
     "filter": {
       "all_status": "Todos los estados",
       "all_assignees": "Todos los asignados",
+      "all_types": "Todos los tipos",
       "not_reviewed": "No revisado",
       "approved": "Aprobado",
       "rejected": "Rechazado",
       "under_review": "Bajo revisión",
       "to_review": "A revisar",
-      "mvmf_collections": "Colecciones del Metaverse Festival"
+      "mvmf_collections": "Colecciones del Metaverse Festival",
+      "standard": "Estandar",
+      "third_party": "Externa"
     },
-    "search_placeholder": "Busca entre {count} {count, plural, one {resultado} other {resultados} por nombre o por la dirección del dueño...",
+    "search_placeholder": "Busca por nombre o por la dirección del dueño",
+    "results": "{count} {count, plural, one {resultado} other {resultados}}",
     "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
     "empty_collections": "Aún no hay colecciones para revisar.",
     "assign_modal": {
@@ -1234,7 +1241,7 @@
   },
   "collection": {
     "type": {
-      "decentraland": "Colección",
+      "standard": "Colección",
       "third_party": "Colección Externa"
     }
   },
