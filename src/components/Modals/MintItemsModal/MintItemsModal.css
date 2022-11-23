@@ -17,7 +17,6 @@
 }
 
 .MintItemsModal .actions {
-  margin-top: 150px;
   width: 100%;
   text-align: right;
 }
@@ -46,4 +45,37 @@
 
 .MintItemsModal .dcl.row {
   margin-top: 10px;
+}
+
+.MintItemsModal .ConfirmationStepContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.MintItemsModal .itemContainer {
+  align-items: center;
+  gap: 10px;
+  display: flex;
+}
+
+.MintItemsModal .itemImage {
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+}
+
+.MintItemsModal .amountText {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.MintItemsModal .beneficary {
+  display: inline-block;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 767px) {
+  .MintItemsModal .amountText {
+    justify-content: flex-start;
+  }
 }

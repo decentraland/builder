@@ -22,10 +22,16 @@ export type CreateItemModalMetadata = {
 
 export type ItemMints = Record<string, Partial<Mint>[]> // itemId: Beneficiary[]
 
+export enum View {
+  MINT = 'MINT',
+  CONFIRM = 'CONFIRM'
+}
+
 export type State = {
   items: Item[]
   itemMints: ItemMints
   error: string | null
+  confirm: View
 }
 
 export type MapStateProps = Pick<Props, 'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading' | 'hasUnsyncedItems'>
