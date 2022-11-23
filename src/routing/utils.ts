@@ -105,3 +105,13 @@ export function getSortOrder(value: string | null | undefined, defaultValue: 'de
 
   return value as 'desc' | 'asc'
 }
+
+export function injectScript(url: string) {
+  const script = document.createElement('script')
+
+  script.src = url
+  script.type = 'text/javascript'
+  script.async = true
+
+  document.body.appendChild(script)
+}
