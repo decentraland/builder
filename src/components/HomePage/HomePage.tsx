@@ -19,14 +19,14 @@ const localStorage = getLocalStorage()
 const cards = [NavigationTab.COLLECTIONS, NavigationTab.SCENES, NavigationTab.LAND, NavigationTab.NAMES]
 
 export const HomePage: React.FC<Props> = props => {
-  const { isLoggingIn, isLoggedIn, onNavigate } = props
+  const { isLoggingIn, isLoggedIn, hasRouterHistory, onNavigate } = props
 
   useEffect(() => {
-    const lastVisitedSection = localStorage.getItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY)
-    if (isLoggedIn && lastVisitedSection && lastVisitedSection !== locations.root()) {
+    const lastVisitedSection = localStorage.getItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY) ?? ''
+    if (isLoggedIn && !hasRouterHistory && lastVisitedSection !== locations.root()) {
       onNavigate(lastVisitedSection)
     }
-  }, [isLoggedIn, onNavigate])
+  }, [isLoggedIn, hasRouterHistory, onNavigate])
 
   const handleOnNavigate = (path: string) => {
     localStorage.setItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY, path)
