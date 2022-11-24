@@ -579,6 +579,7 @@
     "3": "Inquilino"
   },
   "navigation": {
+    "overview": "Overview",
     "scenes": "Escenas",
     "land": "Tierras",
     "collections": "Colecciones",
@@ -591,6 +592,29 @@
     "more": "{count} más"
   },
   "home_page": {
+    "title": "¡Construyamos juntos el Metaverso!",
+    "collections": {
+      "card_title": "Colecciones",
+      "card_description": "Crear, tener una vista previa y publicar colecciones de wearables y emotes.",
+      "cta_label": "Gestionar colecciones"
+    },
+    "scenes": {
+      "card_title": "Escenas",
+      "card_description": "Crear tu espacio en tu TIERRA. Puede usar los modelos 3D gratuitos o subir los suyos propios.",
+      "cta_label": "Crear escenas"
+    },
+    "land": {
+      "card_title": "Tierras",
+      "card_description": "Publicar escenas, crear estates y gestionar permisos de sus tierras.",
+      "cta_label": "Gestionar su tierra"
+    },
+    "names": {
+      "card_title": "Nombres",
+      "card_description": "Reclama tu nombre unico y asignalo a tu avatar o a parcelas.",
+      "cta_label": "Reclamar nombre"
+    }
+  },
+  "scenes_page": {
     "import_scene": "Cargar Escena",
     "no_projects": "No tienes ninguna Escena aún.{br}{link} para comenzar.",
     "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",

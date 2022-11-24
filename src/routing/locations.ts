@@ -4,7 +4,8 @@ import { PaginationOptions, injectPagination, injectParams, CollectionDetailOpti
 type ItemEditorParams = { itemId?: string; collectionId?: string; isReviewing?: string }
 
 export const locations = {
-  root: (options: PaginationOptions = {}) => injectPagination('/', options),
+  root: () => '/',
+  scenes: (options: PaginationOptions = {}) => injectPagination('/scenes', options),
   sceneEditor: (projectId = ':projectId') => `/scene-editor/${projectId}`,
   poolSearch: (options?: PaginationOptions) =>
     injectParams(injectPagination('/pools', options), { group: 'group', ethAddress: 'eth_address' }, options),

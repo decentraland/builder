@@ -30,6 +30,7 @@ import ENSSelectLandPage from 'components/ENSSelectLandPage'
 import LandOperatorPage from 'components/LandOperatorPage'
 import ActivityPage from 'components/ActivityPage'
 import SettingsPage from 'components/SettingsPage'
+import ScenesPage from 'components/ScenesPage'
 import SceneDetailPage from 'components/SceneDetailPage'
 import CollectionsPage from 'components/CollectionsPage'
 import ItemDetailPage from 'components/ItemDetailPage'
@@ -112,6 +113,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.landOperator()} component={LandOperatorPage} />
             <Route exact path={locations.activity()} component={ActivityPage} />
             <Route exact path={locations.settings()} component={SettingsPage} />
+            <Route exact path={locations.scenes()} component={ScenesPage} />
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
             <Route exact key={1} path={locations.ens()} component={ENSListPage} />,
             <Route exact key={2} path={locations.claimENS()} component={ClaimENSPage} />,

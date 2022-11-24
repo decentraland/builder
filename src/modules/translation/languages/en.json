@@ -578,6 +578,7 @@
     "3": "Operator"
   },
   "navigation": {
+    "overview": "Overview",
     "scenes": "Scenes",
     "land": "Land",
     "collections": "Collections",
@@ -590,6 +591,29 @@
     "more": "{count} more"
   },
   "home_page": {
+    "title": "Let's build the Metaverse together!",
+    "collections": {
+      "card_title": "Collections",
+      "card_description": "Create, review and publish your collections of wearables and emotes.",
+      "cta_label": "Manage collections"
+    },
+    "scenes": {
+      "card_title": "Scenes",
+      "card_description": "Build your space in your LAND. You can use free 3D models or upload your own.",
+      "cta_label": "Build scenes"
+    },
+    "land": {
+      "card_title": "Land",
+      "card_description": "Publish Scenes, create Estates and manage permissions of your LAND.",
+      "cta_label": "Manage your land"
+    },
+    "names": {
+      "card_title": "Names",
+      "card_description": "Claim your unique name and assign it to your avatar or your parcels.",
+      "cta_label": "Claim name"
+    }
+  },
+  "scenes_page": {
     "import_scene": "Import Scene",
     "no_projects": "It looks like you don't have any Scenes.{br}{link} to get started.",
     "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",

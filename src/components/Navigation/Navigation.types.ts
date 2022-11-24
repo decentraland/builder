@@ -2,9 +2,10 @@ import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 
 export enum NavigationTab {
+  OVERVIEW = 'overview',
   SCENES = 'scenes',
   LAND = 'land',
-  COLLECTIONS = 'collection',
+  COLLECTIONS = 'collections',
   NAMES = 'names',
   CURATION = 'curation'
 }

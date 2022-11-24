@@ -571,6 +571,7 @@
     "3": "租户"
   },
   "navigation": {
+    "overview": "概述",
     "scenes": "场景",
     "land": "土地",
     "collections": "馆藏",
@@ -583,6 +584,29 @@
     "more": "{count} 更多"
   },
   "home_page": {
+    "title": "让我们一起建设元宇宙！",
+    "collections": {
+      "card_title": "收藏品",
+      "card_description": "创建、审查和发布您的可穿戴设备和表情收藏。",
+      "cta_label": "管理集合"
+    },
+    "scenes": {
+      "card_title": "场景",
+      "card_description": "在你的土地上建造你的空间。 您可以使用免费的 3D 模型或上传您自己的模型。",
+      "cta_label": "构建场景"
+    },
+    "land": {
+      "card_title": "土地",
+      "card_description": "发布场景、创建庄园并管理您土地的权限。",
+      "cta_label": "管理你的土地"
+    },
+    "names": {
+      "card_title": "名称",
+      "card_description": "声明您的唯一名称并将其分配给您的头像或您的包裹。",
+      "cta_label": "索赔名称"
+    }
+  },
+  "scenes_page": {
     "import_scene": "上传场景",
     "no_projects": "看来您没有任何场景。{br} {link}开始使用。",
     "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
