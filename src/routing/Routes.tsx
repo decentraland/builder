@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import isMobile from 'ismobilejs'
 import { Center, Page, Responsive } from 'decentraland-ui'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -43,9 +42,6 @@ import { isDevelopment } from 'lib/environment'
 
 import { Props, State } from './Routes.types'
 import { config } from 'config'
-import { injectScript } from './utils'
-
-const PUBLIC_URL = process.env.PUBLIC_URL
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -62,11 +58,6 @@ export default class Routes extends React.Component<Props, State> {
 
   componentDidMount() {
     document.body.classList.remove('loading-overlay')
-    if (!isMobile().any) {
-      injectScript(`${PUBLIC_URL}/unity/Build/hls.min.js`)
-      injectScript(`${PUBLIC_URL}/editor.js`)
-      injectScript(`${PUBLIC_URL}/UnityLoader.js`)
-    }
   }
 
   renderMaintainancePage() {
