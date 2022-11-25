@@ -77,9 +77,8 @@ class Preview extends React.Component<Props & CollectedProps> {
     try {
       isDCLInitialized = true
       window.devicePixelRatio = 1 // without this unity blows up majestically 💥🌈🦄🔥🤷🏼‍♂️
-      await injectScript(`${PUBLIC_URL}/unity/Build/hls.min.js`)
-      await injectScript(`${PUBLIC_URL}/editor.js`)
-      await injectScript(`${PUBLIC_URL}/UnityLoader.js`)
+      const scriptsURLs = ['unity/Build/hls.min.js', 'editor.js', 'UnityLoader.js']
+      await Promise.all<void>(scriptsURLs.map(script => injectScript(`${PUBLIC_URL}/${script}`)))
       await editorWindow.editor.initEngine(this.canvasContainer.current, PUBLIC_URL + '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()
