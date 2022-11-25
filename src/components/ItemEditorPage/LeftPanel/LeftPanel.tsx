@@ -45,11 +45,11 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { address, onFetchOrphanItems } = this.props
+    const { address, onFetchOrphanItem } = this.props
     this.fetchResource()
     // TODO: Remove this call when there are no users with orphan items
     if (address) {
-      onFetchOrphanItems(address, { limit: 1, page: 1 })
+      onFetchOrphanItem(address)
     }
   }
 
@@ -63,7 +63,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       totalItems,
       visibleItems,
       onSetItems,
-      onFetchOrphanItems
+      onFetchOrphanItem
     } = this.props
     const { initialPage, pages } = this.state
     // when a newly created item redirects to the item editor, iterate over the pages until finding it
@@ -95,7 +95,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       }
       // TODO: Remove this call when there are no users with orphan items
       if (address && address !== prevProps.address) {
-        onFetchOrphanItems(address, { limit: 1, page: 1 })
+        onFetchOrphanItem(address)
       }
     }
   }

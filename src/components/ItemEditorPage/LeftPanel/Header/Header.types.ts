@@ -15,7 +15,7 @@ export type Props = {
   onDeleteCollection: typeof deleteCollectionRequest
   onDeleteItem: typeof deleteItemRequest
   hasEditRights: boolean
-  hasUserOrphanItems: boolean
+  hasUserOrphanItems: boolean | undefined
 }
 
 export type MapStateProps = Pick<Props, 'address' | 'collection' | 'isLoggedIn' | 'isReviewing' | 'hasEditRights' | 'hasUserOrphanItems'>

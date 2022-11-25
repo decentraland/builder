@@ -39,21 +39,20 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   componentDidMount() {
-    const { address, onFetchCollections, onFetchOrphanItems } = this.props
+    const { address, onFetchCollections, onFetchOrphanItem } = this.props
     // fetch if already connected
     if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
-      onFetchOrphanItems(address, { page: 1, limit: 1 })
+      onFetchOrphanItem(address)
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { address, onFetchCollections, onFetchOrphanItems } = this.props
+    const { address, onFetchCollections, onFetchOrphanItem } = this.props
     // if it's the first page and it was not connected when mounting
     if (address && address !== prevProps.address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
-      // TODO: Remove this call when there are no users with orphan items
-      onFetchOrphanItems(address, { page: 1, limit: 1 })
+      onFetchOrphanItem(address)
     }
   }
 
@@ -199,6 +198,10 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     const count = this.isCollectionTabActive() ? totalCollections : totalItems
     const totalPages = this.isCollectionTabActive() ? collectionsPaginationData?.totalPages : itemsPaginationData?.totalPages
 
+    if (isLoadingItems || isLoadingCollections || count === undefined) {
+      return <Loader active size="large" />
+    }
+
     return (
       <>
         <EventBanner />
@@ -225,9 +228,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
           </Container>
         </div>
 
-        {isLoadingItems || isLoadingCollections || count === undefined ? (
-          <Loader active size="large" />
-        ) : count > 0 ? (
+        {count > 0 ? (
           <>
             {view === CollectionPageView.GRID ? this.renderGrid() : view === CollectionPageView.LIST ? this.renderList() : null}
             {!!totalPages && totalPages > 1 && (

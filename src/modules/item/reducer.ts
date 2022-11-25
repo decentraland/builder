@@ -92,7 +92,13 @@ import {
   FetchCollectionThumbnailsFailureAction,
   FETCH_COLLECTION_THUMBNAILS_REQUEST,
   FETCH_COLLECTION_THUMBNAILS_SUCCESS,
-  FETCH_COLLECTION_THUMBNAILS_FAILURE
+  FETCH_COLLECTION_THUMBNAILS_FAILURE,
+  FETCH_ORPHAN_ITEM_SUCCESS,
+  FetchOrphanItemSuccessAction,
+  FetchOrphanItemRequestAction,
+  FetchOrphanItemFailureAction,
+  FETCH_ORPHAN_ITEM_REQUEST,
+  FETCH_ORPHAN_ITEM_FAILURE
 } from './actions'
 import {
   PublishThirdPartyItemsSuccessAction,
@@ -116,7 +122,7 @@ export type ItemState = {
   data: Record<string, Item>
   rarities: Rarity[]
   loading: LoadingState
-  hasUserOrphanItems: boolean
+  hasUserOrphanItems: boolean | undefined
   error: string | null
   pagination: Record<string, ItemPaginationData> | null
 }
@@ -125,7 +131,7 @@ export const INITIAL_STATE: ItemState = {
   data: {},
   rarities: [],
   loading: [],
-  hasUserOrphanItems: false,
+  hasUserOrphanItems: undefined,
   error: null,
   pagination: null
 }
@@ -177,6 +183,9 @@ type ItemReducerAction =
   | SaveMultipleItemsSuccessAction
   | SaveMultipleItemsCancelledAction
   | ClearStateSaveMultipleItemsAction
+  | FetchOrphanItemRequestAction
+  | FetchOrphanItemSuccessAction
+  | FetchOrphanItemFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -203,12 +212,18 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         loading: loadingReducer(state.loading, action)
       }
     }
+    // TODO: Remove this reducer when there are no users with orphan items
+    case FETCH_ORPHAN_ITEM_REQUEST: {
+      return {
+        ...state,
+        hasUserOrphanItems: undefined,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
     case FETCH_ITEMS_SUCCESS:
     case FETCH_COLLECTION_ITEMS_SUCCESS: {
       const { paginationIndex, items, paginationStats } = action.payload
       const hasPagination = paginationStats !== undefined
-      const hasUserOrphanItems =
-        action.type === FETCH_ITEMS_SUCCESS ? items.some(item => item.collectionId === undefined) : state.hasUserOrphanItems
       return {
         ...state,
         data: {
@@ -230,7 +245,17 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               }
             : {})
         },
-        hasUserOrphanItems,
+        error: null
+      }
+    }
+    // TODO: Remove this reducer when there are no users with orphan items
+    case FETCH_ORPHAN_ITEM_SUCCESS: {
+      const { items } = action.payload
+
+      return {
+        ...state,
+        hasUserOrphanItems: items.length > 0,
+        loading: loadingReducer(state.loading, action),
         error: null
       }
     }
@@ -296,6 +321,14 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case RESET_ITEM_FAILURE:
     case RESCUE_ITEMS_FAILURE:
     case DOWNLOAD_ITEM_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: action.payload.error
+      }
+    }
+    // TODO: Remove this reducer when there are no users with orphan items
+    case FETCH_ORPHAN_ITEM_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

@@ -22,6 +22,20 @@ export type FetchItemsRequestAction = ReturnType<typeof fetchItemsRequest>
 export type FetchItemsSuccessAction = ReturnType<typeof fetchItemsSuccess>
 export type FetchItemsFailureAction = ReturnType<typeof fetchItemsFailure>
 
+// Fetch Orphan items
+
+export const FETCH_ORPHAN_ITEM_REQUEST = '[Request] Fetch Orphan Item'
+export const FETCH_ORPHAN_ITEM_SUCCESS = '[Success] Fetch Orphan Item'
+export const FETCH_ORPHAN_ITEM_FAILURE = '[Failure] Fetch Orphan Item'
+
+export const fetchOrphanItemRequest = (address: string) => action(FETCH_ORPHAN_ITEM_REQUEST, { address })
+export const fetchOrphanItemSuccess = (items: Item[]) => action(FETCH_ORPHAN_ITEM_SUCCESS, { items })
+export const fetchOrphanItemFailure = (error: string) => action(FETCH_ORPHAN_ITEM_FAILURE, { error })
+
+export type FetchOrphanItemRequestAction = ReturnType<typeof fetchOrphanItemRequest>
+export type FetchOrphanItemSuccessAction = ReturnType<typeof fetchOrphanItemSuccess>
+export type FetchOrphanItemFailureAction = ReturnType<typeof fetchOrphanItemFailure>
+
 // Fetch item
 
 export const FETCH_ITEM_REQUEST = '[Request] Fetch Item'

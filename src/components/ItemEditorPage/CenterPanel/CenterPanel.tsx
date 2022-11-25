@@ -44,6 +44,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       if (collection && !isTPCollection(collection)) {
         onFetchCollectionItems(collection.id)
       } else if (address) {
+        // TODO: Remove this call when there are no users with orphan items
         onFetchOrphanItems(address)
       }
     }

@@ -8,6 +8,8 @@ import {
   FetchCollectionItemsRequestAction,
   fetchItemsRequest,
   FetchItemsRequestAction,
+  fetchOrphanItemRequest,
+  FetchOrphanItemRequestAction,
   setCollection,
   SetCollectionAction
 } from 'modules/item/actions'
@@ -33,12 +35,13 @@ export type Props = {
   isLoading: boolean
   isPlayingEmote: boolean
   wearableController: IPreviewController | null
-  hasUserOrphanItems: boolean
+  hasUserOrphanItems: boolean | undefined
   onSetItems: typeof setItems
   onSetCollection: typeof setCollection
   onFetchOrphanItems: typeof fetchItemsRequest
   onFetchCollections: typeof fetchCollectionsRequest
   onSetReviewedItems: (itemIds: Item[]) => void
+  onFetchOrphanItem: typeof fetchOrphanItemRequest
 }
 
 export type State = {
@@ -66,7 +69,15 @@ export type MapStateProps = Pick<
   | 'isPlayingEmote'
   | 'hasUserOrphanItems'
 >
-export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onSetCollection' | 'onFetchOrphanItems' | 'onFetchCollections'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onSetItems' | 'onSetCollection' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem'
+>
 export type MapDispatch = Dispatch<
-  SetItemsAction | SetCollectionAction | FetchCollectionItemsRequestAction | FetchItemsRequestAction | FetchCollectionsRequestAction
+  | SetItemsAction
+  | SetCollectionAction
+  | FetchCollectionItemsRequestAction
+  | FetchItemsRequestAction
+  | FetchCollectionsRequestAction
+  | FetchOrphanItemRequestAction
 >
