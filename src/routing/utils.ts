@@ -105,3 +105,18 @@ export function getSortOrder(value: string | null | undefined, defaultValue: 'de
 
   return value as 'desc' | 'asc'
 }
+
+export async function injectScript(url: string) {
+  return new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script')
+
+    script.src = url
+    script.type = 'text/javascript'
+    script.async = true
+
+    document.body.appendChild(script)
+
+    script.onload = () => resolve()
+    script.onerror = () => reject(`Error loading the script: ${url}`)
+  })
+}

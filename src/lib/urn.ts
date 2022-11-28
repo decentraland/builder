@@ -36,10 +36,6 @@ const collectionsSuffixMatcher = '((?<=collections-v2:)(?<collectionAddress>0x[a
 const thirdPartySuffixMatcher =
   '((?<=collections-thirdparty:)(?<thirdPartyName>[^:|\\s]+)(:(?<thirdPartyCollectionId>[^:|\\s]+))?(:(?<thirdPartyTokenId>[^:|\\s]+))?)'
 
-const urnRegExp = new RegExp(
-  `${baseMatcher}:${protocolMatcher}:${typeMatcher}:(?<suffix>${baseAvatarsSuffixMatcher}|${collectionsSuffixMatcher}|${thirdPartySuffixMatcher})`
-)
-
 export enum URNProtocol {
   MAINNET = 'mainnet',
   GOERLI = 'goerli',
@@ -122,6 +118,9 @@ export function isThirdParty(urn?: string) {
 }
 
 export function decodeURN(urn: URN): DecodedURN {
+  const urnRegExp = new RegExp(
+    `${baseMatcher}:${protocolMatcher}:${typeMatcher}:(?<suffix>${baseAvatarsSuffixMatcher}|${collectionsSuffixMatcher}|${thirdPartySuffixMatcher})`
+  )
   const matches = urnRegExp.exec(urn)
 
   if (!matches || !matches.groups) {

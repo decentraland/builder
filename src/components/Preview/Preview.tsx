@@ -7,6 +7,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
 import { PreviewType } from 'modules/editor/types'
 import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
+import { injectScript } from 'routing/utils'
 import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props } from './Preview.types'
 import animationData from './loader.json'
@@ -76,6 +77,8 @@ class Preview extends React.Component<Props & CollectedProps> {
     try {
       isDCLInitialized = true
       window.devicePixelRatio = 1 // without this unity blows up majestically 💥🌈🦄🔥🤷🏼‍♂️
+      const scriptsURLs = ['unity/Build/hls.min.js', 'editor.js', 'UnityLoader.js']
+      await Promise.all<void>(scriptsURLs.map(script => injectScript(`${PUBLIC_URL}/${script}`)))
       await editorWindow.editor.initEngine(this.canvasContainer.current, PUBLIC_URL + '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()
