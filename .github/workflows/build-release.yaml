@@ -24,6 +24,8 @@ jobs:
           only-update-versions: true
       - name: Install
         run: npm ci --legacy-peer-deps
+        env:
+          HUSKY: 0
       - name: Build
         run: npm run build
         env:
