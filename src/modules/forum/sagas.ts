@@ -99,7 +99,8 @@ export function* forumSaga(builder: BuilderAPI) {
  */
 function* handleCreateForumPostFailure(action: CreateCollectionForumPostFailureAction) {
   const { collection, forumPost } = action.payload
+  console.log(collection, forumPost)
 
   yield delay(RETRY_DELAY)
-  yield put(createCollectionForumPostRequest(collection, forumPost))
+  // yield put(createCollectionForumPostRequest(collection, forumPost))
 }
