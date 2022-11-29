@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { Center, Page, Responsive } from 'decentraland-ui'
-import Intercom from 'decentraland-dapps/dist/components/Intercom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 
+import Intercom from 'components/Intercom'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import EditorPage from 'components/EditorPage'
@@ -41,7 +41,6 @@ import CurationPage from 'components/CurationPage'
 import { isDevelopment } from 'lib/environment'
 
 import { Props, State } from './Routes.types'
-import { config } from 'config'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -134,8 +133,7 @@ export default class Routes extends React.Component<Props, State> {
   }
 
   renderIntercom() {
-    const APP_ID = config.get('INTERCOM_APP_ID', '')
-    return <Intercom appId={APP_ID} settings={{ alignment: 'right' }} />
+    return <Intercom />
   }
 
   render() {
