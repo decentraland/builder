@@ -30,7 +30,7 @@
     "decentraland-dapps": "^13.7.1",
     "decentraland-ecs": "file:ecs/decentraland-ecs-6.6.1-20201020183014.commit-bdc29ef-hotfix.tgz",
     "decentraland-experiments": "^1.0.2",
-    "decentraland-transactions": "^1.41.0",
+    "decentraland-transactions": "^1.42.0",
     "decentraland-ui": "^3.56.0",
     "ethers": "^5.6.8",
     "file-saver": "^2.0.1",
