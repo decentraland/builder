@@ -92,7 +92,8 @@ import {
   SaveMultipleItemsSuccessAction,
   saveItemRequest,
   SAVE_ITEM_FAILURE,
-  SET_ITEMS_TOKEN_ID_SUCCESS
+  SET_ITEMS_TOKEN_ID_SUCCESS,
+  FetchCollectionItemsSuccessAction
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
@@ -158,6 +159,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
+  yield takeEvery(FETCH_COLLECTION_ITEMS_SUCCESS, handleFetchCollectionItemsSuccess)
   yield takeEvery(SAVE_COLLECTION_REQUEST, handleSaveCollectionRequest)
   yield takeLatest(SAVE_COLLECTION_SUCCESS, handleSaveCollectionSuccess)
   yield takeLatest(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
@@ -556,6 +558,18 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     }
   }
 
+  function* handleFetchCollectionItemsSuccess(action: FetchCollectionItemsSuccessAction) {
+    const { paginationIndex: collectionId } = action.payload
+    try {
+      const collection: Collection = yield select(getCollection, collectionId)
+      if (collection.isPublished) {
+        yield finishCollectionPublishing(collection)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   /**
    * Processes a collection that was published to the blockchain by signaling the
    * builder server that the collection has been published, setting the item ids,
@@ -565,7 +579,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
    */
   function* finishCollectionPublishing(collection: Collection) {
     const avatarName: string | null = yield select(getName)
-    const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
+    const items: Item[] = yield select(getCollectionItems, collection.id)
 
     yield publishCollection(collection, items)
 
