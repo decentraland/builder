@@ -1,6 +1,6 @@
 import PQueue from 'p-queue'
 import { Contract, providers } from 'ethers'
-import { getLocation, push, replace } from 'connected-react-router'
+import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
 import { ChainId, Network } from '@dcl/schemas'
@@ -11,7 +11,7 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { closeAllModals, closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
+import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
@@ -92,6 +92,8 @@ import {
   fetchCollectionThumbnailsSuccess,
   fetchCollectionThumbnailsFailure,
   FetchCollectionThumbnailsRequestAction,
+  SET_ITEM_COLLECTION,
+  SetItemCollectionAction,
   FETCH_ORPHAN_ITEM_REQUEST,
   FetchOrphanItemRequestAction,
   fetchOrphanItemSuccess,
@@ -130,6 +132,7 @@ import {
   MAX_THUMBNAIL_FILE_SIZE
 } from './utils'
 import { ItemPaginationData } from './reducer'
+import { getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
 
@@ -148,6 +151,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeEvery(DELETE_ITEM_SUCCESS, handleDeleteItemSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
+  yield takeLatest(SET_ITEM_COLLECTION, handleSetItemCollectionRequest)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
   yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
@@ -566,6 +570,26 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     yield take(SAVE_ITEM_SUCCESS)
     yield put(closeModal('MoveItemToCollectionModal'))
     yield put(fetchItemsRequest(address))
+  }
+
+  function* handleSetItemCollectionRequest(action: SetItemCollectionAction) {
+    const { item, collectionId } = action.payload
+    const newItem = { ...item, collectionId: collectionId }
+    const address: string = yield select(getAddress)
+    const collection: Collection = yield select(getCollection, collectionId)
+    yield put(saveItemRequest(newItem, {}))
+    yield take(SAVE_ITEM_SUCCESS)
+    yield put(closeModal('MoveItemToAnotherCollectionModal'))
+    yield put(showToast(getSuccessfulMoveItemToAnotherCollectionToast(item, collection), 'bottom center'))
+    // Get the created toast id to close if the user clicks on the redirect link or changes the page
+    const {
+      payload: { id: toastId }
+    }: RenderToastAction = yield take(RENDER_TOAST)
+    yield put(fetchItemsRequest(address))
+    const location: ReturnType<typeof getLocation> = yield take(LOCATION_CHANGE)
+    if (location.pathname !== locations.collectionDetail(item.collectionId)) {
+      yield put(hideToast(toastId))
+    }
   }
 
   function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
