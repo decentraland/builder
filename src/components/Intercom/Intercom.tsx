@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import IntercomWidget from 'decentraland-dapps/dist/components/Intercom'
 import { getAnalytics, getAnonymousId } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { config } from 'config'
@@ -17,7 +17,9 @@ export const Intercom: React.FC = () => {
     }
   }, [])
 
-  analytics.ready(analyticsReadyCallback)
+  useEffect(() => {
+    analytics.ready(analyticsReadyCallback)
+  }, [])
 
   return dclAnonymousUserID ? (
     <IntercomWidget appId={APP_ID} data={{ anonymous_id: dclAnonymousUserID }} settings={{ alignment: 'right' }} />
