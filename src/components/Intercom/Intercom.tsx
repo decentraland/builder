@@ -4,11 +4,10 @@ import { getAnalytics, getAnonymousId } from 'decentraland-dapps/dist/modules/an
 import { config } from 'config'
 
 const APP_ID = config.get('INTERCOM_APP_ID', '')
+const analytics = getAnalytics()
 
 export const Intercom: React.FC = () => {
   const [dclAnonymousUserID, setDclAnonymousUserID] = useState('')
-
-  const analytics = getAnalytics()
 
   const analyticsReadyCallback = useCallback(() => {
     const dclAnonymousUserID = getAnonymousId()
@@ -19,7 +18,7 @@ export const Intercom: React.FC = () => {
 
   useEffect(() => {
     analytics.ready(analyticsReadyCallback)
-  }, [])
+  }, [analyticsReadyCallback])
 
   return dclAnonymousUserID ? (
     <IntercomWidget appId={APP_ID} data={{ anonymous_id: dclAnonymousUserID }} settings={{ alignment: 'right' }} />
