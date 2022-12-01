@@ -21,7 +21,7 @@ export const Intercom: React.FC = () => {
   }, [analyticsReadyCallback])
 
   return dclAnonymousUserID ? (
-    <IntercomWidget appId={APP_ID} data={{ anonymous_id: dclAnonymousUserID }} settings={{ alignment: 'right' }} />
+    <IntercomWidget appId={APP_ID} data={{ anon_id: dclAnonymousUserID }} settings={{ alignment: 'right' }} />
   ) : null
 }
 
