@@ -10,7 +10,7 @@
   "MARKETPLACE_WEB_URL": "https://market.decentraland.today",
   "LAND_MANAGER_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/land-manager",
   "MARKETPLACE_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/marketplace",
-  "RENTALS_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/rentals-ethereum",
+  "RENTALS_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/rentals-ethereum-mainnet",
   "SHARE_SCENE_URL": "https://share.decentraland.org/b",
   "INTERCOM_APP_ID": "z0h94kay",
   "SEGMENT_API_KEY": "H21EgRI4eYwICDZf5uW6ek2BiykIR6wA",
