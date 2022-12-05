@@ -9,10 +9,13 @@
 }
 
 .HomePage > .ui.container > .title {
-  margin-top: 132px;
-  margin-bottom: 40px;
+  margin: 60px 0px;
   font-size: 28px;
   line-height: 34px;
+}
+
+.HomePage > .ui.container > .ui.cards {
+  margin-top: 0;
 }
 
 .HomePage > .ui.container > .ui.cards > .ui.card {

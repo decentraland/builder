@@ -15,7 +15,15 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
-import { getEntityByItemId, getItems, getData as getItemsById, getPaginationData, getWalletItems } from 'modules/item/selectors'
+import {
+  getEntityByItemId,
+  getItems,
+  getData as getItemsById,
+  getPaginationData,
+  getWalletItems,
+  getCollectionItems
+} from 'modules/item/selectors'
+import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
 import { getCollection } from 'modules/collection/selectors'
 import { EntityHashingType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
@@ -260,7 +268,8 @@ describe('when executing the approval flow', () => {
             [call(buildStandardWearableContentHash, collection, item, EntityHashingType.V1), newBlockchainHash],
             [delay(1000), void 0],
             [select(getItemsById), { [updatedItem.id]: updatedItem }],
-            [select(getCurationsByCollectionId), { [collection.id]: curation }]
+            [select(getCurationsByCollectionId), { [collection.id]: curation }],
+            [select(getCollection, collection.id), { collection }]
           ])
           .dispatch(initiateApprovalFlow(collection))
           .put(
@@ -415,7 +424,8 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
+          [select(getCollection, collection.id), { collection }]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -501,7 +511,8 @@ describe('when executing the approval flow', () => {
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
           [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
-          [select(getCurationsByCollectionId), { [collection.id]: curation }]
+          [select(getCurationsByCollectionId), { [collection.id]: curation }],
+          [select(getCollection, collection.id), { collection }]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -663,7 +674,8 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
+          [select(getCollection, collection.id), { collection }]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -742,7 +754,8 @@ describe('when executing the approval flow', () => {
           [delay(1000), void 0],
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
-          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData]
+          [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
+          [select(getCollection, collection.id), { collection }]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -831,7 +844,8 @@ describe('when executing the approval flow', () => {
           [select(getItemsById), { [syncedItem.id]: syncedItem, [unsyncedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
           [call(buildItemEntity, mockCatalyst, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
-          [select(getCurationsByCollectionId), { [collection.id]: curation }]
+          [select(getCurationsByCollectionId), { [collection.id]: curation }],
+          [select(getCollection, collection.id), { collection }]
         ])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -1832,6 +1846,41 @@ describe('when handling the fetch of collections', () => {
         ])
         .put(fetchCollectionsSuccess([collection], undefined))
         .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the fetch of a collection', () => {
+  let collection: Collection
+
+  describe('and the collection is published but the server items does not have a tokenId', () => {
+    let items: Item[]
+    let address: string
+
+    beforeEach(() => {
+      address = '0xa'
+      collection = { id: 'someId', owner: address, isPublished: true, forumLink: 'someLink' } as Collection
+      items = [{ id: 'item-id', tokenId: undefined }] as Item[]
+    })
+
+    it('should put the setItemsTokenIdRequest action with the collection items', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .provide([
+          [select(getCollection, collection.id), collection],
+          [select(getName), null],
+          [select(getAddress), address],
+          [select(getCollectionItems, collection.id), items]
+        ])
+        .put(setItemsTokenIdRequest(collection, items))
+        .dispatch(
+          fetchCollectionItemsSuccess(collection.id, items, {
+            limit: 5000,
+            page: 1,
+            pages: 1,
+            total: 1
+          })
+        )
         .run({ silenceTimeout: true })
     })
   })
