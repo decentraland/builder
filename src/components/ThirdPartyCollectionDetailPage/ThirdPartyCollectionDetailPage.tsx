@@ -17,7 +17,8 @@ import {
   CheckboxProps,
   Loader,
   Dropdown,
-  DropdownProps
+  DropdownProps,
+  Popup
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ContractName } from 'decentraland-transactions'
@@ -223,13 +224,18 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     </Header>
                     <BuilderIcon name="edit" className="edit-collection-name" />
                   </Row>
-                  <Row>
+                  <Row className="urn-container">
                     <small className="urn">
                       <CopyToClipboard text={collection.urn}>
-                        <div>
-                          {collection.urn}
+                        <Row>
+                          <Popup
+                            content={collection.urn}
+                            position="bottom center"
+                            trigger={<span className="urn-text">{collection.urn}</span>}
+                            on="hover"
+                          />
                           <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
-                        </div>
+                        </Row>
                       </CopyToClipboard>
                     </small>
                   </Row>
