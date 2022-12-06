@@ -8,11 +8,22 @@
   width: 100%;
 }
 
+.ThirdPartyCollectionDetailPage .urn-container {
+  max-width: 100%;
+}
+
 .ThirdPartyCollectionDetailPage .urn {
   cursor: pointer;
   font-size: 13px;
   margin-top: 8px;
   color: var(--secondary-text);
+  max-width: 100%;
+}
+
+.ThirdPartyCollectionDetailPage .urn .urn-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .ThirdPartyCollectionDetailPage .header-row .ui.header.name {
@@ -37,7 +48,8 @@
 
 .ThirdPartyCollectionDetailPage .section .header-row:hover .edit-collection-name,
 .ThirdPartyCollectionDetailPage .urn:hover .copy {
-  display: inline-block;
+  display: flex;
+  align-items: center;
 }
 
 .ThirdPartyCollectionDetailPage .section .header-row:hover {
