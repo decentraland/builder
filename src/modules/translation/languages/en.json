@@ -819,7 +819,7 @@
   },
   "operator_page": {
     "title": "Set Operator",
-    "subtitle": "Your are setting an operator for {name}.",
+    "subtitle": "You are setting an operator for {name}.<br></br>Operators can <b>only</b> deploy scenes to the LAND.",
     "address": "Address",
     "undo": "Undo",
     "revoke": "Revoke",
