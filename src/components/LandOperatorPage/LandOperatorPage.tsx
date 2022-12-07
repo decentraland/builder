@@ -14,7 +14,16 @@ export default class LandOperatorPage extends React.PureComponent<Props> {
           <LandAction
             land={land}
             title={t('operator_page.title')}
-            subtitle={<T id="operator_page.subtitle" values={{ name: <strong>{land.name}</strong> }} />}
+            subtitle={
+              <T
+                id="operator_page.subtitle"
+                values={{
+                  name: <strong>{land.name}</strong>,
+                  b: (chunks: string) => <strong>{chunks}</strong>,
+                  br: () => <br />
+                }}
+              />
+            }
           >
             <LandOperatorForm land={land} onSetOperator={onSetOperator} />
           </LandAction>

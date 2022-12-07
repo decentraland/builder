@@ -786,7 +786,7 @@
     "step_two_message": "Por favor inicia sesión con tu email para poder encontrar las escenas que necesitan ser migradas.",
     "step_two_cta": "Iniciar sesión",
     "step_three_title": "Conecta tu billetera",
-    "step_three_message": "Por favor conecta tu billetera para continuar. Si no tienes una bbilletera, ahi hay una {link} para conseguir una.",
+    "step_three_message": "Por favor conecta tu billetera para continuar. Si no tienes una billetera, ahi hay una {link} para conseguir una.",
     "step_three_link": "guía para principiantes",
     "step_three_cta": "Conectar",
     "step_three_error": "Por favor instala {metamask} u otra billetera de Ethereum para continuar.",
@@ -797,7 +797,7 @@
   },
   "operator_page": {
     "title": "Asignar Operador",
-    "subtitle": "Estas asignando un operador para {name}.",
+    "subtitle": "Estas asignando un operador para {name}.<br></br>Los operadores <b>solo</b> pueden publicar escenas en la tierra.",
     "address": "Dirección",
     "undo": "Deshacer",
     "revoke": "Revocar",
