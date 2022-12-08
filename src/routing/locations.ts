@@ -1,7 +1,7 @@
 import { CollectionType } from 'modules/collection/types'
 import { PaginationOptions, injectPagination, injectParams, CollectionDetailOptions } from './utils'
 
-type ItemEditorParams = { itemId?: string; collectionId?: string; isReviewing?: string }
+type ItemEditorParams = { itemId?: string; collectionId?: string; isReviewing?: string; newItemId?: string }
 
 export const locations = {
   root: () => '/',
@@ -29,11 +29,7 @@ export const locations = {
   sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
   collections: () => '/collections',
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
-  collectionDetail: (
-    collectionId = ':collectionId',
-    type: CollectionType = CollectionType.STANDARD,
-    options?: CollectionDetailOptions
-  ) => {
+  collectionDetail: (collectionId = ':collectionId', type: CollectionType = CollectionType.STANDARD, options?: CollectionDetailOptions) => {
     switch (type) {
       case CollectionType.STANDARD:
         return injectParams(`/collections/${collectionId}`, { tab: 'tab' }, options)
@@ -45,8 +41,14 @@ export const locations = {
   },
   thirdPartyCollectionDetail: (collectionId = ':collectionId', options?: PaginationOptions) =>
     injectPagination(`/thirdPartyCollections/${collectionId}`, options),
-  itemEditor: (options?: ItemEditorParams) =>
-    injectParams('/item-editor', { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing' }, options),
+  itemEditor: (options?: ItemEditorParams) => {
+    console.log(options)
+    return injectParams(
+      '/item-editor',
+      { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing', newItemId: 'newItemId' },
+      options
+    )
+  },
   ens: () => '/names',
   curation: () => '/curation'
 }

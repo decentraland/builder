@@ -1656,7 +1656,11 @@
       "cant_save_published": "不应发布项目以保存它",
       "not_published": "必须发布项目才能使用事务保存",
       "cant_save_without_collection": "没有收藏就无法保存已发布",
-      "not_found": "未找到项目"
+      "not_found": "未找到项目",
+      "item_added_toast": {
+        "title": "项目已添加！",
+        "body": "项目 <b>{name}</b> 已添加到您的收藏中。 <br></br><collection-link>查看收藏</collection-link>"
+      }
     }
   },
   "status": {

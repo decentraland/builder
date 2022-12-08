@@ -29,7 +29,7 @@ class SidebarItem extends React.PureComponent<Props> {
     const { item, isSelected, selectedCollectionId, bodyShape } = this.props
     return (
       <div className={`SidebarItem ${isSelected ? 'is-selected' : ''}`}>
-        <Link to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined })}>
+        <Link to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined, newItemId: undefined })}>
           <ItemImage item={item} />
           <div className="name">
             <ItemStatus item={item} />

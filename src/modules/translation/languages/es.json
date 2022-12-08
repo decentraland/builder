@@ -1671,7 +1671,11 @@
       "cant_save_published": "El item no debe publicarse para guardarlo.",
       "not_published": "El item debe estar publicado",
       "cant_save_without_collection": "No se puede guardar una publicación sin una colección",
-      "not_found": "No se encontró"
+      "not_found": "No se encontró",
+      "item_added_toast": {
+        "title": "¡Item añadido!",
+        "body": "El item <b>{name}</b> se agrego a su colección. <br></br><collection-link>Ver Colección</collection-link>"
+      }
     }
   },
   "status": {

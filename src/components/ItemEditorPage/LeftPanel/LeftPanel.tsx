@@ -14,6 +14,7 @@ import Collections from './Collections'
 import { LEFT_PANEL_PAGE_SIZE } from '../constants'
 import { Props, State, ItemEditorTabs } from './LeftPanel.types'
 import './LeftPanel.css'
+import { ItemAddedToast } from './Toasts/ItemAdded'
 
 const INITIAL_PAGE = 1
 
@@ -218,24 +219,27 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                     />
                   ) : null}
                   {showItems ? (
-                    <Items
-                      items={!collection || !isThirdParty(collection.urn) ? items.sort(sortByName) : items}
-                      totalItems={totalItems || items.length}
-                      hasHeader={!selectedCollectionId && collections.length > 0}
-                      selectedItemId={selectedItemId}
-                      selectedCollectionId={selectedCollectionId}
-                      isReviewing={isReviewing}
-                      isPlayingEmote={isPlayingEmote}
-                      visibleItems={visibleItems}
-                      bodyShape={bodyShape}
-                      onSetItems={onSetItems}
-                      wearableController={wearableController}
-                      initialPage={initialPage}
-                      isLoading={isLoading || isLoadingOrphanItems}
-                      onLoadRandomPage={() => this.loadRandomPage(items)}
-                      onLoadPage={this.loadPage}
-                      onSetReviewedItems={onSetReviewedItems}
-                    />
+                    <>
+                      <Items
+                        items={!collection || !isThirdParty(collection.urn) ? items.sort(sortByName) : items}
+                        totalItems={totalItems || items.length}
+                        hasHeader={!selectedCollectionId && collections.length > 0}
+                        selectedItemId={selectedItemId}
+                        selectedCollectionId={selectedCollectionId}
+                        isReviewing={isReviewing}
+                        isPlayingEmote={isPlayingEmote}
+                        visibleItems={visibleItems}
+                        bodyShape={bodyShape}
+                        onSetItems={onSetItems}
+                        wearableController={wearableController}
+                        initialPage={initialPage}
+                        isLoading={isLoading || isLoadingOrphanItems}
+                        onLoadRandomPage={() => this.loadRandomPage(items)}
+                        onLoadPage={this.loadPage}
+                        onSetReviewedItems={onSetReviewedItems}
+                      />
+                      <ItemAddedToast items={items} collectionId={selectedCollectionId!} />
+                    </>
                   ) : null}
                 </>
               )

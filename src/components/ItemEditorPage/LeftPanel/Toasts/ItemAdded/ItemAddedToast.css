@@ -1,0 +1,13 @@
+.ItemAddedToast.ui.button.view-collection-link {
+  padding-left: 0;
+}
+
+.ItemAddedToast.icon-container {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--dark-two);
+}
