@@ -43,9 +43,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
   }
 
-  handleRemoveItem = () => {
-    const { item, onRemoveItem } = this.props
-    onRemoveItem(item)
+  handleDeleteItem = () => {
+    const { item, onDeleteItem } = this.props
+    onDeleteItem(item)
   }
 
   renderPrice() {
@@ -149,14 +149,17 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     {item.price ? (
                       <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
                     ) : null}
-                    {!item.isPublished ? (
-                      <ConfirmDelete
-                        name={item.name}
-                        onDelete={this.handleRemoveItem}
-                        trigger={<Dropdown.Item text={t('collection_item.remove_item')} />}
-                      />
-                    ) : null}
                     <ResetItemButton itemId={item.id} />
+                    {!item.isPublished ? (
+                      <>
+                        <Dropdown.Divider />
+                        <ConfirmDelete
+                          name={item.name}
+                          onDelete={this.handleDeleteItem}
+                          trigger={<Dropdown.Item text={t('collection_item.delete_item')} />}
+                        />
+                      </>
+                    ) : null}
                   </>
                 ) : null}
               </Dropdown.Menu>

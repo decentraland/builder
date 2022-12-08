@@ -12,10 +12,10 @@ export type Props = {
   item: Item
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
-  onRemoveItem: typeof deleteItemRequest
+  onDeleteItem: typeof deleteItemRequest
   onSetItems: typeof setItems
 }
 
 export type MapStateProps = Pick<Props, 'ethAddress'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onRemoveItem' | 'onSetItems'>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onDeleteItem' | 'onSetItems'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | DeleteItemRequestAction | SetItemsAction>
