@@ -41,11 +41,8 @@ export const locations = {
   },
   thirdPartyCollectionDetail: (collectionId = ':collectionId', options?: PaginationOptions) =>
     injectPagination(`/thirdPartyCollections/${collectionId}`, options),
-  itemEditor: (options?: ItemEditorParams) => injectParams(
-      '/item-editor',
-      { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing', newItemId: 'newItemId' },
-      options
-    ),
+  itemEditor: (options?: ItemEditorParams) =>
+    injectParams('/item-editor', { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing', newItemId: 'newItemId' }, options),
   ens: () => '/names',
   curation: () => '/curation'
 }
