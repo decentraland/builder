@@ -423,7 +423,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       } else if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
         // Redirect to the item editor
         yield put(setItems([item]))
-        console.log('HOLAAA', item)
         yield put(push(locations.itemEditor({ collectionId, itemId: item.id, newItemId: item.id })))
       } else {
         // When creating a Wearable/Emote in the itemEditor, reload the left panel to show the new item created

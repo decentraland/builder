@@ -28,7 +28,6 @@ export function injectParams(location: string, keys: { [key: string]: string } =
     }
   }
 
-  console.log({ params })
   return addParams(location, params.join('&'))
 }
 

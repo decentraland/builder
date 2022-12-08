@@ -11,7 +11,7 @@ import { Props } from './ItemAddedToast.types'
 import './ItemAddedToast.css'
 
 export function ItemAddedToast(props: Props) {
-  const { items, collectionId } = props
+  const { items } = props
   const [shouldShowToast, setShouldShowToast] = useState(false)
   const [item, setItem] = useState<Item | undefined>()
   const search = useLocation().search
@@ -34,7 +34,7 @@ export function ItemAddedToast(props: Props) {
     history.replace({ search: searchParams.toString() })
   }
 
-  return shouldShowToast ? (
+  return shouldShowToast && item ? (
     <Toast
       type={ToastType.INFO}
       title={t('sagas.item.item_added_toast.title')}
@@ -49,11 +49,11 @@ export function ItemAddedToast(props: Props) {
         <T
           id="sagas.item.item_added_toast.body"
           values={{
-            name: item ? item.name : '',
+            name: item.name,
             br: () => <br />,
             b: (chunks: string) => <strong>{chunks}</strong>,
             'collection-link': (chunks: string) => (
-              <Link to={locations.collectionDetail(collectionId)}>
+              <Link to={locations.collectionDetail(item.collectionId)}>
                 <Button className="ItemAddedToast view-collection-link" basic>
                   {chunks}
                 </Button>
