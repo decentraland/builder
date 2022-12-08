@@ -23,6 +23,7 @@ import {
   getStatusForItemIds,
   getWalletItems,
   getWalletOrphanItems,
+  hasUserOrphanItems,
   hasViewAndEditRights
 } from './selectors'
 import { Item, ItemRarity, ItemType, SyncStatus } from './types'
@@ -659,6 +660,54 @@ describe('Item selectors', () => {
             expect(hasViewAndEditRights(state, address, collection, item)).toBe(false)
           })
         })
+      })
+    })
+  })
+
+  describe('when getting if the user has orphan items', () => {
+    describe('when requesting orphan items', () => {
+      beforeEach(() => {
+        state = {
+          ...state,
+          item: {
+            ...state.item,
+            hasUserOrphanItems: undefined
+          }
+        } as RootState
+      })
+
+      it('should return undefined', () => {
+        expect(hasUserOrphanItems(state)).toEqual(undefined)
+      })
+    })
+    describe('when there are orphan items', () => {
+      beforeEach(() => {
+        state = {
+          ...state,
+          item: {
+            ...state.item,
+            hasUserOrphanItems: true
+          }
+        } as RootState
+      })
+
+      it('should return true', () => {
+        expect(hasUserOrphanItems(state)).toEqual(true)
+      })
+    })
+    describe('when there are not orphan items', () => {
+      beforeEach(() => {
+        state = {
+          ...state,
+          item: {
+            ...state.item,
+            hasUserOrphanItems: false
+          }
+        } as RootState
+      })
+
+      it('should return false', () => {
+        expect(hasUserOrphanItems(state)).toEqual(false)
       })
     })
   })

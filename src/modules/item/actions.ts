@@ -29,7 +29,7 @@ export const FETCH_ORPHAN_ITEM_SUCCESS = '[Success] Fetch Orphan Item'
 export const FETCH_ORPHAN_ITEM_FAILURE = '[Failure] Fetch Orphan Item'
 
 export const fetchOrphanItemRequest = (address: string) => action(FETCH_ORPHAN_ITEM_REQUEST, { address })
-export const fetchOrphanItemSuccess = (items: Item[]) => action(FETCH_ORPHAN_ITEM_SUCCESS, { items })
+export const fetchOrphanItemSuccess = (hasUserOrphanItems: boolean) => action(FETCH_ORPHAN_ITEM_SUCCESS, { hasUserOrphanItems })
 export const fetchOrphanItemFailure = (error: string) => action(FETCH_ORPHAN_ITEM_FAILURE, { error })
 
 export type FetchOrphanItemRequestAction = ReturnType<typeof fetchOrphanItemRequest>

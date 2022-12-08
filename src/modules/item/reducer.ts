@@ -212,8 +212,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         loading: loadingReducer(state.loading, action)
       }
     }
-    // TODO: Remove this reducer when there are no users with orphan items
     case FETCH_ORPHAN_ITEM_REQUEST: {
+      // TODO: Remove this reducer when there are no users with orphan items
       return {
         ...state,
         hasUserOrphanItems: undefined,
@@ -248,13 +248,12 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
-    // TODO: Remove this reducer when there are no users with orphan items
     case FETCH_ORPHAN_ITEM_SUCCESS: {
-      const { items } = action.payload
-
+      // TODO: Remove this reducer when there are no users with orphan items
+      const { hasUserOrphanItems } = action.payload
       return {
         ...state,
-        hasUserOrphanItems: items.length > 0,
+        hasUserOrphanItems,
         loading: loadingReducer(state.loading, action),
         error: null
       }
@@ -327,8 +326,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: action.payload.error
       }
     }
-    // TODO: Remove this reducer when there are no users with orphan items
     case FETCH_ORPHAN_ITEM_FAILURE: {
+      // TODO: Remove this reducer when there are no users with orphan items
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
