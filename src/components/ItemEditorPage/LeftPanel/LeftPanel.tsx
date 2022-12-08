@@ -45,10 +45,10 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { address, onFetchOrphanItem } = this.props
+    const { address, hasUserOrphanItems, onFetchOrphanItem } = this.props
     this.fetchResource()
     // TODO: Remove this call when there are no users with orphan items
-    if (address) {
+    if (address && hasUserOrphanItems === undefined) {
       onFetchOrphanItem(address)
     }
   }
@@ -62,6 +62,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       orphanItems,
       totalItems,
       visibleItems,
+      hasUserOrphanItems,
       onSetItems,
       onFetchOrphanItem
     } = this.props
@@ -94,7 +95,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
         this.setState({ pages: [INITIAL_PAGE] })
       }
       // TODO: Remove this call when there are no users with orphan items
-      if (address && address !== prevProps.address) {
+      if (address && address !== prevProps.address && hasUserOrphanItems === undefined) {
         onFetchOrphanItem(address)
       }
     }

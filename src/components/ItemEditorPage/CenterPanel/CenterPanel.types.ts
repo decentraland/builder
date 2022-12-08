@@ -46,6 +46,7 @@ export type Props = {
   emotes: Item[]
   isPlayingEmote: boolean
   isImportFilesModalOpen: boolean
+  hasUserOrphanItems: boolean | undefined
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
@@ -81,6 +82,7 @@ export type MapStateProps = Pick<
   | 'emotes'
   | 'isPlayingEmote'
   | 'isImportFilesModalOpen'
+  | 'hasUserOrphanItems'
 >
 export type MapDispatchProps = Pick<
   Props,

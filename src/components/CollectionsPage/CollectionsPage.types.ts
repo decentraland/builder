@@ -25,6 +25,7 @@ export type Props = {
   isThirdPartyManager: boolean
   isLoadingCollections: boolean
   isLoadingItems: boolean
+  isLoadingOrphanItem: boolean
   isMVMFEnabled: boolean
   hasUserOrphanItems: boolean | undefined
   onNavigate: (path: string) => void
@@ -46,6 +47,7 @@ export type MapStateProps = Pick<
   | 'isThirdPartyManager'
   | 'isLoadingCollections'
   | 'isLoadingItems'
+  | 'isLoadingOrphanItem'
   | 'isMVMFEnabled'
   | 'hasUserOrphanItems'
 >

@@ -39,20 +39,26 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   componentDidMount() {
-    const { address, onFetchCollections, onFetchOrphanItem } = this.props
+    const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem } = this.props
     // fetch if already connected
     if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
-      onFetchOrphanItem(address)
+      // TODO: Remove this call when there are no users with orphan items
+      if (hasUserOrphanItems === undefined) {
+        onFetchOrphanItem(address)
+      }
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { address, onFetchCollections, onFetchOrphanItem } = this.props
+    const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem } = this.props
     // if it's the first page and it was not connected when mounting
     if (address && address !== prevProps.address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
-      onFetchOrphanItem(address)
+      // TODO: Remove this call when there are no users with orphan items
+      if (hasUserOrphanItems === undefined) {
+        onFetchOrphanItem(address)
+      }
     }
   }
 
@@ -136,6 +142,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   fetchItems = () => {
+    // TODO: Remove this call when there are no users with orphan items
     const { address, onFetchOrphanItems } = this.props
     const { page } = this.state
     address && onFetchOrphanItems(address, { page, limit: PAGE_SIZE })
@@ -191,14 +198,22 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const { collectionsPaginationData, itemsPaginationData, view, isLoadingItems, isLoadingCollections, hasUserOrphanItems } = this.props
+    const {
+      collectionsPaginationData,
+      itemsPaginationData,
+      view,
+      hasUserOrphanItems,
+      isLoadingItems,
+      isLoadingCollections,
+      isLoadingOrphanItem
+    } = this.props
     const { page } = this.state
     const totalCollections = collectionsPaginationData?.total
     const totalItems = itemsPaginationData?.total
     const count = this.isCollectionTabActive() ? totalCollections : totalItems
     const totalPages = this.isCollectionTabActive() ? collectionsPaginationData?.totalPages : itemsPaginationData?.totalPages
 
-    if (isLoadingItems || isLoadingCollections || count === undefined) {
+    if (isLoadingOrphanItem) {
       return <Loader active size="large" />
     }
 
@@ -228,7 +243,9 @@ export default class CollectionsPage extends React.PureComponent<Props> {
           </Container>
         </div>
 
-        {count > 0 ? (
+        {isLoadingItems || isLoadingCollections || count === undefined ? (
+          <Loader active size="large" />
+        ) : count > 0 ? (
           <>
             {view === CollectionPageView.GRID ? this.renderGrid() : view === CollectionPageView.LIST ? this.renderList() : null}
             {!!totalPages && totalPages > 1 && (
