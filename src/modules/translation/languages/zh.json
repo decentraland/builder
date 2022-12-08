@@ -783,7 +783,7 @@
   },
   "operator_page": {
     "title": "设定操作者",
-    "subtitle": "您正在为{name}设置一个操作者。",
+    "subtitle": "您正在为 {name} 设置操作员。<br></br>o操作员可以<b>仅</b>将场景部署到土地上。",
     "address": "地址",
     "undo": "复原",
     "revoke": "撤消",
