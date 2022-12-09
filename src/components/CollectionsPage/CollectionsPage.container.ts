@@ -7,13 +7,14 @@ import { openModal } from 'modules/modal/actions'
 import {
   getPaginationData as getItemsPaginationData,
   getLoading as getLoadingItems,
-  getPaginatedCollectionItems
+  getPaginatedCollectionItems,
+  hasUserOrphanItems
 } from 'modules/item/selectors'
 import { getLoading as getLoadingCollections, getPaginatedCollections, getPaginationData } from 'modules/collection/selectors'
 import { setCollectionPageView } from 'modules/ui/collection/actions'
 import { getCollectionPageView } from 'modules/ui/collection/selectors'
 import { isThirdPartyManager } from 'modules/thirdParty/selectors'
-import { fetchItemsRequest, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
+import { fetchItemsRequest, fetchOrphanItemRequest, FETCH_ITEMS_REQUEST, FETCH_ORPHAN_ITEM_REQUEST } from 'modules/item/actions'
 import { fetchCollectionsRequest, FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionsPage.types'
 import CollectionsPage from './CollectionsPage'
@@ -36,7 +37,9 @@ const mapState = (state: RootState): MapStateProps => {
     isThirdPartyManager: isThirdPartyManager(state),
     isLoadingCollections: isLoadingType(getLoadingCollections(state), FETCH_COLLECTIONS_REQUEST),
     isLoadingItems: isLoadingType(getLoadingItems(state), FETCH_ITEMS_REQUEST),
-    isMVMFEnabled: getIsMVMFEnabled(state)
+    isLoadingOrphanItem: isLoadingType(getLoadingItems(state), FETCH_ORPHAN_ITEM_REQUEST),
+    isMVMFEnabled: getIsMVMFEnabled(state),
+    hasUserOrphanItems: hasUserOrphanItems(state)
   }
 }
 
@@ -45,7 +48,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetView: view => dispatch(setCollectionPageView(view)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onFetchOrphanItems: (address, params) => dispatch(fetchItemsRequest(address, params)),
-  onFetchCollections: (address, params) => dispatch(fetchCollectionsRequest(address, params))
+  onFetchCollections: (address, params) => dispatch(fetchCollectionsRequest(address, params)),
+  onFetchOrphanItem: address => dispatch(fetchOrphanItemRequest(address))
 })
 
 export default connect(mapState, mapDispatch)(CollectionsPage)

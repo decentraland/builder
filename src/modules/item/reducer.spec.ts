@@ -12,7 +12,10 @@ import {
   rescueItemsChunkSuccess,
   rescueItemsRequest,
   rescueItemsSuccess,
-  fetchCollectionItemsSuccess
+  fetchCollectionItemsSuccess,
+  fetchOrphanItemRequest,
+  fetchOrphanItemSuccess,
+  fetchOrphanItemFailure
 } from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
@@ -344,6 +347,78 @@ describe('when reducing an action of a successful fetch of collection items', ()
           ...toItemObject(items)
         }
       })
+    })
+  })
+})
+
+describe('when an action of type FETCH_ORPHAN_ITEM_REQUEST is called', () => {
+  const address = '0x0'
+  it('should add a fetchOrphanItemRequest to the loading array', () => {
+    expect(itemReducer(INITIAL_STATE, fetchOrphanItemRequest(address))).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [fetchOrphanItemRequest(address)]
+    })
+  })
+})
+
+describe('when an action of type FETCH_ORPHAN_ITEM_SUCCESS is called', () => {
+  const address = '0x0'
+  describe('and there are orphan items', () => {
+    it('should remove a fetchOrphanItemRequest from the loading array, set hasUserOrphanItems true and null the error', () => {
+      expect(
+        itemReducer(
+          {
+            ...INITIAL_STATE,
+            loading: [fetchOrphanItemRequest(address)],
+            error
+          },
+          fetchOrphanItemSuccess(true)
+        )
+      ).toStrictEqual({
+        ...INITIAL_STATE,
+        loading: [],
+        hasUserOrphanItems: true,
+        error: null
+      })
+    })
+  })
+
+  describe('and there are not orphan items', () => {
+    it('should remove a fetchOrphanItemRequest from the loading array, set hasUserOrphanItems false and null the error', () => {
+      expect(
+        itemReducer(
+          {
+            ...INITIAL_STATE,
+            loading: [fetchOrphanItemRequest(address)],
+            error
+          },
+          fetchOrphanItemSuccess(false)
+        )
+      ).toStrictEqual({
+        ...INITIAL_STATE,
+        loading: [],
+        hasUserOrphanItems: false,
+        error: null
+      })
+    })
+  })
+})
+
+describe('when an action of type FETCH_ORPHAN_ITEM_FAILURE is called', () => {
+  const address = '0x0'
+  it('should remove a fetchOrphanItemRequest from the loading array and set the error', () => {
+    expect(
+      itemReducer(
+        {
+          ...INITIAL_STATE,
+          loading: [fetchOrphanItemRequest(address)]
+        },
+        fetchOrphanItemFailure(error)
+      )
+    ).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [],
+      error
     })
   })
 })

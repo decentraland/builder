@@ -45,11 +45,27 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const { address, hasUserOrphanItems, onFetchOrphanItem } = this.props
     this.fetchResource()
+    // TODO: Remove this call when there are no users with orphan items
+    if (address && hasUserOrphanItems === undefined) {
+      onFetchOrphanItem(address)
+    }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { isConnected, address, selectedCollectionId, selectedItemId, orphanItems, totalItems, visibleItems, onSetItems } = this.props
+    const {
+      isConnected,
+      address,
+      selectedCollectionId,
+      selectedItemId,
+      orphanItems,
+      totalItems,
+      visibleItems,
+      hasUserOrphanItems,
+      onSetItems,
+      onFetchOrphanItem
+    } = this.props
     const { initialPage, pages } = this.state
     // when a newly created item redirects to the item editor, iterate over the pages until finding it
     if (
@@ -77,6 +93,10 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       }
       if (prevProps.selectedCollectionId !== selectedCollectionId) {
         this.setState({ pages: [INITIAL_PAGE] })
+      }
+      // TODO: Remove this call when there are no users with orphan items
+      if (address && address !== prevProps.address && hasUserOrphanItems === undefined) {
+        onFetchOrphanItem(address)
       }
     }
   }
@@ -139,13 +159,14 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       isPlayingEmote,
       isConnected,
       wearableController,
+      isLoading: isLoadingOrphanItems,
+      hasUserOrphanItems,
       onSetItems,
       onSetCollection,
-      isLoading: isLoadingOrphanItems,
       onSetReviewedItems
     } = this.props
     const { pages } = this.state
-    const showTabs = !selectedCollectionId
+    const showTabs = !selectedCollectionId && hasUserOrphanItems
     const showCollections = this.isCollectionTabActive() && !selectedCollectionId
     const showItems = !this.isCollectionTabActive() || selectedCollectionId
     return (

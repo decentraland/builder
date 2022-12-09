@@ -91,7 +91,11 @@ import {
   FETCH_COLLECTION_THUMBNAILS_REQUEST,
   fetchCollectionThumbnailsSuccess,
   fetchCollectionThumbnailsFailure,
-  FetchCollectionThumbnailsRequestAction
+  FetchCollectionThumbnailsRequestAction,
+  FETCH_ORPHAN_ITEM_REQUEST,
+  FetchOrphanItemRequestAction,
+  fetchOrphanItemSuccess,
+  fetchOrphanItemFailure
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -134,6 +138,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   const createOrEditProgressChannel = channel()
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
+  yield takeEvery(FETCH_ORPHAN_ITEM_REQUEST, handleFetchOrphanItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
   yield takeEvery(FETCH_COLLECTION_THUMBNAILS_REQUEST, handleFetchCollectionThumbnailsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
@@ -185,6 +190,23 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(fetchItemSuccess(id, item))
     } catch (error) {
       yield put(fetchItemFailure(id, error.message))
+    }
+  }
+
+  function* handleFetchOrphanItemRequest(action: FetchOrphanItemRequestAction) {
+    // TODO: Remove this method when there are no users with orphan items
+    const { address } = action.payload
+    try {
+      // fetch just one orphan item for the address
+      const response: PaginatedResource<Item> = yield call([legacyBuilder, 'fetchItems'], address, {
+        page: 1,
+        limit: 1,
+        collectionId: 'null'
+      })
+      const { total } = response
+      yield put(fetchOrphanItemSuccess(total !== 0))
+    } catch (error) {
+      yield put(fetchOrphanItemFailure(error.message))
     }
   }
 

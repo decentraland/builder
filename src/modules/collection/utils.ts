@@ -70,7 +70,7 @@ export function getCollectionType(collection: Collection): CollectionType {
     case URNType.BASE_AVATARS:
       return CollectionType.STANDARD
     default:
-      throw new Error(`Tried to get a collection type from an invalid URN: ${collection.urn}`)
+      throw new Error(`Tried to get a collection type from an invalid URN: ${collection.urn}` as unknown as string)
   }
 }
 
