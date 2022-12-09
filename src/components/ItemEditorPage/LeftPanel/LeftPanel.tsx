@@ -236,7 +236,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                         onLoadPage={this.loadPage}
                         onSetReviewedItems={onSetReviewedItems}
                       />
-                      <ItemAddedToast items={items} />
+                      <ItemAddedToast collectionId={selectedCollectionId} />
                     </>
                   ) : null}
                 </>

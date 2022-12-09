@@ -587,7 +587,7 @@ describe('when handling the save item success action', () => {
               [select(getOpenModals), { CreateSingleItemModal: true }],
               [select(getAddress), mockAddress]
             ])
-            .put(push(locations.itemEditor({ collectionId: collection.id, itemId: item.id, newItemId: item.id })))
+            .put(push(locations.itemEditor({ collectionId: collection.id, itemId: item.id, newItem: item.name })))
             .dispatch(saveItemSuccess(item, {}))
             .run({ silenceTimeout: true })
         })
