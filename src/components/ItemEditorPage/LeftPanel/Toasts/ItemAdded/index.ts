@@ -1,1 +1,3 @@
-export { ItemAddedToast } from './ItemAddedToast'
+import ItemAddedToast from './ItemAddedToast'
+
+export { ItemAddedToast };

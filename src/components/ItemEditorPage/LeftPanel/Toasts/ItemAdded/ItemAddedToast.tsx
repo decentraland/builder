@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Toast, ToastType } from 'decentraland-ui'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { locations } from 'routing/locations'
@@ -10,7 +10,7 @@ import ItemAddedLogo from '../../../../../icons/check.svg'
 import { Props } from './ItemAddedToast.types'
 import './ItemAddedToast.css'
 
-export function ItemAddedToast(props: Props) {
+const ItemAddedToast: React.FC<Props> = props => {
   const { items } = props
   const [shouldShowToast, setShouldShowToast] = useState(false)
   const [item, setItem] = useState<Item | undefined>()
@@ -65,3 +65,5 @@ export function ItemAddedToast(props: Props) {
     />
   ) : null
 }
+
+export default React.memo(ItemAddedToast);
