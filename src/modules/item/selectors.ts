@@ -20,6 +20,7 @@ import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
 import { Item, SyncStatus, Rarity, CatalystItem, ItemType } from './types'
 import { areSynced, canSeeItem, isOwner } from './utils'
+import { getSearch } from 'connected-react-router'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -197,3 +198,5 @@ export const hasViewAndEditRights = (state: RootState, address: string, collecti
     (collection !== null ? canSeeItem(collection, item, address) : isOwner(item, address))
   )
 }
+
+export const getNewItemName = (state: RootState) => new URLSearchParams(getSearch(state)).get('newItem')

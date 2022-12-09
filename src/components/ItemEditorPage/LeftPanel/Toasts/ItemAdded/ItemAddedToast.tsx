@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Toast, ToastType } from 'decentraland-ui'
-import { Link, useHistory, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -10,26 +10,22 @@ import { Props } from './ItemAddedToast.types'
 import './ItemAddedToast.css'
 
 const ItemAddedToast: React.FC<Props> = props => {
-  const { collectionId } = props
+  const { collectionId, itemName, search, onReplace } = props
   const [shouldShowToast, setShouldShowToast] = useState(false)
-  const [item, setItem] = useState<string | undefined>()
-  const search = useLocation().search
-  const history = useHistory()
+  const [item, setItem] = useState<string | null>(null)
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(search)
-    const newItem = searchParams.get('newItem')
-    if (newItem) {
+    if (itemName) {
       setShouldShowToast(true)
-      setItem(newItem)
+      setItem(itemName)
     }
-  }, [search])
+  }, [itemName])
 
   function handleRemoveItemAddedToast() {
     setShouldShowToast(false)
     const searchParams = new URLSearchParams(search)
     searchParams.delete('newItem')
-    history.replace({ search: searchParams.toString() })
+    onReplace({ search: searchParams.toString() })
   }
 
   return shouldShowToast && item && collectionId ? (
