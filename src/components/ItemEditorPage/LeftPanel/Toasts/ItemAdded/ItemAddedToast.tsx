@@ -66,4 +66,4 @@ const ItemAddedToast: React.FC<Props> = props => {
   ) : null
 }
 
-export default React.memo(ItemAddedToast);
+export default React.memo(ItemAddedToast)

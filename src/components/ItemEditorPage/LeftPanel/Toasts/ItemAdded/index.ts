@@ -1,3 +1,3 @@
 import ItemAddedToast from './ItemAddedToast'
 
-export { ItemAddedToast };
+export { ItemAddedToast }
