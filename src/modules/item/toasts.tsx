@@ -22,13 +22,7 @@ export const getSuccessfulMoveItemToAnotherCollectionToast = (item: Item, collec
             }}
           />
         </span>
-        <Link
-          className="cta"
-          to={{
-            pathname: locations.collectionDetail(collection.id),
-            state: { prevPath: locations.collectionDetail(item.collectionId) }
-          }}
-        >
+        <Link className="cta" to={locations.collectionDetail(collection.id)}>
           {<T id="toast.collection_detail_page.move_item_to_another_collection.cta" />}
         </Link>
       </>
