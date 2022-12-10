@@ -1642,6 +1642,13 @@
     "third_party_action_failure": {
       "title": "错误",
       "body": "发生错误。请稍后再试。"
+    },
+    "collection_detail_page": {
+      "move_item_to_another_collection": {
+        "title": "项目已移至另一个集合",
+        "body": "{item_name} 已移至 {collection_name} 集合。",
+        "cta": "查看合集"
+      }
     }
   },
   "sagas": {

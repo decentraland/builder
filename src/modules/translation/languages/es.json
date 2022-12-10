@@ -1657,6 +1657,13 @@
     "third_party_action_failure": {
       "title": "Error",
       "body": "Algo salió mal... Vuelve a intentarlo más tarde."
+    },
+    "collection_detail_page": {
+      "move_item_to_another_collection": {
+        "title": "Has movido el Item a otra colección",
+        "body": "{item_name} ha sido movido a la colección {collection_name}.",
+        "cta": "Ver Colección"
+      }
     }
   },
   "sagas": {
