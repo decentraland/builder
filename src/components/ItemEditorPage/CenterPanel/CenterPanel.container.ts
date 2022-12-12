@@ -28,7 +28,7 @@ import {
   isPlayingEmote
 } from 'modules/editor/selectors'
 import { fetchCollectionItemsRequest, fetchItemsRequest } from 'modules/item/actions'
-import { getEmotes, getItem } from 'modules/item/selectors'
+import { getEmotes, getItem, hasUserOrphanItems } from 'modules/item/selectors'
 import { ItemType } from 'modules/item/types'
 import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CenterPanel.types'
@@ -74,7 +74,8 @@ const mapState = (state: RootState): MapStateProps => {
     wearableController: getWearablePreviewController(state),
     emotes,
     isPlayingEmote: isPLayingIdleEmote ? false : isPlayingEmote(state),
-    isImportFilesModalOpen
+    isImportFilesModalOpen,
+    hasUserOrphanItems: hasUserOrphanItems(state)
   }
 }
 

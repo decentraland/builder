@@ -35,6 +35,8 @@ export const getItem = (state: RootState, itemId: string) => {
   return items.find(item => item.id === itemId) || null
 }
 
+export const hasUserOrphanItems = (state: RootState): boolean | undefined => getState(state).hasUserOrphanItems
+
 export const getWalletItems = createSelector<RootState, Item[], string | undefined, Item[]>(getItems, getAddress, (items, address) =>
   items.filter(item => address && isEqual(item.owner, address))
 )

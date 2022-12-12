@@ -59,7 +59,10 @@ import {
   fetchRaritiesFailure,
   setCollection,
   setItemsTokenIdFailure,
-  setItemsTokenIdRequest
+  setItemsTokenIdRequest,
+  fetchOrphanItemRequest,
+  fetchOrphanItemSuccess,
+  fetchOrphanItemFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import { BuiltFile, Currency, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
@@ -1712,6 +1715,61 @@ describe('when handling the failure of setting token items id', () => {
         ])
         .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
         .dispatch(setItemsTokenIdFailure(collection, items, 'error message', 500))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the fetch of an orphan item', () => {
+  let paginationData: PaginatedResource<Item>
+  describe('and the request is successful', () => {
+    describe('and there are orphan items', () => {
+      beforeEach(() => {
+        paginationData = {
+          results: [{ ...mockedItem }],
+          limit: 1,
+          page: 1,
+          pages: 1,
+          total: 1
+        }
+        ;(builderAPI.fetchItems as jest.Mock).mockReturnValue(paginationData)
+      })
+      it('should put a fetchOrphanItemSuccess action with hasUserOrphanItems true', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .dispatch(fetchOrphanItemRequest(mockAddress))
+          .put(fetchOrphanItemSuccess(paginationData.total !== 0))
+          .run({ silenceTimeout: true })
+      })
+    })
+    describe('and there are not orphan items', () => {
+      beforeEach(() => {
+        paginationData = {
+          results: [],
+          limit: 1,
+          page: 1,
+          pages: 1,
+          total: 0
+        }
+        ;(builderAPI.fetchItems as jest.Mock).mockReturnValue(paginationData)
+      })
+      it('should put a fetchOrphanItemSuccess action with hasUserOrphanItems false', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .dispatch(fetchOrphanItemRequest(mockAddress))
+          .put(fetchOrphanItemSuccess(paginationData.total !== 0))
+          .run({ silenceTimeout: true })
+      })
+    })
+  })
+  describe('and the request fails', () => {
+    let errorMessage: string
+    beforeEach(() => {
+      errorMessage = 'an error'
+      ;(builderAPI.fetchItems as jest.Mock).mockRejectedValue(new Error(errorMessage))
+    })
+    it('should put a fetchOrphanItemFailure action with the error message', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .dispatch(fetchOrphanItemRequest(mockAddress))
+        .put(fetchOrphanItemFailure(errorMessage))
         .run({ silenceTimeout: true })
     })
   })

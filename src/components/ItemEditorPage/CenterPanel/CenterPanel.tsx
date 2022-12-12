@@ -28,6 +28,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       collection,
       emotes,
       selectedBaseWearables: bodyShapeBaseWearables,
+      hasUserOrphanItems,
       onFetchBaseWearables,
       onFetchOrphanItems,
       onFetchCollectionItems
@@ -43,8 +44,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       // The TP collections wouldn't have emotes soon, for this reason, we are fetching only standard collections to show in the Play Emote dropdown
       if (collection && !isTPCollection(collection)) {
         onFetchCollectionItems(collection.id)
-      } else {
-        onFetchOrphanItems(address!)
+      } else if (address && hasUserOrphanItems) {
+        // TODO: Remove this call when there are no users with orphan items
+        onFetchOrphanItems(address)
       }
     }
 

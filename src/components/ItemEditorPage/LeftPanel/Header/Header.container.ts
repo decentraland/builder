@@ -9,6 +9,7 @@ import { openModal } from 'modules/modal/actions'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { deleteItemRequest } from 'modules/item/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
+import { hasUserOrphanItems } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './Header.types'
 import Header from './Header'
 
@@ -25,7 +26,8 @@ const mapState = (state: RootState): MapStateProps => {
     isLoggedIn: isLoggedIn(state),
     isReviewing: isReviewing(state),
     collection,
-    hasEditRights: collection !== undefined && address !== undefined && hasViewAndEditRights(state, address, collection)
+    hasEditRights: collection !== undefined && address !== undefined && hasViewAndEditRights(state, address, collection),
+    hasUserOrphanItems: hasUserOrphanItems(state)
   }
 }
 
