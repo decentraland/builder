@@ -12,9 +12,8 @@ export function injectParams(location: string, keys: { [key: string]: string } =
   const url: URL = new URL(window.location.href)
   const currentParams: URLSearchParams = url.searchParams
   const params: string[] = []
-
   for (const [key, param] of Object.entries(keys)) {
-    const value = options[key] || currentParams.get(param)
+    const value = key in options ? options[key] : currentParams.get(param)
     switch (typeof value) {
       case 'string':
         params.push(`${param}=${value}`)

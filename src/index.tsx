@@ -25,11 +25,11 @@ ReactDOM.render(
       <TranslationProvider locales={Object.keys(languages)}>
         <WalletProvider>
           <ModalProvider components={modals}>
-            <ToastProvider>
-              <ConnectedRouter history={history}>
+            <ConnectedRouter history={history}>
+              <ToastProvider>
                 <Routes />
-              </ConnectedRouter>
-            </ToastProvider>
+              </ToastProvider>
+            </ConnectedRouter>
           </ModalProvider>
         </WalletProvider>
       </TranslationProvider>
