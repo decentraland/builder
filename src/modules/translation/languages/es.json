@@ -563,8 +563,11 @@
     "urn": "URN",
     "order": {
       "newest": "Reciente",
+      "oldest": "Antigüo",
       "name_asc": "Nombre ↑",
-      "name_desc": "Nombre ↓"
+      "name_desc": "Nombre ↓",
+      "updated_at_asc": "Última actualización ↑",
+      "updated_at_desc": "Última actualización ↓"
     },
     "total": "Total",
     "parcel_plural": "Parcelas",
