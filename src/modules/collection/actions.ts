@@ -12,10 +12,10 @@ export const FETCH_COLLECTIONS_REQUEST = '[Request] Fetch Collections'
 export const FETCH_COLLECTIONS_SUCCESS = '[Success] Fetch Collections'
 export const FETCH_COLLECTIONS_FAILURE = '[Failure] Fetch Collections'
 
-export const fetchCollectionsRequest = (address?: string, params?: FetchCollectionsParams) =>
-  action(FETCH_COLLECTIONS_REQUEST, { address, params })
-export const fetchCollectionsSuccess = (collections: Collection[], paginationStats?: PaginationStats) =>
-  action(FETCH_COLLECTIONS_SUCCESS, { collections, paginationStats })
+export const fetchCollectionsRequest = (address?: string, params?: FetchCollectionsParams, useCachedResults = false) =>
+  action(FETCH_COLLECTIONS_REQUEST, { address, params, useCachedResults })
+export const fetchCollectionsSuccess = (collections: Collection[], paginationStats?: PaginationStats, params?: FetchCollectionsParams) =>
+  action(FETCH_COLLECTIONS_SUCCESS, { collections, paginationStats, params })
 export const fetchCollectionsFailure = (error: string) => action(FETCH_COLLECTIONS_FAILURE, { error })
 
 export type FetchCollectionsRequestAction = ReturnType<typeof fetchCollectionsRequest>

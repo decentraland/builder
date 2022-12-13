@@ -85,6 +85,7 @@ import {
 } from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
+import { getData, getPaginationData as getCollectionPaginationData, getLastFetchParams } from './selectors'
 import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 const getCollectionMock = (props: Partial<Collection> = {}): Collection =>
@@ -1799,7 +1800,7 @@ describe('when handling the fetch of collections', () => {
           [select(getWalletItems), []],
           [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), { ...mockedPaginationData, results: [collection] }]
         ])
-        .put(fetchCollectionsSuccess([collection], mockedPaginationData))
+        .put(fetchCollectionsSuccess([collection], mockedPaginationData, mockedFetchParameters))
         .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters))
         .run({ silenceTimeout: true })
     })
@@ -1824,7 +1825,7 @@ describe('when handling the fetch of collections', () => {
           [select(getWalletItems), []],
           [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), [collection]]
         ])
-        .put(fetchCollectionsSuccess([collection], undefined))
+        .put(fetchCollectionsSuccess([collection], undefined, mockedFetchParameters))
         .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters))
         .run({ silenceTimeout: true })
     })
@@ -1844,8 +1845,39 @@ describe('when handling the fetch of collections', () => {
           [select(getWalletItems), []],
           [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), [collection]]
         ])
-        .put(fetchCollectionsSuccess([collection], undefined))
+        .put(fetchCollectionsSuccess([collection], undefined, mockedFetchParameters))
         .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and should use the already fetched version', () => {
+    let mockedFetchParameters: FetchCollectionsParams
+    let alreadyFetchedCollections: Record<string, Collection>
+    beforeEach(() => {
+      collection = getCollectionMock()
+      mockedFetchParameters = {
+        assignee: '0x123',
+        isPublished: true,
+        q: collection.name,
+        sort: CurationSortOptions.NAME_ASC,
+        status: CurationStatus.TO_REVIEW
+      }
+      alreadyFetchedCollections = {
+        [collection.id]: collection
+      }
+    })
+
+    it('should put the success action with the data without pagination information', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+        .provide([
+          [select(getWalletItems), []],
+          [select(getLastFetchParams), mockedFetchParameters],
+          [select(getData), alreadyFetchedCollections],
+          [select(getCollectionPaginationData), undefined]
+        ])
+        .put(fetchCollectionsSuccess([collection], undefined, mockedFetchParameters))
+        .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters, true))
         .run({ silenceTimeout: true })
     })
   })

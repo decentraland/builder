@@ -1,7 +1,8 @@
 import { fetchTransactionSuccess } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { FetchCollectionsParams } from 'lib/api/builder'
 import { PaginationStats } from 'lib/api/pagination'
 import { closeAllModals, closeModal } from 'modules/modal/actions'
-import { fetchCollectionsSuccess, PUBLISH_COLLECTION_SUCCESS } from './actions'
+import { fetchCollectionsRequest, fetchCollectionsSuccess, PUBLISH_COLLECTION_SUCCESS } from './actions'
 import { collectionReducer as reducer, CollectionState } from './reducer'
 import { Collection } from './types'
 import { toCollectionObject } from './utils'
@@ -47,6 +48,44 @@ describe('when FETCH_TRANSACTION_SUCCESS', () => {
       expect(state.data.id.createdAt).toBe(mockNow)
       expect(state.data.id.reviewedAt).toBe(mockNow)
       expect(state.data.id.updatedAt).toBe(mockNow)
+    })
+  })
+})
+
+describe('when FETCH_COLLECTIONS_REQUEST', () => {
+  const anExistingCollectionId = 'id'
+  let mockedFetchCollectionParams: FetchCollectionsParams
+  let initialState: CollectionState
+  beforeEach(() => {
+    mockedFetchCollectionParams = {
+      assignee: 'anAssignee',
+      isPublished: false
+    } as FetchCollectionsParams
+    initialState = {
+      data: {
+        [anExistingCollectionId]: {
+          id: 'anExistingCollectionId'
+        }
+      },
+      lastFetchParams: mockedFetchCollectionParams,
+      loading: []
+    } as any
+  })
+
+  describe('and it sends the flag to re-use existing results and same parameters', () => {
+    it('should not set the loading state', () => {
+      const state = reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams, true))
+      expect(reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams, true))).toEqual(state)
+    })
+  })
+
+  describe('and it does not send the flag to re-use existing results', () => {
+    it('should set the loading state', () => {
+      const state = reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams))
+      expect(reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams))).toEqual({
+        ...state,
+        loading: [fetchCollectionsRequest(undefined, mockedFetchCollectionParams)]
+      })
     })
   })
 })

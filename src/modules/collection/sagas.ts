@@ -1,4 +1,5 @@
 import PQueue from 'p-queue'
+import equal from 'fast-deep-equal'
 import { Contract, providers, constants, ethers } from 'ethers'
 import { push, replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
@@ -98,7 +99,7 @@ import {
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
-import { BuilderAPI } from 'lib/api/builder'
+import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
@@ -110,7 +111,7 @@ import {
   getCollectionItems,
   getWalletItems,
   getData as getItemsById,
-  getPaginationData
+  getPaginationData as getItemPaginationData
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash, hasOldHashedContents } from 'modules/item/export'
@@ -140,7 +141,8 @@ import {
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
-import { getCollection, getRaritiesContract, getWalletCollections } from './selectors'
+import { getCollection, getData, getLastFetchParams, getPaginationData, getRaritiesContract, getWalletCollections } from './selectors'
+import { CollectionPaginationData } from './reducer'
 import { Collection, CollectionType } from './types'
 import {
   isOwner,
@@ -150,7 +152,8 @@ import {
   getCollectionType,
   UNSYNCED_COLLECTION_ERROR_PREFIX,
   isTPCollection,
-  getCollectionFactoryContract
+  getCollectionFactoryContract,
+  toPaginationStats
 } from './utils'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
@@ -180,23 +183,43 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
-    const { address, params } = action.payload
+    const { address, params, useCachedResults } = action.payload
     try {
-      const response: PaginatedResource<Collection> | Collection[] = yield call([legacyBuilderClient, 'fetchCollections'], address, params)
-      if (isPaginated(response)) {
-        const { results, limit, page, pages, total } = response
-        yield put(
-          fetchCollectionsSuccess(results, {
-            limit,
-            page,
-            pages,
-            total
-          })
-        )
+      if (useCachedResults) {
+        const lastFetchParams: FetchCollectionsParams | undefined = yield select(getLastFetchParams)
+        if (equal(params, lastFetchParams)) {
+          const collections: Record<string, Collection> = yield select(getData)
+          const paginationData: CollectionPaginationData | null = yield select(getPaginationData)
+          yield put(
+            fetchCollectionsSuccess(Object.values(collections), paginationData ? toPaginationStats(paginationData) : undefined, params)
+          )
+        }
       } else {
-        yield put(fetchCollectionsSuccess(response))
+        const response: PaginatedResource<Collection> | Collection[] = yield call(
+          [legacyBuilderClient, 'fetchCollections'],
+          address,
+          params
+        )
+        if (isPaginated(response)) {
+          const { results, limit, page, pages, total } = response
+          yield put(
+            fetchCollectionsSuccess(
+              results,
+              {
+                limit,
+                page,
+                pages,
+                total
+              },
+              params
+            )
+          )
+        } else {
+          yield put(fetchCollectionsSuccess(response, undefined, params))
+        }
       }
     } catch (error) {
+      console.log('error: ', error)
       yield put(fetchCollectionsFailure(error.message))
     }
   }
@@ -671,7 +694,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       // 2. Get items to approve & the approval data from the server
       // TODO: Use the builder client. Tracked here: https://github.com/decentraland/builder/issues/1855
       // Get all items to get approved in batches
-      const paginatedData: PaginatedResource<Item> = yield select(getPaginationData, collection.id)
+      const paginatedData: PaginatedResource<Item> = yield select(getItemPaginationData, collection.id)
       const BATCH_SIZE = 50
       const REQUESTS_BATCH_SIZE = 10
       const pages = getArrayOfPagesFromTotal(Math.ceil(paginatedData.total / BATCH_SIZE))
