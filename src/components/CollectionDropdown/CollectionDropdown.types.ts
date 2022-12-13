@@ -12,7 +12,7 @@ export type Props = {
   fetchCollectionParams?: FetchCollectionsParams
   onChange: (collection: Collection) => void
   isDisabled?: boolean
-  onFetchCollections: typeof fetchCollectionsRequest,
+  onFetchCollections: typeof fetchCollectionsRequest
   isLoading: boolean
 }
 
