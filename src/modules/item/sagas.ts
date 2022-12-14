@@ -204,7 +204,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         collectionId: 'null'
       })
       const { total } = response
-      yield put(fetchOrphanItemSuccess(total !== 0))
+      yield put(fetchOrphanItemSuccess(total > 0))
     } catch (error) {
       yield put(fetchOrphanItemFailure(error.message))
     }
