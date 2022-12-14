@@ -12,10 +12,10 @@ import {
   Tabs,
   Loader,
   Pagination,
-  PaginationProps
+  PaginationProps,
+  DropdownProps
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
@@ -23,6 +23,7 @@ import Chip from 'components/Chip'
 import EventBanner from 'components/EventBanner'
 import { locations } from 'routing/locations'
 import { CollectionPageView } from 'modules/ui/collection/types'
+import { CurationSortOptions } from 'modules/curations/types'
 import ItemCard from './ItemCard'
 import ItemRow from './ItemRow'
 import CollectionCard from './CollectionCard'
@@ -35,6 +36,7 @@ const PAGE_SIZE = 20
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
     currentTab: TABS.COLLECTIONS,
+    sort: CurationSortOptions.MOST_RELEVANT,
     page: 1
   }
 
@@ -42,7 +44,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem } = this.props
     // fetch if already connected
     if (address) {
-      onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
+      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.MOST_RELEVANT })
       // TODO: Remove this call when there are no users with orphan items
       if (hasUserOrphanItems === undefined) {
         onFetchOrphanItem(address)
@@ -52,9 +54,10 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
   componentDidUpdate(prevProps: Props) {
     const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem } = this.props
+    const { sort } = this.state
     // if it's the first page and it was not connected when mounting
     if (address && address !== prevProps.address) {
-      onFetchCollections(address, { page: 1, limit: PAGE_SIZE })
+      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort })
       // TODO: Remove this call when there are no users with orphan items
       if (hasUserOrphanItems === undefined) {
         onFetchOrphanItem(address)
@@ -79,12 +82,21 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     onNavigate(locations.itemEditor())
   }
 
+  handleSortChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    const { onFetchCollections, address } = this.props
+    const sort = value as CurationSortOptions
+    this.setState({ sort, page: 1 })
+    onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort })
+  }
+
   handleTabChange = (tab: TABS) => {
     const { onFetchOrphanItems, onFetchCollections, address } = this.props
+    const { sort } = this.state
     this.setState({ currentTab: tab, page: 1 }, () => {
       const fetchFn = tab === TABS.ITEMS ? onFetchOrphanItems : onFetchCollections
+      const params = tab === TABS.ITEMS ? { page: 1, limit: PAGE_SIZE } : { page: 1, limit: PAGE_SIZE, sort }
       if (address) {
-        fetchFn(address, { page: 1, limit: PAGE_SIZE })
+        fetchFn(address, params)
       }
     })
   }
@@ -137,8 +149,8 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
   fetchCollections = () => {
     const { address, onFetchCollections } = this.props
-    const { page } = this.state
-    onFetchCollections(address, { page, limit: PAGE_SIZE })
+    const { page, sort } = this.state
+    onFetchCollections(address, { page, limit: PAGE_SIZE, sort })
   }
 
   fetchItems = () => {
@@ -152,34 +164,63 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     this.setState({ page: +props.activePage! }, this.isCollectionTabActive() ? this.fetchCollections : this.fetchItems)
   }
 
-  renderRightActions = () => {
-    const { view, isThirdPartyManager, onSetView } = this.props
+  renderMainActions = () => {
+    const { isThirdPartyManager } = this.props
     return (
       <Column align="right">
         <Row className="actions">
           {this.isCollectionTabActive() && (
-            <Dropdown
-              trigger={
-                <Button basic className="create-item">
-                  <Icon name="add-active" />
-                </Button>
-              }
-              inline
-              direction="left"
-            >
-              <Dropdown.Menu>
-                <>
-                  <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
-                  {isThirdPartyManager && (
-                    <Dropdown.Item text={t('collections_page.new_third_party_collection')} onClick={this.handleNewThirdPartyCollection} />
-                  )}
-                </>
-              </Dropdown.Menu>
-            </Dropdown>
+            <>
+              <Dropdown
+                trigger={
+                  <Button basic className="create-item">
+                    <Icon name="add-active" />
+                  </Button>
+                }
+                inline
+                direction="left"
+              >
+                <Dropdown.Menu>
+                  <>
+                    <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
+                    {isThirdPartyManager && (
+                      <Dropdown.Item text={t('collections_page.new_third_party_collection')} onClick={this.handleNewThirdPartyCollection} />
+                    )}
+                  </>
+                </Dropdown.Menu>
+              </Dropdown>
+            </>
           )}
           <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
             {t('item_editor.open')}
           </Button>
+        </Row>
+      </Column>
+    )
+  }
+
+  renderViewActions = () => {
+    const { view, isCollectionSortEnabled, onSetView } = this.props
+    const { sort } = this.state
+    return (
+      <Column align="right">
+        <Row className="actions">
+          {this.isCollectionTabActive() && isCollectionSortEnabled && (
+            <Dropdown
+              direction="left"
+              value={sort}
+              options={[
+                { value: CurationSortOptions.MOST_RELEVANT, text: t('curation_page.order.most_relevant') },
+                { value: CurationSortOptions.CREATED_AT_DESC, text: t('global.order.newest') },
+                { value: CurationSortOptions.CREATED_AT_ASC, text: t('global.order.oldest') },
+                { value: CurationSortOptions.UPDATED_AT_DESC, text: t('global.order.updated_at_desc') },
+                { value: CurationSortOptions.UPDATED_AT_ASC, text: t('global.order.updated_at_asc') },
+                { value: CurationSortOptions.NAME_DESC, text: t('global.order.name_desc') },
+                { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') }
+              ]}
+              onChange={this.handleSortChange}
+            />
+          )}
           <Chip
             className="grid"
             icon="grid"
@@ -222,23 +263,25 @@ export default class CollectionsPage extends React.PureComponent<Props> {
         <EventBanner />
         <div className="filters">
           <Container>
-            {hasUserOrphanItems && (
-              // TODO: Remove tabs when there are no users with orphan items
-              <Tabs isFullscreen>
-                <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.COLLECTIONS)}>
-                  {t('collections_page.collections')}
-                </Tabs.Tab>
-                <Tabs.Tab active={!this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.ITEMS)}>
-                  {t('collections_page.single_items')}
-                </Tabs.Tab>
-                {this.renderRightActions()}
-              </Tabs>
-            )}
+            <Tabs isFullscreen>
+              {hasUserOrphanItems && (
+                // TODO: Remove tabs when there are no users with orphan items
+                <>
+                  <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.COLLECTIONS)}>
+                    {t('collections_page.collections')}
+                  </Tabs.Tab>
+                  <Tabs.Tab active={!this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.ITEMS)}>
+                    {t('collections_page.single_items')}
+                  </Tabs.Tab>
+                </>
+              )}
+              {this.renderMainActions()}
+            </Tabs>
             <Row height={30}>
               <Column>
                 <Row>{!isLoadingItems && !!count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
               </Column>
-              {!hasUserOrphanItems && this.renderRightActions()}
+              {this.renderViewActions()}
             </Row>
           </Container>
         </div>
