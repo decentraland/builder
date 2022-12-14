@@ -211,12 +211,12 @@ export default class CollectionsPage extends React.PureComponent<Props> {
               value={sort}
               options={[
                 { value: CurationSortOptions.MOST_RELEVANT, text: t('curation_page.order.most_relevant') },
-                { value: CurationSortOptions.CREATED_AT_ASC, text: t('global.order.newest') },
-                { value: CurationSortOptions.CREATED_AT_DESC, text: t('global.order.oldest') },
-                { value: CurationSortOptions.UPDATED_AT_ASC, text: t('global.order.updated_at_asc') },
+                { value: CurationSortOptions.CREATED_AT_DESC, text: t('global.order.newest') },
+                { value: CurationSortOptions.CREATED_AT_ASC, text: t('global.order.oldest') },
                 { value: CurationSortOptions.UPDATED_AT_DESC, text: t('global.order.updated_at_desc') },
-                { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') },
-                { value: CurationSortOptions.NAME_DESC, text: t('global.order.name_desc') }
+                { value: CurationSortOptions.UPDATED_AT_ASC, text: t('global.order.updated_at_asc') },
+                { value: CurationSortOptions.NAME_DESC, text: t('global.order.name_desc') },
+                { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') }
               ]}
               onChange={this.handleSortChange}
             />
