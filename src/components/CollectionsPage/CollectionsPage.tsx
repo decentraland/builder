@@ -16,7 +16,6 @@ import {
   DropdownProps
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
@@ -24,13 +23,13 @@ import Chip from 'components/Chip'
 import EventBanner from 'components/EventBanner'
 import { locations } from 'routing/locations'
 import { CollectionPageView } from 'modules/ui/collection/types'
+import { CurationSortOptions } from 'modules/curations/types'
 import ItemCard from './ItemCard'
 import ItemRow from './ItemRow'
 import CollectionCard from './CollectionCard'
 import CollectionRow from './CollectionRow'
 import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
-import { CurationSortOptions } from 'modules/curations/types'
 
 const PAGE_SIZE = 20
 
