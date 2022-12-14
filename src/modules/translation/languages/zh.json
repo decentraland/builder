@@ -555,8 +555,11 @@
     "urn": "URN",
     "order": {
       "newest": "最新",
+      "oldest": "最老的",
       "name_asc": "名称↑",
-      "name_desc": "名称↓"
+      "name_desc": "名称↓",
+      "updated_at_asc": "最后更新↑",
+      "updated_at_desc": "最后更新↓"
     },
     "total": "全部的",
     "parcel_plural": "包裹",
