@@ -1065,15 +1065,16 @@
   },
   "collections_page": {
     "results": "{count} {count, plural, one {resultado} other {resultados}}",
-    "no_items": "Sin items",
+    "no_items": "Sin colecciones",
     "new_item": "Nuevo item",
     "new_collection": "Nueva colección",
     "new_third_party_collection": "Nueva colección externa",
     "type": "Tipo",
     "items": "Items",
     "collections": "Colecciones",
+    "collection": "Colección",
     "single_items": "Items individuales",
-    "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo",
+    "empty_description": "Aún no tienes colecciones, comienza creándo una de ellas y entra al metaverso con estilo",
     "created_at": "Creado",
     "last_modified": "Última modificación"
   },

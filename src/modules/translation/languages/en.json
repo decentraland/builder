@@ -1054,15 +1054,16 @@
   },
   "collections_page": {
     "results": "{count} {count, plural, one {result} other {results}}",
-    "no_items": "No items",
+    "no_items": "No collections",
     "new_item": "New Item",
     "new_collection": "New Collection",
     "new_third_party_collection": "New Linked Wearables Collection",
     "type": "Type",
     "items": "Items",
     "collections": "Collections",
+    "collection": "Collection",
     "single_items": "Single items",
-    "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!",
+    "empty_description": "You have no collections yet. Create a new collection, and dress the metaverse in style!",
     "created_at": "Created",
     "last_modified": "Last modified"
   },
