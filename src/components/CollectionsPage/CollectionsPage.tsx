@@ -221,12 +221,12 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   renderViewActions = () => {
-    const { view, isCollectionSortEnabled, onSetView } = this.props
+    const { view, onSetView } = this.props
     const { sort } = this.state
     return (
       <Column align="right">
         <Row className="actions">
-          {this.isCollectionTabActive() && isCollectionSortEnabled && (
+          {this.isCollectionTabActive() && (
             <Dropdown
               direction="left"
               value={sort}
