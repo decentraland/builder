@@ -128,6 +128,8 @@ export default class CollectionsPage extends React.PureComponent<Props> {
               <Table.HeaderCell>
                 {this.isCollectionTabActive() ? t('collections_page.collections') : t('collections_page.items')}
               </Table.HeaderCell>
+              <Table.HeaderCell>{t('collections_page.created_at')}</Table.HeaderCell>
+              <Table.HeaderCell>{t('collections_page.last_modified')}</Table.HeaderCell>
               <Table.HeaderCell></Table.HeaderCell>
             </Table.Row>
           </Table.Header>

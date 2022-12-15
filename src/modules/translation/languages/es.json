@@ -1073,7 +1073,9 @@
     "items": "Items",
     "collections": "Colecciones",
     "single_items": "Items individuales",
-    "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
+    "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo",
+    "created_at": "Creado",
+    "last_modified": "Última modificación"
   },
   "curation_page": {
     "order": {

@@ -1062,7 +1062,9 @@
     "items": "Items",
     "collections": "Collections",
     "single_items": "Single items",
-    "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
+    "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!",
+    "created_at": "Created",
+    "last_modified": "Last modified"
   },
   "curation_page": {
     "order": {

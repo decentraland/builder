@@ -5,6 +5,7 @@ import { locations } from 'routing/locations'
 import { getCollectionType } from 'modules/collection/utils'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
+import { formatDistanceToNow } from 'lib/date'
 import { Props } from './CollectionRow.types'
 import styles from './CollectionRow.module.css'
 
@@ -20,7 +21,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
 
     return (
       <Table.Row className={styles.CollectionRow} onClick={this.handleTableRowClick}>
-        <Table.Cell width={4}>
+        <Table.Cell width={3}>
           <div className={styles.imageColumn}>
             <CollectionImage className={styles.image} collectionId={collection.id} />
             <div className={styles.title}>
@@ -30,8 +31,10 @@ export default class CollectionRow extends React.PureComponent<Props> {
           </div>
         </Table.Cell>
         <Table.Cell width={3}>{t(`collection.type.${type}`)}</Table.Cell>
-        <Table.Cell width={3}>{itemCount}</Table.Cell>
-        <Table.Cell width={2}>
+        <Table.Cell width={2}>{itemCount}</Table.Cell>
+        <Table.Cell width={3}>{formatDistanceToNow(collection.createdAt, { addSuffix: true })}</Table.Cell>
+        <Table.Cell width={3}>{formatDistanceToNow(collection.updatedAt, { addSuffix: true })}</Table.Cell>
+        <Table.Cell width={3}>
           {collection.isPublished ? (
             <div className={styles.published}>
               {t('global.published')} <Icon name="check" />

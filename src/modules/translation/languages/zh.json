@@ -1054,7 +1054,9 @@
     "items": "模型",
     "collections": "收藏品",
     "single_items": "单品",
-    "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
+    "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！",
+    "created_at": "已创建",
+    "last_modified": "上一次更改"
   },
   "curation_page": {
     "order": {
