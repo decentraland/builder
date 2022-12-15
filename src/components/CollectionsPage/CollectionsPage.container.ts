@@ -18,7 +18,7 @@ import { fetchItemsRequest, fetchOrphanItemRequest, FETCH_ITEMS_REQUEST, FETCH_O
 import { fetchCollectionsRequest, FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionsPage.types'
 import CollectionsPage from './CollectionsPage'
-import { getIsCollectionsSortEnabled, getIsMVMFEnabled } from 'modules/features/selectors'
+import { getIsMVMFEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   const address = getAddress(state)
@@ -39,8 +39,7 @@ const mapState = (state: RootState): MapStateProps => {
     isLoadingItems: isLoadingType(getLoadingItems(state), FETCH_ITEMS_REQUEST),
     isLoadingOrphanItem: isLoadingType(getLoadingItems(state), FETCH_ORPHAN_ITEM_REQUEST),
     isMVMFEnabled: getIsMVMFEnabled(state),
-    hasUserOrphanItems: hasUserOrphanItems(state),
-    isCollectionSortEnabled: getIsCollectionsSortEnabled(state)
+    hasUserOrphanItems: hasUserOrphanItems(state)
   }
 }
 
