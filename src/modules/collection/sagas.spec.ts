@@ -86,6 +86,7 @@ import {
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
 import { getData, getPaginationData as getCollectionPaginationData, getLastFetchParams } from './selectors'
+import { CollectionPaginationData } from './reducer'
 import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
 
 const getCollectionMock = (props: Partial<Collection> = {}): Collection =>
@@ -1868,17 +1869,51 @@ describe('when handling the fetch of collections', () => {
       }
     })
 
-    it('should put the success action with the data without pagination information', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
-        .provide([
-          [select(getWalletItems), []],
-          [select(getLastFetchParams), mockedFetchParameters],
-          [select(getData), alreadyFetchedCollections],
-          [select(getCollectionPaginationData), undefined]
-        ])
-        .put(fetchCollectionsSuccess([collection], undefined, mockedFetchParameters))
-        .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters, true))
-        .run({ silenceTimeout: true })
+    describe('and it has pagination information', () => {
+      let paginationData: CollectionPaginationData
+      let paginationStats: PaginationStats
+      beforeEach(() => {
+        paginationData = {
+          currentPage: 1,
+          ids: [],
+          limit: 1,
+          total: 1,
+          totalPages: 1
+        }
+        paginationStats = {
+          limit: 1,
+          page: 1,
+          pages: 1,
+          total: 1
+        }
+      })
+      it('should put the success action with the data without pagination information', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+          .provide([
+            [select(getWalletItems), []],
+            [select(getLastFetchParams), mockedFetchParameters],
+            [select(getData), alreadyFetchedCollections],
+            [select(getCollectionPaginationData), paginationData]
+          ])
+          .put(fetchCollectionsSuccess([collection], paginationStats, mockedFetchParameters))
+          .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters, true))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and it does not have pagination information', () => {
+      it('should put the success action with the data without pagination information', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCatalyst)
+          .provide([
+            [select(getWalletItems), []],
+            [select(getLastFetchParams), mockedFetchParameters],
+            [select(getData), alreadyFetchedCollections],
+            [select(getCollectionPaginationData), undefined]
+          ])
+          .put(fetchCollectionsSuccess([collection], undefined, mockedFetchParameters))
+          .dispatch(fetchCollectionsRequest(undefined, mockedFetchParameters, true))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })
