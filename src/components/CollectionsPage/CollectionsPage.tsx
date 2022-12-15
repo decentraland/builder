@@ -65,10 +65,6 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     }
   }
 
-  handleNewItem = () => {
-    this.props.onOpenModal('CreateSingleItemModal', {})
-  }
-
   handleNewCollection = () => {
     this.props.onOpenModal('CreateCollectionModal')
   }
