@@ -219,7 +219,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         }
       }
     } catch (error) {
-      console.log('error: ', error)
       yield put(fetchCollectionsFailure(error.message))
     }
   }

@@ -52,30 +52,40 @@ describe('when FETCH_TRANSACTION_SUCCESS', () => {
   })
 })
 
-describe('when FETCH_COLLECTIONS_REQUEST', () => {
-  const anExistingCollectionId = 'id'
-  let mockedFetchCollectionParams: FetchCollectionsParams
+describe('when reducing the FETCH_COLLECTIONS_REQUEST action', () => {
   let initialState: CollectionState
+  let anExistingCollectionId
+  let mockedFetchCollectionParams: FetchCollectionsParams
   beforeEach(() => {
-    mockedFetchCollectionParams = {
-      assignee: 'anAssignee',
-      isPublished: false
-    } as FetchCollectionsParams
+    anExistingCollectionId = 'id'
     initialState = {
       data: {
         [anExistingCollectionId]: {
           id: 'anExistingCollectionId'
         }
-      },
-      lastFetchParams: mockedFetchCollectionParams,
-      loading: []
-    } as any
+      }
+    } as CollectionState
+    mockedFetchCollectionParams = {
+      assignee: 'anAssignee',
+      isPublished: false
+    } as FetchCollectionsParams
   })
 
   describe('and it sends the flag to re-use existing results and same parameters', () => {
     it('should not set the loading state', () => {
       const state = reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams, true))
       expect(reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams, true))).toEqual(state)
+    })
+  })
+
+  describe('and it sends the flag to re-use existing results and new different parameters', () => {
+    const newParams = { ...mockedFetchCollectionParams, isPublished: true }
+    it('should set the loading state', () => {
+      const state = reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams))
+      expect(reducer(initialState, fetchCollectionsRequest(undefined, newParams, true))).toEqual({
+        ...state,
+        loading: [fetchCollectionsRequest(undefined, newParams, true)]
+      })
     })
   })
 
@@ -91,8 +101,18 @@ describe('when FETCH_COLLECTIONS_REQUEST', () => {
 })
 
 describe('when FETCH_COLLECTIONS_SUCCESS', () => {
+  let initialState: CollectionState
+  let anExistingCollectionId: string
   let mockedCollection: Collection, mockedPaginationStats: PaginationStats
   beforeEach(() => {
+    initialState = {
+      data: {
+        [anExistingCollectionId]: {
+          id: 'anExistingCollectionId'
+        }
+      }
+    } as CollectionState
+    anExistingCollectionId = 'id'
     mockedCollection = {
       id: 'collectionId'
     } as Collection
@@ -105,15 +125,6 @@ describe('when FETCH_COLLECTIONS_SUCCESS', () => {
   })
 
   it('should update pagination data if it is passed as parameter', () => {
-    const anExistingCollectionId = 'id'
-    const initialState = {
-      data: {
-        [anExistingCollectionId]: {
-          id: 'anExistingCollectionId'
-        }
-      }
-    } as any
-
     const state = reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats))
     expect(reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats))).toEqual({
       ...state,
@@ -129,6 +140,31 @@ describe('when FETCH_COLLECTIONS_SUCCESS', () => {
         limit: mockedPaginationStats.limit,
         totalPages: mockedPaginationStats.pages
       }
+    })
+  })
+
+  it('should update params object if it is passed as parameter', () => {
+    const firstFetchParams: FetchCollectionsParams = {
+      assignee: 'anAssignee',
+      isPublished: false
+    }
+
+    const state = reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats))
+    expect(reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats, firstFetchParams))).toEqual({
+      ...state,
+      data: {
+        ...state.data,
+        ...toCollectionObject([mockedCollection])
+      },
+      pagination: {
+        ...state.pagination,
+        ids: [mockedCollection].map(collection => collection.id),
+        total: mockedPaginationStats.total,
+        currentPage: mockedPaginationStats.page,
+        limit: mockedPaginationStats.limit,
+        totalPages: mockedPaginationStats.pages
+      },
+      lastFetchParams: firstFetchParams
     })
   })
 })
