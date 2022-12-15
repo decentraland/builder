@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { Center, Page, Responsive } from 'decentraland-ui'
+import { Center, Loader, Page, Responsive } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
@@ -8,39 +8,40 @@ import { locations } from 'routing/locations'
 import Intercom from 'components/Intercom'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
-import EditorPage from 'components/EditorPage'
 import ErrorPage from 'components/ErrorPage'
-import HomePage from 'components/HomePage'
 import LoadingPage from 'components/LoadingPage'
 import MobilePage from 'components/MobilePage'
-import NotFoundPage from 'components/NotFoundPage'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
-import SceneViewPage from 'components/SceneViewPage'
-import SceneListPage from 'components/SceneListPage'
-import SignInPage from 'components/SignInPage'
-import LandPage from 'components/LandPage'
-import LandDetailPage from 'components/LandDetailPage'
-import LandTransferPage from 'components/LandTransferPage'
-import LandEditPage from 'components/LandEditPage'
-import ENSListPage from 'components/ENSListPage'
-import ClaimENSPage from 'components/ClaimENSPage'
-import LandSelectENSPage from 'components/LandSelectENSPage'
-import LandAssignENSPage from 'components/LandAssignENSPage'
-import ENSSelectLandPage from 'components/ENSSelectLandPage'
-import LandOperatorPage from 'components/LandOperatorPage'
-import ActivityPage from 'components/ActivityPage'
-import SettingsPage from 'components/SettingsPage'
-import ScenesPage from 'components/ScenesPage'
-import SceneDetailPage from 'components/SceneDetailPage'
-import CollectionsPage from 'components/CollectionsPage'
-import ItemDetailPage from 'components/ItemDetailPage'
-import CollectionDetailPage from 'components/CollectionDetailPage'
-import ThirdPartyCollectionDetailPage from 'components/ThirdPartyCollectionDetailPage'
-import ItemEditorPage from 'components/ItemEditorPage'
-import CurationPage from 'components/CurationPage'
 import { isDevelopment } from 'lib/environment'
 
 import { Props, State } from './Routes.types'
+
+const ScenesPage = React.lazy(() => import('components/ScenesPage'))
+const HomePage = React.lazy(() => import('components/HomePage'))
+const SignInPage = React.lazy(() => import('components/SignInPage'))
+const NotFoundPage = React.lazy(() => import('components/NotFoundPage'))
+const EditorPage = React.lazy(() => import('components/EditorPage'))
+const SceneListPage = React.lazy(() => import('components/SceneListPage'))
+const SceneViewPage = React.lazy(() => import('components/SceneViewPage'))
+const LandPage = React.lazy(() => import('components/LandPage'))
+const LandDetailPage = React.lazy(() => import('components/LandDetailPage'))
+const LandTransferPage = React.lazy(() => import('components/LandTransferPage'))
+const LandEditPage = React.lazy(() => import('components/SceneListPage'))
+const ENSListPage = React.lazy(() => import('components/ENSListPage'))
+const ClaimENSPage = React.lazy(() => import('components/ClaimENSPage'))
+const LandSelectENSPage = React.lazy(() => import('components/LandSelectENSPage'))
+const LandAssignENSPage = React.lazy(() => import('components/LandAssignENSPage'))
+const ENSSelectLandPage = React.lazy(() => import('components/ENSSelectLandPage'))
+const LandOperatorPage = React.lazy(() => import('components/LandOperatorPage'))
+const ActivityPage = React.lazy(() => import('components/ActivityPage'))
+const SettingsPage = React.lazy(() => import('components/SettingsPage'))
+const SceneDetailPage = React.lazy(() => import('components/SceneDetailPage'))
+const CollectionsPage = React.lazy(() => import('components/CollectionsPage'))
+const ItemDetailPage = React.lazy(() => import('components/ItemDetailPage'))
+const CollectionDetailPage = React.lazy(() => import('components/CollectionDetailPage'))
+const ThirdPartyCollectionDetailPage = React.lazy(() => import('components/ThirdPartyCollectionDetailPage'))
+const ItemEditorPage = React.lazy(() => import('components/ItemEditorPage'))
+const CurationPage = React.lazy(() => import('components/CurationPage'))
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -59,7 +60,7 @@ export default class Routes extends React.Component<Props, State> {
     document.body.classList.remove('loading-overlay')
   }
 
-  renderMaintainancePage() {
+  renderMaintenancePage() {
     return (
       <>
         <Navbar />
@@ -82,11 +83,11 @@ export default class Routes extends React.Component<Props, State> {
     }
 
     if (inMaintenance) {
-      return this.renderMaintainancePage()
+      return this.renderMaintenancePage()
     }
 
     return (
-      <>
+      <React.Suspense fallback={<Loader size="huge" active />}>
         <Responsive maxWidth={1024} as={React.Fragment}>
           <Switch>
             <Route exact path={locations.poolSearch()} component={SceneListPage} />
@@ -128,7 +129,7 @@ export default class Routes extends React.Component<Props, State> {
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>
-      </>
+      </React.Suspense>
     )
   }
 
