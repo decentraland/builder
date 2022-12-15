@@ -12,7 +12,7 @@ export enum CurationExtraStatuses {
 }
 
 export enum CollectionExtraTypes {
-  ALL_TYPES = 'ALL_TYPES',
+  ALL_TYPES = 'ALL_TYPES'
 }
 
 export const CurationFilterOptions = { ...CurationStatus, ...CurationExtraStatuses }
