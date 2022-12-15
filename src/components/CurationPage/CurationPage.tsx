@@ -130,7 +130,6 @@ export default class CurationPage extends React.PureComponent<Props, State> {
 
   renderSortDropdown = () => {
     const { sortBy } = this.state
-    const { isCollectionsSortEnabled } = this.props
     return (
       <Dropdown
         direction="left"
@@ -138,7 +137,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         options={[
           { value: CurationSortOptions.MOST_RELEVANT, text: t('curation_page.order.most_relevant') },
           {
-            value: isCollectionsSortEnabled ? CurationSortOptions.NEWEST : CurationSortOptions.CREATED_AT_DESC,
+            value: CurationSortOptions.CREATED_AT_DESC,
             text: t('global.order.newest')
           },
           { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') },

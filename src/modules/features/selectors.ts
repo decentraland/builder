@@ -29,11 +29,3 @@ export const getIsMVMFEnabled = (state: RootState) => {
     return false
   }
 }
-
-export const getIsCollectionsSortEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.COLLECTIONS_SORT)
-  } catch (e) {
-    return false
-  }
-}

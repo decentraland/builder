@@ -28,7 +28,6 @@ export type Props = {
   isLoadingOrphanItem: boolean
   isMVMFEnabled: boolean
   hasUserOrphanItems: boolean | undefined
-  isCollectionSortEnabled: boolean
   onNavigate: (path: string) => void
   onSetView: typeof setCollectionPageView
   onOpenModal: typeof openModal
@@ -51,7 +50,6 @@ export type MapStateProps = Pick<
   | 'isLoadingOrphanItem'
   | 'isMVMFEnabled'
   | 'hasUserOrphanItems'
-  | 'isCollectionSortEnabled'
 >
 export type MapDispatchProps = Pick<
   Props,
