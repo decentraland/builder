@@ -1046,15 +1046,18 @@
   },
   "collections_page": {
     "results": "{count} {count，复数，一个{result}其他{results}}",
-    "no_items": "有项目",
+    "no_items": "没有收藏",
     "new_item": "项目",
     "new_collection": "收藏",
     "new_third_party_collection": "新的链接可穿戴设备系列",
     "type": "类型",
     "items": "模型",
     "collections": "收藏品",
+    "collection": "收藏",
     "single_items": "单品",
-    "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
+    "empty_description": "您还没有收藏。创建一个新系列，并以时尚的方式装扮虚拟宇宙！",
+    "created_at": "已创建",
+    "last_modified": "上一次更改"
   },
   "curation_page": {
     "order": {

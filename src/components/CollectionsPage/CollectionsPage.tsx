@@ -65,10 +65,6 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     }
   }
 
-  handleNewItem = () => {
-    this.props.onOpenModal('CreateSingleItemModal', {})
-  }
-
   handleNewCollection = () => {
     this.props.onOpenModal('CreateCollectionModal')
   }
@@ -118,24 +114,45 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
   renderList() {
     const { items, collections } = this.props
+
+    if (this.isCollectionTabActive()) {
+      return (
+        <Section>
+          <Table basic="very">
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>{t('collections_page.collection')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('collections_page.type')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('collections_page.items')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('collections_page.created_at')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('collections_page.last_modified')}</Table.HeaderCell>
+                <Table.HeaderCell></Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {collections.map(collection => (
+                <CollectionRow key={collection.id} collection={collection} />
+              ))}
+            </Table.Body>
+          </Table>
+        </Section>
+      )
+    }
+
     return (
       <Section>
         <Table basic="very">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>{t('global.item')}</Table.HeaderCell>
-              <Table.HeaderCell>{t('collections_page.type')}</Table.HeaderCell>
-              <Table.HeaderCell>
-                {this.isCollectionTabActive() ? t('collections_page.collections') : t('collections_page.items')}
-              </Table.HeaderCell>
-              <Table.HeaderCell></Table.HeaderCell>
+              <Table.HeaderCell>{t('collections_page.created_at')}</Table.HeaderCell>
+              <Table.HeaderCell>{t('collections_page.last_modified')}</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
-
           <Table.Body>
-            {this.isCollectionTabActive()
-              ? collections.map(collection => <CollectionRow key={collection.id} collection={collection} />)
-              : items.map(item => <ItemRow key={item.id} item={item} />)}
+            {items.map(item => (
+              <ItemRow key={item.id} item={item} />
+            ))}
           </Table.Body>
         </Table>
       </Section>
@@ -310,9 +327,6 @@ export default class CollectionsPage extends React.PureComponent<Props> {
               </Header>
               <div className="empty-description">{t('collections_page.empty_description')}</div>
               <div className="create-new-wrapper">
-                <div className="create-new create-new-item" onClick={this.handleNewItem}>
-                  <div className="text">{t('collections_page.new_item')}</div>
-                </div>
                 <div className="create-new create-new-collection" onClick={this.handleNewCollection}>
                   <div className="text">{t('collections_page.new_collection')}</div>
                 </div>
