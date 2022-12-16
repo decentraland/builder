@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from 'react'
-import { ModalNavigation, ModalContent, ModalActions, Button, ButtonProps } from 'decentraland-ui'
+import { ModalNavigation, ModalContent, ModalActions, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { Props, MoveItemToAnotherCollectionModalMetadata } from './MoveItemToAnotherCollectionModal.types'
 import { Collection } from 'modules/collection/types'
-import CollectionDropdown from 'components/CollectionDropdown'
 import { isTPCollection } from 'modules/collection/utils'
-
+import CollectionDropdown from 'components/CollectionDropdown'
+import { Props, MoveItemToAnotherCollectionModalMetadata } from './MoveItemToAnotherCollectionModal.types'
 import './MoveItemToAnotherCollectionModal.css'
 
 export const MoveItemToAnotherCollectionModal: React.FC<Props> = props => {
@@ -18,16 +17,12 @@ export const MoveItemToAnotherCollectionModal: React.FC<Props> = props => {
     setCollection(collection)
   }, [])
 
-  const handleSubmit = useCallback(
-    (_event: React.MouseEvent<HTMLButtonElement>, _data: ButtonProps) => {
-      const { metadata, onSubmit } = props
-      const { item } = metadata as MoveItemToAnotherCollectionModalMetadata
-      if (collection) {
-        onSubmit(item, collection.id)
-      }
-    },
-    [collection, props]
-  )
+  const handleSubmit = useCallback(() => {
+    const { onSubmit } = props
+    if (collection) {
+      onSubmit(item, collection.id)
+    }
+  }, [collection, item, props])
 
   return (
     <Modal name={name} onClose={onClose} size="tiny" closeOnDimmerClick={false}>
@@ -38,7 +33,7 @@ export const MoveItemToAnotherCollectionModal: React.FC<Props> = props => {
       />
       <ModalContent>
         <>
-          <p className="collection-dropdown-label">Collection</p>
+          <p className="collection-dropdown-label">{t('item.collection')}</p>
           <CollectionDropdown
             value={collection}
             onChange={handleChangeCollection}

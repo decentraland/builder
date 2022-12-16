@@ -13,9 +13,10 @@ export type Props = {
   onChange: (collection: Collection) => void
   isDisabled?: boolean
   onFetchCollections: typeof fetchCollectionsRequest
+  isLoading: boolean
 }
 
-export type MapStateProps = Pick<Props, 'collections' | 'address'>
+export type MapStateProps = Pick<Props, 'collections' | 'address' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onFetchCollections'>
 export type MapDispatch = Dispatch<FetchCollectionsRequestAction>
 export type OwnProps = Pick<Props, 'filter' | 'onChange'>

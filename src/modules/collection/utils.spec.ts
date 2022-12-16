@@ -4,8 +4,16 @@ import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item } from 'modules/item/types'
 import { Collection, CollectionType } from 'modules/collection/types'
 import { Mint } from './types'
-import { getTotalAmountOfMintedItems, isLocked, getCollectionType, isTPCollection, getTPThresholdToReview } from './utils'
+import {
+  getTotalAmountOfMintedItems,
+  isLocked,
+  getCollectionType,
+  isTPCollection,
+  getTPThresholdToReview,
+  toPaginationStats
+} from './utils'
 import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
+import { CollectionPaginationData } from './reducer'
 
 jest.mock('modules/item/export')
 
@@ -202,6 +210,24 @@ describe('when getting the threshold of items to review for a TP collection', ()
     })
     it('should return the minum percentage to review of the collection', () => {
       expect(getTPThresholdToReview(totalItems)).toBe(MAX_TP_ITEMS_TO_REVIEW)
+    })
+  })
+})
+
+describe('when transforming a CollectionPaginationData to PaginationStats', () => {
+  const collectionPaginationData: CollectionPaginationData = {
+    currentPage: 1,
+    ids: ['1', '2', '3'],
+    limit: 10,
+    total: 1,
+    totalPages: 1
+  }
+  it('should return a PaginationStats instance with the right data', () => {
+    expect(toPaginationStats(collectionPaginationData)).toStrictEqual({
+      limit: collectionPaginationData.limit,
+      total: collectionPaginationData.total,
+      pages: collectionPaginationData.totalPages,
+      page: collectionPaginationData.currentPage
     })
   })
 })

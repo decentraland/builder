@@ -1,7 +1,9 @@
+import equal from 'fast-deep-equal'
 import { LocationChangeAction, LOCATION_CHANGE } from 'connected-react-router'
 import { CloseAllModalsAction, CloseModalAction, CLOSE_ALL_MODALS, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { FetchCollectionsParams } from 'lib/api/builder'
 import {
   CreateCollectionForumPostRequestAction,
   CreateCollectionForumPostSuccessAction,
@@ -88,13 +90,15 @@ export type CollectionState = {
   loading: LoadingState
   error: string | null
   pagination: CollectionPaginationData | null
+  lastFetchParams: FetchCollectionsParams | undefined
 }
 
 const INITIAL_STATE: CollectionState = {
   data: {},
   loading: [],
   error: null,
-  pagination: null
+  pagination: null,
+  lastFetchParams: undefined
 }
 
 type CollectionReducerAction =
@@ -146,7 +150,6 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
         error: null
       }
     }
-    case FETCH_COLLECTIONS_REQUEST:
     case FETCH_COLLECTION_REQUEST:
     case SAVE_COLLECTION_REQUEST:
     case DELETE_COLLECTION_REQUEST:
@@ -166,8 +169,15 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
         loading: loadingReducer(state.loading, action)
       }
     }
+    case FETCH_COLLECTIONS_REQUEST: {
+      const { params, useCachedResults } = action.payload
+      return {
+        ...state,
+        ...(useCachedResults && equal(params, state.lastFetchParams) ? {} : { loading: loadingReducer(state.loading, action) })
+      }
+    }
     case FETCH_COLLECTIONS_SUCCESS: {
-      const { collections, paginationStats } = action.payload
+      const { collections, paginationStats, params } = action.payload
       const hasPagination = paginationStats !== undefined
       return {
         ...state,
@@ -187,7 +197,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
               }
             }
           : {}),
-        error: null
+        error: null,
+        lastFetchParams: params
       }
     }
     case FETCH_COLLECTION_SUCCESS:

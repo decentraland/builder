@@ -1,7 +1,8 @@
 import { fetchTransactionSuccess } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { FetchCollectionsParams } from 'lib/api/builder'
 import { PaginationStats } from 'lib/api/pagination'
 import { closeAllModals, closeModal } from 'modules/modal/actions'
-import { fetchCollectionsSuccess, PUBLISH_COLLECTION_SUCCESS } from './actions'
+import { fetchCollectionsRequest, fetchCollectionsSuccess, PUBLISH_COLLECTION_SUCCESS } from './actions'
 import { collectionReducer as reducer, CollectionState } from './reducer'
 import { Collection } from './types'
 import { toCollectionObject } from './utils'
@@ -51,9 +52,67 @@ describe('when FETCH_TRANSACTION_SUCCESS', () => {
   })
 })
 
+describe('when reducing the FETCH_COLLECTIONS_REQUEST action', () => {
+  let initialState: CollectionState
+  let anExistingCollectionId
+  let mockedFetchCollectionParams: FetchCollectionsParams
+  beforeEach(() => {
+    anExistingCollectionId = 'id'
+    initialState = {
+      data: {
+        [anExistingCollectionId]: {
+          id: 'anExistingCollectionId'
+        }
+      }
+    } as CollectionState
+    mockedFetchCollectionParams = {
+      assignee: 'anAssignee',
+      isPublished: false
+    } as FetchCollectionsParams
+  })
+
+  describe('and it sends the flag to re-use existing results and same parameters', () => {
+    it('should not set the loading state', () => {
+      const state = reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams, true))
+      expect(reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams, true))).toEqual(state)
+    })
+  })
+
+  describe('and it sends the flag to re-use existing results and new different parameters', () => {
+    const newParams = { ...mockedFetchCollectionParams, isPublished: true }
+    it('should set the loading state', () => {
+      const state = reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams))
+      expect(reducer(initialState, fetchCollectionsRequest(undefined, newParams, true))).toEqual({
+        ...state,
+        loading: [fetchCollectionsRequest(undefined, newParams, true)]
+      })
+    })
+  })
+
+  describe('and it does not send the flag to re-use existing results', () => {
+    it('should set the loading state', () => {
+      const state = reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams))
+      expect(reducer(initialState, fetchCollectionsRequest(undefined, mockedFetchCollectionParams))).toEqual({
+        ...state,
+        loading: [fetchCollectionsRequest(undefined, mockedFetchCollectionParams)]
+      })
+    })
+  })
+})
+
 describe('when FETCH_COLLECTIONS_SUCCESS', () => {
+  let initialState: CollectionState
+  let anExistingCollectionId: string
   let mockedCollection: Collection, mockedPaginationStats: PaginationStats
   beforeEach(() => {
+    initialState = {
+      data: {
+        [anExistingCollectionId]: {
+          id: 'anExistingCollectionId'
+        }
+      }
+    } as CollectionState
+    anExistingCollectionId = 'id'
     mockedCollection = {
       id: 'collectionId'
     } as Collection
@@ -66,15 +125,6 @@ describe('when FETCH_COLLECTIONS_SUCCESS', () => {
   })
 
   it('should update pagination data if it is passed as parameter', () => {
-    const anExistingCollectionId = 'id'
-    const initialState = {
-      data: {
-        [anExistingCollectionId]: {
-          id: 'anExistingCollectionId'
-        }
-      }
-    } as any
-
     const state = reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats))
     expect(reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats))).toEqual({
       ...state,
@@ -90,6 +140,31 @@ describe('when FETCH_COLLECTIONS_SUCCESS', () => {
         limit: mockedPaginationStats.limit,
         totalPages: mockedPaginationStats.pages
       }
+    })
+  })
+
+  it('should update params object if it is passed as parameter', () => {
+    const firstFetchParams: FetchCollectionsParams = {
+      assignee: 'anAssignee',
+      isPublished: false
+    }
+
+    const state = reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats))
+    expect(reducer(initialState, fetchCollectionsSuccess([mockedCollection], mockedPaginationStats, firstFetchParams))).toEqual({
+      ...state,
+      data: {
+        ...state.data,
+        ...toCollectionObject([mockedCollection])
+      },
+      pagination: {
+        ...state.pagination,
+        ids: [mockedCollection].map(collection => collection.id),
+        total: mockedPaginationStats.total,
+        currentPage: mockedPaginationStats.page,
+        limit: mockedPaginationStats.limit,
+        totalPages: mockedPaginationStats.pages
+      },
+      lastFetchParams: firstFetchParams
     })
   })
 })
