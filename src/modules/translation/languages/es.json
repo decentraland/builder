@@ -19,6 +19,12 @@
     "subtitle": "Selecciona la colección a la que quieras mover el item",
     "confirm": "Mover"
   },
+  "move_item_to_another_collection_modal": {
+    "title": "Mover item a otra colección",
+    "subtitle": "Selecciona la colección a la que quieras mover el item",
+    "confirm": "Mover",
+    "cancel": "Cancelar"
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "Eliminar Asset Pack",
@@ -1663,6 +1669,13 @@
     "third_party_action_failure": {
       "title": "Error",
       "body": "Algo salió mal... Vuelve a intentarlo más tarde."
+    },
+    "collection_detail_page": {
+      "move_item_to_another_collection": {
+        "title": "Has movido el Item a otra colección",
+        "body": "{item_name} ha sido movido a la colección {collection_name}.",
+        "cta": "Ver Colección"
+      }
     }
   },
   "sagas": {

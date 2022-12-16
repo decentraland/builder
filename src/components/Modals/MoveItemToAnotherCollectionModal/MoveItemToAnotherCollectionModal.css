@@ -1,0 +1,17 @@
+.MoveItemToAnotherCollectionModal.ui.modal .content p.collection-dropdown-label {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--light-gray);
+}
+
+.MoveItemToAnotherCollectionModal.ui.modal .actions {
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+}
+
+.MoveItemToAnotherCollectionModal.ui.modal .actions button.ui.button {
+  flex: 0;
+  margin: 0 0 8px;
+}

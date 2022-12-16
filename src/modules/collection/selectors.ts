@@ -30,6 +30,7 @@ export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
 export const getPaginationData = (state: RootState) => getState(state).pagination
+export const getLastFetchParams = (state: RootState) => getState(state).lastFetchParams
 export const getError = (state: RootState) => getState(state).error
 
 export const getPaginatedCollections = (state: RootState, pageSize?: number) => {

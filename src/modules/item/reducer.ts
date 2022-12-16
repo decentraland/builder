@@ -37,6 +37,8 @@ import {
   DELETE_ITEM_FAILURE,
   SetCollectionAction,
   SET_COLLECTION,
+  SetItemCollectionAction,
+  SET_ITEM_COLLECTION,
   SetItemsTokenIdRequestAction,
   SetItemsTokenIdSuccessAction,
   SetItemsTokenIdFailureAction,
@@ -157,6 +159,7 @@ type ItemReducerAction =
   | DeleteItemSuccessAction
   | DeleteItemFailureAction
   | SetCollectionAction
+  | SetItemCollectionAction
   | FetchTransactionSuccessAction
   | SetItemsTokenIdRequestAction
   | SetItemsTokenIdSuccessAction
@@ -401,7 +404,17 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         }
       }
     }
-
+    case SET_ITEM_COLLECTION: {
+      const { item, collectionId } = action.payload
+      const newItem: Item = { ...item, collectionId: collectionId }
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [newItem.id]: newItem
+        }
+      }
+    }
     case DOWNLOAD_ITEM_SUCCESS: {
       return {
         ...state,
@@ -409,7 +422,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
-
     case FETCH_TRANSACTION_SUCCESS: {
       const transaction = action.payload.transaction
 
@@ -519,7 +531,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         }, {} as ItemState['data'])
       }
     }
-
     default:
       return state
   }

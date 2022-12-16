@@ -1,0 +1,2 @@
+import MoveItemToAnotherCollectionModal from './MoveItemToAnotherCollectionModal.container'
+export default MoveItemToAnotherCollectionModal

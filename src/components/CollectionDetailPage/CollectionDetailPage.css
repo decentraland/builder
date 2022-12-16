@@ -165,3 +165,51 @@
 .CollectionDetailPage .dcl.tabs.fullscreen .ui.container {
   border-bottom: 1px solid rgba(115, 110, 125, 0.32);
 }
+
+.CollectionDetailPage.toast.move-item-to-another-collection {
+  padding: 0;
+  margin-bottom: 96px;
+}
+
+.CollectionDetailPage.toast.move-item-to-another-collection > div {
+  margin: 16px;
+}
+
+.CollectionDetailPage.toast.move-item-to-another-collection .title {
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 26px;
+  margin-bottom: 0px;
+}
+
+.CollectionDetailPage.toast.move-item-to-another-collection .body {
+  display: flex;
+  flex-direction: column;
+  max-width: 348px;
+}
+
+.CollectionDetailPage.toast.move-item-to-another-collection .body .description {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  margin-bottom: 8px;
+}
+
+.CollectionDetailPage.toast.move-item-to-another-collection .body .cta {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.CollectionDetailPage.toast.move-item-to-another-collection .toast-icon {
+  margin-right: 16px;
+}
+
+.CollectionDetailPage.toast.move-item-to-another-collection .toast-icon .two-way-arrow-icon {
+  background-image: url('../../images/two-way-arrow.svg');
+  height: 48px;
+  width: 48px;
+}

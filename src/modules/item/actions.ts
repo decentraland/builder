@@ -175,6 +175,13 @@ export const SET_COLLECTION = 'Set Collection'
 export const setCollection = (item: Item, collectionId: string | null) => action(SET_COLLECTION, { item, collectionId })
 export type SetCollectionAction = ReturnType<typeof setCollection>
 
+// Set Item Collection
+
+export const SET_ITEM_COLLECTION = 'Set Item Collection'
+
+export const setItemCollection = (item: Item, collectionId: string) => action(SET_ITEM_COLLECTION, { item, collectionId })
+export type SetItemCollectionAction = ReturnType<typeof setItemCollection>
+
 // Set Token Ids
 
 export const SET_ITEMS_TOKEN_ID_REQUEST = '[Request] Set Items Token Id'

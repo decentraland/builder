@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Dropdown, DropdownItemProps, DropdownProps, Row } from 'decentraland-ui'
+import { Dropdown, DropdownItemProps, DropdownProps, Loader, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './CollectionDropdown.types'
 import './CollectionDropdown.css'
@@ -47,9 +47,11 @@ export default class CollectionDropdown extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isDisabled } = this.props
+    const { isDisabled, isLoading } = this.props
     const options = this.getOptions()
-    return (
+    return isLoading ? (
+      <Loader active size="mini" />
+    ) : (
       <Dropdown
         className="CollectionDropdown"
         trigger={this.renderTrigger(options)}
