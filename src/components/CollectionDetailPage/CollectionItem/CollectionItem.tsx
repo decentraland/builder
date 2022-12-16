@@ -48,6 +48,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onDeleteItem(item)
   }
 
+  handleMoveToAnotherCollection = () => {
+    const { collection, item, onOpenModal } = this.props
+    onOpenModal('MoveItemToAnotherCollectionModal', { item, fromCollection: collection })
+  }
+
   renderPrice() {
     const { item } = this.props
 
@@ -144,6 +149,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
                 <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
                 <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
                 <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
+                {!collection.isPublished && (
+                  <Dropdown.Item text={t('collection_item.move_to_another_collection')} onClick={this.handleMoveToAnotherCollection} />
+                )}
                 {canManageItem(collection, item, ethAddress) && !isLocked(collection) ? (
                   <>
                     {item.price ? (

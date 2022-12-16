@@ -3,11 +3,13 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { config } from 'config'
 import { locations } from 'routing/locations'
+import { PaginationStats } from 'lib/api/pagination'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Item, SyncStatus } from 'modules/item/types'
 import { Collection, Access, Mint, CollectionType } from './types'
 import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
+import { CollectionPaginationData } from './reducer'
 
 export const UNSYNCED_COLLECTION_ERROR_PREFIX = 'UnsyncedCollection:'
 
@@ -170,3 +172,13 @@ export class ThirdPartyCurationUpdateError extends Error {
 }
 
 export type ThirdPartyError = ThirdPartyBuildEntityError | ThirdPartyDeploymentError
+
+export const toPaginationStats = (collectionPaginationData: CollectionPaginationData): PaginationStats => {
+  const { limit, currentPage, totalPages, total } = collectionPaginationData
+  return {
+    limit,
+    total,
+    pages: totalPages,
+    page: currentPage
+  }
+}

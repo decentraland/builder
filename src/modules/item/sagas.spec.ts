@@ -8,6 +8,7 @@ import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
 import { call, select, take, race, delay } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
+import { ToastProps, ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -15,6 +16,7 @@ import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { getMethodData } from 'modules/wallet/utils'
@@ -60,6 +62,7 @@ import {
   setCollection,
   setItemsTokenIdFailure,
   setItemsTokenIdRequest,
+  setItemCollection,
   fetchOrphanItemRequest,
   fetchOrphanItemSuccess,
   fetchOrphanItemFailure
@@ -70,8 +73,7 @@ import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from 
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE } from './utils'
 import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
-import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
-import { ToastType } from 'decentraland-ui'
+import * as toasts from './toasts'
 
 const blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -1772,5 +1774,39 @@ describe('when handling the fetch of an orphan item', () => {
         .put(fetchOrphanItemFailure(errorMessage))
         .run({ silenceTimeout: true })
     })
+  })
+})
+
+describe('when handling the setItemCollection action', () => {
+  let collection: Collection
+  let item: Item
+  let toast: ToastProps
+
+  beforeEach(() => {
+    collection = { id: 'aCollection' } as Collection
+    item = { ...mockedItem, collectionId: collection.id, contents: { [IMAGE_PATH]: 'anotherHash' } }
+    toast = {
+      type: ToastType.INFO,
+      title: 'Title',
+      body: 'Body'
+    }
+    jest.spyOn(toasts, 'getSuccessfulMoveItemToAnotherCollectionToast').mockReturnValueOnce(toast)
+  })
+
+  it('should put a save item success action and show the successful move item to another collection toast', () => {
+    return expectSaga(itemSaga, builderAPI, builderClient)
+      .provide([
+        [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
+        [select(getLocation), { pathname: 'collections' }],
+        [select(getCollection, collection.id), collection.id],
+        [select(getItem, item.id), item],
+        [select(getAddress), mockAddress],
+        [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
+      ])
+      .put.like({ action: { type: SHOW_TOAST, payload: { toast, position: 'bottom center' } } })
+      .put(closeModal('MoveItemToAnotherCollectionModal'))
+      .dispatch(saveItemSuccess(item, {}))
+      .dispatch(setItemCollection(item, collection.id))
+      .run({ silenceTimeout: true })
   })
 })
