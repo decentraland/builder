@@ -536,7 +536,9 @@ export class BuilderAPI extends BaseAPI {
     authConfig = { ...authConfig, headers }
 
     try {
-      return super.request(method, path, params, authConfig)
+      const response: any = await super.request(method, path, params, authConfig)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return response
     } catch (error) {
       if (this.isAxiosError(error) && error.response) {
         error.message = error.response.data.error
