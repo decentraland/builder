@@ -1,11 +1,12 @@
 .EventBanner {
   width: 100%;
-  height: 100px;
+  height: 105px;
   margin: 24px 0;
   padding: 0 32px;
   display: flex;
   background-image: url('./holiday-season-banner.png');
   border-radius: 10px;
+  background-size: cover;
 }
 
 .EventBanner .event-banner-text {
