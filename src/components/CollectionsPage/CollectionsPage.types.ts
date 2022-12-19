@@ -26,7 +26,7 @@ export type Props = {
   isLoadingCollections: boolean
   isLoadingItems: boolean
   isLoadingOrphanItem: boolean
-  isMVMFEnabled: boolean
+  isCampaignEnabled: boolean
   hasUserOrphanItems: boolean | undefined
   onNavigate: (path: string) => void
   onSetView: typeof setCollectionPageView
@@ -48,7 +48,7 @@ export type MapStateProps = Pick<
   | 'isLoadingCollections'
   | 'isLoadingItems'
   | 'isLoadingOrphanItem'
-  | 'isMVMFEnabled'
+  | 'isCampaignEnabled'
   | 'hasUserOrphanItems'
 >
 export type MapDispatchProps = Pick<

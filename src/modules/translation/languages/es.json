@@ -1097,7 +1097,6 @@
       "rejected": "Rechazado",
       "under_review": "Bajo revisión",
       "to_review": "A revisar",
-      "mvmf_collections": "Colecciones del Metaverse Festival",
       "standard": "Estandar",
       "third_party": "Externa"
     },
@@ -1550,7 +1549,6 @@
       "animation": "Animación",
       "tags": "Etiquetas",
       "event_tag": "Usa la etiqueta {event_tag} si quieres incluir este item en el {event_name}. {learn_more}",
-      "mvmf": "Metaverse Festival",
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"
@@ -1747,12 +1745,13 @@
   },
   "event_banner": {
     "small": {
-      "title": "Prepárate para el Metaverse Music Festival!",
-      "subtitle": "Agrega el tag {event_tag} a sus Wearables y Emotes tematicos del Festival antes del {event_date_deadline} {enter} y aparecerán en una sección especial para el Festival en el Marketplace durante todo el evento!",
-      "cta": "Más información"
+      "title": "¡Llegaron las vacaciones!",
+      "subtitle": "Agrega el tag #HolidaySeason a tus Wearables y Emotes en estas vacaciones de invierno para que se vean en la nueva sección especial del Marketplace!"
     },
-    "event_category": "Cyberpunk Meets Nature realness",
-    "event_tag": "MVMF22",
-    "event_date_deadline": "2 de Noviembre"
+    "event_tag": "HolidaySeason"
+  },
+  "campaign": {
+    "name": "Holiday Season",
+    "tag": "HolidaySeason"
   }
 }

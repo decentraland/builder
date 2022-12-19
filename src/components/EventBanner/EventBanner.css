@@ -4,24 +4,24 @@
   margin: 24px 0;
   padding: 0 32px;
   display: flex;
-  background-image: url('../../images/mvmf-1064x100.gif');
+  background-image: url('./holiday-season-banner.png');
   border-radius: 10px;
 }
 
 .EventBanner .event-banner-text {
   display: flex;
   flex-direction: column;
-  color: white;
+  color: black;
   align-self: center;
   margin-right: 24px;
   flex-grow: 1;
+  max-width: 500px;
 }
 
 .EventBanner .title {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 6px;
-  text-transform: uppercase;
 }
 
 .EventBanner .subtitle {

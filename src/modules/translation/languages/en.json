@@ -1086,7 +1086,6 @@
       "rejected": "Rejected",
       "under_review": "Under Review",
       "to_review": "To Review",
-      "mvmf_collections": "Metaverse Festival Collections",
       "standard": "Standard",
       "third_party": "Linked"
     },
@@ -1537,8 +1536,7 @@
       "hides_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
       "animation": "Animation",
       "tags": "Tags",
-      "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name}. {learn_more}",
-      "mvmf": "Metaverse Festival",
+      "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name} event.",
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum"
@@ -1735,12 +1733,13 @@
   },
   "event_banner": {
     "small": {
-      "title": "Get ready for the Metaverse Music Festival!",
-      "subtitle": "Add the {event_tag} tag to your festival-themed Wearables & Emotes before {event_date_deadline} {enter} and they'll be featured in a special Festival tab on the Marketplace during the event!",
-      "cta": "Learn More"
+      "title": "The #HolidaySeason is here!",
+      "subtitle": "Add the tag {event_tag} to your wintery and holiday-themed Wearables & Emotes to get them featured in a special Holiday tab of the Marketplace!"
     },
-    "event_category": "Cyberpunk Meets Nature realness",
-    "event_tag": "MVMF22",
-    "event_date_deadline": "November 2"
+    "event_tag": "HolidaySeason"
+  },
+  "campaign": {
+    "name": "Holiday Season",
+    "tag": "HolidaySeason"
   }
 }
