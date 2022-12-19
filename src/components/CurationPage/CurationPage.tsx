@@ -38,7 +38,7 @@ import './CurationPage.css'
 
 const PAGE_SIZE = 12
 const ALL_ASSIGNEES_KEY = 'all'
-const MVMF_TAG = 'MVMF22'
+const CAMPAIGN_TAG = 'HolidaySeason'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -119,12 +119,12 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     this.updateParam({ page: +props.activePage! })
   }
 
-  handleOnMvmfToggleChange = (_event: React.FormEvent<HTMLInputElement>, checkboxProps: CheckboxProps) => {
+  handleOnCampaignToggleChange = (_event: React.FormEvent<HTMLInputElement>, checkboxProps: CheckboxProps) => {
     const { checked } = checkboxProps
     if (checked) {
-      this.updateParam({ filterByTags: [...this.state.filterByTags, MVMF_TAG] })
+      this.updateParam({ filterByTags: [...this.state.filterByTags, CAMPAIGN_TAG] })
     } else {
-      this.updateParam({ filterByTags: [...this.state.filterByTags.filter(tag => tag !== MVMF_TAG)] })
+      this.updateParam({ filterByTags: [...this.state.filterByTags.filter(tag => tag !== CAMPAIGN_TAG)] })
     }
   }
 
@@ -211,21 +211,22 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     )
   }
 
-  renderMvmfFilterToggle = () => {
+  renderCampaignFilterToggle = () => {
     const { filterByTags } = this.state
     return (
       <Radio
         toggle
-        className="filterByMvmfTag"
-        checked={filterByTags.includes(MVMF_TAG)}
-        onChange={this.handleOnMvmfToggleChange}
-        label={t('curation_page.filter.mvmf_collections').toUpperCase()}
+        className="filterByCampaignTag"
+        checked={filterByTags.includes(CAMPAIGN_TAG)}
+        onChange={this.handleOnCampaignToggleChange}
+        label={t('campaign.name')}
       />
     )
   }
 
   renderPage() {
-    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData, isMVMFEnabled } = this.props
+    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData, isCampaignEnabled } =
+      this.props
     const { page, searchText } = this.state
     const totalCurations = paginationData?.total
     const totalPages = paginationData?.totalPages
@@ -251,7 +252,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right" shrink={false}>
                 <Row>
-                  {isMVMFEnabled ? this.renderMvmfFilterToggle() : null}
+                  {isCampaignEnabled ? this.renderCampaignFilterToggle() : null}
                   {this.renderAssigneeFilterDropdown()}
                   {this.renderTypesFilterDropdown()}
                   {this.renderStatusFilterDropdown()}

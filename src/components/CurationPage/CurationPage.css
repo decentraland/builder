@@ -32,6 +32,6 @@
   color: var(--primary);
 }
 
-.CurationPage .filters .filterByMvmfTag {
+.CurationPage .filters .filterByCampaignTag {
   margin-right: 16px;
 }

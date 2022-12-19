@@ -43,7 +43,7 @@ import Tags from './Tags'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
-const MVMF_TAG = 'MVMF22'
+const CAMPAIGN_TAG = 'HolidaySeason'
 
 export default class RightPanel extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
@@ -336,7 +336,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, isDownloading, error, isMVMFEnabled } = this.props
+    const { selectedItemId, address, isConnected, isDownloading, error, isCampaignEnabled } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
@@ -528,20 +528,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     {item ? (
                       <>
                         <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
-                        {isMVMFEnabled && canEditItemMetadata && (
+                        {isCampaignEnabled && canEditItemMetadata && (
                           <p className="event-tag">
                             {t('item_editor.right_panel.event_tag', {
-                              event_tag: <span>{MVMF_TAG}</span>,
-                              event_name: <span>{t('item_editor.right_panel.mvmf')}</span>,
-                              learn_more: (
-                                <a
-                                  href="https://decentraland.org/blog/announcements/emotes-contest-prepare-your-best-moves-for-the-metaverse-music-festival/"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {t('global.learn_more')}
-                                </a>
-                              )
+                              event_tag: <span>{CAMPAIGN_TAG}</span>,
+                              event_name: <span>{t('campaign.name')}</span>
                             })}
                           </p>
                         )}

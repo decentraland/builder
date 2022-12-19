@@ -1,5 +1,5 @@
 export type Props = {
-  isMVMFEnabled: boolean
+  isCampaignEnabled: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isMVMFEnabled'>
+export type MapStateProps = Pick<Props, 'isCampaignEnabled'>

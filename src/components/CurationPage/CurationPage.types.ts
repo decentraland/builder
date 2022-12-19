@@ -33,7 +33,7 @@ export type Props = {
   isConnecting: boolean
   isLoadingCollectionsData: boolean
   isLoadingCommittee: boolean
-  isMVMFEnabled: boolean
+  isCampaignEnabled: boolean
   onNavigate: (path: string) => void
   onFetchCollections: (params?: FetchCollectionsParams) => ReturnType<Dispatch<FetchCollectionsRequestAction>>
 }
@@ -59,7 +59,7 @@ export type MapStateProps = Pick<
   | 'isConnecting'
   | 'isLoadingCollectionsData'
   | 'isLoadingCommittee'
-  | 'isMVMFEnabled'
+  | 'isCampaignEnabled'
 >
 
 export type MapDispatchProps = Pick<Props, 'onFetchCollections'>

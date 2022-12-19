@@ -22,9 +22,9 @@ export const getIsRentalsEnabled = (state: RootState) => {
   }
 }
 
-export const getIsMVMFEnabled = (state: RootState) => {
+export const getIsCampaignEnabled = (state: RootState) => {
   try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.MVMF)
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CAMPAIGN)
   } catch (e) {
     return false
   }
