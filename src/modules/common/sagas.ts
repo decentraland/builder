@@ -40,9 +40,10 @@ import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
 import { entitySaga } from 'modules/entity/sagas'
 import { collectionCurationSaga } from 'modules/curations/collectionCuration/sagas'
+import { getPeerWithNoGBCollectorURL } from './utils'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
 
-const profileSaga = createProfileSaga({ peerUrl: PEER_URL })
+const profileSaga = createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL() })
 
 export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClient, catalystClient: CatalystClient) {
   yield all([
