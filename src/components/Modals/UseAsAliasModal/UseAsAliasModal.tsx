@@ -14,10 +14,10 @@ export default class UseAsAliasModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { onClose, isLoading, aliases, name: oldName } = this.props
+    const { onClose, isLoading, aliases, name: oldName, hasClaimedName } = this.props
     const { newName } = this.props.metadata
     const aliasName = aliases.length > 0 ? aliases[0].name : ''
-    const successOnSetAlias = newName === aliasName && !isLoading
+    const successOnSetAlias = newName === aliasName && hasClaimedName && !isLoading
 
     return (
       <Modal name={newName} onClose={onClose} size="tiny">
