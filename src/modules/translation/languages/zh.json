@@ -1289,7 +1289,8 @@
     "free_message": "原始创作者将成为所产生版税的受益人"
   },
   "confirm_delete": {
-    "content": "您确定要删除\"{name}\"吗?"
+    "content": "删除\"{name}\"?",
+    "subcontent": "您确定要删除项目“{name}”吗？此操作不可逆"
   },
   "publish_collection_modal": {
     "title": "发布收藏",
