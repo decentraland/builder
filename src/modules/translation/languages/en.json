@@ -1299,7 +1299,8 @@
     "free_message": "The original Creator will be the Beneficiary for the generated Royalties"
   },
   "confirm_delete": {
-    "content": "Are you sure you want to delete \"{name}\"?"
+    "content": "Delete \"{name}\"?",
+    "subcontent": "Are you sure you want to delete the item \"{name}\"? This operation is not reversible."
   },
   "publish_collection_modal": {
     "title": "Publish Collection",

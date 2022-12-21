@@ -193,30 +193,26 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           yield put(
             fetchCollectionsSuccess(Object.values(collections), paginationData ? toPaginationStats(paginationData) : undefined, params)
           )
+          return
         }
-      } else {
-        const response: PaginatedResource<Collection> | Collection[] = yield call(
-          [legacyBuilderClient, 'fetchCollections'],
-          address,
-          params
-        )
-        if (isPaginated(response)) {
-          const { results, limit, page, pages, total } = response
-          yield put(
-            fetchCollectionsSuccess(
-              results,
-              {
-                limit,
-                page,
-                pages,
-                total
-              },
-              params
-            )
+      }
+      const response: PaginatedResource<Collection> | Collection[] = yield call([legacyBuilderClient, 'fetchCollections'], address, params)
+      if (isPaginated(response)) {
+        const { results, limit, page, pages, total } = response
+        yield put(
+          fetchCollectionsSuccess(
+            results,
+            {
+              limit,
+              page,
+              pages,
+              total
+            },
+            params
           )
-        } else {
-          yield put(fetchCollectionsSuccess(response, undefined, params))
-        }
+        )
+      } else {
+        yield put(fetchCollectionsSuccess(response, undefined, params))
       }
     } catch (error) {
       yield put(fetchCollectionsFailure(error.message))
