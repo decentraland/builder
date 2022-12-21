@@ -37,3 +37,7 @@ export const getAvatar = createSelector<RootState, string | undefined, ProfileSt
 export const getName = createSelector<RootState, Avatar | null, string | null>(getAvatar, avatar => {
   return avatar && avatar.name ? avatar.name : null
 })
+
+export const getHasClaimedName = createSelector<RootState, Avatar | null, boolean>(getAvatar, avatar => {
+  return avatar?.hasClaimedName || false
+})
