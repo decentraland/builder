@@ -409,7 +409,8 @@
     "title": "为头像分配名称",
     "subtitle": "为您的头像分配新的别名",
     "body": "使用{newName}作为头像的新别名。 唯一名称是帮助您的朋友在Metaverse中找到您的好方法！ 这将替换{oldName}。",
-    "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。"
+    "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。",
+    "error": "发生错误。请稍后再试。"
   },
   "deployment_contest_modal": {
     "action": "参加比赛",

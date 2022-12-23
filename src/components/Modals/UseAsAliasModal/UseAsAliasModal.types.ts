@@ -9,12 +9,13 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   aliases: ENS[]
   hasClaimedName: boolean
   name: string
+  error: string | null
   metadata: {
     newName: string
   }
   onSubmit: typeof setProfileAvatarAliasRequest
 }
 
-export type MapStateProps = Pick<Props, 'isLoading' | 'address' | 'aliases' | 'hasClaimedName' | 'name'>
+export type MapStateProps = Pick<Props, 'isLoading' | 'address' | 'aliases' | 'hasClaimedName' | 'name' | 'error'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
 export type MapDispatch = Dispatch
