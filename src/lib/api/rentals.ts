@@ -9,9 +9,12 @@ export const RENTALS_GRAPH_URL = config.get('RENTALS_GRAPH_URL', '')
 
 const rentalsGraphClient = createClient(RENTALS_GRAPH_URL)
 
-const getRentalsByTenantQuery = () => gql`
-  query Rentals($tenant: Bytes) {
-    rentals(where: { tenant: $tenant, isActive: true }) {
+const getRentalsQuery = () => gql`
+  query Rentals($address: Bytes) {
+    tenantRentals: rentals(where: { tenant: $address, isActive: true }) {
+      ...rentalFields
+    }
+    lessorRentals: rentals(where: { lessor: $address, isActive: true }) {
       ...rentalFields
     }
   }
@@ -32,15 +35,18 @@ function fromRentalFields(fields: RentalFields): Rental {
 }
 
 export class RentalAPI {
-  fetchTokenIdsByTenant = async (address: string) => {
-    const { data } = await rentalsGraphClient.query<{ rentals: RentalFields[] }>({
-      query: getRentalsByTenantQuery(),
+  fetchRentalTokenIds = async (address: string): Promise<{ lessorRentals: Rental[], tenantRentals: Rental[] }> => {
+    const { data } = await rentalsGraphClient.query<{ lessorRentals: RentalFields[], tenantRentals: RentalFields[] }>({
+      query: getRentalsQuery(),
       variables: {
-        tenant: address.toLowerCase()
+        address: address.toLowerCase()
       }
     })
 
-    return data.rentals.map(fromRentalFields)
+    return {
+      lessorRentals: data.lessorRentals.map(fromRentalFields),
+      tenantRentals: data.tenantRentals.map(fromRentalFields)
+    }
   }
 }
 

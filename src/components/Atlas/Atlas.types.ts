@@ -10,6 +10,7 @@ export type Props = Partial<AtlasProps> & {
   emptyTiles: Record<string, Tile>
   showOperator?: boolean
   showTenant?: boolean
+  showLessor?: boolean
   showControls?: boolean
   landId?: string
   showOwner?: boolean

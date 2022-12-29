@@ -43,7 +43,7 @@ export default class TableRow extends React.PureComponent<Props> {
           <div>
             {t(`roles.${land.role}`)}
             &nbsp;
-            {rental ? <RentalPeriod rental={rental} /> : null}
+            {rental ? <RentalPeriod land={land} rental={rental} /> : null}
           </div>
         </Table.Cell>
         <Table.Cell>

@@ -583,8 +583,9 @@
   },
   "roles": {
     "1": "Owner",
-    "2": "Tenant",
-    "3": "Operator"
+    "2": "Lessor",
+    "3": "Tenant",
+    "4": "Operator"
   },
   "navigation": {
     "overview": "Overview",
@@ -740,7 +741,8 @@
   },
   "rental_period": {
     "period_over": "Rental Period Over",
-    "operator_permissions": "You will have Operator permissions until the Owner claims the Land back",
+    "tenant_operator_permissions": "You will have Operator permissions until the Owner claims the Land back",
+    "lessor_operator_permissions": "You will have Operator permissions once you claim your Land back",
     "ends_in": "Ends in"
   },
   "land_page": {
@@ -767,6 +769,8 @@
     "assigned_names": "Assigned names",
     "description": "Description",
     "owner": "Owner",
+    "tenant": "Tenant",
+    "land_is_locked": "This action is blocked until you claim your LAND back.",
     "operated_by": "Operated by",
     "total_land": "Total Land",
     "empty_land": "Empty Land",

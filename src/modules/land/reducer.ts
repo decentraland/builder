@@ -54,6 +54,7 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
       const { error } = action.payload
       return {
         ...state,
+        loading: loadingReducer(state.loading, action),
         error
       }
     }

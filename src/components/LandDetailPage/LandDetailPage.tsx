@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
+import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { LandType, Land, RoleType, Rental } from 'modules/land/types'
 import { Deployment } from 'modules/deployment/types'
@@ -16,6 +16,23 @@ import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
 
+const RentedLandWrapper = ({children, land} : { children: React.ReactNode, land: Land }) => {
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { disabled: land.roles.includes(RoleType.LESSOR) });
+    }
+    return child;
+  });
+
+  return (
+    <Popup
+      content={t('land_detail_page.land_is_locked')}
+      position="top left"
+      disabled={!land.roles.includes(RoleType.LESSOR)}
+      trigger={<span>{childrenWithProps}</span>}
+    />
+  )
+}
 export default class LandDetailPage extends React.PureComponent<Props, State> {
   state: State = {
     hovered: null,
@@ -96,6 +113,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     const { ensList, parcelsAvailableToBuildEstates, projects, onNavigate, onOpenModal } = this.props
     const { hovered, mouseX, mouseY, showTooltip } = this.state
     const occupiedTotal = this.computeOccupiedLand(land, deployments)
+    const landOwner = rental && (land.roles.includes(RoleType.LESSOR) || land.roles.includes(RoleType.TENANT)) ? rental.lessor : land.owner
 
     const canBuildEstate = parcelsAvailableToBuildEstates[land.id]
     const isAtlasClickable = showTooltip && hovered && hovered.projectId && hovered.projectId in projects
@@ -132,57 +150,63 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                 {land.roles.includes(RoleType.OWNER) ? (
                   <Column className="actions" align="right">
                     <Row>
-                      <Button basic onClick={() => onNavigate(locations.landTransfer(land.id))}>
-                        {t('land_detail_page.transfer')}
-                      </Button>
-                      <Button basic onClick={() => onNavigate(locations.landEdit(land.id))}>
-                        {t('global.edit')}
-                      </Button>
-                      <Dropdown
-                        trigger={
-                          <Button basic>
-                            <Icon name="ellipsis horizontal" />
-                          </Button>
-                        }
-                        inline
-                        direction="left"
-                      >
-                        <Dropdown.Menu>
-                          {canBuildEstate ? (
+                      <RentedLandWrapper land={land}>
+                        <Button basic onClick={() => onNavigate(locations.landTransfer(land.id))}>
+                          {t('land_detail_page.transfer')}
+                        </Button>
+                      </RentedLandWrapper>
+                      <RentedLandWrapper land={land}>
+                        <Button basic onClick={() => onNavigate(locations.landEdit(land.id))}>
+                          {t('global.edit')}
+                        </Button>
+                      </RentedLandWrapper>
+                      <RentedLandWrapper land={land}>
+                        <Dropdown
+                          trigger={
+                            <Button basic>
+                              <Icon name="ellipsis horizontal" />
+                            </Button>
+                          }
+                          inline
+                          direction="left"
+                        >
+                          <Dropdown.Menu>
+                            {canBuildEstate ? (
+                              <>
+                                <Dropdown.Item
+                                  text={t('land_detail_page.build_estate')}
+                                  onClick={() => onOpenModal('EstateEditorModal', { land })}
+                                />
+                                <Dropdown.Divider />
+                              </>
+                            ) : null}
+                            {land.type === LandType.ESTATE ? (
+                              <>
+                                <Dropdown.Item
+                                  text={t('land_detail_page.add_or_remove_parcels')}
+                                  onClick={() => onOpenModal('EstateEditorModal', { land })}
+                                />
+                                <Dropdown.Item
+                                  text={t('land_detail_page.dissolve_estate')}
+                                  onClick={() => onOpenModal('DissolveModal', { land })}
+                                />
+                                <Dropdown.Divider />
+                              </>
+                            ) : null}
                             <>
                               <Dropdown.Item
-                                text={t('land_detail_page.build_estate')}
-                                onClick={() => onOpenModal('EstateEditorModal', { land })}
+                                text={t('land_detail_page.assign_name')}
+                                onClick={() => onNavigate(locations.landSelectENS(land.id))}
                               />
                               <Dropdown.Divider />
                             </>
-                          ) : null}
-                          {land.type === LandType.ESTATE ? (
-                            <>
-                              <Dropdown.Item
-                                text={t('land_detail_page.add_or_remove_parcels')}
-                                onClick={() => onOpenModal('EstateEditorModal', { land })}
-                              />
-                              <Dropdown.Item
-                                text={t('land_detail_page.dissolve_estate')}
-                                onClick={() => onOpenModal('DissolveModal', { land })}
-                              />
-                              <Dropdown.Divider />
-                            </>
-                          ) : null}
-                          <>
                             <Dropdown.Item
-                              text={t('land_detail_page.assign_name')}
-                              onClick={() => onNavigate(locations.landSelectENS(land.id))}
+                              text={t('land_detail_page.set_operator')}
+                              onClick={() => onNavigate(locations.landOperator(land.id))}
                             />
-                            <Dropdown.Divider />
-                          </>
-                          <Dropdown.Item
-                            text={t('land_detail_page.set_operator')}
-                            onClick={() => onNavigate(locations.landOperator(land.id))}
-                          />
-                        </Dropdown.Menu>
-                      </Dropdown>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </RentedLandWrapper>
                     </Row>
                   </Column>
                 ) : land.roles.includes(RoleType.TENANT) && rental && !hasRentalPeriodEnded(rental) ? (
@@ -220,6 +244,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                 isDraggable
                 zoom={land.size && land.size >= 1000 ? 0.5 : 1}
                 onHover={this.handleHover(deployments)}
+                showLessor={false}
                 onClick={this.handleClick}
               ></Atlas>
             </div>
@@ -270,11 +295,14 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
           <Section className="data">
             <Stats title={t('global.role')} className="role">
               <Header>{t(`roles.${land.role}`)}</Header>
-              {rental ? <RentalPeriod rental={rental} /> : null}
+              {rental ? <RentalPeriod land={land} rental={rental} /> : null}
             </Stats>
             <Stats title={t('land_detail_page.owner')}>
-              <Profile address={land.owner} size="large" />
+              <Profile address={landOwner} size="large" />
             </Stats>
+            { land.roles.includes(RoleType.LESSOR) ? <Stats title={t('land_detail_page.tenant')}>
+              <Profile address={rental!.tenant} size="large" />
+            </Stats> : null}
             {land.operators.length > 0 ? (
               <Stats title={t('land_detail_page.operated_by')} className="operators">
                 <Row>

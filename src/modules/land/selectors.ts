@@ -6,10 +6,10 @@ import { RootState } from 'modules/common/types'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { getTiles } from 'modules/tile/selectors'
+import { Deployment } from 'modules/deployment/types'
 import { FETCH_LANDS_REQUEST } from './actions'
 import { coordsToId, colorByRole, hasNeighbour } from './utils'
-import { Land, LandType, LandTile } from './types'
-import { Deployment } from 'modules/deployment/types'
+import { Land, LandType, LandTile, RoleType } from './types'
 
 export const getState = (state: RootState) => state.land
 export const getData = (state: RootState) => getState(state).data
@@ -121,7 +121,7 @@ export const getParcelsAvailableToBuildEstates = createSelector<RootState, Recor
   getLandTiles,
   landTiles => {
     const all = Object.values(landTiles)
-      .filter(tile => tile.land.type === LandType.PARCEL)
+      .filter(tile => tile.land.type === LandType.PARCEL && !tile.land.roles.includes(RoleType.LESSOR))
       .map<Coord>(tile => ({ x: tile.land.x!, y: tile.land.y! }))
     const neighbours = Object.keys(landTiles).reduce((obj, id) => {
       const { land } = landTiles[id]
