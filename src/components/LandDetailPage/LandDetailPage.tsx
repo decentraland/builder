@@ -16,13 +16,13 @@ import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
 
-const RentedLandWrapper = ({children, land} : { children: React.ReactNode, land: Land }) => {
+const RentedLandWrapper = ({ children, land }: { children: React.ReactNode; land: Land }) => {
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, { disabled: land.roles.includes(RoleType.LESSOR) });
+      return React.cloneElement(child, { disabled: land.roles.includes(RoleType.LESSOR) })
     }
-    return child;
-  });
+    return child
+  })
 
   return (
     <Popup
@@ -300,9 +300,11 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             <Stats title={t('land_detail_page.owner')}>
               <Profile address={landOwner} size="large" />
             </Stats>
-            { land.roles.includes(RoleType.LESSOR) ? <Stats title={t('land_detail_page.tenant')}>
-              <Profile address={rental!.tenant} size="large" />
-            </Stats> : null}
+            {land.roles.includes(RoleType.LESSOR) ? (
+              <Stats title={t('land_detail_page.tenant')}>
+                <Profile address={rental!.tenant} size="large" />
+              </Stats>
+            ) : null}
             {land.operators.length > 0 ? (
               <Stats title={t('land_detail_page.operated_by')} className="operators">
                 <Row>

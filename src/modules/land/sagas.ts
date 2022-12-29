@@ -277,7 +277,9 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
   const { address } = action.payload
   try {
     const isRentalsEnabled: boolean = yield select(getIsRentalsEnabled)
-    const rentals: Awaited<ReturnType<typeof rental.fetchRentalTokenIds>> = isRentalsEnabled ? yield call([rental, 'fetchRentalTokenIds'], address) : []
+    const rentals: Awaited<ReturnType<typeof rental.fetchRentalTokenIds>> = isRentalsEnabled
+      ? yield call([rental, 'fetchRentalTokenIds'], address)
+      : []
     const tenantTokenIds = rentals.tenantRentals.map(rental => rental.tokenId)
     const lessorTokenIds = rentals.lessorRentals.map(rental => rental.tokenId)
 

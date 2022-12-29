@@ -35,8 +35,8 @@ function fromRentalFields(fields: RentalFields): Rental {
 }
 
 export class RentalAPI {
-  fetchRentalTokenIds = async (address: string): Promise<{ lessorRentals: Rental[], tenantRentals: Rental[] }> => {
-    const { data } = await rentalsGraphClient.query<{ lessorRentals: RentalFields[], tenantRentals: RentalFields[] }>({
+  fetchRentalTokenIds = async (address: string): Promise<{ lessorRentals: Rental[]; tenantRentals: Rental[] }> => {
+    const { data } = await rentalsGraphClient.query<{ lessorRentals: RentalFields[]; tenantRentals: RentalFields[] }>({
       query: getRentalsQuery(),
       variables: {
         address: address.toLowerCase()

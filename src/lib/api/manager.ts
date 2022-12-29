@@ -137,7 +137,12 @@ function isMax(result: LandQueryResult) {
 }
 
 export class ManagerAPI {
-  fetchLand = async (_address: string, tenantTokenIds: string[] = [], lessorTokenIds: string[] =[], skip = 0): Promise<[Land[], Authorization[]]> => {
+  fetchLand = async (
+    _address: string,
+    tenantTokenIds: string[] = [],
+    lessorTokenIds: string[] = [],
+    skip = 0
+  ): Promise<[Land[], Authorization[]]> => {
     const address = _address.toLowerCase()
 
     const { data } = await authGraphClient.query<LandQueryResult>({

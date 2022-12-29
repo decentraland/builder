@@ -17,7 +17,7 @@ export default class RentalPeriod extends React.PureComponent<Props> {
       period = (
         <>
           <span>{t('rental_period.period_over')}</span>&nbsp;
-          <Info content={t(`rental_period.${land.roles.includes(RoleType.LESSOR) ? 'lessor' : 'tenant'}_operator_permissions`) } />
+          <Info content={t(`rental_period.${land.roles.includes(RoleType.LESSOR) ? 'lessor' : 'tenant'}_operator_permissions`)} />
         </>
       )
     } else {
