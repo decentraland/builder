@@ -1307,7 +1307,8 @@
     "free_message": "El creador original será el beneficiario de las regalías"
   },
   "confirm_delete": {
-    "content": "¿Estás seguro que quieres eliminar \"{name}\"?"
+    "content": "Eliminar \"{name}\"?",
+    "subcontent": "¿Estás seguro que quieres eliminar \"{name}\"?. Esta acción es irreversible"
   },
   "publish_collection_modal": {
     "title": "Publicar Colección",
@@ -1753,5 +1754,8 @@
   "campaign": {
     "name": "Holiday Season",
     "tag": "HolidaySeason"
+  },
+  "logged_in_detail_page": {
+    "error_title": "Ocurrió un error al cargar la página de detalles"
   }
 }

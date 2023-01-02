@@ -90,6 +90,11 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
     }
   }
 
+  handleMoveToCollection = () => {
+    const { item, onOpenModal } = this.props
+    onOpenModal('MoveItemToCollectionModal', { item })
+  }
+
   renderPage(item: Item, collection: Collection | null) {
     const { onNavigate } = this.props
     const data = item.data
@@ -224,6 +229,9 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                               )
                             }
                           />
+                          {!item.collectionId && (
+                            <Dropdown.Item text={t('collection_item.move_to_another_collection')} onClick={this.handleMoveToCollection} />
+                          )}
                         </Dropdown.Menu>
                       </Dropdown>
                     ) : null}

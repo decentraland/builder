@@ -32,7 +32,8 @@ export default class ConfirmDelete extends React.PureComponent<Props, State> {
         <Confirm
           size={size}
           open={isOpen}
-          content={t('confirm_delete.content', { name })}
+          header={t('confirm_delete.content', { name })}
+          content={t('confirm_delete.subcontent', { name })}
           onCancel={this.handleToggleConfirmModal}
           onConfirm={this.handleDeleteItem}
         />
