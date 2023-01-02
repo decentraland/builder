@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { isLoadingSetProfileAvatarAlias } from 'decentraland-dapps/dist/modules/profile/selectors'
+import { isLoadingSetProfileAvatarAlias, getError } from 'decentraland-dapps/dist/modules/profile/selectors'
 import { setProfileAvatarAliasRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { RootState } from 'modules/common/types'
 import { getAliases } from 'modules/ens/selectors'
@@ -10,6 +10,7 @@ import UseAsAliasModal from './UseAsAliasModal'
 
 const mapState = (state: RootState): MapStateProps => ({
   isLoading: isLoadingSetProfileAvatarAlias(state),
+  error: getError(state),
   aliases: getAliases(state),
   hasClaimedName: getHasClaimedName(state),
   name: getName(state) || '',

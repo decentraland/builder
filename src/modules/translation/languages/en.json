@@ -413,7 +413,8 @@
     "title": "Use as Alias",
     "subtitle": "This will be your name in the Metaverse",
     "body": "Use {newName} as your avatar’s new alias. Unique names are a great way to help your friends find you in the Metaverse! This will replace {oldName}.",
-    "success": "{name} is your new alias in the Metaverse! Let other people see your new name when visiting the world."
+    "success": "{name} is your new alias in the Metaverse! Let other people see your new name when visiting the world.",
+    "error": "Something went wrong... Please try again later."
   },
   "deployment_contest_modal": {
     "action": "Join the Contest",
