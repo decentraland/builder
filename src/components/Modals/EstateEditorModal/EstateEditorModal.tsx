@@ -54,7 +54,12 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
     const { landTiles } = this.props
     const clickedLandId = coordsToId(x, y)
 
-    if (!this.isSelected(x, y) && landTiles[clickedLandId] && !landTiles[clickedLandId].land.roles.includes(RoleType.LESSOR)) {
+    if (
+      !this.isSelected(x, y) &&
+      landTiles[clickedLandId] &&
+      !landTiles[clickedLandId].land.roles.includes(RoleType.LESSOR) &&
+      !landTiles[clickedLandId].land.roles.includes(RoleType.TENANT)
+    ) {
       this.addParcel(x, y)
       return
     } else {
