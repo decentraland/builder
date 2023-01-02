@@ -20,7 +20,6 @@ const Atlas: React.FC<Props> = props => {
     showOwner,
     showOperator,
     showTenant,
-    showLessor,
     showControls,
     hasPopup,
     className,
@@ -81,13 +80,12 @@ const Atlas: React.FC<Props> = props => {
     [props.x, props.y, landId, isEstate, selection]
   )
 
-  const shouldShowLayer = (tile?: LandTile, showOwner?: boolean, showOperator?: boolean, showTenant?: boolean, showLessor?: boolean) => {
+  const shouldShowLayer = (tile?: LandTile, showOwner?: boolean, showOperator?: boolean, showTenant?: boolean) => {
     return (
       !!tile &&
       ((!!showOwner && tile.land.role === RoleType.OWNER) ||
         (!!showOperator && tile.land.role === RoleType.OPERATOR) ||
-        (!!showTenant && tile.land.role === RoleType.TENANT) ||
-        (!!showLessor && tile.land.roles.includes(RoleType.LESSOR)))
+        (!!showTenant && tile.land.role === RoleType.TENANT))
     )
   }
 
@@ -95,24 +93,24 @@ const Atlas: React.FC<Props> = props => {
     (x, y) => {
       const id = coordsToId(x, y)
       const tile = landTiles[id]
-      if (shouldShowLayer(tile, showOwner, showOperator, showTenant, showLessor)) {
+      if (shouldShowLayer(tile, showOwner, showOperator, showTenant)) {
         return tile || null
       }
       return null
     },
-    [landTiles, showOwner, showOperator, showTenant, showLessor]
+    [landTiles, showOwner, showOperator, showTenant]
   )
 
   const unoccupiedLayer: Layer = useCallback(
     (x, y) => {
       const id = coordsToId(x, y)
       const tile = landTiles[id]
-      if (shouldShowLayer(tile, showOwner, showOperator, showTenant, showLessor)) {
+      if (shouldShowLayer(tile, showOwner, showOperator, showTenant)) {
         return emptyTiles[id] || null
       }
       return null
     },
-    [emptyTiles, landTiles, showOwner, showOperator, showTenant, showLessor]
+    [emptyTiles, landTiles, showOwner, showOperator, showTenant]
   )
 
   const handleHover = useCallback(

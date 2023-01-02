@@ -244,7 +244,6 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                 isDraggable
                 zoom={land.size && land.size >= 1000 ? 0.5 : 1}
                 onHover={this.handleHover(deployments)}
-                showLessor={false}
                 onClick={this.handleClick}
               ></Atlas>
             </div>
