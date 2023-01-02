@@ -300,9 +300,9 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             <Stats title={t('land_detail_page.owner')}>
               <Profile address={landOwner} size="large" />
             </Stats>
-            {land.roles.includes(RoleType.LESSOR) ? (
+            {rental && land.roles.includes(RoleType.LESSOR) ? (
               <Stats title={t('land_detail_page.tenant')}>
-                <Profile address={rental!.tenant} size="large" />
+                <Profile address={rental.tenant} size="large" />
               </Stats>
             ) : null}
             {land.operators.length > 0 ? (
