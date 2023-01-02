@@ -34,35 +34,35 @@ export const colorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: Color.SUMMER_RED,
   [RoleType.LESSOR]: Color.SUMMER_RED,
   [RoleType.OPERATOR]: Color.LUISXVI_VIOLET,
-  [RoleType.TENANT]: Color.MILLENIAL_ORANGE
+  [RoleType.TENANT]: Color.SUMMER_RED
 }
 
 export const emptyColorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: '#ab2039',
   [RoleType.LESSOR]: '#ab2039',
   [RoleType.OPERATOR]: '#8f1d9b',
-  [RoleType.TENANT]: '#D18157'
+  [RoleType.TENANT]: '#ab2039'
 }
 
 export const selectionBorderColorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: '#ff8199',
   [RoleType.LESSOR]: '#ff8199',
   [RoleType.OPERATOR]: '#d742e8',
-  [RoleType.TENANT]: '#FEBD9A'
+  [RoleType.TENANT]: '#ff8199'
 }
 
 export const hoverFillByRole = {
   [RoleType.OWNER]: '#ff8199',
   [RoleType.LESSOR]: '#ff8199',
   [RoleType.OPERATOR]: '#d742e8',
-  [RoleType.TENANT]: '#FEBD9A'
+  [RoleType.TENANT]: '#ff8199'
 }
 
 export const hoverStrokeByRole = {
   [RoleType.OWNER]: '#fcc6d1',
   [RoleType.LESSOR]: '#fcc6d1',
   [RoleType.OPERATOR]: '#ef5eff',
-  [RoleType.TENANT]: '#FED5BF'
+  [RoleType.TENANT]: '#fcc6d1'
 }
 
 export const getSelection = (land: Land) =>
