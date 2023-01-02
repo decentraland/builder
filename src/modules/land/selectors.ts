@@ -123,7 +123,10 @@ export const getParcelsAvailableToBuildEstates = createSelector<RootState, Recor
   getLandTiles,
   landTiles => {
     const all = Object.values(landTiles)
-      .filter(tile => tile.land.type === LandType.PARCEL && !tile.land.roles.includes(RoleType.LESSOR))
+      .filter(
+        tile =>
+          tile.land.type === LandType.PARCEL && !tile.land.roles.includes(RoleType.LESSOR) && !tile.land.roles.includes(RoleType.TENANT)
+      )
       .map<Coord>(tile => ({ x: tile.land.x!, y: tile.land.y! }))
     const neighbours = Object.keys(landTiles).reduce((obj, id) => {
       const { land } = landTiles[id]

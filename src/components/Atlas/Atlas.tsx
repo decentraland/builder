@@ -19,7 +19,7 @@ const Atlas: React.FC<Props> = props => {
     emptyTiles,
     showOwner,
     showOperator,
-    showTenant,
+    showTenant = true,
     showControls,
     hasPopup,
     className,
