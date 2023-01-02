@@ -319,7 +319,7 @@
     "clear": {
       "confirmation": {
         "action": "Despublicar",
-        "description": "Estás a punto de despublicar \"{project}\" del Metaverse",
+        "description": "Estás a punto de despublicar \"{project}\" del Metaverso",
         "title": "Despublicar Escena"
       },
       "connect": {
@@ -367,7 +367,7 @@
         },
         "uploading_assets": {
           "description": "Por favor espera mientras tu Escena es subida.",
-          "title": "Subiendo Escena al Metaverse"
+          "title": "Subiendo Escena al Metaverso"
         },
         "uploading_recording": {
           "description": "Por favor espera mientras la previsualización de tu Escena es subida.",
@@ -415,8 +415,8 @@
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
     "subtitle": "Establece un nuevo alias para tu avatar",
-    "body": "Usa {newName} como el nuevo alias de tu avatar. ¡Los nombres únicos son una excelente manera de ayudar a tus amigos a encontrarte en Metaverse! Esto reemplazará a {oldName}.",
-    "success": "{name} es tu nuevo alias en el Metaverse! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo.",
+    "body": "Usa {newName} como el nuevo alias de tu avatar. ¡Los nombres únicos son una excelente manera de ayudar a tus amigos a encontrarte en Metaverso! Esto reemplazará a {oldName}.",
+    "success": "{name} es tu nuevo alias en el Metaverso! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo.",
     "error": "Algo salió mal... Vuelve a intentarlo más tarde."
   },
   "deployment_contest_modal": {
