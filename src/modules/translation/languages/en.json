@@ -1742,5 +1742,8 @@
   "campaign": {
     "name": "Holiday Season",
     "tag": "HolidaySeason"
+  },
+  "logged_in_detail_page": {
+    "error_title": "An error ocurred while loading the detail page"
   }
 }

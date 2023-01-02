@@ -9,9 +9,12 @@ export type Props = {
   isPageFullscreen?: boolean
   isFooterFullscreen?: boolean
   isNavigationFullscreen?: boolean
+  error?: string
   isLoading?: boolean
   isLoggingIn: boolean
   isLoggedIn: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isLoggingIn' | 'isLoggedIn'>
+export type MapStateProps = Pick<Props, 'isLoggingIn' | 'isLoggedIn' | 'error'>
+
+export type OwnProps = Pick<Props, 'isLoading' | 'error'>

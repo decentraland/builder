@@ -1739,5 +1739,8 @@
   "campaign": {
     "name": "Holiday Season",
     "tag": "HolidaySeason"
+  },
+  "logged_in_detail_page": {
+    "error_title": "加载详细信息页面时出错"
   }
 }
