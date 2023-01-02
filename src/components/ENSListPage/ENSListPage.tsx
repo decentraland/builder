@@ -248,9 +248,15 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoading } = this.props
+    const { isLoading, error } = this.props
     return (
-      <LoggedInDetailPage className="ENSListPage view" activeTab={NavigationTab.NAMES} isLoading={isLoading} isPageFullscreen={true}>
+      <LoggedInDetailPage
+        className="ENSListPage view"
+        error={error}
+        activeTab={NavigationTab.NAMES}
+        isLoading={isLoading}
+        isPageFullscreen={true}
+      >
         {this.renderEnsList()}
       </LoggedInDetailPage>
     )

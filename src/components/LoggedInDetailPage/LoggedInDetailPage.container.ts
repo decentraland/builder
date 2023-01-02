@@ -1,12 +1,13 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
-import { MapStateProps } from './LoggedInDetailPage.types'
+import { isLoggedIn, isLoggingIn, getError } from 'modules/identity/selectors'
+import { MapStateProps, OwnProps } from './LoggedInDetailPage.types'
 import LoggedInDetailPage from './LoggedInDetailPage'
 
-const mapState = (state: RootState): MapStateProps => ({
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   isLoggingIn: isLoggingIn(state),
-  isLoggedIn: isLoggedIn(state)
+  isLoggedIn: isLoggedIn(state),
+  error: getError(state) || ownProps.error
 })
 
 const mapDispatch = () => ({})
