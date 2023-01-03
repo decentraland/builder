@@ -54,7 +54,6 @@ export const getLandTiles = createSelector<
       const id = coordsToId(land.x!, land.y!)
       result[id] = {
         color: colorByRole[land.role],
-        // strikethrough: land.roles.includes(RoleType.LESSOR),
         land
       }
     } else {
@@ -66,7 +65,6 @@ export const getLandTiles = createSelector<
           if (tile) {
             result[coord] = {
               color: colorByRole[land.role],
-              // strikethrough: land.roles.includes(RoleType.LESSOR),
               top: !!tile.top,
               left: !!tile.left,
               topLeft: !!tile.topLeft,

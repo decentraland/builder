@@ -32,35 +32,35 @@ export const getCenter = (selection: { x: number; y: number }[]) => {
 
 export const colorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: Color.SUMMER_RED,
-  [RoleType.LESSOR]: Color.SUMMER_RED,
+  [RoleType.LESSOR]: Color.MILLENIAL_ORANGE,
   [RoleType.OPERATOR]: Color.LUISXVI_VIOLET,
   [RoleType.TENANT]: Color.SUMMER_RED
 }
 
 export const emptyColorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: '#ab2039',
-  [RoleType.LESSOR]: '#ab2039',
+  [RoleType.LESSOR]: '#d18157',
   [RoleType.OPERATOR]: '#8f1d9b',
   [RoleType.TENANT]: '#ab2039'
 }
 
 export const selectionBorderColorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: '#ff8199',
-  [RoleType.LESSOR]: '#ff8199',
+  [RoleType.LESSOR]: '#febd9a',
   [RoleType.OPERATOR]: '#d742e8',
   [RoleType.TENANT]: '#ff8199'
 }
 
 export const hoverFillByRole = {
   [RoleType.OWNER]: '#ff8199',
-  [RoleType.LESSOR]: '#ff8199',
+  [RoleType.LESSOR]: '#febd9a',
   [RoleType.OPERATOR]: '#d742e8',
   [RoleType.TENANT]: '#ff8199'
 }
 
 export const hoverStrokeByRole = {
   [RoleType.OWNER]: '#fcc6d1',
-  [RoleType.LESSOR]: '#fcc6d1',
+  [RoleType.LESSOR]: '#fed5bf',
   [RoleType.OPERATOR]: '#ef5eff',
   [RoleType.TENANT]: '#fcc6d1'
 }

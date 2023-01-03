@@ -147,7 +147,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                     <JumpIn land={land} />
                   </Row>
                 </Column>
-                {land.roles.includes(RoleType.OWNER) ? (
+                {land.role === RoleType.OWNER || land.role === RoleType.LESSOR ? (
                   <Column className="actions" align="right">
                     <Row>
                       <RentedLandWrapper land={land}>

@@ -184,11 +184,9 @@ export class ManagerAPI {
 
     // parcels and estates that I've put for rent
     for (const parcel of data.lessorParcels) {
-      lands.push(fromParcel(parcel, RoleType.OWNER))
       lands.push(fromParcel(parcel, RoleType.LESSOR))
     }
     for (const estate of data.lessorEstates) {
-      lands.push(fromEstate(estate, RoleType.OWNER))
       lands.push(fromEstate(estate, RoleType.LESSOR))
     }
 
