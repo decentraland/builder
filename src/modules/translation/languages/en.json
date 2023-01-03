@@ -583,7 +583,7 @@
   },
   "roles": {
     "1": "Owner",
-    "2": "Lessor",
+    "2": "Owner",
     "3": "Tenant",
     "4": "Operator"
   },

@@ -584,7 +584,7 @@
   },
   "roles": {
     "1": "Dueño",
-    "2": "Operador",
+    "2": "Dueño",
     "3": "Arrendador",
     "4": "Inquilino"
   },
