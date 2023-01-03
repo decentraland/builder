@@ -14,7 +14,7 @@ export default class UseAsAliasModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { onClose, isLoading, aliases, name: oldName, hasClaimedName } = this.props
+    const { onClose, isLoading, aliases, name: oldName, hasClaimedName, error } = this.props
     const { newName } = this.props.metadata
     const aliasName = aliases.length > 0 ? aliases[0].name : ''
     const successOnSetAlias = newName === aliasName && hasClaimedName && !isLoading
@@ -24,7 +24,9 @@ export default class UseAsAliasModal extends React.PureComponent<Props> {
         <ModalNavigation title={t('use_as_alias_modal.title')} subtitle={t('use_as_alias_modal.subtitle')} onClose={onClose} />
         <ModalContent>
           <p>
-            {successOnSetAlias ? (
+            {error ? (
+              <T id="use_as_alias_modal.error" />
+            ) : successOnSetAlias ? (
               <T id="use_as_alias_modal.success" values={{ name: <b>{newName}</b> }} />
             ) : (
               <T id="use_as_alias_modal.body" values={{ newName: <b>{newName}</b>, oldName: <b>{oldName}</b> }} />
@@ -32,9 +34,9 @@ export default class UseAsAliasModal extends React.PureComponent<Props> {
           </p>
         </ModalContent>
         <ModalActions>
-          {successOnSetAlias ? (
+          {successOnSetAlias || error ? (
             <Button primary onClick={onClose}>
-              {t('global.done')}
+              {error ? t('global.close') : t('global.done')}
             </Button>
           ) : (
             <Button primary loading={isLoading} onClick={this.handleSubmit}>
