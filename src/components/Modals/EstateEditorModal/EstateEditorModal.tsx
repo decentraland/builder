@@ -14,7 +14,7 @@ import {
   getCoordsToRemove,
   MAX_PARCELS_PER_TX
 } from 'modules/land/utils'
-import { LandType, Land } from 'modules/land/types'
+import { LandType, Land, RoleType } from 'modules/land/types'
 import { Props, State } from './EstateEditorModal.types'
 import './EstateEditorModal.css'
 
@@ -51,7 +51,15 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
   }
 
   handleClick = (x: number, y: number) => {
-    if (!this.isSelected(x, y)) {
+    const { landTiles } = this.props
+    const clickedLandId = coordsToId(x, y)
+
+    if (
+      !this.isSelected(x, y) &&
+      landTiles[clickedLandId] &&
+      !landTiles[clickedLandId].land.roles.includes(RoleType.LESSOR) &&
+      !landTiles[clickedLandId].land.roles.includes(RoleType.TENANT)
+    ) {
       this.addParcel(x, y)
       return
     } else {
@@ -84,7 +92,7 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
   }
 
   removeParcel(x: number, y: number) {
-    // check if cood is actually selected
+    // check if coord is actually selected
     if (!this.isSelected(x, y)) return
 
     // compute new selection

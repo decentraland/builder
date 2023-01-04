@@ -55,7 +55,7 @@ import { getIsRentalsEnabled } from 'modules/features/selectors'
 import { closeModal } from 'modules/modal/actions'
 import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
-import { Land, LandType, Authorization, Rental, RoleType } from './types'
+import { Land, LandType, Authorization, RoleType } from './types'
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
@@ -277,12 +277,14 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
   const { address } = action.payload
   try {
     const isRentalsEnabled: boolean = yield select(getIsRentalsEnabled)
+    const rentals: Awaited<ReturnType<typeof rental.fetchRentalTokenIds>> = isRentalsEnabled
+      ? yield call([rental, 'fetchRentalTokenIds'], address)
+      : []
+    const tenantTokenIds = rentals.tenantRentals.map(rental => rental.tokenId)
+    const lessorTokenIds = rentals.lessorRentals.map(rental => rental.tokenId)
 
-    const rentals: Rental[] = isRentalsEnabled ? yield call([rental, 'fetchTokenIdsByTenant'], address) : []
-    const tenantTokenIds = rentals.map(rental => rental.tokenId)
-
-    const [land, authorizations]: [Land[], Authorization[]] = yield call([manager, 'fetchLand'], address, tenantTokenIds)
-    yield put(fetchLandsSuccess(address, land, authorizations, rentals))
+    const [land, authorizations]: [Land[], Authorization[]] = yield call([manager, 'fetchLand'], address, tenantTokenIds, lessorTokenIds)
+    yield put(fetchLandsSuccess(address, land, authorizations, rentals.tenantRentals.concat(rentals.lessorRentals)))
   } catch (error) {
     yield put(fetchLandsFailure(address, error.message))
   }
