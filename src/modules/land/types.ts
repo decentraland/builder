@@ -8,8 +8,9 @@ export enum LandType {
 
 export enum RoleType {
   OWNER = 1,
-  TENANT = 2,
-  OPERATOR = 3
+  LESSOR = 2,
+  TENANT = 3,
+  OPERATOR = 4
 }
 
 export type Land = {

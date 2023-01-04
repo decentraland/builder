@@ -585,8 +585,9 @@
   },
   "roles": {
     "1": "Dueño",
-    "2": "Operador",
-    "3": "Inquilino"
+    "2": "Dueño",
+    "3": "Arrendador",
+    "4": "Inquilino"
   },
   "navigation": {
     "overview": "Overview",
@@ -719,7 +720,8 @@
   },
   "rental_period": {
     "period_over": "Período de renta terminado",
-    "operator_permissions": "Tendrás permisos de Operador hasta que el dueño pida su tierra",
+    "tenant_operator_permissions": "Tendrás permisos de Operador hasta que el dueño pida su tierra",
+    "lessor_operator_permissions": "Tendrás permisos de Operador hasta que pidas tu tierra",
     "ends_in": "Termina en"
   },
   "land_page": {
@@ -746,6 +748,8 @@
     "assigned_names": "Nombres asignados",
     "description": "Descripción",
     "owner": "Dueño",
+    "tenant": "Inquilino",
+    "land_is_locked": "Esta acción está bloqueada hasta que reclames tu tierra.",
     "operated_by": "Operado por",
     "total_land": "Tierras Totales",
     "empty_land": "Tierras Vacias",

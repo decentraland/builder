@@ -18,6 +18,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
   state: State = {
     showOwner: true,
     showOperator: true,
+    showLessor: true,
     showTenant: true,
     page: 1,
     selectedLand: 0
@@ -31,7 +32,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
 
   renderLand() {
     const { view, isRentalsEnabled, onSetView } = this.props
-    const { page, showOwner, showOperator, showTenant, selectedLand } = this.state
+    const { page, showOwner, showOperator, showTenant, showLessor, selectedLand } = this.state
 
     const filteredLands = this.getFilteredLands()
 
@@ -156,6 +157,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
               showOperator={showOperator}
               showOwner={showOwner}
               showTenant={showTenant}
+              showLessor={showLessor}
               hasPopup
             />
           </div>
@@ -166,7 +168,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
 
   getFilteredLands() {
     const { lands } = this.props
-    const { showOwner, showOperator, showTenant } = this.state
+    const { showOwner, showOperator, showLessor, showTenant } = this.state
 
     const filteredLands = lands.filter(land => {
       if (showOwner && land.roles.includes(RoleType.OWNER)) {
@@ -176,6 +178,9 @@ export default class LandPage extends React.PureComponent<Props, State> {
         return true
       }
       if (showTenant && land.roles.includes(RoleType.TENANT)) {
+        return true
+      }
+      if (showLessor && land.roles.includes(RoleType.LESSOR)) {
         return true
       }
       return false

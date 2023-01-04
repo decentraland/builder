@@ -14,11 +14,17 @@ const authGraphClient = createClient(LAND_MANAGER_GRAPH_URL)
 const MAX_RESULTS = 1000
 
 const getLandQuery = (skip = 0) => gql`
-  query Land($address: Bytes, $tenantTokenIds: [String!]) {
+  query Land($address: Bytes, $tenantTokenIds: [String!], $lessorTokenIds: [String!]) {
     tenantParcels: parcels(first: ${MAX_RESULTS}, skip: ${skip}, where: { tokenId_in: $tenantTokenIds }) {
       ...parcelFields
     }
     tenantEstates: estates(first: ${MAX_RESULTS}, skip: ${skip}, where: { id_in: $tenantTokenIds }) {
+      ...estateFields
+    }
+    lessorParcels: parcels(first: ${MAX_RESULTS}, skip: ${skip}, where: { tokenId_in: $lessorTokenIds }) {
+      ...parcelFields
+    }
+    lessorEstates: estates(first: ${MAX_RESULTS}, skip: ${skip}, where: { id_in: $lessorTokenIds }) {
       ...estateFields
     }
     ownerParcels: parcels(first: ${MAX_RESULTS}, skip: ${skip}, where: { estate: null, owner: $address }) {
@@ -59,6 +65,8 @@ const getLandQuery = (skip = 0) => gql`
 type LandQueryResult = {
   tenantParcels: ParcelFields[]
   tenantEstates: EstateFields[]
+  lessorParcels: ParcelFields[]
+  lessorEstates: EstateFields[]
   ownerParcels: ParcelFields[]
   ownerEstates: EstateFields[]
   updateOperatorParcels: ParcelFields[]
@@ -129,14 +137,20 @@ function isMax(result: LandQueryResult) {
 }
 
 export class ManagerAPI {
-  fetchLand = async (_address: string, tenantTokenIds: string[] = [], skip = 0): Promise<[Land[], Authorization[]]> => {
+  fetchLand = async (
+    _address: string,
+    tenantTokenIds: string[] = [],
+    lessorTokenIds: string[] = [],
+    skip = 0
+  ): Promise<[Land[], Authorization[]]> => {
     const address = _address.toLowerCase()
 
     const { data } = await authGraphClient.query<LandQueryResult>({
       query: getLandQuery(skip),
       variables: {
         address,
-        tenantTokenIds
+        tenantTokenIds,
+        lessorTokenIds
       }
     })
 
@@ -166,6 +180,14 @@ export class ManagerAPI {
     }
     for (const estate of data.tenantEstates) {
       lands.push(fromEstate(estate, RoleType.TENANT))
+    }
+
+    // parcels and estates that I've put for rent
+    for (const parcel of data.lessorParcels) {
+      lands.push(fromParcel(parcel, RoleType.LESSOR))
+    }
+    for (const estate of data.lessorEstates) {
+      lands.push(fromEstate(estate, RoleType.LESSOR))
     }
 
     // addresses I gave UpdateManager permission are operators of all my lands
@@ -257,10 +279,10 @@ export class ManagerAPI {
     // check if we need to fetch more results
     if (isMax(data)) {
       // merge results recursively
-      const [moreLands, moreAuthorizations] = await this.fetchLand(address, tenantTokenIds, skip + MAX_RESULTS)
+      const [moreLands, moreAuthorizations] = await this.fetchLand(address, tenantTokenIds, lessorTokenIds, skip + MAX_RESULTS)
       const landResults = [...Object.values(landsMap), ...moreLands]
-      const authoriazationResults = [...authorizations, ...moreAuthorizations]
-      return [landResults, authoriazationResults]
+      const authorizationResults = [...authorizations, ...moreAuthorizations]
+      return [landResults, authorizationResults]
     } else {
       return [Object.values(landsMap), authorizations]
     }

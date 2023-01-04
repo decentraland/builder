@@ -577,8 +577,9 @@
   },
   "roles": {
     "1": "持有者",
-    "2": "操作者",
-    "3": "租户"
+    "2": "持有者",
+    "3": "出租人",
+    "4": "租户"
   },
   "navigation": {
     "overview": "概述",
@@ -704,7 +705,8 @@
   },
   "rental_period": {
     "period_over": "租期结束",
-    "operator_permissions": "在所有者收回土地之前，您将拥有操作员权限",
+    "tenant_operator_permissions": "在所有者收回土地之前，您将拥有操作员权限",
+    "lessor_operator_permissions": "一旦你收回你的土地，你将拥有操作员权限",
     "ends_in": "结束于"
   },
   "land_page": {
@@ -732,6 +734,8 @@
     "assigned_names": "分配名称",
     "description": "描述",
     "owner": "持有者",
+    "tenant": "租户",
+    "land_is_locked": "在您收回 LAND 之前，此操作将被阻止。",
     "operated_by": "经营者",
     "total_land": "总土地",
     "empty_land": "空地",
