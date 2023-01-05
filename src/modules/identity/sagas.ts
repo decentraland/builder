@@ -121,6 +121,7 @@ function* handleLogin(action: LoginRequestAction) {
     if (!identity) {
       // Generate a new identity
       const address: string = yield select(getAddress)
+      console.log('Ask for identity request generation!')
       yield put(generateIdentityRequest(address))
       const generateIdentity: Race<GenerateIdentitySuccessAction, GenerateIdentityFailureAction> = yield takeRace(
         GENERATE_IDENTITY_SUCCESS,

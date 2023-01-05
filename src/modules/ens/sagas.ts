@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
-import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { call, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects'
 import { Network } from '@dcl/schemas'
 import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -20,6 +20,7 @@ import { marketplace } from 'lib/api/marketplace'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { Land, LandType } from 'modules/land/types'
+import { isLoggedIn } from 'modules/identity/selectors'
 import { closeModal } from 'modules/modal/actions'
 import {
   FETCH_ENS_REQUEST,
@@ -55,6 +56,7 @@ import {
 } from './actions'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDomainFromName } from './utils'
+import { GENERATE_IDENTITY_SUCCESS } from 'modules/identity/actions'
 
 export function* ensSaga(builderClient: BuilderClient) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -232,6 +234,12 @@ export function* ensSaga(builderClient: BuilderClient) {
     try {
       const lands: Land[] = yield select(getLands)
       const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
+      const hasIdentity: boolean = yield select(isLoggedIn)
+      // Wait for the identity to be generated before querying the builder server
+      if (!hasIdentity) {
+        // This is a patch that assumes that the identity will be generated if it doesn't exist.
+        yield take(GENERATE_IDENTITY_SUCCESS)
+      }
       const coordsWithHashesList: (LandCoords & LandHashes)[] =
         coordsList.length > 0 ? yield call([builderClient, 'getLandRedirectionHashes'], coordsList, getCurrentLocale().locale) : []
 
