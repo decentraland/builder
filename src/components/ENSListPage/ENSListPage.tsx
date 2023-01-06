@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { config } from 'config'
 import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -178,7 +179,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                           <Row>
                             <Column className="link">
                               {ens.landId ? (
-                                <a target="_blank" href={`https://${ens.subdomain}.limo`} rel="noopener noreferrer">
+                                <a target="_blank" href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`} rel="noopener noreferrer">
                                   {ens.subdomain} <Icon name="right-round-arrow" />
                                 </a>
                               ) : null}
