@@ -178,7 +178,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                           <Row>
                             <Column className="link">
                               {ens.landId ? (
-                                <a target="_blank" href={`https://${ens.subdomain}.link`} rel="noopener noreferrer">
+                                <a target="_blank" href={`https://${ens.subdomain}.limo`} rel="noopener noreferrer">
                                   {ens.subdomain} <Icon name="right-round-arrow" />
                                 </a>
                               ) : null}
