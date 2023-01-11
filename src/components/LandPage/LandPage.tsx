@@ -31,7 +31,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
   }
 
   renderLand() {
-    const { view, isRentalsEnabled, onSetView } = this.props
+    const { view, onSetView } = this.props
     const { page, showOwner, showOperator, showTenant, showLessor, selectedLand } = this.state
 
     const filteredLands = this.getFilteredLands()
@@ -92,21 +92,19 @@ export default class LandPage extends React.PureComponent<Props, State> {
                     className="radio-popup"
                     content={<div>{t('land_page.operator_explanation')}</div>}
                   />
-                  {isRentalsEnabled ? (
-                    <Popup
-                      trigger={
-                        <Radio
-                          className="tenant-checkbox"
-                          value="tentant"
-                          checked={showTenant}
-                          onClick={() => this.setState({ showTenant: !showTenant })}
-                          label={t(`roles.${RoleType.TENANT}`)}
-                        />
-                      }
-                      className="radio-popup"
-                      content={<div>{t('land_page.tenant_explanation')}</div>}
-                    />
-                  ) : null}
+                  <Popup
+                    trigger={
+                      <Radio
+                        className="tenant-checkbox"
+                        value="tentant"
+                        checked={showTenant}
+                        onClick={() => this.setState({ showTenant: !showTenant })}
+                        label={t(`roles.${RoleType.TENANT}`)}
+                      />
+                    }
+                    className="radio-popup"
+                    content={<div>{t('land_page.tenant_explanation')}</div>}
+                  />
                   <Chip className="grid" icon="table" isActive={view === LandPageView.GRID} onClick={() => onSetView(LandPageView.GRID)} />
                   <Chip className="atlas" icon="pin" isActive={view === LandPageView.ATLAS} onClick={() => onSetView(LandPageView.ATLAS)} />
                 </Row>
