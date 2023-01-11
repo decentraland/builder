@@ -294,7 +294,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                   defaultSelectedLabel={t('third_party_collection_detail_page.synced_filter.all')}
                   defaultValue={this.state.filters.synced}
                   options={[
-                    { value: undefined, text: t('third_party_collection_detail_page.synced_filter.all') },
+                    { value: undefined || '', text: t('third_party_collection_detail_page.synced_filter.all') },
                     { value: true, text: t('third_party_collection_detail_page.synced_filter.synced') },
                     { value: false, text: t('third_party_collection_detail_page.synced_filter.unsynced') }
                   ]}

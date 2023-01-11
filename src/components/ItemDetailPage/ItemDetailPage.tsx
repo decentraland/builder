@@ -114,7 +114,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
           {!collection && !item.collectionId ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
 
           <div className="item-data">
-            <div>
+            <div className="item-data-left-panel">
               <ItemImage item={item} hasBadge hasRarityBadge />
               <div>
                 <Button primary onClick={this.handleOpenThumbnailDialog}>
@@ -181,9 +181,22 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                       </span>
                       <div className="urn-actions">
                         {isThirdParty(item.urn) ? (
-                          <span className="link" onClick={this.handleEditURN}>
-                            {t('item.edit_urn')}
-                          </span>
+                          <Popup
+                            content={t('collection_item.cannot_edit_urn')}
+                            disabled={false}
+                            position="top center"
+                            trigger={
+                              <div>
+                                <button disabled={item.isPublished} className="link" onClick={this.handleEditURN}>
+                                  {t('item.edit_urn')}
+                                </button>
+                              </div>
+                            }
+                            hideOnScroll={true}
+                            on="hover"
+                            inverted
+                            flowing
+                          />
                         ) : null}
                       </div>
                     </div>
