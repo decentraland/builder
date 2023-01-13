@@ -76,7 +76,7 @@
 
 .ItemDetailPage .item-data .urn-actions {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   text-transform: capitalize;
   font-size: 13px;
   margin-top: 10px;
@@ -90,6 +90,7 @@
 
 .ItemDetailPage .item-data .urn-actions .link:disabled {
   opacity: 0.5;
+  padding-left: 0;
 }
 
 .ItemDetailPage .ItemStatus {

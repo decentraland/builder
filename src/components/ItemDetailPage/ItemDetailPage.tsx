@@ -183,7 +183,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                         {isThirdParty(item.urn) ? (
                           <Popup
                             content={t('collection_item.cannot_edit_urn')}
-                            disabled={false}
+                            disabled={!item.isPublished}
                             position="top center"
                             trigger={
                               <div>
