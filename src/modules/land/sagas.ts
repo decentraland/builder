@@ -1,4 +1,4 @@
-import { takeLatest, call, put, takeEvery, all, select } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { push } from 'connected-react-router'
 import {
@@ -51,7 +51,6 @@ import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory
 import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
 import { Rentals__factory } from 'contracts/factories/Rentals__factory'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS, RENTALS_ADDRESS } from 'modules/common/contracts'
-import { getIsRentalsEnabled } from 'modules/features/selectors'
 import { closeModal } from 'modules/modal/actions'
 import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
@@ -276,10 +275,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
 function* handleFetchLandRequest(action: FetchLandsRequestAction) {
   const { address } = action.payload
   try {
-    const isRentalsEnabled: boolean = yield select(getIsRentalsEnabled)
-    const rentals: Awaited<ReturnType<typeof rental.fetchRentalTokenIds>> = isRentalsEnabled
-      ? yield call([rental, 'fetchRentalTokenIds'], address)
-      : []
+    const rentals: Awaited<ReturnType<typeof rental.fetchRentalTokenIds>> = yield call([rental, 'fetchRentalTokenIds'], address)
     const tenantTokenIds = rentals.tenantRentals.map(rental => rental.tokenId)
     const lessorTokenIds = rentals.lessorRentals.map(rental => rental.tokenId)
 
