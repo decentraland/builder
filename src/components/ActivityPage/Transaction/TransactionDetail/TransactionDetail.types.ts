@@ -7,6 +7,7 @@ export type Props = {
   address?: string
   collectionId?: string
   item?: Item
+  subdomain?: string
   slotsToyBuy?: number
   text: React.ReactNode
   tx: Transaction

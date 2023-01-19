@@ -1,6 +1,6 @@
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
-import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { Network } from '@dcl/schemas'
 import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -8,12 +8,14 @@ import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
+import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
+import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { DCLController__factory } from 'contracts/factories/DCLController__factory'
 import { ERC20__factory } from 'contracts/factories/ERC20__factory'
-import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
+import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { marketplace } from 'lib/api/marketplace'
@@ -51,7 +53,12 @@ import {
   ALLOW_CLAIM_MANA_REQUEST,
   AllowClaimManaRequestAction,
   allowClaimManaSuccess,
-  allowClaimManaFailure
+  allowClaimManaFailure,
+  ReclaimNameRequestAction,
+  reclaimNameSuccess,
+  reclaimNameFailure,
+  RECLAIM_NAME_REQUEST,
+  claimNameTransactionSubmitted
 } from './actions'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDomainFromName } from './utils'
@@ -65,6 +72,7 @@ export function* ensSaga(builderClient: BuilderClient) {
   yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
   yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
   yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
+  yield takeEvery(RECLAIM_NAME_REQUEST, handleReclaimNameRequest)
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSAuthorizationRequest())
@@ -75,19 +83,28 @@ export function* ensSaga(builderClient: BuilderClient) {
     const { name, land } = action.payload
     const subdomain = name.toLowerCase() + '.dcl.eth'
     try {
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const address = wallet.address
       const nodehash = namehash(subdomain)
       const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
+      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+      const [resolverAddress, ownerAddress, nftTokenId]: [string, string, BigNumber] = yield all([
+        call([ensContract, 'resolver'], nodehash),
+        call([ensContract, 'owner'], nodehash),
+        call([dclRegistrarContract, 'getTokenId'], name)
+      ])
 
-      const resolverAddress: string = yield call(() => ensContract.resolver(nodehash))
+      const owner = ownerAddress.toLowerCase()
+      const tokenId = nftTokenId.toString()
 
       if (resolverAddress.toString() === ethers.constants.AddressZero) {
         yield put(
           fetchENSSuccess({
             name,
-            address,
+            tokenId,
+            ensOwnerAddress: owner,
+            nftOwnerAddress: address,
             subdomain,
             resolver: ethers.constants.AddressZero,
             content: ethers.constants.AddressZero
@@ -106,12 +123,14 @@ export function* ensSaga(builderClient: BuilderClient) {
         getCurrentLocale().locale
       )
 
-      const currentContent: string = yield call(() => resolverContract.contenthash(nodehash))
+      const currentContent: string = yield call([resolverContract, 'contenthash'], nodehash)
       if (currentContent === ethers.constants.AddressZero) {
         yield put(
           fetchENSSuccess({
-            address,
             name,
+            tokenId,
+            ensOwnerAddress: owner,
+            nftOwnerAddress: address,
             subdomain,
             resolver: resolverAddress.toString(),
             content: ethers.constants.AddressZero,
@@ -124,8 +143,10 @@ export function* ensSaga(builderClient: BuilderClient) {
       if (`0x${contentHash}` === currentContent) {
         yield put(
           fetchENSSuccess({
-            address,
             name,
+            tokenId,
+            ensOwnerAddress: owner,
+            nftOwnerAddress: address,
             subdomain,
             resolver: ENS_RESOLVER_ADDRESS,
             content: contentHash,
@@ -138,8 +159,10 @@ export function* ensSaga(builderClient: BuilderClient) {
 
       yield put(
         fetchENSSuccess({
-          address,
           name,
+          tokenId,
+          ensOwnerAddress: owner,
+          nftOwnerAddress: address,
           subdomain,
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent ?? ethers.constants.AddressZero,
@@ -252,6 +275,7 @@ export function* ensSaga(builderClient: BuilderClient) {
       const signer: ethers.Signer = yield getSigner()
       const address = wallet.address
       const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
+      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
       const ensList: ENS[] = yield call(() =>
@@ -263,7 +287,11 @@ export function* ensSaga(builderClient: BuilderClient) {
             let content = ''
 
             const nodehash = namehash(subdomain)
-            const resolverAddress: string = await ensContract.resolver(nodehash)
+            const [resolverAddress, owner, tokenId]: [string, string, string] = await Promise.all([
+              ensContract.resolver(nodehash),
+              ensContract.owner(nodehash).then(owner => owner.toLowerCase()),
+              dclRegistrarContract.getTokenId(name).then(name => name.toString())
+            ])
             const resolver = resolverAddress.toString()
 
             if (resolver !== ethers.constants.AddressZero) {
@@ -281,8 +309,10 @@ export function* ensSaga(builderClient: BuilderClient) {
             }
 
             const ens: ENS = {
-              address,
               name,
+              tokenId,
+              ensOwnerAddress: owner,
+              nftOwnerAddress: address,
               subdomain,
               resolver,
               content,
@@ -308,20 +338,43 @@ export function* ensSaga(builderClient: BuilderClient) {
       const from = wallet.address
 
       const controllerContract = DCLController__factory.connect(CONTROLLER_ADDRESS, signer)
-      const transaction: ethers.ContractTransaction = yield call(() => controllerContract.register(name, from))
-
+      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+      console.log('About to register a name', name, from)
+      const transaction: ethers.ContractTransaction = yield call([controllerContract, 'register'], name, from)
+      console.log('Sent transaction to claim name')
+      yield put(claimNameTransactionSubmitted(name, wallet.address, wallet.chainId, transaction.hash))
+      console.log('Put claim name transaction submitted')
+      yield call(waitForTx, transaction.hash)
+      console.log('Waited for transaction to finish')
+      const tokenId: BigNumber = yield call([dclRegistrarContract, 'getTokenId'], name)
       const ens: ENS = {
-        address: wallet.address,
         name: name,
+        tokenId: tokenId.toString(),
+        ensOwnerAddress: wallet.address,
+        nftOwnerAddress: wallet.address,
         subdomain: getDomainFromName(name),
         resolver: ethers.constants.AddressZero,
         content: ethers.constants.AddressZero
       }
-      yield put(claimNameSuccess(ens, name, wallet.address, wallet.chainId, transaction.hash))
+      yield put(claimNameSuccess(ens, name))
       yield put(closeModal('ClaimNameFatFingerModal'))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
       yield put(claimNameFailure(ensError))
+    }
+  }
+
+  function* handleReclaimNameRequest(action: ReclaimNameRequestAction) {
+    const { ens } = action.payload
+    try {
+      const wallet: Wallet = yield getWallet()
+      const signer: ethers.Signer = yield getSigner()
+      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+      const transaction: ethers.ContractTransaction = yield call([dclRegistrarContract, 'reclaim'], ens.tokenId, wallet.address)
+      yield put(reclaimNameSuccess(transaction.hash, wallet.chainId, { ...ens, ensOwnerAddress: wallet.address }))
+    } catch (error) {
+      const ensError: ENSError = { message: error.message }
+      yield put(reclaimNameFailure(ensError))
     }
   }
 
