@@ -2,7 +2,9 @@ import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
+import { ProviderType } from '@dcl/schemas'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { config } from 'config'
 import {
   CONNECT_WALLET_SUCCESS,
@@ -44,8 +46,6 @@ import {
 import { ONE_MONTH_IN_MINUTES, takeRace } from './utils'
 import { isLoggedIn, getCurrentIdentity } from './selectors'
 import { Race } from './types'
-import { ProviderType } from '@dcl/schemas'
-import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 
 export function* identitySaga() {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
