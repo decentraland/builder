@@ -339,13 +339,9 @@ export function* ensSaga(builderClient: BuilderClient) {
 
       const controllerContract = DCLController__factory.connect(CONTROLLER_ADDRESS, signer)
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
-      console.log('About to register a name', name, from)
       const transaction: ethers.ContractTransaction = yield call([controllerContract, 'register'], name, from)
-      console.log('Sent transaction to claim name')
       yield put(claimNameTransactionSubmitted(name, wallet.address, wallet.chainId, transaction.hash))
-      console.log('Put claim name transaction submitted')
       yield call(waitForTx, transaction.hash)
-      console.log('Waited for transaction to finish')
       const tokenId: BigNumber = yield call([dclRegistrarContract, 'getTokenId'], name)
       const ens: ENS = {
         name: name,
