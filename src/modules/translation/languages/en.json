@@ -783,11 +783,13 @@
   "land_assign_ens_page": {
     "title": "Use {name} as link",
     "subtitle": "This link will take you to {land}",
-    "set_name_message": "Before you can assign this name to your land, you need to submit 2 transactions: The first transaction allows you to use your name as a link and the second transaction links your name to your LAND.",
+    "set_name_message": "<strong>Before you can assign this name to your land, you need to submit 2 or 3 transactions:</strong> The first transaction reclaims your ENS name so you become its controller and it's only required if the name was bought or transferred from another user, the second one allows you to use your name as a link and the third transaction links your name to your LAND.",
+    "reclaim": "Reclaim",
+    "reclaim_explanation": "This reclaims the control of your name after it has been transferred to you. The owner of the name has the control over it until it gets reclaimed.",
     "set_resolver": "Set Resolver",
-    "set_resolver_explanation": "This allows your name to be linked to a land",
+    "set_resolver_explanation": "This allows your name to be linked to a land.",
     "set_content": "Set Content",
-    "set_content_explanation": "This resolves your name with a link to your land in Decentraland"
+    "set_content_explanation": "This resolves your name with a link to your land in Decentraland."
   },
   "ens_select_land_page": {
     "title": "Use {name} as a link",
@@ -991,6 +993,7 @@
     "allowed_claim_mana": "Allowed MANA to claim a new name",
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
+    "reclaim_name": "Reclaimed the name: \"{subdomain}\".",
     "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
   },
   "transfer_page": {

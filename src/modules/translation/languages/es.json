@@ -761,7 +761,9 @@
   "land_assign_ens_page": {
     "title": "Asignar {name}",
     "subtitle": "Asigna un nombre a {land}",
-    "set_name_message": "Antes de poder asignar este nombre a su parcela, debe enviar 2 transacciones: la primera transacción le permite usar su nombre como enlace y la segunda transacción vincula su nombre a su LAND.",
+    "set_name_message": "<strong>Antes de poder asignar este nombre a su parcela, debe enviar 2 o 3 transacciones:</strong> La primera transacción reclama tu nombre ENS para que tomes control del mismo y sólo es requerida para nombres comprados o transferidos de otros usuarios, la segunda transacción le permite usar su nombre como enlace y la tercera transacción vincula su nombre a su LAND.",
+    "reclaim": "Reclaim",
+    "reclaim_explanation": "This reclaims the control of your name after it has been transferred to you. The owner of the name has the control over it until it gets reclaimed.",
     "set_resolver": "Establecer Resolver",
     "set_resolver_explanation": "Esto permite que su nombre esté vinculado a una parcela",
     "set_content": "Establecer Contenido",
