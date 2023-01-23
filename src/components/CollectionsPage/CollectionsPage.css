@@ -144,6 +144,7 @@
 
 .dcl.page.CollectionsPage .ui.container {
   width: 100%;
+  max-width: 100% !important;
 }
 
 .CollectionsPage .ui.container .ui.cards {
