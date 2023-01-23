@@ -1,8 +1,14 @@
 export type ENS = {
-  address: string
-
+  /** The NFT owner address */
+  nftOwnerAddress: string
+  /** The ENS name owner address */
+  ensOwnerAddress: string
+  /** The ENS name */
   name: string
+  /** The ENS subdomain name */
   subdomain: string
+  /** The NFT's token id that represents the ENS name */
+  tokenId: string
   resolver: string
   content: string
 
