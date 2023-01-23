@@ -113,8 +113,8 @@ export type FetchENSAuthorizationFailureAction = ReturnType<typeof fetchENSAutho
 
 // Reclaim ENS name
 export const RECLAIM_NAME_REQUEST = '[Request] Reclaim Name'
-export const RECLAIM_NAME_FAILURE = '[Failure] Reclaim Name'
 export const RECLAIM_NAME_SUCCESS = '[Success] Reclaim Name'
+export const RECLAIM_NAME_FAILURE = '[Failure] Reclaim Name'
 
 export const reclaimNameRequest = (ens: ENS) => action(RECLAIM_NAME_REQUEST, { ens })
 export const reclaimNameSuccess = (txHash: string, chainId: number, ens: ENS) =>
