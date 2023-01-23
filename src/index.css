@@ -50,15 +50,17 @@ body canvas.dcl-canvas {
 
 .Navigation .dcl.tabs > .ui.container,
 .dcl.navbar.fullscreen .ui.container,
-.dcl.footer.ui.container {
-  width: 100vw;
+.dcl.footer.ui.container,
+.dcl.navbar.sign-in .ui.container {
+  width: 100%;
   box-sizing: border-box;
   max-width: 100% !important;
 }
 
 .Navigation,
 .dcl.navbar.fullscreen,
-.dcl.footer.ui.container {
+.dcl.footer.ui.container,
+.dcl.navbar.sign-in {
   padding: 0 24px;
   box-sizing: border-box;
 }
