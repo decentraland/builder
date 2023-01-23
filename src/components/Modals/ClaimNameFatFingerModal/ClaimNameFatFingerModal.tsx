@@ -34,8 +34,8 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
     const areNamesDifferent = currentName !== originalName
     const hasError = areNamesDifferent && currentName.length > 0
     return (
-      <Modal name={name} onClose={this.handleClose}>
-        <ModalNavigation title={t('claim_name_fat_finger_modal.title')} onClose={this.handleClose} />
+      <Modal name={name} onClose={isLoading ? undefined : this.handleClose}>
+        <ModalNavigation title={t('claim_name_fat_finger_modal.title')} onClose={isLoading ? undefined : this.handleClose} />
         <Form onSubmit={this.handleClaim}>
           <Modal.Content>
             <div className="details">
@@ -45,12 +45,13 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
               placeholder={t('claim_name_fat_finger_modal.name_placeholder')}
               value={currentName}
               error={hasError}
+              disabled={isLoading}
               message={hasError ? t('claim_name_fat_finger_modal.names_different') : ''}
               onChange={this.handleChangeName}
             />
           </Modal.Content>
           <Modal.Actions>
-            <Button secondary onClick={this.handleClose} type="button">
+            <Button secondary onClick={this.handleClose} disabled={isLoading} type="button">
               {t('global.cancel')}
             </Button>
             <Button primary type="submit" disabled={areNamesDifferent || isLoading} loading={isLoading}>

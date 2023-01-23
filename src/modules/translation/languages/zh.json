@@ -747,7 +747,9 @@
   "land_assign_ens_page": {
     "title": "分配{name}",
     "subtitle": "给...分配一个名字 {land}",
-    "set_name_message": "在将此名称分配给包裹之前，您需要提交2笔交易：第一笔交易允许您使用您的姓名作为链接，第二笔交易将您的姓名链接到LAND。",
+    "set_name_message": "<strong>在您可以将此名称分配给您的土地之前，您需要提交 2 或 3 笔交易：</strong> 第一个交易收回你的 ENS 名称，因此你成为它的控制者，只有当名称是从另一个用户那里购买或转让时才需要，第二个交易允许你使用你的名字作为链接，第三个交易将你的名字链接到你的 LAND。",
+    "reclaim": "开垦土地",
+    "reclaim_explanation": "在您的名字转移给您之后，这会收回您的名字的控制权。 名称的所有者对其拥有控制权，直到它被收回。",
     "set_resolver": "设置解析器",
     "set_resolver_explanation": "这样可以将您的名字链接到包裹",
     "set_content": "设定内容",
