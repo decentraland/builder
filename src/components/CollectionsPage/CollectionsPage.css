@@ -2,7 +2,7 @@
   margin: 0px;
 }
 
-.CollectionsPage .ui.cards > .empty {
+.CollectionsPage .empty {
   margin-top: 28px;
   padding: 112px 0;
   width: 100%;
@@ -15,21 +15,21 @@
   font-size: 17px;
 }
 
-.CollectionsPage .ui.cards > .empty .header.title {
+.CollectionsPage .empty .header.title {
   margin: 0;
 }
 
-.CollectionsPage .ui.cards > .empty .empty-description {
+.CollectionsPage .empty .empty-description {
   margin: 8px auto 34px;
   width: 500px;
 }
 
-.CollectionsPage .ui.cards > .empty .create-new-wrapper {
+.CollectionsPage .empty .create-new-wrapper {
   display: flex;
   justify-content: center;
 }
 
-.CollectionsPage .ui.cards > .empty .create-new {
+.CollectionsPage .empty .create-new {
   width: 240px;
   height: 204px;
   position: relative;
@@ -39,11 +39,11 @@
   cursor: pointer;
 }
 
-.CollectionsPage .ui.cards > .empty .create-new:first-child {
+.CollectionsPage .empty .create-new:first-child {
   margin-right: 24px;
 }
 
-.CollectionsPage .ui.cards > .empty .create-new > .text {
+.CollectionsPage .empty .create-new > .text {
   position: absolute;
   flex: 1 1;
   color: #fff;
@@ -51,11 +51,11 @@
   width: 100%;
 }
 
-.CollectionsPage .ui.cards > .empty .create-new-item {
+.CollectionsPage .empty .create-new-item {
   background-image: url('../../images/hat.svg');
   background-repeat: no-repeat;
 }
-.CollectionsPage .ui.cards > .empty .create-new-collection {
+.CollectionsPage .empty .create-new-collection {
   background-image: url('../../images/folder-hat.svg');
   background-repeat: no-repeat;
 }
@@ -146,7 +146,7 @@
   width: 100%;
 }
 
-.dcl.page.CollectionsPage .ui.container .ui.cards {
+.CollectionsPage .ui.container .ui.cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
   gap: 20px;

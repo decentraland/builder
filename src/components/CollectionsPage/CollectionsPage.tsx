@@ -320,19 +320,17 @@ export default class CollectionsPage extends React.PureComponent<Props> {
             )}
           </>
         ) : (
-          <Card.Group>
-            <div className="empty">
-              <Header className="title" size="large">
-                {t('collections_page.no_items')}
-              </Header>
-              <div className="empty-description">{t('collections_page.empty_description')}</div>
-              <div className="create-new-wrapper">
-                <div className="create-new create-new-collection" onClick={this.handleNewCollection}>
-                  <div className="text">{t('collections_page.new_collection')}</div>
-                </div>
+          <div className="empty">
+            <Header className="title" size="large">
+              {t('collections_page.no_items')}
+            </Header>
+            <div className="empty-description">{t('collections_page.empty_description')}</div>
+            <div className="create-new-wrapper">
+              <div className="create-new create-new-collection" onClick={this.handleNewCollection}>
+                <div className="text">{t('collections_page.new_collection')}</div>
               </div>
             </div>
-          </Card.Group>
+          </div>
         )}
       </>
     )
