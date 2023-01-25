@@ -132,7 +132,7 @@ import {
   MAX_THUMBNAIL_FILE_SIZE
 } from './utils'
 import { ItemPaginationData } from './reducer'
-import { getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
+import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
 
@@ -531,6 +531,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (itemIdInUriParam === item.id) {
         yield put(replace(locations.collections()))
       }
+      yield put(closeModal('DeleteItemModal'))
+      yield put(showToast(getSuccessfulDeletedItemToast(item), 'bottom center'))
     } catch (error) {
       yield put(deleteItemFailure(item, error.message))
     }
