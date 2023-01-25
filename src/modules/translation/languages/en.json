@@ -1209,12 +1209,14 @@
   "collection_detail_page": {
     "new_item": "New Item",
     "mint_items": "Mint Items",
-    "on_sale": "On sale",
+    "on_sale": "Put for sale",
     "set_on_sale_popup": "This will allow your collection to be sold in the Decentraland Marketplace.",
     "unset_on_sale_popup": "This collection is on sale in the Decentraland Marketplace.",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
-    "preview": "Preview",
-    "add_item": "Add Item",
+    "preview": "Preview in Editor",
+    "publish": "Publish Collection",
+    "remove_from_marketplace": "Remove from marketplace",
+    "add_item": "Add Items",
     "add_items_title": "Looking good!",
     "add_items_subtitle": "Now you can start adding items to your collection",
     "add_items_subtitle_extensions": "Accepted files are ZIP, GLTF, GLB, PNG.",
@@ -1223,7 +1225,7 @@
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
     "cant_push": "This collection is still under review, items can still be minted but will not reflect new changes until approval",
     "under_review": "Under Review",
-    "push_changes": "Push Changes",
+    "push_changes": "Publish Updates",
     "cant_operate": "This collection is still locked, once publication ends you'll be able to operate again",
     "locked": "Locked",
     "publish_reason_max_items": "A collection can be published with a max amount of {maxItems} items.",
@@ -1240,11 +1242,13 @@
       "play_mode": "Play Mode",
       "status": "Status"
     },
-    "missing_item_price": "You need to configure the price of one or more {item_type}."
+    "missing_item_price": "You need to configure the price of one or more {item_type}.",
+    "unsynced_collection_title": "There are unsynced items in this collection",
+    "unsynced_collection_message": "One or more items have been modified after this collection was approved.{br}These updates need to be published and reviewed again by the curation commitee."
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
-    "forum_post": "Forum post",
+    "forum_post": "View Forum post",
     "copy_address": "Copy address",
     "edit_urn": "Edit URN",
     "edit_in_bulk": "Edit in bulk",
@@ -1261,9 +1265,11 @@
   },
   "collection_item": {
     "set_price": "set price",
-    "done": "Done",
-    "ready_to_publish": "Ready to publish",
-    "incomplete": "Incomplete",
+    "ready": "Ready",
+    "published": "Published",
+    "not_ready": "Not ready",
+    "under_review": "Under Review",
+    "unsynced": "Unsynced",
     "edit_item": "edit",
     "mint_item": "mint",
     "delete_item": "Delete item",
@@ -1272,7 +1278,8 @@
     "edit_urn": "Edit URN",
     "cannot_edit_urn": "You can't edit the URN once the item is published",
     "reset_item": "Reset changes",
-    "move_to_another_collection": "Move to another collection"
+    "move_to_another_collection": "Move to another collection",
+    "preview": "Preview in Editor"
   },
   "collection": {
     "type": {
@@ -1309,6 +1316,10 @@
   "confirm_delete": {
     "content": "Delete \"{name}\"?",
     "subcontent": "Are you sure you want to delete the item \"{name}\"? This operation is not reversible."
+  },
+  "delete_item_modal": {
+    "title": "Delete {name}",
+    "subtitle": "Are you sure you want to delete {name}?{br}This operation is not reversible."
   },
   "publish_collection_modal": {
     "title": "Publish Collection",
@@ -1670,6 +1681,10 @@
         "title": "Item moved to another collection",
         "body": "{item_name} has been moved to the {collection_name} collection.",
         "cta": "View Collection"
+      },
+      "item_deleted": {
+        "title": "Item Deleted",
+        "body": "{name} has been deleted."
       }
     }
   },

@@ -1221,7 +1221,9 @@
     "set_on_sale_popup": "Esto permitirá que tu colección sea vendida en el Mercado de Decentraland.",
     "unset_on_sale_popup": "Esta colección está en venta en el Mercado de Decentraland.",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
-    "preview": "Preview",
+    "preview": "Preview en el Editor",
+    "publish": "Publicar Colección",
+    "remove_from_marketplace": "Remover del marketplace",
     "add_item": "Agregar Item",
     "add_items_title": "Se ve bien!",
     "add_items_subtitle": "Ahora puede comenzar a agregar items a su colección",
@@ -1248,11 +1250,13 @@
       "play_mode": "Modo de Reproducción",
       "status": "Estado"
     },
-    "missing_item_price": "Es necesario configurar el precio de una o mas {item_type}."
+    "missing_item_price": "Es necesario configurar el precio de una o mas {item_type}.",
+    "unsynced_collection_title": "Hay items no sincronizados con el servidor en esta colección",
+    "unsynced_collection_message": "Se modificaron uno o más items después de que se aprobó esta colección.{br}Estas actualizaciones deben ser publicadas y revisadas nuevamente por el comité de curadores."
   },
   "collection_context_menu": {
     "add_existing_item": "Agregar item existente",
-    "forum_post": "Post en el foro",
+    "forum_post": "Ver post en el foro",
     "copy_address": "Copiar dirección",
     "edit_urn": "Editar URN",
     "edit_in_bulk": "Editar en masa",
@@ -1269,7 +1273,11 @@
   },
   "collection_item": {
     "set_price": "agregar precio",
-    "done": "Terminado",
+    "ready": "Listo",
+    "published": "Publicado",
+    "not_ready": "Incompleto",
+    "under_review": "En Revisión",
+    "unsynced": "No sincronizado",
     "ready_to_publish": "Listo para publicar",
     "incomplete": "Incompleto",
     "edit_item": "editar",
@@ -1279,7 +1287,9 @@
     "see_details": "Ver detalles",
     "edit_urn": "Editar URN",
     "cannot_edit_urn": "No puedes cambiar el URN una vez que el item fue publicado",
-    "reset_item": "Deshacer cambios"
+    "reset_item": "Deshacer cambios",
+    "move_to_another_collection": "Mover a otra colección",
+    "preview": "Preview en el Editor"
   },
   "collection": {
     "type": {
@@ -1316,6 +1326,10 @@
   "confirm_delete": {
     "content": "Eliminar \"{name}\"?",
     "subcontent": "¿Estás seguro que quieres eliminar \"{name}\"?. Esta acción es irreversible"
+  },
+  "delete_item_modal": {
+    "title": "Eliminar {name}",
+    "subtitle": "¿Estás seguro que quieres eliminar {name}?. Esta acción es irreversible"
   },
   "publish_collection_modal": {
     "title": "Publicar Colección",
@@ -1681,6 +1695,10 @@
         "title": "Has movido el Item a otra colección",
         "body": "{item_name} ha sido movido a la colección {collection_name}.",
         "cta": "Ver Colección"
+      },
+      "item_deleted": {
+        "title": "Item Eliminado",
+        "body": "{name} ha sido eliminado."
       }
     }
   },
