@@ -3,27 +3,12 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { RoleType } from 'modules/collection/types'
-import { getExplorerURL, isOwner as isCollectionOwner, isLocked } from 'modules/collection/utils'
+import { isOwner as isCollectionOwner, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
 import styles from './CollectionContextMenu.module.css'
 
 export default class CollectionContextMenu extends React.PureComponent<Props> {
-  handleNavigateToForum = () => {
-    const { collection } = this.props
-    if (collection.isPublished && collection.forumLink) {
-      this.navigateTo(collection.forumLink, '_blank')
-    }
-  }
-
-  handleNavigateToExplorer = () => {
-    const { collection } = this.props
-    const explorerLink = getExplorerURL({
-      collection
-    })
-    this.navigateTo(explorerLink, '_blank')
-  }
-
   handleUpdateManagers = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('ManageCollectionRoleModal', { type: RoleType.MANAGER, collectionId: collection.id, roles: collection.managers })
@@ -42,13 +27,6 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
   handleDeleteCollection = () => {
     const { collection, onDelete } = this.props
     onDelete(collection)
-  }
-
-  navigateTo = (url: string, target = '') => {
-    const newWindow = window.open(url, target)
-    if (newWindow) {
-      newWindow.focus()
-    }
   }
 
   render() {

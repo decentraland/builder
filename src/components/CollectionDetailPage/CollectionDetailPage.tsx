@@ -82,20 +82,27 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   }
 
   handleNavigateToExplorer = () => {
-    const { collection, onNavigate } = this.props
+    const { collection } = this.props
 
     if (collection) {
       const explorerLink = getExplorerURL({
         collection
       })
-      onNavigate(explorerLink)
+      this.navigateTo(explorerLink, '_blank')
     }
   }
 
   handleNavigateToForum = () => {
-    const { collection, onNavigate } = this.props
+    const { collection } = this.props
     if (collection && collection.isPublished && collection.forumLink) {
-      onNavigate(collection.forumLink)
+      this.navigateTo(collection.forumLink, '_blank')
+    }
+  }
+
+  navigateTo = (url: string, target = '') => {
+    const newWindow = window.open(url, target)
+    if (newWindow) {
+      newWindow.focus()
     }
   }
 
