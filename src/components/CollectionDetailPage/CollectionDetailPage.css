@@ -56,7 +56,7 @@
   border-radius: 5px;
 }
 
-.CollectionDetailPage .actions .ui.button.action-button > .text {
+.CollectionDetailPage .actions .ui.button.basic.action-button > .text {
   color: var(--primary);
 }
 
@@ -130,11 +130,11 @@
   border-radius: 5px;
   padding: 8px 58px;
   margin-top: 32px;
-  color: #ff2d55;
+  color: var(--primary);
 }
 
 .CollectionDetailPage .ui.basic.button.empty-action-button span {
-  color: #ff2d55;
+  color: var(--primary);
   font-weight: 600;
 }
 
@@ -210,6 +210,117 @@
 
 .CollectionDetailPage.toast.move-item-to-another-collection .toast-icon .two-way-arrow-icon {
   background-image: url('../../images/two-way-arrow.svg');
+  height: 48px;
+  width: 48px;
+}
+
+.CollectionDetailPage .dcl.tabs .secondary-actions.tab {
+  display: inline-flex;
+  position: absolute;
+  right: 0;
+  padding: 19px 0px;
+}
+
+.CollectionDetailPage .dcl.narrow .secondary-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.CollectionDetailPage .secondary-actions.tab .button.action-button,
+.CollectionDetailPage .dcl.narrow .secondary-actions .button.action-button {
+  display: flex;
+  align-items: center;
+}
+
+.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button.action-button:not(:last-child),
+.CollectionDetailPage .dcl.narrow .secondary-actions .button.action-button:not(:last-child) {
+  margin-right: 24px;
+}
+
+.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button.basic.inverted {
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 5px;
+  box-shadow: none !important;
+  padding: 7px 20px;
+}
+
+.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button.action-button > .Icon,
+.CollectionDetailPage .dcl.narrow .secondary-actions .button.action-button > .Icon {
+  margin-right: 5px;
+}
+
+.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button.action-button.add-items,
+.CollectionDetailPage .dcl.narrow .secondary-actions .button.action-button.add-items {
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  padding: 7px 20px;
+}
+
+.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button span {
+  color: var(--primary);
+}
+
+.unsynced-collection.container {
+  display: flex;
+  padding: 24px 30px;
+  margin: 24px 0;
+  border-radius: 8px;
+  background-color: var(--dark-two);
+  align-items: center;
+  text-align: justify;
+}
+
+.unsynced-collection.message {
+  flex: 1;
+}
+
+.unsynced-collection.title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.unsynced-collection.text {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.unsynced-collection.alert-icon {
+  margin-right: 30px;
+  height: 36px;
+  width: 36px;
+  background: url('../../icons/alert.svg') no-repeat;
+  background-size: contain;
+  filter: invert(64%) sepia(34%) saturate(797%) hue-rotate(331deg) brightness(160%) contrast(98%); /* #fc9965 */
+}
+
+.CollectionDetailPage.toast.deleted-item {
+  padding: 0;
+  width: 480px;
+}
+
+.CollectionDetailPage.toast.deleted-item .toast-info {
+  align-items: center;
+  margin: 16px;
+}
+
+.CollectionDetailPage.toast.deleted-item .title {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 26px;
+  margin-bottom: 0;
+}
+
+.CollectionDetailPage.toast.deleted-item .body .description {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.CollectionDetailPage.toast.deleted-item .toast-icon .delete-icon {
+  background: url('../../icons/delete-circle.svg') no-repeat;
+  background-size: contain;
   height: 48px;
   width: 48px;
 }

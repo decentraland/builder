@@ -10,6 +10,7 @@ export { default as CreateAndEditMultipleItemsModal } from './CreateAndEditMulti
 export { default as CreateItemsModal } from './CreateItemsModal'
 export { default as CreateThirdPartyCollectionModal } from './CreateThirdPartyCollectionModal'
 export { default as CustomLayoutModal } from './CustomLayoutModal'
+export { default as DeleteItemModal } from './DeleteItemModal'
 export { default as DeployModal } from './DeployModal'
 export { default as DissolveModal } from './DissolveModal'
 export { default as EditAssetPackModal } from './EditAssetPackModal'

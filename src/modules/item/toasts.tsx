@@ -31,3 +31,26 @@ export const getSuccessfulMoveItemToAnotherCollectionToast = (item: Item, collec
     closable: true
   }
 }
+
+export const getSuccessfulDeletedItemToast = (item: Item) => {
+  return {
+    type: ToastType.INFO,
+    className: 'CollectionDetailPage deleted-item',
+    icon: <div className="delete-icon"></div>,
+    title: <T id="toast.collection_detail_page.item_deleted.title" />,
+    body: (
+      <>
+        <span className="description">
+          <T
+            id={'toast.collection_detail_page.item_deleted.body'}
+            values={{
+              name: <strong>{item.name}</strong>
+            }}
+          />
+        </span>
+      </>
+    ),
+    timeout: 10000,
+    closable: true
+  }
+}

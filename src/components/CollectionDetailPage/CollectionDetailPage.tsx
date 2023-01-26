@@ -1,7 +1,8 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { Link } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
-import { Section, Row, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps, Tabs, Table } from 'decentraland-ui'
+import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -11,10 +12,11 @@ import {
   getCollectionEditorURL,
   isOnSale as isCollectionOnSale,
   isLocked as isCollectionLocked,
-  isOwner
+  isOwner,
+  getExplorerURL
 } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
-import { Item, ItemType } from 'modules/item/types'
+import { Item, ItemType, SyncStatus } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
@@ -53,11 +55,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     }
   }
 
-  handleOnSaleChange = (_event: React.FormEvent<HTMLInputElement>, checkboxProps: CheckboxProps) => {
-    const { collection, onOpenModal } = this.props
-    const { checked } = checkboxProps
-    if (collection && checked !== undefined) {
-      onOpenModal('SellCollectionModal', { collectionId: collection.id, isOnSale: checked })
+  handleOnSaleChange = () => {
+    const { collection, wallet, onOpenModal } = this.props
+    const toggleIsOnSale = !isCollectionOnSale(collection!, wallet)
+    if (collection) {
+      onOpenModal('SellCollectionModal', { collectionId: collection.id, isOnSale: toggleIsOnSale })
     }
   }
 
@@ -79,6 +81,31 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     collection && onNavigate(getCollectionEditorURL(collection, items))
   }
 
+  handleNavigateToExplorer = () => {
+    const { collection } = this.props
+
+    if (collection) {
+      const explorerLink = getExplorerURL({
+        collection
+      })
+      this.navigateTo(explorerLink, '_blank')
+    }
+  }
+
+  handleNavigateToForum = () => {
+    const { collection } = this.props
+    if (collection && collection.isPublished && collection.forumLink) {
+      this.navigateTo(collection.forumLink, '_blank')
+    }
+  }
+
+  navigateTo = (url: string, target = '') => {
+    const newWindow = window.open(url, target)
+    if (newWindow) {
+      newWindow.focus()
+    }
+  }
+
   handleTabChange = (tab: ItemType) => {
     const { onNavigate, collection } = this.props
     this.setState({ tab })
@@ -97,25 +124,74 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     )
   }
 
+  renderActionButtoms(items: Item[]) {
+    const collection = this.props.collection!
+    const isLocked = isCollectionLocked(collection)
+    const hasItems = this.hasItems(items)
+
+    return (
+      <>
+        <Button basic className="action-button" disabled={isLocked || !hasItems} onClick={this.handleNavigateToExplorer}>
+          <BuilderIcon name="right-round-arrow" />
+          <span className="text">{t('collection_context_menu.see_in_world')}</span>
+        </Button>
+        <Button basic className="action-button" disabled={isLocked || !hasItems} onClick={this.handleNavigateToEditor}>
+          <BuilderIcon name="cube" />
+          <span className="text">{t('collection_detail_page.preview')}</span>
+        </Button>
+        {hasItems && !collection.isPublished ? (
+          <Button basic className="action-button add-items" disabled={isLocked} onClick={this.handleNewItem}>
+            <BuilderIcon name="add-active" />
+            <span className="text">{t('collection_detail_page.add_item')}</span>
+          </Button>
+        ) : null}
+      </>
+    )
+  }
+
+  renderToggleOnSaleButtom() {
+    const { wallet, isOnSaleLoading } = this.props
+    const collection = this.props.collection!
+    const isOnSale = isCollectionOnSale(collection, wallet)
+
+    return (
+      <NetworkCheck network={Network.MATIC}>
+        {isEnabled => (
+          <Button
+            className={classNames('action-button', isOnSale ? 'basic' : 'primary')}
+            disabled={isOnSaleLoading || !isEnabled}
+            onClick={this.handleOnSaleChange}
+          >
+            <span className="text">
+              {isOnSale ? t('collection_detail_page.remove_from_marketplace') : t('collection_detail_page.on_sale')}
+            </span>
+          </Button>
+        )}
+      </NetworkCheck>
+    )
+  }
+
   renderPage(items: Item[]) {
     const { tab } = this.state
-    const { wallet, isOnSaleLoading } = this.props
+    const { status, wallet } = this.props
     const collection = this.props.collection!
 
     const canMint = canMintCollectionItems(collection, wallet.address)
-    const isOnSale = isCollectionOnSale(collection, wallet)
     const isLocked = isCollectionLocked(collection)
     const hasEmotes = items.some(item => item.type === ItemType.EMOTE)
     const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
     const isEmoteMissingPrice = hasEmotes ? items.some(item => item.type === ItemType.EMOTE && !item.price) : false
     const isWearableMissingPrice = hasWearables ? items.some(item => item.type === ItemType.WEARABLE && !item.price) : false
     const hasOnlyEmotes = hasEmotes && !hasWearables
-    const filteredItems = items.filter(item => (hasOnlyEmotes ? item.type === ItemType.EMOTE : item.type === tab))
+    const hasOnlyWearables = hasWearables && !hasEmotes
+    const filteredItems = items.filter(item =>
+      hasOnlyWearables ? item.type === ItemType.WEARABLE : hasOnlyEmotes ? item.type === ItemType.EMOTE : item.type === tab
+    )
     const showShowTabs = hasEmotes && hasWearables
 
     return (
       <>
-        <Section className={collection.isPublished ? 'is-published' : ''}>
+        <Section className={classNames({ 'is-published': collection.isPublished })}>
           <Row>
             <Back absolute onClick={this.handleGoBack} />
             <Narrow>
@@ -137,55 +213,22 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                 </Column>
                 <Column align="right" className="actions-container" shrink={false} grow={false}>
                   <Row className="actions">
-                    {collection.isPublished ? (
-                      <>
-                        {isOwner(collection, wallet.address) ? (
-                          <Popup
-                            content={
-                              isOnSaleLoading
-                                ? t('global.loading')
-                                : isOnSale
-                                ? t('collection_detail_page.unset_on_sale_popup')
-                                : t('collection_detail_page.set_on_sale_popup')
-                            }
-                            position="top center"
-                            trigger={
-                              <NetworkCheck network={Network.MATIC}>
-                                {isEnabled => (
-                                  <Radio
-                                    toggle
-                                    className="on-sale"
-                                    checked={isOnSale}
-                                    onChange={this.handleOnSaleChange}
-                                    label={t('collection_detail_page.on_sale')}
-                                    disabled={isOnSaleLoading || !isEnabled}
-                                  />
-                                )}
-                              </NetworkCheck>
-                            }
-                            hideOnScroll={true}
-                            on="hover"
-                            inverted
-                            flowing
-                          />
-                        ) : null}
-
-                        <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
-                          <Icon name="paper plane" />
-                          <span className="text">{t('collection_detail_page.mint_items')}</span>
-                        </Button>
-                      </>
-                    ) : null}
-
-                    {items.length && !collection.isPublished ? (
-                      <Button basic className="action-button" disabled={isLocked} onClick={this.handleNewItem}>
-                        <span className="text">{t('collection_detail_page.add_item')}</span>
+                    {collection.isPublished && collection.isApproved ? (
+                      <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
+                        <span className="text">{t('collection_detail_page.mint_items')}</span>
                       </Button>
                     ) : null}
-                    <Button basic className="action-button" disabled={isLocked || !items.length} onClick={this.handleNavigateToEditor}>
-                      <span className="text">{t('collection_detail_page.preview')}</span>
-                    </Button>
-                    <CollectionPublishButton collection={collection} />
+                    {collection.isPublished && collection.forumLink && !collection.isApproved && (
+                      <Button basic onClick={this.handleNavigateToForum}>
+                        <span>{t('collection_context_menu.forum_post')}</span>
+                      </Button>
+                    )}
+                    {!(collection.isPublished && collection.isApproved) && status !== SyncStatus.UNSYNCED ? (
+                      <CollectionPublishButton collection={collection} />
+                    ) : null}
+                    {isOwner(collection, wallet.address) && collection.isPublished && collection.isApproved
+                      ? this.renderToggleOnSaleButtom()
+                      : null}
                     {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
                   </Row>
                 </Column>
@@ -203,6 +246,17 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
             />
           </Notice>
 
+          {status === SyncStatus.UNSYNCED ? (
+            <div className="unsynced-collection container">
+              <i className="unsynced-collection alert-icon" />
+              <div className="unsynced-collection message">
+                <h4 className="unsynced-collection title">{t('collection_detail_page.unsynced_collection_title')}</h4>
+                <p className="unsynced-collection text">{t('collection_detail_page.unsynced_collection_message', { br: <br /> })}</p>
+              </div>
+              <CollectionPublishButton collection={collection} />
+            </div>
+          ) : null}
+
           {showShowTabs ? (
             <Tabs isFullscreen>
               <Tabs.Tab active={tab === ItemType.WEARABLE} onClick={() => this.handleTabChange(ItemType.WEARABLE)}>
@@ -215,8 +269,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                 {t('collection_detail_page.emotes')}
                 {isEmoteMissingPrice ? this.renderMisingItemPricePopup(ItemType.EMOTE) : null}
               </Tabs.Tab>
+              <div className="secondary-actions tab">{this.renderActionButtoms(items)}</div>
             </Tabs>
-          ) : null}
+          ) : (
+            <div className="secondary-actions">{this.renderActionButtoms(items)}</div>
+          )}
 
           {this.hasItems(items) ? (
             <Table basic="very">
@@ -229,9 +286,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                     <Table.HeaderCell>{t('collection_detail_page.table.play_mode')}</Table.HeaderCell>
                   ) : null}
                   <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
-                  {collection.isPublished ? <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell> : null}
+                  {collection.isPublished && collection.isApproved ? (
+                    <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell>
+                  ) : null}
                   <Table.HeaderCell>{t('collection_detail_page.table.status')}</Table.HeaderCell>
-                  <Table.HeaderCell></Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
