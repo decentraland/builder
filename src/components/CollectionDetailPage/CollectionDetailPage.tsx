@@ -78,7 +78,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   handleNavigateToEditor = () => {
     const { collection, items, onNavigate } = this.props
-    collection && onNavigate(getCollectionEditorURL(collection, items))
+    collection && onNavigate(getCollectionEditorURL(collection, items, 'collections'))
   }
 
   handleNavigateToExplorer = () => {
