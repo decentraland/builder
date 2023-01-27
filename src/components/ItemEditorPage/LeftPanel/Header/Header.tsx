@@ -15,8 +15,13 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   handleBack = () => {
-    const { onNavigate } = this.props
-    onNavigate(locations.itemEditor())
+    const { collection, isFromCollections, onNavigate } = this.props
+    // If the user came from a collection details page, go back to the same page
+    if (isFromCollections) {
+      onNavigate(locations.collectionDetail(collection!.id))
+    } else {
+      onNavigate(locations.itemEditor())
+    }
   }
 
   handleNewItem = () => {
@@ -50,11 +55,11 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   renderSelectedCollection() {
-    const { collection, address = '', hasUserOrphanItems } = this.props
+    const { collection, address = '', hasUserOrphanItems, isFromCollections } = this.props
     const isOwner = collection && isEqual(collection.owner, address)
     return collection ? (
       <>
-        <div className="block back" onClick={this.handleBack} />
+        <div className={`block ${isFromCollections ? 'close' : 'back'}`} onClick={this.handleBack} />
         <div className="title">
           {collection.name} <CollectionStatus collection={collection} />
         </div>
@@ -78,7 +83,7 @@ export default class Header extends React.PureComponent<Props> {
     const { isLoggedIn } = this.props
     return (
       <>
-        <div className="block home" onClick={this.handleHome} />
+        <div className="block close" onClick={this.handleHome} />
         <div className="title">{t('item_editor.left_panel.title')}</div>
         {isLoggedIn ? (
           <Dropdown trigger={<div className="block add" />} inline direction="left">
