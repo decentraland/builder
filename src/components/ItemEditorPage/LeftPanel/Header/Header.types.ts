@@ -10,6 +10,7 @@ export type Props = {
   collection?: Collection
   isLoggedIn: boolean
   isReviewing: boolean
+  isFromCollections: boolean
   onOpenModal: typeof openModal
   onNavigate: (path: string) => void
   onDeleteCollection: typeof deleteCollectionRequest
@@ -18,6 +19,9 @@ export type Props = {
   hasUserOrphanItems: boolean | undefined
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'collection' | 'isLoggedIn' | 'isReviewing' | 'hasEditRights' | 'hasUserOrphanItems'>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'collection' | 'isLoggedIn' | 'isReviewing' | 'hasEditRights' | 'hasUserOrphanItems' | 'isFromCollections'
+>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onDeleteCollection' | 'onDeleteItem'>
 export type MapDispatch = Dispatch<OpenModalAction | CallHistoryMethodAction | DeleteCollectionRequestAction | DeleteItemRequestAction>
