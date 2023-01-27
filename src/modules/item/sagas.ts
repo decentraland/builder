@@ -437,19 +437,10 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     if (ItemModals.some(modal => openModals[modal])) {
       yield put(closeAllModals())
     } else if (openModals['CreateSingleItemModal']) {
-      if (location.pathname === locations.collections()) {
-        if (item.type === ItemType.EMOTE) {
-          // Redirect to the item editor
-          yield put(setItems([item]))
-          yield put(push(locations.itemEditor({ itemId: item.id })))
-        } else {
-          // Redirect to the newly created item details
-          yield put(push(locations.itemDetail(item.id)))
-        }
-      } else if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
+      if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
         // Redirect to the item editor
         yield put(setItems([item]))
-        yield put(push(locations.itemEditor({ collectionId, itemId: item.id, newItem: item.name })))
+        yield put(push(locations.itemEditor({ collectionId, itemId: item.id, newItem: item.name, fromParam: 'collections' })))
       } else {
         // When creating a Wearable/Emote in the itemEditor, reload the left panel to show the new item created
         if (location.pathname === locations.itemEditor()) {
