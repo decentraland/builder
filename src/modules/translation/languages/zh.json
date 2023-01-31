@@ -747,7 +747,9 @@
   "land_assign_ens_page": {
     "title": "分配{name}",
     "subtitle": "给...分配一个名字 {land}",
-    "set_name_message": "在将此名称分配给包裹之前，您需要提交2笔交易：第一笔交易允许您使用您的姓名作为链接，第二笔交易将您的姓名链接到LAND。",
+    "set_name_message": "<strong>在您可以将此名称分配给您的土地之前，您需要提交 2 或 3 笔交易：</strong> 第一个交易收回你的 ENS 名称，因此你成为它的控制者，只有当名称是从另一个用户那里购买或转让时才需要，第二个交易允许你使用你的名字作为链接，第三个交易将你的名字链接到你的 LAND。",
+    "reclaim": "开垦土地",
+    "reclaim_explanation": "在您的名字转移给您之后，这会收回您的名字的控制权。 名称的所有者对其拥有控制权，直到它被收回。",
     "set_resolver": "设置解析器",
     "set_resolver_explanation": "这样可以将您的名字链接到包裹",
     "set_content": "设定内容",
@@ -1199,9 +1201,10 @@
     "on_sale": "特价中",
     "set_on_sale_popup": "这将允许您的收藏在 Decentraland 市场上出售。",
     "unset_on_sale_popup": "该系列在 Decentraland 市场上有售。",
-    "publish": "发布",
     "notice": "凉爽的！ 现在，您可以开始处理项目了。 {editor_link}打开编辑器，或在任何项目上单击“编辑”按钮。",
-    "preview": "预习",
+    "preview": "在编辑器中预览",
+    "publish": "发布合集",
+    "remove_from_marketplace": "从市场中删除",
     "add_item": "添加项目",
     "add_items_title": "看起来不错！",
     "add_items_subtitle": "现在您可以开始将项目添加到您的收藏中",
@@ -1228,11 +1231,13 @@
       "play_mode": "游戏模式",
       "status": "地位"
     },
-    "missing_item_price": "您需要配置一个或多个 {item_type} 的价格。"
+    "missing_item_price": "您需要配置一个或多个 {item_type} 的价格。",
+    "unsynced_collection_title": "此集合中有未同步的项目",
+    "unsynced_collection_message": "在此集合获得批准后，对一项或多项进行了修改。{br}这些更新需要发布并由策展委员会再次审核。"
   },
   "collection_context_menu": {
     "add_existing_item": "添加现有项目",
-    "forum_post": "论坛帖子",
+    "forum_post": "查看论坛帖子",
     "copy_address": "复制地址",
     "edit_urn": "编辑 URN",
     "edit_in_bulk": "批量编辑",
@@ -1249,7 +1254,11 @@
   },
   "collection_item": {
     "set_price": "设定价格",
-    "done": "完成",
+    "ready": "已完成",
+    "published": "发表",
+    "not_ready": "没有准备好",
+    "under_review": "审查中",
+    "unsynced": "未同步",
     "ready_to_publish": "准备发布",
     "incomplete": "不完整",
     "edit_item": "编辑",
@@ -1259,7 +1268,9 @@
     "see_details": "查看详细信息",
     "edit_urn": "编辑 URN",
     "cannot_edit_urn": "项目发布后您无法编辑 URN",
-    "reset_item": "撤消"
+    "reset_item": "撤消",
+    "move_to_another_collection": "移动到另一个集合",
+    "preview": "在编辑器中预览"
   },
   "collection": {
     "type": {
@@ -1296,6 +1307,10 @@
   "confirm_delete": {
     "content": "删除\"{name}\"?",
     "subcontent": "您确定要删除项目“{name}”吗？此操作不可逆"
+  },
+  "delete_item_modal": {
+    "title": "删除 {name}",
+    "subtitle": "您确定要删除{name}吗？{br}此操作不可逆。"
   },
   "publish_collection_modal": {
     "title": "发布收藏",
@@ -1664,6 +1679,10 @@
         "title": "项目已移至另一个集合",
         "body": "{item_name} 已移至 {collection_name} 集合。",
         "cta": "查看合集"
+      },
+      "item_deleted": {
+        "title": "项目已删除",
+        "body": "{name} 已被删除。"
       }
     }
   },

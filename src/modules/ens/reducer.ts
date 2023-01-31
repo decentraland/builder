@@ -42,7 +42,13 @@ import {
   ALLOW_CLAIM_MANA_SUCCESS,
   AllowClaimManaRequestAction,
   AllowClaimManaSuccessAction,
-  AllowClaimManaFailureAction
+  AllowClaimManaFailureAction,
+  RECLAIM_NAME_SUCCESS,
+  RECLAIM_NAME_FAILURE,
+  RECLAIM_NAME_REQUEST,
+  ReclaimNameRequestAction,
+  ReclaimNameSuccessAction,
+  ReclaimNameFailureAction
 } from './actions'
 import { ENS, ENSError, Authorization } from './types'
 
@@ -83,10 +89,14 @@ export type ENSReducerAction =
   | AllowClaimManaRequestAction
   | AllowClaimManaSuccessAction
   | AllowClaimManaFailureAction
+  | ReclaimNameRequestAction
+  | ReclaimNameSuccessAction
+  | ReclaimNameFailureAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
     case CLAIM_NAME_REQUEST:
+    case RECLAIM_NAME_REQUEST:
     case FETCH_ENS_LIST_REQUEST:
     case FETCH_ENS_AUTHORIZATION_REQUEST:
     case FETCH_ENS_REQUEST:
@@ -144,6 +154,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
+    case RECLAIM_NAME_SUCCESS:
     case CLAIM_NAME_SUCCESS: {
       const { ens } = action.payload
       return {
@@ -158,6 +169,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
+    case RECLAIM_NAME_FAILURE:
     case CLAIM_NAME_FAILURE:
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:

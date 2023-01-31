@@ -48,6 +48,33 @@ body canvas.dcl-canvas {
   animation: uploading 0.5s ease-in-out infinite alternate;
 }
 
+.Navigation .dcl.tabs > .ui.container,
+.dcl.navbar.fullscreen .ui.container,
+.dcl.footer.ui.container,
+.dcl.navbar.sign-in .ui.container {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100% !important;
+}
+
+.Navigation,
+.dcl.navbar.fullscreen,
+.dcl.footer.ui.container,
+.dcl.navbar.sign-in,
+.dcl.page.fullscreen {
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.dcl.page.fullscreen .Navigation {
+  padding: 0;
+}
+
+.ui.container {
+  width: 100%;
+  max-width: 1360px !important;
+}
+
 @keyframes uploading {
   0% {
     opacity: 0.5;

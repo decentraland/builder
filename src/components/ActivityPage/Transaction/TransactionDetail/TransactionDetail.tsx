@@ -9,6 +9,7 @@ import { Atlas } from 'components/Atlas'
 import CollectionImage from 'components/CollectionImage'
 import ItemImage from 'components/ItemImage'
 import Profile from 'components/Profile'
+import { ENSImage } from '../ENSImage'
 import { Props } from './TransactionDetail.types'
 import './TransactionDetail.css'
 
@@ -21,7 +22,7 @@ const getHref = (tx: Transaction) => {
 }
 
 const Image = (props: Props) => {
-  const { selection, address, collectionId, item, slotsToyBuy } = props
+  const { selection, address, collectionId, item, subdomain, slotsToyBuy } = props
 
   const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
   const selectedStrokeLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff0044', scale: 1.4 } : null), [set])
@@ -36,6 +37,8 @@ const Image = (props: Props) => {
     return <CollectionImage collectionId={collectionId} />
   } else if (item) {
     return <ItemImage item={item} />
+  } else if (subdomain) {
+    return <ENSImage subdomain={subdomain} isSmall />
   } else if (slotsToyBuy) {
     return <div className="slot-image" />
   } else {

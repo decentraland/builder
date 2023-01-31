@@ -14,8 +14,18 @@ export default class LandAssignENSPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { ens, isLoading, error, isWaitingTxSetContent, isWaitingTxSetResolver, onSetENSResolver, onSetENSContent, onNavigate } =
-      this.props
+    const {
+      ens,
+      isLoading,
+      error,
+      isWaitingTxSetContent,
+      isWaitingTxReclaim,
+      isWaitingTxSetResolver,
+      onSetENSResolver,
+      onSetENSContent,
+      onReclaimName,
+      onNavigate
+    } = this.props
 
     return (
       <LandProviderPage>
@@ -37,8 +47,10 @@ export default class LandAssignENSPage extends React.PureComponent<Props> {
                 isLoading={isLoading}
                 isWaitingTxSetResolver={isWaitingTxSetResolver}
                 isWaitingTxSetContent={isWaitingTxSetContent}
+                isWaitingTxReclaim={isWaitingTxReclaim}
                 onSetENSContent={onSetENSContent}
                 onSetENSResolver={onSetENSResolver}
+                onReclaimName={onReclaimName}
                 onBack={this.handleGoBack}
                 onNavigate={onNavigate}
               />

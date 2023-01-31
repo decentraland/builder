@@ -78,11 +78,15 @@ export type FetchENSListFailureAction = ReturnType<typeof fetchENSListFailure>
 export const CLAIM_NAME_REQUEST = '[Request] Claim Name'
 export const CLAIM_NAME_SUCCESS = '[Success] Claim Name'
 export const CLAIM_NAME_FAILURE = '[Failure] Claim Name'
+export const CLAIM_NAME_TRANSACTION_SUBMITTED = '[Submitted] Claim Name'
 
 export const claimNameRequest = (name: string) => action(CLAIM_NAME_REQUEST, { name })
-export const claimNameSuccess = (ens: ENS, name: string, address: string, chainId: ChainId, txHash: string) =>
+export const claimNameTransactionSubmitted = (subdomain: string, address: string, chainId: ChainId, txHash: string) =>
+  action(CLAIM_NAME_TRANSACTION_SUBMITTED, {
+    ...buildTransactionPayload(chainId, txHash, { subdomain, address })
+  })
+export const claimNameSuccess = (ens: ENS, name: string) =>
   action(CLAIM_NAME_SUCCESS, {
-    ...buildTransactionPayload(chainId, txHash, { ens, name, address }),
     ens,
     name
   })
@@ -91,6 +95,7 @@ export const claimNameFailure = (error: ENSError) => action(CLAIM_NAME_FAILURE, 
 export type ClaimNameRequestAction = ReturnType<typeof claimNameRequest>
 export type ClaimNameSuccessAction = ReturnType<typeof claimNameSuccess>
 export type ClaimNameFailureAction = ReturnType<typeof claimNameFailure>
+export type ClaimNameTransactionSubmittedAction = ReturnType<typeof claimNameTransactionSubmitted>
 
 // Fetch ENS related authorizations
 export const FETCH_ENS_AUTHORIZATION_REQUEST = '[Request] Fetch ENS Authorization'
@@ -105,6 +110,20 @@ export const fetchENSAuthorizationFailure = (error: ENSError) => action(FETCH_EN
 export type FetchENSAuthorizationRequestAction = ReturnType<typeof fetchENSAuthorizationRequest>
 export type FetchENSAuthorizationSuccessAction = ReturnType<typeof fetchENSAuthorizationSuccess>
 export type FetchENSAuthorizationFailureAction = ReturnType<typeof fetchENSAuthorizationFailure>
+
+// Reclaim ENS name
+export const RECLAIM_NAME_REQUEST = '[Request] Reclaim Name'
+export const RECLAIM_NAME_SUCCESS = '[Success] Reclaim Name'
+export const RECLAIM_NAME_FAILURE = '[Failure] Reclaim Name'
+
+export const reclaimNameRequest = (ens: ENS) => action(RECLAIM_NAME_REQUEST, { ens })
+export const reclaimNameSuccess = (txHash: string, chainId: number, ens: ENS) =>
+  action(RECLAIM_NAME_SUCCESS, { ...buildTransactionPayload(chainId, txHash, { ens }), ens })
+export const reclaimNameFailure = (error: ENSError) => action(RECLAIM_NAME_FAILURE, { error })
+
+export type ReclaimNameRequestAction = ReturnType<typeof reclaimNameRequest>
+export type ReclaimNameSuccessAction = ReturnType<typeof reclaimNameSuccess>
+export type ReclaimNameFailureAction = ReturnType<typeof reclaimNameFailure>
 
 // Allow MANA to claim names
 export const ALLOW_CLAIM_MANA_REQUEST = '[Request] Allow Claim MANA'
