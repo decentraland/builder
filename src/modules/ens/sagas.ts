@@ -279,7 +279,7 @@ export function* ensSaga(builderClient: BuilderClient) {
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
-      const REQUESTS_BATCH_SIZE = 50
+      const REQUESTS_BATCH_SIZE = 25
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
 
       const promisesOfENS: (() => Promise<ENS>)[] = domains.map(data => {
