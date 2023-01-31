@@ -36,6 +36,8 @@ import {
 import { dataURLToBlob } from 'modules/media/utils'
 import { areEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
+import ErrorMetrics from 'components/Modals/CreateSingleItemModal/ErrorMetrics/ErrorMetrics'
+import { isValidWearableMetrics } from 'components/Modals/CreateSingleItemModal/utils'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -285,6 +287,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return hasItem ? this.hasStateItemChanged({ ...this.state, ...newState }, selectedItem!) : false
   }
 
+  isDisabled(item: Item | null) {
+    const { data } = this.state
+    let isValidWearable = true
+    if (!!item && !!data && item.type === ItemType.WEARABLE) {
+      isValidWearable = isValidWearableMetrics(item.metrics, data.category as WearableCategory)
+    }
+
+    return !isValidWearable
+  }
+
   hasSavedItem() {
     const { selectedItem } = this.props
     const { isDirty } = this.state
@@ -462,6 +474,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeCategory}
                         />
+                        {!!data &&
+                        item.type === ItemType.WEARABLE &&
+                        !isValidWearableMetrics(item.metrics, data.category as WearableCategory) ? (
+                          <ErrorMetrics metrics={item.metrics} category={data.category as WearableCategory} />
+                        ) : null}
 
                         {!(item.urn && isThirdParty(item.urn)) && (
                           <Select<ItemRarity>
@@ -541,10 +558,15 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                   </Collapsable>
                   {isDirty ? (
                     <div className="edit-buttons">
-                      <Button secondary onClick={this.handleOnResetItem}>
+                      <Button secondary onClick={this.handleOnResetItem} disabled={isLoading}>
                         {t('global.cancel')}
                       </Button>
-                      <NetworkButton primary onClick={this.handleOnSaveItem} network={Network.MATIC}>
+                      <NetworkButton
+                        primary
+                        onClick={this.handleOnSaveItem}
+                        disabled={isLoading || this.isDisabled(item)}
+                        network={Network.MATIC}
+                      >
                         {t('global.save')}
                       </NetworkButton>
                     </div>

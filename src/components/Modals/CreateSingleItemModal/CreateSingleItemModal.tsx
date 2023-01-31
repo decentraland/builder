@@ -37,7 +37,7 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
-import { areEmoteMetrics, Metrics } from 'modules/models/types'
+import { areEmoteMetrics, Metrics, ModelMetrics } from 'modules/models/types'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -53,8 +53,9 @@ import {
 } from 'modules/item/utils'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
-import { getThumbnailType, toEmoteWithBlobs, toWearableWithBlobs } from './utils'
+import { getThumbnailType, isValidWearableMetrics, toEmoteWithBlobs, toWearableWithBlobs } from './utils'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
+import ErrorMetrics from './ErrorMetrics/ErrorMetrics'
 import {
   Props,
   State,
@@ -655,11 +656,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderFields() {
     const { collection } = this.props
-    const { name, category, rarity, contents, item, type } = this.state
+    const { name, category, rarity, contents, item, type, metrics } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const rarities = getRarities()
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
+    const isValidCategory = !!category && categories.includes(category)
 
     const raritiesLink =
       type === ItemType.EMOTE
@@ -703,10 +705,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           required
           label={t('create_single_item_modal.category_label')}
           placeholder={t('create_single_item_modal.category_placeholder')}
-          value={categories.includes(category!) ? category : undefined}
+          value={isValidCategory ? category : undefined}
           options={categories.map(value => ({ value, text: t(`${type!}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
+        {type === ItemType.WEARABLE && isValidCategory && !isValidWearableMetrics(metrics as ModelMetrics, category as WearableCategory) ? (
+          <ErrorMetrics metrics={metrics as ModelMetrics} category={category as WearableCategory} />
+        ) : null}
       </>
     )
   }
@@ -836,8 +841,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   isDisabled(): boolean {
     const { isLoading } = this.props
+    const { category, metrics, type } = this.state
+    let isValidWearable = true
+    if (type === ItemType.WEARABLE && metrics && category) {
+      isValidWearable = isValidWearableMetrics(metrics as ModelMetrics, category as WearableCategory)
+    }
 
-    return !this.isValid() || isLoading
+    return !this.isValid() || isLoading || !isValidWearable
   }
 
   isValid(): boolean {
@@ -924,10 +934,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (item && itemSortedContents) {
       const blob = dataURLToBlob(screenshot)
 
-      itemSortedContents[THUMBNAIL_PATH] = blob!
-      item.contents = await computeHashes(itemSortedContents)
+      if (blob) {
+        itemSortedContents[THUMBNAIL_PATH] = blob
+        item.contents = await computeHashes(itemSortedContents)
 
-      this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => this.setState({ view }))
+        this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => this.setState({ view }))
+      }
     } else {
       this.setState({ thumbnail: screenshot, hasScreenshotTaken: true }, () => this.setState({ view }))
     }
