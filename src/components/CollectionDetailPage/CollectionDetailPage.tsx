@@ -1,10 +1,9 @@
 import * as React from 'react'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
 import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { FromParam } from 'modules/location/types'
 import {
@@ -20,7 +19,6 @@ import { CollectionType } from 'modules/collection/types'
 import CollectionProvider from 'components/CollectionProvider'
 import { Item, ItemType, SyncStatus } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
@@ -31,8 +29,6 @@ import { Props, State } from './CollectionDetailPage.types'
 import CollectionItem from './CollectionItem'
 
 import './CollectionDetailPage.css'
-
-const STORAGE_KEY = 'dcl-collection-notice'
 
 export default class CollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -238,15 +234,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
           </Row>
         </Section>
         <Narrow>
-          <Notice storageKey={STORAGE_KEY}>
-            <T
-              id="collection_detail_page.notice"
-              values={{
-                editor_link: <Link to={getCollectionEditorURL(collection, items)}>{t('global.click_here')}</Link>
-              }}
-            />
-          </Notice>
-
           {status === SyncStatus.UNSYNCED ? (
             <div className="unsynced-collection container">
               <i className="unsynced-collection alert-icon" />
