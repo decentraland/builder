@@ -1,5 +1,6 @@
 import { BigNumber, ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
+import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { Network } from '@dcl/schemas'
 import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
@@ -278,51 +279,54 @@ export function* ensSaga(builderClient: BuilderClient) {
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
-      const ensList: ENS[] = yield call(() =>
-        Promise.all(
-          domains.map(async data => {
-            const name = data
-            const subdomain = `${data.toLowerCase()}.dcl.eth`
-            let landId: string | undefined = undefined
-            let content = ''
+      const REQUESTS_BATCH_SIZE = 25
+      const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
 
-            const nodehash = namehash(subdomain)
-            const [resolverAddress, owner, tokenId]: [string, string, string] = await Promise.all([
-              ensContract.resolver(nodehash),
-              ensContract.owner(nodehash).then(owner => owner.toLowerCase()),
-              dclRegistrarContract.getTokenId(name).then(name => name.toString())
-            ])
-            const resolver = resolverAddress.toString()
+      const promisesOfENS: (() => Promise<ENS>)[] = domains.map(data => {
+        return async () => {
+          const name = data
+          const subdomain = `${data.toLowerCase()}.dcl.eth`
+          let landId: string | undefined = undefined
+          let content = ''
 
-            if (resolver !== ethers.constants.AddressZero) {
-              try {
-                const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
-                content = await resolverContract.contenthash(nodehash)
+          const nodehash = namehash(subdomain)
+          const [resolverAddress, owner, tokenId]: [string, string, string] = await Promise.all([
+            ensContract.resolver(nodehash),
+            ensContract.owner(nodehash).then(owner => owner.toLowerCase()),
+            dclRegistrarContract.getTokenId(name).then(name => name.toString())
+          ])
+          const resolver = resolverAddress.toString()
 
-                const land = landHashes.find(lh => lh.hash === content)
-                if (land) {
-                  landId = land.id
-                }
-              } catch (error) {
-                console.error('Failed to load ens resolver', error)
+          if (resolver !== ethers.constants.AddressZero) {
+            try {
+              const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
+              content = await resolverContract.contenthash(nodehash)
+
+              const land = landHashes.find(lh => lh.hash === content)
+              if (land) {
+                landId = land.id
               }
+            } catch (error) {
+              console.error('Failed to load ens resolver', error)
             }
+          }
 
-            const ens: ENS = {
-              name,
-              tokenId,
-              ensOwnerAddress: owner,
-              nftOwnerAddress: address,
-              subdomain,
-              resolver,
-              content,
-              landId
-            }
+          const ens: ENS = {
+            name,
+            tokenId,
+            ensOwnerAddress: owner,
+            nftOwnerAddress: address,
+            subdomain,
+            resolver,
+            content,
+            landId
+          }
 
-            return ens
-          })
-        )
-      )
+          return ens
+        }
+      })
+
+      const ensList: ENS[] = yield queue.addAll(promisesOfENS)
       yield put(fetchENSListSuccess(ensList))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
