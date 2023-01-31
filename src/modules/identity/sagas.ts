@@ -1,8 +1,10 @@
-import { takeLatest, put, select, call } from 'redux-saga/effects'
+import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
+import { ProviderType } from '@dcl/schemas'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { config } from 'config'
 import {
   CONNECT_WALLET_SUCCESS,
@@ -56,7 +58,16 @@ export function* identitySaga() {
 function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
   const address = action.payload.address.toLowerCase()
   try {
+    const wallet: Wallet | null = yield select(getWallet)
+
+    if (wallet?.providerType === ProviderType.WALLET_CONNECT) {
+      // Without the delay, the wallet is never asked to sign the message.
+      // https://github.com/decentraland/builder/issues/2521
+      yield delay(1000)
+    }
+
     const eth: ethers.providers.Web3Provider = yield call(getEth)
+
     const account = ethers.Wallet.createRandom()
 
     const payload = {
