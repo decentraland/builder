@@ -19,6 +19,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
+import { FromParam } from 'modules/location/types'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
@@ -556,7 +557,11 @@ describe('when handling the save item success action', () => {
               [select(getOpenModals), { CreateSingleItemModal: true }],
               [select(getAddress), mockAddress]
             ])
-            .put(push(locations.itemEditor({ collectionId: collection.id, itemId: item.id, newItem: item.name, fromParam: 'collections' })))
+            .put(
+              push(locations.itemEditor({ collectionId: collection.id, itemId: item.id, newItem: item.name }), {
+                fromParam: FromParam.COLLECTIONS
+              })
+            )
             .dispatch(saveItemSuccess(item, {}))
             .run({ silenceTimeout: true })
         })

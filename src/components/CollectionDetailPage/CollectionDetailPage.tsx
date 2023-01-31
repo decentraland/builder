@@ -6,6 +6,7 @@ import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table } from
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
+import { FromParam } from 'modules/location/types'
 import {
   canMintCollectionItems,
   canSeeCollection,
@@ -15,6 +16,7 @@ import {
   isOwner,
   getExplorerURL
 } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 import CollectionProvider from 'components/CollectionProvider'
 import { Item, ItemType, SyncStatus } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -29,7 +31,6 @@ import { Props, State } from './CollectionDetailPage.types'
 import CollectionItem from './CollectionItem'
 
 import './CollectionDetailPage.css'
-import { CollectionType } from 'modules/collection/types'
 
 const STORAGE_KEY = 'dcl-collection-notice'
 
@@ -78,7 +79,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   handleNavigateToEditor = () => {
     const { collection, items, onNavigate } = this.props
-    collection && onNavigate(getCollectionEditorURL(collection, items, 'collections'))
+    collection && onNavigate(getCollectionEditorURL(collection, items), { fromParam: FromParam.COLLECTIONS })
   }
 
   handleNavigateToExplorer = () => {

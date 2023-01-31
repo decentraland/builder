@@ -37,8 +37,8 @@ export function getSaleAddress(chainId: ChainId) {
   return getContract(ContractName.CollectionStore, chainId).address.toLowerCase()
 }
 
-export function getCollectionEditorURL(collection: Collection, items: Item[], fromParam?: string): string {
-  return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined, fromParam })
+export function getCollectionEditorURL(collection: Collection, items: Item[]): string {
+  return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })
 }
 
 export function getExplorerURL({ collection, item_ids }: { collection?: Collection; item_ids?: string[] }): string {

@@ -1,7 +1,7 @@
 import { CollectionType } from 'modules/collection/types'
 import { PaginationOptions, injectPagination, injectParams, CollectionDetailOptions } from './utils'
 
-type ItemEditorParams = { itemId?: string; collectionId?: string; isReviewing?: string; newItem?: string; fromParam?: string }
+type ItemEditorParams = { itemId?: string; collectionId?: string; isReviewing?: string; newItem?: string }
 
 export const locations = {
   root: () => '/',
@@ -42,11 +42,7 @@ export const locations = {
   thirdPartyCollectionDetail: (collectionId = ':collectionId', options?: PaginationOptions) =>
     injectPagination(`/thirdPartyCollections/${collectionId}`, options),
   itemEditor: (options?: ItemEditorParams) =>
-    injectParams(
-      '/item-editor',
-      { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing', newItem: 'newItem', fromParam: 'from' },
-      options
-    ),
+    injectParams('/item-editor', { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing', newItem: 'newItem' }, options),
   ens: () => '/names',
   curation: () => '/curation'
 }

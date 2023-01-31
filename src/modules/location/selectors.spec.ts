@@ -1,6 +1,6 @@
 import { RootState } from 'modules/common/types'
 import { locations } from 'routing/locations'
-import { getCollectionId, getFromParam } from './selectors'
+import { getCollectionId } from './selectors'
 
 describe('when getting the collection id from the current url', () => {
   describe('when the collection is standard', () => {
@@ -32,25 +32,6 @@ describe('when getting the collection id from the current url', () => {
       } as unknown
 
       expect(getCollectionId(mockState as RootState)).toEqual(collectionId)
-    })
-  })
-})
-
-describe('when getting the query param from', () => {
-  describe('when the query param from is "collections"', () => {
-    it('should return "collections"', () => {
-      const collectionId = 'collection-id'
-      const fromParam = 'collections'
-      const mockState = {
-        router: {
-          action: 'PUSH',
-          location: {
-            pathname: locations.itemEditor({ collectionId, fromParam }),
-            search: `?collection=${collectionId}&from=${fromParam}`
-          }
-        }
-      } as unknown
-      expect(getFromParam(mockState as RootState)).toEqual(fromParam)
     })
   })
 })

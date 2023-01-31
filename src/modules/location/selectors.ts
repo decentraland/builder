@@ -53,6 +53,5 @@ export const getCollectionId = (state: RootState) => {
 export const getSelectedItemId = (state: RootState) => new URLSearchParams(getSearch(state)).get('item')
 export const getSelectedCollectionId = (state: RootState) => new URLSearchParams(getSearch(state)).get('collection')
 export const isReviewing = (state: RootState) => !!new URLSearchParams(getSearch(state)).get('reviewing')
-export const getFromParam = (state: RootState) => new URLSearchParams(getSearch(state)).get('from')
 export const getState = (state: RootState) => state.location
 export const hasHistory = (state: RootState) => getState(state).hasHistory
