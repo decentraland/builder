@@ -11,7 +11,7 @@ import { deleteCollectionRequest } from 'modules/collection/actions'
 import { deleteItemRequest } from 'modules/item/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { hasUserOrphanItems } from 'modules/item/selectors'
-import { CollectionDetailRouterProps } from 'components/CollectionDetailPage/CollectionDetailPage.types'
+import { CollectionDetailLocationState } from 'components/CollectionDetailPage/CollectionDetailPage.types'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './Header.types'
 import Header from './Header'
 
@@ -22,7 +22,7 @@ const mapState = (state: RootState): MapStateProps => {
   if (collectionId) {
     const collections = getCollections(state)
     collection = collections.find(collection => collection.id === collectionId)
-    isFromCollections = (getLocation(state).state as CollectionDetailRouterProps)?.fromParam === FromParam.COLLECTIONS
+    isFromCollections = (getLocation(state).state as CollectionDetailLocationState)?.fromParam === FromParam.COLLECTIONS
   }
   const address = getAddress(state)
   return {

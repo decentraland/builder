@@ -30,7 +30,7 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: (path, prop) => dispatch(push(path, prop)),
+  onNavigate: (path, locationState) => dispatch(push(path, locationState)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
