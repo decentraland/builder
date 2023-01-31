@@ -80,11 +80,13 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   renderHeader() {
-    const { isLoggedIn } = this.props
+    const { hasUserOrphanItems, isLoggedIn } = this.props
     return (
       <>
         <div className="block close" onClick={this.handleHome} />
-        <div className="title">{t('item_editor.left_panel.title')}</div>
+        <div className="title">
+          {hasUserOrphanItems ? t('item_editor.left_panel.title') : t('item_editor.left_panel.title_alternative')}
+        </div>
         {isLoggedIn ? (
           <Dropdown trigger={<div className="block add" />} inline direction="left">
             <Dropdown.Menu>

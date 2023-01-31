@@ -1507,6 +1507,7 @@
     },
     "left_panel": {
       "title": "My Items",
+      "title_alternative": "My Collections",
       "actions": {
         "new_item": "New Item",
         "new_collection": "New Collection",

@@ -1505,6 +1505,7 @@
     },
     "left_panel": {
       "title": "我的物品",
+      "title_alternative": "我的收藏",
       "actions": {
         "new_item": "新物品",
         "new_collection": "新系列",
