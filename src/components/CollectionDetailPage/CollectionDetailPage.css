@@ -255,7 +255,8 @@
   padding: 7px 20px;
 }
 
-.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button span {
+.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button span,
+.CollectionDetailPage .dcl.narrow .secondary-actions .button span {
   color: var(--primary);
 }
 
