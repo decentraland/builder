@@ -11,15 +11,16 @@
   height: 100%;
 }
 
-.CollectionImage .item-row.empty {
+.CollectionImage > .item-row.empty {
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100%;
   color: var(--secondary-text);
-  border: 1px solid var(--divider);
-  border-radius: 5px;
+  border: 1px solid var(--secondary-text);
   text-transform: uppercase;
+  margin-top: 0;
+  padding: 0;
 }
 
 .CollectionImage .item {
