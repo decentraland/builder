@@ -25,7 +25,7 @@
 
 .LandAssignENSForm .box .message-box {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .LandAssignENSForm .box.box-disabled {
@@ -40,6 +40,7 @@
 .LandAssignENSForm .box p {
   width: 100%;
   margin-right: 45px;
+  margin-bottom: 0px;
 }
 
 .LandAssignENSForm .confirmation-buttons button {

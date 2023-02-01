@@ -89,14 +89,49 @@
   width: 100%;
 }
 
-.done {
+.ready {
   color: rgb(var(--light-blue-raw));
+}
+
+.notReady {
+  color: #736e7d;
 }
 
 .incomplete {
   color: var(--primary);
 }
 
+.published {
+  color: var(--text);
+}
+
+.unsynced {
+  display: flex;
+  align-items: center;
+  color: var(--millenial-orange);
+}
+
+.alertIcon {
+  display: inline-block;
+  margin-right: 0.25rem;
+  height: 15px;
+  width: 15px;
+  vertical-align: text-bottom;
+  background: url('../../../icons/alert.svg') no-repeat;
+  background-size: contain;
+  filter: invert(64%) sepia(34%) saturate(797%) hue-rotate(331deg) brightness(140%) contrast(98%); /* #fc9965 */
+}
+
 .check {
   margin-left: 2px;
+}
+
+.contextMenuButton {
+  width: 18px !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.contextMenu {
+  background-color: var(--smart-grey) !important;
 }

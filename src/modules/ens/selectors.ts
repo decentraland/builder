@@ -10,8 +10,10 @@ import {
   SET_ENS_RESOLVER_SUCCESS,
   SET_ENS_CONTENT_REQUEST,
   SET_ENS_CONTENT_SUCCESS,
-  CLAIM_NAME_SUCCESS,
-  ALLOW_CLAIM_MANA_SUCCESS
+  ALLOW_CLAIM_MANA_SUCCESS,
+  RECLAIM_NAME_SUCCESS,
+  CLAIM_NAME_REQUEST,
+  CLAIM_NAME_TRANSACTION_SUBMITTED
 } from './actions'
 import { Authorization, ENS } from './types'
 import { ENSState } from './reducer'
@@ -26,7 +28,7 @@ export const getLoading = (state: RootState) => getState(state).loading
 export const getENSList = createSelector<RootState, ENSState['data'], ENS[]>(getData, ensData => Object.values(ensData))
 
 export const getENSByWallet = createSelector<RootState, ENS[], string | undefined, ENS[]>(getENSList, getAddress, (ensList, address = '') =>
-  ensList.filter(ens => isEqual(ens.address, address))
+  ensList.filter(ens => isEqual(ens.nftOwnerAddress, address))
 )
 
 export const getAuthorizationByWallet = createSelector<
@@ -48,7 +50,7 @@ export const getAliases = createSelector<RootState, ENS[], string | undefined, s
   getAddress,
   getName,
   (ensList, address = '', name = '') =>
-    ensList.filter(ens => isEqual(ens.address, address) && name && ens.subdomain === getDomainFromName(name))
+    ensList.filter(ens => isEqual(ens.nftOwnerAddress, address) && name && ens.subdomain === getDomainFromName(name))
 )
 
 export const getENSForLand = (state: RootState, landId: string) => {
@@ -56,8 +58,12 @@ export const getENSForLand = (state: RootState, landId: string) => {
   return ensList.filter(ens => ens.landId === landId)
 }
 
+export const isWaitingTxReclaim = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
+  transactions.some(transaction => RECLAIM_NAME_SUCCESS === transaction.actionType)
+)
+
 export const isWaitingTxClaimName = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
-  transactions.some(transaction => CLAIM_NAME_SUCCESS === transaction.actionType)
+  transactions.some(transaction => CLAIM_NAME_TRANSACTION_SUBMITTED === transaction.actionType)
 )
 
 export const isWaitingTxAllowMana = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
@@ -72,6 +78,9 @@ export const isWaitingTxSetLandContent = (state: RootState, landId: string) =>
   getPendingTransactions(state).some(
     transaction => SET_ENS_CONTENT_SUCCESS === transaction.actionType && transaction.payload.land.id === landId
   )
+
+export const isReclaimingName = (state: RootState, name: string) =>
+  getLoading(state).some(loadingAction => loadingAction.type === CLAIM_NAME_REQUEST && loadingAction.name === name)
 
 export const isLoadingContentBySubdomain = createSelector<RootState, ENS[], LoadingState, Record<string, boolean>>(
   getENSList,

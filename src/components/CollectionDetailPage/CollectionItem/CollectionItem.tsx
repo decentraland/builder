@@ -2,18 +2,17 @@ import React from 'react'
 import { ethers } from 'ethers'
 import { EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
+import { Dropdown, Icon, Button, Mana, Table, Popup } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
-import { isComplete, isFree, canMintItem, canManageItem, getMaxSupply } from 'modules/item/utils'
+import { isComplete, isFree, canManageItem, getMaxSupply } from 'modules/item/utils'
 import ItemStatus from 'components/ItemStatus'
 import { getExplorerURL, isLocked } from 'modules/collection/utils'
-import { isEmoteData, ItemType, WearableData } from 'modules/item/types'
+import { isEmoteData, ItemType, SyncStatus, WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
 import ItemImage from 'components/ItemImage'
-import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
 import styles from './CollectionItem.module.css'
@@ -44,8 +43,8 @@ export default class CollectionItem extends React.PureComponent<Props> {
   }
 
   handleDeleteItem = () => {
-    const { item, onDeleteItem } = this.props
-    onDeleteItem(item)
+    const { item, onOpenModal } = this.props
+    onOpenModal('DeleteItemModal', { item })
   }
 
   handleMoveToAnotherCollection = () => {
@@ -73,8 +72,81 @@ export default class CollectionItem extends React.PureComponent<Props> {
     )
   }
 
-  render() {
+  renderItemStatus() {
+    const { item, status } = this.props
+
+    return status === SyncStatus.UNSYNCED ? (
+      <div className={`${styles.unsynced} ${styles.action}`}>
+        <div className={styles.alertIcon} />
+        {t('collection_item.unsynced')}
+      </div>
+    ) : status === SyncStatus.UNDER_REVIEW || (item.isPublished && !item.isApproved) ? (
+      <div className={`${styles.notReady} ${styles.action}`}>
+        <Icon name="clock outline" />
+        {t('collection_item.under_review')}
+      </div>
+    ) : item.isPublished && item.isApproved ? (
+      <div className={`${styles.published} ${styles.action}`}>
+        <Icon name="check circle outline" />
+        {t('collection_item.published')}
+      </div>
+    ) : isComplete(item) ? (
+      <div className={`${styles.ready} ${styles.action}`}>
+        <Icon className={styles.check} name="check" />
+        {t('collection_item.ready')}
+      </div>
+    ) : !item.price ? (
+      <div className={`${styles.notReady} ${styles.action}`}>{t('collection_item.not_ready')}</div>
+    ) : (
+      <span onClick={preventDefault(this.handleNavigateToEditor)} className={`link ${styles.linkAction}`}>
+        {t('collection_item.edit_item')}
+      </span>
+    )
+  }
+
+  renderItemContextMenu() {
     const { collection, item, ethAddress } = this.props
+
+    return (
+      <div className={styles.itemActions}>
+        <Dropdown
+          trigger={
+            <Button basic>
+              <Icon name="ellipsis horizontal" />
+            </Button>
+          }
+          inline
+          direction="left"
+          className={styles.action}
+          onClick={preventDefault()}
+        >
+          <Dropdown.Menu className={styles.contextMenu}>
+            <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
+            <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
+            <Dropdown.Item text={t('collection_item.preview')} onClick={this.handleNavigateToEditor} />
+            {!collection.isPublished && (
+              <Dropdown.Item text={t('collection_item.move_to_another_collection')} onClick={this.handleMoveToAnotherCollection} />
+            )}
+            {canManageItem(collection, item, ethAddress) && !isLocked(collection) ? (
+              <>
+                {item.price ? <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} /> : null}
+                <ResetItemButton itemId={item.id} />
+                {!item.isPublished ? (
+                  <>
+                    <Dropdown.Divider />
+                    <Dropdown.Item text={t('collection_item.delete_item')} onClick={this.handleDeleteItem} />
+                  </>
+                ) : null}
+              </>
+            ) : null}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+    )
+  }
+
+  render() {
+    const { item } = this.props
     const data = item.data as EmoteDataADR74 | WearableData
 
     return (
@@ -108,7 +180,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
           </Table.Cell>
         ) : null}
         <Table.Cell className={styles.column}>{this.renderPrice()}</Table.Cell>
-        {item.isPublished ? (
+        {item.isPublished && item.isApproved ? (
           <Table.Cell className={styles.column}>
             <div>
               {item.totalSupply}/{getMaxSupply(item)}
@@ -116,63 +188,16 @@ export default class CollectionItem extends React.PureComponent<Props> {
           </Table.Cell>
         ) : null}
         <Table.Cell>
-          {canMintItem(collection, item, ethAddress) ? (
-            <span onClick={preventDefault(this.handleMintItem)} className={`link ${styles.linkAction}`}>
-              {t('collection_item.mint_item')}
-            </span>
-          ) : isComplete(item) ? (
-            <div className={`${styles.done} ${styles.action}`}>
-              {t('collection_item.done')} <Icon className={styles.check} name="check" />
-            </div>
-          ) : !item.price ? (
-            <div className={`${styles.incomplete} ${styles.action}`}>{t('collection_item.incomplete')}</div>
-          ) : (
-            <span onClick={preventDefault(this.handleNavigateToEditor)} className={`link ${styles.linkAction}`}>
-              {t('collection_item.edit_item')}
-            </span>
-          )}
-        </Table.Cell>
-        <Table.Cell className={styles.column}>
-          <div className={styles.itemActions}>
-            <Dropdown
-              trigger={
-                <Button basic>
-                  <Icon name="ellipsis horizontal" />
-                </Button>
-              }
-              inline
-              direction="left"
-              className={styles.action}
-              onClick={preventDefault()}
-            >
-              <Dropdown.Menu>
-                <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
-                <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
-                <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
-                {!collection.isPublished && (
-                  <Dropdown.Item text={t('collection_item.move_to_another_collection')} onClick={this.handleMoveToAnotherCollection} />
-                )}
-                {canManageItem(collection, item, ethAddress) && !isLocked(collection) ? (
-                  <>
-                    {item.price ? (
-                      <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
-                    ) : null}
-                    <ResetItemButton itemId={item.id} />
-                    {!item.isPublished ? (
-                      <>
-                        <Dropdown.Divider />
-                        <ConfirmDelete
-                          name={item.name}
-                          onDelete={this.handleDeleteItem}
-                          trigger={<Dropdown.Item text={t('collection_item.delete_item')} />}
-                        />
-                      </>
-                    ) : null}
-                  </>
-                ) : null}
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
+          <Popup
+            className={styles.contextMenuButton}
+            trigger={this.renderItemStatus()}
+            content={this.renderItemContextMenu()}
+            inverted
+            basic
+            offset={[0, -60]}
+            position="right center"
+            hoverable
+          />
         </Table.Cell>
       </Table.Row>
     )

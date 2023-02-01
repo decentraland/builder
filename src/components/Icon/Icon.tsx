@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 
 import { Props, DefaultProps } from './Icon.types'
 import './Icon.css'
@@ -17,6 +18,6 @@ export default class Icon extends React.PureComponent<Props> {
   render() {
     const { name, isActive, onClick, className } = this.props
     const iconName = isActive ? `${name}-active` : name
-    return <div className={`Icon ${iconName} ${onClick ? 'clickeable' : ''} ` + className} onClick={onClick || noop} />
+    return <div className={classNames('Icon', iconName, { clickeable: !!onClick }, className)} onClick={onClick || noop} />
   }
 }

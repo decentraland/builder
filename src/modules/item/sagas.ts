@@ -109,6 +109,7 @@ import { BuilderAPI as LegacyBuilderAPI, FetchCollectionsParams } from 'lib/api/
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
+import { FromParam } from 'modules/location/types'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
@@ -132,7 +133,7 @@ import {
   MAX_THUMBNAIL_FILE_SIZE
 } from './utils'
 import { ItemPaginationData } from './reducer'
-import { getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
+import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
 
@@ -437,19 +438,10 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     if (ItemModals.some(modal => openModals[modal])) {
       yield put(closeAllModals())
     } else if (openModals['CreateSingleItemModal']) {
-      if (location.pathname === locations.collections()) {
-        if (item.type === ItemType.EMOTE) {
-          // Redirect to the item editor
-          yield put(setItems([item]))
-          yield put(push(locations.itemEditor({ itemId: item.id })))
-        } else {
-          // Redirect to the newly created item details
-          yield put(push(locations.itemDetail(item.id)))
-        }
-      } else if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
+      if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
         // Redirect to the item editor
         yield put(setItems([item]))
-        yield put(push(locations.itemEditor({ collectionId, itemId: item.id, newItem: item.name })))
+        yield put(push(locations.itemEditor({ collectionId, itemId: item.id, newItem: item.name }), { fromParam: FromParam.COLLECTIONS }))
       } else {
         // When creating a Wearable/Emote in the itemEditor, reload the left panel to show the new item created
         if (location.pathname === locations.itemEditor()) {
@@ -531,6 +523,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (itemIdInUriParam === item.id) {
         yield put(replace(locations.collections()))
       }
+      yield put(closeModal('DeleteItemModal'))
+      yield put(showToast(getSuccessfulDeletedItemToast(item), 'bottom center'))
     } catch (error) {
       yield put(deleteItemFailure(item, error.message))
     }

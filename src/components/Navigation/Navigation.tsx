@@ -18,29 +18,31 @@ export default class Navigation extends React.PureComponent<Props> {
   render() {
     const { activeTab, isFullscreen, isCommitteeMember, children } = this.props
     return (
-      <Tabs isFullscreen={isFullscreen}>
-        {children}
-        <Tabs.Tab active={activeTab === NavigationTab.OVERVIEW} onClick={() => this.handleOnTabClick(locations.root())}>
-          {t('navigation.overview')}
-        </Tabs.Tab>
-        <Tabs.Tab active={activeTab === NavigationTab.COLLECTIONS} onClick={() => this.handleOnTabClick(locations.collections())}>
-          {t('navigation.collections')}
-        </Tabs.Tab>
-        <Tabs.Tab active={activeTab === NavigationTab.SCENES} onClick={() => this.handleOnTabClick(locations.scenes())}>
-          {t('navigation.scenes')}
-        </Tabs.Tab>
-        <Tabs.Tab active={activeTab === NavigationTab.LAND} onClick={() => this.handleOnTabClick(locations.land())}>
-          {t('navigation.land')}
-        </Tabs.Tab>
-        <Tabs.Tab active={activeTab === NavigationTab.NAMES} onClick={() => this.handleOnTabClick(locations.ens())}>
-          {t('navigation.names')}
-        </Tabs.Tab>
-        {isCommitteeMember ? (
-          <Tabs.Tab active={activeTab === NavigationTab.CURATION} onClick={() => this.handleOnTabClick(locations.curation())}>
-            {t('navigation.curation')}
+      <div className="Navigation">
+        <Tabs isFullscreen={isFullscreen}>
+          {children}
+          <Tabs.Tab active={activeTab === NavigationTab.OVERVIEW} onClick={() => this.handleOnTabClick(locations.root())}>
+            {t('navigation.overview')}
           </Tabs.Tab>
-        ) : null}
-      </Tabs>
+          <Tabs.Tab active={activeTab === NavigationTab.COLLECTIONS} onClick={() => this.handleOnTabClick(locations.collections())}>
+            {t('navigation.collections')}
+          </Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.SCENES} onClick={() => this.handleOnTabClick(locations.scenes())}>
+            {t('navigation.scenes')}
+          </Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.LAND} onClick={() => this.handleOnTabClick(locations.land())}>
+            {t('navigation.land')}
+          </Tabs.Tab>
+          <Tabs.Tab active={activeTab === NavigationTab.NAMES} onClick={() => this.handleOnTabClick(locations.ens())}>
+            {t('navigation.names')}
+          </Tabs.Tab>
+          {isCommitteeMember ? (
+            <Tabs.Tab active={activeTab === NavigationTab.CURATION} onClick={() => this.handleOnTabClick(locations.curation())}>
+              {t('navigation.curation')}
+            </Tabs.Tab>
+          ) : null}
+        </Tabs>
+      </div>
     )
   }
 }

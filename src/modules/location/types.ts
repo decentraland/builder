@@ -10,3 +10,7 @@ export type CollectionDetailByContractAddress = {
 }
 
 export type RedirectTo = CollectionDetailByContractAddress
+
+export enum FromParam {
+  COLLECTIONS = 'collections'
+}

@@ -29,6 +29,10 @@
   display: flex;
 }
 
+.ItemDetailPage .item-data-left-panel {
+  max-width: 256px;
+}
+
 .ItemDetailPage .item-data .ui.primary.button {
   margin-top: 12px;
   width: 100%;
@@ -72,7 +76,7 @@
 
 .ItemDetailPage .item-data .urn-actions {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   text-transform: capitalize;
   font-size: 13px;
   margin-top: 10px;
@@ -80,6 +84,13 @@
 
 .ItemDetailPage .item-data .urn-actions .link {
   margin-right: 24px;
+  border: none;
+  background: none;
+}
+
+.ItemDetailPage .item-data .urn-actions .link:disabled {
+  opacity: 0.5;
+  padding-left: 0;
 }
 
 .ItemDetailPage .ItemStatus {

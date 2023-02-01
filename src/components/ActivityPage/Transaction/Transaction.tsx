@@ -28,7 +28,13 @@ import {
   APPROVE_COLLECTION_SUCCESS,
   REJECT_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
-import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
+import {
+  SET_ENS_RESOLVER_SUCCESS,
+  SET_ENS_CONTENT_SUCCESS,
+  ALLOW_CLAIM_MANA_SUCCESS,
+  RECLAIM_NAME_SUCCESS,
+  CLAIM_NAME_TRANSACTION_SUBMITTED
+} from 'modules/ens/actions'
 import { getSaleAddress, getTotalAmountOfMintedItems } from 'modules/collection/utils'
 import { isEnoughClaimMana } from 'modules/ens/utils'
 import { includes } from 'lib/address'
@@ -294,7 +300,7 @@ const Transaction = (props: Props) => {
       const { address, ens } = tx.payload
       return (
         <TransactionDetail
-          address={address}
+          subdomain={ens.subdomain}
           text={
             <T
               id="transaction.set_ens_resolver"
@@ -312,7 +318,7 @@ const Transaction = (props: Props) => {
       const { address, ens, land } = tx.payload
       return (
         <TransactionDetail
-          address={address}
+          subdomain={ens.subdomain}
           text={
             land ? (
               <T
@@ -353,17 +359,16 @@ const Transaction = (props: Props) => {
         />
       )
     }
-    case CLAIM_NAME_SUCCESS: {
-      const { address, ens } = tx.payload
+    case CLAIM_NAME_TRANSACTION_SUBMITTED: {
+      const { subdomain } = tx.payload
       return (
         <TransactionDetail
-          address={address}
+          subdomain={subdomain}
           text={
             <T
               id="transaction.claim_name"
               values={{
-                address: <Profile address={address} />,
-                name: ens.subdomain
+                name: subdomain
               }}
             />
           }
@@ -371,7 +376,23 @@ const Transaction = (props: Props) => {
         />
       )
     }
-
+    case RECLAIM_NAME_SUCCESS: {
+      const { ens } = tx.payload
+      return (
+        <TransactionDetail
+          subdomain={ens.subdomain}
+          text={
+            <T
+              id="transaction.reclaim_name"
+              values={{
+                subdomain: ens.subdomain
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
     case RESCUE_ITEMS_CHUNK_SUCCESS: {
       const { count, collectionId, collectionName } = tx.payload
       return (

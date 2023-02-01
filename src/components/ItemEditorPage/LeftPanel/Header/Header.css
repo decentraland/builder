@@ -42,6 +42,11 @@
   background-size: 8px;
 }
 
+.Header .close {
+  background-image: url(../../../../icons/close.svg);
+  background-size: 12px;
+}
+
 .Header .add {
   background-image: url(../../../../images/add-item-editor.svg);
   background-size: 15px;
