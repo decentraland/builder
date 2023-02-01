@@ -1,3 +1,7 @@
+.CollectionDetailPage > .ui.container > .dcl.section {
+  margin-bottom: 48px;
+}
+
 .CollectionDetailPage .header-column {
   flex: none;
   width: calc(100% - 300px);
