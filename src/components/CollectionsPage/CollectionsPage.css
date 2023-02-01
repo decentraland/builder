@@ -89,7 +89,12 @@
 }
 
 .CollectionsPage .filters .dcl.row.actions .ui.button.open-editor {
-  padding: 6px 13px;
+  display: flex;
+  align-items: center;
+}
+
+.CollectionsPage .filters .dcl.row.actions .ui.button.open-editor .Icon {
+  margin-right: 6px;
 }
 
 .CollectionsPage .filters .dcl.row.actions .ui.button.open-editor:hover {
