@@ -260,6 +260,12 @@
   color: var(--primary);
 }
 
+.CollectionDetailPage .badge-forum-unread-posts {
+  margin-left: 8px;
+  color: var(--text);
+  background-color: var(--primary);
+}
+
 .unsynced-collection.container {
   display: flex;
   padding: 24px 30px;

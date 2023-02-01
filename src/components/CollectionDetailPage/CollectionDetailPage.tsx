@@ -1,7 +1,7 @@
 import * as React from 'react'
 import classNames from 'classnames'
 import { Network } from '@dcl/schemas'
-import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table } from 'decentraland-ui'
+import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table, Label } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -168,6 +168,21 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     )
   }
 
+  renderForumRepliesBadge() {
+    const { collection } = this.props
+    if (collection && collection?.forumPostReply) {
+      const { highest_post_number, last_read_post_number } = collection.forumPostReply
+      const unreadPosts = highest_post_number - (last_read_post_number ?? 0)
+      return (
+        <Label className="badge-forum-unread-posts" circular size="tiny">
+          {unreadPosts}
+        </Label>
+      )
+    }
+
+    return null
+  }
+
   renderPage(items: Item[]) {
     const { tab } = this.state
     const { status, wallet } = this.props
@@ -215,11 +230,14 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                         <span className="text">{t('collection_detail_page.mint_items')}</span>
                       </Button>
                     ) : null}
-                    {collection.isPublished && collection.forumLink && !collection.isApproved && (
-                      <Button basic onClick={this.handleNavigateToForum}>
-                        <span>{t('collection_context_menu.forum_post')}</span>
-                      </Button>
-                    )}
+                    {collection.isPublished && collection.forumLink && !collection.isApproved ? (
+                      <>
+                        <Button basic onClick={this.handleNavigateToForum}>
+                          <span>{t('collection_context_menu.forum_post')}</span>
+                        </Button>
+                        {collection?.forumPostReply ? this.renderForumRepliesBadge() : null}
+                      </>
+                    ) : null}
                     {!(collection.isPublished && collection.isApproved) && status !== SyncStatus.UNSYNCED ? (
                       <CollectionPublishButton collection={collection} />
                     ) : null}
