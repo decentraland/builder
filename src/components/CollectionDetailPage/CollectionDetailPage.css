@@ -24,6 +24,14 @@
   display: inline-block;
 }
 
+.CollectionDetailPage .ui.circular.label.badge-on-sale {
+  margin-left: 1em;
+  padding: 0.5em 0.667em !important;
+  color: var(--text);
+  background-color: var(--primary);
+  text-transform: uppercase;
+}
+
 .CollectionDetailPage .section:not(.is-published) .header-row:hover {
   cursor: pointer;
 }

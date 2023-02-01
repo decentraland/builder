@@ -54,9 +54,8 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   handleOnSaleChange = () => {
     const { collection, wallet, onOpenModal } = this.props
-    const toggleIsOnSale = !isCollectionOnSale(collection!, wallet)
     if (collection) {
-      onOpenModal('SellCollectionModal', { collectionId: collection.id, isOnSale: toggleIsOnSale })
+      onOpenModal('SellCollectionModal', { collectionId: collection.id, isOnSale: isCollectionOnSale(collection, wallet) })
     }
   }
 
@@ -160,7 +159,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
             onClick={this.handleOnSaleChange}
           >
             <span className="text">
-              {isOnSale ? t('collection_detail_page.remove_from_marketplace') : t('collection_detail_page.on_sale')}
+              {isOnSale ? t('collection_detail_page.remove_from_marketplace') : t('collection_detail_page.put_for_sale')}
             </span>
           </Button>
         )}
@@ -190,6 +189,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
     const canMint = canMintCollectionItems(collection, wallet.address)
     const isLocked = isCollectionLocked(collection)
+    const isOnSale = isCollectionOnSale(collection, wallet)
     const hasEmotes = items.some(item => item.type === ItemType.EMOTE)
     const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
     const isEmoteMissingPrice = hasEmotes ? items.some(item => item.type === ItemType.EMOTE && !item.price) : false
@@ -220,6 +220,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                         {collection.name}
                       </Header>
                       <BuilderIcon name="edit" className="edit-collection-name" />
+                      {isOnSale ? (
+                        <Label className="badge-on-sale" small circular>
+                          {t('collection_detail_page.on_sale')}
+                        </Label>
+                      ) : null}
                     </Row>
                   )}
                 </Column>
