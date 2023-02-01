@@ -17,8 +17,8 @@ export default class Header extends React.PureComponent<Props> {
   handleBack = () => {
     const { collection, isFromCollections, onNavigate } = this.props
     // If the user came from a collection details page, go back to the same page
-    if (isFromCollections) {
-      onNavigate(locations.collectionDetail(collection!.id))
+    if (collection && isFromCollections) {
+      onNavigate(locations.collectionDetail(collection.id))
     } else {
       onNavigate(locations.itemEditor())
     }
@@ -36,22 +36,22 @@ export default class Header extends React.PureComponent<Props> {
 
   handleAddNewItem = () => {
     const { collection, onOpenModal } = this.props
-    onOpenModal('CreateSingleItemModal', { collectionId: collection!.id })
+    collection && onOpenModal('CreateSingleItemModal', { collectionId: collection.id })
   }
 
   handleAddExistingItem = () => {
     const { collection, onOpenModal } = this.props
-    onOpenModal('AddExistingItemModal', { collectionId: collection!.id })
+    collection && onOpenModal('AddExistingItemModal', { collectionId: collection.id })
   }
 
   handleEditName = () => {
     const { collection, onOpenModal } = this.props
-    onOpenModal('EditCollectionNameModal', { collection })
+    collection && onOpenModal('EditCollectionNameModal', { collection })
   }
 
   handleDelete = () => {
     const { collection, onDeleteCollection } = this.props
-    onDeleteCollection(collection!)
+    collection && onDeleteCollection(collection)
   }
 
   renderSelectedCollection() {
