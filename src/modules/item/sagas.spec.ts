@@ -19,6 +19,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
+import { FromParam } from 'modules/location/types'
 import { getMethodData } from 'modules/wallet/utils'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
@@ -528,42 +529,6 @@ describe('when handling the save item success action', () => {
     })
   })
 
-  describe('and the location is the Collection page', () => {
-    describe('and the CreateSingleItemModal is opened', () => {
-      describe('and the item type is wearable', () => {
-        it('should put a location change to the item detail', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
-            .provide([
-              [select(getLocation), { pathname: locations.collections() }],
-              [select(getOpenModals), { CreateSingleItemModal: true }],
-              [select(getAddress), mockAddress]
-            ])
-            .put(push(locations.itemDetail(item.id)))
-            .dispatch(saveItemSuccess(item, {}))
-            .run({ silenceTimeout: true })
-        })
-      })
-
-      describe('and the item type is emote', () => {
-        beforeEach(() => {
-          item = { ...item, type: ItemType.EMOTE }
-        })
-
-        it('should put a location change to the item editor', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
-            .provide([
-              [select(getLocation), { pathname: locations.collections() }],
-              [select(getOpenModals), { CreateSingleItemModal: true }],
-              [select(getAddress), mockAddress]
-            ])
-            .put(push(locations.itemEditor({ itemId: item.id })))
-            .dispatch(saveItemSuccess(item, {}))
-            .run({ silenceTimeout: true })
-        })
-      })
-    })
-  })
-
   describe('and the location is the Collection detail page', () => {
     describe('and the CreateSingleItemModal is opened', () => {
       describe('and the item type is wearable', () => {
@@ -592,7 +557,11 @@ describe('when handling the save item success action', () => {
               [select(getOpenModals), { CreateSingleItemModal: true }],
               [select(getAddress), mockAddress]
             ])
-            .put(push(locations.itemEditor({ collectionId: collection.id, itemId: item.id, newItem: item.name })))
+            .put(
+              push(locations.itemEditor({ collectionId: collection.id, itemId: item.id, newItem: item.name }), {
+                fromParam: FromParam.COLLECTIONS
+              })
+            )
             .dispatch(saveItemSuccess(item, {}))
             .run({ silenceTimeout: true })
         })
@@ -1573,18 +1542,6 @@ describe('when handling the save item curation success action', () => {
         [select(getAddress), mockAddress]
       ])
       .not.put(fetchItemCurationRequest(item.collectionId!, item.id))
-      .dispatch(saveItemSuccess(item, {}))
-      .run({ silenceTimeout: true })
-  })
-
-  it('should put a location change to the item detail if the CreateSingleItemModal was opened and the location was /collections', () => {
-    return expectSaga(itemSaga, builderAPI, builderClient)
-      .provide([
-        [select(getLocation), { pathname: locations.collections() }],
-        [select(getOpenModals), { CreateSingleItemModal: true }],
-        [select(getAddress), mockAddress]
-      ])
-      .put(push(locations.itemDetail(item.id)))
       .dispatch(saveItemSuccess(item, {}))
       .run({ silenceTimeout: true })
   })

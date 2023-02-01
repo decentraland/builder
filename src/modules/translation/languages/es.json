@@ -1521,6 +1521,7 @@
     },
     "left_panel": {
       "title": "Mis Items",
+      "title_alternative": "Mis Colecciones",
       "actions": {
         "new_item": "Nuevo Item",
         "new_collection": "Nueva Colección",

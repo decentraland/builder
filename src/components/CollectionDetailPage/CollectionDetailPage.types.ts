@@ -13,8 +13,12 @@ export type Props = {
   isLoading: boolean
   items: Item[]
   status: SyncStatus
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, prop?: CollectionDetailLocationState) => void
   onOpenModal: typeof openModal
+}
+
+export type CollectionDetailLocationState = {
+  fromParam?: string
 }
 
 export type State = {
