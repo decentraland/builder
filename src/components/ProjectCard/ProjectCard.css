@@ -3,8 +3,6 @@
   width: var(--scenespage-card-width);
   height: var(--scenespage-card-height);
   border-radius: 12px;
-  margin-bottom: var(--scenespage-card-margin);
-  margin-right: var(--scenespage-card-margin);
   background: rgba(var(--bluish-steel-raw), 0.16);
   cursor: pointer;
   display: flex;
