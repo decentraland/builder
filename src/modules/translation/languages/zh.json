@@ -1199,6 +1199,7 @@
     "new_item": "新物品",
     "mint_items": "薄荷项目",
     "on_sale": "特价中",
+    "put_for_sale": "投放出售",
     "set_on_sale_popup": "这将允许您的收藏在 Decentraland 市场上出售。",
     "unset_on_sale_popup": "该系列在 Decentraland 市场上有售。",
     "notice": "凉爽的！ 现在，您可以开始处理项目了。 {editor_link}打开编辑器，或在任何项目上单击“编辑”按钮。",
@@ -1419,6 +1420,16 @@
     "turn_on": "打开",
     "turn_off_description": "关闭此开关后，您的收藏将不再可用。",
     "turn_off": "关掉",
+    "put_for_sale": {
+      "title": "您想出售此收藏吗？",
+      "description": "该系列将可在 Decentraland 市场上购买。",
+      "cta": "投放出售"
+    },
+    "remove_from_marketplace": {
+      "title": "你想从市场中删除这个集合吗？",
+      "description": "该系列将不再可在 Decentraland 市场上购买。",
+      "cta": "从市场中删除"
+    },
     "unsynced_warning": "有些项目有尚未批准的更改。"
   },
   "collection_managers_modal": {},

@@ -1218,12 +1218,13 @@
     "new_item": "Nuevo Item",
     "mint_items": "Crear Items",
     "on_sale": "En venta",
+    "put_for_sale": "Poner en venta",
     "set_on_sale_popup": "Esto permitirá que tu colección sea vendida en el Mercado de Decentraland.",
     "unset_on_sale_popup": "Esta colección está en venta en el Mercado de Decentraland.",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
     "preview": "Preview en el Editor",
     "publish": "Publicar Colección",
-    "remove_from_marketplace": "Remover del marketplace",
+    "remove_from_marketplace": "Remover del Marketplace",
     "add_item": "Agregar Item",
     "add_items_title": "Se ve bien!",
     "add_items_subtitle": "Ahora puede comenzar a agregar items a su colección",
@@ -1436,6 +1437,16 @@
     "turn_on": "Activar",
     "turn_off_description": "Al desactivar esta opción tu colección ya no estará en venta.",
     "turn_off": "Desactivar",
+    "put_for_sale": {
+      "title": "¿Quieres poner en venta esta colección?",
+      "description": "La colección estará en venta en el mercado de Decentraland.",
+      "cta": "Poner en Venta"
+    },
+    "remove_from_marketplace": {
+      "title": "¿Quieres remover esta colección del Marketplace?",
+      "description": "La colección ya no estará en venta en el mercado de Decentraland.",
+      "cta": "Remover del Marketplace"
+    },
     "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
   },
   "publish_third_party_collection_modal": {

@@ -1,3 +1,7 @@
+.SellCollectionModal.ui.modal .dcl.modal-navigation-title {
+  text-align: center;
+}
+
 .SellCollectionModal.ui.modal > .content {
   text-align: center;
   margin-left: 60px;

@@ -8,34 +8,24 @@ import { Props } from './SellCollectionModal.types'
 import './SellCollectionModal.css'
 
 export default class SellCollectionModal extends React.PureComponent<Props> {
-  handleSell = () => {
+  handleToggleOnSale = () => {
     const { collection, wallet, metadata, onSetMinters } = this.props
-    onSetMinters(collection, setOnSale(collection, wallet, metadata.isOnSale))
+    onSetMinters(collection, setOnSale(collection, wallet, !metadata.isOnSale))
   }
 
   render() {
     const { metadata, isLoading, hasUnsyncedItems, onClose } = this.props
+    const tKey = metadata.isOnSale ? 'remove_from_marketplace' : 'put_for_sale'
     return (
       <Modal className="SellCollectionModal" size="tiny" onClose={onClose}>
-        <ModalNavigation title={t('sell_collection_modal.title')} onClose={onClose} />
+        <ModalNavigation title={t(`sell_collection_modal.${tKey}.title`)} onClose={onClose} />
         <Modal.Content>
           {hasUnsyncedItems && <p className="unsynced-warning danger-text">{t('sell_collection_modal.unsynced_warning')}</p>}
-          {metadata.isOnSale ? (
-            <>
-              {t('sell_collection_modal.turn_on_description')}
-              <Button primary fluid onClick={this.handleSell} loading={isLoading}>
-                {t('sell_collection_modal.turn_on')}
-              </Button>
-            </>
-          ) : (
-            <>
-              {t('sell_collection_modal.turn_off_description')}
-              <Button primary fluid onClick={this.handleSell} loading={isLoading}>
-                {t('sell_collection_modal.turn_off')}
-              </Button>
-            </>
-          )}
-          <Button secondary fluid onClick={onClose}>
+          {t(`sell_collection_modal.${tKey}.description`)}
+          <Button primary fluid onClick={this.handleToggleOnSale} loading={isLoading} disabled={isLoading}>
+            {t(`sell_collection_modal.${tKey}.cta`)}
+          </Button>
+          <Button secondary fluid onClick={onClose} disabled={isLoading}>
             {t('global.cancel')}
           </Button>
         </Modal.Content>

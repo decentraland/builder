@@ -1209,7 +1209,8 @@
   "collection_detail_page": {
     "new_item": "New Item",
     "mint_items": "Mint Items",
-    "on_sale": "Put for sale",
+    "on_sale": "On Sale",
+    "put_for_sale": "Put for sale",
     "set_on_sale_popup": "This will allow your collection to be sold in the Decentraland Marketplace.",
     "unset_on_sale_popup": "This collection is on sale in the Decentraland Marketplace.",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
@@ -1442,11 +1443,16 @@
     "content": "The item is currently different from the one that has been previously approved by the committee. {br}The version you are seeing now does not correspond to the one visible in the marketplace and in the game. {br}You can push the changes for the committee to review this new version, or you can click on the confirm button to reset the item to it's original state."
   },
   "sell_collection_modal": {
-    "title": "Do you want to sell your items?",
-    "turn_on_description": "By turning this switch on your collection will be available for purchase in the Decentraland Marketplace.",
-    "turn_on": "Turn On",
-    "turn_off_description": "By turning this switch off your collection will not longer be available for purchase.",
-    "turn_off": "Turn Off",
+    "put_for_sale": {
+      "title": "Do you want to put this collection for sale?",
+      "description": "The collection will be available for purchase in the Decentraland Marketplace.",
+      "cta": "Put for Sale"
+    },
+    "remove_from_marketplace": {
+      "title": "Do you want to remove this collection from the Marketplace?",
+      "description": "The collection will no longer be available for purchase in the Decentraland Marketplace.",
+      "cta": "Remove from Marketplace"
+    },
     "unsynced_warning": "Some items have changes that have not been approved yet."
   },
   "manage_collection_role_modal": {
