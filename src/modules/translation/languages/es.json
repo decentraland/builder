@@ -1231,6 +1231,7 @@
     "add_items_subtitle_extensions": "Formatos aceptados: ZIP, GLTF, GLB, PNG.",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
+    "can_mint": "Crear items le permite transferir NFTs directamente a una dirección.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
     "cant_push": "Esta colección aún está bajo revisión, los artículos aún se pueden acuñar pero no reflejarán nuevos cambios hasta su aprobación.",
     "push_changes": "Subir Cambios",

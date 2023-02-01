@@ -1212,6 +1212,7 @@
     "add_items_subtitle_extensions": "接受的文件是 ZIP、GLTF、GLB、PNG。",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
+    "can_mint": "铸币允许您将 NFT 直接转移到一个地址。",
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
     "cant_push": "此集合仍在审查中，项目仍然可以铸造，但不会反映进一步的变化，直到批准。",
     "push_changes": "上传更改",

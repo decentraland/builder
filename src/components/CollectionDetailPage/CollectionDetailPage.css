@@ -343,3 +343,8 @@
   height: 48px;
   width: 48px;
 }
+
+.CollectionDetailPage.popup-mint,
+.CollectionDetailPage.popup-mint:before {
+  background-color: var(--smart-grey) !important;
+}

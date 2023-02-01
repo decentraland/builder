@@ -231,9 +231,19 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                 <Column align="right" className="actions-container" shrink={false} grow={false}>
                   <Row className="actions">
                     {collection.isPublished && collection.isApproved ? (
-                      <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
-                        <span className="text">{t('collection_detail_page.mint_items')}</span>
-                      </Button>
+                      <Popup
+                        content={t('collection_detail_page.can_mint')}
+                        className="CollectionDetailPage popup-mint"
+                        position="top center"
+                        trigger={
+                          <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
+                            <span className="text">{t('collection_detail_page.mint_items')}</span>
+                          </Button>
+                        }
+                        on="hover"
+                        inverted
+                        flowing
+                      />
                     ) : null}
                     {collection.isPublished && collection.forumLink && !collection.isApproved ? (
                       <>
