@@ -6,3 +6,10 @@ export type ForumPost = {
   archetype?: string
   created_at?: string
 }
+
+export type ForumPostReply = {
+  topic_id: number
+  highest_post_number: number
+  show_read_indicator: boolean
+  last_read_post_number?: number
+}

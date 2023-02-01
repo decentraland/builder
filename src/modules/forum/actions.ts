@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { Collection } from 'modules/collection/types'
-import { ForumPost } from './types'
+import { ForumPost, ForumPostReply } from './types'
 
 // Create collection forum post
 
@@ -22,6 +22,23 @@ export const createCollectionForumPostFailure = (collection: Collection, forumPo
 export type CreateCollectionForumPostRequestAction = ReturnType<typeof createCollectionForumPostRequest>
 export type CreateCollectionForumPostSuccessAction = ReturnType<typeof createCollectionForumPostSuccess>
 export type CreateCollectionForumPostFailureAction = ReturnType<typeof createCollectionForumPostFailure>
+
+// Get collection forum post reply
+
+export const FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST = '[Request] Fetch collection forum post reply'
+export const FETCH_COLLECTION_FORUM_POST_REPLY_SUCCESS = '[Success] Fetch collection forum post reply'
+export const FETCH_COLLECTION_FORUM_POST_REPLY_FAILURE = '[Failure] Fetch collection forum post reply'
+
+export const fetchCollectionForumPostReplyRequest = (collectionId: Collection['id']) =>
+  action(FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST, { collectionId })
+export const fetchCollectionForumPostReplySuccess = (collection: Collection, forumPostReply: ForumPostReply) =>
+  action(FETCH_COLLECTION_FORUM_POST_REPLY_SUCCESS, { collection, forumPostReply })
+export const fetchCollectionForumPostReplyFailure = (collection: Collection, error: string) =>
+  action(FETCH_COLLECTION_FORUM_POST_REPLY_FAILURE, { collection, error })
+
+export type FetchCollectionForumPostReplyRequestAction = ReturnType<typeof fetchCollectionForumPostReplyRequest>
+export type FetchCollectionForumPostReplySuccessAction = ReturnType<typeof fetchCollectionForumPostReplySuccess>
+export type FetchCollectionForumPostReplyFailureAction = ReturnType<typeof fetchCollectionForumPostReplyFailure>
 
 // Create collection assignee event forum post
 

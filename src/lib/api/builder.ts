@@ -18,7 +18,7 @@ import { Account } from 'modules/committee/types'
 import { Collection, CollectionType } from 'modules/collection/types'
 import { Cheque, ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
-import { ForumPost } from 'modules/forum/types'
+import { ForumPost, ForumPostReply } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
@@ -27,6 +27,7 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination
 import { Authorization } from './auth'
 
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
+export const FORUM_URL = config.get('FORUM_URL', '')
 
 export const getContentsStorageUrl = (hash = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
@@ -832,6 +833,20 @@ export class BuilderAPI extends BaseAPI {
 
   async createCollectionForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
     return this.request('post', `/collections/${collection.id}/post`, { forumPost }) as Promise<string>
+  }
+
+  /* Getting the forum post replies in the front to utilize the forum session
+   * and get the latest read messages by the creator.
+   */
+  async getCollectionForumPostReply(topicId: string): Promise<ForumPostReply> {
+    const response = await fetch(`${FORUM_URL}/t/${topicId}.json`)
+    const data = await response.json()
+    return {
+      topic_id: data.id,
+      highest_post_number: data.highest_post_number,
+      show_read_indicator: data.show_read_indicator,
+      last_read_post_number: data?.last_read_post_number
+    }
   }
 
   async createCollectionNewAssigneeForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {

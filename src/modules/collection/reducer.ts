@@ -10,7 +10,13 @@ import {
   CreateCollectionForumPostFailureAction,
   CREATE_COLLECTION_FORUM_POST_REQUEST,
   CREATE_COLLECTION_FORUM_POST_SUCCESS,
-  CREATE_COLLECTION_FORUM_POST_FAILURE
+  CREATE_COLLECTION_FORUM_POST_FAILURE,
+  FetchCollectionForumPostReplyRequestAction,
+  FetchCollectionForumPostReplySuccessAction,
+  FetchCollectionForumPostReplyFailureAction,
+  FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST,
+  FETCH_COLLECTION_FORUM_POST_REPLY_SUCCESS,
+  FETCH_COLLECTION_FORUM_POST_REPLY_FAILURE
 } from 'modules/forum/actions'
 import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
 import {
@@ -138,6 +144,9 @@ type CollectionReducerAction =
   | CreateCollectionForumPostRequestAction
   | CreateCollectionForumPostSuccessAction
   | CreateCollectionForumPostFailureAction
+  | FetchCollectionForumPostReplyRequestAction
+  | FetchCollectionForumPostReplySuccessAction
+  | FetchCollectionForumPostReplyFailureAction
   | PublishThirdPartyItemsSuccessAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction): CollectionState {
@@ -163,6 +172,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case MINT_COLLECTION_ITEMS_REQUEST:
     case MINT_COLLECTION_ITEMS_SUCCESS:
     case CREATE_COLLECTION_FORUM_POST_REQUEST:
+    case FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST:
     case APPROVE_COLLECTION_SUCCESS: {
       return {
         ...state,
@@ -277,6 +287,20 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
         loading: loadingReducer(state.loading, action)
       }
     }
+    case FETCH_COLLECTION_FORUM_POST_REPLY_SUCCESS: {
+      const { collection, forumPostReply } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [collection.id]: {
+            ...state.data[collection.id],
+            forumPostReply
+          }
+        },
+        loading: loadingReducer(state.loading, action)
+      }
+    }
     case FETCH_COLLECTIONS_FAILURE:
     case FETCH_COLLECTION_FAILURE:
     case SAVE_COLLECTION_FAILURE:
@@ -287,7 +311,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case SET_COLLECTION_MINTERS_FAILURE:
     case SET_COLLECTION_MANAGERS_FAILURE:
     case MINT_COLLECTION_ITEMS_FAILURE:
-    case CREATE_COLLECTION_FORUM_POST_FAILURE: {
+    case CREATE_COLLECTION_FORUM_POST_FAILURE:
+    case FETCH_COLLECTION_FORUM_POST_REPLY_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

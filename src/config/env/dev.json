@@ -5,7 +5,7 @@
   "EMAIL_SERVER_URL": "https://decentraland.org/subscribe",
   "PEER_URL": "https://peer.decentraland.zone",
   "ERC721_COLLECTION_BASE_URI": "https://peer.decentraland.zone/lambdas/collections/standard/erc721/",
-  "BUILDER_SERVER_URL": "https://builder-api.decentraland.zone/v1",
+  "BUILDER_SERVER_URL": "http://localhost:5001/v1",
   "MARKETPLACE_URL": "https://api.decentraland.zone/v1",
   "MARKETPLACE_WEB_URL": "https://market.decentraland.zone",
   "LAND_MANAGER_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/land-manager-goerli",
@@ -30,5 +30,6 @@
   "ACCOUNT_URL": "https://account.decentraland.zone",
   "DISCORD_URL": "https://dcl.gg/discord",
   "WEARABLES_ZIP_INFRA_URL": "http://a-test-url-com",
-  "MIN_SALE_VALUE_IN_WEI": "1000000000000000000"
+  "MIN_SALE_VALUE_IN_WEI": "1000000000000000000",
+  "FORUM_URL": "https://forum.decentraland.org"
 }

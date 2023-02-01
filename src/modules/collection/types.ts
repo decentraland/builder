@@ -1,4 +1,5 @@
 import { Item } from 'modules/item/types'
+import { ForumPostReply } from 'modules/forum/types'
 
 export type Collection = {
   id: string
@@ -13,6 +14,7 @@ export type Collection = {
   minters: string[]
   managers: string[]
   forumLink?: string
+  forumPostReply?: ForumPostReply
   lock?: number
   reviewedAt?: number
   createdAt: number
