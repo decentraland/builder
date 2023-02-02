@@ -79,16 +79,16 @@ export function* forumSaga(builder: BuilderAPI) {
   function* handleFetchCollectionForumPostReply(action: FetchCollectionForumPostReplyRequestAction) {
     const { collectionId } = action.payload
     const collection: Collection = yield select(getCollection, collectionId)
-    if (collection?.forumLink) {
-      const topicId = collection.forumLink.split('/').pop()
+    const topicId = collection.forumLink ? collection.forumLink.split('/').pop() : null
+    try {
       if (topicId) {
-        try {
-          const forumPostReply: ForumPostReply = yield call([builder, 'getCollectionForumPostReply'], topicId)
-          yield put(fetchCollectionForumPostReplySuccess(collection, forumPostReply))
-        } catch (error) {
-          yield put(fetchCollectionForumPostReplyFailure(collection, error.message))
-        }
+        const forumPostReply: ForumPostReply = yield call([builder, 'getCollectionForumPostReply'], topicId)
+        yield put(fetchCollectionForumPostReplySuccess(collection, forumPostReply))
+      } else {
+        throw new Error(`Invalid forum topic id for the collection id: ${collectionId}`)
       }
+    } catch (error) {
+      yield put(fetchCollectionForumPostReplyFailure(collection, error.message))
     }
   }
 

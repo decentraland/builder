@@ -9,6 +9,7 @@ import { DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
 import { getCollectionItems } from 'modules/item/selectors'
 import { ItemType } from 'modules/item/types'
+import { fetchCollectionForumPostReplyRequest, FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST } from 'modules/forum/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionDetailPage.types'
 import CollectionDetailPage from './CollectionDetailPage'
 
@@ -25,13 +26,16 @@ const mapState = (state: RootState): MapStateProps => {
     isOnSaleLoading: isOnSaleLoading(state),
     items: getCollectionItems(state, collectionId),
     status: statusByCollectionId[collectionId],
-    isLoading: isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST)
+    isLoading:
+      isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
+      isLoadingType(getLoadingCollection(state), FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: (path, locationState) => dispatch(push(path, locationState)),
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
+  onFetchCollectionForumPostReply: id => dispatch(fetchCollectionForumPostReplyRequest(id))
 })
 
 export default connect(mapState, mapDispatch)(CollectionDetailPage)

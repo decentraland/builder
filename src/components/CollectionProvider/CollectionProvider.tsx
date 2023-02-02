@@ -14,20 +14,11 @@ export default class CollectionProvider extends React.PureComponent<Props> {
     }
   }
 
-  fetchCollectionForumPostReply() {
-    const { id, collection, isLoading, onFetchCollectionForumPostReply } = this.props
-    // Only fetch the forum post replies if the collection has a forum link and there's no other fetch process in progress
-    if (id && collection && !!collection?.forumLink && !collection?.forumPostReply && !isLoading) {
-      onFetchCollectionForumPostReply(id)
-    }
-  }
-
   componentDidMount() {
     const { id, onFetchCollection, isConnected, itemsPage } = this.props
     if (id && isConnected) {
       onFetchCollection(id)
       this.fetchCollectionItems(itemsPage)
-      this.fetchCollectionForumPostReply()
     }
   }
 
@@ -49,7 +40,6 @@ export default class CollectionProvider extends React.PureComponent<Props> {
     if (id && justFinishedConnecting) {
       onFetchCollection(id)
       this.fetchCollectionItems(itemsPage)
-      this.fetchCollectionForumPostReply()
     }
 
     if (
@@ -76,7 +66,6 @@ export default class CollectionProvider extends React.PureComponent<Props> {
       }
       // fetch collection items if the id changes
       this.fetchCollectionItems(itemsPage)
-      this.fetchCollectionForumPostReply()
     }
 
     // logic to fetch the new pages requested
@@ -87,10 +76,6 @@ export default class CollectionProvider extends React.PureComponent<Props> {
       this.fetchCollectionItems(
         Array.isArray(itemsPage) && Array.isArray(prevPages) ? itemsPage.filter(page => !prevPages?.includes(page)) : itemsPage
       )
-    }
-
-    if (id && collection && !!collection?.forumLink && !collection?.forumPostReply) {
-      this.fetchCollectionForumPostReply()
     }
   }
 

@@ -35,6 +35,28 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     tab: this.props.tab || ItemType.WEARABLE
   }
 
+  componentDidMount(): void {
+    const { collection } = this.props
+    if (collection) {
+      this.fetchCollectionForumPostReply()
+    }
+  }
+
+  componentDidUpdate(prevProps: Props): void {
+    const { collection } = this.props
+    if (!prevProps.collection && collection) {
+      this.fetchCollectionForumPostReply()
+    }
+  }
+
+  fetchCollectionForumPostReply() {
+    const { collection, onFetchCollectionForumPostReply } = this.props
+    // Only fetch the forum post replies if the collection has a forum link and there's no other fetch process in progress
+    if (collection && collection.isPublished && !collection.isApproved && collection.forumLink) {
+      onFetchCollectionForumPostReply(collection.id)
+    }
+  }
+
   handleMintItems = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('MintItemsModal', { collectionId: collection!.id })

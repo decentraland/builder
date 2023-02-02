@@ -6,7 +6,6 @@ import { Item } from 'modules/item/types'
 import { fetchCollectionItemsRequest, FetchCollectionItemsRequestAction } from 'modules/item/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
-import { fetchCollectionForumPostReplyRequest, FetchCollectionForumPostReplyRequestAction } from 'modules/forum/actions'
 
 export const DEFAULT_ITEMS_PAGE = 1
 export const DEFAULT_ITEMS_PAGE_SIZE = 50
@@ -48,15 +47,12 @@ export type Props = {
   onFetchCollection: typeof fetchCollectionRequest
   onFetchCollectionItems: typeof fetchCollectionItemsRequest
   onChangePage?: (page: number) => void
-  onFetchCollectionForumPostReply: typeof fetchCollectionForumPostReplyRequest
 }
 
 export type MapStateProps = Pick<
   Props,
   'id' | 'collection' | 'items' | 'isLoading' | 'isConnected' | 'curation' | 'itemCurations' | 'paginatedItems' | 'paginatedCollections'
 >
-export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems' | 'onFetchCollectionForumPostReply'>
-export type MapDispatch = Dispatch<
-  FetchCollectionRequestAction | FetchCollectionItemsRequestAction | FetchCollectionForumPostReplyRequestAction
->
+export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems'>
+export type MapDispatch = Dispatch<FetchCollectionRequestAction | FetchCollectionItemsRequestAction>
 export type OwnProps = Partial<Pick<Props, 'id' | 'itemSelected' | 'itemsPage' | 'itemsPageSize' | 'onChangePage'>>

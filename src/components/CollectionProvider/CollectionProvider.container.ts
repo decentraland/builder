@@ -13,7 +13,6 @@ import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './Collec
 import CollectionProvider from './CollectionProvider'
 import { getCuration } from 'modules/curations/collectionCuration/selectors'
 import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
-import { fetchCollectionForumPostReplyRequest, FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST } from 'modules/forum/actions'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const id = ownProps.id || getCollectionId(state)
@@ -35,15 +34,13 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     isLoading:
       isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST) ||
-      isLoadingType(getLoadingItems(state), FETCH_COLLECTION_ITEMS_REQUEST) ||
-      isLoadingType(getLoading(state), FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST)
+      isLoadingType(getLoadingItems(state), FETCH_COLLECTION_ITEMS_REQUEST)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onFetchCollection: id => dispatch(fetchCollectionRequest(id)),
-  onFetchCollectionItems: (id, params) => dispatch(fetchCollectionItemsRequest(id, params)),
-  onFetchCollectionForumPostReply: id => dispatch(fetchCollectionForumPostReplyRequest(id))
+  onFetchCollectionItems: (id, params) => dispatch(fetchCollectionItemsRequest(id, params))
 })
 
 export default connect(mapState, mapDispatch)(CollectionProvider)
