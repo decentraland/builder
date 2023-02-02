@@ -9,7 +9,6 @@ export enum CurationStatus {
 
 export enum CurationSortOptions {
   MOST_RELEVANT = 'MOST_RELEVANT',
-  NEWEST = 'NEWEST',
   NAME_DESC = 'NAME_DESC',
   NAME_ASC = 'NAME_ASC',
   CREATED_AT_DESC = 'CREATED_AT_DESC',

@@ -36,7 +36,7 @@ const PAGE_SIZE = 20
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
     currentTab: TABS.COLLECTIONS,
-    sort: CurationSortOptions.MOST_RELEVANT,
+    sort: CurationSortOptions.CREATED_AT_DESC,
     page: 1
   }
 
@@ -44,7 +44,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem } = this.props
     // fetch if already connected
     if (address) {
-      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.MOST_RELEVANT })
+      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.CREATED_AT_DESC })
       // TODO: Remove this call when there are no users with orphan items
       if (hasUserOrphanItems === undefined) {
         onFetchOrphanItem(address)
