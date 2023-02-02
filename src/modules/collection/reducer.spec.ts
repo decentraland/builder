@@ -1,6 +1,12 @@
 import { fetchTransactionSuccess } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { FetchCollectionsParams } from 'lib/api/builder'
 import { PaginationStats } from 'lib/api/pagination'
+import {
+  fetchCollectionForumPostReplyFailure,
+  fetchCollectionForumPostReplyRequest,
+  fetchCollectionForumPostReplySuccess
+} from 'modules/forum/actions'
+import { ForumPostReply } from 'modules/forum/types'
 import { closeAllModals, closeModal } from 'modules/modal/actions'
 import { fetchCollectionsRequest, fetchCollectionsSuccess, PUBLISH_COLLECTION_SUCCESS } from './actions'
 import { collectionReducer as reducer, CollectionState } from './reducer'
@@ -184,5 +190,89 @@ describe('when all modals are closed', () => {
       error: 'Some error'
     } as CollectionState
     expect(reducer(initialState, closeAllModals()).error).toBe(null)
+  })
+})
+
+describe('when an action of type FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST is called', () => {
+  let initialState: CollectionState
+  let anExistingCollectionId: string
+  beforeEach(() => {
+    anExistingCollectionId = 'anExistingCollectionId'
+    initialState = {
+      data: {
+        [anExistingCollectionId]: {
+          id: anExistingCollectionId,
+          forumLink: 'https://forum/anExistingCollectionId/1234'
+        }
+      }
+    } as CollectionState
+  })
+
+  it('should set the loading state', () => {
+    const state = reducer(initialState, fetchCollectionForumPostReplyRequest(anExistingCollectionId))
+    expect(reducer(initialState, fetchCollectionForumPostReplyRequest(anExistingCollectionId))).toEqual({
+      ...state,
+      loading: [fetchCollectionForumPostReplyRequest(anExistingCollectionId)]
+    })
+  })
+})
+
+describe('when an action of type FETCH_COLLECTION_FORUM_POST_REPLY_SUCCESS is called', () => {
+  let initialState: CollectionState
+  let collection: Collection
+  let topicId: number
+  beforeEach(() => {
+    collection = { id: 'anExistingCollectionId' } as Collection
+    topicId = 1234
+    initialState = {
+      data: {
+        [collection.id]: {
+          id: collection.id,
+          forumLink: `https://forum/${collection.id}/${topicId}`
+        }
+      }
+    } as CollectionState
+  })
+
+  it('should set the forumPostReply state', () => {
+    const forumPostReply: ForumPostReply = {
+      topic_id: topicId,
+      highest_post_number: 1,
+      show_read_indicator: true,
+      last_read_post_number: 0
+    }
+    const state = reducer(initialState, fetchCollectionForumPostReplySuccess(collection, forumPostReply))
+    expect(reducer(initialState, fetchCollectionForumPostReplySuccess(collection, forumPostReply))).toEqual({
+      ...state,
+      data: {
+        ...initialState.data,
+        [collection.id]: { ...initialState.data[collection.id], forumPostReply }
+      },
+      loading: []
+    })
+  })
+})
+
+describe('when an action of type FETCH_COLLECTION_FORUM_POST_REPLY_FAILURE is called', () => {
+  let initialState: CollectionState
+  let collection: Collection
+  let topicId: number
+  beforeEach(() => {
+    collection = { id: 'anExistingCollectionId' } as Collection
+    topicId = 1234
+    initialState = {
+      data: {
+        [collection.id]: {
+          id: collection.id,
+          forumLink: `https://forum/${collection.id}/${topicId}`
+        }
+      }
+    } as CollectionState
+  })
+
+  it('should set the error state', () => {
+    const error = 'anError'
+    const state = reducer(initialState, fetchCollectionForumPostReplyFailure(collection, error))
+    expect(reducer(initialState, fetchCollectionForumPostReplyFailure(collection, error))).toEqual({ ...state, error, loading: [] })
   })
 })
