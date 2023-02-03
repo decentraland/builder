@@ -47,6 +47,7 @@
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
+  gap: var(--scenespage-card-margin)
 }
 
 .ScenesPage .project-cards .ProjectCard:nth-child(4n) {
@@ -150,6 +151,7 @@
   display: flex;
   overflow: auto;
   padding-top: 20px;
+  gap: var(--scenespage-card-margin);
 }
 
 .ScenesPage .scene-pool-projects .ProjectCard {
