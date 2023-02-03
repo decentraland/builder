@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import { getLocation, push } from 'connected-react-router'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { UserMenu } from 'decentraland-dapps/dist/containers'
 import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getTransactions } from '../../modules/transaction/selectors'
 import { RootState } from '../../modules/common/types'
 import { logout } from '../../modules/identity/actions'
 import { locations } from '../../routing/locations'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './UserMenu.types'
-import UserMenu from './UserMenu'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
