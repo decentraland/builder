@@ -8,7 +8,7 @@ export type ForumPost = {
 }
 
 export type ForumPostReply = {
-  topic_id: number
+  topic_id: string
   highest_post_number: number
   show_read_indicator: boolean
   last_read_post_number?: number
