@@ -195,24 +195,26 @@ describe('when all modals are closed', () => {
 
 describe('when an action of type FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST is called', () => {
   let initialState: CollectionState
-  let anExistingCollectionId: string
+  let collection: Collection
+  let topicId: string
   beforeEach(() => {
-    anExistingCollectionId = 'anExistingCollectionId'
+    collection = { id: 'anExistingCollectionId' } as Collection
+    topicId = '1234'
     initialState = {
       data: {
-        [anExistingCollectionId]: {
-          id: anExistingCollectionId,
-          forumLink: 'https://forum/anExistingCollectionId/1234'
+        [collection.id]: {
+          id: collection.id,
+          forumLink: `https://forum.decentraland.org/t/collection-cucos-created-by-MrCuco-is-ready-for-review/${topicId}`
         }
       }
     } as CollectionState
   })
 
   it('should set the loading state', () => {
-    const state = reducer(initialState, fetchCollectionForumPostReplyRequest(anExistingCollectionId))
-    expect(reducer(initialState, fetchCollectionForumPostReplyRequest(anExistingCollectionId))).toEqual({
+    const state = reducer(initialState, fetchCollectionForumPostReplyRequest(collection.id))
+    expect(reducer(initialState, fetchCollectionForumPostReplyRequest(collection.id))).toEqual({
       ...state,
-      loading: [fetchCollectionForumPostReplyRequest(anExistingCollectionId)]
+      loading: [fetchCollectionForumPostReplyRequest(collection.id)]
     })
   })
 })
@@ -220,15 +222,15 @@ describe('when an action of type FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST is ca
 describe('when an action of type FETCH_COLLECTION_FORUM_POST_REPLY_SUCCESS is called', () => {
   let initialState: CollectionState
   let collection: Collection
-  let topicId: number
+  let topicId: string
   beforeEach(() => {
     collection = { id: 'anExistingCollectionId' } as Collection
-    topicId = 1234
+    topicId = '1234'
     initialState = {
       data: {
         [collection.id]: {
           id: collection.id,
-          forumLink: `https://forum/${collection.id}/${topicId}`
+          forumLink: `https://forum.decentraland.org.decentraland.org/t/collection-cucos-created-by-MrCuco-is-ready-for-review/${topicId}`
         }
       }
     } as CollectionState
@@ -264,7 +266,7 @@ describe('when an action of type FETCH_COLLECTION_FORUM_POST_REPLY_FAILURE is ca
       data: {
         [collection.id]: {
           id: collection.id,
-          forumLink: `https://forum/${collection.id}/${topicId}`
+          forumLink: `https://forum.decentraland.org/t/collection-cucos-created-by-MrCuco-is-ready-for-review/${topicId}`
         }
       }
     } as CollectionState
