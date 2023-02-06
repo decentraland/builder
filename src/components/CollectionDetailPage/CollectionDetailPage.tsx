@@ -243,7 +243,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                       </Header>
                       <BuilderIcon name="edit" className="edit-collection-name" />
                       {isOnSale ? (
-                        <Label className="badge-on-sale" small circular>
+                        <Label className="badge-on-sale" size="small" circular>
                           {t('collection_detail_page.on_sale')}
                         </Label>
                       ) : null}
