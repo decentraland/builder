@@ -42,7 +42,7 @@ const CAMPAIGN_TAG = 'HolidaySeason'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
-    sortBy: CurationSortOptions.MOST_RELEVANT,
+    sortBy: CurationSortOptions.CREATED_AT_DESC,
     filterByStatus: CurationExtraStatuses.ALL_STATUS,
     filterByTags: [],
     filterByType: CollectionExtraTypes.ALL_TYPES,
