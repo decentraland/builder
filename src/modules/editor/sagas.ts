@@ -119,8 +119,7 @@ import {
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION,
-  fromCatalystWearableToWearable,
-  injectSceneEditorScripts
+  fromCatalystWearableToWearable
 } from './utils'
 const editorWindow = window as EditorWindow
 
@@ -215,7 +214,7 @@ function* handleHistory() {
 
 function* renderScene(scene: Scene) {
   if (!editorWindow.editor) {
-    yield call(injectSceneEditorScripts)
+    yield take(OPEN_EDITOR)
   }
 
   if (scene) {
