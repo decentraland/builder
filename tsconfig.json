@@ -1,38 +1,7 @@
 {
+  "extends": "@dcl/eslint-config-dapps",
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "react-jsx",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "noEmit": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "strictNullChecks": true,
-    "noImplicitReturns": true,
-    "resolveJsonModule": true,
-    "noUnusedParameters": true,
-    "downlevelIteration": true,
-    "useUnknownInCatchVariables": false,
-    "importHelpers": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "plugins": [
-      {
-        "name": "tslint-language-service"
-      },
-      {
-        "name": "dcl-tslint-config-standard"
-      }
-    ],
-    "baseUrl": "src",
-    "noFallthroughCasesInSwitch": true
+    "baseUrl": "src"
   },
   "include": ["src", "src/typings.d.ts", "react-app=env.d.ts", "./node_modules/decentraland-builder-scripts/types.d.ts"],
   "exclude": ["src/modules/editor/ecs.js"]
