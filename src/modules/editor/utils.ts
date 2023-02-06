@@ -10,11 +10,13 @@ import { capitalize } from 'lib/text'
 import { Vector3 } from 'modules/models/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
+import { injectScript } from 'routing/utils'
 import { base64ArrayBuffer } from './base64'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const script = require('raw-loader!../../ecsScene/scene.js').default
 
+const PUBLIC_URL = process.env.PUBLIC_URL
 export const THUMBNAIL_WIDTH = 984
 export const THUMBNAIL_HEIGHT = 728
 export const POSITION_GRID_RESOLUTION = 0.5
@@ -342,4 +344,9 @@ export function toBase64(item: Item | Item<ItemType.EMOTE>): string {
   const stringified = JSON.stringify(wearable)
   const sanitized = stringified.replace(/[\u0250-\ue007]/g, '')
   return btoa(sanitized)
+}
+
+export async function injectSceneEditorScripts() {
+  const scriptsURLs = ['unity/Build/hls.min.js', 'editor.js', 'UnityLoader.js']
+  return Promise.all<void>(scriptsURLs.map(script => injectScript(`${PUBLIC_URL}/${script}`)))
 }

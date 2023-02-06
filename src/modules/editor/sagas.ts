@@ -119,7 +119,8 @@ import {
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION,
-  fromCatalystWearableToWearable
+  fromCatalystWearableToWearable,
+  injectSceneEditorScripts
 } from './utils'
 const editorWindow = window as EditorWindow
 
@@ -213,6 +214,10 @@ function* handleHistory() {
 }
 
 function* renderScene(scene: Scene) {
+  if (!editorWindow.editor) {
+    yield call(injectSceneEditorScripts)
+  }
+
   if (scene) {
     const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
     const isReadOnlyResult: boolean = yield select(isReadOnly)
