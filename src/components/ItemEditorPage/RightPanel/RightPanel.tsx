@@ -288,13 +288,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   isDisabled(item: Item | null) {
-    const { data } = this.state
-    let isValidWearable = true
-    if (!!item && !!data && item.type === ItemType.WEARABLE) {
-      isValidWearable = isValidWearableMetrics(item.metrics, data.category as WearableCategory)
-    }
-
-    return !isValidWearable
+    return !item || !this.hasItemValidMetrics(item)
   }
 
   hasSavedItem() {
@@ -345,6 +339,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         </div>
       )
     }
+  }
+
+  hasItemValidMetrics(item: Item) {
+    const { data, isDirty } = this.state
+
+    if (data && isDirty && item.type === ItemType.WEARABLE && !isValidWearableMetrics(item.metrics, data.category as WearableCategory)) {
+      return isValidWearableMetrics(item.metrics, data.category as WearableCategory)
+    }
+
+    return true
   }
 
   render() {
@@ -465,19 +469,20 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                           onChange={this.handleChangeDescription}
                         />
-
-                        <Select<WearableCategory | EmoteCategory>
-                          itemId={item.id}
-                          label={t('global.category')}
-                          value={data!.category}
-                          options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
-                          disabled={!canEditItemMetadata}
-                          onChange={this.handleChangeCategory}
-                        />
-                        {!!data &&
-                        item.type === ItemType.WEARABLE &&
-                        !isValidWearableMetrics(item.metrics, data.category as WearableCategory) ? (
-                          <ErrorMetrics metrics={item.metrics} category={data.category as WearableCategory} />
+                        {data && data.category ? (
+                          <>
+                            <Select<WearableCategory | EmoteCategory>
+                              itemId={item.id}
+                              label={t('global.category')}
+                              value={data.category}
+                              options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
+                              disabled={!canEditItemMetadata}
+                              onChange={this.handleChangeCategory}
+                            />
+                            {!this.hasItemValidMetrics(item) ? (
+                              <ErrorMetrics metrics={item.metrics} category={data.category as WearableCategory} />
+                            ) : null}
+                          </>
                         ) : null}
 
                         {!(item.urn && isThirdParty(item.urn)) && (

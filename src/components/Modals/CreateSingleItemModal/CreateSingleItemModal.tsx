@@ -709,9 +709,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           options={categories.map(value => ({ value, text: t(`${type!}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
-        {type === ItemType.WEARABLE && isValidCategory && !isValidWearableMetrics(metrics as ModelMetrics, category as WearableCategory) ? (
-          <ErrorMetrics metrics={metrics as ModelMetrics} category={category as WearableCategory} />
-        ) : null}
+        {!this.hasItemValidMetrics() ? <ErrorMetrics metrics={metrics as ModelMetrics} category={category as WearableCategory} /> : null}
       </>
     )
   }
@@ -839,15 +837,19 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
   }
 
-  isDisabled(): boolean {
-    const { isLoading } = this.props
+  hasItemValidMetrics() {
     const { category, metrics, type } = this.state
-    let isValidWearable = true
     if (type === ItemType.WEARABLE && metrics && category) {
-      isValidWearable = isValidWearableMetrics(metrics as ModelMetrics, category as WearableCategory)
+      return isValidWearableMetrics(metrics as ModelMetrics, category as WearableCategory)
     }
 
-    return !this.isValid() || isLoading || !isValidWearable
+    return true
+  }
+
+  isDisabled(): boolean {
+    const { isLoading } = this.props
+
+    return !this.isValid() || isLoading || !this.hasItemValidMetrics()
   }
 
   isValid(): boolean {
