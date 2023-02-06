@@ -13,7 +13,8 @@ import {
   InvalidFilesError,
   MissingModelFileError,
   EmoteDurationTooLongError,
-  InvalidModelFilesRepresentation
+  InvalidModelFilesRepresentation,
+  MultipleFilesDetectedError
 } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
 import {
@@ -64,6 +65,18 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       newContents[key] = contents[key]
       return newContents
     }, {})
+  }
+
+  hasZipFileMultipleModels = (contents: Record<string, Blob>) => {
+    let numberOfModels = 0
+
+    Object.keys(contents).forEach((key: string) => {
+      if (key.indexOf('/') === -1 && isModelFile(key)) {
+        numberOfModels += 1
+      }
+    })
+
+    return numberOfModels > 1
   }
 
   /**
@@ -181,6 +194,11 @@ export default class ImportStep extends React.PureComponent<Props, State> {
            * this method processes the contents by cleaning the empty keys
            * and extracting the models to the root level if there's just one body shape representation
            */
+
+          if (this.hasZipFileMultipleModels(contents)) {
+            throw new MultipleFilesDetectedError()
+          }
+
           acceptedFileProps.bodyShape = getBodyShapeTypeFromContents(contents) as BodyShapeType
           if (acceptedFileProps.bodyShape !== BodyShapeType.BOTH) {
             acceptedFileProps.model = getModelFileNameFromSubfolder(model)

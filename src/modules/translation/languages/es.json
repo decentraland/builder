@@ -239,7 +239,9 @@
       "wearable_exceeds_max_triangles": "{title}.{enter}Modelos para {category} tienen un limite de {limit} triangulos",
       "wearable_exceeds_max_triangles_title": "Archivo supera el número de triangulos",
       "wearable_exceeds_max_textures": "{title}.{enter}Modelos para {category} tienen un limite de {limit} texturas",
-      "wearable_exceeds_max_textures_title": "Archivo supera el número de texturas"
+      "wearable_exceeds_max_textures_title": "Archivo supera el número de texturas",
+      "multiple_files_detected": "{title}.{enter}Actualmente no se admite la carga de varios archivos..",
+      "multiple_files_detected_title": "Múltiples archivos detectados"
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
   },

@@ -238,7 +238,9 @@
       "wearable_exceeds_max_triangles": "{title}.{enter}Models for {category} have a limit of {limit} triangles",
       "wearable_exceeds_max_triangles_title": "File exceeds number of triangles",
       "wearable_exceeds_max_textures": "{title}.{enter}Models for {category} have a limit of {limit} textures",
-      "wearable_exceeds_max_textures_title": "File exceeds number of textures"
+      "wearable_exceeds_max_textures_title": "File exceeds number of textures",
+      "multiple_files_detected": "{title}.{enter}Uploading multiple files is not currently supported.",
+      "multiple_files_detected_title": "Multiple files detected"
     },
     "emote_notice": "Emotes are available for all body shapes."
   },

@@ -233,7 +233,9 @@
       "wearable_exceeds_max_triangles": "{title}.{enter}{category} 的模型有 {limit} 个三角形的限制",
       "wearable_exceeds_max_triangles_title": "文件超过三角形数量",
       "wearable_exceeds_max_textures": "{title}.{enter}{category} 的模型有 {limit} 个纹理的限制",
-      "wearable_exceeds_max_textures_title": "文件超过纹理数量"
+      "wearable_exceeds_max_textures_title": "文件超过纹理数量",
+      "multiple_files_detected": "{title}.{enter}目前不支持上传多个文件。",
+      "multiple_files_detected_title": "检测到多个文件"
     },
     "emote_notice": "表情适用于所有体型。"
   },

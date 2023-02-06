@@ -97,3 +97,14 @@ export class WearableExceedsMaxTexturesError extends CustomError {
     )
   }
 }
+
+export class MultipleFilesDetectedError extends CustomError {
+  constructor() {
+    super(
+      t('create_single_item_modal.error.multiple_files_detected', {
+        title: createElement('b', null, t('create_single_item_modal.error.multiple_files_detected_title')),
+        enter: createElement('br')
+      })
+    )
+  }
+}
