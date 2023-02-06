@@ -191,7 +191,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   renderForumRepliesBadge() {
     const { collection } = this.props
-    if (collection && collection?.forumPostReply) {
+    if (collection?.forumPostReply) {
       const { highest_post_number, last_read_post_number } = collection.forumPostReply
       const unreadPosts = highest_post_number - (last_read_post_number ?? 0)
       return (
