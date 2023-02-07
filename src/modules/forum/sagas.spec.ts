@@ -11,16 +11,22 @@ import { throwError } from 'redux-saga-test-plan/providers'
 import {
   createCollectionAssigneeForumPostRequest,
   createCollectionAssigneeForumPostFailure,
-  createCollectionAssigneeForumPostSuccess
+  createCollectionAssigneeForumPostSuccess,
+  fetchCollectionForumPostReplySuccess,
+  fetchCollectionForumPostReplyRequest,
+  fetchCollectionForumPostReplyFailure
 } from './actions'
 import { forumSaga } from './sagas'
-import { ForumPost } from './types'
+import { ForumPost, ForumPostReply } from './types'
 import { buildCollectionNewAssigneePostBody } from './utils'
+
+const FORUM_URL = 'https://forum.decentraland.org'
 
 const mockErrorMessage = 'Some Error'
 
 const mockBuilder = {
-  createCollectionNewAssigneeForumPost: jest.fn()
+  createCollectionNewAssigneeForumPost: jest.fn(),
+  getCollectionForumPostReply: jest.fn()
 } as any as BuilderAPI
 
 afterEach(() => {
@@ -34,7 +40,7 @@ describe('when setting a new curation assignee successfully', () => {
   beforeEach(() => {
     mockedCollection = {
       id: 'anId',
-      forumLink: 'https://forum.decentraland.org/t/collection-cucos-created-by-MrCuco-is-ready-for-review/10713'
+      forumLink: `${FORUM_URL}/t/collection-cucos-created-by-MrCuco-is-ready-for-review/10713`
     } as Collection
     mockedCuration = {
       id: 'curationId',
@@ -64,7 +70,7 @@ describe('when creating the new assignee forum post', () => {
   beforeEach(() => {
     mockedCollection = {
       id: 'anId',
-      forumLink: 'https://forum.decentraland.org/t/collection-cucos-created-by-MrCuco-is-ready-for-review/10713'
+      forumLink: `${FORUM_URL}/t/collection-cucos-created-by-MrCuco-is-ready-for-review/10713`
     } as Collection
     mockedCuration = {
       id: 'curationId',
@@ -107,6 +113,55 @@ describe('when creating the new assignee forum post', () => {
         ])
         .dispatch(createCollectionAssigneeForumPostRequest(mockedCollection.id, mockedCuration))
         .put(createCollectionAssigneeForumPostSuccess())
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when fetching collection forum post reply', () => {
+  let mockedCollection: Collection
+  let topicId: string
+
+  beforeEach(() => {
+    topicId = '1234'
+    mockedCollection = {
+      id: 'anId',
+      forumLink: `${FORUM_URL}/t/collection-cucos-created-by-MrCuco-is-ready-for-review/${topicId}`
+    } as Collection
+  })
+
+  describe('and the collection has a valid forum link', () => {
+    it('should put forum post reply success action', () => {
+      const forumPostReply: ForumPostReply = {
+        topic_id: topicId,
+        highest_post_number: 1,
+        show_read_indicator: true,
+        last_read_post_number: 0
+      }
+      return expectSaga(forumSaga, mockBuilder)
+        .provide([
+          [select(getCollection, mockedCollection.id), mockedCollection],
+          [call([mockBuilder, mockBuilder.getCollectionForumPostReply], topicId), forumPostReply]
+        ])
+        .dispatch(fetchCollectionForumPostReplyRequest(mockedCollection.id))
+        .put(fetchCollectionForumPostReplySuccess(mockedCollection, forumPostReply))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the collection does not has a valid forum link', () => {
+    beforeEach(() => {
+      mockedCollection = {
+        ...mockedCollection,
+        forumLink: `${FORUM_URL}/t/collection-cucos-created-by-MrCuco-is-ready-for-review/`
+      }
+    })
+    it('should put forum post reply failure action', () => {
+      const error = `Invalid forum topic id for the collection id: ${mockedCollection.id}`
+      return expectSaga(forumSaga, mockBuilder)
+        .provide([[select(getCollection, mockedCollection.id), mockedCollection]])
+        .dispatch(fetchCollectionForumPostReplyRequest(mockedCollection.id))
+        .put(fetchCollectionForumPostReplyFailure(mockedCollection, error))
         .run({ silenceTimeout: true })
     })
   })

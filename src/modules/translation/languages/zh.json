@@ -1061,8 +1061,8 @@
     "results": "{count} {count，复数，一个{result}其他{results}}",
     "no_items": "没有收藏",
     "new_item": "项目",
-    "new_collection": "收藏",
-    "new_third_party_collection": "新的链接可穿戴设备系列",
+    "new_collection": "创建集合",
+    "new_third_party_collection": "创建链接的可穿戴设备集合",
     "type": "类型",
     "items": "模型",
     "collections": "收藏品",
@@ -1199,6 +1199,7 @@
     "new_item": "新物品",
     "mint_items": "薄荷项目",
     "on_sale": "特价中",
+    "put_for_sale": "投放出售",
     "set_on_sale_popup": "这将允许您的收藏在 Decentraland 市场上出售。",
     "unset_on_sale_popup": "该系列在 Decentraland 市场上有售。",
     "notice": "凉爽的！ 现在，您可以开始处理项目了。 {editor_link}打开编辑器，或在任何项目上单击“编辑”按钮。",
@@ -1211,6 +1212,7 @@
     "add_items_subtitle_extensions": "接受的文件是 ZIP、GLTF、GLB、PNG。",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
+    "can_mint": "铸币允许您将 NFT 直接转移到一个地址。",
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
     "cant_push": "此集合仍在审查中，项目仍然可以铸造，但不会反映进一步的变化，直到批准。",
     "push_changes": "上传更改",
@@ -1419,6 +1421,16 @@
     "turn_on": "打开",
     "turn_off_description": "关闭此开关后，您的收藏将不再可用。",
     "turn_off": "关掉",
+    "put_for_sale": {
+      "title": "您想出售此收藏吗？",
+      "description": "该系列将可在 Decentraland 市场上购买。",
+      "cta": "投放出售"
+    },
+    "remove_from_marketplace": {
+      "title": "你想从市场中删除这个集合吗？",
+      "description": "该系列将不再可在 Decentraland 市场上购买。",
+      "cta": "从市场中删除"
+    },
     "unsynced_warning": "有些项目有尚未批准的更改。"
   },
   "collection_managers_modal": {},

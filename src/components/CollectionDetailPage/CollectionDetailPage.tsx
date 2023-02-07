@@ -1,10 +1,9 @@
 import * as React from 'react'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
-import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table } from 'decentraland-ui'
+import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table, Label } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { FromParam } from 'modules/location/types'
 import {
@@ -20,7 +19,6 @@ import { CollectionType } from 'modules/collection/types'
 import CollectionProvider from 'components/CollectionProvider'
 import { Item, ItemType, SyncStatus } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
@@ -32,11 +30,31 @@ import CollectionItem from './CollectionItem'
 
 import './CollectionDetailPage.css'
 
-const STORAGE_KEY = 'dcl-collection-notice'
-
 export default class CollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
     tab: this.props.tab || ItemType.WEARABLE
+  }
+
+  componentDidMount(): void {
+    const { collection } = this.props
+    if (collection) {
+      this.fetchCollectionForumPostReply()
+    }
+  }
+
+  componentDidUpdate(prevProps: Props): void {
+    const { collection } = this.props
+    if (!prevProps.collection && collection) {
+      this.fetchCollectionForumPostReply()
+    }
+  }
+
+  fetchCollectionForumPostReply() {
+    const { collection, onFetchCollectionForumPostReply } = this.props
+    // Only fetch the forum post replies if the collection has a forum link and there's no other fetch process in progress
+    if (collection && collection.isPublished && !collection.isApproved && collection.forumLink) {
+      onFetchCollectionForumPostReply(collection.id)
+    }
   }
 
   handleMintItems = () => {
@@ -58,9 +76,8 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   handleOnSaleChange = () => {
     const { collection, wallet, onOpenModal } = this.props
-    const toggleIsOnSale = !isCollectionOnSale(collection!, wallet)
     if (collection) {
-      onOpenModal('SellCollectionModal', { collectionId: collection.id, isOnSale: toggleIsOnSale })
+      onOpenModal('SellCollectionModal', { collectionId: collection.id, isOnSale: isCollectionOnSale(collection, wallet) })
     }
   }
 
@@ -164,12 +181,27 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
             onClick={this.handleOnSaleChange}
           >
             <span className="text">
-              {isOnSale ? t('collection_detail_page.remove_from_marketplace') : t('collection_detail_page.on_sale')}
+              {isOnSale ? t('collection_detail_page.remove_from_marketplace') : t('collection_detail_page.put_for_sale')}
             </span>
           </Button>
         )}
       </NetworkCheck>
     )
+  }
+
+  renderForumRepliesBadge() {
+    const { collection } = this.props
+    if (collection?.forumPostReply) {
+      const { highest_post_number, last_read_post_number } = collection.forumPostReply
+      const unreadPosts = highest_post_number - (last_read_post_number ?? 0)
+      return (
+        <Label className="badge-forum-unread-posts" circular size="tiny">
+          {unreadPosts}
+        </Label>
+      )
+    }
+
+    return null
   }
 
   renderPage(items: Item[]) {
@@ -179,6 +211,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
     const canMint = canMintCollectionItems(collection, wallet.address)
     const isLocked = isCollectionLocked(collection)
+    const isOnSale = isCollectionOnSale(collection, wallet)
     const hasEmotes = items.some(item => item.type === ItemType.EMOTE)
     const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
     const isEmoteMissingPrice = hasEmotes ? items.some(item => item.type === ItemType.EMOTE && !item.price) : false
@@ -209,21 +242,39 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                         {collection.name}
                       </Header>
                       <BuilderIcon name="edit" className="edit-collection-name" />
+                      {isOnSale ? (
+                        <Label className="badge-on-sale" size="small" circular>
+                          {t('collection_detail_page.on_sale')}
+                        </Label>
+                      ) : null}
                     </Row>
                   )}
                 </Column>
                 <Column align="right" className="actions-container" shrink={false} grow={false}>
                   <Row className="actions">
                     {collection.isPublished && collection.isApproved ? (
-                      <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
-                        <span className="text">{t('collection_detail_page.mint_items')}</span>
-                      </Button>
+                      <Popup
+                        content={t('collection_detail_page.can_mint')}
+                        className="CollectionDetailPage popup-mint"
+                        position="top center"
+                        trigger={
+                          <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
+                            <span className="text">{t('collection_detail_page.mint_items')}</span>
+                          </Button>
+                        }
+                        on="hover"
+                        inverted
+                        flowing
+                      />
                     ) : null}
-                    {collection.isPublished && collection.forumLink && !collection.isApproved && (
-                      <Button basic onClick={this.handleNavigateToForum}>
-                        <span>{t('collection_context_menu.forum_post')}</span>
-                      </Button>
-                    )}
+                    {collection.isPublished && collection.forumLink && !collection.isApproved ? (
+                      <>
+                        <Button basic onClick={this.handleNavigateToForum}>
+                          <span>{t('collection_context_menu.forum_post')}</span>
+                        </Button>
+                        {collection?.forumPostReply ? this.renderForumRepliesBadge() : null}
+                      </>
+                    ) : null}
                     {!(collection.isPublished && collection.isApproved) && status !== SyncStatus.UNSYNCED ? (
                       <CollectionPublishButton collection={collection} />
                     ) : null}
@@ -238,15 +289,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
           </Row>
         </Section>
         <Narrow>
-          <Notice storageKey={STORAGE_KEY}>
-            <T
-              id="collection_detail_page.notice"
-              values={{
-                editor_link: <Link to={getCollectionEditorURL(collection, items)}>{t('global.click_here')}</Link>
-              }}
-            />
-          </Notice>
-
           {status === SyncStatus.UNSYNCED ? (
             <div className="unsynced-collection container">
               <i className="unsynced-collection alert-icon" />

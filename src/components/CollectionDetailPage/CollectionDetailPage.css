@@ -1,3 +1,7 @@
+.CollectionDetailPage > .ui.container > .dcl.section {
+  margin-bottom: 48px;
+}
+
 .CollectionDetailPage .header-column {
   flex: none;
   width: calc(100% - 300px);
@@ -22,6 +26,14 @@
 
 .CollectionDetailPage .section:not(.is-published) .header-row:hover .edit-collection-name {
   display: inline-block;
+}
+
+.CollectionDetailPage .ui.circular.label.badge-on-sale {
+  margin-left: 1em;
+  padding: 0.5em 0.667em !important;
+  color: var(--text);
+  background-color: var(--primary);
+  text-transform: uppercase;
 }
 
 .CollectionDetailPage .section:not(.is-published) .header-row:hover {
@@ -255,8 +267,15 @@
   padding: 7px 20px;
 }
 
-.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button span {
+.CollectionDetailPage .dcl.tabs .secondary-actions.tab .button span,
+.CollectionDetailPage .dcl.narrow .secondary-actions .button span {
   color: var(--primary);
+}
+
+.CollectionDetailPage .badge-forum-unread-posts {
+  margin-left: 8px;
+  color: var(--text);
+  background-color: var(--primary);
 }
 
 .unsynced-collection.container {
@@ -323,4 +342,9 @@
   background-size: contain;
   height: 48px;
   width: 48px;
+}
+
+.CollectionDetailPage.popup-mint,
+.CollectionDetailPage.popup-mint:before {
+  background-color: var(--smart-grey) !important;
 }

@@ -22,8 +22,13 @@ import {
   createCollectionForumPostSuccess,
   CREATE_COLLECTION_ASSIGNEE_FORUM_POST_REQUEST,
   CREATE_COLLECTION_FORUM_POST_FAILURE,
-  CREATE_COLLECTION_FORUM_POST_REQUEST
+  CREATE_COLLECTION_FORUM_POST_REQUEST,
+  fetchCollectionForumPostReplyFailure,
+  FetchCollectionForumPostReplyRequestAction,
+  fetchCollectionForumPostReplySuccess,
+  FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST
 } from './actions'
+import { ForumPostReply } from './types'
 
 const RETRY_DELAY = 5000
 
@@ -32,6 +37,7 @@ export function* forumSaga(builder: BuilderAPI) {
   yield takeEvery(CREATE_COLLECTION_FORUM_POST_FAILURE, handleCreateForumPostFailure)
   yield takeEvery(SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS, handleSetAssigneeSuccess)
   yield takeEvery(CREATE_COLLECTION_ASSIGNEE_FORUM_POST_REQUEST, handleCreateCollectionAssigneeForumPost)
+  yield takeEvery(FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST, handleFetchCollectionForumPostReply)
 
   function* handleCreateForumPostRequest(action: CreateCollectionForumPostRequestAction) {
     const { collection, forumPost } = action.payload
@@ -68,6 +74,22 @@ export function* forumSaga(builder: BuilderAPI) {
   function* handleSetAssigneeSuccess(action: SetCollectionCurationAssigneeSuccessAction) {
     const { collectionId, curation } = action.payload
     yield put(createCollectionAssigneeForumPostRequest(collectionId, curation))
+  }
+
+  function* handleFetchCollectionForumPostReply(action: FetchCollectionForumPostReplyRequestAction) {
+    const { collectionId } = action.payload
+    const collection: Collection = yield select(getCollection, collectionId)
+    const topicId = collection.forumLink ? collection.forumLink.split('/').pop() : null
+    try {
+      if (topicId) {
+        const forumPostReply: ForumPostReply = yield call([builder, 'getCollectionForumPostReply'], topicId)
+        yield put(fetchCollectionForumPostReplySuccess(collection, forumPostReply))
+      } else {
+        throw new Error(`Invalid forum topic id for the collection id: ${collectionId}`)
+      }
+    } catch (error) {
+      yield put(fetchCollectionForumPostReplyFailure(collection, error.message))
+    }
   }
 
   function* handleCreateCollectionAssigneeForumPost(action: CreateCollectionAssigneeForumPostRequestAction) {

@@ -36,7 +36,7 @@ const PAGE_SIZE = 20
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
     currentTab: TABS.COLLECTIONS,
-    sort: CurationSortOptions.MOST_RELEVANT,
+    sort: CurationSortOptions.CREATED_AT_DESC,
     page: 1
   }
 
@@ -44,7 +44,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem } = this.props
     // fetch if already connected
     if (address) {
-      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.MOST_RELEVANT })
+      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.CREATED_AT_DESC })
       // TODO: Remove this call when there are no users with orphan items
       if (hasUserOrphanItems === undefined) {
         onFetchOrphanItem(address)
@@ -186,30 +186,17 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     return (
       <Column align="right">
         <Row className="actions">
-          {this.isCollectionTabActive() && (
-            <>
-              <Dropdown
-                trigger={
-                  <Button basic className="create-item">
-                    <Icon name="add-active" />
-                  </Button>
-                }
-                inline
-                direction="left"
-              >
-                <Dropdown.Menu>
-                  <>
-                    <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
-                    {isThirdPartyManager && (
-                      <Dropdown.Item text={t('collections_page.new_third_party_collection')} onClick={this.handleNewThirdPartyCollection} />
-                    )}
-                  </>
-                </Dropdown.Menu>
-              </Dropdown>
-            </>
+          {isThirdPartyManager && (
+            <Button className="action-button" size="small" basic onClick={this.handleNewThirdPartyCollection}>
+              {t('collections_page.new_third_party_collection')}
+            </Button>
           )}
-          <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
+          <Button className="action-button open-editor" size="small" basic onClick={this.handleOpenEditor}>
+            <Icon name="cube" />
             {t('item_editor.open')}
+          </Button>
+          <Button className="action-button" size="small" primary onClick={this.handleNewCollection}>
+            {t('collections_page.new_collection')}
           </Button>
         </Row>
       </Column>
