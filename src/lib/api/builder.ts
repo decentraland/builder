@@ -543,6 +543,7 @@ export class BuilderAPI extends BaseAPI {
     } catch (error) {
       if (this.isAxiosError(error) && error.response) {
         error.message = error.response.data.error
+        error.code = error.response.status.toString()
       }
       throw error
     }
@@ -840,13 +841,17 @@ export class BuilderAPI extends BaseAPI {
    */
   async getCollectionForumPostReply(topicId: string): Promise<ForumPostReply> {
     const response = await fetch(`${FORUM_URL}/t/${topicId}.json`)
-    const data = await response.json()
-    return {
-      topic_id: data.id,
-      highest_post_number: data.highest_post_number,
-      show_read_indicator: data.show_read_indicator,
-      last_read_post_number: data?.last_read_post_number
+    if (response.status === 200) {
+      const data = await response.json()
+      return {
+        topic_id: data.id,
+        highest_post_number: data.highest_post_number,
+        show_read_indicator: data.show_read_indicator,
+        last_read_post_number: data?.last_read_post_number
+      }
     }
+
+    throw new Error('The requested topic id could not be found.')
   }
 
   async createCollectionNewAssigneeForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
