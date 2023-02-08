@@ -1490,6 +1490,18 @@
     "title": "Subir Cambios",
     "description": "Se han realizado cambios en la colección o en los artículos contenidos en ella desde la última vez que un curador los revisó.{br}Para que estos cambios se reflejen en el mercado y en el juego, deben ser revisados y aprobados nuevamente por el comité.{br}¿Está seguro de que desea impulsar los cambios para su revisión?"
   },
+  "see_in_world_modal": {
+    "title": "Ver en el mundo",
+    "subtitle": "Elige una de las opciones sobre dónde quieres ver tus items.",
+    "genesis": {
+      "title": "Genesis Plaza",
+      "subtitle": "Explora, salta, interactúa"
+    },
+    "empty_parcel": {
+      "title": "Parcela vacía",
+      "subtitle": "Sólo podrás correr, pero cargará más rápido"
+    }
+  },
   "collection_image": {
     "no_items": "No Items"
   },

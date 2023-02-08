@@ -12,8 +12,7 @@ import {
   getCollectionEditorURL,
   isOnSale as isCollectionOnSale,
   isLocked as isCollectionLocked,
-  isOwner,
-  getExplorerURL
+  isOwner
 } from 'modules/collection/utils'
 import { CollectionType } from 'modules/collection/types'
 import CollectionProvider from 'components/CollectionProvider'
@@ -99,14 +98,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     collection && onNavigate(getCollectionEditorURL(collection, items), { fromParam: FromParam.COLLECTIONS })
   }
 
-  handleNavigateToExplorer = () => {
-    const { collection } = this.props
-
+  handleSeeInWorld = () => {
+    const { collection, onOpenModal } = this.props
     if (collection) {
-      const explorerLink = getExplorerURL({
-        collection
-      })
-      this.navigateTo(explorerLink, '_blank')
+      onOpenModal('SeeInWorldModal', { collectionId: collection.id })
     }
   }
 
@@ -130,7 +125,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     onNavigate(locations.collectionDetail(collection!.id, CollectionType.STANDARD, { tab }))
   }
 
-  renderMisingItemPricePopup(itemType: ItemType) {
+  renderMissingItemPricePopup(itemType: ItemType) {
     const itemTypeText = itemType === ItemType.WEARABLE ? t('collection_detail_page.wearables') : t('collection_detail_page.emotes')
     return (
       <Popup
@@ -149,7 +144,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
     return (
       <>
-        <Button basic className="action-button" disabled={isLocked || !hasItems} onClick={this.handleNavigateToExplorer}>
+        <Button basic className="action-button" disabled={isLocked || !hasItems} onClick={this.handleSeeInWorld}>
           <BuilderIcon name="right-round-arrow" />
           <span className="text">{t('collection_context_menu.see_in_world')}</span>
         </Button>
@@ -305,12 +300,12 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
               <Tabs.Tab active={tab === ItemType.WEARABLE} onClick={() => this.handleTabChange(ItemType.WEARABLE)}>
                 <BuilderIcon name="wearable" />
                 {t('collection_detail_page.wearables')}
-                {isWearableMissingPrice ? this.renderMisingItemPricePopup(ItemType.WEARABLE) : null}
+                {isWearableMissingPrice ? this.renderMissingItemPricePopup(ItemType.WEARABLE) : null}
               </Tabs.Tab>
               <Tabs.Tab active={tab === ItemType.EMOTE} onClick={() => this.handleTabChange(ItemType.EMOTE)}>
                 <BuilderIcon name="emote" />
                 {t('collection_detail_page.emotes')}
-                {isEmoteMissingPrice ? this.renderMisingItemPricePopup(ItemType.EMOTE) : null}
+                {isEmoteMissingPrice ? this.renderMissingItemPricePopup(ItemType.EMOTE) : null}
               </Tabs.Tab>
               <div className="secondary-actions tab">{this.renderActionButtoms(items)}</div>
             </Tabs>

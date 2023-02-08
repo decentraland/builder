@@ -8,7 +8,6 @@ import { decodeURN, URNType } from 'lib/urn'
 import ItemStatus from 'components/ItemStatus'
 import { SyncStatus } from 'modules/item/types'
 import { getBodyShapeType } from 'modules/item/utils'
-import { getExplorerURL } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
@@ -20,12 +19,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onSelect(item, data.checked!)
   }
 
-  handleNavigateToExplorer = () => {
-    const { item } = this.props
-    const newWindow = window.open(getExplorerURL({ item_ids: [item.id] }), '_blank')
-    if (newWindow) {
-      newWindow.focus()
-    }
+  handleSeeInWorld = () => {
+    const { item, onOpenModal } = this.props
+    onOpenModal('SeeInWorldModal', { itemIds: [item.id] })
   }
 
   handleEditURN = () => {
@@ -113,7 +109,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
               >
                 <Dropdown.Menu>
                   <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
-                  <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
+                  <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleSeeInWorld} />
                   <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
                   <Popup
                     content={t('collection_item.cannot_edit_urn')}

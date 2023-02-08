@@ -1475,6 +1475,18 @@
     "title": "Push Changes",
     "description": "Changes have been made to the collection or the items contained by it since the last time a curator has reviewed them.{br}In order to have this changes reflected on the marketplace and in the game, they have to be reviewed and approved again by the committee.{br}Are you sure you want to push the changes for review?"
   },
+  "see_in_world_modal": {
+    "title": "See in world",
+    "subtitle": "Choose one of the options where to see your items.",
+    "genesis": {
+      "title": "Genesis Plaza",
+      "subtitle": "Explore, jump, interact"
+    },
+    "empty_parcel": {
+      "title": "Empty Parcel",
+      "subtitle": "Just run, but it loads faster"
+    }
+  },
   "collection_image": {
     "no_items": "No Items"
   },
