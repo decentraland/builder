@@ -1480,11 +1480,11 @@
     "subtitle": "Choose a location to try your items in-world",
     "genesis": {
       "title": "Genesis Plaza",
-      "subtitle": "Explore, jump and interact"
+      "subtitle": "Explore, jump and interact."
     },
     "empty_parcel": {
       "title": "Empty Parcel",
-      "subtitle": "Just run and jump, but it loads faster"
+      "subtitle": "Just run and jump. It loads faster."
     },
     "jump_in": "Jump In"
   },
