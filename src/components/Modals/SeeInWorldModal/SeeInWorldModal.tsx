@@ -11,10 +11,7 @@ export default class SeeInWorldModal extends React.PureComponent<Props> {
   handleNavigateToExplorer = (x: number, y: number) => {
     const { metadata, onClose } = this.props
     const url = getExplorerURL({ collectionId: metadata.collectionId, item_ids: metadata.itemIds, position: { x, y } })
-    const newWindow = window.open(url, '_blank,noreferrer')
-    if (newWindow) {
-      newWindow.focus()
-    }
+    window.open(url, '_blank,noreferrer')
     onClose()
   }
 
@@ -31,7 +28,7 @@ export default class SeeInWorldModal extends React.PureComponent<Props> {
           <div className={classNames(styles.image, imageClass)}></div>
         </div>
         <Button primary fluid size="small" onClick={() => this.handleNavigateToExplorer(position.x, position.y)}>
-          Jump in
+          {t('see_in_world_modal.jump_in')}
         </Button>
       </div>
     )
