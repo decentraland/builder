@@ -24,7 +24,7 @@ export default class SeeInWorldModal extends React.PureComponent<Props> {
         <Header className={styles.headers} as="h2">
           {title}
         </Header>
-        <Header className={styles.headers} as="h3">
+        <Header className={styles.headers} as="h4">
           {subtitle}
         </Header>
         <div className={styles.imageWrapper}>
@@ -43,16 +43,16 @@ export default class SeeInWorldModal extends React.PureComponent<Props> {
         <ModalContent>
           <div className={styles.content}>
             {this.renderOption(
-              t('see_in_world_modal.genesis.title'),
-              t('see_in_world_modal.genesis.subtitle'),
-              { x: 0, y: 0 },
-              styles.genesis
-            )}
-            {this.renderOption(
               t('see_in_world_modal.empty_parcel.title'),
               t('see_in_world_modal.empty_parcel.subtitle'),
               { x: 100, y: 100 },
               styles.emptyParcel
+            )}
+            {this.renderOption(
+              t('see_in_world_modal.genesis.title'),
+              t('see_in_world_modal.genesis.subtitle'),
+              { x: 0, y: 0 },
+              styles.genesis
             )}
           </div>
         </ModalContent>

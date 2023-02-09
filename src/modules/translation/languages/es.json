@@ -1492,14 +1492,14 @@
   },
   "see_in_world_modal": {
     "title": "Ver en el mundo",
-    "subtitle": "Elige una de las opciones sobre dónde quieres ver tus items.",
+    "subtitle": "Elige una de las opciones para probar tus items en el mundo",
     "genesis": {
       "title": "Genesis Plaza",
       "subtitle": "Explora, salta, interactúa"
     },
     "empty_parcel": {
       "title": "Parcela vacía",
-      "subtitle": "Sólo podrás correr, pero cargará más rápido"
+      "subtitle": "Sólo podrás correr y saltar, pero cargará más rápido"
     }
   },
   "collection_image": {
