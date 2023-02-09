@@ -1500,7 +1500,8 @@
     "empty_parcel": {
       "title": "Parcela vacía",
       "subtitle": "Sólo podrás correr y saltar, pero cargará más rápido"
-    }
+    },
+    "jump_in": "Ingresar"
   },
   "collection_image": {
     "no_items": "No Items"

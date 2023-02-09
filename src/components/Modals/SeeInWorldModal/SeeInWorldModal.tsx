@@ -1,6 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
-import { Header, ModalContent, ModalNavigation } from 'decentraland-ui'
+import { Button, Header, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExplorerURL } from 'modules/collection/utils'
@@ -20,7 +20,7 @@ export default class SeeInWorldModal extends React.PureComponent<Props> {
 
   renderOption = (title: string, subtitle: string, position: { x: number; y: number }, imageClass: string) => {
     return (
-      <div className={styles.option} role="button" onClick={() => this.handleNavigateToExplorer(position.x, position.y)}>
+      <div className={styles.option}>
         <Header className={styles.headers} as="h2">
           {title}
         </Header>
@@ -30,6 +30,9 @@ export default class SeeInWorldModal extends React.PureComponent<Props> {
         <div className={styles.imageWrapper}>
           <div className={classNames(styles.image, imageClass)}></div>
         </div>
+        <Button primary fluid size="small" onClick={() => this.handleNavigateToExplorer(position.x, position.y)}>
+          Jump in
+        </Button>
       </div>
     )
   }
@@ -38,7 +41,7 @@ export default class SeeInWorldModal extends React.PureComponent<Props> {
     const { onClose } = this.props
 
     return (
-      <Modal size="small" onClose={onClose}>
+      <Modal size="small" onClose={onClose} aria-modal role="dialog">
         <ModalNavigation title={t('see_in_world_modal.title')} subtitle={t('see_in_world_modal.subtitle')} onClose={onClose} />
         <ModalContent>
           <div className={styles.content}>
