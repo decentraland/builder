@@ -1,5 +1,5 @@
-import { ChainId } from '@dcl/schemas'
 import { Dispatch } from 'redux'
+import { ChainId } from '@dcl/schemas'
 import { OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'

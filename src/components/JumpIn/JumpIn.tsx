@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Props } from './JumpIn.types'
 import { getSelection, getCenter, getExplorerURL as getLandURL } from 'modules/land/utils'
+import { Props } from './JumpIn.types'
 import './JumpIn.css'
 
 export default class JumpIn extends React.PureComponent<Props> {
