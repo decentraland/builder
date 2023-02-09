@@ -4,7 +4,7 @@ import { Header, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExplorerURL } from 'modules/collection/utils'
-import styles from './SeeInWorld.module.css'
+import styles from './SeeInWorldModal.module.css'
 import { Props } from './SeeInWorldModal.types'
 
 export default class SeeInWorldModal extends React.PureComponent<Props> {
