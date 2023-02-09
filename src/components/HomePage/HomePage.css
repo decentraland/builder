@@ -20,7 +20,7 @@
 
 .HomePage > .ui.container > .ui.cards > .ui.card {
   margin: 0 16px 0 0;
-  width: 254px;
+  width: 300px;
 }
 
 .HomePage > .ui.container > .ui.cards > .ui.card:nth-child(4n) {
@@ -53,26 +53,35 @@
   color: var(--light-gray);
 }
 
+.HomePage .ui.cards .ui.card > .content > .description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .HomePage .ui.cards .ui.card > .content > .description > .card-image {
-  height: 96px;
-  width: 96px;
-  margin: 40px 79px;
+  height: 240px;
+  width: 280px;
+  margin-bottom: 30px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-image.collections {
-  background: url('../../images/home-page-collections.svg');
+  background-image: url('../../images/home-page-collections.png');
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-image.scenes {
-  background: url('../../images/home-page-scenes.svg');
+  background-image: url('../../images/home-page-scenes.png');
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-image.land {
-  background: url('../../images/home-page-land.svg');
+  background-image: url('../../images/home-page-land.png');
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-image.names {
-  background: url('../../images/home-page-names.svg');
+  background-image: url('../../images/home-page-names.png');
 }
 
 .HomePage .ui.cards .ui.card > .content.extra > button {
