@@ -1477,7 +1477,7 @@
   },
   "see_in_world_modal": {
     "title": "See in world",
-    "subtitle": "Choose a location to open your item in-world",
+    "subtitle": "Choose a location to try your items in-world",
     "genesis": {
       "title": "Genesis Plaza",
       "subtitle": "Explore, jump, interact"
