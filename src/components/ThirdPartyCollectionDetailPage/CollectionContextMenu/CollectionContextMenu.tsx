@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { getCollectionEditorURL, getExplorerURL, isLocked } from 'modules/collection/utils'
+import { getCollectionEditorURL, isLocked } from 'modules/collection/utils'
 import { CreateOrEditMultipleItemsModalType } from 'components/Modals/CreateAndEditMultipleItemsModal/CreateAndEditMultipleItemsModal.types'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
@@ -18,10 +18,9 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
     }
   }
 
-  handleNavigateToExplorer = () => {
-    const { items } = this.props
-    this.analytics.track('See in world')
-    this.navigateTo(getExplorerURL({ item_ids: items.map(item => item.id) }), '_blank')
+  handleSeeInWorld = () => {
+    const { items, onOpenModal } = this.props
+    onOpenModal('SeeInWorldModal', { itemIds: items.map(item => item.id) })
   }
 
   handleNavigateToEditor = () => {
@@ -73,7 +72,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
         direction="left"
       >
         <Dropdown.Menu>
-          <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
+          <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleSeeInWorld} />
           <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
 
           <Popup

@@ -1,0 +1,48 @@
+.content {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.option {
+  background: rgba(var(--purplish-grey-raw), 0.2);
+  padding: 20px;
+  width: 340px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.option :global(.ui.header) {
+  margin: 0px;
+}
+
+.option :global(.ui.header):first-child {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.image {
+  min-height: 100px;
+  width: 230px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.imageWrapper {
+  padding: 60px 15px 60px 15px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: var(--card);
+}
+
+.genesis {
+  background-image: url('../../../images/genesis_city.png');
+}
+
+.emptyParcel {
+  background-image: url('../../../images/empty_parcel.png');
+}

@@ -1453,6 +1453,19 @@
     "title": "上传更改",
     "description": "自上次策展人审查藏品或其中包含的文章以来，对收藏品或其中包含的文章进行了更改。{br}要使这些变化反映在市场和游戏中，必须再次得到委员会的审查和批准。{br}您确定要推动更改以供审核吗？"
   },
+  "see_in_world_modal": {
+    "title": "见于世",
+    "subtitle": "选择一个位置在世界中试用您的物品",
+    "genesis": {
+      "title": "Genesis Plaza",
+      "subtitle": "探索、跳跃和互动。"
+    },
+    "empty_parcel": {
+      "title": "空地块",
+      "subtitle": "只是跑和跳。 它加载速度更快。"
+    },
+    "jump_in": "跳进去"
+  },
   "publish_third_party_collection_modal": {
     "title": "发布链接项目",
     "publish_description": "即将使用 {availableSlots} 个可用插槽中的 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来发布 \"{collectionName}\"。",

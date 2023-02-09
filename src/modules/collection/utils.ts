@@ -41,18 +41,30 @@ export function getCollectionEditorURL(collection: Collection, items: Item[]): s
   return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })
 }
 
-export function getExplorerURL({ collection, item_ids }: { collection?: Collection; item_ids?: string[] }): string {
-  if (!collection && !item_ids) {
+export function getExplorerURL({
+  collectionId,
+  item_ids,
+  position
+}: {
+  collectionId?: string
+  item_ids?: string[]
+  position?: { x: number; y: number }
+}): string {
+  if (!collectionId && !item_ids) {
     throw new Error('Either a collection or item ids must be specified to get the explorer url')
   }
   const EXPLORER_URL = config.get('EXPLORER_URL', '')
   const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
   let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=goerli&DEBUG_MODE=true`
 
-  if (collection) {
-    URL += `&WITH_COLLECTIONS=${collection.id}`
+  if (collectionId) {
+    URL += `&WITH_COLLECTIONS=${collectionId}`
   } else if (item_ids) {
     URL += `&WITH_ITEMS=${item_ids.join(',')}`
+  }
+
+  if (position) {
+    URL += `&position=${position.x},${position.y}`
   }
 
   return URL

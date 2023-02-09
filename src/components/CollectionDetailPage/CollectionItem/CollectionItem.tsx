@@ -8,7 +8,7 @@ import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isFree, canManageItem, getMaxSupply } from 'modules/item/utils'
 import ItemStatus from 'components/ItemStatus'
-import { getExplorerURL, isLocked } from 'modules/collection/utils'
+import { isLocked } from 'modules/collection/utils'
 import { isEmoteData, ItemType, SyncStatus, WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
@@ -23,12 +23,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
   }
 
-  handleNavigateToExplorer = () => {
-    const { item } = this.props
-    const newWindow = window.open(getExplorerURL({ item_ids: [item.id] }), '_blank')
-    if (newWindow) {
-      newWindow.focus()
-    }
+  handleSeeInWorld = () => {
+    const { onOpenModal, item } = this.props
+    onOpenModal('SeeInWorldModal', { itemIds: [item.id] })
   }
 
   handleMintItem = () => {
@@ -122,7 +119,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
         >
           <Dropdown.Menu className={styles.contextMenu}>
             <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
-            <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
+            <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleSeeInWorld} />
             <Dropdown.Item text={t('collection_item.preview')} onClick={this.handleNavigateToEditor} />
             {!collection.isPublished && (
               <Dropdown.Item text={t('collection_item.move_to_another_collection')} onClick={this.handleMoveToAnotherCollection} />
