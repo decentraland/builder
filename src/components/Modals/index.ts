@@ -42,3 +42,4 @@ export { default as EditCurationAssigneeModal } from './EditCurationAssigneeModa
 export { default as MoveItemToCollectionModal } from './MoveItemToCollectionModal'
 export { default as MoveItemToAnotherCollectionModal } from './MoveItemToAnotherCollectionModal'
 export { default as EditThumbnailModal } from './EditThumbnailModal'
+export { default as SeeInWorldModal } from './SeeInWorldModal'
