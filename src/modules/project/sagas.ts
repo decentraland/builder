@@ -132,7 +132,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
     yield put(createScene(newScene))
     yield put(createProject(newProject))
-    yield put(push(locations.root()))
+    yield put(push(locations.scenes()))
   }
 
   function* handleEditProject(action: EditProjectAction) {
@@ -261,6 +261,6 @@ export function* projectSaga(builder: BuilderAPI) {
   }
 
   function* handleDeleteProject(_action: DeleteProjectAction) {
-    yield put(push(locations.root()))
+    yield put(push(locations.scenes()))
   }
 }

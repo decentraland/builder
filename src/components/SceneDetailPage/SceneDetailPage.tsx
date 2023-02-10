@@ -31,7 +31,7 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
       <>
         <Section>
           <Row>
-            <Back absolute onClick={() => onNavigate(locations.root())} />
+            <Back absolute onClick={() => onNavigate(locations.scenes())} />
             <Narrow>
               <Row>
                 <Column>
