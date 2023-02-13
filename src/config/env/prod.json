@@ -2,7 +2,7 @@
   "CHAIN_ID": "1",
   "ENVIRONMENT": "production",
   "LOCAL_STORAGE_KEY": "builder",
-  "EMAIL_SERVER_URL": "https://decentraland.org/subscribe",
+  "EMAIL_SERVER_URL": "https://subscription.decentraland.org/subscribe",
   "PEER_URL": "https://peer.decentraland.org",
   "ERC721_COLLECTION_BASE_URI": "https://peer.decentraland.org/lambdas/collections/standard/erc721/",
   "BUILDER_SERVER_URL": "https://builder-api.decentraland.org/v1",
