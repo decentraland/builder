@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Dropdown, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -61,7 +62,8 @@ export default class Header extends React.PureComponent<Props> {
       <>
         <div className={`block ${isFromCollections ? 'close' : 'back'}`} onClick={this.handleBack} />
         <div className="title">
-          {collection.name} <CollectionStatus collection={collection} />
+          <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
+          <CollectionStatus collection={collection} />
         </div>
         {isOwner && !collection.isPublished ? (
           <Dropdown trigger={<div className="block actions" />} inline direction="left">
