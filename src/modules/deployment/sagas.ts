@@ -271,7 +271,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       let entities: Entity[] = []
 
       if (coords.length > 0) {
-        entities = yield call([catalystClient, 'fetchEntitiesByPointers'], EntityType.SCENE, coords)
+        entities = yield call([catalystClient, 'fetchEntitiesByPointers'], coords)
       }
 
       const deployments = new Map<string, Deployment>()
