@@ -43,7 +43,7 @@ import Tags from './Tags'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
-const CAMPAIGN_TAG = 'HolidaySeason'
+const CAMPAIGN_TAG = 'MVFW23'
 
 export default class RightPanel extends React.PureComponent<Props, State> {
   analytics = getAnalytics()

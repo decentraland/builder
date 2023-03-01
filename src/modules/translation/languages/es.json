@@ -1789,14 +1789,14 @@
   },
   "event_banner": {
     "small": {
-      "title": "¡Llegaron las vacaciones!",
-      "subtitle": "Agrega el tag #HolidaySeason a tus Wearables y Emotes en estas vacaciones de invierno para que se vean en la nueva sección especial del Marketplace!"
+      "title": "¡La Semana de la Moda del Metaverso esta llegando!",
+      "subtitle": "Agrega el tag {event_tag} a tus Wearables y Emotes listos para la pasarela para que aparezcan en una pestaña especial de MVFW del Marketplace para el gran evento."
     },
-    "event_tag": "HolidaySeason"
+    "event_tag": "MVFW23"
   },
   "campaign": {
-    "name": "Holiday Season",
-    "tag": "HolidaySeason"
+    "name": "Metaverse Fashion Week",
+    "tag": "MVFW23"
   },
   "logged_in_detail_page": {
     "error_title": "Ocurrió un error al cargar la página de detalles"

@@ -38,7 +38,7 @@ import './CurationPage.css'
 
 const PAGE_SIZE = 12
 const ALL_ASSIGNEES_KEY = 'all'
-const CAMPAIGN_TAG = 'HolidaySeason'
+const CAMPAIGN_TAG = 'MVFW23'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {

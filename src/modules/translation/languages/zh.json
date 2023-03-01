@@ -1773,14 +1773,14 @@
   },
   "event_banner": {
     "small": {
-      "title": "#HolidaySeason 就在这里！",
-      "subtitle": "将标签#HolidaySeason 添加到您的冬季和假日主题的可穿戴设备和表情，让它们出现在市场的特殊假日标签中！"
+      "title": "元界时装周来了",
+      "subtitle": "将标签 {event_tag} 添加到您的跑道就绪的可穿戴设备和表情，让它们出现在 Marketplace 的特殊 MVFW 选项卡中，用于大型活动。"
     },
-    "event_tag": "HolidaySeason"
+    "event_tag": "MVFW23"
   },
   "campaign": {
-    "name": "Holiday Season",
-    "tag": "HolidaySeason"
+    "name": "元界时装周",
+    "tag": "MVFW23"
   },
   "logged_in_detail_page": {
     "error_title": "加载详细信息页面时出错"
