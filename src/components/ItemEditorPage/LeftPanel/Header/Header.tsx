@@ -16,10 +16,10 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   handleBack = () => {
-    const { collection, isFromCollections, onNavigate } = this.props
+    const { collection, isFromCollections, isFromTPCollections, onNavigate } = this.props
     // If the user came from a collection details page, go back to the same page
-    if (collection && isFromCollections) {
-      onNavigate(locations.collectionDetail(collection.id))
+    if (collection && (isFromCollections || isFromTPCollections)) {
+      onNavigate(isFromCollections ? locations.collectionDetail(collection.id) : locations.thirdPartyCollectionDetail(collection.id))
     } else {
       onNavigate(locations.itemEditor())
     }
@@ -56,11 +56,11 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   renderSelectedCollection() {
-    const { collection, address = '', hasUserOrphanItems, isFromCollections } = this.props
+    const { collection, address = '', hasUserOrphanItems, isFromCollections, isFromTPCollections } = this.props
     const isOwner = collection && isEqual(collection.owner, address)
     return collection ? (
       <>
-        <div className={`block ${isFromCollections ? 'close' : 'back'}`} onClick={this.handleBack} />
+        <div className={`block ${isFromCollections || isFromTPCollections ? 'close' : 'back'}`} onClick={this.handleBack} />
         <div className="title">
           <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
           <CollectionStatus collection={collection} />

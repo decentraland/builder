@@ -11,6 +11,11 @@ export type CollectionDetailByContractAddress = {
 
 export type RedirectTo = CollectionDetailByContractAddress
 
+export type LocationStateProps = {
+  fromParam?: string
+}
+
 export enum FromParam {
-  COLLECTIONS = 'collections'
+  COLLECTIONS = 'collections',
+  TP_COLLECTIONS = 'thirdPartyCollections'
 }
