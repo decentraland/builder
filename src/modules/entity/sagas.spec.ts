@@ -22,7 +22,7 @@ describe('Entity sagas', () => {
       const pointers = ['aPointer', 'anotherPointer']
       const anErrorMessage = 'Something happened'
       return expectSaga(entitySaga, client)
-        .provide([[call([client, 'fetchEntitiesByPointers'], EntityType.WEARABLE, pointers), Promise.reject(new Error(anErrorMessage))]])
+        .provide([[call([client, 'fetchEntitiesByPointers'], pointers), Promise.reject(new Error(anErrorMessage))]])
         .put(fetchEntitiesByPointersFailure(EntityType.WEARABLE, pointers, anErrorMessage))
         .dispatch(fetchEntitiesByPointersRequest(EntityType.WEARABLE, pointers))
         .run({ silenceTimeout: true })
@@ -50,7 +50,7 @@ describe('Entity sagas', () => {
         }
       ]
       return expectSaga(entitySaga, client)
-        .provide([[call([client, 'fetchEntitiesByPointers'], EntityType.WEARABLE, pointers), Promise.resolve(entities)]])
+        .provide([[call([client, 'fetchEntitiesByPointers'], pointers), Promise.resolve(entities)]])
         .put(fetchEntitiesByPointersSuccess(EntityType.WEARABLE, pointers, entities))
         .dispatch(fetchEntitiesByPointersRequest(EntityType.WEARABLE, pointers))
         .run({ silenceTimeout: true })
@@ -66,7 +66,7 @@ describe('Entity sagas', () => {
       const ids = ['QmHash']
       const anErrorMessage = 'Something happened'
       return expectSaga(entitySaga, client)
-        .provide([[call([client, 'fetchEntitiesByIds'], EntityType.WEARABLE, ids), Promise.reject(new Error(anErrorMessage))]])
+        .provide([[call([client, 'fetchEntitiesByIds'], ids), Promise.reject(new Error(anErrorMessage))]])
         .put(fetchEntitiesByIdsFailure(EntityType.WEARABLE, ids, anErrorMessage))
         .dispatch(fetchEntitiesByIdsRequest(EntityType.WEARABLE, ids))
         .run({ silenceTimeout: true })
@@ -94,7 +94,7 @@ describe('Entity sagas', () => {
         }
       ]
       return expectSaga(entitySaga, client)
-        .provide([[call([client, 'fetchEntitiesByIds'], EntityType.WEARABLE, ids), Promise.resolve(entities)]])
+        .provide([[call([client, 'fetchEntitiesByIds'], ids), Promise.resolve(entities)]])
         .put(fetchEntitiesByIdsSuccess(EntityType.WEARABLE, ids, entities))
         .dispatch(fetchEntitiesByIdsRequest(EntityType.WEARABLE, ids))
         .run({ silenceTimeout: true })
