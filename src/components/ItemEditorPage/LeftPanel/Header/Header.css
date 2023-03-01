@@ -26,6 +26,10 @@
   color: var(--text);
 }
 
+.Header .title > a:hover {
+  text-decoration: underline;
+}
+
 .Header .CollectionBadge,
 .Header .CollectionStatus {
   margin-left: 5px;
