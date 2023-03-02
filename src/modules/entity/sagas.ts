@@ -32,7 +32,7 @@ export function* entitySaga(catalyst: CatalystClient) {
   function* handleFetchEntitiesByPointersRequest(action: FetchEntitiesByPointersRequestAction) {
     const { type, pointers } = action.payload
     try {
-      const entities: Entity[] = yield call([catalyst, 'fetchEntitiesByPointers'], type, pointers)
+      const entities: Entity[] = yield call([catalyst, 'fetchEntitiesByPointers'], pointers)
       yield put(fetchEntitiesByPointersSuccess(type, pointers, entities))
     } catch (error) {
       yield put(fetchEntitiesByPointersFailure(type, pointers, error.message))
@@ -42,7 +42,7 @@ export function* entitySaga(catalyst: CatalystClient) {
   function* handleFetchEntitiesByIdsRequest(action: FetchEntitiesByIdsRequestAction) {
     const { type, ids } = action.payload
     try {
-      const entities: Entity[] = yield call([catalyst, 'fetchEntitiesByIds'], type, ids)
+      const entities: Entity[] = yield call([catalyst, 'fetchEntitiesByIds'], ids)
       yield put(fetchEntitiesByIdsSuccess(type, ids, entities))
     } catch (error) {
       yield put(fetchEntitiesByIdsFailure(type, ids, error.message))
