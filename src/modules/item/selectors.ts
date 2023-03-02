@@ -134,17 +134,23 @@ const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStat
 
 const getStatusForStandard = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
   let status: SyncStatus
-  if (!item.isPublished) {
-    status = SyncStatus.UNPUBLISHED
-  } else if (!item.isApproved || (collectionCuration && collectionCuration.status === CurationStatus.PENDING)) {
-    status = SyncStatus.UNDER_REVIEW
-  } else {
-    if (!entity) {
-      status = SyncStatus.LOADING
-    } else if (areSynced(item, entity)) {
+  if (entity) {
+    if (areSynced(item, entity)) {
       status = SyncStatus.SYNCED
     } else {
-      status = SyncStatus.UNSYNCED
+      if (collectionCuration?.status === CurationStatus.PENDING) {
+        status = SyncStatus.UNDER_REVIEW
+      } else {
+        status = SyncStatus.UNSYNCED
+      }
+    }
+  } else {
+    if (!item.isPublished) {
+      status = SyncStatus.UNPUBLISHED
+    } else if (!item.isApproved) {
+      status = SyncStatus.UNDER_REVIEW
+    } else {
+      status = SyncStatus.LOADING
     }
   }
   return status
