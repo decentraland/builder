@@ -199,6 +199,30 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     return null
   }
 
+  renderUnsyncedCollectionNoticeStatus() {
+    const { collection, status } = this.props
+
+    if (!collection?.isApproved || ![SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW].some(s => s === status)) {
+      return null
+    }
+
+    return (
+      <div className="unsynced-collection container">
+        <i className="unsynced-collection alert-icon" />
+        <div className="unsynced-collection message">
+          <h4 className="unsynced-collection title">{t('collection_detail_page.unsynced_collection_title')}</h4>
+          <p className="unsynced-collection text">{t(`collection_detail_page.${status}_collection_message`, { br: <br /> })}</p>
+        </div>
+        {status === SyncStatus.UNDER_REVIEW ? (
+          <Button basic onClick={this.handleNavigateToForum}>
+            <span>{t('collection_context_menu.forum_post')}</span>
+          </Button>
+        ) : null}
+        <CollectionPublishButton collection={collection} />
+      </div>
+    )
+  }
+
   renderPage(items: Item[]) {
     const { tab } = this.state
     const { status, wallet } = this.props
@@ -284,17 +308,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
           </Row>
         </Section>
         <Narrow>
-          {status === SyncStatus.UNSYNCED ? (
-            <div className="unsynced-collection container">
-              <i className="unsynced-collection alert-icon" />
-              <div className="unsynced-collection message">
-                <h4 className="unsynced-collection title">{t('collection_detail_page.unsynced_collection_title')}</h4>
-                <p className="unsynced-collection text">{t('collection_detail_page.unsynced_collection_message', { br: <br /> })}</p>
-              </div>
-              <CollectionPublishButton collection={collection} />
-            </div>
-          ) : null}
-
+          {this.renderUnsyncedCollectionNoticeStatus()}
           {showShowTabs ? (
             <Tabs isFullscreen>
               <Tabs.Tab active={tab === ItemType.WEARABLE} onClick={() => this.handleTabChange(ItemType.WEARABLE)}>
