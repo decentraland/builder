@@ -8,6 +8,7 @@ import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import Navigation from 'components/Navigation'
+import EventBannerContainer from 'components/EventBanner/EventBanner.container'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { locations } from 'routing/locations'
 import { Props } from './HomePage.types'
@@ -74,6 +75,7 @@ export const HomePage: React.FC<Props> = props => {
         <Navigation activeTab={NavigationTab.OVERVIEW}>
           <SyncToast />
         </Navigation>
+        <EventBannerContainer />
         <Container>
           <h1 className="title">{t('home_page.title')}</h1>
           <Card.Group itemsPerRow={4} centered>
