@@ -10,7 +10,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
-
+import { DCLController } from 'contracts'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
@@ -252,7 +252,6 @@ export function* ensSaga(builderClient: BuilderClient) {
       const mana = new ethers.Contract(contract.address, contract.abi, new ethers.providers.Web3Provider(provider))
       const isDCLControllerV2Enabled: boolean = yield select(getIsDCLControllerV2Enabled)
       const controllerAddress = isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS
-      console.log(controllerAddress)
       const allowance: string = yield call(mana.allowance, from, controllerAddress)
       const authorization: Authorization = { allowance }
 
@@ -348,13 +347,13 @@ export function* ensSaga(builderClient: BuilderClient) {
   function* handleClaimNameRequest(action: ClaimNameRequestAction) {
     const { name } = action.payload
     try {
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
 
       const isDCLControllerV2Enabled: boolean = yield select(getIsDCLControllerV2Enabled)
       const controllerAddress = isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS
-      const controllerContract = DCLController__factory.connect(controllerAddress, signer)
+      const controllerContract: DCLController = yield call([DCLController__factory, 'connect'], controllerAddress, signer)
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const transaction: ethers.ContractTransaction = yield call([controllerContract, 'register'], name, from)
       yield put(claimNameTransactionSubmitted(name, wallet.address, wallet.chainId, transaction.hash))

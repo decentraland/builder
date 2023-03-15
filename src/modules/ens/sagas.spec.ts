@@ -1,6 +1,6 @@
 import { BuilderClient } from '@dcl/builder-client'
 import { ChainId, Network } from '@dcl/schemas'
-import { ERC20__factory, ERC20 } from 'contracts'
+import { ERC20__factory, ERC20, DCLController__factory } from 'contracts'
 import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ethers } from 'ethers'
@@ -9,7 +9,7 @@ import { getIsDCLControllerV2Enabled } from 'modules/features/selectors'
 import { getWallet } from 'modules/wallet/utils'
 import { expectSaga } from 'redux-saga-test-plan'
 import { call, select } from 'redux-saga/effects'
-import { allowClaimManaRequest, fetchENSAuthorizationRequest } from './actions'
+import { allowClaimManaRequest, claimNameRequest, fetchENSAuthorizationRequest } from './actions'
 import { ensSaga } from './sagas'
 
 jest.mock('@dcl/builder-client')
@@ -37,16 +37,11 @@ beforeEach(() => {
 })
 
 describe('when handling the approve claim mana request', () => {
-  let allowance: string
-  let signer: ethers.Signer
-
-  beforeEach(() => {
-    allowance = '100'
-    signer = {} as ethers.Signer
-  })
-
   describe('and the dcl controller v2 feature flag is enabled', () => {
     it('should call the manaContract approve function with the dcl controller v2 address', async () => {
+      const allowance = '100'
+      const signer = {} as ethers.Signer
+
       await expectSaga(ensSaga, builderClient)
         .provide([
           [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
@@ -62,6 +57,9 @@ describe('when handling the approve claim mana request', () => {
 
   describe('and the dcl controller v2 feature flag is disabled', () => {
     it('should call the manaContract approve function with the dcl controller address', async () => {
+      const allowance = '100'
+      const signer = {} as ethers.Signer
+
       await expectSaga(ensSaga, builderClient)
         .provide([
           [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
@@ -113,6 +111,44 @@ describe('when handling the fetch of authorizations request', () => {
         ])
         .call(manaContract.allowance, from, CONTROLLER_ADDRESS)
         .dispatch(fetchENSAuthorizationRequest())
+        .silentRun()
+    })
+  })
+})
+
+describe('when handling the claim name request', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  describe('and the dcl controller v2 feature flag is enabled', () => {
+    it('should call DCLController__factory.connect with the dcl controller v2 address', async () => {
+      const signer = {} as ethers.Signer
+
+      await expectSaga(ensSaga, builderClient)
+        .provide([
+          [call(getWallet), { address: 'address' }],
+          [call(getSigner), signer],
+          [select(getIsDCLControllerV2Enabled), true]
+        ])
+        .call([DCLController__factory, 'connect'], CONTROLLER_V2_ADDRESS, signer)
+        .dispatch(claimNameRequest('name'))
+        .silentRun()
+    })
+  })
+
+  describe('and the dcl controller v2 feature flag is disabled', () => {
+    it('should call DCLController__factory.connect with the dcl controller address', async () => {
+      const signer = {} as ethers.Signer
+
+      await expectSaga(ensSaga, builderClient)
+        .provide([
+          [call(getWallet), { address: 'address' }],
+          [call(getSigner), signer],
+          [select(getIsDCLControllerV2Enabled), false]
+        ])
+        .call([DCLController__factory, 'connect'], CONTROLLER_ADDRESS, signer)
+        .dispatch(claimNameRequest('name'))
         .silentRun()
     })
   })
