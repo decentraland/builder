@@ -11,7 +11,7 @@ import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, i
 import { Props, State } from './ClaimENSPage.types'
 
 import './ClaimENSPage.css'
-import { CONTROLLER_ADDRESS, CONTROLLER_V2_CONTRACT_ADDRESS } from 'modules/common/contracts'
+import { CONTROLLER_ADDRESS, CONTROLLER_V2_ADDRESS } from 'modules/common/contracts'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -155,7 +155,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       values={{
                         contract_link: (
                           <TransactionLink
-                            address={isDCLControllerV2Enabled ? CONTROLLER_V2_CONTRACT_ADDRESS : CONTROLLER_ADDRESS}
+                            address={isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS}
                             txHash=""
                           >
                             {isDCLControllerV2Enabled ? 'DCLControllerV2' : 'DCLController'}
