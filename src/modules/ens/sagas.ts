@@ -393,13 +393,13 @@ export function* ensSaga(builderClient: BuilderClient) {
   function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
     const { allowance } = action.payload
     try {
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
-      const manaContract = ERC20__factory.connect(MANA_ADDRESS, signer)
+      const manaContract: ReturnType<typeof ERC20__factory['connect']> = yield call([ERC20__factory, 'connect'], MANA_ADDRESS, signer)
       const isDCLControllerV2Enabled: boolean = yield select(getIsDCLControllerV2Enabled)
       const controllerAddress = isDCLControllerV2Enabled ? CONTROLLER_V2_CONTRACT_ADDRESS : CONTROLLER_ADDRESS
-      const transaction: ethers.ContractTransaction = yield call(() => manaContract.approve(controllerAddress, allowance))
+      const transaction: ethers.ContractTransaction = yield call([manaContract, 'approve'], controllerAddress, allowance)
 
       yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))
     } catch (error) {
