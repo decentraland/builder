@@ -154,10 +154,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       id="claim_ens_page.need_mana_message"
                       values={{
                         contract_link: (
-                          <TransactionLink
-                            address={isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS}
-                            txHash=""
-                          >
+                          <TransactionLink address={isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS} txHash="">
                             {isDCLControllerV2Enabled ? 'DCLControllerV2' : 'DCLController'}
                           </TransactionLink>
                         )
