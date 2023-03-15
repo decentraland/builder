@@ -8,10 +8,9 @@ import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
 import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, isEnoughClaimMana } from 'modules/ens/utils'
-import { Props, State } from './ClaimENSPage.types'
-
-import './ClaimENSPage.css'
 import { CONTROLLER_ADDRESS, CONTROLLER_V2_ADDRESS } from 'modules/common/contracts'
+import { Props, State } from './ClaimENSPage.types'
+import './ClaimENSPage.css'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
