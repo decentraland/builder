@@ -9,6 +9,7 @@ export type Props = {
   mana: number
   allowance: string
   isLoading: boolean
+  isDCLControllerV2Enabled: boolean
   onOpenModal: typeof openModal
   onAllowMana: typeof allowClaimManaRequest
   onClaim: typeof claimNameRequest
@@ -23,6 +24,6 @@ export type State = {
   isError: boolean
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'mana' | 'allowance' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'wallet' | 'mana' | 'allowance' | 'isLoading' | 'isDCLControllerV2Enabled'>
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onAllowMana' | 'onClaim' | 'onNavigate' | 'onBack'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | AllowClaimManaRequestAction | ClaimNameRequestAction>
