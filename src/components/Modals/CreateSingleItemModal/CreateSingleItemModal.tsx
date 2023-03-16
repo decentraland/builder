@@ -175,7 +175,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
     const { address, collection, onSave } = this.props
-    const { id, name, description, type, metrics, collectionId, category, playMode, rarity, hasScreenshotTaken } = this.state as StateData
+    const { id, name, description, type, metrics, collectionId, category, model, playMode, rarity, hasScreenshotTaken } = this
+      .state as StateData
 
     const belongsToAThirdPartyCollection = isThirdParty(collection?.urn)
     // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
@@ -233,7 +234,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       updatedAt: +new Date()
     }
 
-    if (belongsToAThirdPartyCollection && hasScreenshotTaken) {
+    if ((belongsToAThirdPartyCollection && hasScreenshotTaken) || isImageFile(model)) {
       onSave(item as Item, sortedContents.all)
     } else {
       this.setState({
