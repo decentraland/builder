@@ -1,6 +1,5 @@
-import { EmoteWithBlobs, IPreviewController } from '@dcl/schemas'
-import { Item } from 'modules/item/types'
-import React from 'react'
+import { EmoteWithBlobs, WearableWithBlobs } from '@dcl/schemas'
+import { ItemType } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
@@ -18,10 +17,9 @@ export enum ControlOptionAction {
 export type Props = {
   title: string
   isLoading: boolean
-  blob?: EmoteWithBlobs
+  type?: ItemType
+  blob?: WearableWithBlobs | EmoteWithBlobs
   base64s?: string[]
-  wearablePreviewComponent?: React.ReactNode
-  wearablePreviewController?: IPreviewController
   onSave: (screenshot: string) => void
   onBack: () => void
   onClose: () => void
@@ -29,18 +27,5 @@ export type Props = {
 
 export type State = {
   hasBeenUpdated: boolean
-  playingIntervalId?: NodeJS.Timer
-  previewController?: IPreviewController
-  blob?: EmoteWithBlobs
-  zoom: number
-  offsetY?: number
+  blob?: WearableWithBlobs | EmoteWithBlobs
 }
-
-export type CreateSingleItemModalMetadata = {
-  collectionId?: string
-  item?: Item
-  addRepresentation?: boolean
-  changeItemFile?: boolean
-}
-
-export type OwnProps = Pick<Props, 'wearablePreviewComponent' | 'wearablePreviewController'>

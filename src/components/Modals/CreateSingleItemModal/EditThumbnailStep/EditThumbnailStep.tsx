@@ -1,78 +1,60 @@
 import * as React from 'react'
-import { ModalNavigation, WearablePreview, Row, Button, Icon, Loader, EmoteControls } from 'decentraland-ui'
+import { PreviewType } from '@dcl/schemas'
+import {
+  ModalNavigation,
+  WearablePreview,
+  Row,
+  Button,
+  Loader,
+  EmoteControls,
+  TranslationControls,
+  ZoomControls,
+  VerticalPosition
+} from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { ControlOptionAction, Props, State } from './EditThumbnailStep.types'
+import { ItemType } from 'modules/item/types'
+import { Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
-
-const DEFAULT_ZOOM = 2
-const ZOOM_DELTA = 0.1
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
   previewRef = React.createRef<WearablePreview>()
   state: State = {
-    zoom: DEFAULT_ZOOM,
     blob: this.props.blob,
-    previewController: this.props.wearablePreviewController,
     hasBeenUpdated: false
   }
 
-  componentWillUnmount() {
-    const { playingIntervalId } = this.state
-    if (playingIntervalId) {
-      clearInterval(playingIntervalId)
-    }
-  }
-
   handleFileLoad = async () => {
+    const { type } = this.props
     const { hasBeenUpdated } = this.state
+
+    if (!hasBeenUpdated) {
+      return
+    }
+
     const controller = WearablePreview.createController('preview')
-    const length = await controller.emote.getLength()
-    // the emotes are being loaded twice, this is a workaround to just use the 2nd time
-    if (length > 0 && hasBeenUpdated) {
-      this.setState({ previewController: controller })
+
+    if (type === ItemType.EMOTE) {
+      await controller.emote.getLength()
+    } else {
+      await controller.scene.getMetrics()
     }
   }
 
   handleSave = async () => {
-    const { onSave } = this.props
-    const { previewController } = this.state
-    await previewController?.emote.pause()
-    await previewController?.scene.getScreenshot(1024, 1024).then(screenshot => onSave(screenshot))
-  }
-
-  handleControlActionChange = async (action: ControlOptionAction, value?: number) => {
-    const { previewController } = this.state
-    const iframeContentWindow = this.previewRef.current?.iframe?.contentWindow
-    if (iframeContentWindow) {
-      await previewController?.emote.pause()
-      switch (action) {
-        case ControlOptionAction.PAN_CAMERA_Y: {
-          this.setState({ offsetY: value })
-          await previewController?.scene.panCamera({ y: value! * -1 })
-          break
-        }
-        case ControlOptionAction.ZOOM_IN: {
-          await previewController?.scene.changeZoom(ZOOM_DELTA)
-          break
-        }
-        case ControlOptionAction.ZOOM_OUT: {
-          await previewController?.scene.changeZoom(-ZOOM_DELTA)
-          break
-        }
-        default:
-          break
-      }
+    const { type, onSave } = this.props
+    const controller = WearablePreview.createController('preview')
+    if (type === ItemType.EMOTE) {
+      await controller.emote.pause()
     }
-  }
-
-  handleZoomOut = () => {
-    this.setState(prevState => ({ zoom: (prevState.zoom || DEFAULT_ZOOM) - 1 }))
+    const screenshot = await controller.scene.getScreenshot(1024, 1024)
+    onSave(screenshot)
   }
 
   render() {
-    const { onClose, onBack, title, isLoading, base64s } = this.props
+    const { base64s, title, type, isLoading, onBack, onClose } = this.props
     const { blob, hasBeenUpdated } = this.state
+    const isEmote = type === ItemType.EMOTE
 
     return (
       <>
@@ -84,60 +66,40 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               id="preview"
               blob={blob}
               base64s={base64s}
-              profile="default"
+              profile={isEmote ? 'default' : undefined}
+              type={!isEmote ? PreviewType.WEARABLE : undefined}
               disableBackground
               disableFace
               disableDefaultWearables
               disableDefaultEmotes
               disableAutoRotate
               showThumbnailBoundaries
-              skin="000000"
+              skin={isEmote ? '000000' : undefined}
               zoom={100}
               wheelZoom={2}
               onLoad={this.handleFileLoad}
               onUpdate={() => this.setState({ hasBeenUpdated: true })}
+              baseUrl="https://wearable-preview-3l6okj1ck-decentraland1.vercel.app"
             />
             {hasBeenUpdated ? (
               <>
-                <div className="zoom-controls">
-                  <Button
-                    className="zoom-control zoom-in-control"
-                    onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_IN)}
-                  >
-                    <Icon name="plus" />
-                  </Button>
-                  <Button
-                    className="zoom-control zoom-out-control"
-                    onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_OUT)}
-                  >
-                    <Icon name="minus" />
-                  </Button>
-                </div>
-                <div className="y-slider-container">
-                  <Icon className="arrows alternate horizontal" />
-                  <input
-                    step={0.1}
-                    min={-2}
-                    max={2}
-                    type="range"
-                    className="y-slider"
-                    onChange={e => this.handleControlActionChange(ControlOptionAction.PAN_CAMERA_Y, Number(e.target.value))}
-                  ></input>
-                </div>
-
-                <div className="play-controls">
-                  <EmoteControls className="emote-controls" wearablePreviewId="preview" />
-                </div>
+                <ZoomControls wearablePreviewId="preview" />
+                <TranslationControls vertical verticalPosition={VerticalPosition.RIGHT} wearablePreviewId="preview" />
+                {isEmote ? (
+                  <div className="play-controls">
+                    <EmoteControls className="emote-controls" wearablePreviewId="preview" />
+                  </div>
+                ) : null}
               </>
             ) : (
               <Loader active size="large" />
             )}
           </div>
           <Row className="thumbnail-actions">
-            <Button disabled={!hasBeenUpdated} onClick={onBack}>
+            <Button disabled={!hasBeenUpdated || isLoading} onClick={onBack}>
               {t('global.back')}
             </Button>
-            <Button disabled={!hasBeenUpdated} primary loading={isLoading} onClick={this.handleSave}>
+            <Button disabled={!hasBeenUpdated || isLoading} primary loading={isLoading} onClick={this.handleSave}>
               {t('global.save')}
             </Button>
           </Row>
