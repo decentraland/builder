@@ -21,3 +21,11 @@ export const getIsCampaignEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsDCLControllerV2Enabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.DCL_CONTROLLER_V2)
+  } catch (e) {
+    return false
+  }
+}

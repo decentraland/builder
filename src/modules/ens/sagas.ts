@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
-import { Network } from '@dcl/schemas'
+import { ChainId, Network } from '@dcl/schemas'
 import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland-dapps/dist/lib/eth'
@@ -10,14 +10,22 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
-
+import { DCLController } from 'contracts'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { DCLController__factory } from 'contracts/factories/DCLController__factory'
 import { ERC20__factory } from 'contracts/factories/ERC20__factory'
-import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
+import {
+  ENS_ADDRESS,
+  ENS_RESOLVER_ADDRESS,
+  CONTROLLER_ADDRESS,
+  CONTROLLER_V2_ADDRESS,
+  MANA_ADDRESS,
+  REGISTRAR_ADDRESS
+} from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
+import { getIsDCLControllerV2Enabled } from 'modules/features/selectors'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { getLands } from 'modules/land/selectors'
@@ -238,11 +246,13 @@ export function* ensSaga(builderClient: BuilderClient) {
   function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestAction) {
     try {
       const from: string = yield select(getAddress)
-      const chainId = getChainIdByNetwork(Network.ETHEREUM)
+      const chainId: ChainId = yield call(getChainIdByNetwork, Network.ETHEREUM)
       const contract = getContract(ContractName.MANAToken, chainId)
       const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
       const mana = new ethers.Contract(contract.address, contract.abi, new ethers.providers.Web3Provider(provider))
-      const allowance: string = yield call(mana.allowance, from, CONTROLLER_ADDRESS)
+      const isDCLControllerV2Enabled: boolean = yield select(getIsDCLControllerV2Enabled)
+      const controllerAddress = isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS
+      const allowance: string = yield call(mana.allowance, from, controllerAddress)
       const authorization: Authorization = { allowance }
 
       yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))
@@ -337,11 +347,13 @@ export function* ensSaga(builderClient: BuilderClient) {
   function* handleClaimNameRequest(action: ClaimNameRequestAction) {
     const { name } = action.payload
     try {
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
 
-      const controllerContract = DCLController__factory.connect(CONTROLLER_ADDRESS, signer)
+      const isDCLControllerV2Enabled: boolean = yield select(getIsDCLControllerV2Enabled)
+      const controllerAddress = isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS
+      const controllerContract: DCLController = yield call([DCLController__factory, 'connect'], controllerAddress, signer)
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const transaction: ethers.ContractTransaction = yield call([controllerContract, 'register'], name, from)
       yield put(claimNameTransactionSubmitted(name, wallet.address, wallet.chainId, transaction.hash))
@@ -381,12 +393,13 @@ export function* ensSaga(builderClient: BuilderClient) {
   function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
     const { allowance } = action.payload
     try {
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
-      const manaContract = ERC20__factory.connect(MANA_ADDRESS, signer)
-
-      const transaction: ethers.ContractTransaction = yield call(() => manaContract.approve(CONTROLLER_ADDRESS, allowance))
+      const manaContract: ReturnType<typeof ERC20__factory['connect']> = yield call([ERC20__factory, 'connect'], MANA_ADDRESS, signer)
+      const isDCLControllerV2Enabled: boolean = yield select(getIsDCLControllerV2Enabled)
+      const controllerAddress = isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS
+      const transaction: ethers.ContractTransaction = yield call([manaContract, 'approve'], controllerAddress, allowance)
 
       yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))
     } catch (error) {

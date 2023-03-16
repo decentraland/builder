@@ -8,9 +8,8 @@ import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
 import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, isEnoughClaimMana } from 'modules/ens/utils'
-import { CONTROLLER_ADDRESS } from 'modules/common/contracts'
+import { CONTROLLER_ADDRESS, CONTROLLER_V2_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
-
 import './ClaimENSPage.css'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
@@ -71,7 +70,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { wallet, mana, allowance, onBack } = this.props
+    const { wallet, mana, allowance, isDCLControllerV2Enabled, onBack } = this.props
     const { name, isError, isAvailable } = this.state
 
     const isLoading = this.props.isLoading || this.state.isLoading
@@ -154,8 +153,8 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       id="claim_ens_page.need_mana_message"
                       values={{
                         contract_link: (
-                          <TransactionLink address={CONTROLLER_ADDRESS} txHash="">
-                            DCLController
+                          <TransactionLink address={isDCLControllerV2Enabled ? CONTROLLER_V2_ADDRESS : CONTROLLER_ADDRESS} txHash="">
+                            {isDCLControllerV2Enabled ? 'DCLControllerV2' : 'DCLController'}
                           </TransactionLink>
                         )
                       }}

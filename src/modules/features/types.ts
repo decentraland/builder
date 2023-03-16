@@ -1,5 +1,6 @@
 export enum FeatureName {
   MAINTENANCE = 'maintenance',
   RENTALS = 'rentals',
-  CAMPAIGN = 'campaign'
+  CAMPAIGN = 'campaign',
+  DCL_CONTROLLER_V2 = 'dcl-controller-v2'
 }
