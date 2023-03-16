@@ -70,6 +70,12 @@ export class EmoteDurationTooLongError extends CustomError {
   }
 }
 
+export class EmoteCreationTPCollectionError extends Error {
+  constructor() {
+    super(t('create_single_item_modal.error.emote_creation_tp_collection'))
+  }
+}
+
 export class InvalidModelFileType extends CustomError {
   constructor(type: string) {
     super(
