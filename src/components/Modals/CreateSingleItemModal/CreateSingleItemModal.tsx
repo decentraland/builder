@@ -1,5 +1,6 @@
 import * as React from 'react'
 import uuid from 'uuid'
+import classNames from 'classnames'
 import { BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
 import { WearableData } from '@dcl/builder-client'
 import {
@@ -176,7 +177,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { address, collection, onSave } = this.props
     const { id, name, description, type, metrics, collectionId, category, playMode, rarity, hasScreenshotTaken } = this.state as StateData
 
-    const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
+    const belongsToAThirdPartyCollection = isThirdParty(collection?.urn)
     // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
     const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
     let urn: string | undefined
@@ -232,16 +233,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       updatedAt: +new Date()
     }
 
-    // The Emote will be saved on the set price step
-    if (type === ItemType.EMOTE) {
+    if (belongsToAThirdPartyCollection && hasScreenshotTaken) {
+      onSave(item as Item, sortedContents.all)
+    } else {
       this.setState({
         item: { ...(item as Item) },
         itemSortedContents: sortedContents.all,
         view: hasScreenshotTaken ? CreateItemView.SET_PRICE : CreateItemView.THUMBNAIL,
-        fromView: CreateItemView.THUMBNAIL
+        fromView: hasScreenshotTaken ? CreateItemView.DETAILS : CreateItemView.THUMBNAIL
       })
-    } else {
-      onSave(item as Item, sortedContents.all)
     }
   }
 
@@ -322,7 +322,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   handleSubmit = async () => {
     const { metadata, onSave } = this.props
-    const { id } = this.state
+    const { id, view } = this.state
 
     let changeItemFile = false
     let addRepresentation = false
@@ -337,7 +337,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (id && this.isValid()) {
       const { thumbnail, contents, bodyShape, type, model, isRepresentation, item: editedItem } = this.state as StateData
 
-      if (this.state.view === CreateItemView.DETAILS) {
+      if (view === CreateItemView.DETAILS || view === CreateItemView.THUMBNAIL) {
         try {
           const blob = dataURLToBlob(thumbnail)
           const hasCustomThumbnail = THUMBNAIL_PATH in contents
@@ -365,7 +365,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         } catch (error) {
           this.setState({ error: error.message })
         }
-      } else if (this.state.view === CreateItemView.SET_PRICE && !!this.state.item && !!this.state.itemSortedContents) {
+      } else if (view === CreateItemView.SET_PRICE && !!this.state.item && !!this.state.itemSortedContents) {
         onSave(this.state.item, this.state.itemSortedContents)
       }
     }
@@ -409,10 +409,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const category = value as WearableCategory
     if (this.state.category !== category) {
       this.setState({ category })
-      if (this.state.type === ItemType.WEARABLE) {
-        // As it's not required to wait for the promise, use the void operator to return undefined
-        void this.updateThumbnailByCategory(category)
-      }
     }
   }
 
@@ -427,8 +423,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOpenThumbnailDialog = () => {
-    const { type } = this.state
-    if (type === ItemType.EMOTE) {
+    const { model, type } = this.state
+    if (!model) {
+      return
+    }
+
+    if (type === ItemType.EMOTE || !isImageFile(model)) {
       this.setState({ fromView: CreateItemView.DETAILS, view: CreateItemView.THUMBNAIL })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
@@ -635,7 +635,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderImportView() {
-    const { metadata, onClose } = this.props
+    const { collection, metadata, onClose } = this.props
     const { category, isLoading, isRepresentation } = this.state
     const title = this.renderModalTitle()
 
@@ -647,6 +647,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         wearablePreviewComponent={<div className="importer-thumbnail-container">{this.renderWearablePreview()}</div>}
         isLoading={!!isLoading}
         isRepresentation={!!isRepresentation}
+        isTPCollection={isThirdParty(collection?.urn)}
         onDropAccepted={this.handleDropAccepted}
         onClose={onClose}
       />
@@ -861,8 +862,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderDetailsView() {
-    const { onClose, metadata, error, isLoading } = this.props
-    const { thumbnail, isRepresentation, rarity, error: stateError, type } = this.state
+    const { collection, error, metadata, isLoading, onClose } = this.props
+    const { thumbnail, isRepresentation, rarity, error: stateError, type, hasScreenshotTaken } = this.state
 
     const isDisabled = this.isDisabled()
     const thumbnailStyle = getBackgroundStyle(rarity)
@@ -893,11 +894,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               </Row>
               <Row className="actions" align="right">
                 <Button primary disabled={isDisabled} loading={isLoading}>
-                  {(metadata && metadata.changeItemFile) || isRepresentation
+                  {metadata?.changeItemFile || isRepresentation || (isThirdParty(collection?.urn) && hasScreenshotTaken)
                     ? t('global.save')
-                    : type === ItemType.EMOTE
-                    ? t('global.next')
-                    : t('global.create')}
+                    : t('global.next')}
                 </Button>
               </Row>
               {stateError ? (
@@ -924,24 +923,32 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (item && itemSortedContents) {
       const blob = dataURLToBlob(screenshot)
 
-      itemSortedContents[THUMBNAIL_PATH] = blob!
-      item.contents = await computeHashes(itemSortedContents)
+      if (blob) {
+        itemSortedContents[THUMBNAIL_PATH] = blob
+        item.contents = await computeHashes(itemSortedContents)
 
-      this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => this.setState({ view }))
+        this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => this.handleSubmit())
+      }
     } else {
       this.setState({ thumbnail: screenshot, hasScreenshotTaken: true }, () => this.setState({ view }))
     }
   }
 
   renderThumbnailView() {
-    const { onClose } = this.props
-    const { isLoading, contents } = this.state
+    const { isLoading, onClose } = this.props
+    const { contents, type, isLoading: isLoadingState } = this.state
+    let blob = undefined
+
+    if (contents) {
+      blob = type === ItemType.WEARABLE ? toWearableWithBlobs({ contents }) : toEmoteWithBlobs({ contents })
+    }
 
     return (
       <EditThumbnailStep
-        isLoading={!!isLoading}
-        blob={contents ? toEmoteWithBlobs({ contents }) : undefined}
+        isLoading={isLoading || !!isLoadingState}
+        blob={blob}
         title={this.renderModalTitle()}
+        type={type}
         onBack={() => this.setState({ view: CreateItemView.DETAILS })}
         onSave={this.handleOnScreenshotTaken}
         onClose={onClose}
@@ -954,12 +961,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { metadata } = this.props
     return (
       <div
-        className={`option has-icon ${type} ${type === bodyShape ? 'active' : ''}`.trim()}
+        className={classNames('option', 'has-icon', type, { active: type === bodyShape })}
         onClick={() =>
           this.setState({ bodyShape: type, isRepresentation: metadata && metadata.changeItemFile ? false : undefined, item: undefined })
         }
       >
-        {t('body_shapes.' + type)}
+        {t(`body_shapes.${type}`)}
       </div>
     )
   }
@@ -967,11 +974,16 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   renderSetPrice() {
     const { onClose } = this.props
     const { item, itemSortedContents } = this.state
+
+    if (!item) {
+      return null
+    }
+
     return (
       <EditPriceAndBeneficiaryModal
         name={'EditPriceAndBeneficiaryModal'}
-        metadata={{ itemId: item!.id }}
-        item={item!}
+        metadata={{ itemId: item.id }}
+        item={item}
         itemSortedContents={itemSortedContents}
         onClose={onClose}
         mountNode={this.modalContainer.current ?? undefined}
