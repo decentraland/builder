@@ -918,20 +918,22 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOnScreenshotTaken = async (screenshot: string) => {
-    const { fromView, itemSortedContents, item } = this.state
+    const { fromView, itemSortedContents, item, contents } = this.state
     const view = fromView === CreateItemView.DETAILS ? CreateItemView.DETAILS : CreateItemView.SET_PRICE
+    const blob = dataURLToBlob(screenshot) as Blob
 
     if (item && itemSortedContents) {
-      const blob = dataURLToBlob(screenshot)
+      itemSortedContents[THUMBNAIL_PATH] = blob
+      item.contents = await computeHashes(itemSortedContents)
 
-      if (blob) {
-        itemSortedContents[THUMBNAIL_PATH] = blob
-        item.contents = await computeHashes(itemSortedContents)
-
-        this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => this.handleSubmit())
-      }
+      this.setState(
+        { thumbnail: screenshot, itemSortedContents, item, contents: { ...contents, [THUMBNAIL_PATH]: blob }, hasScreenshotTaken: true },
+        () => this.handleSubmit()
+      )
     } else {
-      this.setState({ thumbnail: screenshot, hasScreenshotTaken: true }, () => this.setState({ view }))
+      this.setState({ thumbnail: screenshot, contents: { ...contents, [THUMBNAIL_PATH]: blob }, hasScreenshotTaken: true }, () =>
+        this.setState({ view })
+      )
     }
   }
 
