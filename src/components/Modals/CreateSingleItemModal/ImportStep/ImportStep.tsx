@@ -280,6 +280,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content className="ImportStep">
+          {error && (
+            <div className="error-container">
+              <div className="error-icon" />
+              <div className="error-message">{error}</div>
+            </div>
+          )}
           <ItemImport
             isLoading={isLoading}
             acceptedExtensions={
@@ -289,7 +295,6 @@ export default class ImportStep extends React.PureComponent<Props, State> {
                   : MODEL_EXTENSIONS
                 : ITEM_EXTENSIONS
             }
-            error={error}
             moreInformation={this.renderMoreInformation()}
             onDropAccepted={this.handleDropAccepted}
             onDropRejected={this.handleDropRejected}
