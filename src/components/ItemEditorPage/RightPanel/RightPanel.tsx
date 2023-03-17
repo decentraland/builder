@@ -36,6 +36,8 @@ import {
 import { dataURLToBlob } from 'modules/media/utils'
 import { areEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
+import ErrorMetrics from 'components/Modals/CreateSingleItemModal/ErrorMetrics/ErrorMetrics'
+import { isValidWearableMetrics } from 'components/Modals/CreateSingleItemModal/utils'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -285,6 +287,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return hasItem ? this.hasStateItemChanged({ ...this.state, ...newState }, selectedItem!) : false
   }
 
+  isDisabled(item: Item | null) {
+    return !item || !this.hasItemValidMetrics(item)
+  }
+
   hasSavedItem() {
     const { selectedItem } = this.props
     const { isDirty } = this.state
@@ -333,6 +339,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         </div>
       )
     }
+  }
+
+  hasItemValidMetrics(item: Item) {
+    const { data, isDirty } = this.state
+
+    if (data && isDirty && item.type === ItemType.WEARABLE && !isValidWearableMetrics(item.metrics, data.category as WearableCategory)) {
+      return isValidWearableMetrics(item.metrics, data.category as WearableCategory)
+    }
+
+    return true
   }
 
   render() {
@@ -453,15 +469,21 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                           onChange={this.handleChangeDescription}
                         />
-
-                        <Select<WearableCategory | EmoteCategory>
-                          itemId={item.id}
-                          label={t('global.category')}
-                          value={data!.category}
-                          options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
-                          disabled={!canEditItemMetadata}
-                          onChange={this.handleChangeCategory}
-                        />
+                        {data && data.category ? (
+                          <>
+                            <Select<WearableCategory | EmoteCategory>
+                              itemId={item.id}
+                              label={t('global.category')}
+                              value={data.category}
+                              options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
+                              disabled={!canEditItemMetadata}
+                              onChange={this.handleChangeCategory}
+                            />
+                            {!this.hasItemValidMetrics(item) ? (
+                              <ErrorMetrics metrics={item.metrics} category={data.category as WearableCategory} />
+                            ) : null}
+                          </>
+                        ) : null}
 
                         {!(item.urn && isThirdParty(item.urn)) && (
                           <Select<ItemRarity>
@@ -541,10 +563,15 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                   </Collapsable>
                   {isDirty ? (
                     <div className="edit-buttons">
-                      <Button secondary onClick={this.handleOnResetItem}>
+                      <Button secondary onClick={this.handleOnResetItem} disabled={isLoading}>
                         {t('global.cancel')}
                       </Button>
-                      <NetworkButton primary onClick={this.handleOnSaveItem} network={Network.MATIC}>
+                      <NetworkButton
+                        primary
+                        onClick={this.handleOnSaveItem}
+                        disabled={isLoading || this.isDisabled(item)}
+                        network={Network.MATIC}
+                      >
                         {t('global.save')}
                       </NetworkButton>
                     </div>

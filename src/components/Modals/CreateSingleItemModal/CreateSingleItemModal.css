@@ -87,7 +87,7 @@
 }
 
 .CreateSingleItemModal .data {
-  padding-top: 24px;
+  padding: 24px 24px 24px 0px;
 }
 
 .CreateSingleItemModal .data .ui.header.sub {
@@ -146,6 +146,11 @@
 
 .CreateSingleItemModal .dcl.field {
   margin: 0;
+}
+
+.CreateSingleItemModal .dcl.field,
+.CreateSingleItemModal .dcl.select-field {
+  width: 100%;
 }
 
 .CreateSingleItemModal .error {

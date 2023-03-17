@@ -114,6 +114,10 @@
   background-image: url(../../../images/circle.svg);
 }
 
+.RightPanel .content .ErrorMetrics .errorContainer {
+  margin-bottom: 12px;
+}
+
 .RightPanel > .header > .ui.dropdown {
   position: absolute;
   right: 0px;

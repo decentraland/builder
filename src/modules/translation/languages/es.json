@@ -235,7 +235,13 @@
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}.",
       "invalid_model_files_representation": "El archivo parece tener más de una representación. Por favor revíselas y vuelva a intentarlo.",
       "emote_duration_too_long": ".{enter}La duración de los emoticones tiene un límite de {duration} segundos.{enter}Reduce la duración del emote e intente nuevamente.",
-      "emote_duration_too_long_title": "El emote supera la duración máxima en segundos"
+      "emote_duration_too_long_title": "El emote supera la duración máxima en segundos",
+      "wearable_exceeds_max_triangles": "{title}.{enter}Modelos para {category} tienen un limite de {limit} triangulos",
+      "wearable_exceeds_max_triangles_title": "Archivo supera el número de triangulos",
+      "wearable_exceeds_max_textures": "{title}.{enter}Modelos para {category} tienen un limite de {limit} texturas",
+      "wearable_exceeds_max_textures_title": "Archivo supera el número de texturas",
+      "multiple_files_detected": "{title}.{enter}Actualmente no se admite la carga de varios archivos..",
+      "multiple_files_detected_title": "Múltiples archivos detectados"
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
   },
