@@ -7,7 +7,7 @@ import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient, ThirdParty } from '@dcl/builder-client'
-import { ContractData, ContractName, getContract } from 'decentraland-transactions'
+import { ContractData, ContractName, ErrorCode, getContract } from 'decentraland-transactions'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -420,7 +420,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
     } catch (error) {
-      yield put(publishCollectionFailure(collection, items, error.message))
+      const message = error?.code === ErrorCode.HIGH_CONGESTION ? '' : error.message
+      yield put(publishCollectionFailure(collection, items, message))
     }
   }
 
