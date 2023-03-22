@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Loader, Row } from 'decentraland-ui'
+import { Loader } from 'decentraland-ui'
 import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { Props } from './ItemImport.types'
@@ -19,6 +19,12 @@ export default class ItemImport extends React.PureComponent<Props, any> {
             <Loader active size="big" />
           </div>
         ) : null}
+        {error && (
+          <div className={styles.errorContainer}>
+            <div className={styles.errorIcon} />
+            <div className={styles.errorMessage}>{error}</div>
+          </div>
+        )}
         <T
           id="asset_pack.import.cta"
           values={{
@@ -34,11 +40,6 @@ export default class ItemImport extends React.PureComponent<Props, any> {
             )
           }}
         />
-        {error ? (
-          <Row className={styles.error} align="center">
-            <p className="danger-text">{error}</p>
-          </Row>
-        ) : null}
         {moreInformation ? (
           <div className={styles.zipInfo}>
             <InfoIcon className={styles.infoIcon} />

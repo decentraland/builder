@@ -229,13 +229,7 @@
       "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。",
       "invalid_model_files_representation": "该文件似乎有多个表示，请查看它们并重试。",
       "emote_duration_too_long": "{title}.{enter}表情的持续时间限制为 {duration} 秒。{enter}减少表情的持续时间，然后重试。",
-      "emote_duration_too_long_title": "您的表情超过了最长持续时间（以秒为单位）",
-      "wearable_exceeds_max_triangles": "{title}.{enter}{category} 的模型有 {limit} 个三角形的限制",
-      "wearable_exceeds_max_triangles_title": "文件超过三角形数量",
-      "wearable_exceeds_max_textures": "{title}.{enter}{category} 的模型有 {limit} 个纹理的限制",
-      "wearable_exceeds_max_textures_title": "文件超过纹理数量",
-      "multiple_files_detected": "{title}.{enter}目前不支持上传多个文件。",
-      "multiple_files_detected_title": "检测到多个文件"
+      "emote_duration_too_long_title": "您的表情超过了最长持续时间（以秒为单位）"
     },
     "emote_notice": "表情适用于所有体型。"
   },
