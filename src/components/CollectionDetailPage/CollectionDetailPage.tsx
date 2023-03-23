@@ -202,7 +202,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   renderUnsyncedCollectionNoticeStatus() {
     const { collection, status } = this.props
 
-    if (!collection?.isApproved || ![SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW].some(s => s === status)) {
+    if (!collection?.isApproved || ![SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW].incudes(status)) {
       return null
     }
 
