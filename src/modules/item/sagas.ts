@@ -89,7 +89,6 @@ import {
   SAVE_MULTIPLE_ITEMS_CANCELLED,
   fetchItemsRequest,
   FETCH_COLLECTION_THUMBNAILS_REQUEST,
-  FETCH_COLLECTION_THUMBNAILS_SUCCESS,
   fetchCollectionThumbnailsSuccess,
   fetchCollectionThumbnailsFailure,
   FetchCollectionThumbnailsRequestAction,
@@ -113,7 +112,6 @@ import { getItemId } from 'modules/location/selectors'
 import { FromParam } from 'modules/location/types'
 import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
-import { CurationSortOptions } from 'modules/curations/types'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
 import { waitForTx } from 'modules/transaction/utils'
@@ -261,8 +259,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     try {
       const { results }: { results: Item[] } = yield call([legacyBuilder, 'fetchCollectionItems'], collectionId, {
         page: 1,
-        limit: 4,
-        sort: CurationSortOptions.UPDATED_AT_DESC
+        limit: 4
       })
       yield put(fetchCollectionThumbnailsSuccess(collectionId, results))
     } catch (error) {
@@ -628,8 +625,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     while (true) {
       const result: FetchItemsSuccessAction | FetchCollectionItemsSuccessAction = yield take([
         FETCH_ITEMS_SUCCESS,
-        FETCH_COLLECTION_ITEMS_SUCCESS,
-        FETCH_COLLECTION_THUMBNAILS_SUCCESS
+        FETCH_COLLECTION_ITEMS_SUCCESS
       ])
 
       const { items } = result.payload
