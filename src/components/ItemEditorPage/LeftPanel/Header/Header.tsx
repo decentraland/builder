@@ -19,7 +19,8 @@ export default class Header extends React.PureComponent<Props> {
     const { collection, isFromCollections, isFromTPCollections, onNavigate } = this.props
     // If the user came from a collection details page, go back to the same page
     if (collection && (isFromCollections || isFromTPCollections)) {
-      onNavigate(isFromCollections ? locations.collectionDetail(collection.id) : locations.thirdPartyCollectionDetail(collection.id))
+      const location = isFromCollections ? locations.collectionDetail : locations.thirdPartyCollectionDetail
+      onNavigate(location(collection.id))
     } else {
       onNavigate(locations.itemEditor())
     }
