@@ -18,7 +18,8 @@ import {
   isOwner,
   resizeImage,
   getEmoteCategories,
-  getEmotePlayModes
+  getEmotePlayModes,
+  isModelCategory
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -231,7 +232,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleOpenThumbnailDialog = () => {
     const { selectedItem, onOpenModal } = this.props
 
-    if (selectedItem?.type === ItemType.EMOTE) {
+    if (selectedItem?.type === ItemType.EMOTE || (selectedItem?.data.category && isModelCategory(selectedItem.data.category))) {
       onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange, item: selectedItem })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
