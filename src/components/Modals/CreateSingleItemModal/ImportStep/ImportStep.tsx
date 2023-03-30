@@ -205,7 +205,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         }
       }
 
-      if (changeItemFile && metadata?.item && acceptedFileProps.type !== metadata.item.type) {
+      if (!!metadata && changeItemFile && acceptedFileProps.type !== metadata.item.type) {
         throw new InvalidModelFileType(metadata.item.type)
       }
 
