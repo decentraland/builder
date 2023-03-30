@@ -13,7 +13,8 @@ import {
   InvalidFilesError,
   MissingModelFileError,
   EmoteDurationTooLongError,
-  InvalidModelFilesRepresentation
+  InvalidModelFilesRepresentation,
+  InvalidModelFileType
 } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
 import {
@@ -202,6 +203,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
           model,
           contents
         }
+      }
+
+      if (changeItemFile && metadata?.item && acceptedFileProps.type !== metadata.item.type) {
+        throw new InvalidModelFileType(metadata.item.type)
       }
 
       const isEmote = acceptedFileProps.type === ItemType.EMOTE
