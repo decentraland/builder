@@ -100,6 +100,15 @@ export default class SceneListPage extends React.PureComponent<Props> {
     const { pools, total, totalPages, isLoggedIn, onNavegateToHome } = this.props
     const filters = this.getFilters()
 
+    const paginationProps: Record<string, any> = {}
+
+    if (filters.page === 1) {
+      paginationProps.prevItem = null
+    }
+    if (filters.page === totalPages) {
+      paginationProps.nextItem = null
+    }
+
     return (
       <>
         <Navbar isFullscreen />
@@ -172,6 +181,7 @@ export default class SceneListPage extends React.PureComponent<Props> {
                   totalPages={totalPages}
                   activePage={filters.page}
                   onPageChange={this.handlePageChange}
+                  {...paginationProps}
                 />
               )}
             </Container>
