@@ -14,7 +14,7 @@ import { injectScript } from 'routing/utils'
 import { base64ArrayBuffer } from './base64'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const script = require('raw-loader!../../ecsScene/scene.js').default
+const script = require('raw-loader!../../ecsScene/scene.ts').default
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 export const THUMBNAIL_WIDTH = 984
