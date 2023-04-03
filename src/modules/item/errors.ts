@@ -69,3 +69,13 @@ export class EmoteDurationTooLongError extends CustomError {
     )
   }
 }
+
+export class InvalidModelFileType extends CustomError {
+  constructor(type: string) {
+    super(
+      t('create_single_item_modal.error.invalid_model_file_type', {
+        type: createElement('b', null, t(`item.type.${type}`))
+      })
+    )
+  }
+}

@@ -235,7 +235,8 @@
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}.",
       "invalid_model_files_representation": "El archivo parece tener más de una representación. Por favor revíselas y vuelva a intentarlo.",
       "emote_duration_too_long": ".{enter}La duración de los emoticones tiene un límite de {duration} segundos.{enter}Reduce la duración del emote e intente nuevamente.",
-      "emote_duration_too_long_title": "El emote supera la duración máxima en segundos"
+      "emote_duration_too_long_title": "El emote supera la duración máxima en segundos",
+      "invalid_model_file_type": "El archivo tiene una representación inválida para este {type}. Por favor revíselo y vuelva a intentarlo."
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
   },
