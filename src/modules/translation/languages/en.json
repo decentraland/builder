@@ -1246,7 +1246,8 @@
     },
     "missing_item_price": "You need to configure the price of one or more {item_type}.",
     "unsynced_collection_title": "There are unsynced items in this collection",
-    "unsynced_collection_message": "One or more items have been modified after this collection was approved.{br}These updates need to be published and reviewed again by the curation commitee."
+    "unsynced_collection_message": "One or more items have been modified after this collection was approved.{br}These updates need to be published and reviewed again by the curation commitee.",
+    "under_review_collection_message": "Updated items are being reviewed by the curation committee. Once they are approved,{br}they will be automatically visible to the current owners and in the Marketplace."
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
