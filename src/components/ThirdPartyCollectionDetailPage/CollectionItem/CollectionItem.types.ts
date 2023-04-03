@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'
+import { LocationStateProps } from 'modules/location/types'
 import { deleteItemRequest, DeleteItemRequestAction } from 'modules/item/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 
@@ -12,7 +13,7 @@ export type Props = {
   status: SyncStatus
   onSelect: (item: Item, isSelected: boolean) => void
   onDelete: typeof deleteItemRequest
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, locationState?: LocationStateProps) => void
   onOpenModal: typeof openModal
 }
 

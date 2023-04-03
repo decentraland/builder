@@ -1,7 +1,7 @@
 import * as React from 'react'
 import classNames from 'classnames'
 import { Network } from '@dcl/schemas'
-import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table, Label } from 'decentraland-ui'
+import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table, Label, SemanticSIZES } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -184,19 +184,44 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     )
   }
 
-  renderForumRepliesBadge() {
+  renderForumRepliesBadge(size: SemanticSIZES = 'tiny') {
     const { collection } = this.props
     if (collection?.forumPostReply) {
       const { highest_post_number, last_read_post_number } = collection.forumPostReply
       const unreadPosts = highest_post_number - (last_read_post_number ?? 0)
       return (
-        <Label className="badge-forum-unread-posts" circular size="tiny">
+        <Label className="badge-forum-unread-posts" circular size={size}>
           {unreadPosts}
         </Label>
       )
     }
 
     return null
+  }
+
+  renderUnsyncedCollectionNoticeStatus() {
+    const { collection, status } = this.props
+
+    if (!collection?.isApproved || ![SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW].includes(status)) {
+      return null
+    }
+
+    return (
+      <div className="unsynced-collection container">
+        <i className="unsynced-collection alert-icon" />
+        <div className="unsynced-collection message">
+          <h4 className="unsynced-collection title">{t('collection_detail_page.unsynced_collection_title')}</h4>
+          <p className="unsynced-collection text">{t(`collection_detail_page.${status}_collection_message`, { br: <br /> })}</p>
+        </div>
+        {status === SyncStatus.UNDER_REVIEW ? (
+          <Button primary onClick={this.handleNavigateToForum} className="unsynced-collection action-button">
+            <span>{t('collection_context_menu.forum_post')}</span>
+            {this.renderForumRepliesBadge('medium')}
+          </Button>
+        ) : null}
+        {status === SyncStatus.UNSYNCED ? <CollectionPublishButton collection={collection} /> : null}
+      </div>
+    )
   }
 
   renderPage(items: Item[]) {
@@ -284,17 +309,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
           </Row>
         </Section>
         <Narrow>
-          {status === SyncStatus.UNSYNCED ? (
-            <div className="unsynced-collection container">
-              <i className="unsynced-collection alert-icon" />
-              <div className="unsynced-collection message">
-                <h4 className="unsynced-collection title">{t('collection_detail_page.unsynced_collection_title')}</h4>
-                <p className="unsynced-collection text">{t('collection_detail_page.unsynced_collection_message', { br: <br /> })}</p>
-              </div>
-              <CollectionPublishButton collection={collection} />
-            </div>
-          ) : null}
-
+          {this.renderUnsyncedCollectionNoticeStatus()}
           {showShowTabs ? (
             <Tabs isFullscreen>
               <Tabs.Tab active={tab === ItemType.WEARABLE} onClick={() => this.handleTabChange(ItemType.WEARABLE)}>
