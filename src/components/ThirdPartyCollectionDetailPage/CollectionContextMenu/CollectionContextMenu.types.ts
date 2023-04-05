@@ -4,6 +4,7 @@ import { deleteCollectionRequest, DeleteCollectionRequestAction } from 'modules/
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
+import { LocationStateProps } from 'modules/location/types'
 
 export type Props = {
   collection: Collection
@@ -11,7 +12,7 @@ export type Props = {
   name: string
   onOpenModal: typeof openModal
   onDelete: typeof deleteCollectionRequest
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, locationState?: LocationStateProps) => void
 }
 
 export type OwnProps = Pick<Props, 'collection' | 'items'>

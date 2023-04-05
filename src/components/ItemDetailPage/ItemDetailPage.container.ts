@@ -32,7 +32,7 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSaveItem: (item, contents) => dispatch(saveItemRequest(item, contents)),
-  onNavigate: path => dispatch(push(path)),
+  onNavigate: (path, locationState) => dispatch(push(path, locationState)),
   onDelete: item => dispatch(deleteItemRequest(item)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
