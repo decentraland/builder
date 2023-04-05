@@ -29,3 +29,11 @@ export const getIsDCLControllerV2Enabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsDeployToWorldsEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.DEPLOY_WORLDS)
+  } catch (e) {
+    return false
+  }
+}
