@@ -38,12 +38,25 @@
   align-items: center;
 }
 
+.DeployModal .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0px;
+  margin-bottom: 0px;
+  width: 100%;
+  flex-direction: row-reverse;
+}
+
+.DeployModal .modal-header .ui.header.modal-title {
+  margin-bottom: 0px;
+}
+
 .DeployModal .ui.header.modal-title {
   font-size: 21px;
   margin-bottom: 8px;
   text-align: center;
-  margin: 0px;
-  line-height: 24px;
+  margin-top: 0px;
 }
 
 .DeployModal .modal-subtitle {
@@ -51,8 +64,6 @@
   font-weight: 100;
   text-align: center;
   padding: 0px 40px;
-  margin: 0;
-  line-height: 18px;
 }
 
 .DeployModal .choice-form .options {
@@ -240,4 +251,14 @@
   line-height: 16px;
   text-decoration: underline;
   margin-top: 8px;
+}
+
+.DeployModal .modal-body .ui.header.modal-title {
+  margin: 0px;
+  line-height: 24px;
+}
+
+.DeployModal .modal-body .modal-subtitle {
+  margin: 0;
+  line-height: 18px;
 }
