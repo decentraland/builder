@@ -82,7 +82,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
             />
             {hasBeenUpdated ? (
               <>
-                <ZoomControls wearablePreviewId="preview" />
+                <ZoomControls wearablePreviewId="preview" zoomDelta={0.01} />
                 <TranslationControls vertical verticalPosition={VerticalPosition.RIGHT} wearablePreviewId="preview" />
                 {isEmote ? (
                   <div className="play-controls">
