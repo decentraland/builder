@@ -16,6 +16,6 @@ export default class WalletLoginModal extends React.PureComponent<Props> {
   }
 
   render() {
-    return <LoginModal open={true} onConnect={this.handleConnect} onClose={this.handleClose} />
+    return <LoginModal name="LoginModal" open={true} onConnect={this.handleConnect} onClose={this.handleClose} />
   }
 }
