@@ -145,6 +145,18 @@ export default class ScenesPage extends React.PureComponent<Props> {
 
     const hasPagination = totalPages > 1
 
+    const paginationProps: Record<string, any> = {
+      firstItem: null,
+      lastItem: null
+    }
+
+    if (page === 1) {
+      paginationProps.prevItem = null
+    }
+    if (page === totalPages) {
+      paginationProps.nextItem = null
+    }
+
     return (
       <>
         <Navbar isFullscreen />
@@ -164,13 +176,7 @@ export default class ScenesPage extends React.PureComponent<Props> {
             <Section className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
               <div className="CardList">{this.renderProjects()}</div>
               {hasPagination ? (
-                <Pagination
-                  firstItem={null}
-                  lastItem={null}
-                  activePage={page}
-                  totalPages={totalPages}
-                  onPageChange={this.handlePageChange}
-                />
+                <Pagination {...paginationProps} activePage={page} totalPages={totalPages} onPageChange={this.handlePageChange} />
               ) : null}
             </Section>
             {poolList ? (
