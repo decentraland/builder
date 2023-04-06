@@ -38,25 +38,12 @@
   align-items: center;
 }
 
-.DeployModal .modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 0px;
-  margin-bottom: 0px;
-  width: 100%;
-  flex-direction: row-reverse;
-}
-
-.DeployModal .modal-header .ui.header.modal-title {
-  margin-bottom: 0px;
-}
-
 .DeployModal .ui.header.modal-title {
   font-size: 21px;
   margin-bottom: 8px;
   text-align: center;
-  margin-top: 0px;
+  margin: 0px;
+  line-height: 24px;
 }
 
 .DeployModal .modal-subtitle {
@@ -64,6 +51,8 @@
   font-weight: 100;
   text-align: center;
   padding: 0px 40px;
+  margin: 0;
+  line-height: 18px;
 }
 
 .DeployModal .choice-form .options {
@@ -110,19 +99,19 @@
   width: 100%;
 }
 
-.DeployModal .card .thumbnail {
+.DeployModal .thumbnail {
   height: 150px;
   background-repeat: no-repeat;
   background-size: contain;
   background-position-y: 45%;
 }
 
-.DeployModal .card .thumbnail.deploy-to-pool {
+.DeployModal .thumbnail.deploy-to-pool {
   background-image: url('../../../images/deploy-to-pool.svg');
   width: 78px;
 }
 
-.DeployModal .card .thumbnail.deploy-to-land {
+.DeployModal .thumbnail.deploy-to-land {
   background-image: url('../../../images/deploy-to-land.svg');
   width: 70px;
 }
@@ -150,4 +139,105 @@
 
 .DeployModal .ui.button + .ui.button {
   margin-left: 20px;
+}
+
+/* Deploy to world styles */
+.DeployModal .modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px;
+  width: 810px;
+  gap: 32px;
+}
+
+.DeployModal .modal-body .modal-title,
+.DeployModal .modal-body .deploy-modal-subtitle {
+  margin: 0;
+}
+
+.DeployModal .deploy-modal-subtitle {
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 22px;
+  margin-top: 0;
+}
+
+.DeployModal .modal-close-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.DeployModal .deploy-modal-options {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.DeployModal .deploy-modal-options .ui.button {
+  height: auto;
+  width: 100%;
+}
+
+.DeployModal .option-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  border: 1px solid #716b7c;
+  border-radius: 8px;
+  padding: 24px;
+  flex: 1;
+}
+
+.DeployModal .option-container .thumbnail {
+  height: 100px;
+}
+
+.DeployModal .option-container .option-description {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.DeployModal .scene-pool-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  padding: 16px;
+}
+
+.DeployModal .scene-pool-option .thumbnail {
+  height: 60px;
+}
+
+.DeployModal .scene-pool-description {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.DeployModal .scene-pool-option .scene-pool-action {
+  width: 320px;
+  height: 42px;
+}
+
+.DeployModal .scene-pool-option .option-description {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.DeployModal .learn-more-link {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 16px;
+  text-decoration: underline;
+  margin-top: 8px;
 }

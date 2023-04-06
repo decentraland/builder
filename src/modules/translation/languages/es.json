@@ -411,7 +411,26 @@
       "title": "Publica tu Escena",
       "uploading": "Subiendo..."
     },
-    "title": "Publica tu Escena"
+    "title": "Publicar Escena",
+    "subtitle": "Elige donde querés subir esta escena:",
+    "learn_more": "Más información",
+    "options": {
+      "world": {
+        "title": "Mi mundo",
+        "description": "Límite de tamaño: 100 MB por mundo.<br></br>No se puede encontrar en el mapa de Genesis City.<br></br>Hasta 100 usuarios pueden unirse al mismo tiempo.",
+        "action": "Publicar en el mundo"
+      },
+      "land": {
+        "title": "Mi tierra",
+        "description": "Límite de tamaño: 15 MB por paquete.<br></br>Se puede encontrar en el mapa de Genesis City.<br></br>Un número ilimitado de usuarios pueden unirse al mismo tiempo.",
+        "action": "Publicar en la tierra"
+      },
+      "pool": {
+        "title": "Subir al grupo de escenas",
+        "description": "Tu escena aparecerá en una galería de escenas y estará disponible públicamente para su descarga.",
+        "action": "Subir al grupo de escenas"
+      }
+    }
   },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",

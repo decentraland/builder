@@ -5,6 +5,7 @@ import { PoolGroup } from 'modules/poolGroup/types'
 export type Props = ModalProps & {
   deployment: Deployment
   metadata: DeployModalMetadata
+  isDeployToWorldEnabled: boolean
   currentPoolGroup: PoolGroup | null
 }
 
@@ -19,7 +20,7 @@ export type Step = {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup'>
+export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup' | 'isDeployToWorldEnabled'>
 
 export enum DeployModalView {
   NONE = 'NONE',
