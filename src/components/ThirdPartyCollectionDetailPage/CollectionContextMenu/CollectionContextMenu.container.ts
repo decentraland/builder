@@ -12,7 +12,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
+  onNavigate: (path, locationState) => dispatch(push(path, locationState)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onDelete: collection => dispatch(deleteCollectionRequest(collection))
 })
