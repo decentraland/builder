@@ -408,7 +408,26 @@
       "title": "Publish your Scene",
       "uploading": "Uploading"
     },
-    "title": "Publish your Scene"
+    "title": "Publish Scene",
+    "subtitle": "Select where you want to deploy this scene:",
+    "learn_more": "Learn more",
+    "options": {
+      "world": {
+        "title": "My world",
+        "description": "Size limit: 100 MB per World.<br></br>Not findable in Genesis City map.<br></br>Up to 100 users can join concurrently.",
+        "action": "Publish to world"
+      },
+      "land": {
+        "title": "My LAND",
+        "description": "Size limit: 15 MB per parcel.<br></br>Findable in Genesis City map.<br></br>Unlimited users can join concurrently.",
+        "action": "Publish to land"
+      },
+      "pool": {
+        "title": "Upload to Scene Pool",
+        "description": "Your scene will be listed in a scene gallery and publicly available for download.",
+        "action": "Upload to Scene Pool"
+      }
+    }
   },
   "use_as_alias_modal": {
     "title": "Use as Alias",

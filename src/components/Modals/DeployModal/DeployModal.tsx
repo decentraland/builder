@@ -57,7 +57,59 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderChoiceForm = () => {
-    const { name } = this.props
+    const { name, isDeployToWorldEnabled } = this.props
+
+    if (isDeployToWorldEnabled) {
+      return (
+        <Modal name={name} onClose={this.handleClickOutside}>
+          <div className="modal-body">
+            <Icon name="modal-close" className="modal-close-icon" onClick={this.handleClose} />
+            <Header size="large" className="modal-title">
+              {t('deployment_modal.title')}
+            </Header>
+            <h5 className="deploy-modal-subtitle">{t('deployment_modal.subtitle')}</h5>
+            <div className="deploy-modal-options">
+              <div className="option-container">
+                <div className="thumbnail deploy-to-land" />
+                <span className="option-title">{t('deployment_modal.options.world.title')}</span>
+                <span className="option-description">
+                  {t('deployment_modal.options.world.description', { br: () => <br /> })}
+                  <a className="learn-more-link" href="https://docs.decentraland.org/">
+                    {t('deployment_modal.learn_more')}
+                  </a>
+                </span>
+                <Button primary onClick={() => console.log('TODO: Deploy to world')}>
+                  <span>{t('deployment_modal.options.world.action')}</span>
+                </Button>
+              </div>
+              <div className="option-container">
+                <div className="thumbnail deploy-to-land" />
+                <span className="option-title">{t('deployment_modal.options.land.title')}</span>
+                <span className="option-description">
+                  {t('deployment_modal.options.land.description', { br: () => <br /> })}
+                  <a className="learn-more-link" href="https://docs.decentraland.org/">
+                    {t('deployment_modal.learn_more')}
+                  </a>
+                </span>
+                <Button primary onClick={this.handleDeployToLand}>
+                  <span>{t('deployment_modal.options.land.action')}</span>
+                </Button>
+              </div>
+            </div>
+            <div className="scene-pool-option">
+              <div className="thumbnail deploy-to-pool" />
+              <div className="scene-pool-description">
+                <span className="option-title">{t('deployment_modal.options.pool.title')}</span>
+                <span className="option-description">{t('deployment_modal.options.pool.description')}</span>
+              </div>
+              <Button secondary onClick={this.handleDeployToPool} className="scene-pool-action">
+                <span>{t('deployment_modal.options.pool.action')}</span>
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )
+    }
 
     return (
       <Modal name={name} onClose={this.handleClickOutside}>
