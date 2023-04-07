@@ -1,6 +1,7 @@
 import React from 'react'
 import { EmoteCategory, WearableCategory } from '@dcl/schemas'
-import { AcceptedFileProps, CreateSingleItemModalMetadata } from '../CreateSingleItemModal.types'
+import { AcceptedFileProps } from '../CreateSingleItemModal.types'
+import { Item } from 'modules/item/types'
 
 export type Props = {
   category?: WearableCategory | EmoteCategory
