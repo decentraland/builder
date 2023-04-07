@@ -235,7 +235,8 @@
       "invalid_model_files_representation": "The file seems to have more than one representation, please review them and try again.",
       "emote_duration_too_long": "{title}.{enter}Duration of the emotes has a limit of {duration} seconds.{enter}Reduce the duration of the emote and try again.",
       "emote_duration_too_long_title": "Your emote exceeds the maximum duration in seconds",
-      "invalid_model_file_type": "The file has an invalid representation for this {type} item, please review it and try again."
+      "invalid_model_file_type": "The file has an invalid representation for this {type} item, please review it and try again.",
+      "emote_creation_tp_collection": "You can't create emotes in Third Party Collections."
     },
     "emote_notice": "Emotes are available for all body shapes."
   },

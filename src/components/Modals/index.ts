@@ -1,3 +1,4 @@
+export { default as LoginModal } from 'decentraland-dapps/dist/containers/LoginModal'
 export { default as AddExistingItemModal } from './AddExistingItemModal'
 export { default as ApprovalFlowModal } from './ApprovalFlowModal'
 export { default as ClaimNameFatFingerModal } from './ClaimNameFatFingerModal'

@@ -17,7 +17,7 @@ export default class SignInPage extends React.PureComponent<Props> {
       <>
         <Navbar isSignIn />
         <Page>
-          <SignIn isConnected={isConnected} onConnect={this.handleOnConnect} />
+          <SignIn isConnected={isConnected} handleLoginConnect={this.handleOnConnect} />
         </Page>
         <Footer />
       </>

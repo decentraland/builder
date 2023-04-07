@@ -13,7 +13,7 @@ import { areEmoteMetrics } from 'modules/models/types'
 import { Item } from 'modules/item/types'
 import { isThirdParty } from 'lib/urn'
 import { shorten } from 'lib/address'
-import { getMaxSupply, getMissingBodyShapeType, isFree, resizeImage, getThumbnailURL } from 'modules/item/utils'
+import { getMaxSupply, getMissingBodyShapeType, isFree, resizeImage, getThumbnailURL, isModelCategory } from 'modules/item/utils'
 import { getCollectionType, isLocked as isCollectionLocked } from 'modules/collection/utils'
 import { dataURLToBlob } from 'modules/media/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -42,7 +42,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
 
   handleDeleteItem = () => {
     const { item, onDelete } = this.props
-    onDelete(item!)
+    item && onDelete(item)
   }
 
   handleEditRepresentation = () => {
@@ -70,7 +70,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
   handleOpenThumbnailDialog = () => {
     const { item, onOpenModal } = this.props
 
-    if (item?.type === ItemType.EMOTE) {
+    if (item?.type === ItemType.EMOTE || (item?.data.category && isModelCategory(item.data.category))) {
       onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange, item })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()

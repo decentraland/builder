@@ -1,7 +1,7 @@
 import React from 'react'
 import { EmoteCategory, WearableCategory } from '@dcl/schemas'
-import { Item } from 'modules/item/types'
 import { AcceptedFileProps } from '../CreateSingleItemModal.types'
+import { Item } from 'modules/item/types'
 
 export type Props = {
   category?: WearableCategory | EmoteCategory
@@ -13,6 +13,7 @@ export type Props = {
   wearablePreviewComponent?: React.ReactNode
   isLoading: boolean
   isRepresentation?: boolean
+  isTPCollection?: boolean
   onDropAccepted: (acceptedFileProps: AcceptedFileProps) => void
   onDropRejected?: (files: File[]) => Promise<void>
   onClose: () => void

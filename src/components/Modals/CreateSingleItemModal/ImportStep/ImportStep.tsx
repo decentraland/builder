@@ -14,7 +14,8 @@ import {
   MissingModelFileError,
   EmoteDurationTooLongError,
   InvalidModelFilesRepresentation,
-  InvalidModelFileType
+  InvalidModelFileType,
+  EmoteCreationTPCollectionError
 } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
 import {
@@ -123,7 +124,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
-    const { category, metadata, isRepresentation, onDropAccepted } = this.props
+    const { category, metadata, isRepresentation, isTPCollection, onDropAccepted } = this.props
 
     let changeItemFile = false
     let item = null
@@ -210,6 +211,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       }
 
       const isEmote = acceptedFileProps.type === ItemType.EMOTE
+
+      if (isEmote && isTPCollection) {
+        throw new EmoteCreationTPCollectionError()
+      }
 
       onDropAccepted({
         ...acceptedFileProps,

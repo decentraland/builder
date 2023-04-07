@@ -1,5 +1,5 @@
 import { gql } from 'apollo-boost'
-import { Tile } from 'react-tile-map/lib/src/lib/common'
+import { Tile } from 'react-tile-map/dist/lib/common'
 
 export enum LandType {
   PARCEL = 'parcel',

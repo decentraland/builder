@@ -173,6 +173,8 @@ export function locateNextLand(landTiles: Record<string, LandTile>, currentLandI
   const nextIndex = (((index + 1) % landIds.length) + landIds.length) % landIds.length
 
   const nextLandId = landIds[nextIndex]
+  // TODO: Remove eslint-disable comment
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return landTiles[nextLandId]!.land
 }
 

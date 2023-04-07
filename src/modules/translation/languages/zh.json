@@ -230,7 +230,8 @@
       "invalid_model_files_representation": "该文件似乎有多个表示，请查看它们并重试。",
       "emote_duration_too_long": "{title}.{enter}表情的持续时间限制为 {duration} 秒。{enter}减少表情的持续时间，然后重试。",
       "emote_duration_too_long_title": "您的表情超过了最长持续时间（以秒为单位）",
-      "invalid_model_file_type": "该文件对此 {type} 项目的表示无效，请检查它并重试。"
+      "invalid_model_file_type": "该文件对此 {type} 项目的表示无效，请检查它并重试。",
+      "emote_creation_tp_collection": "您不能在第三方收藏中创建表情。"
     },
     "emote_notice": "表情适用于所有体型。"
   },
