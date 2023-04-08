@@ -229,7 +229,8 @@
       "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。",
       "invalid_model_files_representation": "该文件似乎有多个表示，请查看它们并重试。",
       "emote_duration_too_long": "{title}.{enter}表情的持续时间限制为 {duration} 秒。{enter}减少表情的持续时间，然后重试。",
-      "emote_duration_too_long_title": "您的表情超过了最长持续时间（以秒为单位）"
+      "emote_duration_too_long_title": "您的表情超过了最长持续时间（以秒为单位）",
+      "invalid_model_file_type": "该文件对此 {type} 项目的表示无效，请检查它并重试。"
     },
     "emote_notice": "表情适用于所有体型。"
   },
@@ -403,7 +404,27 @@
       "title": "正在发布场景",
       "uploading": "上传中..."
     },
-    "title": "正在发布场景"
+    "title": "正在发布场景",
+    "subtitle": "选择要部署此场景的位置：",
+    "learn_more": "了解更多",
+    "options": {
+      "world": {
+        "title": "我的世界",
+        "description": "尺寸限制：每个世界100 MB。<br> </br>在Genesis City Map中找不到。<br> </br>最多可以同时加入100位用户。",
+        "description2": "大小限制：每个世界 100 MB。<br></br>在 Genesis City 地图中找不到。<br></br>最多 100 个用户可以同时加入。",
+        "action": "发布到世界"
+      },
+      "land": {
+        "title": "我的地盘",
+        "description": "尺寸限制：每个包裹15 MB。<br> </br>在Genesis City Map中可找到。<br> </br>无限用户可以同时加入。",
+        "action": "发布到土地"
+      },
+      "pool": {
+        "title": "上传到场景池",
+        "description": "您的场景将在场景库中列出，并公开下载。",
+        "action": "上传到场景池"
+      }
+    }
   },
   "use_as_alias_modal": {
     "title": "为头像分配名称",
@@ -1235,7 +1256,8 @@
     },
     "missing_item_price": "您需要配置一个或多个 {item_type} 的价格。",
     "unsynced_collection_title": "此集合中有未同步的项目",
-    "unsynced_collection_message": "在此集合获得批准后，对一项或多项进行了修改。{br}这些更新需要发布并由策展委员会再次审核。"
+    "unsynced_collection_message": "在此集合获得批准后，对一项或多项进行了修改。{br}这些更新需要发布并由策展委员会再次审核。",
+    "under_review_collection_message": "管理委员会正在审查更新的项目。{br}一旦获得批准，它们将自动对当前所有者和市场可见。"
   },
   "collection_context_menu": {
     "add_existing_item": "添加现有项目",

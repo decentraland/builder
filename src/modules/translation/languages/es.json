@@ -235,7 +235,8 @@
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}.",
       "invalid_model_files_representation": "El archivo parece tener más de una representación. Por favor revíselas y vuelva a intentarlo.",
       "emote_duration_too_long": ".{enter}La duración de los emoticones tiene un límite de {duration} segundos.{enter}Reduce la duración del emote e intente nuevamente.",
-      "emote_duration_too_long_title": "El emote supera la duración máxima en segundos"
+      "emote_duration_too_long_title": "El emote supera la duración máxima en segundos",
+      "invalid_model_file_type": "El archivo tiene una representación inválida para este {type}. Por favor revíselo y vuelva a intentarlo."
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
   },
@@ -410,7 +411,26 @@
       "title": "Publica tu Escena",
       "uploading": "Subiendo..."
     },
-    "title": "Publica tu Escena"
+    "title": "Publicar Escena",
+    "subtitle": "Elige donde querés subir esta escena:",
+    "learn_more": "Más información",
+    "options": {
+      "world": {
+        "title": "Mi mundo",
+        "description": "Límite de tamaño: 100 MB por mundo.<br></br>No se puede encontrar en el mapa de Genesis City.<br></br>Hasta 100 usuarios pueden unirse al mismo tiempo.",
+        "action": "Publicar en el mundo"
+      },
+      "land": {
+        "title": "Mi tierra",
+        "description": "Límite de tamaño: 15 MB por paquete.<br></br>Se puede encontrar en el mapa de Genesis City.<br></br>Un número ilimitado de usuarios pueden unirse al mismo tiempo.",
+        "action": "Publicar en la tierra"
+      },
+      "pool": {
+        "title": "Subir al grupo de escenas",
+        "description": "Tu escena aparecerá en una galería de escenas y estará disponible públicamente para su descarga.",
+        "action": "Subir al grupo de escenas"
+      }
+    }
   },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
@@ -762,8 +782,8 @@
     "title": "Asignar {name}",
     "subtitle": "Asigna un nombre a {land}",
     "set_name_message": "<strong>Antes de poder asignar este nombre a su parcela, debe enviar 2 o 3 transacciones:</strong> La primera transacción reclama tu nombre ENS para que tomes control del mismo y sólo es requerida para nombres comprados o transferidos de otros usuarios, la segunda transacción le permite usar su nombre como enlace y la tercera transacción vincula su nombre a su LAND.",
-    "reclaim": "Reclaim",
-    "reclaim_explanation": "This reclaims the control of your name after it has been transferred to you. The owner of the name has the control over it until it gets reclaimed.",
+    "reclaim": "Reclamar",
+    "reclaim_explanation": "Esto recupera el control de su nombre después de que se le haya transferido. El dueño del nombre tiene control sobre él hasta que sea reclamado.",
     "set_resolver": "Establecer Resolver",
     "set_resolver_explanation": "Esto permite que su nombre esté vinculado a una parcela",
     "set_content": "Establecer Contenido",
@@ -1254,7 +1274,8 @@
     },
     "missing_item_price": "Es necesario configurar el precio de una o mas {item_type}.",
     "unsynced_collection_title": "Hay items no sincronizados con el servidor en esta colección",
-    "unsynced_collection_message": "Se modificaron uno o más items después de que se aprobó esta colección.{br}Estas actualizaciones deben ser publicadas y revisadas nuevamente por el comité de curadores."
+    "unsynced_collection_message": "Se modificaron uno o más items después de que se aprobó esta colección.{br}Estas actualizaciones deben ser publicadas y revisadas nuevamente por el comité de curadores.",
+    "under_review_collection_message": "Los items actualizados estan siendo revisados por el comité de curadores.{br}Una vez aprobados, estarán visibles automáticamente para los actuales dueños{br}y en el Marketplace."
   },
   "collection_context_menu": {
     "add_existing_item": "Agregar item existente",
