@@ -1,5 +1,4 @@
 import * as React from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { Grid, Blockie, Loader, Row, Field, InputOnChangeData, Dropdown, Button, Section, DropdownProps, Header } from 'decentraland-ui'
 import { isMobile } from 'decentraland-dapps/dist/lib/utils'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -10,6 +9,8 @@ import SignInRequired from 'components/SignInRequired'
 import { shorten, isValid } from 'lib/address'
 import { LandType } from 'modules/land/types'
 import { Props, State } from './SettingsPage.types'
+import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+
 import './SettingsPage.css'
 
 export default class SettingsPage extends React.PureComponent<Props, State> {
@@ -68,7 +69,7 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
                 </div>
                 <div className="address-container">
                   <div className="address">{isMobile() ? shorten(wallet.address) : wallet.address}</div>
-                  <CopyToClipboard text={wallet.address} onCopy={this.handleOnCopy}>
+                  <CopyToClipboard role="button" text={wallet.address} onCopy={this.handleOnCopy}>
                     {hasCopiedText ? (
                       <span>{t('settings_page.copied')}</span>
                     ) : (

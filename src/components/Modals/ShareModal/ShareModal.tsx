@@ -1,14 +1,15 @@
 import * as React from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { ProviderType } from '@dcl/schemas'
 import { Loader, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
 import { config } from 'config'
 import Icon from 'components/Icon'
 import { ShareTarget } from 'modules/ui/share/types'
 import WalletLoginModal from '../WalletLoginModal'
 import { Props, ShareModalType, State } from './ShareModal.types'
+import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 
 import './ShareModal.css'
 
@@ -161,7 +162,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
           </div>
           <div className="copy-group">
             <input ref={this.input} className="copy-input" readOnly={true} value={this.getShareLink()} onFocus={this.handleFocusLink} />
-            <CopyToClipboard text={this.getShareLink()} onCopy={this.handleCopyLink}>
+            <CopyToClipboard role="button" text={this.getShareLink()} onCopy={this.handleCopyLink}>
               <span className="copy-button">{copied ? t('share_modal.copied') : t('share_modal.copy')}</span>
             </CopyToClipboard>
           </div>
