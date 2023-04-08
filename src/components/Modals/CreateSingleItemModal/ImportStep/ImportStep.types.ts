@@ -5,7 +5,10 @@ import { AcceptedFileProps } from '../CreateSingleItemModal.types'
 
 export type Props = {
   category?: WearableCategory | EmoteCategory
-  metadata?: CreateSingleItemModalMetadata
+  metadata?: {
+    item: Item
+    changeItemFile: boolean
+  }
   title: string
   wearablePreviewComponent?: React.ReactNode
   isLoading: boolean
@@ -21,10 +24,3 @@ export type StateData = {
   isLoading: boolean
 }
 export type State = Partial<StateData>
-
-export type CreateSingleItemModalMetadata = {
-  collectionId?: string
-  item?: Item
-  addRepresentation?: boolean
-  changeItemFile?: boolean
-}

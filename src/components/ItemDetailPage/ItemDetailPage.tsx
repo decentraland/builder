@@ -6,6 +6,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Network } from '@dcl/schemas'
 
 import { locations } from 'routing/locations'
+import { FromParam } from 'modules/location/types'
 import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { areEmoteMetrics } from 'modules/models/types'
@@ -35,7 +36,10 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
   handleEditItem = () => {
     const { item, onNavigate } = this.props
-    onNavigate(locations.itemEditor({ itemId: item!.id, collectionId: item!.collectionId }))
+    item &&
+      onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }), {
+        fromParam: isThirdParty(item.urn) ? FromParam.TP_COLLECTIONS : FromParam.COLLECTIONS
+      })
   }
 
   handleDeleteItem = () => {

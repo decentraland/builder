@@ -5,6 +5,7 @@ import { deleteItemRequest, DeleteItemRequestAction, saveItemRequest, SaveItemRe
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { LocationStateProps } from 'modules/location/types'
 
 export type State = {
   thumbnail: string
@@ -17,7 +18,7 @@ export type Props = {
   item: Item | null
   collection: Collection | null
   isLoading: boolean
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, locationState?: LocationStateProps) => void
   onOpenModal: typeof openModal
   onDelete: typeof deleteItemRequest
   onSaveItem: typeof saveItemRequest

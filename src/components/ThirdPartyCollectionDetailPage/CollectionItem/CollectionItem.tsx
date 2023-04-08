@@ -7,6 +7,7 @@ import { preventDefault } from 'lib/preventDefault'
 import { decodeURN, URNType } from 'lib/urn'
 import ItemStatus from 'components/ItemStatus'
 import { SyncStatus } from 'modules/item/types'
+import { FromParam } from 'modules/location/types'
 import { getBodyShapeType } from 'modules/item/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
@@ -33,7 +34,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
   handleNavigateToEditor = () => {
     const { item, onNavigate } = this.props
-    onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
+    onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }), { fromParam: FromParam.TP_COLLECTIONS })
   }
 
   handleDelete = () => {
