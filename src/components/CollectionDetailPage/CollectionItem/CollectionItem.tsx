@@ -57,7 +57,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
         {isFree(item) ? (
           t('global.free')
         ) : (
-          <Mana showTooltip className={styles.mana} network={Network.MATIC}>
+          <Mana className={styles.mana} network={Network.MATIC} showTooltip>
             {ethers.utils.formatEther(item.price)}
           </Mana>
         )}
