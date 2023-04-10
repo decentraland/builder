@@ -148,7 +148,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                 disabled={isFree}
                 error={!!price && !this.isValidPrice()}
               />
-              <Mana showTooltip={true} network={Network.MATIC} inline />
+              <Mana showTooltip network={Network.MATIC} inline />
               <div className="checkbox make-it-free">
                 <Checkbox className="item-checkbox" checked={isFree} onClick={this.handleIsFreeToggle} />
                 &nbsp;
@@ -189,7 +189,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                         id="edit_price_and_beneficiary_modal.price_message"
                         values={{
                           minPrice: (
-                            <Mana showTooltip={true} inline network={Network.MATIC}>
+                            <Mana showTooltip inline network={Network.MATIC}>
                               {MIN_SALE_VALUE}
                             </Mana>
                           ),
