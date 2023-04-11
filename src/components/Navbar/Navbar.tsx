@@ -9,6 +9,6 @@ export default class Navbar extends React.PureComponent<Props> {
     if (props.isConnected) {
       props = { ...props, rightMenu: <UserMenu /> }
     }
-    return <BaseNavbar activePage="builder" {...props} />
+    return <BaseNavbar activePage="builder" {...props} enableSubMenuSection />
   }
 }
