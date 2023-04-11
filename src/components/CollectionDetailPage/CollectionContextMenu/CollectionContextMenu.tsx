@@ -5,8 +5,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { RoleType } from 'modules/collection/types'
 import { isOwner as isCollectionOwner, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
-import { Props } from './CollectionContextMenu.types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+import { Props } from './CollectionContextMenu.types'
 
 import styles from './CollectionContextMenu.module.css'
 
