@@ -9,7 +9,6 @@ type Props = {
   onCopy?: () => void
 }
 
-//TODO: if this copyText is not passed anywhere else then just remove this param
 export default class CopyToClipboard extends React.PureComponent<Props> {
   handleCopy = async () => {
     const { text } = this.props
