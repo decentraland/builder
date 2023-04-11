@@ -8,8 +8,8 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import SignInRequired from 'components/SignInRequired'
 import { shorten, isValid } from 'lib/address'
 import { LandType } from 'modules/land/types'
-import { Props, State } from './SettingsPage.types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+import { Props, State } from './SettingsPage.types'
 
 import './SettingsPage.css'
 
