@@ -25,8 +25,8 @@ import ItemImage from 'components/ItemImage'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import Back from 'components/Back'
-import { Props, State } from './ItemDetailPage.types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+import { Props, State } from './ItemDetailPage.types'
 
 import './ItemDetailPage.css'
 
