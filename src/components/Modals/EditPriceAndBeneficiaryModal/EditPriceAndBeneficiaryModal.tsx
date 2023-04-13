@@ -121,7 +121,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   isPriceTooLow() {
     const { price = '' } = this.state
-    return price !== '' && price < MIN_SALE_VALUE
+    return price !== '' && Number(price) < Number(MIN_SALE_VALUE)
   }
 
   isValidBeneficiary() {

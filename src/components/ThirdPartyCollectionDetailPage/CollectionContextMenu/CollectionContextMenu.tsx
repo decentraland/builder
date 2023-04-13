@@ -3,6 +3,7 @@ import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getCollectionEditorURL, isLocked } from 'modules/collection/utils'
+import { FromParam } from 'modules/location/types'
 import { CreateOrEditMultipleItemsModalType } from 'components/Modals/CreateAndEditMultipleItemsModal/CreateAndEditMultipleItemsModal.types'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
@@ -25,7 +26,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
 
   handleNavigateToEditor = () => {
     const { collection, items, onNavigate } = this.props
-    onNavigate(getCollectionEditorURL(collection, items))
+    onNavigate(getCollectionEditorURL(collection, items), { fromParam: FromParam.TP_COLLECTIONS })
   }
 
   handleDeleteCollection = () => {

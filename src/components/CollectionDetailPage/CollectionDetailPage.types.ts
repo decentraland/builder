@@ -5,6 +5,7 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, ItemType, SyncStatus } from 'modules/item/types'
 import { fetchCollectionForumPostReplyRequest, FetchCollectionForumPostReplyRequestAction } from 'modules/forum/actions'
+import { LocationStateProps } from 'modules/location/types'
 
 export type Props = {
   tab?: ItemType
@@ -14,13 +15,9 @@ export type Props = {
   isLoading: boolean
   items: Item[]
   status: SyncStatus
-  onNavigate: (path: string, prop?: CollectionDetailLocationState) => void
+  onNavigate: (path: string, locationState?: LocationStateProps) => void
   onOpenModal: typeof openModal
   onFetchCollectionForumPostReply: typeof fetchCollectionForumPostReplyRequest
-}
-
-export type CollectionDetailLocationState = {
-  fromParam?: string
 }
 
 export type State = {
