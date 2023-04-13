@@ -10,6 +10,7 @@ import { isComplete, isFree, canManageItem, getMaxSupply } from 'modules/item/ut
 import ItemStatus from 'components/ItemStatus'
 import { isLocked } from 'modules/collection/utils'
 import { isEmoteData, ItemType, SyncStatus, WearableData } from 'modules/item/types'
+import { FromParam } from 'modules/location/types'
 import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
 import ItemImage from 'components/ItemImage'
@@ -36,7 +37,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
   handleNavigateToEditor = () => {
     const { onNavigate, item, onSetItems } = this.props
     onSetItems([item])
-    onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
+    onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }), { fromParam: FromParam.COLLECTIONS })
   }
 
   handleDeleteItem = () => {

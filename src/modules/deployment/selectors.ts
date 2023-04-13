@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { Tile } from 'react-tile-map/lib/src/lib/common'
+import { Tile } from 'react-tile-map/dist/lib/common'
 import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
 import { getCurrentProject, getUserProjects } from 'modules/project/selectors'

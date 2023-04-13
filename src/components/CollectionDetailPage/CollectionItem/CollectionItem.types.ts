@@ -5,13 +5,14 @@ import { Item, SyncStatus } from 'modules/item/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { deleteItemRequest, DeleteItemRequestAction } from 'modules/item/actions'
 import { setItems, SetItemsAction } from 'modules/editor/actions'
+import { LocationStateProps } from 'modules/location/types'
 
 export type Props = {
   ethAddress?: string
   collection: Collection
   item: Item
   status: SyncStatus
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, locationState?: LocationStateProps) => void
   onOpenModal: typeof openModal
   onDeleteItem: typeof deleteItemRequest
   onSetItems: typeof setItems
