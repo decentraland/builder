@@ -78,4 +78,7 @@ export type SceneDefinition = {
     email: string
   }
   tags: string[]
+  worldConfiguration?: {
+    name: string
+  }
 }

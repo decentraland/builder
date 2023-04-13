@@ -404,6 +404,16 @@
       "title": "正在发布场景",
       "uploading": "上传中..."
     },
+    "deploy_world": {
+      "title": "发布到世界",
+      "description": "选择将定义URL的名称：",
+      "action": "发布",
+      "world_label": "世界（名称）",
+      "world_placeholder": "选择一个名称",
+      "back": "回到发布场景",
+      "close": "关闭发布模式",
+      "claim_name": "要求新名称"
+    },
     "title": "正在发布场景",
     "subtitle": "选择要部署此场景的位置：",
     "learn_more": "了解更多",

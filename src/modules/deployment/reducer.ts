@@ -28,7 +28,13 @@ import {
   FETCH_DEPLOYMENTS_SUCCESS,
   FETCH_DEPLOYMENTS_REQUEST,
   FetchDeploymentsRequestAction,
-  FETCH_DEPLOYMENTS_FAILURE
+  FETCH_DEPLOYMENTS_FAILURE,
+  DEPLOY_TO_WORLD_REQUEST,
+  DeployToWorldFailureAction,
+  DeployToWorldRequestAction,
+  DeployToWorldSuccessAction,
+  DEPLOY_TO_WORLD_SUCCESS,
+  DEPLOY_TO_WORLD_FAILURE
 } from './actions'
 import { ProgressStage, Deployment } from './types'
 
@@ -67,6 +73,9 @@ export type DeploymentReducerAction =
   | FetchDeploymentsRequestAction
   | FetchDeploymentsSuccessAction
   | FetchDeploymentsFailureAction
+  | DeployToWorldRequestAction
+  | DeployToWorldSuccessAction
+  | DeployToWorldFailureAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -139,6 +148,38 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
           ...state.data
         },
         error: action.payload.error
+      }
+    }
+    case DEPLOY_TO_WORLD_REQUEST: {
+      return {
+        ...state,
+        error: null,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case DEPLOY_TO_WORLD_SUCCESS: {
+      const { deployment } = action.payload
+
+      const newData = {
+        ...state.data,
+        [deployment.id]: deployment
+      }
+
+      return {
+        ...state,
+        data: newData,
+        loading: loadingReducer(state.loading, action),
+        progress: {
+          stage: ProgressStage.NONE,
+          value: 0
+        }
+      }
+    }
+    case DEPLOY_TO_WORLD_FAILURE: {
+      return {
+        ...state,
+        error: action.payload.error,
+        loading: loadingReducer(state.loading, action)
       }
     }
     case SET_PROGRESS: {

@@ -26,7 +26,8 @@ export enum DeployModalView {
   NONE = 'NONE',
   CLEAR_DEPLOYMENT = 'CLEAR_DEPLOYMENT',
   DEPLOY_TO_LAND = 'DEPLOY_TO_LAND',
-  DEPLOY_TO_POOL = 'DEPLOY_TO_POOL'
+  DEPLOY_TO_POOL = 'DEPLOY_TO_POOL',
+  DEPLOY_TO_WORLD = 'DEPLOY_TO_WORLD'
 }
 
 export type DeployModalMetadata = {

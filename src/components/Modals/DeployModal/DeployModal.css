@@ -255,7 +255,8 @@
 
 .DeployModal .modal-body .ui.header.modal-title {
   margin: 0px;
-  line-height: 24px;
+  line-height: 36px;
+  font-size: 30px;
 }
 
 .DeployModal .modal-body .modal-subtitle {

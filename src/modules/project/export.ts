@@ -52,9 +52,10 @@ export async function createFiles(args: {
   author: string | null
   isDeploy: boolean
   isEmpty?: boolean
+  world?: string
   onProgress: (args: { loaded: number; total: number }) => void
 }) {
-  const { project, scene, point, rotation, thumbnail, author, isDeploy, isEmpty, onProgress } = args
+  const { project, scene, point, rotation, thumbnail, author, isDeploy, isEmpty, world, onProgress } = args
   const files = await downloadFiles({ scene, onProgress, isDeploy })
   const gameFile = await createGameFile({ project, scene, rotation }, isDeploy)
 
@@ -64,7 +65,7 @@ export async function createFiles(args: {
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
     [EXPORT_PATH.THUMBNAIL_FILE]: await createThumbnailBlob(thumbnail),
-    ...createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty }),
+    ...createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty, world }),
     ...createStaticFiles(),
     ...files
   }
@@ -413,8 +414,9 @@ export function createDynamicFiles(args: {
   thumbnail: string | null
   author: string | null
   isEmpty?: boolean
+  world?: string
 }) {
-  const { project, scene, rotation, point, thumbnail, author, isEmpty } = args
+  const { project, scene, rotation, point, thumbnail, author, isEmpty, world } = args
 
   const files = {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify({
@@ -434,7 +436,7 @@ export function createDynamicFiles(args: {
       null,
       2
     ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation, thumbnail, author, isEmpty), null, 2),
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation, thumbnail, author, isEmpty, world), null, 2),
     [EXPORT_PATH.TSCONFIG_FILE]: JSON.stringify(
       {
         ...tsconfig,
@@ -454,7 +456,8 @@ export function getSceneDefinition(
   rotation: Rotation,
   thumbnail: string | null,
   author: string | null,
-  isEmpty?: boolean
+  isEmpty?: boolean,
+  name?: string
 ) {
   const parcels = getParcelOrientation(project.layout, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
@@ -490,6 +493,12 @@ export function getSceneDefinition(
 
   if (isEmpty) {
     sceneDefinition.source!.isEmpty = true
+  }
+
+  if (name) {
+    sceneDefinition.worldConfiguration = {
+      name: `${name}.dcl.eth`
+    }
   }
 
   return sceneDefinition

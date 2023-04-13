@@ -1,0 +1,56 @@
+.modalBody {
+  width: 750px;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.modalNavigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modalHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalHeader h3 {
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 36px;
+}
+
+.modalHeader span {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.modalBody .actionButton:global(.ui.button) {
+  height: auto;
+  width: fit-content;
+  align-self: flex-end;
+}
+
+.modalForm {
+  display: flex;
+  gap: 36px;
+}
+
+.thumbnail {
+  width: 240px;
+  height: 190px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid lightgray;
+}
+
+.navigationButton {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}

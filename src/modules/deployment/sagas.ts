@@ -1,4 +1,4 @@
-import { CatalystClient } from 'dcl-catalyst-client'
+import { CatalystClient, ContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -42,14 +42,20 @@ import {
   FetchDeploymentsRequestAction,
   fetchDeploymentsRequest,
   fetchDeploymentsSuccess,
-  fetchDeploymentsFailure
+  fetchDeploymentsFailure,
+  deployToWorldSuccess,
+  deployToWorldFailure,
+  DeployToWorldRequestAction,
+  DEPLOY_TO_WORLD_REQUEST
 } from './actions'
 import { ProgressStage } from './types'
 import { makeContentFiles } from './contentUtils'
 import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
+import { config } from 'config'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
+// TODO: Remove this. This is using the store directly which it shouldn't and causes a circular dependency.
 const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: number }) => {
   const { loaded, total } = args
   const progress = ((loaded / total) * 100) | 0
@@ -62,6 +68,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeploymentRequest)
   yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
+  yield takeLatest(DEPLOY_TO_WORLD_REQUEST, handleDeployToWorldRequest)
 
   function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
     const { projectId, additionalInfo } = action.payload
@@ -101,25 +108,30 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     }
   }
 
-  function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
-    const { placement, projectId, overrideDeploymentId } = action.payload
-
+  function* deployScene(
+    deployFailure: typeof deployToWorldFailure | typeof deployToLandFailure,
+    contentClient: ContentClient | CatalystClient,
+    projectId: string,
+    placement: Placement,
+    world?: string
+  ) {
     const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+
     const project = projects[projectId]
     if (!project) {
-      yield put(deployToLandFailure('Unable to Publish: Invalid project'))
+      yield put(deployFailure('Unable to Publish: Invalid project'))
       return
     }
 
-    const scene: Scene = yield getSceneByProjectId(project.id)
+    const scene: Scene = yield call(getSceneByProjectId, project.id)
     if (!scene) {
-      yield put(deployToLandFailure('Unable to Publish: Invalid scene'))
+      yield put(deployFailure('Unable to Publish: Invalid scene'))
       return
     }
 
-    const identity: AuthIdentity = yield getIdentity()
+    const identity: AuthIdentity = yield call(getIdentity)
     if (!identity) {
-      yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
+      yield put(deployFailure('Unable to Publish: Invalid identity'))
       return
     }
 
@@ -153,44 +165,71 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       }
     }
 
+    const files: Record<string, string> = yield call(createFiles, {
+      project,
+      scene,
+      point: placement.point,
+      rotation: placement.rotation,
+      author,
+      thumbnail: previewUrl,
+      isDeploy: true,
+      onProgress: handleProgress(ProgressStage.CREATE_FILES),
+      world
+    })
+
+    const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
+
+    // Remove the old communications property if it exists
+    const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
+
+    const { entityId, files: hashedFiles } = yield call([contentClient, 'buildEntity'], {
+      type: EntityType.SCENE,
+      pointers: [...sceneDefinition.scene.parcels],
+      metadata: sceneDefinition,
+      files: contentFiles
+    })
+
+    const authChain = Authenticator.signPayload(identity, entityId)
+    yield call([contentClient, 'deployEntity'], { entityId, files: hashedFiles, authChain })
+    // generate new deployment
+    const address: string = yield select(getAddress) || ''
+
+    return {
+      id: entityId,
+      placement,
+      owner: address,
+      timestamp: +new Date(),
+      layout: project.layout,
+      name: project.title,
+      thumbnail: previewUrl,
+      projectId: project.id,
+      base: sceneDefinition.scene.base,
+      parcels: sceneDefinition.scene.parcels
+    }
+  }
+
+  function* handleDeployToWorldRequest(action: DeployToWorldRequestAction) {
+    const { world, projectId } = action.payload
+    const contentClient = new ContentClient({ contentUrl: config.get('WORLDS_CONTENT_SERVER', '') })
     try {
-      const files: Record<string, string> = yield call(createFiles, {
-        project,
-        scene,
-        point: placement.point,
-        rotation: placement.rotation,
-        author,
-        thumbnail: previewUrl,
-        isDeploy: true,
-        onProgress: handleProgress(ProgressStage.CREATE_FILES)
-      })
+      const deployment: Deployment = yield call(
+        deployScene,
+        deployToWorldFailure,
+        contentClient,
+        projectId,
+        { point: { x: 0, y: 0 }, rotation: 'north' },
+        world
+      )
+      yield put(deployToWorldSuccess(deployment))
+    } catch (e) {
+      yield put(deployToWorldFailure(e.message.split('\n')[0]))
+    }
+  }
 
-      const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
-      // Remove the old communications property if it exists
-      const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-      const { entityId, files: hashedFiles } = yield call([catalystClient, 'buildEntity'], {
-        type: EntityType.SCENE,
-        pointers: [...sceneDefinition.scene.parcels],
-        metadata: sceneDefinition,
-        files: contentFiles
-      })
-      const authChain = Authenticator.signPayload(identity, entityId)
-      yield call([catalystClient, 'deployEntity'], { entityId, files: hashedFiles, authChain })
-      // generate new deployment
-      const deployment: Deployment = {
-        id: entityId,
-        placement,
-        owner: yield select(getAddress) || '',
-        timestamp: +new Date(),
-        layout: project.layout,
-        name: project.title,
-        thumbnail: previewUrl,
-        projectId: project.id,
-        base: sceneDefinition.scene.base,
-        parcels: sceneDefinition.scene.parcels
-      }
-
-      // notify success
+  function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
+    const { placement, projectId, overrideDeploymentId } = action.payload
+    try {
+      const deployment: Deployment = yield call(deployScene, deployToLandFailure, catalystClient, projectId, placement)
       yield put(deployToLandSuccess(deployment, overrideDeploymentId))
     } catch (e) {
       yield put(deployToLandFailure(e.message.split('\n')[0]))

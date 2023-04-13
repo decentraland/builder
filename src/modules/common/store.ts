@@ -39,6 +39,7 @@ import { RootState, RootStore } from './types'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const builderVersion = require('../../../package.json').version
+const isTestEnv = process.env.NODE_ENV === 'test'
 
 configureAnalytics({
   transformPayload: payload => {
@@ -64,10 +65,12 @@ const rootReducer = createRootReducer(history)
 
 const historyMiddleware = routerMiddleware(history)
 const sagasMiddleware = createSagasMiddleware()
-const loggerMiddleware = createLogger({
-  predicate: () => isDevelopment,
-  collapsed: () => true
-})
+const loggerMiddleware = isTestEnv
+  ? null
+  : createLogger({
+      predicate: () => isDevelopment,
+      collapsed: () => true
+    })
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   migrations,
   storageKey: config.get('LOCAL_STORAGE_KEY', 'builder'),
@@ -135,9 +138,16 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   }
 })
 const transactionMiddleware = createTransactionMiddleware()
-const analyticsMiddleware = createAnalyticsMiddleware(config.get('SEGMENT_API_KEY'))
+const analyticsMiddleware = isTestEnv ? null : createAnalyticsMiddleware(config.get('SEGMENT_API_KEY'))
 
-const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware, transactionMiddleware]
+const middlewares = [
+  historyMiddleware,
+  sagasMiddleware,
+  loggerMiddleware,
+  storageMiddleware,
+  analyticsMiddleware,
+  transactionMiddleware
+].filter(mdw => mdw !== null)
 
 const middleware = applyMiddleware(...middlewares)
 
@@ -176,4 +186,8 @@ window.onbeforeunload = function () {
 
 store.dispatch(fetchTilesRequest())
 
-export { store, history }
+function initTestStore(preloadedState = {}) {
+  const testEnhancer = composeEnhancers(applyMiddleware(historyMiddleware, sagasMiddleware, storageMiddleware, transactionMiddleware))
+  return createStore(rootReducer, preloadedState, testEnhancer)
+}
+export { store, history, initTestStore }
