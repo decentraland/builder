@@ -29,12 +29,12 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-
-    - name: Audit signatures
-      run: npm audit signatures
         
     - name: Clean install dependencies
       run: npm ci
+      
+    - name: Audit signatures
+      run: npm audit signatures
       
     - name: Build
       run: npm run build
