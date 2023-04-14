@@ -27,7 +27,7 @@
     "dcl-scene-writer": "^1.1.2",
     "decentraland": "^3.3.0",
     "decentraland-builder-scripts": "^0.24.0",
-    "decentraland-dapps": "^13.46.0",
+    "decentraland-dapps": "^13.47.1",
     "decentraland-ecs": "file:ecs/decentraland-ecs-6.6.1-20201020183014.commit-bdc29ef-hotfix.tgz",
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^1.42.0",
