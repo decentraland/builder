@@ -1,11 +1,13 @@
 import * as React from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
 import { RoleType } from 'modules/collection/types'
 import { isOwner as isCollectionOwner, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
+import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { Props } from './CollectionContextMenu.types'
+
 import styles from './CollectionContextMenu.module.css'
 
 export default class CollectionContextMenu extends React.PureComponent<Props> {
@@ -62,7 +64,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
             </>
           ) : null}
 
-          <CopyToClipboard text={collection.urn}>
+          <CopyToClipboard role="option" className="item" text={collection.urn}>
             <Dropdown.Item text={t('collection_context_menu.copy_urn')} />
           </CopyToClipboard>
 
@@ -71,7 +73,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
             position="right center"
             disabled={collection.isPublished}
             trigger={
-              <CopyToClipboard text={collection.contractAddress!}>
+              <CopyToClipboard role="option" className="item" text={collection.contractAddress!}>
                 <Dropdown.Item disabled={!collection.isPublished} text={t('collection_context_menu.copy_address')} />
               </CopyToClipboard>
             }
