@@ -1,6 +1,5 @@
 import * as React from 'react'
 import classNames from 'classnames'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import {
   Grid,
   Section,
@@ -39,6 +38,8 @@ import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
 import { Props, State, PAGE_SIZE } from './ThirdPartyCollectionDetailPage.types'
 import { ThirdParty } from 'modules/thirdParty/types'
+import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
@@ -226,7 +227,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                   </Row>
                   <Row className="urn-container">
                     <small className="urn">
-                      <CopyToClipboard text={collection.urn}>
+                      <CopyToClipboard role="button" text={collection.urn}>
                         <Row>
                           <Popup
                             content={collection.urn}

@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { ethers } from 'ethers'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { Section, Row, Narrow, Button, Dropdown, Icon, Mana, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Network } from '@dcl/schemas'
+
 import { locations } from 'routing/locations'
 import { FromParam } from 'modules/location/types'
 import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
@@ -25,7 +25,9 @@ import ItemImage from 'components/ItemImage'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import Back from 'components/Back'
+import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { Props, State } from './ItemDetailPage.types'
+
 import './ItemDetailPage.css'
 
 const STORAGE_KEY = 'dcl-item-notice'
@@ -179,7 +181,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                     <div className="value urn">
                       <span>
                         {item.urn}
-                        <CopyToClipboard text={item.urn}>
+                        <CopyToClipboard role="button" text={item.urn}>
                           <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
                         </CopyToClipboard>
                       </span>
@@ -268,7 +270,13 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                   ) : item.price ? (
                     <Section>
                       <div className="subtitle">{t('item.price')}</div>
-                      {item.price ? <Mana network={Network.MATIC}>{ethers.utils.formatEther(item.price)}</Mana> : '-'}
+                      {item.price ? (
+                        <Mana showTooltip network={Network.MATIC}>
+                          {ethers.utils.formatEther(item.price)}
+                        </Mana>
+                      ) : (
+                        '-'
+                      )}
                     </Section>
                   ) : null}
                   <Section>
