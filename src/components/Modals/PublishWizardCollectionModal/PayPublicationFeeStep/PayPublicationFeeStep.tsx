@@ -109,7 +109,7 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
               <div className="element">
                 <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_mana')}</div>
                 <div className="element-content total-amount">
-                  <Mana network={Network.MATIC} size="small">
+                  <Mana showTooltip network={Network.MATIC} size="small">
                     {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
                   </Mana>
                 </div>
@@ -125,7 +125,7 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
           <Button className="proceed" primary onClick={onNextStep} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
             {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
               value: (
-                <Mana network={Network.MATIC} size="medium">
+                <Mana showTooltip network={Network.MATIC} size="medium">
                   {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
                 </Mana>
               )

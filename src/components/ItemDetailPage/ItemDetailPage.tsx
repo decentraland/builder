@@ -270,7 +270,13 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                   ) : item.price ? (
                     <Section>
                       <div className="subtitle">{t('item.price')}</div>
-                      {item.price ? <Mana network={Network.MATIC}>{ethers.utils.formatEther(item.price)}</Mana> : '-'}
+                      {item.price ? (
+                        <Mana showTooltip network={Network.MATIC}>
+                          {ethers.utils.formatEther(item.price)}
+                        </Mana>
+                      ) : (
+                        '-'
+                      )}
                     </Section>
                   ) : null}
                   <Section>
