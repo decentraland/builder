@@ -411,6 +411,16 @@
       "title": "Publica tu Escena",
       "uploading": "Subiendo..."
     },
+    "deploy_world": {
+      "title": "Publicar en el mundo",
+      "description": "Seleccione el nombre que definirá la URL:",
+      "action": "Publicar",
+      "world_label": "Nombre (mundo)",
+      "world_placeholder": "Seleccione un nombre",
+      "back": "Volver a elegir donde publicar",
+      "close": "Cerrar modal publicación",
+      "claim_name": "Obtener un nuevo nombre"
+    },
     "title": "Publicar Escena",
     "subtitle": "Elige donde querés subir esta escena:",
     "learn_more": "Más información",

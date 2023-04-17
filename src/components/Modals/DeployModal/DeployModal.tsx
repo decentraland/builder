@@ -5,6 +5,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import Icon from 'components/Icon'
 import DeployToLand from './DeployToLand'
 import DeployToPool from './DeployToPool'
+import DeployToWorld from './DeployToWorld'
 import ClearDeployment from './ClearDeployment'
 import { Props, State, DeployModalView } from './DeployModal.types'
 import './DeployModal.css'
@@ -34,6 +35,12 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   handleDeployToPool = () => {
     this.setState({
       view: DeployModalView.DEPLOY_TO_POOL
+    })
+  }
+
+  handleDeployToWorld = () => {
+    this.setState({
+      view: DeployModalView.DEPLOY_TO_WORLD
     })
   }
 
@@ -78,7 +85,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                     {t('deployment_modal.learn_more')}
                   </a>
                 </span>
-                <Button primary onClick={() => console.log('TODO: Deploy to world')}>
+                <Button primary onClick={this.handleDeployToWorld}>
                   <span>{t('deployment_modal.options.world.action')}</span>
                 </Button>
               </div>
@@ -158,6 +165,10 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
     if (view === DeployModalView.DEPLOY_TO_POOL) {
       return <DeployToPool name={name} onClose={this.handleClose} />
+    }
+
+    if (view === DeployModalView.DEPLOY_TO_WORLD) {
+      return <DeployToWorld name={name} onClose={this.handleClose} onBack={this.handleBack} />
     }
 
     return this.renderChoiceForm()

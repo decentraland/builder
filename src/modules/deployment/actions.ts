@@ -33,6 +33,20 @@ export type DeployToLandRequestAction = ReturnType<typeof deployToLandRequest>
 export type DeployToLandSuccessAction = ReturnType<typeof deployToLandSuccess>
 export type DeployToLandFailureAction = ReturnType<typeof deployToLandFailure>
 
+// Deploy to World
+
+export const DEPLOY_TO_WORLD_REQUEST = '[Request] Deploy to World'
+export const DEPLOY_TO_WORLD_SUCCESS = '[Success] Deploy to World'
+export const DEPLOY_TO_WORLD_FAILURE = '[Failure] Deploy to World'
+
+export const deployToWorldRequest = (projectId: string, world: string) => action(DEPLOY_TO_WORLD_REQUEST, { projectId, world })
+export const deployToWorldSuccess = (deployment: Deployment) => action(DEPLOY_TO_WORLD_SUCCESS, { deployment })
+export const deployToWorldFailure = (error: string) => action(DEPLOY_TO_WORLD_FAILURE, { error })
+
+export type DeployToWorldRequestAction = ReturnType<typeof deployToWorldRequest>
+export type DeployToWorldSuccessAction = ReturnType<typeof deployToWorldSuccess>
+export type DeployToWorldFailureAction = ReturnType<typeof deployToWorldFailure>
+
 // Clear LAND deployment
 
 export const CLEAR_DEPLOYMENT_REQUEST = '[Request] Clear Deployment'

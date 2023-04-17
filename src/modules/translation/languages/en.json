@@ -408,6 +408,16 @@
       "title": "Publish your Scene",
       "uploading": "Uploading"
     },
+    "deploy_world": {
+      "title": "Publish to World",
+      "description": "Select the NAME that will define the URL:",
+      "action": "Publish",
+      "world_label": "World (NAME)",
+      "world_placeholder": "Select a NAME",
+      "back": "Go back to publish scene",
+      "close": "Close publish modal",
+      "claim_name": "Claim a new name"
+    },
     "title": "Publish Scene",
     "subtitle": "Select where you want to deploy this scene:",
     "learn_more": "Learn more",
