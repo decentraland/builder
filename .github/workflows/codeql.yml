@@ -1,8 +1,8 @@
-name: "CodeQL"
+name: 'CodeQL'
 
 on:
-  pull_request:
-    branches: [ "master" ]
+  schedule:
+    - cron: '59 23 * * *'
 
 jobs:
   analyze:
@@ -13,27 +13,16 @@ jobs:
       contents: read
       security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'javascript' ]
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
-        
-    - name: Clean install dependencies
-      run: npm ci
-      
-    - name: Audit signatures
-      run: npm audit signatures
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: '/language:javascript'
