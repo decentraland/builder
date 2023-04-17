@@ -29,7 +29,7 @@ export default function DeployToWorld({ name, project, ensList, isLoading, onPub
 
   const worldOptions = useMemo(() => {
     return [
-      ...ensList.map(ens => ({ text: ens.name, value: ens.name })),
+      ...ensList.map(ens => ({ text: ens.name, value: ens.subdomain })),
       { text: t('deployment_modal.deploy_world.claim_name'), value: CLAIM_NAME_OPTION }
     ]
   }, [ensList])
@@ -66,7 +66,7 @@ export default function DeployToWorld({ name, project, ensList, isLoading, onPub
             onChange={handleWorldSelected}
           />
         </div>
-        <Button primary className={styles.actionButton} onClick={handlePublish} loading={isLoading} disabled={isLoading}>
+        <Button primary className={styles.actionButton} onClick={handlePublish} loading={isLoading} disabled={isLoading || !world}>
           {t('deployment_modal.deploy_world.action')}
         </Button>
       </div>

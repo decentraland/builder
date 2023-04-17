@@ -497,7 +497,7 @@ export function getSceneDefinition(
 
   if (name) {
     sceneDefinition.worldConfiguration = {
-      name: `${name}.dcl.eth`
+      name: name
     }
   }
 
