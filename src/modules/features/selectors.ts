@@ -22,14 +22,6 @@ export const getIsCampaignEnabled = (state: RootState) => {
   }
 }
 
-export const getIsDCLControllerV2Enabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.DCL_CONTROLLER_V2)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsDeployToWorldsEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.DEPLOY_WORLDS)

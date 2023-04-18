@@ -6,7 +6,6 @@ import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { allowClaimManaRequest, claimNameRequest, ALLOW_CLAIM_MANA_REQUEST } from 'modules/ens/actions'
 import { getLoading, isWaitingTxAllowMana, getAuthorizationByWallet } from 'modules/ens/selectors'
-import { getIsDCLControllerV2Enabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ClaimENSPage.types'
 import ClaimENSPage from './ClaimENSPage'
 
@@ -17,8 +16,7 @@ const mapState = (state: RootState): MapStateProps => {
     wallet: getWallet(state),
     mana: getMana(state)!,
     allowance: authorization ? authorization.allowance : '0',
-    isLoading: !authorization || isLoadingType(getLoading(state), ALLOW_CLAIM_MANA_REQUEST) || isWaitingTxAllowMana(state),
-    isDCLControllerV2Enabled: getIsDCLControllerV2Enabled(state)
+    isLoading: !authorization || isLoadingType(getLoading(state), ALLOW_CLAIM_MANA_REQUEST) || isWaitingTxAllowMana(state)
   }
 }
 
