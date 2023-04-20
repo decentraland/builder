@@ -18,6 +18,8 @@ export type ENS = {
   //   contentId?: string
   //   contentType?: ENSContent {LAND = 'land', (...)}
   landId?: string
+
+  worldStatus?: string | null
 }
 
 export type ENSError = {

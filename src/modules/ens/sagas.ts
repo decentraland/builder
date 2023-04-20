@@ -288,6 +288,7 @@ export function* ensSaga(builderClient: BuilderClient) {
           const subdomain = `${data.toLowerCase()}.dcl.eth`
           let landId: string | undefined = undefined
           let content = ''
+          let worldStatus = null
 
           const nodehash = namehash(subdomain)
           const [resolverAddress, owner, tokenId]: [string, string, string] = await Promise.all([
@@ -306,6 +307,11 @@ export function* ensSaga(builderClient: BuilderClient) {
               if (land) {
                 landId = land.id
               }
+
+              const resp = await fetch(` https://worlds-content-server.decentraland.zone/world/${subdomain}/about`)
+              if (resp.ok) {
+                worldStatus = await resp.json()
+              }
             } catch (error) {
               console.error('Failed to load ens resolver', error)
             }
@@ -319,7 +325,8 @@ export function* ensSaga(builderClient: BuilderClient) {
             subdomain,
             resolver,
             content,
-            landId
+            landId,
+            worldStatus
           }
 
           return ens
