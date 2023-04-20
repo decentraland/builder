@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosError } from 'axios'
-import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
+import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { config } from 'config'
 import { NO_CACHE_HEADERS } from 'lib/headers'
@@ -15,6 +15,7 @@ import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Item, ItemType, ItemRarity, WearableData, Rarity, ItemApprovalData } from 'modules/item/types'
 import { Account } from 'modules/committee/types'
+import { retryParams } from 'modules/common/utils'
 import { Collection, CollectionType } from 'modules/collection/types'
 import { Cheque, ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
@@ -520,7 +521,13 @@ export class BuilderAPI extends BaseAPI {
     this.authorization = authorization
   }
 
-  async request(method: AxiosRequestConfig['method'], path: string, params?: APIParam | null, config?: AxiosRequestConfig) {
+  async request(
+    method: AxiosRequestConfig['method'],
+    path: string,
+    params?: APIParam | null,
+    config?: AxiosRequestConfig,
+    retry?: RetryParams
+  ) {
     let authConfig = {}
     let headers = {}
     if (config) {
@@ -537,7 +544,7 @@ export class BuilderAPI extends BaseAPI {
     authConfig = { ...authConfig, headers }
 
     try {
-      const response: any = await super.request(method, path, params, authConfig)
+      const response: any = await super.request(method, path, params, authConfig, retry)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return response
     } catch (error) {
@@ -572,7 +579,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchProjects() {
-    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects')
+    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects', undefined, undefined, retryParams)
     return items.map(fromRemoteProject)
   }
 
@@ -688,7 +695,13 @@ export class BuilderAPI extends BaseAPI {
   async fetchItems(address?: string, params: { collectionId?: string; page?: number; limit?: number } = {}) {
     const { collectionId, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE } = params
     const endpoint = address ? `/${address}/items` : '/items'
-    const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, { page, limit, collectionId })
+    const remoteItems: PaginatedResource<RemoteItem> = await this.request(
+      'get',
+      endpoint,
+      { page, limit, collectionId },
+      undefined,
+      retryParams
+    )
     return { ...remoteItems, results: remoteItems.results.map(fromRemoteItem) }
   }
 
@@ -699,7 +712,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollectionItems(collectionId: string, options: FetchCollectionsParams = {}) {
     const { page, limit } = options
-    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, options)
+    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, options, undefined, retryParams)
     if (page && limit && remoteResponse.results) {
       // TODO: remove this check when we have pagination on standard collections
       return { ...remoteResponse, results: remoteResponse.results.map(fromRemoteItem) } as PaginatedResource<Item>
@@ -730,7 +743,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections(address?: string, params?: FetchCollectionsParams) {
     const url = address ? `/${address}/collections` : '/collections'
-    const remoteCollections = await this.request('get', url, toRemoteCollectionQueryParameters(params))
+    const remoteCollections = await this.request('get', url, toRemoteCollectionQueryParameters(params), undefined, retryParams)
 
     const { limit, page } = params || {}
     if (page && limit && remoteCollections.results) {
@@ -741,7 +754,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCollection(id: string) {
-    const remoteCollection: RemoteCollection = await this.request('get', `/collections/${id}`)
+    const remoteCollection: RemoteCollection = await this.request('get', `/collections/${id}`, undefined, undefined, retryParams)
     return fromRemoteCollection(remoteCollection)
   }
 
@@ -790,7 +803,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCurations(): Promise<CollectionCuration[]> {
-    const curations: RemoteCollectionCuration[] = await this.request('get', '/curations')
+    const curations: RemoteCollectionCuration[] = await this.request('get', '/curations', undefined, undefined, retryParams)
 
     return curations.map(fromRemoteCollectionCuration)
   }
@@ -829,7 +842,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCommittee(): Promise<Account[]> {
-    return this.request('get', '/committee') as Promise<Account[]>
+    return this.request('get', '/committee', undefined, undefined, retryParams) as Promise<Account[]>
   }
 
   async createCollectionForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
@@ -863,11 +876,11 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchThirdParties(manager?: string): Promise<ThirdParty[]> {
-    return this.request('get', '/thirdParties', { manager }) as Promise<ThirdParty[]>
+    return this.request('get', '/thirdParties', { manager }, undefined, retryParams) as Promise<ThirdParty[]>
   }
 
   async fetchThirdPartyAvailableSlots(thirdPartyId: string): Promise<number> {
-    return this.request('get', `/thirdParties/${thirdPartyId}/slots`) as Promise<number>
+    return this.request('get', `/thirdParties/${thirdPartyId}/slots`, undefined, undefined, retryParams) as Promise<number>
   }
 
   fetchApprovalData = async (collectionId: string): Promise<ItemApprovalData> => {

@@ -1,6 +1,7 @@
 import { Task } from 'redux-saga'
 import { Action } from 'redux'
 import { take, fork, ActionPattern, ForkEffect, cancel } from 'redux-saga/effects'
+import { RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { config } from 'config'
 
 export const takeLatestCancellable = <A extends Action>(
@@ -40,4 +41,9 @@ export const getPeerWithNoGBCollectorURL = () => {
       : ['peer.decentraland.zone', 'peer-ue-2.decentraland.zone', 'peer-ap1.decentraland.zone']
 
   return urls[Math.floor(Math.random() * urls.length)]
+}
+
+export const retryParams: RetryParams = {
+  attempts: 3,
+  delay: 1500
 }
