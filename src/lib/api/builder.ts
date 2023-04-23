@@ -524,10 +524,13 @@ export class BuilderAPI extends BaseAPI {
   async request(
     method: AxiosRequestConfig['method'],
     path: string,
-    params?: APIParam | null,
-    config?: AxiosRequestConfig,
-    retry?: RetryParams
+    extraParams?: {
+      params?: APIParam | null
+      config?: AxiosRequestConfig
+      retry?: RetryParams
+    }
   ) {
+    const { params, config, retry } = extraParams || {}
     let authConfig = {}
     let headers = {}
     if (config) {
@@ -557,7 +560,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
-    await this.request('put', `/projects/${projectId}/pool`, additionalInfo)
+    await this.request('put', `/projects/${projectId}/pool`, { params: additionalInfo })
   }
 
   async uploadMedia(
@@ -573,13 +576,16 @@ export class BuilderAPI extends BaseAPI {
     formData.append('south', shots.south)
     formData.append('west', shots.west)
 
-    await this.request('post', `/projects/${projectId}/media`, formData, {
-      onUploadProgress
+    await this.request('post', `/projects/${projectId}/media`, {
+      params: formData,
+      config: {
+        onUploadProgress
+      }
     })
   }
 
   async fetchProjects() {
-    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects', undefined, undefined, retryParams)
+    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects', { retry: retryParams })
     return items.map(fromRemoteProject)
   }
 
@@ -589,18 +595,18 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchPoolsPage(filters: PoolFilters & Pagination & Sort) {
-    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', filters)
+    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', { params: filters })
     return { items: items.map(fromRemotePool), total }
   }
 
   async fetchPoolGroups(activeOnly = false) {
-    const items: RemotePoolGroup[] = await this.request('get', '/pools/groups', { activeOnly })
+    const items: RemotePoolGroup[] = await this.request('get', '/pools/groups', { params: { activeOnly } })
     return items.map(fromPoolGroup)
   }
 
   async saveProject(project: Project, scene: Scene) {
     const manifest = createManifest(toRemoteProject(project), scene)
-    await this.request('put', `/projects/${project.id}/manifest`, { manifest })
+    await this.request('put', `/projects/${project.id}/manifest`, { params: { manifest } })
   }
 
   async saveProjectThumbnail(project: Project) {
@@ -608,7 +614,7 @@ export class BuilderAPI extends BaseAPI {
     const formData = new FormData()
     if (blob) {
       formData.append('thumbnail', blob)
-      await this.request('post', `/projects/${project.id}/media`, formData)
+      await this.request('post', `/projects/${project.id}/media`, { params: formData })
     }
   }
 
@@ -636,7 +642,7 @@ export class BuilderAPI extends BaseAPI {
 
   async saveAssetPack(assetPack: FullAssetPack) {
     const remotePack = toRemoteAssetPack(assetPack)
-    await this.request('put', `/assetPacks/${remotePack.id}`, { assetPack: remotePack })
+    await this.request('put', `/assetPacks/${remotePack.id}`, { params: { assetPack: remotePack } })
   }
 
   async saveAssetContents(
@@ -650,8 +656,11 @@ export class BuilderAPI extends BaseAPI {
       formData.append(path, contents[path])
     }
 
-    await this.request('post', `/assetPacks/${asset.assetPackId}/assets/${asset.id}/files`, formData, {
-      onUploadProgress
+    await this.request('post', `/assetPacks/${asset.assetPackId}/assets/${asset.id}/files`, {
+      params: formData,
+      config: {
+        onUploadProgress
+      }
     })
   }
 
@@ -669,14 +678,16 @@ export class BuilderAPI extends BaseAPI {
     const formData = new FormData()
     if (blob) {
       formData.append('thumbnail', blob)
-      await this.request('post', `/assetPacks/${assetPack.id}/thumbnail`, formData)
+      await this.request('post', `/assetPacks/${assetPack.id}/thumbnail`, { params: formData })
     }
   }
 
   async fetchAssetPacks(address?: string): Promise<FullAssetPack[]> {
-    const promisesOfRemoteAssetPacks: Array<Promise<RemoteAssetPack[]>> = [this.request('get', '/assetPacks', { owner: 'default' })]
+    const promisesOfRemoteAssetPacks: Array<Promise<RemoteAssetPack[]>> = [
+      this.request('get', '/assetPacks', { params: { owner: 'default' } })
+    ]
     if (address) {
-      promisesOfRemoteAssetPacks.push(this.request('get', '/assetPacks', { owner: address }))
+      promisesOfRemoteAssetPacks.push(this.request('get', '/assetPacks', { params: { owner: address } }))
     }
 
     const assetPacks: RemoteAssetPack[][] = await Promise.all(promisesOfRemoteAssetPacks)
@@ -695,13 +706,10 @@ export class BuilderAPI extends BaseAPI {
   async fetchItems(address?: string, params: { collectionId?: string; page?: number; limit?: number } = {}) {
     const { collectionId, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE } = params
     const endpoint = address ? `/${address}/items` : '/items'
-    const remoteItems: PaginatedResource<RemoteItem> = await this.request(
-      'get',
-      endpoint,
-      { page, limit, collectionId },
-      undefined,
-      retryParams
-    )
+    const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, {
+      params: { page, limit, collectionId },
+      retry: retryParams
+    })
     return { ...remoteItems, results: remoteItems.results.map(fromRemoteItem) }
   }
 
@@ -712,7 +720,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollectionItems(collectionId: string, options: FetchCollectionsParams = {}) {
     const { page, limit } = options
-    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, options, undefined, retryParams)
+    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, { params: options, retry: retryParams })
     if (page && limit && remoteResponse.results) {
       // TODO: remove this check when we have pagination on standard collections
       return { ...remoteResponse, results: remoteResponse.results.map(fromRemoteItem) } as PaginatedResource<Item>
@@ -721,7 +729,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveItem = async (item: Item, contents: Record<string, Blob>) => {
-    await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
+    await this.request('put', `/items/${item.id}`, { params: { item: toRemoteItem(item) } })
     // This has to be done after the PUT above, otherwise it will fail when creating an item, since it wont find it in the DB and return a 404
     await this.saveItemContents(item, contents)
   }
@@ -733,7 +741,7 @@ export class BuilderAPI extends BaseAPI {
         formData.append(item.contents[path], contents[path])
       }
 
-      return this.request('post', `/items/${item.id}/files`, formData)
+      return this.request('post', `/items/${item.id}/files`, { params: formData })
     }
   }
 
@@ -743,7 +751,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections(address?: string, params?: FetchCollectionsParams) {
     const url = address ? `/${address}/collections` : '/collections'
-    const remoteCollections = await this.request('get', url, toRemoteCollectionQueryParameters(params), undefined, retryParams)
+    const remoteCollections = await this.request('get', url, { params: toRemoteCollectionQueryParameters(params), retry: retryParams })
 
     const { limit, page } = params || {}
     if (page && limit && remoteCollections.results) {
@@ -754,7 +762,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCollection(id: string) {
-    const remoteCollection: RemoteCollection = await this.request('get', `/collections/${id}`, undefined, undefined, retryParams)
+    const remoteCollection: RemoteCollection = await this.request('get', `/collections/${id}`, { retry: retryParams })
     return fromRemoteCollection(remoteCollection)
   }
 
@@ -772,8 +780,10 @@ export class BuilderAPI extends BaseAPI {
   async publishTPCollection(collectionId: string, itemIds: string[], cheque: Cheque) {
     const { collection, items, itemCurations }: { collection: RemoteCollection; items: RemoteItem[]; itemCurations: RemoteItemCuration[] } =
       await this.request('post', `/collections/${collectionId}/publish`, {
-        itemIds,
-        cheque
+        params: {
+          itemIds,
+          cheque
+        }
       })
     return {
       collection: fromRemoteCollection(collection),
@@ -784,18 +794,20 @@ export class BuilderAPI extends BaseAPI {
 
   async saveCollection(collection: Collection, data: string) {
     const remoteCollection = await this.request('put', `/collections/${collection.id}`, {
-      collection: toRemoteCollection(collection),
-      data
+      params: {
+        collection: toRemoteCollection(collection),
+        data
+      }
     })
     return fromRemoteCollection(remoteCollection)
   }
 
   saveTOS = async (collection: Collection, email: string): Promise<void> => {
-    await this.request('post', `/collections/${collection.id}/tos`, { email, collection_address: collection.contractAddress })
+    await this.request('post', `/collections/${collection.id}/tos`, { params: { email, collection_address: collection.contractAddress } })
   }
 
   lockCollection = async (collection: Collection): Promise<string> => {
-    return this.request('post', `/collections/${collection.id}/lock`, { collection_address: collection.id }) as Promise<string>
+    return this.request('post', `/collections/${collection.id}/lock`, { params: { collection_address: collection.id } }) as Promise<string>
   }
 
   async deleteCollection(id: string) {
@@ -803,7 +815,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCurations(): Promise<CollectionCuration[]> {
-    const curations: RemoteCollectionCuration[] = await this.request('get', '/curations', undefined, undefined, retryParams)
+    const curations: RemoteCollectionCuration[] = await this.request('get', '/curations', { retry: retryParams })
 
     return curations.map(fromRemoteCollectionCuration)
   }
@@ -816,7 +828,9 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchItemCurations(collectionId: Collection['id'], itemIds?: Item['id'][]) {
     const curations: RemoteItemCuration[] = await this.request('get', `/collections/${collectionId}/itemCurations`, {
-      itemIds
+      params: {
+        itemIds
+      }
     })
     return curations.map(fromRemoteItemCuration)
   }
@@ -832,7 +846,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async pushCuration(collectionId: string, assignee?: string | null): Promise<void> {
-    return this.request('post', `/collections/${collectionId}/curation`, { curation: { assignee } }) as Promise<void>
+    return this.request('post', `/collections/${collectionId}/curation`, { params: { curation: { assignee } } }) as Promise<void>
   }
 
   async pushItemCuration(itemId: string): Promise<ItemCuration> {
@@ -842,11 +856,11 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCommittee(): Promise<Account[]> {
-    return this.request('get', '/committee', undefined, undefined, retryParams) as Promise<Account[]>
+    return this.request('get', '/committee', { retry: retryParams }) as Promise<Account[]>
   }
 
   async createCollectionForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
-    return this.request('post', `/collections/${collection.id}/post`, { forumPost }) as Promise<string>
+    return this.request('post', `/collections/${collection.id}/post`, { params: { forumPost } }) as Promise<string>
   }
 
   /* Getting the forum post replies in the front to utilize the forum session
@@ -868,7 +882,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async createCollectionNewAssigneeForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
-    return this.request('post', `/collections/${collection.id}/curation/post`, { forumPost }) as Promise<string>
+    return this.request('post', `/collections/${collection.id}/curation/post`, { params: { forumPost } }) as Promise<string>
   }
 
   async fetchRarities(): Promise<Rarity[]> {
@@ -876,11 +890,11 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchThirdParties(manager?: string): Promise<ThirdParty[]> {
-    return this.request('get', '/thirdParties', { manager }, undefined, retryParams) as Promise<ThirdParty[]>
+    return this.request('get', '/thirdParties', { params: { manager }, retry: retryParams }) as Promise<ThirdParty[]>
   }
 
   async fetchThirdPartyAvailableSlots(thirdPartyId: string): Promise<number> {
-    return this.request('get', `/thirdParties/${thirdPartyId}/slots`, undefined, undefined, retryParams) as Promise<number>
+    return this.request('get', `/thirdParties/${thirdPartyId}/slots`, { retry: retryParams }) as Promise<number>
   }
 
   fetchApprovalData = async (collectionId: string): Promise<ItemApprovalData> => {
@@ -888,15 +902,15 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async updateCurationStatus(collectionId: string, status: CurationStatus) {
-    return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
+    return this.request('patch', `/collections/${collectionId}/curation`, { params: { curation: { status } } })
   }
 
   async updateCuration(collectionId: string, curation: Partial<Pick<CollectionCuration, 'assignee' | 'status'>>) {
-    return this.request('patch', `/collections/${collectionId}/curation`, { curation })
+    return this.request('patch', `/collections/${collectionId}/curation`, { params: { curation } })
   }
 
   async updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {
-    const curation: RemoteItemCuration = await this.request('patch', `/items/${itemId}/curation`, { curation: { status } })
+    const curation: RemoteItemCuration = await this.request('patch', `/items/${itemId}/curation`, { params: { curation: { status } } })
     return fromRemoteItemCuration(curation)
   }
 
