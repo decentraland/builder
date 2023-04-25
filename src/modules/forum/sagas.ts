@@ -1,4 +1,4 @@
-import { takeEvery, call, put, select } from 'redux-saga/effects'
+import { takeEvery, call, put, delay, select } from 'redux-saga/effects'
 import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile/selectors'
 import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 import { BuilderAPI } from 'lib/api/builder'
@@ -30,7 +30,7 @@ import {
 } from './actions'
 import { ForumPostReply } from './types'
 
-// const RETRY_DELAY = 5000
+const RETRY_DELAY = 5000
 
 export function* forumSaga(builder: BuilderAPI) {
   yield takeEvery(CREATE_COLLECTION_FORUM_POST_REQUEST, handleCreateForumPostRequest)
@@ -121,7 +121,7 @@ export function* forumSaga(builder: BuilderAPI) {
  */
 function* handleCreateForumPostFailure(action: CreateCollectionForumPostFailureAction) {
   const { collection, forumPost } = action.payload
-  yield call([console, 'log'], 'fallo', collection, forumPost)
-  // yield delay(RETRY_DELAY)
-  // yield put(createCollectionForumPostRequest(collection, forumPost))
+
+  yield delay(RETRY_DELAY)
+  yield put(createCollectionForumPostRequest(collection, forumPost))
 }
