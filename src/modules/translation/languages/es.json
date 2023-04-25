@@ -502,6 +502,25 @@
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado",
     "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias."
   },
+  "worlds_list_page": {
+    "table": {
+      "name": "Nombre",
+      "url": "URL",
+      "published_scene": "Escena Publicada",
+      "publish_scene": "Publicar Escena",
+      "edit_scene": "Editar Escena",
+      "status": "Estado",
+      "status_active": "Activo",
+      "status_inactive": "Inactivo",
+      "actions": "Acciones",
+      "empty_url": "Para activar este mundo, necesitas publicar una escena"
+    },
+    "empty_list": {
+      "title": "Obtenga un mundo gratis cuando tenga un nombre",
+      "description": "Cada nombre le otorga acceso a un Mundo, <b>su espacio 3D personal en el metaverso</b> donde le puede dar forma como quiera e invitar hasta 100 personas a visitar su espacio.",
+      "cta": "Reclamar un nuevo Nombre"
+    }
+  },
   "error_page": {
     "or": "o intentar",
     "reload": "recargar la página",
@@ -625,6 +644,7 @@
     "land": "Tierras",
     "collections": "Colecciones",
     "names": "Nombres",
+    "worlds": "Mundos",
     "curation": "Curado"
   },
   "list": {
