@@ -1,6 +1,7 @@
 import { CatalystClient, ContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
-import { Entity, EntityType } from 'dcl-catalyst-commons'
+import { Entity } from '@dcl/schemas'
+import { EntityType } from 'dcl-catalyst-commons'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
 import { getData as getDeployments } from 'modules/deployment/selectors'
@@ -46,7 +47,11 @@ import {
   deployToWorldSuccess,
   deployToWorldFailure,
   DeployToWorldRequestAction,
-  DEPLOY_TO_WORLD_REQUEST
+  DEPLOY_TO_WORLD_REQUEST,
+  FetchWorldDeploymentsRequestAction,
+  FETCH_WORLD_DEPLOYMENTS_REQUEST,
+  fetchWorldDeploymentsSuccess,
+  fetchWorldDeploymentsFailure
 } from './actions'
 import { ProgressStage } from './types'
 import { makeContentFiles } from './contentUtils'
@@ -69,6 +74,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeLatest(DEPLOY_TO_WORLD_REQUEST, handleDeployToWorldRequest)
+  yield takeLatest(FETCH_WORLD_DEPLOYMENTS_REQUEST, handleFetchWorldDeploymentsRequest)
 
   function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
     const { projectId, additionalInfo } = action.payload
@@ -303,6 +309,49 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     yield put(fetchDeploymentsRequest(coords))
   }
 
+  function formatDeployments(entities: Entity[], getDeploymentId: (entity: Entity) => string): Deployment[] {
+    const deployments = new Map<string, Deployment>()
+    for (const entity of entities.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))) {
+      const id = getDeploymentId(entity)
+      if (id) {
+        const [x, y] = idToCoords(entity.pointers[0])
+        const content = entity.content
+        const definition = entity.metadata as SceneDefinition
+        let name = 'Untitled Scene'
+        if (definition && definition.display && definition.display.title && definition.display.title !== 'interactive-text') {
+          name = definition.display.title
+        }
+        const thumbnail: string | null = getThumbnail(definition, content)
+        const placement: Placement = {
+          point: { x, y },
+          rotation: (definition && definition.source && definition.source.rotation) || 'north'
+        }
+        const projectId = (definition && definition.source && definition.source.projectId) || null
+        const layout = (definition && definition.source && definition.source.layout) || null
+        const { base, parcels } = definition.scene
+        const isEmpty = !!(definition && definition.source && definition.source.isEmpty)
+        if (!isEmpty) {
+          deployments.set(id, {
+            id: entity.id,
+            timestamp: entity.timestamp,
+            projectId,
+            name,
+            thumbnail,
+            placement,
+            owner: definition.owner,
+            layout,
+            base,
+            parcels
+          })
+        } else {
+          deployments.delete(id)
+        }
+      }
+    }
+
+    return Array.from(deployments.values())
+  }
+
   function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
     const { coords } = action.payload
 
@@ -312,48 +361,29 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       if (coords.length > 0) {
         entities = yield call([catalystClient, 'fetchEntitiesByPointers'], coords)
       }
-
-      const deployments = new Map<string, Deployment>()
-      for (const entity of entities.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))) {
-        const id = entity.pointers[0]
-        if (id) {
-          const [x, y] = idToCoords(id)
-          const content = entity.content
-          const definition = entity.metadata as SceneDefinition
-          let name = 'Untitled Scene'
-          if (definition && definition.display && definition.display.title && definition.display.title !== 'interactive-text') {
-            name = definition.display.title
-          }
-          const thumbnail: string | null = getThumbnail(definition, content)
-          const placement: Placement = {
-            point: { x, y },
-            rotation: (definition && definition.source && definition.source.rotation) || 'north'
-          }
-          const projectId = (definition && definition.source && definition.source.projectId) || null
-          const layout = (definition && definition.source && definition.source.layout) || null
-          const { base, parcels } = definition.scene
-          const isEmpty = !!(definition && definition.source && definition.source.isEmpty)
-          if (!isEmpty) {
-            deployments.set(id, {
-              id: entity.id,
-              timestamp: entity.timestamp,
-              projectId,
-              name,
-              thumbnail,
-              placement,
-              owner: definition.owner,
-              layout,
-              base,
-              parcels
-            })
-          } else {
-            deployments.delete(id)
-          }
-        }
-      }
-      yield put(fetchDeploymentsSuccess(coords, Array.from(deployments.values())))
+      const getSceneDeploymentId = (entity: Entity) => entity.pointers[0]
+      yield put(fetchDeploymentsSuccess(coords, formatDeployments(entities, getSceneDeploymentId)))
     } catch (error) {
       yield put(fetchDeploymentsFailure(coords, error.message))
+    }
+  }
+
+  function* handleFetchWorldDeploymentsRequest(action: FetchWorldDeploymentsRequestAction) {
+    const { worlds } = action.payload
+    const contentClient = new ContentClient({ contentUrl: config.get('WORLDS_CONTENT_SERVER', '') })
+    try {
+      const entities: Entity[] = []
+      if (worlds.length > 0) {
+        for (const world of worlds) {
+          // At the moment, worlds content server only support one pointer per entity
+          const entity: Entity[] = yield call([contentClient, 'fetchEntitiesByPointers'], [world])
+          entities.push(entity[0])
+        }
+      }
+      const getWorldDeploymentId = (entity: Entity) => entity.id
+      yield put(fetchWorldDeploymentsSuccess(worlds, formatDeployments(entities, getWorldDeploymentId)))
+    } catch (error) {
+      yield put(fetchWorldDeploymentsFailure(worlds, error.message))
     }
   }
 }

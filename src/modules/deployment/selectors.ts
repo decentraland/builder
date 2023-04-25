@@ -9,12 +9,15 @@ import { ProgressStage, DeploymentStatus, Deployment } from './types'
 import { DeploymentState } from './reducer'
 import { getStatus, mergeStatuses } from './utils'
 import { idToCoords, coordsToId, emptyColorByRole } from 'modules/land/utils'
+import { ENS, WorldStatus } from 'modules/ens/types'
+import { getENSList } from 'modules/ens/selectors'
 
 export const getState = (state: RootState) => state.deployment
 export const getData = (state: RootState) => getState(state).data
 export const isLoading = (state: RootState) => getState(state).loading.length > 0
 export const getError = (state: RootState) => getState(state).error
 export const getProgress = (state: RootState) => getState(state).progress
+export const getLoading = (state: RootState) => getState(state).loading
 export const isUploadingRecording = (state: RootState) => getState(state).progress.stage === ProgressStage.UPLOAD_RECORDING
 export const isUploadingAssets = (state: RootState) => getState(state).progress.stage === ProgressStage.UPLOAD_SCENE_ASSETS
 export const isCreatingFiles = (state: RootState) => getState(state).progress.stage === ProgressStage.CREATE_FILES
@@ -113,5 +116,19 @@ export const getEmptyTiles = createSelector<RootState, Record<string, Deployment
     }
 
     return result
+  }
+)
+
+export const getDeploymentsByWorlds = createSelector<RootState, DeploymentState['data'], ENS[], Record<string, Deployment>>(
+  getData,
+  getENSList,
+  (deployments, ensList) => {
+    const out: Record<string, Deployment> = {}
+    const worlds = ensList.filter(ens => !!ens.worldStatus)
+
+    for (const world of worlds) {
+      out[world.subdomain] = deployments[(world.worldStatus as WorldStatus).scene.entityId]
+    }
+    return out
   }
 )

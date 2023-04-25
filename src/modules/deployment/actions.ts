@@ -80,3 +80,17 @@ export const fetchDeploymentsFailure = (coords: string[], error: string) => acti
 export type FetchDeploymentsRequestAction = ReturnType<typeof fetchDeploymentsRequest>
 export type FetchDeploymentsSuccessAction = ReturnType<typeof fetchDeploymentsSuccess>
 export type FetchDeploymentsFailureAction = ReturnType<typeof fetchDeploymentsFailure>
+
+// Fetch World deployments
+export const FETCH_WORLD_DEPLOYMENTS_REQUEST = '[Request] Fetch World deployments'
+export const FETCH_WORLD_DEPLOYMENTS_SUCCESS = '[Success] Fetch World deployments'
+export const FETCH_WORLD_DEPLOYMENTS_FAILURE = '[Failure] Fetch World deployments'
+
+export const fetchWorldDeploymentsRequest = (worlds: string[]) => action(FETCH_WORLD_DEPLOYMENTS_REQUEST, { worlds })
+export const fetchWorldDeploymentsSuccess = (worlds: string[], deployments: Deployment[]) =>
+  action(FETCH_WORLD_DEPLOYMENTS_SUCCESS, { worlds, deployments })
+export const fetchWorldDeploymentsFailure = (worlds: string[], error: string) => action(FETCH_WORLD_DEPLOYMENTS_FAILURE, { worlds, error })
+
+export type FetchWorldDeploymentsRequestAction = ReturnType<typeof fetchWorldDeploymentsRequest>
+export type FetchWorldDeploymentsSuccessAction = ReturnType<typeof fetchWorldDeploymentsSuccess>
+export type FetchWorldDeploymentsFailureAction = ReturnType<typeof fetchWorldDeploymentsFailure>
