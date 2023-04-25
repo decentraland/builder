@@ -1,16 +1,16 @@
 import { createSelector } from 'reselect'
 import { Tile } from 'react-tile-map/dist/lib/common'
 import { RootState } from 'modules/common/types'
-import { Project } from 'modules/project/types'
 import { getCurrentProject, getUserProjects } from 'modules/project/selectors'
+import { Project } from 'modules/project/types'
 import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { LandTile } from 'modules/land/types'
-import { ProgressStage, DeploymentStatus, Deployment } from './types'
+import { getENSList } from 'modules/ens/selectors'
+import { ENS, WorldStatus } from 'modules/ens/types'
+import { idToCoords, coordsToId, emptyColorByRole } from 'modules/land/utils'
 import { DeploymentState } from './reducer'
 import { getStatus, mergeStatuses } from './utils'
-import { idToCoords, coordsToId, emptyColorByRole } from 'modules/land/utils'
-import { ENS, WorldStatus } from 'modules/ens/types'
-import { getENSList } from 'modules/ens/selectors'
+import { ProgressStage, DeploymentStatus, Deployment } from './types'
 
 export const getState = (state: RootState) => state.deployment
 export const getData = (state: RootState) => getState(state).data
