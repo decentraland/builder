@@ -19,7 +19,7 @@ export type ENS = {
   //   contentType?: ENSContent {LAND = 'land', (...)}
   landId?: string
 
-  worldStatus?: string | null
+  worldStatus?: WorldStatus | null
 }
 
 export type ENSError = {
@@ -35,4 +35,12 @@ export enum ENSOrigin {
 
 export type Authorization = {
   allowance: string
+}
+
+export type WorldStatus = {
+  healthy: boolean
+  scene: {
+    urn: string
+    entityId: string
+  }
 }
