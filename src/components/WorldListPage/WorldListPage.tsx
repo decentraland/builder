@@ -22,7 +22,9 @@ const WorldListPage: React.FC<Props> = props => {
 
   const isWorldDeployed = (ens: ENS) => ens.worldStatus?.healthy === true
 
-  const handleClaimENS = () => props.onNavigate(locations.claimENS())
+  const handleClaimENS = useCallback(() => {
+    onNavigate(locations.claimENS())
+  }, [onNavigate])
 
   const handlePublishScene = useCallback(() => {
     onNavigate(locations.scenes())
@@ -113,7 +115,7 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
-  const renderItemContextMenu = () => {
+  const renderActionsMenu = () => {
     return (
       <div>
         <Dropdown
@@ -127,9 +129,7 @@ const WorldListPage: React.FC<Props> = props => {
           onClick={preventDefault()}
         >
           <Dropdown.Menu>
-            <Dropdown.Item text={t('collection_item.see_details')} />
-            <Dropdown.Item text={t('collection_context_menu.see_in_world')} />
-            <Dropdown.Item text={t('collection_item.preview')} />
+            <Dropdown.Item text={'TBD'} />
           </Dropdown.Menu>
         </Dropdown>
       </div>
@@ -192,7 +192,7 @@ const WorldListPage: React.FC<Props> = props => {
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldStatus(ens)}
                       </Table.Cell>
-                      <Table.Cell width={1}>{renderItemContextMenu()}</Table.Cell>
+                      <Table.Cell width={1}>{renderActionsMenu()}</Table.Cell>
                     </Table.Row>
                   )
                 })}
