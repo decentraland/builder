@@ -11,6 +11,10 @@
   flex-direction: column;
 }
 
+.WorldListPage .empty-names-container .empty-icon {
+  margin-bottom: 45px;
+}
+
 .WorldListPage .empty-names-container .empty-icon .icon {
   font-size: 86px;
   line-height: 86px;
@@ -84,7 +88,7 @@
 
 .WorldListPage .TableRow .publish-scene button {
   margin-right: 20px;
-  width: 145px;
+  width: 165px;
 }
 
 .WorldListPage .TableRow .world-status.active {
