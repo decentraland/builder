@@ -254,19 +254,7 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       delete newState.data[project.id]
       return newState
     }
-    case FETCH_DEPLOYMENTS_SUCCESS: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        data: {
-          ...state.data,
-          ...action.payload.deployments.reduce<DataByKey<Deployment>>((obj, deployment) => {
-            obj[deployment.id] = deployment
-            return obj
-          }, {})
-        }
-      }
-    }
+    case FETCH_DEPLOYMENTS_SUCCESS:
     case FETCH_WORLD_DEPLOYMENTS_SUCCESS: {
       return {
         ...state,
