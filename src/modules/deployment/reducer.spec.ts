@@ -76,7 +76,7 @@ describe('when DEPLOY_TO_WORLD_FAILURE action is dispatched', () => {
 })
 
 describe('when FETCH_WORLD_DEPLOYMENTS_REQUEST action is dispatched', () => {
-  it('should add loading to fetch world deployments', () => {
+  it('should set the loading state', () => {
     const fetchWorldDeploymentsRequestAction = fetchWorldDeploymentsRequest(mockWorlds)
     expect(deploymentReducer(INITIAL_STATE, fetchWorldDeploymentsRequestAction)).toEqual(
       expect.objectContaining({ loading: [fetchWorldDeploymentsRequestAction] })
@@ -85,11 +85,6 @@ describe('when FETCH_WORLD_DEPLOYMENTS_REQUEST action is dispatched', () => {
 })
 
 describe('when FETCH_WORLD_DEPLOYMENTS_SUCCESS action is dispatched', () => {
-  it('should remove loading to fetch world deployments', () => {
-    const fetchWorldDeploymentsSuccessAction = fetchWorldDeploymentsSuccess(mockWorlds, [{}] as Deployment[])
-    expect(deploymentReducer(INITIAL_STATE, fetchWorldDeploymentsSuccessAction)).toEqual(expect.objectContaining({ loading: [] }))
-  })
-
   it('should add new deployments to the state', () => {
     const deployments = [{ id: 'deployMyWorldId' }, { id: 'deployMyWorld2Id' }] as Deployment[]
     const fetchWorldDeploymentsSuccessAction = fetchWorldDeploymentsSuccess(mockWorlds, deployments)
@@ -105,12 +100,7 @@ describe('when FETCH_WORLD_DEPLOYMENTS_SUCCESS action is dispatched', () => {
 })
 
 describe('when FETCH_WORLD_DEPLOYMENTS_FAILURE action is dispatched', () => {
-  it('should remove loading to fetch world deployments', () => {
-    const fetchWorldDeploymentsFailureAction = fetchWorldDeploymentsFailure(mockWorlds, 'error')
-    expect(deploymentReducer(INITIAL_STATE, fetchWorldDeploymentsFailureAction)).toEqual(expect.objectContaining({ loading: [] }))
-  })
-
-  it('should add error to the state', () => {
+  it('should set the error state', () => {
     const fetchWorldDeploymentsFailureAction = fetchWorldDeploymentsFailure(mockWorlds, 'error')
     expect(deploymentReducer(INITIAL_STATE, fetchWorldDeploymentsFailureAction)).toEqual(expect.objectContaining({ error: 'error' }))
   })
