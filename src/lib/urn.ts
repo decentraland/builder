@@ -129,10 +129,10 @@ export function isThirdParty(urn?: string) {
 export function extractEntityId(urn: URN): string {
   const decodedURN = decodeURN(urn)
   if (decodedURN.type !== URNType.ENTITY) {
-    throw new Error('URN is not a third party URN')
+    throw new Error('URN is not an entity URN')
   }
 
-  return decodedURN.entityId ?? ''
+  return decodedURN.entityId
 }
 
 export function decodeURN(urn: URN): DecodedURN {
