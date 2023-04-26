@@ -151,6 +151,29 @@ describe('when decoding an URN', () => {
       })
     })
   })
+
+  describe('when a valid entity urn is used', () => {
+    describe('and the URN is an entity with a baseUrl', () => {
+      it.only('should decode and return each group', () => {
+        expect(decodeURN('urn:decentraland:entity:anEntityId?=&baseUrl=https://aContentServerUrl')).toEqual({
+          type: URNType.ENTITY,
+          suffix: 'anEntityId?=&baseUrl=https://aContentServerUrl',
+          entityId: 'anEntityId',
+          baseUrl: 'https://aContentServerUrl'
+        })
+      })
+    })
+
+    describe('and the URN is only an entity', () => {
+      it('should decode and return each group', () => {
+        expect(decodeURN('urn:decentraland:entity:anEntityId')).toEqual({
+          type: URNType.ENTITY,
+          suffix: 'anEntityId',
+          entityId: 'anEntityId'
+        })
+      })
+    })
+  })
 })
 
 describe('when extracting the third party item token id from an URN', () => {

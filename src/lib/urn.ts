@@ -39,7 +39,7 @@ const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
 const collectionsSuffixMatcher = '((?<=collections-v2:)(?<collectionAddress>0x[a-fA-F0-9]{40}))(:(?<tokenId>[^:|\\s]+))?'
 const thirdPartySuffixMatcher =
   '((?<=collections-thirdparty:)(?<thirdPartyName>[^:|\\s]+)(:(?<thirdPartyCollectionId>[^:|\\s]+))?(:(?<thirdPartyTokenId>[^:|\\s]+))?)'
-const entitySuffixMatcher = '((?<=entity:)(?<entityId>[^:|\\s]+)?\\?=\\&baseUrl=(?<baseUrl>https:[^=\\s]+)?)'
+const entitySuffixMatcher = '((?<=entity:)(?<entityId>[^\\?|\\s]+)(\\?=\\&baseUrl=(?<baseUrl>[^\\?|\\s]+))?)'
 
 export enum URNProtocol {
   MAINNET = 'mainnet',
@@ -68,7 +68,7 @@ type CollectionThirdPartyURN = {
   thirdPartyCollectionId?: string
   thirdPartyTokenId?: string
 }
-type EntityURN = { type: URNType.ENTITY; entityId?: string; baseUrl?: string }
+type EntityURN = { type: URNType.ENTITY; entityId: string; baseUrl?: string }
 export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
   (T extends URNType.BASE_AVATARS
     ? BaseAvatarURN
