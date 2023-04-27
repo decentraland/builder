@@ -107,7 +107,7 @@ const WorldListPage: React.FC<Props> = props => {
       </div>
     ) : (
       <div className="publish-scene">
-        -
+        <span>-</span>
         <Button primary size="small" onClick={handlePublishScene}>
           {t('worlds_list_page.table.publish_scene')}
         </Button>
@@ -126,7 +126,7 @@ const WorldListPage: React.FC<Props> = props => {
           }
           inline
           direction="left"
-          onClick={preventDefault()}
+          onClick={() => preventDefault()}
         >
           <Dropdown.Menu>
             <Dropdown.Item text={'TBD'} />
