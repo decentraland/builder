@@ -3,10 +3,10 @@ import { Entity } from 'dcl-catalyst-commons'
 import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { ContractName } from 'decentraland-transactions'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
-import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { Land } from 'modules/land/types'
 import { getContractAddressForAppChainId } from 'modules/contract/utils'
 import { ENS } from './types'
+import { DCLRegistrar__factory } from 'decentraland-transactions/typechain'
 
 export const PRICE_IN_WEI = '100000000000000000000' // 100 MANA
 export const PRICE = ethers.utils.formatEther(PRICE_IN_WEI)

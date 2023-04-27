@@ -5,16 +5,14 @@ import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effect
 import { ChainId, Network } from '@dcl/schemas'
 import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { DCLControllerV2, DCLControllerV2__factory, DCLRegistrar__factory } from 'decentraland-transactions/typechain'
 import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
-import { DCLController } from 'contracts'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
-import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
-import { DCLController__factory } from 'contracts/factories/DCLController__factory'
 import { ERC20__factory } from 'contracts/factories/ERC20__factory'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
@@ -342,8 +340,8 @@ export function* ensSaga(builderClient: BuilderClient) {
       const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
 
-      const controllerContract: DCLController = yield call(
-        [DCLController__factory, 'connect'],
+      const controllerContract: DCLControllerV2 = yield call(
+        [DCLControllerV2__factory, 'connect'],
         getContractAddressForAppChainId(ContractName.DCLControllerV2),
         signer
       )
@@ -375,7 +373,11 @@ export function* ensSaga(builderClient: BuilderClient) {
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
       const dclRegistrarContract = DCLRegistrar__factory.connect(getContractAddressForAppChainId(ContractName.DCLRegistrar), signer)
-      const transaction: ethers.ContractTransaction = yield call([dclRegistrarContract, 'reclaim'], ens.tokenId, wallet.address)
+      const transaction: ethers.ContractTransaction = yield call(
+        [dclRegistrarContract, 'reclaim(uint256,address)'],
+        ens.tokenId,
+        wallet.address
+      )
       yield put(reclaimNameSuccess(transaction.hash, wallet.chainId, { ...ens, ensOwnerAddress: wallet.address }))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
