@@ -121,7 +121,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact key={3} path={locations.landSelectENS()} component={LandSelectENSPage} />,
             <Route exact key={4} path={locations.landAssignENS()} component={LandAssignENSPage} />,
             <Route exact key={5} path={locations.ensSelectLand()} component={ENSSelectLandPage} />
-            <Route exact key={1} path={locations.worlds()} component={WorldListPage} />,
+            <Route exact path={locations.worlds()} component={WorldListPage} />,
             <Route exact key={1} path={locations.collections()} component={CollectionsPage} />,
             <Route exact key={2} path={locations.itemDetail()} component={ItemDetailPage} />,
             <Route exact key={3} path={locations.collectionDetail()} component={CollectionDetailPage} />,
