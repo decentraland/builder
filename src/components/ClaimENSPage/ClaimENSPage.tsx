@@ -4,11 +4,12 @@ import { Network } from '@dcl/schemas'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getTokenAmountToApprove } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { NetworkButton, NetworkCheck, TransactionLink } from 'decentraland-dapps/dist/containers'
+import { ContractName } from 'decentraland-transactions'
+import { getContractAddressForAppChainId } from 'modules/contract/utils'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
 import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, isEnoughClaimMana } from 'modules/ens/utils'
-import { CONTROLLER_V2_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
 import './ClaimENSPage.css'
 
@@ -153,7 +154,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       id="claim_ens_page.need_mana_message"
                       values={{
                         contract_link: (
-                          <TransactionLink address={CONTROLLER_V2_ADDRESS} txHash="">
+                          <TransactionLink address={getContractAddressForAppChainId(ContractName.DCLControllerV2)} txHash="">
                             DCLControllerV2
                           </TransactionLink>
                         )

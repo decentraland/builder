@@ -1,11 +1,12 @@
 import { ethers } from 'ethers'
 import { Entity } from 'dcl-catalyst-commons'
 import { getSigner } from 'decentraland-dapps/dist/lib/eth'
+import { ContractName } from 'decentraland-transactions'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
-import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { Land } from 'modules/land/types'
-import { REGISTRAR_ADDRESS } from 'modules/common/contracts'
+import { getContractAddressForAppChainId } from 'modules/contract/utils'
 import { ENS } from './types'
+import { DCLRegistrar__factory } from 'decentraland-transactions/typechain'
 
 export const PRICE_IN_WEI = '100000000000000000000' // 100 MANA
 export const PRICE = ethers.utils.formatEther(PRICE_IN_WEI)
@@ -40,7 +41,7 @@ export async function isNameAvailable(name: string): Promise<boolean> {
     return false
   }
   const signer: ethers.Signer = await getSigner()
-  const contractDCLRegistrar = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+  const contractDCLRegistrar = DCLRegistrar__factory.connect(getContractAddressForAppChainId(ContractName.DCLRegistrar), signer)
   return contractDCLRegistrar.available(name)
 }
 

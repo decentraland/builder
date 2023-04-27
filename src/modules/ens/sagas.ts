@@ -5,25 +5,24 @@ import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effect
 import { ChainId, Network } from '@dcl/schemas'
 import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { DCLControllerV2, DCLControllerV2__factory, DCLRegistrar__factory } from 'decentraland-transactions/typechain'
 import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
-import { DCLController } from 'contracts'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
-import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
-import { DCLController__factory } from 'contracts/factories/DCLController__factory'
 import { ERC20__factory } from 'contracts/factories/ERC20__factory'
-import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_V2_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
+import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
 import { getCenter, getSelection } from 'modules/land/utils'
-import { marketplace } from 'lib/api/marketplace'
+import { getContractAddressForAppChainId } from 'modules/contract/utils'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { Land, LandType } from 'modules/land/types'
 import { closeModal } from 'modules/modal/actions'
+import { marketplace } from 'lib/api/marketplace'
 import {
   FETCH_ENS_REQUEST,
   FetchENSRequestAction,
@@ -89,7 +88,7 @@ export function* ensSaga(builderClient: BuilderClient) {
       const address = wallet.address
       const nodehash = namehash(subdomain)
       const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
-      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+      const dclRegistrarContract = DCLRegistrar__factory.connect(getContractAddressForAppChainId(ContractName.DCLRegistrar), signer)
       const [resolverAddress, ownerAddress, nftTokenId]: [string, string, BigNumber] = yield all([
         call([ensContract, 'resolver'], nodehash),
         call([ensContract, 'owner'], nodehash),
@@ -242,7 +241,7 @@ export function* ensSaga(builderClient: BuilderClient) {
       const contract = getContract(ContractName.MANAToken, chainId)
       const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
       const mana = new ethers.Contract(contract.address, contract.abi, new ethers.providers.Web3Provider(provider))
-      const allowance: string = yield call(mana.allowance, from, CONTROLLER_V2_ADDRESS)
+      const allowance: string = yield call(mana.allowance, from, getContractAddressForAppChainId(ContractName.DCLControllerV2))
       const authorization: Authorization = { allowance }
 
       yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))
@@ -262,21 +261,27 @@ export function* ensSaga(builderClient: BuilderClient) {
       const landHashes: { id: string; hash: string }[] = []
 
       for (const { x, y, contentHash } of coordsWithHashesList) {
-        const landId = lands.find(land => {
+        const land = lands.find(land => {
           if (land.type === LandType.ESTATE) {
             return land.parcels!.some(parcel => parcel.x === x && parcel.y === y)
           }
-          return land.x === x && land.y === y
-        })!.id
 
-        landHashes.push({ hash: `0x${contentHash}`, id: landId })
+          return land.x === x && land.y === y
+        })
+
+        // Sometimes this value was undefined, causing a crash with the previous implementation.
+        // This a temp fix to at least render the names that can be rendered.
+        // TODO: Find a real solution if needed.
+        if (land) {
+          landHashes.push({ hash: `0x${contentHash}`, id: land.id })
+        }
       }
 
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
       const address = wallet.address
       const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
-      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+      const dclRegistrarContract = DCLRegistrar__factory.connect(getContractAddressForAppChainId(ContractName.DCLRegistrar), signer)
       const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
       const REQUESTS_BATCH_SIZE = 25
@@ -341,8 +346,12 @@ export function* ensSaga(builderClient: BuilderClient) {
       const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
 
-      const controllerContract: DCLController = yield call([DCLController__factory, 'connect'], CONTROLLER_V2_ADDRESS, signer)
-      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+      const controllerContract: DCLControllerV2 = yield call(
+        [DCLControllerV2__factory, 'connect'],
+        getContractAddressForAppChainId(ContractName.DCLControllerV2),
+        signer
+      )
+      const dclRegistrarContract = DCLRegistrar__factory.connect(getContractAddressForAppChainId(ContractName.DCLRegistrar), signer)
       const transaction: ethers.ContractTransaction = yield call([controllerContract, 'register'], name, from)
       yield put(claimNameTransactionSubmitted(name, wallet.address, wallet.chainId, transaction.hash))
       yield call(waitForTx, transaction.hash)
@@ -369,8 +378,12 @@ export function* ensSaga(builderClient: BuilderClient) {
     try {
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
-      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
-      const transaction: ethers.ContractTransaction = yield call([dclRegistrarContract, 'reclaim'], ens.tokenId, wallet.address)
+      const dclRegistrarContract = DCLRegistrar__factory.connect(getContractAddressForAppChainId(ContractName.DCLRegistrar), signer)
+      const transaction: ethers.ContractTransaction = yield call(
+        [dclRegistrarContract, 'reclaim(uint256,address)'],
+        ens.tokenId,
+        wallet.address
+      )
       yield put(reclaimNameSuccess(transaction.hash, wallet.chainId, { ...ens, ensOwnerAddress: wallet.address }))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
@@ -385,7 +398,11 @@ export function* ensSaga(builderClient: BuilderClient) {
       const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
       const manaContract: ReturnType<typeof ERC20__factory['connect']> = yield call([ERC20__factory, 'connect'], MANA_ADDRESS, signer)
-      const transaction: ethers.ContractTransaction = yield call([manaContract, 'approve'], CONTROLLER_V2_ADDRESS, allowance)
+      const transaction: ethers.ContractTransaction = yield call(
+        [manaContract, 'approve'],
+        getContractAddressForAppChainId(ContractName.DCLControllerV2),
+        allowance
+      )
 
       yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))
     } catch (error) {
