@@ -269,6 +269,9 @@ export function* ensSaga(builderClient: BuilderClient) {
           return land.x === x && land.y === y
         })
 
+        // Sometimes this value was undefined, causing a crash with the previous implementation.
+        // This a temp fix to at least render the names that can be rendered.
+        // TODO: Find a real solution if needed.
         if (land) {
           landHashes.push({ hash: `0x${contentHash}`, id: land.id })
         }
