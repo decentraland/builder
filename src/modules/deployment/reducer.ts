@@ -34,7 +34,13 @@ import {
   DeployToWorldRequestAction,
   DeployToWorldSuccessAction,
   DEPLOY_TO_WORLD_SUCCESS,
-  DEPLOY_TO_WORLD_FAILURE
+  DEPLOY_TO_WORLD_FAILURE,
+  FETCH_WORLD_DEPLOYMENTS_REQUEST,
+  FETCH_WORLD_DEPLOYMENTS_SUCCESS,
+  FETCH_WORLD_DEPLOYMENTS_FAILURE,
+  FetchWorldDeploymentsRequestAction,
+  FetchWorldDeploymentsSuccessAction,
+  FetchWorldDeploymentsFailureAction
 } from './actions'
 import { ProgressStage, Deployment } from './types'
 
@@ -76,6 +82,9 @@ export type DeploymentReducerAction =
   | DeployToWorldRequestAction
   | DeployToWorldSuccessAction
   | DeployToWorldFailureAction
+  | FetchWorldDeploymentsRequestAction
+  | FetchWorldDeploymentsSuccessAction
+  | FetchWorldDeploymentsFailureAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -150,7 +159,9 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         error: action.payload.error
       }
     }
-    case DEPLOY_TO_WORLD_REQUEST: {
+    case DEPLOY_TO_WORLD_REQUEST:
+    case FETCH_DEPLOYMENTS_REQUEST:
+    case FETCH_WORLD_DEPLOYMENTS_REQUEST: {
       return {
         ...state,
         error: null,
@@ -175,7 +186,9 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         }
       }
     }
-    case DEPLOY_TO_WORLD_FAILURE: {
+    case DEPLOY_TO_WORLD_FAILURE:
+    case FETCH_DEPLOYMENTS_FAILURE:
+    case FETCH_WORLD_DEPLOYMENTS_FAILURE: {
       return {
         ...state,
         error: action.payload.error,
@@ -241,14 +254,8 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       delete newState.data[project.id]
       return newState
     }
-    case FETCH_DEPLOYMENTS_REQUEST: {
-      return {
-        ...state,
-        error: null,
-        loading: loadingReducer(state.loading, action)
-      }
-    }
-    case FETCH_DEPLOYMENTS_SUCCESS: {
+    case FETCH_DEPLOYMENTS_SUCCESS:
+    case FETCH_WORLD_DEPLOYMENTS_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -258,14 +265,8 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
             obj[deployment.id] = deployment
             return obj
           }, {})
-        }
-      }
-    }
-    case FETCH_DEPLOYMENTS_FAILURE: {
-      return {
-        ...state,
-        error: action.payload.error,
-        loading: loadingReducer(state.loading, action)
+        },
+        error: null
       }
     }
     default:

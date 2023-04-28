@@ -44,5 +44,6 @@ export const locations = {
   itemEditor: (options?: ItemEditorParams) =>
     injectParams('/item-editor', { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing', newItem: 'newItem' }, options),
   ens: () => '/names',
+  worlds: () => '/worlds',
   curation: () => '/curation'
 }

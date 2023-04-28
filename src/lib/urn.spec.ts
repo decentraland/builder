@@ -1,7 +1,16 @@
 import { ChainId, Network, BodyShape } from '@dcl/schemas'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { buildThirdPartyURN, buildCatalystItemURN, decodeURN, URNType, URNProtocol, extractThirdPartyTokenId, isThirdParty } from './urn'
+import {
+  buildThirdPartyURN,
+  buildCatalystItemURN,
+  decodeURN,
+  URNType,
+  URNProtocol,
+  extractThirdPartyTokenId,
+  isThirdParty,
+  extractEntityId
+} from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 
@@ -151,6 +160,29 @@ describe('when decoding an URN', () => {
       })
     })
   })
+
+  describe('when a valid entity urn is used', () => {
+    describe('and the URN is an entity with a baseUrl', () => {
+      it.only('should decode and return each group', () => {
+        expect(decodeURN('urn:decentraland:entity:anEntityId?=&baseUrl=https://aContentServerUrl')).toEqual({
+          type: URNType.ENTITY,
+          suffix: 'anEntityId?=&baseUrl=https://aContentServerUrl',
+          entityId: 'anEntityId',
+          baseUrl: 'https://aContentServerUrl'
+        })
+      })
+    })
+
+    describe('and the URN is only an entity', () => {
+      it('should decode and return each group', () => {
+        expect(decodeURN('urn:decentraland:entity:anEntityId')).toEqual({
+          type: URNType.ENTITY,
+          suffix: 'anEntityId',
+          entityId: 'anEntityId'
+        })
+      })
+    })
+  })
 })
 
 describe('when extracting the third party item token id from an URN', () => {
@@ -218,6 +250,22 @@ describe('when checking if a collection is a third party', () => {
       it('should return true', () => {
         expect(isThirdParty(urn)).toBe(true)
       })
+    })
+  })
+})
+
+describe('when extracting the entity id from an URN', () => {
+  describe('when the URN is not an entity URN', () => {
+    it("should throw an error signaling that the URN doesn't belong to an entity", () => {
+      expect(() => extractEntityId('urn:decentraland:goerli:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')).toThrowError(
+        'URN is not an entity URN'
+      )
+    })
+  })
+
+  describe('when the URN is an entity URN', () => {
+    it('should extract the entity id', () => {
+      expect(extractEntityId('urn:decentraland:entity:anEntityId')).toBe('anEntityId')
     })
   })
 })

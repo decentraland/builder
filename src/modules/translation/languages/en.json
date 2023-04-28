@@ -499,6 +499,25 @@
     "alias_popup": "This name is being used by your profile but it can still be assigned",
     "not_profile_created": "You need to get into the world first to set an alias."
   },
+  "worlds_list_page": {
+    "table": {
+      "name": "Name",
+      "url": "URL",
+      "published_scene": "Published Scene",
+      "publish_scene": "Publish Scene",
+      "edit_scene": "Edit Scene",
+      "status": "Status",
+      "status_active": "Active",
+      "status_inactive": "Inactive",
+      "actions": "Actions",
+      "empty_url": "To activate this world you need to publish a scene"
+    },
+    "empty_list": {
+      "title": "Get a free World when you own a NAME",
+      "description": "Each NAME grants you access to one World, <b>your own 3D space in the metaverse</b> where you can shape the space however you like and invite up to 100 people to visit.",
+      "cta": "Claim Name"
+    }
+  },
   "error_page": {
     "or": "or try",
     "reload": "reloading the page",
@@ -624,6 +643,7 @@
     "land": "Land",
     "collections": "Collections",
     "names": "Names",
+    "worlds": "Worlds",
     "curation": "Curation"
   },
   "list": {

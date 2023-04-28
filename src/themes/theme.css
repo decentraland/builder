@@ -16,7 +16,7 @@
   --gray: rgba(115, 110, 125, 0.4);
   --dark-gray: rgba(22, 20, 26, 0.48);
 
-  --light-blue-raw: 0, 217, 255;
+  --light-blue-raw: rgb(0, 217, 255);
   --light-blue-steel: rgba(var(--bluish-steel-raw), 0.4);
 
   /**

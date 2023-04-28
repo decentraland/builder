@@ -503,6 +503,25 @@
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配",
     "not_profile_created": "您需要先进入世界才能设置别名。"
   },
+  "worlds_list_page": {
+    "table": {
+      "name": "姓名",
+      "url": "url",
+      "published_scene": "出版的场景",
+      "publish_scene": "发布场景",
+      "edit_scene": "编辑场景",
+      "status": "地位",
+      "status_active": "积极的",
+      "status_inactive": "不活动",
+      "actions": "动作",
+      "empty_url": "要激活这个世界，您需要发布一个场景"
+    },
+    "empty_list": {
+      "title": "当您拥有一个名字时获得一个自由的世界",
+      "description": "每个名称都授予您访问一个世界的权限，<b>您自己在 metaverse 中的 3D 空间</b>，您可以在其中随心所欲地塑造空间并邀请多达 100 人参观。",
+      "cta": "索赔名称"
+    }
+  },
   "estate_editor": {
     "title_edit": "编辑产业",
     "subtitle_edit": "单击以添加或删除包裹",
@@ -618,6 +637,7 @@
     "land": "土地",
     "collections": "馆藏",
     "names": "名字",
+    "worlds": "世界",
     "curation": "策展"
   },
   "list": {

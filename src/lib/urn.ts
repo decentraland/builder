@@ -3,18 +3,21 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
 /**
  * urn:decentraland:
- *   (?<protocol>
- *     mainnet|
- *     goerli|
- *     matic|
- *     mumbai|
- *     off-chain
- *   ):
+ *   (
+ *     (?<protocol>
+ *       mainnet|
+ *       goerli|
+ *       matic|
+ *       mumbai|
+ *       off-chain
+ *     ):
+ *   )?
  *   (
  *     (?<type>
  *       base-avatars|
  *       collections-v2|
- *       collections-thirdparty
+ *       collections-thirdparty|
+ *       entity
  *     ):
  *     (?<suffix>
  *       ((?<=base-avatars:)BaseMale|BaseFemale)|
@@ -24,17 +27,19 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
  *          (:(?<thirdPartyCollectionId>[^:|\\s]+))?
  *          (:(?<thirdPartyTokenId>[^:|\\s]+))?
  *       )
+ *       ((?<=entity:)(?<entityId>[^:|\\s]+)?\\?=\\&baseUrl=(?<baseUrl>https:[^=\\s]+)?)
  *     )
  *   )
  */
 const baseMatcher = 'urn:decentraland'
 const protocolMatcher = '(?<protocol>mainnet|goerli|matic|mumbai|off-chain)'
-const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty)'
+const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty|entity)'
 
 const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
 const collectionsSuffixMatcher = '((?<=collections-v2:)(?<collectionAddress>0x[a-fA-F0-9]{40}))(:(?<tokenId>[^:|\\s]+))?'
 const thirdPartySuffixMatcher =
   '((?<=collections-thirdparty:)(?<thirdPartyName>[^:|\\s]+)(:(?<thirdPartyCollectionId>[^:|\\s]+))?(:(?<thirdPartyTokenId>[^:|\\s]+))?)'
+const entitySuffixMatcher = '((?<=entity:)(?<entityId>[^\\?|\\s]+)(\\?=\\&baseUrl=(?<baseUrl>[^\\?|\\s]+))?)'
 
 export enum URNProtocol {
   MAINNET = 'mainnet',
@@ -46,7 +51,8 @@ export enum URNProtocol {
 export enum URNType {
   BASE_AVATARS = 'base-avatars',
   COLLECTIONS_V2 = 'collections-v2',
-  COLLECTIONS_THIRDPARTY = 'collections-thirdparty'
+  COLLECTIONS_THIRDPARTY = 'collections-thirdparty',
+  ENTITY = 'entity'
 }
 export type URN = string
 
@@ -62,6 +68,7 @@ type CollectionThirdPartyURN = {
   thirdPartyCollectionId?: string
   thirdPartyTokenId?: string
 }
+type EntityURN = { type: URNType.ENTITY; entityId: string; baseUrl?: string }
 export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
   (T extends URNType.BASE_AVATARS
     ? BaseAvatarURN
@@ -69,7 +76,9 @@ export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
     ? CollectionsV2URN
     : T extends URNType.COLLECTIONS_THIRDPARTY
     ? CollectionThirdPartyURN
-    : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN)
+    : T extends URNType.ENTITY
+    ? EntityURN
+    : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN | EntityURN)
 
 export function buildThirdPartyURN(thirdPartyName: string, collectionId: string, tokenId?: string) {
   let urn = `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-thirdparty:${thirdPartyName}:${collectionId}`
@@ -117,9 +126,18 @@ export function isThirdParty(urn?: string) {
   return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
 }
 
+export function extractEntityId(urn: URN): string {
+  const decodedURN = decodeURN(urn)
+  if (decodedURN.type !== URNType.ENTITY) {
+    throw new Error('URN is not an entity URN')
+  }
+
+  return decodedURN.entityId
+}
+
 export function decodeURN(urn: URN): DecodedURN {
   const urnRegExp = new RegExp(
-    `${baseMatcher}:${protocolMatcher}:${typeMatcher}:(?<suffix>${baseAvatarsSuffixMatcher}|${collectionsSuffixMatcher}|${thirdPartySuffixMatcher})`
+    `${baseMatcher}:(${protocolMatcher}:)?${typeMatcher}:(?<suffix>${baseAvatarsSuffixMatcher}|${collectionsSuffixMatcher}|${thirdPartySuffixMatcher}|${entitySuffixMatcher})`
   )
   const matches = urnRegExp.exec(urn)
 

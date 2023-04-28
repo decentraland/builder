@@ -90,7 +90,7 @@
 }
 
 .ready {
-  color: rgb(var(--light-blue-raw));
+  color: var(--light-blue-raw);
 }
 
 .notReady {

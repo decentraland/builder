@@ -19,11 +19,14 @@ import { ERC20__factory } from 'contracts/factories/ERC20__factory'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_V2_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
 import { getCenter, getSelection } from 'modules/land/utils'
-import { marketplace } from 'lib/api/marketplace'
+import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { Land, LandType } from 'modules/land/types'
 import { closeModal } from 'modules/modal/actions'
+import { marketplace } from 'lib/api/marketplace'
+import { content as WorldsAPIContent } from 'lib/api/worlds'
+import { extractEntityId } from 'lib/urn'
 import {
   FETCH_ENS_REQUEST,
   FetchENSRequestAction,
@@ -281,6 +284,7 @@ export function* ensSaga(builderClient: BuilderClient) {
 
       const REQUESTS_BATCH_SIZE = 25
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
+      const worldsDeployed: string[] = []
 
       const promisesOfENS: (() => Promise<ENS>)[] = domains.map(data => {
         return async () => {
@@ -288,6 +292,7 @@ export function* ensSaga(builderClient: BuilderClient) {
           const subdomain = `${data.toLowerCase()}.dcl.eth`
           let landId: string | undefined = undefined
           let content = ''
+          let worldStatus = null
 
           const nodehash = namehash(subdomain)
           const [resolverAddress, owner, tokenId]: [string, string, string] = await Promise.all([
@@ -311,6 +316,24 @@ export function* ensSaga(builderClient: BuilderClient) {
             }
           }
 
+          try {
+            const world = await WorldsAPIContent.fetchWorld(subdomain)
+            if (world) {
+              const { healthy, configurations } = world
+              const entityId = extractEntityId(configurations.scenesUrn[0])
+              worldStatus = {
+                healthy,
+                scene: {
+                  urn: configurations.scenesUrn[0],
+                  entityId
+                }
+              }
+              worldsDeployed.push(subdomain)
+            }
+          } catch (error) {
+            console.error('Failed to load ens world status', error)
+          }
+
           const ens: ENS = {
             name,
             tokenId,
@@ -319,7 +342,8 @@ export function* ensSaga(builderClient: BuilderClient) {
             subdomain,
             resolver,
             content,
-            landId
+            landId,
+            worldStatus
           }
 
           return ens
@@ -327,6 +351,11 @@ export function* ensSaga(builderClient: BuilderClient) {
       })
 
       const ensList: ENS[] = yield queue.addAll(promisesOfENS)
+
+      if (worldsDeployed.length > 0) {
+        yield put(fetchWorldDeploymentsRequest(worldsDeployed))
+      }
+
       yield put(fetchENSListSuccess(ensList))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
