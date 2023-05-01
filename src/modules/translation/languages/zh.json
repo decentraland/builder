@@ -412,7 +412,8 @@
       "world_placeholder": "选择一个名称",
       "back": "回到发布场景",
       "close": "关闭发布模式",
-      "claim_name": "要求新名称"
+      "claim_name": "要求新名称",
+      "empty_state_description": "您没有任何可用的世界。<br></br><b>当您拥有名称</b>。<br></br>每个名称都会让您访问一个世界时，获得一个免费的世界。您可以拥有想要的数量。"
     },
     "title": "正在发布场景",
     "subtitle": "选择要部署此场景的位置：",
