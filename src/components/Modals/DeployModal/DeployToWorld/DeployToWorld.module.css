@@ -36,6 +36,27 @@
   align-self: flex-end;
 }
 
+.modalBodyEmptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modalBodyEmptyState .description {
+  text-align: center;
+}
+
+.modalBodyEmptyStateActions {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.modalBodyEmptyStateActionButton {
+  height: auto;
+  width: 100%;
+  margin: 8px 32px !important;
+}
+
 .modalForm {
   display: flex;
   gap: 36px;
@@ -53,4 +74,14 @@
   background: transparent;
   border: 0;
   cursor: pointer;
+}
+
+.modalBodyEmptyState .emptyThumbnail {
+  height: 180px;
+  width: 180px;
+  margin-bottom: 10px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../../../images/empty_names.png');
 }
