@@ -419,7 +419,8 @@
       "world_placeholder": "Seleccione un nombre",
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
-      "claim_name": "Obtener un nuevo nombre"
+      "claim_name": "Obtener un nuevo nombre",
+      "empty_state_description": "No tiene ningún mundo disponible.<br></br><b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un Mundo. Puedes tener tantos como quieras."
     },
     "title": "Publicar Escena",
     "subtitle": "Elige donde querés subir esta escena:",

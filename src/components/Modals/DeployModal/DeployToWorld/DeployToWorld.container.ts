@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getENSByWallet } from 'modules/ens/selectors'
@@ -16,7 +17,8 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onPublish: (projectId: string, name: string) => {
     return dispatch(deployToWorldRequest(projectId, name))
-  }
+  },
+  onNavigate: (path: string) => dispatch(push(path))
 })
 
 export default connect(mapState, mapDispatch)(DeployToWorld)
