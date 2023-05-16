@@ -420,7 +420,13 @@
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
       "claim_name": "Obtener un nuevo nombre",
-      "empty_state_description": "No tiene ningún mundo disponible.<br></br><b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un Mundo. Puedes tener tantos como quieras."
+      "empty_state_description": "No tiene ningún mundo disponible.<br></br><b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un Mundo. Puedes tener tantos como quieras.",
+      "success": {
+        "title": "Tu escena ha sido publicada!",
+        "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",
+        "jump_in": "Ingresar",
+        "share_in_twitter": "Compartir en Twitter"
+      }
     },
     "title": "Publicar Escena",
     "subtitle": "Elige donde querés subir esta escena:",
