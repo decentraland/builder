@@ -36,23 +36,23 @@
   align-self: flex-end;
 }
 
-.modalBodyEmptyState {
+.modalBodyState {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.modalBodyEmptyState .description {
+.modalBodyState .description {
   text-align: center;
 }
 
-.modalBodyEmptyStateActions {
+.modalBodyStateActions {
   display: flex;
   flex-wrap: wrap;
 }
 
-.modalBodyEmptyStateActionButton {
-  height: auto;
+.modalBodyStateActionButton {
+  height: 46px !important;
   width: 100%;
   margin: 8px 32px !important;
 }
@@ -84,4 +84,32 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-image: url('../../../../images/empty_names.png');
+}
+
+.modalBodySuccessState .description {
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.modalBodySuccessState .shareUrlFieldInput input {
+  border: 2px solid var(--text) !important;
+  padding: 9px 15px !important;
+}
+
+.modalBodySuccessState .shareUrlFieldInput i {
+  opacity: 1 !important;
+}
+
+.modalBodySuccessState .shareUrlField p {
+  display: none !important;
+}
+
+.modalBodySuccessState .successImage {
+  height: 150px;
+  width: 150px;
+  margin-bottom: 10px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../../../images/save-world-success.svg');
 }
