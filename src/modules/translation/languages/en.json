@@ -423,7 +423,7 @@
         "subtitle": "You can now explore and play in your World:",
         "jump_in": "Jump In",
         "share_in_twitter": "Share in Twitter"
-      },
+      }
       "failure": {
         "title": "Something went wrong",
         "subtitle": "We couldn't publish your scene"
@@ -432,7 +432,6 @@
       "world_has_content": "The current world will be replaced",
       "confirm_world_replace_content": "I understand that this action is irreversible",
       "scene_information": "Scene Information"
-    },
     "title": "Publish Scene",
     "subtitle": "Select where you want to deploy this scene:",
     "learn_more": "Learn more",
