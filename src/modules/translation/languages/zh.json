@@ -419,7 +419,7 @@
         "subtitle": "您现在可以在您的世界中探索和玩耍：",
         "jump_in": "跳进去",
         "share_in_twitter": "分享Twitter"
-      },
+      }
       "failure": {
         "title": "出了些问题",
         "subtitle": "我们无法发布您的场景"
@@ -428,7 +428,6 @@
       "world_has_content": "当前的世界将被替换",
       "confirm_world_replace_content": "我知道这个动作是不可逆转的",
       "scene_information": "场景信息"
-    },
     "title": "正在发布场景",
     "subtitle": "选择要部署此场景的位置：",
     "learn_more": "了解更多",
