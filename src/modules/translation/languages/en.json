@@ -423,7 +423,8 @@
         "subtitle": "You can now explore and play in your World:",
         "jump_in": "Jump In",
         "share_in_twitter": "Share in Twitter"
-      }
+      },
+      "world_url_description": "The URL to jump in your World will be:<br></br><b>{world_url}</b>"
     },
     "title": "Publish Scene",
     "subtitle": "Select where you want to deploy this scene:",

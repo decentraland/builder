@@ -426,7 +426,8 @@
         "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",
         "jump_in": "Ingresar",
         "share_in_twitter": "Compartir en Twitter"
-      }
+      },
+      "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>"
     },
     "title": "Publicar Escena",
     "subtitle": "Elige donde querés subir esta escena:",

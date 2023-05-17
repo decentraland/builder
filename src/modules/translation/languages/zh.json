@@ -419,7 +419,8 @@
         "subtitle": "您现在可以在您的世界中探索和玩耍：",
         "jump_in": "跳进去",
         "share_in_twitter": "分享Twitter"
-      }
+      },
+      "world_url_description": "跳入您的世界的URL将是:<br></br><b>{world_url}</b>"
     },
     "title": "正在发布场景",
     "subtitle": "选择要部署此场景的位置：",
