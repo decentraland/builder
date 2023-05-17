@@ -70,6 +70,12 @@
   border: 1px solid lightgray;
 }
 
+.modalForm .worldSelect + p:last-child {
+  max-width: 450px;
+  color: var(--text);
+  font-size: 14px;
+}
+
 .navigationButton {
   background: transparent;
   border: 0;

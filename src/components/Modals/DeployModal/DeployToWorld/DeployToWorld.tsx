@@ -172,9 +172,19 @@ export default function DeployToWorld({
           <SelectField
             label={t('deployment_modal.deploy_world.world_label')}
             placeholder={t('deployment_modal.deploy_world.world_placeholder')}
+            className={styles.worldSelect}
             value={world}
             options={worldOptions}
             onChange={handleWorldSelected}
+            message={
+              world
+                ? t('deployment_modal.deploy_world.world_url_description', {
+                    br: () => <br />,
+                    b: (text: string) => <b>{text}</b>,
+                    world_url: getExplorerUrl
+                  })
+                : undefined
+            }
           />
         </div>
         <Button primary className={styles.actionButton} onClick={handlePublish} loading={isLoading} disabled={isLoading || !world}>
