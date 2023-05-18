@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react'
+import { buildManaAuthorization } from 'lib/mana'
+import { ethers } from 'ethers'
 import classNames from 'classnames'
 import { List, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { withAuthorizedAction } from 'decentraland-dapps/dist/containers'
+import { AuthorizedAction } from 'decentraland-dapps/dist/containers/withAuthorizedAction/AuthorizationModal'
+import { ContractName } from 'decentraland-transactions'
+import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
+import { NFTCategory, Network } from '@dcl/schemas'
+import { getPublishStatus, getError } from 'modules/collection/selectors'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
 import ConfirmCollectionNameStep from './ConfirmCollectionNameStep/ConfirmCollectionNameStep'
 import ConfirmCollectionItemsStep from './ConfirmCollectionItemsStep/ConfirmCollectionItemsStep'
@@ -12,7 +20,7 @@ import CongratulationsStep from './CongratulationsStep/CongratulationsStep'
 import './PublishWizardCollectionModal.css'
 
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
-  const { collection, items, onClose, onFetchRarities, onPublish } = props
+  const { collection, items, wallet, rarities, onClose, onFetchRarities, onPublish, onAuthorizedAction } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
   const [collectionName, setCollectionName] = useState<string>('')
   const [emailAddress, setEmailAddress] = useState<string>('')
@@ -59,7 +67,24 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   }
 
   const handleOnPublish = () => {
-    onPublish(collection, items, emailAddress)
+    const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
+    const manaContract = {
+      name: authorization.contractName,
+      address: authorization.contractAddress,
+      chainId: authorization.chainId,
+      network: Network.MATIC,
+      category: NFTCategory.ENS
+    }
+
+    onAuthorizedAction({
+      authorizedAddress: authorization.authorizedAddress,
+      authorizedContractLabel: ContractName.CollectionManager,
+      targetContract: manaContract,
+      targetContractName: ContractName.MANAToken,
+      requiredAllowanceInWei: ethers.BigNumber.from(rarities[0].prices!.MANA).mul(items.length).toString(),
+      authorizationType: AuthorizationType.ALLOWANCE,
+      onAuthorized: () => onPublish(collection, items, emailAddress)
+    })
   }
 
   const renderStepView = () => {
@@ -141,4 +166,4 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   )
 }
 
-export default PublishWizardCollectionModal
+export default withAuthorizedAction(PublishWizardCollectionModal, AuthorizedAction.PUBLISH_COLLECTION, getPublishStatus, getError)

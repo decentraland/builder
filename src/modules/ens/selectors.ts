@@ -18,6 +18,8 @@ import {
 import { Authorization, ENS } from './types'
 import { ENSState } from './reducer'
 import { getDomainFromName } from './utils'
+import { AuthorizationStepStatus } from 'decentraland-ui'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 export const getState = (state: RootState) => state.ens
 export const getData = (state: RootState) => getState(state).data
@@ -109,3 +111,28 @@ export const isPendingContentBySubdomain = createSelector<RootState, ENS[], Tran
       {} as Record<string, boolean>
     )
 )
+
+export const getClaimNameStatus = (state: RootState) => {
+  if (isLoadingType(getLoading(state), CLAIM_NAME_REQUEST)) {
+    return AuthorizationStepStatus.WAITING
+  }
+
+  if (isWaitingTxClaimName(state)) {
+    return AuthorizationStepStatus.PROCESSING
+  }
+
+  if (getError(state)) {
+    return AuthorizationStepStatus.ERROR
+  }
+
+  return AuthorizationStepStatus.PENDING
+}
+
+export const getErrorMessage = (state: RootState) => {
+  const error = getError(state)
+  if (error) {
+    return error.message
+  }
+
+  return null
+}

@@ -95,6 +95,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
     for (const file of acceptedFiles) {
       try {
+        debugger // eslint-disable-line
         const zip: JSZip = await JSZip.loadAsync(file)
         const contentRaw = zip.file(EXPORT_PATH.MANIFEST_FILE)
         if (!contentRaw) {
@@ -134,6 +135,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         this.analytics.track('Import project failure', {
           fileName: file.name
         })
+        console.log(e)
 
         projects.push({
           id: uuidv4(),

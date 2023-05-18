@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
 import { claimNameRequest } from 'modules/ens/actions'
 
 export type Props = ModalProps & {
@@ -10,7 +11,7 @@ export type Props = ModalProps & {
   }
   onClaim: typeof claimNameRequest
   onNavigate: (path: string) => void
-}
+} & WithAuthorizedActionProps
 
 export type State = {
   currentName: string

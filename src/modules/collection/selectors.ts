@@ -14,7 +14,12 @@ import { getThirdPartyForCollection, isUserManagerOfThirdParty } from 'modules/t
 import { ThirdParty } from 'modules/thirdParty/types'
 import { isEqual } from 'lib/address'
 import { isThirdParty } from 'lib/urn'
-import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
+import {
+  SET_COLLECTION_MINTERS_SUCCESS,
+  APPROVE_COLLECTION_SUCCESS,
+  REJECT_COLLECTION_SUCCESS,
+  PUBLISH_COLLECTION_REQUEST
+} from './actions'
 import { Collection, CollectionType } from './types'
 import { CollectionState } from './reducer'
 import {
@@ -25,6 +30,8 @@ import {
   sortCollectionByCreatedAt,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { AuthorizationStepStatus } from 'decentraland-ui'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -153,4 +160,16 @@ export const hasViewAndEditRights = (state: RootState, address: string, collecti
  */
 export const getRaritiesContract = (chainId: ChainId) => {
   return getContract(ContractName.RaritiesWithOracle, chainId)
+}
+
+export const getPublishStatus = (state: RootState) => {
+  if (isLoadingType(getLoading(state), PUBLISH_COLLECTION_REQUEST)) {
+    return AuthorizationStepStatus.WAITING
+  }
+
+  if (getError(state)) {
+    return AuthorizationStepStatus.ERROR
+  }
+
+  return AuthorizationStepStatus.PENDING
 }

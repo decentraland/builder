@@ -1,7 +1,13 @@
 import React from 'react'
 import { ModalNavigation, Field, Button, Form } from 'decentraland-ui'
+import { ContractName } from 'decentraland-transactions'
+import { NFTCategory, Network } from '@dcl/schemas'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { PRICE_IN_WEI } from 'modules/ens/utils'
+import { CONTROLLER_V2_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimNameFatFingerModal.types'
 import './ClaimNameFatFingerModal.css'
 
@@ -11,10 +17,26 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
   }
 
   handleClaim = () => {
-    const { onClaim } = this.props
+    const { onClaim, onAuthorizedAction } = this.props
     const { currentName } = this.state
 
-    onClaim(currentName)
+    const manaContract = {
+      name: ContractName.MANAToken,
+      address: MANA_ADDRESS,
+      chainId: getChainIdByNetwork(Network.ETHEREUM),
+      network: Network.ETHEREUM,
+      category: NFTCategory.ENS
+    }
+
+    onAuthorizedAction({
+      authorizedAddress: CONTROLLER_V2_ADDRESS,
+      authorizedContractLabel: 'DCLControllerV2',
+      targetContract: manaContract,
+      targetContractName: ContractName.MANAToken,
+      requiredAllowanceInWei: PRICE_IN_WEI,
+      authorizationType: AuthorizationType.ALLOWANCE,
+      onAuthorized: () => onClaim(currentName)
+    })
   }
 
   handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
