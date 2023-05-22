@@ -23,4 +23,15 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
 export default connect(
   mapState,
   mapDispatch
-)(withAuthorizedAction(ClaimNameFatFingerModal, AuthorizedAction.CLAIM_NAME, getClaimNameStatus, getErrorMessage))
+)(
+  withAuthorizedAction(
+    ClaimNameFatFingerModal,
+    AuthorizedAction.CLAIM_NAME,
+    {
+      title_action: 'claim_name_fat_finger_modal.authorization.title_action',
+      action: 'claim_name_fat_finger_modal.authorization.action'
+    },
+    getClaimNameStatus,
+    getErrorMessage
+  )
+)

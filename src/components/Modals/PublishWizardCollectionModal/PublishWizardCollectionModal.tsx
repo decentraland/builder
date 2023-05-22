@@ -20,7 +20,7 @@ import CongratulationsStep from './CongratulationsStep/CongratulationsStep'
 import './PublishWizardCollectionModal.css'
 
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
-  const { collection, items, wallet, rarities, onClose, onFetchRarities, onPublish, onAuthorizedAction } = props
+  const { collection, items, wallet, rarities, onClose, onFetchRarities, onPublish, onAuthorizedAction, onCloseAuthorization } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
   const [collectionName, setCollectionName] = useState<string>('')
   const [emailAddress, setEmailAddress] = useState<string>('')
@@ -35,8 +35,9 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   useEffect(() => {
     if (collection.forumLink) {
       setCurrentStep(PublishWizardCollectionSteps.COLLECTION_PUBLISHED)
+      onCloseAuthorization()
     }
-  }, [collection.forumLink])
+  }, [collection.forumLink, onCloseAuthorization])
 
   const handleOnNextStep = () => {
     setCurrentStep(step => step + 1)
@@ -166,4 +167,25 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   )
 }
 
-export default withAuthorizedAction(PublishWizardCollectionModal, AuthorizedAction.PUBLISH_COLLECTION, getPublishStatus, getError)
+export default withAuthorizedAction(
+  PublishWizardCollectionModal,
+  AuthorizedAction.PUBLISH_COLLECTION,
+  {
+    title_action: 'publish_wizard_collection_modal.authorization.title_action',
+    action: 'publish_wizard_collection_modal.authorization.action',
+    confirm_transaction: {
+      title: 'publish_wizard_collection_modal.authorization.confirm_transaction_title'
+    },
+    authorize_mana: {
+      description: 'publish_wizard_collection_modal.authorization.authorize_mana_description'
+    },
+    set_cap: {
+      description: 'publish_wizard_collection_modal.authorization.set_cap_description'
+    },
+    insufficient_amount_error: {
+      message: 'publish_wizard_collection_modal.authorization.insufficient_amount_error_message'
+    }
+  },
+  getPublishStatus,
+  getError
+)
