@@ -422,7 +422,8 @@
       },
       "world_url_description": "跳入您的世界的URL将是:<br></br><b>{world_url}</b>",
       "world_has_content": "当前的世界将被替换",
-      "confirm_world_replace_content": "我知道这个动作是不可逆转的"
+      "confirm_world_replace_content": "我知道这个动作是不可逆转的",
+      "scene_information": "场景信息"
     },
     "title": "正在发布场景",
     "subtitle": "选择要部署此场景的位置：",
