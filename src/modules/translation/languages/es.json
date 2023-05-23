@@ -427,7 +427,9 @@
         "jump_in": "Ingresar",
         "share_in_twitter": "Compartir en Twitter"
       },
-      "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>"
+      "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>",
+      "world_has_content": "El mundo actual será reemplazado",
+      "confirm_world_replace_content": "Entiendo que esta acción es irreversible"
     },
     "title": "Publicar Escena",
     "subtitle": "Elige donde querés subir esta escena:",
