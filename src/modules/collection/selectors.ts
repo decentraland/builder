@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { AuthorizationStepStatus } from 'decentraland-ui'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { getType } from 'decentraland-dapps/dist/modules/loading/utils'
@@ -12,6 +14,7 @@ import { getCurationsByCollectionId } from 'modules/curations/collectionCuration
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCollectionThirdParty, getData as getThirdParties } from 'modules/thirdParty/selectors'
 import { getThirdPartyForCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
+import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { isEqual } from 'lib/address'
 import { isThirdParty } from 'lib/urn'
@@ -31,9 +34,6 @@ import {
   sortCollectionByCreatedAt,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
-import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { AuthorizationStepStatus } from 'decentraland-ui'
-import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data

@@ -1489,8 +1489,8 @@
     },
     "authorization": {
       "title_action": "publicación",
-      "action": "colección de publicaciones",
-      "confirm_transaction_title": "Transacción completa para publicar su colección",
+      "action": "publicar colección",
+      "confirm_transaction_title": "Completar transacción para publicar su colección",
       "authorize_mana_description": "Tenga en cuenta que algunas billeteras requieren establecer un límite de gasto de maná personalizado.Ingrese un precio de tarifa de {price} o una cantidad ligeramente mayor para evitar el rechazo de la transacción debido a la volatilidad del precio.Puede cambiar el límite en cualquier momento.",
       "set_cap_description": "Ingrese un precio de tarifa de {price} o una cantidad ligeramente mayor para evitar el rechazo de la transacción debido a la volatilidad del precio.Puede cambiar el límite en cualquier momento.",
       "insufficient_amount_error_message": "Recuerde establecer un límite de gasto igual al precio de tarifa {price} o superior para evitar ser rechazado debido a la volatilidad del precio.Revoca su límite actual y vuelve a intentarlo."

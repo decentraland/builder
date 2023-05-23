@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { buildManaAuthorization } from 'lib/mana'
 import { ethers } from 'ethers'
 import classNames from 'classnames'
 import { List, ModalNavigation } from 'decentraland-ui'
@@ -10,6 +9,7 @@ import { AuthorizedAction } from 'decentraland-dapps/dist/containers/withAuthori
 import { ContractName } from 'decentraland-transactions'
 import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { NFTCategory, Network } from '@dcl/schemas'
+import { buildManaAuthorization } from 'lib/mana'
 import { getPublishStatus, getError } from 'modules/collection/selectors'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
 import ConfirmCollectionNameStep from './ConfirmCollectionNameStep/ConfirmCollectionNameStep'

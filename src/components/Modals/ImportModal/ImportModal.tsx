@@ -135,7 +135,6 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         this.analytics.track('Import project failure', {
           fileName: file.name
         })
-        console.log(e)
 
         projects.push({
           id: uuidv4(),

@@ -2,6 +2,8 @@ import { createSelector } from 'reselect'
 import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { AuthorizationStepStatus } from 'decentraland-ui'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { isEqual } from 'lib/address'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
@@ -18,8 +20,6 @@ import {
 import { Authorization, ENS } from './types'
 import { ENSState } from './reducer'
 import { getDomainFromName } from './utils'
-import { AuthorizationStepStatus } from 'decentraland-ui'
-import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 export const getState = (state: RootState) => state.ens
 export const getData = (state: RootState) => getState(state).data
