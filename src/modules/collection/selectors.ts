@@ -3,6 +3,7 @@ import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
+import { getType } from 'decentraland-dapps/dist/modules/loading/utils'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getItems, getStatusByItemId } from 'modules/item/selectors'
@@ -32,6 +33,7 @@ import {
 } from './utils'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { AuthorizationStepStatus } from 'decentraland-ui'
+import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -165,6 +167,14 @@ export const getRaritiesContract = (chainId: ChainId) => {
 export const getPublishStatus = (state: RootState) => {
   if (isLoadingType(getLoading(state), PUBLISH_COLLECTION_REQUEST)) {
     return AuthorizationStepStatus.WAITING
+  }
+
+  const pendingActionTypeTransactions = getPendingTransactions(state).filter(
+    transaction => getType({ type: PUBLISH_COLLECTION_REQUEST }) === getType({ type: transaction.actionType })
+  )
+
+  if (isLoadingType(getLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST) || pendingActionTypeTransactions.length) {
+    return AuthorizationStepStatus.PROCESSING
   }
 
   if (getError(state)) {
