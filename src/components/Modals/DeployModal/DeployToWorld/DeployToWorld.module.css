@@ -49,17 +49,31 @@
 .modalBodyStateActions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .modalBodyStateActionButton {
   height: 46px !important;
-  width: 100%;
+  width: 475px !important;
   margin: 8px 32px !important;
 }
 
 .modalForm {
   display: flex;
   gap: 36px;
+}
+
+.modalFormActions:has(.actionCheckbox):has(.actionButton) {
+  justify-content: space-between !important;
+}
+
+.actionCheckbox {
+  display: flex;
+  align-items: center;
+}
+
+.actionCheckbox div {
+  margin-right: 8px;
 }
 
 .thumbnail {
@@ -70,10 +84,27 @@
   border: 1px solid lightgray;
 }
 
-.modalForm .worldSelect + p:last-child {
-  max-width: 450px;
+.modalForm .worldDetails {
+  width: 450px;
+}
+
+.modalForm .worldDetailsDescription {
   color: var(--text);
   font-size: 14px;
+  margin-bottom: 18px;
+}
+
+.modalForm .worldHasContent {
+  display: flex;
+  align-items: center;
+  background-color: rgba(115, 110, 125, 0.16);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.modalForm .worldHasContent div {
+  margin-right: 13px;
 }
 
 .navigationButton {
@@ -100,13 +131,18 @@
 .modalBodySuccessState .shareUrlFieldInput input {
   border: 2px solid var(--text) !important;
   padding: 9px 15px !important;
+  font-size: 15px !important;
 }
 
 .modalBodySuccessState .shareUrlFieldInput i {
   opacity: 1 !important;
 }
 
-.modalBodySuccessState .shareUrlField p {
+.shareUrlField {
+  width: 432px;
+}
+
+.shareUrlField p {
   display: none !important;
 }
 

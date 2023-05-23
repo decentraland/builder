@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, Field, Icon as DCLIcon, SelectField } from 'decentraland-ui'
+import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
@@ -11,13 +11,13 @@ import styles from './DeployToWorld.module.css'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
-const WORLDS_CONTENT_SERVER = config.get('WORLDS_CONTENT_SERVER', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
 
 export default function DeployToWorld({
   name,
   project,
   ensList,
+  deployments,
   deploymentProgress,
   isLoading,
   onPublish,
@@ -27,6 +27,8 @@ export default function DeployToWorld({
 }: Props) {
   const [view, setView] = useState<string>('')
   const [world, setWorld] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [confirmWorldReplaceContent, setConfirmWorldReplaceContent] = useState<boolean>(false)
 
   useEffect(() => {
     if (ensList.length === 0) {
@@ -37,14 +39,16 @@ export default function DeployToWorld({
   }, [ensList])
 
   useEffect(() => {
-    if (view === DeployToWorldView.FORM && world && deploymentProgress.stage === 2 && deploymentProgress.value === 100) {
+    if (view === DeployToWorldView.FORM && world && loading && deploymentProgress.stage === 2 && deploymentProgress.value === 100) {
       setView(DeployToWorldView.SUCCESS)
+      setLoading(false)
     }
-  }, [view, world, deploymentProgress])
+  }, [view, world, loading, deploymentProgress])
 
   const handlePublish = useCallback(() => {
     if (world) {
       onPublish((project as Project).id, world)
+      setLoading(true)
     }
   }, [onPublish, project, world])
 
@@ -52,14 +56,18 @@ export default function DeployToWorld({
     onNavigate(locations.claimENS())
   }, [onNavigate])
 
-  const handleWorldSelected = useCallback((_, { value }) => {
-    if (value === CLAIM_NAME_OPTION) {
-      // TODO: Add claim name flow
-      return
-    }
+  const handleWorldSelected = useCallback(
+    (_, { value }) => {
+      if (value === CLAIM_NAME_OPTION) {
+        handleClaimName()
+        return
+      }
 
-    setWorld(value)
-  }, [])
+      setWorld(value)
+      setConfirmWorldReplaceContent(false)
+    },
+    [handleClaimName]
+  )
 
   const handleNavigateToExplorer = () => {
     window.open(getExplorerUrl, '_blank,noreferrer')
@@ -69,14 +77,26 @@ export default function DeployToWorld({
     console.log('Share in Twitter')
   }, [])
 
+  const handleConfirmWorldReplaceContent = useCallback((_, { checked }) => {
+    setConfirmWorldReplaceContent(checked)
+  }, [])
+
   const getExplorerUrl = useMemo(() => {
-    return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER}/${world}`
+    return `${EXPLORER_URL}/world/${world}`
   }, [world])
 
   const worldOptions = useMemo(() => {
     return [
       ...ensList.map(ens => ({ text: ens.name, value: ens.subdomain })),
-      { text: t('deployment_modal.deploy_world.claim_name'), value: CLAIM_NAME_OPTION }
+      {
+        text: (
+          <span>
+            <DCLIcon name="add" />
+            {t('deployment_modal.deploy_world.claim_name')}
+          </span>
+        ),
+        value: CLAIM_NAME_OPTION
+      }
     ]
   }, [ensList])
 
@@ -153,7 +173,8 @@ export default function DeployToWorld({
 
   const renderForm = () => {
     const thumbnailUrl: string = project?.thumbnail ?? ''
-
+    const isWorldSelected = world !== ''
+    const hasWorldContent = isWorldSelected && !!deployments[world]
     return (
       <>
         <div className={styles.modalHeader}>
@@ -169,27 +190,50 @@ export default function DeployToWorld({
               role="img"
             />
           ) : null}
-          <SelectField
-            label={t('deployment_modal.deploy_world.world_label')}
-            placeholder={t('deployment_modal.deploy_world.world_placeholder')}
-            className={styles.worldSelect}
-            value={world}
-            options={worldOptions}
-            onChange={handleWorldSelected}
-            message={
-              world
-                ? t('deployment_modal.deploy_world.world_url_description', {
+          <div className={styles.worldDetails}>
+            <SelectField
+              label={t('deployment_modal.deploy_world.world_label')}
+              placeholder={t('deployment_modal.deploy_world.world_placeholder')}
+              value={world}
+              options={worldOptions}
+              onChange={handleWorldSelected}
+            />
+            {isWorldSelected ? (
+              <>
+                <p className={styles.worldDetailsDescription}>
+                  {t('deployment_modal.deploy_world.world_url_description', {
                     br: () => <br />,
                     b: (text: string) => <b>{text}</b>,
                     world_url: getExplorerUrl
-                  })
-                : undefined
-            }
-          />
+                  })}
+                </p>
+                {hasWorldContent ? (
+                  <span className={styles.worldHasContent}>
+                    <Icon name="alert-warning" />
+                    {t('deployment_modal.deploy_world.world_has_content')}
+                  </span>
+                ) : null}
+              </>
+            ) : undefined}
+          </div>
         </div>
-        <Button primary className={styles.actionButton} onClick={handlePublish} loading={isLoading} disabled={isLoading || !world}>
-          {t('deployment_modal.deploy_world.action')}
-        </Button>
+        <Row className={styles.modalFormActions} align="right">
+          {hasWorldContent ? (
+            <div className={styles.actionCheckbox}>
+              <Checkbox checked={confirmWorldReplaceContent} onClick={handleConfirmWorldReplaceContent} disabled={isLoading || loading} />
+              {t('deployment_modal.deploy_world.confirm_world_replace_content')}
+            </div>
+          ) : null}
+          <Button
+            primary
+            className={styles.actionButton}
+            onClick={handlePublish}
+            loading={isLoading || loading}
+            disabled={isLoading || loading || !world || (hasWorldContent && !confirmWorldReplaceContent)}
+          >
+            {t('deployment_modal.deploy_world.action')}
+          </Button>
+        </Row>
       </>
     )
   }

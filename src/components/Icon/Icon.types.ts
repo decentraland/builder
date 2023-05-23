@@ -2,6 +2,8 @@ export type IconName =
   | 'add-active'
   | 'add'
   | 'alert'
+  | 'alert-pending'
+  | 'alert-warning'
   | 'arrow-down'
   | 'arrow-key-down'
   | 'arrow-key-down'
