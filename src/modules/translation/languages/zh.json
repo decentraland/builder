@@ -425,6 +425,10 @@
         "title": "出了些问题",
         "subtitle": "我们无法发布您的场景"
       },
+      "failure": {
+        "title": "出了些问题",
+        "subtitle": "我们无法发布您的场景"
+      },
       "world_url_description": "跳入您的世界的URL将是:<br></br><b>{world_url}</b>",
       "world_has_content": "当前的世界将被替换",
       "confirm_world_replace_content": "我知道这个动作是不可逆转的",
