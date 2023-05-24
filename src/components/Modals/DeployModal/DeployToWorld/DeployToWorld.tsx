@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
+import { isDevelopment } from 'lib/environment'
 import { locations } from 'routing/locations'
-import { Layout, Project } from 'modules/project/types'
+import { Deployment } from 'modules/deployment/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
@@ -13,6 +14,7 @@ import { DeployToWorldView, Props } from './DeployToWorld.types'
 import styles from './DeployToWorld.module.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
+const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
 
 export default function DeployToWorld({
@@ -21,9 +23,10 @@ export default function DeployToWorld({
   metrics,
   ensList,
   deployments,
-  deploymentProgress,
   isLoading,
+  error,
   onPublish,
+  onRecord,
   onNavigate,
   onClose,
   onBack
@@ -32,25 +35,36 @@ export default function DeployToWorld({
   const [world, setWorld] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [confirmWorldReplaceContent, setConfirmWorldReplaceContent] = useState<boolean>(false)
+  // Ref used to store current world deployment status and validate if the user is trying to deploy the same world
+  const currentDeployment = useRef<Deployment | undefined>()
 
   useEffect(() => {
     if (ensList.length === 0) {
       setView(DeployToWorldView.EMPTY)
     } else {
       setView(DeployToWorldView.FORM)
+      onRecord()
     }
-  }, [ensList])
+  }, [ensList, onRecord])
 
   useEffect(() => {
-    if (view === DeployToWorldView.FORM && world && loading && deploymentProgress.stage === 2 && deploymentProgress.value === 100) {
+    if (view === DeployToWorldView.FORM && loading && error) {
+      setView(DeployToWorldView.ERROR)
+      setLoading(false)
+    } else if (
+      view === DeployToWorldView.FORM &&
+      world &&
+      loading &&
+      (currentDeployment.current ? deployments[world].timestamp > currentDeployment.current.timestamp : !!deployments[world])
+    ) {
       setView(DeployToWorldView.SUCCESS)
       setLoading(false)
     }
-  }, [view, world, loading, deploymentProgress])
+  }, [view, world, loading, error, deployments])
 
   const handlePublish = useCallback(() => {
     if (world) {
-      onPublish((project as Project).id, world)
+      onPublish(project.id, world)
       setLoading(true)
     }
   }, [onPublish, project, world])
@@ -68,8 +82,9 @@ export default function DeployToWorld({
 
       setWorld(value)
       setConfirmWorldReplaceContent(false)
+      currentDeployment.current = deployments[value]
     },
-    [handleClaimName]
+    [deployments, handleClaimName]
   )
 
   const handleNavigateToExplorer = () => {
@@ -85,6 +100,9 @@ export default function DeployToWorld({
   }, [])
 
   const getExplorerUrl = useMemo(() => {
+    if (isDevelopment) {
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=goerli`
+    }
     return `${EXPLORER_URL}/world/${world}`
   }, [world])
 
@@ -174,8 +192,18 @@ export default function DeployToWorld({
     )
   }
 
+  const renderFailureState = () => {
+    return (
+      <div className={`${styles.modalBodyState} ${styles.modalBodyFailureState}`}>
+        <div className={styles.failureImage} aria-label={project?.description} role="img" />
+        <h1 className={styles.modalHeader}>{t('deployment_modal.deploy_world.failure.title')}</h1>
+        <span className={styles.description}>{t('deployment_modal.deploy_world.failure.subtitle')}</span>
+      </div>
+    )
+  }
+
   const renderMetrics = () => {
-    const { rows, cols } = project?.layout as Layout
+    const { rows, cols } = project.layout
     return (
       <div className={styles.metrics}>
         <strong>{t('deployment_modal.deploy_world.scene_information')}:</strong>
@@ -207,7 +235,7 @@ export default function DeployToWorld({
   }
 
   const renderThumbnail = () => {
-    const thumbnailUrl = project?.thumbnail as string
+    const thumbnailUrl = project.thumbnail
     return (
       <div className={styles.thumbnail} style={{ backgroundImage: `url(${thumbnailUrl})` }} aria-label={project?.description} role="img">
         <Popup
@@ -225,9 +253,8 @@ export default function DeployToWorld({
   }
 
   const renderForm = () => {
-    const thumbnailUrl: string = project?.thumbnail ?? ''
-    const isWorldSelected = world !== ''
-    const hasWorldContent = isWorldSelected && !!deployments[world]
+    const thumbnailUrl: string = project.thumbnail
+    const hasWorldContent = !!deployments[world]
     return (
       <>
         <div className={styles.modalHeader}>
@@ -244,7 +271,7 @@ export default function DeployToWorld({
               options={worldOptions}
               onChange={handleWorldSelected}
             />
-            {isWorldSelected ? (
+            {world ? (
               <>
                 <p className={styles.worldDetailsDescription}>
                   {t('deployment_modal.deploy_world.world_url_description', {
@@ -290,6 +317,8 @@ export default function DeployToWorld({
         return renderForm()
       case DeployToWorldView.SUCCESS:
         return renderSuccessState()
+      case DeployToWorldView.ERROR:
+        return renderFailureState()
       case DeployToWorldView.EMPTY:
         return renderEmptyState()
       default:

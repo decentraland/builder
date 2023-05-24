@@ -178,3 +178,13 @@
   background-repeat: no-repeat;
   background-image: url('../../../../images/save-world-success.svg');
 }
+
+.failureImage {
+  height: 150px;
+  width: 150px;
+  margin-bottom: 10px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../../../images/scene-error.svg');
+}
