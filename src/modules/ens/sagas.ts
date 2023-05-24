@@ -25,7 +25,7 @@ import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { Land, LandType } from 'modules/land/types'
 import { closeModal } from 'modules/modal/actions'
 import { marketplace } from 'lib/api/marketplace'
-import { content as WorldsAPIContent } from 'lib/api/worlds'
+import { WorldInfo, content as WorldsAPIContent } from 'lib/api/worlds'
 import { extractEntityId } from 'lib/urn'
 import {
   FETCH_ENS_REQUEST,
@@ -62,14 +62,20 @@ import {
   reclaimNameSuccess,
   reclaimNameFailure,
   RECLAIM_NAME_REQUEST,
-  claimNameTransactionSubmitted
+  claimNameTransactionSubmitted,
+  FETCH_ENS_WORLD_STATUS_REQUEST,
+  FetchENSWorldStatusRequestAction,
+  fetchENSWorldStatusSuccess,
+  fetchENSWorldStatusFailure
 } from './actions'
+import { getENSBySubdomain } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDomainFromName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
+  yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_ENS_AUTHORIZATION_REQUEST, handleFetchAuthorizationRequest)
@@ -176,6 +182,41 @@ export function* ensSaga(builderClient: BuilderClient) {
     } catch (error) {
       const ensError: ENSError = { message: error.message }
       yield put(fetchENSFailure(ensError))
+    }
+  }
+
+  function* handleFetchENSWorldStatusRequest(action: FetchENSWorldStatusRequestAction) {
+    const { subdomain } = action.payload
+    const ens: ENS = yield select(getENSBySubdomain, subdomain)
+    try {
+      let worldStatus = null
+
+      try {
+        const world: WorldInfo = yield call([WorldsAPIContent, 'fetchWorld'], subdomain)
+        if (world) {
+          const { healthy, configurations } = world
+          const entityId = extractEntityId(configurations.scenesUrn[0])
+          worldStatus = {
+            healthy,
+            scene: {
+              urn: configurations.scenesUrn[0],
+              entityId
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load ens world status', error)
+      }
+
+      yield put(
+        fetchENSWorldStatusSuccess({
+          ...ens,
+          worldStatus
+        })
+      )
+    } catch (error) {
+      const ensError: ENSError = { message: error.message }
+      yield put(fetchENSWorldStatusFailure(ensError))
     }
   }
 

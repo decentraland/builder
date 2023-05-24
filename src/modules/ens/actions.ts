@@ -17,6 +17,19 @@ export type FetchENSRequestAction = ReturnType<typeof fetchENSRequest>
 export type FetchENSSuccessAction = ReturnType<typeof fetchENSSuccess>
 export type FetchENSFailureAction = ReturnType<typeof fetchENSFailure>
 
+// Fetch World Status for a ENS
+export const FETCH_ENS_WORLD_STATUS_REQUEST = '[Request] Fetch ENS World Status'
+export const FETCH_ENS_WORLD_STATUS_SUCCESS = '[Success] Fetch ENS World Status'
+export const FETCH_ENS_WORLD_STATUS_FAILURE = '[Failure] Fetch ENS World Status'
+
+export const fetchENSWorldStatusRequest = (subdomain: string) => action(FETCH_ENS_WORLD_STATUS_REQUEST, { subdomain })
+export const fetchENSWorldStatusSuccess = (ens: ENS) => action(FETCH_ENS_WORLD_STATUS_SUCCESS, { ens })
+export const fetchENSWorldStatusFailure = (error: ENSError) => action(FETCH_ENS_WORLD_STATUS_FAILURE, { error })
+
+export type FetchENSWorldStatusRequestAction = ReturnType<typeof fetchENSWorldStatusRequest>
+export type FetchENSWorldStatusSuccessAction = ReturnType<typeof fetchENSWorldStatusSuccess>
+export type FetchENSWorldStatusFailureAction = ReturnType<typeof fetchENSWorldStatusFailure>
+
 // Set the ENS Resolver
 export const SET_ENS_RESOLVER_REQUEST = '[Request] Set ENS Resolver'
 export const SET_ENS_RESOLVER_SUCCESS = '[Success] Set ENS Resolver'
