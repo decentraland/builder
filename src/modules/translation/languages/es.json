@@ -431,6 +431,10 @@
         "title": "Algo salió mal",
         "subtitle": "No pudimos publicar tu escena"
       },
+      "failure": {
+        "title": "Algo salió mal",
+        "subtitle": "No pudimos publicar tu escena"
+      },
       "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>",
       "world_has_content": "El mundo actual será reemplazado",
       "confirm_world_replace_content": "Entiendo que esta acción es irreversible",
