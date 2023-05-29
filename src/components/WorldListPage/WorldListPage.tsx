@@ -87,14 +87,8 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const renderWorldStatus = (ens: ENS) => {
-    return isWorldDeployed(ens) ? (
-      <span className="world-status active">
-        <DCLIcon name="check" />
-        {t('worlds_list_page.table.status_active')}
-      </span>
-    ) : (
-      <span className="world-status inactive">{t('worlds_list_page.table.status_inactive')}</span>
-    )
+    const status = isWorldDeployed(ens) ? 'active' : 'inactive'
+    return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
   }
 
   const renderPublishSceneButton = (ens: ENS) => {
