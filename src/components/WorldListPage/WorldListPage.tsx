@@ -211,9 +211,7 @@ const WorldListPage: React.FC<Props> = props => {
   const renderEmptyPage = () => {
     return (
       <Empty className="empty-names-container" height={500}>
-        <div className="empty-icon">
-          <DCLIcon name="address card outline" />
-        </div>
+        <div className="empty-icon" />
         <div className="empty-title">{t('worlds_list_page.empty_list.title')}</div>
         <div className="empty-description">{t('worlds_list_page.empty_list.description', { b: (text: string) => <b>{text}</b> })}</div>
         <Button className="empty-action" primary onClick={handleClaimENS}>

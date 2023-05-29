@@ -17,7 +17,10 @@
 }
 
 .WorldListPage .empty-names-container .empty-icon {
-  margin-bottom: 45px;
+  margin-bottom: 30px;
+  background-image: url(../../images/empty-names.svg);
+  height: 86px;
+  width: 86px;
 }
 
 .WorldListPage .empty-names-container .empty-icon .icon {
