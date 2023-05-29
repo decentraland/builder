@@ -6,7 +6,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { getClaimNameStatus, getLoading, isWaitingTxClaimName, getErrorMessage } from 'modules/ens/selectors'
-import { claimNameRequest, CLAIM_NAME_REQUEST } from 'modules/ens/actions'
+import { claimNameRequest, CLAIM_NAME_REQUEST, claimNameClear } from 'modules/ens/actions'
 import { MapDispatch, MapDispatchProps } from './ClaimNameFatFingerModal.types'
 import ClaimNameFatFingerModal from './ClaimNameFatFingerModal'
 
@@ -17,7 +17,8 @@ const mapState = (state: RootState) => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
-  onClaim: name => dispatch(claimNameRequest(name))
+  onClaim: name => dispatch(claimNameRequest(name)),
+  onClaimNameClear: () => dispatch(claimNameClear())
 })
 
 export default connect(

@@ -17,7 +17,7 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
   }
 
   handleClaim = () => {
-    const { onClaim, onAuthorizedAction } = this.props
+    const { onClaim, onAuthorizedAction, onClaimNameClear } = this.props
     const { currentName } = this.state
 
     const manaContract = {
@@ -28,6 +28,7 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
       category: NFTCategory.ENS
     }
 
+    onClaimNameClear()
     onAuthorizedAction({
       authorizedAddress: CONTROLLER_V2_ADDRESS,
       authorizedContractLabel: 'DCLControllerV2',
