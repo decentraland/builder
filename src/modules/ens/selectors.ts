@@ -2,6 +2,8 @@ import { createSelector } from 'reselect'
 import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { AuthorizationStepStatus } from 'decentraland-ui'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { isEqual } from 'lib/address'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
@@ -109,3 +111,28 @@ export const isPendingContentBySubdomain = createSelector<RootState, ENS[], Tran
       {} as Record<string, boolean>
     )
 )
+
+export const getClaimNameStatus = (state: RootState) => {
+  if (isLoadingType(getLoading(state), CLAIM_NAME_REQUEST)) {
+    return AuthorizationStepStatus.WAITING
+  }
+
+  if (isWaitingTxClaimName(state)) {
+    return AuthorizationStepStatus.PROCESSING
+  }
+
+  if (getError(state)) {
+    return AuthorizationStepStatus.ERROR
+  }
+
+  return AuthorizationStepStatus.PENDING
+}
+
+export const getErrorMessage = (state: RootState) => {
+  const error = getError(state)
+  if (error) {
+    return error.message
+  }
+
+  return null
+}

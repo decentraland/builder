@@ -1,8 +1,11 @@
 import { createSelector } from 'reselect'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { AuthorizationStepStatus } from 'decentraland-ui'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
+import { getType } from 'decentraland-dapps/dist/modules/loading/utils'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getItems, getStatusByItemId } from 'modules/item/selectors'
@@ -11,10 +14,16 @@ import { getCurationsByCollectionId } from 'modules/curations/collectionCuration
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCollectionThirdParty, getData as getThirdParties } from 'modules/thirdParty/selectors'
 import { getThirdPartyForCollection, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
+import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { isEqual } from 'lib/address'
 import { isThirdParty } from 'lib/urn'
-import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
+import {
+  SET_COLLECTION_MINTERS_SUCCESS,
+  APPROVE_COLLECTION_SUCCESS,
+  REJECT_COLLECTION_SUCCESS,
+  PUBLISH_COLLECTION_REQUEST
+} from './actions'
 import { Collection, CollectionType } from './types'
 import { CollectionState } from './reducer'
 import {
@@ -153,4 +162,24 @@ export const hasViewAndEditRights = (state: RootState, address: string, collecti
  */
 export const getRaritiesContract = (chainId: ChainId) => {
   return getContract(ContractName.RaritiesWithOracle, chainId)
+}
+
+export const getPublishStatus = (state: RootState) => {
+  if (isLoadingType(getLoading(state), PUBLISH_COLLECTION_REQUEST)) {
+    return AuthorizationStepStatus.WAITING
+  }
+
+  const pendingActionTypeTransactions = getPendingTransactions(state).filter(
+    transaction => getType({ type: PUBLISH_COLLECTION_REQUEST }) === getType({ type: transaction.actionType })
+  )
+
+  if (isLoadingType(getLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST) || pendingActionTypeTransactions.length) {
+    return AuthorizationStepStatus.PROCESSING
+  }
+
+  if (getError(state)) {
+    return AuthorizationStepStatus.ERROR
+  }
+
+  return AuthorizationStepStatus.PENDING
 }

@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
 import { publishCollectionRequest, PublishCollectionRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, Rarity } from 'modules/item/types'
@@ -26,7 +27,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   onPublish: typeof publishCollectionRequest
   onFetchRarities: typeof fetchRaritiesRequest
-}
+} & WithAuthorizedActionProps
 
 export type PublishCollectionModalMetadata = {
   collectionId: string

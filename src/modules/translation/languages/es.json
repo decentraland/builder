@@ -841,7 +841,11 @@
     "description": "Has elegido {name}. Vuelva a ingresar su nombre para confirmar su selección.",
     "ok_message": "Felicidades el nombre {name} es tuyo.",
     "name_placeholder": "Tu nombre único",
-    "names_different": "Los nombres no son iguales"
+    "names_different": "Los nombres no son iguales",
+    "authorization": {
+      "title_action": "compra",
+      "action": "afirmar"
+    }
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",
@@ -1482,6 +1486,14 @@
       "description": "La colección sera publicada luego de ser aprobada por el Comité de Curadores. Dado que es un proceso manual, podria tomar unos días. Por favor sea paciente y consciente",
       "forum_post": "Post en el foro",
       "view_forum_post": "Ver el Post en el foro"
+    },
+    "authorization": {
+      "title_action": "publicación",
+      "action": "publicar colección",
+      "confirm_transaction_title": "Completar transacción para publicar su colección",
+      "authorize_mana_description": "Tenga en cuenta que algunas billeteras requieren establecer un límite de gasto de maná personalizado.Ingrese un precio de tarifa de {price} o una cantidad ligeramente mayor para evitar el rechazo de la transacción debido a la volatilidad del precio.Puede cambiar el límite en cualquier momento.",
+      "set_cap_description": "Ingrese un precio de tarifa de {price} o una cantidad ligeramente mayor para evitar el rechazo de la transacción debido a la volatilidad del precio.Puede cambiar el límite en cualquier momento.",
+      "insufficient_amount_error_message": "Recuerde establecer un límite de gasto igual al precio de tarifa {price} o superior para evitar ser rechazado debido a la volatilidad del precio.Revoca su límite actual y vuelve a intentarlo."
     }
   },
   "sell_collection_modal": {

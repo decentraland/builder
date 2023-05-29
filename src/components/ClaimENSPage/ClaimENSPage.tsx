@@ -1,14 +1,12 @@
 import * as React from 'react'
-import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio, Popup } from 'decentraland-ui'
+import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Popup } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getTokenAmountToApprove } from 'decentraland-dapps/dist/modules/authorization/utils'
-import { NetworkButton, NetworkCheck, TransactionLink } from 'decentraland-dapps/dist/containers'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
 import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, isEnoughClaimMana } from 'modules/ens/utils'
-import { CONTROLLER_V2_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
 import './ClaimENSPage.css'
 
@@ -20,21 +18,14 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     isError: false
   }
 
-  handleManaApprove = () => {
-    const { allowance, onAllowMana } = this.props
-    const manaToAllow = isEnoughClaimMana(allowance) ? 0 : getTokenAmountToApprove()
-    onAllowMana(manaToAllow.toString())
-  }
-
   handleClaim = async () => {
-    const { wallet, mana, allowance, onOpenModal } = this.props
+    const { wallet, mana, onOpenModal } = this.props
     const { name } = this.state
 
     const isValid = isNameValid(name)
     const isEnoughMana = wallet && isEnoughClaimMana(mana.toString())
-    const isManaAllowed = isEnoughClaimMana(allowance)
 
-    if (!isValid || !isEnoughMana || !isManaAllowed) return
+    if (!isValid || !isEnoughMana) return
 
     this.setState({ isLoading: true })
     try {
@@ -70,16 +61,13 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { wallet, mana, allowance, onBack } = this.props
-    const { name, isError, isAvailable } = this.state
-
-    const isLoading = this.props.isLoading || this.state.isLoading
+    const { wallet, mana, onBack } = this.props
+    const { name, isError, isAvailable, isLoading } = this.state
 
     const isValid = isNameValid(name)
     const isEnoughMana = wallet && isEnoughClaimMana(mana.toString())
-    const isManaAllowed = isEnoughClaimMana(allowance)
 
-    const isDisabled = !isValid || !isAvailable || !isEnoughMana || !isManaAllowed
+    const isDisabled = !isValid || !isAvailable || !isEnoughMana
 
     let message = ''
     if (isError) {
@@ -141,36 +129,14 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                     onAction={this.handleAction}
                   />
                 </Section>
-                <Section className="field">
-                  <Header sub={true}>{t('claim_ens_page.radio_label')}</Header>
-                  <NetworkCheck network={Network.ETHEREUM}>
-                    {isEnabled => (
-                      <Radio toggle disabled={isLoading || !isEnabled} checked={isManaAllowed} onChange={this.handleManaApprove} />
-                    )}
-                  </NetworkCheck>
-                  <p className="message">
-                    <T
-                      id="claim_ens_page.need_mana_message"
-                      values={{
-                        contract_link: (
-                          <TransactionLink address={CONTROLLER_V2_ADDRESS} txHash="">
-                            DCLControllerV2
-                          </TransactionLink>
-                        )
-                      }}
-                    />
-                  </p>
-                </Section>
                 <Row className="actions">
                   <Button className="cancel" onClick={onBack} type="button">
                     {t('global.cancel')}
                   </Button>
-                  {!isLoading && (!isEnoughMana || !isManaAllowed) ? (
+                  {!isLoading && !isEnoughMana ? (
                     <Popup
                       className="modal-tooltip"
-                      content={
-                        !isEnoughMana ? t('claim_ens_page.not_enough_mana') : !isManaAllowed ? t('claim_ens_page.mana_not_allowed') : ''
-                      }
+                      content={t('claim_ens_page.not_enough_mana')}
                       position="top center"
                       trigger={
                         <div className="popup-button">

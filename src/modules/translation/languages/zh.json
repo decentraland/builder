@@ -828,7 +828,11 @@
     "description": "您已选择{name}。重新输入您的姓名以确认您的选择。",
     "ok_message": "恭喜{name}是您的名字。",
     "name_placeholder": "您的唯一名字",
-    "names_different": "名称不符"
+    "names_different": "名称不符",
+    "authorization": {
+      "title_action": "购买",
+      "action": "宣称"
+    }
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",
@@ -1466,6 +1470,14 @@
       "description": "藏品经策展人委员会批准后出版。 由于这是一个手动过程，因此可能需要几天时间。 请耐心和细心。",
       "forum_post": "论坛帖子",
       "view_forum_post": "查看论坛帖子"
+    },
+    "authorization": {
+      "title_action": "出版物",
+      "action": "发布集合",
+      "confirm_transaction_title": "完整的交易以发布您的收藏",
+      "authorize_mana_description": "请记住，某些钱包需要设置自定义的法力支出限制。输入{price}的费用或稍高的金额，以避免由于价格波动而拒绝交易。您可以随时更改限制。",
+      "set_cap_description": "输入{price}的费用或稍高的金额，以避免由于价格波动而拒绝交易。您可以随时更改限制。",
+      "insufficient_amount_error_message": "请记住，将支出上限设置为等于费用{price}或更高的费用，以免由于价格波动而被拒绝。撤销您当前的上限，然后重试。"
     }
   },
   "sell_collection_modal": {

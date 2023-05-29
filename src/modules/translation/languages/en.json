@@ -863,7 +863,11 @@
     "description": "You have chosen {name}. Re-enter your name to confirm your selection.",
     "ok_message": "Congratulations the name {name} is yours.",
     "name_placeholder": "Your unique name",
-    "names_different": "Names do not match"
+    "names_different": "Names do not match",
+    "authorization": {
+      "title_action": "purchase",
+      "action": "claim"
+    }
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",
@@ -1472,6 +1476,14 @@
       "description": "The collection will be published after it is approved by the Curators Committee. Since this is a manual process, it can take a few days. Please be patient and mindful.",
       "forum_post": "Forum Post",
       "view_forum_post": "View Forum Post"
+    },
+    "authorization": {
+      "title_action": "publication",
+      "action": "publish collection",
+      "confirm_transaction_title": "Complete transaction to publish your collection",
+      "authorize_mana_description": "Keep in mind that some wallets require setting a custom MANA spending limit. Enter a fee price of {price} or a slightly higher amount to avoid transaction rejection due to price volatility. You can change the limit at any time.",
+      "set_cap_description": "Enter a fee price of {price} or a slightly higher amount to avoid transaction rejection due to price volatility. You can change the limit at any time.",
+      "insufficient_amount_error_message": "Remember to set a spending cap equal to the fee price {price} or higher to avoid being rejected due to price volatility. Revoke your current cap and try again."
     }
   },
   "publish_third_party_collection_modal": {

@@ -48,7 +48,9 @@ import {
   RECLAIM_NAME_REQUEST,
   ReclaimNameRequestAction,
   ReclaimNameSuccessAction,
-  ReclaimNameFailureAction
+  ReclaimNameFailureAction,
+  CLAIM_NAME_CLEAR,
+  ClaimNameClearAction
 } from './actions'
 import { ENS, ENSError, Authorization } from './types'
 
@@ -92,6 +94,7 @@ export type ENSReducerAction =
   | ReclaimNameRequestAction
   | ReclaimNameSuccessAction
   | ReclaimNameFailureAction
+  | ClaimNameClearAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
@@ -167,6 +170,12 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
             ...ens
           }
         }
+      }
+    }
+    case CLAIM_NAME_CLEAR: {
+      return {
+        ...state,
+        error: null
       }
     }
     case RECLAIM_NAME_FAILURE:
