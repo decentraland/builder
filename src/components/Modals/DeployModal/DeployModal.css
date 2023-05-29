@@ -124,7 +124,12 @@
 
 .DeployModal .thumbnail.deploy-to-land {
   background-image: url('../../../images/deploy-to-land.svg');
-  width: 70px;
+  width: 150px;
+}
+
+.DeployModal .thumbnail.deploy-to-world {
+  background-image: url('../../../images/deploy-to-world.svg');
+  width: 150px;
 }
 
 .DeployModal .ui.button {
@@ -203,7 +208,7 @@
 }
 
 .DeployModal .option-container .thumbnail {
-  height: 100px;
+  height: 150px;
 }
 
 .DeployModal .option-container .option-description {
