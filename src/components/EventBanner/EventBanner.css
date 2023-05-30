@@ -1,6 +1,6 @@
 .EventBanner {
   width: 100%;
-  padding: 0px 42px;
+  padding: 25px 50px;
   display: flex;
   background-image: url('./pride-banner.png');
   background-size: cover;
@@ -20,26 +20,28 @@
   flex-direction: column;
   color: white;
   align-self: center;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  line-height: 29px;
-  gap: 20px;
+  line-height: 26px;
+  gap: 10px;
+  justify-content: center;
 }
 
 .EventBanner .event-banner-logo-container {
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 600;
+  text-align: center;
+  line-height: unset;
 }
 
 .EventBanner .event-banner-logo {
-  width: 340px;
-  height: 125px;
+  width: 320px;
 }
 
 .EventBanner .title {
-  font-size: 40px;
+  font-size: 34px;
   line-height: 26px;
   font-weight: 800;
   margin-bottom: 10px;
@@ -49,14 +51,15 @@
 .EventBanner .subtitle {
   text-align: justify;
   overflow-wrap: break-word;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
 }
 
 .EventBanner .event-banner-hat {
-  width: 296px;
+  width: 256px;
 }
 
 .EventBanner .event-banner-pink {
-  color: black;
+  color: #fd98ff;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 }
