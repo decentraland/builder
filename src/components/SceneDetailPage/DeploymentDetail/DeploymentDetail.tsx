@@ -53,7 +53,6 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
   render() {
     const { project, deployment, landTiles, onNavigate, onOpenModal } = this.props
     const landId = deployment.base in landTiles ? landTiles[deployment.base].land.id : null
-    console.log(deployment)
     const status = getStatus(project, deployment)
     let statusText = t('scene_detail_page.published')
     if (status === DeploymentStatus.NEEDS_SYNC) {
