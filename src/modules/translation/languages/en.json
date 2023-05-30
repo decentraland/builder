@@ -1834,14 +1834,16 @@
   },
   "event_banner": {
     "small": {
-      "title": "Metaverse Fashion Week is almost here!",
-      "subtitle": "Add the tag {event_tag} to your runway-ready Wearables & Emotes to get them featured in a special MVFW tab of the Marketplace for the big event."
+      "title": "Prepare for Metaverse Pride '23",
+      "subtitle": "ADD THE TAG {event_tag} TO YOUR WEARABLES & EMOTES PROMOTING PRIDE, INCLUSIVITY, AND DIVERSITY IN THE METAVERSE TO GET THEM FEATURED IN A SPECIAL PRIDE TAB OF THE MARKETPLACE FOR THE BIG EVENT.",
+      "dates": "JUNE 27-29",
+      "information": "CELEBRATE DIVERSITY AND INCLUSIVITY IN THE METAVERSE"
     },
-    "event_tag": "MVFW23"
+    "event_tag": "PRIDE23"
   },
   "campaign": {
-    "name": "Metaverse Fashion Week",
-    "tag": "MVFW23"
+    "name": "Metaverse Pride",
+    "tag": "PRIDE23"
   },
   "logged_in_detail_page": {
     "error_title": "An error ocurred while loading the detail page"
