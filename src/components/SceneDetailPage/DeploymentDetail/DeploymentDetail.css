@@ -1,8 +1,12 @@
 .DeploymentDetail {
   border-bottom: 1px solid var(--divider);
-  height: 80px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  margin-bottom: 8px;
+  background-color: var(--dark-two);
+  border-radius: 10px;
 }
 
 .DeploymentDetail:first-child {
@@ -15,15 +19,24 @@
 }
 
 .DeploymentDetail .atlas-wrapper {
-  flex: none;
-  width: 96px;
-  height: 64px;
+  width: 95px;
+  height: 95px;
   background-color: var(--card);
   border-radius: 8px;
-  margin-right: 24px;
 }
 
 .DeploymentDetail .atlas-wrapper canvas {
+  border-radius: 8px;
+}
+
+.DeploymentDetail .thumbnail-wrapper {
+  background-color: var(--card);
+  border-radius: 8px;
+}
+
+.DeploymentDetail .thumbnail-wrapper .thumbnail {
+  width: 95px;
+  height: 95px;
   border-radius: 8px;
 }
 
