@@ -948,14 +948,16 @@
   "scene_detail_page": {
     "actions": {
       "duplicate": "Duplicate",
-      "download": "Download",
       "delete": "Delete",
       "unpublish": "Unpublish"
     },
+    "edit_scene": "Edit Scene",
+    "download_scene": "Download Scene",
     "published_in": "Published In",
-    "no_deployments": "This Scene has not been published in the Metaverse yet.",
-    "online": "Online",
+    "no_deployments": "This scene has not been published yet.",
+    "published": "Published",
     "unsynced": "Unsynced",
+    "draft": "Draft",
     "status": "Status",
     "location": "Location",
     "description": "Description"

@@ -943,14 +943,16 @@
   "scene_detail_page": {
     "actions": {
       "duplicate": "重复",
-      "download": "下载",
       "delete": "删除",
       "unpublish": "取消发布"
     },
+    "edit_scene": "编辑场景",
+    "download_scene": "下载场景",
     "published_in": "出版于",
-    "no_deployments": "此场景尚未在Metaverse中发布。",
-    "online": "线上",
+    "no_deployments": "这个场景尚未出版。",
+    "published": "出版",
     "unsynced": "未同步",
+    "draft": "草稿",
     "status": "状态",
     "location": "位置",
     "description": "描述"
