@@ -1838,14 +1838,16 @@
   },
   "event_banner": {
     "small": {
-      "title": "元界时装周来了",
-      "subtitle": "将标签 {event_tag} 添加到您的跑道就绪的可穿戴设备和表情，让它们出现在 Marketplace 的特殊 MVFW 选项卡中，用于大型活动。"
+      "title": "為 元界 自豪 '23 做準備",
+      "subtitle": "將標籤 {event_tag} 添加到您的收藏品和動畫中，以促進 元界 中的自豪感、包容性和多樣性，以出現在大型活動的特殊驕傲市場標籤中",
+      "dates": "月 27 日至 29 日",
+      "information": "慶祝 元界 的多樣性和包容性"
     },
-    "event_tag": "MVFW23"
+    "event_tag": "PRIDE23"
   },
   "campaign": {
-    "name": "元界时装周",
-    "tag": "MVFW23"
+    "name": "做準備 '23",
+    "tag": "PRIDE23"
   },
   "logged_in_detail_page": {
     "error_title": "加载详细信息页面时出错"

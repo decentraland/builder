@@ -1,11 +1,18 @@
 .EventBanner {
   width: 100%;
-  margin: 24px 0;
-  padding: 42px;
+  padding: 25px 50px;
   display: flex;
-  background-image: url('./mvfw-banner.png');
+  background-image: url('./pride-banner.png');
   background-size: cover;
   background-position: center;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 50px;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.EventBanner::before {
+  background-color: rgba(0, 0, 0, 0.25);
 }
 
 .EventBanner .event-banner-text {
@@ -13,24 +20,30 @@
   flex-direction: column;
   color: white;
   align-self: center;
-  margin-right: 24px;
-  flex-grow: 1;
-  max-width: 600px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 26px;
+  gap: 10px;
+  justify-content: center;
 }
 
-.EventBanner .event-banner-text::before {
-  content: '';
-  width: 118px;
-  height: 32px;
-  background: url('./mvmf-logo.png');
-  background-size: contain;
-  margin-bottom: 15px;
+.EventBanner .event-banner-logo-container {
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  line-height: unset;
+}
+
+.EventBanner .event-banner-logo {
+  width: 320px;
 }
 
 .EventBanner .title {
-  font-size: 24px;
+  font-size: 34px;
   line-height: 26px;
-  font-weight: bold;
+  font-weight: 800;
   margin-bottom: 10px;
   text-transform: uppercase;
 }
@@ -38,9 +51,16 @@
 .EventBanner .subtitle {
   text-align: justify;
   overflow-wrap: break-word;
-  font-size: 16px;
+  font-size: 19px;
+  font-weight: 700;
+  word-spacing: -1px;
 }
 
-.EventBanner .event-banner-cta {
-  align-self: center;
+.EventBanner .event-banner-hat {
+  width: 256px;
+}
+
+.EventBanner .event-banner-pink {
+  color: #fd98ff;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 }
