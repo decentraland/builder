@@ -53,6 +53,7 @@
   overflow-wrap: break-word;
   font-size: 19px;
   font-weight: 700;
+  word-spacing: -1px;
 }
 
 .EventBanner .event-banner-hat {
