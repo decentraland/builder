@@ -3,7 +3,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Template } from 'modules/template/types'
 import { getDimensions } from 'lib/layout'
 
-export const MAX_AREA = 32
+export const MAX_AREA = 400
 
 export function getTemplates(): Template[] {
   return [
