@@ -1,4 +1,4 @@
-name: Build and Test
+name: Test
 
 on: [push, pull_request]
 
@@ -13,11 +13,6 @@ jobs:
           node-version: 16.x
       - name: Install
         run: npm ci --legacy-peer-deps
-      - name: Build
-        run: npm run build
-        env:
-          NODE_PATH: 'src'
-          NODE_OPTIONS: '--max-old-space-size=8192'
       - name: Test
         run: npm run test:coverage
         if: ${{ always() }}
