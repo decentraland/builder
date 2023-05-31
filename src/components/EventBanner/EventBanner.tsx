@@ -17,7 +17,7 @@ const EventBanner = ({ isCampaignEnabled }: Props) => {
         <span className="title">{t('event_banner.small.title')}</span>
         <span className="subtitle">
           {t('event_banner.small.subtitle', {
-            event_tag: <b className="event-banner-pink">'{t('event_banner.event_tag')}'</b>,
+            event_tag: <b className="event-banner-pink">'#{t('event_banner.event_tag')}'</b>,
             enter: <br />
           })}
         </span>
