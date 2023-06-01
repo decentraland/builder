@@ -9,6 +9,7 @@ type Props = {
   role: 'button' | 'option'
   showPopup?: boolean
   className?: string
+  timeOut?: number
   onCopy?: () => void
 }
 
@@ -18,6 +19,10 @@ type State = {
 }
 
 export default class CopyToClipboard extends React.PureComponent<Props, State> {
+  static defaultProps = {
+    timeOut: 3000
+  }
+
   state: State = {
     hasCopiedText: false,
     fadeOut: false
@@ -27,7 +32,7 @@ export default class CopyToClipboard extends React.PureComponent<Props, State> {
     if (this.props.showPopup && prevState.hasCopiedText === false && this.state.hasCopiedText === true) {
       setTimeout(() => {
         this.setState(prevState => ({ ...prevState, fadeOut: true }))
-      }, 1000)
+      }, this.props.timeOut)
     }
   }
 

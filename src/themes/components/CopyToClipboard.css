@@ -1,5 +1,5 @@
 .copy-to-clipboard-popup {
-  z-index: 3001;
+  z-index: 3000 !important;
 }
 
 .copy-to-clipboard-popup.fade-out {
