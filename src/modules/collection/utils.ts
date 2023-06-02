@@ -67,7 +67,9 @@ export function getExplorerURL({
     URL += `&position=${position.x},${position.y}`
   }
 
-  return URL
+  const BACKPACK_V1_ROLLBACK = `&DISABLE_backpack_editor_v2=&ENABLE_backpack_editor_v1=` // TODO: Remove this once the backpack editor v2 is ready for the in world preview
+
+  return `${URL}${BACKPACK_V1_ROLLBACK}`
 }
 
 export function getCollectionBaseURI() {
