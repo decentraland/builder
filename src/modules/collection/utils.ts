@@ -67,7 +67,7 @@ export function getExplorerURL({
     URL += `&position=${position.x},${position.y}`
   }
 
-  return URL
+  return `${URL}&DISABLE_backpack_editor_v2=&ENABLE_backpack_editor_v1=`
 }
 
 export function getCollectionBaseURI() {
