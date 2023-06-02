@@ -2,11 +2,11 @@
   border-bottom: 1px solid var(--divider);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 24px;
   margin-bottom: 8px;
   background-color: var(--dark-two);
   border-radius: 10px;
+  gap: 105px;
 }
 
 .DeploymentDetail:first-child {
@@ -76,4 +76,15 @@
 .DeploymentDetail .ui.dropdown {
   position: absolute;
   right: 0px;
+}
+
+.DeploymentDetail .world-url .Stats .value {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+}
+
+.DeploymentDetail .world-url .Stats .value .icon.link {
+  margin-left: 12px;
+  color: var(--text);
 }
