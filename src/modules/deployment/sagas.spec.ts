@@ -92,7 +92,10 @@ describe('when handling fetch worlds deployments request', () => {
                 display: { title: 'MySceneName', navmapThumbnail: 'scene-thumbnail.png' },
                 scene: { base: '0,0', parcels: ['0,0', '0,1', '1,0', '1,1'] },
                 source: { projectId: 'aProjectId', layout: { rows: 2, cols: 2 } },
-                owner: ''
+                owner: '',
+                worldConfiguration: {
+                  name: worlds[0]
+                }
               }
             }
           ]
@@ -110,7 +113,8 @@ describe('when handling fetch worlds deployments request', () => {
             owner: '',
             layout: { rows: 2, cols: 2 },
             base: '0,0',
-            parcels: ['0,0', '0,1', '1,0', '1,1']
+            parcels: ['0,0', '0,1', '1,0', '1,1'],
+            world: worlds[0]
           }
         ] as unknown as Deployment[])
       )
