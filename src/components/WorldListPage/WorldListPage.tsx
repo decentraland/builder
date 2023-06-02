@@ -85,7 +85,7 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const renderWorldUrl = (ens: ENS) => {
-    const url = getExplorerUrl(ens.name)
+    const url = getExplorerUrl(ens.subdomain)
     return isWorldDeployed(ens) ? (
       <div className="world-url">
         <span>{url}</span>
