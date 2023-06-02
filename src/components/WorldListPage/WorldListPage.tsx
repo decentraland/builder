@@ -5,7 +5,6 @@ import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { ENS } from 'modules/ens/types'
 import { locations } from 'routing/locations'
-import { preventDefault } from 'lib/preventDefault'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -126,27 +125,6 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
-  const renderActionsMenu = () => {
-    return (
-      <div>
-        <Dropdown
-          trigger={
-            <Button basic>
-              <DCLIcon name="ellipsis horizontal" />
-            </Button>
-          }
-          inline
-          direction="left"
-          onClick={() => preventDefault()}
-        >
-          <Dropdown.Menu>
-            <Dropdown.Item text={'TBD'} />
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-    )
-  }
-
   const renderEnsList = () => {
     const total = ensList.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
@@ -190,7 +168,6 @@ const WorldListPage: React.FC<Props> = props => {
                   <Table.HeaderCell width="1" textAlign="center">
                     {t('worlds_list_page.table.status')}
                   </Table.HeaderCell>
-                  <Table.HeaderCell width="1"></Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -203,7 +180,6 @@ const WorldListPage: React.FC<Props> = props => {
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldStatus(ens)}
                       </Table.Cell>
-                      <Table.Cell width={1}>{renderActionsMenu()}</Table.Cell>
                     </Table.Row>
                   )
                 })}
