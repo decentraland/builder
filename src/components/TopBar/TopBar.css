@@ -21,6 +21,11 @@
 
 .TopBar .right-column .row {
   justify-content: flex-end;
+  align-items: center;
+}
+
+.TopBar .right-column .DeploymentStatus {
+  margin-right: 14px;
 }
 
 .TopBar .middle-column .editor-actions {

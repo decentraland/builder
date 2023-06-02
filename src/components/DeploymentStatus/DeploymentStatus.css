@@ -1,6 +1,6 @@
 .DeploymentStatus {
   display: block;
-  height: 22px;
+  height: 22px !important;
   padding: 2px 8px !important;
   border-radius: 34px !important;
   color: var(--shadows);
