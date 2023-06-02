@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react'
 import { Props } from './SceneDetailPage.types'
-import { Page, Center, Loader, Section, Row, Column, Header, Button, Dropdown, Icon, Empty, Badge } from 'decentraland-ui'
+import { Page, Center, Loader, Section, Row, Column, Header, Button, Dropdown, Icon, Empty } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { Deployment, DeploymentStatus } from 'modules/deployment/types'
-import { getStatus } from 'modules/deployment/utils'
+import { Deployment } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
 import Back from 'components/Back'
 import NotFound from 'components/NotFound'
+import DeploymentStatus from 'components/DeploymentStatus'
 import DeploymentDetail from './DeploymentDetail'
 import './SceneDetailPage.css'
 
@@ -33,37 +33,13 @@ const SceneDetailPage: React.FC<Props> = props => {
   }, [onOpenModal])
 
   const getSceneStatus = () => {
-    const { project, deployments, isLoading, isLoadingDeployments } = props
+    const { project, isLoading, isLoadingDeployments } = props
 
-    if (isLoading || isLoadingDeployments) {
+    if (isLoading || isLoadingDeployments || !project) {
       return null
     }
 
-    if (deployments.length === 0) {
-      return (
-        <Badge className="status-badge" color="#FFBC5B">
-          {t('scene_detail_page.draft')}
-        </Badge>
-      )
-    }
-
-    let statusText = t('scene_detail_page.published')
-    let badgeColor = '#34CE76'
-    for (const deployment of deployments) {
-      if (deployment.projectId === (project as Project).id) {
-        if (DeploymentStatus.NEEDS_SYNC === getStatus(project, deployment)) {
-          statusText = t('scene_detail_page.unsynced')
-          badgeColor = '#FFBC5B'
-          break
-        }
-      }
-    }
-
-    return (
-      <Badge className="status-badge" color={badgeColor}>
-        {statusText}
-      </Badge>
-    )
+    return <DeploymentStatus projectId={project.id} className="deployment-status" />
   }
 
   const renderPage = (project: Project, deployments: Deployment[]) => {
