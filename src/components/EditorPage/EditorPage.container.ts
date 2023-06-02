@@ -13,7 +13,7 @@ import EditorPage from './EditorPage'
 
 const mapState = (state: RootState): MapStateProps => {
   let claimedName = undefined
-  const isFromClaimName = (getLocation(state).state as ClaimNameLocationStateProps).fromParam === FromParam.CLAIM_NAME
+  const isFromClaimName = (getLocation(state).state as ClaimNameLocationStateProps)?.fromParam === FromParam.CLAIM_NAME
   if (isFromClaimName) {
     claimedName = (getLocation(state).state as ClaimNameLocationStateProps).claimedName
   }
