@@ -9,6 +9,8 @@ import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
 import LocalStorageToast from 'components/LocalStorageToast'
+import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
+import { DeployToWorldModalMetadata } from 'components/Modals/DeployModal/DeployToWorld/DeployToWorld.types'
 import Tools from './Tools'
 import Metrics from './Metrics'
 import ItemDragLayer from './ItemDragLayer'
@@ -47,6 +49,17 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     this.props.onCloseEditor()
     document.body.classList.remove('lock-scroll')
     document.body.removeEventListener('mousewheel', this.handleMouseWheel)
+  }
+
+  componentDidUpdate(): void {
+    const { currentProject, claimedName, isFromClaimName, isLoading, isPreviewing, onOpenModal } = this.props
+    if (!(isLoading || isPreviewing) && currentProject && isFromClaimName && claimedName) {
+      onOpenModal('DeployModal', {
+        view: DeployModalView.DEPLOY_TO_WORLD,
+        projectId: currentProject.id,
+        claimedName
+      } as DeployToWorldModalMetadata)
+    }
   }
 
   handleMouseWheel = (e: Event) => {

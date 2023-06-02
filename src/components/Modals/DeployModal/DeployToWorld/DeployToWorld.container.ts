@@ -27,7 +27,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
     return dispatch(deployToWorldRequest(projectId, name))
   },
   onRecord: () => dispatch(recordMediaRequest()),
-  onNavigate: (path: string) => dispatch(push(path))
+  onNavigate: (path, locationState) => dispatch(push(path, locationState))
 })
 
 export default connect(mapState, mapDispatch)(DeployToWorld)

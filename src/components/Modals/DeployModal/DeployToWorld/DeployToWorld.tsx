@@ -7,6 +7,7 @@ import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { locations } from 'routing/locations'
 import { Deployment } from 'modules/deployment/types'
+import { FromParam } from 'modules/location/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
@@ -26,6 +27,7 @@ export default function DeployToWorld({
   deployments,
   isLoading,
   error,
+  claimedName,
   onPublish,
   onRecord,
   onNavigate,
@@ -33,7 +35,7 @@ export default function DeployToWorld({
   onBack
 }: Props) {
   const [view, setView] = useState<string>('')
-  const [world, setWorld] = useState<string>('')
+  const [world, setWorld] = useState<string>(claimedName ?? '')
   const [loading, setLoading] = useState<boolean>(false)
   const [confirmWorldReplaceContent, setConfirmWorldReplaceContent] = useState<boolean>(false)
   // Ref used to store current world deployment status and validate if the user is trying to deploy the same world
@@ -78,8 +80,8 @@ export default function DeployToWorld({
   }, [view, project.id, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
-    onNavigate(locations.claimENS())
-  }, [onNavigate])
+    onNavigate(locations.claimENS(), { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
+  }, [project, onNavigate])
 
   const handleWorldSelected = useCallback(
     (_, { value }) => {
@@ -261,7 +263,6 @@ export default function DeployToWorld({
   }
 
   const renderForm = () => {
-    const thumbnailUrl: string = project.thumbnail
     const hasWorldContent = !!deployments[world]
     return (
       <>
@@ -270,7 +271,7 @@ export default function DeployToWorld({
           <span>{t('deployment_modal.deploy_world.description')}</span>
         </div>
         <div className={styles.modalForm}>
-          {thumbnailUrl ? renderThumbnail() : null}
+          {project?.thumbnail ? renderThumbnail() : null}
           <div className={styles.worldDetails}>
             <SelectField
               label={t('deployment_modal.deploy_world.world_label')}

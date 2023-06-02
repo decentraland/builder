@@ -2,7 +2,7 @@ import { all, takeLatest, put, select, take, race } from 'redux-saga/effects'
 import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
-import { CLAIM_NAME_SUCCESS, SetENSContentSuccessAction, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
+import { CLAIM_NAME_SUCCESS, SetENSContentSuccessAction, SET_ENS_CONTENT_SUCCESS, ClaimNameSuccessAction } from 'modules/ens/actions'
 import {
   FetchCollectionsSuccessAction,
   FetchCollectionsFailureAction,
@@ -10,8 +10,8 @@ import {
   FETCH_COLLECTIONS_SUCCESS
 } from 'modules/collection/actions'
 import { getCollectionsByContractAddress } from 'modules/collection/selectors'
-import { RedirectTo, RedirectToTypes } from './types'
 import { redirectToFailure, redirectToRequest, RedirectToRequestAction, redirectToSuccess, REDIRECT_TO_REQUEST } from './actions'
+import { DeployToWorldLocationStateProps, FromParam, RedirectTo, RedirectToTypes } from './types'
 
 export function* locationSaga() {
   yield all([
@@ -37,8 +37,22 @@ function* handleSetENSContentSuccess(action: SetENSContentSuccessAction) {
   }
 }
 
-function* goToActivity() {
-  yield put(replace(locations.activity()))
+function* goToActivity(action: ClaimNameSuccessAction | null = null) {
+  const location: ReturnType<typeof getLocation> = yield select(getLocation)
+  if (
+    location.pathname === locations.claimENS() &&
+    (location.state as DeployToWorldLocationStateProps)?.fromParam === FromParam.DEPLOY_TO_WORLD &&
+    action
+  ) {
+    yield put(
+      replace(locations.sceneEditor((location.state as DeployToWorldLocationStateProps).projectId), {
+        fromParam: FromParam.CLAIM_NAME,
+        claimedName: action.payload.ens.subdomain
+      })
+    )
+  } else {
+    yield put(replace(locations.activity()))
+  }
 }
 
 export function* handleLocationChange() {

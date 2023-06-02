@@ -7,6 +7,8 @@ import { Project } from 'modules/project/types'
 import { ModelMetrics } from 'modules/models/types'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { Deployment } from 'modules/deployment/types'
+import { DeployToWorldLocationStateProps } from 'modules/location/types'
+import { DeployModalMetadata } from '../DeployModal.types'
 
 export type Props = {
   name: string
@@ -17,11 +19,12 @@ export type Props = {
   deploymentProgress: DeploymentState['progress']
   error: string | null
   isLoading: boolean
+  claimedName: string | null
   onClose: () => void
   onBack: () => void
   onPublish: typeof deployToWorldRequest
   onRecord: typeof recordMediaRequest
-  onNavigate: (path: string) => void
+  onNavigate: (path: string, locationState?: DeployToWorldLocationStateProps) => void
 }
 
 export type MapStateProps = Pick<Props, 'ensList' | 'project' | 'metrics' | 'deployments' | 'deploymentProgress' | 'error' | 'isLoading'>
@@ -34,4 +37,9 @@ export enum DeployToWorldView {
   SUCCESS = 'SUCCESS',
   EMPTY = 'EMPTY',
   ERROR = 'ERROR'
+}
+
+export type DeployToWorldModalMetadata = DeployModalMetadata & {
+  projectId: string
+  claimedName: string
 }

@@ -1,27 +1,37 @@
 import { connect } from 'react-redux'
-
+import { getLocation } from 'connected-react-router'
 import { getCurrentProject } from 'modules/project/selectors'
 import { RootState } from 'modules/common/types'
 import { closeEditor, zoomIn, zoomOut, resetCamera } from 'modules/editor/actions'
 import { isSidebarOpen, isPreviewing, isReady, isFetching } from 'modules/editor/selectors'
+import { isLoggedIn } from 'modules/identity/selectors'
 import { openModal } from 'modules/modal/actions'
 import { numItems } from 'modules/scene/selectors'
+import { ClaimNameLocationStateProps, FromParam } from 'modules/location/types'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
-import { isLoggedIn } from 'modules/identity/selectors'
 
-const mapState = (state: RootState): MapStateProps => ({
-  isPreviewing: isPreviewing(state),
-  isSidebarOpen: isSidebarOpen(state),
-  isLoading: !isReady(state),
-  isFetching: isFetching(state),
-  isLoggedIn: isLoggedIn(state),
-  currentProject: getCurrentProject(state),
-  numItems: numItems(state)
-})
+const mapState = (state: RootState): MapStateProps => {
+  let claimedName = undefined
+  const isFromClaimName = (getLocation(state).state as ClaimNameLocationStateProps).fromParam === FromParam.CLAIM_NAME
+  if (isFromClaimName) {
+    claimedName = (getLocation(state).state as ClaimNameLocationStateProps).claimedName
+  }
+  return {
+    isPreviewing: isPreviewing(state),
+    isSidebarOpen: isSidebarOpen(state),
+    isLoading: !isReady(state),
+    isFetching: isFetching(state),
+    isLoggedIn: isLoggedIn(state),
+    currentProject: getCurrentProject(state),
+    numItems: numItems(state),
+    isFromClaimName,
+    claimedName
+  }
+}
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onOpenModal: name => dispatch(openModal(name)),
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onCloseEditor: () => dispatch(closeEditor()),
   onZoomIn: () => dispatch(zoomIn()),
   onZoomOut: () => dispatch(zoomOut()),
