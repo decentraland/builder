@@ -71,10 +71,6 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
     if (status === DeploymentStatus.NEEDS_SYNC) {
       statusText = t('scene_detail_page.unsynced')
     }
-    let location = deployment.base
-    if (deployment?.world) {
-      location = deployment.world
-    }
     return (
       <div className={`DeploymentDetail ${landId ? 'clickable' : ''}`} onClick={() => landId && onNavigate(locations.landDetail(landId))}>
         {this.renderThumbnail()}
