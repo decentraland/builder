@@ -77,16 +77,18 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     const children = (
       <>
         <div className="project-thumbnail" style={style} />
-        <DeploymentStatus projectId={project.id} className="deployment-status" />
         {isFromScenePool ? null : (
-          <OptionsDropdown
-            className="options-dropdown"
-            options={[
-              { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
-              { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
-              { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
-            ]}
-          />
+          <>
+            <DeploymentStatus projectId={project.id} className="deployment-status" />
+            <OptionsDropdown
+              className="options-dropdown"
+              options={[
+                { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
+                { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
+                { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
+              ]}
+            />
+          </>
         )}
         <div className="project-data">
           <div className="title-wrapper">
