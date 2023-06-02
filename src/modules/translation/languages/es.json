@@ -975,7 +975,8 @@
     "draft": "Borrador",
     "status": "Estado",
     "location": "Ubicación",
-    "description": "Descripción"
+    "description": "Descripción",
+    "url": "URL"
   },
   "shortcuts": {
     "delete": "Eliminar objeto",

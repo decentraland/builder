@@ -967,7 +967,8 @@
     "draft": "Draft",
     "status": "Status",
     "location": "Location",
-    "description": "Description"
+    "description": "Description",
+    "url": "URL"
   },
   "shortcuts": {
     "delete": "Delete item",

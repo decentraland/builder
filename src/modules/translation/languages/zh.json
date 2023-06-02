@@ -962,7 +962,8 @@
     "draft": "草稿",
     "status": "状态",
     "location": "位置",
-    "description": "描述"
+    "description": "描述",
+    "url": "URL"
   },
   "shortcuts": {
     "delete": "删除",
