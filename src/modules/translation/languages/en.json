@@ -694,8 +694,10 @@
     }
   },
   "scenes_page": {
-    "import_scene": "Import Scene",
-    "no_projects": "It looks like you don't have any Scenes.{br}{link} to get started.",
+    "my_scenes": "My Scenes",
+    "upload_scene": "Upload Scene",
+    "create_scene": "Create Scene",
+    "no_projects": "You can publish your scenes in your LAND, your Worlds or upload them to the Scene Pool.{br}Alternatively, you can also <link>upload a scene file</link> and continue working from here.",
     "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
     "project_actions": {
       "delete_project": "Delete",
@@ -920,7 +922,8 @@
     "its_you": "It's you!"
   },
   "project_card": {
-    "items": "items",
+    "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
+    "item_count": "{items} {items, plural, one {item} other {items}}",
     "confirm_delete_content": "Are you sure you want to delete your Scene \"{title}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{title}\""
   },

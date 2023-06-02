@@ -688,8 +688,10 @@
     }
   },
   "scenes_page": {
-    "import_scene": "上传场景",
-    "no_projects": "看来您没有任何场景。{br} {link}开始使用。",
+    "my_scenes": "我的场景",
+    "upload_scene": "上传场景",
+    "create_scene": "创建场景",
+    "no_projects": "您可以在您的 LAND、您的世界中发布您的场景或将它们上传到场景池。{br}或者，您也可以<link>上传场景文件</link>并从这里继续工作。",
     "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "project_actions": {
       "delete_project": "删除场景",
@@ -915,7 +917,8 @@
     "its_you": "是你"
   },
   "project_card": {
-    "items": "模型",
+    "parcel_count": "{parcels} {parcels, plural, one {包裹} other {包裹}}",
+    "item_count": "{items} {items, plural, one {物品} other {项目}}",
     "confirm_delete_content": "您确认删除场景 \"{title}\"? 此操作不能回退！",
     "confirm_delete_header": "删除 \"{title}\""
   },
