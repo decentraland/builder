@@ -317,7 +317,7 @@
     "clear": {
       "confirmation": {
         "action": "Unpublish",
-        "description": "You are about to unpublish \"{project}\" from {coords}",
+        "description": "You are about to unpublish \"{project}\" from {location}",
         "title": "Unpublish Scene"
       },
       "connect": {

@@ -320,7 +320,7 @@
     "clear": {
       "confirmation": {
         "action": "Despublicar",
-        "description": "Estás a punto de despublicar \"{project}\" del Metaverso",
+        "description": "Estás a punto de despublicar \"{project}\" de {location}",
         "title": "Despublicar Escena"
       },
       "connect": {

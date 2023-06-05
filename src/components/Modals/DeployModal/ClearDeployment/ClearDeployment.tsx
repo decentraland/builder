@@ -91,6 +91,13 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   renderConfirmation = () => {
     const { deployment, error } = this.props
 
+    if (!deployment) {
+      return null
+    }
+
+    const isWorldDeployment = deployment && !!deployment.world
+    const deploymentLocation = isWorldDeployment ? deployment.world : deployment.base
+
     return (
       <div className="ClearDeployment confirmation">
         <div className="modal-header">
@@ -100,7 +107,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
           {t('deployment_modal.clear.confirmation.title')}
         </Header>
         <p className="modal-subtitle">
-          <T id="deployment_modal.clear.confirmation.description" values={{ project: deployment!.name, coords: deployment!.base }} />
+          <T id="deployment_modal.clear.confirmation.description" values={{ project: deployment.name, location: deploymentLocation }} />
         </p>
 
         <Button primary size="small" onClick={this.handleClearDeploy}>

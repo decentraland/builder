@@ -313,7 +313,7 @@
     "clear": {
       "confirmation": {
         "action": "撤回发布",
-        "description": "从虚拟世界撤回 \"{project}\"",
+        "description": "您即将从 {location} 取消发布\"{project}\"",
         "title": "撤回已发布的场景"
       },
       "connect": {
