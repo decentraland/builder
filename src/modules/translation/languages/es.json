@@ -429,7 +429,8 @@
       },
       "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>",
       "world_has_content": "El mundo actual será reemplazado",
-      "confirm_world_replace_content": "Entiendo que esta acción es irreversible"
+      "confirm_world_replace_content": "Entiendo que esta acción es irreversible",
+      "scene_information": "Información de escena"
     },
     "title": "Publicar Escena",
     "subtitle": "Elige donde querés subir esta escena:",

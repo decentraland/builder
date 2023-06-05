@@ -84,6 +84,29 @@
   border: 1px solid lightgray;
 }
 
+.thumbnailInfo {
+  float: right;
+  margin: 3px 7px !important;
+  filter: invert(84%) sepia(8%) saturate(12%) hue-rotate(24deg) brightness(102%) contrast(89%);
+}
+
+.thumbnailInfo:hover {
+  filter: invert(97%) sepia(97%) saturate(0%) hue-rotate(17deg) brightness(104%) contrast(104%);
+}
+
+.metricsList {
+  margin-top: 4px !important;
+}
+
+.metricsList div {
+  margin-left: 4px;
+  text-transform: capitalize;
+}
+
+.metricsList div::before {
+  content: '-\00a0';
+}
+
 .modalForm .worldDetails {
   width: 450px;
 }
