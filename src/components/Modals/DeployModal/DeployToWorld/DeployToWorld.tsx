@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import classNames from 'classnames'
 import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -68,6 +69,13 @@ export default function DeployToWorld({
       setLoading(true)
     }
   }, [onPublish, project, world])
+
+  const handleClose = useCallback(() => {
+    if (view === DeployToWorldView.SUCCESS) {
+      onNavigate(locations.sceneDetail(project.id))
+    }
+    onClose()
+  }, [view, project.id, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
     onNavigate(locations.claimENS())
@@ -327,13 +335,15 @@ export default function DeployToWorld({
   }
 
   return (
-    <Modal name={name} onClose={onClose}>
+    <Modal name={name} onClose={handleClose}>
       <div className={styles.modalBody}>
-        <div className={styles.modalNavigation}>
-          <button className={styles.navigationButton} onClick={onBack} aria-label={t('deployment_modal.deploy_world.back')}>
-            <Icon name="modal-back" />
-          </button>
-          <button className={styles.navigationButton} onClick={onClose} aria-label={t('deployment_modal.deploy_world.close')}>
+        <div className={classNames(styles.modalNavigation, { [styles.end]: view === DeployToWorldView.SUCCESS })}>
+          {view !== DeployToWorldView.SUCCESS && (
+            <button className={styles.navigationButton} onClick={onBack} aria-label={t('deployment_modal.deploy_world.back')}>
+              <Icon name="modal-back" />
+            </button>
+          )}
+          <button className={styles.navigationButton} onClick={handleClose} aria-label={t('deployment_modal.deploy_world.close')}>
             <Icon name="modal-close" />
           </button>
         </div>
