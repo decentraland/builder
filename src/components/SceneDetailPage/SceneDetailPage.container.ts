@@ -2,8 +2,10 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
+import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getProjectId } from 'modules/location/selectors'
 import { getData as getProjects, getLoading } from 'modules/project/selectors'
+import { getLoading as getLoadingLands } from 'modules/land/selectors'
 import { getDeploymentsByProjectId, getLoading as getLoadingDeployment } from 'modules/deployment/selectors'
 import { LOAD_PROJECTS_REQUEST, deleteProject, duplicateProject } from 'modules/project/actions'
 import { openModal } from 'modules/modal/actions'
@@ -26,7 +28,8 @@ const mapState = (state: RootState): MapStateProps => {
     isLoadingDeployments:
       isLoadingType(getLoadingENS(state), FETCH_ENS_LIST_REQUEST) ||
       isLoadingType(getLoadingDeployment(state), FETCH_DEPLOYMENTS_REQUEST) ||
-      isLoadingType(getLoadingDeployment(state), FETCH_WORLD_DEPLOYMENTS_REQUEST)
+      isLoadingType(getLoadingDeployment(state), FETCH_WORLD_DEPLOYMENTS_REQUEST) ||
+      isLoadingType(getLoadingLands(state), FETCH_LANDS_REQUEST)
   }
 }
 
