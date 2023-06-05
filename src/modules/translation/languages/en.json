@@ -424,6 +424,10 @@
         "jump_in": "Jump In",
         "share_in_twitter": "Share in Twitter"
       },
+      "failure": {
+        "title": "Something went wrong",
+        "subtitle": "We couldn't publish your scene"
+      },
       "world_url_description": "The URL to jump in your World will be:<br></br><b>{world_url}</b>",
       "world_has_content": "The current world will be replaced",
       "confirm_world_replace_content": "I understand that this action is irreversible",
@@ -944,14 +948,16 @@
   "scene_detail_page": {
     "actions": {
       "duplicate": "Duplicate",
-      "download": "Download",
       "delete": "Delete",
       "unpublish": "Unpublish"
     },
+    "edit_scene": "Edit Scene",
+    "download_scene": "Download Scene",
     "published_in": "Published In",
-    "no_deployments": "This Scene has not been published in the Metaverse yet.",
-    "online": "Online",
+    "no_deployments": "This scene has not been published yet.",
+    "published": "Published",
     "unsynced": "Unsynced",
+    "draft": "Draft",
     "status": "Status",
     "location": "Location",
     "description": "Description"

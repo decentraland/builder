@@ -2,6 +2,11 @@
   margin-bottom: 16px;
 }
 
+.WorldListPage .filters .ui.header.items-count,
+.WorldListPage .ui.table > thead > tr th {
+  color: var(--text);
+}
+
 .WorldListPage .TableRow {
   cursor: default;
 }
@@ -12,7 +17,10 @@
 }
 
 .WorldListPage .empty-names-container .empty-icon {
-  margin-bottom: 45px;
+  margin-bottom: 30px;
+  background-image: url(../../images/empty-names.svg);
+  height: 86px;
+  width: 86px;
 }
 
 .WorldListPage .empty-names-container .empty-icon .icon {
@@ -68,7 +76,7 @@
 }
 
 .WorldListPage .TableRow .empty-url {
-  color: var(--secondary-text);
+  color: #ffffffcc;
   font-style: italic;
 }
 
@@ -92,11 +100,11 @@
 }
 
 .WorldListPage .TableRow .world-status.active {
-  color: var(--light-blue-raw);
+  color: #34ce76;
 }
 
 .WorldListPage .TableRow .world-status.inactive {
-  color: var(--secondary-text);
+  color: #cfcdd4;
 }
 
 .WorldListPage .ui.pagination {
@@ -125,7 +133,6 @@
 
 .WorldListPage .ui.sub.header.items-count {
   flex: 1 0 auto;
-  color: var(--secondary-text);
   text-transform: uppercase;
   font-size: 13px;
   line-height: 18px;

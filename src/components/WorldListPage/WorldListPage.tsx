@@ -87,14 +87,8 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const renderWorldStatus = (ens: ENS) => {
-    return isWorldDeployed(ens) ? (
-      <span className="world-status active">
-        <DCLIcon name="check" />
-        {t('worlds_list_page.table.status_active')}
-      </span>
-    ) : (
-      <span className="world-status inactive">{t('worlds_list_page.table.status_inactive')}</span>
-    )
+    const status = isWorldDeployed(ens) ? 'active' : 'inactive'
+    return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
   }
 
   const renderPublishSceneButton = (ens: ENS) => {
@@ -217,9 +211,7 @@ const WorldListPage: React.FC<Props> = props => {
   const renderEmptyPage = () => {
     return (
       <Empty className="empty-names-container" height={500}>
-        <div className="empty-icon">
-          <DCLIcon name="address card outline" />
-        </div>
+        <div className="empty-icon" />
         <div className="empty-title">{t('worlds_list_page.empty_list.title')}</div>
         <div className="empty-description">{t('worlds_list_page.empty_list.description', { b: (text: string) => <b>{text}</b> })}</div>
         <Button className="empty-action" primary onClick={handleClaimENS}>

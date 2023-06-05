@@ -77,7 +77,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             <h5 className="deploy-modal-subtitle">{t('deployment_modal.subtitle')}</h5>
             <div className="deploy-modal-options">
               <div className="option-container">
-                <div className="thumbnail deploy-to-land" />
+                <div className="thumbnail deploy-to-world" />
                 <span className="option-title">{t('deployment_modal.options.world.title')}</span>
                 <span className="option-description">
                   {t('deployment_modal.options.world.description', { br: () => <br /> })}

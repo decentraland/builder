@@ -11,6 +11,7 @@ import SceneStats from 'components/SceneStats'
 import { DeployModalView, DeployModalMetadata } from 'components/Modals/DeployModal/DeployModal.types'
 import { Props } from './DeploymentDetail.types'
 import './DeploymentDetail.css'
+import Stats from 'components/SceneStats/Stats/Stats'
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
   getHighlightLayer =
@@ -23,19 +24,13 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
       return deployment.parcels.some(parcel => parcel === id) ? { color: color[tile.land.role], scale } : null
     }
 
-  render() {
-    const { project, deployment, landTiles, onNavigate, onOpenModal } = this.props
+  renderThumbnail = () => {
+    const { deployment, landTiles, project } = this.props
     const [x, y] = idToCoords(deployment.base)
     const landId = deployment.base in landTiles ? landTiles[deployment.base].land.id : null
-    const status = getStatus(project, deployment)
-    let statusClass = 'online'
-    let statusText = t('scene_detail_page.online')
-    if (status === DeploymentStatus.NEEDS_SYNC) {
-      statusText = t('scene_detail_page.unsynced')
-      statusClass = 'needs-sync'
-    }
-    return (
-      <div className={`DeploymentDetail ${landId ? 'clickable' : ''}`} onClick={() => landId && onNavigate(locations.landDetail(landId))}>
+
+    if (landId) {
+      return (
         <div className="atlas-wrapper">
           <Atlas
             x={x}
@@ -45,13 +40,28 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
             layers={[this.getHighlightLayer(hoverStrokeByRole, 1.4), this.getHighlightLayer(hoverFillByRole, 1.2)]}
           />
         </div>
-        <div className="stat">
-          <div className="title">
-            <i className={`status ${statusClass}`} />
-            {statusText}
-          </div>
-          <div className="secondary-text">{t('scene_detail_page.status')}</div>
-        </div>
+      )
+    }
+
+    return (
+      <div className="thumbnail-wrapper">
+        <img className="thumbnail" src={project.thumbnail} alt={project.description} />
+      </div>
+    )
+  }
+
+  render() {
+    const { project, deployment, landTiles, onNavigate, onOpenModal } = this.props
+    const landId = deployment.base in landTiles ? landTiles[deployment.base].land.id : null
+    const status = getStatus(project, deployment)
+    let statusText = t('scene_detail_page.published')
+    if (status === DeploymentStatus.NEEDS_SYNC) {
+      statusText = t('scene_detail_page.unsynced')
+    }
+    return (
+      <div className={`DeploymentDetail ${landId ? 'clickable' : ''}`} onClick={() => landId && onNavigate(locations.landDetail(landId))}>
+        {this.renderThumbnail()}
+        <Stats label={t('scene_detail_page.status')}>{statusText}</Stats>
         <SceneStats deployment={deployment} />
         <Dropdown
           trigger={

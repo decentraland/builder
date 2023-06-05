@@ -60,6 +60,11 @@ export const getENSForLand = (state: RootState, landId: string) => {
   return ensList.filter(ens => ens.landId === landId)
 }
 
+export const getENSBySubdomain = (state: RootState, subdomain = '') => {
+  const ensList = getENSList(state)
+  return ensList.find(ens => ens.subdomain === subdomain) as ENS
+}
+
 export const isWaitingTxReclaim = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
   transactions.some(transaction => RECLAIM_NAME_SUCCESS === transaction.actionType)
 )

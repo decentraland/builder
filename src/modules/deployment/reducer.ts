@@ -171,14 +171,12 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case DEPLOY_TO_WORLD_SUCCESS: {
       const { deployment } = action.payload
 
-      const newData = {
-        ...state.data,
-        [deployment.id]: deployment
-      }
-
       return {
         ...state,
-        data: newData,
+        data: {
+          ...state.data,
+          [deployment.id]: { ...deployment }
+        },
         loading: loadingReducer(state.loading, action),
         progress: {
           stage: ProgressStage.NONE,

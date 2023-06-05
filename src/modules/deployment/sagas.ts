@@ -4,27 +4,29 @@ import { Entity } from '@dcl/schemas'
 import { EntityType } from 'dcl-catalyst-commons'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
-import { getData as getDeployments } from 'modules/deployment/selectors'
-import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
-import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
-import { Scene } from 'modules/scene/types'
-import { Project } from 'modules/project/types'
-import { store } from 'modules/common/store'
-import { Media } from 'modules/media/types'
-import { getMedia } from 'modules/media/selectors'
-import { createFiles, EXPORT_PATH } from 'modules/project/export'
-import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
-import { takeScreenshot } from 'modules/editor/actions'
-import { objectURLToBlob } from 'modules/media/utils'
-import { getSceneByProjectId } from 'modules/scene/utils'
+import { config } from 'config'
 import { BuilderAPI, getPreviewUrl } from 'lib/api/builder'
-import { getIdentity } from 'modules/identity/utils'
+import { store } from 'modules/common/store'
+import { getData as getDeployments } from 'modules/deployment/selectors'
+import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
+import { takeScreenshot } from 'modules/editor/actions'
+import { fetchENSWorldStatusRequest } from 'modules/ens/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { getName } from 'modules/profile/selectors'
+import { getIdentity } from 'modules/identity/utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
-import { LandType } from 'modules/land/types'
-import { coordsToId, idToCoords } from 'modules/land/utils'
 import { getCoordsByEstateId } from 'modules/land/selectors'
+import { coordsToId, idToCoords } from 'modules/land/utils'
+import { LandType } from 'modules/land/types'
+import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
+import { getMedia } from 'modules/media/selectors'
+import { objectURLToBlob } from 'modules/media/utils'
+import { Media } from 'modules/media/types'
+import { getName } from 'modules/profile/selectors'
+import { createFiles, EXPORT_PATH } from 'modules/project/export'
+import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
+import { Project } from 'modules/project/types'
+import { getSceneByProjectId } from 'modules/scene/utils'
+import { Scene } from 'modules/scene/types'
 import {
   DEPLOY_TO_POOL_REQUEST,
   deployToPoolFailure,
@@ -51,12 +53,12 @@ import {
   FetchWorldDeploymentsRequestAction,
   FETCH_WORLD_DEPLOYMENTS_REQUEST,
   fetchWorldDeploymentsSuccess,
-  fetchWorldDeploymentsFailure
+  fetchWorldDeploymentsFailure,
+  fetchWorldDeploymentsRequest
 } from './actions'
-import { ProgressStage } from './types'
 import { makeContentFiles } from './contentUtils'
 import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
-import { config } from 'config'
+import { ProgressStage } from './types'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -226,6 +228,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         { point: { x: 0, y: 0 }, rotation: 'north' },
         world
       )
+      yield put(fetchENSWorldStatusRequest(world))
+      yield put(fetchWorldDeploymentsRequest([world]))
       yield put(deployToWorldSuccess(deployment))
     } catch (e) {
       yield put(deployToWorldFailure(e.message.split('\n')[0]))
