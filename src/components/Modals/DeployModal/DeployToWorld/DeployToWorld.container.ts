@@ -7,10 +7,12 @@ import { deployToWorldRequest } from 'modules/deployment/actions'
 import { getDeploymentsByWorlds, getProgress as getUploadProgress, isLoading } from 'modules/deployment/selectors'
 import { MapDispatch, MapDispatchProps, MapStateProps } from './DeployToWorld.types'
 import DeployToWorld from './DeployToWorld'
+import { getCurrentMetrics } from 'modules/scene/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
   project: getCurrentProject(state),
+  metrics: getCurrentMetrics(state),
   deployments: getDeploymentsByWorlds(state),
   deploymentProgress: getUploadProgress(state),
   isLoading: isLoading(state)

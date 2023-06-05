@@ -426,7 +426,8 @@
       },
       "world_url_description": "The URL to jump in your World will be:<br></br><b>{world_url}</b>",
       "world_has_content": "The current world will be replaced",
-      "confirm_world_replace_content": "I understand that this action is irreversible"
+      "confirm_world_replace_content": "I understand that this action is irreversible",
+      "scene_information": "Scene Information"
     },
     "title": "Publish Scene",
     "subtitle": "Select where you want to deploy this scene:",

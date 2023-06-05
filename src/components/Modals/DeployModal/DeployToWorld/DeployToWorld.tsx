@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row } from 'decentraland-ui'
+import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
 import { locations } from 'routing/locations'
-import { Project } from 'modules/project/types'
-import Icon from 'components/Icon'
-import { DeployToWorldView, Props } from './DeployToWorld.types'
-import styles from './DeployToWorld.module.css'
+import { Layout, Project } from 'modules/project/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+import Icon from 'components/Icon'
+import { InfoIcon } from 'components/InfoIcon'
+import { DeployToWorldView, Props } from './DeployToWorld.types'
+
+import styles from './DeployToWorld.module.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
@@ -16,6 +18,7 @@ const CLAIM_NAME_OPTION = 'claim_name_option'
 export default function DeployToWorld({
   name,
   project,
+  metrics,
   ensList,
   deployments,
   deploymentProgress,
@@ -171,6 +174,56 @@ export default function DeployToWorld({
     )
   }
 
+  const renderMetrics = () => {
+    const { rows, cols } = project?.layout as Layout
+    return (
+      <div className={styles.metrics}>
+        <strong>{t('deployment_modal.deploy_world.scene_information')}:</strong>
+        <List className={styles.metricsList}>
+          <List.Item>
+            {t('global.size')}: {rows} x {cols}
+          </List.Item>
+          <List.Item>
+            {t('metrics.triangles')}: {metrics.triangles}
+          </List.Item>
+          <List.Item>
+            {t('metrics.materials')}: {metrics.materials}
+          </List.Item>
+          <List.Item>
+            {t('metrics.meshes')}: {metrics.meshes}
+          </List.Item>
+          <List.Item>
+            {t('metrics.bodies')}: {metrics.bodies}
+          </List.Item>
+          <List.Item>
+            {t('metrics.entities')}: {metrics.entities}
+          </List.Item>
+          <List.Item>
+            {t('metrics.textures')}: {metrics.textures}
+          </List.Item>
+        </List>
+      </div>
+    )
+  }
+
+  const renderThumbnail = () => {
+    const thumbnailUrl = project?.thumbnail as string
+    return (
+      <div className={styles.thumbnail} style={{ backgroundImage: `url(${thumbnailUrl})` }} aria-label={project?.description} role="img">
+        <Popup
+          className="modal-tooltip"
+          content={renderMetrics()}
+          position="bottom center"
+          trigger={<InfoIcon className={styles.thumbnailInfo} />}
+          hideOnScroll={true}
+          on="hover"
+          inverted
+          basic
+        />
+      </div>
+    )
+  }
+
   const renderForm = () => {
     const thumbnailUrl: string = project?.thumbnail ?? ''
     const isWorldSelected = world !== ''
@@ -182,14 +235,7 @@ export default function DeployToWorld({
           <span>{t('deployment_modal.deploy_world.description')}</span>
         </div>
         <div className={styles.modalForm}>
-          {thumbnailUrl ? (
-            <div
-              className={styles.thumbnail}
-              style={{ backgroundImage: `url(${thumbnailUrl})` }}
-              aria-label={project?.description}
-              role="img"
-            />
-          ) : null}
+          {thumbnailUrl ? renderThumbnail() : null}
           <div className={styles.worldDetails}>
             <SelectField
               label={t('deployment_modal.deploy_world.world_label')}
