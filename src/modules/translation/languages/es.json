@@ -427,6 +427,10 @@
         "jump_in": "Ingresar",
         "share_in_twitter": "Compartir en Twitter"
       },
+      "failure": {
+        "title": "Algo salió mal",
+        "subtitle": "No pudimos publicar tu escena"
+      },
       "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>",
       "world_has_content": "El mundo actual será reemplazado",
       "confirm_world_replace_content": "Entiendo que esta acción es irreversible",
@@ -952,14 +956,16 @@
   "scene_detail_page": {
     "actions": {
       "duplicate": "Duplicar",
-      "download": "Descargar",
       "delete": "Eliminar",
       "unpublish": "Despublicar"
     },
+    "edit_scene": "Editar Escena",
+    "download_scene": "Descargar Escena",
     "published_in": "Publicada En",
-    "no_deployments": "Esta Escena no ha sido publicada en el Metaverso aún.",
-    "online": "Online",
+    "no_deployments": "Esta escena aún no ha sido publicada.",
+    "published": "Publicada",
     "unsynced": "Desactualizada",
+    "draft": "Borrador",
     "status": "Estado",
     "location": "Ubicación",
     "description": "Descripción"

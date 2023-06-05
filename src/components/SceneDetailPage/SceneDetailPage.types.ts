@@ -9,12 +9,13 @@ export type Props = {
   project: Project | null
   deployments: Deployment[]
   isLoading: boolean
+  isLoadingDeployments: boolean
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
   onDelete: typeof deleteProject
   onDuplicate: typeof duplicateProject
 }
 
-export type MapStateProps = Pick<Props, 'project' | 'deployments' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'project' | 'deployments' | 'isLoading' | 'isLoadingDeployments'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onDelete' | 'onDuplicate' | 'onOpenModal'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | DeleteProjectAction | DuplicateProjectAction | OpenModalAction>
