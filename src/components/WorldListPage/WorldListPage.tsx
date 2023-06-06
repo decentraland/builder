@@ -21,7 +21,7 @@ const WorldListPage: React.FC<Props> = props => {
   const [page, setPage] = useState(1)
 
   const isWorldDeployed = (ens: ENS) => {
-    if (ens.worldStatus?.healthy === true) {
+    if (ens.worldStatus?.healthy) {
       const deployment = deploymentsByWorlds[ens.subdomain]
 
       return deployment && deployment.projectId && !!projects.find(project => project.id === deployment.projectId)
