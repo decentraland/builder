@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
+import classNames from 'classnames'
 import { Link } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
@@ -216,7 +217,7 @@ const ScenesPage: React.FC<Props> = props => {
               <Column align="right">{projects.length > 1 ? renderSortDropdown() : null}</Column>
             </Row>
           </Section>
-          <Section className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
+          <Section className={classNames('project-cards', { 'has-pagination': hasPagination })}>
             <div className="CardList">{renderProjects()}</div>
             {hasPagination ? (
               <Pagination {...paginationProps} activePage={page} totalPages={totalPages} onPageChange={handlePageChange} />

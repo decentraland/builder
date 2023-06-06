@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { Badge } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { DeploymentStatus as Status } from 'modules/deployment/types'
@@ -8,7 +9,7 @@ import './DeploymentStatus.css'
 export default class DeploymentStatus extends React.PureComponent<Props> {
   render() {
     const { status, className = '', type } = this.props
-    const classes = `DeploymentStatus status-badge ${className}`
+    const classes = classNames('DeploymentStatus', 'status-badge', className)
     if (status === Status.PUBLISHED || (type === 'pool' && status === Status.NEEDS_SYNC)) {
       return (
         <Badge className={classes} color="#34CE76">
