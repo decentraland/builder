@@ -77,7 +77,7 @@ export default function DeployToWorld({
       onNavigate(locations.sceneDetail(project.id))
     }
     onClose()
-  }, [view, project.id, onClose, onNavigate])
+  }, [view, project, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
     onNavigate(locations.claimENS(), { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
