@@ -28,7 +28,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   componentWillReceiveProps(props: Props) {
     const { project, deployments } = props
     if (deployments.length > 0) {
-      const deployment = getDeployment(project, deployments)
+      const landDeployments = deployments.filter(deployment => deployment.base !== '0,0')
+      const deployment = getDeployment(project, landDeployments)
       this.setState({
         placement: { ...deployment.placement }
       })
