@@ -519,7 +519,7 @@
   },
   "worlds_list_page": {
     "table": {
-      "name": "Nombre",
+      "name": "NOMBRE",
       "url": "URL",
       "published_scene": "Escena Publicada",
       "publish_scene": "Publicar Escena",
