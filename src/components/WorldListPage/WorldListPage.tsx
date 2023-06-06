@@ -16,11 +16,19 @@ const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
-  const { ensList, error, deploymentsByWorlds, isLoading, onNavigate } = props
+  const { ensList, error, deploymentsByWorlds, isLoading, projects, onNavigate } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
 
-  const isWorldDeployed = (ens: ENS) => ens.worldStatus?.healthy === true
+  const isWorldDeployed = (ens: ENS) => {
+    if (ens.worldStatus?.healthy === true) {
+      const deployment = deploymentsByWorlds[ens.subdomain]
+
+      return deployment && deployment.projectId && !!projects.find(project => project.id === deployment.projectId)
+    }
+
+    return false
+  }
 
   const handleClaimENS = useCallback(() => {
     onNavigate(locations.claimENS())
