@@ -53,7 +53,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
 
   componentDidUpdate(): void {
     const { currentProject, claimedName, isFromClaimName, isLoading, isPreviewing, onOpenModal } = this.props
-    if (!(isLoading || isPreviewing) && currentProject && isFromClaimName && claimedName) {
+    if (!(isLoading || isPreviewing) && currentProject && isFromClaimName) {
       onOpenModal('DeployModal', {
         view: DeployModalView.DEPLOY_TO_WORLD,
         projectId: currentProject.id,
