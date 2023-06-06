@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import copyText from 'lib/copyText'
@@ -20,6 +21,7 @@ type State = {
 
 export default class CopyToClipboard extends React.PureComponent<Props, State> {
   static defaultProps = {
+    showPopup: false,
     timeOut: 3000
   }
 
@@ -28,43 +30,41 @@ export default class CopyToClipboard extends React.PureComponent<Props, State> {
     fadeOut: false
   }
 
-  componentDidUpdate(_prevProps: Props, prevState: State): void {
-    if (this.props.showPopup && prevState.hasCopiedText === false && this.state.hasCopiedText === true) {
-      setTimeout(() => {
-        this.setState(prevState => ({ ...prevState, fadeOut: true }))
-      }, this.props.timeOut)
-    }
-  }
-
   handleTransitionEnd = () => {
     if (this.props.showPopup) {
-      this.setState(prevState => ({ ...prevState, hasCopiedText: false }))
+      this.setState({ hasCopiedText: false, fadeOut: false })
     }
   }
 
   handleCopy = async () => {
-    const { text } = this.props
+    const { showPopup, text, timeOut, onCopy } = this.props
     await copyText(text, () => {
-      this.props?.onCopy && this.props.onCopy()
-      if (this.props.showPopup) {
-        this.setState({ hasCopiedText: true, fadeOut: false })
+      if (onCopy) {
+        onCopy()
       }
-      return
+
+      if (showPopup) {
+        this.setState({ hasCopiedText: true })
+        setTimeout(() => {
+          this.setState({ fadeOut: true })
+        }, timeOut)
+      }
     })
   }
 
   render() {
-    const { children } = this.props
+    const { className, children, role, showPopup } = this.props
+    const { fadeOut, hasCopiedText } = this.state
     return (
-      <div {...this.props} aria-label="copy" onClick={this.handleCopy}>
-        {this.props.showPopup ? (
+      <div className={classNames(className)} role={role} aria-label="copy" onClick={this.handleCopy}>
+        {showPopup ? (
           <Popup
-            className={`copy-to-clipboard-popup ${this.state.fadeOut ? 'fade-out' : ''}`}
+            className={classNames('copy-to-clipboard-popup', { 'fade-out': fadeOut })}
             onTransitionEnd={this.handleTransitionEnd}
             content={<div className="copied-text">{t('global.copied')}</div>}
             position="right center"
             trigger={children}
-            open={this.state.hasCopiedText}
+            open={hasCopiedText}
             inverted
             basic
           />
