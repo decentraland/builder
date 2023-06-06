@@ -14,6 +14,7 @@
 .WorldListPage .empty-names-container {
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 
 .WorldListPage .empty-names-container .empty-icon {

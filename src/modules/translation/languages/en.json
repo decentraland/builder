@@ -516,7 +516,7 @@
   },
   "worlds_list_page": {
     "table": {
-      "name": "Name",
+      "name": "NAME",
       "url": "URL",
       "published_scene": "Published Scene",
       "publish_scene": "Publish Scene",
