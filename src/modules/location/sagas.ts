@@ -17,7 +17,7 @@ export function* locationSaga() {
   yield all([
     takeLatest(LOGIN_SUCCESS, handleLoginSuccess),
     takeLatest(SET_ENS_CONTENT_SUCCESS, handleSetENSContentSuccess),
-    takeLatest(CLAIM_NAME_SUCCESS, goToActivity),
+    takeLatest(CLAIM_NAME_SUCCESS, handleClaimNameSuccess),
     takeLatest(LOCATION_CHANGE, handleLocationChange),
     takeLatest(REDIRECT_TO_REQUEST, handleRedirectToRequest)
   ])
@@ -33,11 +33,11 @@ function* handleLoginSuccess(_action: LoginSuccessAction) {
 function* handleSetENSContentSuccess(action: SetENSContentSuccessAction) {
   const { land } = action.payload
   if (!land) {
-    yield goToActivity()
+    yield put(replace(locations.activity()))
   }
 }
 
-function* goToActivity(action: ClaimNameSuccessAction | null = null) {
+function* handleClaimNameSuccess(action: ClaimNameSuccessAction | null = null) {
   const location: ReturnType<typeof getLocation> = yield select(getLocation)
   if (
     location.pathname === locations.claimENS() &&
