@@ -1,10 +1,19 @@
 import { Dispatch } from 'redux'
-import { Project } from 'modules/project/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
-import { deleteProject, DeleteProjectAction, duplicateProject, DuplicateProjectAction } from 'modules/project/actions'
-import { DeploymentStatus } from 'modules/deployment/types'
+import { Deployment, DeploymentStatus } from 'modules/deployment/types'
+import {
+  deleteProject,
+  DeleteProjectAction,
+  duplicateProject,
+  DuplicateProjectAction,
+  loadProjectSceneRequest,
+  LoadProjectSceneRequestAction
+} from 'modules/project/actions'
+import { Project } from 'modules/project/types'
+import { PreviewType } from 'modules/editor/types'
 
 export type DefaultProps = {
+  parcels: number
   items: number
 }
 
@@ -13,10 +22,13 @@ export type Props = DefaultProps & {
   isUploading: boolean
   hasError: boolean
   deploymentStatus: DeploymentStatus
+  deployments: Deployment[]
+  type: PreviewType
   onClick?: (project: Project) => any
   onDeleteProject: typeof deleteProject
   onDuplicateProject: typeof duplicateProject
   onOpenModal: typeof openModal
+  onLoadProjectScene: typeof loadProjectSceneRequest
 }
 
 export type OwnProps = Pick<Props, 'project'>
@@ -25,6 +37,6 @@ export type State = {
   isDeleting: boolean
 }
 
-export type MapStateProps = Pick<Props, 'items' | 'deploymentStatus' | 'isUploading' | 'hasError'>
-export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject' | 'onOpenModal'>
-export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction | OpenModalAction>
+export type MapStateProps = Pick<Props, 'parcels' | 'items' | 'deploymentStatus' | 'deployments' | 'type' | 'isUploading' | 'hasError'>
+export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject' | 'onOpenModal' | 'onLoadProjectScene'>
+export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction | OpenModalAction | LoadProjectSceneRequestAction>

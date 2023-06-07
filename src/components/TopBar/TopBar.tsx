@@ -95,7 +95,6 @@ export default class TopBar extends React.PureComponent<Props> {
             </div>
             {currentProject ? (
               <>
-                <DeploymentStatus projectId={currentProject.id} />
                 <div
                   className={`project-title ${isLoading ? 'disabled' : ''}`}
                   onClick={this.handleTitleClick}
@@ -155,6 +154,7 @@ export default class TopBar extends React.PureComponent<Props> {
         </Grid.Column>
         <Grid.Column mobile={6} tablet={6} computer={5} className="right-column">
           <Grid.Row>
+            {currentProject ? <DeploymentStatus projectId={currentProject.id} /> : null}
             <ShortcutTooltip shortcut={Shortcut.PREVIEW} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="preview" isActive={isPreviewing} isDisabled={isLoading} onClick={this.handleTogglePreview} />
             </ShortcutTooltip>

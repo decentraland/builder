@@ -1,9 +1,22 @@
-import * as React from 'react'
+import React, { useCallback, useEffect } from 'react'
+import classNames from 'classnames'
 import { Link } from 'react-router-dom'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Row, Header, Icon, Section } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import {
+  Container,
+  Button,
+  Page,
+  Dropdown,
+  DropdownProps,
+  Pagination,
+  PaginationProps,
+  Row,
+  Header,
+  Icon,
+  Section,
+  Column
+} from 'decentraland-ui'
 
-import BuilderIcon from 'components/Icon'
 import ProjectCard from 'components/ProjectCard'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
@@ -17,42 +30,54 @@ import { PaginationOptions } from 'routing/utils'
 import { Props, DefaultProps } from './ScenesPage.types'
 import './ScenesPage.css'
 
-export default class ScenesPage extends React.PureComponent<Props> {
-  static defaultProps: DefaultProps = {
-    projects: []
-  }
+const ScenesPage: React.FC<Props> = props => {
+  const {
+    didSync,
+    page,
+    poolList,
+    projects,
+    sortBy,
+    totalPages,
+    isFetching,
+    isLoggedIn,
+    isLoggingIn,
+    onLoadFromScenePool,
+    onNavigate,
+    onOpenModal,
+    onPageChange
+  } = props
 
-  componentWillMount() {
-    const { onLoadFromScenePool } = this.props
+  useEffect(() => {
     onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
-  }
+  }, [onLoadFromScenePool])
 
-  handleOpenImportModal = () => {
-    this.props.onOpenModal('ImportModal')
-  }
+  const handleOpenImportModal = useCallback(() => {
+    onOpenModal('ImportModal')
+  }, [onOpenModal])
 
-  handleOpenCreateModal = () => {
-    this.props.onOpenModal('CustomLayoutModal')
-  }
+  const handleOpenCreateModal = useCallback(() => {
+    onOpenModal('CustomLayoutModal')
+  }, [onOpenModal])
 
-  renderImportButton = () => {
+  const renderImportButton = () => {
     return (
-      <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
-        <BuilderIcon name="import" />
+      <Button inverted className="import-scene" onClick={handleOpenImportModal}>
+        <Icon name="upload" />
+        {t('scenes_page.upload_scene')}
       </Button>
     )
   }
 
-  renderCreateButton = () => {
+  const renderCreateButton = () => {
     return (
-      <Button basic className="create-scene" onClick={this.handleOpenCreateModal}>
-        <BuilderIcon name="add-active" />
+      <Button primary className="create-scene" onClick={handleOpenCreateModal}>
+        <div className="icon icon-tree" />
+        {t('scenes_page.create_scene')}
       </Button>
     )
   }
 
-  renderSortDropdown = () => {
-    const { sortBy } = this.props
+  const renderSortDropdown = () => {
     return (
       <Dropdown
         direction="left"
@@ -62,148 +87,172 @@ export default class ScenesPage extends React.PureComponent<Props> {
           { value: SortBy.NAME, text: t('scenes_page.sort.name') },
           { value: SortBy.SIZE, text: t('scenes_page.sort.size') }
         ]}
-        onChange={this.handleDropdownChange}
+        onChange={handleDropdownChange}
       />
     )
   }
 
-  renderProjects = () => {
-    const { isLoggedIn, didSync, projects } = this.props
-
+  const renderProjects = () => {
     if (projects.length > 0) {
       return projects.map(project => <ProjectCard key={project.id} project={project} />)
     } else if (!isLoggedIn && didSync) {
       return (
         <div className="empty-projects">
           <div>
-            <T
-              id="scenes_page.no_projects_guest"
-              values={{
-                br: <br />,
-                sign_in: (
-                  <a href={locations.signIn()} onClick={this.handleLogin}>
-                    {t('user_menu.sign_in')}
-                  </a>
-                )
-              }}
-            />
+            {t('scenes_page.no_projects_guest', {
+              br: <br />,
+              sign_in: (
+                <a href={locations.signIn()} onClick={handleLogin}>
+                  {t('user_menu.sign_in')}
+                </a>
+              )
+            })}
           </div>
         </div>
       )
     }
     return (
       <div className="empty-projects">
-        <div>
-          <T
-            id="scenes_page.no_projects"
-            values={{
-              br: <br />,
-              link: (
-                <span
-                  className="link"
-                  onClick={event => {
-                    event.preventDefault()
-                    this.handleOpenCreateModal()
-                  }}
-                >
-                  {t('global.click_here')}
-                </span>
-              )
-            }}
-          />
+        <div className="empty-project-thumbnail" />
+        <p className="description">
+          {t('scenes_page.no_projects', {
+            br: <br />,
+            link: (text: string) => (
+              <span
+                className="link"
+                onClick={event => {
+                  event.preventDefault()
+                  handleOpenImportModal()
+                }}
+              >
+                {text}
+              </span>
+            )
+          })}
+        </p>
+        <div className="actions">
+          <Button
+            as="a"
+            className="learn-more-button"
+            inverted
+            href="https://docs.decentraland.org/creator/development-guide/sdk-101/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {t('global.learn_more')}
+          </Button>
+          <Button className="create-scene-button" primary onClick={handleOpenCreateModal}>
+            {t('scenes_page.create_scene')}
+          </Button>
         </div>
       </div>
     )
   }
 
-  handleLogin = () => this.props.onNavigate(locations.signIn())
+  const handleLogin = useCallback(() => onNavigate(locations.signIn()), [onNavigate])
 
-  handleOpenShowcase = () => this.props.onNavigate(locations.poolSearch())
+  const paginate = useCallback(
+    (options: PaginationOptions = {}) => {
+      onPageChange({
+        page,
+        sortBy,
+        ...options
+      })
+    },
+    [page, sortBy, onPageChange]
+  )
 
-  handleNavigateToLand = () => this.props.onNavigate(locations.land())
+  const handleDropdownChange = useCallback(
+    (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => paginate({ sortBy: value as SortBy }),
+    [paginate]
+  )
 
-  handleDropdownChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) =>
-    this.paginate({ sortBy: value as SortBy })
+  const handlePageChange = useCallback(
+    (_event: React.SyntheticEvent<HTMLElement, Event>, { activePage }: PaginationProps) => paginate({ page: activePage as number }),
+    [paginate]
+  )
 
-  handlePageChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { activePage }: PaginationProps) =>
-    this.paginate({ page: activePage as number })
-
-  paginate = (options: PaginationOptions = {}) => {
-    const { page, sortBy } = this.props
-    this.props.onPageChange({
-      page,
-      sortBy,
-      ...options
-    })
+  if (isLoggingIn || isFetching) {
+    return <LoadingPage />
   }
 
-  render() {
-    const { projects, isFetching, totalPages, page, isLoggingIn, poolList } = this.props
-    if (isLoggingIn || isFetching) {
-      return <LoadingPage />
-    }
+  const hasPagination = totalPages > 1
 
-    const hasPagination = totalPages > 1
+  const paginationProps: Record<string, any> = {
+    firstItem: null,
+    lastItem: null
+  }
 
-    const paginationProps: Record<string, any> = {
-      firstItem: null,
-      lastItem: null
-    }
+  if (page === 1) {
+    paginationProps.prevItem = null
+  }
+  if (page === totalPages) {
+    paginationProps.nextItem = null
+  }
 
-    if (page === 1) {
-      paginationProps.prevItem = null
-    }
-    if (page === totalPages) {
-      paginationProps.nextItem = null
-    }
-
-    return (
-      <>
-        <Navbar isFullscreen />
-        <Page isFullscreen className="ScenesPage">
-          <Navigation activeTab={NavigationTab.SCENES}>
-            <SyncToast />
-          </Navigation>
-          <Container>
-            <div className="projects-menu">
-              <div className="items-count">{t('scenes_page.results', { count: projects.length })}</div>
-              <div className="actions">
-                {projects.length > 1 ? this.renderSortDropdown() : null}
-                {this.renderImportButton()}
-                {this.renderCreateButton()}
-              </div>
-            </div>
-            <Section className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
-              <div className="CardList">{this.renderProjects()}</div>
-              {hasPagination ? (
-                <Pagination {...paginationProps} activePage={page} totalPages={totalPages} onPageChange={this.handlePageChange} />
-              ) : null}
-            </Section>
-            {poolList ? (
-              <>
-                <Row>
-                  <Row className="scene-pool-menu">
-                    <Header sub>{t('scenes_page.from_scene_pool')}</Header>
-                  </Row>
-                  <Row align="right">
-                    <Link to={locations.poolSearch()}>
-                      <Button basic>
-                        {t('global.view_more')}&nbsp;<Icon name="chevron right"></Icon>
-                      </Button>
-                    </Link>
-                  </Row>
-                </Row>
-                <div className="scene-pool-projects">
-                  {poolList.map(pool => (
-                    <ProjectCard key={pool.id} project={pool} />
-                  ))}
+  return (
+    <>
+      <Navbar isFullscreen />
+      <Page isFullscreen className="ScenesPage">
+        <Navigation activeTab={NavigationTab.SCENES}>
+          <SyncToast />
+        </Navigation>
+        <Container>
+          <Section className="projects-menu">
+            <Row>
+              <Column>
+                <Header>{t('scenes_page.my_scenes')}</Header>
+              </Column>
+              <Column align="right">
+                <div className="actions">
+                  {renderImportButton()}
+                  {renderCreateButton()}
                 </div>
-              </>
+              </Column>
+            </Row>
+            <Row className="actions">
+              <Column>
+                <div className="items-count">{t('scenes_page.results', { count: projects.length })}</div>
+              </Column>
+              <Column align="right">{projects.length > 1 ? renderSortDropdown() : null}</Column>
+            </Row>
+          </Section>
+          <Section className={classNames('project-cards', { 'has-pagination': hasPagination })}>
+            <div className="CardList">{renderProjects()}</div>
+            {hasPagination ? (
+              <Pagination {...paginationProps} activePage={page} totalPages={totalPages} onPageChange={handlePageChange} />
             ) : null}
-          </Container>
-        </Page>
-        <Footer />
-      </>
-    )
-  }
+          </Section>
+          {poolList ? (
+            <>
+              <Row>
+                <Row className="scene-pool-menu">
+                  <Header sub>{t('scenes_page.from_scene_pool')}</Header>
+                </Row>
+                <Row align="right">
+                  <Link to={locations.poolSearch()}>
+                    <Button basic>
+                      {t('global.view_more')}&nbsp;<Icon name="chevron right"></Icon>
+                    </Button>
+                  </Link>
+                </Row>
+              </Row>
+              <div className="scene-pool-projects">
+                {poolList.map(pool => (
+                  <ProjectCard key={pool.id} project={pool} />
+                ))}
+              </div>
+            </>
+          ) : null}
+        </Container>
+      </Page>
+      <Footer />
+    </>
+  )
 }
+
+ScenesPage.defaultProps = {
+  projects: []
+} as DefaultProps
+
+export default ScenesPage

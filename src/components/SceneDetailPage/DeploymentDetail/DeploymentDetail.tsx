@@ -1,17 +1,23 @@
 import * as React from 'react'
 import { Layer, Dropdown, Button, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { config } from 'config'
+import { isDevelopment } from 'lib/environment'
 import { idToCoords, coordsToId, hoverStrokeByRole, hoverFillByRole } from 'modules/land/utils'
 import { locations } from 'routing/locations'
 import { getStatus } from 'modules/deployment/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
 import { RoleType } from 'modules/land/types'
 import { Atlas } from 'components/Atlas'
+import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import SceneStats from 'components/SceneStats'
 import { DeployModalView, DeployModalMetadata } from 'components/Modals/DeployModal/DeployModal.types'
+import Stats from 'components/SceneStats/Stats/Stats'
 import { Props } from './DeploymentDetail.types'
 import './DeploymentDetail.css'
-import Stats from 'components/SceneStats/Stats/Stats'
+
+const EXPLORER_URL = config.get('EXPLORER_URL', '')
+const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
   getHighlightLayer =
@@ -50,6 +56,13 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
     )
   }
 
+  getExplorerUrl = (world: string) => {
+    if (isDevelopment) {
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=goerli`
+    }
+    return `${EXPLORER_URL}/world/${world}`
+  }
+
   render() {
     const { project, deployment, landTiles, onNavigate, onOpenModal } = this.props
     const landId = deployment.base in landTiles ? landTiles[deployment.base].land.id : null
@@ -62,7 +75,18 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
       <div className={`DeploymentDetail ${landId ? 'clickable' : ''}`} onClick={() => landId && onNavigate(locations.landDetail(landId))}>
         {this.renderThumbnail()}
         <Stats label={t('scene_detail_page.status')}>{statusText}</Stats>
-        <SceneStats deployment={deployment} />
+        {deployment.world ? (
+          <div className="world-url">
+            <Stats label={t('scene_detail_page.url')}>
+              {this.getExplorerUrl(deployment.world)}
+              <CopyToClipboard role="button" text={this.getExplorerUrl(deployment.world)} showPopup={true}>
+                <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
+              </CopyToClipboard>
+            </Stats>
+          </div>
+        ) : (
+          <SceneStats deployment={deployment} />
+        )}
         <Dropdown
           trigger={
             <Button basic>
