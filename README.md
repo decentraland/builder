@@ -33,5 +33,6 @@ Here are the basic requirements to run the project:
 ```
 # .env
 
+
 NODE_PATH=src
 ```
