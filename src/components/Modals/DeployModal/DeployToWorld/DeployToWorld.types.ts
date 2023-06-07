@@ -24,11 +24,12 @@ export type Props = {
   onBack: () => void
   onPublish: typeof deployToWorldRequest
   onRecord: typeof recordMediaRequest
-  onNavigate: (path: string, locationState?: DeployToWorldLocationStateProps) => void
+  onNavigate: (path: string) => void
+  onReplace: (path: string, locationState?: DeployToWorldLocationStateProps) => void
 }
 
 export type MapStateProps = Pick<Props, 'ensList' | 'project' | 'metrics' | 'deployments' | 'deploymentProgress' | 'error' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onPublish' | 'onNavigate' | 'onRecord'>
+export type MapDispatchProps = Pick<Props, 'onPublish' | 'onNavigate' | 'onRecord' | 'onReplace'>
 export type MapDispatch = Dispatch<DeployToWorldRequestAction | CallHistoryMethodAction | RecordMediaRequestAction>
 
 export enum DeployToWorldView {

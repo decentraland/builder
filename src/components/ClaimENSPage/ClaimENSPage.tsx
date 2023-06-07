@@ -54,13 +54,16 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   handleBack = () => {
-    if (this.props.isFromDeployToWorld && this.props.projectId) {
-      this.props.onNavigate(locations.sceneEditor(this.props.projectId), {
+    const { hasHistory, projectId, isFromDeployToWorld, onBack, onNavigate, onReplace } = this.props
+    if (isFromDeployToWorld && projectId) {
+      onReplace(locations.sceneEditor(projectId), {
         fromParam: FromParam.CLAIM_NAME,
         claimedName: ''
       })
+    } else if (hasHistory) {
+      onBack()
     } else {
-      this.props.onNavigate(locations.root())
+      onNavigate(locations.ens())
     }
   }
 

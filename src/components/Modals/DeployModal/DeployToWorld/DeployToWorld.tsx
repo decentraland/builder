@@ -31,6 +31,7 @@ export default function DeployToWorld({
   onPublish,
   onRecord,
   onNavigate,
+  onReplace,
   onClose,
   onBack
 }: Props) {
@@ -80,8 +81,8 @@ export default function DeployToWorld({
   }, [view, project, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
-    onNavigate(locations.claimENS(), { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
-  }, [project, onNavigate])
+    onReplace(locations.claimENS(), { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
+  }, [project, onReplace])
 
   const handleWorldSelected = useCallback(
     (_, { value }) => {

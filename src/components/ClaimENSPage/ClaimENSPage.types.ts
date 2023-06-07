@@ -8,9 +8,11 @@ export type Props = {
   wallet: Wallet | null
   mana: number
   projectId: string | null
+  hasHistory: boolean
   isFromDeployToWorld: boolean
   onOpenModal: typeof openModal
-  onNavigate: (path: string, locationState?: ClaimNameLocationStateProps) => void
+  onNavigate: (path: string) => void
+  onReplace: (path: string, locationState?: ClaimNameLocationStateProps) => void
   onBack: typeof goBack
 }
 
@@ -21,6 +23,6 @@ export type State = {
   isError: boolean
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'mana' | 'projectId' | 'isFromDeployToWorld'>
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onNavigate' | 'onBack'>
+export type MapStateProps = Pick<Props, 'wallet' | 'mana' | 'projectId' | 'hasHistory' | 'isFromDeployToWorld'>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onNavigate' | 'onBack' | 'onReplace'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>
