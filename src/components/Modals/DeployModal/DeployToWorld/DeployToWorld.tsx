@@ -170,7 +170,7 @@ export default function DeployToWorld({
           <div className={styles.successImage} aria-label={project?.description} role="img" />
           <h1 className={styles.modalHeader}>{t('deployment_modal.deploy_world.success.title')}</h1>
           <span className={styles.description}>{t('deployment_modal.deploy_world.success.subtitle')}</span>
-          <CopyToClipboard role="button" text={getExplorerUrl} className={`${styles.shareUrlField} field`}>
+          <CopyToClipboard role="button" text={getExplorerUrl} className={`${styles.shareUrlField} field`} showPopup={true}>
             <Field
               className={styles.shareUrlFieldInput}
               value={getExplorerUrl}

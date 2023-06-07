@@ -2,9 +2,9 @@ import React, { useCallback, useState } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty, Icon as DCLIcon } from 'decentraland-ui'
 import { config } from 'config'
+import { isDevelopment } from 'lib/environment'
 import { ENS } from 'modules/ens/types'
 import { locations } from 'routing/locations'
-import { preventDefault } from 'lib/preventDefault'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -13,6 +13,7 @@ import { Props, SortBy } from './WorldListPage.types'
 import './WorldListPage.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
+const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
@@ -28,6 +29,13 @@ const WorldListPage: React.FC<Props> = props => {
     }
 
     return false
+  }
+
+  const getExplorerUrl = (world: string) => {
+    if (isDevelopment) {
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=goerli`
+    }
+    return `${EXPLORER_URL}/world/${world}`
   }
 
   const handleClaimENS = useCallback(() => {
@@ -76,12 +84,12 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const renderWorldUrl = (ens: ENS) => {
-    const url = `${EXPLORER_URL}/world/${ens.name}`
+    const url = getExplorerUrl(ens.subdomain)
     return isWorldDeployed(ens) ? (
       <div className="world-url">
         <span>{url}</span>
         <div className="right">
-          <CopyToClipboard role="button" text={url}>
+          <CopyToClipboard role="button" text={url} showPopup={true}>
             <DCLIcon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
           </CopyToClipboard>
           <a href={url} target="_blank" rel="noopener noreferrer">
@@ -113,27 +121,6 @@ const WorldListPage: React.FC<Props> = props => {
         <Button primary size="small" onClick={handlePublishScene}>
           {t('worlds_list_page.table.publish_scene')}
         </Button>
-      </div>
-    )
-  }
-
-  const renderActionsMenu = () => {
-    return (
-      <div>
-        <Dropdown
-          trigger={
-            <Button basic>
-              <DCLIcon name="ellipsis horizontal" />
-            </Button>
-          }
-          inline
-          direction="left"
-          onClick={() => preventDefault()}
-        >
-          <Dropdown.Menu>
-            <Dropdown.Item text={'TBD'} />
-          </Dropdown.Menu>
-        </Dropdown>
       </div>
     )
   }
@@ -181,7 +168,6 @@ const WorldListPage: React.FC<Props> = props => {
                   <Table.HeaderCell width="1" textAlign="center">
                     {t('worlds_list_page.table.status')}
                   </Table.HeaderCell>
-                  <Table.HeaderCell width="1"></Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -194,7 +180,6 @@ const WorldListPage: React.FC<Props> = props => {
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldStatus(ens)}
                       </Table.Cell>
-                      <Table.Cell width={1}>{renderActionsMenu()}</Table.Cell>
                     </Table.Row>
                   )
                 })}
