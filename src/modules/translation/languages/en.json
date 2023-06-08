@@ -423,17 +423,14 @@
       "back": "Go back to publish scene",
       "close": "Close publish modal",
       "claim_name": "Claim name",
-      "empty_state_description": "You don't have any available World.<br></br><b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want.",
+      "empty_state_title": "You don't have any available World",
+      "empty_state_description": "<b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want.",
       "success": {
         "title": "Your scene is published!",
         "subtitle": "You can now explore and play in your World:",
         "jump_in": "Jump In",
         "share_in_twitter": "Share in Twitter",
         "share_in_twitter_text": "I just published new content on my World✨\n\nCheck it out:\n📍"
-      },
-      "failure": {
-        "title": "Something went wrong",
-        "subtitle": "We couldn't publish your scene"
       },
       "failure": {
         "title": "Something went wrong",

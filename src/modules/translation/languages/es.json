@@ -426,17 +426,14 @@
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
       "claim_name": "Obtener un nombre",
-      "empty_state_description": "No tiene ningún mundo disponible.<br></br><b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un mundo. Puedes tener tantos como quieras.",
+      "empty_state_title": "No tiene ningún mundo disponible",
+      "empty_state_description": "<b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un mundo. Puedes tener tantos como quieras.",
       "success": {
         "title": "Tu escena ha sido publicada!",
         "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",
         "jump_in": "Ingresar",
         "share_in_twitter": "Compartir en Twitter",
         "share_in_twitter_text": "Acabo de publicar contenido nuevo en mi mundo✨\n\nVisitalo en:\n📍"
-      },
-      "failure": {
-        "title": "Algo salió mal",
-        "subtitle": "No pudimos publicar tu escena"
       },
       "failure": {
         "title": "Algo salió mal",
