@@ -416,8 +416,8 @@
       "world_placeholder": "Select a NAME",
       "back": "Go back to publish scene",
       "close": "Close publish modal",
-      "claim_name": "Claim a new name",
-      "empty_state_description": "You don't have any available world.<br></br><b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want.",
+      "claim_name": "Claim name",
+      "empty_state_description": "You don't have any available World.<br></br><b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want.",
       "success": {
         "title": "Your scene is published!",
         "subtitle": "You can now explore and play in your World:",
@@ -434,7 +434,7 @@
         "subtitle": "We couldn't publish your scene"
       },
       "world_url_description": "The URL to jump in your World will be:<br></br><b>{world_url}</b>",
-      "world_has_content": "The current world will be replaced",
+      "world_has_content": "The existing content in {world} Dream will be replaced with the new content you're about to publish.",
       "confirm_world_replace_content": "I understand that this action is irreversible",
       "scene_information": "Scene Information"
     },

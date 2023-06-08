@@ -111,7 +111,7 @@
 }
 
 .DeployModal .thumbnail {
-  height: 150px;
+  height: 162px;
   background-repeat: no-repeat;
   background-size: contain;
   background-position-y: 45%;
@@ -124,12 +124,12 @@
 
 .DeployModal .thumbnail.deploy-to-land {
   background-image: url('../../../images/deploy-to-land.svg');
-  width: 150px;
+  width: 162px;
 }
 
 .DeployModal .thumbnail.deploy-to-world {
   background-image: url('../../../images/deploy-to-world.svg');
-  width: 150px;
+  width: 162px;
 }
 
 .DeployModal .ui.button {
@@ -205,10 +205,11 @@
   border-radius: 8px;
   padding: 24px;
   flex: 1;
+  background-color: #5e5b67;
 }
 
 .DeployModal .option-container .thumbnail {
-  height: 150px;
+  height: 162px;
 }
 
 .DeployModal .option-container .option-description {
@@ -256,6 +257,7 @@
   line-height: 16px;
   text-decoration: underline;
   margin-top: 8px;
+  color: white;
 }
 
 .DeployModal .modal-body .ui.header.modal-title {
