@@ -317,7 +317,7 @@
     "clear": {
       "confirmation": {
         "action": "Unpublish",
-        "description": "You are about to unpublish \"{project}\" from {coords}",
+        "description": "You are about to unpublish \"{project}\" from {location}",
         "title": "Unpublish Scene"
       },
       "connect": {
@@ -424,6 +424,10 @@
         "jump_in": "Jump In",
         "share_in_twitter": "Share in Twitter",
         "share_in_twitter_text": "I just published new content on my World✨\n\nCheck it out:\n📍"
+      },
+      "failure": {
+        "title": "Something went wrong",
+        "subtitle": "We couldn't publish your scene"
       },
       "failure": {
         "title": "Something went wrong",

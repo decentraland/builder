@@ -10,13 +10,22 @@ import './ClearDeployment.css'
 export default class ClearDeployment extends React.PureComponent<Props, State> {
   state: State = {
     hasError: false,
-    needsConfirmation: true
+    needsConfirmation: true,
+    error: null
   }
 
   analytics = getAnalytics()
 
   componentDidMount() {
     this.analytics.track('Unpublish Scene')
+  }
+
+  componentDidUpdate(prevProps: Readonly<Props>): void {
+    if (this.props.error && !this.props.isCreatingFiles && prevProps.isCreatingFiles) {
+      this.setState({
+        error: this.props.error
+      })
+    }
   }
 
   handleClearDeploy = () => {
@@ -89,7 +98,12 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   renderConfirmation = () => {
-    const { deployment, error } = this.props
+    const { deployment } = this.props
+    const { error } = this.state
+
+    if (!deployment) {
+      return null
+    }
 
     return (
       <div className="ClearDeployment confirmation">
@@ -100,7 +114,10 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
           {t('deployment_modal.clear.confirmation.title')}
         </Header>
         <p className="modal-subtitle">
-          <T id="deployment_modal.clear.confirmation.description" values={{ project: deployment!.name, coords: deployment!.base }} />
+          <T
+            id="deployment_modal.clear.confirmation.description"
+            values={{ project: deployment.name, location: deployment?.world ?? deployment.base }}
+          />
         </p>
 
         <Button primary size="small" onClick={this.handleClearDeploy}>
@@ -130,8 +147,8 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   renderView = () => {
-    const { isConnected, isUploadingAssets, isCreatingFiles, deployment, error } = this.props
-    const { needsConfirmation } = this.state
+    const { isConnected, isUploadingAssets, isCreatingFiles, deployment } = this.props
+    const { needsConfirmation, error } = this.state
     const isLoading = isUploadingAssets || isCreatingFiles
 
     if (!isConnected) return this.renderConnectForm()

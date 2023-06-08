@@ -233,6 +233,10 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         data: {
           ...state.data
         },
+        progress: {
+          stage: ProgressStage.NONE,
+          value: 0
+        },
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
       }

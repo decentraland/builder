@@ -320,7 +320,7 @@
     "clear": {
       "confirmation": {
         "action": "Despublicar",
-        "description": "Estás a punto de despublicar \"{project}\" del Metaverso",
+        "description": "Estás a punto de despublicar \"{project}\" de {location}",
         "title": "Despublicar Escena"
       },
       "connect": {
@@ -427,6 +427,10 @@
         "jump_in": "Ingresar",
         "share_in_twitter": "Compartir en Twitter",
         "share_in_twitter_text": "Acabo de publicar contenido nuevo en mi mundo✨\n\nVisitalo en:\n📍"
+      },
+      "failure": {
+        "title": "Algo salió mal",
+        "subtitle": "No pudimos publicar tu escena"
       },
       "failure": {
         "title": "Algo salió mal",
