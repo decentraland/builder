@@ -270,7 +270,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
             <Icon name="modal-back" />
           </button>
           <Header size="large" className="modal-title">
-            {t('deployment_modal.deploy_world.title')}
+            {t('deployment_modal.land.empty.title')}
           </Header>
           <button className="navigation-button" onClick={this.handleClose}>
             <Icon name="modal-close" />
