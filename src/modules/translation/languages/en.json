@@ -378,6 +378,12 @@
         "description": "Your Scene has now been published.",
         "title": "Done!"
       },
+      "empty": {
+        "title": "Publish to Land",
+        "description": "You don’t own any LAND.<br></br><b>Buy your own LAND or rent it during a period</b><br></br>Your scene is {landSize} so make sure to get a {dimension, plural, one {land} other {estate}} that is equal or bigger than that.",
+        "buy_land": "Buy land",
+        "rent_land": "Rent land"
+      },
       "title": "Publish Scene"
     },
     "option_land": {

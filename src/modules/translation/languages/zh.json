@@ -374,6 +374,12 @@
         "description": "场景已上传。",
         "title": "已完成!"
       },
+      "empty": {
+        "title": "发布到土地",
+        "description": "您没有任何土地。<br></br><b>Buy your o在一段时间内租用土地或租用</b><br></br>您的场景是 {landSize} 因此，请确保获得 {dimension, plural, one {土地} other {财产}} 那是相等或更大的。",
+        "buy_land": "购买土地",
+        "rent_land": "出租土地"
+      },
       "title": "发布场景"
     },
     "option_land": {
