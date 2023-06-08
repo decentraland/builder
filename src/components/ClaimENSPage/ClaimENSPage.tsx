@@ -3,9 +3,10 @@ import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, B
 import { Network } from '@dcl/schemas'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
+import { locations } from 'routing/locations'
+import { FromParam } from 'modules/location/types'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { locations } from 'routing/locations'
 import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, isEnoughClaimMana } from 'modules/ens/utils'
 import { Props, State } from './ClaimENSPage.types'
 import './ClaimENSPage.css'
@@ -53,7 +54,17 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   handleBack = () => {
-    this.props.onNavigate(locations.root())
+    const { hasHistory, projectId, isFromDeployToWorld, onBack, onNavigate, onReplace } = this.props
+    if (isFromDeployToWorld && projectId) {
+      onReplace(locations.sceneEditor(projectId), {
+        fromParam: FromParam.CLAIM_NAME,
+        claimedName: ''
+      })
+    } else if (hasHistory) {
+      onBack()
+    } else {
+      onNavigate(locations.ens())
+    }
   }
 
   handleAction = () => {

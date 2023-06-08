@@ -13,7 +13,8 @@ import './DeployModal.css'
 export default class DeployModal extends React.PureComponent<Props, State> {
   state: State = {
     view: DeployModalView.NONE,
-    deploymentId: null
+    deploymentId: null,
+    claimedName: null
   }
 
   componentDidMount() {
@@ -21,7 +22,8 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     if (metadata) {
       this.setState({
         view: metadata.view || DeployModalView.NONE,
-        deploymentId: metadata.deploymentId || null
+        deploymentId: metadata.deploymentId || null,
+        claimedName: metadata?.claimedName || null
       })
     }
   }
@@ -152,7 +154,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { view, deploymentId } = this.state
+    const { view, deploymentId, claimedName } = this.state
     const { name, currentPoolGroup } = this.props
 
     if (view === DeployModalView.CLEAR_DEPLOYMENT && deploymentId) {
@@ -168,7 +170,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     }
 
     if (view === DeployModalView.DEPLOY_TO_WORLD) {
-      return <DeployToWorld name={name} onClose={this.handleClose} onBack={this.handleBack} />
+      return <DeployToWorld claimedName={claimedName} name={name} onClose={this.handleClose} onBack={this.handleBack} />
     }
 
     return this.renderChoiceForm()
