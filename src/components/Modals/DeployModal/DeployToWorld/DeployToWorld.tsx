@@ -39,6 +39,8 @@ export default function DeployToWorld({
   // Ref used to store current world deployment status and validate if the user is trying to deploy the same world
   const currentDeployment = useRef<Deployment | undefined>()
 
+  const currenWorldLabel = world && ensList.find(ens => ens.subdomain === world)?.name
+
   useEffect(() => {
     if (ensList.length === 0) {
       setView(DeployToWorldView.EMPTY)
@@ -74,8 +76,11 @@ export default function DeployToWorld({
     if (view === DeployToWorldView.SUCCESS) {
       onNavigate(locations.sceneDetail(project.id))
     }
+    if (isLoading) {
+      return
+    }
     onClose()
-  }, [view, project.id, onClose, onNavigate])
+  }, [view, project.id, isLoading, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
     onNavigate(locations.claimENS())
@@ -289,10 +294,10 @@ export default function DeployToWorld({
                   })}
                 </p>
                 {hasWorldContent ? (
-                  <span className={styles.worldHasContent}>
+                  <div className={styles.worldHasContent}>
                     <Icon name="alert-warning" />
-                    {t('deployment_modal.deploy_world.world_has_content')}
-                  </span>
+                    <span>{t('deployment_modal.deploy_world.world_has_content', { world: currenWorldLabel })}</span>
+                  </div>
                 ) : null}
               </>
             ) : undefined}
@@ -339,11 +344,21 @@ export default function DeployToWorld({
       <div className={styles.modalBody}>
         <div className={classNames(styles.modalNavigation, { [styles.end]: view === DeployToWorldView.SUCCESS })}>
           {view !== DeployToWorldView.SUCCESS && (
-            <button className={styles.navigationButton} onClick={onBack} aria-label={t('deployment_modal.deploy_world.back')}>
+            <button
+              className={styles.navigationButton}
+              disabled={isLoading}
+              onClick={onBack}
+              aria-label={t('deployment_modal.deploy_world.back')}
+            >
               <Icon name="modal-back" />
             </button>
           )}
-          <button className={styles.navigationButton} onClick={handleClose} aria-label={t('deployment_modal.deploy_world.close')}>
+          <button
+            className={styles.navigationButton}
+            disabled={isLoading}
+            onClick={handleClose}
+            aria-label={t('deployment_modal.deploy_world.close')}
+          >
             <Icon name="modal-close" />
           </button>
         </div>

@@ -81,7 +81,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                 <span className="option-title">{t('deployment_modal.options.world.title')}</span>
                 <span className="option-description">
                   {t('deployment_modal.options.world.description', { br: () => <br /> })}
-                  <a className="learn-more-link" href="https://docs.decentraland.org/">
+                  <a className="learn-more-link" href="https://docs.decentraland.org/" target="_blank" rel="noreferrer">
                     {t('deployment_modal.learn_more')}
                   </a>
                 </span>
@@ -94,7 +94,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                 <span className="option-title">{t('deployment_modal.options.land.title')}</span>
                 <span className="option-description">
                   {t('deployment_modal.options.land.description', { br: () => <br /> })}
-                  <a className="learn-more-link" href="https://docs.decentraland.org/">
+                  <a className="learn-more-link" href="https://docs.decentraland.org/" target="_blank" rel="noreferrer">
                     {t('deployment_modal.learn_more')}
                   </a>
                 </span>

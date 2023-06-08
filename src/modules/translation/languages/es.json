@@ -412,15 +412,15 @@
       "uploading": "Subiendo..."
     },
     "deploy_world": {
-      "title": "Publicar en el mundo",
+      "title": "Publicar en Dreamspace",
       "description": "Seleccione el nombre que definirá la URL:",
       "action": "Publicar",
       "world_label": "Nombre (mundo)",
       "world_placeholder": "Seleccione un nombre",
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
-      "claim_name": "Obtener un nuevo nombre",
-      "empty_state_description": "No tiene ningún mundo disponible.<br></br><b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un Mundo. Puedes tener tantos como quieras.",
+      "claim_name": "Obtener un nombre",
+      "empty_state_description": "No tiene ningún DreamSpace disponible.<br></br><b>Obtenga un DreamSpace gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un DreamSpace. Puedes tener tantos como quieras.",
       "success": {
         "title": "Tu escena ha sido publicada!",
         "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",
@@ -432,7 +432,7 @@
         "subtitle": "No pudimos publicar tu escena"
       },
       "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>",
-      "world_has_content": "El mundo actual será reemplazado",
+      "world_has_content": "El contenido existente en {world} DreamSpace se reemplazará con el nuevo contenido que está a punto de publicar.",
       "confirm_world_replace_content": "Entiendo que esta acción es irreversible",
       "scene_information": "Información de escena"
     },
