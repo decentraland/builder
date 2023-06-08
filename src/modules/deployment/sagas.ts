@@ -5,7 +5,7 @@ import { EntityType } from 'dcl-catalyst-commons'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
 import { config } from 'config'
-import { BuilderAPI, getPreviewUrl } from 'lib/api/builder'
+import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
 import { store } from 'modules/common/store'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
@@ -257,6 +257,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       return
     }
 
+    const contentClient = deployment.world ? new ContentClient({ contentUrl: config.get('WORLDS_CONTENT_SERVER', '') }) : catalystClient
+
     const identity: AuthIdentity = yield getIdentity()
     if (!identity) {
       yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
@@ -271,22 +273,23 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         scene: emptyScene,
         point: placement.point,
         rotation: placement.rotation,
-        thumbnail: null,
+        thumbnail: deployment.world ? getEmptySceneUrl() : null,
         author: null,
         isDeploy: true,
         isEmpty: true,
-        onProgress: handleProgress(ProgressStage.CREATE_FILES)
+        onProgress: handleProgress(ProgressStage.CREATE_FILES),
+        world: deployment.world ?? undefined
       })
       const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
       const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-      const { entityId, files: hashedFiles } = yield call([catalystClient, 'buildEntity'], {
+      const { entityId, files: hashedFiles } = yield call([contentClient, 'buildEntity'], {
         type: EntityType.SCENE,
         pointers: [...sceneDefinition.scene.parcels],
         metadata: sceneDefinition,
         files: contentFiles
       })
       const authChain = Authenticator.signPayload(identity, entityId)
-      yield call([catalystClient, 'deployEntity'], { entityId, files: hashedFiles, authChain })
+      yield call([contentClient, 'deployEntity'], { entityId, files: hashedFiles, authChain })
       yield put(clearDeploymentSuccess(deploymentId))
     } catch (error) {
       yield put(clearDeploymentFailure(deploymentId, error.message))
