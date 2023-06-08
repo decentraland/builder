@@ -262,7 +262,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderEmpty = () => {
-    console.log({ project: this.props.project, media: this.props.media })
     const { layout } = this.props.project
     return (
       <div className="DeployToLand empty">
