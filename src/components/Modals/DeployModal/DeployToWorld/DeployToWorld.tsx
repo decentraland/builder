@@ -83,7 +83,7 @@ export default function DeployToWorld({
       return
     }
     onClose()
-  }, [view, project, onClose, onNavigate])
+  }, [view, project, isLoading, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
     const ensUrl = `${locations.claimENS()}?from=${FromParam.DEPLOY_TO_WORLD}&projectId=${project.id}`
