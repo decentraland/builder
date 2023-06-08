@@ -33,6 +33,7 @@ export type Props = {
 
 export type State = {
   isIncentiveBannerOpen: boolean
+  isDeployModalOpened: boolean
 }
 
 export type MapStateProps = Pick<

@@ -27,7 +27,8 @@ const localStorage = getLocalStorage()
 
 export default class EditorPage extends React.PureComponent<Props, State> {
   state = {
-    isIncentiveBannerOpen: false
+    isIncentiveBannerOpen: false,
+    isDeployModalOpened: false
   }
 
   componentWillMount() {
@@ -53,12 +54,14 @@ export default class EditorPage extends React.PureComponent<Props, State> {
 
   componentDidUpdate(): void {
     const { currentProject, claimedName, isFromClaimName, isLoading, isPreviewing, onOpenModal } = this.props
-    if (!(isLoading || isPreviewing) && currentProject && isFromClaimName) {
+    const { isDeployModalOpened } = this.state
+    if (!(isLoading || isPreviewing) && currentProject && isFromClaimName && !isDeployModalOpened) {
       onOpenModal('DeployModal', {
         view: DeployModalView.DEPLOY_TO_WORLD,
         projectId: currentProject.id,
         claimedName
       } as DeployToWorldModalMetadata)
+      this.setState({ isDeployModalOpened: true })
     }
   }
 
