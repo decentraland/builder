@@ -39,13 +39,13 @@ function* handleSetENSContentSuccess(action: SetENSContentSuccessAction) {
 
 function* handleClaimNameSuccess(action: ClaimNameSuccessAction | null = null) {
   const location: ReturnType<typeof getLocation> = yield select(getLocation)
-  if (
-    location.pathname === locations.claimENS() &&
-    (location.state as DeployToWorldLocationStateProps)?.fromParam === FromParam.DEPLOY_TO_WORLD &&
-    action
-  ) {
+  const isFromDeployToWorld =
+    (location.state as DeployToWorldLocationStateProps)?.fromParam === FromParam.DEPLOY_TO_WORLD ||
+    location.query.from === FromParam.DEPLOY_TO_WORLD
+  if (location.pathname === locations.claimENS() && isFromDeployToWorld && action) {
+    const projectId = (location.state as DeployToWorldLocationStateProps)?.projectId || location.query.projectId
     yield put(
-      replace(locations.sceneEditor((location.state as DeployToWorldLocationStateProps).projectId), {
+      replace(locations.sceneEditor(projectId), {
         fromParam: FromParam.CLAIM_NAME,
         claimedName: action.payload.ens.subdomain
       })

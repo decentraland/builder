@@ -81,7 +81,8 @@ export default function DeployToWorld({
   }, [view, project, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
-    onReplace(locations.claimENS(), { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
+    const ensUrl = `${locations.claimENS()}?from=${FromParam.DEPLOY_TO_WORLD}&projectId=${project.id}`
+    onReplace(ensUrl, { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
   }, [project, onReplace])
 
   const handleWorldSelected = useCallback(

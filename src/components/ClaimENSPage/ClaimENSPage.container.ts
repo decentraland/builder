@@ -9,10 +9,12 @@ import { MapDispatchProps, MapDispatch, MapStateProps } from './ClaimENSPage.typ
 import ClaimENSPage from './ClaimENSPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const isFromDeployToWorld = (getLocation(state).state as DeployToWorldLocationStateProps)?.fromParam === FromParam.DEPLOY_TO_WORLD
+  const isFromDeployToWorld =
+    (getLocation(state).state as DeployToWorldLocationStateProps)?.fromParam === FromParam.DEPLOY_TO_WORLD ||
+    getLocation(state).query.from === FromParam.DEPLOY_TO_WORLD
   let projectId = null
   if (isFromDeployToWorld) {
-    projectId = (getLocation(state).state as DeployToWorldLocationStateProps).projectId
+    projectId = (getLocation(state).state as DeployToWorldLocationStateProps)?.projectId || getLocation(state).query.projectId
   }
 
   return {
