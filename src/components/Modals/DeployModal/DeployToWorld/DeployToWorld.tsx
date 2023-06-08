@@ -7,6 +7,7 @@ import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { locations } from 'routing/locations'
 import { Deployment } from 'modules/deployment/types'
+import { FromParam } from 'modules/location/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
@@ -26,14 +27,16 @@ export default function DeployToWorld({
   deployments,
   isLoading,
   error,
+  claimedName,
   onPublish,
   onRecord,
   onNavigate,
+  onReplace,
   onClose,
   onBack
 }: Props) {
   const [view, setView] = useState<string>('')
-  const [world, setWorld] = useState<string>('')
+  const [world, setWorld] = useState<string>(claimedName ?? '')
   const [loading, setLoading] = useState<boolean>(false)
   const [confirmWorldReplaceContent, setConfirmWorldReplaceContent] = useState<boolean>(false)
   // Ref used to store current world deployment status and validate if the user is trying to deploy the same world
@@ -80,11 +83,12 @@ export default function DeployToWorld({
       return
     }
     onClose()
-  }, [view, project.id, isLoading, onClose, onNavigate])
+  }, [view, project, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
-    onNavigate(locations.claimENS())
-  }, [onNavigate])
+    const ensUrl = `${locations.claimENS()}?from=${FromParam.DEPLOY_TO_WORLD}&projectId=${project.id}`
+    onReplace(ensUrl, { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
+  }, [project, onReplace])
 
   const handleWorldSelected = useCallback(
     (_, { value }) => {
@@ -103,10 +107,6 @@ export default function DeployToWorld({
   const handleNavigateToExplorer = () => {
     window.open(getExplorerUrl, '_blank,noreferrer')
   }
-
-  const handleShareInTwitter = useCallback(() => {
-    console.log('Share in Twitter')
-  }, [])
 
   const handleConfirmWorldReplaceContent = useCallback((_, { checked }) => {
     setConfirmWorldReplaceContent(checked)
@@ -133,6 +133,13 @@ export default function DeployToWorld({
       }
     ]
   }, [ensList])
+
+  const getShareInTwitterUrl = () => {
+    const url = encodeURIComponent(getExplorerUrl)
+    const text = encodeURIComponent(t('deployment_modal.deploy_world.success.share_in_twitter_text'))
+
+    return `https://twitter.com/intent/tweet?text=${text}&url=${url}`
+  }
 
   const renderEmptyState = () => {
     return (
@@ -175,7 +182,7 @@ export default function DeployToWorld({
           <div className={styles.successImage} aria-label={project?.description} role="img" />
           <h1 className={styles.modalHeader}>{t('deployment_modal.deploy_world.success.title')}</h1>
           <span className={styles.description}>{t('deployment_modal.deploy_world.success.subtitle')}</span>
-          <CopyToClipboard role="button" text={getExplorerUrl} className={`${styles.shareUrlField} field`}>
+          <CopyToClipboard role="button" text={getExplorerUrl} className={`${styles.shareUrlField} field`} showPopup={true}>
             <Field
               className={styles.shareUrlFieldInput}
               value={getExplorerUrl}
@@ -194,11 +201,14 @@ export default function DeployToWorld({
             icon="external alternate"
           />
           <Button
+            as="a"
             secondary
             className={styles.modalBodyStateActionButton}
             content={t('deployment_modal.deploy_world.success.share_in_twitter')}
             icon="twitter"
-            onClick={handleShareInTwitter}
+            href={getShareInTwitterUrl()}
+            rel="noopener noreferrer"
+            target="_blank"
           />
         </div>
       </>
@@ -266,7 +276,6 @@ export default function DeployToWorld({
   }
 
   const renderForm = () => {
-    const thumbnailUrl: string = project.thumbnail
     const hasWorldContent = !!deployments[world]
     return (
       <>
@@ -275,7 +284,7 @@ export default function DeployToWorld({
           <span>{t('deployment_modal.deploy_world.description')}</span>
         </div>
         <div className={styles.modalForm}>
-          {thumbnailUrl ? renderThumbnail() : null}
+          {project?.thumbnail ? renderThumbnail() : null}
           <div className={styles.worldDetails}>
             <SelectField
               label={t('deployment_modal.deploy_world.world_label')}

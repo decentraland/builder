@@ -15,7 +15,17 @@ export type LocationStateProps = {
   fromParam?: string
 }
 
+export type DeployToWorldLocationStateProps = LocationStateProps & {
+  projectId: string
+}
+
+export type ClaimNameLocationStateProps = LocationStateProps & {
+  claimedName: string
+}
+
 export enum FromParam {
   COLLECTIONS = 'collections',
-  TP_COLLECTIONS = 'thirdPartyCollections'
+  TP_COLLECTIONS = 'thirdPartyCollections',
+  DEPLOY_TO_WORLD = 'deployToWorld',
+  CLAIM_NAME = 'claimName'
 }

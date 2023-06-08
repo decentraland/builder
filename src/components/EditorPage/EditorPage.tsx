@@ -9,6 +9,8 @@ import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
 import LocalStorageToast from 'components/LocalStorageToast'
+import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
+import { DeployToWorldModalMetadata } from 'components/Modals/DeployModal/DeployToWorld/DeployToWorld.types'
 import Tools from './Tools'
 import Metrics from './Metrics'
 import ItemDragLayer from './ItemDragLayer'
@@ -25,7 +27,8 @@ const localStorage = getLocalStorage()
 
 export default class EditorPage extends React.PureComponent<Props, State> {
   state = {
-    isIncentiveBannerOpen: false
+    isIncentiveBannerOpen: false,
+    isDeployModalOpened: false
   }
 
   componentWillMount() {
@@ -47,6 +50,19 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     this.props.onCloseEditor()
     document.body.classList.remove('lock-scroll')
     document.body.removeEventListener('mousewheel', this.handleMouseWheel)
+  }
+
+  componentDidUpdate(): void {
+    const { currentProject, claimedName, isFromClaimName, isLoading, isPreviewing, onOpenModal } = this.props
+    const { isDeployModalOpened } = this.state
+    if (!(isLoading || isPreviewing) && currentProject && isFromClaimName && !isDeployModalOpened) {
+      onOpenModal('DeployModal', {
+        view: DeployModalView.DEPLOY_TO_WORLD,
+        projectId: currentProject.id,
+        claimedName
+      } as DeployToWorldModalMetadata)
+      this.setState({ isDeployModalOpened: true })
+    }
   }
 
   handleMouseWheel = (e: Event) => {

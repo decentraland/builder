@@ -425,7 +425,8 @@
         "title": "Tu escena ha sido publicada!",
         "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",
         "jump_in": "Ingresar",
-        "share_in_twitter": "Compartir en Twitter"
+        "share_in_twitter": "Compartir en Twitter",
+        "share_in_twitter_text": "Acabo de publicar contenido nuevo en mi mundo✨\n\nVisitalo en:\n📍"
       },
       "failure": {
         "title": "Algo salió mal",
@@ -519,7 +520,7 @@
   },
   "worlds_list_page": {
     "table": {
-      "name": "Nombre",
+      "name": "NOMBRE",
       "url": "URL",
       "published_scene": "Escena Publicada",
       "publish_scene": "Publicar Escena",
@@ -573,6 +574,7 @@
     "cancel": "Cancelar",
     "coming_soon": "Próximamente",
     "confirm": "Confirmar",
+    "copied": "Copiado!",
     "add": "Agregar",
     "buy": "Comprar",
     "continue": "Continuar",
@@ -691,8 +693,10 @@
     }
   },
   "scenes_page": {
-    "import_scene": "Cargar Escena",
-    "no_projects": "No tienes ninguna Escena aún.{br}{link} para comenzar.",
+    "my_scenes": "Mis Escenas",
+    "upload_scene": "Subir Escene",
+    "create_scene": "Crear Escene",
+    "no_projects": "Puede publicar sus escenas en su LAND, sus mundos o cargarlas en el Pool de escenas.{br}Alternativamente, también puede <link>cargar un archivo de escena</link> y continuar trabajando desde allí.",
     "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",
     "project_actions": {
       "delete_project": "Borrar Escena",
@@ -924,7 +928,8 @@
     "its_you": "¡Eres tú!"
   },
   "project_card": {
-    "items": "objetos",
+    "parcel_count": "{parcels} {parcels, plural, one {parcela} other {parcelas}}",
+    "item_count": "{items} {items, plural, one {item} other {items}}",
     "confirm_delete_content": "¿Seguro que quieres borrar tu Escena \"{title}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{title}\""
   },
@@ -968,7 +973,8 @@
     "draft": "Borrador",
     "status": "Estado",
     "location": "Ubicación",
-    "description": "Descripción"
+    "description": "Descripción",
+    "url": "URL"
   },
   "shortcuts": {
     "delete": "Eliminar objeto",

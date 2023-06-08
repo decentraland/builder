@@ -418,7 +418,8 @@
         "title": "您的场景已出版！",
         "subtitle": "您现在可以在您的世界中探索和玩耍：",
         "jump_in": "跳进去",
-        "share_in_twitter": "分享Twitter"
+        "share_in_twitter": "分享Twitter",
+        "share_in_twitter_text": "我刚刚在我的世界上发表了新内容✨\n\n一探究竟:\n📍"
       },
       "failure": {
         "title": "出了些问题",
@@ -566,6 +567,7 @@
     "cancel": "取消",
     "coming_soon": "快来了",
     "confirm": "确认",
+    "copied": "复制!",
     "add": "添加",
     "buy": "买",
     "continue": "继续",
@@ -684,8 +686,10 @@
     }
   },
   "scenes_page": {
-    "import_scene": "上传场景",
-    "no_projects": "看来您没有任何场景。{br} {link}开始使用。",
+    "my_scenes": "我的场景",
+    "upload_scene": "上传场景",
+    "create_scene": "创建场景",
+    "no_projects": "您可以在您的 LAND、您的世界中发布您的场景或将它们上传到场景池。{br}或者，您也可以<link>上传场景文件</link>并从这里继续工作。",
     "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "project_actions": {
       "delete_project": "删除场景",
@@ -911,7 +915,8 @@
     "its_you": "是你"
   },
   "project_card": {
-    "items": "模型",
+    "parcel_count": "{parcels} {parcels, plural, one {包裹} other {包裹}}",
+    "item_count": "{items} {items, plural, one {物品} other {项目}}",
     "confirm_delete_content": "您确认删除场景 \"{title}\"? 此操作不能回退！",
     "confirm_delete_header": "删除 \"{title}\""
   },
@@ -955,7 +960,8 @@
     "draft": "草稿",
     "status": "状态",
     "location": "位置",
-    "description": "描述"
+    "description": "描述",
+    "url": "URL"
   },
   "shortcuts": {
     "delete": "删除",

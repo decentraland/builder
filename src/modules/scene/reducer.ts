@@ -15,7 +15,13 @@ import {
   SYNC_SCENE_ASSETS_SUCCESS,
   SyncSceneAssetsSuccessAction
 } from 'modules/scene/actions'
-import { DeleteProjectAction, DELETE_PROJECT, LoadManifestSuccessAction } from 'modules/project/actions'
+import {
+  DeleteProjectAction,
+  DELETE_PROJECT,
+  LoadManifestSuccessAction,
+  LOAD_PROJECT_SCENE_SUCCESS,
+  LoadProjectSceneSuccessAction
+} from 'modules/project/actions'
 
 export type SceneState = {
   data: ModelById<Scene>
@@ -32,6 +38,7 @@ export type SceneReducerAction =
   | LoadManifestSuccessAction
   | FixLegacyNamespacesSuccessAction
   | SyncSceneAssetsSuccessAction
+  | LoadProjectSceneSuccessAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -44,7 +51,8 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
     case CREATE_SCENE:
     case PROVISION_SCENE:
     case FIX_LEGACY_NAMESPACES_SUCCESS:
-    case SYNC_SCENE_ASSETS_SUCCESS: {
+    case SYNC_SCENE_ASSETS_SUCCESS:
+    case LOAD_PROJECT_SCENE_SUCCESS: {
       const { scene } = action.payload
 
       return {

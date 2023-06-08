@@ -422,7 +422,8 @@
         "title": "Your scene is published!",
         "subtitle": "You can now explore and play in your World:",
         "jump_in": "Jump In",
-        "share_in_twitter": "Share in Twitter"
+        "share_in_twitter": "Share in Twitter",
+        "share_in_twitter_text": "I just published new content on my World✨\n\nCheck it out:\n📍"
       },
       "failure": {
         "title": "Something went wrong",
@@ -516,7 +517,7 @@
   },
   "worlds_list_page": {
     "table": {
-      "name": "Name",
+      "name": "NAME",
       "url": "URL",
       "published_scene": "Published Scene",
       "publish_scene": "Publish Scene",
@@ -569,6 +570,7 @@
     "amount": "Amount",
     "cancel": "Cancel",
     "close": "Close",
+    "copied": "Copied!",
     "coming_soon": "Coming Soon",
     "confirm": "Confirm",
     "add": "Add",
@@ -690,8 +692,10 @@
     }
   },
   "scenes_page": {
-    "import_scene": "Import Scene",
-    "no_projects": "It looks like you don't have any Scenes.{br}{link} to get started.",
+    "my_scenes": "My Scenes",
+    "upload_scene": "Upload Scene",
+    "create_scene": "Create Scene",
+    "no_projects": "You can publish your scenes in your LAND, your Worlds or upload them to the Scene Pool.{br}Alternatively, you can also <link>upload a scene file</link> and continue working from here.",
     "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
     "project_actions": {
       "delete_project": "Delete",
@@ -916,7 +920,8 @@
     "its_you": "It's you!"
   },
   "project_card": {
-    "items": "items",
+    "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
+    "item_count": "{items} {items, plural, one {item} other {items}}",
     "confirm_delete_content": "Are you sure you want to delete your Scene \"{title}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{title}\""
   },
@@ -960,7 +965,8 @@
     "draft": "Draft",
     "status": "Status",
     "location": "Location",
-    "description": "Description"
+    "description": "Description",
+    "url": "URL"
   },
   "shortcuts": {
     "delete": "Delete item",

@@ -9,12 +9,14 @@ import { getDeploymentsByWorlds, getError as getDeploymentsError, getLoading as 
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getLoading as getLandsLoading } from 'modules/land/selectors'
 import { isLoggingIn, isLoggedIn } from 'modules/identity/selectors'
+import { getProjects } from 'modules/ui/dashboard/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './WorldListPage.types'
 import WorldListPage from './WorldListPage'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
   deploymentsByWorlds: getDeploymentsByWorlds(state),
+  projects: getProjects(state),
   error: getENSError(state)?.message ?? getDeploymentsError(state) ?? undefined,
   isLoading:
     isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) ||

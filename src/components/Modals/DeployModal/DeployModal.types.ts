@@ -12,6 +12,7 @@ export type Props = ModalProps & {
 export type State = {
   view: DeployModalView
   deploymentId: string | null
+  claimedName: string | null
 }
 
 export type Step = {
@@ -33,4 +34,5 @@ export enum DeployModalView {
 export type DeployModalMetadata = {
   view: DeployModalView
   deploymentId?: string
+  claimedName?: string
 }

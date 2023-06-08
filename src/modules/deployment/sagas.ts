@@ -212,7 +212,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       thumbnail: previewUrl,
       projectId: project.id,
       base: sceneDefinition.scene.base,
-      parcels: sceneDefinition.scene.parcels
+      parcels: sceneDefinition.scene.parcels,
+      world
     }
   }
 
@@ -345,7 +346,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
             owner: definition.owner,
             layout,
             base,
-            parcels
+            parcels,
+            world: definition.worldConfiguration?.name
           })
         } else {
           deployments.delete(id)

@@ -53,6 +53,7 @@ export type Deployment = {
   layout: Layout | null
   base: string
   parcels: string[]
+  world?: string
 }
 
 export type SceneDefinition = {
