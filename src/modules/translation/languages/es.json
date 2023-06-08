@@ -425,7 +425,8 @@
         "title": "Tu escena ha sido publicada!",
         "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",
         "jump_in": "Ingresar",
-        "share_in_twitter": "Compartir en Twitter"
+        "share_in_twitter": "Compartir en Twitter",
+        "share_in_twitter_text": "Acabo de publicar contenido nuevo en mi mundo✨\n\nVisitalo en:\n📍"
       },
       "failure": {
         "title": "Algo salió mal",

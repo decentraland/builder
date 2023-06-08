@@ -103,10 +103,6 @@ export default function DeployToWorld({
     window.open(getExplorerUrl, '_blank,noreferrer')
   }
 
-  const handleShareInTwitter = useCallback(() => {
-    console.log('Share in Twitter')
-  }, [])
-
   const handleConfirmWorldReplaceContent = useCallback((_, { checked }) => {
     setConfirmWorldReplaceContent(checked)
   }, [])
@@ -132,6 +128,13 @@ export default function DeployToWorld({
       }
     ]
   }, [ensList])
+
+  const getShareInTwitterUrl = () => {
+    const url = encodeURIComponent(getExplorerUrl)
+    const text = encodeURIComponent(t('deployment_modal.deploy_world.success.share_in_twitter_text'))
+
+    return `https://twitter.com/intent/tweet?text=${text}&url=${url}`
+  }
 
   const renderEmptyState = () => {
     return (
@@ -193,11 +196,14 @@ export default function DeployToWorld({
             icon="external alternate"
           />
           <Button
+            as="a"
             secondary
             className={styles.modalBodyStateActionButton}
             content={t('deployment_modal.deploy_world.success.share_in_twitter')}
             icon="twitter"
-            onClick={handleShareInTwitter}
+            href={getShareInTwitterUrl()}
+            rel="noopener noreferrer"
+            target="_blank"
           />
         </div>
       </>
