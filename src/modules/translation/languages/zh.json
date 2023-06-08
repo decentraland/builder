@@ -374,6 +374,12 @@
         "description": "场景已上传。",
         "title": "已完成!"
       },
+      "empty": {
+        "title": "您没有任何土地。",
+        "description": "<b>Buy your o在一段时间内租用土地或租用</b><br></br>您的场景是 {landSize} 因此，请确保获得 {dimension, plural, one {土地} other {财产}} 那是相等或更大的。",
+        "buy_land": "购买土地",
+        "rent_land": "出租土地"
+      },
       "title": "发布场景"
     },
     "option_land": {
@@ -413,17 +419,14 @@
       "back": "回到发布场景",
       "close": "关闭发布模式",
       "claim_name": "索赔名称",
-      "empty_state_description": "您没有任何可用的梦境空间。<br></br><b>当您拥有一个名字时，获得一个免费的梦境空间</b>.<br></br>每个名称都会让您进入一个世界。您可以拥有想要的数量。",
+      "empty_state_title": "您没有任何可用的梦境空间。",
+      "empty_state_description": "<b>当您拥有一个名字时，获得一个免费的梦境空间</b>.<br></br>每个名称都会让您进入一个世界。您可以拥有想要的数量。",
       "success": {
         "title": "您的场景已出版！",
         "subtitle": "您现在可以在您的世界中探索和玩耍：",
         "jump_in": "跳进去",
         "share_in_twitter": "分享Twitter",
         "share_in_twitter_text": "我刚刚在我的世界上发表了新内容✨\n\n一探究竟:\n📍"
-      },
-      "failure": {
-        "title": "出了些问题",
-        "subtitle": "我们无法发布您的场景"
       },
       "failure": {
         "title": "出了些问题",

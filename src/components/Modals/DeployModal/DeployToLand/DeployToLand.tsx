@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { config } from 'config'
 import { Button, Loader, Header, Row } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -11,6 +12,7 @@ import LandAtlas from './LandAtlas'
 import { Props, State, DeployToLandView } from './DeployToLand.types'
 import './DeployToLand.css'
 
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 export default class DeployToLand extends React.PureComponent<Props, State> {
   state: State = {
     placement: null,
@@ -28,7 +30,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   componentWillReceiveProps(props: Props) {
     const { project, deployments } = props
     if (deployments.length > 0) {
-      const landDeployments = deployments.filter(deployment => deployment.base !== '0,0')
+      const landDeployments = deployments.filter(deployment => !deployment.world)
       const deployment = getDeployment(project, landDeployments)
       this.setState({
         placement: { ...deployment.placement }
@@ -52,7 +54,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       media,
       project,
       deploymentsByCoord,
-      error
+      error,
+      landTiles
     } = this.props
     const { coords, needsConfirmation } = this.state
     const isLoading = isRecording || isUploadingAssets || isCreatingFiles || isUploadingRecording
@@ -64,6 +67,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       view = DeployToLandView.CONNECT
     } else if (isConnected && isLoading && !error) {
       view = DeployToLandView.PROGRESS
+    } else if (isConnected && media && !landTiles.length) {
+      view = DeployToLandView.EMPTY
     } else if (isConnected && media && !needsConfirmation) {
       view = DeployToLandView.MAP
     } else if (!isLoading && deployment && getStatus(project, deployment) === DeploymentStatus.PUBLISHED) {
@@ -92,7 +97,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
     if (view === DeployToLandView.CONFIRMATION) {
       this.setState({ view: DeployToLandView.MAP, needsConfirmation: false })
-    } else if (view === DeployToLandView.MAP) {
+    } else if (view === DeployToLandView.MAP || view === DeployToLandView.EMPTY) {
       this.props.onBack()
     }
   }
@@ -256,6 +261,56 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     )
   }
 
+  renderEmpty = () => {
+    const { layout } = this.props.project
+    return (
+      <div className="DeployToLand empty">
+        <div className="empty-modal-header">
+          <button className="navigation-button" onClick={this.handleBack}>
+            <Icon name="modal-back" />
+          </button>
+          <Header size="large" className="modal-title">
+            {t('deployment_modal.land.empty.title')}
+          </Header>
+          <button className="navigation-button" onClick={this.handleClose}>
+            <Icon name="modal-close" />
+          </button>
+        </div>
+        <div className="modal-body">
+          <div className="thumbnail" aria-label="No land" role="img" />
+          <span className="description">
+            {t('deployment_modal.land.empty.description', {
+              br: () => <br />,
+              b: (text: string) => <b>{text}</b>,
+              dimension: layout.rows,
+              landSize: `${layout.rows}x${layout.cols}`
+            })}
+          </span>
+        </div>
+        <div className="actions">
+          <Button
+            primary
+            className="action-button"
+            as="a"
+            href={`${MARKETPLACE_WEB_URL}/lands?assetType=nft&section=land&isMap=false&isFullscreen=false&vendor=decentraland&page=1&sortBy=newest&onlyOnSale=true`}
+            target="_blank"
+          >
+            {t('deployment_modal.land.empty.buy_land')}
+          </Button>
+          <Button
+            secondary
+            className="action-button"
+            as="a"
+            href={`${MARKETPLACE_WEB_URL}/lands?assetType=nft&section=land&isMap=false&isFullscreen=false&vendor=decentraland&page=1&sortBy=newest&onlyOnRent=true`}
+            target="_blank"
+          >
+            {t('deployment_modal.land.empty.rent_land')}
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   renderSuccess = () => {
     const { placement } = this.state
     const { x, y } = placement!.point
@@ -293,6 +348,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     if (view === DeployToLandView.SUCCESS) return this.renderSuccess()
 
     if (view === DeployToLandView.CONFIRMATION) return this.renderConfirmation()
+
+    if (view === DeployToLandView.EMPTY) return this.renderEmpty()
 
     return <Loader size="big" />
   }
