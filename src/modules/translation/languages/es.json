@@ -381,6 +381,12 @@
         "description": "¡Tu Escena ha sido publicada!",
         "title": "¡Listo!"
       },
+      "empty": {
+        "title": "Publicar escena",
+        "description": "No eres dueño de ninguna tierra.<br></br><b>Compre su propia tierra o alquile durante un período</b><br></br>Tu escena es {landSize}, asegúrese de obtener {dimension, plural, one {una tierra} other {un estado}} que sea igual o más grande que eso.",
+        "buy_land": "Comprar tierra",
+        "rent_land": "Alquilar tierra"
+      },
       "title": "Publicar Escena"
     },
     "option_land": {
