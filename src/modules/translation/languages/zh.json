@@ -313,7 +313,7 @@
     "clear": {
       "confirmation": {
         "action": "撤回发布",
-        "description": "从虚拟世界撤回 \"{project}\"",
+        "description": "您即将从 {location} 取消发布\"{project}\"",
         "title": "撤回已发布的场景"
       },
       "connect": {
@@ -420,6 +420,10 @@
         "jump_in": "跳进去",
         "share_in_twitter": "分享Twitter",
         "share_in_twitter_text": "我刚刚在我的世界上发表了新内容✨\n\n一探究竟:\n📍"
+      },
+      "failure": {
+        "title": "出了些问题",
+        "subtitle": "我们无法发布您的场景"
       },
       "failure": {
         "title": "出了些问题",

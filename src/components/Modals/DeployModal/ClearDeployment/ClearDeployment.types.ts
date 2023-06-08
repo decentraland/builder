@@ -23,6 +23,7 @@ export type Props = SignInProps & {
 export type State = {
   hasError: boolean
   needsConfirmation: boolean
+  error: string | null
 }
 
 export type OwnProps = Pick<Props, 'deploymentId'>
