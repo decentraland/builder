@@ -48,6 +48,8 @@
 
 .modalBodyState .description {
   text-align: center;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .modalBodyStateActions {
@@ -78,6 +80,10 @@
 
 .actionCheckbox div {
   margin-right: 8px;
+}
+
+.actionCheckbox :global(.ui.checkbox input[type='checkbox'].hidden) ~ label:hover::before {
+  border: 2px solid white;
 }
 
 .thumbnail {
@@ -129,6 +135,11 @@
   border-radius: 4px;
   padding: 6px 8px;
   font-size: 12px;
+  line-height: 16px;
+}
+
+.modalForm .worldHasContent :global(.Icon) {
+  min-width: 24px;
 }
 
 .modalForm .worldHasContent div {
@@ -141,6 +152,11 @@
   cursor: pointer;
 }
 
+.navigationButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .modalBodyEmptyState .emptyThumbnail {
   height: 180px;
   width: 180px;
@@ -148,7 +164,7 @@
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url('../../../../images/empty_names.png');
+  background-image: url('../../../../images/empty-deploy-to-world.svg');
 }
 
 .modalBodySuccessState .description {
