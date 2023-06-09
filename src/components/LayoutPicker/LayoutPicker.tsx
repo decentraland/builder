@@ -11,8 +11,7 @@ import './LayoutPicker.css'
 export default class LayoutPicker extends React.PureComponent<Props> {
   getValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim()
-    // TODO review this
-    return value ? Math.floor(Number(value) || 1) : 1
+    return value ? Number(value) : undefined
   }
 
   handleChangeCols = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +34,7 @@ export default class LayoutPicker extends React.PureComponent<Props> {
 
   getSize = () => {
     const { rows, cols } = this.props
-    const size = Math.max(rows, cols)
+    const size = Math.max(rows || 0, cols || 0)
     if (size <= 4) {
       return 'big'
     } else if (size <= 6) {
@@ -53,6 +52,7 @@ export default class LayoutPicker extends React.PureComponent<Props> {
     if (errorMessage) {
       classes += ' error'
     }
+
     return (
       <>
         <div className={classes}>
@@ -62,7 +62,7 @@ export default class LayoutPicker extends React.PureComponent<Props> {
                 <Icon name="warning sign" />
               </div>
             ) : (
-              <SquaresGrid size={this.getSize()} rows={rows} cols={cols} />
+              <SquaresGrid size={this.getSize()} rows={rows || 0} cols={cols || 0} />
             )
           ) : null}
           <div className="inputs">
@@ -71,7 +71,8 @@ export default class LayoutPicker extends React.PureComponent<Props> {
               <input
                 id="rows-input"
                 type="number"
-                defaultValue={rows.toString()}
+                step={1}
+                value={rows !== undefined ? rows.toString() : ''}
                 onChange={this.handleChangeRows}
                 ref={this.disableScroll}
               />
@@ -82,7 +83,8 @@ export default class LayoutPicker extends React.PureComponent<Props> {
               <input
                 id="cols-input"
                 type="number"
-                defaultValue={cols.toString()}
+                step={1}
+                value={cols !== undefined ? cols.toString() : ''}
                 onChange={this.handleChangeCols}
                 ref={this.disableScroll}
               />

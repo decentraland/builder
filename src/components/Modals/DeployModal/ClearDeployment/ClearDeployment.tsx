@@ -11,7 +11,8 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   state: State = {
     hasError: false,
     needsConfirmation: true,
-    error: null
+    error: null,
+    isWorld: false
   }
 
   analytics = getAnalytics()
@@ -25,6 +26,10 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
       this.setState({
         error: this.props.error
       })
+    }
+
+    if (this.props.deployment && this.props.deployment.world) {
+      this.setState({ isWorld: true })
     }
   }
 
@@ -70,7 +75,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   renderProgress = () => {
-    const { deploymentProgress, isCreatingFiles, isUploadingAssets } = this.props
+    const { deploymentProgress } = this.props
 
     let classes = 'progress-bar'
 
@@ -83,13 +88,9 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     return (
       <div className="ClearDeployment progress">
         <Header size="large" className="modal-title">
-          {isUploadingAssets && 'Uploading assets'}
-          {isCreatingFiles && 'Creating Asset files'}
+          {t('deployment_modal.clear.progress.title')}
         </Header>
-        <p className="modal-subtitle">
-          {isUploadingAssets && 'Please wait while your scene is uploaded.'}
-          {isCreatingFiles && 'Please wait while create the files that will be uploaded.'}
-        </p>
+        <p className="modal-subtitle">{t('deployment_modal.clear.progress.description')}</p>
         <div className="progress-bar-container">
           <div className={classes} style={{ width: `${progress}%` }} />
         </div>
@@ -130,6 +131,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   renderSuccess = () => {
+    const { isWorld } = this.state
     return (
       <div className="ClearDeployment success">
         <div className="modal-header">
@@ -138,7 +140,11 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
         <Header size="large" className="modal-title">
           {t('deployment_modal.clear.success.title')}
         </Header>
-        <p className="modal-subtitle">{t('deployment_modal.clear.success.description')}</p>
+        <p className="modal-subtitle">
+          {t('deployment_modal.clear.success.description', {
+            asset: isWorld ? t('deployment_modal.clear.success.world') : t('deployment_modal.clear.success.land')
+          })}
+        </p>
         <Button size="small" primary onClick={this.props.onClose}>
           {t('deployment_modal.clear.success.continue')}
         </Button>
