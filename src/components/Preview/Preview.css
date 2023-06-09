@@ -120,3 +120,8 @@
     content: '100%';
   }
 }
+
+.SceneEditorErrorModal > .content {
+  text-align: center !important;
+  line-height: 35px !important;
+}

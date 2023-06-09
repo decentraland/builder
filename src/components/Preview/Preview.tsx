@@ -4,6 +4,9 @@ import Lottie from 'lottie-react'
 import { config } from 'config'
 
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { Button } from 'decentraland-ui'
+import { locations } from 'routing/locations'
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
 import { PreviewType } from 'modules/editor/types'
 import { convertToUnityKeyboardEvent, injectSceneEditorScripts } from 'modules/editor/utils'
@@ -22,10 +25,16 @@ let isDCLInitialized = false
 class Preview extends React.Component<Props & CollectedProps> {
   canvasContainer = React.createRef<HTMLDivElement>()
 
+  state = {
+    hasError: false
+  }
+
   componentDidMount() {
     if (unityDebugParams) {
       window.history.replaceState('', 'Unity Debug', `?${unityDebugParams}`)
     }
+
+    window.addEventListener('error', this.handleUnityError)
 
     if (!isDCLInitialized) {
       this.startEditor().catch(error => console.error('Failed to start editor', error))
@@ -38,9 +47,16 @@ class Preview extends React.Component<Props & CollectedProps> {
 
   componentWillUnmount() {
     if (canvas) {
-      document.getElementsByTagName('body')[0].appendChild(canvas)
+      const gl = canvas.getContext('webgl')
+      gl && gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
+    window.removeEventListener('error', this.handleUnityError)
     this.unsubscribeKeyDownEvent()
+  }
+
+  handleUnityError = (event: any) => {
+    event.stopImmediatePropagation()
+    this.setState({ hasError: true })
   }
 
   moveCanvas = () => {
@@ -103,6 +119,23 @@ class Preview extends React.Component<Props & CollectedProps> {
     return null
   }
 
+  renderError() {
+    const forceBackReload = () => window.location.replace(locations.sceneDetail(this.props.project.id))
+    return (
+      <Modal name="SceneEditorErrorModal" onClose={forceBackReload} size="tiny">
+        <Modal.Content>{t('editor_preview.loading_unity_error', { br: <br /> })}</Modal.Content>
+        <Modal.Actions>
+          <Button secondary onClick={forceBackReload}>
+            {t('global.back')}
+          </Button>
+          <Button primary onClick={() => window.location.reload()}>
+            {t('global.reload')}
+          </Button>
+        </Modal.Actions>
+      </Modal>
+    )
+  }
+
   render() {
     const { isLoadingEditor, connectDropTarget } = this.props
     const isLoadingResources = isLoadingEditor
@@ -127,6 +160,7 @@ class Preview extends React.Component<Props & CollectedProps> {
           </div>
         )}
         <div className={`Preview ${isLoadingResources ? 'loading' : ''}`} id="preview-viewport" ref={this.canvasContainer} />
+        {this.state.hasError && this.renderError()}
       </div>
     )
   }
