@@ -329,8 +329,14 @@
       },
       "success": {
         "continue": "OK",
-        "description": "¡La LAND ya esta despejada y lista para publicar una nueva Escena!",
-        "title": "¡Todo listo!"
+        "description": "{asset} para publicar una nueva Escena!",
+        "title": "¡Todo listo!",
+        "land": "La tierra ya esta despejada y lista",
+        "world": "El mundo ya esta despejado y listo"
+      },
+      "progress": {
+        "title": "Despublicar Escena",
+        "description": "Por favor, espere mientras su escena se despublica"
       }
     },
     "description": "Sube to Escena a tu LAND o aplica por un permiso para que dueños de LAND lo hagan por tí.",
@@ -449,12 +455,12 @@
     "learn_more": "Más información",
     "options": {
       "world": {
-        "title": "Mi mundo",
+        "title": "Mi Mundo",
         "description": "Límite de tamaño: 100 MB por mundo.<br></br>No se puede encontrar en el mapa de Genesis City.<br></br>Hasta 100 usuarios pueden unirse al mismo tiempo.",
         "action": "Publicar en el mundo"
       },
       "land": {
-        "title": "Mi tierra",
+        "title": "Mi Tierra",
         "description": "Límite de tamaño: 15 MB por paquete.<br></br>Se puede encontrar en el mapa de Genesis City.<br></br>Un número ilimitado de usuarios pueden unirse al mismo tiempo.",
         "action": "Publicar en la tierra"
       },
@@ -953,7 +959,9 @@
   },
   "project_layout_picker": {
     "max_area_error": "Tu Escena no puede tener más de {area} parcelas",
-    "min_area_error": "Tu Escena es muy chica"
+    "min_area_error": "Tu Escena es muy chica",
+    "decimals_error": "El tamaño de parcelas de su escena no debe tener un valor decimal",
+    "empty_field_error": "Debe completar la cantidad de filas y columnas para establecer el tamaño de la escena"
   },
   "quota_exceeded_modal": {
     "retry": {

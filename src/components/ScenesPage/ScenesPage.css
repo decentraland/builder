@@ -184,6 +184,33 @@
   flex: none;
 }
 
+.ScenesPage .ui.button.import-scene,
+.ScenesPage .ui.button.create-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px;
+}
+
+.ScenesPage .import-scene::before,
+.ScenesPage .create-scene::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: block;
+}
+
+.ScenesPage .import-scene::before {
+  background-image: url('../../images/upload_scene.svg');
+}
+
+.ScenesPage .create-scene::before {
+  background-image: url('../../images/create_scene.svg');
+}
+
 @keyframes templateAnimation {
   0% {
     background: rgba(var(--bluish-steel-raw), 0.16);

@@ -326,8 +326,14 @@
       },
       "success": {
         "continue": "Done",
-        "description": "The land is now clear and ready to host something else!",
-        "title": "All clear!"
+        "description": "The {asset} is now clear and ready to host something else!",
+        "title": "All clear!",
+        "land": "land",
+        "world": "world"
+      },
+      "progress": {
+        "title": "Unpublish scene",
+        "description": "Please wait while your scene is being unpublished"
       }
     },
     "description": "Deploy your Scene to your LAND or apply for a permit from landowners.",
@@ -446,12 +452,12 @@
     "learn_more": "Learn more",
     "options": {
       "world": {
-        "title": "My world",
+        "title": "My World",
         "description": "Size limit: 100 MB per World.<br></br>Not findable in Genesis City map.<br></br>Up to 100 users can join concurrently.",
         "action": "Publish to world"
       },
       "land": {
-        "title": "My LAND",
+        "title": "My Land",
         "description": "Size limit: 15 MB per parcel.<br></br>Findable in Genesis City map.<br></br>Unlimited users can join concurrently.",
         "action": "Publish to land"
       },
@@ -945,7 +951,9 @@
   },
   "project_layout_picker": {
     "max_area_error": "Your Scene can't have more than {area} parcels",
-    "min_area_error": "Your Scene is too small"
+    "min_area_error": "Your Scene is too small",
+    "decimals_error": "Your scene parcels size should not have a decimal value",
+    "empty_field_error": "You should complete the amount of rows and columns to set the scene size"
   },
   "quota_exceeded_modal": {
     "retry": {
@@ -1012,7 +1020,7 @@
   "create_modal": {
     "title": "Create a Scene",
     "name_subtitle": "Set a name and a description for your scene",
-    "size_subtitle": "Set the size of your new scene",
+    "size_subtitle": "Set the parcels size of your new scene",
     "name_label": "Name",
     "description_label": "Description",
     "description_placeholder": "Some description..."
