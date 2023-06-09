@@ -143,9 +143,9 @@ export default function DeployToWorld({
 
   const renderEmptyState = () => {
     return (
-      <>
+      <div className={styles.emptyState}>
         <div className={styles.modalHeader}>
-          <h3>{t('deployment_modal.deploy_world.title')}</h3>
+          <h3>{t('deployment_modal.deploy_world.empty_state_title')}</h3>
         </div>
         <div className={`${styles.modalBodyState} ${styles.modalBodyEmptyState}`}>
           <div className={styles.emptyThumbnail} aria-label={project?.description} role="img" />
@@ -171,7 +171,7 @@ export default function DeployToWorld({
             {t('global.learn_more')}
           </Button>
         </div>
-      </>
+      </div>
     )
   }
 

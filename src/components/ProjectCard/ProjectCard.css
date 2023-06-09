@@ -14,6 +14,8 @@
   height: 170px;
   width: 256px;
   background-size: 256px 170px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .ProjectCard .deployment-status {
@@ -39,14 +41,12 @@
 
 .ProjectCard .title {
   font-size: 18px;
-  line-height: 22px;
+  line-height: 24px;
   font-weight: 600;
-  max-width: 175px;
   overflow: hidden;
+  white-space: nowrap;
+  width: 240px;
   text-overflow: ellipsis;
-  -webkit-line-clamp: 2;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
 }
 
 .ProjectCard .description {

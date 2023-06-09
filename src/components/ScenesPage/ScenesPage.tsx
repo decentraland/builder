@@ -62,7 +62,6 @@ const ScenesPage: React.FC<Props> = props => {
   const renderImportButton = () => {
     return (
       <Button inverted className="import-scene" onClick={handleOpenImportModal}>
-        <Icon name="upload" />
         {t('scenes_page.upload_scene')}
       </Button>
     )
@@ -71,7 +70,6 @@ const ScenesPage: React.FC<Props> = props => {
   const renderCreateButton = () => {
     return (
       <Button primary className="create-scene" onClick={handleOpenCreateModal}>
-        <div className="icon icon-tree" />
         {t('scenes_page.create_scene')}
       </Button>
     )

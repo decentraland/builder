@@ -322,8 +322,14 @@
       },
       "success": {
         "continue": "已完成",
-        "description": "已清空土地,与在可以发布其他场景!",
-        "title": "已清空土地!"
+        "description": "{asset}现在已经清晰，准备托管其他东西！",
+        "title": "已清空土地!",
+        "land": "土地",
+        "world": "世界"
+      },
+      "progress": {
+        "title": "未出版的场景",
+        "description": "请等待您的场景未出版时"
       }
     },
     "description": "将场景部署到土地上，或向土地所有者申请许可。",
@@ -940,7 +946,9 @@
   },
   "project_layout_picker": {
     "max_area_error": "您的场景不得超过 {area} 块地块",
-    "min_area_error": "您的场景太小了"
+    "min_area_error": "您的场景太小了",
+    "decimals_error": "您的场景包裹尺寸不应具有小数为小数",
+    "empty_field_error": "您应该完成行和列的数量，以设置包裹尺寸"
   },
   "quota_exceeded_modal": {
     "retry": {

@@ -214,11 +214,17 @@
 
 .DeployModal .option-container .option-description {
   font-weight: 400;
-  font-size: 13px;
-  line-height: 16px;
+  font-size: 14px;
+  line-height: 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
+}
+
+.DeployModal .option-container .option-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
 }
 
 .DeployModal .scene-pool-option {
@@ -246,8 +252,14 @@
 
 .DeployModal .scene-pool-option .option-description {
   font-weight: 400;
-  font-size: 13px;
-  line-height: 16px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.DeployModal .scene-pool-option .option-title {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 .DeployModal .learn-more-link {

@@ -1,6 +1,19 @@
 import React, { useCallback, useState } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty, Icon as DCLIcon } from 'decentraland-ui'
+import {
+  Button,
+  Table,
+  Row,
+  Column,
+  Header,
+  Section,
+  Container,
+  Pagination,
+  Dropdown,
+  Empty,
+  Icon as DCLIcon,
+  Popup
+} from 'decentraland-ui'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { ENS } from 'modules/ens/types'
@@ -110,7 +123,11 @@ const WorldListPage: React.FC<Props> = props => {
   const renderPublishSceneButton = (ens: ENS) => {
     return isWorldDeployed(ens) ? (
       <div className="publish-scene">
-        <span>{deploymentsByWorlds[ens.subdomain]?.name}</span>
+        <Popup
+          content={deploymentsByWorlds[ens.subdomain]?.name}
+          on="hover"
+          trigger={<span>{deploymentsByWorlds[ens.subdomain]?.name}</span>}
+        />
         <Button inverted size="small" onClick={() => handleEditScene(ens)}>
           {t('worlds_list_page.table.edit_scene')}
         </Button>

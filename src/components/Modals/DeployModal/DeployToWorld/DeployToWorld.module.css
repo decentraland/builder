@@ -15,6 +15,17 @@
   justify-content: end;
 }
 
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.emptyState .modalHeader h3 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
 .modalHeader {
   display: flex;
   flex-direction: column;
