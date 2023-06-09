@@ -608,6 +608,7 @@
     "project": "Escena",
     "read_more": "Leer más",
     "retry_tx": "Re Enviar",
+    "reload": "Recargar",
     "save": "Salvar",
     "skip": "Saltar",
     "send": "Enviar",
@@ -1839,7 +1840,8 @@
     "unsynced": "Desincronizado"
   },
   "editor_preview": {
-    "loading_unity": "Cargando Unity..."
+    "loading_unity": "Cargando Unity...",
+    "loading_unity_error": "Hubo un error inesperado cargando su escena.{br}Por favor, recargue su navegador."
   },
   "approval_flow": {
     "loading": {

@@ -607,6 +607,7 @@
     "project": "Scene",
     "read_more": "Read more",
     "retry_tx": "Retry",
+    "reload": "Reload",
     "save": "Save",
     "send": "Send",
     "share": "Share",
@@ -1820,7 +1821,8 @@
     "unsynced": "Unsynced"
   },
   "editor_preview": {
-    "loading_unity": "Loading Unity..."
+    "loading_unity": "Loading Unity...",
+    "loading_unity_error": "There was an unexpected error loading your scene.{br}Please reload your browser."
   },
   "approval_flow": {
     "loading": {

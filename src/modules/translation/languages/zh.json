@@ -601,6 +601,7 @@
     "project": "场景",
     "read_more": "阅读更多",
     "retry_tx": "重试",
+    "reload": "重新加载",
     "save": "保存",
     "skip": "跳过",
     "send": "发送",
@@ -1824,7 +1825,8 @@
     "unsynced": "未同步"
   },
   "editor_preview": {
-    "loading_unity": "正在加载统一..."
+    "loading_unity": "正在加载统一...",
+    "loading_unity_error": "加载您的场景有一个意外的错误。{br}请重新加载浏览器。"
   },
   "approval_flow": {
     "loading": {
