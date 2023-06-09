@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { getError as getWalletError, isConnecting, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
+  isLoading,
   isUploadingAssets,
   getProgress as getUploadProgress,
   getError as getDeploymentError,
@@ -30,6 +31,7 @@ const mapState = (state: RootState): MapStateProps => ({
   isUploadingAssets: isUploadingAssets(state),
   isUploadingRecording: isUploadingRecording(state),
   isCreatingFiles: isCreatingFiles(state),
+  isLoading: isLoading(state),
   isLoggedIn: isLoggedIn(state),
   walletError: !!getWalletError(state),
   media: getMedia(state),

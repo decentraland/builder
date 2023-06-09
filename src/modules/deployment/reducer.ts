@@ -126,7 +126,8 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case DEPLOY_TO_LAND_REQUEST: {
       return {
         ...state,
-        error: null
+        error: null,
+        loading: loadingReducer(state.loading, action)
       }
     }
     case DEPLOY_TO_LAND_SUCCESS: {
@@ -147,7 +148,9 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         progress: {
           stage: ProgressStage.NONE,
           value: 0
-        }
+        },
+        error: null,
+        loading: loadingReducer(state.loading, action)
       }
     }
     case DEPLOY_TO_LAND_FAILURE: {
