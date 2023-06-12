@@ -120,15 +120,15 @@ class Preview extends React.Component<Props & CollectedProps> {
   }
 
   renderError() {
-    const forceBackReload = () => window.location.replace(locations.sceneDetail(this.props.project.id))
+    const { project } = this.props
     return (
-      <Modal name="SceneEditorErrorModal" onClose={forceBackReload} size="tiny">
+      <Modal name="SceneEditorErrorModal" size="tiny">
         <Modal.Content>{t('editor_preview.loading_unity_error', { br: <br /> })}</Modal.Content>
         <Modal.Actions>
-          <Button secondary onClick={forceBackReload}>
+          <Button secondary as="a" href={locations.sceneDetail(project.id)}>
             {t('global.back')}
           </Button>
-          <Button primary onClick={() => window.location.reload()}>
+          <Button primary as="a" href={locations.sceneEditor(project.id)}>
             {t('global.reload')}
           </Button>
         </Modal.Actions>
