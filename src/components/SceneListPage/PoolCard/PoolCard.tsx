@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
 import { DeployModalView, DeployModalMetadata } from 'components/Modals/DeployModal/DeployModal.types'
 import { Props, DefaultProps, State } from './PoolCard.types'
@@ -45,7 +44,6 @@ export default class PoolCard extends React.PureComponent<Props, State> {
     return (
       <Link to={locations.poolView(pool.id, 'pool')} className="PoolCard">
         <div className="thumbnail" style={{ backgroundImage: `url(${pool.thumbnail})` }} />
-        <DeploymentStatus projectId={pool.id} className="deployment-status" type="pool" />
         <div className="project-data">
           <div className="title-wrapper">
             <div className="title">{pool.title}</div>

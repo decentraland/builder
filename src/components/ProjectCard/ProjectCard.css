@@ -1,6 +1,7 @@
 .ProjectCard {
   position: relative;
-  width: var(--scenespage-card-width);
+  width: 100%;
+  max-width: var(--scenespage-card-width);
   height: var(--scenespage-card-height);
   border-radius: 10px;
   background: rgba(var(--bluish-steel-raw), 0.16);
@@ -12,8 +13,9 @@
 
 .ProjectCard .project-thumbnail {
   height: 170px;
-  width: 256px;
-  background-size: 256px 170px;
+  width: 100%;
+  max-width: 256px;
+  background-size: 100% 170px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
