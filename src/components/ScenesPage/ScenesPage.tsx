@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
+import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Container,
@@ -30,6 +31,9 @@ import { PaginationOptions } from 'routing/utils'
 import { Props, DefaultProps } from './ScenesPage.types'
 import './ScenesPage.css'
 
+export const LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT = 'builder-deploy-to-world-announcement'
+const localStorage = getLocalStorage()
+
 const ScenesPage: React.FC<Props> = props => {
   const {
     didSync,
@@ -41,6 +45,7 @@ const ScenesPage: React.FC<Props> = props => {
     isFetching,
     isLoggedIn,
     isLoggingIn,
+    isDeployToWorldEnabled,
     onLoadFromScenePool,
     onNavigate,
     onOpenModal,
@@ -49,7 +54,10 @@ const ScenesPage: React.FC<Props> = props => {
 
   useEffect(() => {
     onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
-  }, [onLoadFromScenePool])
+    if (!localStorage.getItem(LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT) && isDeployToWorldEnabled) {
+      onOpenModal('DeployToWorldAnnouncementModal')
+    }
+  }, [isDeployToWorldEnabled, onLoadFromScenePool, onOpenModal])
 
   const handleOpenImportModal = useCallback(() => {
     onOpenModal('ImportModal')
