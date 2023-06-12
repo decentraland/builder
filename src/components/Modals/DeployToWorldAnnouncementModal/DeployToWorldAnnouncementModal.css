@@ -2,6 +2,12 @@
   width: 640px;
 }
 
+.ui.modal.DeployToWorldAnnouncementModal,
+.ui.modal.DeployToWorldAnnouncementModal .content,
+.ui.modal.DeployToWorldAnnouncementModal .actions {
+  background-color: var(--toast);
+}
+
 .ui.small.modal.DeployToWorldAnnouncementModal .title {
   font-size: 30px;
   font-weight: 600;
