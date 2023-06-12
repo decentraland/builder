@@ -52,10 +52,10 @@ export default class DeployButton extends React.PureComponent<Props> {
   }
 
   render() {
-    const { areEntitiesOutOfBoundaries, isLoading } = this.props
+    const { areEntitiesOutOfBoundaries, project, isLoading } = this.props
     const exceededMetric = this.getExceededMetric()
     const didExceedMetrics = exceededMetric !== '' || areEntitiesOutOfBoundaries
-    const isButtonDisabled = isLoading || didExceedMetrics
+    const isButtonDisabled = isLoading || didExceedMetrics || !project.thumbnail
     const isPopupDisabled = isLoading || !isButtonDisabled
 
     return (

@@ -7,9 +7,11 @@ import {
   zoomIn,
   zoomOut,
   resetCamera,
+  takeScreenshot,
   ZoomInAction,
   ZoomOutAction,
-  ResetCameraAction
+  ResetCameraAction,
+  TakeScreenshotAction
 } from 'modules/editor/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Project } from 'modules/project/types'
@@ -21,6 +23,7 @@ export type Props = {
   isFetching: boolean
   isLoading: boolean
   isLoggedIn: boolean
+  isScreenshotReady: boolean
   numItems: number
   isFromClaimName: boolean
   claimedName?: string
@@ -29,6 +32,7 @@ export type Props = {
   onZoomIn: typeof zoomIn
   onZoomOut: typeof zoomOut
   onResetCamera: typeof resetCamera
+  onTakeScreenshot: typeof takeScreenshot
 }
 
 export type State = {
@@ -43,12 +47,16 @@ export type MapStateProps = Pick<
   | 'isLoading'
   | 'isFetching'
   | 'isLoggedIn'
+  | 'isScreenshotReady'
   | 'currentProject'
   | 'numItems'
   | 'isFromClaimName'
   | 'claimedName'
 >
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onCloseEditor' | 'onZoomOut' | 'onZoomIn' | 'onResetCamera'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onOpenModal' | 'onCloseEditor' | 'onZoomOut' | 'onZoomIn' | 'onResetCamera' | 'onTakeScreenshot'
+>
 export type MapDispatch = Dispatch<
   | OpenModalAction
   | BindEditorKeybardShortcutsAction
@@ -57,4 +65,5 @@ export type MapDispatch = Dispatch<
   | ZoomInAction
   | ZoomOutAction
   | ResetCameraAction
+  | TakeScreenshotAction
 >
