@@ -33,7 +33,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       const landDeployments = deployments.filter(deployment => !deployment.world)
       const deployment = getDeployment(project, landDeployments)
       this.setState({
-        placement: { ...deployment.placement }
+        placement: { ...deployment?.placement }
       })
     }
   }
@@ -51,6 +51,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       isUploadingAssets,
       isCreatingFiles,
       isUploadingRecording,
+      isLoading: isDeploymentLoading,
       media,
       project,
       deploymentsByCoord,
@@ -58,7 +59,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       landTiles
     } = this.props
     const { coords, needsConfirmation } = this.state
-    const isLoading = isRecording || isUploadingAssets || isCreatingFiles || isUploadingRecording
+    const isLoading = isRecording || isUploadingAssets || isCreatingFiles || isUploadingRecording || isDeploymentLoading
     let view: DeployToLandView = DeployToLandView.NONE
 
     const deployment = coords && deploymentsByCoord[coords]
@@ -67,7 +68,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       view = DeployToLandView.CONNECT
     } else if (isConnected && isLoading && !error) {
       view = DeployToLandView.PROGRESS
-    } else if (isConnected && media && !landTiles.length) {
+    } else if (isConnected && media && !Object.keys(landTiles).length) {
       view = DeployToLandView.EMPTY
     } else if (isConnected && media && !needsConfirmation) {
       view = DeployToLandView.MAP
@@ -237,7 +238,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   renderMap = () => {
     const { media, project, deployments, deploymentsByCoord, landTiles, isLoggedIn } = this.props
-    const deployment = getDeployment(project, deployments)
+    const landDeployments = deployments.filter(deployment => !deployment.world)
+    const deployment = getDeployment(project, landDeployments)
     return (
       <div className="DeployToLand atlas">
         <div className="modal-header">
