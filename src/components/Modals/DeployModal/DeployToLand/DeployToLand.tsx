@@ -32,9 +32,11 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     if (deployments.length > 0) {
       const landDeployments = deployments.filter(deployment => !deployment.world)
       const deployment = getDeployment(project, landDeployments)
-      this.setState({
-        placement: { ...deployment?.placement }
-      })
+      if (deployment) {
+        this.setState({
+          placement: { ...deployment.placement }
+        })
+      }
     }
   }
 
@@ -194,6 +196,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     const { media, project, error, deployments } = this.props
     const { placement } = this.state
     const { rows, cols } = project.layout
+
+    console.log(placement)
 
     return (
       <div className="DeployToLand confirmation">
