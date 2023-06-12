@@ -613,6 +613,7 @@
     "project": "Scene",
     "read_more": "Read more",
     "retry_tx": "Retry",
+    "reload": "Reload",
     "save": "Save",
     "send": "Send",
     "share": "Share",
@@ -1828,7 +1829,8 @@
     "unsynced": "Unsynced"
   },
   "editor_preview": {
-    "loading_unity": "Loading Unity..."
+    "loading_unity": "Loading Unity...",
+    "loading_unity_error": "Please reload your browser. If the problem persist, try using a lighter scene or contact support."
   },
   "approval_flow": {
     "loading": {

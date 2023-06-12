@@ -614,6 +614,7 @@
     "project": "Escena",
     "read_more": "Leer más",
     "retry_tx": "Re Enviar",
+    "reload": "Recargar",
     "save": "Salvar",
     "skip": "Saltar",
     "send": "Enviar",
@@ -1847,7 +1848,8 @@
     "unsynced": "Desincronizado"
   },
   "editor_preview": {
-    "loading_unity": "Cargando Unity..."
+    "loading_unity": "Cargando Unity...",
+    "loading_unity_error": "Por favor vuelva a cargar su navegador. Si el problema persiste, intente usar una escena más ligera o contacte a soporte."
   },
   "approval_flow": {
     "loading": {
