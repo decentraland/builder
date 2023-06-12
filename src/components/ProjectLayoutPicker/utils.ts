@@ -2,8 +2,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_AREA } from 'modules/template/utils'
 
 export function getErrorMessage(rows: number | undefined, cols: number | undefined) {
-  console.log({ rows, cols })
-
   if (rows === undefined || cols === undefined) {
     return t('project_layout_picker.empty_field_error')
   }

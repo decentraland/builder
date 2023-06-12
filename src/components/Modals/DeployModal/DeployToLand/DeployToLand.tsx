@@ -197,8 +197,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     const { placement } = this.state
     const { rows, cols } = project.layout
 
-    console.log(placement)
-
     return (
       <div className="DeployToLand confirmation">
         <div className="modal-header">
