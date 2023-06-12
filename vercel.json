@@ -8,7 +8,7 @@
       "GEN_STATIC_LOCAL": "true",
       "PUBLIC_URL": "/",
       "REACT_APP_DCL_DEFAULT_ENV": "dev",
-      "NODE_OPTIONS": "--max-old-space-size=8192"
+      "NODE_OPTIONS": "--max-old-space-size=10000"
     }
   },
   "routes": [
