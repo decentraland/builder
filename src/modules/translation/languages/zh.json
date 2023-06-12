@@ -1826,7 +1826,7 @@
   },
   "editor_preview": {
     "loading_unity": "正在加载统一...",
-    "loading_unity_error": "加载您的场景有一个意外的错误。{br}请重新加载浏览器。"
+    "loading_unity_error": "请重新加载您的浏览器。 如果问题持续存在，请尝试使用更轻的场景或联系支持。"
   },
   "approval_flow": {
     "loading": {

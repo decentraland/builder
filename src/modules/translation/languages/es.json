@@ -1841,7 +1841,7 @@
   },
   "editor_preview": {
     "loading_unity": "Cargando Unity...",
-    "loading_unity_error": "Hubo un error inesperado cargando su escena.{br}Por favor, recargue su navegador."
+    "loading_unity_error": "Por favor vuelva a cargar su navegador. Si el problema persiste, intente usar una escena más ligera o contacte a soporte."
   },
   "approval_flow": {
     "loading": {

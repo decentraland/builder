@@ -1822,7 +1822,7 @@
   },
   "editor_preview": {
     "loading_unity": "Loading Unity...",
-    "loading_unity_error": "There was an unexpected error loading your scene.{br}Please reload your browser."
+    "loading_unity_error": "Please reload your browser. If the problem persist, try using a lighter scene or contact support."
   },
   "approval_flow": {
     "loading": {
