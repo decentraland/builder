@@ -56,9 +56,12 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     const { currentProject, claimedName, isFromClaimName, isLoading, isPreviewing, isScreenshotReady, onOpenModal, onTakeScreenshot } =
       this.props
     const { isDeployModalOpened } = this.state
+
     if (!(isLoading || isPreviewing) && isScreenshotReady && currentProject && !currentProject.thumbnail) {
       onTakeScreenshot()
-    } else if (!(isLoading || isPreviewing) && currentProject && isFromClaimName && !isDeployModalOpened) {
+    }
+
+    if (!(isLoading || isPreviewing) && currentProject && isFromClaimName && !isDeployModalOpened) {
       onOpenModal('DeployModal', {
         view: DeployModalView.DEPLOY_TO_WORLD,
         projectId: currentProject.id,
