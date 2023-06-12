@@ -92,7 +92,13 @@ const ScenesPage: React.FC<Props> = props => {
 
   const renderProjects = () => {
     if (projects.length > 0) {
-      return projects.map(project => <ProjectCard key={project.id} project={project} />)
+      return (
+        <div className="CardList">
+          {projects.map(project => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+      )
     } else if (!isLoggedIn && didSync) {
       return (
         <div className="empty-projects">
@@ -216,7 +222,7 @@ const ScenesPage: React.FC<Props> = props => {
             </Row>
           </Section>
           <Section className={classNames('project-cards', { 'has-pagination': hasPagination })}>
-            <div className="CardList">{renderProjects()}</div>
+            {renderProjects()}
             {hasPagination ? (
               <Pagination {...paginationProps} activePage={page} totalPages={totalPages} onPageChange={handlePageChange} />
             ) : null}
