@@ -73,15 +73,15 @@
   font-size: 20px;
 }
 
-.ScenesPage .CardList {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: var(--scenespage-card-margin);
+.ScenesPage .CardList .ProjectCard,
+.ScenesPage .CardList .ProjectCard .project-thumbnail {
+  max-width: unset;
 }
 
-.ScenesPage .project-cards .ProjectCard:nth-child(4n) {
-  margin-right: 0;
+.ScenesPage .CardList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--scenespage-card-margin);
 }
 
 .ScenesPage .ProjectCard {
