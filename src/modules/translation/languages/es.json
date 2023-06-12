@@ -471,6 +471,11 @@
       }
     }
   },
+  "deploy_to_world_announcement_modal": {
+    "title": "Ahora puedes publicar<br></br>tus escenas a los mundos",
+    "description": "Cree su escena con el constructor y publíquela en un mundo en unos pocos clics.",
+    "create_scene": "Crear Escena"
+  },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
     "subtitle": "Establece un nuevo alias para tu avatar",
