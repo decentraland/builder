@@ -317,7 +317,7 @@
     "clear": {
       "confirmation": {
         "action": "Unpublish",
-        "description": "You are about to unpublish \"{project}\" from {coords}",
+        "description": "You are about to unpublish \"{project}\" from {location}",
         "title": "Unpublish Scene"
       },
       "connect": {
@@ -326,8 +326,14 @@
       },
       "success": {
         "continue": "Done",
-        "description": "The land is now clear and ready to host something else!",
-        "title": "All clear!"
+        "description": "The {asset} is now clear and ready to host something else!",
+        "title": "All clear!",
+        "land": "land",
+        "world": "world"
+      },
+      "progress": {
+        "title": "Unpublish scene",
+        "description": "Please wait while your scene is being unpublished"
       }
     },
     "description": "Deploy your Scene to your LAND or apply for a permit from landowners.",
@@ -378,6 +384,12 @@
         "description": "Your Scene has now been published.",
         "title": "Done!"
       },
+      "empty": {
+        "title": "You don’t own any LAND",
+        "description": "<b>Buy your own LAND or rent it during a period</b><br></br>Your scene is {landSize} so make sure to get a {dimension, plural, one {land} other {estate}} that is equal or bigger than that.",
+        "buy_land": "Buy land",
+        "rent_land": "Rent land"
+      },
       "title": "Publish Scene"
     },
     "option_land": {
@@ -416,20 +428,36 @@
       "world_placeholder": "Select a NAME",
       "back": "Go back to publish scene",
       "close": "Close publish modal",
-      "claim_name": "Claim a new name",
-      "empty_state_description": "You don't have any available world.<br></br><b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want."
+      "claim_name": "Claim name",
+      "empty_state_title": "You don't have any available World",
+      "empty_state_description": "<b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want.",
+      "success": {
+        "title": "Your scene is published!",
+        "subtitle": "You can now explore and play in your World:",
+        "jump_in": "Jump In",
+        "share_in_twitter": "Share in Twitter",
+        "share_in_twitter_text": "I just published new content on my World✨\n\nCheck it out:\n📍"
+      },
+      "failure": {
+        "title": "Something went wrong",
+        "subtitle": "We couldn't publish your scene"
+      },
+      "world_url_description": "The URL to jump in your World will be:<br></br><b>{world_url}</b>",
+      "world_has_content": "The existing content in {world} Dream will be replaced with the new content you're about to publish.",
+      "confirm_world_replace_content": "I understand that this action is irreversible",
+      "scene_information": "Scene Information"
     },
     "title": "Publish Scene",
     "subtitle": "Select where you want to deploy this scene:",
     "learn_more": "Learn more",
     "options": {
       "world": {
-        "title": "My world",
+        "title": "My World",
         "description": "Size limit: 100 MB per World.<br></br>Not findable in Genesis City map.<br></br>Up to 100 users can join concurrently.",
         "action": "Publish to world"
       },
       "land": {
-        "title": "My LAND",
+        "title": "My Land",
         "description": "Size limit: 15 MB per parcel.<br></br>Findable in Genesis City map.<br></br>Unlimited users can join concurrently.",
         "action": "Publish to land"
       },
@@ -439,6 +467,11 @@
         "action": "Upload to Scene Pool"
       }
     }
+  },
+  "deploy_to_world_announcement_modal": {
+    "title": "You can now publish<br></br>your scenes to Worlds",
+    "description": "Create your scene with the Builder and publish it to a World in a few clicks.",
+    "create_scene": "Create Scene"
   },
   "use_as_alias_modal": {
     "title": "Use as Alias",
@@ -502,7 +535,7 @@
   },
   "worlds_list_page": {
     "table": {
-      "name": "Name",
+      "name": "NAME",
       "url": "URL",
       "published_scene": "Published Scene",
       "publish_scene": "Publish Scene",
@@ -555,6 +588,7 @@
     "amount": "Amount",
     "cancel": "Cancel",
     "close": "Close",
+    "copied": "Copied!",
     "coming_soon": "Coming Soon",
     "confirm": "Confirm",
     "add": "Add",
@@ -584,6 +618,7 @@
     "project": "Scene",
     "read_more": "Read more",
     "retry_tx": "Retry",
+    "reload": "Reload",
     "save": "Save",
     "send": "Send",
     "share": "Share",
@@ -676,8 +711,10 @@
     }
   },
   "scenes_page": {
-    "import_scene": "Import Scene",
-    "no_projects": "It looks like you don't have any Scenes.{br}{link} to get started.",
+    "my_scenes": "My Scenes",
+    "upload_scene": "Upload Scene",
+    "create_scene": "Create Scene",
+    "no_projects": "You can publish your scenes in your LAND, your Worlds or upload them to the Scene Pool.{br}Alternatively, you can also <link>upload a scene file</link> and continue working from here.",
     "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
     "project_actions": {
       "delete_project": "Delete",
@@ -902,7 +939,8 @@
     "its_you": "It's you!"
   },
   "project_card": {
-    "items": "items",
+    "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
+    "item_count": "{items} {items, plural, one {item} other {items}}",
     "confirm_delete_content": "Are you sure you want to delete your Scene \"{title}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{title}\""
   },
@@ -919,7 +957,9 @@
   },
   "project_layout_picker": {
     "max_area_error": "Your Scene can't have more than {area} parcels",
-    "min_area_error": "Your Scene is too small"
+    "min_area_error": "Your Scene is too small",
+    "decimals_error": "Your scene parcels size should not have a decimal value",
+    "empty_field_error": "You should complete the amount of rows and columns to set the scene size"
   },
   "quota_exceeded_modal": {
     "retry": {
@@ -934,17 +974,20 @@
   "scene_detail_page": {
     "actions": {
       "duplicate": "Duplicate",
-      "download": "Download",
       "delete": "Delete",
       "unpublish": "Unpublish"
     },
+    "edit_scene": "Edit Scene",
+    "download_scene": "Download Scene",
     "published_in": "Published In",
-    "no_deployments": "This Scene has not been published in the Metaverse yet.",
-    "online": "Online",
+    "no_deployments": "This scene has not been published yet.",
+    "published": "Published",
     "unsynced": "Unsynced",
+    "draft": "Draft",
     "status": "Status",
     "location": "Location",
-    "description": "Description"
+    "description": "Description",
+    "url": "URL"
   },
   "shortcuts": {
     "delete": "Delete item",
@@ -983,7 +1026,7 @@
   "create_modal": {
     "title": "Create a Scene",
     "name_subtitle": "Set a name and a description for your scene",
-    "size_subtitle": "Set the size of your new scene",
+    "size_subtitle": "Set the parcels size of your new scene",
     "name_label": "Name",
     "description_label": "Description",
     "description_placeholder": "Some description..."
@@ -1791,7 +1834,8 @@
     "unsynced": "Unsynced"
   },
   "editor_preview": {
-    "loading_unity": "Loading Unity..."
+    "loading_unity": "Loading Unity...",
+    "loading_unity_error": "Please reload your browser. If the problem persist, try using a lighter scene or contact support."
   },
   "approval_flow": {
     "loading": {

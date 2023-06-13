@@ -1,0 +1,8 @@
+.copy-to-clipboard-popup {
+  z-index: 3000 !important;
+}
+
+.copy-to-clipboard-popup.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}

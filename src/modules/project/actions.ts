@@ -137,3 +137,19 @@ export const loadManifestFailure = (error: string) => action(LOAD_MANIFEST_FAILU
 export type LoadManifestRequestAction = ReturnType<typeof loadManifestRequest>
 export type LoadManifestSuccessAction = ReturnType<typeof loadManifestSuccess>
 export type LoadManifestFailureAction = ReturnType<typeof loadManifestFailure>
+
+// Load project scene
+export const LOAD_PROJECT_SCENE_REQUEST = '[Request] Load project scene'
+export const LOAD_PROJECT_SCENE_SUCCESS = '[Success] Load project scene'
+export const LOAD_PROJECT_SCENE_FAILURE = '[Failure] Load project scene'
+
+export const loadProjectSceneRequest = (
+  project: Project,
+  type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PROJECT
+) => action(LOAD_PROJECT_SCENE_REQUEST, { project, type })
+export const loadProjectSceneSuccess = (scene: Scene) => action(LOAD_PROJECT_SCENE_SUCCESS, { scene })
+export const loadProjectSceneFailure = (error: string) => action(LOAD_PROJECT_SCENE_FAILURE, { error })
+
+export type LoadProjectSceneRequestAction = ReturnType<typeof loadProjectSceneRequest>
+export type LoadProjectSceneSuccessAction = ReturnType<typeof loadProjectSceneSuccess>
+export type LoadProjectSceneFailureAction = ReturnType<typeof loadProjectSceneFailure>

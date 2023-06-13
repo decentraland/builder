@@ -109,3 +109,67 @@ p.DeployToLand {
 .DeployToLand.success .ui.button.hollow {
   margin-left: 0px !important;
 }
+
+.DeployToLand.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  gap: 32px;
+  width: 750px;
+}
+
+.DeployToLand.empty .actions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.DeployToLand.empty .modal-body {
+  padding: 0;
+  gap: 20px;
+  width: 100%;
+}
+
+.DeployToLand.empty .actions .ui.button.action-button {
+  width: 100%;
+  max-width: 475px;
+  margin: 0;
+  height: auto;
+}
+
+.DeployToLand.empty .empty-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.DeployToLand.empty .empty-modal-header .navigation-button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.DeployToLand.empty .empty-modal-header .ui.header.modal-title {
+  margin-bottom: 0;
+}
+
+.DeployToLand.empty .description {
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.DeployToLand.empty .thumbnail {
+  width: 180px;
+  height: 180px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../../../images/deploy-land-empty.svg');
+}

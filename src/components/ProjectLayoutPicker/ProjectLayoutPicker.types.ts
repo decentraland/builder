@@ -8,5 +8,8 @@ export type Props = Omit<LayoutProps, 'onChange'> & {
 }
 
 export type State = {
-  hasMaxError: boolean
+  layout: {
+    rows: number | undefined
+    cols: number | undefined
+  }
 }

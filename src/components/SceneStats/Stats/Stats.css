@@ -8,13 +8,13 @@
 .Stats .value {
   position: relative;
   height: 24px;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   line-height: 1.6;
   letter-spacing: normal;
-  width: 240px;
+  width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -27,5 +27,6 @@
 
 .Stats .label {
   text-transform: uppercase;
-  color: var(--secondary-text);
+  font-size: 14px;
+  font-weight: 700;
 }

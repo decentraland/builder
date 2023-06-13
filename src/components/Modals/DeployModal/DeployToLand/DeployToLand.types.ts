@@ -20,6 +20,7 @@ export type Props = {
   isUploadingAssets: boolean
   isCreatingFiles: boolean
   isUploadingRecording: boolean
+  isLoading: boolean
   isLoggedIn: boolean
   mediaProgress: number
   deploymentProgress: DeploymentState['progress']
@@ -61,6 +62,7 @@ export type MapStateProps = Pick<
   | 'isUploadingRecording'
   | 'isCreatingFiles'
   | 'isConnected'
+  | 'isLoading'
   | 'isLoggedIn'
   | 'ethAddress'
   | 'project'
@@ -80,5 +82,6 @@ export enum DeployToLandView {
   PROGRESS = 'PROGRESS',
   MAP = 'MAP',
   SUCCESS = 'SUCCESS',
-  CONFIRMATION = 'CONFIRMATION'
+  CONFIRMATION = 'CONFIRMATION',
+  EMPTY = 'EMPTY'
 }

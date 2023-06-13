@@ -2,11 +2,16 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
+import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getProjectId } from 'modules/location/selectors'
 import { getData as getProjects, getLoading } from 'modules/project/selectors'
-import { getDeploymentsByProjectId } from 'modules/deployment/selectors'
+import { getLoading as getLoadingLands } from 'modules/land/selectors'
+import { getDeploymentsByProjectId, getLoading as getLoadingDeployment } from 'modules/deployment/selectors'
 import { LOAD_PROJECTS_REQUEST, deleteProject, duplicateProject } from 'modules/project/actions'
 import { openModal } from 'modules/modal/actions'
+import { FETCH_DEPLOYMENTS_REQUEST, FETCH_WORLD_DEPLOYMENTS_REQUEST } from 'modules/deployment/actions'
+import { FETCH_ENS_LIST_REQUEST } from 'modules/ens/actions'
+import { getLoading as getLoadingENS } from 'modules/ens/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './SceneDetailPage.types'
 import SceneDetailPage from './SceneDetailPage'
 
@@ -19,7 +24,12 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     project,
     deployments,
-    isLoading: isLoadingType(getLoading(state), LOAD_PROJECTS_REQUEST)
+    isLoading: isLoadingType(getLoading(state), LOAD_PROJECTS_REQUEST),
+    isLoadingDeployments:
+      isLoadingType(getLoadingENS(state), FETCH_ENS_LIST_REQUEST) ||
+      isLoadingType(getLoadingDeployment(state), FETCH_DEPLOYMENTS_REQUEST) ||
+      isLoadingType(getLoadingDeployment(state), FETCH_WORLD_DEPLOYMENTS_REQUEST) ||
+      isLoadingType(getLoadingLands(state), FETCH_LANDS_REQUEST)
   }
 }
 

@@ -320,7 +320,7 @@
     "clear": {
       "confirmation": {
         "action": "Despublicar",
-        "description": "Estás a punto de despublicar \"{project}\" del Metaverso",
+        "description": "Estás a punto de despublicar \"{project}\" de {location}",
         "title": "Despublicar Escena"
       },
       "connect": {
@@ -329,8 +329,14 @@
       },
       "success": {
         "continue": "OK",
-        "description": "¡La LAND ya esta despejada y lista para publicar una nueva Escena!",
-        "title": "¡Todo listo!"
+        "description": "{asset} para publicar una nueva Escena!",
+        "title": "¡Todo listo!",
+        "land": "La tierra ya esta despejada y lista",
+        "world": "El mundo ya esta despejado y listo"
+      },
+      "progress": {
+        "title": "Despublicar Escena",
+        "description": "Por favor, espere mientras su escena se despublica"
       }
     },
     "description": "Sube to Escena a tu LAND o aplica por un permiso para que dueños de LAND lo hagan por tí.",
@@ -381,6 +387,12 @@
         "description": "¡Tu Escena ha sido publicada!",
         "title": "¡Listo!"
       },
+      "empty": {
+        "title": "No eres dueño de ninguna tierra",
+        "description": "<b>Compre su propia tierra o alquile durante un período</b><br></br>Tu escena es {landSize}, asegúrese de obtener {dimension, plural, one {una tierra} other {un estado}} que sea igual o más grande que eso.",
+        "buy_land": "Comprar tierra",
+        "rent_land": "Alquilar tierra"
+      },
       "title": "Publicar Escena"
     },
     "option_land": {
@@ -412,27 +424,43 @@
       "uploading": "Subiendo..."
     },
     "deploy_world": {
-      "title": "Publicar en el mundo",
+      "title": "Publicar en tu mundo",
       "description": "Seleccione el nombre que definirá la URL:",
       "action": "Publicar",
       "world_label": "Nombre (mundo)",
       "world_placeholder": "Seleccione un nombre",
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
-      "claim_name": "Obtener un nuevo nombre",
-      "empty_state_description": "No tiene ningún mundo disponible.<br></br><b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un Mundo. Puedes tener tantos como quieras."
+      "claim_name": "Obtener un nombre",
+      "empty_state_title": "No tiene ningún mundo disponible",
+      "empty_state_description": "<b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un mundo. Puedes tener tantos como quieras.",
+      "success": {
+        "title": "Tu escena ha sido publicada!",
+        "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",
+        "jump_in": "Ingresar",
+        "share_in_twitter": "Compartir en Twitter",
+        "share_in_twitter_text": "Acabo de publicar contenido nuevo en mi mundo✨\n\nVisitalo en:\n📍"
+      },
+      "failure": {
+        "title": "Algo salió mal",
+        "subtitle": "No pudimos publicar tu escena"
+      },
+      "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>",
+      "world_has_content": "El contenido existente en {world} mundo se reemplazará con el nuevo contenido que está a punto de publicar.",
+      "confirm_world_replace_content": "Entiendo que esta acción es irreversible",
+      "scene_information": "Información de escena"
     },
     "title": "Publicar Escena",
     "subtitle": "Elige donde querés subir esta escena:",
     "learn_more": "Más información",
     "options": {
       "world": {
-        "title": "Mi mundo",
+        "title": "Mi Mundo",
         "description": "Límite de tamaño: 100 MB por mundo.<br></br>No se puede encontrar en el mapa de Genesis City.<br></br>Hasta 100 usuarios pueden unirse al mismo tiempo.",
         "action": "Publicar en el mundo"
       },
       "land": {
-        "title": "Mi tierra",
+        "title": "Mi Tierra",
         "description": "Límite de tamaño: 15 MB por paquete.<br></br>Se puede encontrar en el mapa de Genesis City.<br></br>Un número ilimitado de usuarios pueden unirse al mismo tiempo.",
         "action": "Publicar en la tierra"
       },
@@ -442,6 +470,11 @@
         "action": "Subir al grupo de escenas"
       }
     }
+  },
+  "deploy_to_world_announcement_modal": {
+    "title": "Ahora puedes publicar<br></br>tus escenas a los mundos",
+    "description": "Cree su escena con el constructor y publíquela en un mundo en unos pocos clics.",
+    "create_scene": "Crear Escena"
   },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
@@ -505,7 +538,7 @@
   },
   "worlds_list_page": {
     "table": {
-      "name": "Nombre",
+      "name": "NOMBRE",
       "url": "URL",
       "published_scene": "Escena Publicada",
       "publish_scene": "Publicar Escena",
@@ -559,6 +592,7 @@
     "cancel": "Cancelar",
     "coming_soon": "Próximamente",
     "confirm": "Confirmar",
+    "copied": "Copiado!",
     "add": "Agregar",
     "buy": "Comprar",
     "continue": "Continuar",
@@ -585,6 +619,7 @@
     "project": "Escena",
     "read_more": "Leer más",
     "retry_tx": "Re Enviar",
+    "reload": "Recargar",
     "save": "Salvar",
     "skip": "Saltar",
     "send": "Enviar",
@@ -677,8 +712,10 @@
     }
   },
   "scenes_page": {
-    "import_scene": "Cargar Escena",
-    "no_projects": "No tienes ninguna Escena aún.{br}{link} para comenzar.",
+    "my_scenes": "Mis Escenas",
+    "upload_scene": "Subir Escene",
+    "create_scene": "Crear Escene",
+    "no_projects": "Puede publicar sus escenas en su LAND, sus mundos o cargarlas en el Pool de escenas.{br}Alternativamente, también puede <link>cargar un archivo de escena</link> y continuar trabajando desde allí.",
     "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",
     "project_actions": {
       "delete_project": "Borrar Escena",
@@ -910,7 +947,8 @@
     "its_you": "¡Eres tú!"
   },
   "project_card": {
-    "items": "objetos",
+    "parcel_count": "{parcels} {parcels, plural, one {parcela} other {parcelas}}",
+    "item_count": "{items} {items, plural, one {item} other {items}}",
     "confirm_delete_content": "¿Seguro que quieres borrar tu Escena \"{title}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{title}\""
   },
@@ -927,7 +965,9 @@
   },
   "project_layout_picker": {
     "max_area_error": "Tu Escena no puede tener más de {area} parcelas",
-    "min_area_error": "Tu Escena es muy chica"
+    "min_area_error": "Tu Escena es muy chica",
+    "decimals_error": "El tamaño de parcelas de su escena no debe tener un valor decimal",
+    "empty_field_error": "Debe completar la cantidad de filas y columnas para establecer el tamaño de la escena"
   },
   "quota_exceeded_modal": {
     "retry": {
@@ -942,17 +982,20 @@
   "scene_detail_page": {
     "actions": {
       "duplicate": "Duplicar",
-      "download": "Descargar",
       "delete": "Eliminar",
       "unpublish": "Despublicar"
     },
+    "edit_scene": "Editar Escena",
+    "download_scene": "Descargar Escena",
     "published_in": "Publicada En",
-    "no_deployments": "Esta Escena no ha sido publicada en el Metaverso aún.",
-    "online": "Online",
+    "no_deployments": "Esta escena aún no ha sido publicada.",
+    "published": "Publicada",
     "unsynced": "Desactualizada",
+    "draft": "Borrador",
     "status": "Estado",
     "location": "Ubicación",
-    "description": "Descripción"
+    "description": "Descripción",
+    "url": "URL"
   },
   "shortcuts": {
     "delete": "Eliminar objeto",
@@ -1810,7 +1853,8 @@
     "unsynced": "Desincronizado"
   },
   "editor_preview": {
-    "loading_unity": "Cargando Unity..."
+    "loading_unity": "Cargando Unity...",
+    "loading_unity_error": "Por favor vuelva a cargar su navegador. Si el problema persiste, intente usar una escena más ligera o contacte a soporte."
   },
   "approval_flow": {
     "loading": {

@@ -1,26 +1,9 @@
-.DeploymentStatus {
-  border-radius: 100%;
-  width: 8px;
-  height: 8px;
-  margin-right: 10px;
+.dcl.badge.DeploymentStatus {
   display: block;
-}
-
-.DeploymentStatus.unpublished {
-  background: transparent;
-  display: none;
-}
-
-.DeploymentStatus.published {
-  background: #3fff47;
-}
-
-.DeploymentStatus.dirty {
-  background: orange;
-}
-
-.ui.visible.popup.inverted.status {
-  margin-left: -14px;
-  margin-top: 16px;
-  z-index: 99999999999;
+  height: 22px;
+  padding: 2px 8px;
+  border-radius: 34px;
+  color: var(--shadows);
+  font-weight: 500;
+  text-transform: none;
 }

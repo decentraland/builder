@@ -13,7 +13,8 @@ import './DeployModal.css'
 export default class DeployModal extends React.PureComponent<Props, State> {
   state: State = {
     view: DeployModalView.NONE,
-    deploymentId: null
+    deploymentId: null,
+    claimedName: null
   }
 
   componentDidMount() {
@@ -21,7 +22,8 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     if (metadata) {
       this.setState({
         view: metadata.view || DeployModalView.NONE,
-        deploymentId: metadata.deploymentId || null
+        deploymentId: metadata.deploymentId || null,
+        claimedName: metadata?.claimedName || null
       })
     }
   }
@@ -77,11 +79,11 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             <h5 className="deploy-modal-subtitle">{t('deployment_modal.subtitle')}</h5>
             <div className="deploy-modal-options">
               <div className="option-container">
-                <div className="thumbnail deploy-to-land" />
+                <div className="thumbnail deploy-to-world" />
                 <span className="option-title">{t('deployment_modal.options.world.title')}</span>
                 <span className="option-description">
                   {t('deployment_modal.options.world.description', { br: () => <br /> })}
-                  <a className="learn-more-link" href="https://docs.decentraland.org/">
+                  <a className="learn-more-link" href="https://docs.decentraland.org/" target="_blank" rel="noreferrer">
                     {t('deployment_modal.learn_more')}
                   </a>
                 </span>
@@ -94,7 +96,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                 <span className="option-title">{t('deployment_modal.options.land.title')}</span>
                 <span className="option-description">
                   {t('deployment_modal.options.land.description', { br: () => <br /> })}
-                  <a className="learn-more-link" href="https://docs.decentraland.org/">
+                  <a className="learn-more-link" href="https://docs.decentraland.org/" target="_blank" rel="noreferrer">
                     {t('deployment_modal.learn_more')}
                   </a>
                 </span>
@@ -152,7 +154,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { view, deploymentId } = this.state
+    const { view, deploymentId, claimedName } = this.state
     const { name, currentPoolGroup } = this.props
 
     if (view === DeployModalView.CLEAR_DEPLOYMENT && deploymentId) {
@@ -168,7 +170,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     }
 
     if (view === DeployModalView.DEPLOY_TO_WORLD) {
-      return <DeployToWorld name={name} onClose={this.handleClose} onBack={this.handleBack} />
+      return <DeployToWorld claimedName={claimedName} name={name} onClose={this.handleClose} onBack={this.handleBack} />
     }
 
     return this.renderChoiceForm()

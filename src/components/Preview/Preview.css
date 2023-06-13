@@ -120,3 +120,17 @@
     content: '100%';
   }
 }
+
+.ui.modals > .ui.modal.SceneEditorErrorModal {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.ui.modals > .ui.modal.SceneEditorErrorModal > .content {
+  max-width: 400px;
+  margin-bottom: 0;
+  align-self: center;
+  overflow-wrap: break-word;
+  text-align: center;
+  line-height: 24px;
+}

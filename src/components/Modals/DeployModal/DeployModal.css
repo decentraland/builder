@@ -111,7 +111,7 @@
 }
 
 .DeployModal .thumbnail {
-  height: 150px;
+  height: 162px;
   background-repeat: no-repeat;
   background-size: contain;
   background-position-y: 45%;
@@ -124,7 +124,12 @@
 
 .DeployModal .thumbnail.deploy-to-land {
   background-image: url('../../../images/deploy-to-land.svg');
-  width: 70px;
+  width: 162px;
+}
+
+.DeployModal .thumbnail.deploy-to-world {
+  background-image: url('../../../images/deploy-to-world.svg');
+  width: 162px;
 }
 
 .DeployModal .ui.button {
@@ -200,19 +205,26 @@
   border-radius: 8px;
   padding: 24px;
   flex: 1;
+  background-color: #5e5b67;
 }
 
 .DeployModal .option-container .thumbnail {
-  height: 100px;
+  height: 162px;
 }
 
 .DeployModal .option-container .option-description {
   font-weight: 400;
-  font-size: 13px;
-  line-height: 16px;
+  font-size: 14px;
+  line-height: 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
+}
+
+.DeployModal .option-container .option-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
 }
 
 .DeployModal .scene-pool-option {
@@ -240,8 +252,14 @@
 
 .DeployModal .scene-pool-option .option-description {
   font-weight: 400;
-  font-size: 13px;
-  line-height: 16px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.DeployModal .scene-pool-option .option-title {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 .DeployModal .learn-more-link {
@@ -251,6 +269,7 @@
   line-height: 16px;
   text-decoration: underline;
   margin-top: 8px;
+  color: white;
 }
 
 .DeployModal .modal-body .ui.header.modal-title {

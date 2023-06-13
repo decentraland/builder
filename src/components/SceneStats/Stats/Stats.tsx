@@ -7,8 +7,8 @@ export default class Stats extends React.PureComponent<Props> {
     const { label, children } = this.props
     return (
       <div className="Stats">
-        <div className="value">{children}</div>
         <div className="label">{label}</div>
+        <div className="value">{children}</div>
       </div>
     )
   }

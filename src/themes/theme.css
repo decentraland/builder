@@ -24,9 +24,9 @@
   */
 
   /* ScenesPage */
-  --scenespage-card-width: 246px;
-  --scenespage-card-height: 182px;
-  --scenespage-card-margin: 26.66px;
+  --scenespage-card-width: 256px;
+  --scenespage-card-height: 240px;
+  --scenespage-card-margin: 12px;
 
   /* ScenesPage */
   --list-page-card-width: 328px;

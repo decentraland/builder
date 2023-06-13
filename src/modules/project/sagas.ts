@@ -1,6 +1,6 @@
 import uuidv4 from 'uuid/v4'
 import { push } from 'connected-react-router'
-import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
+import { takeLatest, put, select, take, call, all, race, delay, takeEvery } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -35,7 +35,11 @@ import {
   SHARE_PROJECT,
   EDIT_PROJECT_THUMBNAIL,
   DELETE_PROJECT,
-  DeleteProjectAction
+  DeleteProjectAction,
+  loadProjectSceneSuccess,
+  loadProjectSceneFailure,
+  LoadProjectSceneRequestAction,
+  LOAD_PROJECT_SCENE_REQUEST
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
@@ -72,6 +76,7 @@ export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
+  yield takeEvery(LOAD_PROJECT_SCENE_REQUEST, handleLoadProjectSceneRequest)
 
   function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
     const { template } = action.payload
@@ -233,7 +238,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleLoadProjectsRequest() {
     try {
-      const projects: Project[] = yield call(() => builder.fetchProjects())
+      const projects: Project[] = yield call([builder, 'fetchProjects'])
       const record: ModelById<Project> = {}
 
       for (const project of projects) {
@@ -246,10 +251,25 @@ export function* projectSaga(builder: BuilderAPI) {
     }
   }
 
+  function* handleLoadProjectSceneRequest(action: LoadProjectSceneRequestAction) {
+    const { project, type } = action.payload
+    try {
+      const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+      if (scenes && scenes[project.sceneId]) {
+        yield put(loadProjectSceneSuccess(scenes[project.sceneId]))
+        return
+      }
+      const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], project.id, type)
+      yield put(loadProjectSceneSuccess(manifest.scene))
+    } catch (e) {
+      yield put(loadProjectSceneFailure(e.message))
+    }
+  }
+
   function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
     const { id, type } = action.payload
     try {
-      const manifest: Manifest<Project> = yield call(() => builder.fetchManifest(id, type))
+      const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], id, type)
       yield put(loadManifestSuccess(manifest))
     } catch (e) {
       yield put(loadManifestFailure(e.message))

@@ -1,7 +1,7 @@
 export type Props = {
-  rows: number
-  cols: number
-  onChange: (rows: number, cols: number) => void
+  rows: number | undefined
+  cols: number | undefined
+  onChange: (rows: number | undefined, cols: number | undefined) => void
   errorMessage?: string
   showGrid?: boolean
 }

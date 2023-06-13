@@ -6,6 +6,12 @@
   font-size: 17px;
 }
 
+.ScenesPage .button.inverted,
+.ScenesPage .button.inverted:hover {
+  background-color: #ffffff;
+  color: var(--shadows);
+}
+
 .ScenesPage .project-cards {
   position: relative;
 }
@@ -18,16 +24,40 @@
 
 .ScenesPage .empty-projects {
   display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 200px;
   border-radius: 12px;
   border: 1px solid var(--divider);
   align-items: center;
   justify-content: center;
-  color: var(--secondary-text);
+  color: var(--text);
+  background-color: var(--dark-two);
   user-select: none;
   text-align: center;
   line-height: 28px;
+  padding-top: 105px;
+  padding-bottom: 122px;
+}
+
+.ScenesPage .empty-projects .empty-project-thumbnail {
+  width: 86px;
+  height: 86px;
+  background: url(../../images/scene.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 30px;
+}
+
+.ScenesPage .empty-projects .description {
+  margin-bottom: 40px;
+}
+
+.ScenesPage .empty-projects .actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
 }
 
 .ScenesPage .template-cards {
@@ -43,15 +73,15 @@
   font-size: 20px;
 }
 
-.ScenesPage .CardList {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: var(--scenespage-card-margin)
+.ScenesPage .CardList .ProjectCard,
+.ScenesPage .CardList .ProjectCard .project-thumbnail {
+  max-width: unset;
 }
 
-.ScenesPage .project-cards .ProjectCard:nth-child(4n) {
-  margin-right: 0;
+.ScenesPage .CardList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--scenespage-card-margin);
 }
 
 .ScenesPage .ProjectCard {
@@ -66,12 +96,6 @@
 .ScenesPage .dcl.tabs,
 .ScenesPage .dcl.tabs .ui.container {
   position: relative;
-}
-
-.ScenesPage .projects-menu {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
 }
 
 .ScenesPage .projects-menu .items-count,
@@ -92,19 +116,21 @@
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
 .ScenesPage .projects-menu .actions .ui.button {
-  width: 16px;
-  height: 16px;
-  box-sizing: content-box;
-  padding: 5px 10px;
-  border-radius: 4px;
-  border: solid 1px var(--gray);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .ScenesPage .projects-menu .actions .ui.button + .ui.button {
-  margin-left: 4px;
+  margin-left: 16px;
+}
+
+.ScenesPage .projects-menu .actions .ui.button.create-scene {
+  display: flex;
+  align-items: center;
 }
 
 .ScenesPage .projects-menu .actions .ui.dropdown.active.visible {
@@ -156,6 +182,33 @@
 
 .ScenesPage .scene-pool-projects .ProjectCard {
   flex: none;
+}
+
+.ScenesPage .ui.button.import-scene,
+.ScenesPage .ui.button.create-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px;
+}
+
+.ScenesPage .import-scene::before,
+.ScenesPage .create-scene::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: block;
+}
+
+.ScenesPage .import-scene::before {
+  background-image: url('../../images/upload_scene.svg');
+}
+
+.ScenesPage .create-scene::before {
+  background-image: url('../../images/create_scene.svg');
 }
 
 @keyframes templateAnimation {
