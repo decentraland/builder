@@ -2,8 +2,8 @@ import { connect } from 'react-redux'
 import { getLocation } from 'connected-react-router'
 import { getCurrentProject } from 'modules/project/selectors'
 import { RootState } from 'modules/common/types'
-import { closeEditor, zoomIn, zoomOut, resetCamera } from 'modules/editor/actions'
-import { isSidebarOpen, isPreviewing, isReady, isFetching } from 'modules/editor/selectors'
+import { closeEditor, zoomIn, zoomOut, resetCamera, takeScreenshot } from 'modules/editor/actions'
+import { isSidebarOpen, isPreviewing, isReady, isFetching, isScreenshotReady } from 'modules/editor/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { openModal } from 'modules/modal/actions'
 import { numItems } from 'modules/scene/selectors'
@@ -23,6 +23,7 @@ const mapState = (state: RootState): MapStateProps => {
     isLoading: !isReady(state),
     isFetching: isFetching(state),
     isLoggedIn: isLoggedIn(state),
+    isScreenshotReady: isScreenshotReady(state),
     currentProject: getCurrentProject(state),
     numItems: numItems(state),
     isFromClaimName,
@@ -35,7 +36,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCloseEditor: () => dispatch(closeEditor()),
   onZoomIn: () => dispatch(zoomIn()),
   onZoomOut: () => dispatch(zoomOut()),
-  onResetCamera: () => dispatch(resetCamera())
+  onResetCamera: () => dispatch(resetCamera()),
+  onTakeScreenshot: () => dispatch(takeScreenshot())
 })
 
 export default connect(mapState, mapDispatch)(EditorPage)
