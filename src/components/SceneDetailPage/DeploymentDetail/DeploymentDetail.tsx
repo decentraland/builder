@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import { Layer, Dropdown, Button, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
@@ -66,27 +67,36 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
   render() {
     const { project, deployment, landTiles, onNavigate, onOpenModal } = this.props
     const landId = deployment.base in landTiles ? landTiles[deployment.base].land.id : null
+    const locationText = deployment.world ? deployment.world : deployment.base
     const status = getStatus(project, deployment)
     let statusText = t('scene_detail_page.published')
     if (status === DeploymentStatus.NEEDS_SYNC) {
       statusText = t('scene_detail_page.unsynced')
     }
+
     return (
-      <div className={`DeploymentDetail ${landId ? 'clickable' : ''}`} onClick={() => landId && onNavigate(locations.landDetail(landId))}>
+      <div
+        className={classNames('DeploymentDetail', { clickable: landId })}
+        onClick={() => landId && onNavigate(locations.landDetail(landId))}
+      >
         {this.renderThumbnail()}
         <Stats label={t('scene_detail_page.status')}>{statusText}</Stats>
-        {deployment.world ? (
-          <div className="world-url">
-            <Stats label={t('scene_detail_page.url')}>
-              {this.getExplorerUrl(deployment.world)}
-              <CopyToClipboard role="button" text={this.getExplorerUrl(deployment.world)} showPopup={true}>
-                <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
-              </CopyToClipboard>
-            </Stats>
+        <Stats label={t('scene_detail_page.location')}>
+          <div className={classNames({ 'world-url': deployment.world })}>
+            {locationText}
+            {deployment.world ? (
+              <>
+                <CopyToClipboard role="button" text={this.getExplorerUrl(deployment.world)} showPopup={true}>
+                  <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
+                </CopyToClipboard>
+                <a href={this.getExplorerUrl(deployment.world)} target="_blank" rel="noopener noreferrer">
+                  <Icon name="external alternate" />
+                </a>
+              </>
+            ) : null}
           </div>
-        ) : (
-          <SceneStats deployment={deployment} />
-        )}
+        </Stats>
+        <SceneStats deployment={deployment} />
         <Dropdown
           trigger={
             <Button basic>

@@ -6,11 +6,15 @@
   margin-bottom: 8px;
   background-color: var(--dark-two);
   border-radius: 10px;
-  gap: 105px;
+  gap: 45px;
 }
 
 .DeploymentDetail:first-child {
   border-top: 1px solid var(--divider);
+}
+
+.DeploymentDetail:last-child {
+  grid-column-end: -1;
 }
 
 .DeploymentDetail.clickable:hover {
@@ -78,13 +82,16 @@
   right: 0px;
 }
 
-.DeploymentDetail .world-url .Stats .value {
+.DeploymentDetail .Stats .value .world-url {
   display: flex;
   flex-direction: row;
-  width: auto;
 }
 
-.DeploymentDetail .world-url .Stats .value .icon.link {
-  margin-left: 12px;
+.DeploymentDetail .Stats .value .world-url .icon.link,
+.DeploymentDetail .Stats .value .world-url a {
   color: var(--text);
+}
+
+.DeploymentDetail .Stats .value .world-url .icon.link {
+  margin-left: 5px;
 }
