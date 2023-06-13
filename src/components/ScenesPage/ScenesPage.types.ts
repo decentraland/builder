@@ -21,6 +21,7 @@ export type Props = DefaultProps & {
   page: number
   sortBy: SortBy
   totalPages: number
+  isDeployToWorldEnabled: boolean
   onOpenModal: typeof openModal
   onPageChange: (options: PaginationOptions) => void
   onNavigate: (path: string) => void
@@ -30,7 +31,17 @@ export type Props = DefaultProps & {
 
 export type MapStateProps = Pick<
   Props,
-  'projects' | 'isFetching' | 'isLoggingIn' | 'page' | 'sortBy' | 'totalPages' | 'didSync' | 'didCreate' | 'isLoggedIn' | 'poolList'
+  | 'projects'
+  | 'isFetching'
+  | 'isLoggingIn'
+  | 'page'
+  | 'sortBy'
+  | 'totalPages'
+  | 'didSync'
+  | 'didCreate'
+  | 'isLoggedIn'
+  | 'poolList'
+  | 'isDeployToWorldEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPageChange' | 'onNavigate' | 'onLoadFromScenePool'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | LoadPoolsRequestAction>

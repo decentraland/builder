@@ -13,6 +13,7 @@ export { default as CreateThirdPartyCollectionModal } from './CreateThirdPartyCo
 export { default as CustomLayoutModal } from './CustomLayoutModal'
 export { default as DeleteItemModal } from './DeleteItemModal'
 export { default as DeployModal } from './DeployModal'
+export { default as DeployToWorldAnnouncementModal } from './DeployToWorldAnnouncementModal'
 export { default as DissolveModal } from './DissolveModal'
 export { default as EditAssetPackModal } from './EditAssetPackModal'
 export { default as EditCollectionNameModal } from './EditCollectionNameModal'

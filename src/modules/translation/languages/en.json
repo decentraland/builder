@@ -468,6 +468,11 @@
       }
     }
   },
+  "deploy_to_world_announcement_modal": {
+    "title": "You can now publish<br></br>your scenes to Worlds",
+    "description": "Create your scene with the Builder and publish it to a World in a few clicks.",
+    "create_scene": "Create Scene"
+  },
   "use_as_alias_modal": {
     "title": "Use as Alias",
     "subtitle": "This will be your name in the Metaverse",

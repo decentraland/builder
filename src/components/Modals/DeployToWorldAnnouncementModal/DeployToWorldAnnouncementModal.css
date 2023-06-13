@@ -1,0 +1,67 @@
+.ui.small.modal.DeployToWorldAnnouncementModal {
+  width: 640px;
+}
+
+.ui.modal.DeployToWorldAnnouncementModal,
+.ui.modal.DeployToWorldAnnouncementModal .content,
+.ui.modal.DeployToWorldAnnouncementModal .actions {
+  background-color: var(--toast);
+}
+
+.ui.small.modal.DeployToWorldAnnouncementModal .title {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: 0px;
+  text-align: center;
+}
+
+.ui.small.modal.DeployToWorldAnnouncementModal .description {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0em;
+  text-align: center;
+}
+
+.DeployToWorldAnnouncementModal .thumbnail {
+  height: 120px;
+  width: 100%;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../../images/scene.svg');
+  margin-bottom: 16px;
+}
+
+.DeployToWorldAnnouncementModal .ui.button.create-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.DeployToWorldAnnouncementModal .ui.button.create-scene::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: block;
+  background-image: url('../../../images/create_scene.svg');
+}
+
+.ui.modal.DeployToWorldAnnouncementModal .actions {
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.DeployToWorldAnnouncementModal .actions > .ui.button:last-child {
+  margin-top: 16px;
+  margin-left: 0;
+}
+
+.ui.modal.DeployToWorldAnnouncementModal .actions > .ui.button.inverted,
+.ui.modal.DeployToWorldAnnouncementModal .actions > .ui.button.inverted:hover {
+  background-color: #ffffff;
+  color: var(--shadows);
+}

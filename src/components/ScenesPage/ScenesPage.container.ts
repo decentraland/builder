@@ -5,6 +5,7 @@ import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { isFetching } from 'modules/project/selectors'
+import { getIsDeployToWorldsEnabled } from 'modules/features/selectors'
 import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
 import { getProjects, getPage, getSortBy, getTotalPages, didSync, didCreate } from 'modules/ui/dashboard/selectors'
 import { loadPoolsRequest } from 'modules/pool/actions'
@@ -22,7 +23,8 @@ const mapState = (state: RootState): MapStateProps => ({
   didCreate: didCreate(state),
   didSync: didSync(state),
   isLoggedIn: isLoggedIn(state),
-  poolList: getPoolList(state)
+  poolList: getPoolList(state),
+  isDeployToWorldEnabled: getIsDeployToWorldsEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
