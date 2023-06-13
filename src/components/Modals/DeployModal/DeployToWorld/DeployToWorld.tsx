@@ -29,7 +29,6 @@ export default function DeployToWorld({
   error,
   claimedName,
   onPublish,
-  onRecord,
   onNavigate,
   onReplace,
   onClose,
@@ -49,9 +48,8 @@ export default function DeployToWorld({
       setView(DeployToWorldView.EMPTY)
     } else {
       setView(DeployToWorldView.FORM)
-      onRecord()
     }
-  }, [ensList, onRecord])
+  }, [ensList])
 
   useEffect(() => {
     if (view === DeployToWorldView.FORM && loading && error) {
