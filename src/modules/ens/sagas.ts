@@ -306,14 +306,16 @@ export function* ensSaga(builderClient: BuilderClient) {
       const landHashes: { id: string; hash: string }[] = []
 
       for (const { x, y, contentHash } of coordsWithHashesList) {
-        const landId = lands.find(land => {
+        const land = lands.find(land => {
           if (land.type === LandType.ESTATE) {
             return land.parcels!.some(parcel => parcel.x === x && parcel.y === y)
           }
           return land.x === x && land.y === y
-        })!.id
+        })
 
-        landHashes.push({ hash: `0x${contentHash}`, id: landId })
+        if (land) {
+          landHashes.push({ hash: `0x${contentHash}`, id: land.id })
+        }
       }
 
       const wallet: Wallet = yield getWallet()
