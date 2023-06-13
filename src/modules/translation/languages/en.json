@@ -722,6 +722,12 @@
       "export_project": "Download",
       "unpublish": "Unpublish"
     },
+    "no_scenes": {
+      "title": "Create your first scene",
+      "description": "Set your creativty free and start building scenes for your LANDs, DreamSpaces and share it with the community. <a>Learn more about creating Scenes.</a>",
+      "from_scratch": "Start from scratch",
+      "from_template": "Use predefined templates"
+    },
     "sort": {
       "name": "Name",
       "newest": "Newest",

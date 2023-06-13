@@ -29,3 +29,11 @@ export const getIsDeployToWorldsEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsTemplatesEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SCENE_TEMPLATES)
+  } catch (e) {
+    return false
+  }
+}

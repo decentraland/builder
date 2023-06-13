@@ -211,6 +211,22 @@
   background-image: url('../../images/create_scene.svg');
 }
 
+.ScenesPage .no-scenes-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 50px;
+  background: #242129;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.ScenesPage .scene-creation-optinos {
+  display: flex;
+  gap: 15px;
+}
+
 @keyframes templateAnimation {
   0% {
     background: rgba(var(--bluish-steel-raw), 0.16);

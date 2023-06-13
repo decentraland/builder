@@ -46,6 +46,7 @@ const ScenesPage: React.FC<Props> = props => {
     isLoggedIn,
     isLoggingIn,
     isDeployToWorldEnabled,
+    isTemplatesEnabled,
     onLoadFromScenePool,
     onNavigate,
     onOpenModal,
@@ -123,6 +124,20 @@ const ScenesPage: React.FC<Props> = props => {
         </div>
       )
     }
+
+    if (isTemplatesEnabled) {
+      return (
+        <div className="no-scenes-container">
+          <h3>{t('scenes_page.no_scenes.title')}</h3>
+          <span>{t('scenes_page.no_scenes.description')}</span>
+          <div className="scene-creation-options">
+            <div className="scene-creation-option">{t('scenes_page.no_scenes.from_scratch')}</div>
+            <div className="scene-creation-option">{t('scenes_page.no_scenes.from_template')}</div>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="empty-projects">
         <div className="empty-project-thumbnail" />

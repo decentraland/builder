@@ -12,6 +12,7 @@ import { loadPoolsRequest } from 'modules/pool/actions'
 import { getPoolList } from 'modules/pool/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ScenesPage.types'
 import ScenesPage from './ScenesPage'
+import { getIsTemplatesEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   projects: getProjects(state),
@@ -24,7 +25,8 @@ const mapState = (state: RootState): MapStateProps => ({
   didSync: didSync(state),
   isLoggedIn: isLoggedIn(state),
   poolList: getPoolList(state),
-  isDeployToWorldEnabled: getIsDeployToWorldsEnabled(state)
+  isDeployToWorldEnabled: getIsDeployToWorldsEnabled(state),
+  isTemplatesEnabled: getIsTemplatesEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
