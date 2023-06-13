@@ -30,7 +30,7 @@ jobs:
         run: npm run build
         env:
           NODE_PATH: 'src'
-          NODE_OPTIONS: '--max-old-space-size=8192'
+          NODE_OPTIONS: '--max-old-space-size=6144'
       - name: Publish
         uses: menduz/oddish-action@master
         with:
