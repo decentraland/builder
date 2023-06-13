@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { locations } from 'routing/locations'
@@ -35,6 +36,8 @@ export default function DeployToWorld({
   onClose,
   onBack
 }: Props) {
+  const analytics = getAnalytics()
+
   const [view, setView] = useState<string>('')
   const [world, setWorld] = useState<string>(claimedName ?? '')
   const [loading, setLoading] = useState<boolean>(false)
@@ -47,16 +50,19 @@ export default function DeployToWorld({
   useEffect(() => {
     if (ensList.length === 0) {
       setView(DeployToWorldView.EMPTY)
-    } else {
+      analytics.track('Publish to World step', { step: DeployToWorldView.EMPTY })
+    } else if (!currentDeployment.current) {
       setView(DeployToWorldView.FORM)
+      analytics.track('Publish to World step', { step: DeployToWorldView.FORM })
       onRecord()
     }
-  }, [ensList, onRecord])
+  }, [ensList, onRecord, analytics])
 
   useEffect(() => {
     if (view === DeployToWorldView.FORM && loading && error) {
       setView(DeployToWorldView.ERROR)
       setLoading(false)
+      analytics.track('Publish to World step', { step: DeployToWorldView.ERROR })
     } else if (
       view === DeployToWorldView.FORM &&
       world &&
@@ -65,8 +71,15 @@ export default function DeployToWorld({
     ) {
       setView(DeployToWorldView.SUCCESS)
       setLoading(false)
+      analytics.track('Publish to World step', { step: DeployToWorldView.SUCCESS })
     }
-  }, [view, world, loading, error, deployments])
+  }, [view, world, loading, error, deployments, analytics])
+
+  useEffect(() => {
+    if (claimedName) {
+      analytics.track('Publish to World - Minted Name', { name: claimedName })
+    }
+  }, [claimedName, analytics])
 
   const handlePublish = useCallback(() => {
     if (world) {
@@ -87,8 +100,9 @@ export default function DeployToWorld({
 
   const handleClaimName = useCallback(() => {
     const ensUrl = `${locations.claimENS()}?from=${FromParam.DEPLOY_TO_WORLD}&projectId=${project.id}`
+    analytics.track('Publish to World - Claim Name')
     onReplace(ensUrl, { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
-  }, [project, onReplace])
+  }, [project, onReplace, analytics])
 
   const handleWorldSelected = useCallback(
     (_, { value }) => {
