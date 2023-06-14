@@ -45,3 +45,4 @@ export { default as MoveItemToCollectionModal } from './MoveItemToCollectionModa
 export { default as MoveItemToAnotherCollectionModal } from './MoveItemToAnotherCollectionModal'
 export { default as EditThumbnailModal } from './EditThumbnailModal'
 export { default as SeeInWorldModal } from './SeeInWorldModal'
+export { default as SceneCreationModal } from './SceneCreationModal'

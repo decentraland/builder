@@ -26,6 +26,7 @@ import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import SceneCreationSelector from 'components/SceneCreationSelector'
 import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
 import { Props, DefaultProps } from './ScenesPage.types'
@@ -65,7 +66,7 @@ const ScenesPage: React.FC<Props> = props => {
   }, [onOpenModal])
 
   const handleOpenCreateModal = useCallback(() => {
-    onOpenModal('CustomLayoutModal')
+    onOpenModal('SceneCreationModal')
   }, [onOpenModal])
 
   const renderImportButton = () => {
@@ -129,11 +130,12 @@ const ScenesPage: React.FC<Props> = props => {
       return (
         <div className="no-scenes-container">
           <h3>{t('scenes_page.no_scenes.title')}</h3>
-          <span>{t('scenes_page.no_scenes.description')}</span>
-          <div className="scene-creation-options">
-            <div className="scene-creation-option">{t('scenes_page.no_scenes.from_scratch')}</div>
-            <div className="scene-creation-option">{t('scenes_page.no_scenes.from_template')}</div>
-          </div>
+          <span className="no-scenes-description">
+            {t('scenes_page.no_scenes.description', {
+              a: (content: string) => <a href="decentraland.com">{content}</a>
+            })}
+          </span>
+          <SceneCreationSelector />
         </div>
       )
     }

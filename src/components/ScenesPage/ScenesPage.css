@@ -222,9 +222,23 @@
   justify-content: center;
 }
 
-.ScenesPage .scene-creation-optinos {
-  display: flex;
-  gap: 15px;
+.ScenesPage .no-scenes-title {
+  font-size: 24px;
+}
+
+.ScenesPage .no-scenes-description {
+  color: white;
+  width: 100%;
+  max-width: 620px;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.ScenesPage .no-scenes-description a {
+  color: white;
+  text-decoration: underline;
 }
 
 @keyframes templateAnimation {

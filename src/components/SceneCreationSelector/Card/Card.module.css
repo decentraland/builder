@@ -1,0 +1,48 @@
+.container {
+  width: 100%;
+  max-width: 320px;
+  background-color: #313131;
+  border-radius: 10px;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.media {
+  width: 100%;
+  flex: 1;
+  position: relative;
+  height: 100%;
+}
+
+.thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.thumbnail.hidden {
+  display: none;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+}
+
+.description .title {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.description .info {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 15px;
+}

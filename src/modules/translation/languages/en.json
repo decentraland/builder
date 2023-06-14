@@ -722,11 +722,18 @@
       "export_project": "Download",
       "unpublish": "Unpublish"
     },
+    "choose_scene_creation": "Choose the best option to build your scene",
     "no_scenes": {
       "title": "Create your first scene",
-      "description": "Set your creativty free and start building scenes for your LANDs, DreamSpaces and share it with the community. <a>Learn more about creating Scenes.</a>",
-      "from_scratch": "Start from scratch",
-      "from_template": "Use predefined templates"
+      "description": "Unleash your creativity. Start building scenes for your LANDs and Worlds and share with the community. <a>Learn more about creating Scenes.</a>",
+      "from_scratch": {
+        "title": "Start from scratch",
+        "description": "Start building your scenes from the ground up with the online builder in a simple and intuitive way."
+      },
+      "from_template": {
+        "title": "Use predefined templates",
+        "description": "Choose one of these polished templates and release an amazing scene with just a few clicks!"
+      }
     },
     "sort": {
       "name": "Name",
