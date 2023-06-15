@@ -67,9 +67,9 @@ const ScenesPage: React.FC<Props> = props => {
 
   const handleOpenCreateModal = useCallback(() => {
     if (isTemplatesEnabled) {
-      onOpenModal('CustomLayoutModal')
-    } else {
       onOpenModal('SceneCreationModal')
+    } else {
+      onOpenModal('CustomLayoutModal')
     }
   }, [isTemplatesEnabled, onOpenModal])
 

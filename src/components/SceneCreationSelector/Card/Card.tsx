@@ -23,8 +23,8 @@ export function Card({ title, description, videoSrc, imgSrc, onClick }: Props) {
   }, [])
 
   return (
-    <div className={styles.container} role="button" onClick={onClick}>
-      <div className={styles.media} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div className={styles.container} role="button" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={onClick}>
+      <div className={styles.media}>
         <video className={classNames(styles.thumbnail, { [styles.hidden]: !hovered })} src={videoSrc} muted ref={video} />
         <img className={classNames(styles.thumbnail, { [styles.hidden]: !!hovered })} alt={title} src={imgSrc} />
       </div>
