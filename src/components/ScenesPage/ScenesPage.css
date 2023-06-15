@@ -211,6 +211,36 @@
   background-image: url('../../images/create_scene.svg');
 }
 
+.ScenesPage .no-scenes-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 50px;
+  background: #242129;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.ScenesPage .no-scenes-title {
+  font-size: 24px;
+}
+
+.ScenesPage .no-scenes-description {
+  color: white;
+  width: 100%;
+  max-width: 620px;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.ScenesPage .no-scenes-description a {
+  color: white;
+  text-decoration: underline;
+}
+
 @keyframes templateAnimation {
   0% {
     background: rgba(var(--bluish-steel-raw), 0.16);

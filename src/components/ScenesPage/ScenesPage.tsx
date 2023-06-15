@@ -26,6 +26,7 @@ import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import SceneCreationSelector from 'components/SceneCreationSelector'
 import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
 import { Props, DefaultProps } from './ScenesPage.types'
@@ -46,6 +47,7 @@ const ScenesPage: React.FC<Props> = props => {
     isLoggedIn,
     isLoggingIn,
     isDeployToWorldEnabled,
+    isTemplatesEnabled,
     onLoadFromScenePool,
     onNavigate,
     onOpenModal,
@@ -64,8 +66,12 @@ const ScenesPage: React.FC<Props> = props => {
   }, [onOpenModal])
 
   const handleOpenCreateModal = useCallback(() => {
-    onOpenModal('CustomLayoutModal')
-  }, [onOpenModal])
+    if (isTemplatesEnabled) {
+      onOpenModal('SceneCreationModal')
+    } else {
+      onOpenModal('CustomLayoutModal')
+    }
+  }, [isTemplatesEnabled, onOpenModal])
 
   const renderImportButton = () => {
     return (
@@ -123,6 +129,21 @@ const ScenesPage: React.FC<Props> = props => {
         </div>
       )
     }
+
+    if (isTemplatesEnabled) {
+      return (
+        <div className="no-scenes-container">
+          <h3>{t('scenes_page.no_scenes.title')}</h3>
+          <span className="no-scenes-description">
+            {t('scenes_page.no_scenes.description', {
+              a: (content: string) => <a href="https://docs.decentraland.org/creator/development-guide/sdk-101/">{content}</a>
+            })}
+          </span>
+          <SceneCreationSelector />
+        </div>
+      )
+    }
+
     return (
       <div className="empty-projects">
         <div className="empty-project-thumbnail" />

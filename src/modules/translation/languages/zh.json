@@ -716,6 +716,19 @@
       "export_project": "场景导出",
       "unpublish": "撤消发布"
     },
+    "choose_scene_creation": "选择建立场景的最佳选择",
+    "no_scenes": {
+      "title": "创建您的第一个场景",
+      "description": "释放您的创造力。开始为您的土地和世界建立场景，并与社区分享。<a>了解有关创建场景的更多信息。</a>",
+      "from_scratch": {
+        "title": "白手起家",
+        "description": "以简单而直观的方式开始用在线构建器开始构建您的场景."
+      },
+      "from_template": {
+        "title": "使用预定义的模板",
+        "description": "选择这些抛光模板之一，并只需单击几下即可发布一个惊人的场景!"
+      }
+    },
     "sort": {
       "name": "名称",
       "newest": "最新",
