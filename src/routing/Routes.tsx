@@ -43,6 +43,7 @@ const CollectionDetailPage = React.lazy(() => import('components/CollectionDetai
 const ThirdPartyCollectionDetailPage = React.lazy(() => import('components/ThirdPartyCollectionDetailPage'))
 const ItemEditorPage = React.lazy(() => import('components/ItemEditorPage'))
 const CurationPage = React.lazy(() => import('components/CurationPage'))
+const TemplatesPage = React.lazy(() => import('components/TemplatesPage'))
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -116,6 +117,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.settings()} component={SettingsPage} />
             <Route exact path={locations.scenes()} component={ScenesPage} />
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
+            <Route exact path={locations.templates()} component={TemplatesPage} />
             <Route exact key={1} path={locations.ens()} component={ENSListPage} />,
             <Route exact key={2} path={locations.claimENS()} component={ClaimENSPage} />,
             <Route exact key={3} path={locations.landSelectENS()} component={LandSelectENSPage} />,

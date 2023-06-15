@@ -3,15 +3,16 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Card } from './Card/Card'
 import { Props } from './SceneCreationSelector.types'
 import styles from './SceneCreationSelector.module.css'
+import { locations } from 'routing/locations'
 
-export default function SceneCreationSelector({ onOpenModal }: Props) {
+export default function SceneCreationSelector({ onOpenModal, onNavigate }: Props) {
   const handleOpenCreateFromScratchModal = useCallback(() => {
     onOpenModal('CustomLayoutModal')
   }, [onOpenModal])
 
   const handleCreateFromTemplate = useCallback(() => {
-    console.log('TODO: Add template flow')
-  }, [])
+    onNavigate(locations.templates())
+  }, [onNavigate])
 
   return (
     <div className={styles.container}>
