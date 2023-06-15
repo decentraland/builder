@@ -136,7 +136,7 @@ const ScenesPage: React.FC<Props> = props => {
           <h3>{t('scenes_page.no_scenes.title')}</h3>
           <span className="no-scenes-description">
             {t('scenes_page.no_scenes.description', {
-              a: (content: string) => <a href="decentraland.com">{content}</a>
+              a: (content: string) => <a href="https://docs.decentraland.org/creator/development-guide/sdk-101/">{content}</a>
             })}
           </span>
           <SceneCreationSelector />
