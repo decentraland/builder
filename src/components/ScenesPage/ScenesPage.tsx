@@ -66,8 +66,12 @@ const ScenesPage: React.FC<Props> = props => {
   }, [onOpenModal])
 
   const handleOpenCreateModal = useCallback(() => {
-    onOpenModal('SceneCreationModal')
-  }, [onOpenModal])
+    if (isTemplatesEnabled) {
+      onOpenModal('CustomLayoutModal')
+    } else {
+      onOpenModal('SceneCreationModal')
+    }
+  }, [isTemplatesEnabled, onOpenModal])
 
   const renderImportButton = () => {
     return (

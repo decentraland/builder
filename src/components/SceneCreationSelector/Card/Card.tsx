@@ -1,8 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import classNames from 'classnames'
 import { Props } from './Card.types'
 import styles from './Card.module.css'
-import { useCallback } from 'react'
 
 export function Card({ title, description, videoSrc, imgSrc, onClick }: Props) {
   const [hovered, setHovered] = useState(false)

@@ -723,6 +723,19 @@
       "export_project": "Descargar Escena",
       "unpublish": "Despublicar"
     },
+    "choose_scene_creation": "Elija la mejor opción para construir su escena",
+    "no_scenes": {
+      "title": "Crea tu primera escena",
+      "description": "Desata tu creatividad. Comienza a construir escenas para sus tierras y mundos y comparta con la comunidad.<a> Aprenda más sobre cómo crear escenas. </a>",
+      "from_scratch": {
+        "title": "Empezar desde el principio",
+        "description": "Comience a construir sus escenas desde cero con el constructor en línea de una manera simple e intuitiva."
+      },
+      "from_template": {
+        "title": "Use plantillas predefinidas",
+        "description": "Elija una de estas plantillas pulidas y lance una escena increíble con solo unos pocos clics!"
+      }
+    },
     "sort": {
       "name": "Nombre",
       "newest": "Más Nuevas",
