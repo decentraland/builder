@@ -1,12 +1,22 @@
 .container {
   width: 100%;
-  max-width: 320px;
   background-color: #313131;
   border-radius: 10px;
   height: 260px;
   display: flex;
   flex-direction: column;
+  border: none;
+  padding: 0;
+  color: white;
+  cursor: not-allowed;
+}
+
+.container:not(:disabled) {
   cursor: pointer;
+}
+
+.container:disabled .media {
+  filter: grayscale(1);
 }
 
 .media {
@@ -34,6 +44,7 @@
   display: flex;
   flex-direction: column;
   padding: 14px;
+  text-align: left;
 }
 
 .description .title {
@@ -42,7 +53,12 @@
 }
 
 .description .info {
-  margin-top: 8px;
+  margin-top: 4px;
   font-size: 12px;
   line-height: 15px;
+}
+
+.description .subtitle {
+  font-size: 14px;
+  line-height: 24px;
 }

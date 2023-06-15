@@ -749,7 +749,8 @@
   },
   "templates_page": {
     "title": "Choose a template",
-    "back_to_scenes": "Back to scenes"
+    "back_to_scenes": "Back to scenes",
+    "parcels": "<icon></icon> {size} parcels"
   },
   "import_modal": {
     "action": "Import",

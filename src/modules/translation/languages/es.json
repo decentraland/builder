@@ -755,6 +755,11 @@
     "results": "{count} {count, plural, one {resultado} other {resultados}}",
     "from_scene_pool": "De La Comunidad"
   },
+  "templates_page": {
+    "title": "Elija una plantilla",
+    "back_to_scenes": "Volver a las escenas",
+    "parcels": "<icon></icon> {size} parcelas"
+  },
   "import_modal": {
     "action": "Cargar",
     "action_many": "Cargar {count} Escenas",

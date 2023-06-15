@@ -1,48 +1,24 @@
 import { useCallback } from 'react'
-import { Button, Icon, Page } from 'decentraland-ui'
+import { Button, Page, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
+import { SceneCard } from 'components/SceneCard'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props } from './TemplatesPage.types'
+import templates from './templates.json'
 import styles from './TemplatesPage.module.css'
-
-const TEMPLATES = [
-  {
-    name: 'The house',
-    description: 'The house',
-    thumbnail: 'Thumbnail',
-    creator: 'Decentraland Foundation',
-    sceneDetails: { size: 4 },
-    location: 'Loc',
-    status: 'ACTIVE'
-  },
-  {
-    name: 'The office',
-    description: 'The office',
-    thumbnail: 'Thumbnail',
-    creator: 'Decentraland Foundation',
-    sceneDetails: { size: 4 },
-    s3_url: 'Loc',
-    status: 'ACTIVE'
-  },
-  {
-    name: 'The theater',
-    description: 'The theater',
-    thumbnail: 'Thumbnail',
-    creator: 'Decentraland Foundation',
-    sceneDetails: { size: 4 },
-    s3_url: 'Loc',
-    status: 'ACTIVE'
-  }
-]
 
 export default function TemplatesPage({ onNavigate }: Props) {
   const handleBackClick = useCallback(() => {
     onNavigate(locations.scenes())
   }, [onNavigate])
+
+  const handleGoToTemplate = useCallback(templateId => {
+    console.log('TODO: Go to template with id ', templateId)
+  }, [])
 
   return (
     <>
@@ -59,9 +35,27 @@ export default function TemplatesPage({ onNavigate }: Props) {
           />
           <h2 className={styles.title}>{t('templates_page.title')}</h2>
         </div>
-        {TEMPLATES.forEach(({ name }) => (
-          <span>{name}</span>
-        ))}
+        <div className={styles.templates}>
+          {templates.map(template => (
+            <SceneCard
+              key={template.id}
+              title={template.title}
+              description={template.description}
+              videoSrc={template.video}
+              imgSrc={template.thumbnail}
+              subtitle={
+                <span className={styles.subtitle}>
+                  {t('templates_page.parcels', {
+                    icon: () => <span className={styles.parcelsIcon} />,
+                    size: template.parcels
+                  })}
+                </span>
+              }
+              disabled={template.status !== 'ACTIVE'}
+              onClick={handleGoToTemplate.bind(null, template.id)}
+            />
+          ))}
+        </div>
       </Page>
       <Footer />
     </>

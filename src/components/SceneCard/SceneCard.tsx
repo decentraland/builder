@@ -1,9 +1,9 @@
 import { useState, useRef, useCallback } from 'react'
 import classNames from 'classnames'
-import { Props } from './Card.types'
-import styles from './Card.module.css'
+import { Props } from './SceneCard.types'
+import styles from './SceneCard.module.css'
 
-export function Card({ title, description, videoSrc, imgSrc, onClick }: Props) {
+export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disabled, onClick }: Props) {
   const [hovered, setHovered] = useState(false)
   const video = useRef<HTMLVideoElement>(null)
 
@@ -22,16 +22,24 @@ export function Card({ title, description, videoSrc, imgSrc, onClick }: Props) {
     }
   }, [])
 
+  console.log(title)
   return (
-    <div className={styles.container} role="button" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={onClick}>
+    <button
+      className={styles.container}
+      disabled={disabled}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+    >
       <div className={styles.media}>
-        <video className={classNames(styles.thumbnail, { [styles.hidden]: !hovered })} src={videoSrc} muted ref={video} />
-        <img className={classNames(styles.thumbnail, { [styles.hidden]: !!hovered })} alt={title} src={imgSrc} />
+        {videoSrc && <video className={classNames(styles.thumbnail, { [styles.hidden]: !hovered })} src={videoSrc} muted ref={video} />}
+        <img className={classNames(styles.thumbnail, { [styles.hidden]: !!hovered && videoSrc })} alt={title} src={imgSrc} />
       </div>
       <div className={styles.description}>
         <span className={styles.title}>{title}</span>
+        {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
         {hovered && <span className={styles.info}>{description}</span>}
       </div>
-    </div>
+    </button>
   )
 }
