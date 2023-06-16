@@ -17,7 +17,7 @@ export default class ExportModal extends React.PureComponent<Props> {
   render() {
     const { name, onClose, isLoading, progress, total, isTemplatesEnabled } = this.props
 
-    let action = t('export_modal.action')
+    let action = isTemplatesEnabled ? t('export_modal.action') : t('export_modal.old.action')
     if (total > 0) {
       action = `${t('export_modal.loading')} ${((progress / total) * 100).toFixed(0)}%`
     }
@@ -50,12 +50,12 @@ export default class ExportModal extends React.PureComponent<Props> {
     }
 
     return (
-      <Modal name={name}>
-        <Modal.Header>{t('export_modal.title')}</Modal.Header>
+      <Modal name={name} className="export-modal-old">
+        <Modal.Header>{t('export_modal.old.title')}</Modal.Header>
         <Modal.Content>
           <div className="details">
             <T
-              id="export_modal.description"
+              id="export_modal.old.description"
               values={{
                 sdk_link: (
                   <a href="https://developers.decentraland.org" rel="noopener noreferrer" target="_blank">
