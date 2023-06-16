@@ -51,10 +51,7 @@ export default function TemplatesPage({ onNavigate }: Props) {
                   })}
                 </span>
               }
-              tag={template.status !== 'ACTIVE'
-                ? { label: t('templates_page.coming_soon'), color: '#716B7C' }
-                : undefined
-              }
+              tag={template.status !== 'ACTIVE' ? { label: t('templates_page.coming_soon'), color: '#716B7C' } : undefined}
               disabled={template.status !== 'ACTIVE'}
               onClick={handleGoToTemplate.bind(null, template.id)}
             />

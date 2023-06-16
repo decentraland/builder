@@ -31,6 +31,7 @@ export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disa
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
+      aria-label={title}
     >
       <div className={styles.media}>
         {videoSrc && <video className={classNames(styles.thumbnail, { [styles.hidden]: !hovered })} src={videoSrc} muted ref={video} />}
@@ -42,7 +43,11 @@ export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disa
             <span className={styles.title}>{title}</span>
             {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
           </div>
-          {tag ? <Badge className={styles.badge} color={tag.color}>{tag.label}</Badge> : null}
+          {tag ? (
+            <Badge className={styles.badge} color={tag.color}>
+              {tag.label}
+            </Badge>
+          ) : null}
         </div>
         {hovered && <span className={styles.info}>{description}</span>}
       </div>

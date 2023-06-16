@@ -65,6 +65,10 @@
   flex: 1;
 }
 
+.container:disabled .descriptionInfo {
+  opacity: 0.5;
+}
+
 .descriptionInfo .title {
   font-size: 18px;
   line-height: 22px;
