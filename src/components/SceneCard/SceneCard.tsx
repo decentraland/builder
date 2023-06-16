@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from 'react'
 import classNames from 'classnames'
+import { Badge } from 'decentraland-ui'
 import { Props } from './SceneCard.types'
 import styles from './SceneCard.module.css'
-import { Badge } from 'decentraland-ui'
 
 export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disabled, tag, onClick }: Props) {
   const [hovered, setHovered] = useState(false)
@@ -23,7 +23,6 @@ export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disa
     }
   }, [])
 
-  console.log(title)
   return (
     <button
       className={styles.container}
