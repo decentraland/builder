@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
+import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { SceneCard } from '../SceneCard'
+import SceneCard from '../SceneCard'
 import { Props } from './SceneCreationSelector.types'
 import styles from './SceneCreationSelector.module.css'
-import { locations } from 'routing/locations'
 
 export default function SceneCreationSelector({ onOpenModal, onNavigate }: Props) {
   const handleOpenCreateFromScratchModal = useCallback(() => {

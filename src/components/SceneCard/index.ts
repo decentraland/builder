@@ -1,1 +1,3 @@
-export * from './SceneCard'
+import { SceneCard } from './SceneCard'
+
+export default SceneCard

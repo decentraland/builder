@@ -4,7 +4,7 @@ import { Badge } from 'decentraland-ui'
 import { Props } from './SceneCard.types'
 import styles from './SceneCard.module.css'
 
-export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disabled, tag, onClick }: Props) {
+export const SceneCard: React.FC<Props> = ({ title, subtitle, description, videoSrc, imgSrc, disabled, tag, onClick }) => {
   const [hovered, setHovered] = useState(false)
   const video = useRef<HTMLVideoElement>(null)
 
