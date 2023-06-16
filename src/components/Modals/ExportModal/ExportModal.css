@@ -1,3 +1,40 @@
 .ui.small.modal.ExportModal {
-  width: 560px;
+  padding: 60px;
+}
+
+.ui.small.modal.ExportModal .export-modal-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 36px;
+}
+
+.ui.small.modal.ExportModal .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui.small.modal.ExportModal .content::before {
+  content: url('../../../images/export_modal_img.svg');
+  height: 180px;
+  margin-bottom: 20px;
+}
+
+.ui.small.modal.ExportModal .details {
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  max-width: 386px;
+}
+
+.ui.small.modal.ExportModal .export-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ui.small.modal.ExportModal .export-modal-actions > .ui.button {
+  margin: 0;
 }

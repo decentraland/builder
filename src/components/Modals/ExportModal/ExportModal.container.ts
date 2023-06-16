@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Project } from 'modules/project/types'
 import { getState as getEditor } from 'modules/editor/selectors'
 import { exportProjectRequest } from 'modules/project/actions'
+import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { RootState } from 'modules/common/types'
 import { MapDispatchProps } from './ExportModal.types'
 import ExportModal from './ExportModal'
@@ -13,7 +14,8 @@ const mapState = (state: RootState) => {
   return {
     isLoading,
     progress,
-    total
+    total,
+    isTemplatesEnabled: getIsTemplatesEnabled(state)
   }
 }
 

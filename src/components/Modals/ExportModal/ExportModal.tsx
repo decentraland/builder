@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button } from 'decentraland-ui'
+import { Button, Close, Icon } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
@@ -15,20 +15,47 @@ export default class ExportModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { name, onClose, isLoading, progress, total } = this.props
+    const { name, onClose, isLoading, progress, total, isTemplatesEnabled } = this.props
 
-    let action = t('export_modal.action')
+    let action = isTemplatesEnabled ? t('export_modal.action') : t('export_modal.old.action')
     if (total > 0) {
       action = `${t('export_modal.loading')} ${((progress / total) * 100).toFixed(0)}%`
     }
 
+    if (isTemplatesEnabled) {
+      return (
+        <Modal name={name} closeIcon={<Close />} onClose={onClose}>
+          <Modal.Header className="export-modal-title">{t('export_modal.title')}</Modal.Header>
+          <Modal.Content>
+            <span className="details">{t('export_modal.description')}</span>
+          </Modal.Content>
+          <Modal.Actions className="export-modal-actions">
+            <Button primary onClick={this.handleExport} disabled={isLoading}>
+              <Icon name="download" />
+              {action}
+            </Button>
+            <Button
+              as="a"
+              secondary
+              href="https://developers.decentraland.org"
+              rel="noopener noreferrer"
+              target="_blank"
+              disabled={isLoading}
+            >
+              {t('export_modal.docs')}
+            </Button>
+          </Modal.Actions>
+        </Modal>
+      )
+    }
+
     return (
-      <Modal name={name}>
-        <Modal.Header>{t('export_modal.title')}</Modal.Header>
+      <Modal name={name} className="export-modal-old">
+        <Modal.Header>{t('export_modal.old.title')}</Modal.Header>
         <Modal.Content>
           <div className="details">
             <T
-              id="export_modal.description"
+              id="export_modal.old.description"
               values={{
                 sdk_link: (
                   <a href="https://developers.decentraland.org" rel="noopener noreferrer" target="_blank">
