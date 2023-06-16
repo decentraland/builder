@@ -7,5 +7,9 @@ export type Props = {
   imgSrc: string
   description: string
   disabled?: boolean
+  tag?: {
+    label: string
+    color: string
+  }
   onClick: () => void
 }

@@ -2,8 +2,9 @@ import { useState, useRef, useCallback } from 'react'
 import classNames from 'classnames'
 import { Props } from './SceneCard.types'
 import styles from './SceneCard.module.css'
+import { Badge } from 'decentraland-ui'
 
-export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disabled, onClick }: Props) {
+export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disabled, tag, onClick }: Props) {
   const [hovered, setHovered] = useState(false)
   const video = useRef<HTMLVideoElement>(null)
 
@@ -35,9 +36,14 @@ export function SceneCard({ title, subtitle, description, videoSrc, imgSrc, disa
         {videoSrc && <video className={classNames(styles.thumbnail, { [styles.hidden]: !hovered })} src={videoSrc} muted ref={video} />}
         <img className={classNames(styles.thumbnail, { [styles.hidden]: !!hovered && videoSrc })} alt={title} src={imgSrc} />
       </div>
-      <div className={styles.description}>
-        <span className={styles.title}>{title}</span>
-        {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
+      <div className={styles.cardInfo}>
+        <div className={styles.description}>
+          <div className={styles.descriptionInfo}>
+            <span className={styles.title}>{title}</span>
+            {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
+          </div>
+          {tag ? <Badge className={styles.badge} color={tag.color}>{tag.label}</Badge> : null}
+        </div>
         {hovered && <span className={styles.info}>{description}</span>}
       </div>
     </button>
