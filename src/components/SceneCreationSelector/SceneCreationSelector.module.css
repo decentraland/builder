@@ -1,7 +1,7 @@
 .container {
-  display: flex;
+  display: grid;
   width: 100%;
-  align-items: center;
+  grid-template-columns: 320px 320px;
   justify-content: center;
   gap: 15px;
 }

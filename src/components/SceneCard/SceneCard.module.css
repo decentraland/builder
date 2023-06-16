@@ -1,0 +1,87 @@
+.container {
+  width: 100%;
+  background-color: #313131;
+  border-radius: 10px;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  padding: 0;
+  color: white;
+  cursor: not-allowed;
+}
+
+.container:not(:disabled) {
+  cursor: pointer;
+}
+
+.container:disabled .media {
+  filter: grayscale(1);
+}
+
+.media {
+  width: 100%;
+  flex: 1;
+  position: relative;
+  height: 100%;
+}
+
+.thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.thumbnail.hidden {
+  display: none;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  text-align: left;
+  width: 100%;
+}
+
+.cardInfo .info {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.description {
+  display: flex;
+  gap: 20px;
+}
+
+.descriptionInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.container:disabled .descriptionInfo {
+  opacity: 0.5;
+}
+
+.descriptionInfo .title {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.descriptionInfo .subtitle {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.badge:global(.dcl.badge) {
+  height: fit-content;
+  padding: 2px 8px;
+  font-weight: normal;
+  border-radius: 34px;
+}

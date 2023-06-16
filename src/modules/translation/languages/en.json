@@ -754,6 +754,12 @@
     "results": "{count} {count, plural, one {result} other {results}}",
     "from_scene_pool": "From The Scene Pool"
   },
+  "templates_page": {
+    "title": "Choose a template",
+    "back_to_scenes": "Back to scenes",
+    "parcels": "<icon></icon> {size} parcels",
+    "coming_soon": "Coming soon"
+  },
   "import_modal": {
     "action": "Import",
     "action_many": "Import {count} Scenes",

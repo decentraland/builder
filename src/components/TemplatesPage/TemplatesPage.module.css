@@ -1,0 +1,43 @@
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.backButton:global(.ui.button.basic) {
+  padding: 0;
+  margin: 0;
+}
+
+.backButton:global(.ui.button.basic) > i:global(.icon) {
+  color: white;
+  font-size: 27px;
+  line-height: 30px;
+  height: auto;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 26px;
+}
+
+.templates {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
+}
+
+.subtitle {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.parcelsIcon {
+  background: url('../../icons/parcels.svg');
+  background-size: 12px;
+  width: 12px;
+  height: 12px;
+}

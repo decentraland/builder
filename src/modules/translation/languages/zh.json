@@ -748,6 +748,12 @@
     "results": "{count}结果",
     "from_scene_pool": "自场景池"
   },
+  "templates_page": {
+    "title": "选择一个模板",
+    "back_to_scenes": "回到场景",
+    "parcels": "<icon></icon> {size} 包裹",
+    "coming_soon": "即将推出"
+  },
   "import_modal": {
     "action": "导入",
     "action_many": "导入 {count} 个场景",
