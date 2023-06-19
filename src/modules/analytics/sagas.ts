@@ -1,8 +1,7 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
-import { takeLatest, select, takeEvery } from 'redux-saga/effects'
-import { getAnalytics, trackConnectWallet } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { takeLatest, select, all } from 'redux-saga/effects'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { createAnalyticsSaga } from 'decentraland-dapps/dist/modules/analytics/sagas'
 
 import { OPEN_EDITOR, OpenEditorAction, TOGGLE_SNAP_TO_GRID, ToggleSnapToGridAction } from 'modules/editor/actions'
 import { getCurrentProject } from 'modules/project/selectors'
@@ -47,7 +46,9 @@ import { getLandTiles, getRentals } from 'modules/land/selectors'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
 
-export function* analyticsSaga() {
+const baseAnalyticsSaga = createAnalyticsSaga()
+
+function* builderAnalyticsSaga() {
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(ADD_ITEM, handleNewItem)
   yield takeLatest(DUPLICATE_ITEM, handleNewItem)
@@ -55,20 +56,21 @@ export function* analyticsSaga() {
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
-  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeLatest(DEPLOY_TO_POOL_SUCCESS, handleDeployToPoolSuccess)
   yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
   yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
   yield takeLatest(SEARCH_ASSETS, handleSearchAssets)
   yield takeLatest(SYNC, handleSync)
-  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
-  yield takeEvery(LOCATION_CHANGE, handleLocationChange)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SAVE_ASSET_PACK_SUCCESS, handleSaveAssetPackSuccess)
   yield takeLatest(DELETE_ASSET_PACK_SUCCESS, handleDeleteAssetPackSuccess)
   yield takeLatest(SAVE_ASSET_PACK_FAILURE, handleSaveAssetPackFailure)
   yield takeLatest(DELETE_ASSET_PACK_FAILURE, handleDeleteAssetPackFailure)
   yield takeLatest(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishTPItemSuccess)
+}
+
+export function* analyticsSaga() {
+  yield all([baseAnalyticsSaga(), builderAnalyticsSaga()])
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params) as void
@@ -129,22 +131,6 @@ function* handleUpdateTransfrom(_: UpdateTransfromAction) {
   track('Update item', { projectId: project.id })
 }
 
-function handleConnectWallet(action: ConnectWalletSuccessAction) {
-  const ethereum = (window as any)['ethereum']
-
-  let provider = null
-
-  if (ethereum) {
-    if (ethereum.isMetaMask) {
-      provider = 'metamask'
-    } else if (ethereum.isDapper) {
-      provider = 'dapper'
-    }
-  }
-
-  track('Connect wallet', { address: action.payload.wallet.address, provider })
-}
-
 function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
@@ -187,24 +173,6 @@ function* handleSync(_: SyncAction) {
   const localProjectIds: string[] = yield select(getLocalProjectIds)
   if (localProjectIds.length > 0) {
     track('Sync projects', { count: localProjectIds.length })
-  }
-}
-
-function handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
-  const { wallet } = action.payload
-  const analytics = getAnalytics()
-
-  if (analytics) {
-    analytics.identify(wallet.address)
-    trackConnectWallet({ providerType: wallet.providerType, address: wallet.address })
-  }
-}
-
-function handleLocationChange() {
-  const analytics = getAnalytics()
-
-  if (analytics) {
-    analytics.page()
   }
 }
 
