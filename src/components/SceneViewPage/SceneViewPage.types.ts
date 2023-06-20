@@ -24,6 +24,7 @@ export type Props = {
   isFetching: boolean
   isLoggedIn: boolean
   isReady: boolean
+  isTemplatesEnabled: boolean
   onCloseEditor: typeof closeEditor
   onLoadProject: typeof loadPublicProjectRequest
   onPreview: () => ReturnType<typeof togglePreview>
@@ -34,7 +35,15 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'isPreviewing' | 'isFetching' | 'isLoggedIn' | 'isReady' | 'currentProject' | 'currentPool' | 'currentScene' | 'currentAuthor'
+  | 'isPreviewing'
+  | 'isFetching'
+  | 'isLoggedIn'
+  | 'isReady'
+  | 'currentProject'
+  | 'currentPool'
+  | 'currentScene'
+  | 'currentAuthor'
+  | 'isTemplatesEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onLikePool' | 'onOpenModal' | 'onCloseEditor' | 'onBack'>
 export type MapDispatch = Dispatch<

@@ -415,10 +415,10 @@
         "subtitle": "Necesitas iniciar sesión para publicar tu Escena",
         "title": "Iniciar Sesión"
       },
-      "subtitle": "Envía tu trabajo a nuestro pool de Escenas para obtener la chance de que esta sea publicada.",
+      "subtitle": "Su escena está a punto de cargarse en el grupo de la comunidad, lo que significa que cualquiera puede usarla.",
       "success": {
-        "body": "Recibirás una notificación por email si tu Escena es elegida para ser publicada.",
-        "title": "¡Gracias por subir tu Escena!"
+        "body": "Se incluirá en nuestra galería de escenas públicas para cualquier persona interesada en usarla.¡Gracias por tu contribución!",
+        "title": "¡Tu escena ahora es parte del grupo de escenas!"
       },
       "title": "Publica tu Escena",
       "uploading": "Subiendo..."
