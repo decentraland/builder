@@ -473,6 +473,11 @@
     "description": "Create your scene with the Builder and publish it to a World in a few clicks.",
     "create_scene": "Create Scene"
   },
+  "templates_announcement_modal": {
+    "title": "Expand your creativity with templates and the community scene pool",
+    "description": "From now on you can start downloading and using templates and scenes from the community pool. Let your imagination shape your worlds and lands!",
+    "go_to_scenes": "Go to my scenes"
+  },
   "use_as_alias_modal": {
     "title": "Use as Alias",
     "subtitle": "This will be your name in the Metaverse",

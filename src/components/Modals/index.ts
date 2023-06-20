@@ -46,3 +46,4 @@ export { default as MoveItemToAnotherCollectionModal } from './MoveItemToAnother
 export { default as EditThumbnailModal } from './EditThumbnailModal'
 export { default as SeeInWorldModal } from './SeeInWorldModal'
 export { default as SceneCreationModal } from './SceneCreationModal'
+export { default as TemplatesAnnouncementModal } from './TemplatesAnnouncementModal'

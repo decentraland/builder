@@ -1,0 +1,45 @@
+.modal {
+  display: flex;
+  flex-direction: column;
+  padding: 50px;
+  width: 750px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+:global(.ui.modal > .content).templatesBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+:global(.content).templatesBody::after {
+  content: url('../../../images/template-preview.svg');
+  width: 356px;
+  height: 238px;
+  display: block;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 36px;
+  text-align: center;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+:global(.ui.modal) > .actions > :global(a.ui.button) {
+  margin: 0;
+}

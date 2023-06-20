@@ -476,6 +476,11 @@
     "description": "Cree su escena con el constructor y publíquela en un mundo en unos pocos clics.",
     "create_scene": "Crear Escena"
   },
+  "templates_announcement_modal": {
+    "title": "Amplíe su creatividad con plantillas y el grupo de escenas comunitarias",
+    "description": "De ahora en adelante puede comenzar a descargar y usar plantillas y escenas del grupo de la comunidad.¡Deja que tu imaginación moldee tus mundos y tierras!",
+    "go_to_scenes": "Ir a mis escenas"
+  },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
     "subtitle": "Establece un nuevo alias para tu avatar",
