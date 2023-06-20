@@ -33,6 +33,8 @@ import { Props, DefaultProps } from './ScenesPage.types'
 import './ScenesPage.css'
 
 export const LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT = 'builder-deploy-to-world-announcement'
+export const LOCALSTORAGE_TEMPLATES_ANNOUCEMENT = 'builder-templates-announcement'
+
 const localStorage = getLocalStorage()
 
 const ScenesPage: React.FC<Props> = props => {
@@ -59,7 +61,11 @@ const ScenesPage: React.FC<Props> = props => {
     if (!localStorage.getItem(LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT) && isDeployToWorldEnabled) {
       onOpenModal('DeployToWorldAnnouncementModal')
     }
-  }, [isDeployToWorldEnabled, onLoadFromScenePool, onOpenModal])
+
+    if (!localStorage.getItem(LOCALSTORAGE_TEMPLATES_ANNOUCEMENT) && isTemplatesEnabled) {
+      onOpenModal('TemplatesAnnouncementModal')
+    }
+  }, [isDeployToWorldEnabled, isTemplatesEnabled, onLoadFromScenePool, onOpenModal])
 
   const handleOpenImportModal = useCallback(() => {
     onOpenModal('ImportModal')
