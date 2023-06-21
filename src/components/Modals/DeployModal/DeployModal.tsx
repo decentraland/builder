@@ -162,7 +162,15 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     }
 
     if (view === DeployModalView.DEPLOY_TO_LAND || currentPoolGroup) {
-      return <DeployToLand name={name} onDeployToPool={this.handleDeployToPool} onBack={this.handleBack} onClose={this.handleClose} />
+      return (
+        <DeployToLand
+          name={name}
+          onDeployToPool={this.handleDeployToPool}
+          onDeployToWorld={this.handleDeployToWorld}
+          onBack={this.handleBack}
+          onClose={this.handleClose}
+        />
+      )
     }
 
     if (view === DeployModalView.DEPLOY_TO_POOL) {

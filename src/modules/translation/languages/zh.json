@@ -386,6 +386,13 @@
         "buy_land": "购买土地",
         "rent_land": "出租土地"
       },
+      "not_enough_land": {
+        "title": "这个场景比你的土地更大",
+        "description": "此场景需要{cols} x {rows}包裹的区域。确保您的土地等于或大于或更大，以适应这一场景。请记住，这个场景可能非常适合一个世界。",
+        "publish_world": "出版给我的世界",
+        "return_scenes": "返回场景",
+        "claim_name": "为自由世界索取您的独特名称"
+      },
       "title": "发布场景"
     },
     "option_land": {

@@ -163,6 +163,7 @@ p.DeployToLand {
   text-align: center;
   font-size: 14px;
   line-height: 20px;
+  max-width: 475px;
 }
 
 .DeployToLand.empty .thumbnail {

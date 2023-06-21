@@ -390,6 +390,13 @@
         "buy_land": "Buy land",
         "rent_land": "Rent land"
       },
+      "not_enough_land": {
+        "title": "This scene is bigger than your LAND",
+        "description": "This scene requires an area of {cols}x{rows} parcels. Ensure your LANDs are equal to or larger than this to acommodate this scene. Have in mind that this scene could be a perfect fit for a world.",
+        "publish_world": "Publish to my world",
+        "return_scenes": "Return to scenes",
+        "claim_name": "Claim your unique name for a free World"
+      },
       "title": "Publish Scene"
     },
     "option_land": {

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { config } from 'config'
+import { Link } from 'react-router-dom'
 import { Button, Loader, Header, Row } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -7,10 +8,12 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
 import { coordsToId, getExplorerURL } from 'modules/land/utils'
 import { getDeployment, getStatus } from 'modules/deployment/utils'
+import { locations } from 'routing/locations'
 import Icon from 'components/Icon'
 import LandAtlas from './LandAtlas'
 import { Props, State, DeployToLandView } from './DeployToLand.types'
 import './DeployToLand.css'
+import { hasEnoughSpaceForScene } from './utils'
 
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 export default class DeployToLand extends React.PureComponent<Props, State> {
@@ -72,6 +75,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       view = DeployToLandView.PROGRESS
     } else if (isConnected && media && !Object.keys(landTiles).length) {
       view = DeployToLandView.EMPTY
+    } else if (isConnected && media && !hasEnoughSpaceForScene(project, landTiles)) {
+      view = DeployToLandView.NOT_ENOUGH_LAND
     } else if (isConnected && media && !needsConfirmation) {
       view = DeployToLandView.MAP
     } else if (!isLoading && deployment && getStatus(project, deployment) === DeploymentStatus.PUBLISHED) {
@@ -100,7 +105,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
     if (view === DeployToLandView.CONFIRMATION) {
       this.setState({ view: DeployToLandView.MAP, needsConfirmation: false })
-    } else if (view === DeployToLandView.MAP || view === DeployToLandView.EMPTY) {
+    } else if (view === DeployToLandView.MAP || view === DeployToLandView.EMPTY || view === DeployToLandView.NOT_ENOUGH_LAND) {
       this.props.onBack()
     }
   }
@@ -242,6 +247,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     const { media, project, deployments, deploymentsByCoord, landTiles, isLoggedIn } = this.props
     const landDeployments = deployments.filter(deployment => !deployment.world)
     const deployment = getDeployment(project, landDeployments)
+
+    console.log(landTiles)
     return (
       <div className="DeployToLand atlas">
         <div className="modal-header">
@@ -315,6 +322,51 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     )
   }
 
+  renderNotEnoughLand = () => {
+    const { project, ensList, onDeployToWorld } = this.props
+
+    if (!project) return <></>
+
+    return (
+      <div className="DeployToLand empty">
+        <div className="empty-modal-header">
+          <button className="navigation-button" onClick={this.handleBack}>
+            <Icon name="modal-back" />
+          </button>
+          <Header size="large" className="modal-title">
+            {t('deployment_modal.land.not_enough_land.title')}
+          </Header>
+          <button className="navigation-button" onClick={this.handleClose}>
+            <Icon name="modal-close" />
+          </button>
+        </div>
+        <div className="modal-body">
+          <div className="thumbnail" aria-label="No land" role="img" />
+          <span className="description">
+            {t('deployment_modal.land.not_enough_land.description', {
+              rows: project?.layout.rows,
+              cols: project?.layout.cols
+            })}
+          </span>
+        </div>
+        <div className="actions">
+          {ensList.length ? (
+            <Button primary className="action-button" onClick={onDeployToWorld}>
+              {t('deployment_modal.land.not_enough_land.publish_world')}
+            </Button>
+          ) : (
+            <Button primary as={Link} className="action-button" to={locations.claimENS()}>
+              {t('deployment_modal.land.not_enough_land.claim_name')}
+            </Button>
+          )}
+          <Button secondary className="action-button" as={Link} to={locations.scenes()}>
+            {t('deployment_modal.land.not_enough_land.return_scenes')}
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   renderSuccess = () => {
     const { placement } = this.state
     const { x, y } = placement!.point
@@ -354,6 +406,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     if (view === DeployToLandView.CONFIRMATION) return this.renderConfirmation()
 
     if (view === DeployToLandView.EMPTY) return this.renderEmpty()
+
+    if (view === DeployToLandView.NOT_ENOUGH_LAND) return this.renderNotEnoughLand()
 
     return <Loader size="big" />
   }
