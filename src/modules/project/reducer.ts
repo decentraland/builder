@@ -41,13 +41,13 @@ import {
 export type ProjectState = {
   data: ModelById<Project>
   loading: LoadingState
-  error: Record<string, string>
+  error: string | null
 }
 
-const INITIAL_STATE: ProjectState = {
+export const INITIAL_STATE: ProjectState = {
   data: {},
   loading: [],
-  error: {}
+  error: null
 }
 
 export type ProjectReducerAction =
@@ -127,9 +127,11 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
     }
     case LOAD_PROJECTS_FAILURE:
     case LOAD_TEMPLATES_FAILURE: {
+      const { error } = action.payload
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
+        error
       }
     }
     case LOAD_PUBLIC_PROJECT_REQUEST:
