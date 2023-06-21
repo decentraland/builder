@@ -33,6 +33,7 @@ export type Props = {
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
   ensList: ENS[]
+  isTemplatesEnabled: boolean
   onOpenModal: typeof openModal
   onClose: () => void
   onDeploy: typeof deployToLandRequest
@@ -76,6 +77,7 @@ export type MapStateProps = Pick<
   | 'deploymentsByCoord'
   | 'landTiles'
   | 'ensList'
+  | 'isTemplatesEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onDeploy' | 'onRecord' | 'onNavigateHome'>
 export type MapDispatch = Dispatch<OpenModalAction | DeployToLandRequestAction | RecordMediaRequestAction | CallHistoryMethodAction>

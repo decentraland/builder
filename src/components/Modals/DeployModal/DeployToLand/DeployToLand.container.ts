@@ -23,6 +23,7 @@ import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
 import { locations } from 'routing/locations'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './DeployToLand.types'
 import DeployToLand from './DeployToLand'
+import { getIsTemplatesEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
@@ -44,7 +45,8 @@ const mapState = (state: RootState): MapStateProps => ({
   deploymentsByCoord: getDeploymentsByCoord(state),
   landTiles: getLandTiles(state),
   deployments: getCurrentDeployments(state),
-  error: getDeploymentError(state)
+  error: getDeploymentError(state),
+  isTemplatesEnabled: getIsTemplatesEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

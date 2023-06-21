@@ -61,7 +61,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       project,
       deploymentsByCoord,
       error,
-      landTiles
+      landTiles,
+      isTemplatesEnabled
     } = this.props
     const { coords, needsConfirmation } = this.state
     const isLoading = isRecording || isUploadingAssets || isCreatingFiles || isUploadingRecording || isDeploymentLoading
@@ -75,7 +76,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       view = DeployToLandView.PROGRESS
     } else if (isConnected && media && !Object.keys(landTiles).length) {
       view = DeployToLandView.EMPTY
-    } else if (isConnected && media && !hasEnoughSpaceForScene(project, landTiles)) {
+    } else if (isConnected && media && isTemplatesEnabled && !hasEnoughSpaceForScene(project, landTiles)) {
       view = DeployToLandView.NOT_ENOUGH_LAND
     } else if (isConnected && media && !needsConfirmation) {
       view = DeployToLandView.MAP
