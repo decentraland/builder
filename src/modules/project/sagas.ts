@@ -39,7 +39,11 @@ import {
   loadProjectSceneSuccess,
   loadProjectSceneFailure,
   LoadProjectSceneRequestAction,
-  LOAD_PROJECT_SCENE_REQUEST
+  LOAD_PROJECT_SCENE_REQUEST,
+  LOAD_TEMPLATES_REQUEST,
+  loadTemplatesSuccess,
+  loadTemplatesFailure,
+  loadTemplatesRequest
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
@@ -73,6 +77,7 @@ export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
   yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
+  yield takeLatest(LOAD_TEMPLATES_REQUEST, handleLoadTemplatesRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
@@ -109,7 +114,10 @@ export function* projectSaga(builder: BuilderAPI) {
       sceneId: scene.id,
       ethAddress: ethAddress || null,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      isTemplate: false,
+      video: null,
+      templateStatus: null
     }
 
     yield put(createScene(scene))
@@ -276,8 +284,24 @@ export function* projectSaga(builder: BuilderAPI) {
     }
   }
 
+  function* handleLoadTemplatesRequest() {
+    try {
+      const projects: Project[] = yield call([builder, 'fetchTemplates'])
+      const record: ModelById<Project> = {}
+
+      for (const project of projects) {
+        record[project.id] = project
+      }
+
+      yield put(loadTemplatesSuccess(record))
+    } catch (e) {
+      yield put(loadTemplatesFailure(e.message))
+    }
+  }
+
   function* handleLoginSuccess(_action: LoginSuccessAction) {
     yield put(loadProjectsRequest())
+    yield put(loadTemplatesRequest())
   }
 
   function* handleDeleteProject(_action: DeleteProjectAction) {
