@@ -124,7 +124,10 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
       cols: 1
     },
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
+    isTemplate: false,
+    video: null,
+    templateStatus: null
   }
 
   const defaultGroundAsset = getDefaultGroundAsset()
