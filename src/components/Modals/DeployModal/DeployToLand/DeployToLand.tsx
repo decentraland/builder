@@ -11,9 +11,9 @@ import { getDeployment, getStatus } from 'modules/deployment/utils'
 import { locations } from 'routing/locations'
 import Icon from 'components/Icon'
 import LandAtlas from './LandAtlas'
+import { hasEnoughSpaceForScene } from './utils'
 import { Props, State, DeployToLandView } from './DeployToLand.types'
 import './DeployToLand.css'
-import { hasEnoughSpaceForScene } from './utils'
 
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 export default class DeployToLand extends React.PureComponent<Props, State> {
@@ -249,7 +249,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     const landDeployments = deployments.filter(deployment => !deployment.world)
     const deployment = getDeployment(project, landDeployments)
 
-    console.log(landTiles)
     return (
       <div className="DeployToLand atlas">
         <div className="modal-header">
