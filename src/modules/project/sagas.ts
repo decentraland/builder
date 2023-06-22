@@ -304,6 +304,7 @@ export function* projectSaga(builder: BuilderAPI) {
     const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
     yield put(loadProjectsRequest())
 
+    // TODO: Remove this validation when the feature is fully deployed
     if (isTemplatesEnabled) {
       yield put(loadTemplatesRequest())
     }

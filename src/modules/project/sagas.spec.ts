@@ -5,9 +5,9 @@ import { AuthIdentity } from '@dcl/crypto'
 import { BuilderAPI } from 'lib/api/builder'
 import { mockTemplate, mockTemplates } from 'specs/project'
 import { loginSuccess } from 'modules/identity/actions'
+import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { loadProjectsRequest, loadTemplatesFailure, loadTemplatesRequest, loadTemplatesSuccess } from './actions'
 import { projectSaga } from './sagas'
-import { getIsTemplatesEnabled } from 'modules/features/selectors'
 
 const builderAPI = {
   fetchTemplates: jest.fn()
