@@ -107,6 +107,20 @@ export type LoadProjectsRequestAction = ReturnType<typeof loadProjectsRequest>
 export type LoadProjectsSuccessAction = ReturnType<typeof loadProjectsSuccess>
 export type LoadProjectsFailureAction = ReturnType<typeof loadProjectsFailure>
 
+// Load cloud templates
+
+export const LOAD_TEMPLATES_REQUEST = '[Request] Load templates'
+export const LOAD_TEMPLATES_SUCCESS = '[Success] Load templates'
+export const LOAD_TEMPLATES_FAILURE = '[Failure] Load templates'
+
+export const loadTemplatesRequest = () => action(LOAD_TEMPLATES_REQUEST, {})
+export const loadTemplatesSuccess = (projects: ModelById<Project>) => action(LOAD_TEMPLATES_SUCCESS, { projects })
+export const loadTemplatesFailure = (error: string) => action(LOAD_TEMPLATES_FAILURE, { error })
+
+export type LoadTemplatesRequestAction = ReturnType<typeof loadTemplatesRequest>
+export type LoadTemplatesSuccessAction = ReturnType<typeof loadTemplatesSuccess>
+export type LoadTemplatesFailureAction = ReturnType<typeof loadTemplatesFailure>
+
 // Load public cloud project
 
 export const LOAD_PUBLIC_PROJECT_REQUEST = '[Request] Load public project'
