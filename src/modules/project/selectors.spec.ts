@@ -5,6 +5,7 @@ import { Project, TemplateStatus } from './types'
 
 let state: RootState
 let anotherMockTemplate: Project
+let mockProject: Project
 
 describe('Templates selectors', () => {
   beforeEach(() => {
@@ -23,12 +24,28 @@ describe('Templates selectors', () => {
       video: 'templateVideo2',
       templateStatus: TemplateStatus.PENDING
     }
+    mockProject = {
+      id: 'projectId',
+      title: 'projectTitle',
+      description: 'projectDescription',
+      thumbnail: 'projectThumbnail',
+      isPublic: true,
+      sceneId: 'projectSceneId',
+      ethAddress: '0xc',
+      createdAt: '2',
+      updatedAt: '2',
+      layout: { rows: 5, cols: 5 },
+      isTemplate: false,
+      video: null,
+      templateStatus: null
+    }
 
     state = {
       project: {
         data: {
           ...mockTemplates,
-          [anotherMockTemplate.id]: anotherMockTemplate
+          [anotherMockTemplate.id]: anotherMockTemplate,
+          [mockProject.id]: mockProject
         }
       }
     } as any
