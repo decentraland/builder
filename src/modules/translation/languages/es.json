@@ -393,6 +393,13 @@
         "buy_land": "Comprar tierra",
         "rent_land": "Alquilar tierra"
       },
+      "not_enough_land": {
+        "title": "Esta escena es más grande que tu tierra",
+        "description": "Esta escena requiere un área de {cols} x {rows} parcelas. Asegúrese de que sus tierras sean iguales o más grandes que esta para acomodar esta escena. Tenga en cuenta que esta escena podría ser perfecta para un mundo.",
+        "publish_world": "Publicar en mi mundo",
+        "return_scenes": "Volver a las escenas",
+        "claim_name": "Obtene tu nombre único para un mundo gratis"
+      },
       "title": "Publicar Escena"
     },
     "option_land": {

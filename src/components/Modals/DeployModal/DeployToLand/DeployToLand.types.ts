@@ -9,6 +9,7 @@ import { DeploymentState } from 'modules/deployment/reducer'
 import { Project } from 'modules/project/types'
 import { Media } from 'modules/media/types'
 import { LandTile } from 'modules/land/types'
+import { ENS } from 'modules/ens/types'
 
 export type Props = {
   name: string
@@ -31,11 +32,14 @@ export type Props = {
   deployments: Deployment[]
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
+  ensList: ENS[]
+  isTemplatesEnabled: boolean
   onOpenModal: typeof openModal
   onClose: () => void
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
   onDeployToPool: () => void
+  onDeployToWorld: () => void
   onBack: () => void
   onNavigateHome: () => void
 }
@@ -72,6 +76,8 @@ export type MapStateProps = Pick<
   | 'deploymentProgress'
   | 'deploymentsByCoord'
   | 'landTiles'
+  | 'ensList'
+  | 'isTemplatesEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onDeploy' | 'onRecord' | 'onNavigateHome'>
 export type MapDispatch = Dispatch<OpenModalAction | DeployToLandRequestAction | RecordMediaRequestAction | CallHistoryMethodAction>
@@ -83,5 +89,6 @@ export enum DeployToLandView {
   MAP = 'MAP',
   SUCCESS = 'SUCCESS',
   CONFIRMATION = 'CONFIRMATION',
-  EMPTY = 'EMPTY'
+  EMPTY = 'EMPTY',
+  NOT_ENOUGH_LAND = 'NOT_ENOUGH_LAND'
 }

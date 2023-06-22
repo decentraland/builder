@@ -24,13 +24,13 @@ ReactDOM.render(
     <DragDropContextProvider backend={HTML5Backend}>
       <TranslationProvider locales={Object.keys(languages)}>
         <WalletProvider>
-          <ModalProvider components={modals}>
-            <ConnectedRouter history={history}>
+          <ConnectedRouter history={history}>
+            <ModalProvider components={modals}>
               <ToastProvider>
                 <Routes />
               </ToastProvider>
-            </ConnectedRouter>
-          </ModalProvider>
+            </ModalProvider>
+          </ConnectedRouter>
         </WalletProvider>
       </TranslationProvider>
     </DragDropContextProvider>
