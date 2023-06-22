@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, Page, Responsive, Container } from 'decentraland-ui'
+import { Loader, Page, Responsive, Container, Button, Icon as IconUI } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Chip from 'components/Chip'
@@ -112,8 +112,13 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     )
   }
 
+  handleExportProject() {
+    const { currentProject, onOpenModal } = this.props
+    onOpenModal('ExportModal', { project: currentProject })
+  }
+
   render() {
-    const { isFetching, isPreviewing, isReady } = this.props
+    const { isFetching, isPreviewing, isReady, isTemplatesEnabled } = this.props
 
     if (isFetching) {
       return this.renderLoading()
@@ -134,6 +139,12 @@ export default class SceneViewPage extends React.PureComponent<Props> {
             <Navbar isFullscreen />
             <Container className="back-container">
               <Back absolute onClick={onBack}></Back>
+              {isTemplatesEnabled && (
+                <Button secondary onClick={this.handleExportProject.bind(this)}>
+                  <IconUI name="download" />
+                  {t('scene_detail_page.download_scene')}
+                </Button>
+              )}
             </Container>
           </>
         )}

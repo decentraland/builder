@@ -422,10 +422,10 @@
         "subtitle": "Necesitas iniciar sesión para publicar tu Escena",
         "title": "Iniciar Sesión"
       },
-      "subtitle": "Envía tu trabajo a nuestro pool de Escenas para obtener la chance de que esta sea publicada.",
+      "subtitle": "Su escena está a punto de cargarse en el grupo de la comunidad, lo que significa que cualquiera puede usarla.",
       "success": {
-        "body": "Recibirás una notificación por email si tu Escena es elegida para ser publicada.",
-        "title": "¡Gracias por subir tu Escena!"
+        "body": "Se incluirá en nuestra galería de escenas públicas para cualquier persona interesada en usarla.¡Gracias por tu contribución!",
+        "title": "¡Tu escena ahora es parte del grupo de escenas!"
       },
       "title": "Publica tu Escena",
       "uploading": "Subiendo..."
@@ -482,6 +482,11 @@
     "title": "Ahora puedes publicar<br></br>tus escenas a los mundos",
     "description": "Cree su escena con el constructor y publíquela en un mundo en unos pocos clics.",
     "create_scene": "Crear Escena"
+  },
+  "templates_announcement_modal": {
+    "title": "Amplíe su creatividad con plantillas y el grupo de escenas comunitarias",
+    "description": "De ahora en adelante puede comenzar a descargar y usar plantillas y escenas del grupo de la comunidad.¡Deja que tu imaginación moldee tus mundos y tierras!",
+    "go_to_scenes": "Ir a mis escenas"
   },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",

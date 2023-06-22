@@ -159,10 +159,14 @@
   font-size: 18px;
 }
 
-.back-container {
-  height: 42p;
+.ui.container.back-container {
+  height: 42px;
   margin-top: 24px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .back-container .dcl.back {
