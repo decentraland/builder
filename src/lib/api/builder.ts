@@ -5,7 +5,7 @@ import { config } from 'config'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
-import { Project, Manifest } from 'modules/project/types'
+import { Project, Manifest, TemplateStatus } from 'modules/project/types'
 import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
 import { Scene } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
@@ -107,6 +107,9 @@ export type RemoteProject = {
   cols: number
   created_at: string
   updated_at: string
+  is_template: boolean
+  video: string | null
+  template_status: TemplateStatus | null
 }
 
 export type RemotePoolGroup = {
@@ -204,7 +207,10 @@ function toRemoteProject(project: Project): Omit<RemoteProject, 'thumbnail'> {
     rows: project.layout.rows,
     cols: project.layout.cols,
     created_at: project.createdAt,
-    updated_at: project.updatedAt
+    updated_at: project.updatedAt,
+    is_template: project.isTemplate,
+    video: project.video,
+    template_status: project.templateStatus
   }
 }
 
@@ -222,7 +228,10 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
       cols: remoteProject.cols
     },
     createdAt: remoteProject.created_at,
-    updatedAt: remoteProject.updated_at
+    updatedAt: remoteProject.updated_at,
+    isTemplate: !!remoteProject.is_template,
+    video: remoteProject?.video,
+    templateStatus: remoteProject?.template_status
   }
 }
 
@@ -604,6 +613,14 @@ export class BuilderAPI extends BaseAPI {
   async fetchPoolGroups(activeOnly = false) {
     const items: RemotePoolGroup[] = await this.request('get', '/pools/groups', { params: { activeOnly } })
     return items.map(fromPoolGroup)
+  }
+
+  async fetchTemplates() {
+    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects/', {
+      params: { is_template: true },
+      retry: retryParams
+    })
+    return items.map(fromRemoteProject)
   }
 
   async saveProject(project: Project, scene: Scene) {
