@@ -63,6 +63,7 @@ import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/acti
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
+import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
@@ -300,8 +301,12 @@ export function* projectSaga(builder: BuilderAPI) {
   }
 
   function* handleLoginSuccess(_action: LoginSuccessAction) {
+    const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
     yield put(loadProjectsRequest())
-    yield put(loadTemplatesRequest())
+
+    if (isTemplatesEnabled) {
+      yield put(loadTemplatesRequest())
+    }
   }
 
   function* handleDeleteProject(_action: DeleteProjectAction) {

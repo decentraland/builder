@@ -1,9 +1,13 @@
 import { expectSaga } from 'redux-saga-test-plan'
-import { call } from 'redux-saga/effects'
+import { call, select } from 'redux-saga/effects'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { AuthIdentity } from '@dcl/crypto'
 import { BuilderAPI } from 'lib/api/builder'
 import { mockTemplate, mockTemplates } from 'specs/project'
-import { loadTemplatesFailure, loadTemplatesRequest, loadTemplatesSuccess } from './actions'
+import { loginSuccess } from 'modules/identity/actions'
+import { loadProjectsRequest, loadTemplatesFailure, loadTemplatesRequest, loadTemplatesSuccess } from './actions'
 import { projectSaga } from './sagas'
+import { getIsTemplatesEnabled } from 'modules/features/selectors'
 
 const builderAPI = {
   fetchTemplates: jest.fn()
@@ -26,6 +30,36 @@ describe('when handling the loadTemplatesRequest action', () => {
         .provide([[call([builderAPI, 'fetchTemplates']), Promise.reject(new Error('error'))]])
         .put(loadTemplatesFailure('error'))
         .dispatch(loadTemplatesRequest())
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the loginSuccess action', () => {
+  let wallet: Wallet
+  let identity: AuthIdentity
+
+  beforeEach(() => {
+    wallet = { address: '0xa' } as Wallet
+    identity = {} as AuthIdentity
+  })
+
+  describe('and the FF Templates is enabled', () => {
+    it('should put a loadTemplatesRequest action', () => {
+      return expectSaga(projectSaga, builderAPI)
+        .provide([[select(getIsTemplatesEnabled), true]])
+        .put(loadTemplatesRequest())
+        .put(loadProjectsRequest())
+        .dispatch(loginSuccess(wallet, identity))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the FF Templates is disabled', () => {
+    it('should not put a loadTemplatesRequest action', () => {
+      return expectSaga(projectSaga, builderAPI)
+        .put(loadProjectsRequest())
+        .dispatch(loginSuccess(wallet, identity))
         .run({ silenceTimeout: true })
     })
   })
