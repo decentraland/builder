@@ -5,12 +5,14 @@ import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { likePoolRequest } from 'modules/pool/actions'
 import { loadPublicProjectRequest } from 'modules/project/actions'
-import { isFetching, getCurrentPublicProject, getCurrentPool } from 'modules/pool/selectors'
+import { isFetching, getCurrentPool } from 'modules/pool/selectors'
 import { isPreviewing, isReady, isLoading } from 'modules/editor/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { getCurrentAuthor } from 'modules/profile/selectors'
 import { togglePreview, closeEditor } from 'modules/editor/actions'
+import { getCurrentProject } from 'modules/project/selectors'
+import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { openModal } from 'modules/modal/actions'
 import { PreviewType } from 'modules/editor/types'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
@@ -21,10 +23,11 @@ const mapState = (state: RootState): MapStateProps => ({
   isReady: !isLoading(state) && isReady(state),
   isFetching: isFetching(state) && !isReady(state),
   isLoggedIn: isLoggedIn(state),
-  currentProject: getCurrentPublicProject(state),
+  currentProject: getCurrentProject(state),
   currentPool: getCurrentPool(state),
   currentScene: getCurrentScene(state),
-  currentAuthor: getCurrentAuthor(state)
+  currentAuthor: getCurrentAuthor(state),
+  isTemplatesEnabled: getIsTemplatesEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

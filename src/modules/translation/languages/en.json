@@ -419,10 +419,10 @@
         "subtitle": "You need to sign in before you publish to the Scene pool",
         "title": "Sign In"
       },
-      "subtitle": "Submit your work to our Scene pool for a chance to get it published.",
+      "subtitle": "Your scene is about to be uploaded to the community pool, which means anyone can use it.",
       "success": {
-        "body": "You will receive an email notification if your Scene is picked to be published.",
-        "title": "Thanks for uploading your Scene!"
+        "body": "It will be included in our public scene gallery for anyone interested in using it. Thank you for your contribution!",
+        "title": "Your scene now is part of the scene pool!"
       },
       "title": "Publish your Scene",
       "uploading": "Uploading"
@@ -479,6 +479,11 @@
     "title": "You can now publish<br></br>your scenes to Worlds",
     "description": "Create your scene with the Builder and publish it to a World in a few clicks.",
     "create_scene": "Create Scene"
+  },
+  "templates_announcement_modal": {
+    "title": "Expand your creativity with templates and the community scene pool",
+    "description": "From now on you can start downloading and using templates and scenes from the community pool. Let your imagination shape your worlds and lands!",
+    "go_to_scenes": "Go to my scenes"
   },
   "use_as_alias_modal": {
     "title": "Use as Alias",

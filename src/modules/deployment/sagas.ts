@@ -273,7 +273,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         scene: emptyScene,
         point: placement.point,
         rotation: placement.rotation,
-        thumbnail: deployment.world ? getEmptySceneUrl() : null,
+        thumbnail: getEmptySceneUrl(),
         author: null,
         isDeploy: true,
         isEmpty: true,
