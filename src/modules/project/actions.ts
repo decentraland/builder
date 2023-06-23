@@ -70,7 +70,8 @@ export type DeleteProjectAction = ReturnType<typeof deleteProject>
 
 export const DUPLICATE_PROJECT = 'Duplicate project'
 
-export const duplicateProject = (project: Project, type?: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL) => action(DUPLICATE_PROJECT, { project, type })
+export const duplicateProject = (project: Project, type?: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL) =>
+  action(DUPLICATE_PROJECT, { project, type })
 
 export type DuplicateProjectAction = ReturnType<typeof duplicateProject>
 
