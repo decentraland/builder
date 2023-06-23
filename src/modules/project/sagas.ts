@@ -56,7 +56,7 @@ import { store } from 'modules/common/store'
 import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { BuilderAPI } from 'lib/api/builder'
-import { saveProjectRequest } from 'modules/sync/actions'
+import { SAVE_PROJECT_SUCCESS, saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
@@ -132,21 +132,39 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleDuplicateProject(action: DuplicateProjectAction) {
     const { project } = action.payload
-
+    const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
     const scene: Scene = yield getSceneByProjectId(project.id)
 
-    let thumbnail = project.thumbnail
+    let thumbnail: string = project.thumbnail
 
-    if (thumbnail && isRemoteURL(thumbnail)) {
+    if (isTemplatesEnabled && project.isTemplate) {
+      thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
+    } else if (thumbnail && isRemoteURL(thumbnail)) {
       thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
     }
 
     const newScene = { ...scene, id: uuidv4() }
-    const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: new Date().toISOString(), thumbnail }
+    const newProject = {
+      ...project,
+      sceneId: newScene.id,
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      thumbnail,
+      isTemplate: false,
+      video: null,
+      templateStatus: null
+    }
 
     yield put(createScene(newScene))
     yield put(createProject(newProject))
-    yield put(push(locations.scenes()))
+
+    if (isTemplatesEnabled && project.isTemplate) {
+      yield take(SAVE_PROJECT_SUCCESS)
+      yield put(push(locations.sceneEditor(newProject.id)))
+    } else {
+      yield put(push(locations.scenes()))
+    }
   }
 
   function* handleEditProject(action: EditProjectAction) {
