@@ -2,9 +2,9 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getTemplates } from 'modules/project/selectors'
+import { loadTemplatesRequest } from 'modules/project/actions'
 import { MapDispatchProps, MapDispatch, MapStateProps } from './TemplatesPage.types'
 import { TemplatesPage } from './TemplatesPage'
-import { loadTemplatesRequest } from 'modules/project/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   templates: getTemplates(state)

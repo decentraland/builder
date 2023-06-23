@@ -2,15 +2,14 @@ import { useCallback, useEffect } from 'react'
 import { Button, Page, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { TemplateStatus } from 'modules/project/types'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import SceneCard from 'components/SceneCard'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props } from './TemplatesPage.types'
-// import templatesJSON from './templates.json'
 import styles from './TemplatesPage.module.css'
-import { TemplateStatus } from 'modules/project/types'
 
 export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTemplates }) => {
   useEffect(() => {
