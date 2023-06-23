@@ -106,13 +106,6 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       delete newState.data[project.id]
       return newState
     }
-    case LOAD_PROJECTS_REQUEST:
-    case LOAD_TEMPLATES_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
-      }
-    }
     case LOAD_PROJECTS_SUCCESS:
     case LOAD_TEMPLATES_SUCCESS: {
       const { projects } = action.payload
@@ -126,19 +119,14 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       }
     }
     case LOAD_PROJECTS_FAILURE:
-    case LOAD_TEMPLATES_FAILURE: {
+    case LOAD_TEMPLATES_FAILURE:
+    case LOAD_PUBLIC_PROJECT_FAILURE:
+    case LOAD_MANIFEST_FAILURE: {
       const { error } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         error
-      }
-    }
-    case LOAD_PUBLIC_PROJECT_REQUEST:
-    case LOAD_PUBLIC_PROJECT_FAILURE: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
       }
     }
     case LOAD_PUBLIC_PROJECT_SUCCESS: {
@@ -163,7 +151,7 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       const { manifest } = action.payload
       const prevProject = state.data[manifest.project.id]
       if (prevProject) {
-        return state // no need to update state if project is already there. This prevents changing the project in the state with an outdated one from the manifest in S3.
+        return { ...state, loading: loadingReducer(state.loading, action) } // no need to update state if project is already there. This prevents changing the project in the state with an outdated one from the manifest in S3.
       }
       return {
         ...state,
@@ -174,8 +162,10 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
         loading: loadingReducer(state.loading, action)
       }
     }
-    case LOAD_MANIFEST_REQUEST:
-    case LOAD_MANIFEST_FAILURE: {
+    case LOAD_PROJECTS_REQUEST:
+    case LOAD_TEMPLATES_REQUEST:
+    case LOAD_PUBLIC_PROJECT_REQUEST:
+    case LOAD_MANIFEST_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
