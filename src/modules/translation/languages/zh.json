@@ -1022,6 +1022,16 @@
     "description": "描述",
     "url": "URL"
   },
+  "template_detail_page": {
+    "select_template": "选择模板",
+    "download_scene": "下载场景",
+    "description": "描述",
+    "creator": "创造者",
+    "scene_details": "场景细节",
+    "built_for_world": "为世界建造",
+    "personalize_it_yourself": "自己个性化",
+    "parcels": "{rows} x {cols} 包裹"
+  },
   "shortcuts": {
     "delete": "删除",
     "duplicate": "复制",
