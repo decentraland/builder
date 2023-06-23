@@ -125,7 +125,7 @@
 }
 
 .TemplateDetailPage .size-scene::before {
-  background-image: url('../../images/size-scene.svg');
+  background-image: url('../../icons/parcels.svg');
 }
 
 .TemplateDetailPage .world::before {
