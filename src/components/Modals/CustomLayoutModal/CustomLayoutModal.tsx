@@ -8,6 +8,8 @@ import { fromLayout } from 'modules/template/utils'
 import { ProjectLayout } from 'modules/project/types'
 import { Props, State } from './CustomLayoutModal.types'
 
+import './CustomLayoutModal.css'
+
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
 
@@ -122,7 +124,13 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
           </>
         </Modal.Content>
         <Modal.Actions>
-          <Button primary className="" disabled={hasError || !name || isLoading} loading={isLoading} onClick={this.handleCloneTemplate}>
+          <Button
+            primary
+            className="next-action-button"
+            disabled={hasError || !name || isLoading}
+            loading={isLoading}
+            onClick={this.handleCloneTemplate}
+          >
             {t('global.next')}
           </Button>
         </Modal.Actions>

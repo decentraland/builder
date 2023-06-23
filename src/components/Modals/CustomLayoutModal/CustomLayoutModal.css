@@ -1,0 +1,7 @@
+.CustomLayoutModal.ui.modal .actions {
+  justify-content: flex-end;
+}
+
+.CustomLayoutModal.ui.modal .actions > .ui.button.next-action-button {
+  flex: 0.3;
+}
