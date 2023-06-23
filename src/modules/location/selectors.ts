@@ -26,6 +26,18 @@ export const getProjectId = (state: RootState) => {
   return result ? result.params.projectId : null
 }
 
+const templateIdMatchSelector = createMatchSelector<
+  RootState,
+  {
+    templateId: string
+  }
+>(locations.templateDetail())
+
+export const getTemplateId = (state: RootState) => {
+  const result = templateIdMatchSelector(state)
+  return result ? result.params.templateId : null
+}
+
 const itemIdMatchSelector = createMatchSelector<
   RootState,
   {
