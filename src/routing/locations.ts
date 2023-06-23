@@ -46,5 +46,6 @@ export const locations = {
   ens: () => '/names',
   worlds: () => '/worlds',
   curation: () => '/curation',
-  templates: () => '/templates'
+  templates: () => '/templates',
+  templateDetail: (templateId = ':templateId') => `/templates/${templateId}`
 }
