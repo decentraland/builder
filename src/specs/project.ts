@@ -14,7 +14,7 @@ export const mockTemplate: Project = {
   layout: { rows: 1, cols: 1 },
   isTemplate: true,
   video: 'templateVideo',
-  templateStatus: TemplateStatus.AVAILABLE
+  templateStatus: TemplateStatus.ACTIVE
 }
 
 export const mockTemplates: ModelById<Project> = { [mockTemplate.id]: mockTemplate }
