@@ -35,10 +35,9 @@ const TemplateDetailPage: React.FC<Props> = props => {
 
   const handleSelectTemplateClick = useCallback(() => {
     if (template) {
-      console.log('TODO: Clone template:', template.id)
-      // onOpenModal('CloneTemplateModal', { template })
+      onOpenModal('CustomLayoutModal', { template })
     }
-  }, [template])
+  }, [template, onOpenModal])
 
   const renderPage = (template: Project) => {
     return (
