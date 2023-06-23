@@ -9,6 +9,7 @@ import { ProjectLayout } from 'modules/project/types'
 import { Props, State } from './CustomLayoutModal.types'
 
 import './CustomLayoutModal.css'
+import { PreviewType } from 'modules/editor/types'
 
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -51,7 +52,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   handleCloneTemplate = () => {
     const { metadata, onDuplicate } = this.props
     const project = { ...metadata.template, title: this.state.name, description: this.state.description }
-    onDuplicate(project)
+    onDuplicate(project, PreviewType.PUBLIC)
   }
 
   renderCreateScene() {
