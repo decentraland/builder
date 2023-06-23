@@ -27,14 +27,13 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
 
-const PUBLIC_URL = config.get('PUBLIC_URL', '')
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 export const FORUM_URL = config.get('FORUM_URL', '')
 
 export const getContentsStorageUrl = (hash = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
-export const getEmptySceneUrl = () => `${PUBLIC_URL}/images/empty-ground.png`
+export const getEmptySceneUrl = () => '/images/empty-ground.png'
 
 export type FetchCollectionsParams = {
   assignee?: string
