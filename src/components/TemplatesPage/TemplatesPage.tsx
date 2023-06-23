@@ -16,9 +16,12 @@ export const TemplatesPage: React.FC<Props> = ({ onNavigate }) => {
     onNavigate(locations.scenes())
   }, [onNavigate])
 
-  const handleGoToTemplate = useCallback(templateId => {
-    console.log('TODO: Go to template with id ', templateId)
-  }, [])
+  const handleGoToTemplate = useCallback(
+    templateId => {
+      onNavigate(locations.templateDetail(templateId))
+    },
+    [onNavigate]
+  )
 
   return (
     <>
@@ -51,8 +54,8 @@ export const TemplatesPage: React.FC<Props> = ({ onNavigate }) => {
                   })}
                 </span>
               }
-              tag={template.status !== 'ACTIVE' ? { label: t('templates_page.coming_soon'), color: '#716B7C' } : undefined}
-              disabled={template.status !== 'ACTIVE'}
+              tag={template.templateStatus !== 'ACTIVE' ? { label: t('templates_page.coming_soon'), color: '#716B7C' } : undefined}
+              disabled={template.templateStatus !== 'ACTIVE'}
               onClick={handleGoToTemplate.bind(null, template.id)}
             />
           ))}

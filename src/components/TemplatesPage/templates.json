@@ -9,7 +9,17 @@
     "thumbnail": "/images/template-preview-img.svg",
     "video": "/videos/template-preview.mp4",
     "creator": "Decentraland Foundation",
-    "status": "ACTIVE"
+    "isTemplate": true,
+    "templateStatus": "ACTIVE",
+    "isPublic": true,
+    "sceneId": "1",
+    "ethAddress": "0xa",
+    "createdAt": "1",
+    "updatedAt": "1",
+    "layout": {
+      "rows": 3,
+      "cols": 2
+    }
   },
   {
     "id": "2",
@@ -20,7 +30,17 @@
     "description": "The office",
     "thumbnail": "/images/office-preview.svg",
     "creator": "Decentraland Foundation",
-    "status": "COMING_SOON"
+    "isTemplate": true,
+    "templateStatus": "COMING_SOON",
+    "isPublic": true,
+    "sceneId": "1",
+    "ethAddress": "0xa",
+    "createdAt": "1",
+    "updatedAt": "1",
+    "layout": {
+      "rows": 3,
+      "cols": 2
+    }
   },
   {
     "id": "3",
@@ -31,6 +51,16 @@
     "description": "The theater",
     "thumbnail": "/images/theater-preview.svg",
     "creator": "Decentraland Foundation",
-    "status": "COMING_SOON"
+    "isTemplate": true,
+    "templateStatus": "COMING_SOON",
+    "isPublic": true,
+    "sceneId": "1",
+    "ethAddress": "0xa",
+    "createdAt": "1",
+    "updatedAt": "1",
+    "layout": {
+      "rows": 3,
+      "cols": 2
+    }
   }
 ]
