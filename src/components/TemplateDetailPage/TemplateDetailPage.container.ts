@@ -6,16 +6,15 @@ import { getTemplateId } from 'modules/location/selectors'
 import { getLoading } from 'modules/project/selectors'
 import { LOAD_PROJECTS_REQUEST, duplicateProject } from 'modules/project/actions'
 import { openModal } from 'modules/modal/actions'
-import { Project } from 'modules/project/types'
 import templates from '../TemplatesPage/templates.json'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TemplateDetailPage.types'
 import TemplateDetailPage from './TemplateDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
   const templateId = getTemplateId(state)
-  const template = templates.find(template => template.id === templateId)
+  const template = templates.find(template => template.id === templateId) || null
   return {
-    template: template ? (template as Project) : null,
+    template,
     isLoading: isLoadingType(getLoading(state), LOAD_PROJECTS_REQUEST)
   }
 }
