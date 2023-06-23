@@ -140,7 +140,12 @@ export default class SceneViewPage extends React.PureComponent<Props> {
             <Container className="back-container">
               <Back absolute onClick={onBack}></Back>
               {isTemplatesEnabled && (
-                <Button secondary onClick={this.handleExportProject.bind(this)}>
+                <Button
+                  secondary
+                  onClick={this.handleExportProject.bind(this)}
+                  loading={!this.props.currentProject}
+                  disabled={!this.props.currentProject}
+                >
                   <IconUI name="download" />
                   {t('scene_detail_page.download_scene')}
                 </Button>
