@@ -85,16 +85,6 @@ const TemplateDetailPage: React.FC<Props> = props => {
               <Button inverted className="download-button" onClick={handleDownloadClick}>
                 {t('template_detail_page.download_scene')}
               </Button>
-              <Button
-                inverted
-                className="learn-more-button"
-                as="a"
-                href="https://docs.decentraland.org/creator/builder/manage-scenes/#export-a-scene"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {t('global.learn_more')}
-              </Button>
             </Column>
           </Row>
           <Row className="content">
