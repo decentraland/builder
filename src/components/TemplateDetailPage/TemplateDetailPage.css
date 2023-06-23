@@ -1,0 +1,133 @@
+.TemplateDetailPage {
+  margin-top: 24px;
+}
+
+.TemplateDetailPage .dcl.section.large {
+  margin-bottom: 26px;
+}
+
+.TemplateDetailPage .dcl.back {
+  margin-right: 8px;
+}
+
+.TemplateDetailPage .header-image {
+  height: 347px;
+  width: 100%;
+  background-color: var(--card);
+  background-size: cover;
+  background-position: center;
+}
+
+.TemplateDetailPage .capitalize .ui.header:not(.sub) {
+  text-transform: capitalize;
+}
+
+.TemplateDetailPage .title-container {
+  display: flex;
+  gap: 10px;
+}
+
+.TemplateDetailPage .title-container .header.name {
+  margin-top: 0px;
+  font-size: 22px;
+}
+
+.TemplateDetailPage .title-container .back-button {
+  padding: 0;
+  margin: 0;
+}
+
+.TemplateDetailPage .title-container .back-button > i.icon {
+  color: white;
+  font-size: 27px;
+  line-height: 30px;
+  height: auto;
+}
+
+.TemplateDetailPage .ui.header {
+  font-weight: 700;
+}
+
+.TemplateDetailPage .row.content {
+  align-items: flex-start;
+}
+
+.TemplateDetailPage .creator-container {
+  width: 195px;
+  padding-top: 10px;
+}
+
+.TemplateDetailPage .description-container {
+  padding-top: 10px;
+}
+
+.TemplateDetailPage .description-container .description-content {
+  padding-top: 6px;
+}
+
+.TemplateDetailPage .action-buttons-container {
+  background-color: var(--dark-two);
+  height: 203px;
+  width: 433px;
+  border-radius: 10px;
+  padding: 26px 22px 26px 22px;
+}
+
+.TemplateDetailPage .action-buttons-container .button {
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.TemplateDetailPage .button.download-button,
+.TemplateDetailPage .button.download-button:hover {
+  background-color: #ffffff;
+  color: var(--shadows);
+}
+
+.TemplateDetailPage .description-content {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.TemplateDetailPage .creator-container .description-content {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.TemplateDetailPage .creator-container .description-content .dcl.logo {
+  width: 47px;
+  height: 47px;
+}
+
+.TemplateDetailPage .description-content.personalize-content,
+.TemplateDetailPage .description-content.size-scene,
+.TemplateDetailPage .description-content.world {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.TemplateDetailPage .personalize-content::before,
+.TemplateDetailPage .size-scene::before,
+.TemplateDetailPage .world::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: block;
+}
+
+.TemplateDetailPage .personalize-content::before {
+  background-image: url('../../images/create_scene.svg');
+}
+
+.TemplateDetailPage .size-scene::before {
+  background-image: url('../../icons/parcels.svg');
+}
+
+.TemplateDetailPage .world::before {
+  background-image: url('../../images/world.svg');
+}

@@ -20,9 +20,12 @@ export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTe
     onNavigate(locations.scenes())
   }, [onNavigate])
 
-  const handleGoToTemplate = useCallback(templateId => {
-    console.log('TODO: Go to template with id ', templateId)
-  }, [])
+  const handleGoToTemplate = useCallback(
+    templateId => {
+      onNavigate(locations.templateDetail(templateId))
+    },
+    [onNavigate]
+  )
 
   return (
     <>

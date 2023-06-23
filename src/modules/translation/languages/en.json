@@ -1027,6 +1027,16 @@
     "description": "Description",
     "url": "URL"
   },
+  "template_detail_page": {
+    "select_template": "Select Template",
+    "download_scene": "Download Scene",
+    "description": "Description",
+    "creator": "Creator",
+    "scene_details": "Scene Details",
+    "built_for_world": "Built for World",
+    "personalize_it_yourself": "Personalize it yourself",
+    "parcels": "{rows} x {cols} parcels"
+  },
   "shortcuts": {
     "delete": "Delete item",
     "duplicate": "Duplicate item",

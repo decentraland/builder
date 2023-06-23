@@ -1035,6 +1035,16 @@
     "description": "Descripción",
     "url": "URL"
   },
+  "template_detail_page": {
+    "select_template": "Seleccionar plantilla",
+    "download_scene": "Descargar Escena",
+    "description": "Descripción",
+    "creator": "Creador",
+    "scene_details": "Detalles de la escena",
+    "built_for_world": "Construido para Mundos",
+    "personalize_it_yourself": "Personalizalo tu mismo",
+    "parcels": "{rows} x {cols} parcelas"
+  },
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",

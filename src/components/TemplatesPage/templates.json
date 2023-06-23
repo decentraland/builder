@@ -1,0 +1,66 @@
+[
+  {
+    "id": "1",
+    "cols": 2,
+    "rows": 2,
+    "parcels": 4,
+    "title": "The house",
+    "description": "Your house in Decentraland, ideal for your own DreamSpace. Invite friends, host parties and share your best art, videos and music.",
+    "thumbnail": "/images/template-preview-img.svg",
+    "video": "/videos/template-preview.mp4",
+    "creator": "Decentraland Foundation",
+    "isTemplate": true,
+    "templateStatus": "ACTIVE",
+    "isPublic": true,
+    "sceneId": "1",
+    "ethAddress": "0xa",
+    "createdAt": "1",
+    "updatedAt": "1",
+    "layout": {
+      "rows": 3,
+      "cols": 2
+    }
+  },
+  {
+    "id": "2",
+    "cols": 2,
+    "rows": 5,
+    "parcels": 10,
+    "title": "The office",
+    "description": "The office",
+    "thumbnail": "/images/office-preview.svg",
+    "creator": "Decentraland Foundation",
+    "isTemplate": true,
+    "templateStatus": "COMING_SOON",
+    "isPublic": true,
+    "sceneId": "1",
+    "ethAddress": "0xa",
+    "createdAt": "1",
+    "updatedAt": "1",
+    "layout": {
+      "rows": 3,
+      "cols": 2
+    }
+  },
+  {
+    "id": "3",
+    "cols": 3,
+    "rows": 2,
+    "parcels": 6,
+    "title": "The theater",
+    "description": "The theater",
+    "thumbnail": "/images/theater-preview.svg",
+    "creator": "Decentraland Foundation",
+    "isTemplate": true,
+    "templateStatus": "COMING_SOON",
+    "isPublic": true,
+    "sceneId": "1",
+    "ethAddress": "0xa",
+    "createdAt": "1",
+    "updatedAt": "1",
+    "layout": {
+      "rows": 3,
+      "cols": 2
+    }
+  }
+]
