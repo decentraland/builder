@@ -616,8 +616,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchTemplates() {
-    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects/', {
-      params: { is_template: true },
+    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/templates', {
       retry: retryParams
     })
     return items.map(fromRemoteProject)

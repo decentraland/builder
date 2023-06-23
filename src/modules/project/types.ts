@@ -26,6 +26,6 @@ export type ProjectLayout = Layout & { hasError: boolean }
 export type Manifest<T = Project> = { version: number; project: T; scene: Scene }
 
 export enum TemplateStatus {
-  PENDING = 'pending',
-  AVAILABLE = 'available'
+  ACTIVE = 'active',
+  COMING_SOOM = 'coming_soon'
 }

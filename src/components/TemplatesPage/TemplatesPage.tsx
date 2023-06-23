@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Button, Page, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -8,10 +8,15 @@ import SceneCard from 'components/SceneCard'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props } from './TemplatesPage.types'
-import templates from './templates.json'
+// import templatesJSON from './templates.json'
 import styles from './TemplatesPage.module.css'
+import { TemplateStatus } from 'modules/project/types'
 
-export const TemplatesPage: React.FC<Props> = ({ onNavigate }) => {
+export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTemplates }) => {
+  useEffect(() => {
+    onLoadTemplates()
+  }, [onLoadTemplates])
+
   const handleBackClick = useCallback(() => {
     onNavigate(locations.scenes())
   }, [onNavigate])
@@ -36,7 +41,7 @@ export const TemplatesPage: React.FC<Props> = ({ onNavigate }) => {
           <h2 className={styles.title}>{t('templates_page.title')}</h2>
         </div>
         <div className={styles.templates}>
-          {templates.map(template => (
+          {Object.values(templates).map(template => (
             <SceneCard
               key={template.id}
               title={template.title}
@@ -47,12 +52,14 @@ export const TemplatesPage: React.FC<Props> = ({ onNavigate }) => {
                 <span className={styles.subtitle}>
                   {t('templates_page.parcels', {
                     icon: () => <span className={styles.parcelsIcon} />,
-                    size: template.parcels
+                    size: template.layout.rows * template.layout.cols
                   })}
                 </span>
               }
-              tag={template.status !== 'ACTIVE' ? { label: t('templates_page.coming_soon'), color: '#716B7C' } : undefined}
-              disabled={template.status !== 'ACTIVE'}
+              tag={
+                template.templateStatus !== TemplateStatus.ACTIVE ? { label: t('templates_page.coming_soon'), color: '#716B7C' } : undefined
+              }
+              disabled={template.templateStatus !== TemplateStatus.ACTIVE}
               onClick={handleGoToTemplate.bind(null, template.id)}
             />
           ))}

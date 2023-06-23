@@ -22,7 +22,7 @@ describe('Templates selectors', () => {
       layout: { rows: 3, cols: 4 },
       isTemplate: true,
       video: 'templateVideo2',
-      templateStatus: TemplateStatus.PENDING
+      templateStatus: TemplateStatus.COMING_SOOM
     }
     mockProject = {
       id: 'projectId',
