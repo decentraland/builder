@@ -20,8 +20,7 @@ export function hasEnoughSpaceForScene(project: Project | null, landTiles: Recor
 
   const tiles = Object.keys(landTiles)
   const { rows, cols } = project.layout
-
-  if (rows * cols < tiles.length) {
+  if (rows * cols > tiles.length) {
     return false
   }
 
