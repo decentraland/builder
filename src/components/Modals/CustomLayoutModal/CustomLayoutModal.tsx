@@ -6,8 +6,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
 import { fromLayout } from 'modules/template/utils'
 import { ProjectLayout } from 'modules/project/types'
+import { PreviewType } from 'modules/editor/types'
 import { Props, State } from './CustomLayoutModal.types'
-
 import './CustomLayoutModal.css'
 
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
@@ -51,7 +51,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   handleCloneTemplate = () => {
     const { metadata, onDuplicate } = this.props
     const project = { ...metadata.template, title: this.state.name, description: this.state.description }
-    onDuplicate(project)
+    onDuplicate(project, PreviewType.PUBLIC)
   }
 
   renderCreateScene() {

@@ -131,9 +131,9 @@ export function* projectSaga(builder: BuilderAPI) {
   }
 
   function* handleDuplicateProject(action: DuplicateProjectAction) {
-    const { project } = action.payload
+    const { project, type } = action.payload
     const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
-    const scene: Scene = yield getSceneByProjectId(project.id)
+    const scene: Scene = yield getSceneByProjectId(project.id, type)
 
     let thumbnail: string = project.thumbnail
 
