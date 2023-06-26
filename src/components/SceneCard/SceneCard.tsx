@@ -10,16 +10,26 @@ export const SceneCard: React.FC<Props> = ({ title, subtitle, description, video
   const [hovered, setHovered] = useState(false)
   const video = useRef<HTMLVideoElement>(null)
 
+  const isVideoPlaying = () => {
+    return (
+      video.current &&
+      video.current.currentTime > 0 &&
+      !video.current.paused &&
+      !video.current.ended &&
+      video.current.readyState > video.current.HAVE_CURRENT_DATA
+    )
+  }
+
   const handleMouseEnter = useCallback(async () => {
     setHovered(true)
-    if (video.current) {
+    if (video.current && !isVideoPlaying()) {
       await video.current.play()
     }
   }, [])
 
   const handleMouseLeave = useCallback(() => {
     setHovered(false)
-    if (video.current) {
+    if (video.current && isVideoPlaying()) {
       video.current.pause()
       video.current.currentTime = 0
     }
@@ -38,7 +48,7 @@ export const SceneCard: React.FC<Props> = ({ title, subtitle, description, video
         {videoSrc && (
           <video
             className={classNames(styles.thumbnail, { [styles.hidden]: !hovered })}
-            src={`${PUBLIC_URL}/${videoSrc}`}
+            src={`${PUBLIC_URL}${videoSrc}`}
             muted
             ref={video}
           />
@@ -46,7 +56,7 @@ export const SceneCard: React.FC<Props> = ({ title, subtitle, description, video
         <img
           className={classNames(styles.thumbnail, { [styles.hidden]: !!hovered && videoSrc })}
           alt={title}
-          src={`${PUBLIC_URL}/${imgSrc}`}
+          src={`${PUBLIC_URL}${imgSrc}`}
         />
       </div>
       <div className={styles.cardInfo}>
