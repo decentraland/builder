@@ -6,10 +6,9 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
 import { fromLayout } from 'modules/template/utils'
 import { ProjectLayout } from 'modules/project/types'
-import { Props, State } from './CustomLayoutModal.types'
-
-import './CustomLayoutModal.css'
 import { PreviewType } from 'modules/editor/types'
+import { Props, State } from './CustomLayoutModal.types'
+import './CustomLayoutModal.css'
 
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
