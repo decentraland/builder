@@ -27,7 +27,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
         onSuccess: project => dispatch(push(locations.sceneEditor(project.id)))
       })
     ),
-  onDuplicate: project => dispatch(duplicateProject(project))
+  onDuplicate: (project, type) => dispatch(duplicateProject(project, type))
 })
 
 export default connect(mapState, mapDispatch)(CustomLayoutModal)

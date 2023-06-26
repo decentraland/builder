@@ -31,9 +31,6 @@ const TemplatesAnnouncementModal: React.FC<Props> = ({ name, onClose, onNavigate
         <Button primary className="create-scene" onClick={handleGoToScenes}>
           {t('templates_announcement_modal.go_to_scenes')}
         </Button>
-        <Button inverted as="a" href="https://decentraland.org/blog/announcements" rel="noopener noreferrer" target="_blank">
-          {t('global.learn_more')}
-        </Button>
       </Modal.Actions>
     </Modal>
   )

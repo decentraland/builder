@@ -15,7 +15,7 @@ export default class ExportModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { name, onClose, isLoading, progress, total, isTemplatesEnabled } = this.props
+    const { name, onClose, isLoading, progress, total, isTemplatesEnabled, metadata } = this.props
 
     let action = isTemplatesEnabled ? t('export_modal.action') : t('export_modal.old.action')
     if (total > 0) {
@@ -30,18 +30,11 @@ export default class ExportModal extends React.PureComponent<Props> {
             <span className="details">{t('export_modal.description')}</span>
           </Modal.Content>
           <Modal.Actions className="export-modal-actions">
-            <Button primary onClick={this.handleExport} disabled={isLoading}>
+            <Button primary onClick={this.handleExport} disabled={isLoading || !metadata.project}>
               <Icon name="download" />
               {action}
             </Button>
-            <Button
-              as="a"
-              secondary
-              href="https://developers.decentraland.org"
-              rel="noopener noreferrer"
-              target="_blank"
-              disabled={isLoading}
-            >
+            <Button as="a" secondary href="https://developers.decentraland.org" rel="noopener noreferrer" target="_blank">
               {t('export_modal.docs')}
             </Button>
           </Modal.Actions>

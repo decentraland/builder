@@ -64,7 +64,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
           <div className="header-image" style={{ backgroundImage: `url(${template.thumbnail})` }} />
         </Section>
         <Section>
-          <Row className="content">
+          <Row className="content info-container">
             <Column className="creator-container">
               <Header>{t('template_detail_page.creator')}</Header>
               <p className="description-content">
