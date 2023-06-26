@@ -64,7 +64,7 @@ export async function createFiles(args: {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
-    [EXPORT_PATH.THUMBNAIL_FILE]: await createThumbnailBlob(thumbnail),
+    [EXPORT_PATH.THUMBNAIL_FILE]: await createThumbnailBlob(thumbnail, isEmpty),
     ...createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty, world }),
     ...createStaticFiles(),
     ...files
@@ -529,10 +529,11 @@ export function hasScripts(scene: Scene) {
   return Object.values(scene.components).some(component => component.type === ComponentType.Script)
 }
 
-async function createThumbnailBlob(thumbnail: string | null) {
+async function createThumbnailBlob(thumbnail: string | null, isClearDeployment: boolean = false) {
   if (thumbnail) {
     try {
-      const resp = await fetch(thumbnail, { headers: NO_CACHE_HEADERS })
+      const headers = !isClearDeployment ? NO_CACHE_HEADERS : {}
+      const resp = await fetch(thumbnail, { headers })
       const blob = await resp.blob()
       return blob
     } catch (error) {
