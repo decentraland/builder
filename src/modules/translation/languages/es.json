@@ -457,18 +457,18 @@
       "confirm_world_replace_content": "Entiendo que esta acción es irreversible",
       "scene_information": "Información de escena"
     },
-    "title": "Publicar Escena",
+    "title": "Publicar Escena {sceneName}",
     "subtitle": "Elige donde querés subir esta escena:",
     "learn_more": "Más información",
     "options": {
       "world": {
         "title": "Mi Mundo",
-        "description": "Límite de tamaño: 100 MB por mundo.<br></br>No se puede encontrar en el mapa de Genesis City.<br></br>Hasta 100 usuarios pueden unirse al mismo tiempo.",
+        "description": "No se puede encontrar en el mapa de Genesis City.<br></br>Hasta 100 usuarios pueden unirse al mismo tiempo.",
         "action": "Publicar en el mundo"
       },
       "land": {
         "title": "Mi Tierra",
-        "description": "Límite de tamaño: 15 MB por paquete.<br></br>Se puede encontrar en el mapa de Genesis City.<br></br>Un número ilimitado de usuarios pueden unirse al mismo tiempo.",
+        "description": "Se puede encontrar en el mapa de Genesis City.<br></br>Un número ilimitado de usuarios pueden unirse al mismo tiempo.",
         "action": "Publicar en la tierra"
       },
       "pool": {
