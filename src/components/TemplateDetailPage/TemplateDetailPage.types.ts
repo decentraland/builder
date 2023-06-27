@@ -2,7 +2,6 @@ import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { Project } from 'modules/project/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
-import { DuplicateProjectAction } from 'modules/project/actions'
 
 export type Props = {
   template: Project | null
@@ -13,4 +12,4 @@ export type Props = {
 
 export type MapStateProps = Pick<Props, 'template' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | DuplicateProjectAction | OpenModalAction>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>
