@@ -200,12 +200,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 25px;
   border: 1px solid #716b7c;
   border-radius: 8px;
   padding: 24px;
   flex: 1;
   background-color: #5e5b67;
+}
+
+.DeployModal .option-container .option-container-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .DeployModal .option-container .thumbnail {

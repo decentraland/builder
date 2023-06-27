@@ -450,14 +450,14 @@
       "confirm_world_replace_content": "我知道这个动作是不可逆转的",
       "scene_information": "场景信息"
     },
-    "title": "正在发布场景",
+    "title": "正在发布场景 {sceneName}",
     "subtitle": "选择要部署此场景的位置：",
     "learn_more": "了解更多",
     "options": {
       "world": {
         "title": "我的世界",
-        "description": "尺寸限制：每个世界100 MB。<br> </br>在Genesis City Map中找不到。<br> </br>最多可以同时加入100位用户。",
-        "description2": "大小限制：每个世界 100 MB。<br></br>在 Genesis City 地图中找不到。<br></br>最多 100 个用户可以同时加入。",
+        "description": "在Genesis City Map中找不到。<br> </br>最多可以同时加入100位用户。",
+        "description2": "在 Genesis City 地图中找不到。<br></br>最多 100 个用户可以同时加入。",
         "action": "发布到世界"
       },
       "land": {
