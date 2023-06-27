@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { Page, Center, Loader, Section, Row, Column, Header, Button, Logo, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -15,6 +15,15 @@ const TemplateDetailPage: React.FC<Props> = props => {
   const { template, isLoading, onOpenModal, onNavigate } = props
   const analytics = getAnalytics()
 
+  const eventInfo = useMemo(
+    () => ({
+      id: template?.id,
+      name: template?.title,
+      description: template?.description
+    }),
+    [template]
+  )
+
   const renderLoading = () => {
     return (
       <Center>
@@ -28,9 +37,9 @@ const TemplateDetailPage: React.FC<Props> = props => {
   }
 
   const handleDownloadClick = useCallback(() => {
-    analytics.track('Download Template', { id: template?.id })
+    analytics.track('Download Template', eventInfo)
     onOpenModal('ExportModal', { project: template })
-  }, [analytics, template, onOpenModal])
+  }, [analytics, template, eventInfo, onOpenModal])
 
   const handleBackClick = useCallback(() => {
     onNavigate(locations.templates())
@@ -38,10 +47,10 @@ const TemplateDetailPage: React.FC<Props> = props => {
 
   const handleSelectTemplateClick = useCallback(() => {
     if (template) {
-      analytics.track('Select Template', { id: template?.id })
+      analytics.track('Select Template', eventInfo)
       onOpenModal('CustomLayoutModal', { template })
     }
-  }, [analytics, template, onOpenModal])
+  }, [analytics, template, eventInfo, onOpenModal])
 
   const renderPage = (template: Project) => {
     return (

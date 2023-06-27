@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { Button, Page, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { TemplateStatus } from 'modules/project/types'
+import { Project, TemplateStatus } from 'modules/project/types'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
@@ -24,9 +24,13 @@ export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTe
   }, [onNavigate])
 
   const handleGoToTemplate = useCallback(
-    templateId => {
-      analytics.track('Go to template detail', { id: templateId })
-      onNavigate(locations.templateDetail(templateId))
+    (template: Project) => {
+      analytics.track('Go to template detail', {
+        id: template.id,
+        name: template.title,
+        description: template.description
+      })
+      onNavigate(locations.templateDetail(template.id))
     },
     [analytics, onNavigate]
   )
@@ -66,7 +70,7 @@ export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTe
                 template.templateStatus !== TemplateStatus.ACTIVE ? { label: t('templates_page.coming_soon'), color: '#716B7C' } : undefined
               }
               disabled={template.templateStatus !== TemplateStatus.ACTIVE}
-              onClick={handleGoToTemplate.bind(null, template.id)}
+              onClick={handleGoToTemplate.bind(null, template)}
             />
           ))}
         </div>
