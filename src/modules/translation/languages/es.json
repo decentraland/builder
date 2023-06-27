@@ -597,7 +597,7 @@
     },
     "action": "Descargar escena",
     "docs": "¿Qué es el SDK de Decentraland?",
-    "description": "Construir con Decentraland SDK es una excelente manera de impulsar su creatividad y compartir escenas más avanzadas.",
+    "description": "Transiciona sin problemas del builder al SDK para una escena más interactiva y personalizada. Las escenas descargadas se pueden mejorar con SDK o cargarse en otra cuenta a través del builder.",
     "loading": "Descargando...",
     "title": "Descargue escenas y cree con un mayor nivel de complejidad."
   },
@@ -784,7 +784,7 @@
     "action": "Cargar",
     "action_many": "Cargar {count} Escenas",
     "cta": "Arrastra un archivo .zip o {action}",
-    "description": "¡Puedes importar cualquier escena hecha con el constructor y desde el grupo de escenas!",
+    "description": "Puede usar la función de importación para mover escenas entre diferentes cuentas.Importe siempre el archivo zip como proviene de la descarga.",
     "invalid_file": "Archivo inválido",
     "title": "Importar Escena",
     "upload_manually": "Busca en tu computadora"
