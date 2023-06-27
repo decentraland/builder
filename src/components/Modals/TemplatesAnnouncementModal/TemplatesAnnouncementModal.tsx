@@ -8,7 +8,9 @@ import { locations } from 'routing/locations'
 import { Props } from './TemplatesAnnouncementModal.types'
 import styles from './TemplatesAnnouncementModal.module.css'
 
+const PUBLIC_URL = process.env.PUBLIC_URL
 const localStorage = getLocalStorage()
+const videoSrc = '/videos/template-preview.mp4'
 
 const TemplatesAnnouncementModal: React.FC<Props> = ({ name, onClose, onNavigate }) => {
   const handleClose = () => {
@@ -26,6 +28,7 @@ const TemplatesAnnouncementModal: React.FC<Props> = ({ name, onClose, onNavigate
       <Modal.Content className={styles.templatesBody}>
         <h1 className={styles.title}>{t('templates_announcement_modal.title')}</h1>
         <span className={styles.description}>{t('templates_announcement_modal.description')}</span>
+        <video autoPlay loop className={styles.thumbnail} src={`${PUBLIC_URL}${videoSrc}`} muted />
       </Modal.Content>
       <Modal.Actions className={styles.actions}>
         <Button primary className="create-scene" onClick={handleGoToScenes}>
