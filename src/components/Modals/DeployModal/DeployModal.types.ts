@@ -1,12 +1,14 @@
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { Deployment } from 'modules/deployment/types'
 import { PoolGroup } from 'modules/poolGroup/types'
+import { Project } from 'modules/project/types'
 
 export type Props = ModalProps & {
   deployment: Deployment
   metadata: DeployModalMetadata
   isDeployToWorldEnabled: boolean
   currentPoolGroup: PoolGroup | null
+  project: Project | null
 }
 
 export type State = {
@@ -21,7 +23,7 @@ export type Step = {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup' | 'isDeployToWorldEnabled'>
+export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup' | 'isDeployToWorldEnabled' | 'project'>
 
 export enum DeployModalView {
   NONE = 'NONE',

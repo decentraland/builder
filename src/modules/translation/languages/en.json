@@ -454,18 +454,18 @@
       "confirm_world_replace_content": "I understand that this action is irreversible",
       "scene_information": "Scene Information"
     },
-    "title": "Publish Scene",
+    "title": "Publish {sceneName} Scene",
     "subtitle": "Select where you want to deploy this scene:",
     "learn_more": "Learn more",
     "options": {
       "world": {
         "title": "My World",
-        "description": "Size limit: 100 MB per World.<br></br>Not findable in Genesis City map.<br></br>Up to 100 users can join concurrently.",
+        "description": "Not findable in Genesis City map.<br></br>Up to 100 users can join concurrently.",
         "action": "Publish to world"
       },
       "land": {
         "title": "My Land",
-        "description": "Size limit: 15 MB per parcel.<br></br>Findable in Genesis City map.<br></br>Unlimited users can join concurrently.",
+        "description": "Findable in Genesis City map.<br></br>Unlimited users can join concurrently.",
         "action": "Publish to land"
       },
       "pool": {
