@@ -6,7 +6,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Container,
   Button,
-  Page,
   Dropdown,
   DropdownProps,
   Pagination,
@@ -19,12 +18,10 @@ import {
 } from 'decentraland-ui'
 
 import ProjectCard from 'components/ProjectCard'
-import Footer from 'components/Footer'
-import Navbar from 'components/Navbar'
+import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
-import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import SceneCreationSelector from 'components/SceneCreationSelector'
 import { locations } from 'routing/locations'
@@ -233,13 +230,10 @@ const ScenesPage: React.FC<Props> = props => {
     paginationProps.nextItem = null
   }
 
-  return (
-    <>
-      <Navbar isFullscreen />
-      <Page isFullscreen className="ScenesPage">
-        <Navigation activeTab={NavigationTab.SCENES}>
-          <SyncToast />
-        </Navigation>
+  const render = () => {
+    return (
+      <>
+        <SyncToast />
         <Container>
           <Section className="projects-menu">
             <Row>
@@ -288,9 +282,14 @@ const ScenesPage: React.FC<Props> = props => {
             </>
           ) : null}
         </Container>
-      </Page>
-      <Footer />
-    </>
+      </>
+    )
+  }
+
+  return (
+    <LoggedInDetailPage className="ScenesPage" activeTab={NavigationTab.SCENES}>
+      {render()}
+    </LoggedInDetailPage>
   )
 }
 

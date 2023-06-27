@@ -2,10 +2,6 @@
   padding-top: 32px;
 }
 
-.ScenesPage {
-  font-size: 17px;
-}
-
 .ScenesPage .ui.button.inverted,
 .ScenesPage .ui.button.inverted:hover {
   background-color: #ffffff;
