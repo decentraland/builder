@@ -77,7 +77,9 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
             },
             limits: {
               ...state.data[sceneId].limits,
-              ...limits
+              ...limits,
+              // INCREASE MATERIALS LIMIT FOR TEMPLATES
+              materials: limits.materials * 1.1
             }
           }
         }

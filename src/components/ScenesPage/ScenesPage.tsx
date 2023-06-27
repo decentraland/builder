@@ -55,12 +55,11 @@ const ScenesPage: React.FC<Props> = props => {
 
   useEffect(() => {
     onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
-    if (!localStorage.getItem(LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT) && isDeployToWorldEnabled) {
-      onOpenModal('DeployToWorldAnnouncementModal')
-    }
 
     if (!localStorage.getItem(LOCALSTORAGE_TEMPLATES_ANNOUCEMENT) && isTemplatesEnabled) {
       onOpenModal('TemplatesAnnouncementModal')
+    } else if (!localStorage.getItem(LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT) && isDeployToWorldEnabled) {
+      onOpenModal('DeployToWorldAnnouncementModal')
     }
   }, [isDeployToWorldEnabled, isTemplatesEnabled, onLoadFromScenePool, onOpenModal])
 
@@ -136,7 +135,7 @@ const ScenesPage: React.FC<Props> = props => {
     if (isTemplatesEnabled) {
       return (
         <div className="no-scenes-container">
-          <h3>{t('scenes_page.no_scenes.title')}</h3>
+          <h3 className="no-scene-title">{t('scenes_page.no_scenes.title')}</h3>
           <span className="no-scenes-description">
             {t('scenes_page.no_scenes.description', {
               a: (content: string) => (

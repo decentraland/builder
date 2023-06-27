@@ -591,7 +591,7 @@
     },
     "action": "下载场景",
     "docs": "什么是分散的SDK？",
-    "description": "使用分散的SDK建造是冲动创造力并分享更高级场景的好方法。",
+    "description": "从构建器无缝过渡到SDK，以获得更具互动性的个性化场景。可以通过SDK增强下载的场景或通过建造者上传到另一个帐户.",
     "loading": "下载...",
     "title": "下载场景并以更高的复杂程度创建."
   },
@@ -770,7 +770,7 @@
     "action": "导入",
     "action_many": "导入 {count} 个场景",
     "cta": "拖拽场景文件到此，或者 {action}",
-    "description": "您可以导入使用 Builder 设计的任何场景！",
+    "description": "您可以使用导入功能在不同帐户之间移动场景。始终导入来自下载的zip文件。",
     "invalid_file": "无效文件",
     "title": "导入场景",
     "upload_manually": "浏览您的电脑"
