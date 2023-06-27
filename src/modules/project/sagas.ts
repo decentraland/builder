@@ -132,6 +132,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleDuplicateProject(action: DuplicateProjectAction) {
     const { project, type } = action.payload
+    const ethAddress: string = yield select(getAddress)
     const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
     const scene: Scene = yield getSceneByProjectId(project.id, type)
 
@@ -146,6 +147,7 @@ export function* projectSaga(builder: BuilderAPI) {
     const newScene = { ...scene, id: uuidv4() }
     const newProject = {
       ...project,
+      ethAddress,
       sceneId: newScene.id,
       id: uuidv4(),
       createdAt: new Date().toISOString(),

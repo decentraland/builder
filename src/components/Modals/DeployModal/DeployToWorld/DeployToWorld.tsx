@@ -304,6 +304,7 @@ export default function DeployToWorld({
               label={t('deployment_modal.deploy_world.world_label')}
               placeholder={t('deployment_modal.deploy_world.world_placeholder')}
               value={world}
+              disabled={isLoading || loading}
               options={worldOptions}
               onChange={handleWorldSelected}
             />

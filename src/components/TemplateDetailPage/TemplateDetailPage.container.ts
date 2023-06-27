@@ -4,7 +4,7 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { RootState } from 'modules/common/types'
 import { getTemplateId } from 'modules/location/selectors'
 import { getLoading, getTemplates } from 'modules/project/selectors'
-import { LOAD_PROJECTS_REQUEST, duplicateProject } from 'modules/project/actions'
+import { LOAD_PROJECTS_REQUEST } from 'modules/project/actions'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TemplateDetailPage.types'
 import TemplateDetailPage from './TemplateDetailPage'
@@ -20,8 +20,7 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onDuplicate: project => dispatch(duplicateProject(project))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
 export default connect(mapState, mapDispatch)(TemplateDetailPage)
