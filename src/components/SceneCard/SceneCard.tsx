@@ -1,5 +1,5 @@
-import { useState, useRef, useCallback } from 'react'
 import classNames from 'classnames'
+import { usePlayVideoOnHover } from 'lib/video'
 import { Badge } from 'decentraland-ui'
 import { Props } from './SceneCard.types'
 import styles from './SceneCard.module.css'
@@ -7,40 +7,14 @@ import styles from './SceneCard.module.css'
 const PUBLIC_URL = process.env.PUBLIC_URL
 
 export const SceneCard: React.FC<Props> = ({ title, subtitle, description, videoSrc, imgSrc, disabled, tag, onClick }) => {
-  const [hovered, setHovered] = useState(false)
-  const video = useRef<HTMLVideoElement>(null)
-
-  const isVideoPlaying = () => {
-    return (
-      video.current &&
-      video.current.currentTime > 0 &&
-      !video.current.paused &&
-      !video.current.ended &&
-      video.current.readyState > video.current.HAVE_CURRENT_DATA
-    )
-  }
-
-  const handleMouseEnter = useCallback(async () => {
-    setHovered(true)
-    if (video.current && !isVideoPlaying()) {
-      await video.current.play()
-    }
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    setHovered(false)
-    if (video.current && isVideoPlaying()) {
-      video.current.pause()
-      video.current.currentTime = 0
-    }
-  }, [])
+  const { video, hovered, onMouseEnter, onMouseLeave } = usePlayVideoOnHover()
 
   return (
     <button
       className={styles.container}
       disabled={disabled}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       onClick={onClick}
       aria-label={title}
     >

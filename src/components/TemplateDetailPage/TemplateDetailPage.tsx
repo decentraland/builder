@@ -1,7 +1,9 @@
 import React, { useCallback, useMemo } from 'react'
+import classNames from 'classnames'
 import { Page, Center, Loader, Section, Row, Column, Header, Button, Logo, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
+import { usePlayVideoOnHover } from 'lib/video'
 import { Project } from 'modules/project/types'
 import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
@@ -11,8 +13,12 @@ import { Props } from './TemplateDetailPage.types'
 import './TemplateDetailPage.css'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
+const PUBLIC_URL = process.env.PUBLIC_URL
+
 const TemplateDetailPage: React.FC<Props> = props => {
   const { template, isLoading, onOpenModal, onNavigate } = props
+  const { hovered, video, onMouseEnter, onMouseLeave } = usePlayVideoOnHover()
+
   const analytics = getAnalytics()
 
   const eventInfo = useMemo(
@@ -74,7 +80,20 @@ const TemplateDetailPage: React.FC<Props> = props => {
           </Row>
         </Section>
         <Section>
-          <div className="header-image" style={{ backgroundImage: `url(${template.thumbnail})` }} />
+          <div className="template-media" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+            {template.video && (
+              <video
+                className={classNames('header-image', { 'image-hidden': !hovered })}
+                src={`${PUBLIC_URL}${template.video}`}
+                muted
+                ref={video}
+              />
+            )}
+            <div
+              className={classNames('header-image', { 'image-hidden': !!hovered && template.video })}
+              style={{ backgroundImage: `url(${template.thumbnail})` }}
+            />
+          </div>
         </Section>
         <Section>
           <Row className="content info-container">
