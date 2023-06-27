@@ -10,10 +10,10 @@ import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 import Back from 'components/Back'
 import { PreviewType } from 'modules/editor/types'
+import { getProjectToExport } from './utils'
 import { Props } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
-import { getProjectToExport } from './utils'
 
 export default class SceneViewPage extends React.PureComponent<Props> {
   componentDidMount() {

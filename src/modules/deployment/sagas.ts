@@ -102,7 +102,6 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         yield put(takeScreenshot())
 
         yield put(setProgress(ProgressStage.NONE, 90))
-        console.log(additionalInfo)
         yield call(() => builder.deployToPool(project.id, additionalInfo))
 
         yield put(setProgress(ProgressStage.NONE, 100))
