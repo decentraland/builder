@@ -10,7 +10,7 @@ import { getProjectId } from 'modules/location/utils'
 import { Project } from 'modules/project/types'
 import { Vector3 } from 'modules/models/types'
 import { PARCEL_SIZE } from './constants'
-import { LOAD_PUBLIC_PROJECT_REQUEST } from './actions'
+import { LOAD_PROJECTS_REQUEST, LOAD_PUBLIC_PROJECT_REQUEST } from './actions'
 
 export const getState: (state: RootState) => ProjectState = state => state.project
 export const getData: (state: RootState) => ProjectState['data'] = state => getState(state).data
@@ -44,8 +44,9 @@ export const getCurrentBounds = createSelector<RootState, Project | null, Vector
   }
 })
 
-export const isFetching = createSelector<RootState, LoadingState, boolean>(getLoading, projectLoading =>
-  isLoadingType(projectLoading, LOAD_PUBLIC_PROJECT_REQUEST)
+export const isFetching = createSelector<RootState, LoadingState, boolean>(
+  getLoading,
+  projectLoading => isLoadingType(projectLoading, LOAD_PUBLIC_PROJECT_REQUEST) || isLoadingType(projectLoading, LOAD_PROJECTS_REQUEST)
 )
 
 export const getTemplates = createSelector(getData, projects => {
