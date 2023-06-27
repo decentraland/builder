@@ -3,7 +3,7 @@ import { push } from 'connected-react-router'
 
 import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
-import { LOAD_MANIFEST_REQUEST, createProjectFromTemplate, duplicateProject } from 'modules/project/actions'
+import { LOAD_MANIFEST_REQUEST, createProjectFromTemplate } from 'modules/project/actions'
 import { getError as getProjectError, getLoading as getProjectLoading } from 'modules/project/selectors'
 import { MapDispatchProps, MapDispatch, MapStateProps } from './CustomLayoutModal.types'
 
@@ -26,8 +26,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
         description,
         onSuccess: project => dispatch(push(locations.sceneEditor(project.id)))
       })
-    ),
-  onDuplicate: (project, type) => dispatch(duplicateProject(project, type))
+    )
 })
 
 export default connect(mapState, mapDispatch)(CustomLayoutModal)
