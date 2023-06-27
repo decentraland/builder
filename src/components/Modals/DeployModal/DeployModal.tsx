@@ -66,16 +66,15 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderChoiceForm = () => {
-    const { name, isDeployToWorldEnabled, deployment } = this.props
+    const { name, isDeployToWorldEnabled, project } = this.props
 
-    console.log({ deployment })
     if (isDeployToWorldEnabled) {
       return (
         <Modal name={name} onClose={this.handleClickOutside}>
           <div className="modal-body">
             <Icon name="modal-close" className="modal-close-icon" onClick={this.handleClose} />
             <Header size="large" className="modal-title">
-              {t('deployment_modal.title', { sceneName: 'mee' })}
+              {t('deployment_modal.title', { sceneName: project?.title ? `"${project.title}"` : '' })}
             </Header>
             <h5 className="deploy-modal-subtitle">{t('deployment_modal.subtitle')}</h5>
             <div className="deploy-modal-options">
@@ -128,7 +127,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             <Icon name="modal-close" onClick={this.handleClose} />
           </div>
           <Header size="large" className="modal-title">
-            {t('deployment_modal.title', { sceneName: 'meli' })}
+            {t('deployment_modal.title', { sceneName: '' })}
           </Header>
           <p className="modal-subtitle">{t('deployment_modal.description')}</p>
           <div className="options">
