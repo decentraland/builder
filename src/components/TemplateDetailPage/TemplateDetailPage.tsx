@@ -9,9 +9,11 @@ import NotFound from 'components/NotFound'
 import { Props } from './TemplateDetailPage.types'
 
 import './TemplateDetailPage.css'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 const TemplateDetailPage: React.FC<Props> = props => {
   const { template, isLoading, onOpenModal, onNavigate } = props
+  const analytics = getAnalytics()
 
   const renderLoading = () => {
     return (
@@ -26,8 +28,9 @@ const TemplateDetailPage: React.FC<Props> = props => {
   }
 
   const handleDownloadClick = useCallback(() => {
+    analytics.track('Download Template', { id: template?.id })
     onOpenModal('ExportModal', { project: template })
-  }, [template, onOpenModal])
+  }, [analytics, template, onOpenModal])
 
   const handleBackClick = useCallback(() => {
     onNavigate(locations.templates())
@@ -35,9 +38,10 @@ const TemplateDetailPage: React.FC<Props> = props => {
 
   const handleSelectTemplateClick = useCallback(() => {
     if (template) {
+      analytics.track('Select Template', { id: template?.id })
       onOpenModal('CustomLayoutModal', { template })
     }
-  }, [template, onOpenModal])
+  }, [analytics, template, onOpenModal])
 
   const renderPage = (template: Project) => {
     return (

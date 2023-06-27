@@ -3,6 +3,7 @@ import { Button, Page, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { TemplateStatus } from 'modules/project/types'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import SceneCard from 'components/SceneCard'
@@ -12,6 +13,8 @@ import { Props } from './TemplatesPage.types'
 import styles from './TemplatesPage.module.css'
 
 export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTemplates }) => {
+  const analytics = getAnalytics()
+
   useEffect(() => {
     onLoadTemplates()
   }, [onLoadTemplates])
@@ -22,9 +25,10 @@ export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTe
 
   const handleGoToTemplate = useCallback(
     templateId => {
+      analytics.track('Go to template detail', { id: templateId })
       onNavigate(locations.templateDetail(templateId))
     },
-    [onNavigate]
+    [analytics, onNavigate]
   )
 
   return (
