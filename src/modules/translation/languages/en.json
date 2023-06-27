@@ -594,7 +594,7 @@
     },
     "action": "Download scene",
     "docs": "What is the Decentraland SDK?",
-    "description": "Building with Decentraland SDK is a great way to impulse your creativity and share more advanced scenes.",
+    "description": "Transition seamlessly from the Builder to the SDK for a more interactive, personalized scene. Downloaded scenes can be enhanced with SDK or uploaded into another account through the Builder.",
     "loading": "Downloading...",
     "title": "Download scenes and create with a higher level of complexity."
   },
@@ -776,7 +776,7 @@
     "action": "Import",
     "action_many": "Import {count} Scenes",
     "cta": "Drag your Scene .zip file here, or {action}",
-    "description": "You can import any Scene made with the Builder!",
+    "description": "You can use the import feature to move scenes between different accounts. Always import the zip file as it comes from the download.",
     "invalid_file": "Invalid file",
     "title": "Import Scene",
     "upload_manually": "Browse your computer"

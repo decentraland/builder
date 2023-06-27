@@ -5,6 +5,7 @@
 .ImportModal .details {
   display: block;
   margin-bottom: 24px;
+  font-size: 16px;
 }
 
 .ImportModal .project-card {
