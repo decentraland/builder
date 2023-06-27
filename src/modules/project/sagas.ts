@@ -57,7 +57,7 @@ import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { BuilderAPI } from 'lib/api/builder'
 import { SAVE_PROJECT_SUCCESS, saveProjectRequest } from 'modules/sync/actions'
-import { Gizmo } from 'modules/editor/types'
+import { Gizmo, PreviewType } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
@@ -217,7 +217,10 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleExportProject(action: ExportProjectRequestAction) {
     const { project } = action.payload
-    const scene: Scene = yield getSceneByProjectId(project.id)
+    const scene: Scene = yield getSceneByProjectId(
+      project.id,
+      project.isTemplate || project.isPublic ? PreviewType.PUBLIC : PreviewType.PROJECT
+    )
 
     yield put(setExportProgress({ loaded: 0, total: 0 }))
     const author: string = yield select(getName)
