@@ -19,16 +19,8 @@
   margin-bottom: 40px;
 }
 
-/* :global(.content).templatesBody::after {
-  content: url('../../../images/template-preview.svg');
-  width: 356px;
-  height: 238px;
-  display: block;
-} */
-
 .thumbnail {
   display: block;
-  /* width: 456px; */
   height: 238px;
   object-fit: cover;
   border-top-left-radius: 10px;
