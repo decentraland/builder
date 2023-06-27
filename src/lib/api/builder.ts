@@ -219,7 +219,9 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
     id: remoteProject.id,
     title: remoteProject.title,
     description: remoteProject.description,
-    thumbnail: `${BUILDER_SERVER_URL}/projects/${remoteProject.id}/media/thumbnail.png`,
+    thumbnail: remoteProject.is_template
+      ? `${PUBLIC_URL}${remoteProject.thumbnail}`
+      : `${BUILDER_SERVER_URL}/projects/${remoteProject.id}/media/thumbnail.png`,
     isPublic: !!remoteProject.is_public,
     sceneId: remoteProject.scene_id,
     ethAddress: remoteProject.eth_address,
@@ -230,7 +232,7 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
     createdAt: remoteProject.created_at,
     updatedAt: remoteProject.updated_at,
     isTemplate: !!remoteProject.is_template,
-    video: remoteProject?.video,
+    video: remoteProject.is_template && remoteProject?.video ? `${PUBLIC_URL}${remoteProject.video}` : null,
     templateStatus: remoteProject?.template_status
   }
 }
