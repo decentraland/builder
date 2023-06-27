@@ -770,7 +770,7 @@
     "action": "导入",
     "action_many": "导入 {count} 个场景",
     "cta": "拖拽场景文件到此，或者 {action}",
-    "description": "您可以导入使用 Builder 设计的任何场景！",
+    "description": "您可以用建筑商和场景池中的任何场景导入任何场景！",
     "invalid_file": "无效文件",
     "title": "导入场景",
     "upload_manually": "浏览您的电脑"

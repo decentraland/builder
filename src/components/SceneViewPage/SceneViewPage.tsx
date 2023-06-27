@@ -13,6 +13,7 @@ import { PreviewType } from 'modules/editor/types'
 import { Props } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
+import { getProjectToExport } from './utils'
 
 export default class SceneViewPage extends React.PureComponent<Props> {
   componentDidMount() {
@@ -113,8 +114,8 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   }
 
   handleExportProject() {
-    const { currentProject, onOpenModal } = this.props
-    onOpenModal('ExportModal', { project: currentProject })
+    const { onOpenModal } = this.props
+    onOpenModal('ExportModal', { project: getProjectToExport(this.getCurrentProject()) })
   }
 
   render() {
@@ -140,12 +141,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
             <Container className="back-container">
               <Back absolute onClick={onBack}></Back>
               {isTemplatesEnabled && (
-                <Button
-                  secondary
-                  onClick={this.handleExportProject.bind(this)}
-                  loading={!this.props.currentProject}
-                  disabled={!this.props.currentProject}
-                >
+                <Button secondary onClick={this.handleExportProject.bind(this)} loading={!currentProject} disabled={!currentProject}>
                   <IconUI name="download" />
                   {t('scene_detail_page.download_scene')}
                 </Button>
