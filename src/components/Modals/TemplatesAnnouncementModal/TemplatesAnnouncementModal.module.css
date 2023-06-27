@@ -19,11 +19,12 @@
   margin-bottom: 40px;
 }
 
-:global(.content).templatesBody::after {
-  content: url('../../../images/template-preview.svg');
-  width: 356px;
-  height: 238px;
+.thumbnail {
   display: block;
+  height: 238px;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .title {

@@ -55,12 +55,11 @@ const ScenesPage: React.FC<Props> = props => {
 
   useEffect(() => {
     onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
-    if (!localStorage.getItem(LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT) && isDeployToWorldEnabled) {
-      onOpenModal('DeployToWorldAnnouncementModal')
-    }
 
     if (!localStorage.getItem(LOCALSTORAGE_TEMPLATES_ANNOUCEMENT) && isTemplatesEnabled) {
       onOpenModal('TemplatesAnnouncementModal')
+    } else if (!localStorage.getItem(LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT) && isDeployToWorldEnabled) {
+      onOpenModal('DeployToWorldAnnouncementModal')
     }
   }, [isDeployToWorldEnabled, isTemplatesEnabled, onLoadFromScenePool, onOpenModal])
 
