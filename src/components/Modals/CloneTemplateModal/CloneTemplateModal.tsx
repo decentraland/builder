@@ -29,7 +29,7 @@ const CloneTemplateModal: React.FC<Props> = ({ metadata, alias, name, isLoading,
 
   const handleCloneTemplate = useCallback(() => {
     const project = { ...metadata.template, title, description }
-    onDuplicate(project, PreviewType.PUBLIC)
+    onDuplicate(project, PreviewType.TEMPLATE)
   }, [title, description, metadata, onDuplicate])
 
   const handleOnTitleChange = useCallback((_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
