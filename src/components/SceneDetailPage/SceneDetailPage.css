@@ -16,6 +16,7 @@
   background-color: var(--card);
   background-size: cover;
   background-position: center;
+  object-fit: cover;
 }
 
 .SceneDetailPage .capitalize .ui.header:not(.sub) {
