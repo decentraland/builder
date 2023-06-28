@@ -149,8 +149,7 @@ export const LOAD_MANIFEST_REQUEST = '[Request] Load manifest'
 export const LOAD_MANIFEST_SUCCESS = '[Success] Load manifest'
 export const LOAD_MANIFEST_FAILURE = '[Failure] Load manifest'
 
-export const loadManifestRequest = (id: string, type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PROJECT) =>
-  action(LOAD_MANIFEST_REQUEST, { id, type })
+export const loadManifestRequest = (id: string, type: PreviewType = PreviewType.PROJECT) => action(LOAD_MANIFEST_REQUEST, { id, type })
 export const loadManifestSuccess = (manifest: Manifest) => action(LOAD_MANIFEST_SUCCESS, { manifest })
 export const loadManifestFailure = (error: string) => action(LOAD_MANIFEST_FAILURE, { error })
 
@@ -163,10 +162,8 @@ export const LOAD_PROJECT_SCENE_REQUEST = '[Request] Load project scene'
 export const LOAD_PROJECT_SCENE_SUCCESS = '[Success] Load project scene'
 export const LOAD_PROJECT_SCENE_FAILURE = '[Failure] Load project scene'
 
-export const loadProjectSceneRequest = (
-  project: Project,
-  type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PROJECT
-) => action(LOAD_PROJECT_SCENE_REQUEST, { project, type })
+export const loadProjectSceneRequest = (project: Project, type: PreviewType = PreviewType.PROJECT) =>
+  action(LOAD_PROJECT_SCENE_REQUEST, { project, type })
 export const loadProjectSceneSuccess = (scene: Scene) => action(LOAD_PROJECT_SCENE_SUCCESS, { scene })
 export const loadProjectSceneFailure = (error: string) => action(LOAD_PROJECT_SCENE_FAILURE, { error })
 

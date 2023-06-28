@@ -142,7 +142,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
     try {
       if ((thumbnail && isRemoteURL(thumbnail)) || (isTemplatesEnabled && project.isTemplate)) {
-        thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
+        thumbnail = yield call(getImageAsDataUrl, project.thumbnail, project.isTemplate)
       }
 
       const newScene = { ...scene, id: uuidv4() }
