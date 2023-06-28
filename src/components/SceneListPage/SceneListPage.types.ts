@@ -14,7 +14,7 @@ export type Props = PoolsRequestFilters & {
   total: number | null
   totalPages: number | null
   isLoggedIn: boolean
-  onNavegateToHome: () => void
+  onNavigateToScenes: () => void
   onNavegateToViewPool: (poolId: string) => void
   onPageChange: (filters: PoolsRequestFilters) => void
   onLoadPools: typeof loadPoolsRequest
@@ -25,7 +25,7 @@ export type MapStateProps = Pick<
   Props,
   'location' | 'pools' | 'poolGroups' | 'total' | 'totalPages' | 'page' | 'sortBy' | 'sortOrder' | 'group' | 'ethAddress' | 'isLoggedIn'
 >
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPageChange' | 'onNavegateToHome' | 'onNavegateToViewPool' | 'onLoadPools'>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPageChange' | 'onNavigateToScenes' | 'onNavegateToViewPool' | 'onLoadPools'>
 export type MapDispatch = Dispatch<LikePoolRequestAction | OpenModalAction | LoadPoolsRequestAction | CallHistoryMethodAction>
 
 export const filterAttributes = ['page', 'sortBy', 'sortOrder', 'group', 'ethAddress'] as (keyof PoolsRequestFilters)[]

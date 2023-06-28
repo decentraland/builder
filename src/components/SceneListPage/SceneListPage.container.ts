@@ -40,7 +40,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onLoadPools: (filters: PoolsRequestFilters) => dispatch(loadPoolsRequest(filters)),
   onPageChange: (filters: PoolsRequestFilters) => dispatch(push(locations.poolSearch(filters))),
-  onNavegateToHome: () => dispatch(push(locations.root())),
+  onNavigateToScenes: () => dispatch(push(locations.scenes())),
   onNavegateToViewPool: (poolId: string) => dispatch(push(locations.poolView(poolId)))
 })
 
