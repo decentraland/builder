@@ -40,7 +40,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
 
   const handleSelectTemplateClick = useCallback(() => {
     if (template) {
-      onOpenModal('CustomLayoutModal', { template })
+      onOpenModal('CloneTemplateModal', { template })
     }
   }, [template, onOpenModal])
 
