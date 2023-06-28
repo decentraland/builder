@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import classNames from 'classnames'
 import { Page, Center, Loader, Section, Row, Column, Header, Button, Logo, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -11,12 +11,24 @@ import NotFound from 'components/NotFound'
 import { Props } from './TemplateDetailPage.types'
 
 import './TemplateDetailPage.css'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 
 const TemplateDetailPage: React.FC<Props> = props => {
   const { template, isLoading, onOpenModal, onNavigate } = props
   const { hovered, video, onMouseEnter, onMouseLeave } = usePlayVideoOnHover()
+
+  const analytics = getAnalytics()
+
+  const eventInfo = useMemo(
+    () => ({
+      id: template?.id,
+      name: template?.title,
+      description: template?.description
+    }),
+    [template]
+  )
 
   const renderLoading = () => {
     return (
@@ -31,8 +43,9 @@ const TemplateDetailPage: React.FC<Props> = props => {
   }
 
   const handleDownloadClick = useCallback(() => {
+    analytics.track('Download Template', eventInfo)
     onOpenModal('ExportModal', { project: template })
-  }, [template, onOpenModal])
+  }, [analytics, template, eventInfo, onOpenModal])
 
   const handleBackClick = useCallback(() => {
     onNavigate(locations.templates())
@@ -40,9 +53,10 @@ const TemplateDetailPage: React.FC<Props> = props => {
 
   const handleSelectTemplateClick = useCallback(() => {
     if (template) {
+      analytics.track('Select Template', eventInfo)
       onOpenModal('CloneTemplateModal', { template })
     }
-  }, [template, onOpenModal])
+  }, [analytics, template, eventInfo, onOpenModal])
 
   const renderPage = (template: Project) => {
     return (
