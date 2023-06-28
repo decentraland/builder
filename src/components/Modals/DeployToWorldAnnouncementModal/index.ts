@@ -1,3 +1,0 @@
-import DeployToWorldAnnouncementModal from './DeployToWorldAnnouncementModal.container'
-
-export default DeployToWorldAnnouncementModal
