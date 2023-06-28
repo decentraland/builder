@@ -769,14 +769,14 @@
   "templates_page": {
     "title": "Choose a template",
     "back_to_scenes": "Back to scenes",
-    "parcels": "<icon></icon> {size} parcels",
+    "parcels": "{size} parcels",
     "coming_soon": "Coming soon"
   },
   "import_modal": {
     "action": "Import",
     "action_many": "Import {count} Scenes",
     "cta": "Drag your Scene .zip file here, or {action}",
-    "description": "You can use the import feature to move scenes between different accounts. Always import the zip file as it comes from the download.",
+    "description": "To transfer scenes between different accounts or import a scene previously downloaded from the scene pool, utilize the import feature. Ensure that you import the zip file exactly as it was downloaded.",
     "invalid_file": "Invalid file",
     "title": "Import Scene",
     "upload_manually": "Browse your computer"

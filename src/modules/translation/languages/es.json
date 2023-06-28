@@ -777,14 +777,14 @@
   "templates_page": {
     "title": "Elija una plantilla",
     "back_to_scenes": "Volver a las escenas",
-    "parcels": "<icon></icon> {size} parcelas",
+    "parcels": "{size} parcelas",
     "coming_soon": "Muy pronto"
   },
   "import_modal": {
     "action": "Cargar",
     "action_many": "Cargar {count} Escenas",
     "cta": "Arrastra un archivo .zip o {action}",
-    "description": "Puede usar la función de importación para mover escenas entre diferentes cuentas.Importe siempre el archivo zip como proviene de la descarga.",
+    "description": "Para transferir escenas entre diferentes cuentas o importar una escena previamente descargada desde el grupo de escenas, utilice la función de importación. Asegúrese de importar el archivo zip exactamente como se descargó.",
     "invalid_file": "Archivo inválido",
     "title": "Importar Escena",
     "upload_manually": "Busca en tu computadora"
