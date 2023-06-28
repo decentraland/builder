@@ -777,7 +777,7 @@
   "templates_page": {
     "title": "Elija una plantilla",
     "back_to_scenes": "Volver a las escenas",
-    "parcels": "<icon></icon> {size} parcelas",
+    "parcels": "{size} parcelas",
     "coming_soon": "Muy pronto"
   },
   "import_modal": {

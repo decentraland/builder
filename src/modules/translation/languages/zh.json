@@ -763,7 +763,7 @@
   "templates_page": {
     "title": "选择一个模板",
     "back_to_scenes": "回到场景",
-    "parcels": "<icon></icon> {size} 包裹",
+    "parcels": "{size} 包裹",
     "coming_soon": "即将推出"
   },
   "import_modal": {
