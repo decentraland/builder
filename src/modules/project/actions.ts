@@ -72,8 +72,14 @@ export const DUPLICATE_PROJECT_REQUEST = '[Request] Duplicate project'
 export const DUPLICATE_PROJECT_SUCCESS = '[Success] Duplicate project'
 export const DUPLICATE_PROJECT_FAILURE = '[Failure] Duplicate project'
 
-export const duplicateProjectRequest = (project: Project, type?: PreviewType) => action(DUPLICATE_PROJECT_REQUEST, { project, type })
-export const duplicateProjectSuccess = (project: Project, type?: PreviewType) => action(DUPLICATE_PROJECT_SUCCESS, { project, type })
+export const duplicateProjectRequest = (
+  project: Project,
+  type?: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL | PreviewType.TEMPLATE
+) => action(DUPLICATE_PROJECT_REQUEST, { project, type })
+export const duplicateProjectSuccess = (
+  project: Project,
+  type?: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL | PreviewType.TEMPLATE
+) => action(DUPLICATE_PROJECT_SUCCESS, { project, type })
 export const duplicateProjectFailure = (error: string) => action(DUPLICATE_PROJECT_FAILURE, { error })
 
 export type DuplicateProjectRequestAction = ReturnType<typeof duplicateProjectRequest>
@@ -149,8 +155,10 @@ export const LOAD_MANIFEST_REQUEST = '[Request] Load manifest'
 export const LOAD_MANIFEST_SUCCESS = '[Success] Load manifest'
 export const LOAD_MANIFEST_FAILURE = '[Failure] Load manifest'
 
-export const loadManifestRequest = (id: string, type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PROJECT) =>
-  action(LOAD_MANIFEST_REQUEST, { id, type })
+export const loadManifestRequest = (
+  id: string,
+  type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL | PreviewType.TEMPLATE = PreviewType.PROJECT
+) => action(LOAD_MANIFEST_REQUEST, { id, type })
 export const loadManifestSuccess = (manifest: Manifest) => action(LOAD_MANIFEST_SUCCESS, { manifest })
 export const loadManifestFailure = (error: string) => action(LOAD_MANIFEST_FAILURE, { error })
 
@@ -165,7 +173,7 @@ export const LOAD_PROJECT_SCENE_FAILURE = '[Failure] Load project scene'
 
 export const loadProjectSceneRequest = (
   project: Project,
-  type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PROJECT
+  type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL | PreviewType.TEMPLATE = PreviewType.PROJECT
 ) => action(LOAD_PROJECT_SCENE_REQUEST, { project, type })
 export const loadProjectSceneSuccess = (scene: Scene) => action(LOAD_PROJECT_SCENE_SUCCESS, { scene })
 export const loadProjectSceneFailure = (error: string) => action(LOAD_PROJECT_SCENE_FAILURE, { error })

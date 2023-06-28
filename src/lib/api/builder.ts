@@ -642,7 +642,10 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/projects/${id}`)
   }
 
-  async fetchManifest(id: string, type: PreviewType.PROJECT | PreviewType.POOL | PreviewType.PUBLIC = PreviewType.PROJECT) {
+  async fetchManifest(
+    id: string,
+    type: PreviewType.PROJECT | PreviewType.POOL | PreviewType.PUBLIC | PreviewType.TEMPLATE = PreviewType.PROJECT
+  ) {
     const remoteManifest = await this.request('get', `/${type}s/${id}/manifest`)
     const manifest = {
       ...remoteManifest,

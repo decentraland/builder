@@ -102,7 +102,7 @@ export function areEqualMappings(mappingsA: Record<string, string> = {}, mapping
 
 export function* getSceneByProjectId(
   projectId: string,
-  type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PROJECT
+  type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL | PreviewType.TEMPLATE = PreviewType.PROJECT
 ) {
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const pools: ReturnType<typeof getPools> = yield select(getPools)
