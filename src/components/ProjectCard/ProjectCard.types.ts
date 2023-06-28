@@ -4,8 +4,8 @@ import { Deployment, DeploymentStatus } from 'modules/deployment/types'
 import {
   deleteProject,
   DeleteProjectAction,
-  duplicateProject,
-  DuplicateProjectAction,
+  duplicateProjectRequest,
+  DuplicateProjectRequestAction,
   loadProjectSceneRequest,
   LoadProjectSceneRequestAction
 } from 'modules/project/actions'
@@ -26,7 +26,7 @@ export type Props = DefaultProps & {
   type: PreviewType
   onClick?: (project: Project) => any
   onDeleteProject: typeof deleteProject
-  onDuplicateProject: typeof duplicateProject
+  onDuplicateProject: typeof duplicateProjectRequest
   onOpenModal: typeof openModal
   onLoadProjectScene: typeof loadProjectSceneRequest
 }
@@ -39,4 +39,4 @@ export type State = {
 
 export type MapStateProps = Pick<Props, 'parcels' | 'items' | 'deploymentStatus' | 'deployments' | 'type' | 'isUploading' | 'hasError'>
 export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject' | 'onOpenModal' | 'onLoadProjectScene'>
-export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction | OpenModalAction | LoadProjectSceneRequestAction>
+export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectRequestAction | OpenModalAction | LoadProjectSceneRequestAction>

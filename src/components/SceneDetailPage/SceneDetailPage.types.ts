@@ -3,7 +3,7 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
-import { deleteProject, duplicateProject, DeleteProjectAction, DuplicateProjectAction } from 'modules/project/actions'
+import { deleteProject, duplicateProjectRequest, DeleteProjectAction, DuplicateProjectRequestAction } from 'modules/project/actions'
 
 export type Props = {
   project: Project | null
@@ -13,9 +13,9 @@ export type Props = {
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
   onDelete: typeof deleteProject
-  onDuplicate: typeof duplicateProject
+  onDuplicate: typeof duplicateProjectRequest
 }
 
 export type MapStateProps = Pick<Props, 'project' | 'deployments' | 'isLoading' | 'isLoadingDeployments'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onDelete' | 'onDuplicate' | 'onOpenModal'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | DeleteProjectAction | DuplicateProjectAction | OpenModalAction>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | DeleteProjectAction | DuplicateProjectRequestAction | OpenModalAction>

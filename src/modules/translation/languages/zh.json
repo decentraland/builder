@@ -1074,6 +1074,13 @@
     "description_label": "描述",
     "description_placeholder": "一些描述..."
   },
+  "clone_template_modal": {
+    "title": "为您的场景设置名称和描述",
+    "name_label": "姓名",
+    "name_max_length": "该名称最多可以是32个字符",
+    "description_label": "描述",
+    "description_placeholder": "一些描述..."
+  },
   "templates": {
     "big": "大 (2x3)",
     "custom_layout": {

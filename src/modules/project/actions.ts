@@ -68,12 +68,17 @@ export type DeleteProjectAction = ReturnType<typeof deleteProject>
 
 // Duplicate project
 
-export const DUPLICATE_PROJECT = 'Duplicate project'
+export const DUPLICATE_PROJECT_REQUEST = '[Request] Duplicate project'
+export const DUPLICATE_PROJECT_SUCCESS = '[Success] Duplicate project'
+export const DUPLICATE_PROJECT_FAILURE = '[Failure] Duplicate project'
 
-export const duplicateProject = (project: Project, type?: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL) =>
-  action(DUPLICATE_PROJECT, { project, type })
+export const duplicateProjectRequest = (project: Project, type?: PreviewType) => action(DUPLICATE_PROJECT_REQUEST, { project, type })
+export const duplicateProjectSuccess = (project: Project, type?: PreviewType) => action(DUPLICATE_PROJECT_SUCCESS, { project, type })
+export const duplicateProjectFailure = (error: string) => action(DUPLICATE_PROJECT_FAILURE, { error })
 
-export type DuplicateProjectAction = ReturnType<typeof duplicateProject>
+export type DuplicateProjectRequestAction = ReturnType<typeof duplicateProjectRequest>
+export type DuplicateProjectSuccessAction = ReturnType<typeof duplicateProjectSuccess>
+export type DuplicateProjectFailureAction = ReturnType<typeof duplicateProjectFailure>
 
 // Export project
 

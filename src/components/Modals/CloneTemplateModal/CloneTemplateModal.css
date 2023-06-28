@@ -1,0 +1,60 @@
+.CloneTemplateModal.ui.modal,
+.CloneTemplateModal.ui.modal .content,
+.CloneTemplateModal.ui.modal .actions {
+  background-color: var(--toast);
+}
+
+.CloneTemplateModal.ui.modal .modal-navigation-container.disabled .modal-navigation-close {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.CloneTemplateModal.ui.modal .content .dcl.field input,
+.CloneTemplateModal.ui.modal .content .dcl.text-area textarea {
+  background-color: var(--modal);
+  border: 0.5px solid var(--text);
+}
+
+.CloneTemplateModal.ui.modal .dcl.modal-navigation-title {
+  margin-bottom: 51px;
+}
+
+.CloneTemplateModal.ui.modal .content .dcl.field input {
+  font-size: 14px;
+}
+
+.CloneTemplateModal.ui.modal .content .dcl.text-area textarea {
+  font-size: 13px;
+}
+
+.CloneTemplateModal.ui.modal .content .dcl.text-area textarea:focus {
+  border: 2px solid var(--text);
+}
+
+.CloneTemplateModal.ui.modal .content .dcl.field .ui.sub.header,
+.CloneTemplateModal.ui.modal .content .dcl.text-area .title {
+  color: var(--text);
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.CloneTemplateModal.ui.modal .content .dcl.field .message {
+  color: #a09ba8;
+  font-size: 12px;
+}
+
+.CloneTemplateModal.ui.modal .content .dcl.field {
+  margin-bottom: 15px;
+}
+
+.CloneTemplateModal.ui.modal .content .dcl.field .maxLength {
+  display: none;
+}
+
+.CloneTemplateModal.ui.modal .actions {
+  justify-content: flex-end;
+}
+
+.CloneTemplateModal.ui.modal .actions > .ui.button.next-action-button {
+  flex: 0.1;
+}

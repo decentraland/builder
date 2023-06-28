@@ -11,6 +11,7 @@ export { default as CreateAndEditMultipleItemsModal } from './CreateAndEditMulti
 export { default as CreateItemsModal } from './CreateItemsModal'
 export { default as CreateThirdPartyCollectionModal } from './CreateThirdPartyCollectionModal'
 export { default as CustomLayoutModal } from './CustomLayoutModal'
+export { default as CloneTemplateModal } from './CloneTemplateModal'
 export { default as DeleteItemModal } from './DeleteItemModal'
 export { default as DeployModal } from './DeployModal'
 export { default as DeployToWorldAnnouncementModal } from './DeployToWorldAnnouncementModal'
