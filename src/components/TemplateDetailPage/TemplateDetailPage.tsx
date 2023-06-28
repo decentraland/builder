@@ -13,8 +13,6 @@ import { Props } from './TemplateDetailPage.types'
 import './TemplateDetailPage.css'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
-const PUBLIC_URL = process.env.PUBLIC_URL
-
 const TemplateDetailPage: React.FC<Props> = props => {
   const { template, isLoading, onOpenModal, onNavigate } = props
   const { hovered, video, onMouseEnter, onMouseLeave } = usePlayVideoOnHover()
@@ -82,12 +80,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
         <Section>
           <div className="template-media" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
             {template.video && (
-              <video
-                className={classNames('header-image', { 'image-hidden': !hovered })}
-                src={`${PUBLIC_URL}${template.video}`}
-                muted
-                ref={video}
-              />
+              <video className={classNames('header-image', { 'image-hidden': !hovered })} src={template.video} muted ref={video} />
             )}
             <div
               className={classNames('header-image', { 'image-hidden': !!hovered && template.video })}
