@@ -86,7 +86,12 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                   <Button primary onClick={this.handleDeployToWorld}>
                     <span>{t('deployment_modal.options.world.action')}</span>
                   </Button>
-                  <a className="learn-more-link" href="https://docs.decentraland.org/" target="_blank" rel="noreferrer">
+                  <a
+                    className="learn-more-link"
+                    href="https://docs.decentraland.org/creator/worlds/contributor/worlds/about/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {t('deployment_modal.learn_more')}
                   </a>
                 </div>
@@ -99,7 +104,12 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                   <Button primary onClick={this.handleDeployToLand}>
                     <span>{t('deployment_modal.options.land.action')}</span>
                   </Button>
-                  <a className="learn-more-link" href="https://docs.decentraland.org/" target="_blank" rel="noreferrer">
+                  <a
+                    className="learn-more-link"
+                    href="https://docs.decentraland.org/creator/builder/builder-101/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {t('deployment_modal.learn_more')}
                   </a>
                 </div>
