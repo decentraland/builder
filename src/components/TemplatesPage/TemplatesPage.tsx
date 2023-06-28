@@ -8,6 +8,7 @@ import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import SceneCard from 'components/SceneCard'
 import Navigation from 'components/Navigation'
+import CustomIcon from 'components/Icon'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props } from './TemplatesPage.types'
 import styles from './TemplatesPage.module.css'
@@ -60,8 +61,8 @@ export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTe
               imgSrc={template.thumbnail}
               subtitle={
                 <span className={styles.subtitle}>
+                  <CustomIcon name="scene-parcel" />
                   {t('templates_page.parcels', {
-                    icon: () => <span className={styles.parcelsIcon} />,
                     size: template.layout.rows * template.layout.cols
                   })}
                 </span>

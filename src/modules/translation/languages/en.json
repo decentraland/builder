@@ -769,7 +769,7 @@
   "templates_page": {
     "title": "Choose a template",
     "back_to_scenes": "Back to scenes",
-    "parcels": "<icon></icon> {size} parcels",
+    "parcels": "{size} parcels",
     "coming_soon": "Coming soon"
   },
   "import_modal": {
