@@ -97,7 +97,7 @@ export default class SceneListPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { pools, total, totalPages, isLoggedIn, onNavegateToHome } = this.props
+    const { pools, total, totalPages, isLoggedIn, onNavigateToScenes } = this.props
     const filters = this.getFilters()
 
     const paginationProps: Record<string, any> = {
@@ -120,7 +120,7 @@ export default class SceneListPage extends React.PureComponent<Props> {
             <Container>
               <Section className="navigation">
                 <Row>
-                  <Back absolute onClick={onNavegateToHome}></Back>
+                  <Back absolute onClick={onNavigateToScenes}></Back>
                   <Narrow>
                     <Row>
                       <Column>

@@ -72,6 +72,8 @@
 .descriptionInfo .title {
   font-size: 18px;
   line-height: 22px;
+  font-family: var(--font-family);
+  font-weight: 600;
 }
 
 .descriptionInfo .subtitle {
