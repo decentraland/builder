@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { push } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { takeLatest, put, select, take, call, all, race, delay, takeEvery } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
@@ -334,6 +334,7 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleLoginSuccess(_action: LoginSuccessAction) {
     const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
     yield put(loadProjectsRequest())
+    yield put(replace(locations.scenes()))
 
     // TODO: Remove this validation when the feature is fully deployed
     if (isTemplatesEnabled) {
