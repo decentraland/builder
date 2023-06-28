@@ -53,11 +53,26 @@ export default class EditorPage extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(): void {
-    const { currentProject, claimedName, isFromClaimName, isLoading, isPreviewing, isScreenshotReady, onOpenModal, onTakeScreenshot } =
-      this.props
+    const {
+      currentProject,
+      claimedName,
+      isFromClaimName,
+      isReady,
+      isLoading,
+      isPreviewing,
+      isScreenshotReady,
+      onOpenModal,
+      onTakeScreenshot
+    } = this.props
     const { isDeployModalOpened } = this.state
 
+    // When it fails to take the screenshot, try again
     if (!(isLoading || isPreviewing) && isScreenshotReady && currentProject && !currentProject.thumbnail) {
+      onTakeScreenshot()
+    }
+
+    // When it fails to save the screenshot after duplicating a project, take a new screenshot
+    if (!isLoading && isReady && currentProject && !currentProject.thumbnail) {
       onTakeScreenshot()
     }
 

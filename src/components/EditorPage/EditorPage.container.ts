@@ -3,7 +3,7 @@ import { getLocation } from 'connected-react-router'
 import { getCurrentProject } from 'modules/project/selectors'
 import { RootState } from 'modules/common/types'
 import { closeEditor, zoomIn, zoomOut, resetCamera, takeScreenshot } from 'modules/editor/actions'
-import { isSidebarOpen, isPreviewing, isReady, isFetching, isScreenshotReady } from 'modules/editor/selectors'
+import { isSidebarOpen, isPreviewing, isReady, isFetching, isLoading, isScreenshotReady } from 'modules/editor/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { openModal } from 'modules/modal/actions'
 import { numItems } from 'modules/scene/selectors'
@@ -20,7 +20,8 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     isPreviewing: isPreviewing(state),
     isSidebarOpen: isSidebarOpen(state),
-    isLoading: !isReady(state),
+    isReady: isReady(state),
+    isLoading: isLoading(state),
     isFetching: isFetching(state),
     isLoggedIn: isLoggedIn(state),
     isScreenshotReady: isScreenshotReady(state),

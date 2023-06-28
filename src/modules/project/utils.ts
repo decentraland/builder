@@ -69,7 +69,12 @@ export function getParcelOrientation(layout: Layout, point: Coordinate, rotation
 }
 
 export async function getImageAsDataUrl(url: string): Promise<string> {
-  const res = await fetch(url, { headers: NO_CACHE_HEADERS })
-  const buffer = await res.arrayBuffer()
-  return `data:image/png;base64,${base64ArrayBuffer(buffer)}`
+  try {
+    const res = await fetch(url, { headers: NO_CACHE_HEADERS })
+    const buffer = await res.arrayBuffer()
+    return `data:image/png;base64,${base64ArrayBuffer(buffer)}`
+  } catch (error) {
+    console.error(error)
+    return ''
+  }
 }
