@@ -58,8 +58,6 @@ const ScenesPage: React.FC<Props> = props => {
 
     if (!localStorage.getItem(LOCALSTORAGE_TEMPLATES_ANNOUCEMENT) && isTemplatesEnabled) {
       onOpenModal('TemplatesAnnouncementModal')
-    } else if (!localStorage.getItem(LOCALSTORAGE_DEPLOY_TO_WORLD_ANNOUCEMENT) && isDeployToWorldEnabled) {
-      onOpenModal('DeployToWorldAnnouncementModal')
     }
   }, [isDeployToWorldEnabled, isTemplatesEnabled, onLoadFromScenePool, onOpenModal])
 
