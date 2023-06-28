@@ -1,5 +1,6 @@
 import { Project, Layout } from 'modules/project/types'
 import { Coordinate, Rotation } from 'modules/deployment/types'
+import { base64ArrayBuffer } from 'modules/editor/base64'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getDimensions } from 'lib/layout'
 
@@ -67,18 +68,8 @@ export function getParcelOrientation(layout: Layout, point: Coordinate, rotation
   return parcels
 }
 
-export async function getImageAsDataUrl(url: string, isTemplate = false): Promise<string> {
-  const reader = new FileReader()
-  const headers = !isTemplate ? NO_CACHE_HEADERS : {}
-  const res = await fetch(url, { headers })
-  const blob = await res.blob()
-
-  const out = new Promise<string>((resolve, reject) => {
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = e => reject(e)
-  })
-
-  reader.readAsDataURL(blob)
-
-  return out
+export async function getImageAsDataUrl(url: string): Promise<string> {
+  const res = await fetch(url, { headers: NO_CACHE_HEADERS })
+  const buffer = await res.arrayBuffer()
+  return `data:image/png;base64,${base64ArrayBuffer(buffer)}`
 }
