@@ -8,8 +8,8 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
   CreateProjectFromTemplateAction,
-  DUPLICATE_PROJECT,
-  DuplicateProjectAction,
+  DUPLICATE_PROJECT_REQUEST,
+  DuplicateProjectRequestAction,
   EXPORT_PROJECT_REQUEST,
   ExportProjectRequestAction,
   IMPORT_PROJECT,
@@ -43,7 +43,9 @@ import {
   LOAD_TEMPLATES_REQUEST,
   loadTemplatesSuccess,
   loadTemplatesFailure,
-  loadTemplatesRequest
+  loadTemplatesRequest,
+  duplicateProjectSuccess,
+  duplicateProjectFailure
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
@@ -71,7 +73,7 @@ import { createFiles } from './export'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
-  yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
+  yield takeLatest(DUPLICATE_PROJECT_REQUEST, handleDuplicateProjectRequest)
   yield takeLatest(EDIT_PROJECT, handleEditProject)
   yield takeLatest(SHARE_PROJECT, handleShareProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
@@ -130,7 +132,7 @@ export function* projectSaga(builder: BuilderAPI) {
     }
   }
 
-  function* handleDuplicateProject(action: DuplicateProjectAction) {
+  function* handleDuplicateProjectRequest(action: DuplicateProjectRequestAction) {
     const { project, type } = action.payload
     const ethAddress: string = yield select(getAddress)
     const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
@@ -138,34 +140,38 @@ export function* projectSaga(builder: BuilderAPI) {
 
     let thumbnail: string = project.thumbnail
 
-    if (isTemplatesEnabled && project.isTemplate) {
-      thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
-    } else if (thumbnail && isRemoteURL(thumbnail)) {
-      thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
-    }
+    try {
+      if ((thumbnail && isRemoteURL(thumbnail)) || (isTemplatesEnabled && project.isTemplate)) {
+        thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
+      }
 
-    const newScene = { ...scene, id: uuidv4() }
-    const newProject = {
-      ...project,
-      ethAddress,
-      sceneId: newScene.id,
-      id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      thumbnail,
-      isTemplate: false,
-      video: null,
-      templateStatus: null
-    }
+      const newScene = { ...scene, id: uuidv4() }
+      const newProject = {
+        ...project,
+        ethAddress,
+        sceneId: newScene.id,
+        id: uuidv4(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        thumbnail,
+        isTemplate: false,
+        video: null,
+        templateStatus: null
+      }
 
-    yield put(createScene(newScene))
-    yield put(createProject(newProject))
+      yield put(createScene(newScene))
+      yield put(createProject(newProject))
 
-    if (isTemplatesEnabled && project.isTemplate) {
-      yield take(SAVE_PROJECT_SUCCESS)
-      yield put(push(locations.sceneEditor(newProject.id)))
-    } else {
-      yield put(push(locations.scenes()))
+      if (isTemplatesEnabled && project.isTemplate) {
+        yield take(SAVE_PROJECT_SUCCESS)
+        yield put(push(locations.sceneEditor(newProject.id)))
+      } else {
+        yield put(push(locations.scenes()))
+      }
+
+      yield put(duplicateProjectSuccess(newProject, type))
+    } catch (error) {
+      yield put(duplicateProjectFailure(error.message))
     }
   }
 
