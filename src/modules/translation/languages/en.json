@@ -1079,6 +1079,13 @@
     "description_label": "Description",
     "description_placeholder": "Some description..."
   },
+  "clone_template_modal": {
+    "title": "Set a name and a description for your scene",
+    "name_label": "Name",
+    "name_max_length": "The name can be 32 characters at most",
+    "description_label": "Description",
+    "description_placeholder": "Some description..."
+  },
   "templates": {
     "big": "Big (2x3)",
     "custom_layout": {

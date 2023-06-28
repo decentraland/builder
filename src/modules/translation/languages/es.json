@@ -1082,6 +1082,13 @@
     "description_placeholder": "Una descripción...",
     "change_item_file": "Editar representation"
   },
+  "clone_template_modal": {
+    "title": "Escribe un nombre y una descripcion de tu Escena",
+    "name_label": "Nombre",
+    "name_max_length": "El nombre puede tener un máximo de 32 caracteres",
+    "description_label": "Descripción",
+    "description_placeholder": "Una descripción..."
+  },
   "sync": {
     "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",
     "loading": "Guardando...",

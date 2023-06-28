@@ -7,7 +7,7 @@ import { getProjectId } from 'modules/location/selectors'
 import { getData as getProjects, getLoading } from 'modules/project/selectors'
 import { getLoading as getLoadingLands } from 'modules/land/selectors'
 import { getDeploymentsByProjectId, getLoading as getLoadingDeployment } from 'modules/deployment/selectors'
-import { LOAD_PROJECTS_REQUEST, deleteProject, duplicateProject } from 'modules/project/actions'
+import { LOAD_PROJECTS_REQUEST, deleteProject, duplicateProjectRequest } from 'modules/project/actions'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_DEPLOYMENTS_REQUEST, FETCH_WORLD_DEPLOYMENTS_REQUEST } from 'modules/deployment/actions'
 import { FETCH_ENS_LIST_REQUEST } from 'modules/ens/actions'
@@ -37,7 +37,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onDelete: project => dispatch(deleteProject(project)),
-  onDuplicate: project => dispatch(duplicateProject(project))
+  onDuplicate: project => dispatch(duplicateProjectRequest(project))
 })
 
 export default connect(mapState, mapDispatch)(SceneDetailPage)

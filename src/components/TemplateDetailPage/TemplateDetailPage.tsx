@@ -54,7 +54,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
   const handleSelectTemplateClick = useCallback(() => {
     if (template) {
       analytics.track('Select Template', eventInfo)
-      onOpenModal('CustomLayoutModal', { template })
+      onOpenModal('CloneTemplateModal', { template })
     }
   }, [analytics, template, eventInfo, onOpenModal])
 

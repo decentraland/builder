@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { deleteProject, duplicateProject, loadProjectSceneRequest } from 'modules/project/actions'
+import { deleteProject, duplicateProjectRequest, loadProjectSceneRequest } from 'modules/project/actions'
 import { getDeploymentStatusByProjectId, getDeploymentsByProjectId } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { getData as getPoolProjects } from 'modules/pool/selectors'
@@ -31,8 +31,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onDeleteProject: id => dispatch(deleteProject(id)),
-  onDuplicateProject: id => dispatch(duplicateProject(id)),
+  onDeleteProject: project => dispatch(deleteProject(project)),
+  onDuplicateProject: project => dispatch(duplicateProjectRequest(project)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onLoadProjectScene: (project, type) => dispatch(loadProjectSceneRequest(project, type))
 })
