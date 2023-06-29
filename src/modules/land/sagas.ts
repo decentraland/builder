@@ -1,6 +1,6 @@
-import { takeLatest, call, put, takeEvery, all, select } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { getLocation, push } from 'connected-react-router'
+import { push } from 'connected-react-router'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,
@@ -287,18 +287,7 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
 }
 
 function* handleWallet(action: ConnectWalletSuccessAction | ChangeAccountAction) {
-  const location: ReturnType<typeof getLocation> = yield select(getLocation)
-  const { pathname, search } = location
   const { address } = action.payload.wallet
 
   yield put(fetchLandsRequest(address))
-
-  if (pathname === locations.signIn()) {
-    const redirectTo = new URLSearchParams(search).get('redirectTo')
-    if (redirectTo) {
-      yield put(push(decodeURIComponent(redirectTo)))
-    } else {
-      yield put(push(locations.root()))
-    }
-  }
 }
