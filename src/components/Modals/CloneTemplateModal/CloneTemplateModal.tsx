@@ -1,24 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import classNames from 'classnames'
 import { Button, Field, ModalNavigation, TextAreaField, InputOnChangeData, TextAreaProps } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { PreviewType } from 'modules/editor/types'
-import { CloneTemplateModalMetadata, Props } from './CloneTemplateModal.types'
+import { Props } from './CloneTemplateModal.types'
 
 import './CloneTemplateModal.css'
 
-const CloneTemplateModal: React.FC<Props> = ({ metadata, alias, name, isLoading, onDuplicate, onClose }) => {
-  const [title, setTitle] = useState<string>('')
+const CloneTemplateModal: React.FC<Props> = ({ metadata, name, isLoading, onDuplicate, onClose }) => {
+  const [title, setTitle] = useState<string>(metadata.template.title)
   const [description, setDescription] = useState<string>('')
-
-  useEffect(() => {
-    if (alias) {
-      setTitle(`${alias}.${(metadata as CloneTemplateModalMetadata).template.title}`)
-    } else {
-      setTitle(metadata.template.title)
-    }
-  }, [alias, metadata])
 
   const handleClose = useCallback(() => {
     if (isLoading) {
