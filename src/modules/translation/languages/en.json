@@ -594,7 +594,7 @@
     },
     "action": "Download scene",
     "docs": "What is the Decentraland SDK?",
-    "description": "Transition seamlessly from the Builder to the SDK for a more interactive, personalized scene. Downloaded scenes can be enhanced with SDK or uploaded into another account through the Builder.",
+    "description": "Transition seamlessly from the Builder to the SDK to create a more interactive and personalized scene. You can also download scenes from the scene pool or templates to import them in any of your accounts.",
     "loading": "Downloading...",
     "title": "Download scenes and create with a higher level of complexity."
   },
