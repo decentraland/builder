@@ -597,7 +597,7 @@
     },
     "action": "Descargar escena",
     "docs": "¿Qué es el SDK de Decentraland?",
-    "description": "Transiciona sin problemas del builder al SDK para una escena más interactiva y personalizada. Las escenas descargadas se pueden mejorar con SDK o cargarse en otra cuenta a través del builder.",
+    "description": "Transición sin problemas del constructor al SDK para crear una escena más interactiva y personalizada.También puede descargar escenas del grupo de escenas o plantillas para importarlas en cualquiera de sus cuentas.",
     "loading": "Descargando...",
     "title": "Descargue escenas y cree con un mayor nivel de complejidad."
   },
