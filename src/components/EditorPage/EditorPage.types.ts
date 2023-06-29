@@ -21,6 +21,7 @@ export type Props = {
   isSidebarOpen: boolean
   isPreviewing: boolean
   isFetching: boolean
+  isReady: boolean
   isLoading: boolean
   isLoggedIn: boolean
   isScreenshotReady: boolean
@@ -44,6 +45,7 @@ export type MapStateProps = Pick<
   Props,
   | 'isSidebarOpen'
   | 'isPreviewing'
+  | 'isReady'
   | 'isLoading'
   | 'isFetching'
   | 'isLoggedIn'

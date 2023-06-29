@@ -67,18 +67,19 @@ export function getParcelOrientation(layout: Layout, point: Coordinate, rotation
   return parcels
 }
 
-export async function getImageAsDataUrl(url: string, isTemplate = false): Promise<string> {
+export async function getImageAsDataUrl(url: string): Promise<string> {
   const reader = new FileReader()
-  const headers = !isTemplate ? NO_CACHE_HEADERS : {}
-  const res = await fetch(url, { headers })
+  const res = await fetch(url, { headers: NO_CACHE_HEADERS })
   const blob = await res.blob()
+  // TODO: Fix binary data type in the builder-server
+  const imgBlob = new Blob([blob], { type: 'image/png' })
 
   const out = new Promise<string>((resolve, reject) => {
     reader.onload = () => resolve(reader.result as string)
     reader.onerror = e => reject(e)
   })
 
-  reader.readAsDataURL(blob)
+  reader.readAsDataURL(imgBlob)
 
   return out
 }

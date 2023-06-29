@@ -57,7 +57,7 @@ import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, cr
 import { store } from 'modules/common/store'
 import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { BuilderAPI } from 'lib/api/builder'
+import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
 import { SAVE_PROJECT_SUCCESS, saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo, PreviewType } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
@@ -141,8 +141,10 @@ export function* projectSaga(builder: BuilderAPI) {
     let thumbnail: string = project.thumbnail
 
     try {
-      if ((thumbnail && isRemoteURL(thumbnail)) || (isTemplatesEnabled && project.isTemplate)) {
-        thumbnail = yield call(getImageAsDataUrl, project.thumbnail, project.isTemplate)
+      if (isTemplatesEnabled && project.isTemplate) {
+        thumbnail = yield call(getImageAsDataUrl, `${BUILDER_SERVER_URL}/projects/${project.id}/media/thumbnail.png`)
+      } else if (thumbnail && isRemoteURL(thumbnail)) {
+        thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
       }
 
       const newScene = { ...scene, id: uuidv4() }
