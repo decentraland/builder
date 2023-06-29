@@ -15,6 +15,7 @@ import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
 import { isDevelopment } from 'lib/environment'
 
 import { Props, State } from './Routes.types'
+import { ProtectedRoute } from 'modules/ProtectedRoute'
 
 const ScenesPage = React.lazy(() => import('components/ScenesPage'))
 const HomePage = React.lazy(() => import('components/HomePage'))
@@ -116,7 +117,8 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.landOperator()} component={LandOperatorPage} />
             <Route exact path={locations.activity()} component={ActivityPage} />
             <Route exact path={locations.settings()} component={SettingsPage} />
-            <Route exact path={locations.scenes()} component={ScenesPage} />
+            {/* <Route exact path={locations.scenes()} component={ScenesPage} /> */}
+            <ProtectedRoute exact path={locations.scenes()} component={ScenesPage} />
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
             <Route exact path={locations.templates()} component={TemplatesPage} />
             <Route exact path={locations.templateDetail()} component={TemplateDetailPage} />
