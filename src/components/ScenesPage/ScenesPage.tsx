@@ -36,19 +36,16 @@ const localStorage = getLocalStorage()
 
 const ScenesPage: React.FC<Props> = props => {
   const {
-    didSync,
     page,
     poolList,
     projects,
     sortBy,
     totalPages,
     isFetching,
-    isLoggedIn,
     isLoggingIn,
     isDeployToWorldEnabled,
     isTemplatesEnabled,
     onLoadFromScenePool,
-    onNavigate,
     onOpenModal,
     onPageChange
   } = props
@@ -113,21 +110,6 @@ const ScenesPage: React.FC<Props> = props => {
           ))}
         </div>
       )
-    } else if (!isLoggedIn && didSync) {
-      return (
-        <div className="empty-projects">
-          <div>
-            {t('scenes_page.no_projects_guest', {
-              br: <br />,
-              sign_in: (
-                <a href={locations.signIn()} onClick={handleLogin}>
-                  {t('user_menu.sign_in')}
-                </a>
-              )
-            })}
-          </div>
-        </div>
-      )
     }
 
     if (isTemplatesEnabled) {
@@ -185,8 +167,6 @@ const ScenesPage: React.FC<Props> = props => {
       </div>
     )
   }
-
-  const handleLogin = useCallback(() => onNavigate(locations.signIn()), [onNavigate])
 
   const paginate = useCallback(
     (options: PaginationOptions = {}) => {

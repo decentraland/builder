@@ -25,8 +25,15 @@ export function* locationSaga() {
 
 function* handleLoginSuccess(_action: LoginSuccessAction) {
   const location: ReturnType<typeof getLocation> = yield select(getLocation)
-  if (location.pathname === locations.signIn()) {
-    yield put(replace(locations.root()))
+  const { pathname, search } = location
+
+  if (pathname === locations.signIn()) {
+    const redirectTo = new URLSearchParams(search).get('redirectTo')
+    if (redirectTo) {
+      yield put(push(decodeURIComponent(redirectTo)))
+    } else {
+      yield put(push(locations.root()))
+    }
   }
 }
 

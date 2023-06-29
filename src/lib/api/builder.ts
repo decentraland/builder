@@ -619,7 +619,8 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchTemplates() {
     const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/templates', {
-      retry: retryParams
+      retry: retryParams,
+      params: { sort_by: 'created_at', sort_order: 'asc' }
     })
     return items.map(fromRemoteProject).sort((template1, template2) => {
       if (template1.templateStatus === TemplateStatus.COMING_SOON) {
