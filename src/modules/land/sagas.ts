@@ -288,5 +288,6 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
 
 function* handleWallet(action: ConnectWalletSuccessAction | ChangeAccountAction) {
   const { address } = action.payload.wallet
+
   yield put(fetchLandsRequest(address))
 }

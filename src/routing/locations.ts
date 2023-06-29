@@ -11,7 +11,9 @@ export const locations = {
     injectParams(injectPagination('/pools', options), { group: 'group', ethAddress: 'eth_address' }, options),
   poolView: (projectId = ':projectId', type = ':type(pool)') => `/view/${type}/${projectId}`,
   sceneView: (projectId = ':projectId') => `/view/${projectId}`,
-  signIn: () => '/sign-in',
+  signIn: (redirectTo?: string) => {
+    return `/sign-in${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`
+  },
   mobile: () => '/mobile',
   notFound: () => '/404',
   callback: () => '/callback',
