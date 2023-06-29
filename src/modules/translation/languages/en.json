@@ -776,7 +776,7 @@
     "action": "Upload",
     "action_many": "Upload {count} Scenes",
     "cta": "Drag your Scene .zip file here, or {action}",
-    "description": "To transfer scenes between different accounts or upload a scene previously downloaded from the scene pool, utilize the import feature. Ensure that you import the zip file exactly as it was downloaded",
+    "description": "To transfer scenes between different accounts or upload a scene previously downloaded from the scene pool, utilize the 'upload scene' feature. Ensure that you upload the zip file exactly as it was downloaded.",
     "invalid_file": "Invalid file",
     "title": "Upload Scene",
     "upload_manually": "Browse your computer"

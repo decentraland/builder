@@ -7,7 +7,6 @@ import { Project } from 'modules/project/types'
 
 export type Props = ModalProps & {
   metadata: CloneTemplateModalMetadata
-  alias: string | null
   error: string | null
   isLoading: boolean
   onDuplicate: typeof duplicateProjectRequest
@@ -17,6 +16,6 @@ export type CloneTemplateModalMetadata = {
   template: Project
 }
 
-export type MapStateProps = Pick<Props, 'alias' | 'error' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'error' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onDuplicate'>
 export type MapDispatch = Dispatch<DuplicateProjectRequestAction | CallHistoryMethodAction>
