@@ -27,5 +27,5 @@ export type Manifest<T = Project> = { version: number; project: T; scene: Scene 
 
 export enum TemplateStatus {
   ACTIVE = 'active',
-  COMING_SOOM = 'coming_soon'
+  COMING_SOON = 'coming_soon'
 }

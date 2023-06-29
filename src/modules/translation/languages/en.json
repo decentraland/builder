@@ -594,7 +594,7 @@
     },
     "action": "Download scene",
     "docs": "What is the Decentraland SDK?",
-    "description": "Transition seamlessly from the Builder to the SDK to create a more interactive and personalized scene. You can also download scenes from the scene pool or templates to import them in any of your accounts.",
+    "description": "Transition seamlessly from the Builder to the SDK for a more interactive and personalized scene. Keep in mind that you have the option to download scenes from the scene pool and templates and upload it across different accounts.",
     "loading": "Downloading...",
     "title": "Download scenes and create with a higher level of complexity."
   },
@@ -773,12 +773,12 @@
     "coming_soon": "Coming soon"
   },
   "import_modal": {
-    "action": "Import",
-    "action_many": "Import {count} Scenes",
+    "action": "Upload",
+    "action_many": "Upload {count} Scenes",
     "cta": "Drag your Scene .zip file here, or {action}",
-    "description": "To transfer scenes between different accounts or import a scene previously downloaded from the scene pool, utilize the import feature. Ensure that you import the zip file exactly as it was downloaded.",
+    "description": "To transfer scenes between different accounts or upload a scene previously downloaded from the scene pool, utilize the import feature. Ensure that you import the zip file exactly as it was downloaded",
     "invalid_file": "Invalid file",
-    "title": "Import Scene",
+    "title": "Upload Scene",
     "upload_manually": "Browse your computer"
   },
   "itemdrawer": {

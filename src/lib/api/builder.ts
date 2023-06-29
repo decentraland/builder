@@ -621,7 +621,16 @@ export class BuilderAPI extends BaseAPI {
     const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/templates', {
       retry: retryParams
     })
-    return items.map(fromRemoteProject)
+    return items.map(fromRemoteProject).sort((template1, template2) => {
+      if (template1.templateStatus === TemplateStatus.COMING_SOON) {
+        return 1
+      }
+
+      if (template2.templateStatus === TemplateStatus.COMING_SOON) {
+        return -1
+      }
+      return 0
+    })
   }
 
   async saveProject(project: Project, scene: Scene) {
