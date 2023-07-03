@@ -81,7 +81,7 @@ export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_TEMPLATES_REQUEST, handleLoadTemplatesRequest)
-  yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
+  yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadManifestRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
   yield takeEvery(LOAD_PROJECT_SCENE_REQUEST, handleLoadProjectSceneRequest)
@@ -306,7 +306,7 @@ export function* projectSaga(builder: BuilderAPI) {
     }
   }
 
-  function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
+  function* handleLoadManifestRequest(action: LoadManifestRequestAction) {
     const { id, type } = action.payload
     try {
       const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], id, type)

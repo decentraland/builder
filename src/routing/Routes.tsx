@@ -22,6 +22,7 @@ const HomePage = React.lazy(() => import('components/HomePage'))
 const SignInPage = React.lazy(() => import('components/SignInPage'))
 const NotFoundPage = React.lazy(() => import('components/NotFoundPage'))
 const EditorPage = React.lazy(() => import('components/EditorPage'))
+const InspectorPage = React.lazy(() => import('components/InspectorPage'))
 const SceneListPage = React.lazy(() => import('components/SceneListPage'))
 const SceneViewPage = React.lazy(() => import('components/SceneViewPage'))
 const LandPage = React.lazy(() => import('components/LandPage'))
@@ -105,6 +106,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.root()} component={HomePage} />
             <Route exact path={locations.notFound()} component={NotFoundPage} />
             <Route exact path={locations.sceneEditor()} component={EditorPage} />
+            <Route exact path={locations.inspector()} component={InspectorPage} />
             <Route exact path={locations.poolSearch()} component={SceneListPage} />
             <Route exact path={locations.sceneView()} component={SceneViewPage} />
             <Route exact path={locations.poolView()} component={SceneViewPage} />

@@ -1,0 +1,62 @@
+.EditorPage {
+  height: 100%;
+}
+
+.EditorPage .wrapper {
+  height: calc(100vh - var(--topbar-height));
+}
+
+.EditorPage .wrapper.fullscreen {
+  height: calc(100vh);
+}
+
+.EditorPage .wrapper.with-banner {
+  height: calc(100vh - var(--topbar-height) - var(--incentive-banner-height));
+}
+
+.toolbar {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.toolbar.open {
+  width: calc(100% - var(--sidebar-width));
+}
+
+.toolbar > div {
+  position: absolute;
+  bottom: 14px;
+  z-index: var(--preview-z-index);
+  display: flex;
+  align-items: center;
+}
+
+.toolbar > .Metrics {
+  left: 20px;
+}
+
+.toolbar .Tools {
+  right: 20px;
+}
+
+.toolbar .Tools .tool {
+  margin-right: 16px;
+}
+
+.toolbar .Tools .tool:last-child {
+  margin-right: 0;
+  margin-left: 24px;
+}
+
+.toolbar .Tools .tool .shortcuts {
+  bottom: 3px;
+  position: relative;
+}
+
+.ui.visible.popup.inverted.shortcut-popup:before {
+  right: 0.4em; /* The arrow needs to be on top of the icon */
+}

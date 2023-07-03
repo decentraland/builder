@@ -42,6 +42,7 @@ import { entitySaga } from 'modules/entity/sagas'
 import { collectionCurationSaga } from 'modules/curations/collectionCuration/sagas'
 import { getPeerWithNoGBCollectorURL } from './utils'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
+import { inspectorSaga } from 'modules/inspector/sagas'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL() })
 
@@ -81,6 +82,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     walletSaga(),
     collectionCurationSaga(builderAPI),
     itemCurationSaga(builderAPI),
-    featuresSaga({ polling: { apps: [ApplicationName.BUILDER], delay: 60000 /** 60 seconds */ } })
+    featuresSaga({ polling: { apps: [ApplicationName.BUILDER], delay: 60000 /** 60 seconds */ } }),
+    inspectorSaga()
   ])
 }

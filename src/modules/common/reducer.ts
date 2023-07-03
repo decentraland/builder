@@ -36,6 +36,7 @@ import { syncReducer as sync } from 'modules/sync/reducer'
 import { thirdPartyReducer as thirdParty } from 'modules/thirdParty/reducer'
 import { tileReducer as tile } from 'modules/tile/reducer'
 import { uiReducer as ui } from 'modules/ui/reducer'
+import { inspectorReducer as inspector } from 'modules/inspector/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -73,7 +74,8 @@ export function createRootReducer(history: History) {
       translation,
       ui,
       wallet,
-      features
+      features,
+      inspector
     })
   )
 }

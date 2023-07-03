@@ -95,6 +95,7 @@ const SceneDetailPage: React.FC<Props> = props => {
                   direction="left"
                 >
                   <Dropdown.Menu>
+                    <Dropdown.Item text='Open Inspector' onClick={() => onNavigate(locations.inspector(project.id))} />
                     <Dropdown.Item text={t('scene_detail_page.actions.duplicate')} onClick={handleDuplicateClick} />
                     <Dropdown.Item text={t('scene_detail_page.actions.delete')} onClick={handleDeleteClick} />
                   </Dropdown.Menu>
