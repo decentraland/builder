@@ -16,9 +16,13 @@
   justify-content: center;
 }
 
-.ui.small.modal.ExportModal .content::before {
-  content: url('../../../images/export_modal_img.svg');
+.ui.small.modal.ExportModal .content .export-modal-content-image {
+  background-image: url('../../../images/export_modal_img.png');
   height: 180px;
+  width: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   margin-bottom: 20px;
 }
 
