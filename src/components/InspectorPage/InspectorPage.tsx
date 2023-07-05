@@ -4,7 +4,7 @@ import { Center, Loader } from 'decentraland-ui'
 
 import { Props } from './InspectorPage.types'
 import './InspectorPage.css'
-import { toComposite } from 'modules/inspector/utils'
+import { toComposite, toMappings } from 'modules/inspector/utils'
 
 export default class InspectorPage extends React.PureComponent<Props> {
   componentDidMount() {
@@ -23,6 +23,19 @@ export default class InspectorPage extends React.PureComponent<Props> {
       )
     }
 
-    return <div className="InspectorPager">{!scene ? <Loader active /> : <p>{JSON.stringify(toComposite(scene))}</p>}</div>
+    return (
+      <div className="InspectorPager">
+        {!scene ? (
+          <Loader active />
+        ) : (
+          <div>
+            <p>Composite:</p>
+            <p>{JSON.stringify(toComposite(scene))}</p>
+            <p>Mappings:</p>
+            <p>{JSON.stringify(toMappings(scene))}</p>
+          </div>
+        )}
+      </div>
+    )
   }
 }

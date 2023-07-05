@@ -2,6 +2,10 @@ import { Composite } from '@dcl/ecs'
 import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
 import { ComponentData, ComponentType, Scene } from 'modules/scene/types'
 
+export function toPath(path: string) {
+  return `assets/scene/models/${path}`
+}
+
 export function toComposite(scene: Scene) {
   const { engine, components } = createEngineContext()
 
@@ -19,7 +23,7 @@ export function toComposite(scene: Scene) {
         case ComponentType.GLTFShape: {
           const data = component.data as ComponentData[ComponentType.GLTFShape]
           const asset = scene.assets[data.assetId]
-          components.GltfContainer.createOrReplace(entityId, { src: asset.model })
+          components.GltfContainer.createOrReplace(entityId, { src: toPath(asset.model) })
           break
         }
       }
@@ -28,4 +32,15 @@ export function toComposite(scene: Scene) {
 
   const composite = dumpEngineToComposite(engine as any, 'json')
   return Composite.toJson(composite) as string
+}
+
+export function toMappings(scene: Scene): Record<string, string> {
+  const mappings: Record<string, string> = {}
+  for (const asset of Object.values(scene.assets)) {
+    for (const path in asset.contents) {
+      const hash = asset.contents[path]
+      mappings[toPath(path)] = hash
+    }
+  }
+  return mappings
 }
