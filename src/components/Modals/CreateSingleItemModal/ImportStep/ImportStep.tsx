@@ -90,11 +90,13 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       throw new MissingModelFileError()
     }
 
-    return {
+    const result = {
       modelData: await this.processModel(modelPath, content),
       wearable,
       scene
     }
+
+    return result
   }
 
   /**
