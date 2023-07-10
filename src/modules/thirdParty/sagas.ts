@@ -4,7 +4,8 @@ import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
 import { Contract, providers } from 'ethers'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { ContentClient } from 'dcl-catalyst-client'
+import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
@@ -82,7 +83,7 @@ export function* getContractInstance(
   return contractInstance
 }
 
-export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
+export function* thirdPartySaga(builder: BuilderAPI, contentClient: ContentClient) {
   const actionProgressChannel = channel()
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, handleDeployBatchedThirdPartyItemsRequest)
@@ -307,9 +308,9 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const promisesOfItemsBeingDeployed: (() => Promise<ItemCuration | void>)[] = items.map((item: Item) => async () => {
       let entity: DeploymentPreparationData
       try {
-        entity = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
+        entity = await buildTPItemEntity(builder, collection, item, tree, hashes[item.id])
         try {
-          await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
+          await contentClient.deploy({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
           actionProgressChannel.put({
             progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100),
             tpAction: ThirdPartyAction.APPROVE_COLLECTION

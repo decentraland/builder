@@ -1,7 +1,15 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
-import { Entity } from 'dcl-catalyst-commons'
+import {
+  BodyShape,
+  EmoteCategory,
+  EmoteDataADR74,
+  Wearable,
+  WearableCategory,
+  Entity,
+  BodyPartCategory,
+  HideableWearableCategory
+} from '@dcl/schemas'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { ModelMetrics } from 'modules/models/types'
@@ -340,21 +348,23 @@ export function getRarities() {
   return ItemRarity.schema.enum as ItemRarity[]
 }
 
-export function isImageCategory(category: WearableCategory) {
+export function isImageCategory(category: HideableWearableCategory) {
   return IMAGE_CATEGORIES.includes(category)
 }
 
-export function isModelCategory(category: WearableCategory) {
+export function isModelCategory(category: HideableWearableCategory) {
   return !isImageCategory(category)
 }
 
-export function getModelCategories() {
-  return (WearableCategory.schema.enum as WearableCategory[]).filter(category => isModelCategory(category))
+export function getModelCategories(): HideableWearableCategory[] {
+  return (WearableCategory.schema.enum as HideableWearableCategory[])
+    .filter(category => isModelCategory(category))
+    .concat(BodyPartCategory.schema.enum)
 }
 
 export function getSkinHiddenCategories() {
   return [
-    WearableCategory.HEAD,
+    BodyPartCategory.HEAD,
     WearableCategory.HAIR,
     WearableCategory.FACIAL_HAIR,
     WearableCategory.MOUTH,
@@ -372,7 +382,12 @@ function getCategories(contents: Record<string, any> | undefined = {}) {
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
-  const ignoreCategories = new Set([WearableCategory.HEAD, WearableCategory.BODY_SHAPE])
+  const ignoreCategories = new Set([
+    BodyPartCategory.HEAD,
+    WearableCategory.BODY_SHAPE,
+    WearableCategory.HANDS_WEAR,
+    BodyPartCategory.HANDS
+  ])
 
   return getCategories(contents).filter(category => !ignoreCategories.has(category))
 }
@@ -386,7 +401,9 @@ export function getEmotePlayModes() {
 }
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
-  let overrideCategories = getCategories(contents)
+  let overrideCategories = getCategories(contents).filter(
+    category => ![WearableCategory.HANDS_WEAR, BodyPartCategory.HANDS].includes(category)
+  )
 
   if (category === WearableCategory.SKIN) {
     overrideCategories = overrideCategories.filter(
@@ -493,7 +510,7 @@ export function isWearableSynced(item: Item, entity: Entity) {
   }
 
   // check if contents are synced
-  const contents = entity.content!.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
+  const contents = entity.content.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
     const hash = item.contents[path]
     if (contents.get(path) !== hash) {
@@ -542,7 +559,7 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity)
   }
 
   // check if contents are synced
-  const contents = entity.content!.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
+  const contents = entity.content.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
     const hash = item.contents[path]
     if (contents.get(path) !== hash) {

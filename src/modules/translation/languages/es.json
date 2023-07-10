@@ -1822,7 +1822,8 @@
       "tiara": "Tiara",
       "top_head": "Cabeza",
       "upper_body": "Torso",
-      "skin": "Skin"
+      "skin": "Skin",
+      "hands_wear": "Manos"
     }
   },
   "rarity_description": {

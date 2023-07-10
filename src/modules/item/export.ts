@@ -1,5 +1,5 @@
 import { Emote, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { DeploymentPreparationData, buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
 import { BuilderAPI } from 'lib/api/builder'
@@ -231,7 +231,6 @@ async function buildItemEntityBlobs(item: Item | Item<ItemType.EMOTE>, legacyBui
 }
 
 export async function buildItemEntity(
-  client: CatalystClient,
   legacyBuilderClient: BuilderAPI,
   collection: Collection,
   item: Item | Item<ItemType.EMOTE>,
@@ -250,7 +249,7 @@ export async function buildItemEntity(
     // Emotes will be deployed as Wearables ultil they are released
     metadata = buildWearableEntityMetadata(collection, item)
   }
-  return client.buildEntity({
+  return buildEntity({
     type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,
     pointers: [metadata.id],
     metadata,
@@ -260,23 +259,21 @@ export async function buildItemEntity(
 }
 
 export async function buildStandardItemEntity(
-  client: CatalystClient,
   legacyBuilderClient: BuilderAPI,
   collection: Collection,
   item: Item
 ): Promise<DeploymentPreparationData> {
-  return buildItemEntity(client, legacyBuilderClient, collection, item)
+  return buildItemEntity(legacyBuilderClient, collection, item)
 }
 
 export async function buildTPItemEntity(
-  client: CatalystClient,
   legacyBuilderClient: BuilderAPI,
   collection: Collection,
   item: Item,
   tree: MerkleDistributorInfo,
   itemHash: string
 ): Promise<DeploymentPreparationData> {
-  return buildItemEntity(client, legacyBuilderClient, collection, item, tree, itemHash)
+  return buildItemEntity(legacyBuilderClient, collection, item, tree, itemHash)
 }
 
 export async function buildStandardWearableContentHash(

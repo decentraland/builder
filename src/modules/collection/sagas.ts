@@ -3,7 +3,7 @@ import equal from 'fast-deep-equal'
 import { Contract, providers, constants, ethers } from 'ethers'
 import { push, replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient, ThirdParty } from '@dcl/builder-client'
@@ -158,7 +158,7 @@ import {
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
 
-export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: BuilderClient, catalyst: CatalystClient) {
+export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: BuilderClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
@@ -654,15 +654,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
-        const entity: DeploymentPreparationData = yield call(
-          buildItemEntity,
-          catalyst,
-          legacyBuilderClient,
-          collection,
-          item,
-          undefined,
-          undefined
-        )
+        const entity: DeploymentPreparationData = yield call(buildItemEntity, legacyBuilderClient, collection, item, undefined, undefined)
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }

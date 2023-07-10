@@ -1,4 +1,4 @@
-import { BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, HideableWearableCategory, WearableCategory } from '@dcl/schemas'
 import { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
 
 export enum Gizmo {
@@ -53,8 +53,8 @@ export type CatalystWearable = {
   data: {
     tags: string[]
     category: WearableCategory
-    replaces?: WearableCategory[]
-    hides?: WearableCategory[]
+    replaces?: HideableWearableCategory[]
+    hides?: HideableWearableCategory[]
     representations: {
       bodyShapes: BodyShape[]
       mainFile: string

@@ -1,4 +1,4 @@
-import { EntityType, EntityVersion } from 'dcl-catalyst-commons'
+import { EntityType } from '@dcl/schemas'
 import {
   fetchEntitiesByIdsFailure,
   fetchEntitiesByIdsRequest,
@@ -24,7 +24,7 @@ const entity = {
     owner: '0xpepito',
     some: 'thing'
   },
-  version: EntityVersion.V3
+  version: 'v3'
 }
 
 describe('when reducing the FETCH_ENTITIES_BY_POINTERS_REQUEST action', () => {

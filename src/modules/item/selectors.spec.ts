@@ -1,5 +1,4 @@
-import { ChainId } from '@dcl/schemas'
-import { Entity } from 'dcl-catalyst-commons'
+import { ChainId, Entity } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CollectionState } from 'modules/collection/reducer'
 import { Collection } from 'modules/collection/types'

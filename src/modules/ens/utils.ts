@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { Entity } from 'dcl-catalyst-commons'
+import { Entity } from '@dcl/schemas'
 import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'

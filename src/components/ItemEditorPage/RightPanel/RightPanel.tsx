@@ -1,7 +1,7 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
 import { Loader, Dropdown, Button } from 'decentraland-ui'
-import { EmoteCategory, EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
+import { EmoteCategory, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -125,7 +125,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ rarity, isDirty: this.isDirty({ rarity }) })
   }
 
-  handleChangeCategory = (category: WearableCategory | EmoteCategory) => {
+  handleChangeCategory = (category: HideableWearableCategory | EmoteCategory) => {
     let data
     if (isEmoteData(this.state.data!)) {
       data = {
@@ -154,7 +154,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
-  setReplaces(data: WearableData, replaces: WearableCategory[]) {
+  setReplaces(data: WearableData, replaces: HideableWearableCategory[]) {
     return {
       ...data,
       replaces,
@@ -165,12 +165,12 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  handleChangeReplaces = (replaces: WearableCategory[]) => {
+  handleChangeReplaces = (replaces: HideableWearableCategory[]) => {
     const data = this.setReplaces((this.state.data as WearableData)!, replaces)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
-  setHides(data: WearableData, hides: WearableCategory[]) {
+  setHides(data: WearableData, hides: HideableWearableCategory[]) {
     return {
       ...data,
       hides,
@@ -181,7 +181,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  handleChangeHides = (hides: WearableCategory[]) => {
+  handleChangeHides = (hides: HideableWearableCategory[]) => {
     const data = this.setHides((this.state.data as WearableData)!, hides)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
@@ -297,7 +297,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  asCategorySelect(type: ItemType, values: WearableCategory[]) {
+  asCategorySelect(type: ItemType, values: HideableWearableCategory[]) {
     return values.map(value => ({ value, text: t(`${type}.category.${value}`) }))
   }
 
@@ -360,10 +360,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                   : getEmoteCategories()
                 : []
 
-              let overrideCategories: WearableCategory[] = []
-              let hidesCategories: WearableCategory[] = []
-              let replaces: WearableCategory[] = []
-              let hides: WearableCategory[] = []
+              let overrideCategories: HideableWearableCategory[] = []
+              let hidesCategories: HideableWearableCategory[] = []
+              let replaces: HideableWearableCategory[] = []
+              let hides: HideableWearableCategory[] = []
 
               if (data && !isEmoteData(data)) {
                 hides = data.hides ? data.hides.filter(category => actionableCategories.includes(category)) : []
@@ -454,11 +454,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           onChange={this.handleChangeDescription}
                         />
 
-                        <Select<WearableCategory | EmoteCategory>
+                        <Select<HideableWearableCategory | EmoteCategory>
                           itemId={item.id}
                           label={t('global.category')}
                           value={data!.category}
-                          options={this.asCategorySelect(item.type, wearableCategories as WearableCategory[])}
+                          options={this.asCategorySelect(item.type, wearableCategories as HideableWearableCategory[])}
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeCategory}
                         />
@@ -480,7 +480,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     <Collapsable label={t('item_editor.right_panel.overrides')}>
                       {item ? (
                         <>
-                          <MultiSelect<WearableCategory>
+                          <MultiSelect<HideableWearableCategory>
                             itemId={item.id}
                             label={t('item_editor.right_panel.replaces')}
                             info={t('item_editor.right_panel.replaces_info')}
@@ -489,7 +489,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             disabled={!canEditItemMetadata || this.isSkin()}
                             onChange={this.handleChangeReplaces}
                           />
-                          <MultiSelect<WearableCategory>
+                          <MultiSelect<HideableWearableCategory>
                             itemId={item.id}
                             label={t('item_editor.right_panel.hides')}
                             info={t('item_editor.right_panel.hides_info')}

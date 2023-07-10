@@ -3,13 +3,13 @@ import CID from 'cids'
 import toBuffer from 'blob-to-buffer'
 import pull from 'pull-stream'
 import { MemoryDatastore } from 'interface-datastore'
-import { EntityContentItemReference } from 'dcl-catalyst-commons'
 import { Asset } from 'modules/asset/types'
 import { ContentServiceFile, Deployment, DeploymentStatus, SceneDefinition } from './types'
 import { Project } from 'modules/project/types'
 import { Scene, ComponentType } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
+import { EntityContentItemReference } from '@dcl/hashing'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Importer = require('ipfs-unixfs-engine').Importer

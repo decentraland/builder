@@ -1,12 +1,12 @@
-import { CatalystClient, ContentClient } from 'dcl-catalyst-client'
+import { ContentClient, createContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
-import { Entity } from '@dcl/schemas'
-import { EntityType } from 'dcl-catalyst-commons'
+import { Entity, EntityType } from '@dcl/schemas'
+import { createFetchComponent } from '@well-known-components/fetch-component'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
 import { config } from 'config'
 import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
-import { store } from 'modules/common/store'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
 import { takeScreenshot } from 'modules/editor/actions'
@@ -59,6 +59,7 @@ import {
 import { makeContentFiles } from './contentUtils'
 import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
 import { ProgressStage } from './types'
+import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -69,7 +70,7 @@ const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: 
   store.dispatch(setProgress(type, progress))
 }
 
-export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystClient) {
+export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClient) {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeploymentRequest)
@@ -118,7 +119,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* deployScene(
     deployFailure: typeof deployToWorldFailure | typeof deployToLandFailure,
-    contentClient: ContentClient | CatalystClient,
+    contentClient: ContentClient,
     projectId: string,
     placement: Placement,
     world?: string
@@ -190,7 +191,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     // Remove the old communications property if it exists
     const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
 
-    const { entityId, files: hashedFiles } = yield call([contentClient, 'buildEntity'], {
+    const { entityId, files: hashedFiles } = yield call(buildEntity, {
       type: EntityType.SCENE,
       pointers: [...sceneDefinition.scene.parcels],
       metadata: sceneDefinition,
@@ -198,7 +199,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     })
 
     const authChain = Authenticator.signPayload(identity, entityId)
-    yield call([contentClient, 'deployEntity'], { entityId, files: hashedFiles, authChain })
+    yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
     // generate new deployment
     const address: string = yield select(getAddress) || ''
 
@@ -219,7 +220,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handleDeployToWorldRequest(action: DeployToWorldRequestAction) {
     const { world, projectId } = action.payload
-    const contentClient = new ContentClient({ contentUrl: config.get('WORLDS_CONTENT_SERVER', '') })
+    const contentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
     try {
       const deployment: Deployment = yield call(
         deployScene,
@@ -240,7 +241,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
     const { placement, projectId, overrideDeploymentId } = action.payload
     try {
-      const deployment: Deployment = yield call(deployScene, deployToLandFailure, catalystClient, projectId, placement)
+      const deployment: Deployment = yield call(deployScene, deployToLandFailure, contentClient, projectId, placement)
       yield put(deployToLandSuccess(deployment, overrideDeploymentId))
     } catch (e) {
       yield put(deployToLandFailure(e.message.split('\n')[0]))
@@ -257,7 +258,9 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       return
     }
 
-    const contentClient = deployment.world ? new ContentClient({ contentUrl: config.get('WORLDS_CONTENT_SERVER', '') }) : catalystClient
+    const contentClientForDeploy = deployment.world
+      ? createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+      : contentClient
 
     const identity: AuthIdentity = yield getIdentity()
     if (!identity) {
@@ -282,14 +285,14 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       })
       const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
       const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-      const { entityId, files: hashedFiles } = yield call([contentClient, 'buildEntity'], {
+      const { entityId, files: hashedFiles } = yield call(buildEntity, {
         type: EntityType.SCENE,
         pointers: [...sceneDefinition.scene.parcels],
         metadata: sceneDefinition,
         files: contentFiles
       })
       const authChain = Authenticator.signPayload(identity, entityId)
-      yield call([contentClient, 'deployEntity'], { entityId, files: hashedFiles, authChain })
+      yield call([contentClientForDeploy, 'deploy'], { entityId, files: hashedFiles, authChain })
       yield put(clearDeploymentSuccess(deploymentId))
     } catch (error) {
       yield put(clearDeploymentFailure(deploymentId, error.message))
@@ -368,7 +371,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       let entities: Entity[] = []
 
       if (coords.length > 0) {
-        entities = yield call([catalystClient, 'fetchEntitiesByPointers'], coords)
+        entities = yield call([contentClient, 'fetchEntitiesByPointers'], coords)
       }
       const getSceneDeploymentId = (entity: Entity) => entity.pointers[0]
       yield put(fetchDeploymentsSuccess(coords, formatDeployments(entities, getSceneDeploymentId)))
@@ -379,12 +382,14 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handleFetchWorldDeploymentsRequest(action: FetchWorldDeploymentsRequestAction) {
     const { worlds } = action.payload
-    const contentClient = new ContentClient({ contentUrl: config.get('WORLDS_CONTENT_SERVER', '') })
+    const contentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
     try {
       const entities: Entity[] = []
+
       if (worlds.length > 0) {
         for (const world of worlds) {
           // At the moment, worlds content server only support one pointer per entity
+
           const entity: Entity[] = yield call([contentClient, 'fetchEntitiesByPointers'], [world])
           entities.push(entity[0])
         }
