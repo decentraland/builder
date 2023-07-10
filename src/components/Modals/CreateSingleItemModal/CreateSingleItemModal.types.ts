@@ -10,6 +10,7 @@ export enum CreateItemView {
   IMPORT = 'import',
   DETAILS = 'details',
   THUMBNAIL = 'thumbnail',
+  VIDEO = 'video',
   SET_PRICE = 'setPrice'
 }
 
