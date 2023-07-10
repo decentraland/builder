@@ -10,6 +10,7 @@ export enum CreateItemView {
   IMPORT = 'import',
   DETAILS = 'details',
   THUMBNAIL = 'thumbnail',
+  VIDEO = 'video',
   SET_PRICE = 'setPrice'
 }
 
@@ -44,6 +45,7 @@ export type StateData = {
   hasScreenshotTaken?: boolean
   previewController?: IPreviewController
   weareblePreviewUpdated: boolean
+  requiredPermissions?: string[]
 }
 export type State = { view: CreateItemView; fromView?: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
 
@@ -82,6 +84,7 @@ export type AcceptedFileProps = Pick<
   | 'category'
   | 'thumbnail'
   | 'hasScreenshotTaken'
+  | 'requiredPermissions'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection'>

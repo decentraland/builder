@@ -174,7 +174,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
     const { address, collection, onSave } = this.props
-    const { id, name, description, type, metrics, collectionId, category, playMode, rarity, hasScreenshotTaken } = this.state as StateData
+    const { id, name, description, type, metrics, collectionId, category, playMode, rarity, hasScreenshotTaken, requiredPermissions } = this
+      .state as StateData
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
     // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
@@ -197,7 +198,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         replaces: [],
         hides: [],
         tags: [],
-        representations: [...representations]
+        representations: [...representations],
+        requiredPermissions: requiredPermissions || []
       } as WearableData
     } else {
       data = {
@@ -247,7 +249,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   addItemRepresentation = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
     const { onSave } = this.props
-    const { bodyShape, item: editedItem } = this.state as StateData
+    const { bodyShape, item: editedItem, requiredPermissions } = this.state as StateData
     const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
     const item = {
       ...editedItem,
@@ -260,7 +262,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         ],
         replaces: [...editedItem.data.replaces],
         hides: [...editedItem.data.hides],
-        tags: [...editedItem.data.tags]
+        tags: [...editedItem.data.tags],
+        requiredPermissions: requiredPermissions || []
       },
       contents: {
         ...editedItem.contents,
@@ -276,7 +279,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   modifyItem = async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
     const { onSave } = this.props
-    const { name, bodyShape, type, metrics, category, playMode } = this.state as StateData
+    const { name, bodyShape, type, metrics, category, playMode, requiredPermissions } = this.state as StateData
 
     let data: WearableData | EmoteDataADR74
 
@@ -285,7 +288,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         ...pristineItem.data,
         replaces: [],
         hides: [],
-        category: category as WearableCategory
+        category: category as WearableCategory,
+        requiredPermissions: requiredPermissions || []
       } as WearableData
     } else {
       data = {
