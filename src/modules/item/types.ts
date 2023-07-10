@@ -96,6 +96,7 @@ export type WearableData = {
   replaces: WearableCategory[]
   hides: WearableCategory[]
   tags: string[]
+  requiredPermissions?: string[]
 }
 
 type BaseItem = {
