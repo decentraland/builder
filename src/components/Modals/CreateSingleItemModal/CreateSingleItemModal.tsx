@@ -665,6 +665,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const rarities = getRarities()
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents, isHandsCategoryEnabled) : getEmoteCategories()
 
+    console.log(categories)
     const raritiesLink =
       type === ItemType.EMOTE
         ? 'https://docs.decentraland.org/emotes/emotes/#rarity'
