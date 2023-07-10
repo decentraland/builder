@@ -1,15 +1,6 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import {
-  BodyPartCategory,
-  BodyShape,
-  EmoteCategory,
-  EmoteDataADR74,
-  Wearable,
-  WearableCategory,
-  HideableWearableCategory,
-  Entity
-} from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory, Entity } from '@dcl/schemas'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { ModelMetrics } from 'modules/models/types'
@@ -348,18 +339,16 @@ export function getRarities() {
   return ItemRarity.schema.enum as ItemRarity[]
 }
 
-export function isImageCategory(category: HideableWearableCategory) {
+export function isImageCategory(category: WearableCategory) {
   return IMAGE_CATEGORIES.includes(category)
 }
 
-export function isModelCategory(category: HideableWearableCategory) {
+export function isModelCategory(category: WearableCategory) {
   return !isImageCategory(category)
 }
 
-export function getModelCategories(): HideableWearableCategory[] {
-  return (WearableCategory.schema.enum as HideableWearableCategory[])
-    .filter(category => isModelCategory(category))
-    .concat(BodyPartCategory.schema.enum)
+export function getModelCategories(): WearableCategory[] {
+  return (WearableCategory.schema.enum as WearableCategory[]).filter(category => isModelCategory(category))
 }
 
 export function getSkinHiddenCategories() {
