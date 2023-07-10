@@ -1,5 +1,5 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
-import { BodyShape, EmoteDataADR74, Wearable, WearableCategory, Rarity as ItemRarity } from '@dcl/schemas'
+import { BodyShape, EmoteDataADR74, Wearable, WearableCategory, Rarity as ItemRarity, HideableWearableCategory } from '@dcl/schemas'
 import { AnimationMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
@@ -50,8 +50,8 @@ export type WearableRepresentation = {
   bodyShapes: BodyShape[]
   mainFile: string
   contents: string[]
-  overrideReplaces: WearableCategory[]
-  overrideHides: WearableCategory[]
+  overrideReplaces: HideableWearableCategory[]
+  overrideHides: HideableWearableCategory[]
 }
 
 export type EmoteRepresentation = {
@@ -93,8 +93,8 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
 export type WearableData = {
   category?: WearableCategory
   representations: WearableRepresentation[]
-  replaces: WearableCategory[]
-  hides: WearableCategory[]
+  replaces: HideableWearableCategory[]
+  hides: HideableWearableCategory[]
   tags: string[]
 }
 

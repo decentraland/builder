@@ -8,6 +8,7 @@ import { getCollection } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CreateSingleItemModal.types'
 import CreateSingleItemModal from './CreateSingleItemModal'
+import { getIsHandsCategoryEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const collection: Collection | null = ownProps.metadata.collectionId ? getCollection(state, ownProps.metadata.collectionId) : null
@@ -16,7 +17,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     collection,
     address: getAddress(state),
     error: getError(state),
-    isLoading: isLoadingType(getLoading(state), SAVE_ITEM_REQUEST)
+    isLoading: isLoadingType(getLoading(state), SAVE_ITEM_REQUEST),
+    isHandsCategoryEnabled: getIsHandsCategoryEnabled(state)
   }
 }
 

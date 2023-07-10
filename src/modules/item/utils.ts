@@ -1,6 +1,6 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory } from '@dcl/schemas'
 import { Entity } from 'dcl-catalyst-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -354,7 +354,8 @@ export function getModelCategories() {
 
 export function getSkinHiddenCategories() {
   return [
-    WearableCategory.HEAD,
+    BodyPartCategory.HEAD,
+    BodyPartCategory.HANDS,
     WearableCategory.HAIR,
     WearableCategory.FACIAL_HAIR,
     WearableCategory.MOUTH,
@@ -372,8 +373,7 @@ function getCategories(contents: Record<string, any> | undefined = {}) {
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
-  const ignoreCategories = new Set([WearableCategory.HEAD, WearableCategory.BODY_SHAPE])
-
+  const ignoreCategories = new Set([WearableCategory.BODY_SHAPE])
   return getCategories(contents).filter(category => !ignoreCategories.has(category))
 }
 
@@ -385,16 +385,39 @@ export function getEmotePlayModes() {
   return Object.values(EmotePlayMode)
 }
 
-export function getOverridesCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
-  let overrideCategories = getCategories(contents)
+export function getHideableWearableCategories(
+  contents: Record<string, any> | undefined = {},
+  category?: WearableCategory,
+  isHandsCategoryEnabled = false
+) {
+  let hideableCategories: WearableCategory[] = getCategories(contents)
 
-  if (category === WearableCategory.SKIN) {
-    overrideCategories = overrideCategories.filter(
-      overrideCategory => !getSkinHiddenCategories().includes(overrideCategory) && overrideCategory !== WearableCategory.SKIN
-    )
+  if (!isHandsCategoryEnabled) {
+    hideableCategories = hideableCategories.filter(category => category !== WearableCategory.HANDS_WEAR)
   }
 
-  return overrideCategories
+  if (category === WearableCategory.SKIN) {
+    hideableCategories = hideableCategories.filter(
+      hideableCategory => !getSkinHiddenCategories().includes(hideableCategory) && hideableCategory !== WearableCategory.SKIN
+    )
+  }
+  return hideableCategories
+}
+
+export function getHideableBodyPartCategories(contents: Record<string, any> | undefined = {}, isHandsCategoryEnabled = false) {
+  const fileNames = Object.keys(contents)
+
+  if (!fileNames.some(isModelFile)) {
+    return []
+  }
+
+  let hideableCategories = BodyPartCategory.schema.enum as BodyPartCategory[]
+
+  if (!isHandsCategoryEnabled) {
+    hideableCategories = hideableCategories.filter(category => category !== BodyPartCategory.HANDS)
+  }
+
+  return hideableCategories
 }
 
 export function isFree(item: Item) {

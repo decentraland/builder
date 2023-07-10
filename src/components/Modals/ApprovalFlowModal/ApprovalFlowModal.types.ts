@@ -1,6 +1,5 @@
 import { Dispatch } from 'redux'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
-import { DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { approveCollectionRequest, ApproveCollectionRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
@@ -34,7 +33,7 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
 } & (V extends ApprovalFlowModalView.RESCUE
   ? { items: Item[]; contentHashes: string[] }
   : V extends ApprovalFlowModalView.DEPLOY
-  ? { items: Item[]; entities: DeploymentPreparationData[] }
+  ? { items: Item[]; entities: any[] }
   : V extends ApprovalFlowModalView.CONSUME_TP_SLOTS
   ? { slots: Slot[]; merkleTreeRoot: MerkleDistributorInfo['merkleRoot']; items: Item[] }
   : V extends ApprovalFlowModalView.DEPLOY_TP

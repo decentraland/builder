@@ -3,7 +3,7 @@ import equal from 'fast-deep-equal'
 import { Contract, providers, constants, ethers } from 'ethers'
 import { push, replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { CatalystClient } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient, ThirdParty } from '@dcl/builder-client'
@@ -648,21 +648,13 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
   function* getStandardItemsAndEntitiesToDeploy(collection: Collection) {
     const itemsToDeploy: Item[] = []
-    const entitiesToDeploy: DeploymentPreparationData[] = []
+    const entitiesToDeploy: any[] = []
     const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
     const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
-        const entity: DeploymentPreparationData = yield call(
-          buildItemEntity,
-          catalyst,
-          legacyBuilderClient,
-          collection,
-          item,
-          undefined,
-          undefined
-        )
+        const entity: any = yield call(buildItemEntity, catalyst, legacyBuilderClient, collection, item, undefined, undefined)
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }

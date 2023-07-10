@@ -13,7 +13,7 @@ export function fromRemoteItem(remoteItem: RemoteItem): Item {
     isApproved: remoteItem.is_approved,
     inCatalyst: remoteItem.in_catalyst,
     type: remoteItem.type,
-    data: remoteItem.data as WearableData,
+    data: remoteItem.data as any as WearableData,
     contents: remoteItem.contents,
     blockchainContentHash: remoteItem.content_hash,
     currentContentHash: remoteItem.local_content_hash,

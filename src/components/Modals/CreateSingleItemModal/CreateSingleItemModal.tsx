@@ -1,7 +1,6 @@
 import * as React from 'react'
 import uuid from 'uuid'
 import { BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
-import { WearableData } from '@dcl/builder-client'
 import {
   ModalNavigation,
   Row,
@@ -29,7 +28,8 @@ import {
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
   ItemType,
-  EmotePlayMode
+  EmotePlayMode,
+  WearableData
 } from 'modules/item/types'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -623,7 +623,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return (
       <WearablePreview
         id="thumbnail-picker"
-        blob={blob}
+        blob={blob as any} // TODO: Remove when decentraland-ui schemas is updated
         disableBackground
         disableAutoRotate
         projection={PreviewProjection.ORTHOGRAPHIC}

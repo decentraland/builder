@@ -1733,10 +1733,10 @@
       "details": "Details",
       "basics": "Basics",
       "overrides": "Overrides",
-      "replaces": "Replaces",
-      "replaces_info": "When a user equips your item, any other items in the category you select will be unequipped. Users must reequip them after removing your item.",
-      "hides": "Hides",
-      "hides_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
+      "base_body": "Base body",
+      "base_body_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
+      "wearables": "Wearables",
+      "wearables_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
       "animation": "Animation",
       "tags": "Tags",
       "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name} event.",
@@ -1803,7 +1803,9 @@
       "tiara": "Tiara",
       "top_head": "Top Head",
       "upper_body": "Upper Body",
-      "skin": "Skin"
+      "skin": "Skin",
+      "hands": "Hands",
+      "hands_wear": "Hands"
     }
   },
   "rarity_description": {

@@ -1,5 +1,5 @@
-import { Emote, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { Emote, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
+import { CatalystClient } from 'dcl-catalyst-client'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
 import { BuilderAPI } from 'lib/api/builder'
@@ -237,7 +237,7 @@ export async function buildItemEntity(
   item: Item | Item<ItemType.EMOTE>,
   tree?: MerkleDistributorInfo,
   itemHash?: string
-): Promise<DeploymentPreparationData> {
+): Promise<void> {
   const blobs = await buildItemEntityBlobs(item, legacyBuilderClient)
   const files = await makeContentFiles(blobs)
   let metadata
@@ -250,13 +250,8 @@ export async function buildItemEntity(
     // Emotes will be deployed as Wearables ultil they are released
     metadata = buildWearableEntityMetadata(collection, item)
   }
-  return client.buildEntity({
-    type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,
-    pointers: [metadata.id],
-    metadata,
-    files,
-    timestamp: Date.now()
-  })
+  console.log(files, client, metadata) // TODO MELI removed
+  return null as any as Promise<void>
 }
 
 export async function buildStandardItemEntity(
@@ -264,7 +259,7 @@ export async function buildStandardItemEntity(
   legacyBuilderClient: BuilderAPI,
   collection: Collection,
   item: Item
-): Promise<DeploymentPreparationData> {
+): Promise<void> {
   return buildItemEntity(client, legacyBuilderClient, collection, item)
 }
 

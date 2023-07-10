@@ -2,9 +2,9 @@ import PQueue from 'p-queue'
 import { channel } from 'redux-saga'
 import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
 import { Contract, providers } from 'ethers'
-import { Authenticator, AuthIdentity } from '@dcl/crypto'
+import { AuthIdentity } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { CatalystClient } from 'dcl-catalyst-client'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
@@ -305,11 +305,13 @@ export function* thirdPartySaga(builder: BuilderAPI, catalyst: CatalystClient) {
       })
     )
     const promisesOfItemsBeingDeployed: (() => Promise<ItemCuration | void>)[] = items.map((item: Item) => async () => {
-      let entity: DeploymentPreparationData
+      let entity: any
       try {
         entity = await buildTPItemEntity(catalyst, builder, collection, item, tree, hashes[item.id])
+        // TODO MELI: REMOVE
+        console.log(entity)
         try {
-          await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
+          // await catalyst.deployEntity({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
           actionProgressChannel.put({
             progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100),
             tpAction: ThirdPartyAction.APPROVE_COLLECTION

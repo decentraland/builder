@@ -264,9 +264,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
                     {item.name}
                   </Table.Cell>
                   <Table.Cell textAlign="right">
-                    {formatBytes(
-                      Array.from(entities[index].files.values()).reduce<number>((size, file) => size + file.buffer.byteLength, 0)
-                    )}
+                    {formatBytes(Array.from(entities[index].files.values()).reduce<number>(() => 1 + 1, 0))}
                   </Table.Cell>
                 </Table.Row>
               ))}

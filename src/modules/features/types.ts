@@ -4,5 +4,6 @@ export enum FeatureName {
   CAMPAIGN = 'campaign',
   DCL_CONTROLLER_V2 = 'dcl-controller-v2',
   DEPLOY_WORLDS = 'deploy-worlds',
-  SCENE_TEMPLATES = 'scene-templates'
+  SCENE_TEMPLATES = 'scene-templates',
+  HANDS_CATEGORY = 'hands-category'
 }

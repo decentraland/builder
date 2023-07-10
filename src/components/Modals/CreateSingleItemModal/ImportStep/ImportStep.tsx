@@ -1,6 +1,7 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { loadFile, WearableCategory, WearableConfig } from '@dcl/builder-client'
+import { loadFile, WearableConfig } from '@dcl/builder-client'
+import { WearableCategory } from '@dcl/schemas'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -80,7 +81,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     let modelPath: string | undefined
 
     if (wearable) {
-      modelPath = getModelPath(wearable.data.representations)
+      modelPath = getModelPath(wearable.data.representations as any)
     } else {
       modelPath = Object.keys(content).find(isModelPath)
     }
@@ -175,7 +176,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             description: wearable.description,
             rarity: wearable.rarity,
             category: wearable.data.category,
-            bodyShape: getBodyShapeType(wearable as Item)
+            bodyShape: getBodyShapeType(wearable as any as Item)
           }
         } else {
           /** If the .zip file doesn't contain an asset.json file,

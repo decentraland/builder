@@ -19,6 +19,7 @@ export type Props = ModalProps & {
   error: string | null
   isLoading: boolean
   collection: Collection | null
+  isHandsCategoryEnabled: boolean
   onSave: typeof saveItemRequest
 }
 
@@ -84,6 +85,6 @@ export type AcceptedFileProps = Pick<
   | 'hasScreenshotTaken'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection'>
+export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isHandsCategoryEnabled'>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>
