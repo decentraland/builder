@@ -200,7 +200,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         tags: [],
         representations: [...representations],
         requiredPermissions: requiredPermissions || []
-        // acá
       } as WearableData
     } else {
       data = {
