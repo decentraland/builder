@@ -4,6 +4,7 @@ import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
 import { Contract, providers } from 'ethers'
 import { AuthIdentity, Authenticator } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
+import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/types'
 import { ContentClient } from 'dcl-catalyst-client'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -305,7 +306,7 @@ export function* thirdPartySaga(builder: BuilderAPI, contentClient: ContentClien
       })
     )
     const promisesOfItemsBeingDeployed: (() => Promise<ItemCuration | void>)[] = items.map((item: Item) => async () => {
-      let entity: any
+      let entity: DeploymentPreparationData
       try {
         entity = await buildTPItemEntity(builder, collection, item, tree, hashes[item.id])
         try {
