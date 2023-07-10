@@ -1,6 +1,6 @@
 {
-  "NETWORK": "goerli",
-  "CHAIN_ID": "5",
+  "NETWORK": "sepolia",
+  "CHAIN_ID": "11155111",
   "ENVIRONMENT": "development",
   "LOCAL_STORAGE_KEY": "builder",
   "EMAIL_SERVER_URL": "https://subscription.decentraland.org/subscribe",
