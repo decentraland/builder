@@ -236,7 +236,7 @@ export async function buildItemEntity(
   item: Item | Item<ItemType.EMOTE>,
   tree?: MerkleDistributorInfo,
   itemHash?: string
-): Promise<void> {
+): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item, legacyBuilderClient)
   const files = await makeContentFiles(blobs)
   let metadata
