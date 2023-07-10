@@ -102,6 +102,7 @@ type BaseItem = {
   id: string // uuid
   name: string
   thumbnail: string
+  video?: string
   description: string
   rarity?: ItemRarity
   metrics: ModelMetrics
@@ -162,6 +163,7 @@ export type InitializeItem = [string, string, string, string]
 export type GenerateImageOptions = { width?: number; height?: number; thumbnail?: Blob }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
+export const VIDEO_PATH = 'video.mp4'
 export const IMAGE_PATH = 'image.png'
 export const ITEM_NAME_MAX_LENGTH = 32
 export const ITEM_DESCRIPTION_MAX_LENGTH = 64

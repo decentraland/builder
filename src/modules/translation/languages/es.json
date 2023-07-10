@@ -228,6 +228,7 @@
       "file_too_big": "{title}.{enter}El límite máximo de tamaño de archivo es {size}. Reduzca el tamaño del archivo e intente nuevamente.",
       "file_too_big_title": "El archivo es demasiado grande y no se puede cargar",
       "thumbnail_file_too_big": "El archivo thumbnail es demasiado grande para cargarlo. El tamaño maximo es {size}.",
+      "video_file_too_big": "El video es demasiado grande para cargarlo. El tamaño maximo es {size}.",
       "wrong_extension": "El archivo tiene una extensión inválida.",
       "invalid_files": "Los archivos parecen no ser válidos o estar dañados. Por favor revíselos y vuelva a intentarlo.",
       "missing_model_file": "No se pudo encontrar un archivo de modelo válido.",

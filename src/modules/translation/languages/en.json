@@ -227,6 +227,7 @@
       "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
       "file_too_big_title": "The file is too large and can't be uploaded",
       "thumbnail_file_too_big": "The thumbnail file is too big to be uploaded. The max size is {size}.",
+      "video_file_too_big": "The video file is too big to be uploaded. The max size is {size}.",
       "wrong_extension": "The file has an invalid extension.",
       "invalid_files": "Files seem to be invalid or broken, please review them and try again.",
       "missing_model_file": "Couldn't find a valid model file.",
