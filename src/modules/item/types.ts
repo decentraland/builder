@@ -96,6 +96,7 @@ export type WearableData = {
   replaces: HideableWearableCategory[]
   hides: HideableWearableCategory[]
   tags: string[]
+  requiredPermissions?: string[]
 }
 
 type BaseItem = {
@@ -168,6 +169,6 @@ export const ITEM_DESCRIPTION_MAX_LENGTH = 64
 export const MODEL_EXTENSIONS = ['.zip', '.gltf', '.glb']
 export const IMAGE_EXTENSIONS = ['.zip', '.png']
 export const ITEM_EXTENSIONS = ['.zip', '.gltf', '.glb', '.png']
-export const IMAGE_CATEGORIES = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
+export const IMAGE_CATEGORIES = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH] as HideableWearableCategory[]
 
 export { ItemRarity }

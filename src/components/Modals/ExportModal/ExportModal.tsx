@@ -27,6 +27,7 @@ export default class ExportModal extends React.PureComponent<Props> {
         <Modal name={name} closeIcon={<Close />} onClose={onClose}>
           <Modal.Header className="export-modal-title">{t('export_modal.title')}</Modal.Header>
           <Modal.Content>
+            <div className="export-modal-content-image" />
             <span className="details">{t('export_modal.description')}</span>
           </Modal.Content>
           <Modal.Actions className="export-modal-actions">

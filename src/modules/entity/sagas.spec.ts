@@ -1,5 +1,5 @@
-import { CatalystClient } from 'dcl-catalyst-client'
-import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
+import { ContentClient } from 'dcl-catalyst-client'
+import { Entity, EntityType } from '@dcl/schemas'
 import { expectSaga } from 'redux-saga-test-plan'
 import { call } from 'redux-saga/effects'
 import {
@@ -16,7 +16,7 @@ describe('Entity sagas', () => {
   describe('when handling the FETCH_ENTITIES_BY_POINTERS_REQUEST action', () => {
     const client = {
       fetchEntitiesByPointers: jest.fn()
-    } as unknown as CatalystClient
+    } as unknown as ContentClient
 
     it('should dispatch a failue action if the client throws', () => {
       const pointers = ['aPointer', 'anotherPointer']
@@ -46,7 +46,7 @@ describe('Entity sagas', () => {
             owner: '0xpepito',
             some: 'thing'
           },
-          version: EntityVersion.V3
+          version: 'v3'
         }
       ]
       return expectSaga(entitySaga, client)
@@ -90,7 +90,7 @@ describe('Entity sagas', () => {
             owner: '0xpepito',
             some: 'thing'
           },
-          version: EntityVersion.V3
+          version: 'v3'
         }
       ]
       return expectSaga(entitySaga, client)

@@ -1808,7 +1808,8 @@
       "top_head": "头顶",
       "upper_body": "上半身",
       "skin": "皮肤",
-      "hands": "手"
+      "hands": "手",
+      "hands_wear": "手"
     }
   },
   "rarity_tooltip": {

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { loadFile, WearableConfig } from '@dcl/builder-client'
-import { WearableCategory } from '@dcl/schemas'
+import { loadFile, SceneConfig, WearableCategory, WearableConfig } from '@dcl/builder-client'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -74,9 +73,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
    *
    * @param file - The ZIP file.
    */
-  handleZippedModelFiles = async (file: File): Promise<{ modelData: ModelData; wearable?: WearableConfig }> => {
+  handleZippedModelFiles = async (file: File): Promise<{ modelData: ModelData; wearable?: WearableConfig; scene?: SceneConfig }> => {
     const loadedFile = await loadFile(file.name, file)
-    const { wearable, content } = loadedFile
+    const { wearable, scene, content } = loadedFile
 
     let modelPath: string | undefined
 
@@ -92,7 +91,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
     return {
       modelData: await this.processModel(modelPath, content),
-      wearable
+      wearable,
+      scene
     }
   }
 
@@ -152,7 +152,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       }
 
       if (extension === '.zip') {
-        const { modelData, wearable } = await this.handleZippedModelFiles(file)
+        const { modelData, wearable, scene } = await this.handleZippedModelFiles(file)
         const { type, model, contents } = modelData
 
         acceptedFileProps = {
@@ -176,7 +176,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             description: wearable.description,
             rarity: wearable.rarity,
             category: wearable.data.category,
-            bodyShape: getBodyShapeType(wearable as any as Item)
+            bodyShape: getBodyShapeType(wearable as Item),
+            requiredPermissions: scene?.requiredPermissions
           }
         } else {
           /** If the .zip file doesn't contain an asset.json file,

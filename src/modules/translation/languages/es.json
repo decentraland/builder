@@ -1823,7 +1823,8 @@
       "top_head": "Cabeza",
       "upper_body": "Torso",
       "skin": "Skin",
-      "hands": "Manos"
+      "hands": "Manos",
+      "hands_wear": "Manos"
     }
   },
   "rarity_description": {

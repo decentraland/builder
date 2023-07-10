@@ -1,6 +1,7 @@
 import uuidv4 from 'uuid/v4'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
-import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { ContentClient } from 'dcl-catalyst-client'
+import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { call } from '@redux-saga/core/effects'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
@@ -66,9 +67,9 @@ const mockBuilder = {
   fetchContents: jest.fn()
 } as any as BuilderAPI
 
-const mockedCatalystClient = {
-  deployEntity: jest.fn()
-} as unknown as CatalystClient
+const mockContentClient = {
+  deploy: jest.fn()
+} as unknown as ContentClient
 
 let thirdParty: ThirdParty
 
@@ -93,7 +94,7 @@ describe('when the login action succeeds', () => {
   })
 
   it('should put the fetch third party request action', () => {
-    return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+    return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
       .put(fetchThirdPartiesRequest(wallet.address))
       .dispatch(loginSuccess(wallet, identity))
       .run({ silenceTimeout: true })
@@ -108,7 +109,7 @@ describe('when fetching third parties', () => {
     })
 
     it('should put the fetch third party fail action with an error', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[matchers.call.fn(mockBuilder.fetchThirdParties), throwError(new Error(errorMessage))]])
         .put(fetchThirdPartiesFailure(errorMessage))
         .dispatch(fetchThirdPartiesRequest())
@@ -141,7 +142,7 @@ describe('when fetching third parties', () => {
       })
 
       it('should pass the address to the api and put the fetch third party success action the response', () => {
-        return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+        return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
           .provide([[call([mockBuilder, 'fetchThirdParties'], address), thirdParties]])
           .put(fetchThirdPartiesSuccess(thirdParties))
           .dispatch(fetchThirdPartiesRequest(address))
@@ -151,7 +152,7 @@ describe('when fetching third parties', () => {
 
     describe('when no address is supplied', () => {
       it('should put the fetch third party success action with the api response', () => {
-        return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+        return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
           .provide([[matchers.call.fn(mockBuilder.fetchThirdParties), thirdParties]])
           .put(fetchThirdPartiesSuccess(thirdParties))
           .dispatch(fetchThirdPartiesRequest())
@@ -169,7 +170,7 @@ describe('when fetching third party available slots', () => {
     })
 
     it('should put the fetch third party available slots fail action with an error', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[matchers.call.fn(mockBuilder.fetchThirdPartyAvailableSlots), throwError(new Error(errorMessage))]])
         .put(fetchThirdPartyAvailableSlotsFailure(errorMessage))
         .dispatch(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
@@ -180,7 +181,7 @@ describe('when fetching third party available slots', () => {
   describe('when the api request succeeds', () => {
     it('should put the fetch third party success action the response', () => {
       const mockedAvaibleSlots = 20
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[call([mockBuilder, 'fetchThirdPartyAvailableSlots'], thirdParty.id), mockedAvaibleSlots]])
         .put(fetchThirdPartyAvailableSlotsSuccess(thirdParty.id, mockedAvaibleSlots))
         .dispatch(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
@@ -211,7 +212,7 @@ describe('when publishing third party items', () => {
     })
 
     it('should put the publish third party items fail action with an error, show the error toast and close the modal', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([
           [select(getCollection, item.collectionId), collection],
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
@@ -246,7 +247,7 @@ describe('when publishing third party items', () => {
 
     it('should put the fetch third party success action with the new itemCurations and close the PublishThirdPartyCollectionModal modal', () => {
       const mockedItemReturnedByServer = { ...mockedItem, id: 'a new id' }
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([
           [select(getCollection, item.collectionId), collection],
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
@@ -263,7 +264,7 @@ describe('when publishing third party items', () => {
 
     it('should put the fetch available slots action when the push finishes successfully', () => {
       const mockedItemReturnedByServer = { ...mockedItem, id: 'a new id' }
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
         .dispatch(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations))
         .run({ silenceTimeout: true })
@@ -298,7 +299,7 @@ describe('when pushing changes to third party items', () => {
     })
 
     it('should put the push changes third party items fail action with an error, show the error toast, close the modal and reset the progress', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([
           [select(getItemCurations, item.collectionId), itemCurations],
           [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), throwError(new Error('Error'))]
@@ -358,7 +359,7 @@ describe('when pushing changes to third party items', () => {
 
     it('should put the push changes success action with the updated item curations, close the PublishThirdPartyCollectionModal modal and reset the progress', () => {
       const anotherItem = { ...mockedItem, id: 'anotherItemId' }
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[select(getItemCurations, item.collectionId), itemCurations]])
         .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES))
         .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
@@ -412,7 +413,7 @@ describe('when publishing & pushing changes to third party items', () => {
 
   describe('when the publish items fails', () => {
     it('should put the publish & push changes failure action, show the error toast, close the modal and reset the progress', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
           [
@@ -435,7 +436,7 @@ describe('when publishing & pushing changes to third party items', () => {
       ;(mockBuilder.pushItemCuration as jest.Mock).mockRejectedValue(new Error(errorMessage))
     })
     it('should put the publish & push changes failure action', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
           [select(getItemCurations, item.collectionId), itemCurations]
@@ -464,7 +465,7 @@ describe('when publishing & pushing changes to third party items', () => {
     })
 
     it('should put the publish & push changes success action, the fetch available slots request and reset the progress', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
           [select(getItemCurations, item.collectionId), itemCurations]
@@ -525,7 +526,7 @@ describe('when handling the batched deployment of third party items', () => {
 
   describe("and the identity couldn't get retrieved", () => {
     it('should put a failure action signaling that the identity is invalid', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[call(getIdentity), undefined]])
         .put(deployBatchedThirdPartyItemsFailure([], 'Invalid Identity'))
         .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))
@@ -546,7 +547,7 @@ describe('when handling the batched deployment of third party items', () => {
     })
 
     it('should put a failure action with the errors that occurred when deploying', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[call(getIdentity), auth]])
         .put(deployBatchedThirdPartyItemsFailure(errors))
         .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))
@@ -558,9 +559,7 @@ describe('when handling the batched deployment of third party items', () => {
     let errors: ThirdPartyError[]
     beforeEach(() => {
       ;(buildTPItemEntity as unknown as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
-      ;(mockedCatalystClient.deployEntity as unknown as jest.Mock)
-        .mockResolvedValueOnce(0)
-        .mockRejectedValueOnce(new Error('Failed to deploy'))
+      ;(mockContentClient.deploy as unknown as jest.Mock).mockResolvedValueOnce(0).mockRejectedValueOnce(new Error('Failed to deploy'))
       ;(Authenticator.signPayload as unknown as jest.Mock<typeof Authenticator.signPayload>).mockResolvedValueOnce({
         type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
         payload: 'somePayload',
@@ -570,7 +569,7 @@ describe('when handling the batched deployment of third party items', () => {
     })
 
     it('should put a failure action with the errors that occurred when deploying', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[call(getIdentity), auth]])
         .put(deployBatchedThirdPartyItemsFailure(errors))
         .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))
@@ -582,7 +581,7 @@ describe('when handling the batched deployment of third party items', () => {
     let errors: ThirdPartyError[]
     beforeEach(() => {
       ;(buildTPItemEntity as unknown as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
-      ;(mockedCatalystClient.deployEntity as unknown as jest.Mock).mockResolvedValueOnce(0)
+      ;(mockContentClient.deploy as unknown as jest.Mock).mockResolvedValueOnce(0)
       ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockRejectedValueOnce(new Error('Failed to update'))
       ;(Authenticator.signPayload as unknown as jest.Mock<typeof Authenticator.signPayload>).mockResolvedValueOnce({
         type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
@@ -593,7 +592,7 @@ describe('when handling the batched deployment of third party items', () => {
     })
 
     it('should put a failure action with the errors that occurred when updating the item curation', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[call(getIdentity), auth]])
         .put(deployBatchedThirdPartyItemsFailure(errors))
         .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))
@@ -624,7 +623,7 @@ describe('when handling the batched deployment of third party items', () => {
         }
       ]
       ;(buildTPItemEntity as unknown as jest.Mock).mockResolvedValueOnce(deploymentData[0]).mockResolvedValueOnce(deploymentData[1])
-      ;(mockedCatalystClient.deployEntity as unknown as jest.Mock).mockResolvedValueOnce(0).mockResolvedValueOnce(1)
+      ;(mockContentClient.deploy as unknown as jest.Mock).mockResolvedValueOnce(0).mockResolvedValueOnce(1)
       ;(mockBuilder.updateItemCurationStatus as jest.Mock).mockResolvedValueOnce(itemCurations[0]).mockResolvedValueOnce(itemCurations[1])
       ;(Authenticator.signPayload as unknown as jest.Mock<typeof Authenticator.signPayload>).mockResolvedValueOnce({
         type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
@@ -634,7 +633,7 @@ describe('when handling the batched deployment of third party items', () => {
     })
 
     it('should put the success action with the deployment preparation data', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockedCatalystClient)
+      return expectSaga(thirdPartySaga, mockBuilder, mockContentClient)
         .provide([[call(getIdentity), auth]])
         .put(deployBatchedThirdPartyItemsSuccess(collection, itemCurations))
         .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))

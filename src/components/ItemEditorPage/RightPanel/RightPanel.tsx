@@ -126,7 +126,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ rarity, isDirty: this.isDirty({ rarity }) })
   }
 
-  handleChangeCategory = (category: WearableCategory | EmoteCategory) => {
+  handleChangeCategory = (category: HideableWearableCategory | EmoteCategory) => {
     let data
     if (isEmoteData(this.state.data!)) {
       data = {
@@ -529,7 +529,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           onChange={this.handleChangeDescription}
                         />
 
-                        <Select<WearableCategory | EmoteCategory>
+                        <Select<HideableWearableCategory | EmoteCategory>
                           itemId={item.id}
                           label={t('global.category')}
                           value={data!.category}
