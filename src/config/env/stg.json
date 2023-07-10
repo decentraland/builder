@@ -1,4 +1,5 @@
 {
+  "NETWORK": "mainnet",
   "CHAIN_ID": "1",
   "ENVIRONMENT": "staging",
   "LOCAL_STORAGE_KEY": "builder",

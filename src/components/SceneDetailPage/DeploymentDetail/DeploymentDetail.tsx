@@ -59,7 +59,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
 
   getExplorerUrl = (world: string) => {
     if (isDevelopment) {
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=goerli`
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=${config.get("NETWORK")}`
     }
     return `${EXPLORER_URL}/world/${world}`
   }
