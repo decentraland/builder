@@ -167,7 +167,7 @@ export function getItemMetadataType(item: { type: ItemType; contents: Record<str
 }
 
 export function isSmart({ type, contents = {} }: { type?: ItemType; contents?: Record<string, string | Blob> }) {
-  return type && getItemMetadataType({ type, contents }) === ItemMetadataType.SMART_WEARABLE
+  return !!type && getItemMetadataType({ type, contents }) === ItemMetadataType.SMART_WEARABLE
 }
 
 export function buildItemMetadata(
