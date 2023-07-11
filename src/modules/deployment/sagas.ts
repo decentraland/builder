@@ -1,4 +1,4 @@
-import { CatalystClient, ContentClient, createCatalystClient, createContentClient } from 'dcl-catalyst-client'
+import { CatalystClient, ContentClient, createContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from '@dcl/schemas'
 import { createFetchComponent } from '@well-known-components/fetch-component'
@@ -220,11 +220,10 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handleDeployToWorldRequest(action: DeployToWorldRequestAction) {
     const { world, projectId } = action.payload
-    const catalystClient = createCatalystClient({
-      url: `${config.get('WORLDS_CONTENT_SERVER', '')}/world/${world}`,
+    const contentClient = createContentClient({
+      url: config.get('WORLDS_CONTENT_SERVER', ''),
       fetcher: createFetchComponent()
     })
-    const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
     try {
       const deployment: Deployment = yield call(
         deployScene,
@@ -263,14 +262,15 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       return
     }
 
-    const catalystClientForDeploy = deployment.world
-      ? createCatalystClient({
-          url: `${config.get('WORLDS_CONTENT_SERVER', '')}/world/${deployment.world}`,
-          fetcher: createFetchComponent()
-        })
-      : catalystClient
-
-    const contentClientForDeploy: ContentClient = yield call([catalystClientForDeploy, 'getContentClient'])
+    let contentClient: ContentClient
+    if (deployment.world) {
+      contentClient = createContentClient({
+        url: config.get('WORLDS_CONTENT_SERVER', ''),
+        fetcher: createFetchComponent()
+      })
+    } else {
+      contentClient = yield call([catalystClient, 'getContentClient'])
+    }
 
     const identity: AuthIdentity = yield getIdentity()
     if (!identity) {
@@ -302,7 +302,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         files: contentFiles
       })
       const authChain = Authenticator.signPayload(identity, entityId)
-      yield call([contentClientForDeploy, 'deploy'], { entityId, files: hashedFiles, authChain })
+      yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
       yield put(clearDeploymentSuccess(deploymentId))
     } catch (error) {
       yield put(clearDeploymentFailure(deploymentId, error.message))
