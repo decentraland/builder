@@ -128,7 +128,7 @@ export default function DeployToWorld({
 
   const getExplorerUrl = useMemo(() => {
     if (isDevelopment) {
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=${config.get("NETWORK")}`
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=${config.get('NETWORK')}`
     }
     return `${EXPLORER_URL}/world/${world}`
   }, [world])
