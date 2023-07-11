@@ -1,4 +1,4 @@
-import { ContentClient, createContentClient } from 'dcl-catalyst-client'
+import { CatalystClient, createCatalystClient, createContentClient } from 'dcl-catalyst-client'
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
@@ -19,7 +19,7 @@ import { Deployment } from './types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 let builderAPI: BuilderAPI
-let contentClient: ContentClient
+let catalystClient: CatalystClient
 let deployMock: jest.Mock
 let fetchEntitiesByPointersMock: jest.Mock
 
@@ -32,6 +32,7 @@ jest.mock('dcl-catalyst-client/dist/client/utils/DeploymentBuilder', () => ({
 }))
 
 jest.mock('dcl-catalyst-client', () => ({
+  createCatalystClient: jest.fn(),
   createContentClient: jest.fn()
 }))
 
@@ -39,18 +40,29 @@ beforeEach(() => {
   builderAPI = {
     uploadMedia: jest.fn()
   } as unknown as BuilderAPI
-  contentClient = {
-    deploy: jest.fn()
-  } as unknown as ContentClient
   deployMock = jest.fn()
   fetchEntitiesByPointersMock = jest.fn()
-  ;(createContentClient as jest.Mock).mockReturnValue({ deploy: deployMock, fetchEntitiesByPointers: fetchEntitiesByPointersMock })
+
+  const getContentClientMock = jest.fn().mockResolvedValue({
+    deploy: deployMock,
+    fetchEntitiesByPointers: fetchEntitiesByPointersMock
+  })
+  catalystClient = {
+    getContentClient: getContentClientMock
+  } as unknown as CatalystClient
+  ;(createCatalystClient as jest.Mock).mockReturnValue({
+    getContentClient: getContentClientMock
+  })
+  ;(createContentClient as jest.Mock).mockReturnValue({
+    deploy: deployMock,
+    fetchEntitiesByPointers: fetchEntitiesByPointersMock
+  })
 })
 
 describe('when handling deploy to world request', () => {
   it('should upload media', () => {
     const projectId = 'project-id'
-    return expectSaga(deploymentSaga, builderAPI, contentClient)
+    return expectSaga(deploymentSaga, builderAPI, catalystClient)
       .provide([
         [matchers.select(getData), { [projectId]: { id: projectId } }],
         [matchers.call.fn(getSceneByProjectId), {}],
@@ -68,7 +80,7 @@ describe('when handling deploy to world request', () => {
   it('should build and deploy scene with correct parameters', () => {
     const projectId = 'project-id'
     const sceneDefinition = { scene: { parcels: [] } }
-    return expectSaga(deploymentSaga, builderAPI, contentClient)
+    return expectSaga(deploymentSaga, builderAPI, catalystClient)
       .provide([
         [matchers.select(getData), { [projectId]: { id: projectId } }],
         [matchers.call.fn(getSceneByProjectId), {}],
@@ -92,7 +104,7 @@ describe('when handling deploy to world request', () => {
 describe('when handling fetch worlds deployments request', () => {
   it('should fetch deployments for each world', () => {
     const worlds = ['my-world.dcl.eth']
-    return expectSaga(deploymentSaga, builderAPI, contentClient)
+    return expectSaga(deploymentSaga, builderAPI, catalystClient)
       .provide([
         [
           matchers.call.fn(fetchEntitiesByPointersMock),

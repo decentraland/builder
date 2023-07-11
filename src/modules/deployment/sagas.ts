@@ -220,7 +220,11 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handleDeployToWorldRequest(action: DeployToWorldRequestAction) {
     const { world, projectId } = action.payload
-    const contentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+    const catalystClient = createCatalystClient({
+      url: `${config.get('WORLDS_CONTENT_SERVER', '')}/world/${world}`,
+      fetcher: createFetchComponent()
+    })
+    const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
     try {
       const deployment: Deployment = yield call(
         deployScene,
@@ -260,7 +264,10 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     }
 
     const catalystClientForDeploy = deployment.world
-      ? createCatalystClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+      ? createCatalystClient({
+          url: `${config.get('WORLDS_CONTENT_SERVER', '')}/world/${deployment.world}`,
+          fetcher: createFetchComponent()
+        })
       : catalystClient
 
     const contentClientForDeploy: ContentClient = yield call([catalystClientForDeploy, 'getContentClient'])
@@ -386,8 +393,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handleFetchWorldDeploymentsRequest(action: FetchWorldDeploymentsRequestAction) {
     const { worlds } = action.payload
-    const worldCatalystClient = createCatalystClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
-    const contentClient: ContentClient = yield call([worldCatalystClient, 'getContentClient'])
+    const worldContentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
     try {
       const entities: Entity[] = []
 
@@ -395,7 +401,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         for (const world of worlds) {
           // At the moment, worlds content server only support one pointer per entity
 
-          const entity: Entity[] = yield call([contentClient, 'fetchEntitiesByPointers'], [world])
+          const entity: Entity[] = yield call([worldContentClient, 'fetchEntitiesByPointers'], [world])
           entities.push(entity[0])
         }
       }
