@@ -54,6 +54,7 @@ export type RemoteItem = {
   name: string
   description: string
   thumbnail: string
+  video: string | null
   eth_address: string
   collection_id: string | null
   blockchain_item_id: string | null
@@ -333,6 +334,7 @@ function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'>
     name: item.name,
     description: item.description || '',
     thumbnail: item.thumbnail,
+    video: item.video || null,
     eth_address: item.owner,
     collection_id: item.collectionId || null,
     blockchain_item_id: item.tokenId || null,
@@ -780,7 +782,9 @@ export class BuilderAPI extends BaseAPI {
       }
 
       requests.push(this.request('post', `/items/${item.id}/files`, { params: formData }))
-      if (videosFormData.entries.length > 0) requests.push(this.request('post', `/items/${item.id}/videos`, { params: videosFormData }))
+
+      if (Array.from(videosFormData.keys()).length > 0)
+        requests.push(this.request('post', `/items/${item.id}/videos`, { params: videosFormData }))
     }
 
     return Promise.all(requests)

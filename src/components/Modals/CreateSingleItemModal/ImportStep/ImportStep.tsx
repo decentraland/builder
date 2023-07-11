@@ -27,7 +27,8 @@ import {
   isModelFile,
   isModelPath,
   MAX_FILE_SIZE,
-  MAX_EMOTE_DURATION
+  MAX_EMOTE_DURATION,
+  isSmart
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
@@ -215,7 +216,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
       onDropAccepted({
         ...acceptedFileProps,
-        bodyShape: isEmote ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
+        bodyShape: isEmote || isSmart(acceptedFileProps) ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
       })
     } catch (error) {
       this.setState({ error: error.message, isLoading: false })

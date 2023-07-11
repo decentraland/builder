@@ -152,7 +152,7 @@ export function getBackgroundStyle(rarity?: ItemRarity) {
     : { backgroundColor: 'var(--secondary)' }
 }
 
-export function getItemMetadataType(item: Item) {
+export function getItemMetadataType(item: { type: ItemType; contents: Record<string, string | Blob> }) {
   switch (item.type) {
     case ItemType.WEARABLE: {
       if (Object.keys(item.contents).some(path => path.endsWith('.js'))) {
@@ -164,6 +164,10 @@ export function getItemMetadataType(item: Item) {
       return ItemMetadataType.EMOTE
     }
   }
+}
+
+export function isSmart({ type, contents = {} }: { type?: ItemType; contents?: Record<string, string | Blob> }) {
+  return type && getItemMetadataType({ type, contents }) === ItemMetadataType.SMART_WEARABLE
 }
 
 export function buildItemMetadata(

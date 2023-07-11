@@ -396,6 +396,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
             throw new ThumbnailFileTooBigError()
           }
         }
+
         // If a new video is present, this method will calculate only the video's final size with a limit of 1MB
         if (videoContent) {
           const finalVideoSize: number = yield call(calculateFileSize, videoContent)
@@ -403,6 +404,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
             throw new VideoFileTooBigError()
           }
         }
+
         if (finalModelSize > MAX_FILE_SIZE) {
           throw new ItemTooBigError()
         }
