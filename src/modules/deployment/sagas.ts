@@ -1,4 +1,4 @@
-import { ContentClient, createContentClient } from 'dcl-catalyst-client'
+import { CatalystClient, ContentClient, createCatalystClient, createContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from '@dcl/schemas'
 import { createFetchComponent } from '@well-known-components/fetch-component'
@@ -70,7 +70,7 @@ const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: 
   store.dispatch(setProgress(type, progress))
 }
 
-export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClient) {
+export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystClient) {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeploymentRequest)
@@ -241,6 +241,7 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
   function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
     const { placement, projectId, overrideDeploymentId } = action.payload
     try {
+      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
       const deployment: Deployment = yield call(deployScene, deployToLandFailure, contentClient, projectId, placement)
       yield put(deployToLandSuccess(deployment, overrideDeploymentId))
     } catch (e) {
@@ -258,9 +259,11 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
       return
     }
 
-    const contentClientForDeploy = deployment.world
-      ? createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
-      : contentClient
+    const catalystClientForDeploy = deployment.world
+      ? createCatalystClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+      : catalystClient
+
+    const contentClientForDeploy: ContentClient = yield call([catalystClientForDeploy, 'getContentClient'])
 
     const identity: AuthIdentity = yield getIdentity()
     if (!identity) {
@@ -371,6 +374,7 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
       let entities: Entity[] = []
 
       if (coords.length > 0) {
+        const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
         entities = yield call([contentClient, 'fetchEntitiesByPointers'], coords)
       }
       const getSceneDeploymentId = (entity: Entity) => entity.pointers[0]
@@ -382,7 +386,8 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
 
   function* handleFetchWorldDeploymentsRequest(action: FetchWorldDeploymentsRequestAction) {
     const { worlds } = action.payload
-    const contentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+    const worldCatalystClient = createCatalystClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+    const contentClient: ContentClient = yield call([worldCatalystClient, 'getContentClient'])
     try {
       const entities: Entity[] = []
 
