@@ -54,6 +54,7 @@ export type RemoteItem = {
   name: string
   description: string
   thumbnail: string
+  video: string | null
   eth_address: string
   collection_id: string | null
   blockchain_item_id: string | null
@@ -333,6 +334,7 @@ function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'>
     name: item.name,
     description: item.description || '',
     thumbnail: item.thumbnail,
+    video: item.video || null,
     eth_address: item.owner,
     collection_id: item.collectionId || null,
     blockchain_item_id: item.tokenId || null,
@@ -765,14 +767,27 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveItemContents = async (item: Item, contents: Record<string, Blob>) => {
+    const requests = []
+
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()
+      const videosFormData = new FormData()
+
       for (const path in contents) {
-        formData.append(item.contents[path], contents[path])
+        if (contents[path].type.startsWith('video/')) {
+          videosFormData.append(path, contents[path])
+        } else {
+          formData.append(item.contents[path], contents[path])
+        }
       }
 
-      return this.request('post', `/items/${item.id}/files`, { params: formData })
+      requests.push(this.request('post', `/items/${item.id}/files`, { params: formData }))
+
+      if (Array.from(videosFormData.keys()).length > 0)
+        requests.push(this.request('post', `/items/${item.id}/videos`, { params: videosFormData }))
     }
+
+    return Promise.all(requests)
   }
 
   async deleteItem(id: string) {
