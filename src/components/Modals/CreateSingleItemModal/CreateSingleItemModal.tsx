@@ -156,10 +156,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE ? this.prefixContents(BodyShapeType.MALE, contents) : {}
     const female =
       bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, contents) : {}
-    
+
     const all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
-      [SCENE_PATH]: contents[THUMBNAIL_PATH],
+      [SCENE_PATH]: contents[SCENE_PATH],
       [VIDEO_PATH]: contents[VIDEO_PATH],
       ...male,
       ...female
@@ -180,7 +180,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
     const all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
-      [SCENE_PATH]: contents[THUMBNAIL_PATH],
+      [SCENE_PATH]: contents[SCENE_PATH],
       ...male,
       ...female
     }
