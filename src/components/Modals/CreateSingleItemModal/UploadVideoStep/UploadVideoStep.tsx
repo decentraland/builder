@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Loader, ModalNavigation } from 'decentraland-ui'
+import { Button, Column, Loader, ModalNavigation, Row } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import FileImport from 'components/FileImport'
@@ -154,10 +154,16 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
         </Modal.Content>
         {video && (
           <Modal.Actions className={styles.actions}>
-            <Button onClick={this.handleGoBack}>{t('global.back')}</Button>
-            <Button primary onClick={onSaveVideo}>
-              {t('global.save')}
-            </Button>
+            <Row grow>
+              <Column grow shrink>
+                <Button onClick={this.handleGoBack}>{t('global.back')}</Button>
+              </Column>
+              <Column align="right">
+                <Button primary onClick={onSaveVideo}>
+                  {t('global.save')}
+                </Button>
+              </Column>
+            </Row>
           </Modal.Actions>
         )}
       </>

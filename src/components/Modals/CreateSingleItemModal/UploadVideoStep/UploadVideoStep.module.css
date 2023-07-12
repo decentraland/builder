@@ -76,6 +76,6 @@
   object-fit: contain;
 }
 
-.actions {
-  width: auto !important;
+:global(.ui.modal > .actions).actions {
+  width: auto;
 }
