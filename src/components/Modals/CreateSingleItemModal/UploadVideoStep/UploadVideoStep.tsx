@@ -85,8 +85,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
   }
 
   renderDropzoneCTA = (open: () => void) => {
-    const { isLoading } = this.props
-    const { error } = this.state
+    const { isLoading, error } = this.state
 
     return (
       <>
@@ -126,7 +125,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
   handleGoBack = () => {
     if (this.state.video) {
       URL.revokeObjectURL(this.state.video)
-      this.setState({ video: undefined })
+      this.setState({ video: undefined, isLoading: false })
     }
   }
 

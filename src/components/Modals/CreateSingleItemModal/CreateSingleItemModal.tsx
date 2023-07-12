@@ -429,7 +429,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   handleVideoDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     this.setState({
       isLoading: true,
-      // view: CreateItemView.DETAILS,
       ...acceptedFileProps
     })
   }
@@ -710,14 +709,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderUploadVideoView() {
     const { onClose } = this.props
-    const { contents, isLoading } = this.state
+    const { contents } = this.state
     const title = this.renderModalTitle()
 
     return (
       <UploadVideoStep
         title={title}
         contents={contents}
-        isLoading={!!isLoading}
         onDropAccepted={this.handleVideoDropAccepted}
         onClose={onClose}
         onSaveVideo={this.handleSaveVideo}
