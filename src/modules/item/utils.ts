@@ -371,8 +371,11 @@ function getCategories(contents: Record<string, any> | undefined = {}) {
   return fileNames.some(isModelFile) ? getModelCategories() : IMAGE_CATEGORIES
 }
 
-export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
+export function getWearableCategories(contents: Record<string, any> | undefined = {}, isHandsCategoryEnabled = false) {
   const ignoreCategories = new Set([WearableCategory.BODY_SHAPE])
+  if (!isHandsCategoryEnabled) {
+    ignoreCategories.add(WearableCategory.HANDS_WEAR)
+  }
   return getCategories(contents).filter(category => !ignoreCategories.has(category))
 }
 
