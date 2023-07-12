@@ -30,6 +30,7 @@ import {
   WearableRepresentation,
   ItemType,
   EmotePlayMode,
+  SCENE_PATH,
   VIDEO_PATH
 } from 'modules/item/types'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
@@ -133,8 +134,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
    */
   prefixContents(bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
-      // Do not include the thumbnail in each of the body shapes
-      if (key === THUMBNAIL_PATH || key === VIDEO_PATH) {
+      // Do not include the thumbnail, scenes, and video in each of the body shapes
+      if ([THUMBNAIL_PATH, SCENE_PATH, VIDEO_PATH].includes(key)) {
         return newContents
       }
       newContents[this.prefixContentName(bodyShape, key)] = contents[key]
@@ -155,7 +156,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE ? this.prefixContents(BodyShapeType.MALE, contents) : {}
     const female =
       bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, contents) : {}
-    const all = { [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH], [VIDEO_PATH]: contents[VIDEO_PATH], ...male, ...female }
+    
+    const all = {
+      [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
+      [SCENE_PATH]: contents[THUMBNAIL_PATH],
+      [VIDEO_PATH]: contents[VIDEO_PATH],
+      ...male,
+      ...female
+    }
 
     return { male, female, all }
   }
@@ -170,7 +178,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         female[key] = contents[key]
       }
     }
-    const all = { [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH], ...male, ...female }
+    const all = {
+      [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
+      [SCENE_PATH]: contents[THUMBNAIL_PATH],
+      ...male,
+      ...female
+    }
     return { male, female, all }
   }
 

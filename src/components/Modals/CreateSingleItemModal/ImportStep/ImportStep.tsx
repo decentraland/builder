@@ -16,7 +16,7 @@ import {
   InvalidModelFilesRepresentation,
   InvalidModelFileType
 } from 'modules/item/errors'
-import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
+import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS, SCENE_PATH } from 'modules/item/types'
 import {
   getBodyShapeType,
   getBodyShapeTypeFromContents,
@@ -155,6 +155,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       if (extension === '.zip') {
         const { modelData, wearable, scene } = await this.handleZippedModelFiles(file)
         const { type, model, contents } = modelData
+
+        if (scene) {
+          contents[SCENE_PATH] = new Blob([JSON.stringify(scene)], { type: 'application/json' })
+        }
 
         acceptedFileProps = {
           ...acceptedFileProps,
