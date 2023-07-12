@@ -1,12 +1,10 @@
 import * as React from 'react'
 import classNames from 'classnames'
 
-import { getBackgroundStyle, getThumbnailURL } from 'modules/item/utils'
+import { getBackgroundStyle, getThumbnailURL, isSmart } from 'modules/item/utils'
 import RarityBadge from 'components/RarityBadge'
 import ItemBadge from 'components/ItemBadge'
 import { SmartBadge } from 'components/SmartBadge'
-import { ItemMetadataType } from 'modules/item/types'
-import { getItemMetadataType } from 'modules/item/utils'
 import { Props } from './ItemImage.types'
 import './ItemImage.css'
 
@@ -19,7 +17,6 @@ export default class ItemImage extends React.PureComponent<Props> {
 
   render() {
     const { className, item, src, hasBadge, badgeSize, hasRarityBadge, hasRarityBackground } = this.props
-    const isSmart = getItemMetadataType(item) === ItemMetadataType.SMART_WEARABLE
 
     return (
       <div
@@ -34,7 +31,7 @@ export default class ItemImage extends React.PureComponent<Props> {
           {hasBadge ? (
             <>
               <ItemBadge item={item} size={badgeSize}></ItemBadge>
-              {isSmart ? <SmartBadge size={badgeSize} /> : null}
+              {isSmart(item) ? <SmartBadge size={badgeSize} /> : null}
             </>
           ) : null}
         </div>
