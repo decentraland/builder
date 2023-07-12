@@ -3,7 +3,7 @@ import { Contract, providers } from 'ethers'
 import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
-import { ChainId, Network } from '@dcl/schemas'
+import { ChainId, Network, Entity, EntityType } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
@@ -15,7 +15,6 @@ import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentral
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
-import { Entity, EntityType } from 'dcl-catalyst-commons'
 import {
   FetchItemsRequestAction,
   fetchItemsSuccess,

@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { Entity } from 'dcl-catalyst-commons'
+import { Entity } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
 import { EntityState } from './reducer'
 

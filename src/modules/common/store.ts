@@ -4,8 +4,9 @@ import createSagasMiddleware from 'redux-saga'
 import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
 import { BuilderClient } from '@dcl/builder-client'
+import { createFetchComponent } from '@well-known-components/fetch-component'
 
-import { CatalystClient } from 'dcl-catalyst-client'
+import { createCatalystClient } from 'dcl-catalyst-client'
 import { config } from 'config'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/transaction/middleware'
@@ -155,7 +156,7 @@ const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer) as RootStore
 
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
-const catalystClient = new CatalystClient({ catalystUrl: PEER_URL })
+const catalystClient = createCatalystClient({ url: PEER_URL, fetcher: createFetchComponent() })
 
 const getClientAddress = () => getAddress(store.getState())!
 const getClientAuthAuthority = () => {

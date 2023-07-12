@@ -1,6 +1,6 @@
 import { all, call, put, takeEvery } from 'redux-saga/effects'
-import { CatalystClient } from 'dcl-catalyst-client'
-import { Entity, EntityType } from 'dcl-catalyst-commons'
+import { CatalystClient, ContentClient } from 'dcl-catalyst-client'
+import { Entity, EntityType } from '@dcl/schemas'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { getIdentity } from 'modules/identity/utils'
 import {
@@ -21,7 +21,7 @@ import {
   FETCH_ENTITIES_BY_POINTERS_REQUEST
 } from './actions'
 
-export function* entitySaga(catalyst: CatalystClient) {
+export function* entitySaga(catalystClient: CatalystClient) {
   // takes
   yield takeEvery(FETCH_ENTITIES_BY_POINTERS_REQUEST, handleFetchEntitiesByPointersRequest)
   yield takeEvery(FETCH_ENTITIES_BY_IDS_REQUEST, handleFetchEntitiesByIdsRequest)
@@ -32,7 +32,8 @@ export function* entitySaga(catalyst: CatalystClient) {
   function* handleFetchEntitiesByPointersRequest(action: FetchEntitiesByPointersRequestAction) {
     const { type, pointers } = action.payload
     try {
-      const entities: Entity[] = yield call([catalyst, 'fetchEntitiesByPointers'], pointers)
+      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
+      const entities: Entity[] = yield call([contentClient, 'fetchEntitiesByPointers'], pointers)
       yield put(fetchEntitiesByPointersSuccess(type, pointers, entities))
     } catch (error) {
       yield put(fetchEntitiesByPointersFailure(type, pointers, error.message))
@@ -42,7 +43,8 @@ export function* entitySaga(catalyst: CatalystClient) {
   function* handleFetchEntitiesByIdsRequest(action: FetchEntitiesByIdsRequestAction) {
     const { type, ids } = action.payload
     try {
-      const entities: Entity[] = yield call([catalyst, 'fetchEntitiesByIds'], ids)
+      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
+      const entities: Entity[] = yield call([contentClient, 'fetchEntitiesByIds'], ids)
       yield put(fetchEntitiesByIdsSuccess(type, ids, entities))
     } catch (error) {
       yield put(fetchEntitiesByIdsFailure(type, ids, error.message))
@@ -57,10 +59,10 @@ export function* entitySaga(catalyst: CatalystClient) {
       if (!identity) {
         throw new Error('Invalid Identity')
       }
-
+      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
       yield all(
         entities.map(entity =>
-          call([catalyst, 'deployEntity'], { ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
+          call([contentClient, 'deploy'], { ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
         )
       )
 

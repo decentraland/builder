@@ -4,7 +4,7 @@ import { locations } from 'routing/locations'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { ethers } from 'ethers'
-import { Entity, EntityType, EntityVersion } from 'dcl-catalyst-commons'
+import { Entity, EntityType } from '@dcl/schemas'
 import { call, select, take, race, delay } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
@@ -802,7 +802,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
     entitiesByItemId = {
       [itemId]: {
         id: 'anEntity',
-        version: EntityVersion.V3,
+        version: 'v3',
         type: EntityType.WEARABLE,
         timestamp: Date.now(),
         pointers: [],

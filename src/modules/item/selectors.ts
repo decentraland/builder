@@ -1,4 +1,4 @@
-import { Entity } from 'dcl-catalyst-commons'
+import { Entity } from '@dcl/schemas'
 import { createSelector } from 'reselect'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
