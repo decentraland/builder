@@ -204,7 +204,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       hides = [...currentHides.filter(cat => !BodyPartCategory.schema.enum.includes(cat)), ...value]
     }
 
-    console.log({ hides })
     const data = this.setHides((this.state.data as WearableData)!, hides)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
@@ -457,7 +456,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, isDownloading, error, isCampaignEnabled } = this.props
+    const { selectedItemId, address, isConnected, isDownloading, error, isCampaignEnabled, isHandsCategoryEnabled } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
@@ -470,7 +469,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
-              const categories = item ? (item.type === ItemType.WEARABLE ? getWearableCategories(item.contents) : getEmoteCategories()) : []
+              const categories = item
+                ? item.type === ItemType.WEARABLE
+                  ? getWearableCategories(item.contents, isHandsCategoryEnabled)
+                  : getEmoteCategories()
+                : []
 
               const downloadButton = isDownloading ? (
                 <Loader active size="tiny" className="donwload-item-loader" />
