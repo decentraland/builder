@@ -16,7 +16,7 @@ import {
   InvalidModelFilesRepresentation,
   InvalidModelFileType
 } from 'modules/item/errors'
-import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
+import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS, SCENE_PATH } from 'modules/item/types'
 import {
   getBodyShapeType,
   getBodyShapeTypeFromContents,
@@ -27,7 +27,8 @@ import {
   isModelFile,
   isModelPath,
   MAX_FILE_SIZE,
-  MAX_EMOTE_DURATION
+  MAX_EMOTE_DURATION,
+  isSmart
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
@@ -155,6 +156,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         const { modelData, wearable, scene } = await this.handleZippedModelFiles(file)
         const { type, model, contents } = modelData
 
+        if (scene) {
+          contents[SCENE_PATH] = new Blob([JSON.stringify(scene)], { type: 'application/json' })
+        }
+
         acceptedFileProps = {
           ...acceptedFileProps,
           type,
@@ -215,7 +220,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
       onDropAccepted({
         ...acceptedFileProps,
-        bodyShape: isEmote ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
+        bodyShape: isEmote || isSmart(acceptedFileProps) ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
       })
     } catch (error) {
       this.setState({ error: error.message, isLoading: false })

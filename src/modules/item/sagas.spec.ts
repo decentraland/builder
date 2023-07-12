@@ -69,9 +69,20 @@ import {
   fetchOrphanItemFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
-import { BuiltFile, Currency, IMAGE_PATH, Item, ItemRarity, ItemType, Rarity, THUMBNAIL_PATH, WearableRepresentation } from './types'
+import {
+  BuiltFile,
+  Currency,
+  IMAGE_PATH,
+  Item,
+  ItemRarity,
+  ItemType,
+  Rarity,
+  THUMBNAIL_PATH,
+  VIDEO_PATH,
+  WearableRepresentation
+} from './types'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE } from './utils'
+import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE, MAX_VIDEO_FILE_SIZE } from './utils'
 import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
 import * as toasts from './toasts'
@@ -183,6 +194,22 @@ describe('when handling the save item request action', () => {
           )
         )
         .dispatch(saveItemRequest(item, { ...contents, [THUMBNAIL_PATH]: blob }))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and video file size is larger than 4MB', () => {
+    it('should put a saveItemFailure action with video too big message', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getItem, item.id), undefined],
+          [matchers.call.fn(reHashOlderContents), {}],
+          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE)],
+          [matchers.call.fn(calculateFileSize), MAX_VIDEO_FILE_SIZE + 1]
+        ])
+        .put(saveItemFailure(item, { ...contents, [VIDEO_PATH]: blob }, 'The video file is too big to be uploaded. The max size is 4MB.'))
+        .dispatch(saveItemRequest(item, { ...contents, [VIDEO_PATH]: blob }))
         .run({ silenceTimeout: true })
     })
   })
