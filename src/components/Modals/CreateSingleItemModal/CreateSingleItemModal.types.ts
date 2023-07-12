@@ -87,6 +87,7 @@ export type AcceptedFileProps = Pick<
   | 'thumbnail'
   | 'hasScreenshotTaken'
   | 'requiredPermissions'
+  | 'video'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isHandsCategoryEnabled'>
