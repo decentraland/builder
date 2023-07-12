@@ -7,7 +7,8 @@ import {
   areEqualArrays,
   areEqualRepresentations,
   groupsOf,
-  getWearableCategories
+  getWearableCategories,
+  isSmart
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -205,6 +206,43 @@ describe('when getting wearable categories', () => {
       })
 
       expect(categories).toEqual(['eyebrows', 'eyes', 'mouth'])
+    })
+  })
+})
+
+describe('when checking if an item is smart', () => {
+  describe('when the type is undefined', () => {
+    it('should return false', () => {
+      const item = {} as Item
+      expect(isSmart(item)).toBe(false)
+    })
+  })
+
+  describe('when the item does not have content', () => {
+    it('should return false', () => {
+      const item = { type: ItemType.WEARABLE } as Item
+      expect(isSmart(item)).toBe(false)
+    })
+  })
+
+  describe('when the item does not have a content file that suggest the wearable is smart', () => {
+    it('should return false', () => {
+      const item = { type: ItemType.WEARABLE, contents: { file1: new Blob(), file2: new Blob() } } as unknown as Item
+      expect(isSmart(item)).toBe(false)
+    })
+  })
+
+  describe('when the item is an emote', () => {
+    it('should return false', () => {
+      const item = { type: ItemType.EMOTE } as Item
+      expect(isSmart(item)).toBe(false)
+    })
+  })
+
+  describe('when the item is a wearable and has a content file with a javascript extension', () => {
+    it('should return true', () => {
+      const item = { type: ItemType.WEARABLE, contents: { 'sw.js': '' } } as unknown as Item
+      expect(isSmart(item)).toBe(true)
     })
   })
 })
