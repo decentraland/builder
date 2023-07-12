@@ -1,5 +1,5 @@
 import { all } from 'redux-saga/effects'
-import { ContentClient } from 'dcl-catalyst-client'
+import { CatalystClient } from 'dcl-catalyst-client'
 import { BuilderClient } from '@dcl/builder-client'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 
@@ -45,7 +45,7 @@ import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL() })
 
-export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClient, contentClient: ContentClient) {
+export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClient, catalystClient: CatalystClient) {
   yield all([
     analyticsSaga(),
     assetPackSaga(builderAPI),
@@ -53,10 +53,10 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     authorizationSaga(),
     collectionSaga(builderAPI, newBuilderClient),
     committeeSaga(builderAPI),
-    deploymentSaga(builderAPI, contentClient),
+    deploymentSaga(builderAPI, catalystClient),
     editorSaga(),
     ensSaga(newBuilderClient),
-    entitySaga(contentClient),
+    entitySaga(catalystClient),
     forumSaga(builderAPI),
     identitySaga(),
     itemSaga(builderAPI, newBuilderClient),
@@ -72,7 +72,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     sceneSaga(),
     statsSaga(),
     syncSaga(builderAPI),
-    thirdPartySaga(builderAPI, contentClient),
+    thirdPartySaga(builderAPI, catalystClient),
     tileSaga(),
     toastSaga(),
     transactionSaga(),

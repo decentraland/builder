@@ -648,7 +648,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
   function* getStandardItemsAndEntitiesToDeploy(collection: Collection) {
     const itemsToDeploy: Item[] = []
-    const entitiesToDeploy: any[] = []
+    const entitiesToDeploy: DeploymentPreparationData[] = []
     const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
     const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
     for (const item of itemsOfCollection) {

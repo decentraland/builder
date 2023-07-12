@@ -113,7 +113,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
       let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
 
       if (!thumbnail) {
-        const modelPath = getModelPath(loadedFile.wearable.data.representations as any)
+        const modelPath = getModelPath(loadedFile.wearable.data.representations)
         const url = URL.createObjectURL(loadedFile.content[modelPath])
         const data = await getModelData(url, {
           width: 1024,

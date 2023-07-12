@@ -80,7 +80,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     let modelPath: string | undefined
 
     if (wearable) {
-      modelPath = getModelPath(wearable.data.representations as any)
+      modelPath = getModelPath(wearable.data.representations)
     } else {
       modelPath = Object.keys(content).find(isModelPath)
     }
