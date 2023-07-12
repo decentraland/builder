@@ -103,6 +103,7 @@ type BaseItem = {
   id: string // uuid
   name: string
   thumbnail: string
+  video?: string
   description: string
   rarity?: ItemRarity
   metrics: ModelMetrics
@@ -163,6 +164,7 @@ export type InitializeItem = [string, string, string, string]
 export type GenerateImageOptions = { width?: number; height?: number; thumbnail?: Blob }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
+export const VIDEO_PATH = 'video.mp4'
 export const IMAGE_PATH = 'image.png'
 export const SCENE_PATH = 'scene.json'
 export const SCENE_LOGIC_PATH = 'bin/game.js'
