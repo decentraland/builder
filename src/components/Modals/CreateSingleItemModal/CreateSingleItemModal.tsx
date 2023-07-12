@@ -29,7 +29,9 @@ import {
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
   ItemType,
-  EmotePlayMode
+  EmotePlayMode,
+  SCENE_PATH,
+  VIDEO_PATH
 } from 'modules/item/types'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -49,7 +51,8 @@ import {
   getMaxSupplyForRarity,
   getEmoteCategories,
   getEmotePlayModes,
-  getBodyShapeTypeFromContents
+  getBodyShapeTypeFromContents,
+  isSmart
 } from 'modules/item/utils'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
@@ -131,8 +134,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
    */
   prefixContents(bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
-      // Do not include the thumbnail in each of the body shapes
-      if (key === THUMBNAIL_PATH) {
+      // Do not include the thumbnail, scenes, and video in each of the body shapes
+      if ([THUMBNAIL_PATH, SCENE_PATH, VIDEO_PATH].includes(key)) {
         return newContents
       }
       newContents[this.prefixContentName(bodyShape, key)] = contents[key]
@@ -153,7 +156,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE ? this.prefixContents(BodyShapeType.MALE, contents) : {}
     const female =
       bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, contents) : {}
-    const all = { [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH], ...male, ...female }
+    
+    const all = {
+      [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
+      [SCENE_PATH]: contents[THUMBNAIL_PATH],
+      [VIDEO_PATH]: contents[VIDEO_PATH],
+      ...male,
+      ...female
+    }
 
     return { male, female, all }
   }
@@ -168,7 +178,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         female[key] = contents[key]
       }
     }
-    const all = { [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH], ...male, ...female }
+    const all = {
+      [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
+      [SCENE_PATH]: contents[THUMBNAIL_PATH],
+      ...male,
+      ...female
+    }
     return { male, female, all }
   }
 
@@ -216,6 +231,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       urn,
       description: description || '',
       thumbnail: THUMBNAIL_PATH,
+      video: VIDEO_PATH,
       type,
       collectionId,
       totalSupply: 0,
@@ -339,7 +355,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     if (id && this.isValid()) {
-      const { thumbnail, contents, bodyShape, type, model, isRepresentation, item: editedItem } = this.state as StateData
+      const { thumbnail, contents, bodyShape, type, model, isRepresentation, item: editedItem, video } = this.state as StateData
 
       if (this.state.view === CreateItemView.DETAILS) {
         try {
@@ -347,6 +363,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           const hasCustomThumbnail = THUMBNAIL_PATH in contents
           if (blob && !hasCustomThumbnail) {
             contents[THUMBNAIL_PATH] = blob
+          }
+
+          if (video) {
+            const videoBlob = dataURLToBlob(video)
+            const hasPreviewVideo = VIDEO_PATH in contents
+            if (videoBlob && !hasPreviewVideo) {
+              contents[VIDEO_PATH] = videoBlob
+            }
           }
 
           const sortedContents =
@@ -418,6 +442,50 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         void this.updateThumbnailByCategory(category)
       }
     }
+  }
+
+  handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { contents } = this.state
+    const { files } = event.target
+
+    if (!files || !files.length) return
+
+    const file = files[0]
+    const videoType = getExtension(file.name) || ''
+    if (!['.mp4', '.mov'].includes(videoType)) {
+      this.setState({ error: t('create_single_item_modal.error.wrong_video_format') })
+      return
+    }
+    this.setState({ error: undefined })
+
+    this.setState({
+      video: URL.createObjectURL(file),
+      contents: {
+        ...contents,
+        [VIDEO_PATH]: file
+      }
+    })
+  }
+
+  clearVideo = () => {
+    const { video, contents } = this.state
+
+    if (video) {
+      URL.revokeObjectURL(video)
+    }
+
+    this.setState({
+      video: undefined,
+      contents:
+        contents &&
+        Object.keys(contents)
+          .filter(key => key !== VIDEO_PATH)
+          .reduce((newContents: Record<string, Blob>, key: string) => {
+            newContents[key] = contents[key]
+            return newContents
+          }, {})
+    })
+    return
   }
 
   handleRarityChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
@@ -657,6 +725,25 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
+  renderUploadPreviewVideo() {
+    const { video } = this.state
+    return (
+      <>
+        <Field
+          className="video-uploader"
+          label={t('create_single_item_modal.upload_video_label')}
+          placeholder={t('create_single_item_modal.upload_video_placeholder')}
+          type="file"
+          accept="video/mp4"
+          action={video ? <Icon name="close" /> : undefined}
+          onAction={this.clearVideo}
+          onChange={this.handleVideoChange}
+        />
+        {video && <video autoPlay loop src={`${process.env.PUBLIC_URL}${video}`} muted />}
+      </>
+    )
+  }
+
   renderFields() {
     const { collection } = this.props
     const { name, category, rarity, contents, item, type } = this.state
@@ -669,6 +756,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       type === ItemType.EMOTE
         ? 'https://docs.decentraland.org/emotes/emotes/#rarity'
         : 'https://docs.decentraland.org/decentraland/wearables-editor-user-guide/#rarity'
+
+    const isSmartItem = isSmart({ type, contents })
 
     return (
       <>
@@ -711,14 +800,16 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           options={categories.map(value => ({ value, text: t(`${type!}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
+        {isSmartItem && this.renderUploadPreviewVideo()}
       </>
     )
   }
 
   renderWearableDetails() {
     const { metadata } = this.props
-    const { bodyShape, isRepresentation, item } = this.state
+    const { bodyShape, isRepresentation, type, item, contents } = this.state
     const isAddingRepresentation = this.isAddingRepresentation()
+    const isSmartItem = isSmart({ type, contents })
 
     return (
       <>
@@ -727,8 +818,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             <Header sub>{t('create_single_item_modal.representation_label')}</Header>
             <Row>
               {this.renderRepresentation(BodyShapeType.BOTH)}
-              {this.renderRepresentation(BodyShapeType.MALE)}
-              {this.renderRepresentation(BodyShapeType.FEMALE)}
+              {!isSmartItem && this.renderRepresentation(BodyShapeType.MALE)}
+              {!isSmartItem && this.renderRepresentation(BodyShapeType.FEMALE)}
             </Row>
           </Section>
         )}

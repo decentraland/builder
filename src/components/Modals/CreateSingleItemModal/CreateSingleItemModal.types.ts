@@ -45,6 +45,7 @@ export type StateData = {
   hasScreenshotTaken?: boolean
   previewController?: IPreviewController
   weareblePreviewUpdated: boolean
+  video?: string
   requiredPermissions?: string[]
 }
 export type State = { view: CreateItemView; fromView?: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
