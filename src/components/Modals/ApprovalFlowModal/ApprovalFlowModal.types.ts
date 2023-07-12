@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
-import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/types'
 import { approveCollectionRequest, ApproveCollectionRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import { rescueItemsRequest, RescueItemsRequestAction } from 'modules/item/actions'

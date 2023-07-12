@@ -37,3 +37,11 @@ export const getIsTemplatesEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsHandsCategoryEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.HANDS_CATEGORY)
+  } catch (e) {
+    return false
+  }
+}

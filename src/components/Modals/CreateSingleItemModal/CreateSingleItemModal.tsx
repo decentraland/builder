@@ -1,7 +1,6 @@
 import * as React from 'react'
 import uuid from 'uuid'
 import { BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
-import { WearableData } from '@dcl/builder-client'
 import {
   ModalNavigation,
   Row,
@@ -29,7 +28,8 @@ import {
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
   ItemType,
-  EmotePlayMode
+  EmotePlayMode,
+  WearableData
 } from 'modules/item/types'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -658,12 +658,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
-    const { collection } = this.props
+    const { collection, isHandsCategoryEnabled } = this.props
     const { name, category, rarity, contents, item, type } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const rarities = getRarities()
-    const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
+    const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents, isHandsCategoryEnabled) : getEmoteCategories()
 
     const raritiesLink =
       type === ItemType.EMOTE

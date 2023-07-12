@@ -1741,6 +1741,10 @@
       "replaces_info": "当用户装备您的物品时，您选择的类别中的其他任何物品都将被取消装备。 用户删除物品后必须重新装备它们。",
       "hides": "皮",
       "hides_info": "当用户装备您的物品时，您选择的类别中的所有其他物品将保持装备状态，但不会被渲染。 用户仅会在删除您的商品后看到他们的其他商品。 ",
+      "base_body": "基体",
+      "base_body_info": "TBD",
+      "wearables": "可穿戴设备",
+      "wearables_info": "TBD",
       "animation": "动画",
       "tags": "标签",
       "event_tag": "如果您想将此项目包含在 {event_tag} 中，请使用 {event_name} 标签。{learn_more}",
@@ -1808,6 +1812,7 @@
       "top_head": "头顶",
       "upper_body": "上半身",
       "skin": "皮肤",
+      "hands": "手",
       "hands_wear": "手"
     }
   },
