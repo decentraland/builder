@@ -208,7 +208,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE)],
           [matchers.call.fn(calculateFileSize), MAX_VIDEO_FILE_SIZE + 1]
         ])
-        .put(saveItemFailure(item, { ...contents, [VIDEO_PATH]: blob }, 'The video file is too big to be uploaded. The max size is 4MB.'))
+        .put(saveItemFailure(item, { ...contents, [VIDEO_PATH]: blob }, 'The video size limit is 4MB. Reduce its size and try again.'))
         .dispatch(saveItemRequest(item, { ...contents, [VIDEO_PATH]: blob }))
         .run({ silenceTimeout: true })
     })
