@@ -421,15 +421,15 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     ) as BodyPartCategory[]
     const hides = [...hidesBodyPart, ...hidesWearable]
     const replaces = [...replacesBodyPart, ...replacesWearable]
-    const availableToHide = actionableCategories.filter(category => ![...hides, ...replaces].includes(category))
-    const availableToOverride = actionableCategories.filter(category => ![...hides, ...replaces].includes(category))
+    const availableToHide = actionableCategories.filter(category => !replaces.includes(category))
+    const availableToOverride = actionableCategories.filter(category => !hides.includes(category))
     return (
       <>
         <MultiSelect<WearableCategory | BodyPartCategory>
           itemId={item.id}
           label={t('item_editor.right_panel.replaces')}
           info={t('item_editor.right_panel.replaces_info')}
-          value={item.data.replaces as WearableCategory[]}
+          value={replaces}
           options={this.asCategorySelect(item.type, availableToOverride)}
           disabled={!canEditItemMetadata || this.isSkin()}
           onChange={this.handleChangeReplaces}
@@ -438,7 +438,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
           itemId={item.id}
           label={t('item_editor.right_panel.hides')}
           info={t('item_editor.right_panel.hides_info')}
-          value={item.data.hides as WearableCategory[]}
+          value={hides}
           options={this.asCategorySelect(
             item.type,
             // Workaround for https://github.com/decentraland/builder/issues/2068
