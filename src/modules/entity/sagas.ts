@@ -1,5 +1,5 @@
 import { all, call, put, takeEvery } from 'redux-saga/effects'
-import { ContentClient } from 'dcl-catalyst-client'
+import { CatalystClient, ContentClient } from 'dcl-catalyst-client'
 import { Entity, EntityType } from '@dcl/schemas'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { getIdentity } from 'modules/identity/utils'
@@ -21,7 +21,7 @@ import {
   FETCH_ENTITIES_BY_POINTERS_REQUEST
 } from './actions'
 
-export function* entitySaga(contentClient: ContentClient) {
+export function* entitySaga(catalystClient: CatalystClient) {
   // takes
   yield takeEvery(FETCH_ENTITIES_BY_POINTERS_REQUEST, handleFetchEntitiesByPointersRequest)
   yield takeEvery(FETCH_ENTITIES_BY_IDS_REQUEST, handleFetchEntitiesByIdsRequest)
@@ -32,6 +32,7 @@ export function* entitySaga(contentClient: ContentClient) {
   function* handleFetchEntitiesByPointersRequest(action: FetchEntitiesByPointersRequestAction) {
     const { type, pointers } = action.payload
     try {
+      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
       const entities: Entity[] = yield call([contentClient, 'fetchEntitiesByPointers'], pointers)
       yield put(fetchEntitiesByPointersSuccess(type, pointers, entities))
     } catch (error) {
@@ -42,6 +43,7 @@ export function* entitySaga(contentClient: ContentClient) {
   function* handleFetchEntitiesByIdsRequest(action: FetchEntitiesByIdsRequestAction) {
     const { type, ids } = action.payload
     try {
+      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
       const entities: Entity[] = yield call([contentClient, 'fetchEntitiesByIds'], ids)
       yield put(fetchEntitiesByIdsSuccess(type, ids, entities))
     } catch (error) {
@@ -57,7 +59,7 @@ export function* entitySaga(contentClient: ContentClient) {
       if (!identity) {
         throw new Error('Invalid Identity')
       }
-
+      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
       yield all(
         entities.map(entity =>
           call([contentClient, 'deploy'], { ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })

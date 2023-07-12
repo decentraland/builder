@@ -1,4 +1,4 @@
-import { ContentClient, createContentClient } from 'dcl-catalyst-client'
+import { CatalystClient, ContentClient, createContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from '@dcl/schemas'
 import { createFetchComponent } from '@well-known-components/fetch-component'
@@ -70,7 +70,7 @@ const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: 
   store.dispatch(setProgress(type, progress))
 }
 
-export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClient) {
+export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystClient) {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeploymentRequest)
@@ -220,7 +220,10 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
 
   function* handleDeployToWorldRequest(action: DeployToWorldRequestAction) {
     const { world, projectId } = action.payload
-    const contentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+    const contentClient = createContentClient({
+      url: config.get('WORLDS_CONTENT_SERVER', ''),
+      fetcher: createFetchComponent()
+    })
     try {
       const deployment: Deployment = yield call(
         deployScene,
@@ -241,6 +244,7 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
   function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
     const { placement, projectId, overrideDeploymentId } = action.payload
     try {
+      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
       const deployment: Deployment = yield call(deployScene, deployToLandFailure, contentClient, projectId, placement)
       yield put(deployToLandSuccess(deployment, overrideDeploymentId))
     } catch (e) {
@@ -258,9 +262,15 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
       return
     }
 
-    const contentClientForDeploy = deployment.world
-      ? createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
-      : contentClient
+    let contentClient: ContentClient
+    if (deployment.world) {
+      contentClient = createContentClient({
+        url: config.get('WORLDS_CONTENT_SERVER', ''),
+        fetcher: createFetchComponent()
+      })
+    } else {
+      contentClient = yield call([catalystClient, 'getContentClient'])
+    }
 
     const identity: AuthIdentity = yield getIdentity()
     if (!identity) {
@@ -292,7 +302,7 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
         files: contentFiles
       })
       const authChain = Authenticator.signPayload(identity, entityId)
-      yield call([contentClientForDeploy, 'deploy'], { entityId, files: hashedFiles, authChain })
+      yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
       yield put(clearDeploymentSuccess(deploymentId))
     } catch (error) {
       yield put(clearDeploymentFailure(deploymentId, error.message))
@@ -371,6 +381,7 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
       let entities: Entity[] = []
 
       if (coords.length > 0) {
+        const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
         entities = yield call([contentClient, 'fetchEntitiesByPointers'], coords)
       }
       const getSceneDeploymentId = (entity: Entity) => entity.pointers[0]
@@ -382,7 +393,7 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
 
   function* handleFetchWorldDeploymentsRequest(action: FetchWorldDeploymentsRequestAction) {
     const { worlds } = action.payload
-    const contentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+    const worldContentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
     try {
       const entities: Entity[] = []
 
@@ -390,7 +401,7 @@ export function* deploymentSaga(builder: BuilderAPI, contentClient: ContentClien
         for (const world of worlds) {
           // At the moment, worlds content server only support one pointer per entity
 
-          const entity: Entity[] = yield call([contentClient, 'fetchEntitiesByPointers'], [world])
+          const entity: Entity[] = yield call([worldContentClient, 'fetchEntitiesByPointers'], [world])
           entities.push(entity[0])
         }
       }

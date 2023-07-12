@@ -339,11 +339,11 @@ export function getRarities() {
   return ItemRarity.schema.enum as ItemRarity[]
 }
 
-export function isImageCategory(category: WearableCategory) {
+export function isImageCategory(category: HideableWearableCategory) {
   return IMAGE_CATEGORIES.includes(category)
 }
 
-export function isModelCategory(category: WearableCategory) {
+export function isModelCategory(category: HideableWearableCategory) {
   return !isImageCategory(category)
 }
 

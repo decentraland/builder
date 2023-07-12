@@ -4,8 +4,8 @@ import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
 import { Contract, providers } from 'ethers'
 import { AuthIdentity, Authenticator } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
-import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/types'
-import { ContentClient } from 'dcl-catalyst-client'
+import { CatalystClient } from 'dcl-catalyst-client'
+import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
@@ -83,7 +83,7 @@ export function* getContractInstance(
   return contractInstance
 }
 
-export function* thirdPartySaga(builder: BuilderAPI, contentClient: ContentClient) {
+export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystClient) {
   const actionProgressChannel = channel()
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, handleDeployBatchedThirdPartyItemsRequest)
@@ -310,6 +310,7 @@ export function* thirdPartySaga(builder: BuilderAPI, contentClient: ContentClien
       try {
         entity = await buildTPItemEntity(builder, collection, item, tree, hashes[item.id])
         try {
+          const contentClient = await catalystClient.getContentClient()
           await contentClient.deploy({ ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
           actionProgressChannel.put({
             progress: Math.round(((items.length - (queue.size + queue.pending)) / items.length) * 100),

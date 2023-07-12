@@ -1,7 +1,6 @@
-import { ContentClient } from 'dcl-catalyst-client'
+import { CatalystClient } from 'dcl-catalyst-client'
 import { Entity, EntityType } from '@dcl/schemas'
 import { expectSaga } from 'redux-saga-test-plan'
-import { call } from 'redux-saga/effects'
 import {
   fetchEntitiesByIdsFailure,
   fetchEntitiesByIdsRequest,
@@ -13,16 +12,24 @@ import {
 import { entitySaga } from './sagas'
 
 describe('Entity sagas', () => {
+  let catalystClient: CatalystClient
+  let fetchEntitiesByPointersMock: jest.Mock
+
   describe('when handling the FETCH_ENTITIES_BY_POINTERS_REQUEST action', () => {
-    const client = {
-      fetchEntitiesByPointers: jest.fn()
-    } as unknown as ContentClient
+    beforeEach(() => {
+      fetchEntitiesByPointersMock = jest.fn()
+      catalystClient = {
+        getContentClient: jest.fn().mockResolvedValue({
+          fetchEntitiesByPointers: fetchEntitiesByPointersMock
+        })
+      } as unknown as CatalystClient
+    })
 
     it('should dispatch a failue action if the client throws', () => {
       const pointers = ['aPointer', 'anotherPointer']
       const anErrorMessage = 'Something happened'
-      return expectSaga(entitySaga, client)
-        .provide([[call([client, 'fetchEntitiesByPointers'], pointers), Promise.reject(new Error(anErrorMessage))]])
+      fetchEntitiesByPointersMock.mockRejectedValue(new Error(anErrorMessage))
+      return expectSaga(entitySaga, catalystClient)
         .put(fetchEntitiesByPointersFailure(EntityType.WEARABLE, pointers, anErrorMessage))
         .dispatch(fetchEntitiesByPointersRequest(EntityType.WEARABLE, pointers))
         .run({ silenceTimeout: true })
@@ -49,8 +56,8 @@ describe('Entity sagas', () => {
           version: 'v3'
         }
       ]
-      return expectSaga(entitySaga, client)
-        .provide([[call([client, 'fetchEntitiesByPointers'], pointers), Promise.resolve(entities)]])
+      fetchEntitiesByPointersMock.mockResolvedValue(entities)
+      return expectSaga(entitySaga, catalystClient)
         .put(fetchEntitiesByPointersSuccess(EntityType.WEARABLE, pointers, entities))
         .dispatch(fetchEntitiesByPointersRequest(EntityType.WEARABLE, pointers))
         .run({ silenceTimeout: true })
@@ -58,15 +65,22 @@ describe('Entity sagas', () => {
   })
 
   describe('when handling the FETCH_ENTITIES_BY_IDS_REQUEST action', () => {
-    const client = {
-      fetchEntitiesByIds: jest.fn()
-    } as unknown as CatalystClient
+    let fetchEntitiesByIdsMock: jest.Mock
+
+    beforeEach(() => {
+      fetchEntitiesByIdsMock = jest.fn()
+      catalystClient = {
+        getContentClient: jest.fn().mockResolvedValue({
+          fetchEntitiesByIds: fetchEntitiesByIdsMock
+        })
+      } as unknown as CatalystClient
+    })
 
     it('should dispatch a failue action if the client throws', () => {
       const ids = ['QmHash']
       const anErrorMessage = 'Something happened'
-      return expectSaga(entitySaga, client)
-        .provide([[call([client, 'fetchEntitiesByIds'], ids), Promise.reject(new Error(anErrorMessage))]])
+      fetchEntitiesByIdsMock.mockRejectedValue(new Error(anErrorMessage))
+      return expectSaga(entitySaga, catalystClient)
         .put(fetchEntitiesByIdsFailure(EntityType.WEARABLE, ids, anErrorMessage))
         .dispatch(fetchEntitiesByIdsRequest(EntityType.WEARABLE, ids))
         .run({ silenceTimeout: true })
@@ -93,8 +107,8 @@ describe('Entity sagas', () => {
           version: 'v3'
         }
       ]
-      return expectSaga(entitySaga, client)
-        .provide([[call([client, 'fetchEntitiesByIds'], ids), Promise.resolve(entities)]])
+      fetchEntitiesByIdsMock.mockResolvedValue(entities)
+      return expectSaga(entitySaga, catalystClient)
         .put(fetchEntitiesByIdsSuccess(EntityType.WEARABLE, ids, entities))
         .dispatch(fetchEntitiesByIdsRequest(EntityType.WEARABLE, ids))
         .run({ silenceTimeout: true })
