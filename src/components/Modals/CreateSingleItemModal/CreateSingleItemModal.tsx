@@ -412,7 +412,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         category
       })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
-        this.setState({ view: isSmart({ type, contents }) ? CreateItemView.VIDEO : CreateItemView.DETAILS })
+        this.setState({ view: isSmart({ type, contents }) ? CreateItemView.UPLOAD_VIDEO : CreateItemView.DETAILS })
       })
     }
   }
@@ -429,8 +429,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   handleVideoDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     this.setState({
       isLoading: true,
-      view: CreateItemView.DETAILS,
+      // view: CreateItemView.DETAILS,
       ...acceptedFileProps
+    })
+  }
+
+  handleSaveVideo = () => {
+    this.setState({
+      view: CreateItemView.DETAILS
     })
   }
 
@@ -623,7 +629,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     switch (view) {
       case CreateItemView.THUMBNAIL:
         return t('create_single_item_modal.thumbnail_step_title')
-      case CreateItemView.VIDEO:
+      case CreateItemView.UPLOAD_VIDEO:
         return t('create_single_item_modal.upload_video_step_title')
       default:
         return t('create_single_item_modal.title')
@@ -714,6 +720,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         isLoading={!!isLoading}
         onDropAccepted={this.handleVideoDropAccepted}
         onClose={onClose}
+        onSaveVideo={this.handleSaveVideo}
       />
     )
   }
@@ -1051,7 +1058,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     switch (this.state.view) {
       case CreateItemView.IMPORT:
         return this.renderImportView()
-      case CreateItemView.VIDEO:
+      case CreateItemView.UPLOAD_VIDEO:
         return this.renderUploadVideoView()
       case CreateItemView.DETAILS:
         return this.renderDetailsView()

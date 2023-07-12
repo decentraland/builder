@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { Loader, ModalNavigation } from 'decentraland-ui'
+import { Button, Loader, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { getExtension, toMB } from 'lib/file'
 import { WrongExtensionError, VideoFileTooBigError, VideoFileTooLongError, InvalidVideoError } from 'modules/item/errors'
+import { MAX_VIDEO_DURATION, MAX_VIDEO_FILE_SIZE } from 'modules/item/utils'
 import { VIDEO_EXTENSIONS, VIDEO_PATH } from 'modules/item/types'
 import { Props, State } from './UploadVideoStep.types'
 import styles from './UploadVideoStep.module.css'
-import { MAX_VIDEO_DURATION, MAX_VIDEO_FILE_SIZE } from 'modules/item/utils'
 
 const loadVideo = (file: File): Promise<HTMLVideoElement> =>
   new Promise((resolve, reject) => {
@@ -49,7 +49,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
     const extension = getExtension(file.name)
 
     try {
-      this.setState({ isLoading: true, error: undefined })
+      this.setState({ isLoading: true, error: undefined, video: undefined })
 
       if (!extension) {
         throw new WrongExtensionError()
@@ -63,6 +63,8 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
       if (video.duration > MAX_VIDEO_DURATION) {
         throw new VideoFileTooLongError()
       }
+
+      this.setState({ video: video.src, isLoading: false })
 
       onDropAccepted({
         video: video.src,
@@ -121,22 +123,44 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
     )
   }
 
+  handleGoBack = () => {
+    if (this.state.video) {
+      URL.revokeObjectURL(this.state.video)
+      this.setState({ video: undefined })
+    }
+  }
+
   render() {
-    const { title, onClose } = this.props
+    const { title, onClose, onSaveVideo } = this.props
+    const { id, video } = this.state
 
     return (
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
-          <FileImport
-            className={styles.dropzone}
-            accept={VIDEO_EXTENSIONS}
-            onAcceptedFiles={this.handleDropAccepted}
-            onRejectedFiles={this.handleDropRejected}
-            renderAction={this.renderDropzoneCTA}
-          />
-          {/* video preview here */}
+          {(!video || id) && (
+            <FileImport
+              className={styles.dropzone}
+              accept={VIDEO_EXTENSIONS}
+              onAcceptedFiles={this.handleDropAccepted}
+              onRejectedFiles={this.handleDropRejected}
+              renderAction={this.renderDropzoneCTA}
+            />
+          )}
+          {video && (
+            <div className={styles.dropzone}>
+              <video src={video} className={styles.video} autoPlay controls loop muted playsInline />
+            </div>
+          )}
         </Modal.Content>
+        {video && (
+          <Modal.Actions>
+            <Button onClick={this.handleGoBack}>{t('global.back')}</Button>
+            <Button primary onClick={onSaveVideo}>
+              {t('global.save')}
+            </Button>
+          </Modal.Actions>
+        )}
       </>
     )
   }
