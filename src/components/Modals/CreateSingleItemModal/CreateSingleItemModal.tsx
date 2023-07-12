@@ -67,8 +67,8 @@ import {
   SortedContent,
   AcceptedFileProps
 } from './CreateSingleItemModal.types'
-import './CreateSingleItemModal.css'
 import UploadVideoStep from './UploadVideoStep/UploadVideoStep'
+import './CreateSingleItemModal.css'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()

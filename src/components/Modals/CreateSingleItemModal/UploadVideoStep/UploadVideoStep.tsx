@@ -153,7 +153,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
           )}
         </Modal.Content>
         {video && (
-          <Modal.Actions>
+          <Modal.Actions className={styles.actions}>
             <Button onClick={this.handleGoBack}>{t('global.back')}</Button>
             <Button primary onClick={onSaveVideo}>
               {t('global.save')}
