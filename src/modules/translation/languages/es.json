@@ -1789,7 +1789,8 @@
       "event_tag": "Usa la etiqueta {event_tag} si quieres incluir este item en el {event_name}. {learn_more}",
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
-      "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"
+      "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro",
+      "required_permissions": "Permisos"
     }
   },
   "emote": {
