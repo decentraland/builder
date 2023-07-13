@@ -202,6 +202,7 @@
   "create_single_item_modal": {
     "title": "新物品",
     "thumbnail_step_title": "编辑缩略图",
+    "upload_video_step_title": "智能可穿戴设备的详细视频",
     "title_emote": "新表情",
     "add_representation": "添加{bodyShape}",
     "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
@@ -219,16 +220,18 @@
     "pick_item": "选择没有{bodyShape}的商品",
     "adding_representation": "这将添加为以下项目的{body Shape}",
     "change_item_file": "编辑制图表达",
+    "upload_video_information": "最大文件大小 {max_size} - 最大持续时间 {max_duration} 秒",
     "error": {
       "item_too_big": "整个项目太大，无法上传。 所有文件的最大大小为 {size}。",
       "file_too_big": "{title}.{enter}文件大小限制为 {size}。减小文件的大小，然后重试。",
       "file_too_big_title": "文件太大，无法上传",
       "thumbnail_file_too_big": "文件太大，无法上传。 最大文件大小限制为 {size}。",
-      "video_file_too_big": "缩略图文件太大，无法上传。 最大尺寸为{size}。",
-      "video_file_too_long": "视频文件太长。所需时间应小于 {max_duration}。",
+      "video_file_too_big": "视频大小限制为{size}。 减小其大小并重试",
+      "video_file_too_long": "视频时长超过 {max_duration} 秒。 减少它并重试。",
       "wrong_extension": "该文件的扩展名无效。",
       "wrong_video_format": "视频的扩展名无效。它应该是 .mp4 或 .mov。",
       "invalid_files": "文件似乎无效或损坏，请检查并重试。",
+      "invalid_video": "视频似乎无效或已损坏，请检查并重试。",
       "missing_model_file": "找不到有效的模型文件。",
       "invalid_content_path": "属性 \"{name}\" 的无效路径 \"{path}\"，找不到文件。",
       "invalid_enum_value": "属性 \"{name}\" 的无效值 \"{value}\"，可能的值：{values}。",
@@ -779,6 +782,10 @@
     "description": "要在不同帐户之间传输场景或导入先前从场景池下载的场景，请使用导入功能。确保您按照下载完全导入zip文件。",
     "invalid_file": "无效文件",
     "title": "导入场景",
+    "upload_manually": "浏览您的电脑"
+  },
+  "upload_video": {
+    "cta": "拖动您的智能设备的视频（格式.MP4），或{action}",
     "upload_manually": "浏览您的电脑"
   },
   "itemdrawer": {
