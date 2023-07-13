@@ -204,6 +204,7 @@
   "create_single_item_modal": {
     "title": "New Item",
     "thumbnail_step_title": "Edit Thumbnail",
+    "upload_video_step_title": "Detailed Video of Your Smart Wearable",
     "title_emote": "New Emote",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
@@ -224,16 +225,18 @@
     "change_item_file": "Edit representation",
     "import_information": "For more information about uploading wearables or emotes {link}",
     "import_information_link_label": "click here",
+    "upload_video_information": "Maximum file size {max_size} - Maximum duration {max_duration} seconds",
     "error": {
       "item_too_big": "The entire item is too big to be uploaded. The max size for all files is {size}.",
       "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
       "file_too_big_title": "The file is too large and can't be uploaded",
       "thumbnail_file_too_big": "The thumbnail file is too big to be uploaded. The max size is {size}.",
-      "video_file_too_big": "The video file is too big to be uploaded. The max size is {size}.",
-      "video_file_too_long": "The video file is too long. It should take less than {max_duration}.",
+      "video_file_too_big": "The video size limit is {size}. Reduce its size and try again.",
+      "video_file_too_long": "Video duration exceeds {max_duration} seconds. Reduce it and try again.",
       "wrong_extension": "The file has an invalid extension.",
       "wrong_video_format": "The video has an invalid extension. It should be a .mp4 or .mov.",
       "invalid_files": "Files seem to be invalid or broken, please review them and try again.",
+      "invalid_video": "Video seem to be invalid or broken, please review them and try again.",
       "missing_model_file": "Couldn't find a valid model file.",
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}.",
@@ -785,6 +788,10 @@
     "invalid_file": "Invalid file",
     "title": "Upload Scene",
     "upload_manually": "Browse your computer"
+  },
+  "upload_video": {
+    "cta": "Drag a video (format .MP4) of your smart wereable, or {action}",
+    "upload_manually": "Browse it from your computer"
   },
   "itemdrawer": {
     "opensea_credit": "Powered by {link}",
