@@ -32,7 +32,13 @@ export const HandsCategoryLaunchModal = ({ isHandsCategoryEnabled, isLoadingFeat
             br: () => <br />
           })}
         </span>
-        <Button className={styles.actionButton} onClick={onClose} primary>
+        <Button
+          as="a"
+          href="https://docs.decentraland.org/creator/wearables/creating-wearables/"
+          target="_blank"
+          className={styles.actionButton}
+          primary
+        >
           {t('hands_category_ftu.action')}
         </Button>
       </div>
