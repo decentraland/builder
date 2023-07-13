@@ -67,6 +67,7 @@ import {
   SortedContent,
   AcceptedFileProps
 } from './CreateSingleItemModal.types'
+import UploadVideoStep from './UploadVideoStep/UploadVideoStep'
 import './CreateSingleItemModal.css'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
@@ -83,6 +84,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       weareblePreviewUpdated: false,
       hasScreenshotTaken: false
     }
+
     if (!metadata) {
       return state
     }
@@ -414,7 +416,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         category
       })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
-        this.setState({ view: CreateItemView.DETAILS })
+        this.setState({ view: isSmart({ type, contents }) ? CreateItemView.UPLOAD_VIDEO : CreateItemView.DETAILS })
       })
     }
   }
@@ -426,6 +428,19 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       bodyShape: bodyShape || prevState.bodyShape,
       ...acceptedProps
     }))
+  }
+
+  handleVideoDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
+    this.setState({
+      isLoading: true,
+      ...acceptedFileProps
+    })
+  }
+
+  handleSaveVideo = () => {
+    this.setState({
+      view: CreateItemView.DETAILS
+    })
   }
 
   handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
@@ -446,50 +461,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         void this.updateThumbnailByCategory(category)
       }
     }
-  }
-
-  handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { contents } = this.state
-    const { files } = event.target
-
-    if (!files || !files.length) return
-
-    const file = files[0]
-    const videoType = getExtension(file.name) || ''
-    if (!['.mp4', '.mov'].includes(videoType)) {
-      this.setState({ error: t('create_single_item_modal.error.wrong_video_format') })
-      return
-    }
-    this.setState({ error: undefined })
-
-    this.setState({
-      video: URL.createObjectURL(file),
-      contents: {
-        ...contents,
-        [VIDEO_PATH]: file
-      }
-    })
-  }
-
-  clearVideo = () => {
-    const { video, contents } = this.state
-
-    if (video) {
-      URL.revokeObjectURL(video)
-    }
-
-    this.setState({
-      video: undefined,
-      contents:
-        contents &&
-        Object.keys(contents)
-          .filter(key => key !== VIDEO_PATH)
-          .reduce((newContents: Record<string, Blob>, key: string) => {
-            newContents[key] = contents[key]
-            return newContents
-          }, {})
-    })
-    return
   }
 
   handleRarityChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
@@ -643,6 +614,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const isAddingRepresentation = this.isAddingRepresentation()
     const { bodyShape, type, view } = this.state
     const { metadata } = this.props
+
     if (isAddingRepresentation) {
       return t('create_single_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape!}`) })
     }
@@ -657,11 +629,19 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         : t('create_single_item_modal.title_emote')
     }
 
-    return view === CreateItemView.THUMBNAIL ? t('create_single_item_modal.thumbnail_step_title') : t('create_single_item_modal.title')
+    switch (view) {
+      case CreateItemView.THUMBNAIL:
+        return t('create_single_item_modal.thumbnail_step_title')
+      case CreateItemView.UPLOAD_VIDEO:
+        return t('create_single_item_modal.upload_video_step_title')
+      default:
+        return t('create_single_item_modal.title')
+    }
   }
 
   handleFileLoad = async () => {
     const { weareblePreviewUpdated, type, model } = this.state
+
     // if model is an image, the wearable preview won't be needed
     if (model && isImageFile(model)) {
       return this.getMetricsAndScreenshot()
@@ -683,9 +663,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { type, contents } = this.state
     const isEmote = type === ItemType.EMOTE
     const blob = contents ? (isEmote ? toEmoteWithBlobs({ contents }) : toWearableWithBlobs({ contents })) : undefined
+
     if (!blob) {
       return null
     }
+
     const wearablePreviewExtraOptions = isEmote
       ? {
           profile: 'default',
@@ -729,22 +711,19 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
-  renderUploadPreviewVideo() {
-    const { video } = this.state
+  renderUploadVideoView() {
+    const { onClose } = this.props
+    const { contents } = this.state
+    const title = this.renderModalTitle()
+
     return (
-      <>
-        <Field
-          className="video-uploader"
-          label={t('create_single_item_modal.upload_video_label')}
-          placeholder={t('create_single_item_modal.upload_video_placeholder')}
-          type="file"
-          accept="video/mp4"
-          action={video ? <Icon name="close" /> : undefined}
-          onAction={this.clearVideo}
-          onChange={this.handleVideoChange}
-        />
-        {video && <video autoPlay loop src={`${process.env.PUBLIC_URL}${video}`} muted />}
-      </>
+      <UploadVideoStep
+        title={title}
+        contents={contents}
+        onDropAccepted={this.handleVideoDropAccepted}
+        onClose={onClose}
+        onSaveVideo={this.handleSaveVideo}
+      />
     )
   }
 
@@ -760,8 +739,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       type === ItemType.EMOTE
         ? 'https://docs.decentraland.org/emotes/emotes/#rarity'
         : 'https://docs.decentraland.org/decentraland/wearables-editor-user-guide/#rarity'
-
-    const isSmartItem = isSmart({ type, contents })
 
     return (
       <>
@@ -804,7 +781,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           options={categories.map(value => ({ value, text: t(`${type!}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
-        {isSmartItem && this.renderUploadPreviewVideo()}
       </>
     )
   }
@@ -817,13 +793,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     return (
       <>
-        {isAddingRepresentation ? null : (
+        {isAddingRepresentation || isSmartItem ? null : (
           <Section>
             <Header sub>{t('create_single_item_modal.representation_label')}</Header>
             <Row>
               {this.renderRepresentation(BodyShapeType.BOTH)}
-              {!isSmartItem && this.renderRepresentation(BodyShapeType.MALE)}
-              {!isSmartItem && this.renderRepresentation(BodyShapeType.FEMALE)}
+              {this.renderRepresentation(BodyShapeType.MALE)}
+              {this.renderRepresentation(BodyShapeType.FEMALE)}
             </Row>
           </Section>
         )}
@@ -1084,6 +1060,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     switch (this.state.view) {
       case CreateItemView.IMPORT:
         return this.renderImportView()
+      case CreateItemView.UPLOAD_VIDEO:
+        return this.renderUploadVideoView()
       case CreateItemView.DETAILS:
         return this.renderDetailsView()
       case CreateItemView.THUMBNAIL:
