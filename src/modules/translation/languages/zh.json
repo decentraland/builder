@@ -1956,5 +1956,11 @@
   },
   "logged_in_detail_page": {
     "error_title": "加载详细信息页面时出错"
+  },
+  "hands_category_ftu": {
+    "title": "现在，您可以买手可穿戴设备！",
+    "img_alt": "新手类别",
+    "description": "1- 您可以在编辑器中找到它.<br></br>2- 现在您可以将手的可穿戴设备更新为此类别.<br></br>如何？您必须再次更改可穿戴类别，并使用新类别的手。",
+    "action": "了解更多"
   }
 }
