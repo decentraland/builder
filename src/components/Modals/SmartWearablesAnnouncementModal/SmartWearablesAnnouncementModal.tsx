@@ -19,7 +19,7 @@ const SmartWearablesAnnouncementModal: React.FC<ModalProps> = ({ name, onClose }
 
   const handleLearnMore = () => {
     handleClose()
-    window.open('https://wearables.decentraland.org/', '_blank', 'noopener noreferrer')
+    window.open('https://docs.decentraland.org/creator/development-guide/smart-wearables/', '_blank', 'noopener noreferrer')
   }
 
   return (
