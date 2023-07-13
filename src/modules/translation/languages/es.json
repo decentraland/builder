@@ -207,6 +207,7 @@
   "create_single_item_modal": {
     "title": "Nuevo item",
     "thumbnail_step_title": "Editar el thumbnail",
+    "upload_video_step_title": "Video detallado de su dispositivo portátil inteligente",
     "title_emote": "Nueva Animación",
     "add_representation": "Agregar representación de {bodyShape}",
     "wrong_thumbnail_format": "El thumbnail provisto no es una imagen PNG",
@@ -225,16 +226,18 @@
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
     "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item",
     "change_item_file": "Editar representación",
+    "upload_video_information": "Tamaño máximo de archivo {max_size} - Duración máxima {max_duration} segundos",
     "error": {
       "item_too_big": "El item entero es demasiado grande para cargarlo. El tamaño máximo de todos los archivos es {size}.",
       "file_too_big": "{title}.{enter}El límite máximo de tamaño de archivo es {size}. Reduzca el tamaño del archivo e intente nuevamente.",
       "file_too_big_title": "El archivo es demasiado grande y no se puede cargar",
       "thumbnail_file_too_big": "El archivo thumbnail es demasiado grande para cargarlo. El tamaño maximo es {size}.",
-      "video_file_too_big": "El video es demasiado grande para cargarlo. El tamaño maximo es {size}.",
-      "video_file_too_long": "El archivo de video es demasiado largo. Debería durar menos de {max_duration}.",
+      "video_file_too_big": "El límite de tamaño del video es {tamaño}. Reduce su tamaño e inténtalo de nuevo.",
+      "video_file_too_long": "La duración del video excede {max_duration} segundos. Redúcelo e inténtalo de nuevo.",
       "wrong_extension": "El archivo tiene una extensión inválida.",
       "wrong_video_format": "El video tiene una extensión no válida. Debería ser .mp4 o .mov.",
       "invalid_files": "Los archivos parecen no ser válidos o estar dañados. Por favor revíselos y vuelva a intentarlo.",
+      "invalid_video": "Parece que el video no es válido o está roto, revísalo e inténtalo de nuevo.",
       "missing_model_file": "No se pudo encontrar un archivo de modelo válido.",
       "invalid_content_path": "La ruta \"{path}\" es inválida para la propiedad \"{name}\", el archivo no existe.",
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}.",
@@ -792,6 +795,10 @@
     "description": "Para transferir escenas entre diferentes cuentas o cargar una escena previamente descargada desde el grupo de escenas, utilice la función de carga. Asegúrese de cargar el archivo zip exactamente como se descargó.",
     "invalid_file": "Archivo inválido",
     "title": "Cargar Escena",
+    "upload_manually": "Busca en tu computadora"
+  },
+  "upload_video": {
+    "cta": "Arrastra un video (formato .MP4) de tu wereable inteligente, o {acción}",
     "upload_manually": "Busca en tu computadora"
   },
   "itemdrawer": {
