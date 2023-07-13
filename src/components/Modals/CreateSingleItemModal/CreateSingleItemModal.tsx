@@ -159,7 +159,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     const all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
-      [SCENE_PATH]: contents[THUMBNAIL_PATH],
+      [SCENE_PATH]: contents[SCENE_PATH],
       [VIDEO_PATH]: contents[VIDEO_PATH],
       ...male,
       ...female
@@ -180,7 +180,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
     const all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
-      [SCENE_PATH]: contents[THUMBNAIL_PATH],
+      [SCENE_PATH]: contents[SCENE_PATH],
       ...male,
       ...female
     }
