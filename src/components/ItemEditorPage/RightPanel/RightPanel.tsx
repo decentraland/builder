@@ -1,6 +1,6 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
-import { Loader, Dropdown, Button } from 'decentraland-ui'
+import { Loader, Dropdown, Button, TagField } from 'decentraland-ui'
 import { BodyPartCategory, EmoteCategory, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -19,7 +19,8 @@ import {
   getEmoteCategories,
   getEmotePlayModes,
   getHideableBodyPartCategories,
-  getHideableWearableCategories
+  getHideableWearableCategories,
+  isSmart
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -467,6 +468,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     )
   }
 
+  renderPermissions(item: Item) {
+    return (
+      <div className="required-permissions">
+        <TagField className="blank" value={item.data.requiredPermissions ?? []} search={false} disabled multiple />
+      </div>
+    )
+  }
+
   render() {
     const { selectedItemId, address, isConnected, isDownloading, error, isCampaignEnabled, isHandsCategoryEnabled } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
@@ -612,6 +621,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         />
                       ) : null}
                     </Collapsable>
+                  )}
+                  {item && isSmart(item) && (
+                    <Collapsable label={t('item_editor.right_panel.required_permissions')}>{this.renderPermissions(item)}</Collapsable>
                   )}
                   <Collapsable label={t('item_editor.right_panel.tags')}>
                     {item ? (
