@@ -1,0 +1,45 @@
+.modal {
+  display: flex;
+  flex-direction: column;
+  padding: 50px;
+  width: 750px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+:global(.ui.modal > .content).content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.thumbnail {
+  display: block;
+  height: 238px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 36px;
+  text-align: center;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+:global(.ui.modal) > .actions > :global(a.ui.button) {
+  margin: 0;
+}

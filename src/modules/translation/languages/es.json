@@ -498,6 +498,11 @@
     "description": "De ahora en adelante puede comenzar a descargar y usar plantillas y escenas del grupo de la comunidad.¡Deja que tu imaginación moldee tus Mundos y Tierras!",
     "go_to_scenes": "Ir a mis escenas"
   },
+  "smart_wearables_announcement_modal": {
+    "title": "¡La vestimenta interactiva ya está disponible! 🟢",
+    "description": "Da rienda suelta a tu curiosidad y sumérgete en el mercado para recogerlos, abriendo la puerta a un reino de nuevas y emocionantes experiencias en Decentraland. ¡Acepta el viaje!",
+    "learn_more": "Más información sobre la vestimenta interactiva"
+  },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
     "subtitle": "Establece un nuevo alias para tu avatar",

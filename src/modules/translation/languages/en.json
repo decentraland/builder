@@ -495,6 +495,11 @@
     "description": "From now on you can start downloading and using templates and scenes from the community pool. Let your imagination shape your Worlds and LANDs!",
     "go_to_scenes": "Go to my scenes"
   },
+  "smart_wearables_announcement_modal": {
+    "title": "Smart wearables are now live! 🟢",
+    "description": "Unleash your curiosity and dive into the marketplace to collect them, opening the door to a realm of thrilling new experiences in Decentraland. Embrace the journey!",
+    "learn_more": "Learn more about Smart Wearables"
+  },
   "use_as_alias_modal": {
     "title": "Use as Alias",
     "subtitle": "This will be your name in the Metaverse",

@@ -1,0 +1,3 @@
+import SmartWearablesAnnouncementModal from './SmartWearablesAnnouncementModal'
+
+export default SmartWearablesAnnouncementModal

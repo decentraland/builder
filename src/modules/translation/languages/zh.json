@@ -493,6 +493,11 @@
     "description": "从现在开始，您可以开始下载和使用社区池中的模板和场景。让您的想象力塑造您的世界和土地！",
     "go_to_scenes": "去我的场景"
   },
+  "smart_wearables_announcement_modal": {
+    "title": "智能穿戴设备现已上线！🟢",
+    "description": "释放你的好奇心，潜入市场收集它们，打开 Decentraland 中令人兴奋的新体验领域的大门。拥抱旅程！",
+    "learn_more": "了解有关智能可穿戴设备的更多信息"
+  },
   "use_as_alias_modal": {
     "title": "为头像分配名称",
     "subtitle": "为您的头像分配新的别名",
