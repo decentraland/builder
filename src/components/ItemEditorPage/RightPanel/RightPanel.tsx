@@ -77,7 +77,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const { isHandsCategoryEnabled } = this.props
     const data = item.data
 
-    if (isHandsCategoryEnabled) {
+    if (isHandsCategoryEnabled && item.type === ItemType.WEARABLE) {
       // Move all items that are in replaces array to hides array
       data.hides = data.hides.concat(data.replaces)
       data.replaces = []
@@ -365,7 +365,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const canEditItemMetadata = this.canEditItemMetadata(item)
     const data = this.state.data as WearableData
 
-    if (!item) {
+    if (!item || isEmoteData(data)) {
       return null
     }
 
