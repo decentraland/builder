@@ -10,7 +10,7 @@ export enum CreateItemView {
   IMPORT = 'import',
   DETAILS = 'details',
   THUMBNAIL = 'thumbnail',
-  VIDEO = 'video',
+  UPLOAD_VIDEO = 'upload_video',
   SET_PRICE = 'setPrice'
 }
 
@@ -87,6 +87,7 @@ export type AcceptedFileProps = Pick<
   | 'thumbnail'
   | 'hasScreenshotTaken'
   | 'requiredPermissions'
+  | 'video'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isHandsCategoryEnabled'>
