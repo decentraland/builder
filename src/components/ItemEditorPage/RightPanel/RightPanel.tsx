@@ -37,6 +37,7 @@ import {
 import { dataURLToBlob } from 'modules/media/utils'
 import { areEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
+import Info from 'components/Info'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -576,7 +577,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     ) : null}
                   </Collapsable>
                   {item?.type === ItemType.WEARABLE && (
-                    <Collapsable label={t('item_editor.right_panel.overrides')}>{this.renderOverrides(item)}</Collapsable>
+                    <Collapsable
+                      label={
+                        <>
+                          <span className="overrides-label-panel">{t('item_editor.right_panel.overrides')}</span>
+                          {isHandsCategoryEnabled ? <Info content={t('item_editor.right_panel.overrides_info')} className="info" /> : null}
+                        </>
+                      }
+                    >
+                      {this.renderOverrides(item)}
+                    </Collapsable>
                   )}
                   {item?.type === ItemType.EMOTE && (
                     <Collapsable label={t('item_editor.right_panel.animation')}>

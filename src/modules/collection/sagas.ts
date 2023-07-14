@@ -140,6 +140,7 @@ import {
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
+import { getIsHandsCategoryEnabled } from 'modules/features/selectors'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getData, getLastFetchParams, getPaginationData, getRaritiesContract, getWalletCollections } from './selectors'
 import { CollectionPaginationData } from './reducer'
@@ -651,10 +652,19 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const entitiesToDeploy: DeploymentPreparationData[] = []
     const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
     const itemsOfCollection: Item[] = yield getItemsFromCollection(collection)
+    const isHandsCategoryEnabled: boolean = yield select(getIsHandsCategoryEnabled)
     for (const item of itemsOfCollection) {
       const deployedEntity = entitiesByItemId[item.id]
       if (!deployedEntity || !areSynced(item, deployedEntity)) {
-        const entity: DeploymentPreparationData = yield call(buildItemEntity, legacyBuilderClient, collection, item, undefined, undefined)
+        const entity: DeploymentPreparationData = yield call(
+          buildItemEntity,
+          legacyBuilderClient,
+          collection,
+          item,
+          undefined,
+          undefined,
+          isHandsCategoryEnabled
+        )
         itemsToDeploy.push(item)
         entitiesToDeploy.push(entity)
       }

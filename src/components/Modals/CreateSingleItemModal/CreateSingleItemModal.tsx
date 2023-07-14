@@ -1,6 +1,6 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -173,7 +173,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { address, collection, onSave } = this.props
+    const { address, collection, isHandsCategoryEnabled, onSave } = this.props
     const { id, name, description, type, metrics, collectionId, category, playMode, rarity, hasScreenshotTaken, requiredPermissions } = this
       .state as StateData
 
@@ -198,6 +198,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         replaces: [],
         hides: [],
         tags: [],
+        removesDefaultHiding: isHandsCategoryEnabled ? [BodyPartCategory.HANDS, WearableCategory.HANDS_WEAR] : [],
         representations: [...representations],
         requiredPermissions: requiredPermissions || []
       } as WearableData
@@ -262,6 +263,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         ],
         replaces: [...editedItem.data.replaces],
         hides: [...editedItem.data.hides],
+        removesDefaultHiding: [...(editedItem.data.removesDefaultHiding || [])],
         tags: [...editedItem.data.tags],
         requiredPermissions: requiredPermissions || []
       },

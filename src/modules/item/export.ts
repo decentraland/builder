@@ -1,4 +1,4 @@
-import { Emote, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
+import { BodyPartCategory, Emote, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { DeploymentPreparationData, buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
@@ -126,11 +126,13 @@ function getMerkleProof(tree: MerkleDistributorInfo, entityHash: string, entityV
   }
 }
 
-function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo): Wearable {
+function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDistributorInfo, isHandsCategoryEnabled?: boolean): Wearable {
   if (!item.urn) {
     throw new Error('Item does not have URN')
   }
 
+  const removesDefaultHiding =
+    item.data.removesDefaultHiding || (isHandsCategoryEnabled ? [WearableCategory.HANDS_WEAR, BodyPartCategory.HANDS] : [])
   // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
   const baseEntityData = {
     id: item.urn,
@@ -142,6 +144,7 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
       hides: item.data.hides,
       tags: item.data.tags,
       category: item.data.category as WearableCategory,
+      removesDefaultHiding,
       representations: item.data.representations as WearableRepresentation[]
     },
     image: IMAGE_PATH,
@@ -156,11 +159,13 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
   }
 }
 
-function buildWearableEntityMetadata(collection: Collection, item: Item): Wearable {
+function buildWearableEntityMetadata(collection: Collection, item: Item, isHandsCategoryEnabled?: boolean): Wearable {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published')
   }
 
+  const removesDefaultHiding =
+    item.data.removesDefaultHiding || (isHandsCategoryEnabled ? [WearableCategory.HANDS_WEAR, BodyPartCategory.HANDS] : [])
   // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
   const catalystItem: Wearable = {
     id: buildCatalystItemURN(collection.contractAddress, item.tokenId),
@@ -174,6 +179,7 @@ function buildWearableEntityMetadata(collection: Collection, item: Item): Wearab
       hides: item.data.hides,
       tags: item.data.tags,
       category: item.data.category!,
+      removesDefaultHiding,
       representations: item.data.representations
     },
     image: IMAGE_PATH,
@@ -235,7 +241,8 @@ export async function buildItemEntity(
   collection: Collection,
   item: Item | Item<ItemType.EMOTE>,
   tree?: MerkleDistributorInfo,
-  itemHash?: string
+  itemHash?: string,
+  isHandsCategoryEnabled?: boolean
 ): Promise<DeploymentPreparationData> {
   const blobs = await buildItemEntityBlobs(item, legacyBuilderClient)
   const files = await makeContentFiles(blobs)
@@ -244,10 +251,10 @@ export async function buildItemEntity(
   if (isEmote) {
     metadata = buildADR74EmoteEntityMetadata(collection, item)
   } else if (tree && itemHash) {
-    metadata = buildTPItemEntityMetadata(item, itemHash, tree)
+    metadata = buildTPItemEntityMetadata(item, itemHash, tree, isHandsCategoryEnabled)
   } else {
     // Emotes will be deployed as Wearables ultil they are released
-    metadata = buildWearableEntityMetadata(collection, item)
+    metadata = buildWearableEntityMetadata(collection, item, isHandsCategoryEnabled)
   }
   return buildEntity({
     type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,
