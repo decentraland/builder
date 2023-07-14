@@ -688,6 +688,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
+  handleUploadVideoGoBack = () => {
+    const keys = Object.keys(this.state)
+    const stateReset = keys.reduce((acc, v) => ({ ...acc, [v]: undefined }), {})
+    this.setState({ ...stateReset, ...this.getInitialState() })
+  }
+
   renderImportView() {
     const { metadata, onClose } = this.props
     const { category, isLoading, isRepresentation } = this.state
@@ -717,6 +723,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         title={title}
         contents={contents}
         onDropAccepted={this.handleVideoDropAccepted}
+        onBack={this.handleUploadVideoGoBack}
         onClose={onClose}
         onSaveVideo={this.handleSaveVideo}
       />

@@ -11,6 +11,7 @@
   user-select: none;
   overflow: auto;
   position: relative;
+  border: 1px dashed #a09ba8;
 }
 
 .FileImport .dropzone .action {

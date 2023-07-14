@@ -207,7 +207,7 @@
   "create_single_item_modal": {
     "title": "Nuevo item",
     "thumbnail_step_title": "Editar el thumbnail",
-    "upload_video_step_title": "Video detallado de su dispositivo portátil inteligente",
+    "upload_video_step_title": "Sube un video para tu vestimenta inteligente",
     "title_emote": "Nueva Animación",
     "add_representation": "Agregar representación de {bodyShape}",
     "wrong_thumbnail_format": "El thumbnail provisto no es una imagen PNG",
@@ -798,8 +798,8 @@
     "upload_manually": "Busca en tu computadora"
   },
   "upload_video": {
-    "cta": "Arrastra un video (formato .MP4) de tu wereable inteligente, o {acción}",
-    "upload_manually": "Busca en tu computadora"
+    "cta": "Arrastre y suelte un video (formato .MP4) para mostrar la funcionalidad portátil inteligente o {acción}",
+    "upload_manually": "busca en tu computadora"
   },
   "itemdrawer": {
     "opensea_credit": "Impulsado por {link}",

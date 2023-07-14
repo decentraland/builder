@@ -202,7 +202,7 @@
   "create_single_item_modal": {
     "title": "新物品",
     "thumbnail_step_title": "编辑缩略图",
-    "upload_video_step_title": "智能可穿戴设备的详细视频",
+    "upload_video_step_title": "上传您的智能可穿戴设备的视频",
     "title_emote": "新表情",
     "add_representation": "添加{bodyShape}",
     "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
@@ -784,7 +784,7 @@
     "upload_manually": "浏览您的电脑"
   },
   "upload_video": {
-    "cta": "拖动您的智能设备的视频（格式.MP4），或{action}",
+    "cta": "拖放视频（格式.MP4）以展示智能可穿戴功能或{action}",
     "upload_manually": "浏览您的电脑"
   },
   "itemdrawer": {
