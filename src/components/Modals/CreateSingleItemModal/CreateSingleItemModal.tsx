@@ -197,8 +197,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         category: category as WearableCategory,
         replaces: [],
         hides: [],
-        tags: [],
         removesDefaultHiding: isHandsCategoryEnabled ? [BodyPartCategory.HANDS, WearableCategory.HANDS_WEAR] : [],
+        tags: [],
         representations: [...representations],
         requiredPermissions: requiredPermissions || []
       } as WearableData
