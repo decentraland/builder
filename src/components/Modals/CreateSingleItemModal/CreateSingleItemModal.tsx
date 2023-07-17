@@ -193,11 +193,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     let data: WearableData | EmoteDataADR74
 
     if (type === ItemType.WEARABLE) {
+      const removesDefaultHiding = isHandsCategoryEnabled && category === WearableCategory.UPPER_BODY ? [BodyPartCategory.HANDS] : []
       data = {
         category: category as WearableCategory,
         replaces: [],
         hides: [],
-        removesDefaultHiding: isHandsCategoryEnabled ? [BodyPartCategory.HANDS, WearableCategory.HANDS_WEAR] : [],
+        removesDefaultHiding,
         tags: [],
         representations: [...representations],
         requiredPermissions: requiredPermissions || []
@@ -290,6 +291,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         ...pristineItem.data,
         replaces: [],
         hides: [],
+        removesDefaultHiding: [],
         category: category as WearableCategory,
         requiredPermissions: requiredPermissions || []
       } as WearableData

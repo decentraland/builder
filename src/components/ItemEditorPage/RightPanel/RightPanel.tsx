@@ -219,10 +219,21 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOnSaveItem = async () => {
-    const { selectedItem, onSaveItem } = this.props
+    const { selectedItem, isHandsCategoryEnabled, onSaveItem } = this.props
     const { name, description, rarity, contents, data, isDirty } = this.state
 
     if (isDirty && selectedItem) {
+      let itemData = data
+      //override hands default hiding for all new wearables
+      if (itemData && !isEmoteData(itemData) && isHandsCategoryEnabled) {
+        itemData = {
+          ...itemData,
+          removesDefaultHiding:
+            itemData.category === WearableCategory.UPPER_BODY || itemData.hides?.includes(WearableCategory.UPPER_BODY)
+              ? [BodyPartCategory.HANDS]
+              : []
+        }
+      }
       const itemContents = {
         ...selectedItem.contents,
         ...(await computeHashes(contents))
@@ -232,7 +243,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         name,
         description,
         rarity,
-        data: (data as WearableData)!,
+        data: itemData as WearableData,
         contents: itemContents
       }
       onSaveItem(item, contents)

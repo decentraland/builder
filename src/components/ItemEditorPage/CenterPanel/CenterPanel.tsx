@@ -14,6 +14,7 @@ import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
+import { isDevelopment } from 'lib/environment'
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
@@ -250,6 +251,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           id="wearable-editor"
           profile="default"
           bodyShape={bodyShape}
+          baseUrl="https://wearable-preview-git-feat-hands-category-decentraland1.vercel.app"
           emote={emote}
           skin={toHex(skinColor)}
           eyes={toHex(eyeColor)}
@@ -266,6 +268,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           disableBackground
           wheelZoom={1.5}
           wheelStart={100}
+          dev={isDevelopment}
           onUpdate={() => this.setState({ isLoading: true })}
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
