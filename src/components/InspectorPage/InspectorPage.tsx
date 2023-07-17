@@ -2,14 +2,27 @@
 import * as React from 'react'
 import { Center, Loader } from 'decentraland-ui'
 
-import { Props } from './InspectorPage.types'
+import { Props, State } from './InspectorPage.types'
 import './InspectorPage.css'
-import { toComposite, toMappings } from 'modules/inspector/utils'
 
-export default class InspectorPage extends React.PureComponent<Props> {
+export default class InspectorPage extends React.PureComponent<Props, State> {
+  state: State = {
+    isLoaded: false
+  }
+
   componentDidMount() {
     const { onOpen } = this.props
     onOpen()
+  }
+
+  refIframe = (iframe: HTMLIFrameElement | null) => {
+    const { onConnect } = this.props
+    if (iframe) {
+      iframe.onload = () => {
+        this.setState({ isLoaded: true })
+      }
+      onConnect(iframe.id)
+    }
   }
 
   render() {
@@ -24,17 +37,9 @@ export default class InspectorPage extends React.PureComponent<Props> {
     }
 
     return (
-      <div className="InspectorPager">
-        {!scene ? (
-          <Loader active />
-        ) : (
-          <div>
-            <p>Composite:</p>
-            <p>{JSON.stringify(toComposite(scene))}</p>
-            <p>Mappings:</p>
-            <p>{JSON.stringify(toMappings(scene))}</p>
-          </div>
-        )}
+      <div className="InspectorPage">
+        {!this.state.isLoaded && <Loader active />}
+        {scene && <iframe ref={this.refIframe} title="inspector" id="inspector" src="http://localhost:8000?parent=http://localhost:3000" />}
       </div>
     )
   }

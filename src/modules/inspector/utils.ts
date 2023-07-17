@@ -1,12 +1,23 @@
 import { Composite } from '@dcl/ecs'
 import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
+import { Project } from 'modules/project/types'
 import { ComponentData, ComponentType, Scene } from 'modules/scene/types'
+
+export function getParcels(project: Project) {
+  const parcels: { x: number; y: number }[] = []
+  for (let x = 0; x < project.layout.rows; x++) {
+    for (let y = 0; y < project.layout.rows; y++) {
+      parcels.push({ x, y })
+    }
+  }
+  return parcels
+}
 
 export function toPath(path: string) {
   return `assets/scene/models/${path}`
 }
 
-export function toComposite(scene: Scene) {
+export function toComposite(scene: Scene, project?: Project) {
   const { engine, components } = createEngineContext()
 
   for (const entity of Object.values(scene.entities)) {
@@ -29,6 +40,16 @@ export function toComposite(scene: Scene) {
       }
     }
   }
+
+  components.Scene.createOrReplace(engine.RootEntity, {
+    layout: {
+      parcels: project ? getParcels(project) : [{ x: 0, y: 0 }],
+      base: {
+        x: 0,
+        y: 0
+      }
+    }
+  })
 
   const composite = dumpEngineToComposite(engine as any, 'json')
   return Composite.toJson(composite) as string
