@@ -1983,5 +1983,11 @@
   },
   "logged_in_detail_page": {
     "error_title": "Ocurrió un error al cargar la página de detalles"
+  },
+  "hands_category_ftu": {
+    "title": "¡Ahora puedes usar la categoría Manos!",
+    "img_alt": "Categoría de manos",
+    "description": "1- Puedes encontrarlo en el editor.<br></br>2- Ahora puede actualizar los wearables de su mano a esta categoría.<br></br>¿Cómo? Debe cambiar su categoría portátil nuevamente y usar las nuevas manos de categoría.",
+    "action": "Aprende más"
   }
 }

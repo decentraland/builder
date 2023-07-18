@@ -1964,5 +1964,11 @@
   },
   "logged_in_detail_page": {
     "error_title": "An error ocurred while loading the detail page"
+  },
+  "hands_category_ftu": {
+    "title": "Now you can use Hands category!",
+    "img_alt": "New hands category",
+    "description": "1- You can find it in the editor.<br></br>2- Now you can update your hand’s wearables to this category.<br></br>How? You have to change your wearable category again and use the new category hands.",
+    "action": "Learn more"
   }
 }
