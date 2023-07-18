@@ -97,6 +97,7 @@
       "cta": "Arrastra el archivo {models_link} de tu Asset aquí, o {action}",
       "description_create": "Comienza añadiendo algunos assets a tu pack",
       "description_edit": "Añade algunos assets más a tu pack",
+      "loaded": "Asset importado correctamente",
       "errors": {
         "duplicated": "Asset duplicado",
         "duplicated_asset": "{name}: Ya existe un asset en este asset pack llamado \"{existingAsset}\" que tiene el id \"{id}\", por favor cámbiale el id a \"{newAsset}\" por uno diferente",

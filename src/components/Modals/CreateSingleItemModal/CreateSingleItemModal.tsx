@@ -68,6 +68,7 @@ import {
   AcceptedFileProps
 } from './CreateSingleItemModal.types'
 import UploadVideoStep from './UploadVideoStep/UploadVideoStep'
+import { ITEM_LOADED_CHECK_DELAY } from './constants'
 import './CreateSingleItemModal.css'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
@@ -412,7 +413,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         category
       })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
-        this.setState({ view: isSmart({ type, contents }) ? CreateItemView.UPLOAD_VIDEO : CreateItemView.DETAILS })
+        if (isSmart({ type, contents })) {
+          const timer = setTimeout(() => this.setState({ view: CreateItemView.UPLOAD_VIDEO }), ITEM_LOADED_CHECK_DELAY)
+          this.setState({ timer })
+          return
+        }
+
+        this.setState({ view: CreateItemView.DETAILS })
       })
     }
   }
@@ -1073,6 +1080,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         return this.renderSetPrice()
       default:
         return null
+    }
+  }
+
+  componentWillUnmount() {
+    const { timer } = this.state
+
+    if (timer) {
+      clearTimeout(timer)
     }
   }
 

@@ -97,6 +97,7 @@
       "cta": "将Asset的{models_link}文件拖到此处，或{action}",
       "description_create": "首先将模型添加到Asset Pack",
       "description_edit": "向您添加更多项目Asset Pack",
+      "loaded": "项目导入成功",
       "errors": {
         "duplicated": "重复资产",
         "duplicated_asset": "{name}：此资产包中已经有一个名为\"{existingAsset}\"的资产，其ID为\"{id}\"，请将\"{newAsset}\"的ID更改为另一种",

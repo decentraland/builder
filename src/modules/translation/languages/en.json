@@ -98,6 +98,7 @@
       "cta": "Drag your Asset file here in {models_link} format, or {action}",
       "description_create": "Start by adding some assets to your pack",
       "description_edit": "Add some more items to your pack",
+      "loaded": "Item imported successfully",
       "errors": {
         "duplicated": "Duplicated Asset",
         "duplicated_asset": "{name}: There's already an asset in this asset pack called \"{existingAsset}\" that has the id \"{id}\", please change the id of \"{newAsset}\" to a different one",
