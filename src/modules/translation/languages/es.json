@@ -1829,7 +1829,7 @@
       "upper_body": "Torso",
       "skin": "Skin",
       "hands": "Manos",
-      "hands_wear": "Manos"
+      "hands_wear": "Ropa de manos"
     }
   },
   "rarity_description": {
@@ -1974,9 +1974,10 @@
     "error_title": "Ocurrió un error al cargar la página de detalles"
   },
   "hands_category_ftu": {
-    "title": "¡Ahora puedes usar la categoría Manos!",
-    "img_alt": "Categoría de manos",
-    "description": "1- Puedes encontrarlo en el editor.<br></br>2- Ahora puede actualizar los wearables de su mano a esta categoría.<br></br>¿Cómo? Debe cambiar su categoría portátil nuevamente y usar las nuevas manos de categoría.",
+    "title": "Introducción de ropa de mano",
+    "subtitle": "Una nueva categoría de wearables para todas sus creaciones de ropa mano",
+    "img_alt": "Nueva categoría de ropa de mano",
+    "description": "Actualice sus wearables a la nueva categoría en el editor una vez que los haya modificado en consecuencia. Tenga en cuenta que la categoría de ropa de mano es para accesorios manuales o portátiles que reemplazan las manos con otros funcionalmente similares, no para elementos que se sostienen.",
     "action": "Aprende más"
   }
 }

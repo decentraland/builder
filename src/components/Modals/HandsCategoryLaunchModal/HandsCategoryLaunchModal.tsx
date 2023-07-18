@@ -25,6 +25,7 @@ export const HandsCategoryLaunchModal = ({ isHandsCategoryEnabled, isLoadingFeat
     <Modal open={isOpen} size="small" onClose={onClose} className={styles.handCategoryModal}>
       <ModalNavigation title={t('hands_category_ftu.title')} onClose={onClose} />
       <div className={styles.container}>
+        <span className={styles.subtitle}>{t('hands_category_ftu.subtitle')}</span>
         <img src={handsCategoryImg} aria-label={t('hands_category_ftu.img_alt')} className={styles.img} />
         <span className={styles.description}>
           {t('hands_category_ftu.description', {

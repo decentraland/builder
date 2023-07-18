@@ -1810,7 +1810,7 @@
       "upper_body": "Upper Body",
       "skin": "Skin",
       "hands": "Hands",
-      "hands_wear": "Hands"
+      "hands_wear": "Handwear"
     }
   },
   "rarity_description": {
@@ -1955,9 +1955,10 @@
     "error_title": "An error ocurred while loading the detail page"
   },
   "hands_category_ftu": {
-    "title": "Now you can use Hands category!",
-    "img_alt": "New hands category",
-    "description": "1- You can find it in the editor.<br></br>2- Now you can update your hand’s wearables to this category.<br></br>How? You have to change your wearable category again and use the new category hands.",
+    "title": "Introducing Handwear",
+    "subtitle": "A new Wearable category for all your hand-enhancing creations",
+    "img_alt": "New Handwear category",
+    "description": "Update your hand Wearables to the new category in the Editor once you’ve modified them accordingly. Please note, the Handwear category is for hand accessories or Wearables that replace hands with other functionally similar ones, not for items that are held.",
     "action": "Learn more"
   }
 }
