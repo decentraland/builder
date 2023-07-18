@@ -140,7 +140,7 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
     data: {
       replaces: item.data.replaces,
       hides: item.data.hides,
-      removesDefaultHiding: item.data.removesDefaultHiding,
+      ...('removesDefaultHiding' in item.data ? { removesDefaultHiding: item.data.removesDefaultHiding } : {}),
       tags: item.data.tags,
       category: item.data.category as WearableCategory,
       representations: item.data.representations as WearableRepresentation[]
@@ -173,7 +173,7 @@ function buildWearableEntityMetadata(collection: Collection, item: Item): Wearab
     data: {
       replaces: item.data.replaces,
       hides: item.data.hides,
-      removesDefaultHiding: item.data.removesDefaultHiding,
+      ...('removesDefaultHiding' in item.data ? { removesDefaultHiding: item.data.removesDefaultHiding } : {}),
       tags: item.data.tags,
       category: item.data.category!,
       representations: item.data.representations
