@@ -1733,14 +1733,15 @@
       "details": "Details",
       "basics": "Basics",
       "overrides": "Overrides",
+      "overrides_info": "Overrides determine what other wearable categories and base body parts your item will hide. Just select them on the dropdown menu.",
       "replaces": "Replaces",
       "replaces_info": "When a user equips your item, any other items in the category you select will be unequipped. Users must reequip them after removing your item.",
       "hides": "Hides",
       "hides_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
       "base_body": "Base body",
-      "base_body_info": "TBD",
+      "base_body_info": "The elements you choose from the base body dropdown menu will be hidden.",
       "wearables": "Wearables",
-      "wearables_info": "TBD",
+      "wearables_info": "The elements you choose from the wearables dropdown menu will be hidden.",
       "animation": "Animation",
       "tags": "Tags",
       "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name} event.",
@@ -1809,7 +1810,7 @@
       "upper_body": "Upper Body",
       "skin": "Skin",
       "hands": "Hands",
-      "hands_wear": "Hands"
+      "hands_wear": "Handwear"
     }
   },
   "rarity_description": {
@@ -1954,9 +1955,10 @@
     "error_title": "An error ocurred while loading the detail page"
   },
   "hands_category_ftu": {
-    "title": "Now you can use Hands category!",
-    "img_alt": "New hands category",
-    "description": "1- You can find it in the editor.<br></br>2- Now you can update your hand’s wearables to this category.<br></br>How? You have to change your wearable category again and use the new category hands.",
+    "title": "Introducing Handwear",
+    "subtitle": "A new Wearable category for all your hand-enhancing creations",
+    "img_alt": "New Handwear category",
+    "description": "Update your hand Wearables to the new category in the Editor once you’ve modified them accordingly. Please note, the Handwear category is for hand accessories or Wearables that replace hands with other functionally similar ones, not for items that are held.",
     "action": "Learn more"
   }
 }

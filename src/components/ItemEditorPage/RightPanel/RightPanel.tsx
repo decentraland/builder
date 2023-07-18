@@ -37,6 +37,7 @@ import {
 import { dataURLToBlob } from 'modules/media/utils'
 import { areEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
+import Info from 'components/Info'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -218,10 +219,21 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOnSaveItem = async () => {
-    const { selectedItem, onSaveItem } = this.props
+    const { selectedItem, isHandsCategoryEnabled, onSaveItem } = this.props
     const { name, description, rarity, contents, data, isDirty } = this.state
 
     if (isDirty && selectedItem) {
+      let itemData = data
+      //override hands default hiding for all new wearables
+      if (itemData && !isEmoteData(itemData) && isHandsCategoryEnabled) {
+        itemData = {
+          ...itemData,
+          removesDefaultHiding:
+            itemData.category === WearableCategory.UPPER_BODY || itemData.hides?.includes(WearableCategory.UPPER_BODY)
+              ? [BodyPartCategory.HANDS]
+              : []
+        }
+      }
       const itemContents = {
         ...selectedItem.contents,
         ...(await computeHashes(contents))
@@ -231,7 +243,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         name,
         description,
         rarity,
-        data: (data as WearableData)!,
+        data: itemData as WearableData,
         contents: itemContents
       }
       onSaveItem(item, contents)
@@ -576,7 +588,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     ) : null}
                   </Collapsable>
                   {item?.type === ItemType.WEARABLE && (
-                    <Collapsable label={t('item_editor.right_panel.overrides')}>{this.renderOverrides(item)}</Collapsable>
+                    <Collapsable
+                      label={
+                        <>
+                          <span className="overrides-label-panel">{t('item_editor.right_panel.overrides')}</span>
+                          {isHandsCategoryEnabled ? <Info content={t('item_editor.right_panel.overrides_info')} className="info" /> : null}
+                        </>
+                      }
+                    >
+                      {this.renderOverrides(item)}
+                    </Collapsable>
                   )}
                   {item?.type === ItemType.EMOTE && (
                     <Collapsable label={t('item_editor.right_panel.animation')}>

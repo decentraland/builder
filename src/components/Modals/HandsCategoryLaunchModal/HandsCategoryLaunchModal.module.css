@@ -10,13 +10,21 @@
   align-items: center;
   justify-content: center;
   gap: 30px;
-  padding: 25px;
-  padding-bottom: 40px;
+  padding: 25px 60px 40px;
+}
+
+.img {
+  width: 350px;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .description {
   font-size: 14px;
-  line-height: 25px;
+  line-height: 20px;
 }
 
 .actionButton {

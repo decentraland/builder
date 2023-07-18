@@ -14,6 +14,7 @@ import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
+import { isDevelopment } from 'lib/environment'
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
@@ -266,6 +267,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           disableBackground
           wheelZoom={1.5}
           wheelStart={100}
+          dev={isDevelopment}
           onUpdate={() => this.setState({ isLoading: true })}
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
