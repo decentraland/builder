@@ -75,6 +75,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
   modalContainer = React.createRef<HTMLDivElement>()
+  timer: ReturnType<typeof setTimeout> | undefined
 
   getInitialState() {
     const { metadata } = this.props
@@ -414,8 +415,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
         if (isSmart({ type, contents })) {
-          const timer = setTimeout(() => this.setState({ view: CreateItemView.UPLOAD_VIDEO }), ITEM_LOADED_CHECK_DELAY)
-          this.setState({ timer })
+          this.timer = setTimeout(() => this.setState({ view: CreateItemView.UPLOAD_VIDEO }), ITEM_LOADED_CHECK_DELAY)
           return
         }
 
@@ -1084,10 +1084,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   componentWillUnmount() {
-    const { timer } = this.state
-
-    if (timer) {
-      clearTimeout(timer)
+    if (this.timer) {
+      clearTimeout(this.timer)
     }
   }
 

@@ -8,6 +8,7 @@ import styles from './ItemImport.module.css'
 import { ITEM_LOADED_CHECK_DELAY } from 'components/Modals/CreateSingleItemModal/constants'
 
 export default class ItemImport extends React.PureComponent<Props, State> {
+  timer: ReturnType<typeof setTimeout> | undefined
   state: State = this.getInitialState()
 
   getInitialState(): State {
@@ -18,17 +19,16 @@ export default class ItemImport extends React.PureComponent<Props, State> {
 
   componentDidUpdate(prevProps: Readonly<Props>) {
     if (prevProps.isLoading && !this.props.isLoading) {
-      const timer = setTimeout(() => {
+      this.timer = setTimeout(() => {
         this.setState({ itemLoaded: false })
       }, ITEM_LOADED_CHECK_DELAY)
-      this.setState({ itemLoaded: true, timer })
+      this.setState({ itemLoaded: true })
     }
   }
 
   componentWillUnmount() {
-    const { timer } = this.state
-    if (timer) {
-      clearTimeout(timer)
+    if (this.timer) {
+      clearTimeout(this.timer)
     }
   }
 

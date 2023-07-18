@@ -11,7 +11,6 @@ export type Props = {
 
 export type StateData = {
   itemLoaded: boolean
-  timer: ReturnType<typeof setTimeout> | undefined
 }
 
 export type State = Partial<StateData>

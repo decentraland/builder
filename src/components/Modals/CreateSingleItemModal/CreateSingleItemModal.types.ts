@@ -48,7 +48,6 @@ export type StateData = {
   weareblePreviewUpdated: boolean
   video?: string
   requiredPermissions?: string[]
-  timer: ReturnType<typeof setTimeout> | undefined
 }
 export type State = {
   view: CreateItemView
