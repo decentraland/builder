@@ -37,7 +37,6 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
   getInitialState(): State {
     return {
       id: '',
-      error: '',
       isLoading: false
     }
   }
@@ -74,14 +73,14 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
         }
       })
     } catch (error) {
-      this.setState({ error: error.message, isLoading: false })
+      this.setState({ error, isLoading: false })
     }
   }
 
   handleDropRejected = (rejectedFiles: File[]) => {
     console.warn('rejected', rejectedFiles)
     const error = new InvalidVideoError()
-    this.setState({ error: error.message })
+    this.setState({ error })
   }
 
   renderDropzoneCTA = (open: () => void) => {
@@ -97,7 +96,10 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
         {error && (
           <div className={styles.errorContainer}>
             <div className={styles.errorIcon} />
-            <div className={styles.errorMessage}>{error}</div>
+            <div className={styles.errorMessageContainer}>
+              {error.title ? <span className={styles.errorTitle}>{error.title}</span> : null}
+              <span className={styles.errorMessage}>{error.message}</span>
+            </div>
           </div>
         )}
         <T
