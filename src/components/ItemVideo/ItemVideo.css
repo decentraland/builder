@@ -1,0 +1,61 @@
+.ItemVideoContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.ItemVideo {
+  position: relative;
+}
+
+.ItemVideo.video-wrapper {
+  border-radius: 5px;
+}
+
+.ItemVideo.video-wrapper .item-video {
+  height: 96px;
+  width: 96px;
+  object-fit: cover;
+}
+
+.ItemVideo .ItemBadge {
+  background-color: #37333d;
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+}
+
+.ItemVideo .ItemBadge::before {
+  filter: none;
+}
+
+.ItemVideo .SmartBadge.small {
+  left: 32px;
+}
+
+.ItemVideo .badges-container {
+  position: absolute;
+  display: flex;
+  bottom: 9px;
+  left: 9px;
+}
+
+.ItemVideoContainer .metrics {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.ItemVideoContainer .metrics .metric {
+  color: var(--secondary-text);
+  font-size: 13px;
+  line-height: 18px;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.ItemVideoContainer .metrics .metric:last-child {
+  margin-bottom: 0;
+}
