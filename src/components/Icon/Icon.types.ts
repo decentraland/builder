@@ -64,6 +64,7 @@ export type IconName =
   | 'move'
   | 'pin'
   | 'pin-active'
+  | 'play'
   | 'plus'
   | 'preview-active'
   | 'preview'
