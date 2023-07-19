@@ -14,6 +14,8 @@ export enum CreateItemView {
   SET_PRICE = 'setPrice'
 }
 
+export const ITEM_LOADED_CHECK_DELAY = 2000
+
 export type Props = ModalProps & {
   address?: string
   metadata: CreateSingleItemModalMetadata
@@ -49,7 +51,11 @@ export type StateData = {
   video?: string
   requiredPermissions?: string[]
 }
-export type State = { view: CreateItemView; fromView?: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
+export type State = {
+  view: CreateItemView
+  fromView?: CreateItemView
+  itemSortedContents?: Record<string, Blob>
+} & Partial<StateData>
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string
