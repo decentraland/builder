@@ -61,7 +61,7 @@ const SceneDetailPage: React.FC<Props> = props => {
   }
 
   const renderPage = (project: Project, deployments: Deployment[]) => {
-    const { isLoadingDeployments, onNavigate, onOpenModal } = props
+    const { isLoadingDeployments, onNavigate, onOpenModal, isInspectorEnabled } = props
     return (
       <>
         <Section size="large">
@@ -95,7 +95,9 @@ const SceneDetailPage: React.FC<Props> = props => {
                   direction="left"
                 >
                   <Dropdown.Menu>
-                    <Dropdown.Item text="Open Inspector" onClick={() => onNavigate(locations.inspector(project.id))} />
+                    {isInspectorEnabled ? (
+                      <Dropdown.Item text="Open Inspector" onClick={() => onNavigate(locations.inspector(project.id))} />
+                    ) : null}
                     <Dropdown.Item text={t('scene_detail_page.actions.duplicate')} onClick={handleDuplicateClick} />
                     <Dropdown.Item text={t('scene_detail_page.actions.delete')} onClick={handleDeleteClick} />
                   </Dropdown.Menu>

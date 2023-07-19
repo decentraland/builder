@@ -78,7 +78,7 @@ export default class Routes extends React.Component<Props, State> {
   }
 
   renderRoutes() {
-    const { inMaintenance } = this.props
+    const { inMaintenance, isInspectorEnabled } = this.props
     const { hasError, stackTrace } = this.state
 
     if (isDevelopment && hasError) {
@@ -106,7 +106,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.root()} component={HomePage} />
             <Route exact path={locations.notFound()} component={NotFoundPage} />
             <Route exact path={locations.sceneEditor()} component={EditorPage} />
-            <Route exact path={locations.inspector()} component={InspectorPage} />
+            {isInspectorEnabled ? <Route exact path={locations.inspector()} component={InspectorPage} /> : null}
             <Route exact path={locations.poolSearch()} component={SceneListPage} />
             <Route exact path={locations.sceneView()} component={SceneViewPage} />
             <Route exact path={locations.poolView()} component={SceneViewPage} />

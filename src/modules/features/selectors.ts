@@ -45,3 +45,11 @@ export const getIsHandsCategoryEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsInspectorEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.WEB_EDITOR)
+  } catch (e) {
+    return false
+  }
+}

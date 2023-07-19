@@ -4,18 +4,18 @@ import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { deleteProject, duplicateProjectRequest, DeleteProjectAction, DuplicateProjectRequestAction } from 'modules/project/actions'
-
 export type Props = {
   project: Project | null
   deployments: Deployment[]
   isLoading: boolean
   isLoadingDeployments: boolean
+  isInspectorEnabled: boolean
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
   onDelete: typeof deleteProject
   onDuplicate: typeof duplicateProjectRequest
 }
 
-export type MapStateProps = Pick<Props, 'project' | 'deployments' | 'isLoading' | 'isLoadingDeployments'>
+export type MapStateProps = Pick<Props, 'project' | 'deployments' | 'isLoading' | 'isLoadingDeployments' | 'isInspectorEnabled'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onDelete' | 'onDuplicate' | 'onOpenModal'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | DeleteProjectAction | DuplicateProjectRequestAction | OpenModalAction>
