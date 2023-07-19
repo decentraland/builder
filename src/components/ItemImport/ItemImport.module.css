@@ -18,6 +18,18 @@
   height: 500px !important;
 }
 
+:global(.FileImport) .dropzone.itemLoaded :global(.image) {
+  background: url('../../images/import-success.svg') no-repeat;
+}
+
+:global(.FileImport) .dropzone.isLoading :global(.image) {
+  background: none;
+}
+
+:global(.FileImport) .dropzone :global(.ui.loader) {
+  transform: translateX(-50%) translateY(-119%);
+}
+
 .error {
   margin-top: 15px;
   width: 100%;

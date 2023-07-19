@@ -16,9 +16,10 @@
 
 .dropzone {
   height: 500px !important;
+  padding: 0 65px;
 }
 
-.dropzone :global(.overlay) {
+.overlay {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -28,11 +29,11 @@
 }
 
 .dropzone :global(.cta .image) {
-  /* width: 64px;
-  height: 64px;
-  background-size: cover;
-  margin-bottom: 32px; */
   background: url('/src/images/upload-video.svg') no-repeat;
+}
+
+.dropzone :global(.cta .action) {
+  display: inline-block;
 }
 
 .error {

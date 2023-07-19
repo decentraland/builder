@@ -90,7 +90,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
     return (
       <>
         {isLoading ? (
-          <div className="overlay">
+          <div className={styles.overlay}>
             <Loader active size="big" />
           </div>
         ) : null}
@@ -130,12 +130,12 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { title, onClose, onSaveVideo } = this.props
+    const { title, onBack, onClose, onSaveVideo } = this.props
     const { id, video } = this.state
 
     return (
       <>
-        <ModalNavigation title={title} onClose={onClose} />
+        <ModalNavigation title={title} onBack={onBack} onClose={onClose} />
         <Modal.Content>
           {(!video || id) && (
             <FileImport
