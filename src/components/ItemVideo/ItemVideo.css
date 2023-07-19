@@ -7,13 +7,18 @@
   position: relative;
 }
 
+.ItemVideo {
+  height: 96px;
+  width: 96px;
+}
+
 .ItemVideo.video-wrapper {
   border-radius: 5px;
 }
 
 .ItemVideo.video-wrapper .item-video {
-  height: 96px;
-  width: 96px;
+  height: 100%;
+  width: 100%;
   object-fit: cover;
 }
 
