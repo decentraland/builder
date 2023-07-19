@@ -98,6 +98,7 @@
       "cta": "Drag your Asset file here in {models_link} format, or {action}",
       "description_create": "Start by adding some assets to your pack",
       "description_edit": "Add some more items to your pack",
+      "loaded": "Item imported successfully",
       "errors": {
         "duplicated": "Duplicated Asset",
         "duplicated_asset": "{name}: There's already an asset in this asset pack called \"{existingAsset}\" that has the id \"{id}\", please change the id of \"{newAsset}\" to a different one",
@@ -204,7 +205,7 @@
   "create_single_item_modal": {
     "title": "New Item",
     "thumbnail_step_title": "Edit Thumbnail",
-    "upload_video_step_title": "Detailed Video of Your Smart Wearable",
+    "upload_video_step_title": "Upload a video for your smart wearable",
     "title_emote": "New Emote",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
@@ -790,8 +791,8 @@
     "upload_manually": "Browse your computer"
   },
   "upload_video": {
-    "cta": "Drag a video (format .MP4) of your smart wereable, or {action}",
-    "upload_manually": "Browse it from your computer"
+    "cta": "Drag and drop a video (format .MP4) to showcase the smart wereable funcionality or {action}",
+    "upload_manually": "browse it from your computer"
   },
   "itemdrawer": {
     "opensea_credit": "Powered by {link}",
@@ -1964,5 +1965,11 @@
   },
   "logged_in_detail_page": {
     "error_title": "An error ocurred while loading the detail page"
+  },
+  "hands_category_ftu": {
+    "title": "Now you can use Hands category!",
+    "img_alt": "New hands category",
+    "description": "1- You can find it in the editor.<br></br>2- Now you can update your hand’s wearables to this category.<br></br>How? You have to change your wearable category again and use the new category hands.",
+    "action": "Learn more"
   }
 }

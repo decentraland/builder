@@ -65,7 +65,8 @@ import {
   CreateSingleItemModalMetadata,
   StateData,
   SortedContent,
-  AcceptedFileProps
+  AcceptedFileProps,
+  ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import UploadVideoStep from './UploadVideoStep/UploadVideoStep'
 import './CreateSingleItemModal.css'
@@ -74,6 +75,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
   modalContainer = React.createRef<HTMLDivElement>()
+  timer: ReturnType<typeof setTimeout> | undefined
 
   getInitialState() {
     const { metadata } = this.props
@@ -412,7 +414,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         category
       })
       this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
-        this.setState({ view: isSmart({ type, contents }) ? CreateItemView.UPLOAD_VIDEO : CreateItemView.DETAILS })
+        if (isSmart({ type, contents })) {
+          this.timer = setTimeout(() => this.setState({ view: CreateItemView.UPLOAD_VIDEO }), ITEM_LOADED_CHECK_DELAY)
+          return
+        }
+
+        this.setState({ view: CreateItemView.DETAILS })
       })
     }
   }
@@ -688,6 +695,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
+  handleUploadVideoGoBack = () => {
+    const keys = Object.keys(this.state)
+    const stateReset = keys.reduce((acc, v) => ({ ...acc, [v]: undefined }), {})
+    this.setState({ ...stateReset, ...this.getInitialState() })
+  }
+
   renderImportView() {
     const { metadata, onClose } = this.props
     const { category, isLoading, isRepresentation } = this.state
@@ -717,6 +730,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         title={title}
         contents={contents}
         onDropAccepted={this.handleVideoDropAccepted}
+        onBack={this.handleUploadVideoGoBack}
         onClose={onClose}
         onSaveVideo={this.handleSaveVideo}
       />
@@ -1066,6 +1080,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         return this.renderSetPrice()
       default:
         return null
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer)
     }
   }
 

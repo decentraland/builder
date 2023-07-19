@@ -97,6 +97,7 @@
       "cta": "将Asset的{models_link}文件拖到此处，或{action}",
       "description_create": "首先将模型添加到Asset Pack",
       "description_edit": "向您添加更多项目Asset Pack",
+      "loaded": "项目导入成功",
       "errors": {
         "duplicated": "重复资产",
         "duplicated_asset": "{name}：此资产包中已经有一个名为\"{existingAsset}\"的资产，其ID为\"{id}\"，请将\"{newAsset}\"的ID更改为另一种",
@@ -202,7 +203,7 @@
   "create_single_item_modal": {
     "title": "新物品",
     "thumbnail_step_title": "编辑缩略图",
-    "upload_video_step_title": "智能可穿戴设备的详细视频",
+    "upload_video_step_title": "上传您的智能可穿戴设备的视频",
     "title_emote": "新表情",
     "add_representation": "添加{bodyShape}",
     "wrong_thumbnail_format": "提供的缩略图不是 PNG 图像",
@@ -784,7 +785,7 @@
     "upload_manually": "浏览您的电脑"
   },
   "upload_video": {
-    "cta": "拖动您的智能设备的视频（格式.MP4），或{action}",
+    "cta": "拖放视频（格式.MP4）以展示智能可穿戴功能或{action}",
     "upload_manually": "浏览您的电脑"
   },
   "itemdrawer": {
@@ -1968,5 +1969,11 @@
   },
   "logged_in_detail_page": {
     "error_title": "加载详细信息页面时出错"
+  },
+  "hands_category_ftu": {
+    "title": "现在，您可以买手可穿戴设备！",
+    "img_alt": "新手类别",
+    "description": "1- 您可以在编辑器中找到它.<br></br>2- 现在您可以将手的可穿戴设备更新为此类别.<br></br>如何？您必须再次更改可穿戴类别，并使用新类别的手。",
+    "action": "了解更多"
   }
 }
