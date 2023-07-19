@@ -53,12 +53,23 @@
   background-color: rgba(115, 110, 125, 0.16);
   align-items: center;
   text-align: justify;
+  line-height: 24px;
+}
+
+.errorMessageContainer {
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+}
+
+.errorTitle {
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .errorMessage {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 24px;
 }
 
 .errorIcon {
