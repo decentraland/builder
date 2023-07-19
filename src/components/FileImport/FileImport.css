@@ -11,6 +11,7 @@
   user-select: none;
   overflow: auto;
   position: relative;
+  border: 1px dashed #a09ba8;
 }
 
 .FileImport .dropzone .action {
@@ -26,6 +27,7 @@
   background: url('../../images/import.svg') no-repeat;
   background-size: cover;
   margin-bottom: 32px;
+  transition: background-image 0.2s ease-in-out;
 }
 
 .FileImport .cta {
