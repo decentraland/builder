@@ -7,7 +7,6 @@ export type Props = Omit<ModalProps, 'metadata'> & {
 
 export type State = {
   video: Blob | null
-  isLoading: boolean
 }
 
 export type EditVideoModalMetadata = {
