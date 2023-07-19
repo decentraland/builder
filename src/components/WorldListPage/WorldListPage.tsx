@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import { ChainId, getChainName } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Button,
@@ -24,7 +25,6 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props, SortBy } from './WorldListPage.types'
 import './WorldListPage.css'
-import { ChainId, getChainName } from '@dcl/schemas'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
