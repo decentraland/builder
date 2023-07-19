@@ -46,7 +46,7 @@ const WorldListPage: React.FC<Props> = props => {
 
   const getExplorerUrl = (world: string) => {
     if (isDevelopment) {
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=goerli`
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
     }
     return `${EXPLORER_URL}/world/${world}`
   }
