@@ -3,9 +3,9 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Loader } from 'decentraland-ui'
 import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
+import { ITEM_LOADED_CHECK_DELAY } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
 import { Props, State } from './ItemImport.types'
 import styles from './ItemImport.module.css'
-import { ITEM_LOADED_CHECK_DELAY } from 'components/Modals/CreateSingleItemModal/constants'
 
 export default class ItemImport extends React.PureComponent<Props, State> {
   timer: ReturnType<typeof setTimeout> | undefined

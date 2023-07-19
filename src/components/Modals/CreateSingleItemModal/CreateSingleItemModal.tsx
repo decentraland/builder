@@ -65,10 +65,10 @@ import {
   CreateSingleItemModalMetadata,
   StateData,
   SortedContent,
-  AcceptedFileProps
+  AcceptedFileProps,
+  ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import UploadVideoStep from './UploadVideoStep/UploadVideoStep'
-import { ITEM_LOADED_CHECK_DELAY } from './constants'
 import './CreateSingleItemModal.css'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {

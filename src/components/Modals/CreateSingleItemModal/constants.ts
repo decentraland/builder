@@ -1,1 +1,0 @@
-export const ITEM_LOADED_CHECK_DELAY = 2000
