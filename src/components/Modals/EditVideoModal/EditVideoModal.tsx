@@ -12,8 +12,7 @@ export default class EditVideoModal extends React.PureComponent<Props, State> {
 
   getInitialState(): State {
     return {
-      video: null,
-      isLoading: false
+      video: null
     }
   }
 
@@ -42,7 +41,6 @@ export default class EditVideoModal extends React.PureComponent<Props, State> {
     return (
       <Modal name={name} onClose={onClose}>
         <UploadVideoStep
-          isLoading={this.state.isLoading}
           title={this.renderModalTitle()}
           onClose={onClose}
           onDropAccepted={this.handleDropAccepted}
