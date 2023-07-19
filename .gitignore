@@ -27,4 +27,5 @@ yarn-error.log*
 
 src/ecsScene/scene.js
 /public/editor.js
+/public/inspector*
 /src/ecsScene/ecs.js.raw
