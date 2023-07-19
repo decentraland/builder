@@ -232,12 +232,8 @@
       "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
       "file_too_big_title": "The file is too large and can't be uploaded",
       "thumbnail_file_too_big": "The thumbnail file is too big to be uploaded. The max size is {size}.",
-      "video_file_too_big": "The video size limit is {size}. Reduce its size and try again.",
-      "video_file_too_long": "Video duration exceeds {max_duration} seconds. Reduce it and try again.",
       "wrong_extension": "The file has an invalid extension.",
-      "wrong_video_format": "The video has an invalid extension. It should be a .mp4 or .mov.",
       "invalid_files": "Files seem to be invalid or broken, please review them and try again.",
-      "invalid_video": "Video seem to be invalid or broken, please review them and try again.",
       "missing_model_file": "Couldn't find a valid model file.",
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}.",
@@ -792,7 +788,21 @@
   },
   "upload_video": {
     "cta": "Drag and drop a video (format .MP4) to showcase the smart wereable funcionality or {action}",
-    "upload_manually": "browse it from your computer"
+    "upload_manually": "browse it from your computer",
+    "error": {
+      "video_file_too_big": {
+        "title": "The file is too large and can't be uploaded.",
+        "message": "File size limit is {size}. Reduce the size of the file and try again."
+      },
+      "video_file_too_long": {
+        "title": "Video duration exceeds {max_duration} seconds.",
+        "message": "Reduce the duration and try again."
+      },
+      "invalid_video": {
+        "title": "Video seem to be invalid or broken.",
+        "message": "Review your file and try again."
+      }
+    }
   },
   "itemdrawer": {
     "opensea_credit": "Powered by {link}",
