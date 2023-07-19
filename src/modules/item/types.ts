@@ -95,6 +95,7 @@ export type WearableData = {
   representations: WearableRepresentation[]
   replaces: HideableWearableCategory[]
   hides: HideableWearableCategory[]
+  removesDefaultHiding?: HideableWearableCategory[]
   tags: string[]
   requiredPermissions?: string[]
 }

@@ -98,6 +98,10 @@
   text-transform: uppercase;
 }
 
+.RightPanel .overrides-label-panel {
+  margin-right: 5px;
+}
+
 .RightPanel .details .metrics .metric.triangles {
   background-image: url(../../../images/triangles.svg);
 }

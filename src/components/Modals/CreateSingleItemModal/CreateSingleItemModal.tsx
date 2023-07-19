@@ -1,6 +1,6 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -173,7 +173,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { address, collection, onSave } = this.props
+    const { address, collection, isHandsCategoryEnabled, onSave } = this.props
     const { id, name, description, type, metrics, collectionId, category, playMode, rarity, hasScreenshotTaken, requiredPermissions } = this
       .state as StateData
 
@@ -193,10 +193,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     let data: WearableData | EmoteDataADR74
 
     if (type === ItemType.WEARABLE) {
+      const removesDefaultHiding = isHandsCategoryEnabled && category === WearableCategory.UPPER_BODY ? [BodyPartCategory.HANDS] : []
       data = {
         category: category as WearableCategory,
         replaces: [],
         hides: [],
+        removesDefaultHiding,
         tags: [],
         representations: [...representations],
         requiredPermissions: requiredPermissions || []
@@ -262,6 +264,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         ],
         replaces: [...editedItem.data.replaces],
         hides: [...editedItem.data.hides],
+        removesDefaultHiding: [...(editedItem.data.removesDefaultHiding || [])],
         tags: [...editedItem.data.tags],
         requiredPermissions: requiredPermissions || []
       },
@@ -288,6 +291,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         ...pristineItem.data,
         replaces: [],
         hides: [],
+        removesDefaultHiding: [],
         category: category as WearableCategory,
         requiredPermissions: requiredPermissions || []
       } as WearableData

@@ -36,6 +36,7 @@ export function toWearableWithBlobs({ contents, file }: { contents?: Record<stri
       category: WearableCategory.HAT,
       hides: [],
       replaces: [],
+      removesDefaultHiding: [],
       tags: [],
       representations: [
         {
