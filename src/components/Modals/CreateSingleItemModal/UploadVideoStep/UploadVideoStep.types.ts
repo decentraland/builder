@@ -12,7 +12,7 @@ export type Props = {
 
 export type StateData = {
   id: string
-  error: string
+  error?: { title?: string; message: string }
   isLoading: boolean
   video: string
 }

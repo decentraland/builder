@@ -35,14 +35,20 @@ export class ThumbnailFileTooBigError extends Error {
 }
 
 export class VideoFileTooBigError extends Error {
+  public title: string
+
   constructor() {
-    super(t('create_single_item_modal.error.video_file_too_big', { size: `${toMB(MAX_VIDEO_FILE_SIZE)}MB` }))
+    super(t('upload_video.error.video_file_too_big.message', { size: `${toMB(MAX_VIDEO_FILE_SIZE)}MB` }))
+    this.title = t('upload_video.error.video_file_too_big.title')
   }
 }
 
 export class VideoFileTooLongError extends Error {
+  public title: string
+
   constructor() {
-    super(t('create_single_item_modal.error.video_file_too_long', { max_duration: MAX_VIDEO_DURATION }))
+    super(t('upload_video.error.video_file_too_long.message'))
+    this.title = t('upload_video.error.video_file_too_long.title', { max_duration: MAX_VIDEO_DURATION })
   }
 }
 
@@ -59,8 +65,11 @@ export class InvalidFilesError extends Error {
 }
 
 export class InvalidVideoError extends Error {
+  public title: string
+
   constructor() {
-    super(t('create_single_item_modal.error.invalid_video'))
+    super(t('upload_video.error.invalid_video.message'))
+    this.title = t('upload_video.error.invalid_video.title')
   }
 }
 
