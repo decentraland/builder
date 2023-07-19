@@ -341,6 +341,10 @@ export function getThumbnailURL(item: Item) {
   return getContentsStorageUrl(item.contents[item.thumbnail])
 }
 
+export function getVideoURL(item: Item) {
+  return item.video ? getContentsStorageUrl(item.contents[item.video]) : ''
+}
+
 export function getRarities() {
   return ItemRarity.schema.enum as ItemRarity[]
 }
@@ -369,7 +373,7 @@ export function getSkinHiddenCategories() {
     WearableCategory.UPPER_BODY,
     WearableCategory.LOWER_BODY,
     WearableCategory.FEET
-  ]
+  ] as WearableCategory[] & BodyPartCategory[]
 }
 
 function getCategories(contents: Record<string, any> | undefined = {}) {
@@ -412,7 +416,10 @@ export function getHideableWearableCategories(
   return hideableCategories
 }
 
-export function getHideableBodyPartCategories(contents: Record<string, any> | undefined = {}, isHandsCategoryEnabled = false) {
+export function getHideableBodyPartCategories(
+  contents: Record<string, any> | undefined = {},
+  isHandsCategoryEnabled = false
+): BodyPartCategory[] {
   const fileNames = Object.keys(contents)
 
   if (!fileNames.some(isModelFile)) {
@@ -649,4 +656,25 @@ export const EMPTY_ITEM_METRICS: ModelMetrics = {
   meshes: 0,
   bodies: 0,
   entities: 1
+}
+
+export const loadVideo = (src: File | string): Promise<HTMLVideoElement> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const video = document.createElement('video')
+      video.preload = 'metadata'
+
+      video.onloadedmetadata = function () {
+        resolve(video)
+      }
+
+      video.onerror = function () {
+        reject('Invalid video. Please select a video file.')
+      }
+
+      video.src = typeof src === 'string' ? src : URL.createObjectURL(src)
+    } catch (e) {
+      reject(e)
+    }
+  })
 }
