@@ -55,7 +55,7 @@ export function getExplorerURL({
   }
   const EXPLORER_URL = config.get('EXPLORER_URL', '')
   const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
-  const chainName = getChainName(config.get("CHAIN_ID") as unknown as ChainId) as string;
+  const chainName = getChainName(config.get('CHAIN_ID') as unknown as ChainId) as string
   let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=${chainName.toLowerCase()}&DEBUG_MODE=true`
 
   if (collectionId) {

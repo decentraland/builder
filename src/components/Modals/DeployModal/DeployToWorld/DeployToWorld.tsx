@@ -129,7 +129,7 @@ export default function DeployToWorld({
 
   const getExplorerUrl = useMemo(() => {
     if (isDevelopment) {
-      const chainName = getChainName(config.get("CHAIN_ID") as unknown as ChainId) as string;
+      const chainName = getChainName(config.get('CHAIN_ID') as unknown as ChainId) as string
       return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=${chainName.toLowerCase()}`
     }
     return `${EXPLORER_URL}/world/${world}`
