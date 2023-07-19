@@ -233,12 +233,8 @@
       "file_too_big": "{title}.{enter}El límite máximo de tamaño de archivo es {size}. Reduzca el tamaño del archivo e intente nuevamente.",
       "file_too_big_title": "El archivo es demasiado grande y no se puede cargar",
       "thumbnail_file_too_big": "El archivo thumbnail es demasiado grande para cargarlo. El tamaño maximo es {size}.",
-      "video_file_too_big": "El límite de tamaño del video es {tamaño}. Reduce su tamaño e inténtalo de nuevo.",
-      "video_file_too_long": "La duración del video excede {max_duration} segundos. Redúcelo e inténtalo de nuevo.",
       "wrong_extension": "El archivo tiene una extensión inválida.",
-      "wrong_video_format": "El video tiene una extensión no válida. Debería ser .mp4 o .mov.",
       "invalid_files": "Los archivos parecen no ser válidos o estar dañados. Por favor revíselos y vuelva a intentarlo.",
-      "invalid_video": "Parece que el video no es válido o está roto, revísalo e inténtalo de nuevo.",
       "missing_model_file": "No se pudo encontrar un archivo de modelo válido.",
       "invalid_content_path": "La ruta \"{path}\" es inválida para la propiedad \"{name}\", el archivo no existe.",
       "invalid_enum_value": "Valor inválido \"{value}\" para la propiedad \"{name}\", valores posibles: {values}.",
@@ -801,7 +797,21 @@
   },
   "upload_video": {
     "cta": "Arrastre y suelte un video (formato .MP4) para mostrar la funcionalidad portátil inteligente o {acción}",
-    "upload_manually": "busca en tu computadora"
+    "upload_manually": "busca en tu computadora",
+    "error": {
+      "video_file_too_big": {
+        "title": "El archivo es demasiado grande y no se puede cargar.",
+        "message": "El límite de tamaño del archivo es {tamaño}. Reduzca el tamaño del archivo y vuelva a intentarlo."
+      },
+      "video_file_too_long": {
+        "title": "La duración del video excede {max_duration} segundos.",
+        "message": "Reduce la duración e inténtalo de nuevo."
+      },
+      "invalid_video": {
+        "title": "Parece que el video no es válido o está roto.",
+        "message": "Revisa tu archivo y vuelve a intentarlo."
+      }
+    }
   },
   "itemdrawer": {
     "opensea_credit": "Impulsado por {link}",
