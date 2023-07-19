@@ -24,6 +24,7 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props, SortBy } from './WorldListPage.types'
 import './WorldListPage.css'
+import { ChainId, getChainName } from '@dcl/schemas'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
@@ -46,7 +47,8 @@ const WorldListPage: React.FC<Props> = props => {
 
   const getExplorerUrl = (world: string) => {
     if (isDevelopment) {
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=${config.get('NETWORK')}`
+      const chainName = getChainName(config.get("CHAIN_ID") as unknown as ChainId) as string;
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=${chainName.toLowerCase()}`
     }
     return `${EXPLORER_URL}/world/${world}`
   }

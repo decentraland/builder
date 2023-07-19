@@ -1,5 +1,4 @@
 {
-  "NETWORK": "sepolia",
   "CHAIN_ID": "11155111",
   "ENVIRONMENT": "development",
   "LOCAL_STORAGE_KEY": "builder",
