@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
+import { Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getVideoURL } from 'modules/item/utils'
 import { getFileSize, toMB } from 'lib/file'
 import { Props } from './ItemVideo.types'
 import './ItemVideo.css'
-import { Icon } from 'decentraland-ui'
 
 const ItemVideo: React.FC<Props> = ({ className, item, src, showMetrics = false }: Props) => {
   const [isLoadedVideo, setLoadedVideo] = useState<boolean>(false)

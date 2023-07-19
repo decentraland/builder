@@ -6,10 +6,6 @@ import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { isThirdParty } from 'lib/urn'
-import ItemImage from 'components/ItemImage'
-import ItemProvider from 'components/ItemProvider'
-import ConfirmDelete from 'components/ConfirmDelete'
-import Icon from 'components/Icon'
 import {
   getMissingBodyShapeType,
   getRarities,
@@ -40,14 +36,18 @@ import {
 import { dataURLToBlob } from 'modules/media/utils'
 import { areEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
+import ConfirmDelete from 'components/ConfirmDelete'
+import Icon from 'components/Icon'
 import Info from 'components/Info'
+import ItemImage from 'components/ItemImage'
+import ItemProvider from 'components/ItemProvider'
+import ItemVideo from 'components/ItemVideo'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
-import ItemVideo from 'components/ItemVideo'
 
 const CAMPAIGN_TAG = 'PRIDE23'
 
