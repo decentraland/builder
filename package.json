@@ -126,7 +126,8 @@
       "^!?raw-loader!.*$": "identity-obj-proxy",
       "^three/.*$": "identity-obj-proxy",
       "^@babylonjs.*$": "identity-obj-proxy",
-      "^.*/modules/curations/collectionCuration/toasts.*$": "identity-obj-proxy"
+      "^.*/modules/curations/collectionCuration/toasts.*$": "identity-obj-proxy",
+      "@dcl/ecs": "identity-obj-proxy"
     }
   },
   "engines": {
