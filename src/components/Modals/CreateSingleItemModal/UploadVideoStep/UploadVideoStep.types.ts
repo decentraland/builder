@@ -5,6 +5,7 @@ export type Props = {
   title: string
   onDropAccepted: (acceptedFileProps: AcceptedFileProps) => void
   onDropRejected?: (files: File[]) => Promise<void>
+  onBack: () => void
   onClose: () => void
   onSaveVideo: () => void
 }
