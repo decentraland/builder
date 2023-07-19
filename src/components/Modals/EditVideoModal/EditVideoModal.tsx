@@ -1,9 +1,9 @@
 import React from 'react'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import UploadVideoStep from '../CreateSingleItemModal/UploadVideoStep/UploadVideoStep'
-import { AcceptedFileProps } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
 import { VIDEO_PATH } from 'modules/item/types'
+import { AcceptedFileProps } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
+import UploadVideoStep from '../CreateSingleItemModal/UploadVideoStep/UploadVideoStep'
 import { Props, State } from './EditVideoModal.types'
 import './EditVideoModal.css'
 
