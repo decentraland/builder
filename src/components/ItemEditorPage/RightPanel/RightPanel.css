@@ -165,7 +165,8 @@
   word-break: break-word;
 }
 
-.RightPanel .details .download-item-button {
+.RightPanel .details .download-item-button,
+.RightPanel .details .play-video-button {
   position: absolute;
   right: 8px;
   bottom: 8px;
@@ -238,9 +239,14 @@
   line-height: 26px;
 }
 
+.ui.modal.VideoShowcaseModal .content {
+  height: 500px;
+}
+
 .ui.modal.VideoShowcaseModal .content > video {
   height: 100%;
   width: 100%;
+  object-fit: contain;
   border-radius: 8px;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.08) 100%), #37333d;
 }

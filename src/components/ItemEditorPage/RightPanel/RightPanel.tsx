@@ -1,6 +1,6 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
-import { Loader, Dropdown, Button, TagField, Modal } from 'decentraland-ui'
+import { Loader, Dropdown, Button, TagField, Modal, ModalNavigation } from 'decentraland-ui'
 import { BodyPartCategory, EmoteCategory, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -538,7 +538,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       <div className="details">
         {canEditItemMetadata ? (
           <>
-            <Icon name="edit" className="edit-item-file" onClick={this.handleOpenVideoDialog} />
+            <Icon name="edit" className="edit-item-file" onClick={this.handleChangeVideoFile} />
+            <Icon name="play" className="play-video-button" onClick={this.handleOpenVideoDialog} />
             <ItemVideo item={item} src={this.state.video} showMetrics />
           </>
         ) : (
@@ -557,9 +558,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   renderVideoShowcase(item: Item) {
+    const handleClose = () => this.setState({ showVideoShowCase: false })
+
     return (
-      <Modal open={this.state.showVideoShowCase} size="small" className="VideoShowcaseModal">
-        <Modal.Header>{t('video_showcase_modal.title')}</Modal.Header>
+      <Modal open={this.state.showVideoShowCase} size="small" className="VideoShowcaseModal" onClose={handleClose}>
+        <ModalNavigation title={t('video_showcase_modal.title')} onClose={handleClose} />
         <Modal.Content>
           <video
             src={getVideoURL(item)}
@@ -569,12 +572,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             disablePictureInPicture
           />
         </Modal.Content>
-        <Modal.Actions>
-          <Button onClick={() => this.setState({ showVideoShowCase: false })}>{t('video_showcase_modal.back')}</Button>
-          <Button primary onClick={this.handleChangeVideoFile}>
-            {t('video_showcase_modal.edit')}
-          </Button>
-        </Modal.Actions>
       </Modal>
     )
   }
