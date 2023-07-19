@@ -16,7 +16,6 @@ import { DeployModalView, DeployModalMetadata } from 'components/Modals/DeployMo
 import Stats from 'components/SceneStats/Stats/Stats'
 import { Props } from './DeploymentDetail.types'
 import './DeploymentDetail.css'
-import { ChainId, getChainName } from '@dcl/schemas'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
@@ -60,8 +59,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
 
   getExplorerUrl = (world: string) => {
     if (isDevelopment) {
-      const chainName = getChainName(config.get('CHAIN_ID') as unknown as ChainId) as string
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=${chainName.toLowerCase()}`
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
     }
     return `${EXPLORER_URL}/world/${world}`
   }
