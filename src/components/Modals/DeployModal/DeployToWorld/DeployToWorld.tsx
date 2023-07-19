@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChainId, getChainName } from '@dcl/schemas'
 import classNames from 'classnames'
 import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -128,7 +129,8 @@ export default function DeployToWorld({
 
   const getExplorerUrl = useMemo(() => {
     if (isDevelopment) {
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=goerli`
+      const chainName = getChainName(config.get('CHAIN_ID') as unknown as ChainId) as string
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=${chainName.toLowerCase()}`
     }
     return `${EXPLORER_URL}/world/${world}`
   }, [world])
