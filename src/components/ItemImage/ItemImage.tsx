@@ -15,8 +15,22 @@ export default class ItemImage extends React.PureComponent<Props> {
     hasRarityBackground: true
   }
 
+  renderBadge() {
+    const { item, hasBadge, badgeSize } = this.props
+
+    if (!hasBadge) {
+      return null
+    }
+
+    if (isSmart(item)) {
+      return <SmartBadge size={badgeSize} />
+    } else {
+      return <ItemBadge item={item} size={badgeSize} />
+    }
+  }
+
   render() {
-    const { className, item, src, hasBadge, badgeSize, hasRarityBadge, hasRarityBackground } = this.props
+    const { className, item, src, hasRarityBadge, hasRarityBackground } = this.props
 
     return (
       <div
@@ -28,12 +42,7 @@ export default class ItemImage extends React.PureComponent<Props> {
           {hasRarityBadge && item.rarity && item.data.category ? (
             <RarityBadge className="rarity-badge" category={item.data.category} rarity={item.rarity} />
           ) : null}
-          {hasBadge ? (
-            <>
-              <ItemBadge item={item} size={badgeSize}></ItemBadge>
-              {isSmart(item) ? <SmartBadge size={badgeSize} /> : null}
-            </>
-          ) : null}
+          {this.renderBadge()}
         </div>
       </div>
     )
