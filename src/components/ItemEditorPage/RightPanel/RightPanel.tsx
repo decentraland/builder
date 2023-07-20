@@ -42,6 +42,7 @@ import Info from 'components/Info'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ItemVideo from 'components/ItemVideo'
+import { EditVideoView } from 'components/Modals/EditVideoModal/EditVideoModal.types'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -138,7 +139,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleChangeVideoFile = () => {
     const { selectedItem, onOpenModal } = this.props
     this.setState({ showVideoShowCase: false }, () => {
-      onOpenModal('EditVideoModal', { item: selectedItem, onSaveVideo: this.handleSaveVideo })
+      onOpenModal('EditVideoModal', { item: selectedItem, view: EditVideoView.UPLOAD_VIDEO, onSaveVideo: this.handleSaveVideo })
     })
   }
 
@@ -552,7 +553,13 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   renderPermissions(item: Item) {
     return (
       <div className="required-permissions">
-        <TagField className="blank" value={item.data.requiredPermissions ?? []} search={false} disabled multiple />
+        <TagField
+          className="blank"
+          value={item.data.requiredPermissions?.map(permission => permission.replaceAll('_', ' ')) ?? []}
+          search={false}
+          disabled
+          multiple
+        />
       </div>
     )
   }
