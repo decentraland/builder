@@ -36,9 +36,6 @@ import {
   WearableData
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
-import { EngineType, getItemData, getModelData } from 'lib/getModelData'
-import { getExtension } from 'lib/file'
-import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import {
   getBodyShapeType,
@@ -54,6 +51,9 @@ import {
   getBodyShapeTypeFromContents,
   isSmart
 } from 'modules/item/utils'
+import { EngineType, getItemData, getModelData } from 'lib/getModelData'
+import { getExtension } from 'lib/file'
+import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import ItemVideo from 'components/ItemVideo'
