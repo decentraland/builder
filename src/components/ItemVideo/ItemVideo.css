@@ -47,14 +47,14 @@
   left: 9px;
 }
 
-.ItemVideoContainer .metrics {
+.ItemVideoContainer .ItemVideoMetricsContainer {
   margin-left: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 
-.ItemVideoContainer .metrics .metric {
+.ItemVideoContainer .ItemVideoMetricsContainer .metric {
   color: var(--secondary-text);
   font-size: 13px;
   line-height: 18px;
@@ -64,6 +64,6 @@
   margin-bottom: 8px;
 }
 
-.ItemVideoContainer .metrics .metric:last-child {
+.ItemVideoContainer .ItemVideoMetricsContainer .metric:last-child {
   margin-bottom: 0;
 }
