@@ -39,7 +39,9 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
     return (
       <div className="InspectorPage">
         {!this.state.isLoaded && <Loader active />}
-        {scene && <iframe ref={this.refIframe} title="inspector" id="inspector" src="/inspector-index.html?parent=http://localhost:3000" />}
+        {scene && (
+          <iframe ref={this.refIframe} title="inspector" id="inspector" src={`/inspector-index.html?parent=${window.location.origin}`} />
+        )}
       </div>
     )
   }
