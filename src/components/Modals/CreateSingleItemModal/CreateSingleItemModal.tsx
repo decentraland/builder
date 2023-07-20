@@ -33,8 +33,7 @@ import {
   EmotePlayMode,
   SCENE_PATH,
   VIDEO_PATH,
-  WearableData,
-  VIDEO_EXTENSIONS
+  WearableData
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
@@ -523,35 +522,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOpenVideoDialog = () => {
-    if (this.videoInput.current) {
-      this.videoInput.current.click()
-    }
-  }
-
-  handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { contents } = this.state
-    const { files } = event.target
-
-    if (files && files.length > 0) {
-      const file = files[0]
-      const videoType = getExtension(file.name)
-
-      if (!(videoType && VIDEO_EXTENSIONS.includes(videoType))) {
-        this.setState({ error: t('create_single_item_modal.error.wrong_video_format') })
-        return
-      }
-
-      const video = URL.createObjectURL(file)
-
-      this.setState({
-        video,
-        contents: {
-          ...contents,
-          [VIDEO_PATH]: file
-        },
-        error: undefined
-      })
-    }
+    this.setState({ view: CreateItemView.UPLOAD_VIDEO })
   }
 
   handleYes = () => this.setState({ isRepresentation: true })
@@ -1058,7 +1029,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             <Header sub>{t('create_single_item_modal.video_preview_title')}</Header>
             <div className="preview">
               <ItemVideo src={video} showMetrics previewIcon={<DCLIcon name="video" onClick={this.handleOpenVideoDialog} />} />
-              <input type="file" ref={this.videoInput} onChange={this.handleVideoChange} accept="video/mp4" />
             </div>
           </div>
         </Row>
