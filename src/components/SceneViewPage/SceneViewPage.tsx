@@ -80,7 +80,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
 
   getObjectCount() {
     const { currentScene } = this.props
-    if (!currentScene) {
+    if (!currentScene || !currentScene.sdk6) {
       return 0
     }
 
@@ -89,7 +89,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
       return 0
     }
 
-    const entitiesCount = Object.keys(currentScene.entities).length
+    const entitiesCount = Object.keys(currentScene.sdk6.entities).length
     if (entitiesCount < parcelCount) {
       return 0
     }

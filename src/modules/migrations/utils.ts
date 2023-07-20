@@ -1,9 +1,9 @@
 import { Project } from 'modules/project/types'
 import { Migration, Versionable } from './types'
-import { Scene, ComponentType, ComponentDefinition, AnyComponent } from 'modules/scene/types'
+import { ComponentType, ComponentDefinition, AnyComponent, Scene, SceneSDK6 } from 'modules/scene/types'
 import { getGLTFShapeName, getUniqueName } from 'modules/scene/utils'
 
-export function addScale(scene: Scene) {
+export function addScale(scene: SceneSDK6) {
   if (scene) {
     for (const component of Object.values(scene.components)) {
       if (component.type === ComponentType.Transform) {
@@ -68,7 +68,7 @@ export function getUniqueNameLegacy(components: AnyComponent[], takenNames: Read
   return name
 }
 
-export function addEntityName(scene: Scene) {
+export function addEntityName(scene: SceneSDK6) {
   const takenNames = new Set<string>()
 
   for (const entityId in scene.entities) {
@@ -80,20 +80,20 @@ export function addEntityName(scene: Scene) {
   }
 }
 
-export function addAssets(scene: Scene) {
+export function addAssets(scene: SceneSDK6) {
   if (!scene.assets) {
     scene.assets = {}
   }
 }
 
-export function removeScriptSrc(scene: Scene) {
+export function removeScriptSrc(scene: SceneSDK6) {
   const scripts = Object.values(scene.components).filter(component => component.type === ComponentType.Script)
   for (const script of scripts) {
     delete (script.data as any).src
   }
 }
 
-export function sanitizeEntityName(scene: Scene) {
+export function sanitizeEntityName(scene: SceneSDK6) {
   const takenNames = new Set<string>()
 
   for (const entityId in scene.entities) {
@@ -107,7 +107,7 @@ export function sanitizeEntityName(scene: Scene) {
   }
 }
 
-export function sanitizeEntityName2(scene: Scene) {
+export function sanitizeEntityName2(scene: SceneSDK6) {
   const takenNames = new Set<string>()
 
   for (const entityId in scene.entities) {
@@ -122,7 +122,7 @@ export function sanitizeEntityName2(scene: Scene) {
   }
 }
 
-export function dedupeEntityName(scene: Scene) {
+export function dedupeEntityName(scene: SceneSDK6) {
   const takenNames = new Set<string>()
   for (const entityId in scene.entities) {
     const entity = scene.entities[entityId]
@@ -137,5 +137,12 @@ export function replaceUserIdWithEthAddress(project: Project) {
   delete (project as any).userId
   if (typeof project.ethAddress === 'undefined') {
     project.ethAddress = null
+  }
+}
+
+export function wrapSdk6(scene: SceneSDK6): Scene {
+  return {
+    sdk6: scene,
+    sdk7: null
   }
 }

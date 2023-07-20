@@ -9,7 +9,7 @@ import { getContentsStorageUrl } from 'lib/api/builder'
 import { capitalize } from 'lib/text'
 import { Vector3 } from 'modules/models/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
-import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
+import { EntityDefinition, ComponentDefinition, ComponentType, SceneSDK6 } from 'modules/scene/types'
 import { injectScript } from 'routing/utils'
 import { base64ArrayBuffer } from './base64'
 
@@ -97,7 +97,7 @@ export function snapScale(scale: Vector3): Vector3 {
   }
 }
 
-export function createReadyOnlyScene(scene: Scene): Scene {
+export function createReadyOnlyScene(scene: SceneSDK6): SceneSDK6 {
   const readOnlyEntities = Object.values(scene.entities).reduce((newEntities, entity) => {
     newEntities[entity.id] = { ...entity, disableGizmos: true }
     return newEntities

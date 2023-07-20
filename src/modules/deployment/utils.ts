@@ -6,7 +6,7 @@ import { MemoryDatastore } from 'interface-datastore'
 import { EntityContentItemReference } from '@dcl/hashing'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
-import { Scene, ComponentType } from 'modules/scene/types'
+import { ComponentType, SceneSDK6 } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { ContentServiceFile, Deployment, DeploymentStatus, SceneDefinition } from './types'
@@ -109,7 +109,7 @@ export function getDeployment(project: Project | null, deployments: Deployment[]
   return deployments.find(deployment => getStatus(project, deployment) === DeploymentStatus.NEEDS_SYNC) || deployments[0]
 }
 
-export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
+export const getEmptyDeployment = (projectId: string): [Project, SceneSDK6] => {
   const sceneId = uuid.v4()
   const project: Project = {
     id: projectId,
@@ -132,7 +132,7 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
 
   const defaultGroundAsset = getDefaultGroundAsset()
 
-  const scene: Scene = {
+  const scene: SceneSDK6 = {
     id: sceneId,
     entities: {
       '42d414e0-5d9f-40a0-884a-e0cbac9d7e5c': {

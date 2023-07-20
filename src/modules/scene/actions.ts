@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
-import { Scene, ComponentType, ComponentData } from './types'
+import { Scene, ComponentType, ComponentData, SceneSDK6 } from './types'
 import { ModelMetrics, Vector3 } from 'modules/models/types'
 import { Project } from 'modules/project/types'
 
@@ -16,7 +16,7 @@ export type CreateSceneAction = ReturnType<typeof createScene>
 
 export const PROVISION_SCENE = 'Provision scene'
 
-export const provisionScene = (scene: Scene, init = false) => action(PROVISION_SCENE, { scene, init })
+export const provisionScene = (scene: SceneSDK6, init = false) => action(PROVISION_SCENE, { scene, init })
 
 export type ProvisionSceneAction = ReturnType<typeof provisionScene>
 
@@ -98,7 +98,7 @@ export type ApplyLayoutAction = ReturnType<typeof applyLayout>
 
 export const FIX_LEGACY_NAMESPACES_REQUEST = '[Request] Fix Legacy Namespaces'
 
-export const fixLegacyNamespacesRequest = (scene: Scene) => action(FIX_LEGACY_NAMESPACES_REQUEST, { scene })
+export const fixLegacyNamespacesRequest = (scene: SceneSDK6) => action(FIX_LEGACY_NAMESPACES_REQUEST, { scene })
 
 export type FixLegacyNamespacesRequestAction = ReturnType<typeof fixLegacyNamespacesRequest>
 
@@ -106,7 +106,7 @@ export type FixLegacyNamespacesRequestAction = ReturnType<typeof fixLegacyNamesp
 
 export const FIX_LEGACY_NAMESPACES_SUCCESS = '[Success] Fix Legacy Namespaces'
 
-export const fixLegacyNamespacesSuccess = (scene: Scene) => action(FIX_LEGACY_NAMESPACES_SUCCESS, { scene })
+export const fixLegacyNamespacesSuccess = (scene: SceneSDK6) => action(FIX_LEGACY_NAMESPACES_SUCCESS, { scene })
 
 export type FixLegacyNamespacesSuccessAction = ReturnType<typeof fixLegacyNamespacesSuccess>
 
@@ -114,7 +114,7 @@ export type FixLegacyNamespacesSuccessAction = ReturnType<typeof fixLegacyNamesp
 
 export const SYNC_SCENE_ASSETS_REQUEST = '[Request] Sync Scene Assets'
 
-export const syncSceneAssetsRequest = (scene: Scene) => action(SYNC_SCENE_ASSETS_REQUEST, { scene })
+export const syncSceneAssetsRequest = (scene: SceneSDK6) => action(SYNC_SCENE_ASSETS_REQUEST, { scene })
 
 export type SyncSceneAssetsRequestAction = ReturnType<typeof syncSceneAssetsRequest>
 
@@ -122,7 +122,7 @@ export type SyncSceneAssetsRequestAction = ReturnType<typeof syncSceneAssetsRequ
 
 export const SYNC_SCENE_ASSETS_SUCCESS = '[Success] Sync Scene Assets'
 
-export const syncSceneAssetsSuccess = (scene: Scene) => action(SYNC_SCENE_ASSETS_SUCCESS, { scene })
+export const syncSceneAssetsSuccess = (scene: SceneSDK6) => action(SYNC_SCENE_ASSETS_SUCCESS, { scene })
 
 export type SyncSceneAssetsSuccessAction = ReturnType<typeof syncSceneAssetsSuccess>
 

@@ -1,7 +1,7 @@
 import { Composite } from '@dcl/ecs'
 import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
 import { Project } from 'modules/project/types'
-import { ComponentData, ComponentType, Scene } from 'modules/scene/types'
+import { ComponentData, ComponentType, SceneSDK6 } from 'modules/scene/types'
 
 export function getParcels(project: Project) {
   const parcels: { x: number; y: number }[] = []
@@ -17,7 +17,7 @@ export function toPath(path: string) {
   return `assets/scene/models/${path}`
 }
 
-export function toComposite(scene: Scene, project?: Project) {
+export function toComposite(scene: SceneSDK6, project?: Project) {
   const { engine, components } = createEngineContext()
 
   for (const entity of Object.values(scene.entities)) {
@@ -55,7 +55,7 @@ export function toComposite(scene: Scene, project?: Project) {
   return Composite.toJson(composite) as string
 }
 
-export function toMappings(scene: Scene): Record<string, string> {
+export function toMappings(scene: SceneSDK6): Record<string, string> {
   const mappings: Record<string, string> = {}
   for (const asset of Object.values(scene.assets)) {
     for (const path in asset.contents) {

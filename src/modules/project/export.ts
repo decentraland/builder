@@ -6,7 +6,7 @@ import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
 import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
-import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
+import { Scene, ComponentType, ComponentDefinition, SceneSDK6 } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
@@ -45,7 +45,7 @@ export const SCRIPT_INSTANCE_NAME = 'script'
 
 export async function createFiles(args: {
   project: Project
-  scene: Scene
+  scene: SceneSDK6
   point: Coordinate
   rotation: Rotation
   thumbnail: string | null
@@ -75,7 +75,7 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
   return { version: MANIFEST_FILE_VERSION, project, scene }
 }
 
-export async function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }, isDeploy = false) {
+export async function createGameFile(args: { project: Project; scene: SceneSDK6; rotation: Rotation }, isDeploy = false) {
   const { scene, project, rotation } = args
   const useLightweight = isDeploy && !hasScripts(scene)
   const Writer = useLightweight ? LightweightWriter : SceneWriter
@@ -326,7 +326,7 @@ export function createStaticFiles() {
 }
 
 export async function downloadFiles(args: {
-  scene: Scene
+  scene: SceneSDK6
   onProgress: (args: { loaded: number; total: number }) => void
   isDeploy: boolean
 }) {
@@ -408,7 +408,7 @@ export async function downloadFiles(args: {
 
 export function createDynamicFiles(args: {
   project: Project
-  scene: Scene
+  scene: SceneSDK6
   point: Coordinate
   rotation: Rotation
   thumbnail: string | null
@@ -508,7 +508,7 @@ export function parcelToString({ x, y }: { x: number; y: number }) {
   return x + ',' + y
 }
 
-export function isPlaceholder(componentId: string, scene: Scene) {
+export function isPlaceholder(componentId: string, scene: SceneSDK6) {
   const component = scene.components[componentId]
   if (component && component.type === ComponentType.GLTFShape) {
     const entity = Object.values(scene.entities).find(entity => entity.components.some(id => id === componentId))
@@ -520,12 +520,12 @@ export function isPlaceholder(componentId: string, scene: Scene) {
   return false
 }
 
-export function isScript(componentId: string, scene: Scene) {
+export function isScript(componentId: string, scene: SceneSDK6) {
   const component = scene.components[componentId]
   return component && component.type === ComponentType.Script
 }
 
-export function hasScripts(scene: Scene) {
+export function hasScripts(scene: SceneSDK6) {
   return Object.values(scene.components).some(component => component.type === ComponentType.Script)
 }
 

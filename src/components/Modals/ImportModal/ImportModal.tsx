@@ -126,8 +126,13 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         }
 
         importedFile.manifest!.project.id = uuidv4()
-        importedFile.manifest!.scene.id = uuidv4()
-        importedFile.manifest!.project.sceneId = parsed.scene.id
+        const sceneId = uuidv4()
+        if (importedFile.manifest!.scene.sdk6) {
+          importedFile.manifest!.scene.sdk6.id = sceneId
+        } else {
+          importedFile.manifest!.scene.sdk7.id = sceneId
+        }
+        importedFile.manifest!.project.sceneId = sceneId
 
         this.analytics.track('Import project', { name: file.name })
 

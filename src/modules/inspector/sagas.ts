@@ -81,8 +81,8 @@ function* handleConnectInspector(action: ConnectInspectorAction) {
   const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
   const scene = scenes[project.sceneId]
 
-  const composite = toComposite(scene, project)
-  const mappings = toMappings(scene)
+  const composite = scene.sdk7 ? scene.sdk7.composite : toComposite(scene.sdk6, project)
+  const mappings = scene.sdk7 ? scene.sdk7.mappings : toMappings(scene.sdk6)
 
   const transport = new MessageTransport(window, iframe.contentWindow!, '*')
   const server = new IframeStorage.Server(transport)

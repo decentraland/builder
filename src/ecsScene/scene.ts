@@ -4,7 +4,7 @@ import * as ECS from 'decentraland-ecs'
 import { createChannel } from 'decentraland-builder-scripts/channel'
 import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
-import { EntityDefinition, AnyComponent, ComponentData, ComponentType, Scene } from 'modules/scene/types'
+import { EntityDefinition, AnyComponent, ComponentData, ComponentType, SceneSDK6 } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
 
 const { Gizmos, SmartItem } = require('decentraland-ecs') as any
@@ -188,7 +188,7 @@ async function handleExternalAction(message: { type: string; payload: Record<str
   }
 }
 
-function createComponent(component: AnyComponent, scene: Scene) {
+function createComponent(component: AnyComponent, scene: SceneSDK6) {
   const { id, type, data } = component
 
   if (!getComponentById(id)) {

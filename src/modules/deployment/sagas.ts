@@ -138,83 +138,89 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       return
     }
 
-    const identity: AuthIdentity = yield call(getIdentity)
-    if (!identity) {
-      yield put(deployFailure('Unable to Publish: Invalid identity'))
-      return
-    }
-
-    const author: ReturnType<typeof getName> = yield select(getName)
-
-    // upload media if logged in
-    let previewUrl: string | null = null
-    const isLoggedInResult: boolean = yield select(isLoggedIn)
-    if (isLoggedInResult) {
-      const media: Media | null = yield select(getMedia)
-      if (media) {
-        const [north, east, south, west, thumbnail]: Array<Blob> = yield all([
-          call(objectURLToBlob, media.north),
-          call(objectURLToBlob, media.east),
-          call(objectURLToBlob, media.south),
-          call(objectURLToBlob, media.west),
-          call(objectURLToBlob, media.preview)
-        ])
-
-        yield call(
-          [builder, 'uploadMedia'],
-          project.id,
-          thumbnail,
-          { north, east, south, west },
-          handleProgress(ProgressStage.UPLOAD_RECORDING)
-        )
-
-        previewUrl = getPreviewUrl(project.id)
-      } else {
-        console.warn('Failed to upload scene preview')
+    if (scene.sdk6) {
+      const identity: AuthIdentity = yield call(getIdentity)
+      if (!identity) {
+        yield put(deployFailure('Unable to Publish: Invalid identity'))
+        return
       }
-    }
 
-    const files: Record<string, string> = yield call(createFiles, {
-      project,
-      scene,
-      point: placement.point,
-      rotation: placement.rotation,
-      author,
-      thumbnail: previewUrl,
-      isDeploy: true,
-      onProgress: handleProgress(ProgressStage.CREATE_FILES),
-      world
-    })
+      const author: ReturnType<typeof getName> = yield select(getName)
 
-    const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
+      // upload media if logged in
+      let previewUrl: string | null = null
+      const isLoggedInResult: boolean = yield select(isLoggedIn)
+      if (isLoggedInResult) {
+        const media: Media | null = yield select(getMedia)
+        if (media) {
+          const [north, east, south, west, thumbnail]: Array<Blob> = yield all([
+            call(objectURLToBlob, media.north),
+            call(objectURLToBlob, media.east),
+            call(objectURLToBlob, media.south),
+            call(objectURLToBlob, media.west),
+            call(objectURLToBlob, media.preview)
+          ])
 
-    // Remove the old communications property if it exists
-    const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
+          yield call(
+            [builder, 'uploadMedia'],
+            project.id,
+            thumbnail,
+            { north, east, south, west },
+            handleProgress(ProgressStage.UPLOAD_RECORDING)
+          )
 
-    const { entityId, files: hashedFiles } = yield call(buildEntity, {
-      type: EntityType.SCENE,
-      pointers: [...sceneDefinition.scene.parcels],
-      metadata: sceneDefinition,
-      files: contentFiles
-    })
+          previewUrl = getPreviewUrl(project.id)
+        } else {
+          console.warn('Failed to upload scene preview')
+        }
+      }
 
-    const authChain = Authenticator.signPayload(identity, entityId)
-    yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
-    // generate new deployment
-    const address: string = yield select(getAddress) || ''
+      const files: Record<string, string> = yield call(createFiles, {
+        project,
+        scene: scene.sdk6,
+        point: placement.point,
+        rotation: placement.rotation,
+        author,
+        thumbnail: previewUrl,
+        isDeploy: true,
+        onProgress: handleProgress(ProgressStage.CREATE_FILES),
+        world
+      })
 
-    return {
-      id: entityId,
-      placement,
-      owner: address,
-      timestamp: +new Date(),
-      layout: project.layout,
-      name: project.title,
-      thumbnail: previewUrl,
-      projectId: project.id,
-      base: sceneDefinition.scene.base,
-      parcels: sceneDefinition.scene.parcels,
-      world
+      const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
+
+      // Remove the old communications property if it exists
+      const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
+
+      const { entityId, files: hashedFiles } = yield call(buildEntity, {
+        type: EntityType.SCENE,
+        pointers: [...sceneDefinition.scene.parcels],
+        metadata: sceneDefinition,
+        files: contentFiles
+      })
+
+      const authChain = Authenticator.signPayload(identity, entityId)
+      yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
+      // generate new deployment
+      const address: string = yield select(getAddress) || ''
+
+      return {
+        id: entityId,
+        placement,
+        owner: address,
+        timestamp: +new Date(),
+        layout: project.layout,
+        name: project.title,
+        thumbnail: previewUrl,
+        projectId: project.id,
+        base: sceneDefinition.scene.base,
+        parcels: sceneDefinition.scene.parcels,
+        world
+      }
+    } else {
+      // TODO: implement for sdk7
+      yield put(deployFailure('Unimplemented for SDK7'))
+      return
     }
   }
 

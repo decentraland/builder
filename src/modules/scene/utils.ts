@@ -13,7 +13,7 @@ import { SCRIPT_INSTANCE_NAME } from 'modules/project/export'
 import { AssetParameter, AssetParameterValues, AssetParameterType, AssetActionValue, Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { PreviewType } from 'modules/editor/types'
 import { ModelMetrics, Vector3 } from 'modules/models/types'
-import { Scene, ComponentType, ComponentDefinition, AnyComponent, EntityDefinition } from './types'
+import { ComponentType, ComponentDefinition, AnyComponent, EntityDefinition, SceneSDK6 } from './types'
 
 /**
  * Returns a new random position bound to y: 0
@@ -30,8 +30,8 @@ export function isWithinBounds(position: Vector3, bounds: Vector3) {
 }
 
 // Note: if we start making extensive use of scene cloning we may replace this by a proper deep clone
-export function cloneEntities(scene: Scene) {
-  return Object.keys(scene.entities).reduce<Scene['entities']>(
+export function cloneEntities(scene: SceneSDK6) {
+  return Object.keys(scene.entities).reduce<SceneSDK6['entities']>(
     (entities, entityId) => ({
       ...entities,
       [entityId]: { ...scene.entities[entityId], components: [...scene.entities[entityId].components] }
@@ -40,8 +40,8 @@ export function cloneEntities(scene: Scene) {
   )
 }
 
-export function filterEntitiesWithComponent(componentId: string, entities: Scene['entities']): Scene['entities'] {
-  const newEntities: Scene['entities'] = {}
+export function filterEntitiesWithComponent(componentId: string, entities: SceneSDK6['entities']): SceneSDK6['entities'] {
+  const newEntities: SceneSDK6['entities'] = {}
 
   for (const id in entities) {
     const entity = entities[id]
@@ -122,7 +122,7 @@ export function* getSceneByProjectId(projectId: string, type: PreviewType = Prev
   return scene
 }
 
-export function getEntityName(scene: Scene, entityComponents: EntityDefinition['components'], assets: Record<string, Asset>) {
+export function getEntityName(scene: SceneSDK6, entityComponents: EntityDefinition['components'], assets: Record<string, Asset>) {
   const takenNames = new Set<string>()
   const components = entityComponents.map(id => scene.components[id])
 

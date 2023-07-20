@@ -12,7 +12,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { pool } = ownProps
   const scene = getScenes(state)[pool.sceneId]
   return {
-    items: scene ? scene.metrics.entities : 0,
+    items: scene && scene.sdk6 ? scene.sdk6.metrics.entities : 0,
     deploymentStatus: getDeploymentStatusByProjectId(state)[ownProps.pool.id]
   }
 }

@@ -3,6 +3,7 @@ import { RootState } from 'modules/common/types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Project } from 'modules/project/types'
 import { INITIAL_STATE as DEPLOYMENT_INITIAL_STATE } from 'modules/deployment/reducer'
+import { SceneSDK6 } from 'modules/scene/types'
 import {
   toProjectCloudSchema,
   addScale,
@@ -12,7 +13,8 @@ import {
   sanitizeEntityName,
   sanitizeEntityName2,
   dedupeEntityName,
-  replaceUserIdWithEthAddress
+  replaceUserIdWithEthAddress,
+  wrapSdk6
 } from './utils'
 
 export const migrations = {
@@ -28,7 +30,7 @@ export const migrations = {
   '3': (state: RootState) => {
     for (const scene of Object.values((state && state.scene && state.scene.present && state.scene.present.data) || {})) {
       // mutation ahead
-      addMappings(scene)
+      addMappings(scene as unknown as SceneSDK6)
     }
     return state
   },
@@ -50,14 +52,14 @@ export const migrations = {
   '5': (state: RootState) => {
     for (const scene of Object.values((state && state.scene && state.scene.present && state.scene.present.data) || {})) {
       // mutation ahead
-      addScale(scene)
+      addScale(scene as unknown as SceneSDK6)
     }
     return state
   },
   '6': (state: RootState) => {
     for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
-      addEntityName(scene)
+      addEntityName(scene as unknown as SceneSDK6)
     }
 
     return state
@@ -65,35 +67,35 @@ export const migrations = {
   '7': (state: RootState) => {
     for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
-      addAssets(scene)
+      addAssets(scene as unknown as SceneSDK6)
     }
     return state
   },
   '8': (state: RootState) => {
     for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
-      removeScriptSrc(scene)
+      removeScriptSrc(scene as unknown as SceneSDK6)
     }
     return state
   },
   '9': (state: RootState) => {
     for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
-      sanitizeEntityName(scene)
+      sanitizeEntityName(scene as unknown as SceneSDK6)
     }
     return state
   },
   '10': (state: RootState) => {
     for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
-      sanitizeEntityName2(scene)
+      sanitizeEntityName2(scene as unknown as SceneSDK6)
     }
     return state
   },
   '11': (state: RootState) => {
     for (const sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
-      dedupeEntityName(scene)
+      dedupeEntityName(scene as unknown as SceneSDK6)
     }
     return state
   },
@@ -117,6 +119,14 @@ export const migrations = {
     const isDirty = !!(state.deployment && state.deployment.data && Object.keys(state.deployment.data).length > 0)
     if (isDirty) {
       state.deployment = DEPLOYMENT_INITIAL_STATE
+    }
+    return state
+  },
+  '15': (state: RootState) => {
+    // wrap scenes under sdk6 property
+    for (const sceneId in state.scene.present.data) {
+      const scene = state.scene.present.data[sceneId] as unknown as SceneSDK6
+      state.scene.present.data[sceneId] = wrapSdk6(scene)
     }
     return state
   }
