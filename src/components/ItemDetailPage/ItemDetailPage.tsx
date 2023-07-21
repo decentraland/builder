@@ -30,6 +30,7 @@ import ItemVideo from 'components/ItemVideo'
 import VideoMetrics from 'components/ItemVideo/VideoMetrics'
 import { Props, State } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
+import ItemRequiredPermission from 'components/ItemRequiredPermission'
 
 const STORAGE_KEY = 'dcl-item-notice'
 
@@ -362,13 +363,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                     />
                   </div>
                   <div className="data">
-                    <div className="tags-container">
-                      {item.data.requiredPermissions.map(permission => (
-                        <span className="tag" key={permission}>
-                          {permission.replaceAll('_', ' ')}
-                        </span>
-                      ))}
-                    </div>
+                    <ItemRequiredPermission requiredPermissions={item.data.requiredPermissions} basic />
                   </div>
                 </div>
               ) : null}
