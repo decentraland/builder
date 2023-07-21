@@ -386,6 +386,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
+  if (remoteItem.video) item.video = remoteItem.video
 
   return item
 }
