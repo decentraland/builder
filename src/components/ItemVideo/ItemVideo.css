@@ -12,14 +12,17 @@
   width: 96px;
 }
 
-.ItemVideo.video-wrapper {
-  border-radius: 5px;
-}
-
 .ItemVideo.video-wrapper .item-video {
   height: 100%;
   width: 100%;
   object-fit: cover;
+  border-radius: 5px;
+}
+
+.ItemVideo.video-wrapper .icon {
+  position: absolute;
+  bottom: 16px;
+  right: 12px;
 }
 
 .ItemVideo .ItemBadge {
