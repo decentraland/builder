@@ -836,6 +836,10 @@
     "too_many": "Too many {metric}",
     "triangles": "triangles"
   },
+  "video_stats": {
+    "seconds": "{seconds} secs",
+    "size": "{size} MB"
+  },
   "mobile_page": {
     "desktop_too_narrow": "The Builder doesn't work on this resolution! Try making this window wider if you can.",
     "gallery_title": "Check out work from Builder users!",
@@ -1770,8 +1774,14 @@
       "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name} event.",
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
-      "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum"
+      "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum",
+      "required_permissions": "Permissions"
     }
+  },
+  "video_showcase_modal": {
+    "title": "Detailed Video of Your Smart Wearable",
+    "back": "Back",
+    "edit": "Edit Video"
   },
   "emote": {
     "category": {
