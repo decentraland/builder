@@ -831,6 +831,10 @@
     "too_many": "{metric} 过多",
     "triangles": "三角形"
   },
+  "video_stats": {
+    "seconds": "{seconds} 秒",
+    "size": "{size} MB"
+  },
   "mobile_page": {
     "desktop_too_narrow": "生成器不适用于此分辨率！ 如果可以，请尝试扩大此窗口。",
     "gallery_title": "查看内容编辑用户的作品!",
@@ -1781,8 +1785,14 @@
       "event_tag": "如果您想将此项目包含在 {event_tag} 中，请使用 {event_name} 标签。{learn_more}",
       "select_placeholder": "选择一个选项",
       "request_for_changes": "要求变更",
-      "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权"
+      "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权",
+      "required_permissions": "权限"
     }
+  },
+  "video_showcase_modal": {
+    "title": "您智能可穿戴的详细视频",
+    "back": "后退",
+    "edit": "编辑视频"
   },
   "emote": {
     "category": {
