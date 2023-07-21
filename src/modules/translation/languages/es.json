@@ -844,6 +844,10 @@
     "too_many": "Demasiados {metric}",
     "triangles": "triángulos"
   },
+  "video_stats": {
+    "seconds": "{seconds} segs",
+    "size": "{size} MB"
+  },
   "mobile_page": {
     "desktop_too_narrow": "¡El Builder no funciona con esta resolución! Intenta agrandando la ventana si puedes.",
     "gallery_title": "Esto es lo que se está costruyendo",
@@ -1789,8 +1793,14 @@
       "event_tag": "Usa la etiqueta {event_tag} si quieres incluir este item en el {event_name}. {learn_more}",
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
-      "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"
+      "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro",
+      "required_permissions": "Permisos"
     }
+  },
+  "video_showcase_modal": {
+    "title": "Video detallado de su Vestimenta Interactiva",
+    "back": "Volver",
+    "edit": "Editar video"
   },
   "emote": {
     "category": {
