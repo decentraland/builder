@@ -8,13 +8,15 @@ import {
   Button,
   Form,
   Field,
+  Icon as DCLIcon,
   Section,
   Header,
   InputOnChangeData,
   SelectField,
   DropdownProps,
   WearablePreview,
-  Message
+  Message,
+  TagField
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -33,13 +35,8 @@ import {
   VIDEO_PATH,
   WearableData
 } from 'modules/item/types'
-import { EngineType, getItemData, getModelData } from 'lib/getModelData'
-import { computeHashes } from 'modules/deployment/contentUtils'
-import ItemDropdown from 'components/ItemDropdown'
-import Icon from 'components/Icon'
-import { getExtension } from 'lib/file'
-import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
+import { computeHashes } from 'modules/deployment/contentUtils'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -54,10 +51,17 @@ import {
   getBodyShapeTypeFromContents,
   isSmart
 } from 'modules/item/utils'
+import { EngineType, getItemData, getModelData } from 'lib/getModelData'
+import { getExtension } from 'lib/file'
+import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
+import ItemDropdown from 'components/ItemDropdown'
+import Icon from 'components/Icon'
+import ItemVideo from 'components/ItemVideo'
+import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
+import UploadVideoStep from './UploadVideoStep/UploadVideoStep'
 import { getThumbnailType, toEmoteWithBlobs, toWearableWithBlobs } from './utils'
-import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import {
   Props,
   State,
@@ -68,12 +72,12 @@ import {
   AcceptedFileProps,
   ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
-import UploadVideoStep from './UploadVideoStep/UploadVideoStep'
 import './CreateSingleItemModal.css'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
+  videoInput = React.createRef<HTMLInputElement>()
   modalContainer = React.createRef<HTMLDivElement>()
   timer: ReturnType<typeof setTimeout> | undefined
 
@@ -517,6 +521,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
   }
 
+  handleOpenVideoDialog = () => {
+    this.setState({ view: CreateItemView.UPLOAD_VIDEO })
+  }
+
   handleYes = () => this.setState({ isRepresentation: true })
 
   handleNo = () => this.setState({ isRepresentation: false })
@@ -619,7 +627,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderModalTitle = () => {
     const isAddingRepresentation = this.isAddingRepresentation()
-    const { bodyShape, type, view } = this.state
+    const { bodyShape, type, view, contents } = this.state
     const { metadata } = this.props
 
     if (isAddingRepresentation) {
@@ -634,6 +642,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return view === CreateItemView.THUMBNAIL
         ? t('create_single_item_modal.thumbnail_step_title')
         : t('create_single_item_modal.title_emote')
+    }
+
+    if (isSmart({ type, contents }) && view === CreateItemView.DETAILS) {
+      return t('create_single_item_modal.smart_wearable_details_title')
     }
 
     switch (view) {
@@ -799,70 +811,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     )
   }
 
-  renderWearableDetails() {
-    const { metadata } = this.props
-    const { bodyShape, isRepresentation, type, item, contents } = this.state
-    const isAddingRepresentation = this.isAddingRepresentation()
-    const isSmartItem = isSmart({ type, contents })
-
-    return (
-      <>
-        {isAddingRepresentation || isSmartItem ? null : (
-          <Section>
-            <Header sub>{t('create_single_item_modal.representation_label')}</Header>
-            <Row>
-              {this.renderRepresentation(BodyShapeType.BOTH)}
-              {this.renderRepresentation(BodyShapeType.MALE)}
-              {this.renderRepresentation(BodyShapeType.FEMALE)}
-            </Row>
-          </Section>
-        )}
-        {bodyShape && (!metadata || !metadata.changeItemFile) ? (
-          <>
-            {bodyShape === BodyShapeType.BOTH ? (
-              this.renderFields()
-            ) : (
-              <>
-                {isAddingRepresentation ? null : (
-                  <Section>
-                    <Header sub>{t('create_single_item_modal.existing_item')}</Header>
-                    <Row>
-                      <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
-                        {t('global.yes')}
-                      </div>
-                      <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
-                        {t('global.no')}
-                      </div>
-                    </Row>
-                  </Section>
-                )}
-                {isRepresentation === undefined ? null : isRepresentation ? (
-                  <Section>
-                    <Header sub>
-                      {isAddingRepresentation
-                        ? t('create_single_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-                        : t('create_single_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
-                    </Header>
-                    <ItemDropdown
-                      value={item}
-                      filter={this.filterItemsByBodyShape}
-                      onChange={this.handleItemChange}
-                      isDisabled={isAddingRepresentation}
-                    />
-                  </Section>
-                ) : (
-                  this.renderFields()
-                )}
-              </>
-            )}
-          </>
-        ) : (
-          this.renderFields()
-        )}
-      </>
-    )
-  }
-
   getPlayModeOptions() {
     const playModes: string[] = getEmotePlayModes()
 
@@ -873,48 +821,24 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }))
   }
 
-  renderEmoteDetails() {
-    const { playMode = '' } = this.state
-
-    return (
-      <>
-        {this.renderFields()}
-        <SelectField
-          required
-          search={false}
-          className="has-description"
-          label={t('create_single_item_modal.play_mode_label')}
-          placeholder={t('create_single_item_modal.play_mode_placeholder')}
-          value={playMode as EmotePlayMode}
-          options={this.getPlayModeOptions()}
-          onChange={this.handlePlayModeChange}
-        />
-        <div className="dcl select-field">
-          <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" className="" />} />
-        </div>
-      </>
-    )
-  }
-
   renderMetrics() {
     const { metrics } = this.state
-
     if (metrics) {
       if (areEmoteMetrics(metrics)) {
         return (
           <div className="metrics">
-            <div className="metric circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
-            <div className="metric circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
-            <div className="metric circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
-            <div className="metric circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
+            <div className="metric image circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+            <div className="metric image circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
+            <div className="metric image circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
+            <div className="metric image circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
           </div>
         )
       } else {
         return (
           <div className="metrics">
-            <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-            <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-            <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
+            <div className="metric image triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+            <div className="metric image materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+            <div className="metric image textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
           </div>
         )
       }
@@ -949,12 +873,192 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return required.every(prop => prop !== undefined)
   }
 
+  renderWearableDetails() {
+    const { metadata } = this.props
+    const { bodyShape, thumbnail, isRepresentation, rarity, item } = this.state
+    const title = this.renderModalTitle()
+    const thumbnailStyle = getBackgroundStyle(rarity)
+    const isAddingRepresentation = this.isAddingRepresentation()
+
+    return (
+      <>
+        <Column className="preview" width={192} grow={false}>
+          <div className="thumbnail-container">
+            <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} alt={title} />
+            {isRepresentation ? null : (
+              <>
+                <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+                <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
+              </>
+            )}
+          </div>
+          {this.renderMetrics()}
+        </Column>
+        <Column className="data" grow={true}>
+          {isAddingRepresentation ? null : (
+            <Section>
+              <Header sub>{t('create_single_item_modal.representation_label')}</Header>
+              <Row>
+                {this.renderRepresentation(BodyShapeType.BOTH)}
+                {this.renderRepresentation(BodyShapeType.MALE)}
+                {this.renderRepresentation(BodyShapeType.FEMALE)}
+              </Row>
+            </Section>
+          )}
+          {bodyShape && (!metadata || !metadata.changeItemFile) ? (
+            <>
+              {bodyShape === BodyShapeType.BOTH ? (
+                this.renderFields()
+              ) : (
+                <>
+                  {isAddingRepresentation ? null : (
+                    <Section>
+                      <Header sub>{t('create_single_item_modal.existing_item')}</Header>
+                      <Row>
+                        <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
+                          {t('global.yes')}
+                        </div>
+                        <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
+                          {t('global.no')}
+                        </div>
+                      </Row>
+                    </Section>
+                  )}
+                  {isRepresentation === undefined ? null : isRepresentation ? (
+                    <Section>
+                      <Header sub>
+                        {isAddingRepresentation
+                          ? t('create_single_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+                          : t('create_single_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
+                      </Header>
+                      <ItemDropdown
+                        value={item}
+                        filter={this.filterItemsByBodyShape}
+                        onChange={this.handleItemChange}
+                        isDisabled={isAddingRepresentation}
+                      />
+                    </Section>
+                  ) : (
+                    this.renderFields()
+                  )}
+                </>
+              )}
+            </>
+          ) : (
+            this.renderFields()
+          )}
+        </Column>
+      </>
+    )
+  }
+
+  renderEmoteDetails() {
+    const { thumbnail, rarity, playMode = '' } = this.state
+    const title = this.renderModalTitle()
+    const thumbnailStyle = getBackgroundStyle(rarity)
+
+    return (
+      <>
+        <Column className="preview" width={192} grow={false}>
+          <div className="thumbnail-container">
+            <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} alt={title} />
+            <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+            <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
+          </div>
+          {this.renderMetrics()}
+        </Column>
+        <Column className="data" grow={true}>
+          {this.renderFields()}
+          <SelectField
+            required
+            search={false}
+            className="has-description"
+            label={t('create_single_item_modal.play_mode_label')}
+            placeholder={t('create_single_item_modal.play_mode_placeholder')}
+            value={playMode as EmotePlayMode}
+            options={this.getPlayModeOptions()}
+            onChange={this.handlePlayModeChange}
+          />
+          <div className="dcl select-field">
+            <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" />} />
+          </div>
+        </Column>
+      </>
+    )
+  }
+
+  renderSmartWearableDetails() {
+    const { thumbnail, rarity, requiredPermissions, video } = this.state
+    const title = this.renderModalTitle()
+    const thumbnailStyle = getBackgroundStyle(rarity)
+
+    return (
+      <div className="data smart-wearable">
+        {this.renderFields()}
+        <div className="required-permissions">
+          <Header sub>{t('create_single_item_modal.smart_wearable_permissions_label')}</Header>
+          <TagField value={requiredPermissions?.map(permission => permission.replaceAll('_', ' '))} search={false} disabled multiple />
+          <p className="learn-more">
+            {t('create_single_item_modal.required_permissions_learn_more_about', {
+              learn_more: (
+                <a
+                  href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('global.learn_more')}
+                </a>
+              )
+            })}
+          </p>
+        </div>
+        <Row className="previews">
+          <div className="thumbnail-preview-container">
+            <Header sub>{t('create_single_item_modal.thumbnail_preview_title')}</Header>
+            <div className="preview">
+              <div className="thumbnail-container">
+                <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} alt={title} />
+                <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+                <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
+              </div>
+              {this.renderMetrics()}
+            </div>
+          </div>
+
+          <div className="video-preview-container">
+            <Header sub>{t('create_single_item_modal.video_preview_title')}</Header>
+            <div className="preview">
+              <ItemVideo src={video} showMetrics previewIcon={<DCLIcon name="video" onClick={this.handleOpenVideoDialog} />} />
+            </div>
+          </div>
+        </Row>
+        <div className="dcl select-field">
+          <Message info visible content={t('create_single_item_modal.smart_wearable_notice')} icon={<Icon name="alert" />} />
+        </div>
+      </div>
+    )
+  }
+
+  renderItemDetails() {
+    const { type, contents } = this.state
+
+    if (type === ItemType.EMOTE) {
+      return this.renderEmoteDetails()
+    } else if (isSmart({ type, contents })) {
+      return this.renderSmartWearableDetails()
+    } else {
+      return this.renderWearableDetails()
+    }
+  }
+
+  handleGoBack = () => {
+    this.setState({ view: CreateItemView.UPLOAD_VIDEO })
+  }
+
   renderDetailsView() {
     const { onClose, metadata, error, isLoading } = this.props
-    const { thumbnail, isRepresentation, rarity, error: stateError, type } = this.state
-
+    const { isRepresentation, error: stateError, type, contents } = this.state
     const isDisabled = this.isDisabled()
-    const thumbnailStyle = getBackgroundStyle(rarity)
     const title = this.renderModalTitle()
 
     return (
@@ -963,31 +1067,24 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         <Modal.Content>
           <Form onSubmit={this.handleSubmit} disabled={isDisabled}>
             <Column>
-              <Row className="details">
-                <Column className="preview" width={192} grow={false}>
-                  <div className="thumbnail-container">
-                    <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} alt={title} />
-                    {isRepresentation ? null : (
-                      <>
-                        <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
-                        <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
-                      </>
-                    )}
-                  </div>
-                  {this.renderMetrics()}
+              <Row className="details">{this.renderItemDetails()}</Row>
+              <Row className="actions" grow>
+                {isSmart({ type, contents }) ? (
+                  <Column grow shrink>
+                    <Button disabled={isDisabled} loading={isLoading} onClick={this.handleGoBack}>
+                      {t('global.back')}
+                    </Button>
+                  </Column>
+                ) : null}
+                <Column align="right">
+                  <Button primary disabled={isDisabled} loading={isLoading}>
+                    {(metadata && metadata.changeItemFile) || isRepresentation
+                      ? t('global.save')
+                      : type === ItemType.EMOTE
+                      ? t('global.next')
+                      : t('global.create')}
+                  </Button>
                 </Column>
-                <Column className="data" grow={true}>
-                  {type === ItemType.WEARABLE ? this.renderWearableDetails() : this.renderEmoteDetails()}
-                </Column>
-              </Row>
-              <Row className="actions" align="right">
-                <Button primary disabled={isDisabled} loading={isLoading}>
-                  {(metadata && metadata.changeItemFile) || isRepresentation
-                    ? t('global.save')
-                    : type === ItemType.EMOTE
-                    ? t('global.next')
-                    : t('global.create')}
-                </Button>
               </Row>
               {stateError ? (
                 <Row className="error" align="right">
