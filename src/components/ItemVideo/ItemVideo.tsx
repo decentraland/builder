@@ -1,10 +1,10 @@
 import React from 'react'
 import classNames from 'classnames'
 import { getVideoURL } from 'modules/item/utils'
+import { useVideo } from 'lib/video'
 import VideoMetrics from './VideoMetrics'
 import { Props } from './ItemVideo.types'
 import './ItemVideo.css'
-import { useVideo } from 'lib/video'
 
 const ItemVideo: React.FC<Props> = ({ className, item, src, showMetrics = false, previewIcon = null, children = undefined }: Props) => {
   const { video, duration, size, isLoading } = useVideo()
