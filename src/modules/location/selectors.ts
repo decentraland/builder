@@ -72,7 +72,7 @@ export const getSelectedItemId = (state: RootState) => {
   if (!collectionId) return null
 
   const items = getCollectionItems(state, collectionId)
-  return isReviewing(state) ? (items.find(item => item.type === ItemType.WEARABLE) || items[0])?.id ?? null : null
+  return (items.find(item => item.type === ItemType.WEARABLE) || items[0])?.id ?? null
 }
 export const getSelectedCollectionId = (state: RootState) => new URLSearchParams(getSearch(state)).get('collection')
 export const isReviewing = (state: RootState) => !!new URLSearchParams(getSearch(state)).get('reviewing')
