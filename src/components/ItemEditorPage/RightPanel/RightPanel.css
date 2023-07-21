@@ -23,6 +23,11 @@
   color: var(--secondary-text);
 }
 
+.RightPanel .container {
+  overflow-y: auto;
+  max-height: calc(100vh - 78px);
+}
+
 .RightPanel .details {
   display: flex;
   border: 1px solid var(--gray);
@@ -30,6 +35,7 @@
   padding: 8px;
   align-items: stretch;
   position: relative;
+  margin-bottom: 20px;
 }
 
 .RightPanel .details .edit-item-file {
@@ -85,17 +91,27 @@
   margin-left: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
 }
 
 .RightPanel .details .metrics .metric {
   color: var(--secondary-text);
   font-size: 13px;
   line-height: 18px;
-  padding-left: 20px;
   background-repeat: no-repeat;
   background-position-y: center;
   text-transform: uppercase;
+}
+
+.RightPanel .details .metrics .metric {
+  margin-bottom: 8px;
+}
+
+.RightPanel .details .metrics .metric:last-child {
+  margin-bottom: 0;
+}
+
+.RightPanel .details .metrics .metric.image {
+  padding-left: 20px;
 }
 
 .RightPanel .overrides-label-panel {
@@ -149,7 +165,8 @@
   word-break: break-word;
 }
 
-.RightPanel .details .download-item-button {
+.RightPanel .details .download-item-button,
+.RightPanel .details .play-video-button {
   position: absolute;
   right: 8px;
   bottom: 8px;
@@ -175,4 +192,70 @@
   color: var(--text-on-primary);
   font-weight: 600;
   text-decoration: underline;
+}
+
+.RightPanel .required-permissions .dcl.tag-field,
+.RightPanel .required-permissions .dcl.tag-field .ui.dropdown {
+  width: 100%;
+  min-width: 200px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.RightPanel .required-permissions .container .ui.disabled.dropdown {
+  opacity: 1;
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.RightPanel .required-permissions .container .ui.multiple.dropdown .ui.label,
+.RightPanel .required-permissions .container .ui.multiple.dropdown .ui.label:hover {
+  background-color: #716b7c;
+  border-color: #716b7c;
+  color: var(--text);
+  padding: 2px 8px;
+  margin: 0;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.RightPanel .required-permissions .container .ui.multiple.dropdown .ui.label i.delete.icon {
+  display: none;
+}
+
+.RightPanel .required-permissions .message {
+  display: none;
+}
+
+.ui.small.modal.VideoShowcaseModal > .header {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 26px;
+}
+
+.ui.modal.VideoShowcaseModal .content {
+  height: 500px;
+}
+
+.ui.modal.VideoShowcaseModal .content > video {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.08) 100%), #37333d;
+}
+
+.ui.modal.VideoShowcaseModal .actions {
+  justify-content: space-between;
+}
+
+.ui.modal.VideoShowcaseModal .actions button.ui.button {
+  flex-grow: 0;
+  width: 140px;
 }

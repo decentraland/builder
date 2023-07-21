@@ -6,30 +6,10 @@ import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { getExtension, toMB } from 'lib/file'
 import { WrongExtensionError, VideoFileTooBigError, VideoFileTooLongError, InvalidVideoError } from 'modules/item/errors'
-import { MAX_VIDEO_DURATION, MAX_VIDEO_FILE_SIZE } from 'modules/item/utils'
+import { MAX_VIDEO_DURATION, MAX_VIDEO_FILE_SIZE, loadVideo } from 'modules/item/utils'
 import { VIDEO_EXTENSIONS, VIDEO_PATH } from 'modules/item/types'
 import { Props, State } from './UploadVideoStep.types'
 import styles from './UploadVideoStep.module.css'
-
-const loadVideo = (file: File): Promise<HTMLVideoElement> =>
-  new Promise((resolve, reject) => {
-    try {
-      const video = document.createElement('video')
-      video.preload = 'metadata'
-
-      video.onloadedmetadata = function () {
-        resolve(video)
-      }
-
-      video.onerror = function () {
-        reject('Invalid video. Please select a video file.')
-      }
-
-      video.src = URL.createObjectURL(file)
-    } catch (e) {
-      reject(e)
-    }
-  })
 
 export default class UploadVideoStep extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
