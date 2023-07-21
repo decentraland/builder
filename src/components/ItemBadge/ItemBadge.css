@@ -24,6 +24,16 @@
   filter: invert(100%);
 }
 
+.ItemBadge.smart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ItemBadge.smart:before {
+  content: none;
+}
+
 .ItemBadge.male:before {
   background-image: url('../../images/male.svg');
 }
