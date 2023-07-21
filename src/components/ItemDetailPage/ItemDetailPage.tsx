@@ -353,6 +353,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                     <div className="title">{t('item_detail_page.required_permissions')}</div>
                     <Button
                       inverted
+                      className="learn-more-permissions"
                       size="small"
                       href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
                       rel="noopener noreferrer"

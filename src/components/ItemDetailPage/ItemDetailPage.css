@@ -206,7 +206,7 @@
   border-radius: 5px;
 }
 
-.ItemDetailPage .title-card-container a.ui.button.inverted:focus {
+.ItemDetailPage .title-card-container a.learn-more-permissions.ui.button.inverted:focus {
   background: transparent;
   box-shadow: none !important;
 }
