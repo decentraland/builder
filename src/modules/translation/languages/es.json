@@ -241,9 +241,16 @@
       "invalid_model_files_representation": "El archivo parece tener más de una representación. Por favor revíselas y vuelva a intentarlo.",
       "emote_duration_too_long": ".{enter}La duración de los emoticones tiene un límite de {duration} segundos.{enter}Reduce la duración del emote e intente nuevamente.",
       "emote_duration_too_long_title": "El emote supera la duración máxima en segundos",
-      "invalid_model_file_type": "El archivo tiene una representación inválida para este {type}. Por favor revíselo y vuelva a intentarlo."
+      "invalid_model_file_type": "El archivo tiene una representación inválida para este {type}. Por favor revíselo y vuelva a intentarlo.",
+      "wrong_video_format": "El video provisto no es un video MP4"
     },
-    "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
+    "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
+    "smart_wearable_details_title": "Completa los detalles de la vestimenta interactiva",
+    "smart_wearable_permissions_label": "Permisos de la vestimenta interactiva",
+    "required_permissions_learn_more_about": "{learn_more} acerca de los permisos de la vestimenta interactiva",
+    "smart_wearable_notice": "Recuerde que la vestimenta interactiva está disponibles para todos los cuerpos.",
+    "thumbnail_preview_title": "Thumbnail",
+    "video_preview_title": "Detalle de video"
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
