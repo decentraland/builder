@@ -240,9 +240,16 @@
       "invalid_model_files_representation": "The file seems to have more than one representation, please review them and try again.",
       "emote_duration_too_long": "{title}.{enter}Duration of the emotes has a limit of {duration} seconds.{enter}Reduce the duration of the emote and try again.",
       "emote_duration_too_long_title": "Your emote exceeds the maximum duration in seconds",
-      "invalid_model_file_type": "The file has an invalid representation for this {type} item, please review it and try again."
+      "invalid_model_file_type": "The file has an invalid representation for this {type} item, please review it and try again.",
+      "wrong_video_format": "The provided video is not a MP4 video"
     },
-    "emote_notice": "Emotes are available for all body shapes."
+    "emote_notice": "Emotes are available for all body shapes.",
+    "smart_wearable_details_title": "Complete the smart wereable details",
+    "smart_wearable_permissions_label": "Smart wearable permissions",
+    "required_permissions_learn_more_about": "{learn_more} about smart wearables permissions",
+    "smart_wearable_notice": "Remember that Smart Wearables are available for all body shapes",
+    "thumbnail_preview_title": "Thumbnail",
+    "video_preview_title": "Video detail"
   },
   "create_and_edit_multiple_items_modal": {
     "create": {

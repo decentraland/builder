@@ -7,12 +7,12 @@ import { getFileSize, toMB } from 'lib/file'
 import { Props } from './ItemVideo.types'
 import './ItemVideo.css'
 
-const ItemVideo: React.FC<Props> = ({ className, item, src, showMetrics = false }: Props) => {
+const ItemVideo: React.FC<Props> = ({ className, item, src, showMetrics = false, previewIcon = null }: Props) => {
   const [isLoadedVideo, setLoadedVideo] = useState<boolean>(false)
   const [videoSize, setVideoSize] = useState<number>(0)
   const [videoDuration, setVideoDuration] = useState<number>(0)
   const video = useRef<HTMLVideoElement>(null)
-  const videoSrc = src || getVideoURL(item)
+  const videoSrc = src || (item ? getVideoURL(item) : '')
 
   useEffect(() => {
     const videoElement = video.current
@@ -41,6 +41,7 @@ const ItemVideo: React.FC<Props> = ({ className, item, src, showMetrics = false 
     <div className={classNames('ItemVideoContainer', className)}>
       <div className="ItemVideo is-video video-wrapper">
         <video className="item-video" preload="auto" src={videoSrc} ref={video} />
+        {previewIcon ?? null}
       </div>
       {showMetrics && isLoadedVideo ? (
         <div className="metrics">
