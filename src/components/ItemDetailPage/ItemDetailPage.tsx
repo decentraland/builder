@@ -6,17 +6,17 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Network } from '@dcl/schemas'
 
 import { locations } from 'routing/locations'
+import { getMaxSupply, getMissingBodyShapeType, isFree, resizeImage, getThumbnailURL, isSmart } from 'modules/item/utils'
+import { getCollectionType, isLocked as isCollectionLocked } from 'modules/collection/utils'
+import { dataURLToBlob } from 'modules/media/utils'
+import { computeHashes } from 'modules/deployment/contentUtils'
 import { FromParam } from 'modules/location/types'
-import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
+import { ItemType, THUMBNAIL_PATH, VIDEO_PATH } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { areEmoteMetrics } from 'modules/models/types'
 import { Item } from 'modules/item/types'
 import { isThirdParty } from 'lib/urn'
 import { shorten } from 'lib/address'
-import { getMaxSupply, getMissingBodyShapeType, isFree, resizeImage, getThumbnailURL } from 'modules/item/utils'
-import { getCollectionType, isLocked as isCollectionLocked } from 'modules/collection/utils'
-import { dataURLToBlob } from 'modules/media/utils'
-import { computeHashes } from 'modules/deployment/contentUtils'
 import ItemBadge from 'components/ItemBadge'
 import Notice from 'components/Notice'
 import ItemProvider from 'components/ItemProvider'
@@ -26,20 +26,35 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import Back from 'components/Back'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+import ItemVideo from 'components/ItemVideo'
+import VideoMetrics from 'components/ItemVideo/VideoMetrics'
+import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import { Props, State } from './ItemDetailPage.types'
-
 import './ItemDetailPage.css'
 
 const STORAGE_KEY = 'dcl-item-notice'
 
 export default class ItemDetailPage extends React.PureComponent<Props, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
-  handleEditItem = () => {
+
+  handlePreviewItem = () => {
     const { item, onNavigate } = this.props
     item &&
       onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }), {
         fromParam: isThirdParty(item.urn) ? FromParam.TP_COLLECTIONS : FromParam.COLLECTIONS
       })
+  }
+
+  handleEditItemVideo = () => {
+    const { item, onOpenModal } = this.props
+    onOpenModal('EditVideoModal', { item, onSaveVideo: this.handleSaveVideo })
+  }
+
+  handleSaveVideo = async (video: Blob) => {
+    const { onSaveItem, item } = this.props
+    onSaveItem({ ...item, contents: { ...item?.contents, ...(await computeHashes({ [VIDEO_PATH]: video })) } } as Item, {
+      [VIDEO_PATH]: video
+    })
   }
 
   handleDeleteItem = () => {
@@ -140,11 +155,31 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                 </div>
               ) : (
                 <div className="metrics">
+                  <div className="subtitle">{t('item_detail_page.properties')}</div>
                   <div className="metric">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
                   <div className="metric">{t('model_metrics.materials', { count: metrics.materials })}</div>
                   <div className="metric">{t('model_metrics.textures', { count: metrics.textures })}</div>
                 </div>
               )}
+              {isSmart(item) ? (
+                <ItemVideo item={item}>
+                  {(_video, duration, size, _isLoading) => (
+                    <>
+                      <div className="overlay">
+                        <Icon name="play" className="play-video-button" onClick={this.handleEditItemVideo} />
+                      </div>
+                      <Button primary onClick={this.handleEditItemVideo}>
+                        <Icon name="video" />
+                        {t('item_detail_page.edit_video')}
+                      </Button>
+                      <div className="metrics">
+                        <div className="subtitle">{t('item_detail_page.properties')}</div>
+                        <VideoMetrics duration={duration} size={size} showIcons={false} />
+                      </div>
+                    </>
+                  )}
+                </ItemVideo>
+              ) : null}
               <div className="details">
                 <div className="subtitle">{t('item_detail_page.details')}</div>
                 {item.isPublished && (
@@ -214,8 +249,13 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
               <div className="card">
                 <div className="title-card-container">
                   <div className="title">{item.name}</div>
-                  <div>
-                    <Button inverted size="small" onClick={this.handleEditItem}>
+                  <div className="actions">
+                    {isSmart(item) && (
+                      <Button className="edit" inverted size="small" onClick={this.handleEditRepresentation}>
+                        {t('global.edit')}
+                      </Button>
+                    )}
+                    <Button inverted size="small" onClick={this.handlePreviewItem}>
                       {t('collection_detail_page.preview')}
                     </Button>
                     {hasActions ? (
@@ -286,7 +326,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                 </div>
               </div>
 
-              {item.type === ItemType.WEARABLE ? (
+              {item.type === ItemType.WEARABLE && !isSmart(item) ? (
                 <div className="card">
                   <div className="title-card-container">
                     <div className="title">{t('item_detail_page.representations.title')}</div>
@@ -304,6 +344,26 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {isSmart(item) && item.data.requiredPermissions?.length ? (
+                <div className="card">
+                  <div className="title-card-container">
+                    <div className="title">{t('item_detail_page.required_permissions')}</div>
+                    <Button
+                      inverted
+                      className="learn-more-permissions"
+                      size="small"
+                      href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      content={t('global.learn_more')}
+                    />
+                  </div>
+                  <div className="data">
+                    <ItemRequiredPermission requiredPermissions={item.data.requiredPermissions} basic />
                   </div>
                 </div>
               ) : null}
