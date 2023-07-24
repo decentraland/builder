@@ -7,9 +7,16 @@ export type Props = Omit<ModalProps, 'metadata'> & {
 
 export type State = {
   video: Blob | null
+  view: string
 }
 
 export type EditVideoModalMetadata = {
   onSaveVideo: (video: Blob) => void
   item: Item
+  view?: EditVideoView
+}
+
+export enum EditVideoView {
+  VIEW_VIDEO = 'view_video',
+  UPLOAD_VIDEO = 'upload_video'
 }

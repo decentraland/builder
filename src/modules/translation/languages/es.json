@@ -853,7 +853,7 @@
     "triangles": "triángulos"
   },
   "video_stats": {
-    "seconds": "{seconds} segs",
+    "seconds": "{seconds} {seconds, plural, one {segundo} other {segundos}}",
     "size": "{size} MB"
   },
   "mobile_page": {
@@ -1374,7 +1374,9 @@
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
     "add_representation": "Agregar representación de {bodyShape}",
     "change_item_file": "Editar representación",
-    "delete_published_item": "No se puede borrar un item publicado"
+    "delete_published_item": "No se puede borrar un item publicado",
+    "required_permissions": "Permisos",
+    "edit_video": "Editar video"
   },
   "third_party_collection_detail_page": {
     "notice": "Cada item publicado toma un Slot. Crear un borrador de propuesta en el DAO para solicitar más slots",
