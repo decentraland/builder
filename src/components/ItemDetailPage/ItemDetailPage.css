@@ -193,6 +193,11 @@
   justify-content: space-between;
 }
 
+.ItemDetailPage .title-card-container .title,
+.ItemDetailPage .title-card-container .actions {
+  flex: 1;
+}
+
 .ItemDetailPage .title-card-container .actions .edit {
   min-width: 50px;
   margin-right: 8px;
