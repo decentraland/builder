@@ -28,9 +28,9 @@ import Back from 'components/Back'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import ItemVideo from 'components/ItemVideo'
 import VideoMetrics from 'components/ItemVideo/VideoMetrics'
+import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import { Props, State } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
-import ItemRequiredPermission from 'components/ItemRequiredPermission'
 
 const STORAGE_KEY = 'dcl-item-notice'
 
