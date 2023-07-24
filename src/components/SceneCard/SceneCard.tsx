@@ -1,11 +1,11 @@
 import classNames from 'classnames'
-import { usePlayVideoOnHover } from 'lib/video'
+import { useVideo } from 'lib/video'
 import { Badge } from 'decentraland-ui'
 import { Props } from './SceneCard.types'
 import styles from './SceneCard.module.css'
 
 export const SceneCard: React.FC<Props> = ({ title, subtitle, description, videoSrc, imgSrc, disabled, tag, onClick }) => {
-  const { video, hovered, onMouseEnter, onMouseLeave } = usePlayVideoOnHover()
+  const { video, hovered, onMouseEnter, onMouseLeave } = useVideo()
 
   return (
     <button

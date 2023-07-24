@@ -1,6 +1,6 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
-import { Loader, Dropdown, Button, TagField, Modal, ModalNavigation } from 'decentraland-ui'
+import { Loader, Dropdown, Button, Modal, ModalNavigation } from 'decentraland-ui'
 import { BodyPartCategory, EmoteCategory, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -42,6 +42,8 @@ import Info from 'components/Info'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ItemVideo from 'components/ItemVideo'
+import ItemRequiredPermission from 'components/ItemRequiredPermission'
+import { EditVideoView } from 'components/Modals/EditVideoModal/EditVideoModal.types'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -138,7 +140,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleChangeVideoFile = () => {
     const { selectedItem, onOpenModal } = this.props
     this.setState({ showVideoShowCase: false }, () => {
-      onOpenModal('EditVideoModal', { item: selectedItem, onSaveVideo: this.handleSaveVideo })
+      onOpenModal('EditVideoModal', { item: selectedItem, view: EditVideoView.UPLOAD_VIDEO, onSaveVideo: this.handleSaveVideo })
     })
   }
 
@@ -550,11 +552,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   renderPermissions(item: Item) {
-    return (
-      <div className="required-permissions">
-        <TagField className="blank" value={item.data.requiredPermissions ?? []} search={false} disabled multiple />
-      </div>
-    )
+    return <ItemRequiredPermission requiredPermissions={item.data.requiredPermissions} />
   }
 
   renderVideoShowcase(item: Item) {
@@ -701,9 +699,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         ) : null}
                       </Collapsable>
                     )}
-                    {item && isSmart(item) && (
+                    {item && isSmart(item) && item.data.requiredPermissions?.length ? (
                       <Collapsable label={t('item_editor.right_panel.required_permissions')}>{this.renderPermissions(item)}</Collapsable>
-                    )}
+                    ) : null}
                     <Collapsable label={t('item_editor.right_panel.tags')}>
                       {item ? (
                         <>
