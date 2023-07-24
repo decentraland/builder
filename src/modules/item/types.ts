@@ -98,6 +98,7 @@ export type WearableData = {
   removesDefaultHiding?: HideableWearableCategory[]
   tags: string[]
   requiredPermissions?: string[]
+  isSmart?: boolean
 }
 
 type BaseItem = {
