@@ -838,7 +838,7 @@
     "triangles": "三角形"
   },
   "video_stats": {
-    "seconds": "{seconds} 秒",
+    "seconds": "{seconds} {seconds, plural, one {第二} other {秒}}",
     "size": "{size} MB"
   },
   "mobile_page": {
@@ -1349,7 +1349,9 @@
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",
     "add_representation": "添加{bodyShape}",
     "change_item_file": "编辑表示",
-    "delete_published_item": "您无法删除已发布的项目"
+    "delete_published_item": "您无法删除已发布的项目",
+    "required_permissions": "权限",
+    "edit_video": "编辑视频展示柜"
   },
   "third_party_collection_detail_page": {
     "notice": "每个发布的项目占用 1 个 Slot。在 DAO 中创建提案草案以申请更多插槽",
