@@ -699,9 +699,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         ) : null}
                       </Collapsable>
                     )}
-                    {item && isSmart(item) && item.data.requiredPermissions?.length && (
+                    {item && isSmart(item) && item.data.requiredPermissions?.length ? (
                       <Collapsable label={t('item_editor.right_panel.required_permissions')}>{this.renderPermissions(item)}</Collapsable>
-                    )}
+                    ) : null}
                     <Collapsable label={t('item_editor.right_panel.tags')}>
                       {item ? (
                         <>

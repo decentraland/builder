@@ -995,7 +995,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return (
       <div className="data smart-wearable">
         {this.renderFields()}
-        {requiredPermissions?.length && (
+        {requiredPermissions?.length ? (
           <div className="required-permissions">
             <Header sub>{t('create_single_item_modal.smart_wearable_permissions_label')}</Header>
             <ItemRequiredPermission requiredPermissions={requiredPermissions} basic />
@@ -1013,7 +1013,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               })}
             </p>
           </div>
-        )}
+        ) : null}
         <Row className="previews">
           <div className="thumbnail-preview-container">
             <Header sub>{t('create_single_item_modal.thumbnail_preview_title')}</Header>
