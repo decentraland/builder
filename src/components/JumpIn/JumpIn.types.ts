@@ -1,3 +1,4 @@
+import React from 'react'
 import { Dispatch } from 'redux'
 import { ChainId } from '@dcl/schemas'
 import { OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -6,11 +7,14 @@ import { Item } from 'modules/item/types'
 import { Land } from 'modules/land/types'
 
 export type Props = {
-  size?: 'small' | 'medium' | 'big'
+  size?: 'small' | 'medium' | 'large'
+  active?: boolean
   land?: Land
   collection?: Collection
   items?: Item[]
   chainId?: ChainId
+  text?: React.ReactNode | string
+  disabled?: boolean
   onJumpIn: () => void
 }
 
