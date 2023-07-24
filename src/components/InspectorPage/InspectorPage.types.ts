@@ -14,6 +14,5 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'isLoggedIn' | 'scene'>
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type MapDispatchProps = Pick<Props, 'onOpen' | 'onConnect'>
 export type MapDispatch = Dispatch<OpenInspectorAction | ConnectInspectorAction>
