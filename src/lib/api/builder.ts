@@ -26,6 +26,7 @@ import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
+import { isSmart } from 'modules/item/utils'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
@@ -387,6 +388,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
   if (remoteItem.video) item.video = remoteItem.video
+  if (remoteItem.type === ItemType.WEARABLE) item.data.isSmart = isSmart(remoteItem)
 
   return item
 }
