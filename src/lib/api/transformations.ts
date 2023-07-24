@@ -2,7 +2,6 @@ import { RemoteItem } from '@dcl/builder-client'
 import { Rarity } from '@dcl/schemas'
 import { Item, ItemRarity, WearableData } from 'modules/item/types'
 
-// TODO: what's the difference between this and the src/lib/api function called the same way?
 export function fromRemoteItem(remoteItem: RemoteItem): Item {
   const item: Item = {
     id: remoteItem.id,
