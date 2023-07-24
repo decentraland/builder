@@ -29,7 +29,8 @@ import {
   WearableRepresentation,
   ItemType,
   EmotePlayMode,
-  WearableData
+  WearableData,
+  isEmoteData
 } from 'modules/item/types'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -250,9 +251,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   addItemRepresentation = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { onSave } = this.props
+    const { isHandsCategoryEnabled, onSave } = this.props
     const { bodyShape, item: editedItem, requiredPermissions } = this.state as StateData
     const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
+    const removesDefaultHiding =
+      isHandsCategoryEnabled &&
+      !isEmoteData(editedItem.data) &&
+      (editedItem.data.category === WearableCategory.UPPER_BODY || editedItem.data.hides.includes(WearableCategory.UPPER_BODY))
+        ? [BodyPartCategory.HANDS]
+        : []
     const item = {
       ...editedItem,
       data: {
@@ -264,7 +271,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         ],
         replaces: [...editedItem.data.replaces],
         hides: [...editedItem.data.hides],
-        removesDefaultHiding: [...(editedItem.data.removesDefaultHiding || [])],
+        removesDefaultHiding: removesDefaultHiding,
         tags: [...editedItem.data.tags],
         requiredPermissions: requiredPermissions || []
       },
@@ -281,17 +288,18 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   modifyItem = async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { onSave } = this.props
+    const { isHandsCategoryEnabled, onSave } = this.props
     const { name, bodyShape, type, metrics, category, playMode, requiredPermissions } = this.state as StateData
 
     let data: WearableData | EmoteDataADR74
 
     if (type === ItemType.WEARABLE) {
+      const removesDefaultHiding = isHandsCategoryEnabled && category === WearableCategory.UPPER_BODY ? [BodyPartCategory.HANDS] : []
       data = {
         ...pristineItem.data,
         replaces: [],
         hides: [],
-        removesDefaultHiding: [],
+        removesDefaultHiding,
         category: category as WearableCategory,
         requiredPermissions: requiredPermissions || []
       } as WearableData
