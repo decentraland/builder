@@ -29,8 +29,7 @@ import {
   WearableRepresentation,
   ItemType,
   EmotePlayMode,
-  WearableData,
-  isEmoteData
+  WearableData
 } from 'modules/item/types'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -256,7 +255,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
     const removesDefaultHiding =
       isHandsCategoryEnabled &&
-      !isEmoteData(editedItem.data) &&
       (editedItem.data.category === WearableCategory.UPPER_BODY || editedItem.data.hides.includes(WearableCategory.UPPER_BODY))
         ? [BodyPartCategory.HANDS]
         : []
