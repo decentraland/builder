@@ -24,9 +24,9 @@ import { ModelMetrics } from 'modules/models/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { isSmart } from 'modules/item/utils'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
-import { isSmart } from 'modules/item/utils'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
