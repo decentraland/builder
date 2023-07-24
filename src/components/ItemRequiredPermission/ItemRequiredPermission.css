@@ -1,0 +1,49 @@
+.ItemRequiredPermission .dcl.tag-field,
+.ItemRequiredPermission .dcl.tag-field .ui.dropdown {
+  width: 100%;
+  min-width: 200px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ItemRequiredPermission .container {
+  width: 100%;
+}
+
+.ItemRequiredPermission .container .ui.disabled.dropdown {
+  opacity: 1;
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.ItemRequiredPermission.basic .container .ui.disabled.dropdown {
+  border: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.ItemRequiredPermission .container .ui.multiple.dropdown .ui.label,
+.ItemRequiredPermission .container .ui.multiple.dropdown .ui.label:hover {
+  background-color: #716b7c;
+  border-color: #716b7c;
+  color: var(--text);
+  padding: 2px 8px;
+  margin: 0;
+  border-radius: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: default;
+}
+
+.ItemRequiredPermission .container .ui.multiple.dropdown .ui.label i.delete.icon {
+  display: none;
+}
+
+.ItemRequiredPermission .message {
+  display: none;
+}

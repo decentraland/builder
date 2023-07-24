@@ -15,8 +15,7 @@ import {
   SelectField,
   DropdownProps,
   WearablePreview,
-  Message,
-  TagField
+  Message
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -57,6 +56,7 @@ import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import ItemVideo from 'components/ItemVideo'
+import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
@@ -1001,23 +1001,25 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     return (
       <div className="data smart-wearable">
         {this.renderFields()}
-        <div className="required-permissions">
-          <Header sub>{t('create_single_item_modal.smart_wearable_permissions_label')}</Header>
-          <TagField value={requiredPermissions?.map(permission => permission.replaceAll('_', ' '))} search={false} disabled multiple />
-          <p className="learn-more">
-            {t('create_single_item_modal.required_permissions_learn_more_about', {
-              learn_more: (
-                <a
-                  href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('global.learn_more')}
-                </a>
-              )
-            })}
-          </p>
-        </div>
+        {requiredPermissions?.length ? (
+          <div className="required-permissions">
+            <Header sub>{t('create_single_item_modal.smart_wearable_permissions_label')}</Header>
+            <ItemRequiredPermission requiredPermissions={requiredPermissions} basic />
+            <p className="learn-more">
+              {t('create_single_item_modal.required_permissions_learn_more_about', {
+                learn_more: (
+                  <a
+                    href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('global.learn_more')}
+                  </a>
+                )
+              })}
+            </p>
+          </div>
+        ) : null}
         <Row className="previews">
           <div className="thumbnail-preview-container">
             <Header sub>{t('create_single_item_modal.thumbnail_preview_title')}</Header>
