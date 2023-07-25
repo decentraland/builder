@@ -736,6 +736,7 @@
     "create_scene": "Crear Escene",
     "no_projects": "Puede publicar sus escenas en su LAND, sus mundos o cargarlas en el Pool de escenas.{br}Alternativamente, también puede <link>cargar un archivo de escena</link> y continuar trabajando desde allí.",
     "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",
+    "sdk6_support": "El soporte técnico para SDK 6 finalizará el 23 de diciembre de 2023.",
     "project_actions": {
       "delete_project": "Borrar Escena",
       "duplicate_project": "Duplicar Escena",

@@ -6,11 +6,11 @@ import { getTemplateId } from 'modules/location/selectors'
 import { getLoading, getTemplates } from 'modules/project/selectors'
 import { LOAD_PROJECTS_REQUEST, loadProjectSceneRequest } from 'modules/project/actions'
 import { openModal } from 'modules/modal/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './TemplateDetailPage.types'
-import TemplateDetailPage from './TemplateDetailPage'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { PreviewType } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './TemplateDetailPage.types'
+import TemplateDetailPage from './TemplateDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
   const templateId = getTemplateId(state)

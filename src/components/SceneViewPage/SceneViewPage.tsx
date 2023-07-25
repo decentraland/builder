@@ -9,12 +9,12 @@ import Navbar from 'components/Navbar'
 import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 import Back from 'components/Back'
+import SDKTag from 'components/SDKTag/SDKTag'
 import { PreviewType } from 'modules/editor/types'
 import { getProjectToExport } from './utils'
 import { Props } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
-import SDKTag from 'components/SDKTag/SDKTag'
 
 export default class SceneViewPage extends React.PureComponent<Props> {
   componentDidMount() {

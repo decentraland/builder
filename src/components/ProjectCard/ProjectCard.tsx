@@ -9,9 +9,9 @@ import { isRemoteURL } from 'modules/media/utils'
 import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
 import { OptionsDropdown } from 'components/OptionsDropdown'
+import SDKTag from 'components/SDKTag/SDKTag'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
-import SDKTag from 'components/SDKTag/SDKTag'
 
 export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {

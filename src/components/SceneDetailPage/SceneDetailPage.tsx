@@ -10,9 +10,9 @@ import Footer from 'components/Footer'
 import Back from 'components/Back'
 import NotFound from 'components/NotFound'
 import DeploymentStatus from 'components/DeploymentStatus'
+import SDKTag from 'components/SDKTag/SDKTag'
 import DeploymentDetail from './DeploymentDetail'
 import './SceneDetailPage.css'
-import SDKTag from 'components/SDKTag/SDKTag'
 
 const SceneDetailPage: React.FC<Props> = props => {
   const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onLoadProjectScene } = props
