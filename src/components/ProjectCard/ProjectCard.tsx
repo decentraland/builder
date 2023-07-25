@@ -11,6 +11,7 @@ import Icon from 'components/Icon'
 import { OptionsDropdown } from 'components/OptionsDropdown'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
+import SDKTag from 'components/SDKTag/SDKTag'
 
 export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
@@ -57,7 +58,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, parcels, items, onClick, isUploading, hasError } = this.props
+    const { project, parcels, items, onClick, isUploading, hasError, scene } = this.props
     const { isDeleting } = this.state
     const isFromScenePool = 'likes' in (project as Pool)
 
@@ -80,14 +81,17 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
         {isFromScenePool ? null : (
           <>
             <DeploymentStatus projectId={project.id} className="deployment-status" />
-            <OptionsDropdown
-              className="options-dropdown"
-              options={[
-                { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
-                { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
-                { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
-              ]}
-            />
+            <div className="options-container">
+              <SDKTag scene={scene} />
+              <OptionsDropdown
+                className="options-dropdown"
+                options={[
+                  { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
+                  { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
+                  { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
+                ]}
+              />
+            </div>
           </>
         )}
         <div className="project-data">

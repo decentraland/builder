@@ -22,6 +22,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return {
     parcels,
     items,
+    scene,
     deploymentStatus: getDeploymentStatusByProjectId(state)[ownProps.project.id],
     deployments: getDeploymentsByProjectId(state)[ownProps.project.id],
     isUploading: getLoadingSet(state).has(project.id),

@@ -34,13 +34,17 @@
   cursor: pointer;
 }
 
+.SceneDetailPage .status-container {
+  margin-left: 40px; /* Back Button Size + Margin Size */
+}
+
 .SceneDetailPage .status-badge {
   height: 22px;
-  margin-left: 40px; /* Back Button Size + Margin Size */
   padding: 2px 8px;
   border-radius: 34px;
   color: var(--shadows);
   font-weight: 500;
+  margin-right: 10px;
 }
 
 .SceneDetailPage .button.download-button,

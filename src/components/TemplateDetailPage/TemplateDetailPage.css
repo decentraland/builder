@@ -108,7 +108,8 @@
 
 .TemplateDetailPage .description-content.personalize-content,
 .TemplateDetailPage .description-content.size-scene,
-.TemplateDetailPage .description-content.world {
+.TemplateDetailPage .description-content.world,
+.TemplateDetailPage .description-content.sdk {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,7 +119,8 @@
 
 .TemplateDetailPage .personalize-content::before,
 .TemplateDetailPage .size-scene::before,
-.TemplateDetailPage .world::before {
+.TemplateDetailPage .world::before,
+.TemplateDetailPage .sdk::before {
   content: '';
   width: 24px;
   height: 24px;
@@ -138,4 +140,8 @@
 
 .TemplateDetailPage .world::before {
   background-image: url('../../images/world.svg');
+}
+
+.TemplateDetailPage .sdk::before {
+  background-image: url('../../icons/code.svg');
 }

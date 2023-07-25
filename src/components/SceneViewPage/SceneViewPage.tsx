@@ -14,6 +14,7 @@ import { getProjectToExport } from './utils'
 import { Props } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
+import SDKTag from 'components/SDKTag/SDKTag'
 
 export default class SceneViewPage extends React.PureComponent<Props> {
   componentDidMount() {
@@ -131,7 +132,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     }
 
     const currentPool = this.getCurrentPool()
-    const { currentAuthor: author, onBack } = this.props
+    const { currentAuthor: author, currentScene, onBack } = this.props
 
     return (
       <>
@@ -181,6 +182,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
           <div className="detail">
             <div className="title">
               <h1>{currentProject.title}</h1>
+              <SDKTag scene={currentScene} />
             </div>
             {author && (
               <div className="author">

@@ -103,6 +103,7 @@ const ScenesPage: React.FC<Props> = props => {
 
   const renderProjects = () => {
     if (projects.length > 0) {
+      console.log(projects)
       return (
         <div className="CardList">
           {projects.map(project => (
