@@ -220,6 +220,10 @@ async function buildItemEntityContent(item: Item): Promise<Record<string, string
     contents[IMAGE_PATH] = catalystItem.hash
   }
 
+  if (VIDEO_PATH in contents) {
+    delete contents[VIDEO_PATH]
+  }
+
   return contents
 }
 
