@@ -11,10 +11,16 @@ export type Props = ModalProps & {
   onCreateProject: (name: string, description: string, template: Template) => void
 }
 
+export enum SceneCreationStep {
+  INFO = 'info',
+  SIZE = 'size',
+  SDK = 'sdk'
+}
+
 export type State = {
   rows: number
   cols: number
-  setSize: boolean
+  step: SceneCreationStep
   hasError: boolean
   name: string
   description: string

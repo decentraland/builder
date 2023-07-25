@@ -1075,6 +1075,7 @@
     "title": "Create a Scene",
     "name_subtitle": "Set a name and a description for your scene",
     "size_subtitle": "Set the parcels size of your new scene",
+    "sdk_subtitle": "Experience the new decentraland editor",
     "name_label": "Name",
     "description_label": "Description",
     "description_placeholder": "Some description..."
