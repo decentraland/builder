@@ -16,7 +16,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { project } = ownProps
   const parcels = project.layout.cols * project.layout.rows
   const scene = getScenes(state)[project.sceneId]
-  const items = scene ? Object.keys(scene.entities).length - parcels : 0
+  const items = scene && scene.sdk6 ? Object.keys(scene.sdk6.entities).length - parcels : 0
   const type = getPoolProjects(state)[project.id] ? PreviewType.POOL : PreviewType.PROJECT
 
   return {

@@ -1,7 +1,7 @@
-import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
+import { ComponentType, ComponentDefinition, SceneSDK6 } from 'modules/scene/types'
 import mappings from './mappings.json'
 
-export function addMappings(scene: Scene | null) {
+export function addMappings(scene: SceneSDK6 | null) {
   if (scene) {
     for (const component of Object.values(scene.components)) {
       if (component.type === ComponentType.GLTFShape) {

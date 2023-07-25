@@ -10,6 +10,7 @@
     "@dcl/crypto": "^3.0.1",
     "@dcl/hashing": "^1.1.0",
     "@dcl/schemas": "^8.2.2",
+    "@dcl/sdk": "^7.3.2-5603025667.commit-44de38f",
     "@dcl/ui-env": "^1.2.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^11.0.0",
@@ -17,6 +18,7 @@
     "@typechain/ethers-v5": "^10.1.0",
     "@types/jszip": "^3.1.6",
     "@well-known-components/fetch-component": "^2.0.1",
+    "ajv": "^8.12.0",
     "apollo-boost": "^0.4.8",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.9",
@@ -124,7 +126,8 @@
       "^!?raw-loader!.*$": "identity-obj-proxy",
       "^three/.*$": "identity-obj-proxy",
       "^@babylonjs.*$": "identity-obj-proxy",
-      "^.*/modules/curations/collectionCuration/toasts.*$": "identity-obj-proxy"
+      "^.*/modules/curations/collectionCuration/toasts.*$": "identity-obj-proxy",
+      "@dcl/ecs": "identity-obj-proxy"
     }
   },
   "engines": {

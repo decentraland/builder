@@ -44,7 +44,17 @@ export type ComponentDefinition<T extends ComponentType> = {
   data: ComponentData[T]
 }
 
-export type Scene = {
+export type Scene =
+  | {
+      sdk6: SceneSDK6
+      sdk7: null
+    }
+  | {
+      sdk6: null
+      sdk7: SceneSDK7
+    }
+
+export type SceneSDK6 = {
   id: string
   metrics: ModelMetrics
   limits: ModelMetrics
@@ -56,4 +66,10 @@ export type Scene = {
     assetId: string
     componentId: string
   } | null
+}
+
+export type SceneSDK7 = {
+  id: string
+  composite: string
+  mappings: Record<string, string>
 }

@@ -7,6 +7,7 @@ export const locations = {
   root: () => '/',
   scenes: (options: PaginationOptions = {}) => injectPagination('/scenes', options),
   sceneEditor: (projectId = ':projectId') => `/scene-editor/${projectId}`,
+  inspector: (projectId = ':projectId') => `/inspector/${projectId}`,
   poolSearch: (options?: PaginationOptions) =>
     injectParams(injectPagination('/pools', options), { group: 'group', ethAddress: 'eth_address' }, options),
   poolView: (projectId = ':projectId', type = ':type(pool)') => `/view/${type}/${projectId}`,

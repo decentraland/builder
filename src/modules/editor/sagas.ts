@@ -75,7 +75,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, ComponentType, ComponentDefinition, ComponentData } from 'modules/scene/types'
+import { Scene, ComponentType, ComponentDefinition, ComponentData, SceneSDK6 } from 'modules/scene/types'
 import { ModelMetrics, Vector3, Quaternion } from 'modules/models/types'
 import { Project } from 'modules/project/types'
 import { CatalystWearable, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
@@ -148,7 +148,7 @@ export function* editorSaga() {
   yield takeLatest(FETCH_BASE_WEARABLES_REQUEST, handleFetchBaseWearables)
 }
 
-function* pollEditor(scene: Scene) {
+function* pollEditor(scene: SceneSDK6) {
   let metrics: ModelMetrics
   let entities: number
 
@@ -163,7 +163,7 @@ function* pollEditor(scene: Scene) {
   }
 }
 
-function* handleEditorReady(scene: Scene) {
+function* handleEditorReady(scene: SceneSDK6) {
   yield pollEditor(scene)
   yield put(setEditorLoading(false))
 }
@@ -208,11 +208,13 @@ function* handleProvisionScene(action: ProvisionSceneAction) {
 
 function* handleHistory() {
   const scene: Scene = yield select(getCurrentScene)
-  yield renderScene(scene)
-  yield put(takeScreenshot())
+  if (scene.sdk6) {
+    yield renderScene(scene.sdk6)
+    yield put(takeScreenshot())
+  }
 }
 
-function* renderScene(scene: Scene) {
+function* renderScene(scene: SceneSDK6) {
   if (!editorWindow.editor) {
     yield take(OPEN_EDITOR)
   }
@@ -230,8 +232,8 @@ function* renderScene(scene: Scene) {
 function handleMetricsChange(args: { metrics: ModelMetrics; limits: ModelMetrics }) {
   const { metrics, limits } = args
   const scene = getCurrentScene(store.getState())
-  if (scene) {
-    store.dispatch(updateMetrics(scene.id, metrics, limits))
+  if (scene && scene.sdk6) {
+    store.dispatch(updateMetrics(scene.sdk6.id, metrics, limits))
   }
 }
 
@@ -244,33 +246,35 @@ function handleTransformChange(args: { transforms: { entityId: string; position:
   const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState())
   if (!scene) return
 
-  const entityComponents = getEntityComponentsByType(store.getState())
-  const transformData: { componentId: string; data: ComponentData[ComponentType.Transform] }[] = []
+  if (scene.sdk6) {
+    const entityComponents = getEntityComponentsByType(store.getState())
+    const transformData: { componentId: string; data: ComponentData[ComponentType.Transform] }[] = []
 
-  for (const transformPayload of args.transforms) {
-    let position: Vector3 = { x: 0, y: 0, z: 0 }
-    const transform = entityComponents[transformPayload.entityId][ComponentType.Transform] as
-      | ComponentDefinition<ComponentType.Transform>
-      | undefined
+    for (const transformPayload of args.transforms) {
+      let position: Vector3 = { x: 0, y: 0, z: 0 }
+      const transform = entityComponents[transformPayload.entityId][ComponentType.Transform] as
+        | ComponentDefinition<ComponentType.Transform>
+        | undefined
 
-    if (!transform) continue
+      if (!transform) continue
 
-    if (bounds) {
-      position = snapToBounds(transformPayload.position, bounds)
+      if (bounds) {
+        position = snapToBounds(transformPayload.position, bounds)
+      }
+
+      const scale = snapScale(transformPayload.scale)
+
+      if (transform) {
+        const newTransformData = { position, rotation: transformPayload.rotation, scale }
+        if (areEqualTransforms(transform.data, newTransformData)) continue
+        transformData.push({ componentId: transform.id, data: newTransformData })
+      } else {
+        console.warn(`Unable to find Transform component for ${transformPayload.entityId}`)
+      }
     }
-
-    const scale = snapScale(transformPayload.scale)
-
-    if (transform) {
-      const newTransformData = { position, rotation: transformPayload.rotation, scale }
-      if (areEqualTransforms(transform.data, newTransformData)) continue
-      transformData.push({ componentId: transform.id, data: newTransformData })
-    } else {
-      console.warn(`Unable to find Transform component for ${transformPayload.entityId}`)
+    if (transformData.length > 0) {
+      store.dispatch(updateTransform(scene.sdk6.id, transformData))
     }
-  }
-  if (transformData.length > 0) {
-    store.dispatch(updateTransform(scene.id, transformData))
   }
 }
 
@@ -338,36 +342,41 @@ function* handleOpenEditor(action: OpenEditorAction) {
     }
 
     // fix legacy stuff
-    let scene: Scene = yield getSceneByProjectId(project.id, type)
-    yield put(fixLegacyNamespacesRequest(scene))
-    const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
-    scene = fixSuccessAction.payload.scene
+    const scene: Scene = yield getSceneByProjectId(project.id, type)
 
-    // if assets packs are being loaded wait for them to finish
-    const loading: AssetPackState['loading'] = yield select(getLoading)
-    if (isLoadingType(loading, LOAD_ASSET_PACKS_REQUEST)) {
-      yield take(LOAD_ASSET_PACKS_SUCCESS)
+    if (scene.sdk6) {
+      yield put(fixLegacyNamespacesRequest(scene.sdk6))
+      const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
+      let patchedScene = fixSuccessAction.payload.scene
+
+      // if assets packs are being loaded wait for them to finish
+      const loading: AssetPackState['loading'] = yield select(getLoading)
+      if (isLoadingType(loading, LOAD_ASSET_PACKS_REQUEST)) {
+        yield take(LOAD_ASSET_PACKS_SUCCESS)
+      }
+
+      // sync scene assets
+      yield put(syncSceneAssetsRequest(patchedScene))
+      const syncSuccessAction: ReturnType<typeof syncSceneAssetsSuccess> = yield take(SYNC_SCENE_ASSETS_SUCCESS)
+      patchedScene = syncSuccessAction.payload.scene
+
+      yield put(setEditorReadOnly(isReadOnly))
+      yield createNewEditorScene(project)
+
+      // Set the remote url for scripts
+      yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(getContentsStorageUrl())))
+
+      // Spawns the assets
+      yield renderScene(patchedScene)
+
+      // Enable snap to grid
+      yield handleToggleSnapToGrid(toggleSnapToGrid(true))
+
+      // Select gizmo
+      yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+    } else {
+      console.error(`Scene is not SDK6`)
     }
-
-    // sync scene assets
-    yield put(syncSceneAssetsRequest(scene))
-    const syncSuccessAction: ReturnType<typeof syncSceneAssetsSuccess> = yield take(SYNC_SCENE_ASSETS_SUCCESS)
-    scene = syncSuccessAction.payload.scene
-
-    yield put(setEditorReadOnly(isReadOnly))
-    yield createNewEditorScene(project)
-
-    // Set the remote url for scripts
-    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(getContentsStorageUrl())))
-
-    // Spawns the assets
-    yield renderScene(scene)
-
-    // Enable snap to grid
-    yield handleToggleSnapToGrid(toggleSnapToGrid(true))
-
-    // Select gizmo
-    yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
   } else {
     console.error(`Unable to Open Editor: Invalid ${type}`)
   }
@@ -410,7 +419,7 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   })
 
   if (!isEnabled) {
-    const components: Scene['components'] = yield select(getComponents)
+    const components: SceneSDK6['components'] = yield select(getComponents)
     const hasScript = Object.values(components).some(component => component.type === ComponentType.Script)
 
     if (hasScript) {
@@ -421,7 +430,11 @@ function* handleTogglePreview(action: TogglePreviewAction) {
 
     yield handleResetCamera()
     const scene: Scene = yield select(getCurrentScene)
-    yield renderScene(scene)
+    if (scene.sdk6) {
+      yield renderScene(scene.sdk6)
+    } else {
+      console.error('Scene is not SDK6')
+    }
   } else {
     editor.setCameraPosition({ x, y: 1.5, z })
     editor.setCameraRotation(0, 0)
@@ -445,7 +458,11 @@ function* handleSetEditorReady(action: SetEditorReadyAction) {
     if (isReady) {
       try {
         const scene: Scene = yield getSceneByProjectId(project.id)
-        yield handleEditorReady(scene)
+        if (scene.sdk6) {
+          yield handleEditorReady(scene.sdk6)
+        } else {
+          console.error('Scene is not SDK6')
+        }
       } catch (error) {
         console.error(error)
       }

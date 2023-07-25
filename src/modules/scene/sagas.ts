@@ -34,7 +34,7 @@ import {
   getCollectiblesByURL,
   getShapesByEntityId
 } from 'modules/scene/selectors'
-import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
+import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent, SceneSDK6 } from 'modules/scene/types'
 import { getSelectedEntityIds, isReady } from 'modules/editor/selectors'
 import { setSelectedEntities, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
@@ -83,12 +83,17 @@ function* handleAddItem(action: AddItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
+  if (!scene.sdk6) {
+    console.error('Scene is not SDK6')
+    return
+  }
+
   let shapeId: string | null
   let scriptId: string | null = null
   let { position } = action.payload
   const { asset } = action.payload
   const transformId = uuidv4()
-  const newComponents = { ...scene.components }
+  const newComponents = { ...scene.sdk6.components }
 
   if (!position) {
     position = yield call(editorWindow.editor.getCameraTarget)
@@ -161,14 +166,14 @@ function* handleAddItem(action: AddItemAction) {
     } as ComponentDefinition<ComponentType.Script>
   }
 
-  const newEntities = { ...scene.entities }
+  const newEntities = { ...scene.sdk6.entities }
   const entityId = uuidv4()
   const entityComponents = [transformId, shapeId]
   if (scriptId) {
     // Scripts components must go first
     entityComponents.unshift(scriptId)
   }
-  const newScene = { ...scene, components: newComponents, entities: newEntities }
+  const newScene: SceneSDK6 = { ...scene.sdk6, components: newComponents, entities: newEntities }
   const assets: DataByKey<Asset> = yield select(getAssets)
   const entityName = getEntityName(newScene, entityComponents, assets)
   newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
@@ -195,11 +200,16 @@ function* handleUpdateTransfrom(action: UpdateTransfromAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
+  if (!scene.sdk6) {
+    console.error('Scene is not SDK6')
+    return
+  }
+
   const { components } = action.payload
-  const newComponents: Scene['components'] = { ...scene.components }
+  const newComponents: SceneSDK6['components'] = { ...scene.sdk6.components }
 
   for (const componentData of components) {
-    if (componentData.componentId in scene.components) {
+    if (componentData.componentId in scene.sdk6.components) {
       newComponents[componentData.componentId] = {
         ...newComponents[componentData.componentId],
         data: {
@@ -216,12 +226,17 @@ function* handleUpdateTransfrom(action: UpdateTransfromAction) {
       }
     }
   }
-  yield put(provisionScene({ ...scene, components: newComponents }))
+  yield put(provisionScene({ ...scene.sdk6, components: newComponents }))
 }
 
 function* handleResetItem(_: ResetItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
+
+  if (!scene.sdk6) {
+    console.error('Scene is not SDK6')
+    return
+  }
 
   const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
   if (selectedEntityIds.length === 0) return
@@ -229,7 +244,7 @@ function* handleResetItem(_: ResetItemAction) {
   const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
 
   const newComponents = {
-    ...scene.components
+    ...scene.sdk6.components
   }
 
   for (const entityId of selectedEntityIds) {
@@ -247,7 +262,7 @@ function* handleResetItem(_: ResetItemAction) {
     }
   }
 
-  yield put(provisionScene({ ...scene, components: newComponents }))
+  yield put(provisionScene({ ...scene.sdk6, components: newComponents }))
 }
 
 function* handleDuplicateItem(_: DuplicateItemAction) {
@@ -255,11 +270,16 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
+  if (!scene.sdk6) {
+    console.error('Scene is not SDK6')
+    return
+  }
+
   const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
   if (selectedEntityIds.length === 0) return
 
-  const newComponents = { ...scene.components }
-  const newEntities = { ...scene.entities }
+  const newComponents = { ...scene.sdk6.components }
+  const newEntities = { ...scene.sdk6.entities }
   const newEntityIds: string[] = []
 
   for (const entityId of selectedEntityIds) {
@@ -296,7 +316,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
     const newEntityId = uuidv4()
     // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
     // This means that we use components before we are done creating all of them.
-    const entityName = getEntityName({ ...scene, components: newComponents, entities: newEntities }, entityComponents, assets)
+    const entityName = getEntityName({ ...scene.sdk6, components: newComponents, entities: newEntities }, entityComponents, assets)
 
     newEntities[newEntityId] = { id: newEntityId, components: entityComponents, name: entityName }
     newEntityIds.push(newEntityId)
@@ -309,7 +329,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
       const scriptId = uuidv4()
       const values = JSON.parse(JSON.stringify(parameters))
 
-      renameEntity(assets[assetId].parameters, values, scene.entities[entityId].name, entityName)
+      renameEntity(assets[assetId].parameters, values, scene.sdk6.entities[entityId].name, entityName)
 
       newComponents[scriptId] = {
         id: scriptId,
@@ -326,7 +346,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   }
 
   yield put(setSelectedEntities([]))
-  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
+  yield put(provisionScene({ ...scene.sdk6, components: newComponents, entities: newEntities }))
   yield delay(300) // gotta wait for the webworker to process the updateEditor action
 
   // wait for entities to finish loading
@@ -344,12 +364,17 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
+  if (!scene.sdk6) {
+    console.error('Scene is not SDK6')
+    return
+  }
+
   const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
   if (selectedEntityIds.length === 0) return
 
-  const newComponents = { ...scene.components }
-  const newEntities = { ...scene.entities }
-  const newAssets = { ...scene.assets }
+  const newComponents = { ...scene.sdk6.components }
+  const newEntities = { ...scene.sdk6.entities }
+  const newAssets = { ...scene.sdk6.assets }
 
   for (const entityId of selectedEntityIds) {
     const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
@@ -369,7 +394,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
     for (const componentId in newComponents) {
       const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
       if (component.type === ComponentType.Script) {
-        removeEntityReferences(newAssets[component.data.assetId].parameters, component.data.values, scene.entities[entityId].name)
+        removeEntityReferences(newAssets[component.data.assetId].parameters, component.data.values, scene.sdk6.entities[entityId].name)
       }
     }
   }
@@ -394,7 +419,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
 
   yield put(setSelectedEntities([]))
 
-  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities, assets: newAssets }))
+  yield put(provisionScene({ ...scene.sdk6, components: newComponents, entities: newEntities, assets: newAssets }))
 }
 
 function* handleSetGround(action: SetGroundAction) {
@@ -407,10 +432,15 @@ function* handleSetGround(action: SetGroundAction) {
   const scene = scenes[currentProject.sceneId]
   if (!scene) return
 
+  if (!scene.sdk6) {
+    console.error('Scene is not SDK6')
+    return
+  }
+
   const { rows, cols } = currentProject.layout
 
   if (asset) {
-    yield applyGround(scene, rows, cols, asset)
+    yield applyGround(scene.sdk6, rows, cols, asset)
   }
 }
 
@@ -558,15 +588,21 @@ function* handleApplyLayout(action: ApplyLayoutAction) {
   const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
   const scene = scenes[project.sceneId]
 
-  if (scene && scene.ground) {
-    const groundId = scene.ground.assetId
+  if (!scene) return
+  if (!scene.sdk6) {
+    console.error('Scene is not SDK6')
+    return
+  }
+
+  if (scene.sdk6.ground) {
+    const groundId = scene.sdk6.ground.assetId
     const assets: ReturnType<typeof getGroundAssets> = yield select(getGroundAssets)
     const ground = assets[groundId]
-    yield applyGround(scene, rows, cols, ground)
+    yield applyGround(scene.sdk6, rows, cols, ground)
   }
 }
 
-function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
+function* applyGround(scene: SceneSDK6, rows: number, cols: number, asset: Asset) {
   const assets: DataByKey<Asset> = yield select(getAssets)
   const sceneComponents = { ...scene.components }
   const sceneAssets = { ...scene.assets }
@@ -647,21 +683,21 @@ function* handleSetScriptParameters(action: SetScriptValuesAction) {
   const { entityId, values } = action.payload
   const scene: Scene | null = yield select(getCurrentScene)
 
-  if (scene) {
-    const components = scene.entities[entityId].components
-    const componentId = components.find(id => scene.components[id].type === ComponentType.Script)
+  if (scene && scene.sdk6) {
+    const components = scene.sdk6.entities[entityId].components
+    const componentId = components.find(id => scene.sdk6.components[id].type === ComponentType.Script)
 
     if (componentId) {
-      const newScene: Scene = {
-        ...scene,
+      const newScene: SceneSDK6 = {
+        ...scene.sdk6,
         components: {
-          ...scene.components,
+          ...scene.sdk6.components,
           [componentId]: {
-            ...scene.components[componentId],
+            ...scene.sdk6.components[componentId],
             data: {
-              ...scene.components[componentId].data,
+              ...scene.sdk6.components[componentId].data,
               values: {
-                ...(scene.components[componentId] as ComponentDefinition<ComponentType.Script>).data.values,
+                ...(scene.sdk6.components[componentId] as ComponentDefinition<ComponentType.Script>).data.values,
                 ...values
               }
             }

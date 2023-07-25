@@ -3,7 +3,7 @@ import { Wearable } from 'decentraland-ecs'
 import { BodyShape } from '@dcl/schemas'
 
 import { RootState } from 'modules/common/types'
-import { ComponentType, Scene } from 'modules/scene/types'
+import { ComponentType, SceneSDK6 } from 'modules/scene/types'
 import { getEntities, getComponents } from 'modules/scene/selectors'
 import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { getCurrentProject, getLoading as getLoadingProject } from 'modules/project/selectors'
@@ -72,8 +72,8 @@ export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Reco
 export const getEnabledTools = createSelector<
   RootState,
   string[],
-  Scene['entities'],
-  Scene['components'],
+  SceneSDK6['entities'],
+  SceneSDK6['components'],
   { move: boolean; rotate: boolean; duplicate: boolean; reset: boolean; delete: boolean }
 >(getSelectedEntityIds, getEntities, getComponents, (selectedEntityIds, entities, components) => {
   let isNFT = false

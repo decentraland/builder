@@ -65,7 +65,7 @@ describe('when handling deploy to world request', () => {
     return expectSaga(deploymentSaga, builderAPI, catalystClient)
       .provide([
         [matchers.select(getData), { [projectId]: { id: projectId } }],
-        [matchers.call.fn(getSceneByProjectId), {}],
+        [matchers.call.fn(getSceneByProjectId), { sdk6: {} }],
         [matchers.call.fn(getIdentity), {}],
         [matchers.select(getName), 'author'],
         [matchers.select(getMedia), { north: 'north', south: 'south', east: 'east', west: 'west', preview: 'preview' }],
@@ -83,7 +83,7 @@ describe('when handling deploy to world request', () => {
     return expectSaga(deploymentSaga, builderAPI, catalystClient)
       .provide([
         [matchers.select(getData), { [projectId]: { id: projectId } }],
-        [matchers.call.fn(getSceneByProjectId), {}],
+        [matchers.call.fn(getSceneByProjectId), { sdk6: {} }],
         [matchers.call.fn(getIdentity), {}],
         [matchers.select(getName), 'author'],
         [matchers.select(getMedia), { north: 'north', south: 'south', east: 'east', west: 'west', preview: 'preview' }],

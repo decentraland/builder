@@ -81,7 +81,7 @@ export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_TEMPLATES_REQUEST, handleLoadTemplatesRequest)
-  yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
+  yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadManifestRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
   yield takeEvery(LOAD_PROJECT_SCENE_REQUEST, handleLoadProjectSceneRequest)
@@ -91,13 +91,16 @@ export function* projectSaga(builder: BuilderAPI) {
     const { title, description, onSuccess } = action.meta
 
     const scene: Scene = {
-      id: uuidv4(),
-      entities: {},
-      components: {},
-      assets: {},
-      metrics: EMPTY_SCENE_METRICS,
-      limits: EMPTY_SCENE_METRICS,
-      ground: null
+      sdk6: {
+        id: uuidv4(),
+        entities: {},
+        components: {},
+        assets: {},
+        metrics: EMPTY_SCENE_METRICS,
+        limits: EMPTY_SCENE_METRICS,
+        ground: null
+      },
+      sdk7: null
     }
 
     const { rows, cols } = template
@@ -114,7 +117,7 @@ export function* projectSaga(builder: BuilderAPI) {
         rows,
         cols
       },
-      sceneId: scene.id,
+      sceneId: scene.sdk6.id,
       ethAddress: ethAddress || null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -232,23 +235,27 @@ export function* projectSaga(builder: BuilderAPI) {
       project.isTemplate || project.isPublic ? PreviewType.PUBLIC : PreviewType.PROJECT
     )
 
-    yield put(setExportProgress({ loaded: 0, total: 0 }))
-    const author: string = yield select(getName)
-    const files: Record<string, Blob | string> = yield call(createFiles, {
-      project,
-      scene,
-      point: { x: 0, y: 0 },
-      rotation: 'east',
-      isDeploy: false,
-      thumbnail: null,
-      author,
-      onProgress: progress => store.dispatch(setExportProgress(progress))
-    })
+    if (scene.sdk6) {
+      yield put(setExportProgress({ loaded: 0, total: 0 }))
+      const author: string = yield select(getName)
+      const files: Record<string, Blob | string> = yield call(createFiles, {
+        project,
+        scene: scene.sdk6,
+        point: { x: 0, y: 0 },
+        rotation: 'east',
+        isDeploy: false,
+        thumbnail: null,
+        author,
+        onProgress: progress => store.dispatch(setExportProgress(progress))
+      })
 
-    // download zip
-    const name = project.title.replace(/\s/g, '_')
-    yield call(downloadZip, name, files)
-    yield put(exportProjectSuccess())
+      // download zip
+      const name = project.title.replace(/\s/g, '_')
+      yield call(downloadZip, name, files)
+      yield put(exportProjectSuccess())
+    } else {
+      console.error('Scene is not SDK6')
+    }
   }
 
   function* handleImportProject(action: ImportProjectAction) {
@@ -306,7 +313,7 @@ export function* projectSaga(builder: BuilderAPI) {
     }
   }
 
-  function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
+  function* handleLoadManifestRequest(action: LoadManifestRequestAction) {
     const { id, type } = action.payload
     try {
       const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], id, type)

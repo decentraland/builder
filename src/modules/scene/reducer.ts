@@ -1,5 +1,4 @@
 import undoable, { StateWithHistory, includeAction, ActionTypes } from 'redux-undo'
-import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { EDITOR_UNDO, EDITOR_REDO, OPEN_EDITOR } from 'modules/editor/actions'
 import { Scene } from 'modules/scene/types'
@@ -24,7 +23,7 @@ import {
 } from 'modules/project/actions'
 
 export type SceneState = {
-  data: ModelById<Scene>
+  data: Record<string, Scene>
   loading: LoadingState
   error: string | null
 }
@@ -49,40 +48,78 @@ const INITIAL_STATE: SceneState = {
 const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReducerAction): SceneState => {
   switch (action.type) {
     case CREATE_SCENE:
-    case PROVISION_SCENE:
-    case FIX_LEGACY_NAMESPACES_SUCCESS:
-    case SYNC_SCENE_ASSETS_SUCCESS:
     case LOAD_PROJECT_SCENE_SUCCESS: {
       const { scene } = action.payload
-
+      if (scene.sdk6) {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            [scene.sdk6.id]: {
+              ...scene,
+              sdk6: { ...scene.sdk6, components: { ...scene.sdk6.components }, entities: { ...scene.sdk6.entities } }
+            }
+          }
+        }
+      } else {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            [scene.sdk7.id]: { ...scene }
+          }
+        }
+      }
+    }
+    case PROVISION_SCENE:
+    case FIX_LEGACY_NAMESPACES_SUCCESS:
+    case SYNC_SCENE_ASSETS_SUCCESS: {
+      const { scene: sceneSdk6 } = action.payload
+      const scene = state.data[sceneSdk6.id]
       return {
         ...state,
         data: {
           ...state.data,
-          [scene.id]: { ...scene, components: { ...scene.components }, entities: { ...scene.entities } }
+          [sceneSdk6.id]: {
+            ...scene,
+            sdk6: {
+              ...sceneSdk6,
+              components: { ...sceneSdk6.components },
+              entities: { ...sceneSdk6.entities }
+            },
+            sdk7: null
+          }
         }
       }
     }
     case UPDATE_METRICS: {
       const { sceneId, metrics, limits } = action.payload
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [sceneId]: {
-            ...state.data[sceneId],
-            metrics: {
-              ...state.data[sceneId].metrics,
-              ...metrics
-            },
-            limits: {
-              ...state.data[sceneId].limits,
-              ...limits,
-              // INCREASE MATERIALS LIMIT FOR TEMPLATES
-              materials: limits.materials * 1.1
+      const scene = state.data[sceneId]
+      if (scene.sdk6) {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            [sceneId]: {
+              ...scene,
+              sdk6: {
+                ...scene.sdk6,
+                metrics: {
+                  ...scene.sdk6.metrics,
+                  ...metrics
+                },
+                limits: {
+                  ...scene.sdk6.limits,
+                  ...limits,
+                  // INCREASE MATERIALS LIMIT FOR TEMPLATES
+                  materials: limits.materials * 1.1
+                }
+              }
             }
           }
         }
+      } else {
+        return state
       }
     }
     case DELETE_PROJECT: {
