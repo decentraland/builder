@@ -4,11 +4,12 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 
 import { CreateProjectFromTemplateAction } from 'modules/project/actions'
 import { Template } from 'modules/template/types'
+import { SDKVersion } from 'modules/scene/types'
 
 export type Props = ModalProps & {
   error: string | null
   isLoading: boolean
-  onCreateProject: (name: string, description: string, template: Template) => void
+  onCreateProject: (name: string, description: string, template: Template, sdk: SDKVersion) => void
 }
 
 export enum SceneCreationStep {

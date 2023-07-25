@@ -7,6 +7,7 @@ import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
 import { fromLayout } from 'modules/template/utils'
 import { ProjectLayout } from 'modules/project/types'
 import { Props, SceneCreationStep, State } from './CustomLayoutModal.types'
+import { SDKVersion } from 'modules/scene/types'
 
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -50,7 +51,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
         this.setState({ step: SceneCreationStep.SDK })
         break
       case SceneCreationStep.SDK:
-        onCreateProject(name, description, fromLayout(rows, cols))
+        onCreateProject(name, description, fromLayout(rows, cols), SDKVersion.SDK7)
         onClose()
         break
     }

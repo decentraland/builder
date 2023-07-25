@@ -19,11 +19,12 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onCreateProject: (name, description, template) =>
+  onCreateProject: (name, description, template, sdk) =>
     dispatch(
       createProjectFromTemplate(template, {
         title: name,
         description,
+        sdk,
         onSuccess: project => dispatch(push(locations.sceneEditor(project.id)))
       })
     )

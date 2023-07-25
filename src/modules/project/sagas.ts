@@ -48,7 +48,7 @@ import {
   duplicateProjectFailure
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
-import { Scene } from 'modules/scene/types'
+import { SDKVersion, Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
@@ -88,19 +88,32 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
     const { template } = action.payload
-    const { title, description, onSuccess } = action.meta
+    const { title, description, sdk, onSuccess } = action.meta
 
-    const scene: Scene = {
-      sdk6: {
-        id: uuidv4(),
-        entities: {},
-        components: {},
-        assets: {},
-        metrics: EMPTY_SCENE_METRICS,
-        limits: EMPTY_SCENE_METRICS,
-        ground: null
-      },
-      sdk7: null
+    let scene: Scene
+
+    if (sdk === SDKVersion.SDK7) {
+      scene = {
+        sdk6: null,
+        sdk7: {
+          id: uuidv4(),
+          composite: '',
+          mappings: {}
+        }
+      }
+    } else {
+      scene = {
+        sdk6: {
+          id: uuidv4(),
+          entities: {},
+          components: {},
+          assets: {},
+          metrics: EMPTY_SCENE_METRICS,
+          limits: EMPTY_SCENE_METRICS,
+          ground: null
+        },
+        sdk7: null
+      }
     }
 
     const { rows, cols } = template
@@ -117,7 +130,7 @@ export function* projectSaga(builder: BuilderAPI) {
         rows,
         cols
       },
-      sceneId: scene.sdk6.id,
+      sceneId: scene.sdk6 ? scene.sdk6.id : scene.sdk7.id,
       ethAddress: ethAddress || null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
