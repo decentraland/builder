@@ -8,6 +8,7 @@ import { fromLayout } from 'modules/template/utils'
 import { ProjectLayout } from 'modules/project/types'
 import { Props, SceneCreationStep, State } from './CustomLayoutModal.types'
 import { SDKVersion } from 'modules/scene/types'
+import webEditorSrc from 'images/web-editor-image.png'
 
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -116,7 +117,11 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
       return <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} showGrid />
     }
 
-    return <div>HOLA</div>
+    return (
+      <div>
+        <img src={webEditorSrc} alt="new web editor" />
+      </div>
+    )
   }
 
   render() {
