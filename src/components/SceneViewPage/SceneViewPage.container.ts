@@ -12,7 +12,7 @@ import { getCurrentScene } from 'modules/scene/selectors'
 import { getCurrentAuthor } from 'modules/profile/selectors'
 import { togglePreview, closeEditor } from 'modules/editor/actions'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getIsTemplatesEnabled } from 'modules/features/selectors'
+import { getIsInspectorEnabled, getIsTemplatesEnabled } from 'modules/features/selectors'
 import { openModal } from 'modules/modal/actions'
 import { PreviewType } from 'modules/editor/types'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
@@ -27,7 +27,8 @@ const mapState = (state: RootState): MapStateProps => ({
   currentPool: getCurrentPool(state),
   currentScene: getCurrentScene(state),
   currentAuthor: getCurrentAuthor(state),
-  isTemplatesEnabled: getIsTemplatesEnabled(state)
+  isTemplatesEnabled: getIsTemplatesEnabled(state),
+  isInspectorEnabled: getIsInspectorEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

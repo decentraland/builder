@@ -58,7 +58,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, parcels, items, onClick, isUploading, hasError, scene } = this.props
+    const { project, parcels, items, onClick, isUploading, hasError, scene, isInspectorEnabled } = this.props
     const { isDeleting } = this.state
     const isFromScenePool = 'likes' in (project as Pool)
 
@@ -82,7 +82,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
           <>
             <DeploymentStatus projectId={project.id} className="deployment-status" />
             <div className="options-container">
-              <SDKTag scene={scene} />
+              {isInspectorEnabled && <SDKTag scene={scene} />}
               <OptionsDropdown
                 className="options-dropdown"
                 options={[

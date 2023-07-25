@@ -114,7 +114,7 @@ const SceneDetailPage: React.FC<Props> = props => {
           </Row>
           <Row className="status-container">
             {getSceneStatus()}
-            <SDKTag scene={scene} />
+            {isInspectorEnabled && <SDKTag scene={scene} />}
           </Row>
         </Section>
         <Section>

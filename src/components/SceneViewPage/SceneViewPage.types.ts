@@ -25,6 +25,7 @@ export type Props = {
   isLoggedIn: boolean
   isReady: boolean
   isTemplatesEnabled: boolean
+  isInspectorEnabled: boolean
   onCloseEditor: typeof closeEditor
   onLoadProject: typeof loadPublicProjectRequest
   onPreview: () => ReturnType<typeof togglePreview>
@@ -44,6 +45,7 @@ export type MapStateProps = Pick<
   | 'currentScene'
   | 'currentAuthor'
   | 'isTemplatesEnabled'
+  | 'isInspectorEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onLikePool' | 'onOpenModal' | 'onCloseEditor' | 'onBack'>
 export type MapDispatch = Dispatch<

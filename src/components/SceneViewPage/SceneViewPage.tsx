@@ -120,7 +120,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isFetching, isPreviewing, isReady, isTemplatesEnabled } = this.props
+    const { isFetching, isPreviewing, isReady, isTemplatesEnabled, isInspectorEnabled } = this.props
 
     if (isFetching) {
       return this.renderLoading()
@@ -182,7 +182,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
           <div className="detail">
             <div className="title">
               <h1>{currentProject.title}</h1>
-              <SDKTag scene={currentScene} />
+              {isInspectorEnabled && <SDKTag scene={currentScene} />}
             </div>
             {author && (
               <div className="author">

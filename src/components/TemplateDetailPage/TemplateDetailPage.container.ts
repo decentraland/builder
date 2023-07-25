@@ -9,6 +9,7 @@ import { openModal } from 'modules/modal/actions'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { PreviewType } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
+import { getIsInspectorEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TemplateDetailPage.types'
 import TemplateDetailPage from './TemplateDetailPage'
 
@@ -19,7 +20,8 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     template: template ? template : null,
     scene,
-    isLoading: isLoadingType(getLoading(state), LOAD_PROJECTS_REQUEST)
+    isLoading: isLoadingType(getLoading(state), LOAD_PROJECTS_REQUEST),
+    isInspectorEnabled: getIsInspectorEnabled(state)
   }
 }
 
