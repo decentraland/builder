@@ -49,7 +49,14 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           {collection.name}
           &nbsp;·&nbsp;
           {t(`collection.type.${type}`)}
-          <JumpIn size="small" collection={collection} chainId={chainId} items={isTPCollection(collection) ? items : undefined} />
+          <JumpIn
+            size="small"
+            active
+            collection={collection}
+            chainId={chainId}
+            items={isTPCollection(collection) ? items : undefined}
+            text={t('global.see_in_world')}
+          />
         </div>
         <div className="actions">
           <span className="button-container">

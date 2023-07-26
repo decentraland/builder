@@ -22,6 +22,7 @@ import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import CollectionStatus from 'components/CollectionStatus'
+import JumpIn from 'components/JumpIn'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionContextMenu from './CollectionContextMenu'
 import { Props, State } from './CollectionDetailPage.types'
@@ -98,13 +99,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     collection && onNavigate(getCollectionEditorURL(collection, items), { fromParam: FromParam.COLLECTIONS })
   }
 
-  handleSeeInWorld = () => {
-    const { collection, onOpenModal } = this.props
-    if (collection) {
-      onOpenModal('SeeInWorldModal', { collectionId: collection.id })
-    }
-  }
-
   handleNavigateToForum = () => {
     const { collection } = this.props
     if (collection && collection.isPublished && collection.forumLink) {
@@ -144,10 +138,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
     return (
       <>
-        <Button basic className="action-button" disabled={isLocked || !hasItems} onClick={this.handleSeeInWorld}>
-          <BuilderIcon name="right-round-arrow" />
-          <span className="text">{t('collection_context_menu.see_in_world')}</span>
-        </Button>
+        <JumpIn size="small" active collection={collection} text={t('global.see_in_world')} disabled={isLocked || !hasItems} />
         <Button basic className="action-button" disabled={isLocked || !hasItems} onClick={this.handleNavigateToEditor}>
           <BuilderIcon name="cube" />
           <span className="text">{t('collection_detail_page.preview')}</span>
