@@ -1,12 +1,12 @@
 import { Composite } from '@dcl/ecs'
 import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
-import { Project } from 'modules/project/types'
+import { Layout, Project } from 'modules/project/types'
 import { ComponentData, ComponentType, SceneSDK6 } from 'modules/scene/types'
 
-export function getParcels(project: Project) {
+export function getParcels(layout: Layout) {
   const parcels: { x: number; y: number }[] = []
-  for (let x = 0; x < project.layout.rows; x++) {
-    for (let y = 0; y < project.layout.rows; y++) {
+  for (let x = 0; x < layout.rows; x++) {
+    for (let y = 0; y < layout.rows; y++) {
       parcels.push({ x, y })
     }
   }
@@ -43,7 +43,7 @@ export function toComposite(scene: SceneSDK6, project?: Project) {
 
   components.Scene.createOrReplace(engine.RootEntity, {
     layout: {
-      parcels: project ? getParcels(project) : [{ x: 0, y: 0 }],
+      parcels: project ? getParcels(project.layout) : [{ x: 0, y: 0 }],
       base: {
         x: 0,
         y: 0

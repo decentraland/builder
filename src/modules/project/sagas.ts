@@ -72,7 +72,7 @@ import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
-import { toComposite } from 'modules/inspector/utils'
+import { getParcels } from 'modules/inspector/utils'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -91,6 +91,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
     const { template } = action.payload
+    const { rows, cols } = template
     const { title, description, sdk, onSuccess } = action.meta
 
     let scene: Scene
@@ -99,7 +100,10 @@ export function* projectSaga(builder: BuilderAPI) {
       const { engine, components } = createEngineContext()
       components.Scene.createOrReplace(engine.RootEntity, {
         layout: {
-          parcels: [{ x: 0, y: 0 }],
+          parcels: getParcels({
+            rows,
+            cols
+          }),
           base: {
             x: 0,
             y: 0
@@ -129,18 +133,6 @@ export function* projectSaga(builder: BuilderAPI) {
         sdk7: null
       }
     }
-
-    console.log({ meli: toComposite({
-      id: uuidv4(),
-      entities: {},
-      components: {},
-      assets: {},
-      metrics: EMPTY_SCENE_METRICS,
-      limits: EMPTY_SCENE_METRICS,
-      ground: null
-    })})
-
-    const { rows, cols } = template
 
     const ethAddress: string = yield select(getAddress)
 
