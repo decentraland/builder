@@ -6,7 +6,7 @@ import { BuilderAPI } from 'lib/api/builder'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { Item, IMAGE_PATH, THUMBNAIL_PATH, ItemType, EntityHashingType, isEmoteItemType } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, ItemType, EntityHashingType, isEmoteItemType, VIDEO_PATH } from './types'
 import { EMPTY_ITEM_METRICS, generateCatalystImage, generateImage } from './utils'
 
 /**
@@ -220,6 +220,10 @@ async function buildItemEntityContent(item: Item): Promise<Record<string, string
     contents[IMAGE_PATH] = catalystItem.hash
   }
 
+  if (VIDEO_PATH in contents) {
+    delete contents[VIDEO_PATH]
+  }
+
   return contents
 }
 
@@ -229,6 +233,9 @@ async function buildItemEntityBlobs(item: Item | Item<ItemType.EMOTE>, legacyBui
     !item.contents[IMAGE_PATH] ? generateImage(item) : null
   ])
   files[IMAGE_PATH] = image ?? files[IMAGE_PATH]
+  if (VIDEO_PATH in files) {
+    delete files[VIDEO_PATH]
+  }
   return files
 }
 

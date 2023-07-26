@@ -25,7 +25,7 @@
 
 .RightPanel .container {
   overflow-y: auto;
-  max-height: calc(100vh - 78px);
+  max-height: calc(100vh - 80px);
 }
 
 .RightPanel .details {

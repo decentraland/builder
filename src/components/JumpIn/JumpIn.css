@@ -10,10 +10,19 @@
   border: none;
 }
 
+.JumpIn.active {
+  background-image: url(../../icons/right-round-arrow.svg);
+  background-color: transparent;
+}
+
 .JumpIn.small {
   background-size: 14px;
   width: 22px;
   height: 22px;
+}
+
+.JumpIn.small.active {
+  background-size: 16px;
 }
 
 .JumpIn.medium {
@@ -22,8 +31,27 @@
   height: 32px;
 }
 
+.JumpIn.medium.active {
+  background-size: 24px;
+}
+
 .JumpIn.large {
   background-size: 25px;
   width: 42px;
   height: 42px;
+}
+
+.JumpIn.large.active {
+  background-size: 36px;
+}
+
+.JumpInContainer.ui.button {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.JumpInContainer .text {
+  color: var(--primary);
 }
