@@ -29,7 +29,8 @@ import {
   ItemMetadataType,
   WearableRepresentation,
   GenerateImageOptions,
-  EmotePlayMode
+  EmotePlayMode,
+  VIDEO_PATH
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
@@ -535,6 +536,8 @@ export function isWearableSynced(item: Item, entity: Entity) {
   const contents = entity.content.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
     const hash = item.contents[path]
+    // Skip video file because it's not in the catalyst
+    if (VIDEO_PATH === path) continue
     if (contents.get(path) !== hash) {
       return false
     }
