@@ -9,7 +9,7 @@ import { ProjectLayout } from 'modules/project/types'
 import { Props, SceneCreationStep, State } from './CustomLayoutModal.types'
 import { SDKVersion } from 'modules/scene/types'
 import webEditorSrc from 'images/web-editor-image.png'
-
+import styles from './CustomLayoutModal.module.css'
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state: State = {
     rows: 2,
@@ -24,7 +24,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
     this.setState({ ...projectLayout })
   }
 
-  handleGoBack = () => {
+  handleBack = () => {
     const { step } = this.state
     switch (step) {
       case SceneCreationStep.SDK:
@@ -41,21 +41,20 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
     onClose()
   }
 
-  handleSubmit = () => {
-    const { onCreateProject, onClose } = this.props
-    const { step, name, description, rows, cols } = this.state
-    switch (step) {
-      case SceneCreationStep.INFO:
-        this.setState({ step: SceneCreationStep.SIZE })
-        break
-      case SceneCreationStep.SIZE:
-        this.setState({ step: SceneCreationStep.SDK })
-        break
-      case SceneCreationStep.SDK:
-        onCreateProject(name, description, fromLayout(rows, cols), SDKVersion.SDK7)
-        onClose()
-        break
+  handleNext = () => {
+    const { step } = this.state
+    if (step === SceneCreationStep.INFO) {
+      this.setState({ step: SceneCreationStep.SIZE })
+    } else if (step === SceneCreationStep.SIZE) {
+      this.setState({ step: SceneCreationStep.SDK })
     }
+  }
+
+  handleSubmit = (sdk: SDKVersion) => {
+    const { onCreateProject, onClose } = this.props
+    const { name, description, rows, cols } = this.state
+    onCreateProject(name, description, fromLayout(rows, cols), sdk)
+    onClose()
   }
 
   getSubtitle = () => {
@@ -67,30 +66,6 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
         return t('create_modal.size_subtitle')
       case SceneCreationStep.SDK:
         return t('create_modal.sdk_subtitle')
-    }
-  }
-
-  getSubmitButtonLabel = () => {
-    const { step } = this.state
-    switch (step) {
-      case SceneCreationStep.INFO:
-        return t('global.next')
-      case SceneCreationStep.SIZE:
-        return t('global.next')
-      case SceneCreationStep.SDK:
-        return t('global.create')
-    }
-  }
-
-  getCancelButtonLabel = () => {
-    const { step } = this.state
-    switch (step) {
-      case SceneCreationStep.INFO:
-        return t('global.cancel')
-      case SceneCreationStep.SIZE:
-        return t('global.back')
-      case SceneCreationStep.SDK:
-        return t('global.back')
     }
   }
 
@@ -118,33 +93,72 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
     }
 
     return (
-      <div>
-        <img src={webEditorSrc} alt="new web editor" />
+      <div className={styles.sdkContent}>
+        <span className={styles.sdkDescription}>{t('create_modal.sdk_description', { b: (str: string) => <b>{str}</b> })}</span>
+        <img className={styles.sdkImg} src={webEditorSrc} alt={t('create_modal.sdk_image_alt')} />
       </div>
     )
   }
 
+  renderModalActions = () => {
+    const { hasError, name, step } = this.state
+    const { isInspectorEnabled } = this.props
+
+    switch (step) {
+      case SceneCreationStep.INFO:
+        return (
+          <div className={styles.actionsContainer}>
+            <Button secondary onClick={this.handleCancel}>
+              {t('global.cancel')}
+            </Button>
+            <Button primary disabled={hasError || !name} onClick={this.handleNext}>
+              {t('global.next')}
+            </Button>
+          </div>
+        )
+      case SceneCreationStep.SIZE:
+        return (
+          <div className={styles.actionsContainer}>
+            <Button secondary onClick={this.handleBack}>
+              {t('global.back')}
+            </Button>
+            <Button
+              primary
+              disabled={hasError || !name}
+              onClick={isInspectorEnabled ? this.handleNext : this.handleSubmit.bind(this, SDKVersion.SDK6)}
+            >
+              {isInspectorEnabled ? t('global.next') : t('global.create')}
+            </Button>
+          </div>
+        )
+      case SceneCreationStep.SDK:
+        return (
+          <div className={styles.sdkActionContainer}>
+            <Button secondary onClick={this.handleSubmit.bind(this, SDKVersion.SDK6)}>
+              {t('create_modal.use_sdk6')}
+            </Button>
+            <Button primary onClick={this.handleSubmit.bind(this, SDKVersion.SDK7)}>
+              {t('create_modal.use_sdk7')}
+            </Button>
+          </div>
+        )
+    }
+  }
+
   render() {
     const { name: modalName, onClose } = this.props
-    const { name, hasError, step } = this.state
+    const { step } = this.state
 
     return (
       <Modal name={modalName}>
         <ModalNavigation
-          title={t('create_modal.title')}
+          title={step !== SceneCreationStep.SDK ? t('create_modal.title') : t('create_modal.sdk_title')}
           subtitle={this.getSubtitle()}
-          onBack={step !== SceneCreationStep.INFO ? this.handleGoBack : undefined}
+          onBack={step !== SceneCreationStep.INFO ? this.handleBack : undefined}
           onClose={onClose}
         />
         <Modal.Content>{this.renderModalContent()}</Modal.Content>
-        <Modal.Actions>
-          <Button secondary onClick={this.handleGoBack}>
-            {this.getCancelButtonLabel()}
-          </Button>
-          <Button primary disabled={hasError || !name} onClick={this.handleSubmit}>
-            {this.getSubmitButtonLabel()}
-          </Button>
-        </Modal.Actions>
+        <Modal.Actions>{this.renderModalActions()}</Modal.Actions>
       </Modal>
     )
   }

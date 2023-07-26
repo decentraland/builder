@@ -77,7 +77,6 @@ export function* syncSaga(builder: BuilderAPI) {
     const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
     const scene = scenes[project.sceneId]
 
-    console.log({ scene })
     try {
       yield call(() => saveProject(project.id, project, scene, builder, debounce))
       yield put(saveProjectSuccess(project))
@@ -117,7 +116,6 @@ export function* syncSaga(builder: BuilderAPI) {
   function* handleCreateProject(action: CreateProjectAction) {
     const isLoggedInResult: boolean = yield select(isLoggedIn)
     if (isLoggedInResult) {
-      console.log(action.payload.project)
       yield put(saveProjectRequest(action.payload.project))
     }
   }
