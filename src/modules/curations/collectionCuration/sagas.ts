@@ -1,4 +1,4 @@
-import { call, select, takeEvery } from '@redux-saga/core/effects'
+import { call, select, takeEvery, put } from '@redux-saga/core/effects'
 import { ToastType } from 'decentraland-ui'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
@@ -8,7 +8,6 @@ import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/a
 import { BuilderAPI } from 'lib/api/builder'
 import { getCollection } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
-import { put } from 'redux-saga-test-plan/matchers'
 import { CurationStatus } from '../types'
 import {
   approveCollectionCurationFailure,
