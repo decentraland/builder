@@ -1,9 +1,8 @@
 import PQueue from 'p-queue'
-import { call, takeEvery, takeLatest } from '@redux-saga/core/effects'
+import { call, takeEvery, takeLatest, put } from '@redux-saga/core/effects'
 import { BuilderAPI } from 'lib/api/builder'
 import { FetchCollectionItemsSuccessAction, FETCH_COLLECTION_ITEMS_SUCCESS } from 'modules/item/actions'
 import { isThirdParty } from 'lib/urn'
-import { put } from 'redux-saga-test-plan/matchers'
 import { Item } from 'modules/item/types'
 import {
   fetchItemCurationFailure,
