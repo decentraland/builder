@@ -1,17 +1,14 @@
 import { hashV1 } from '@dcl/hashing'
-import { VIDEO_PATH } from 'modules/item/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { default as toBuffer } from 'blob-to-buffer'
 
-export const FILE_NAME_BLACKLIST = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts', VIDEO_PATH]
+export const FILE_NAME_BLACKLIST = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
 export async function computeHashes(contents: Record<string, Blob>): Promise<Record<string, string>> {
   const contentsAsHashes: Record<string, string> = {}
   for (const path in contents) {
     const blob = contents[path]
-    const isEmpty = blob.size === 0 // skip empty blobs, it breaks the catalyst
-    if (FILE_NAME_BLACKLIST.includes(path) || isEmpty) continue
     const blobBuffer = await blob.arrayBuffer()
     contentsAsHashes[path] = await hashV1(new Uint8Array(blobBuffer))
   }
