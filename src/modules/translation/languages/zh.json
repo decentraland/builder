@@ -1070,9 +1070,15 @@
     "title": "创建一个场景",
     "name_subtitle": "为您的场景设置名称和描述",
     "size_subtitle": "设置新场景的大小",
+    "sdk_title": "体验新的分散编辑",
+    "sdk_subtitle": "在没有任何代码的情况下利用SDK 7的功率。",
+    "sdk_description": "通过改进的视觉编辑器来增强场景构建过程。包括上一个场景构建器中的所有功能，而添加<b>智能项目的添加</b>是为即将进行更新的。",
+    "sdk_image_alt": "SDK 7",
     "name_label": "名称",
     "description_label": "描述",
-    "description_placeholder": "一些描述..."
+    "description_placeholder": "一些描述...",
+    "use_sdk7": "使用分散网络编辑器",
+    "use_sdk6": "使用传统场景建造者 (SDK 6)"
   },
   "clone_template_modal": {
     "title": "为您的场景设置名称和描述",
