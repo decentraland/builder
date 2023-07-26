@@ -30,7 +30,6 @@ import {
   WearableRepresentation,
   ItemType,
   EmotePlayMode,
-  SCENE_PATH,
   VIDEO_PATH,
   WearableData
 } from 'modules/item/types'
@@ -143,7 +142,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   prefixContents(bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
       // Do not include the thumbnail, scenes, and video in each of the body shapes
-      if ([THUMBNAIL_PATH, SCENE_PATH, VIDEO_PATH].includes(key)) {
+      if ([THUMBNAIL_PATH, VIDEO_PATH].includes(key)) {
         return newContents
       }
       newContents[this.prefixContentName(bodyShape, key)] = contents[key]
@@ -167,7 +166,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     const all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
-      [SCENE_PATH]: contents[SCENE_PATH],
       [VIDEO_PATH]: contents[VIDEO_PATH],
       ...male,
       ...female
@@ -188,7 +186,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
     const all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
-      [SCENE_PATH]: contents[SCENE_PATH],
       ...male,
       ...female
     }
