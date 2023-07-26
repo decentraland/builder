@@ -52,7 +52,3 @@
   width: 100%;
   gap: 10px;
 }
-
-:global(.CustomLayoutModal.ui.modal .content .dcl.field) {
-  margin-bottom: 30px;
-}

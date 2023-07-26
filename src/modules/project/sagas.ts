@@ -1,5 +1,7 @@
 import uuidv4 from 'uuid/v4'
+import { Composite } from '@dcl/ecs'
 import { push } from 'connected-react-router'
+import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
 import { takeLatest, put, select, take, call, all, race, delay, takeEvery } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
@@ -70,6 +72,7 @@ import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
+import { toComposite } from 'modules/inspector/utils'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -93,11 +96,22 @@ export function* projectSaga(builder: BuilderAPI) {
     let scene: Scene
 
     if (sdk === SDKVersion.SDK7) {
+      const { engine, components } = createEngineContext()
+      components.Scene.createOrReplace(engine.RootEntity, {
+        layout: {
+          parcels: [{ x: 0, y: 0 }],
+          base: {
+            x: 0,
+            y: 0
+          }
+        }
+      })
+
       scene = {
         sdk6: null,
         sdk7: {
           id: uuidv4(),
-          composite: '',
+          composite: Composite.toJson(dumpEngineToComposite(engine as any, 'json')),
           mappings: {}
         }
       }
@@ -115,6 +129,16 @@ export function* projectSaga(builder: BuilderAPI) {
         sdk7: null
       }
     }
+
+    console.log({ meli: toComposite({
+      id: uuidv4(),
+      entities: {},
+      components: {},
+      assets: {},
+      metrics: EMPTY_SCENE_METRICS,
+      limits: EMPTY_SCENE_METRICS,
+      ground: null
+    })})
 
     const { rows, cols } = template
 
