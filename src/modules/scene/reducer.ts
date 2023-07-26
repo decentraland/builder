@@ -12,7 +12,9 @@ import {
   FixLegacyNamespacesSuccessAction,
   FIX_LEGACY_NAMESPACES_SUCCESS,
   SYNC_SCENE_ASSETS_SUCCESS,
-  SyncSceneAssetsSuccessAction
+  SyncSceneAssetsSuccessAction,
+  UPDATE_SCENE,
+  UpdateSceneAction
 } from 'modules/scene/actions'
 import {
   DeleteProjectAction,
@@ -38,6 +40,7 @@ export type SceneReducerAction =
   | FixLegacyNamespacesSuccessAction
   | SyncSceneAssetsSuccessAction
   | LoadProjectSceneSuccessAction
+  | UpdateSceneAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -67,6 +70,22 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
           data: {
             ...state.data,
             [scene.sdk7.id]: { ...scene }
+          }
+        }
+      }
+    }
+    case UPDATE_SCENE: {
+      const { scene } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [scene.id]: {
+            ...state.data[scene.id],
+            sdk6: null,
+            sdk7: {
+              ...scene
+            }
           }
         }
       }

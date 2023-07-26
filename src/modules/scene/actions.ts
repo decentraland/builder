@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
-import { Scene, ComponentType, ComponentData, SceneSDK6 } from './types'
+import { Scene, ComponentType, ComponentData, SceneSDK6, SceneSDK7 } from './types'
 import { ModelMetrics, Vector3 } from 'modules/models/types'
 import { Project } from 'modules/project/types'
 
@@ -133,3 +133,10 @@ export const SET_SCRIPT_VALUES = 'Set Script Values'
 export const setScriptValues = (entityId: string, values: AssetParameterValues) => action(SET_SCRIPT_VALUES, { entityId, values })
 
 export type SetScriptValuesAction = ReturnType<typeof setScriptValues>
+
+// Update Scene
+export const UPDATE_SCENE = 'Update scene'
+
+export const updateScene = (scene: SceneSDK7) => action(UPDATE_SCENE, { scene })
+
+export type UpdateSceneAction = ReturnType<typeof updateScene>

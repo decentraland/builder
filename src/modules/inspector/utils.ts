@@ -52,7 +52,7 @@ export function toComposite(scene: SceneSDK6, project?: Project) {
   })
 
   const composite = dumpEngineToComposite(engine as any, 'json')
-  return Composite.toJson(composite) as string
+  return JSON.stringify(Composite.toJson(composite))
 }
 
 export function toMappings(scene: SceneSDK6): Record<string, string> {

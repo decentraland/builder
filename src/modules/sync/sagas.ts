@@ -14,7 +14,7 @@ import {
   EDIT_PROJECT_THUMBNAIL,
   EditProjectThumbnailAction
 } from 'modules/project/actions'
-import { PROVISION_SCENE, ProvisionSceneAction } from 'modules/scene/actions'
+import { PROVISION_SCENE, ProvisionSceneAction, UpdateSceneAction, UPDATE_SCENE } from 'modules/scene/actions'
 
 import {
   SAVE_PROJECT_REQUEST,
@@ -52,6 +52,7 @@ export function* syncSaga(builder: BuilderAPI) {
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
   yield takeLatest(PROVISION_SCENE, handleProvisionScene)
   yield takeLatest(SAVE_PROJECT_SUCCESS, handleSaveProjectSuccess)
+  yield takeLatest(UPDATE_SCENE, handleUpdateScene)
 
   function* handleLoginSuccess(_action: LoginSuccessAction) {
     yield put(sync())
@@ -136,6 +137,16 @@ export function* syncSaga(builder: BuilderAPI) {
 
   function* handleProvisionScene(action: ProvisionSceneAction) {
     if (action.payload.init) return
+    const isLoggedInResult: boolean = yield select(isLoggedIn)
+    if (isLoggedInResult) {
+      const project: Project | null = yield select(getCurrentProject)
+      if (project) {
+        yield put(saveProjectRequest(project))
+      }
+    }
+  }
+
+  function* handleUpdateScene(_action: UpdateSceneAction) {
     const isLoggedInResult: boolean = yield select(isLoggedIn)
     if (isLoggedInResult) {
       const project: Project | null = yield select(getCurrentProject)
