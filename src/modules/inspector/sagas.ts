@@ -80,14 +80,14 @@ export function* inspectorSaga(store: RootStore) {
       const project: Project = yield getProject(projectId)
 
       yield put(loadProjectSceneRequest(project))
-      {
-        const result: { success?: LoadProjectSceneSuccessAction; failure?: LoadProjectSceneFailureAction } = yield race({
-          success: take(LOAD_PROJECT_SCENE_SUCCESS),
-          failure: take(LOAD_PROJECT_SCENE_FAILURE)
-        })
-        if (result.failure) {
-          throw new Error('Could not load scene')
-        }
+
+      const result: { success?: LoadProjectSceneSuccessAction; failure?: LoadProjectSceneFailureAction } = yield race({
+        success: take(LOAD_PROJECT_SCENE_SUCCESS),
+        failure: take(LOAD_PROJECT_SCENE_FAILURE)
+      })
+
+      if (result.failure) {
+        throw new Error('Could not load scene')
       }
     } catch (error) {
       console.error(error)
