@@ -768,11 +768,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents, isHandsCategoryEnabled) : getEmoteCategories()
 
     const raritiesLink =
-      type === ItemType.EMOTE
-        ? 'https://docs.decentraland.org/creator/wearables-and-emotes/manage-collections/uploading-emotes/#rarity'
+      'https://docs.decentraland.org/creator/wearables-and-emotes/manage-collections' +
+      (type === ItemType.EMOTE
+        ? '/uploading-emotes/#rarity'
         : isSmart({ type, contents })
-        ? 'https://docs.decentraland.org/creator/wearables-and-amotes/manage-collections/uploading-smart-wearables/#rarity'
-        : 'https://docs.decentraland.org/creator/wearables-and-amotes/manage-collections/uploading-wearables/#rarity'
+        ? '/uploading-smart-wearables/#rarity'
+        : '/uploading-wearables/#rarity')
 
     return (
       <>
