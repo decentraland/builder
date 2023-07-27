@@ -1,5 +1,7 @@
 import uuidv4 from 'uuid/v4'
+import { Composite } from '@dcl/ecs'
 import { push } from 'connected-react-router'
+import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
 import { takeLatest, put, select, take, call, all, race, delay, takeEvery } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
@@ -48,7 +50,7 @@ import {
   duplicateProjectFailure
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
-import { Scene } from 'modules/scene/types'
+import { SDKVersion, Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
@@ -70,6 +72,7 @@ import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
+import { getParcels } from 'modules/inspector/utils'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -88,22 +91,48 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
     const { template } = action.payload
-    const { title, description, onSuccess } = action.meta
-
-    const scene: Scene = {
-      sdk6: {
-        id: uuidv4(),
-        entities: {},
-        components: {},
-        assets: {},
-        metrics: EMPTY_SCENE_METRICS,
-        limits: EMPTY_SCENE_METRICS,
-        ground: null
-      },
-      sdk7: null
-    }
-
     const { rows, cols } = template
+    const { title, description, sdk, onSuccess } = action.meta
+
+    let scene: Scene
+
+    if (sdk === SDKVersion.SDK7) {
+      const { engine, components } = createEngineContext()
+      components.Scene.createOrReplace(engine.RootEntity, {
+        layout: {
+          parcels: getParcels({
+            rows,
+            cols
+          }),
+          base: {
+            x: 0,
+            y: 0
+          }
+        }
+      })
+
+      scene = {
+        sdk6: null,
+        sdk7: {
+          id: uuidv4(),
+          composite: Composite.toJson(dumpEngineToComposite(engine as any, 'json')),
+          mappings: {}
+        }
+      }
+    } else {
+      scene = {
+        sdk6: {
+          id: uuidv4(),
+          entities: {},
+          components: {},
+          assets: {},
+          metrics: EMPTY_SCENE_METRICS,
+          limits: EMPTY_SCENE_METRICS,
+          ground: null
+        },
+        sdk7: null
+      }
+    }
 
     const ethAddress: string = yield select(getAddress)
 
@@ -117,7 +146,7 @@ export function* projectSaga(builder: BuilderAPI) {
         rows,
         cols
       },
-      sceneId: scene.sdk6.id,
+      sceneId: scene.sdk6 ? scene.sdk6.id : scene.sdk7.id,
       ethAddress: ethAddress || null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

@@ -54,6 +54,11 @@ export type Scene =
       sdk7: SceneSDK7
     }
 
+export enum SDKVersion {
+  SDK6 = 'sdk6',
+  SDK7 = 'sdk7'
+}
+
 export type SceneSDK6 = {
   id: string
   metrics: ModelMetrics

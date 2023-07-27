@@ -1078,9 +1078,15 @@
     "title": "Crear una Escena",
     "name_subtitle": "Escribe un nombre y una descripcion de tu Escena",
     "size_subtitle": "Elige el tamaño de tu nueva Escena",
+    "sdk_title": "Experimente el nuevo editor de Decentraland",
+    "sdk_subtitle": "Aproveche el poder de SDK 7 sin ningún código.",
+    "sdk_description": "Mejore su proceso de construcción de escenas con nuestro editor visual mejorado. Se incluyen todas las características del Builder anterior, mientras que la adición de  <b>smart items</b> está programado para una próxima actualización.",
+    "sdk_image_alt": "SDK 7",
     "name_label": "Nombre",
     "description_label": "Descripción",
     "description_placeholder": "Una descripción...",
+    "use_sdk7": "Use el nuevo editor web de Decentraland",
+    "use_sdk6": "Use el antiguo constructor de escenas (SDK 6)",
     "change_item_file": "Editar representation"
   },
   "clone_template_modal": {

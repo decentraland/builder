@@ -3,7 +3,7 @@ import { action } from 'typesafe-actions'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Template } from 'modules/template/types'
-import { Scene } from 'modules/scene/types'
+import { SDKVersion, Scene } from 'modules/scene/types'
 import { Pool } from 'modules/pool/types'
 import { PreviewType } from 'modules/editor/types'
 
@@ -14,7 +14,12 @@ export const CREATE_PROJECT_FROM_TEMPLATE = 'Create project from template'
 export const createProjectFromTemplate = (template: Template, meta: CreateProjectFromTemplateMeta = {}) =>
   action(CREATE_PROJECT_FROM_TEMPLATE, { template }, meta)
 
-type CreateProjectFromTemplateMeta = { title?: string; description?: string; onSuccess?: (project: Project, scene: Scene) => any }
+type CreateProjectFromTemplateMeta = {
+  title?: string
+  description?: string
+  sdk?: SDKVersion
+  onSuccess?: (project: Project, scene: Scene) => any
+}
 
 export type CreateProjectFromTemplateAction = ReturnType<typeof createProjectFromTemplate>
 
