@@ -377,8 +377,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
       if (this.state.view === CreateItemView.DETAILS) {
         try {
-          // eslint-disable-next-line no-debugger
-          debugger
           const blob = dataURLToBlob(thumbnail)
           const hasCustomThumbnail = THUMBNAIL_PATH in contents
           if (blob && !hasCustomThumbnail) {
