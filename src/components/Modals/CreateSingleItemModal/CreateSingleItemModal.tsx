@@ -164,11 +164,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const female =
       bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, contents) : {}
 
-    const all = {
+    const all: Record<string, Blob> = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
-      [VIDEO_PATH]: contents[VIDEO_PATH],
       ...male,
       ...female
+    }
+
+    if (contents[VIDEO_PATH]) {
+      all[VIDEO_PATH] = contents[VIDEO_PATH]
     }
 
     return { male, female, all }
@@ -765,9 +768,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents, isHandsCategoryEnabled) : getEmoteCategories()
 
     const raritiesLink =
-      type === ItemType.EMOTE
-        ? 'https://docs.decentraland.org/emotes/emotes/#rarity'
-        : 'https://docs.decentraland.org/decentraland/wearables-editor-user-guide/#rarity'
+      'https://docs.decentraland.org/creator/wearables-and-emotes/manage-collections' +
+      (type === ItemType.EMOTE
+        ? '/uploading-emotes/#rarity'
+        : isSmart({ type, contents })
+        ? '/uploading-smart-wearables/#rarity'
+        : '/uploading-wearables/#rarity')
 
     return (
       <>
