@@ -71,10 +71,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   getCurrentScene() {
     const { scenes } = this.props
     const project = this.getCurrentProject()
-    if (project) {
-      return scenes[project.sceneId]
-    }
-    return null
+    return (project && scenes[project.sceneId]) || null
   }
 
   getCurrentPool() {

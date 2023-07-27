@@ -43,10 +43,11 @@ import { collectionCurationSaga } from 'modules/curations/collectionCuration/sag
 import { getPeerWithNoGBCollectorURL } from './utils'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
 import { inspectorSaga } from 'modules/inspector/sagas'
+import { RootStore } from './types'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL() })
 
-export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClient, catalystClient: CatalystClient) {
+export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClient, catalystClient: CatalystClient, store: RootStore) {
   yield all([
     analyticsSaga(),
     assetPackSaga(builderAPI),
@@ -83,6 +84,6 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     collectionCurationSaga(builderAPI),
     itemCurationSaga(builderAPI),
     featuresSaga({ polling: { apps: [ApplicationName.BUILDER], delay: 60000 /** 60 seconds */ } }),
-    inspectorSaga()
+    inspectorSaga(store)
   ])
 }
