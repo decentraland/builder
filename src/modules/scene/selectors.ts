@@ -11,6 +11,8 @@ export const getState: (state: RootState) => SceneState = state => state.scene.p
 
 export const getData: (state: RootState) => SceneState['data'] = state => getState(state).data
 
+export const getIsLoading: (state: RootState) => boolean = state => !!getState(state).loading.length
+
 export const getCurrentScene = createSelector<RootState, Project | null, SceneState['data'], Scene | null>(
   getCurrentProject,
   getData,

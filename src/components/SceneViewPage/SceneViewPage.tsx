@@ -24,6 +24,15 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     }
   }
 
+  componentDidUpdate() {
+    const project = this.getCurrentProject()
+    const scene = this.getCurrentScene()
+    const { isLoading, onLoadProjectScene } = this.props
+    if (project && !scene && !isLoading) {
+      onLoadProjectScene(project, this.getType())
+    }
+  }
+
   componentWillUnmount() {
     this.props.onCloseEditor()
   }
@@ -59,6 +68,15 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     }
   }
 
+  getCurrentScene() {
+    const { scenes } = this.props
+    const project = this.getCurrentProject()
+    if (project) {
+      return scenes[project.sceneId]
+    }
+    return null
+  }
+
   getCurrentPool() {
     const { currentPool } = this.props
 
@@ -80,7 +98,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   }
 
   getObjectCount() {
-    const { currentScene } = this.props
+    const currentScene = this.getCurrentScene()
     if (!currentScene || !currentScene.sdk6) {
       return 0
     }
@@ -132,7 +150,8 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     }
 
     const currentPool = this.getCurrentPool()
-    const { currentAuthor: author, currentScene, onBack } = this.props
+    const currentScene = this.getCurrentScene()
+    const { currentAuthor: author, onBack } = this.props
 
     return (
       <>
