@@ -1075,9 +1075,15 @@
     "title": "Create a Scene",
     "name_subtitle": "Set a name and a description for your scene",
     "size_subtitle": "Set the parcels size of your new scene",
+    "sdk_title": "Experience the new decentraland editor",
+    "sdk_subtitle": "Harness the power of SDK 7 without any code.",
+    "sdk_description": "Enhance your scene-building process with our improved visual editor. All features from the previous Scene Builder are included, while the addition of <b>Smart Items</b> is scheduled for an upcoming update.",
+    "sdk_image_alt": "SDK 7",
     "name_label": "Name",
     "description_label": "Description",
-    "description_placeholder": "Some description..."
+    "description_placeholder": "Some description...",
+    "use_sdk7": "Use decentraland web editor",
+    "use_sdk6": "Use legacy scene builder (SDK 6)"
   },
   "clone_template_modal": {
     "title": "Set a name and a description for your scene",

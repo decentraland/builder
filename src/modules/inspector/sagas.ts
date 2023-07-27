@@ -92,7 +92,7 @@ function* handleConnectInspector(action: ConnectInspectorAction) {
       case 'scene.json': {
         return JSON.stringify({
           scene: {
-            parcels: getParcels(project).map($ => `${$.x},${$.y}`),
+            parcels: getParcels(project.layout).map($ => `${$.x},${$.y}`),
             base: '0,0'
           }
         })
