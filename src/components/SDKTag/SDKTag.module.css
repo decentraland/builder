@@ -1,0 +1,20 @@
+.container {
+  padding: 0 8px;
+  background: var(--dcl-shadow, #161518);
+  color: #fff;
+  font-size: 13px;
+  border-radius: 34px;
+  border: 1px solid #fff;
+  height: fit-content;
+}
+
+.container .loader:global(.ui.loader) {
+  position: relative;
+  width: 35px;
+  height: 20px;
+  top: 12px;
+}
+
+.container .loader:global(.ui.loader):after {
+  border-color: #fff transparent transparent !important;
+}

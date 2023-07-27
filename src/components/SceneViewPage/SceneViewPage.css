@@ -84,6 +84,9 @@
 
 .SceneViewPage .detail .title {
   flex: 1;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .SceneViewPage .detail .title h1 {

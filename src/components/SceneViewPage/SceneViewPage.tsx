@@ -9,6 +9,7 @@ import Navbar from 'components/Navbar'
 import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 import Back from 'components/Back'
+import SDKTag from 'components/SDKTag/SDKTag'
 import { PreviewType } from 'modules/editor/types'
 import { getProjectToExport } from './utils'
 import { Props } from './SceneViewPage.types'
@@ -20,6 +21,15 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     const { match, onLoadProject } = this.props
     if (match.params.projectId) {
       onLoadProject(match.params.projectId, this.getType())
+    }
+  }
+
+  componentDidUpdate() {
+    const project = this.getCurrentProject()
+    const scene = this.getCurrentScene()
+    const { isLoading, onLoadProjectScene } = this.props
+    if (project && !scene && !isLoading) {
+      onLoadProjectScene(project, this.getType())
     }
   }
 
@@ -58,6 +68,15 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     }
   }
 
+  getCurrentScene() {
+    const { scenes } = this.props
+    const project = this.getCurrentProject()
+    if (project) {
+      return scenes[project.sceneId]
+    }
+    return null
+  }
+
   getCurrentPool() {
     const { currentPool } = this.props
 
@@ -79,7 +98,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   }
 
   getObjectCount() {
-    const { currentScene } = this.props
+    const currentScene = this.getCurrentScene()
     if (!currentScene || !currentScene.sdk6) {
       return 0
     }
@@ -119,7 +138,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isFetching, isPreviewing, isReady, isTemplatesEnabled } = this.props
+    const { isFetching, isPreviewing, isReady, isTemplatesEnabled, isInspectorEnabled } = this.props
 
     if (isFetching) {
       return this.renderLoading()
@@ -131,6 +150,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     }
 
     const currentPool = this.getCurrentPool()
+    const currentScene = this.getCurrentScene()
     const { currentAuthor: author, onBack } = this.props
 
     return (
@@ -181,6 +201,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
           <div className="detail">
             <div className="title">
               <h1>{currentProject.title}</h1>
+              {isInspectorEnabled && <SDKTag scene={currentScene} />}
             </div>
             {author && (
               <div className="author">

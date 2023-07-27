@@ -9,6 +9,7 @@ import { isRemoteURL } from 'modules/media/utils'
 import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
 import { OptionsDropdown } from 'components/OptionsDropdown'
+import SDKTag from 'components/SDKTag/SDKTag'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
 
@@ -57,7 +58,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, parcels, items, onClick, isUploading, hasError } = this.props
+    const { project, parcels, items, onClick, isUploading, hasError, scene, isInspectorEnabled } = this.props
     const { isDeleting } = this.state
     const isFromScenePool = 'likes' in (project as Pool)
 
@@ -80,14 +81,17 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
         {isFromScenePool ? null : (
           <>
             <DeploymentStatus projectId={project.id} className="deployment-status" />
-            <OptionsDropdown
-              className="options-dropdown"
-              options={[
-                { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
-                { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
-                { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
-              ]}
-            />
+            <div className="options-container">
+              {isInspectorEnabled && <SDKTag scene={scene} />}
+              <OptionsDropdown
+                className="options-dropdown"
+                options={[
+                  { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
+                  { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
+                  { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
+                ]}
+              />
+            </div>
           </>
         )}
         <div className="project-data">

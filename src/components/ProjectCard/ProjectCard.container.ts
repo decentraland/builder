@@ -8,7 +8,7 @@ import { getData as getPoolProjects } from 'modules/pool/selectors'
 import { openModal } from 'modules/modal/actions'
 import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
 import { PreviewType } from 'modules/editor/types'
-
+import { getIsInspectorEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './ProjectCard.types'
 import ProjectCard from './ProjectCard'
 
@@ -22,10 +22,12 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return {
     parcels,
     items,
+    scene,
     deploymentStatus: getDeploymentStatusByProjectId(state)[ownProps.project.id],
     deployments: getDeploymentsByProjectId(state)[ownProps.project.id],
     isUploading: getLoadingSet(state).has(project.id),
     hasError: getErrorSet(state).has(project.id),
+    isInspectorEnabled: getIsInspectorEnabled(state),
     type
   }
 }

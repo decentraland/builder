@@ -87,12 +87,19 @@
   z-index: 999;
 }
 
-.ProjectCard:hover .options-dropdown.ui.dropdown > .dropdown.icon {
-  visibility: visible;
+.ProjectCard .options-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  visibility: hidden;
+  padding: 8px;
 }
 
-.ProjectCard .options-dropdown.ui.dropdown > .dropdown.icon {
-  visibility: hidden;
+.ProjectCard:hover .options-container {
+  visibility: visible;
 }
 
 .ProjectCard .options-dropdown .icon:before {

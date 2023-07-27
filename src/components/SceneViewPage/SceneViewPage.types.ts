@@ -5,7 +5,7 @@ import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 
 import { Project } from 'modules/project/types'
 import { Pool } from 'modules/pool/types'
-import { loadPublicProjectRequest, LoadPublicProjectRequestAction } from 'modules/project/actions'
+import { LoadProjectSceneRequestAction, loadPublicProjectRequest, LoadPublicProjectRequestAction } from 'modules/project/actions'
 import { Scene } from 'modules/scene/types'
 import { togglePreview, TogglePreviewAction, closeEditor, CloseEditorAction } from 'modules/editor/actions'
 import { likePoolRequest, LikePoolRequestAction } from 'modules/pool/actions'
@@ -18,19 +18,22 @@ export type Props = {
   type: PreviewType.PUBLIC | PreviewType.POOL
   currentProject: Project | null
   currentPool: Pool | null
-  currentScene: Scene | null
+  scenes: Record<string, Scene>
   currentAuthor: Profile | null
   isPreviewing: boolean
   isFetching: boolean
   isLoggedIn: boolean
   isReady: boolean
   isTemplatesEnabled: boolean
+  isInspectorEnabled: boolean
+  isLoading: boolean
   onCloseEditor: typeof closeEditor
   onLoadProject: typeof loadPublicProjectRequest
   onPreview: () => ReturnType<typeof togglePreview>
   onLikePool: typeof likePoolRequest
   onOpenModal: typeof openModal
   onBack: () => void
+  onLoadProjectScene: (project: Project, type: PreviewType.POOL | PreviewType.PUBLIC) => void
 }
 
 export type MapStateProps = Pick<
@@ -39,13 +42,18 @@ export type MapStateProps = Pick<
   | 'isFetching'
   | 'isLoggedIn'
   | 'isReady'
+  | 'isLoading'
   | 'currentProject'
   | 'currentPool'
-  | 'currentScene'
+  | 'scenes'
   | 'currentAuthor'
   | 'isTemplatesEnabled'
+  | 'isInspectorEnabled'
 >
-export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onLikePool' | 'onOpenModal' | 'onCloseEditor' | 'onBack'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onLoadProject' | 'onPreview' | 'onLikePool' | 'onOpenModal' | 'onCloseEditor' | 'onBack' | 'onLoadProjectScene'
+>
 export type MapDispatch = Dispatch<
   | LoadPublicProjectRequestAction
   | TogglePreviewAction
@@ -53,4 +61,5 @@ export type MapDispatch = Dispatch<
   | OpenModalAction
   | CloseEditorAction
   | CallHistoryMethodAction
+  | LoadProjectSceneRequestAction
 >

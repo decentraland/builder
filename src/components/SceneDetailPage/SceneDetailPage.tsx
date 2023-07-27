@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Props } from './SceneDetailPage.types'
 import { Page, Center, Loader, Section, Row, Column, Header, Button, Dropdown, Icon, Empty, Confirm } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -10,12 +10,19 @@ import Footer from 'components/Footer'
 import Back from 'components/Back'
 import NotFound from 'components/NotFound'
 import DeploymentStatus from 'components/DeploymentStatus'
+import SDKTag from 'components/SDKTag/SDKTag'
 import DeploymentDetail from './DeploymentDetail'
 import './SceneDetailPage.css'
 
 const SceneDetailPage: React.FC<Props> = props => {
-  const { project, isLoading, deployments, onOpenModal, onDelete, onDuplicate } = props
+  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onLoadProjectScene } = props
   const [isDeleting, setIsDeleting] = useState(false)
+
+  useEffect(() => {
+    if (project && !scene) {
+      onLoadProjectScene(project)
+    }
+  }, [project, scene, onLoadProjectScene])
 
   const renderLoading = () => {
     return (
@@ -61,7 +68,7 @@ const SceneDetailPage: React.FC<Props> = props => {
   }
 
   const renderPage = (project: Project, deployments: Deployment[]) => {
-    const { isLoadingDeployments, onNavigate, onOpenModal, isInspectorEnabled } = props
+    const { isLoadingDeployments, onNavigate, onOpenModal, isInspectorEnabled, scene } = props
     return (
       <>
         <Section size="large">
@@ -105,8 +112,9 @@ const SceneDetailPage: React.FC<Props> = props => {
               </Row>
             </Column>
           </Row>
-          <Row>
-            <Column>{getSceneStatus()}</Column>
+          <Row className="status-container">
+            {getSceneStatus()}
+            {isInspectorEnabled && <SDKTag scene={scene} />}
           </Row>
         </Section>
         <Section>

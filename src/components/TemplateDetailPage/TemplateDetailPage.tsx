@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { Page, Center, Loader, Section, Row, Column, Header, Button, Logo, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -12,7 +12,7 @@ import './TemplateDetailPage.css'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 const TemplateDetailPage: React.FC<Props> = props => {
-  const { template, isLoading, onOpenModal, onNavigate } = props
+  const { template, isLoading, isInspectorEnabled, scene, onOpenModal, onNavigate, onLoadTemplateScene } = props
 
   const analytics = getAnalytics()
 
@@ -24,6 +24,12 @@ const TemplateDetailPage: React.FC<Props> = props => {
     }),
     [template]
   )
+
+  useEffect(() => {
+    if (template && !scene) {
+      onLoadTemplateScene(template)
+    }
+  }, [template, scene, onLoadTemplateScene])
 
   const renderLoading = () => {
     return (
@@ -106,6 +112,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
               <p className="description-content world">{t('template_detail_page.built_for_world')}</p>
               <p className="description-content size-scene">{t('template_detail_page.parcels', { ...template.layout })}</p>
               <p className="description-content personalize-content">{t('template_detail_page.personalize_it_yourself')}</p>
+              {scene && isInspectorEnabled && <p className="description-content sdk">{scene?.sdk6 ? 'SDK 6' : 'SDK 7'}</p>}
             </Column>
           </Row>
         </Section>

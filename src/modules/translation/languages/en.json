@@ -735,6 +735,7 @@
     "create_scene": "Create Scene",
     "no_projects": "You can publish your scenes in your LAND, your Worlds or upload them to the Scene Pool.{br}Alternatively, you can also <link>upload a scene file</link> and continue working from here.",
     "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
+    "sdk6_support": "Technical support for SDK 6 will end on December 23rd, 2023.",
     "project_actions": {
       "delete_project": "Delete",
       "duplicate_project": "Duplicate",

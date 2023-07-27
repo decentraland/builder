@@ -729,6 +729,7 @@
     "create_scene": "创建场景",
     "no_projects": "您可以在您的 LAND、您的世界中发布您的场景或将它们上传到场景池。{br}或者，您也可以<link>上传场景文件</link>并从这里继续工作。",
     "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
+    "sdk6_support": "SDK 6的技术支持将于2023年12月23日结束。",
     "project_actions": {
       "delete_project": "删除场景",
       "duplicate_project": "复制场景",
