@@ -171,7 +171,7 @@ const builderClientUrl: string = BUILDER_SERVER_URL.replace('/v1', '')
 
 const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, fetch)
 
-sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient)
+sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, store)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {
