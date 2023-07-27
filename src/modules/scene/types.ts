@@ -1,3 +1,4 @@
+import { CompositeDefinition } from '@dcl/ecs'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
 import { ModelMetrics, Vector3, Quaternion } from 'modules/models/types'
 
@@ -75,6 +76,6 @@ export type SceneSDK6 = {
 
 export type SceneSDK7 = {
   id: string
-  composite: string
+  composite: CompositeDefinition
   mappings: Record<string, string>
 }

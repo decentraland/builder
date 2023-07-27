@@ -20,5 +20,10 @@ export const rpcSuccess = (method: `${IframeStorage.Method}`, result: IframeStor
 export type RPCSuccessAction = ReturnType<typeof rpcSuccess>
 
 export const RPC_FAILURE = '[Failure] RPC'
-export const rpcFailure = (method: `${IframeStorage.Method}`, error: string, nonce: number) => action(RPC_FAILURE, { method, error, nonce })
+export const rpcFailure = (
+  method: `${IframeStorage.Method}`,
+  params: IframeStorage.Params[IframeStorage.Method],
+  error: string,
+  nonce: number
+) => action(RPC_FAILURE, { method, params, error, nonce })
 export type RPCFailureAction = ReturnType<typeof rpcFailure>

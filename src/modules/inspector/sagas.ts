@@ -133,7 +133,7 @@ function* handleRpcRequest(action: RPCRequestAction) {
     const result: IframeStorage.Result[IframeStorage.Method] = yield handler(params)
     yield put(rpcSuccess(method, result, nonce))
   } catch (error) {
-    yield put(rpcFailure(method, error.message, nonce))
+    yield put(rpcFailure(method, params, error.message, nonce))
   }
 }
 
@@ -157,13 +157,11 @@ function handleRpcFailure(action: RPCFailureAction) {
 
 function* handleReadFile(params: IframeStorage.Params['read_file']) {
   const { path } = params
-  console.log('read_file', path)
 
   const scene: SceneSDK7 = yield getScene()
 
   // TODO: this should be fetched from the builder-server
   if (FILES.has(path)) {
-    console.log('loading file from memory')
     return FILES.get(path)
   }
 
@@ -187,7 +185,7 @@ function* handleReadFile(params: IframeStorage.Params['read_file']) {
       break
     }
     case 'assets/scene/main.composite': {
-      file = scene.composite
+      file = JSON.stringify(scene.composite)
       break
     }
     case 'inspector-preferences.json': {
@@ -257,7 +255,7 @@ function* handleWriteFile(params: IframeStorage.Params['write_file']) {
       const scene: SceneSDK7 = yield getScene()
       const newScene: SceneSDK7 = {
         ...scene,
-        composite: new TextDecoder().decode(content)
+        composite: JSON.parse(new TextDecoder().decode(content))
       }
       yield put(updateScene(newScene))
       break
@@ -290,7 +288,6 @@ function* handleWriteFile(params: IframeStorage.Params['write_file']) {
 
 function* handleDelete(params: IframeStorage.Params['delete']) {
   const { path } = params
-  console.log('delete', path)
 
   const scene: SceneSDK7 = yield getScene()
 

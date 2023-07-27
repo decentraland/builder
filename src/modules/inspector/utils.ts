@@ -1,4 +1,4 @@
-import { Composite } from '@dcl/ecs'
+import { Composite, CompositeDefinition } from '@dcl/ecs'
 import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
 import { Layout, Project } from 'modules/project/types'
 import { ComponentData, ComponentType, SceneSDK6 } from 'modules/scene/types'
@@ -52,7 +52,7 @@ export function toComposite(scene: SceneSDK6, project?: Project) {
   })
 
   const composite = dumpEngineToComposite(engine as any, 'json')
-  return JSON.stringify(Composite.toJson(composite))
+  return Composite.toJson(composite) as CompositeDefinition
 }
 
 export function toMappings(scene: SceneSDK6): Record<string, string> {
