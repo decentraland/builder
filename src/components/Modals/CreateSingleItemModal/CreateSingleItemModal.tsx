@@ -456,6 +456,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   handleSaveVideo = () => {
     this.setState({
+      fromView: undefined,
       view: CreateItemView.DETAILS
     })
   }
@@ -528,7 +529,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleOpenVideoDialog = () => {
-    this.setState({ view: CreateItemView.UPLOAD_VIDEO })
+    this.setState({ view: CreateItemView.UPLOAD_VIDEO, fromView: CreateItemView.DETAILS })
   }
 
   handleYes = () => this.setState({ isRepresentation: true })
@@ -719,6 +720,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   handleUploadVideoGoBack = () => {
     const keys = Object.keys(this.state)
+    const { fromView } = this.state
+
+
+    if (fromView) {
+      this.setState({ view: fromView })
+      return
+    }
+
     const stateReset = keys.reduce((acc, v) => ({ ...acc, [v]: undefined }), {})
     this.setState({ ...stateReset, ...this.getInitialState() })
   }
