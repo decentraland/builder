@@ -149,7 +149,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return (
       <Table.Row className={`CollectionItem ${styles.row}`}>
-        <Table.Cell className={`${styles.avatarColumn}`} width={5}>
+        <Table.Cell className={`${styles.avatarColumn}`} width={6}>
           <Link to={locations.itemDetail(item.id)} className="CollectionItem">
             <div className={styles.avatarContainer}>
               <ItemImage className={styles.itemImage} item={item} />
