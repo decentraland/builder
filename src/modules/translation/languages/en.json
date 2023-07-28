@@ -218,7 +218,6 @@
     "upload_video_placeholder": "Select a video",
     "rarity_label": "How rare is this item?",
     "rarity_placeholder": "Select a rarity",
-    "rarity_learn_more_about": "{learn_more} about rarities",
     "representation_label": "Select the body shape for your item",
     "existing_item": "Is this part of an existing item?",
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
@@ -246,7 +245,6 @@
     "emote_notice": "Emotes are available for all body shapes.",
     "smart_wearable_details_title": "Complete the smart wereable details",
     "smart_wearable_permissions_label": "Smart wearable permissions",
-    "required_permissions_learn_more_about": "{learn_more} about smart wearables permissions",
     "smart_wearable_notice": "Remember that Smart Wearables are available for all body shapes",
     "thumbnail_preview_title": "Thumbnail",
     "video_preview_title": "Video detail"
