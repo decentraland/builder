@@ -73,7 +73,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     )
   }
 
-  renderDropzoneCTA = (open: () => void) => {
+  renderDropzoneCTA = (open: (event: React.MouseEvent) => void) => {
     return (
       <T
         id="import_modal.cta"

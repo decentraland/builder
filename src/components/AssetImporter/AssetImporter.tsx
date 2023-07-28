@@ -14,6 +14,7 @@ import { EXPORT_PATH } from 'modules/project/export'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH, MAX_FILE_SIZE } from 'modules/asset/utils'
 import { getModelData, ThumbnailType } from 'lib/getModelData'
+import { preventDefault } from 'lib/event'
 import { createDefaultImportedFile, getMetrics, ASSET_MANIFEST, prepareScript } from './utils'
 import { truncateFileName, getExtension } from 'lib/file'
 
@@ -74,7 +75,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     )
   }
 
-  renderDropzoneCTA = (open: () => void) => {
+  renderDropzoneCTA = (open: (event: React.MouseEvent) => void) => {
     const { isLoading } = this.state
     return (
       <>
@@ -87,7 +88,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           id="asset_pack.import.cta"
           values={{
             models_link: (
-              <span className="link" onClick={this.handleOpenDocs}>
+              <span className="link" onClick={preventDefault(this.handleOpenDocs)}>
                 GLB, GLTF, ZIP
               </span>
             ),
@@ -323,7 +324,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
   }
 
   render() {
-    const { files } = this.state
+    const { files, isLoading } = this.state
     const items = Object.values(files)
     const buttonText = items.length > 1 ? t('asset_pack.import.action_many', { count: items.length }) : t('asset_pack.import.action')
     const hasCorrupted = items.find(item => !!item.error)
@@ -338,6 +339,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           onAcceptedFiles={this.handleDropAccepted}
           onRejectedFiles={this.handleDropRejected}
           renderAction={this.renderDropzoneCTA}
+          disabled={isLoading}
         />
         <Button className="submit" disabled={!canImport} primary={canImport} onClick={this.handleSubmit}>
           {buttonText}
