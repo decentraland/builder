@@ -722,7 +722,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const keys = Object.keys(this.state)
     const { fromView } = this.state
 
-    console.log('fromView', fromView)
 
     if (fromView) {
       this.setState({ view: fromView })
