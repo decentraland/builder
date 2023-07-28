@@ -334,6 +334,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                     <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell>
                   ) : null}
                   <Table.HeaderCell>{t('collection_detail_page.table.status')}</Table.HeaderCell>
+                  <Table.HeaderCell />
                 </Table.Row>
               </Table.Header>
               <Table.Body>
