@@ -257,6 +257,12 @@
   font-weight: 500;
 }
 
-.CreateSingleItemModal p.rarity.learn-more {
-  margin-top: -20px;
+.CreateSingleItemModal .field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.CreateSingleItemModal .field-header .learn-more {
+  text-decoration: underline;
 }

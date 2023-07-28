@@ -17,7 +17,7 @@ import {
   WearablePreview,
   Message
 } from 'decentraland-ui'
-import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getImageType, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
@@ -781,7 +781,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         {(!item || !item.isPublished) && !belongsToAThirdPartyCollection ? (
           <>
             <SelectField
-              label={t('create_single_item_modal.rarity_label')}
+              label={
+                <div className="field-header">
+                  {t('create_single_item_modal.rarity_label')}
+                  <a href={raritiesLink} target="_blank" rel="noopener noreferrer" className="learn-more">
+                    {t('global.learn_more')}
+                  </a>
+                </div>
+              }
               placeholder={t('create_single_item_modal.rarity_placeholder')}
               value={rarity}
               options={rarities.map(value => ({
@@ -794,18 +801,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               }))}
               onChange={this.handleRarityChange}
             />
-            <p className="rarity learn-more">
-              <T
-                id="create_single_item_modal.rarity_learn_more_about"
-                values={{
-                  learn_more: (
-                    <a href={raritiesLink} target="_blank" rel="noopener noreferrer">
-                      {t('global.learn_more')}
-                    </a>
-                  )
-                }}
-              />
-            </p>
           </>
         ) : null}
         <SelectField
@@ -1006,21 +1001,18 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         {this.renderFields()}
         {requiredPermissions?.length ? (
           <div className="required-permissions">
-            <Header sub>{t('create_single_item_modal.smart_wearable_permissions_label')}</Header>
+            <Header sub className="field-header">
+              {t('create_single_item_modal.smart_wearable_permissions_label')}
+              <a
+                href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="learn-more"
+              >
+                {t('global.learn_more')}
+              </a>
+            </Header>
             <ItemRequiredPermission requiredPermissions={requiredPermissions} basic />
-            <p className="learn-more">
-              {t('create_single_item_modal.required_permissions_learn_more_about', {
-                learn_more: (
-                  <a
-                    href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('global.learn_more')}
-                  </a>
-                )
-              })}
-            </p>
           </div>
         ) : null}
         <Row className="previews">
