@@ -1,0 +1,59 @@
+.modalContainer:global(.ui.modal) {
+  width: 740px;
+  height: 740px;
+  /* override display:block with important */
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContainer :global(.dcl.modal-navigation) {
+  width: 100%;
+}
+
+.modalContainer :global(.dcl.modal-navigation-title) {
+  max-width: 560px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  max-width: 560px;
+}
+
+.modalContainer:global(.ui.modal) > .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.actions button {
+  width: 100%;
+  max-width: 476px;
+}
+
+.actions button:global(.ui.button):not(:first-child) {
+  margin-left: 0;
+}
+
+.loadingMessage {
+  display: flex;
+}
+
+.loader:global(.ui.loader.inline) {
+  margin-right: 10px;
+}

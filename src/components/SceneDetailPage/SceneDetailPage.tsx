@@ -12,11 +12,13 @@ import NotFound from 'components/NotFound'
 import DeploymentStatus from 'components/DeploymentStatus'
 import SDKTag from 'components/SDKTag/SDKTag'
 import DeploymentDetail from './DeploymentDetail'
+import MigrateSceneToSDK7 from './MigrateSceneToSDK7'
 import './SceneDetailPage.css'
 
 const SceneDetailPage: React.FC<Props> = props => {
-  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onLoadProjectScene } = props
+  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onNavigate, onLoadProjectScene } = props
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showMigrationModal, setShowMigrationModal] = useState(false)
 
   useEffect(() => {
     if (project && !scene) {
@@ -57,6 +59,14 @@ const SceneDetailPage: React.FC<Props> = props => {
     setIsDeleting(false)
   }, [setIsDeleting])
 
+  const handleEditScene = useCallback(() => {
+    if (scene?.sdk6) {
+      setShowMigrationModal(true)
+    } else {
+      onNavigate(locations.inspector(project?.id))
+    }
+  }, [project, scene, onNavigate])
+
   const getSceneStatus = () => {
     const { project, isLoading, isLoadingDeployments } = props
 
@@ -88,7 +98,7 @@ const SceneDetailPage: React.FC<Props> = props => {
                   <Icon name="download" />
                   {t('scene_detail_page.download_scene')}
                 </Button>
-                <Button primary className="edit-button" onClick={() => onNavigate(locations.sceneEditor(project.id))}>
+                <Button primary className="edit-button" disabled={!scene} loading={!scene} onClick={handleEditScene}>
                   <Icon name="edit outline" />
                   {t('scene_detail_page.edit_scene')}
                 </Button>
@@ -102,9 +112,6 @@ const SceneDetailPage: React.FC<Props> = props => {
                   direction="left"
                 >
                   <Dropdown.Menu>
-                    {isInspectorEnabled ? (
-                      <Dropdown.Item text="Open Inspector" onClick={() => onNavigate(locations.inspector(project.id))} />
-                    ) : null}
                     <Dropdown.Item text={t('scene_detail_page.actions.duplicate')} onClick={handleDuplicateClick} />
                     <Dropdown.Item text={t('scene_detail_page.actions.delete')} onClick={handleDeleteClick} />
                   </Dropdown.Menu>
@@ -171,6 +178,9 @@ const SceneDetailPage: React.FC<Props> = props => {
             />
           </>
         ) : null}
+        {showMigrationModal && (
+          <MigrateSceneToSDK7 project={project} scene={scene} onNavigate={onNavigate} onClose={() => setShowMigrationModal(false)} />
+        )}
       </Page>
       <Footer />
     </>

@@ -140,3 +140,20 @@ export const UPDATE_SCENE = 'Update scene'
 export const updateScene = (scene: SceneSDK7) => action(UPDATE_SCENE, { scene })
 
 export type UpdateSceneAction = ReturnType<typeof updateScene>
+
+// Migrate scene
+export const MIGRATE_TO_SDK7_REQUEST = '[Request] Migrate to SDK7'
+export const migrateToSDK7Request = (project: Project, shouldSaveCopy: boolean) =>
+  action(MIGRATE_TO_SDK7_REQUEST, {
+    project,
+    shouldSaveCopy
+  })
+export type MigrateToSDK7RequestAction = ReturnType<typeof migrateToSDK7Request>
+
+export const MIGRATE_TO_SDK7_SUCCESS = '[Success] Migrate to SDK7'
+export const migrateToSDK7Success = () => action(MIGRATE_TO_SDK7_SUCCESS)
+export type MigrateToSDK7SuccessAction = ReturnType<typeof migrateToSDK7Success>
+
+export const MIGRATE_TO_SDK7_FAILURE = '[Failure] Migrate to SDK7'
+export const migrateToSDK7Failure = (error: string) => action(MIGRATE_TO_SDK7_FAILURE, { error })
+export type MigrateToSDK7FailureAction = ReturnType<typeof migrateToSDK7Failure>

@@ -23,7 +23,12 @@ import {
   FIX_LEGACY_NAMESPACES_REQUEST,
   FixLegacyNamespacesRequestAction,
   fixLegacyNamespacesSuccess,
-  syncSceneAssetsSuccess
+  syncSceneAssetsSuccess,
+  MIGRATE_TO_SDK7_REQUEST,
+  MigrateToSDK7RequestAction,
+  migrateToSDK7Failure,
+  updateScene,
+  migrateToSDK7Success
 } from 'modules/scene/actions'
 import {
   getGLTFsByAssetId,
@@ -34,7 +39,7 @@ import {
   getCollectiblesByURL,
   getShapesByEntityId
 } from 'modules/scene/selectors'
-import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent, SceneSDK6 } from 'modules/scene/types'
+import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
 import { getSelectedEntityIds, isReady } from 'modules/editor/selectors'
 import { setSelectedEntities, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
@@ -57,6 +62,11 @@ import { loadAssets } from 'modules/asset/actions'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getMetrics } from 'components/AssetImporter/utils'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
+import { DUPLICATE_PROJECT_SUCCESS, duplicateProjectRequest } from 'modules/project/actions'
+import { toComposite, toMappings } from 'modules/inspector/utils'
+import { push } from 'connected-react-router'
+import { locations } from 'routing/locations'
+import { PreviewType } from 'modules/editor/types'
 
 const editorWindow = window as EditorWindow
 
@@ -71,6 +81,7 @@ export function* sceneSaga() {
   yield takeLatest(SYNC_SCENE_ASSETS_REQUEST, handleSyncSceneAssetsAction)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
   yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
+  yield takeLatest(MIGRATE_TO_SDK7_REQUEST, handleMigrateToSDK7Request)
 }
 
 function* handleAddItem(action: AddItemAction) {
@@ -706,5 +717,41 @@ function* handleSetScriptParameters(action: SetScriptValuesAction) {
       }
       yield put(provisionScene(newScene))
     }
+  }
+}
+
+function* handleMigrateToSDK7Request(action: MigrateToSDK7RequestAction) {
+  const { project, shouldSaveCopy } = action.payload
+
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  const scene = scenes[project.sceneId]
+  if (scene.sdk7) {
+    put(migrateToSDK7Failure('Scene is already in SDK7'))
+    return
+  }
+  try {
+    if (shouldSaveCopy) {
+      const oldProject = {
+        ...project,
+        title: `Old_${project.title}`
+      }
+      yield put(duplicateProjectRequest(oldProject, PreviewType.PROJECT, false))
+      yield take(DUPLICATE_PROJECT_SUCCESS)
+    }
+
+    const composite = toComposite(scene.sdk6, project)
+    const mappings = toMappings(scene.sdk6)
+
+    const newSDK7Scene: SceneSDK7 = {
+      id: scene.sdk6.id,
+      composite,
+      mappings
+    }
+
+    yield put(updateScene(newSDK7Scene))
+    yield put(push(locations.inspector(project.id)))
+    yield put(migrateToSDK7Success())
+  } catch (error) {
+    put(migrateToSDK7Failure(error))
   }
 }

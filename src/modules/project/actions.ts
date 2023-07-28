@@ -77,7 +77,8 @@ export const DUPLICATE_PROJECT_REQUEST = '[Request] Duplicate project'
 export const DUPLICATE_PROJECT_SUCCESS = '[Success] Duplicate project'
 export const DUPLICATE_PROJECT_FAILURE = '[Failure] Duplicate project'
 
-export const duplicateProjectRequest = (project: Project, type?: PreviewType) => action(DUPLICATE_PROJECT_REQUEST, { project, type })
+export const duplicateProjectRequest = (project: Project, type?: PreviewType, shouldRedirect = true) =>
+  action(DUPLICATE_PROJECT_REQUEST, { project, type, shouldRedirect })
 export const duplicateProjectSuccess = (project: Project, type?: PreviewType) => action(DUPLICATE_PROJECT_SUCCESS, { project, type })
 export const duplicateProjectFailure = (error: string) => action(DUPLICATE_PROJECT_FAILURE, { error })
 
