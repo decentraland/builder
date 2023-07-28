@@ -262,9 +262,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       <span>
         {t('create_single_item_modal.import_information', {
           link: (
-            <a href="javascript" onClick={preventDefault(this.handleOpenMoreInformation)}>
+            <span className="link" onClick={preventDefault(this.handleOpenMoreInformation)}>
               {t('create_single_item_modal.import_information_link_label')}
-            </a>
+            </span>
           )
         })}
       </span>
