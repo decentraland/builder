@@ -117,7 +117,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
 
     return (
       <>
-        <ModalNavigation title={title} onBack={onBack} onClose={onClose} />
+        <ModalNavigation title={title} onBack={video ? this.handleGoBack : onBack} onClose={onClose} />
         <Modal.Content>
           {(!video || id) && (
             <FileImport
