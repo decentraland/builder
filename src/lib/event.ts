@@ -1,7 +1,7 @@
 import { SyntheticEvent } from 'react'
 
 // check if eventMethod is a callable property of event
-type EventMethod<T extends SyntheticEvent | Event> = {
+export type EventMethod<T extends SyntheticEvent | Event> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never
 }[keyof T]
 
