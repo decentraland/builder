@@ -2,7 +2,7 @@ import React from 'react'
 import { ethers } from 'ethers'
 import { EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Dropdown, Icon, Button, Mana, Table, Popup } from 'decentraland-ui'
+import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
@@ -185,18 +185,8 @@ export default class CollectionItem extends React.PureComponent<Props> {
             </div>
           </Table.Cell>
         ) : null}
-        <Table.Cell>
-          <Popup
-            className={styles.contextMenuButton}
-            trigger={this.renderItemStatus()}
-            content={this.renderItemContextMenu()}
-            inverted
-            basic
-            offset={[0, -60]}
-            position="right center"
-            hoverable
-          />
-        </Table.Cell>
+        <Table.Cell>{this.renderItemStatus()}</Table.Cell>
+        <Table.Cell className={styles.contextMenuButton}>{this.renderItemContextMenu()}</Table.Cell>
       </Table.Row>
     )
   }
