@@ -14,6 +14,7 @@ import { EXPORT_PATH } from 'modules/project/export'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH, MAX_FILE_SIZE } from 'modules/asset/utils'
 import { getModelData, ThumbnailType } from 'lib/getModelData'
+import { preventDefault } from 'lib/preventDefault'
 import { createDefaultImportedFile, getMetrics, ASSET_MANIFEST, prepareScript } from './utils'
 import { truncateFileName, getExtension } from 'lib/file'
 
@@ -87,7 +88,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           id="asset_pack.import.cta"
           values={{
             models_link: (
-              <span className="link" onClick={this.handleOpenDocs}>
+              <span className="link" onClick={preventDefault(this.handleOpenDocs)}>
                 GLB, GLTF, ZIP
               </span>
             ),
@@ -318,8 +319,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     })
   }
 
-  handleOpenDocs = (event: React.MouseEvent) => {
-    event.preventDefault()
+  handleOpenDocs = () => {
     window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
   }
 

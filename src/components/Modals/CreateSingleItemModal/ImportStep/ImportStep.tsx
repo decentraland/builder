@@ -33,6 +33,7 @@ import {
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
 import ItemImport from 'components/ItemImport'
+import { preventDefault } from 'lib/preventDefault'
 import { AcceptedFileProps, ModelData } from '../CreateSingleItemModal.types'
 import { Props, State } from './ImportStep.types'
 import './ImportStep.css'
@@ -252,8 +253,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 
-  handleOpenMoreInformation = (event: React.MouseEvent) => {
-    event.preventDefault()
+  handleOpenMoreInformation = () => {
     window.open('https://docs.decentraland.org/decentraland/creating-wearables/', '_blank', 'noopener noreferrer')
   }
 
@@ -262,7 +262,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       <span>
         {t('create_single_item_modal.import_information', {
           link: (
-            <a href="javascript" onClick={this.handleOpenMoreInformation}>
+            <a href="javascript" onClick={preventDefault(this.handleOpenMoreInformation)}>
               {t('create_single_item_modal.import_information_link_label')}
             </a>
           )
