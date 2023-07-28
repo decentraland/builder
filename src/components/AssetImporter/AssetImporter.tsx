@@ -74,7 +74,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     )
   }
 
-  renderDropzoneCTA = (open: () => void) => {
+  renderDropzoneCTA = (open: (event: React.MouseEvent) => void) => {
     const { isLoading } = this.state
     return (
       <>
@@ -318,7 +318,8 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     })
   }
 
-  handleOpenDocs = () => {
+  handleOpenDocs = (event: React.MouseEvent) => {
+    event.preventDefault()
     window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
   }
 

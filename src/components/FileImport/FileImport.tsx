@@ -5,6 +5,11 @@ import { Props } from './FileImport.types'
 import './FileImport.css'
 
 export default class FileImport<T> extends React.Component<Props<T>> {
+  open = (openImporter: () => void) => (event: React.MouseEvent) => {
+    event.stopPropagation()
+    openImporter()
+  }
+
   renderDropZone = (props: DropzoneState) => {
     // TODO: Upgrade react-dropzone to a newer version to avoid the linting error: unbound-method
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -22,7 +27,7 @@ export default class FileImport<T> extends React.Component<Props<T>> {
         {(!items || items.length === 0) && renderAction && (
           <span className="cta">
             <div className="image" />
-            <div>{renderAction(open)}</div>
+            <div>{renderAction(this.open(open))}</div>
           </span>
         )}
       </div>
@@ -46,7 +51,6 @@ export default class FileImport<T> extends React.Component<Props<T>> {
           onDropAccepted={this.handleDropAccepted}
           onDropRejected={this.handleDropRejected}
           accept={accept}
-          noClick
         />
       </div>
     )

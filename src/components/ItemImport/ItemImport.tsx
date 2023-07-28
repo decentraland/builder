@@ -32,9 +32,12 @@ export default class ItemImport extends React.PureComponent<Props, State> {
     }
   }
 
-  handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
+  handleOpenDocs = (event: React.MouseEvent) => {
+    event.preventDefault()
+    window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
+  }
 
-  renderDropzoneCTA = (open: () => void) => {
+  renderDropzoneCTA = (open: (event: React.MouseEvent) => void) => {
     const { error, isLoading, acceptedExtensions, moreInformation } = this.props
     const { itemLoaded } = this.state
 

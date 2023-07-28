@@ -63,7 +63,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
     this.setState({ error })
   }
 
-  renderDropzoneCTA = (open: () => void) => {
+  renderDropzoneCTA = (open: (event: React.MouseEvent) => void) => {
     const { isLoading, error } = this.state
 
     return (

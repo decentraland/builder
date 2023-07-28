@@ -252,12 +252,17 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 
+  handleOpenMoreInformation = (event: React.MouseEvent) => {
+    event.preventDefault()
+    window.open('https://docs.decentraland.org/decentraland/creating-wearables/', '_blank', 'noopener noreferrer')
+  }
+
   renderMoreInformation() {
     return (
       <span>
         {t('create_single_item_modal.import_information', {
           link: (
-            <a href="https://docs.decentraland.org/decentraland/creating-wearables/" target="_blank" rel="noopener noreferrer">
+            <a href="javascript" onClick={this.handleOpenMoreInformation}>
               {t('create_single_item_modal.import_information_link_label')}
             </a>
           )

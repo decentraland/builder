@@ -3,7 +3,7 @@ export type Props<T> = {
   accept: string | string[]
   className?: string
   renderFiles?: (files: T[]) => JSX.Element
-  renderAction: (open: () => void) => JSX.Element
+  renderAction: (open: (event: React.MouseEvent) => void) => JSX.Element
   onAcceptedFiles: (files: File[]) => void
   onRejectedFiles: (files: File[]) => void
 }
