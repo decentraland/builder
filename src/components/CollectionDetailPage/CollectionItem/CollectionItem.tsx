@@ -18,6 +18,8 @@ import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
 import styles from './CollectionItem.module.css'
 
+const LENGTH_LIMIT = 25
+
 export default class CollectionItem extends React.PureComponent<Props> {
   handleEditPriceAndBeneficiary = () => {
     const { onOpenModal, item } = this.props
@@ -149,7 +151,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return (
       <Table.Row className={`CollectionItem ${styles.row}`}>
-        <Table.Cell className={`${styles.avatarColumn}`} width={6}>
+        <Table.Cell className={`${styles.avatarColumn}`} width={item.name.length > LENGTH_LIMIT ? 6 : 5}>
           <Link to={locations.itemDetail(item.id)} className="CollectionItem">
             <div className={styles.avatarContainer}>
               <ItemImage className={styles.itemImage} item={item} />
