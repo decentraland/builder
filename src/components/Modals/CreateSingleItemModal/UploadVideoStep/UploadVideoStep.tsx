@@ -113,7 +113,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
 
   render() {
     const { title, onBack, onClose, onSaveVideo } = this.props
-    const { id, video } = this.state
+    const { id, isLoading, video } = this.state
 
     return (
       <>
@@ -126,6 +126,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
               onAcceptedFiles={this.handleDropAccepted}
               onRejectedFiles={this.handleDropRejected}
               renderAction={this.renderDropzoneCTA}
+              disabled={isLoading}
             />
           )}
           {video && (

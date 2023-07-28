@@ -324,7 +324,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
   }
 
   render() {
-    const { files } = this.state
+    const { files, isLoading } = this.state
     const items = Object.values(files)
     const buttonText = items.length > 1 ? t('asset_pack.import.action_many', { count: items.length }) : t('asset_pack.import.action')
     const hasCorrupted = items.find(item => !!item.error)
@@ -339,6 +339,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           onAcceptedFiles={this.handleDropAccepted}
           onRejectedFiles={this.handleDropRejected}
           renderAction={this.renderDropzoneCTA}
+          disabled={isLoading}
         />
         <Button className="submit" disabled={!canImport} primary={canImport} onClick={this.handleSubmit}>
           {buttonText}

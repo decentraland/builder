@@ -97,6 +97,7 @@ export default class ItemImport extends React.PureComponent<Props, State> {
           onAcceptedFiles={onDropAccepted}
           onRejectedFiles={onDropRejected}
           renderAction={this.renderDropzoneCTA}
+          disabled={isLoading || itemLoaded}
         />
       </>
     )

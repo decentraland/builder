@@ -14,7 +14,7 @@ export enum CreateItemView {
   SET_PRICE = 'setPrice'
 }
 
-export const ITEM_LOADED_CHECK_DELAY = 2000
+export const ITEM_LOADED_CHECK_DELAY = 2000 * 10
 
 export type Props = ModalProps & {
   address?: string

@@ -43,7 +43,7 @@ export default class FileImport<T> extends React.Component<Props<T>> {
   }
 
   render() {
-    const { accept } = this.props
+    const { accept, disabled } = this.props
     return (
       <div className="FileImport">
         <Dropzone
@@ -51,6 +51,7 @@ export default class FileImport<T> extends React.Component<Props<T>> {
           onDropAccepted={this.handleDropAccepted}
           onDropRejected={this.handleDropRejected}
           accept={accept}
+          disabled={disabled}
         />
       </div>
     )
