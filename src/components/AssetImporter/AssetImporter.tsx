@@ -14,7 +14,7 @@ import { EXPORT_PATH } from 'modules/project/export'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH, MAX_FILE_SIZE } from 'modules/asset/utils'
 import { getModelData, ThumbnailType } from 'lib/getModelData'
-import { preventDefault } from 'lib/preventDefault'
+import { preventDefault } from 'lib/event'
 import { createDefaultImportedFile, getMetrics, ASSET_MANIFEST, prepareScript } from './utils'
 import { truncateFileName, getExtension } from 'lib/file'
 

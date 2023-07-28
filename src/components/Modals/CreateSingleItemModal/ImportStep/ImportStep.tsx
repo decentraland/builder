@@ -33,7 +33,7 @@ import {
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
 import ItemImport from 'components/ItemImport'
-import { preventDefault } from 'lib/preventDefault'
+import { preventDefault } from 'lib/event'
 import { AcceptedFileProps, ModelData } from '../CreateSingleItemModal.types'
 import { Props, State } from './ImportStep.types'
 import './ImportStep.css'

@@ -3,7 +3,7 @@ import { Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SquaresGrid from 'components/SquaresGrid'
-import { preventDefault } from 'lib/preventDefault'
+import { preventDefault } from 'lib/event'
 import { Props } from './LayoutPicker.types'
 
 import './LayoutPicker.css'

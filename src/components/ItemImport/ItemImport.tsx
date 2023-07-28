@@ -4,7 +4,7 @@ import { Loader } from 'decentraland-ui'
 import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { ITEM_LOADED_CHECK_DELAY } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
-import { preventDefault } from 'lib/preventDefault'
+import { preventDefault } from 'lib/event'
 import { Props, State } from './ItemImport.types'
 import styles from './ItemImport.module.css'
 

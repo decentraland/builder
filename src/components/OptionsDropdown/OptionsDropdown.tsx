@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dropdown } from 'decentraland-ui'
 import classnames from 'classnames'
-import { preventDefault } from 'lib/preventDefault'
+import { preventDefault } from 'lib/event'
 import { Props } from './OptionsDropdown.types'
 import styles from './OptionsDropdown.module.css'
 
