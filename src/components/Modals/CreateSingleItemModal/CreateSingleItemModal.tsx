@@ -450,7 +450,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   handleVideoDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     this.setState({
       isLoading: true,
-      fromView: undefined,
       ...acceptedFileProps
     })
   }
@@ -722,6 +721,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   handleUploadVideoGoBack = () => {
     const keys = Object.keys(this.state)
     const { fromView } = this.state
+
+    console.log('fromView', fromView)
 
     if (fromView) {
       this.setState({ view: fromView })
