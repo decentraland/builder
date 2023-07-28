@@ -4,6 +4,7 @@ import { Loader } from 'decentraland-ui'
 import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { ITEM_LOADED_CHECK_DELAY } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
+import { preventDefault } from 'lib/event'
 import { Props, State } from './ItemImport.types'
 import styles from './ItemImport.module.css'
 
@@ -32,9 +33,11 @@ export default class ItemImport extends React.PureComponent<Props, State> {
     }
   }
 
-  handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
+  handleOpenDocs = () => {
+    window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
+  }
 
-  renderDropzoneCTA = (open: () => void) => {
+  renderDropzoneCTA = (open: (event: React.MouseEvent) => void) => {
     const { error, isLoading, acceptedExtensions, moreInformation } = this.props
     const { itemLoaded } = this.state
 
@@ -58,7 +61,7 @@ export default class ItemImport extends React.PureComponent<Props, State> {
             id="asset_pack.import.cta"
             values={{
               models_link: (
-                <span className="link" onClick={this.handleOpenDocs}>
+                <span className="link" onClick={preventDefault(this.handleOpenDocs)}>
                   {acceptedExtensions.map(ext => ext.replace('.', '').toUpperCase()).join(', ')}
                 </span>
               ),
@@ -94,6 +97,7 @@ export default class ItemImport extends React.PureComponent<Props, State> {
           onAcceptedFiles={onDropAccepted}
           onRejectedFiles={onDropRejected}
           renderAction={this.renderDropzoneCTA}
+          disabled={isLoading || itemLoaded}
         />
       </>
     )
