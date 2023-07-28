@@ -769,11 +769,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     const raritiesLink =
       'https://docs.decentraland.org/creator/wearables-and-emotes/manage-collections' +
-      (type === ItemType.EMOTE
-        ? '/uploading-emotes/#rarity'
-        : isSmart({ type, contents })
-        ? '/uploading-smart-wearables/#rarity'
-        : '/uploading-wearables/#rarity')
+      (type === ItemType.EMOTE ? '/uploading-emotes/#rarity' : '/uploading-wearables/#rarity')
 
     return (
       <>
