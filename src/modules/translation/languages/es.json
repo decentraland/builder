@@ -1986,5 +1986,32 @@
     "img_alt": "Nueva categoría de ropa de mano",
     "description": "Actualice sus wearables a la nueva categoría en el editor una vez que los haya modificado en consecuencia. Tenga en cuenta que la categoría de ropa de mano es para accesorios manuales o portátiles que reemplazan las manos con otros funcionalmente similares, no para elementos que se sostienen.",
     "action": "Aprende más"
+  },
+  "migrate_to_sdk7_modal": {
+    "use_legacy_builder": "Continúe con el editor de escenas antiguo (SDK 6)",
+    "save_a_copy": "Guarde una copia de la escena original en SDK 6.",
+    "saving_copy": "Guardando copia en SDK 6",
+    "migrating_scene": "Migrando escena a SDK 7",
+    "image_alt": "Migrar a SDK 7",
+    "info": {
+      "title": "Actualice su escena a SDK 7 con el nuevo editor web de Decentraland",
+      "subtitle": "<b>Esta escena está actualmente construida con SDK 6, lo que dejará de recibir soporte en unos pocos meses, pero se puede migrar automáticamente al SDK 7.</b> Se incluyen todas las características del constructor de escenas anterior, mientras que los elementos inteligentes se agregarán en una próxima actualización.",
+      "action": "Use el editor web de Decentraland (SDK 7)"
+    },
+    "info_smart_items": {
+      "title": "Actualice su escena a SDK 7 con el nuevo editor web de Decentraland",
+      "subtitle": "<b>Esta escena está actualmente construida con SDK 6, que dejará de recibir soporte en unos pocos meses, y contiene elementos inteligentes </b>.Si elige actualizar a SDK 7 utilizando nuestro editor visual mejorado, estos elementos inteligentes se eliminarán, ya que aún no son compatibles.",
+      "action": "Use el editor web de Decentraland (SDK 7)"
+    },
+    "migrate": {
+      "title": "Migración automática a SDK 7",
+      "subtitle": "Esta escena está actualmente construida con SDK 6, pero se puede migrar automáticamente a SDK 7 </b>.Esto mejorará su experiencia de construcción de escenas con nuestro nuevo y mejorado editor web.<br> </br> <br> </br> <b> ¿Listo para actualizar? </b>",
+      "action": "Migrar ahora"
+    },
+    "migrate_smart_items": {
+      "title": "Opciones de migración para su escena",
+      "subtitle": "Tu escena contiene <b>{smartItemsCount} Smart Items</b> wActualmente, solo solo son compatibles en SDK 6. <br> </br> Puede optar por migrar al SDK 7 eliminando estos elementos o continuar utilizando el constructor de escenas heredadas hasta que los elementos inteligentes estén disponibles para SDK 7 (próximamente).",
+      "action": "Migrar y eliminar elementos inteligentes"
+    }
   }
 }

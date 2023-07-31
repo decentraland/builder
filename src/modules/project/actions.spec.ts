@@ -45,7 +45,7 @@ describe('when creating the action to duplicate a project', () => {
   it('should return an action signaling the request to duplicate a project', () => {
     expect(duplicateProjectRequest(mockTemplate)).toEqual({
       type: DUPLICATE_PROJECT_REQUEST,
-      payload: { project: mockTemplate }
+      payload: { project: mockTemplate, shouldRedirect: true }
     })
   })
 })

@@ -165,7 +165,7 @@ export function* projectSaga(builder: BuilderAPI) {
   }
 
   function* handleDuplicateProjectRequest(action: DuplicateProjectRequestAction) {
-    const { project, type } = action.payload
+    const { project, type, shouldRedirect } = action.payload
     const ethAddress: string = yield select(getAddress)
     const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
     const scene: Scene = yield getSceneByProjectId(project.id, type)
@@ -179,11 +179,15 @@ export function* projectSaga(builder: BuilderAPI) {
         thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
       }
 
-      const newScene = { ...scene, id: uuidv4() }
+      const newSceneId = uuidv4()
+      const newScene: Scene = scene.sdk6
+        ? { sdk6: { ...scene.sdk6, id: newSceneId }, sdk7: null }
+        : { sdk7: { ...scene.sdk7, id: newSceneId }, sdk6: null }
+
       const newProject = {
         ...project,
         ethAddress,
-        sceneId: newScene.id,
+        sceneId: newSceneId,
         id: uuidv4(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -199,7 +203,7 @@ export function* projectSaga(builder: BuilderAPI) {
       if (isTemplatesEnabled && project.isTemplate) {
         yield take(SAVE_PROJECT_SUCCESS)
         yield put(push(locations.sceneEditor(newProject.id)))
-      } else {
+      } else if (shouldRedirect) {
         yield put(push(locations.scenes()))
       }
 

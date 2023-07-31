@@ -1967,5 +1967,32 @@
     "img_alt": "New Handwear category",
     "description": "Update your hand Wearables to the new category in the Editor once you’ve modified them accordingly. Please note, the Handwear category is for hand accessories or Wearables that replace hands with other functionally similar ones, not for items that are held.",
     "action": "Learn more"
+  },
+  "migrate_to_sdk7_modal": {
+    "use_legacy_builder": "Continue with legacy scene builder (SDK 6)",
+    "save_a_copy": "Save a copy of the original scene in SDK 6.",
+    "saving_copy": "Saving copy in SDK 6",
+    "migrating_scene": "Migrating scene to SDK 7",
+    "image_alt": "Migrate to SDK 7",
+    "info": {
+      "title": "Upgrade Your Scene to SDK 7with the New Decentraland Web Editor",
+      "subtitle": "<b>This scene is currently built with SDK 6, which will stop receiving support in a few months, but it can be automatically migrated to SDK 7.</b> All features from the previous Scene Builder are included, while smart items will be added in an upcoming update.",
+      "action": "Use decentraland web editor (SDK 7)"
+    },
+    "info_smart_items": {
+      "title": "Upgrade Your Scene to SDK 7with the New Decentraland Web Editor",
+      "subtitle": "<b>This scene is currently built with SDK 6, which will stop receiving support in a few months, and contains smart items</b>. If you choose to upgrade to SDK 7 using our improved visual editor, these smart items will be removed, as they are not yet supported.",
+      "action": "Use decentraland web editor (SDK 7)"
+    },
+    "migrate": {
+      "title": "Automatic Migration to SDK 7",
+      "subtitle": "This scene is currently built with SDK 6 but can be <b>automatically migrated to SDK 7</b>. This will enhance your scene-building experience with our new and improved Web Editor. <br></br><br></br><b>Ready to upgrade?</b>",
+      "action": "Migrate now"
+    },
+    "migrate_smart_items": {
+      "title": "Migration Options for Your Scene",
+      "subtitle": "Your scene contains <b>{smartItemsCount} Smart Items</b> which are currently only supported in SDK 6.<br></br>You can choose to migrate to SDK 7 by removing these items, or continue using the legacy Scene Builder until Smart Items are available for SDK 7 (coming soon).",
+      "action": "Migrate and remove smart items"
+    }
   }
 }

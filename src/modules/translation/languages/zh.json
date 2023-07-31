@@ -1971,5 +1971,32 @@
     "img_alt": "新手套类别",
     "description": "对编辑器进行了相应修改后，将手动可穿戴设备更新为编辑器中的新类别。请注意，手套类别用于手动配件或可穿戴设备，这些手工装饰品或可穿戴设备将手用其他功能相似的手动代替，而不是用于持有的物品。",
     "action": "了解更多"
+  },
+  "migrate_to_sdk7_modal": {
+    "use_legacy_builder": "继续使用Legacy Scene Builder（SDK 6）",
+    "save_a_copy": "保存SDK 6中原始场景的副本.",
+    "saving_copy": "在SDK 6中保存副本6",
+    "migrating_scene": "迁移到SDK 7",
+    "image_alt": "迁移到SDK 7",
+    "info": {
+      "title": "将您的场景升级到SDK 7与新的分散网络编辑器",
+      "subtitle": "<b>目前，此场景是使用SDK 6构建的，该场景将在几个月内停止接收支持，但是它可以自动迁移到SDK7。</b>包括上一个场景构建器的所有功能，而智能项目将在即将进行的更新中添加。",
+      "action": "使用分散网络编辑器（SDK 7)"
+    },
+    "info_smart_items": {
+      "title": "将您的场景升级到SDK 7与新的分散网络编辑器",
+      "subtitle": "<b>此场景目前是使用SDK 6构建的，该场景将在几个月内停止获得支持，并包含智能项目</b>。如果您选择使用我们改进的视觉编辑器升级到SDK 7，则这些智能项目将被删除，因为它们尚未得到支持。",
+      "action": "使用分散网络编辑器（SDK 7)"
+    },
+    "migrate": {
+      "title": "自动迁移到SDK 7",
+      "subtitle": "该场景目前是使用SDK 6构建的，但可以自动迁移到SDK 7 </b>。这将通过我们的新的和改进的Web编辑器来增强您的场景建设体验。<br> </br> <br> </br> <b>准备升级？</b>",
+      "action": "迁移w"
+    },
+    "migrate_smart_items": {
+      "title": "场景的迁移选项",
+      "subtitle": "您的场景包含<b> {smartItemScount}智能项目</b>当前仅在SDK 6中支持。<br> </br>您可以选择通过删除这些项目来选择迁移到SDK 7，或继续使用传统场景构建器直到可用于SDK 7的智能物品（即将推出）。",
+      "action": "迁移并删除智能项目"
+    }
   }
 }
