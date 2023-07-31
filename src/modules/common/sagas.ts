@@ -84,6 +84,6 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     collectionCurationSaga(builderAPI),
     itemCurationSaga(builderAPI),
     featuresSaga({ polling: { apps: [ApplicationName.BUILDER], delay: 60000 /** 60 seconds */ } }),
-    inspectorSaga(store)
+    inspectorSaga(builderAPI, store)
   ])
 }

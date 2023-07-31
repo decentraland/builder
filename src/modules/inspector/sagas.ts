@@ -39,7 +39,7 @@ import { Project } from 'modules/project/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { IframeStorage, MessageTransport } from '@dcl/inspector'
 import { getParcels } from './utils'
-import { getContentsStorageUrl } from 'lib/api/builder'
+import { BuilderAPI, getContentsStorageUrl } from 'lib/api/builder'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { Scene, SceneSDK7 } from 'modules/scene/types'
 import { updateScene } from 'modules/scene/actions'
@@ -48,11 +48,9 @@ import { RootStore } from 'modules/common/types'
 let nonces = 0
 const getNonce = () => nonces++
 const promises = new Map<number, IFuture<unknown>>()
+const assets = new Map<string, Buffer>()
 
-// TODO: delete this, use builder-server
-const FILES = new Map<string, Buffer>()
-
-export function* inspectorSaga(store: RootStore) {
+export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
   yield takeEvery(OPEN_INSPECTOR, handleOpenInspector)
   yield takeEvery(CONNECT_INSPECTOR, handleConnectInspector)
   yield takeEvery(RPC_REQUEST, handleRpcRequest)
@@ -160,14 +158,13 @@ export function* inspectorSaga(store: RootStore) {
 
     const scene: SceneSDK7 = yield getScene()
 
-    // TODO: this should be fetched from the builder-server
-    if (FILES.has(path)) {
-      return FILES.get(path)
+    if (assets.has(path)) {
+      return assets.get(path)
     }
 
     if (path in scene.mappings) {
       const hash = scene.mappings[path]
-      const response: Response = yield call(fetch, `https://builder-api.decentraland.org/v1/storage/contents/${hash}`)
+      const response: Response = yield call(fetch, getContentsStorageUrl(hash), { headers: NO_CACHE_HEADERS })
       const buffer: ArrayBuffer = yield call([response, 'arrayBuffer'])
       return Buffer.from(buffer)
     }
@@ -189,6 +186,7 @@ export function* inspectorSaga(store: RootStore) {
         break
       }
       case 'inspector-preferences.json': {
+        // TODO: this is hardcoded now but we could store this on redux and persist it across sessions
         file = JSON.stringify({
           version: 1,
           data: {
@@ -261,15 +259,24 @@ export function* inspectorSaga(store: RootStore) {
         break
       }
       case 'inspector-preferences.json': {
+        // TODO: save user config somewhere in redux and persist it between sessions
+        break
+      }
+      case 'main.crdt': {
+        // TODO: store this in scene.sdk7
         break
       }
       default: {
         const hash: string = yield call(hashV1, content)
 
-        const res: Response = yield call(fetch, getContentsStorageUrl(hash), { headers: NO_CACHE_HEADERS })
-        if (!res.ok) {
-          // TODO: remove this, use builder-server
-          FILES.set(path, content)
+        const isUploaded: boolean = yield call(isContentUploaded, path, hash)
+
+        if (!isUploaded) {
+          // keep asset in memory while uploading it
+          assets.set(path, content)
+          const blob = new Blob([content])
+          // we dont await for the upload and serve the file from memory in the meantime to have a faster feedback
+          void builder.uploadFile(blob)
         }
 
         const scene: SceneSDK7 = yield getScene()
@@ -280,8 +287,8 @@ export function* inspectorSaga(store: RootStore) {
             [path]: hash
           }
         }
-
         yield put(updateScene(newScene))
+        break
       }
     }
   }
@@ -290,8 +297,6 @@ export function* inspectorSaga(store: RootStore) {
     const { path } = params
 
     const scene: SceneSDK7 = yield getScene()
-
-    FILES.delete(path)
 
     if (path in scene.mappings) {
       const newMappings = { ...scene.mappings }
@@ -302,6 +307,8 @@ export function* inspectorSaga(store: RootStore) {
       }
       yield put(updateScene(newScene))
     }
+    // remove from memory
+    assets.delete(path)
   }
 
   // UTILS
@@ -362,5 +369,17 @@ export function* inspectorSaga(store: RootStore) {
     }
 
     return scene.sdk7
+  }
+}
+
+function* isContentUploaded(path: string, hash: string) {
+  if (assets.has(path)) {
+    return true
+  }
+  try {
+    const res: Response = yield call(fetch, `${getContentsStorageUrl(hash)}/exists`, { headers: NO_CACHE_HEADERS })
+    return res.ok
+  } catch (error) {
+    return false
   }
 }
