@@ -1,6 +1,6 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
-import { Loader, Dropdown, Button, Modal, ModalNavigation } from 'decentraland-ui'
+import { Loader, Dropdown, Button } from 'decentraland-ui'
 import { BodyPartCategory, EmoteCategory, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -16,8 +16,7 @@ import {
   getEmotePlayModes,
   getHideableBodyPartCategories,
   getHideableWearableCategories,
-  isSmart,
-  getVideoURL
+  isSmart
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -43,7 +42,6 @@ import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ItemVideo from 'components/ItemVideo'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
-import { EditVideoView } from 'components/Modals/EditVideoModal/EditVideoModal.types'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -112,8 +110,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       contents: {},
       data: undefined,
       hasItem: false,
-      isDirty: false,
-      showVideoShowCase: false
+      isDirty: false
     }
   }
 
@@ -134,14 +131,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOpenVideoDialog = () => {
-    this.setState({ showVideoShowCase: true })
-  }
-
-  handleChangeVideoFile = () => {
     const { selectedItem, onOpenModal } = this.props
-    this.setState({ showVideoShowCase: false }, () => {
-      onOpenModal('EditVideoModal', { item: selectedItem, view: EditVideoView.UPLOAD_VIDEO, onSaveVideo: this.handleSaveVideo })
-    })
+    onOpenModal('EditVideoModal', { item: selectedItem, onSaveVideo: this.handleSaveVideo })
   }
 
   handleSaveVideo = (video: Blob) => {
@@ -540,7 +531,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       <div className="details">
         {canEditItemMetadata ? (
           <>
-            <Icon name="edit" className="edit-item-file" onClick={this.handleChangeVideoFile} />
+            <Icon name="edit" className="edit-item-file" onClick={this.handleOpenVideoDialog} />
             <Icon name="play" className="play-video-button" onClick={this.handleOpenVideoDialog} />
             <ItemVideo item={item} src={this.state.video} showMetrics />
           </>
@@ -555,28 +546,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return <ItemRequiredPermission requiredPermissions={item.data.requiredPermissions} />
   }
 
-  renderVideoShowcase(item: Item) {
-    const handleClose = () => this.setState({ showVideoShowCase: false })
-
-    return (
-      <Modal open={this.state.showVideoShowCase} size="small" className="VideoShowcaseModal" onClose={handleClose}>
-        <ModalNavigation title={t('video_showcase_modal.title')} onClose={handleClose} />
-        <Modal.Content>
-          <video
-            src={getVideoURL(item)}
-            preload="auto"
-            controls
-            controlsList="nodownload noremoteplayback noplaybackrate"
-            disablePictureInPicture
-          />
-        </Modal.Content>
-      </Modal>
-    )
-  }
-
   render() {
     const { selectedItemId, address, isConnected, error, isCampaignEnabled, isHandsCategoryEnabled } = this.props
-    const { name, description, rarity, data, isDirty, hasItem, showVideoShowCase } = this.state
+    const { name, description, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
 
@@ -731,7 +703,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         {t('global.error_ocurred')}: {error}
                       </p>
                     ) : null}
-                    {item && showVideoShowCase ? this.renderVideoShowcase(item) : null}
                   </div>
                 </>
               ) : null
