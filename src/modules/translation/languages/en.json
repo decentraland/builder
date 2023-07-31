@@ -1994,5 +1994,13 @@
       "subtitle": "Your scene contains <b>{smartItemsCount} Smart Items</b> which are currently only supported in SDK 6.<br></br>You can choose to migrate to SDK 7 by removing these items, or continue using the legacy Scene Builder until Smart Items are available for SDK 7 (coming soon).",
       "action": "Migrate and remove smart items"
     }
+  },
+  "inspector": {
+    "top_bar": {
+      "back": "Back to your Scene",
+      "download": "Download scene",
+      "publish": "Publish scene",
+      "preview": "Preview scene"
+    }
   }
 }

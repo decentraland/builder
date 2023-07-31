@@ -13,12 +13,12 @@ import { locations } from 'routing/locations'
 
 import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
-import { Props } from './TopBar.types'
-import './TopBar.css'
+import { Props } from './SDK6TopBar.types'
+import './SDK6TopBar.css'
 
 const widget = IntercomWidget.getInstance()
 
-export default class TopBar extends React.PureComponent<Props> {
+export default class SDK6TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
     const { gizmo, onSetGizmo } = this.props
     onSetGizmo(gizmo === Gizmo.MOVE ? Gizmo.NONE : Gizmo.MOVE)
@@ -87,7 +87,7 @@ export default class TopBar extends React.PureComponent<Props> {
     } = this.props
 
     return (
-      <Grid className="TopBar">
+      <Grid className="SDK6TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
           <Header size="medium" className="project-title-header">
             <div className="go-back" onClick={this.handleGoBack}>

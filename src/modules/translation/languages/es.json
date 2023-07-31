@@ -2013,5 +2013,13 @@
       "subtitle": "Tu escena contiene <b>{smartItemsCount} Smart Items</b> wActualmente, solo solo son compatibles en SDK 6. <br> </br> Puede optar por migrar al SDK 7 eliminando estos elementos o continuar utilizando el constructor de escenas heredadas hasta que los elementos inteligentes estén disponibles para SDK 7 (próximamente).",
       "action": "Migrar y eliminar elementos inteligentes"
     }
+  },
+  "inspector": {
+    "top_bar": {
+      "back": "Volver a tu escena",
+      "download": "Descargar escena",
+      "publish": "Publicar escena",
+      "preview": "Avance de escena"
+    }
   }
 }

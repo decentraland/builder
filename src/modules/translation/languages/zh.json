@@ -1998,5 +1998,13 @@
       "subtitle": "您的场景包含<b> {smartItemScount}智能项目</b>当前仅在SDK 6中支持。<br> </br>您可以选择通过删除这些项目来选择迁移到SDK 7，或继续使用传统场景构建器直到可用于SDK 7的智能物品（即将推出）。",
       "action": "迁移并删除智能项目"
     }
+  },
+  "inspector": {
+    "top_bar": {
+      "back": "回到你的现场",
+      "download": "下载",
+      "publish": "发布",
+      "preview": "预览"
+    }
   }
 }
