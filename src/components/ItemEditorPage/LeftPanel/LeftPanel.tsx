@@ -46,11 +46,15 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { address, hasUserOrphanItems, onFetchOrphanItem } = this.props
+    const { address, hasUserOrphanItems, selectedItem, onFetchOrphanItem, onSetItems } = this.props
     this.fetchResource()
     // TODO: Remove this call when there are no users with orphan items
     if (address && hasUserOrphanItems === undefined) {
       onFetchOrphanItem(address)
+    }
+
+    if (selectedItem) {
+      onSetItems([selectedItem])
     }
   }
 
@@ -60,6 +64,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       address,
       selectedCollectionId,
       selectedItemId,
+      selectedItem,
       orphanItems,
       totalItems,
       visibleItems,
@@ -87,6 +92,8 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     } else if (prevProps.selectedItemId && selectedItemId && prevProps.selectedItemId !== selectedItemId) {
       const items = visibleItems.filter(item => item.type !== ItemType.EMOTE)
       onSetItems(items)
+    } else if (!prevProps.selectedItem && selectedItem) {
+      onSetItems([selectedItem])
     } else {
       // fetch only if this was triggered by a connecting event or if th selectedCollection changes
       if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {
