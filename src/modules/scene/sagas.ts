@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
+import { takeLatest, put, select, call, delay, take, race } from 'redux-saga/effects'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -62,7 +62,13 @@ import { loadAssets } from 'modules/asset/actions'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getMetrics } from 'components/AssetImporter/utils'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
-import { DUPLICATE_PROJECT_SUCCESS, duplicateProjectRequest } from 'modules/project/actions'
+import {
+  DUPLICATE_PROJECT_FAILURE,
+  DUPLICATE_PROJECT_SUCCESS,
+  DuplicateProjectFailureAction,
+  DuplicateProjectSuccessAction,
+  duplicateProjectRequest
+} from 'modules/project/actions'
 import { toComposite, toMappings } from 'modules/inspector/utils'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
@@ -736,7 +742,18 @@ function* handleMigrateToSDK7Request(action: MigrateToSDK7RequestAction) {
         title: `Old_${project.title}`
       }
       yield put(duplicateProjectRequest(oldProject, PreviewType.PROJECT, false))
-      yield take(DUPLICATE_PROJECT_SUCCESS)
+      const duplicateProject: {
+        success: DuplicateProjectSuccessAction
+        failure: DuplicateProjectFailureAction
+      } = yield race({
+        success: take(DUPLICATE_PROJECT_SUCCESS),
+        failure: take(DUPLICATE_PROJECT_FAILURE)
+      })
+
+      if (duplicateProject.failure) {
+        put(migrateToSDK7Failure(duplicateProject.failure.payload.error))
+        return
+      }
     }
 
     const composite = toComposite(scene.sdk6, project)
