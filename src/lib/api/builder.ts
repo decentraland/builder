@@ -597,6 +597,16 @@ export class BuilderAPI extends BaseAPI {
     })
   }
 
+  async uploadFile(file: Blob) {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const { hash }: { hash: string } = await this.request('post', `/storage/upload`, {
+      params: formData
+    })
+    return { hash }
+  }
+
   async fetchProjects() {
     const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects', { retry: retryParams })
     return items.map(fromRemoteProject)
