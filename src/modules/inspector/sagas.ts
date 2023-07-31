@@ -307,6 +307,8 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
       }
       yield put(updateScene(newScene))
     }
+    // remove from memory
+    assets.delete(path)
   }
 
   // UTILS
