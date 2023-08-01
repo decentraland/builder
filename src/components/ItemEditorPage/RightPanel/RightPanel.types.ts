@@ -43,7 +43,6 @@ export type State = {
   data?: WearableData | EmoteDataADR74
   hasItem: boolean
   isDirty: boolean
-  showVideoShowCase: boolean
 }
 
 export type MapStateProps = Pick<
