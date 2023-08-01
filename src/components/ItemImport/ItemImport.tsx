@@ -5,6 +5,7 @@ import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { ITEM_LOADED_CHECK_DELAY } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
 import { preventDefault } from 'lib/event'
+import ErrorMessage from './ErrorMessage/ErrorMessage'
 import { Props, State } from './ItemImport.types'
 import styles from './ItemImport.module.css'
 
@@ -48,12 +49,7 @@ export default class ItemImport extends React.PureComponent<Props, State> {
             <Loader active size="huge" />
           </div>
         ) : null}
-        {error && (
-          <div className={styles.errorContainer}>
-            <div className={styles.errorIcon} />
-            <div className={styles.errorMessage}>{error}</div>
-          </div>
-        )}
+        <ErrorMessage error={error} />
         {itemLoaded ? (
           t('asset_pack.import.loaded')
         ) : (
