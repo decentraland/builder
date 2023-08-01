@@ -10,6 +10,7 @@ import { Scene, ComponentType, ComponentDefinition, SceneSDK6 } from 'modules/sc
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
+import { wrapSdk6 } from 'modules/migrations/utils'
 import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
@@ -422,7 +423,7 @@ export function createDynamicFiles(args: {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify({
       version: MANIFEST_FILE_VERSION,
       project,
-      scene
+      scene: wrapSdk6(scene)
     }),
     [EXPORT_PATH.PACKAGE_FILE]: JSON.stringify(
       {
