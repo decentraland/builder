@@ -2,12 +2,13 @@ import * as React from 'react'
 import { Button, Column, Loader, ModalNavigation, Row } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import FileImport from 'components/FileImport'
-import { InfoIcon } from 'components/InfoIcon'
 import { getExtension, toMB } from 'lib/file'
 import { WrongExtensionError, VideoFileTooBigError, VideoFileTooLongError, InvalidVideoError } from 'modules/item/errors'
 import { MAX_VIDEO_DURATION, MAX_VIDEO_FILE_SIZE, loadVideo } from 'modules/item/utils'
 import { VIDEO_EXTENSIONS, VIDEO_PATH } from 'modules/item/types'
+import FileImport from 'components/FileImport'
+import { InfoIcon } from 'components/InfoIcon'
+import ErrorMessage from 'components/ItemImport/ErrorMessage'
 import { Props, State } from './UploadVideoStep.types'
 import styles from './UploadVideoStep.module.css'
 
@@ -73,15 +74,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
             <Loader active size="big" />
           </div>
         ) : null}
-        {error && (
-          <div className={styles.errorContainer}>
-            <div className={styles.errorIcon} />
-            <div className={styles.errorMessageContainer}>
-              {error.title ? <span className={styles.errorTitle}>{error.title}</span> : null}
-              <span className={styles.errorMessage}>{error.message}</span>
-            </div>
-          </div>
-        )}
+        <ErrorMessage error={error} />
         <T
           id="upload_video.cta"
           values={{
