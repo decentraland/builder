@@ -169,6 +169,21 @@
 
 .ItemDetailPage .data {
   display: flex;
+  line-height: 30px;
+}
+
+.ItemDetailPage .data:not(:last-child) {
+  margin-bottom: 24px;
+}
+
+.ItemDetailPage .data.tags-container {
+  margin-top: 12px;
+}
+
+.ItemDetailPage .data.tags-container .tag {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
 }
 
 .ItemDetailPage .card .dcl.section.medium {
@@ -196,6 +211,11 @@
 .ItemDetailPage .title-card-container .title,
 .ItemDetailPage .title-card-container .actions {
   flex: 1;
+}
+
+.ItemDetailPage .title-card-container .actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .ItemDetailPage .title-card-container .actions .edit {

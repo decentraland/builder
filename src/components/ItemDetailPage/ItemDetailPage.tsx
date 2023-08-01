@@ -296,7 +296,24 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                     ) : null}
                   </div>
                 </div>
-                <div className="data">{item.description}</div>
+                {item.description && (
+                  <>
+                    <div className="subtitle">{t('global.description')}</div>
+                    <div className="data">{item.description}</div>
+                  </>
+                )}
+                {item.data.tags.length ? (
+                  <>
+                    <div className="subtitle">{t('item_detail_page.tags.title')}</div>
+                    <div className="data tags-container">
+                      {item.data.tags.map(tag => (
+                        <span className="tag" key={tag}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                ) : null}
               </div>
 
               <div className="card">
@@ -364,21 +381,6 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                   </div>
                   <div className="data">
                     <ItemRequiredPermission requiredPermissions={item.data.requiredPermissions} basic />
-                  </div>
-                </div>
-              ) : null}
-
-              {item.data.tags.length ? (
-                <div className="card">
-                  <div className="title">{t('item_detail_page.tags.title')}</div>
-                  <div className="data">
-                    <div className="tags-container">
-                      {item.data.tags.map(tag => (
-                        <span className="tag" key={tag}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                 </div>
               ) : null}

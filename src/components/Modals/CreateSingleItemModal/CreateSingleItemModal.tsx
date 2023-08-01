@@ -196,7 +196,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { address, collection, isHandsCategoryEnabled, onSave } = this.props
+    const { address, collection, isHandsCategoryEnabled } = this.props
     const { id, name, description, type, metrics, collectionId, category, playMode, rarity, hasScreenshotTaken, requiredPermissions } = this
       .state as StateData
 
@@ -260,17 +260,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       updatedAt: +new Date()
     }
 
-    // The Emote will be saved on the set price step
-    if (type === ItemType.EMOTE) {
-      this.setState({
-        item: { ...(item as Item) },
-        itemSortedContents: sortedContents.all,
-        view: hasScreenshotTaken ? CreateItemView.SET_PRICE : CreateItemView.THUMBNAIL,
-        fromView: CreateItemView.THUMBNAIL
-      })
-    } else {
-      onSave(item as Item, sortedContents.all)
-    }
+    this.setState({
+      item: { ...(item as Item) },
+      itemSortedContents: sortedContents.all,
+      view: hasScreenshotTaken || type !== ItemType.EMOTE ? CreateItemView.SET_PRICE : CreateItemView.THUMBNAIL,
+      fromView: CreateItemView.THUMBNAIL
+    })
   }
 
   addItemRepresentation = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
@@ -722,7 +717,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const keys = Object.keys(this.state)
     const { fromView } = this.state
 
-
     if (fromView) {
       this.setState({ view: fromView })
       return
@@ -1090,11 +1084,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 ) : null}
                 <Column align="right">
                   <Button primary disabled={isDisabled} loading={isLoading}>
-                    {(metadata && metadata.changeItemFile) || isRepresentation
-                      ? t('global.save')
-                      : type === ItemType.EMOTE
-                      ? t('global.next')
-                      : t('global.create')}
+                    {(metadata && metadata.changeItemFile) || isRepresentation ? t('global.save') : t('global.next')}
                   </Button>
                 </Column>
               </Row>
