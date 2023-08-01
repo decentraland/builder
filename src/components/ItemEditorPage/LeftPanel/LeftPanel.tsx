@@ -92,8 +92,6 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     } else if (prevProps.selectedItemId && selectedItemId && prevProps.selectedItemId !== selectedItemId) {
       const items = visibleItems.filter(item => item.type !== ItemType.EMOTE)
       onSetItems(items)
-    } else if (!prevProps.selectedItem && selectedItem) {
-      onSetItems([selectedItem])
     } else {
       // fetch only if this was triggered by a connecting event or if th selectedCollection changes
       if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {
@@ -107,6 +105,21 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
         onFetchOrphanItem(address)
       }
     }
+
+    // Preselect item when clicking on a collection
+    if (!prevProps.selectedItem && selectedItem && selectedItem.type !== ItemType.EMOTE) {
+      onSetItems([selectedItem])
+    }
+
+    // Clear visible items when changing collection
+    if (prevProps.selectedCollectionId !== selectedCollectionId) {
+      onSetItems([])
+    }
+  }
+
+  componentWillUnmount(): void {
+    const { onSetItems } = this.props
+    onSetItems([])
   }
 
   getItems(collection: Collection | null, collectionItems: Item[]) {
