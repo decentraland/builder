@@ -1077,7 +1077,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               <Row className="actions" grow>
                 {isSmart({ type, contents }) ? (
                   <Column grow shrink>
-                    <Button disabled={isDisabled} loading={isLoading} onClick={this.handleGoBack}>
+                    <Button disabled={isDisabled} onClick={this.handleGoBack}>
                       {t('global.back')}
                     </Button>
                   </Column>

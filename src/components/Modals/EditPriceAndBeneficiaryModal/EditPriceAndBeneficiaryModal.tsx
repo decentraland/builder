@@ -210,7 +210,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               {t('global.save')}
             </NetworkButton>
             {!!onSkip && (
-              <Button secondary loading={isLoading} onClick={onSkip} type="button">
+              <Button secondary disabled={this.isDisabled()} onClick={onSkip} type="button">
                 {t('global.skip')}
               </Button>
             )}
