@@ -209,7 +209,11 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateFileSize), MAX_VIDEO_FILE_SIZE + 1]
         ])
         .put(
-          saveItemFailure(item, { ...contents, [VIDEO_PATH]: blob }, 'File size limit is 4MB. Reduce the size of the file and try again.')
+          saveItemFailure(
+            item,
+            { ...contents, [VIDEO_PATH]: blob },
+            'File size limit is 4MB. Please reduce the size of the file and try again.'
+          )
         )
         .dispatch(saveItemRequest(item, { ...contents, [VIDEO_PATH]: blob }))
         .run({ silenceTimeout: true })
