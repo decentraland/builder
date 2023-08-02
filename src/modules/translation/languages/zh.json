@@ -493,6 +493,11 @@
     "description": "从现在开始，您可以开始下载和使用社区池中的模板和场景。让您的想象力塑造您的世界和土地！",
     "go_to_scenes": "去我的场景"
   },
+  "smart_wearables_announcement_modal": {
+    "title": "智能穿戴设备现已上线！🟢",
+    "description": "<b>开始用令人惊叹的创作来激发你的想象力。</b><br></br>为玩家提供新的能力，例如让他们飞行的喷气背包或在之上添加新的内容层 世界其他地区。",
+    "learn_more": "了解有关智能可穿戴设备的更多信息"
+  },
   "use_as_alias_modal": {
     "title": "为头像分配名称",
     "subtitle": "为您的头像分配新的别名",

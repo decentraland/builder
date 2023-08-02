@@ -498,6 +498,11 @@
     "description": "De ahora en adelante puede comenzar a descargar y usar plantillas y escenas del grupo de la comunidad.¡Deja que tu imaginación moldee tus Mundos y Tierras!",
     "go_to_scenes": "Ir a mis escenas"
   },
+  "smart_wearables_announcement_modal": {
+    "title": "¡La vestimenta interactiva ya está disponible! 🟢",
+    "description": "<b>Empieza a volar tu imaginación con creaciones asombrosas.</b><br></br>Ofrece a los jugadores nuevas habilidades, como un jetpack que les permite volar o agrega una nueva capa de contenido encima de la resto del mundo.",
+    "learn_more": "Más información sobre la vestimenta interactiva"
+  },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
     "subtitle": "Establece un nuevo alias para tu avatar",
