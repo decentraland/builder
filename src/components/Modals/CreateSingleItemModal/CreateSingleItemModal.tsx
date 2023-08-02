@@ -986,7 +986,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             options={this.getPlayModeOptions()}
             onChange={this.handlePlayModeChange}
           />
-          <div className="dcl select-field">
+          <div className="notice">
             <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" />} />
           </div>
         </Column>
@@ -1038,7 +1038,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             </div>
           </div>
         </Row>
-        <div className="dcl select-field">
+        <div className="notice">
           <Message info visible content={t('create_single_item_modal.smart_wearable_notice')} icon={<Icon name="alert" />} />
         </div>
       </div>
