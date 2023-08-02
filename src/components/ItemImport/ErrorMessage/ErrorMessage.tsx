@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { Props, ErrorMessage as ErrorMessageType } from './ErrorMessage.types'
 import styles from './ErrorMessage.module.css'
+import { CustomErrorWithTitle } from 'modules/item/errors'
 
-const CLEAR_ERROR_DELAY = 6000
+const CLEAR_ERROR_DELAY = 600000
 
 function isErrorMessage(error: unknown): error is ErrorMessageType {
-  return error instanceof Error && 'message' in error
+  return (error instanceof Error || error instanceof CustomErrorWithTitle) && 'message' in error
 }
 
 const ErrorMessage: React.FC<Props> = ({ error, className }: Props) => {

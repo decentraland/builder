@@ -1,6 +1,15 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { loadFile, SceneConfig, WearableCategory, WearableConfig } from '@dcl/builder-client'
+import {
+  loadFile,
+  SceneConfig,
+  WearableConfig,
+  AllowedMediaHostnameIsEmptyOrInvalidError,
+  DuplicatedRequiredPermissionsError,
+  MissingRequiredPropertiesError,
+  UnknownRequiredPermissionsError
+} from '@dcl/builder-client/dist/files'
+import { WearableCategory } from '@dcl/builder-client/dist/item'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -14,7 +23,8 @@ import {
   MissingModelFileError,
   EmoteDurationTooLongError,
   InvalidModelFilesRepresentation,
-  InvalidModelFileType
+  InvalidModelFileType,
+  CustomErrorWithTitle
 } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS, SCENE_PATH } from 'modules/item/types'
 import {
@@ -44,7 +54,6 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   getInitialState(): State {
     return {
       id: '',
-      error: '',
       isLoading: false
     }
   }
@@ -123,6 +132,49 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     }
 
     return { model, contents: proccessedContent, type }
+  }
+
+  handleErrorsOnFile = (error: any) => {
+    let errorTranslationId = null
+    let wrongConfigurations: string[] = []
+
+    if (error instanceof UnknownRequiredPermissionsError) {
+      errorTranslationId = 'unknown_required_permissions'
+      wrongConfigurations = error.getUnknownRequiredPermissions()
+    } else if (error instanceof DuplicatedRequiredPermissionsError) {
+      errorTranslationId = 'duplicated_required_permissions'
+      wrongConfigurations = error.getDuplicatedRequiredPermissions()
+    } else if (error instanceof AllowedMediaHostnameIsEmptyOrInvalidError) {
+      errorTranslationId = 'allowed_media_hostnames_empty_or_invalid'
+    } else if (error instanceof MissingRequiredPropertiesError) {
+      errorTranslationId = 'missing_required_properties'
+      wrongConfigurations = error.getMissingProperties()
+    }
+
+    console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+
+    this.setState({
+      error: errorTranslationId
+        ? new CustomErrorWithTitle(
+            t(`create_single_item_modal.error.${errorTranslationId}.title`, {
+              wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
+              count: wrongConfigurations.length
+            }),
+            t(`create_single_item_modal.error.${errorTranslationId}.message`, {
+              learn_more: (
+                <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
+                  {t('global.learn_more')}
+                </span>
+              )
+            })
+          )
+        : error.message,
+      isLoading: false
+    })
+  }
+
+  handleOpenLearnMoreOnError = () => {
+    window.open('https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/', '_blank', 'noopener noreferrer')
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
@@ -224,14 +276,13 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         bodyShape: isEmote || isSmart(acceptedFileProps) ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
       })
     } catch (error) {
-      this.setState({ error: error.message, isLoading: false })
+      this.handleErrorsOnFile(error)
     }
   }
 
   handleDropRejected = (rejectedFiles: File[]) => {
     console.warn('rejected', rejectedFiles)
-    const error = new InvalidFilesError()
-    this.setState({ error: error.message })
+    this.setState({ error: new InvalidFilesError() })
   }
 
   async processModel(model: string, contents: Record<string, Blob>): Promise<ModelData> {

@@ -240,7 +240,23 @@
       "emote_duration_too_long": "{title}.{enter}Duration of the emotes has a limit of {duration} seconds.{enter}Reduce the duration of the emote and try again.",
       "emote_duration_too_long_title": "Your emote exceeds the maximum duration in seconds",
       "invalid_model_file_type": "The file has an invalid representation for this {type} item, please review it and try again.",
-      "wrong_video_format": "The provided video is not a MP4 video"
+      "wrong_video_format": "The provided video is not a MP4 video",
+      "unknown_required_permissions": {
+        "title": "Smart Wearable {count, plural, one {Permission} other {Permissions}} {wrong_configurations} {count, plural, one {doesn't} other {don't}} exist. Please correct the 'scene.json'.",
+        "message": "For more information, check the Docs to {learn_more}."
+      },
+      "duplicated_required_permissions": {
+        "title": "{wrong_configurations} Smart Wearable {count, plural, one {Permission is} other {Permissions are}} duplicated. Please correct the 'scene.json'.",
+        "message": "For more information, check the Docs to {learn_more}."
+      },
+      "missing_required_properties": {
+        "title": "The {count, plural, one {property} other {properties}} {wrong_configurations} {count, plural, one {is} other {are}} missing in the configuration. Please correct the 'scene.json'.",
+        "message": "For more information, check the Docs to {learn_more}."
+      },
+      "allowed_media_hostnames_empty_or_invalid": {
+        "title": "Given that the 'ALLOW_MEDIA_HOSTNAMES' permission is set, the 'allowedMediaHostnames' property must be set and not empty. Please correct the 'scene.json'.",
+        "message": "For more information, check the Docs to {learn_more}."
+      }
     },
     "emote_notice": "Emotes are available for all body shapes.",
     "smart_wearable_details_title": "Complete the smart wereable details",
