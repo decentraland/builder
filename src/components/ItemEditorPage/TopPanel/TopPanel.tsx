@@ -55,7 +55,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
             collection={collection}
             chainId={chainId}
             items={isTPCollection(collection) ? items : undefined}
-            text={t('global.see_in_world')}
+            text={t('global.see_in_decentraland')}
           />
         </div>
         <div className="actions">

@@ -122,7 +122,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
         >
           <Dropdown.Menu className={styles.contextMenu}>
             <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
-            <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleSeeInWorld} />
+            <Dropdown.Item text={t('collection_context_menu.see_in_decentraland')} onClick={this.handleSeeInWorld} />
             <Dropdown.Item text={t('collection_item.preview')} onClick={this.handleNavigateToEditor} />
             {!collection.isPublished && (
               <Dropdown.Item text={t('collection_item.move_to_another_collection')} onClick={this.handleMoveToAnotherCollection} />
