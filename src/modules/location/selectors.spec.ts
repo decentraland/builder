@@ -1,7 +1,10 @@
+import { getData } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { Item, ItemType } from 'modules/item/types'
 import { locations } from 'routing/locations'
 import { getCollectionId, getSelectedItemId, getTemplateId } from './selectors'
+
+jest.mock('decentraland-dapps/dist/modules/wallet/selectors')
 
 describe('when getting the collection id from the current url', () => {
   describe('when the collection is standard', () => {
@@ -109,7 +112,9 @@ describe('when getting the selected item id using the current url', () => {
         } as Item
 
         mockState = {
-          ...mockState,
+          collection: {
+            data: {}
+          },
           item: {
             data: {}
           },
@@ -124,63 +129,195 @@ describe('when getting the selected item id using the current url', () => {
             }
           }
         } as unknown as RootState
+        ;(getData as jest.MockedFunction<typeof getData>).mockResolvedValueOnce('some-address')
       })
 
-      describe('and there are no items related to it', () => {
-        it('should return null', () => {
-          expect(getSelectedItemId(mockState)).toEqual(null)
-        })
-      })
-
-      describe('and the collection only has emotes', () => {
+      describe('and the collection is a standard collection', () => {
         beforeEach(() => {
           mockState = {
             ...mockState,
-            item: {
+            collection: {
               data: {
-                [emote.id]: emote
+                [collectionId]: {
+                  id: collectionId,
+                  isPublished: true,
+                  urn: 'urn:decentraland:mumbai:collections-v2:0xa05aa3e192efe94b8674df51a07a44f54b114069'
+                }
               }
             }
           } as unknown as RootState
         })
 
-        it('should return the id of the first emote', () => {
-          expect(getSelectedItemId(mockState)).toEqual(emote.id)
+        describe('and there are no items related to it', () => {
+          it('should return null', () => {
+            expect(getSelectedItemId(mockState)).toEqual(null)
+          })
+        })
+
+        describe('and the collection only has emotes', () => {
+          beforeEach(() => {
+            mockState = {
+              ...mockState,
+              item: {
+                data: {
+                  [emote.id]: emote
+                },
+                pagination: {
+                  [collectionId]: {
+                    ids: [emote.id]
+                  }
+                }
+              }
+            } as unknown as RootState
+          })
+
+          it('should return the id of the first emote', () => {
+            expect(getSelectedItemId(mockState)).toEqual(emote.id)
+          })
+        })
+
+        describe('and the collection has only wearables', () => {
+          beforeEach(() => {
+            mockState = {
+              ...mockState,
+              item: {
+                data: {
+                  [wearable.id]: wearable
+                },
+                pagination: {
+                  [collectionId]: {
+                    ids: [wearable.id]
+                  }
+                }
+              }
+            } as unknown as RootState
+          })
+
+          it('should return the id of the first wearable', () => {
+            expect(getSelectedItemId(mockState)).toEqual(wearable.id)
+          })
+        })
+
+        describe('and the collection has wearables and emotes', () => {
+          beforeEach(() => {
+            mockState = {
+              ...mockState,
+              item: {
+                data: {
+                  [emote.id]: emote,
+                  [wearable.id]: wearable
+                },
+                pagination: {
+                  [collectionId]: {
+                    ids: [emote.id, wearable.id]
+                  }
+                }
+              }
+            } as unknown as RootState
+          })
+
+          it('should return the id of the first wearable', () => {
+            expect(getSelectedItemId(mockState)).toEqual(wearable.id)
+          })
         })
       })
 
-      describe('and the collection has only wearables', () => {
+      describe('and the collection is a third party collection', () => {
         beforeEach(() => {
           mockState = {
             ...mockState,
-            item: {
+            collection: {
               data: {
-                [wearable.id]: wearable
+                [collectionId]: {
+                  id: collectionId,
+                  isPublished: true,
+                  urn: 'urn:decentraland:matic:collections-thirdparty:some-collection-name:some-address'
+                }
               }
             }
           } as unknown as RootState
+          emote = {
+            ...emote,
+            isPublished: true
+          } as Item
+
+          wearable = {
+            ...wearable,
+            isPublished: true
+          } as Item
         })
 
-        it('should return the id of the first wearable', () => {
-          expect(getSelectedItemId(mockState)).toEqual(wearable.id)
+        describe('and there are no items under review', () => {
+          it('should return null', () => {
+            expect(getSelectedItemId(mockState)).toEqual(null)
+          })
         })
-      })
 
-      describe('and the collection has wearables and emotes', () => {
-        beforeEach(() => {
-          mockState = {
-            ...mockState,
-            item: {
-              data: {
-                [emote.id]: emote,
-                [wearable.id]: wearable
+        describe('and the collection only has emotes under review', () => {
+          beforeEach(() => {
+            mockState = {
+              ...mockState,
+              item: {
+                data: {
+                  [emote.id]: emote
+                },
+                pagination: {
+                  [collectionId]: {
+                    ids: [emote.id]
+                  }
+                }
               }
-            }
-          } as unknown as RootState
+            } as unknown as RootState
+          })
+
+          it('should return the id of the first emote', () => {
+            expect(getSelectedItemId(mockState)).toEqual(emote.id)
+          })
         })
 
-        it('should return the id of the first wearable', () => {
-          expect(getSelectedItemId(mockState)).toEqual(wearable.id)
+        describe('and the collection has only wearables under review', () => {
+          beforeEach(() => {
+            mockState = {
+              ...mockState,
+              item: {
+                data: {
+                  [wearable.id]: wearable
+                },
+                pagination: {
+                  [collectionId]: {
+                    ids: [wearable.id]
+                  }
+                }
+              }
+            } as unknown as RootState
+          })
+
+          it('should return the id of the first wearable', () => {
+            expect(getSelectedItemId(mockState)).toEqual(wearable.id)
+          })
+        })
+
+        describe('and the collection has wearables and emotes under review', () => {
+          beforeEach(() => {
+            mockState = {
+              ...mockState,
+              item: {
+                data: {
+                  [emote.id]: emote,
+                  [wearable.id]: wearable
+                },
+                pagination: {
+                  [collectionId]: {
+                    ids: [emote.id, wearable.id]
+                  }
+                }
+              }
+            } as unknown as RootState
+          })
+
+          it('should return the id of the first wearable', () => {
+            expect(getSelectedItemId(mockState)).toEqual(wearable.id)
+          })
         })
       })
     })

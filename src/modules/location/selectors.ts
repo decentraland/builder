@@ -1,8 +1,11 @@
 import { locations } from 'routing/locations'
 import { createMatchSelector, getSearch } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
-import { getCollectionItems } from 'modules/item/selectors'
-import { ItemType } from 'modules/item/types'
+import { getCollection } from 'modules/collection/selectors'
+import { getPaginatedCollectionItems } from 'modules/item/selectors'
+import { getFirstWearableOrItem } from 'modules/item/utils'
+import { getCollectionType } from 'modules/collection/utils'
+import { CollectionType } from 'modules/collection/types'
 
 const landIdMatchSelector = createMatchSelector<
   RootState,
@@ -71,8 +74,12 @@ export const getSelectedItemId = (state: RootState) => {
   const collectionId = getSelectedCollectionId(state)
   if (!collectionId) return null
 
-  const items = getCollectionItems(state, collectionId)
-  return (items.find(item => item.type === ItemType.WEARABLE) || items[0])?.id ?? null
+  const collection = getCollection(state, collectionId)
+
+  const isReviewingTPCollection = collection ? getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing(state) : false
+  const allItems = getPaginatedCollectionItems(state, collectionId)
+  const items = isReviewingTPCollection ? allItems.filter(item => item.isPublished) : allItems
+  return getFirstWearableOrItem(items)?.id ?? null
 }
 export const getSelectedCollectionId = (state: RootState) => new URLSearchParams(getSearch(state)).get('collection')
 export const isReviewing = (state: RootState) => !!new URLSearchParams(getSearch(state)).get('reviewing')

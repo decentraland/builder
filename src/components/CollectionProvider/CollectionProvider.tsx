@@ -65,7 +65,7 @@ export default class CollectionProvider extends React.PureComponent<Props> {
         onFetchCollection(id)
       }
       // fetch collection items if the id changes
-      this.fetchCollectionItems(itemsPage)
+      this.fetchCollectionItems(DEFAULT_ITEMS_PAGE)
     }
 
     // logic to fetch the new pages requested
