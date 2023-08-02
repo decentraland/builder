@@ -95,7 +95,8 @@
     "import": {
       "action": "Import asset",
       "action_many": "Import {count} assets",
-      "cta": "Drag your Asset file here in {models_link} format, or {action}",
+      "cta": "Drag and drop your asset file here ({accepted_extensions}),{enter}or {action}",
+      "upload_manually": "browse for it on your computer",
       "description_create": "Start by adding some assets to your pack",
       "description_edit": "Add some more items to your pack",
       "loaded": "Item imported successfully",

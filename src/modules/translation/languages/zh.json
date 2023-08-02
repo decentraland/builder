@@ -94,7 +94,8 @@
     "import": {
       "action": "导入{资产}",
       "action_many": "导入{count} Asset",
-      "cta": "将Asset的{models_link}文件拖到此处，或{action}",
+      "cta": "在此处拖放您的资产文件 ({accepted_extensions}),{enter}或{action}",
+      "upload_manually": "在计算机上浏览它",
       "description_create": "首先将模型添加到Asset Pack",
       "description_edit": "向您添加更多项目Asset Pack",
       "loaded": "项目导入成功",

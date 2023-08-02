@@ -1,6 +1,7 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
 import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory, Entity } from '@dcl/schemas'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { ModelMetrics } from 'modules/models/types'
@@ -684,4 +685,13 @@ export const loadVideo = (src: File | string): Promise<HTMLVideoElement> => {
 
 export const getFirstWearableOrItem = (items: Item[]): Item | undefined => {
   return items.length > 0 ? items.find(item => item.type === ItemType.WEARABLE) ?? items[0] : undefined
+}
+
+export const formatExtensions = (extensions: string[]): string => {
+  const formattedExtensions = extensions.map(extension => extension.toUpperCase().replace('.', ''))
+  formattedExtensions.sort()
+  return formattedExtensions
+    .slice(0, -1)
+    .join(', ')
+    .concat(` ${t('global.or')} ${formattedExtensions.slice(-1)[0]}`)
 }

@@ -94,7 +94,8 @@
     "import": {
       "action": "Importar Asset",
       "action_many": "Importar {count} Assets",
-      "cta": "Arrastra el archivo {models_link} de tu Asset aquí, o {action}",
+      "cta": "Arrastra el archivo ({accepted_extensions}) de tu Asset aquí,{enter}o {action}",
+      "upload_manually": "buscalo en tu computadora",
       "description_create": "Comienza añadiendo algunos assets a tu pack",
       "description_edit": "Añade algunos assets más a tu pack",
       "loaded": "Asset importado correctamente",
