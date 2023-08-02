@@ -108,17 +108,10 @@
 }
 
 .SceneViewPage .detail .avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 12px;
   margin-left: 12px;
-  background: var(--light-blue-steel);
-  display: inline-block;
-  vertical-align: bottom;
 }
 
-.SceneViewPage .detail .avatar img {
-  border-radius: 12px;
+.SceneViewPage .detail .avatar .dcl.avatar-face {
   width: 24px;
   height: 24px;
 }

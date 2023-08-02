@@ -1,7 +1,9 @@
 import * as React from 'react'
+import { config } from 'config'
 import { Loader, Page, Responsive, Container, Button, Icon as IconUI } from 'decentraland-ui'
+import Profile from 'decentraland-dapps/dist/containers/Profile'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-
+import { PreviewType } from 'modules/editor/types'
 import Chip from 'components/Chip'
 import Footer from 'components/Footer'
 import Icon from 'components/Icon'
@@ -10,11 +12,12 @@ import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 import Back from 'components/Back'
 import SDKTag from 'components/SDKTag/SDKTag'
-import { PreviewType } from 'modules/editor/types'
 import { getProjectToExport } from './utils'
 import { Props } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
+
+const PROFILE_URL = config.get('PROFILE_URL', '')
 
 export default class SceneViewPage extends React.PureComponent<Props> {
   componentDidMount() {
@@ -134,8 +137,25 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     onOpenModal('ExportModal', { project: getProjectToExport(this.getCurrentProject()) })
   }
 
+  renderAuthor() {
+    const { currentAuthor, isProfileEnabled } = this.props
+
+    if (!currentAuthor) {
+      return null
+    }
+
+    const address = currentAuthor.avatars[0].ethAddress
+
+    return (
+      <div className="author">
+        {t('public_page.made_by')}
+        <Profile address={address} {...(isProfileEnabled && { as: 'a', href: `${PROFILE_URL}/${address}` })} />
+      </div>
+    )
+  }
+
   render() {
-    const { isFetching, isPreviewing, isReady, isTemplatesEnabled, isInspectorEnabled } = this.props
+    const { isFetching, isPreviewing, isReady, isTemplatesEnabled, isInspectorEnabled, onBack } = this.props
 
     if (isFetching) {
       return this.renderLoading()
@@ -148,7 +168,6 @@ export default class SceneViewPage extends React.PureComponent<Props> {
 
     const currentPool = this.getCurrentPool()
     const currentScene = this.getCurrentScene()
-    const { currentAuthor: author, onBack } = this.props
 
     return (
       <>
@@ -200,20 +219,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
               <h1>{currentProject.title}</h1>
               {isInspectorEnabled && <SDKTag scene={currentScene} />}
             </div>
-            {author && (
-              <div className="author">
-                {t('public_page.made_by')}
-                <span className="author-name"> {author.avatars.length > 0 ? author.avatars[0].name : t('user_menu.guest')}</span>
-                <div className="avatar">
-                  <img
-                    width="24"
-                    height="24"
-                    src={author.avatars.length > 0 ? author.avatars[0].avatar.snapshots.face256 : ''}
-                    alt={author.avatars[0].name}
-                  />
-                </div>
-              </div>
-            )}
+            {this.renderAuthor()}
             {currentProject.description && (
               <div className="description">
                 <p>{currentProject.description}</p>
