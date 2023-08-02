@@ -244,7 +244,7 @@
       "wrong_video_format": "El video provisto no es un video MP4"
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
-    "smart_wearable_details_title": "Completa los detalles de la vestimenta interactiva",
+    "smart_wearable_details_title": "Completa los detalles de tu vestimenta interactiva",
     "smart_wearable_permissions_label": "Permisos de la vestimenta interactiva",
     "smart_wearable_notice": "Recuerde que la vestimenta interactiva está disponibles para todos los cuerpos.",
     "thumbnail_preview_title": "Thumbnail",
@@ -652,7 +652,7 @@
     "save": "Salvar",
     "skip": "Saltar",
     "send": "Enviar",
-    "see_in_world": "Ver en el mundo",
+    "see_in_decentraland": "Ver en Decentraland",
     "share": "Compartir",
     "sign_in_required": "Debes {link} para acceder a esta página.",
     "sign_in": "Iniciar sesión",
@@ -799,23 +799,23 @@
     "description": "Para transferir escenas entre diferentes cuentas o cargar una escena previamente descargada desde el grupo de escenas, utilice la función de carga. Asegúrese de cargar el archivo zip exactamente como se descargó.",
     "invalid_file": "Archivo inválido",
     "title": "Cargar Escena",
-    "upload_manually": "Busca en tu computadora"
+    "upload_manually": "buscarlo en su computadora"
   },
   "upload_video": {
     "cta": "Arrastre y suelte un video (formato .MP4) para mostrar la funcionalidad portátil inteligente o {acción}",
-    "upload_manually": "busca en tu computadora",
+    "upload_manually": "buscarlo en su computadora",
     "error": {
       "video_file_too_big": {
         "title": "El archivo es demasiado grande y no se puede cargar.",
-        "message": "El límite de tamaño del archivo es {tamaño}. Reduzca el tamaño del archivo y vuelva a intentarlo."
+        "message": "El límite de tamaño del archivo es {tamaño}. Por favor reduzca el tamaño del archivo y vuelva a intentarlo."
       },
       "video_file_too_long": {
         "title": "La duración del video excede {max_duration} segundos.",
-        "message": "Reduce la duración e inténtalo de nuevo."
+        "message": "Por favor reduce la duración e inténtalo de nuevo."
       },
       "invalid_video": {
         "title": "Parece que el video no es válido o está roto.",
-        "message": "Revisa tu archivo y vuelve a intentarlo."
+        "message": "Por favor revisa tu archivo y vuelve a intentarlo."
       }
     }
   },
@@ -1459,7 +1459,7 @@
     "edit_urn": "Editar URN",
     "edit_in_bulk": "Editar en masa",
     "copy_urn": "Copiar URN",
-    "see_in_world": "Ver en el mundo",
+    "see_in_decentraland": "Ver en Decentraland",
     "unpublished": "Esta colleción aún no está publicada",
     "managers": "Colaboradores",
     "minters": "Emisores",
@@ -1517,7 +1517,7 @@
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
     "price_message": "Tenga en cuenta que la cantidad mínima admitida para transacciones sin costo es {minPrice}.{br}{br}Si el item cuesta menos que eso, el comprador deberá cubrir el costo de la transacción en {token}.",
-    "beneficiary_label": "Beneficiario",
+    "beneficiary_label": "Dirección de la billetera del beneficiario",
     "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección.",
     "free_message": "El creador original será el beneficiario de las regalías"
   },
@@ -1594,12 +1594,12 @@
     },
     "confirm_collection_items_step": {
       "title": "Confirmar artículos",
-      "subtitle": "No se pueden agregar ni eliminar artículos de la colección una vez que se publica.{enter}La rareza de los artículos tampoco se podra cambiar despues de la publicación.",
-      "description": "Nombre del artículo, descripción, categorias y precio podran ser modificadas luego.",
+      "subtitle": "No se pueden agregar o eliminar elementos de una colección ni se puede cambiar su rareza después de la publicación.",
+      "description": "Sin embargo, el nombre, la descripción, la categoría y el precio de los artículos siempre se pueden modificar.",
       "confirm_items": "Confirmar Artículos"
     },
     "review_content_policy_step": {
-      "title": "Antes de enviar su colección para su revisión, confirme su reconocimiento.",
+      "title": "Antes de enviar su colección para su revisión, confirme su reconocimiento de lo siguiente:",
       "content_policy_first_condition": "Entiendo que no podré agregar o eliminar artículos, ni modificar el nombre de la colección después de que se publique, y puedo dar fe de que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
       "terms_of_use": "Términos de uso",
       "content_policy": "Política de contenido",
@@ -1610,8 +1610,8 @@
       "continue": "Continar"
     },
     "pay_publication_fee_step": {
-      "title": "Está por enviar a revisión la colección \"{collection_name}\" que incluye {count} {count, plural, one {artículo} other {artículos}}.",
-      "subtitle": "Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarica de publicación de {currency} {publicationFee} por artículo (pagado en MANA).",
+      "title": "Estás por enviar tu colección \"{collection_name}\" que incluye {count} {count, plural, one {artículo} other {artículos}} a revisión.",
+      "subtitle": "Para apoyar al Comité de Curadores y la tesorería de DAO, hay una tarifa de publicación de {currency} {publicationFee} por artículo (pagado en MANA).",
       "learn_more": "Más información sobre la tarifa de publicación",
       "quantity": "Cantidad",
       "items": "{count} {count, plural, one {artículo} other {artículos}}",
@@ -1622,8 +1622,8 @@
     },
     "congratulations_step": {
       "title": "Su colección ya esta disponible para ser verificada por los curadores.",
-      "subtitle": "Todos los comentarios seran enviados al {forum_post} donde usted y cualquier miembro de la comunidad podrán participar.",
-      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curadores. Dado que es un proceso manual, podria tomar unos días. Por favor sea paciente y consciente",
+      "subtitle": "Todos los comentarios seran enviados al {forum_post} donde usted y cualquier miembro de la comunidad podrán comentar.",
+      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curación. Dado que este es un proceso manual, podria tomar unos días. Se agradece su paciencia.",
       "forum_post": "Post en el foro",
       "view_forum_post": "Ver el Post en el foro"
     },
@@ -1695,8 +1695,8 @@
     "description": "Se han realizado cambios en la colección o en los artículos contenidos en ella desde la última vez que un curador los revisó.{br}Para que estos cambios se reflejen en el mercado y en el juego, deben ser revisados y aprobados nuevamente por el comité.{br}¿Está seguro de que desea impulsar los cambios para su revisión?"
   },
   "see_in_world_modal": {
-    "title": "Ver en el mundo",
-    "subtitle": "Elige una de las opciones para probar tus items en el mundo",
+    "title": "Ver en Decentraland",
+    "subtitle": "Elige una de las opciones para probar tus items en Decentraland",
     "genesis": {
       "title": "Genesis Plaza",
       "subtitle": "Explora, salta e interactúa"

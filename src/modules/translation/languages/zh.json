@@ -214,7 +214,7 @@
     "play_mode_placeholder": "选择播放模式",
     "upload_video_label": "向用户展示如何使用此项目的预览",
     "upload_video_placeholder": "选择视频",
-    "rarity_label": "这件商品有多稀有？",
+    "rarity_label": "这个物品的稀有度是多少？",
     "rarity_placeholder": "选择稀有",
     "representation_label": "选择您的项目的身体形状",
     "existing_item": "这是现有项目的一部分吗？",
@@ -239,7 +239,7 @@
       "wrong_video_format": "提供的视频不是MP4视频"
     },
     "emote_notice": "表情适用于所有体型。",
-    "smart_wearable_details_title": "填写智能威胁细节",
+    "smart_wearable_details_title": "完善您的智能可穿戴设备详细信息",
     "smart_wearable_permissions_label": "智能可穿戴权限",
     "smart_wearable_notice": "请记住，智能可穿戴设备可用于所有身体形状",
     "thumbnail_preview_title": "缩略图",
@@ -646,7 +646,7 @@
     "save": "保存",
     "skip": "跳过",
     "send": "发送",
-    "see_in_world": "看到世界",
+    "see_in_decentraland": "参见 Decentraland",
     "share": "分享",
     "sign_in_required": "您需要{link}才能访问此页面。",
     "sign_in": "登录",
@@ -786,24 +786,21 @@
     "description": "要在不同帐户之间传输场景或导入先前从场景池下载的场景，请使用导入功能。确保您按照下载完全导入zip文件。",
     "invalid_file": "无效文件",
     "title": "导入场景",
-    "upload_manually": "浏览您的电脑"
+    "upload_manually": "在您的计算机上浏览它"
   },
   "upload_video": {
     "cta": "拖放视频（格式.MP4）以展示智能可穿戴功能或{action}",
-    "upload_manually": "浏览您的电脑",
+    "upload_manually": "在您的计算机上浏览它",
     "error": {
       "video_file_too_big": {
         "title": "文件太大，无法上传。",
-        "message": "文件大小限制为 {size}。减小文件大小并重试。"
+        "message": "文件大小限制为 {size}。请减小文件大小并重试。"
       },
       "video_file_too_long": {
-        "title": "视频时长超过 {max_duration} 秒。",
-        "message": "减少持续时间并重试。"
+        "title": "您的视频时长超过 {max_duration} 秒。",
+        "message": "请减少持续时间并重试。"
       },
-      "invalid_video": {
-        "title": "视频似乎无效或损坏。",
-        "message": "检查您的文件并重试。"
-      }
+      "invalid_video": { "title": "您的视频似乎无效或已损坏。", "message": "请检查您的文件并重试。" }
     }
   },
   "itemdrawer": {
@@ -1396,7 +1393,7 @@
     "new_item": "新物品",
     "mint_items": "薄荷项目",
     "on_sale": "特价中",
-    "put_for_sale": "投放出售",
+    "put_for_sale": "出售",
     "set_on_sale_popup": "这将允许您的收藏在 Decentraland 市场上出售。",
     "unset_on_sale_popup": "该系列在 Decentraland 市场上有售。",
     "notice": "凉爽的！ 现在，您可以开始处理项目了。 {editor_link}打开编辑器，或在任何项目上单击“编辑”按钮。",
@@ -1442,7 +1439,7 @@
     "edit_urn": "编辑 URN",
     "edit_in_bulk": "批量编辑",
     "copy_urn": "复制 URN",
-    "see_in_world": "见世面",
+    "see_in_decentraland": "参见 Decentraland",
     "unpublished": "此合集尚未发布",
     "managers": "合作者",
     "minters": "铸币厂",
@@ -1500,7 +1497,7 @@
     "free": "免费",
     "price_label": "价格",
     "price_message": "请记住，无成本交易支持的最低金额是 {minPrice}。{br}{br}如果您的商品价格低于此价格，买家将需要支付 {token} 中的交易费用。",
-    "beneficiary_label": "受益人",
+    "beneficiary_label": "收款人钱包地址",
     "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。",
     "free_message": "原始创作者将成为所产生版税的受益人"
   },
@@ -1579,12 +1576,12 @@
     },
     "confirm_collection_items_step": {
       "title": "确认项目",
-      "subtitle": "项目一旦发布就无法从集合中添加或删除。{enter}项目的稀有度在发布后也无法更改。",
-      "description": "项目名称、描述、类别和价格可以稍后修改。",
+      "subtitle": "项目不能在集合中添加或删除，也不能在发布后更改其稀有度。",
+      "description": "但是，商品的名称、描述、类别和价格始终可以修改。",
       "confirm_items": "确认项目"
     },
     "review_content_policy_step": {
-      "title": "在发送您的收藏以供审核之前，请确认您的确认。",
+      "title": "在将您的收藏发送以供审核之前，请确认您已确认以下内容：",
       "content_policy_first_condition": "我了解我将无法添加或删除项目，或在集合发布后修改其名称，并且我可以证明\"{collection_name}\"作为名称不侵犯任何知识产权。",
       "terms_of_use": "使用条款",
       "content_policy": "内容政策",
@@ -1595,8 +1592,8 @@
       "continue": "继续"
     },
     "pay_publication_fee_step": {
-      "title": "您即将发送包含 {count} {count, plural, one {物品} other {项目}} 的集合 \"{collection_name}\" 以供审核。",
-      "subtitle": "为了支持策展人委员会和 DAO 宝藏，每件作品有 {currency} {publicationFee} 的出版费（以 MANA 支付）。",
+      "title": "您即将发送您的收藏\"{collection_name}\"，其中包括 {count} {count, plural, one {物品} other {项目}} 供审核。",
+      "subtitle": "为了支持策展人委员会和 DAO 金库，每件作品需支付 {currency} {publicationFee} 的出版费（以 MANA 支付）。",
       "learn_more": "详细了解发布费",
       "quantity": "数量",
       "items": "{count} {count, plural, one {物品} other {项目}}",
@@ -1607,8 +1604,8 @@
     },
     "congratulations_step": {
       "title": "您的收藏现在可供策展人查看。",
-      "subtitle": "任何反馈都将在 {forum_post} 中发送，您和社区中的任何人都可以参与其中。",
-      "description": "藏品经策展人委员会批准后出版。 由于这是一个手动过程，因此可能需要几天时间。 请耐心和细心。",
+      "subtitle": "任何反馈都将在 {forum_post} 中发送，您和社区中的任何人都可以发表评论。",
+      "description": "该合集将在策展委员会批准后发布。由于这是一个手动过程，可能需要几天时间。感谢您的耐心等待。",
       "forum_post": "论坛帖子",
       "view_forum_post": "查看论坛帖子"
     },
@@ -1630,7 +1627,7 @@
     "put_for_sale": {
       "title": "您想出售此收藏吗？",
       "description": "该系列将可在 Decentraland 市场上购买。",
-      "cta": "投放出售"
+      "cta": "出售"
     },
     "remove_from_marketplace": {
       "title": "你想从市场中删除这个集合吗？",
@@ -1660,8 +1657,8 @@
     "description": "自上次策展人审查藏品或其中包含的文章以来，对收藏品或其中包含的文章进行了更改。{br}要使这些变化反映在市场和游戏中，必须再次得到委员会的审查和批准。{br}您确定要推动更改以供审核吗？"
   },
   "see_in_world_modal": {
-    "title": "见于世",
-    "subtitle": "选择一个位置在世界中试用您的物品",
+    "title": "参见 Decentraland",
+    "subtitle": "在 Decentraland 中选择一个位置来试用您的商品",
     "genesis": {
       "title": "Genesis Plaza",
       "subtitle": "探索、跳跃和互动。"
