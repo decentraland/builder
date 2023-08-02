@@ -681,3 +681,7 @@ export const loadVideo = (src: File | string): Promise<HTMLVideoElement> => {
     }
   })
 }
+
+export const getFirstWearableOrItem = (items: Item[]): Item | undefined => {
+  return items.length > 0 ? items.find(item => item.type === ItemType.WEARABLE) ?? items[0] : undefined
+}

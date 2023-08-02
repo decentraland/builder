@@ -28,6 +28,7 @@ export type Props = {
   orphanItems: Item[]
   collections: Collection[]
   selectedItemId: string | null
+  selectedItem: Item | null
   selectedCollectionId: string | null
   visibleItems: Item[]
   isReviewing: boolean
@@ -59,6 +60,7 @@ export type MapStateProps = Pick<
   | 'orphanItems'
   | 'collections'
   | 'selectedItemId'
+  | 'selectedItem'
   | 'selectedCollectionId'
   | 'visibleItems'
   | 'bodyShape'

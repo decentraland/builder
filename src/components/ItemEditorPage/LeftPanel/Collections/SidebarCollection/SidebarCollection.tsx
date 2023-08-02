@@ -9,12 +9,10 @@ import './SidebarCollection.css'
 
 class SidebarCollection extends React.PureComponent<Props> {
   render() {
-    const { collection, items, isSelected } = this.props
-    const collectionItems = items.filter(item => item.collectionId === collection.id).sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1))
-    const itemId = collectionItems.length > 0 ? collectionItems[0].id : undefined
+    const { collection, isSelected } = this.props
     return (
       <div className={`SidebarCollection ${isSelected ? 'is-selected' : ''}`}>
-        <Link to={locations.itemEditor({ collectionId: collection.id, itemId })}>
+        <Link to={locations.itemEditor({ collectionId: collection.id })}>
           <CollectionImage collectionId={collection.id} />
           <div className="wrapper">
             <div className="name">

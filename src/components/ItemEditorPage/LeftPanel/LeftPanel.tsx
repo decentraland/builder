@@ -46,11 +46,15 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { address, hasUserOrphanItems, onFetchOrphanItem } = this.props
+    const { address, hasUserOrphanItems, selectedItem, onFetchOrphanItem, onSetItems } = this.props
     this.fetchResource()
     // TODO: Remove this call when there are no users with orphan items
     if (address && hasUserOrphanItems === undefined) {
       onFetchOrphanItem(address)
+    }
+
+    if (selectedItem) {
+      onSetItems([selectedItem])
     }
   }
 
@@ -60,6 +64,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       address,
       selectedCollectionId,
       selectedItemId,
+      selectedItem,
       orphanItems,
       totalItems,
       visibleItems,
@@ -100,6 +105,21 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
         onFetchOrphanItem(address)
       }
     }
+
+    // Preselect item when clicking on a collection
+    if (!prevProps.selectedItem && selectedItem && selectedItem.type !== ItemType.EMOTE) {
+      onSetItems([selectedItem])
+    }
+
+    // Clear visible items when changing collection
+    if (prevProps.selectedCollectionId !== selectedCollectionId) {
+      onSetItems([])
+    }
+  }
+
+  componentWillUnmount(): void {
+    const { onSetItems } = this.props
+    onSetItems([])
   }
 
   getItems(collection: Collection | null, collectionItems: Item[]) {

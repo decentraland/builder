@@ -5,6 +5,7 @@ import { isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/
 import { getSelectedCollectionId, getSelectedItemId, isReviewing } from 'modules/location/selectors'
 import { getBodyShape, getVisibleItems, getWearablePreviewController, isPlayingEmote } from 'modules/editor/selectors'
 import {
+  getItem,
   getItems,
   getLoading,
   getPaginatedWalletOrphanItems,
@@ -34,6 +35,8 @@ const mapState = (state: RootState): MapStateProps => {
     ? getPaginationData(state, address)
     : undefined
   const collectionsPaginationData = !selectedCollectionId ? getCollectionsPaginationData(state) : undefined
+  const selectedItemId = getSelectedItemId(state) || ''
+  const selectedItem = getItem(state, selectedItemId)
 
   return {
     address,
@@ -46,7 +49,8 @@ const mapState = (state: RootState): MapStateProps => {
         ? getPaginatedWalletOrphanItems(state, address, itemsPaginationData?.limit)
         : getWalletOrphanItems(state),
     collections: getAuthorizedCollections(state),
-    selectedItemId: getSelectedItemId(state),
+    selectedItemId,
+    selectedItem,
     selectedCollectionId,
     visibleItems: getVisibleItems(state),
     bodyShape: getBodyShape(state),

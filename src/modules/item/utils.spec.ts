@@ -8,7 +8,8 @@ import {
   areEqualRepresentations,
   groupsOf,
   getWearableCategories,
-  isSmart
+  isSmart,
+  getFirstWearableOrItem
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -243,6 +244,36 @@ describe('when checking if an item is smart', () => {
     it('should return true', () => {
       const item = { type: ItemType.WEARABLE, contents: { 'sw.js': '' } } as unknown as Item
       expect(isSmart(item)).toBe(true)
+    })
+  })
+})
+
+describe('when getting the first wearable or item of an array', () => {
+  describe('when the array is empty', () => {
+    it('should return undefined', () => {
+      expect(getFirstWearableOrItem([])).toBeUndefined()
+    })
+  })
+
+  describe('when the array has a wearable', () => {
+    it('should return the wearable', () => {
+      const wearable = { type: ItemType.WEARABLE } as Item
+      expect(getFirstWearableOrItem([wearable])).toBe(wearable)
+    })
+  })
+
+  describe('when the array has an item', () => {
+    it('should return the item', () => {
+      const item = { type: ItemType.EMOTE } as Item
+      expect(getFirstWearableOrItem([item])).toBe(item)
+    })
+  })
+
+  describe('when the array has a wearable and an item', () => {
+    it('should return the wearable', () => {
+      const wearable = { type: ItemType.WEARABLE } as Item
+      const item = { type: ItemType.EMOTE } as Item
+      expect(getFirstWearableOrItem([item, wearable])).toBe(wearable)
     })
   })
 })
