@@ -6,5 +6,6 @@ export enum FeatureName {
   DEPLOY_WORLDS = 'deploy-worlds',
   SCENE_TEMPLATES = 'scene-templates',
   HANDS_CATEGORY = 'hands-category',
-  WEB_EDITOR = 'web-editor'
+  WEB_EDITOR = 'web-editor',
+  PROFILE = 'profile'
 }
