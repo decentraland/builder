@@ -9,8 +9,8 @@ import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { getCurrentMetrics } from 'modules/scene/selectors'
 import { isSavingCurrentProject } from 'modules/sync/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
-import TopBar from './TopBar'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './SDK6TopBar.types'
+import SDK6TopBar from './SDK6TopBar'
 import { hasHistory } from 'modules/location/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
@@ -39,4 +39,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path))
 })
 
-export default connect(mapState, mapDispatch)(TopBar)
+export default connect(mapState, mapDispatch)(SDK6TopBar)

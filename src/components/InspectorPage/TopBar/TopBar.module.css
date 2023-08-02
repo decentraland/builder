@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.nameContainer {
+  display: flex;
+  align-items: center;
+}
+
+.nameContainer :global(.ui.button.basic) {
+  padding: 0;
+  text-transform: none;
+  color: white !important;
+  font-size: 16px;
+}
+
+.editNameBtn:global(.ui.button) {
+  display: flex;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.editNameBtn:global(.ui.button .Icon) {
+  filter: brightness(0) invert(1);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.downloadBtn:global(.ui.button) {
+  min-width: fit-content;
+  width: fit-content;
+}
+
+.downloadBtn:global(.ui.button) > i:global(.icon.download):not(.button) {
+  margin: 0;
+}

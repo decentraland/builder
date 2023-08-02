@@ -5,7 +5,7 @@ import experiments, { EXPERIMENT_TUTORIAL_OPEN } from 'experiments'
 
 import NotFoundPage from 'components/NotFoundPage'
 import LoadingPage from 'components/LoadingPage'
-import TopBar from 'components/TopBar'
+import SDK6TopBar from 'components/SDK6TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
 import LocalStorageToast from 'components/LocalStorageToast'
@@ -143,7 +143,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
 
     return (
       <div className="EditorPage">
-        {isPreviewing ? null : <TopBar />}
+        {isPreviewing ? null : <SDK6TopBar />}
         <Grid className={gridClasses}>
           <Grid.Row className={wrapperClasses}>
             <ViewPort />
