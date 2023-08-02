@@ -32,5 +32,6 @@
   "WEARABLES_ZIP_INFRA_URL": "https://docs.decentraland.org/decentraland/linked-wearables/#creating-linked-wearables-in-bulk",
   "MIN_SALE_VALUE_IN_WEI": "1000000000000000000",
   "FORUM_URL": "https://forum.decentraland.org",
-  "WORLDS_CONTENT_SERVER": "https://worlds-content-server.decentraland.org"
+  "WORLDS_CONTENT_SERVER": "https://worlds-content-server.decentraland.org",
+  "PROFILE_URL": "https://profile.decentraland.today"
 }
