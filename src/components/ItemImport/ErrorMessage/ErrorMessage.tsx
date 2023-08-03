@@ -4,7 +4,7 @@ import { CustomErrorWithTitle } from 'modules/item/errors'
 import { Props, ErrorMessage as ErrorMessageType } from './ErrorMessage.types'
 import styles from './ErrorMessage.module.css'
 
-const CLEAR_ERROR_DELAY = 600000
+const CLEAR_ERROR_DELAY = 6000
 
 function isErrorMessage(error: unknown): error is ErrorMessageType {
   return (error instanceof Error || error instanceof CustomErrorWithTitle) && 'message' in error
