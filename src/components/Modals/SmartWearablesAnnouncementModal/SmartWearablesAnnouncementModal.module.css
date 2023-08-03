@@ -1,4 +1,5 @@
-.modal {
+.modal,
+.modal:global(.ui.small.modal) {
   display: flex;
   flex-direction: column;
   width: 750px;
@@ -23,7 +24,7 @@
 
 .video {
   display: block;
-  height: 238px;
+  height: 250px;
   object-fit: cover;
   border-radius: 10px;
   border: 3px solid #fff;
@@ -39,10 +40,11 @@
   text-align: center;
 }
 
-.actions {
+.modal:global(.ui.modal) .actions:global(.actions) {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding: 0 105px;
 }
 
 :global(.ui.modal) > .actions > :global(a.ui.button) {
