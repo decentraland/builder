@@ -27,3 +27,7 @@ export const rpcFailure = (
   nonce: number
 ) => action(RPC_FAILURE, { method, params, error, nonce })
 export type RPCFailureAction = ReturnType<typeof rpcFailure>
+
+export const TOGGLE_SCREENSHOT = 'Toggle Screenshot'
+export const toggleScreenshot = (enabled: boolean) => action(TOGGLE_SCREENSHOT, { enabled })
+export type ToggleScreenshotAction = ReturnType<typeof toggleScreenshot>

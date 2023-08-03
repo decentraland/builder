@@ -33,17 +33,21 @@ import {
   RPCSuccessAction,
   RPC_FAILURE,
   RPC_REQUEST,
-  RPC_SUCCESS
+  RPC_SUCCESS,
+  toggleScreenshot
 } from './actions'
 import { Project } from 'modules/project/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { IframeStorage, MessageTransport } from '@dcl/inspector'
+import { IframeStorage } from '@dcl/inspector'
+import { MessageTransport } from '@dcl/mini-rpc'
 import { getParcels } from './utils'
 import { BuilderAPI, getContentsStorageUrl } from 'lib/api/builder'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { Scene, SceneSDK7 } from 'modules/scene/types'
-import { updateScene } from 'modules/scene/actions'
+import { updateScene, UPDATE_SCENE } from 'modules/scene/actions'
 import { RootStore } from 'modules/common/types'
+import { takeScreenshot } from 'modules/editor/actions'
+import { isScreenshotEnabled } from './selectors'
 
 let nonces = 0
 const getNonce = () => nonces++
@@ -56,6 +60,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
   yield takeEvery(RPC_REQUEST, handleRpcRequest)
   yield takeEvery(RPC_SUCCESS, handleRpcSuccess)
   yield takeEvery(RPC_FAILURE, handleRpcFailure)
+  yield takeEvery(UPDATE_SCENE, handleUpdateScene)
 
   function* handleOpenInspector(_action: OpenInspectorAction) {
     try {
@@ -92,13 +97,16 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     }
   }
 
-  function handleConnectInspector(action: ConnectInspectorAction) {
+  function* handleConnectInspector(action: ConnectInspectorAction) {
     const { iframeId } = action.payload
 
     const iframe = document.getElementById(iframeId) as HTMLIFrameElement | null
     if (iframe === null) {
       throw new Error(`Iframe with id="${iframeId}" not found`)
     }
+
+    // disable the screenshots, turn it on once the scene is fully loaded
+    yield put(toggleScreenshot(false))
 
     const transport = new MessageTransport(window, iframe.contentWindow!, '*')
     const storage = new IframeStorage.Server(transport)
@@ -114,6 +122,18 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         return promise
       })
     }
+
+    // wait for RPC to be idle (3 seconds)
+    yield take(RPC_SUCCESS)
+    let elapsed = 0
+    while (elapsed < 3000) {
+      const timestamp = Date.now()
+      yield take(RPC_REQUEST)
+      elapsed = Date.now() - timestamp
+    }
+
+    // turn on screenshots
+    yield put(toggleScreenshot(true))
   }
 
   function* handleRpcRequest(action: RPCRequestAction) {
@@ -140,6 +160,13 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     const promise = promises.get(nonce)
     if (promise) {
       promise.reject(new Error(error))
+    }
+  }
+
+  function* handleUpdateScene() {
+    const isEnabled: boolean = yield select(isScreenshotEnabled)
+    if (isEnabled) {
+      yield put(takeScreenshot())
     }
   }
 
