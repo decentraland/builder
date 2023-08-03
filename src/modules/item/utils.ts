@@ -688,10 +688,18 @@ export const getFirstWearableOrItem = (items: Item[]): Item | undefined => {
 }
 
 export const formatExtensions = (extensions: string[]): string => {
+  if (extensions.length === 0) {
+    return ''
+  }
+
   const formattedExtensions = extensions.map(extension => extension.toUpperCase().replace('.', ''))
   formattedExtensions.sort()
-  return formattedExtensions
-    .slice(0, -1)
-    .join(', ')
-    .concat(` ${t('global.or')} ${formattedExtensions.slice(-1)[0]}`)
+
+  if (extensions.length > 1) {
+    const joinedExtensions = formattedExtensions.slice(0, -1).join(', ')
+    const lastExtension = formattedExtensions.slice(-1)[0]
+    return `${joinedExtensions} ${t('global.or')} ${lastExtension}`
+  }
+
+  return formattedExtensions.join(', ')
 }
