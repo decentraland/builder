@@ -1,4 +1,5 @@
-.modal, .modal:global(.ui.small.modal) {
+.modal,
+.modal:global(.ui.small.modal) {
   display: flex;
   flex-direction: column;
   width: 750px;
