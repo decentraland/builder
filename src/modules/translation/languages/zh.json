@@ -236,7 +236,23 @@
       "emote_duration_too_long": "{title}.{enter}表情的持续时间限制为 {duration} 秒。{enter}减少表情的持续时间，然后重试。",
       "emote_duration_too_long_title": "您的表情超过了最长持续时间（以秒为单位）",
       "invalid_model_file_type": "该文件对此 {type} 项目的表示无效，请检查它并重试。",
-      "wrong_video_format": "提供的视频不是MP4视频"
+      "wrong_video_format": "提供的视频不是MP4视频",
+      "unknown_required_permissions": {
+        "title": "智能穿戴设备{count,plural,一个{权限}其他{权限}}{wrong_configurations}{count,plural,一个{不}其他{不}}存在。请更正' 场景.json'。",
+        "message": "有关更多信息，请查看文档 {learn_more}。"
+      },
+      "duplicated_required_permissions": {
+        "title": "{wrong_configurations} 智能穿戴设备 {count,plural, one {Permission is} other {Permissions are}} 重复。请更正 'scene.json'。",
+        "message": "有关更多信息，请查看文档 {learn_more}。"
+      },
+      "missing_required_properties": {
+        "title": "配置中缺少 {count,plural,one{property}other{properties}}{wrong_configurations}{count,plural,one{is}other{are}}。请更正 'scene.json' .",
+        "message": "有关更多信息，请查看文档 {learn_more}。"
+      },
+      "allowed_media_hostnames_empty_or_invalid": {
+        "title": "鉴于设置了 'ALLOW_MEDIA_HOSTNAMES' 权限，因此必须设置 'allowedMediaHostnames' 属性且不为空。请更正 'scene.json'。",
+        "message": "有关更多信息，请查看文档 {learn_more}。"
+      }
     },
     "emote_notice": "表情适用于所有体型。",
     "smart_wearable_details_title": "完善您的智能可穿戴设备详细信息",

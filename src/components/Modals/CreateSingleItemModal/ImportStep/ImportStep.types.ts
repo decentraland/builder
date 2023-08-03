@@ -1,5 +1,6 @@
 import React from 'react'
 import { EmoteCategory, WearableCategory } from '@dcl/schemas'
+import { ErrorMessage } from 'components/ItemImport/ErrorMessage/ErrorMessage.types'
 import { Item } from 'modules/item/types'
 import { AcceptedFileProps } from '../CreateSingleItemModal.types'
 
@@ -20,7 +21,7 @@ export type Props = {
 
 export type StateData = {
   id: string
-  error: string
+  error?: ErrorMessage
   isLoading: boolean
 }
 export type State = Partial<StateData>

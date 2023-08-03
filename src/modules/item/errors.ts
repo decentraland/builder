@@ -10,6 +10,16 @@ class CustomError {
   }
 }
 
+export class CustomErrorWithTitle {
+  title: ReactNode
+  message: ReactNode
+
+  constructor(title: ReactNode, message: ReactNode) {
+    this.title = title
+    this.message = message
+  }
+}
+
 export class ItemTooBigError extends Error {
   constructor() {
     super(t('create_single_item_modal.error.item_too_big', { size: `${toMB(MAX_FILE_SIZE)}MB` }))
