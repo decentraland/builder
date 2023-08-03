@@ -53,3 +53,11 @@ export const getIsInspectorEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsProfileEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.PROFILE)
+  } catch (e) {
+    return false
+  }
+}
