@@ -241,7 +241,23 @@
       "emote_duration_too_long": ".{enter}La duración de los emoticones tiene un límite de {duration} segundos.{enter}Reduce la duración del emote e intente nuevamente.",
       "emote_duration_too_long_title": "El emote supera la duración máxima en segundos",
       "invalid_model_file_type": "El archivo tiene una representación inválida para este {type}. Por favor revíselo y vuelva a intentarlo.",
-      "wrong_video_format": "El video provisto no es un video MP4"
+      "wrong_video_format": "El video provisto no es un video MP4",
+      "unknown_required_permissions": {
+        "title": "{count, plural, one {El permiso} other {Los permisos}} {wrong_configurations} de la vestimenta interactiva no {count, plural, one {existe} other {existen}}. Por favor, corrija el archivo 'scene.json'.",
+        "message": "Para obtener {learn_more}, consulte la documentación."
+      },
+      "duplicated_required_permissions": {
+        "title": "{count, plural, one {El permiso} other {Los permisos}} {wrong_configurations} {count, plural, one {está duplicado} other {están duplicados}}. Por favor, corrija el archivo 'scene.json'.",
+        "message": "Para obtener {learn_more}, consulte la documentación."
+      },
+      "missing_required_properties": {
+        "title": "{count, plural, one {La propiedad} other {Las propiedades}} {wrong_configurations} no {count, plural, one {está} other {están}} configuradas. Por favor, corrija el archivo 'scene.json'.",
+        "message": "Para obtener {learn_more}, consulte la documentación."
+      },
+      "allowed_media_hostnames_empty_or_invalid": {
+        "title": "Dado que el permiso 'ALLOW_MEDIA_HOSTNAMES' está configurado, la propiedad 'allowedMediaHostnames' debe ser configurada y no puede ser vacía. Por favor, corrija el archivo 'scene.json'.",
+        "message": "Para obtener {learn_more}, consulte la documentación."
+      }
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
     "smart_wearable_details_title": "Completa los detalles de tu vestimenta interactiva",
