@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
+import { CustomErrorWithTitle } from 'modules/item/errors'
 import { Props, ErrorMessage as ErrorMessageType } from './ErrorMessage.types'
 import styles from './ErrorMessage.module.css'
-import { CustomErrorWithTitle } from 'modules/item/errors'
 
 const CLEAR_ERROR_DELAY = 600000
 
