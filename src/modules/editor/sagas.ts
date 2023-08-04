@@ -121,6 +121,8 @@ import {
   ROTATION_GRID_RESOLUTION,
   fromCatalystWearableToWearable
 } from './utils'
+import { MessageTransport } from '@dcl/mini-rpc'
+import { CameraClient } from '@dcl/inspector'
 const editorWindow = window as EditorWindow
 
 export function* editorSaga() {
@@ -565,30 +567,44 @@ function* handleScreenshot(_: TakeScreenshotAction) {
     const currentProject: Project | null = yield select(getCurrentProject)
     if (!currentProject) return
 
-    // wait for editor to be ready
-    let ready: boolean = yield select(isReady)
-    while (!ready) {
-      const readyAction: SetEditorReadyAction = yield take(SET_EDITOR_READY)
-      ready = readyAction.payload.isReady
+    const scene: Scene | null = yield select(getCurrentScene)
+    if (!scene) return
+
+    if (scene.sdk6) {
+      // wait for editor to be ready
+      let ready: boolean = yield select(isReady)
+      while (!ready) {
+        const readyAction: SetEditorReadyAction = yield take(SET_EDITOR_READY)
+        ready = readyAction.payload.isReady
+      }
+
+      // wait for assets to load
+      let loading: boolean = yield select(isLoading)
+      while (loading) {
+        const loadingAction: SetEditorLoadingAction = yield take(SET_EDITOR_LOADING)
+        loading = loadingAction.payload.isLoading
+      }
+
+      // rendering leeway
+      yield delay(2000)
+
+      const screenshot: string = yield call(() => editorWindow.editor.takeScreenshot())
+      if (!screenshot) return
+
+      const thumbnail: string | null = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
+      if (!thumbnail) return
+
+      yield put(editProjectThumbnail(currentProject.id, thumbnail))
+    } else {
+      const iframe = document.getElementById('inspector') as HTMLIFrameElement | null
+      if (!iframe || !iframe.contentWindow!) return
+      const transport = new MessageTransport(window, iframe.contentWindow)
+      const camera = new CameraClient(transport)
+      const screenshot: string = yield call([camera, 'takeScreenshot'], +iframe.width, +iframe.height)
+      const thumbnail: string | null = yield call(resizeScreenshot, screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+      if (!thumbnail) return
+      yield put(editProjectThumbnail(currentProject.id, thumbnail))
     }
-
-    // wait for assets to load
-    let loading: boolean = yield select(isLoading)
-    while (loading) {
-      const loadingAction: SetEditorLoadingAction = yield take(SET_EDITOR_LOADING)
-      loading = loadingAction.payload.isLoading
-    }
-
-    // rendering leeway
-    yield delay(2000)
-
-    const screenshot: string = yield call(() => editorWindow.editor.takeScreenshot())
-    if (!screenshot) return
-
-    const thumbnail: string | null = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
-    if (!thumbnail) return
-
-    yield put(editProjectThumbnail(currentProject.id, thumbnail))
   } catch (e) {
     // skip screenshot
   }
