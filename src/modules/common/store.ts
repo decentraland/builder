@@ -80,7 +80,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     ['scene', 'present'],
     ['ui', 'dashboard'],
     ['auth', 'data'],
-    ['sync', 'localProjectIds'],
+    ['sync', 'localProjectIds']
   ],
   actions: [
     CREATE_PROJECT,
@@ -98,7 +98,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     EDIT_PROJECT_THUMBNAIL,
     DISMISS_SIGN_IN_TOAST,
     DISMISS_SYNCED_TOAST,
-    SET_SYNC,
+    SET_SYNC
   ],
   transform: state => {
     const projects: DataByKey<Project> = {}
