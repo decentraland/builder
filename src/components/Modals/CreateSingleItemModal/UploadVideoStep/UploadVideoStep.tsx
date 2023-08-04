@@ -102,7 +102,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
   }
 
   handleGoBack = () => {
-    const { contents, onDropAccepted } = this.props
+    const { contents, onDropAccepted, onBack } = this.props
 
     if (this.state.video) {
       URL.revokeObjectURL(this.state.video)
@@ -118,16 +118,18 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
           ...contents
         }
       })
+    } else {
+      onBack && onBack()
     }
   }
 
   render() {
-    const { title, required, onBack, onClose, onSaveVideo } = this.props
+    const { title, required, onClose, onSaveVideo, onBack } = this.props
     const { id, isLoading, video } = this.state
 
     return (
       <>
-        <ModalNavigation title={title} onBack={video ? this.handleGoBack : onBack} onClose={onClose} />
+        <ModalNavigation title={title} onBack={onBack ? this.handleGoBack : undefined} onClose={onClose} />
         <Modal.Content>
           {(!video || id) && (
             <FileImport
