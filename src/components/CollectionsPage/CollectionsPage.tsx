@@ -17,7 +17,6 @@ import {
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
-import HandsCategoryLaunchModal from 'components/Modals/HandsCategoryLaunchModal'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
 import Chip from 'components/Chip'
@@ -332,7 +331,6 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   render() {
     return (
       <LoggedInDetailPage className="CollectionsPage" activeTab={NavigationTab.COLLECTIONS}>
-        <HandsCategoryLaunchModal />
         {this.renderPage()}
       </LoggedInDetailPage>
     )
