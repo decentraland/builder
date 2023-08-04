@@ -25,6 +25,30 @@
   right: 12px;
 }
 
+.ItemVideo.video-wrapper .empty-video-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px dashed #a09ba8;
+  height: 100%;
+  width: 100%;
+}
+
+.ItemVideo.video-wrapper .empty-video-container .empty-video-icon {
+  height: 32px;
+  width: 32px;
+  background: url('/src/images/upload-video.svg') no-repeat;
+  background-size: 32px 32px;
+  margin-bottom: 12px;
+}
+
+.ItemVideo.video-wrapper .empty-video-container .empty-video-text {
+  text-align: center;
+  color: #a09ba8;
+  font-size: 12px;
+}
+
 .ItemVideo .ItemBadge {
   background-color: #37333d;
   width: 24px;

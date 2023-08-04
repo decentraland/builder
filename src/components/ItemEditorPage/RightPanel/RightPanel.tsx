@@ -533,7 +533,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
           <>
             <Icon name="edit" className="edit-item-file" onClick={this.handleOpenVideoDialog} />
             <Icon name="play" className="play-video-button" onClick={this.handleOpenVideoDialog} />
-            <ItemVideo item={item} src={this.state.video} showMetrics />
+            <div onClick={this.handleOpenVideoDialog}>
+              <ItemVideo item={item} src={this.state.video} showMetrics />
+            </div>
           </>
         ) : (
           <ItemVideo item={item} src={this.state.video} showMetrics />

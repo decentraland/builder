@@ -136,6 +136,10 @@
   margin-left: 20px;
 }
 
+.CreateSingleItemModal .smart-wearable .previews .video-preview-container:has(.empty-video-container) {
+  margin-right: 60px;
+}
+
 .CreateSingleItemModal .actions {
   margin-top: 24px;
   width: 100%;
