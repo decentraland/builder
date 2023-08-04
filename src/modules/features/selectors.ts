@@ -54,7 +54,7 @@ export const getIsInspectorEnabled = (state: RootState) => {
   }
 }
 
-export const getIsProfileEnabled = (state: RootState) => {
+export const getisProfileSiteEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.PROFILE)
   } catch (e) {

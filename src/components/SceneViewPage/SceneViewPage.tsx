@@ -138,7 +138,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   }
 
   renderAuthor() {
-    const { currentAuthor, isProfileEnabled } = this.props
+    const { currentAuthor, isProfileSiteEnabled } = this.props
 
     if (!currentAuthor) {
       return null
@@ -149,7 +149,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     return (
       <div className="author">
         {t('public_page.made_by')}
-        <Profile address={address} {...(isProfileEnabled && { as: 'a', href: `${PROFILE_URL}/accounts/${address}` })} />
+        <Profile address={address} {...(isProfileSiteEnabled && { as: 'a', href: `${PROFILE_URL}/accounts/${address}` })} />
       </div>
     )
   }
