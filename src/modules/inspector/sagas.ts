@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import { call, put, race, select, take, takeEvery } from 'redux-saga/effects'
+import { call, delay, put, race, select, take, takeEvery } from 'redux-saga/effects'
 import { future, IFuture } from 'fp-future'
 import { hashV1 } from '@dcl/hashing'
 import { LoginFailureAction, LoginSuccessAction, LOGIN_FAILURE, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -124,16 +124,19 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     }
 
     // wait for RPC to be idle (3 seconds)
-    yield take(RPC_SUCCESS)
-    let elapsed = 0
-    while (elapsed < 3000) {
-      const timestamp = Date.now()
-      yield take(RPC_REQUEST)
-      elapsed = Date.now() - timestamp
-    }
+    yield waitForRpcIdle(3000)
 
     // turn on screenshots
     yield put(toggleScreenshot(true))
+
+    // check if project doesn't have a thumbnail (ie. because it's new), and if so, take a screenshot
+    const project: Project | null = yield select(getCurrentProject)
+    if (project) {
+      const result: boolean = yield call(hasThumbnail, project)
+      if (!result) {
+        yield put(takeScreenshot())
+      }
+    }
   }
 
   function* handleRpcRequest(action: RPCRequestAction) {
@@ -337,66 +340,64 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     // remove from memory
     assets.delete(path)
   }
+}
 
-  // UTILS
+function* getProject(projectId: string): any {
+  // grab projects from store
+  const projects: Record<string, Project> = yield select(getProjects)
+  const project = projects[projectId]
 
-  function* getProject(projectId: string): any {
-    // grab projects from store
-    const projects: Record<string, Project> = yield select(getProjects)
-    const project = projects[projectId]
-
-    // if project is found in store, return it
-    if (project) {
-      return project
-    }
-
-    // if project is not in the store, check if projects are being loaded
-    const projectsLoadingState: ReturnType<typeof getLoadingProjects> = yield select(getLoadingProjects)
-    const isLoading = isLoadingType(projectsLoadingState, LOAD_PROJECTS_REQUEST)
-
-    // if projects are not being loaded, then request them
-    if (!isLoading) {
-      yield put(loadProjectsRequest())
-    }
-
-    // wait for projects to be loaded
-    const result: { success?: LoadProjectsSuccessAction; failure?: LoadProjectsFailureAction } = yield race({
-      success: take(LOAD_PROJECTS_SUCCESS),
-      failure: take(LOAD_PROJECTS_FAILURE)
-    })
-
-    // if load is successful try getting the project again
-    if (result.success) {
-      const _project: Project = yield getProject(projectId)
-      return _project
-    }
-
-    // if load fails then throw
-    if (result.failure) {
-      console.error(result.failure)
-      throw new Error(`Could not load project`)
-    }
+  // if project is found in store, return it
+  if (project) {
+    return project
   }
 
-  function* getScene() {
-    const project: Project = yield select(getCurrentProject)
+  // if project is not in the store, check if projects are being loaded
+  const projectsLoadingState: ReturnType<typeof getLoadingProjects> = yield select(getLoadingProjects)
+  const isLoading = isLoadingType(projectsLoadingState, LOAD_PROJECTS_REQUEST)
 
-    if (!project) {
-      throw new Error('Invalid project')
-    }
-
-    const scene: Scene | null = yield select(getCurrentScene)
-
-    if (!scene) {
-      throw new Error('Invalid scene')
-    }
-
-    if (!scene.sdk7) {
-      throw new Error('Scene must be SDK7')
-    }
-
-    return scene.sdk7
+  // if projects are not being loaded, then request them
+  if (!isLoading) {
+    yield put(loadProjectsRequest())
   }
+
+  // wait for projects to be loaded
+  const result: { success?: LoadProjectsSuccessAction; failure?: LoadProjectsFailureAction } = yield race({
+    success: take(LOAD_PROJECTS_SUCCESS),
+    failure: take(LOAD_PROJECTS_FAILURE)
+  })
+
+  // if load is successful try getting the project again
+  if (result.success) {
+    const _project: Project = yield getProject(projectId)
+    return _project
+  }
+
+  // if load fails then throw
+  if (result.failure) {
+    console.error(result.failure)
+    throw new Error(`Could not load project`)
+  }
+}
+
+function* getScene() {
+  const project: Project = yield select(getCurrentProject)
+
+  if (!project) {
+    throw new Error('Invalid project')
+  }
+
+  const scene: Scene | null = yield select(getCurrentScene)
+
+  if (!scene) {
+    throw new Error('Invalid scene')
+  }
+
+  if (!scene.sdk7) {
+    throw new Error('Scene must be SDK7')
+  }
+
+  return scene.sdk7
 }
 
 function* isContentUploaded(path: string, hash: string) {
@@ -406,6 +407,31 @@ function* isContentUploaded(path: string, hash: string) {
   try {
     const res: Response = yield call(fetch, `${getContentsStorageUrl(hash)}/exists`, { headers: NO_CACHE_HEADERS })
     return res.ok
+  } catch (error) {
+    return false
+  }
+}
+
+function* waitForRpcIdle(ms: number) {
+  const { request }: { request: RPCRequestAction | null } = yield race({
+    request: take(RPC_REQUEST),
+    timeout: delay(ms, true)
+  })
+  if (request) {
+    let elapsed = 0
+    while (elapsed < ms) {
+      const timestamp = Date.now()
+      yield race([take(RPC_REQUEST), delay(ms, true)])
+      elapsed = Date.now() - timestamp
+    }
+  }
+}
+
+function* hasThumbnail(project: Project) {
+  try {
+    if (!project.thumbnail) return false
+    const response: Response = yield call(fetch, project.thumbnail, { headers: NO_CACHE_HEADERS })
+    return response.ok
   } catch (error) {
     return false
   }
