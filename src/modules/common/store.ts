@@ -28,7 +28,7 @@ import { getData } from 'modules/identity/selectors'
 import { Scene } from 'modules/scene/types'
 import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
-import { GENERATE_IDENTITY_SUCCESS, DESTROY_IDENTITY, LOGIN_SUCCESS, LOGIN_FAILURE } from 'modules/identity/actions'
+import { LOGIN_SUCCESS, LOGIN_FAILURE } from 'modules/identity/actions'
 import { fetchTilesRequest } from 'modules/tile/actions'
 import { isDevelopment } from 'lib/environment'
 import { BuilderAPI, BUILDER_SERVER_URL } from 'lib/api/builder'
@@ -81,7 +81,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     ['ui', 'dashboard'],
     ['auth', 'data'],
     ['sync', 'localProjectIds'],
-    ['identity', 'data']
   ],
   actions: [
     CREATE_PROJECT,
@@ -100,8 +99,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     DISMISS_SIGN_IN_TOAST,
     DISMISS_SYNCED_TOAST,
     SET_SYNC,
-    GENERATE_IDENTITY_SUCCESS,
-    DESTROY_IDENTITY
   ],
   transform: state => {
     const projects: DataByKey<Project> = {}

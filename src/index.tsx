@@ -8,9 +8,11 @@ import ModalProvider from 'decentraland-dapps/dist/providers/ModalProvider'
 import ToastProvider from 'decentraland-dapps/dist/providers/ToastProvider'
 import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationProvider'
 import WalletProvider from 'decentraland-dapps/dist/providers/WalletProvider'
+import * as SingleSignOn from '@dcl/single-sign-on-client'
 
 import { store, history } from 'modules/common/store'
 import * as modals from 'components/Modals'
+import { config } from 'config'
 import * as languages from 'modules/translation/languages'
 import Routes from 'routing'
 
@@ -18,6 +20,8 @@ import './modules/analytics/track'
 import './modules/analytics/rollbar'
 import './themes'
 import './index.css'
+
+SingleSignOn.init(config.get('SSO_URL'))
 
 ReactDOM.render(
   <Provider store={store}>
