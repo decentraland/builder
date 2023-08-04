@@ -6,16 +6,16 @@ import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
-import { isComplete, isFree, canManageItem, getMaxSupply } from 'modules/item/utils'
-import ItemStatus from 'components/ItemStatus'
+import { isComplete, isFree, canManageItem, getMaxSupply, isSmart } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
-import { isEmoteData, ItemType, SyncStatus, WearableData } from 'modules/item/types'
+import { isEmoteData, ItemType, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
+import ItemStatus from 'components/ItemStatus'
 import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
 import ItemImage from 'components/ItemImage'
-import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
+import { Props } from './CollectionItem.types'
 import styles from './CollectionItem.module.css'
 
 const LENGTH_LIMIT = 25
@@ -95,7 +95,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
         <Icon className={styles.check} name="check" />
         {t('collection_item.ready')}
       </div>
-    ) : !item.price ? (
+    ) : !item.price || (isSmart(item) && !(VIDEO_PATH in item.contents)) ? (
       <div className={`${styles.notReady} ${styles.action}`}>{t('collection_item.not_ready')}</div>
     ) : (
       <span onClick={preventDefault(this.handleNavigateToEditor)} className={`link ${styles.linkAction}`}>

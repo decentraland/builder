@@ -1469,7 +1469,8 @@
       "play_mode": "Modo de Reproducción",
       "status": "Estado"
     },
-    "missing_item_price": "Es necesario configurar el precio de una o mas {item_type}.",
+    "missing_item_price": "Es necesario configurar el precio de una o más {item_type}.",
+    "missing_smart_wearable_video": "Es necesario subir un video para uno o más vestimentas interactivas.",
     "unsynced_collection_title": "Hay items no sincronizados con el servidor en esta colección",
     "unsynced_collection_message": "Se modificaron uno o más items después de que se aprobó esta colección.{br}Estas actualizaciones deben ser publicadas y revisadas nuevamente por el comité de curadores.",
     "under_review_collection_message": "Los items actualizados estan siendo revisados por el comité de curadores.{br}Una vez aprobados, estarán visibles automáticamente para los actuales dueños{br}y en el Marketplace."

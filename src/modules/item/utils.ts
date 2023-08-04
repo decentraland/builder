@@ -313,7 +313,7 @@ export async function resizeImage(image: Blob, width = 256, height = 256) {
 }
 
 export function isComplete(item: Item) {
-  return item.beneficiary !== undefined && item.price !== undefined
+  return item.beneficiary !== undefined && item.price !== undefined && (isSmart(item) ? VIDEO_PATH in item.contents : true)
 }
 
 export function isOwner(item: Item, address?: string) {
