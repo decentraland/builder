@@ -222,10 +222,15 @@
   width: 140px;
 }
 
-.RightPanel .details .ItemVideoContainer:has(.empty-video-container) .empty-video-icon {
+.RightPanel .details .ItemVideoContainer .ItemEmptyVideoContainer {
+  height: 96px;
+  width: 96px;
+}
+
+.RightPanel .details .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-icon {
   margin-bottom: 0;
 }
 
-.RightPanel .details .ItemVideoContainer:has(.empty-video-container) .empty-video-text {
+.RightPanel .details .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-text {
   display: none;
 }

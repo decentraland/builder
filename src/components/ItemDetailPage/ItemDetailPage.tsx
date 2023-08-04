@@ -162,23 +162,25 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                 </div>
               )}
               {isSmart(item) ? (
-                <ItemVideo item={item}>
-                  {(_video, duration, size, _isLoading) => (
-                    <>
-                      <div className="overlay">
-                        <Icon name="play" className="play-video-button" onClick={this.handleEditItemVideo} />
-                      </div>
-                      <Button primary onClick={this.handleEditItemVideo}>
-                        <Icon name="video" />
-                        {t('item_detail_page.edit_video')}
-                      </Button>
-                      <div className="metrics">
-                        <div className="subtitle">{t('item_detail_page.properties')}</div>
-                        <VideoMetrics duration={duration} size={size} showIcons={false} />
-                      </div>
-                    </>
-                  )}
-                </ItemVideo>
+                <div onClick={this.handleEditItemVideo}>
+                  <ItemVideo item={item}>
+                    {(_video, duration, size, _isLoading) => (
+                      <>
+                        <div className="overlay">
+                          <Icon name="play" className="play-video-button" onClick={this.handleEditItemVideo} />
+                        </div>
+                        <Button primary onClick={this.handleEditItemVideo}>
+                          <Icon name="video" />
+                          {t('item_detail_page.edit_video')}
+                        </Button>
+                        <div className="metrics">
+                          <div className="subtitle">{t('item_detail_page.properties')}</div>
+                          <VideoMetrics duration={duration} size={size} showIcons={false} />
+                        </div>
+                      </>
+                    )}
+                  </ItemVideo>
+                </div>
               ) : null}
               <div className="details">
                 <div className="subtitle">{t('item_detail_page.details')}</div>

@@ -15,23 +15,21 @@ const ItemVideo: React.FC<Props> = ({ className, item, src, showMetrics = false,
 
   return (
     <div className={classNames('ItemVideoContainer', className)}>
-      <div className={classNames('ItemVideo is-video video-wrapper')}>
-        {!isEmptyVideo ? (
-          <>
+      {isEmptyVideo ? (
+        <div className="ItemEmptyVideoContainer">
+          <div className="empty-video-icon" />
+          <div className="empty-video-text">{t('create_single_item_modal.upload_video_step_title')}</div>
+        </div>
+      ) : (
+        <>
+          <div className={classNames('ItemVideo', 'is-video', 'video-wrapper')}>
             <video className="item-video" preload="auto" src={videoSrc} ref={video} />
             {previewIcon ?? null}
-          </>
-        ) : isEmptyVideo && !children ? (
-          <div className="empty-video-container">
-            <div className="empty-video-icon" />
-            <div className="empty-video-text">{t('create_single_item_modal.upload_video_step_title')}</div>
           </div>
-        ) : null}
-      </div>
-      {children ? children(video, duration, size, isLoading) : null}
-      {showMetrics && !isLoading && !isEmptyVideo ? (
-        <VideoMetrics className="ItemVideoMetricsContainer" duration={duration} size={size} />
-      ) : null}
+          {children ? children(video, duration, size, isLoading) : null}
+          {showMetrics && !isLoading ? <VideoMetrics className="ItemVideoMetricsContainer" duration={duration} size={size} /> : null}
+        </>
+      )}
     </div>
   )
 }

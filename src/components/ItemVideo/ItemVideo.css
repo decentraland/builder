@@ -25,7 +25,7 @@
   right: 12px;
 }
 
-.ItemVideo.video-wrapper .empty-video-container {
+.ItemVideoContainer .ItemEmptyVideoContainer {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,7 +36,7 @@
   width: 100%;
 }
 
-.ItemVideo.video-wrapper .empty-video-container .empty-video-icon {
+.ItemVideoContainer .ItemEmptyVideoContainer .empty-video-icon {
   height: 32px;
   width: 32px;
   background: url('/src/images/upload-video.svg') no-repeat;
@@ -44,7 +44,7 @@
   margin-bottom: 12px;
 }
 
-.ItemVideo.video-wrapper .empty-video-container .empty-video-text {
+.ItemVideoContainer .ItemEmptyVideoContainer .empty-video-text {
   text-align: center;
   color: #a09ba8;
   font-size: 12px;

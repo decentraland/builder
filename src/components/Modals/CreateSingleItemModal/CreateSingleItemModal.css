@@ -127,7 +127,8 @@
 }
 
 .CreateSingleItemModal .smart-wearable .preview .thumbnail-container,
-.CreateSingleItemModal .smart-wearable .ItemVideoContainer .ItemVideo {
+.CreateSingleItemModal .smart-wearable .ItemVideoContainer .ItemVideo,
+.CreateSingleItemModal .smart-wearable .ItemVideoContainer .ItemEmptyVideoContainer {
   width: 144px;
   height: 144px;
 }
@@ -136,7 +137,7 @@
   margin-left: 20px;
 }
 
-.CreateSingleItemModal .smart-wearable .previews .video-preview-container:has(.empty-video-container) {
+.CreateSingleItemModal .smart-wearable .previews .video-preview-container .ItemEmptyVideoContainer {
   margin-right: 60px;
 }
 

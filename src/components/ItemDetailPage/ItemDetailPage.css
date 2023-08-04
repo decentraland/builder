@@ -323,7 +323,18 @@
   margin-top: 16px;
 }
 
-.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemVideo {
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemVideo,
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemEmptyVideoContainer {
   width: 256px;
   height: 256px;
+}
+
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-icon {
+  height: 45px;
+  width: 45px;
+  background-size: 45px 45px;
+}
+
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-text {
+  font-size: 17px;
 }
