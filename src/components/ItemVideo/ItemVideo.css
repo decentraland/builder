@@ -31,6 +31,7 @@
   justify-content: center;
   flex-direction: column;
   border: 1px dashed #a09ba8;
+  border-radius: 8px;
   height: 100%;
   width: 100%;
 }
