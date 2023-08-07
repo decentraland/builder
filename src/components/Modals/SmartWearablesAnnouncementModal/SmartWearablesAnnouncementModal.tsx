@@ -26,7 +26,7 @@ const SmartWearablesAnnouncementModal: React.FC<ModalProps> = ({ name, onClose }
     <Modal className={styles.modal} name={name} onClose={handleClose}>
       <ModalNavigation title={t('smart_wearables_announcement_modal.title')} onClose={handleClose} />
       <Modal.Content className={styles.content}>
-        <video autoPlay loop className={styles.video} src={`${PUBLIC_URL}${videoSrc}`} muted />
+        <video autoPlay loop className={styles.video} src={`${PUBLIC_URL}${videoSrc}`} muted preload="auto" />
         <span className={styles.description}>
           {t('smart_wearables_announcement_modal.description', {
             br: () => <br />,
