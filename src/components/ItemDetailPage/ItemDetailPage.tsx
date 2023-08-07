@@ -162,7 +162,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                 </div>
               )}
               {isSmart(item) ? (
-                <ItemVideo item={item}>
+                <ItemVideo item={item} onClick={this.handleEditItemVideo}>
                   {(_video, duration, size, _isLoading) => (
                     <>
                       <div className="overlay">

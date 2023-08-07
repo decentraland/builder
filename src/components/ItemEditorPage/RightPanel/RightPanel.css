@@ -221,3 +221,16 @@
   flex-grow: 0;
   width: 140px;
 }
+
+.RightPanel .details .ItemVideoContainer .ItemEmptyVideoContainer {
+  height: 96px;
+  width: 96px;
+}
+
+.RightPanel .details .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-icon {
+  margin-bottom: 0;
+}
+
+.RightPanel .details .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-text {
+  display: none;
+}

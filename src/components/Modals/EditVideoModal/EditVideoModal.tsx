@@ -14,16 +14,17 @@ export default class EditVideoModal extends React.PureComponent<Props, State> {
 
   getInitialState(): State {
     const { metadata } = this.props
+    const isEmptyVideo = !(VIDEO_PATH in metadata.item.contents)
 
     return {
       video: null,
-      view: metadata?.view ?? EditVideoView.VIEW_VIDEO
+      view: metadata?.view ?? isEmptyVideo ? EditVideoView.UPLOAD_VIDEO : EditVideoView.VIEW_VIDEO
     }
   }
 
   handleDropAccepted = (acceptedFileProps: AcceptedFileProps) => {
     this.setState({
-      video: acceptedFileProps.contents![VIDEO_PATH]
+      video: (acceptedFileProps.contents as Record<string, Blob>)[VIDEO_PATH]
     })
   }
 

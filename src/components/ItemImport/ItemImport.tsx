@@ -1,10 +1,10 @@
-import * as React from 'react'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import React from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Loader } from 'decentraland-ui'
+import { formatExtensions } from 'modules/item/utils'
 import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
 import { ITEM_LOADED_CHECK_DELAY } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
-import { preventDefault } from 'lib/event'
 import ErrorMessage from './ErrorMessage/ErrorMessage'
 import { Props, State } from './ItemImport.types'
 import styles from './ItemImport.module.css'
@@ -50,25 +50,17 @@ export default class ItemImport extends React.PureComponent<Props, State> {
           </div>
         ) : null}
         <ErrorMessage error={error} />
-        {itemLoaded ? (
-          t('asset_pack.import.loaded')
-        ) : (
-          <T
-            id="asset_pack.import.cta"
-            values={{
-              models_link: (
-                <span className="link" onClick={preventDefault(this.handleOpenDocs)}>
-                  {acceptedExtensions.map(ext => ext.replace('.', '').toUpperCase()).join(', ')}
-                </span>
-              ),
+        {itemLoaded
+          ? t('asset_pack.import.loaded')
+          : t('asset_pack.import.cta', {
+              accepted_extensions: formatExtensions(acceptedExtensions),
+              enter: <br />,
               action: (
                 <span className="action" onClick={open}>
-                  {t('import_modal.upload_manually')}
+                  {t('asset_pack.import.upload_manually')}
                 </span>
               )
-            }}
-          />
-        )}
+            })}
         {moreInformation && !itemLoaded ? (
           <div className={styles.zipInfo}>
             <InfoIcon className={styles.infoIcon} />

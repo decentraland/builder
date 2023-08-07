@@ -758,6 +758,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         onBack={this.handleUploadVideoGoBack}
         onClose={onClose}
         onSaveVideo={this.handleSaveVideo}
+        required={false}
       />
     )
   }
@@ -986,7 +987,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             options={this.getPlayModeOptions()}
             onChange={this.handlePlayModeChange}
           />
-          <div className="dcl select-field">
+          <div className="notice">
             <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" />} />
           </div>
         </Column>
@@ -1034,11 +1035,16 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           <div className="video-preview-container">
             <Header sub>{t('create_single_item_modal.video_preview_title')}</Header>
             <div className="preview">
-              <ItemVideo src={video} showMetrics previewIcon={<DCLIcon name="video" onClick={this.handleOpenVideoDialog} />} />
+              <ItemVideo
+                src={video}
+                showMetrics
+                previewIcon={<DCLIcon name="video" onClick={this.handleOpenVideoDialog} />}
+                onClick={this.handleOpenVideoDialog}
+              />
             </div>
           </div>
         </Row>
-        <div className="dcl select-field">
+        <div className="notice">
           <Message info visible content={t('create_single_item_modal.smart_wearable_notice')} icon={<Icon name="alert" />} />
         </div>
       </div>
@@ -1077,7 +1083,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               <Row className="actions" grow>
                 {isSmart({ type, contents }) ? (
                   <Column grow shrink>
-                    <Button disabled={isDisabled} loading={isLoading} onClick={this.handleGoBack}>
+                    <Button disabled={isDisabled} onClick={this.handleGoBack}>
                       {t('global.back')}
                     </Button>
                   </Column>

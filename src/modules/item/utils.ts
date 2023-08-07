@@ -1,6 +1,7 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
 import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory, Entity } from '@dcl/schemas'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { ModelMetrics } from 'modules/models/types'
@@ -312,7 +313,7 @@ export async function resizeImage(image: Blob, width = 256, height = 256) {
 }
 
 export function isComplete(item: Item) {
-  return item.beneficiary !== undefined && item.price !== undefined
+  return item.beneficiary !== undefined && item.price !== undefined && (isSmart(item) ? VIDEO_PATH in item.contents : true)
 }
 
 export function isOwner(item: Item, address?: string) {
@@ -684,4 +685,21 @@ export const loadVideo = (src: File | string): Promise<HTMLVideoElement> => {
 
 export const getFirstWearableOrItem = (items: Item[]): Item | undefined => {
   return items.length > 0 ? items.find(item => item.type === ItemType.WEARABLE) ?? items[0] : undefined
+}
+
+export const formatExtensions = (extensions: string[]): string => {
+  if (extensions.length === 0) {
+    return ''
+  }
+
+  const formattedExtensions = extensions.map(extension => extension.toUpperCase().replace('.', ''))
+  formattedExtensions.sort()
+
+  if (extensions.length > 1) {
+    const joinedExtensions = formattedExtensions.slice(0, -1).join(', ')
+    const lastExtension = formattedExtensions.slice(-1)[0]
+    return `${joinedExtensions} ${t('global.or')} ${lastExtension}`
+  }
+
+  return formattedExtensions.join(', ')
 }

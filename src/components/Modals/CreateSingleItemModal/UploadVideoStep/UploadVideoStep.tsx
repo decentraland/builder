@@ -13,6 +13,10 @@ import { Props, State } from './UploadVideoStep.types'
 import styles from './UploadVideoStep.module.css'
 
 export default class UploadVideoStep extends React.PureComponent<Props, State> {
+  static defaultProps = {
+    required: true
+  }
+
   state: State = this.getInitialState()
 
   getInitialState(): State {
@@ -98,19 +102,34 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
   }
 
   handleGoBack = () => {
+    const { contents, onDropAccepted, onBack } = this.props
+
     if (this.state.video) {
       URL.revokeObjectURL(this.state.video)
       this.setState({ video: undefined, isLoading: false })
+
+      if (contents && VIDEO_PATH in contents) {
+        delete contents[VIDEO_PATH]
+      }
+
+      onDropAccepted({
+        video: undefined,
+        contents: {
+          ...contents
+        }
+      })
+    } else {
+      onBack && onBack()
     }
   }
 
   render() {
-    const { title, onBack, onClose, onSaveVideo } = this.props
+    const { title, required, onClose, onSaveVideo, onBack } = this.props
     const { id, isLoading, video } = this.state
 
     return (
       <>
-        <ModalNavigation title={title} onBack={video ? this.handleGoBack : onBack} onClose={onClose} />
+        <ModalNavigation title={title} onBack={onBack ? this.handleGoBack : undefined} onClose={onClose} />
         <Modal.Content>
           {(!video || id) && (
             <FileImport
@@ -128,7 +147,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
             </div>
           )}
         </Modal.Content>
-        {video && (
+        {(video || !required) && (
           <Modal.Actions className={styles.actions}>
             <Row grow>
               <Column grow shrink>
@@ -136,7 +155,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right">
                 <Button primary onClick={onSaveVideo}>
-                  {t('global.save')}
+                  {required || video ? t('global.save') : t('global.skip')}
                 </Button>
               </Column>
             </Row>

@@ -3,6 +3,7 @@ import { AcceptedFileProps } from '../CreateSingleItemModal.types'
 export type Props = {
   contents?: Record<string, Blob>
   title: string
+  required: boolean
   onDropAccepted: (acceptedFileProps: AcceptedFileProps) => void
   onDropRejected?: (files: File[]) => Promise<void>
   onBack?: () => void

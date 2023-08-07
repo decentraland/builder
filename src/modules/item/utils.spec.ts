@@ -9,7 +9,8 @@ import {
   groupsOf,
   getWearableCategories,
   isSmart,
-  getFirstWearableOrItem
+  getFirstWearableOrItem,
+  formatExtensions
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -274,6 +275,26 @@ describe('when getting the first wearable or item of an array', () => {
       const wearable = { type: ItemType.WEARABLE } as Item
       const item = { type: ItemType.EMOTE } as Item
       expect(getFirstWearableOrItem([item, wearable])).toBe(wearable)
+    })
+  })
+})
+
+describe('when formatting accepted extensions', () => {
+  describe('when the array is empty', () => {
+    it('should return an empty string', () => {
+      expect(formatExtensions([])).toBe('')
+    })
+  })
+
+  describe('when the array has one extension', () => {
+    it('should return the extension', () => {
+      expect(formatExtensions(['.jpg'])).toBe('JPG')
+    })
+  })
+
+  describe('when the array has multiple extensions', () => {
+    it('should return the extensions sorted and separated by commas', () => {
+      expect(formatExtensions(['.zip', '.glb', '.gltf'])).toBe('GLB, GLTF or ZIP')
     })
   })
 })

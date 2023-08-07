@@ -15,10 +15,10 @@
 }
 
 .FileImport .dropzone .action {
-  display: block;
   color: var(--primary);
   cursor: pointer;
   text-align: center;
+  text-decoration-line: underline;
 }
 
 .FileImport .image {

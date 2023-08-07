@@ -8,4 +8,5 @@ export type Props = {
   showMetrics?: boolean
   previewIcon?: React.ReactNode
   children?: (video: RefObject<HTMLVideoElement>, duration: number, size: number, isLoading: boolean) => React.ReactNode
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }

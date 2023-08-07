@@ -94,7 +94,8 @@
     "import": {
       "action": "导入{资产}",
       "action_many": "导入{count} Asset",
-      "cta": "将Asset的{models_link}文件拖到此处，或{action}",
+      "cta": "在此处拖放您的资产文件 ({accepted_extensions}),{enter}或{action}",
+      "upload_manually": "在计算机上浏览它",
       "description_create": "首先将模型添加到Asset Pack",
       "description_edit": "向您添加更多项目Asset Pack",
       "loaded": "项目导入成功",
@@ -1449,6 +1450,7 @@
       "status": "地位"
     },
     "missing_item_price": "您需要配置一个或多个 {item_type} 的价格。",
+    "missing_smart_wearable_video": "您需要上传一个或多个智能可穿戴设备的视频。",
     "unsynced_collection_title": "此集合中有未同步的项目",
     "unsynced_collection_message": "在此集合获得批准后，对一项或多项进行了修改。{br}这些更新需要发布并由策展委员会再次审核。",
     "under_review_collection_message": "管理委员会正在审查更新的项目。{br}一旦获得批准，它们将自动对当前所有者和市场可见。"
