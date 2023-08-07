@@ -43,7 +43,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   componentDidMount() {
-    const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem, onOpenModal } = this.props
+    const { address, hasUserOrphanItems, isPublishSmartWearablesEnabled, onFetchCollections, onFetchOrphanItem, onOpenModal } = this.props
     // fetch if already connected
     if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.CREATED_AT_DESC })
@@ -52,7 +52,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
         onFetchOrphanItem(address)
       }
 
-      if (!localStorage.getItem(LOCALSTORAGE_SMART_WEARABLES_ANNOUCEMENT)) {
+      if (isPublishSmartWearablesEnabled && !localStorage.getItem(LOCALSTORAGE_SMART_WEARABLES_ANNOUCEMENT)) {
         onOpenModal('SmartWearablesAnnouncementModal')
       }
     }
