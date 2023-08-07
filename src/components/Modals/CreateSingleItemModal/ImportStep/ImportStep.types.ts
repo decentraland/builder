@@ -14,6 +14,7 @@ export type Props = {
   wearablePreviewComponent?: React.ReactNode
   isLoading: boolean
   isRepresentation?: boolean
+  isPublishSmartWearablesEnabled?: boolean
   onDropAccepted: (acceptedFileProps: AcceptedFileProps) => void
   onDropRejected?: (files: File[]) => Promise<void>
   onClose: () => void

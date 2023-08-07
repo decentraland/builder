@@ -727,7 +727,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderImportView() {
-    const { metadata, onClose } = this.props
+    const { metadata, isPublishSmartWearablesEnabled, onClose } = this.props
     const { category, isLoading, isRepresentation } = this.state
     const title = this.renderModalTitle()
 
@@ -741,6 +741,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         isRepresentation={!!isRepresentation}
         onDropAccepted={this.handleDropAccepted}
         onClose={onClose}
+        isPublishSmartWearablesEnabled={isPublishSmartWearablesEnabled}
       />
     )
   }

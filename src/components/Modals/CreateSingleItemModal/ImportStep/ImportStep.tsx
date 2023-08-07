@@ -178,7 +178,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
-    const { category, metadata, isRepresentation, onDropAccepted } = this.props
+    const { category, metadata, isRepresentation, onDropAccepted, isPublishSmartWearablesEnabled = false } = this.props
 
     let changeItemFile = false
     let item = null
@@ -270,6 +270,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       }
 
       const isEmote = acceptedFileProps.type === ItemType.EMOTE
+
+      if (isSmart(acceptedFileProps) && !isPublishSmartWearablesEnabled) {
+        throw new InvalidFilesError()
+      }
 
       onDropAccepted({
         ...acceptedFileProps,

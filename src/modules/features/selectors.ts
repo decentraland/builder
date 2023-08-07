@@ -61,3 +61,11 @@ export const getIsProfileSiteEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsPublishSmartWearablesEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.PUBLISH_SMART_WEARABLES)
+  } catch (e) {
+    return false
+  }
+}

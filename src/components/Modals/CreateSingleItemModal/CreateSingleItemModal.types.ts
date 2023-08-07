@@ -23,6 +23,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   collection: Collection | null
   isHandsCategoryEnabled: boolean
+  isPublishSmartWearablesEnabled: boolean
   onSave: typeof saveItemRequest
 }
 
@@ -96,6 +97,9 @@ export type AcceptedFileProps = Pick<
   | 'video'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isHandsCategoryEnabled'>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'error' | 'isLoading' | 'collection' | 'isHandsCategoryEnabled' | 'isPublishSmartWearablesEnabled'
+>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>
