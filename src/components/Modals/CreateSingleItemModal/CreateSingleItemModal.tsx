@@ -1034,8 +1034,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
           <div className="video-preview-container">
             <Header sub>{t('create_single_item_modal.video_preview_title')}</Header>
-            <div className="preview" onClick={this.handleOpenVideoDialog}>
-              <ItemVideo src={video} showMetrics previewIcon={<DCLIcon name="video" onClick={this.handleOpenVideoDialog} />} />
+            <div className="preview">
+              <ItemVideo
+                src={video}
+                showMetrics
+                previewIcon={<DCLIcon name="video" onClick={this.handleOpenVideoDialog} />}
+                onClick={this.handleOpenVideoDialog}
+              />
             </div>
           </div>
         </Row>
