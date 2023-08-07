@@ -1,7 +1,7 @@
 import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
-import { getIsDeployToWorldsEnabled, getIsMaintenanceEnabled, getisProfileSiteEnabled } from './selectors'
+import { getIsDeployToWorldsEnabled, getIsMaintenanceEnabled, getIsProfileSiteEnabled } from './selectors'
 import { FeatureName } from './types'
 
 jest.mock('decentraland-dapps/dist/modules/features/selectors')
@@ -55,7 +55,7 @@ describe('when getting if maintainance is enabled', () => {
 
 const ffSelectors = [
   { selector: getIsDeployToWorldsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.DEPLOY_WORLDS },
-  { selector: getisProfileSiteEnabled, app: ApplicationName.DAPPS, feature: FeatureName.PROFILE }
+  { selector: getIsProfileSiteEnabled, app: ApplicationName.DAPPS, feature: FeatureName.PROFILE }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {
