@@ -239,7 +239,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
     const isEmoteMissingPrice = hasEmotes ? items.some(item => item.type === ItemType.EMOTE && !item.price) : false
     const isWearableMissingPrice = hasWearables ? items.some(item => item.type === ItemType.WEARABLE && !item.price) : false
-    const isSmartWearableMissingVideo = hasWearables ? items.some(item => isSmart(item) && !(VIDEO_PATH in item.contents)) : false
+    const isSmartWearableMissingVideo = hasWearables && items.some(item => isSmart(item) && !(VIDEO_PATH in item.contents))
     const hasOnlyEmotes = hasEmotes && !hasWearables
     const hasOnlyWearables = hasWearables && !hasEmotes
     const filteredItems = items.filter(item =>
