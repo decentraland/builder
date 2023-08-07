@@ -11,11 +11,6 @@
   margin-right: 4px;
 }
 
-.grid:hover .action {
-  display: inherit !important;
-  margin-left: 5px;
-}
-
 .grid {
   padding: 10px 0 !important;
   color: var(--text);
@@ -75,5 +70,5 @@
 }
 
 .action {
-  display: none !important;
+  margin-left: 5px;
 }

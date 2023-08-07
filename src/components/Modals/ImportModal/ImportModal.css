@@ -125,3 +125,7 @@
 .ImportModal .multiple-projects .project-card img {
   height: 96px;
 }
+
+.ImportModal .FileImport .action {
+  display: block;
+}

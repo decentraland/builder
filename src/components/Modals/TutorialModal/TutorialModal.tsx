@@ -6,7 +6,7 @@ import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { LOCALSTORAGE_TUTORIAL_KEY } from 'components/EditorPage/EditorPage'
-import { preventDefault } from 'lib/preventDefault'
+import { preventDefault } from 'lib/event'
 import { getSlides } from './slides'
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'

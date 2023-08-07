@@ -69,3 +69,7 @@
 .ui.popup.modal-tooltip {
   z-index: 999999999999999;
 }
+
+html {
+  overflow: hidden;
+}

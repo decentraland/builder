@@ -13,6 +13,26 @@
   width: 100%;
 }
 
+.CreateSingleItemModal .details .ui.sub.header {
+  color: var(--text);
+}
+
+.CreateSingleItemModal .details .dcl.field .message,
+.CreateSingleItemModal .details .dcl.select-field .message {
+  display: none;
+}
+
+.CreateSingleItemModal .details .dcl.field,
+.CreateSingleItemModal .details .dcl.select-field,
+.CreateSingleItemModal .details .required-permissions {
+  margin-bottom: 24px;
+}
+
+.CreateSingleItemModal .details .notice {
+  min-width: 400px;
+  margin-bottom: 0;
+}
+
 .CreateSingleItemModal .preview {
   padding: 24px;
 }
@@ -43,22 +63,31 @@
   right: 12px;
 }
 
+.CreateSingleItemModal .ItemVideoContainer .ItemVideo.video-wrapper .icon.video {
+  font-size: 22px;
+  cursor: pointer;
+}
+
 .CreateSingleItemModal .preview .thumbnail-container input[type='file'] {
   display: none;
 }
 
-.CreateSingleItemModal .preview .metrics {
-  margin-top: 24px;
+.CreateSingleItemModal .smart-wearable .previews .preview input[type='file'] {
+  display: none;
 }
 
-.CreateSingleItemModal .preview .metric {
+.CreateSingleItemModal .preview .metric,
+.CreateSingleItemModal .smart-wearable .ItemVideoContainer .metric {
   color: var(--secondary-text);
   font-size: 13px;
   line-height: 18px;
-  padding-left: 20px;
   margin-bottom: 16px;
   background-repeat: no-repeat;
   background-position-y: center;
+}
+
+.CreateSingleItemModal .preview .metric.image {
+  padding-left: 20px;
 }
 
 .CreateSingleItemModal .preview .metric.triangles {
@@ -77,6 +106,41 @@
   background-image: url(../../../images/circle.svg);
 }
 
+.CreateSingleItemModal .smart-wearable .previews.row {
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.CreateSingleItemModal .smart-wearable .previews .header.sub {
+  margin-bottom: 8px;
+  line-height: 24px;
+}
+
+.CreateSingleItemModal .smart-wearable .preview {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+}
+
+.CreateSingleItemModal .smart-wearable .ui.message.info {
+  margin-bottom: 0;
+}
+
+.CreateSingleItemModal .smart-wearable .preview .thumbnail-container,
+.CreateSingleItemModal .smart-wearable .ItemVideoContainer .ItemVideo,
+.CreateSingleItemModal .smart-wearable .ItemVideoContainer .ItemEmptyVideoContainer {
+  width: 144px;
+  height: 144px;
+}
+
+.CreateSingleItemModal .smart-wearable .previews .metrics {
+  margin-left: 20px;
+}
+
+.CreateSingleItemModal .smart-wearable .previews .video-preview-container .ItemEmptyVideoContainer {
+  margin-right: 60px;
+}
+
 .CreateSingleItemModal .actions {
   margin-top: 24px;
   width: 100%;
@@ -88,6 +152,11 @@
 
 .CreateSingleItemModal .data {
   padding-top: 24px;
+}
+
+.CreateSingleItemModal .smart-wearable.data {
+  padding: 24px;
+  width: 100%;
 }
 
 .CreateSingleItemModal .data .ui.header.sub {
@@ -198,8 +267,8 @@
 }
 
 .CreateSingleItemModal .ui.message.info > .Icon.alert {
-  height: 18px;
-  width: 18px;
+  height: 15px;
+  width: 15px;
   background-size: 200px;
 }
 
@@ -213,6 +282,12 @@
   font-weight: 500;
 }
 
-.CreateSingleItemModal p.rarity.learn-more {
-  margin-top: -20px;
+.CreateSingleItemModal .field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.CreateSingleItemModal .field-header .learn-more {
+  text-decoration: underline;
 }

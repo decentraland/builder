@@ -98,12 +98,14 @@ export type WearableData = {
   removesDefaultHiding?: HideableWearableCategory[]
   tags: string[]
   requiredPermissions?: string[]
+  isSmart?: boolean
 }
 
 type BaseItem = {
   id: string // uuid
   name: string
   thumbnail: string
+  video?: string
   description: string
   rarity?: ItemRarity
   metrics: ModelMetrics
@@ -164,11 +166,15 @@ export type InitializeItem = [string, string, string, string]
 export type GenerateImageOptions = { width?: number; height?: number; thumbnail?: Blob }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
+export const VIDEO_PATH = 'video.mp4'
 export const IMAGE_PATH = 'image.png'
+export const SCENE_PATH = 'scene.json'
+export const SCENE_LOGIC_PATH = 'bin/game.js'
 export const ITEM_NAME_MAX_LENGTH = 32
 export const ITEM_DESCRIPTION_MAX_LENGTH = 64
 export const MODEL_EXTENSIONS = ['.zip', '.gltf', '.glb']
 export const IMAGE_EXTENSIONS = ['.zip', '.png']
+export const VIDEO_EXTENSIONS = ['.mp4']
 export const ITEM_EXTENSIONS = ['.zip', '.gltf', '.glb', '.png']
 export const IMAGE_CATEGORIES = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
 

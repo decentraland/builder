@@ -2,21 +2,23 @@ import React from 'react'
 import { ethers } from 'ethers'
 import { EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Dropdown, Icon, Button, Mana, Table, Popup } from 'decentraland-ui'
+import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
-import { preventDefault } from 'lib/preventDefault'
-import { isComplete, isFree, canManageItem, getMaxSupply } from 'modules/item/utils'
-import ItemStatus from 'components/ItemStatus'
+import { preventDefault } from 'lib/event'
+import { isComplete, isFree, canManageItem, getMaxSupply, isSmart } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
-import { isEmoteData, ItemType, SyncStatus, WearableData } from 'modules/item/types'
+import { isEmoteData, ItemType, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
+import ItemStatus from 'components/ItemStatus'
 import ItemBadge from 'components/ItemBadge'
 import RarityBadge from 'components/RarityBadge'
 import ItemImage from 'components/ItemImage'
-import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
+import { Props } from './CollectionItem.types'
 import styles from './CollectionItem.module.css'
+
+const LENGTH_LIMIT = 25
 
 export default class CollectionItem extends React.PureComponent<Props> {
   handleEditPriceAndBeneficiary = () => {
@@ -93,7 +95,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
         <Icon className={styles.check} name="check" />
         {t('collection_item.ready')}
       </div>
-    ) : !item.price ? (
+    ) : !item.price || (isSmart(item) && !(VIDEO_PATH in item.contents)) ? (
       <div className={`${styles.notReady} ${styles.action}`}>{t('collection_item.not_ready')}</div>
     ) : (
       <span onClick={preventDefault(this.handleNavigateToEditor)} className={`link ${styles.linkAction}`}>
@@ -120,7 +122,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
         >
           <Dropdown.Menu className={styles.contextMenu}>
             <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
-            <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleSeeInWorld} />
+            <Dropdown.Item text={t('collection_context_menu.see_in_decentraland')} onClick={this.handleSeeInWorld} />
             <Dropdown.Item text={t('collection_item.preview')} onClick={this.handleNavigateToEditor} />
             {!collection.isPublished && (
               <Dropdown.Item text={t('collection_item.move_to_another_collection')} onClick={this.handleMoveToAnotherCollection} />
@@ -149,7 +151,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return (
       <Table.Row className={`CollectionItem ${styles.row}`}>
-        <Table.Cell className={`${styles.avatarColumn}`} width={5}>
+        <Table.Cell className={`${styles.avatarColumn}`} width={item.name.length > LENGTH_LIMIT ? 6 : 5}>
           <Link to={locations.itemDetail(item.id)} className="CollectionItem">
             <div className={styles.avatarContainer}>
               <ItemImage className={styles.itemImage} item={item} />
@@ -185,18 +187,8 @@ export default class CollectionItem extends React.PureComponent<Props> {
             </div>
           </Table.Cell>
         ) : null}
-        <Table.Cell>
-          <Popup
-            className={styles.contextMenuButton}
-            trigger={this.renderItemStatus()}
-            content={this.renderItemContextMenu()}
-            inverted
-            basic
-            offset={[0, -60]}
-            position="right center"
-            hoverable
-          />
-        </Table.Cell>
+        <Table.Cell>{this.renderItemStatus()}</Table.Cell>
+        <Table.Cell className={styles.contextMenuButton}>{this.renderItemContextMenu()}</Table.Cell>
       </Table.Row>
     )
   }

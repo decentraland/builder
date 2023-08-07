@@ -8,19 +8,6 @@
   text-overflow: ellipsis;
 }
 
-.ItemDetailPage .actions .ui.dropdown {
-  border: 1px solid var(--gray);
-  border-radius: 5px;
-}
-
-.ItemDetailPage .actions .ui.dropdown .icon.ellipsis {
-  margin: auto !important;
-}
-
-.ItemDetailPage .actions .ui.button.primary.compact {
-  border: 1.5px solid var(--primary);
-}
-
 .ItemDetailPage .Notice {
   margin-bottom: 32px;
 }
@@ -182,6 +169,21 @@
 
 .ItemDetailPage .data {
   display: flex;
+  line-height: 30px;
+}
+
+.ItemDetailPage .data:not(:last-child) {
+  margin-bottom: 24px;
+}
+
+.ItemDetailPage .data.tags-container {
+  margin-top: 12px;
+}
+
+.ItemDetailPage .data.tags-container .tag {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
 }
 
 .ItemDetailPage .card .dcl.section.medium {
@@ -206,11 +208,32 @@
   justify-content: space-between;
 }
 
-.ItemDetailPage .title-card-container button.ui.button.inverted {
+.ItemDetailPage .title-card-container .title,
+.ItemDetailPage .title-card-container .actions {
+  flex: 1;
+}
+
+.ItemDetailPage .title-card-container .actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ItemDetailPage .title-card-container .actions .edit {
+  min-width: 50px;
+  margin-right: 8px;
+}
+
+.ItemDetailPage .title-card-container button.ui.button.inverted,
+.ItemDetailPage .title-card-container a.ui.button.inverted {
   height: 32px;
   color: #ff2d55;
   border: 1px solid rgba(115, 110, 125, 0.4);
   border-radius: 5px;
+}
+
+.ItemDetailPage .title-card-container a.learn-more-permissions.ui.button.inverted:focus {
+  background: transparent;
+  box-shadow: none !important;
 }
 
 .ItemDetailPage .ui.button.basic.more-actions-button {
@@ -275,4 +298,43 @@
 
 .ItemDetailPage .dropdown .menu > .disabled.item a {
   cursor: default;
+}
+
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  height: 256px;
+  width: 256px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .overlay .play-video-button {
+  font-size: 50px;
+  height: 50px;
+  width: 50px;
+  line-height: 50px;
+  cursor: pointer;
+}
+
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer {
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemVideo,
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemEmptyVideoContainer {
+  width: 256px;
+  height: 256px;
+}
+
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-icon {
+  height: 45px;
+  width: 45px;
+  background-size: 45px 45px;
+}
+
+.ItemDetailPage .item-data-left-panel .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-text {
+  font-size: 17px;
 }

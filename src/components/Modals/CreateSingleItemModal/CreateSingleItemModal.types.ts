@@ -10,9 +10,11 @@ export enum CreateItemView {
   IMPORT = 'import',
   DETAILS = 'details',
   THUMBNAIL = 'thumbnail',
-  VIDEO = 'video',
+  UPLOAD_VIDEO = 'upload_video',
   SET_PRICE = 'setPrice'
 }
+
+export const ITEM_LOADED_CHECK_DELAY = 2000
 
 export type Props = ModalProps & {
   address?: string
@@ -21,6 +23,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   collection: Collection | null
   isHandsCategoryEnabled: boolean
+  isPublishSmartWearablesEnabled: boolean
   onSave: typeof saveItemRequest
 }
 
@@ -46,9 +49,14 @@ export type StateData = {
   hasScreenshotTaken?: boolean
   previewController?: IPreviewController
   weareblePreviewUpdated: boolean
+  video?: string
   requiredPermissions?: string[]
 }
-export type State = { view: CreateItemView; fromView?: CreateItemView; itemSortedContents?: Record<string, Blob> } & Partial<StateData>
+export type State = {
+  view: CreateItemView
+  fromView?: CreateItemView
+  itemSortedContents?: Record<string, Blob>
+} & Partial<StateData>
 
 export type CreateSingleItemModalMetadata = {
   collectionId?: string
@@ -86,8 +94,12 @@ export type AcceptedFileProps = Pick<
   | 'thumbnail'
   | 'hasScreenshotTaken'
   | 'requiredPermissions'
+  | 'video'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'isHandsCategoryEnabled'>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'error' | 'isLoading' | 'collection' | 'isHandsCategoryEnabled' | 'isPublishSmartWearablesEnabled'
+>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>
