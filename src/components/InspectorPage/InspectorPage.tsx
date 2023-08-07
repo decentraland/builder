@@ -7,6 +7,8 @@ import './InspectorPage.css'
 import TopBar from './TopBar'
 import NotFoundPage from 'components/NotFoundPage'
 
+const PUBLIC_URL = process.env.PUBLIC_URL
+
 export default class InspectorPage extends React.PureComponent<Props, State> {
   state: State = {
     isLoaded: false
@@ -48,7 +50,12 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
         {scene && (
           <>
             <TopBar />
-            <iframe ref={this.refIframe} title="inspector" id="inspector" src={`/inspector-index.html?parent=${window.location.origin}`} />
+            <iframe
+              ref={this.refIframe}
+              title="inspector"
+              id="inspector"
+              src={`${PUBLIC_URL}/inspector-index.html?parent=${window.location.origin}`}
+            />
           </>
         )}
       </div>
