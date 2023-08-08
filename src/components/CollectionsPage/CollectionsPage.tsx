@@ -17,7 +17,6 @@ import {
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
-import HandsCategoryLaunchModal from 'components/Modals/HandsCategoryLaunchModal'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
 import Chip from 'components/Chip'
@@ -33,6 +32,7 @@ import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
 const PAGE_SIZE = 20
+export const LOCALSTORAGE_SMART_WEARABLES_ANNOUCEMENT = 'builder-smart-wearables-announcement'
 
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
@@ -42,13 +42,17 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   componentDidMount() {
-    const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem } = this.props
+    const { address, hasUserOrphanItems, isPublishSmartWearablesEnabled, onFetchCollections, onFetchOrphanItem, onOpenModal } = this.props
     // fetch if already connected
     if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.CREATED_AT_DESC })
       // TODO: Remove this call when there are no users with orphan items
       if (hasUserOrphanItems === undefined) {
         onFetchOrphanItem(address)
+      }
+
+      if (isPublishSmartWearablesEnabled && !localStorage.getItem(LOCALSTORAGE_SMART_WEARABLES_ANNOUCEMENT)) {
+        onOpenModal('SmartWearablesAnnouncementModal')
       }
     }
   }
@@ -327,7 +331,6 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   render() {
     return (
       <LoggedInDetailPage className="CollectionsPage" activeTab={NavigationTab.COLLECTIONS}>
-        <HandsCategoryLaunchModal />
         {this.renderPage()}
       </LoggedInDetailPage>
     )

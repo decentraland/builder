@@ -37,6 +37,7 @@ export type State = {
   name: string
   description: string
   thumbnail: string
+  video: string
   rarity?: ItemRarity
   contents: Record<string, Blob>
   data?: WearableData | EmoteDataADR74

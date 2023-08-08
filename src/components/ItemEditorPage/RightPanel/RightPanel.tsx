@@ -6,10 +6,6 @@ import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { isThirdParty } from 'lib/urn'
-import ItemImage from 'components/ItemImage'
-import ItemProvider from 'components/ItemProvider'
-import ConfirmDelete from 'components/ConfirmDelete'
-import Icon from 'components/Icon'
 import {
   getMissingBodyShapeType,
   getRarities,
@@ -19,7 +15,8 @@ import {
   getEmoteCategories,
   getEmotePlayModes,
   getHideableBodyPartCategories,
-  getHideableWearableCategories
+  getHideableWearableCategories,
+  isSmart
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -32,12 +29,19 @@ import {
   ITEM_DESCRIPTION_MAX_LENGTH,
   ITEM_NAME_MAX_LENGTH,
   THUMBNAIL_PATH,
-  WearableData
+  WearableData,
+  VIDEO_PATH
 } from 'modules/item/types'
 import { dataURLToBlob } from 'modules/media/utils'
 import { areEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
+import ConfirmDelete from 'components/ConfirmDelete'
+import Icon from 'components/Icon'
 import Info from 'components/Info'
+import ItemImage from 'components/ItemImage'
+import ItemProvider from 'components/ItemProvider'
+import ItemVideo from 'components/ItemVideo'
+import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -86,6 +90,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
     this.setState({
       thumbnail: '',
+      video: '',
       name: item.name,
       description: item.description,
       rarity: item.rarity,
@@ -100,6 +105,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       name: '',
       description: '',
       thumbnail: '',
+      video: '',
       rarity: undefined,
       contents: {},
       data: undefined,
@@ -122,6 +128,15 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleChangeItemFile = () => {
     const { selectedItem, onOpenModal } = this.props
     onOpenModal('CreateSingleItemModal', { item: selectedItem, changeItemFile: true })
+  }
+
+  handleOpenVideoDialog = () => {
+    const { selectedItem, onOpenModal } = this.props
+    onOpenModal('EditVideoModal', { item: selectedItem, onSaveVideo: this.handleSaveVideo })
+  }
+
+  handleSaveVideo = (video: Blob) => {
+    this.setState({ video: URL.createObjectURL(video), contents: { ...this.state.contents, [VIDEO_PATH]: video }, isDirty: true })
   }
 
   handleChangeName = (name: string) => {
@@ -335,7 +350,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     type: ItemType,
     values: T[]
   ): { value: T; text: string }[] {
-    return values.map(value => ({ value, text: t(`${type}.category.${value}`) }))
+    return values.map(value => ({ value, text: t(`${type}.category.${value as string}`) }))
   }
 
   asRaritySelect(values: ItemRarity[]) {
@@ -355,18 +370,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     if (areEmoteMetrics(metrics)) {
       return (
         <div className="metrics">
-          <div className="metric circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
-          <div className="metric circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
-          <div className="metric circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
-          <div className="metric circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
+          <div className="metric image circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
+          <div className="metric image circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
+          <div className="metric image circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
+          <div className="metric image circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
         </div>
       )
     } else {
       return (
         <div className="metrics">
-          <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-          <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-          <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
+          <div className="metric image triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+          <div className="metric image materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+          <div className="metric image textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
         </div>
       )
     }
@@ -467,9 +482,73 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     )
   }
 
+  renderModelDetails(item: Item) {
+    const { isDownloading } = this.props
+    const { thumbnail } = this.state
+
+    const canEditItemMetadata = this.canEditItemMetadata(item)
+
+    const downloadButton = isDownloading ? (
+      <Loader active size="tiny" className="donwload-item-loader" />
+    ) : (
+      <Icon name="export" className={'download-item-button'} onClick={this.handleDownloadItem} />
+    )
+
+    return (
+      <div className="details">
+        {canEditItemMetadata ? (
+          <>
+            <Icon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />
+            {downloadButton}
+            <div className="thumbnail-container">
+              <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+              <div className="thumbnail-edit-container">
+                <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
+                <div className="thumbnail-edit-background"></div>
+                <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {downloadButton}
+            <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+          </>
+        )}
+        {this.renderMetrics(item)}
+      </div>
+    )
+  }
+
+  renderVideoDetails(item: Item) {
+    if (!isSmart(item)) {
+      return null
+    }
+
+    const canEditItemMetadata = this.canEditItemMetadata(item)
+
+    return (
+      <div className="details">
+        {canEditItemMetadata ? (
+          <>
+            <Icon name="edit" className="edit-item-file" onClick={this.handleOpenVideoDialog} />
+            <Icon name="play" className="play-video-button" onClick={this.handleOpenVideoDialog} />
+            <ItemVideo item={item} src={this.state.video} showMetrics onClick={this.handleOpenVideoDialog} />
+          </>
+        ) : (
+          <ItemVideo item={item} src={this.state.video} showMetrics />
+        )}
+      </div>
+    )
+  }
+
+  renderPermissions(item: Item) {
+    return <ItemRequiredPermission requiredPermissions={item.data.requiredPermissions} />
+  }
+
   render() {
-    const { selectedItemId, address, isConnected, isDownloading, error, isCampaignEnabled, isHandsCategoryEnabled } = this.props
-    const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
+    const { selectedItemId, address, isConnected, error, isCampaignEnabled, isHandsCategoryEnabled } = this.props
+    const { name, description, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
 
@@ -486,12 +565,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                   ? getWearableCategories(item.contents, isHandsCategoryEnabled)
                   : getEmoteCategories()
                 : []
-
-              const downloadButton = isDownloading ? (
-                <Loader active size="tiny" className="donwload-item-loader" />
-              ) : (
-                <Icon name="export" className={'download-item-button'} onClick={this.handleDownloadItem} />
-              )
 
               return isLoading ? (
                 <Loader size="massive" active />
@@ -519,129 +592,118 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       </Dropdown>
                     ) : null}
                   </div>
-                  <Collapsable label={t('item_editor.right_panel.details')}>
-                    {item ? (
-                      <div className="details">
-                        {canEditItemMetadata ? (
-                          <>
-                            <Icon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />
-                            {downloadButton}
-                            <div className="thumbnail-container">
-                              <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
-                              <div className="thumbnail-edit-container">
-                                <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
-                                <div className="thumbnail-edit-background"></div>
-                                <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            {downloadButton}
-                            <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
-                          </>
-                        )}
-                        {this.renderMetrics(item)}
-                      </div>
-                    ) : null}
-                  </Collapsable>
-                  <Collapsable label={t('item_editor.right_panel.basics')}>
-                    {item ? (
-                      <>
-                        <Input
-                          itemId={item.id}
-                          label={t('global.name')}
-                          value={name}
-                          disabled={!canEditItemMetadata}
-                          maxLength={ITEM_NAME_MAX_LENGTH}
-                          onChange={this.handleChangeName}
-                        />
-                        <Input
-                          itemId={item.id}
-                          label={t('global.description')}
-                          value={description}
-                          disabled={!canEditItemMetadata}
-                          maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
-                          onChange={this.handleChangeDescription}
-                        />
-
-                        <Select<HideableWearableCategory | EmoteCategory>
-                          itemId={item.id}
-                          label={t('global.category')}
-                          value={data!.category}
-                          options={this.asCategorySelect<WearableCategory | EmoteCategory>(item.type, categories)}
-                          disabled={!canEditItemMetadata}
-                          onChange={this.handleChangeCategory}
-                        />
-
-                        {!(item.urn && isThirdParty(item.urn)) && (
-                          <Select<ItemRarity>
-                            itemId={item.id}
-                            label={t('global.rarity')}
-                            value={rarity}
-                            options={this.asRaritySelect(rarities)}
-                            disabled={item.isPublished || !canEditItemMetadata}
-                            onChange={this.handleChangeRarity}
-                          />
-                        )}
-                      </>
-                    ) : null}
-                  </Collapsable>
-                  {item?.type === ItemType.WEARABLE && (
-                    <Collapsable
-                      label={
-                        <>
-                          <span className="overrides-label-panel">{t('item_editor.right_panel.overrides')}</span>
-                          {isHandsCategoryEnabled ? <Info content={t('item_editor.right_panel.overrides_info')} className="info" /> : null}
-                        </>
-                      }
-                    >
-                      {this.renderOverrides(item)}
-                    </Collapsable>
-                  )}
-                  {item?.type === ItemType.EMOTE && (
-                    <Collapsable label={t('item_editor.right_panel.animation')}>
+                  <div className="container">
+                    <Collapsable label={t('item_editor.right_panel.details')}>
                       {item ? (
-                        <Select<EmotePlayMode>
-                          itemId={item.id}
-                          label={t('create_single_item_modal.play_mode_label')}
-                          value={(data as EmoteDataADR74)!.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
-                          options={this.asPlayModeSelect(playModes)}
-                          disabled={!canEditItemMetadata}
-                          onChange={this.handlePlayModeChange}
-                        />
+                        <>
+                          {this.renderModelDetails(item)}
+                          {this.renderVideoDetails(item)}
+                        </>
                       ) : null}
                     </Collapsable>
-                  )}
-                  <Collapsable label={t('item_editor.right_panel.tags')}>
-                    {item ? (
-                      <>
-                        <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
-                        {isCampaignEnabled && canEditItemMetadata && (
-                          <p className="event-tag">
-                            {t('item_editor.right_panel.event_tag', {
-                              event_tag: <span>{CAMPAIGN_TAG}</span>,
-                              event_name: <span>{t('campaign.name')}</span>
-                            })}
-                          </p>
-                        )}
-                      </>
+                    <Collapsable label={t('item_editor.right_panel.basics')}>
+                      {item ? (
+                        <>
+                          <Input
+                            itemId={item.id}
+                            label={t('global.name')}
+                            value={name}
+                            disabled={!canEditItemMetadata}
+                            maxLength={ITEM_NAME_MAX_LENGTH}
+                            onChange={this.handleChangeName}
+                          />
+                          <Input
+                            itemId={item.id}
+                            label={t('global.description')}
+                            value={description}
+                            disabled={!canEditItemMetadata}
+                            maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
+                            onChange={this.handleChangeDescription}
+                          />
+
+                          <Select<HideableWearableCategory | EmoteCategory>
+                            itemId={item.id}
+                            label={t('global.category')}
+                            value={data!.category}
+                            options={this.asCategorySelect<WearableCategory | EmoteCategory>(item.type, categories)}
+                            disabled={!canEditItemMetadata}
+                            onChange={this.handleChangeCategory}
+                          />
+
+                          {!(item.urn && isThirdParty(item.urn)) && (
+                            <Select<ItemRarity>
+                              itemId={item.id}
+                              label={t('global.rarity')}
+                              value={rarity}
+                              options={this.asRaritySelect(rarities)}
+                              disabled={item.isPublished || !canEditItemMetadata}
+                              onChange={this.handleChangeRarity}
+                            />
+                          )}
+                        </>
+                      ) : null}
+                    </Collapsable>
+                    {item?.type === ItemType.WEARABLE && (
+                      <Collapsable
+                        label={
+                          <>
+                            <span className="overrides-label-panel">{t('item_editor.right_panel.overrides')}</span>
+                            {isHandsCategoryEnabled ? (
+                              <Info content={t('item_editor.right_panel.overrides_info')} className="info" />
+                            ) : null}
+                          </>
+                        }
+                      >
+                        {this.renderOverrides(item)}
+                      </Collapsable>
+                    )}
+                    {item?.type === ItemType.EMOTE && (
+                      <Collapsable label={t('item_editor.right_panel.animation')}>
+                        {item ? (
+                          <Select<EmotePlayMode>
+                            itemId={item.id}
+                            label={t('create_single_item_modal.play_mode_label')}
+                            value={(data as EmoteDataADR74)!.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
+                            options={this.asPlayModeSelect(playModes)}
+                            disabled={!canEditItemMetadata}
+                            onChange={this.handlePlayModeChange}
+                          />
+                        ) : null}
+                      </Collapsable>
+                    )}
+                    {item && isSmart(item) && item.data.requiredPermissions?.length ? (
+                      <Collapsable label={t('item_editor.right_panel.required_permissions')}>{this.renderPermissions(item)}</Collapsable>
                     ) : null}
-                  </Collapsable>
-                  {isDirty ? (
-                    <div className="edit-buttons">
-                      <Button secondary onClick={this.handleOnResetItem}>
-                        {t('global.cancel')}
-                      </Button>
-                      <NetworkButton primary onClick={this.handleOnSaveItem} network={Network.MATIC}>
-                        {t('global.save')}
-                      </NetworkButton>
-                    </div>
-                  ) : error && selectedItemId ? (
-                    <p className="danger-text">
-                      {t('global.error_ocurred')}: {error}
-                    </p>
-                  ) : null}
+                    <Collapsable label={t('item_editor.right_panel.tags')}>
+                      {item ? (
+                        <>
+                          <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
+                          {isCampaignEnabled && canEditItemMetadata && (
+                            <p className="event-tag">
+                              {t('item_editor.right_panel.event_tag', {
+                                event_tag: <span>{CAMPAIGN_TAG}</span>,
+                                event_name: <span>{t('campaign.name')}</span>
+                              })}
+                            </p>
+                          )}
+                        </>
+                      ) : null}
+                    </Collapsable>
+                    {isDirty ? (
+                      <div className="edit-buttons">
+                        <Button secondary onClick={this.handleOnResetItem}>
+                          {t('global.cancel')}
+                        </Button>
+                        <NetworkButton primary onClick={this.handleOnSaveItem} network={Network.MATIC}>
+                          {t('global.save')}
+                        </NetworkButton>
+                      </div>
+                    ) : error && selectedItemId ? (
+                      <p className="danger-text">
+                        {t('global.error_ocurred')}: {error}
+                      </p>
+                    ) : null}
+                  </div>
                 </>
               ) : null
             }}

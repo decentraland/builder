@@ -73,7 +73,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
         direction="left"
       >
         <Dropdown.Menu>
-          <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleSeeInWorld} />
+          <Dropdown.Item text={t('collection_context_menu.see_in_decentraland')} onClick={this.handleSeeInWorld} />
           <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
 
           <Popup

@@ -1,6 +1,15 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { loadFile, SceneConfig, WearableCategory, WearableConfig } from '@dcl/builder-client'
+import {
+  loadFile,
+  SceneConfig,
+  WearableConfig,
+  AllowedMediaHostnameIsEmptyOrInvalidError,
+  DuplicatedRequiredPermissionsError,
+  MissingRequiredPropertiesError,
+  UnknownRequiredPermissionsError
+} from '@dcl/builder-client/dist/files'
+import { WearableCategory } from '@dcl/builder-client/dist/item'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -14,9 +23,10 @@ import {
   MissingModelFileError,
   EmoteDurationTooLongError,
   InvalidModelFilesRepresentation,
-  InvalidModelFileType
+  InvalidModelFileType,
+  CustomErrorWithTitle
 } from 'modules/item/errors'
-import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS } from 'modules/item/types'
+import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS, SCENE_PATH } from 'modules/item/types'
 import {
   getBodyShapeType,
   getBodyShapeTypeFromContents,
@@ -27,11 +37,13 @@ import {
   isModelFile,
   isModelPath,
   MAX_FILE_SIZE,
-  MAX_EMOTE_DURATION
+  MAX_EMOTE_DURATION,
+  isSmart
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
 import ItemImport from 'components/ItemImport'
+import { preventDefault } from 'lib/event'
 import { AcceptedFileProps, ModelData } from '../CreateSingleItemModal.types'
 import { Props, State } from './ImportStep.types'
 import './ImportStep.css'
@@ -42,7 +54,6 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   getInitialState(): State {
     return {
       id: '',
-      error: '',
       isLoading: false
     }
   }
@@ -123,8 +134,51 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return { model, contents: proccessedContent, type }
   }
 
+  handleErrorsOnFile = (error: any) => {
+    let errorTranslationId = null
+    let wrongConfigurations: string[] = []
+
+    if (error instanceof UnknownRequiredPermissionsError) {
+      errorTranslationId = 'unknown_required_permissions'
+      wrongConfigurations = error.getUnknownRequiredPermissions()
+    } else if (error instanceof DuplicatedRequiredPermissionsError) {
+      errorTranslationId = 'duplicated_required_permissions'
+      wrongConfigurations = error.getDuplicatedRequiredPermissions()
+    } else if (error instanceof AllowedMediaHostnameIsEmptyOrInvalidError) {
+      errorTranslationId = 'allowed_media_hostnames_empty_or_invalid'
+    } else if (error instanceof MissingRequiredPropertiesError) {
+      errorTranslationId = 'missing_required_properties'
+      wrongConfigurations = error.getMissingProperties()
+    }
+
+    console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+
+    this.setState({
+      error: errorTranslationId
+        ? new CustomErrorWithTitle(
+            t(`create_single_item_modal.error.${errorTranslationId}.title`, {
+              wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
+              count: wrongConfigurations.length
+            }),
+            t(`create_single_item_modal.error.${errorTranslationId}.message`, {
+              learn_more: (
+                <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
+                  {t('global.learn_more')}
+                </span>
+              )
+            })
+          )
+        : error.message,
+      isLoading: false
+    })
+  }
+
+  handleOpenLearnMoreOnError = () => {
+    window.open('https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/', '_blank', 'noopener noreferrer')
+  }
+
   handleDropAccepted = async (acceptedFiles: File[]) => {
-    const { category, metadata, isRepresentation, onDropAccepted } = this.props
+    const { category, metadata, isRepresentation, onDropAccepted, isPublishSmartWearablesEnabled = false } = this.props
 
     let changeItemFile = false
     let item = null
@@ -154,6 +208,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       if (extension === '.zip') {
         const { modelData, wearable, scene } = await this.handleZippedModelFiles(file)
         const { type, model, contents } = modelData
+
+        if (scene) {
+          contents[SCENE_PATH] = new Blob([JSON.stringify(scene)], { type: 'application/json' })
+        }
 
         acceptedFileProps = {
           ...acceptedFileProps,
@@ -213,19 +271,22 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
       const isEmote = acceptedFileProps.type === ItemType.EMOTE
 
+      if (isSmart(acceptedFileProps) && !isPublishSmartWearablesEnabled) {
+        throw new InvalidFilesError()
+      }
+
       onDropAccepted({
         ...acceptedFileProps,
-        bodyShape: isEmote ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
+        bodyShape: isEmote || isSmart(acceptedFileProps) ? BodyShapeType.BOTH : acceptedFileProps.bodyShape
       })
     } catch (error) {
-      this.setState({ error: error.message, isLoading: false })
+      this.handleErrorsOnFile(error)
     }
   }
 
   handleDropRejected = (rejectedFiles: File[]) => {
     console.warn('rejected', rejectedFiles)
-    const error = new InvalidFilesError()
-    this.setState({ error: error.message })
+    this.setState({ error: new InvalidFilesError() })
   }
 
   async processModel(model: string, contents: Record<string, Blob>): Promise<ModelData> {
@@ -247,14 +308,18 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 
+  handleOpenMoreInformation = () => {
+    window.open('https://docs.decentraland.org/decentraland/creating-wearables/', '_blank', 'noopener noreferrer')
+  }
+
   renderMoreInformation() {
     return (
       <span>
         {t('create_single_item_modal.import_information', {
           link: (
-            <a href="https://docs.decentraland.org/decentraland/creating-wearables/" target="_blank" rel="noopener noreferrer">
+            <span className="link" onClick={preventDefault(this.handleOpenMoreInformation)}>
               {t('create_single_item_modal.import_information_link_label')}
-            </a>
+            </span>
           )
         })}
       </span>

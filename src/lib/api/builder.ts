@@ -24,6 +24,7 @@ import { ModelMetrics } from 'modules/models/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { isSmart } from 'modules/item/utils'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
 
@@ -54,6 +55,7 @@ export type RemoteItem = {
   name: string
   description: string
   thumbnail: string
+  video: string | null
   eth_address: string
   collection_id: string | null
   blockchain_item_id: string | null
@@ -333,6 +335,7 @@ function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'>
     name: item.name,
     description: item.description || '',
     thumbnail: item.thumbnail,
+    video: item.video || null,
     eth_address: item.owner,
     collection_id: item.collectionId || null,
     blockchain_item_id: item.tokenId || null,
@@ -384,6 +387,8 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
+  if (remoteItem.video) item.video = remoteItem.video
+  if (remoteItem.type === ItemType.WEARABLE) item.data.isSmart = isSmart(remoteItem)
 
   return item
 }
@@ -775,14 +780,27 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveItemContents = async (item: Item, contents: Record<string, Blob>) => {
+    const requests = []
+
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()
+      const videosFormData = new FormData()
+
       for (const path in contents) {
-        formData.append(item.contents[path], contents[path])
+        if (contents[path].type.startsWith('video/')) {
+          videosFormData.append(path, contents[path])
+        } else {
+          formData.append(item.contents[path], contents[path])
+        }
       }
 
-      return this.request('post', `/items/${item.id}/files`, { params: formData })
+      requests.push(this.request('post', `/items/${item.id}/files`, { params: formData }))
+
+      if (Array.from(videosFormData.keys()).length > 0)
+        requests.push(this.request('post', `/items/${item.id}/videos`, { params: videosFormData }))
     }
+
+    return Promise.all(requests)
   }
 
   async deleteItem(id: string) {

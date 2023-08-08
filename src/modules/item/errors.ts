@@ -1,11 +1,21 @@
 import { ReactNode, createElement } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toMB } from 'lib/file'
-import { MAX_EMOTE_DURATION, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE } from 'modules/item/utils'
+import { MAX_EMOTE_DURATION, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE, MAX_VIDEO_DURATION, MAX_VIDEO_FILE_SIZE } from 'modules/item/utils'
 
 class CustomError {
   message: ReactNode
   constructor(message: ReactNode) {
+    this.message = message
+  }
+}
+
+export class CustomErrorWithTitle {
+  title: ReactNode
+  message: ReactNode
+
+  constructor(title: ReactNode, message: ReactNode) {
+    this.title = title
     this.message = message
   }
 }
@@ -34,6 +44,24 @@ export class ThumbnailFileTooBigError extends Error {
   }
 }
 
+export class VideoFileTooBigError extends Error {
+  public title: string
+
+  constructor() {
+    super(t('upload_video.error.video_file_too_big.message', { size: `${toMB(MAX_VIDEO_FILE_SIZE)}MB` }))
+    this.title = t('upload_video.error.video_file_too_big.title')
+  }
+}
+
+export class VideoFileTooLongError extends Error {
+  public title: string
+
+  constructor() {
+    super(t('upload_video.error.video_file_too_long.message'))
+    this.title = t('upload_video.error.video_file_too_long.title', { max_duration: MAX_VIDEO_DURATION })
+  }
+}
+
 export class WrongExtensionError extends Error {
   constructor() {
     super(t('create_single_item_modal.error.wrong_extension'))
@@ -43,6 +71,15 @@ export class WrongExtensionError extends Error {
 export class InvalidFilesError extends Error {
   constructor() {
     super(t('create_single_item_modal.error.invalid_files'))
+  }
+}
+
+export class InvalidVideoError extends Error {
+  public title: string
+
+  constructor() {
+    super(t('upload_video.error.invalid_video.message'))
+    this.title = t('upload_video.error.invalid_video.title')
   }
 }
 

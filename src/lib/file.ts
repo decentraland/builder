@@ -16,3 +16,23 @@ export function getExtension(fileName: string) {
 export function toMB(bytes: number) {
   return bytes / 1024 / 1024
 }
+
+export async function getFileSize(src: string): Promise<number> {
+  try {
+    const response = await fetch(src)
+
+    if (response.ok) {
+      if (src.startsWith('blob')) {
+        const blob = await response.blob()
+        return blob.size || 0
+      } else {
+        const fileSize = response.headers.get('Content-Length')
+        return fileSize ? parseInt(fileSize, 10) : 0
+      }
+    }
+  } catch (error) {
+    console.error('Error retrieving file size:', error)
+  }
+
+  return 0
+}

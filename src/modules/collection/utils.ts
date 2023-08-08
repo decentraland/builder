@@ -6,6 +6,7 @@ import { locations } from 'routing/locations'
 import { PaginationStats } from 'lib/api/pagination'
 import { isEqual, includes } from 'lib/address'
 import { decodeURN, isThirdParty, URNType } from 'lib/urn'
+import { getFirstWearableOrItem } from 'modules/item/utils'
 import { Item, SyncStatus } from 'modules/item/types'
 import { Collection, Access, Mint, CollectionType } from './types'
 import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
@@ -38,7 +39,10 @@ export function getSaleAddress(chainId: ChainId) {
 }
 
 export function getCollectionEditorURL(collection: Collection, items: Item[]): string {
-  return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })
+  return locations.itemEditor({
+    collectionId: collection.id,
+    itemId: getFirstWearableOrItem(items)?.id
+  })
 }
 
 export function getExplorerURL({

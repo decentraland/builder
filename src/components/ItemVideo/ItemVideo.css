@@ -1,0 +1,94 @@
+.ItemVideoContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.ItemVideo {
+  position: relative;
+}
+
+.ItemVideo {
+  height: 96px;
+  width: 96px;
+}
+
+.ItemVideo.video-wrapper .item-video {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.ItemVideo.video-wrapper .icon {
+  position: absolute;
+  bottom: 16px;
+  right: 12px;
+}
+
+.ItemVideoContainer .ItemEmptyVideoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px dashed #a09ba8;
+  border-radius: 8px;
+  height: 100%;
+  width: 100%;
+}
+
+.ItemVideoContainer .ItemEmptyVideoContainer .empty-video-icon {
+  height: 32px;
+  width: 32px;
+  background: url('/src/images/upload-video.svg') no-repeat;
+  background-size: 32px 32px;
+  margin-bottom: 12px;
+}
+
+.ItemVideoContainer .ItemEmptyVideoContainer .empty-video-text {
+  text-align: center;
+  color: #a09ba8;
+  font-size: 12px;
+}
+
+.ItemVideo .ItemBadge {
+  background-color: #37333d;
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+}
+
+.ItemVideo .ItemBadge::before {
+  filter: none;
+}
+
+.ItemVideo .SmartBadge.small {
+  left: 32px;
+}
+
+.ItemVideo .badges-container {
+  position: absolute;
+  display: flex;
+  bottom: 9px;
+  left: 9px;
+}
+
+.ItemVideoContainer .ItemVideoMetricsContainer {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.ItemVideoContainer .ItemVideoMetricsContainer .metric {
+  color: var(--secondary-text);
+  font-size: 13px;
+  line-height: 18px;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.ItemVideoContainer .ItemVideoMetricsContainer .metric:last-child {
+  margin-bottom: 0;
+}

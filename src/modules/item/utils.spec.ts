@@ -7,7 +7,10 @@ import {
   areEqualArrays,
   areEqualRepresentations,
   groupsOf,
-  getWearableCategories
+  getWearableCategories,
+  isSmart,
+  getFirstWearableOrItem,
+  formatExtensions
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -205,6 +208,93 @@ describe('when getting wearable categories', () => {
       })
 
       expect(categories).toEqual(['eyebrows', 'eyes', 'mouth'])
+    })
+  })
+})
+
+describe('when checking if an item is smart', () => {
+  describe('when the type is undefined', () => {
+    it('should return false', () => {
+      const item = {} as Item
+      expect(isSmart(item)).toBe(false)
+    })
+  })
+
+  describe('when the item does not have content', () => {
+    it('should return false', () => {
+      const item = { type: ItemType.WEARABLE } as Item
+      expect(isSmart(item)).toBe(false)
+    })
+  })
+
+  describe('when the item does not have a content file that suggest the wearable is smart', () => {
+    it('should return false', () => {
+      const item = { type: ItemType.WEARABLE, contents: { file1: new Blob(), file2: new Blob() } } as unknown as Item
+      expect(isSmart(item)).toBe(false)
+    })
+  })
+
+  describe('when the item is an emote', () => {
+    it('should return false', () => {
+      const item = { type: ItemType.EMOTE } as Item
+      expect(isSmart(item)).toBe(false)
+    })
+  })
+
+  describe('when the item is a wearable and has a content file with a javascript extension', () => {
+    it('should return true', () => {
+      const item = { type: ItemType.WEARABLE, contents: { 'sw.js': '' } } as unknown as Item
+      expect(isSmart(item)).toBe(true)
+    })
+  })
+})
+
+describe('when getting the first wearable or item of an array', () => {
+  describe('when the array is empty', () => {
+    it('should return undefined', () => {
+      expect(getFirstWearableOrItem([])).toBeUndefined()
+    })
+  })
+
+  describe('when the array has a wearable', () => {
+    it('should return the wearable', () => {
+      const wearable = { type: ItemType.WEARABLE } as Item
+      expect(getFirstWearableOrItem([wearable])).toBe(wearable)
+    })
+  })
+
+  describe('when the array has an item', () => {
+    it('should return the item', () => {
+      const item = { type: ItemType.EMOTE } as Item
+      expect(getFirstWearableOrItem([item])).toBe(item)
+    })
+  })
+
+  describe('when the array has a wearable and an item', () => {
+    it('should return the wearable', () => {
+      const wearable = { type: ItemType.WEARABLE } as Item
+      const item = { type: ItemType.EMOTE } as Item
+      expect(getFirstWearableOrItem([item, wearable])).toBe(wearable)
+    })
+  })
+})
+
+describe('when formatting accepted extensions', () => {
+  describe('when the array is empty', () => {
+    it('should return an empty string', () => {
+      expect(formatExtensions([])).toBe('')
+    })
+  })
+
+  describe('when the array has one extension', () => {
+    it('should return the extension', () => {
+      expect(formatExtensions(['.jpg'])).toBe('JPG')
+    })
+  })
+
+  describe('when the array has multiple extensions', () => {
+    it('should return the extensions sorted and separated by commas', () => {
+      expect(formatExtensions(['.zip', '.glb', '.gltf'])).toBe('GLB, GLTF or ZIP')
     })
   })
 })

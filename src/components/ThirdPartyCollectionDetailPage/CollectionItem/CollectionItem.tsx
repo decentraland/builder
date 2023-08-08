@@ -3,7 +3,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Grid, Dropdown, Icon, Button, Checkbox, CheckboxProps, Popup } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
-import { preventDefault } from 'lib/preventDefault'
+import { preventDefault } from 'lib/event'
 import { decodeURN, URNType } from 'lib/urn'
 import ItemStatus from 'components/ItemStatus'
 import { SyncStatus } from 'modules/item/types'
@@ -110,7 +110,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
               >
                 <Dropdown.Menu>
                   <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
-                  <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleSeeInWorld} />
+                  <Dropdown.Item text={t('collection_context_menu.see_in_decentraland')} onClick={this.handleSeeInWorld} />
                   <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
                   <Popup
                     content={t('collection_item.cannot_edit_urn')}
