@@ -130,11 +130,12 @@ function* handleLogin(action: LoginRequestAction) {
       }
     }
 
-    // Check if we need  to generate a new identity
-    const identity: AuthIdentity = yield select(getCurrentIdentity)
-    if (!identity) {
-      // Generate a new identity
-      const address: string = yield select(getAddress)
+    const address: string = yield select(getAddress)
+    const identity: AuthIdentity | null = yield call(getIdentity, address)
+
+    if (identity) {
+      yield put(generateIdentitySuccess(address, identity))
+    } else {
       yield put(generateIdentityRequest(address))
       const generateIdentity: Race<GenerateIdentitySuccessAction, GenerateIdentityFailureAction> = yield takeRace(
         GENERATE_IDENTITY_SUCCESS,
