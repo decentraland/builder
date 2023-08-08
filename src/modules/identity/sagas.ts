@@ -137,6 +137,7 @@ function* handleLogin(action: LoginRequestAction) {
       yield put(generateIdentitySuccess(address, identity))
     } else {
       yield put(generateIdentityRequest(address))
+      
       const generateIdentity: Race<GenerateIdentitySuccessAction, GenerateIdentityFailureAction> = yield takeRace(
         GENERATE_IDENTITY_SUCCESS,
         GENERATE_IDENTITY_FAILURE
