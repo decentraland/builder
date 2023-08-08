@@ -12,6 +12,7 @@
     "@dcl/mini-rpc": "^1.0.6",
     "@dcl/schemas": "^8.2.2",
     "@dcl/sdk": "^7.3.6",
+    "@dcl/single-sign-on-client": "^0.0.11",
     "@dcl/ui-env": "^1.2.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^11.0.0",
@@ -129,7 +130,8 @@
       "^three/.*$": "identity-obj-proxy",
       "^@babylonjs.*$": "identity-obj-proxy",
       "^.*/modules/curations/collectionCuration/toasts.*$": "identity-obj-proxy",
-      "@dcl/ecs": "identity-obj-proxy"
+      "@dcl/ecs": "identity-obj-proxy",
+      "@dcl/single-sign-on-client": "identity-obj-proxy"
     }
   },
   "engines": {
