@@ -557,7 +557,7 @@ export class BuilderAPI extends BaseAPI {
         headers = { ...config.headers }
       }
     }
-    const authHeaders = this.authorization.createAuthHeaders(method, path)
+    const authHeaders = await this.authorization.createAuthHeaders(method, path)
     headers = {
       ...headers,
       ...authHeaders
