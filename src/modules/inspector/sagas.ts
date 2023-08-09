@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import { call, put, race, select, take, takeEvery } from 'redux-saga/effects'
+import { call, delay, put, race, select, take, takeEvery } from 'redux-saga/effects'
 import { future, IFuture } from 'fp-future'
 import { hashV1 } from '@dcl/hashing'
 import { LoginFailureAction, LoginSuccessAction, LOGIN_FAILURE, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -33,17 +33,21 @@ import {
   RPCSuccessAction,
   RPC_FAILURE,
   RPC_REQUEST,
-  RPC_SUCCESS
+  RPC_SUCCESS,
+  toggleScreenshot
 } from './actions'
 import { Project } from 'modules/project/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { IframeStorage, MessageTransport } from '@dcl/inspector'
+import { IframeStorage } from '@dcl/inspector'
+import { MessageTransport } from '@dcl/mini-rpc'
 import { getParcels } from './utils'
 import { BuilderAPI, getContentsStorageUrl } from 'lib/api/builder'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { Scene, SceneSDK7 } from 'modules/scene/types'
-import { updateScene } from 'modules/scene/actions'
+import { updateScene, UPDATE_SCENE } from 'modules/scene/actions'
 import { RootStore } from 'modules/common/types'
+import { takeScreenshot } from 'modules/editor/actions'
+import { isScreenshotEnabled } from './selectors'
 
 let nonces = 0
 const getNonce = () => nonces++
@@ -56,6 +60,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
   yield takeEvery(RPC_REQUEST, handleRpcRequest)
   yield takeEvery(RPC_SUCCESS, handleRpcSuccess)
   yield takeEvery(RPC_FAILURE, handleRpcFailure)
+  yield takeEvery(UPDATE_SCENE, handleUpdateScene)
 
   function* handleOpenInspector(_action: OpenInspectorAction) {
     try {
@@ -92,13 +97,16 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     }
   }
 
-  function handleConnectInspector(action: ConnectInspectorAction) {
+  function* handleConnectInspector(action: ConnectInspectorAction) {
     const { iframeId } = action.payload
 
     const iframe = document.getElementById(iframeId) as HTMLIFrameElement | null
     if (iframe === null) {
       throw new Error(`Iframe with id="${iframeId}" not found`)
     }
+
+    // disable the screenshots, turn it on once the scene is fully loaded
+    yield put(toggleScreenshot(false))
 
     const transport = new MessageTransport(window, iframe.contentWindow!, '*')
     const storage = new IframeStorage.Server(transport)
@@ -113,6 +121,21 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         store.dispatch(action)
         return promise
       })
+    }
+
+    // wait for RPC to be idle (3 seconds)
+    yield waitForRpcIdle(3000)
+
+    // turn on screenshots
+    yield put(toggleScreenshot(true))
+
+    // check if project doesn't have a thumbnail (ie. because it's new), and if so, take a screenshot
+    const project: Project | null = yield select(getCurrentProject)
+    if (project) {
+      const result: boolean = yield call(hasThumbnail, project)
+      if (!result) {
+        yield put(takeScreenshot())
+      }
     }
   }
 
@@ -140,6 +163,13 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     const promise = promises.get(nonce)
     if (promise) {
       promise.reject(new Error(error))
+    }
+  }
+
+  function* handleUpdateScene() {
+    const isEnabled: boolean = yield select(isScreenshotEnabled)
+    if (isEnabled) {
+      yield put(takeScreenshot())
     }
   }
 
@@ -310,66 +340,64 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     // remove from memory
     assets.delete(path)
   }
+}
 
-  // UTILS
+function* getProject(projectId: string): any {
+  // grab projects from store
+  const projects: Record<string, Project> = yield select(getProjects)
+  const project = projects[projectId]
 
-  function* getProject(projectId: string): any {
-    // grab projects from store
-    const projects: Record<string, Project> = yield select(getProjects)
-    const project = projects[projectId]
-
-    // if project is found in store, return it
-    if (project) {
-      return project
-    }
-
-    // if project is not in the store, check if projects are being loaded
-    const projectsLoadingState: ReturnType<typeof getLoadingProjects> = yield select(getLoadingProjects)
-    const isLoading = isLoadingType(projectsLoadingState, LOAD_PROJECTS_REQUEST)
-
-    // if projects are not being loaded, then request them
-    if (!isLoading) {
-      yield put(loadProjectsRequest())
-    }
-
-    // wait for projects to be loaded
-    const result: { success?: LoadProjectsSuccessAction; failure?: LoadProjectsFailureAction } = yield race({
-      success: take(LOAD_PROJECTS_SUCCESS),
-      failure: take(LOAD_PROJECTS_FAILURE)
-    })
-
-    // if load is successful try getting the project again
-    if (result.success) {
-      const _project: Project = yield getProject(projectId)
-      return _project
-    }
-
-    // if load fails then throw
-    if (result.failure) {
-      console.error(result.failure)
-      throw new Error(`Could not load project`)
-    }
+  // if project is found in store, return it
+  if (project) {
+    return project
   }
 
-  function* getScene() {
-    const project: Project = yield select(getCurrentProject)
+  // if project is not in the store, check if projects are being loaded
+  const projectsLoadingState: ReturnType<typeof getLoadingProjects> = yield select(getLoadingProjects)
+  const isLoading = isLoadingType(projectsLoadingState, LOAD_PROJECTS_REQUEST)
 
-    if (!project) {
-      throw new Error('Invalid project')
-    }
-
-    const scene: Scene | null = yield select(getCurrentScene)
-
-    if (!scene) {
-      throw new Error('Invalid scene')
-    }
-
-    if (!scene.sdk7) {
-      throw new Error('Scene must be SDK7')
-    }
-
-    return scene.sdk7
+  // if projects are not being loaded, then request them
+  if (!isLoading) {
+    yield put(loadProjectsRequest())
   }
+
+  // wait for projects to be loaded
+  const result: { success?: LoadProjectsSuccessAction; failure?: LoadProjectsFailureAction } = yield race({
+    success: take(LOAD_PROJECTS_SUCCESS),
+    failure: take(LOAD_PROJECTS_FAILURE)
+  })
+
+  // if load is successful try getting the project again
+  if (result.success) {
+    const _project: Project = yield getProject(projectId)
+    return _project
+  }
+
+  // if load fails then throw
+  if (result.failure) {
+    console.error(result.failure)
+    throw new Error(`Could not load project`)
+  }
+}
+
+function* getScene() {
+  const project: Project = yield select(getCurrentProject)
+
+  if (!project) {
+    throw new Error('Invalid project')
+  }
+
+  const scene: Scene | null = yield select(getCurrentScene)
+
+  if (!scene) {
+    throw new Error('Invalid scene')
+  }
+
+  if (!scene.sdk7) {
+    throw new Error('Scene must be SDK7')
+  }
+
+  return scene.sdk7
 }
 
 function* isContentUploaded(path: string, hash: string) {
@@ -379,6 +407,31 @@ function* isContentUploaded(path: string, hash: string) {
   try {
     const res: Response = yield call(fetch, `${getContentsStorageUrl(hash)}/exists`, { headers: NO_CACHE_HEADERS })
     return res.ok
+  } catch (error) {
+    return false
+  }
+}
+
+function* waitForRpcIdle(ms: number) {
+  const { request }: { request: RPCRequestAction | null } = yield race({
+    request: take(RPC_REQUEST),
+    timeout: delay(ms, true)
+  })
+  if (request) {
+    let elapsed = 0
+    while (elapsed < ms) {
+      const timestamp = Date.now()
+      yield race([take(RPC_REQUEST), delay(ms, true)])
+      elapsed = Date.now() - timestamp
+    }
+  }
+}
+
+function* hasThumbnail(project: Project) {
+  try {
+    if (!project.thumbnail) return false
+    const response: Response = yield call(fetch, project.thumbnail, { headers: NO_CACHE_HEADERS })
+    return response.ok
   } catch (error) {
     return false
   }

@@ -94,9 +94,11 @@
     "import": {
       "action": "Importar Asset",
       "action_many": "Importar {count} Assets",
-      "cta": "Arrastra el archivo {models_link} de tu Asset aquí, o {action}",
+      "cta": "Arrastra el archivo ({accepted_extensions}) de tu Asset aquí,{enter}o {action}",
+      "upload_manually": "buscalo en tu computadora",
       "description_create": "Comienza añadiendo algunos assets a tu pack",
       "description_edit": "Añade algunos assets más a tu pack",
+      "loaded": "Asset importado correctamente",
       "errors": {
         "duplicated": "Asset duplicado",
         "duplicated_asset": "{name}: Ya existe un asset en este asset pack llamado \"{existingAsset}\" que tiene el id \"{id}\", por favor cámbiale el id a \"{newAsset}\" por uno diferente",
@@ -207,6 +209,7 @@
   "create_single_item_modal": {
     "title": "Nuevo item",
     "thumbnail_step_title": "Editar el thumbnail",
+    "upload_video_step_title": "Sube un video para tu vestimenta inteligente",
     "title_emote": "Nueva Animación",
     "add_representation": "Agregar representación de {bodyShape}",
     "wrong_thumbnail_format": "El thumbnail provisto no es una imagen PNG",
@@ -215,14 +218,16 @@
     "category_placeholder": "Selecciona una categoria",
     "play_mode_label": "Modo de ejecución",
     "play_mode_placeholder": "Selecciona un modo de ejecución",
+    "upload_video_label": "Mostrar a los usuarios una vista previa de cómo usar este elemento",
+    "upload_video_placeholder": "Seleccione un video",
     "rarity_label": "Cuál es la rareza de este item?",
     "rarity_placeholder": "Selecciona una rareza",
-    "rarity_learn_more_about": "{learn_more} acerca de las rarezas",
     "representation_label": "Selecciona el tipo de cuerpo para tu item",
     "existing_item": "Es parte de un item existente?",
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
     "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item",
     "change_item_file": "Editar representación",
+    "upload_video_information": "Tamaño máximo de archivo {max_size} - Duración máxima {max_duration} segundos",
     "error": {
       "item_too_big": "El item entero es demasiado grande para cargarlo. El tamaño máximo de todos los archivos es {size}.",
       "file_too_big": "{title}.{enter}El límite máximo de tamaño de archivo es {size}. Reduzca el tamaño del archivo e intente nuevamente.",
@@ -236,9 +241,31 @@
       "invalid_model_files_representation": "El archivo parece tener más de una representación. Por favor revíselas y vuelva a intentarlo.",
       "emote_duration_too_long": ".{enter}La duración de los emoticones tiene un límite de {duration} segundos.{enter}Reduce la duración del emote e intente nuevamente.",
       "emote_duration_too_long_title": "El emote supera la duración máxima en segundos",
-      "invalid_model_file_type": "El archivo tiene una representación inválida para este {type}. Por favor revíselo y vuelva a intentarlo."
+      "invalid_model_file_type": "El archivo tiene una representación inválida para este {type}. Por favor revíselo y vuelva a intentarlo.",
+      "wrong_video_format": "El video provisto no es un video MP4",
+      "unknown_required_permissions": {
+        "title": "{count, plural, one {El permiso} other {Los permisos}} {wrong_configurations} de la vestimenta interactiva no {count, plural, one {existe} other {existen}}. Por favor, corrija el archivo 'scene.json'.",
+        "message": "Para obtener {learn_more}, consulte la documentación."
+      },
+      "duplicated_required_permissions": {
+        "title": "{count, plural, one {El permiso} other {Los permisos}} {wrong_configurations} {count, plural, one {está duplicado} other {están duplicados}}. Por favor, corrija el archivo 'scene.json'.",
+        "message": "Para obtener {learn_more}, consulte la documentación."
+      },
+      "missing_required_properties": {
+        "title": "{count, plural, one {La propiedad} other {Las propiedades}} {wrong_configurations} no {count, plural, one {está} other {están}} configuradas. Por favor, corrija el archivo 'scene.json'.",
+        "message": "Para obtener {learn_more}, consulte la documentación."
+      },
+      "allowed_media_hostnames_empty_or_invalid": {
+        "title": "Dado que el permiso 'ALLOW_MEDIA_HOSTNAMES' está configurado, la propiedad 'allowedMediaHostnames' debe ser configurada y no puede ser vacía. Por favor, corrija el archivo 'scene.json'.",
+        "message": "Para obtener {learn_more}, consulte la documentación."
+      }
     },
-    "emote_notice": "Las animaciones estan disponibles para todos los cuerpos."
+    "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
+    "smart_wearable_details_title": "Completa los detalles de tu vestimenta interactiva",
+    "smart_wearable_permissions_label": "Permisos de la vestimenta interactiva",
+    "smart_wearable_notice": "Recuerde que la vestimenta interactiva está disponibles para todos los cuerpos.",
+    "thumbnail_preview_title": "Thumbnail",
+    "video_preview_title": "Detalle de video"
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
@@ -488,6 +515,11 @@
     "description": "De ahora en adelante puede comenzar a descargar y usar plantillas y escenas del grupo de la comunidad.¡Deja que tu imaginación moldee tus Mundos y Tierras!",
     "go_to_scenes": "Ir a mis escenas"
   },
+  "smart_wearables_announcement_modal": {
+    "title": "¡La vestimenta interactiva ya está disponible! 🟢",
+    "description": "<b>Lleva la Vestimenta al siguiente nivel con Experiencias Portátiles</b><br></br>Monetiza tus Experiencias Portátiles a través de la Vestimenta Interactiva y amplía la usabilidad de la Vestimenta ofreciendo a los jugadores nuevas habilidades (¡como volar!) o una capa adicional de contenido superpuesto en escenas de Decentraland.",
+    "learn_more": "Más información sobre la vestimenta interactiva"
+  },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
     "subtitle": "Establece un nuevo alias para tu avatar",
@@ -642,6 +674,7 @@
     "save": "Salvar",
     "skip": "Saltar",
     "send": "Enviar",
+    "see_in_decentraland": "Ver en Decentraland",
     "share": "Compartir",
     "sign_in_required": "Debes {link} para acceder a esta página.",
     "sign_in": "Iniciar sesión",
@@ -788,7 +821,25 @@
     "description": "Para transferir escenas entre diferentes cuentas o cargar una escena previamente descargada desde el grupo de escenas, utilice la función de carga. Asegúrese de cargar el archivo zip exactamente como se descargó.",
     "invalid_file": "Archivo inválido",
     "title": "Cargar Escena",
-    "upload_manually": "Busca en tu computadora"
+    "upload_manually": "buscarlo en su computadora"
+  },
+  "upload_video": {
+    "cta": "Arrastre y suelte un video (formato .MP4) para mostrar la funcionalidad portátil inteligente o {acción}",
+    "upload_manually": "buscarlo en su computadora",
+    "error": {
+      "video_file_too_big": {
+        "title": "El archivo es demasiado grande y no se puede cargar.",
+        "message": "El límite de tamaño del archivo es {tamaño}. Por favor reduzca el tamaño del archivo y vuelva a intentarlo."
+      },
+      "video_file_too_long": {
+        "title": "La duración del video excede {max_duration} segundos.",
+        "message": "Por favor reduce la duración e inténtalo de nuevo."
+      },
+      "invalid_video": {
+        "title": "Parece que el video no es válido o está roto.",
+        "message": "Por favor revisa tu archivo y vuelve a intentarlo."
+      }
+    }
   },
   "itemdrawer": {
     "opensea_credit": "Impulsado por {link}",
@@ -821,6 +872,10 @@
     "textures": "texturas",
     "too_many": "Demasiados {metric}",
     "triangles": "triángulos"
+  },
+  "video_stats": {
+    "seconds": "{seconds} {seconds, plural, one {segundo} other {segundos}}",
+    "size": "{size} MB"
   },
   "mobile_page": {
     "desktop_too_narrow": "¡El Builder no funciona con esta resolución! Intenta agrandando la ventana si puedes.",
@@ -1340,7 +1395,9 @@
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
     "add_representation": "Agregar representación de {bodyShape}",
     "change_item_file": "Editar representación",
-    "delete_published_item": "No se puede borrar un item publicado"
+    "delete_published_item": "No se puede borrar un item publicado",
+    "required_permissions": "Permisos",
+    "edit_video": "Editar video"
   },
   "third_party_collection_detail_page": {
     "notice": "Cada item publicado toma un Slot. Crear un borrador de propuesta en el DAO para solicitar más slots",
@@ -1412,7 +1469,8 @@
       "play_mode": "Modo de Reproducción",
       "status": "Estado"
     },
-    "missing_item_price": "Es necesario configurar el precio de una o mas {item_type}.",
+    "missing_item_price": "Es necesario configurar el precio de una o más {item_type}.",
+    "missing_smart_wearable_video": "Es necesario subir un video para uno o más vestimentas interactivas.",
     "unsynced_collection_title": "Hay items no sincronizados con el servidor en esta colección",
     "unsynced_collection_message": "Se modificaron uno o más items después de que se aprobó esta colección.{br}Estas actualizaciones deben ser publicadas y revisadas nuevamente por el comité de curadores.",
     "under_review_collection_message": "Los items actualizados estan siendo revisados por el comité de curadores.{br}Una vez aprobados, estarán visibles automáticamente para los actuales dueños{br}y en el Marketplace."
@@ -1424,7 +1482,7 @@
     "edit_urn": "Editar URN",
     "edit_in_bulk": "Editar en masa",
     "copy_urn": "Copiar URN",
-    "see_in_world": "Ver en el mundo",
+    "see_in_decentraland": "Ver en Decentraland",
     "unpublished": "Esta colleción aún no está publicada",
     "managers": "Colaboradores",
     "minters": "Emisores",
@@ -1482,7 +1540,7 @@
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
     "price_message": "Tenga en cuenta que la cantidad mínima admitida para transacciones sin costo es {minPrice}.{br}{br}Si el item cuesta menos que eso, el comprador deberá cubrir el costo de la transacción en {token}.",
-    "beneficiary_label": "Beneficiario",
+    "beneficiary_label": "Dirección de la billetera del beneficiario",
     "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección.",
     "free_message": "El creador original será el beneficiario de las regalías"
   },
@@ -1559,12 +1617,12 @@
     },
     "confirm_collection_items_step": {
       "title": "Confirmar artículos",
-      "subtitle": "No se pueden agregar ni eliminar artículos de la colección una vez que se publica.{enter}La rareza de los artículos tampoco se podra cambiar despues de la publicación.",
-      "description": "Nombre del artículo, descripción, categorias y precio podran ser modificadas luego.",
+      "subtitle": "No se pueden agregar o eliminar elementos de una colección ni se puede cambiar su rareza después de la publicación.",
+      "description": "Sin embargo, el nombre, la descripción, la categoría y el precio de los artículos siempre se pueden modificar.",
       "confirm_items": "Confirmar Artículos"
     },
     "review_content_policy_step": {
-      "title": "Antes de enviar su colección para su revisión, confirme su reconocimiento.",
+      "title": "Antes de enviar su colección para su revisión, confirme su reconocimiento de lo siguiente:",
       "content_policy_first_condition": "Entiendo que no podré agregar o eliminar artículos, ni modificar el nombre de la colección después de que se publique, y puedo dar fe de que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
       "terms_of_use": "Términos de uso",
       "content_policy": "Política de contenido",
@@ -1575,8 +1633,8 @@
       "continue": "Continar"
     },
     "pay_publication_fee_step": {
-      "title": "Está por enviar a revisión la colección \"{collection_name}\" que incluye {count} {count, plural, one {artículo} other {artículos}}.",
-      "subtitle": "Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarica de publicación de {currency} {publicationFee} por artículo (pagado en MANA).",
+      "title": "Estás por enviar tu colección \"{collection_name}\" que incluye {count} {count, plural, one {artículo} other {artículos}} a revisión.",
+      "subtitle": "Para apoyar al Comité de Curadores y la tesorería de DAO, hay una tarifa de publicación de {currency} {publicationFee} por artículo (pagado en MANA).",
       "learn_more": "Más información sobre la tarifa de publicación",
       "quantity": "Cantidad",
       "items": "{count} {count, plural, one {artículo} other {artículos}}",
@@ -1587,8 +1645,8 @@
     },
     "congratulations_step": {
       "title": "Su colección ya esta disponible para ser verificada por los curadores.",
-      "subtitle": "Todos los comentarios seran enviados al {forum_post} donde usted y cualquier miembro de la comunidad podrán participar.",
-      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curadores. Dado que es un proceso manual, podria tomar unos días. Por favor sea paciente y consciente",
+      "subtitle": "Todos los comentarios seran enviados al {forum_post} donde usted y cualquier miembro de la comunidad podrán comentar.",
+      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curación. Dado que este es un proceso manual, podria tomar unos días. Se agradece su paciencia.",
       "forum_post": "Post en el foro",
       "view_forum_post": "Ver el Post en el foro"
     },
@@ -1660,8 +1718,8 @@
     "description": "Se han realizado cambios en la colección o en los artículos contenidos en ella desde la última vez que un curador los revisó.{br}Para que estos cambios se reflejen en el mercado y en el juego, deben ser revisados y aprobados nuevamente por el comité.{br}¿Está seguro de que desea impulsar los cambios para su revisión?"
   },
   "see_in_world_modal": {
-    "title": "Ver en el mundo",
-    "subtitle": "Elige una de las opciones para probar tus items en el mundo",
+    "title": "Ver en Decentraland",
+    "subtitle": "Elige una de las opciones para probar tus items en Decentraland",
     "genesis": {
       "title": "Genesis Plaza",
       "subtitle": "Explora, salta e interactúa"
@@ -1773,8 +1831,14 @@
       "event_tag": "Usa la etiqueta {event_tag} si quieres incluir este item en el {event_name}. {learn_more}",
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
-      "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"
+      "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro",
+      "required_permissions": "Permisos"
     }
+  },
+  "video_showcase_modal": {
+    "title": "Video detallado de su Vestimenta Interactiva",
+    "back": "Volver",
+    "edit": "Editar video"
   },
   "emote": {
     "category": {

@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ProviderType } from '@dcl/schemas'
+import { getIdentity, storeIdentity, clearIdentity } from '@dcl/single-sign-on-client'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { config } from 'config'
@@ -84,6 +85,8 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
       signer.signMessage(message)
     )
 
+    yield call(storeIdentity, address, identity)
+
     yield put(generateIdentitySuccess(address, identity))
   } catch (error) {
     yield put(generateIdentityFailure(address, error))
@@ -127,12 +130,14 @@ function* handleLogin(action: LoginRequestAction) {
       }
     }
 
-    // Check if we need  to generate a new identity
-    const identity: AuthIdentity = yield select(getCurrentIdentity)
-    if (!identity) {
-      // Generate a new identity
-      const address: string = yield select(getAddress)
+    const address: string = yield select(getAddress)
+    const identity: AuthIdentity | null = yield call(getIdentity, address)
+
+    if (identity) {
+      yield put(generateIdentitySuccess(address, identity))
+    } else {
       yield put(generateIdentityRequest(address))
+
       const generateIdentity: Race<GenerateIdentitySuccessAction, GenerateIdentityFailureAction> = yield takeRace(
         GENERATE_IDENTITY_SUCCESS,
         GENERATE_IDENTITY_FAILURE
@@ -161,27 +166,44 @@ function* handleLogout(_action: LogoutAction) {
   if (address) {
     yield put(disconnectWallet())
     yield put(destroyIdentity(address))
+    // Clear the identity from the SSO iframe. Doing so will log you out of all DCL applications (That use SSO).
+    yield call(clearIdentity, address)
   }
 }
 
 function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   const { wallet } = action.payload
-  const shouldRestoreSession: boolean = yield select(isLoggedIn)
-  if (shouldRestoreSession) {
-    yield put(loginRequest(wallet.providerType, true))
+  const { address, providerType } = wallet
+
+  // Obtains the identity from the SSO iframe.
+  const identity: AuthIdentity | null = yield call(getIdentity, address)
+
+  // If an identity is found, store it and proceed with the login so the state acknowledges that the user is connected.
+  if (identity) {
+    yield put(generateIdentitySuccess(address, identity))
+    yield put(loginRequest(providerType, true))
   }
 }
 
 function* handleChangeAccount(action: ChangeAccountAction) {
   const { wallet } = action.payload
-  const shouldRestoreSession: boolean = yield select(isLoggedIn)
-  if (shouldRestoreSession) {
-    yield put(loginRequest(wallet.providerType, true))
+  const { address, providerType } = wallet
+
+  // Obtains the identity from the SSO iframe.
+  const identity: AuthIdentity | null = yield call(getIdentity, address)
+
+  // If an identity is found, store it and proceed with the login so the state acknowledges that the user is connected.
+  if (identity) {
+    yield put(generateIdentitySuccess(address, identity))
+    yield put(loginRequest(providerType, true))
   }
+
   yield put(clearAssetPacks())
 
   const location: ReturnType<typeof getLocation> = yield select(getLocation)
+
   const isEditor = location.pathname.includes('editor')
+
   if (isEditor) {
     yield put(replace(locations.root()))
   }

@@ -4,19 +4,19 @@ import * as crypto from 'crypto'
 import uuidv4 from 'uuid/v4'
 import JSZip from 'jszip'
 import { Button, Loader } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-
+import { truncateFileName, getExtension } from 'lib/file'
+import { getModelData, ThumbnailType } from 'lib/getModelData'
+import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH, MAX_FILE_SIZE } from 'modules/asset/utils'
+import { Asset, GROUND_CATEGORY, RawAsset } from 'modules/asset/types'
+import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
+import { formatExtensions } from 'modules/item/utils'
+import { MODEL_EXTENSIONS } from 'modules/item/types'
+import { EXPORT_PATH } from 'modules/project/export'
 import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
-import { Asset, GROUND_CATEGORY, RawAsset } from 'modules/asset/types'
-import { EXPORT_PATH } from 'modules/project/export'
-import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
-import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH, MAX_FILE_SIZE } from 'modules/asset/utils'
-import { getModelData, ThumbnailType } from 'lib/getModelData'
 import { createDefaultImportedFile, getMetrics, ASSET_MANIFEST, prepareScript } from './utils'
-import { truncateFileName, getExtension } from 'lib/file'
-
 import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
 
@@ -74,7 +74,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     )
   }
 
-  renderDropzoneCTA = (open: () => void) => {
+  renderDropzoneCTA = (open: (event: React.MouseEvent) => void) => {
     const { isLoading } = this.state
     return (
       <>
@@ -83,21 +83,15 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
             <Loader active size="big" />
           </div>
         ) : null}
-        <T
-          id="asset_pack.import.cta"
-          values={{
-            models_link: (
-              <span className="link" onClick={this.handleOpenDocs}>
-                GLB, GLTF, ZIP
-              </span>
-            ),
-            action: (
-              <span className="action" onClick={open}>
-                {t('import_modal.upload_manually')}
-              </span>
-            )
-          }}
-        />
+        {t('asset_pack.import.cta', {
+          accepted_extensions: formatExtensions(MODEL_EXTENSIONS),
+          enter: <br />,
+          action: (
+            <span className="action" onClick={open}>
+              {t('asset_pack.import.upload_manually')}
+            </span>
+          )
+        })}
       </>
     )
   }
@@ -323,7 +317,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
   }
 
   render() {
-    const { files } = this.state
+    const { files, isLoading } = this.state
     const items = Object.values(files)
     const buttonText = items.length > 1 ? t('asset_pack.import.action_many', { count: items.length }) : t('asset_pack.import.action')
     const hasCorrupted = items.find(item => !!item.error)
@@ -338,6 +332,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           onAcceptedFiles={this.handleDropAccepted}
           onRejectedFiles={this.handleDropRejected}
           renderAction={this.renderDropzoneCTA}
+          disabled={isLoading}
         />
         <Button className="submit" disabled={!canImport} primary={canImport} onClick={this.handleSubmit}>
           {buttonText}

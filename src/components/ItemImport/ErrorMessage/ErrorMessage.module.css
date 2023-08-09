@@ -1,0 +1,40 @@
+.errorContainer {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 24px 30px;
+  margin: 16px;
+  width: calc(100% - 32px);
+  border-radius: 8px;
+  background-color: rgba(115, 110, 125, 0.16);
+  align-items: center;
+  text-align: justify;
+  line-height: 24px;
+}
+
+.errorMessageContainer {
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+}
+
+.errorTitle {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.errorMessage {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.errorIcon {
+  margin-right: 24px;
+  height: 48px;
+  width: 48px;
+  background: url('/src/icons/alert.svg') no-repeat;
+  background-size: contain;
+  filter: invert(65%) sepia(60%) saturate(599%) hue-rotate(323deg) brightness(104%) contrast(98%); /* #fc9965 */
+}

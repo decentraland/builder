@@ -15,13 +15,15 @@ import {
   isOwner
 } from 'modules/collection/utils'
 import { CollectionType } from 'modules/collection/types'
+import { isSmart } from 'modules/item/utils'
+import { Item, ItemType, SyncStatus, VIDEO_PATH } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
-import { Item, ItemType, SyncStatus } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import CollectionStatus from 'components/CollectionStatus'
+import JumpIn from 'components/JumpIn'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionContextMenu from './CollectionContextMenu'
 import { Props, State } from './CollectionDetailPage.types'
@@ -98,13 +100,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     collection && onNavigate(getCollectionEditorURL(collection, items), { fromParam: FromParam.COLLECTIONS })
   }
 
-  handleSeeInWorld = () => {
-    const { collection, onOpenModal } = this.props
-    if (collection) {
-      onOpenModal('SeeInWorldModal', { collectionId: collection.id })
-    }
-  }
-
   handleNavigateToForum = () => {
     const { collection } = this.props
     if (collection && collection.isPublished && collection.forumLink) {
@@ -137,6 +132,17 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     )
   }
 
+  renderMissingSmartWearableVideoPopup() {
+    return (
+      <Popup
+        className="modal-tooltip"
+        content={t('collection_detail_page.missing_smart_wearable_video')}
+        position="top center"
+        trigger={<i aria-hidden="true" className="circle icon tiny"></i>}
+      />
+    )
+  }
+
   renderActionButtoms(items: Item[]) {
     const collection = this.props.collection!
     const isLocked = isCollectionLocked(collection)
@@ -144,10 +150,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
     return (
       <>
-        <Button basic className="action-button" disabled={isLocked || !hasItems} onClick={this.handleSeeInWorld}>
-          <BuilderIcon name="right-round-arrow" />
-          <span className="text">{t('collection_context_menu.see_in_world')}</span>
-        </Button>
+        <JumpIn size="small" active collection={collection} text={t('global.see_in_decentraland')} disabled={isLocked || !hasItems} />
         <Button basic className="action-button" disabled={isLocked || !hasItems} onClick={this.handleNavigateToEditor}>
           <BuilderIcon name="cube" />
           <span className="text">{t('collection_detail_page.preview')}</span>
@@ -236,6 +239,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
     const isEmoteMissingPrice = hasEmotes ? items.some(item => item.type === ItemType.EMOTE && !item.price) : false
     const isWearableMissingPrice = hasWearables ? items.some(item => item.type === ItemType.WEARABLE && !item.price) : false
+    const isSmartWearableMissingVideo = hasWearables && items.some(item => isSmart(item) && !(VIDEO_PATH in item.contents))
     const hasOnlyEmotes = hasEmotes && !hasWearables
     const hasOnlyWearables = hasWearables && !hasEmotes
     const filteredItems = items.filter(item =>
@@ -315,7 +319,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
               <Tabs.Tab active={tab === ItemType.WEARABLE} onClick={() => this.handleTabChange(ItemType.WEARABLE)}>
                 <BuilderIcon name="wearable" />
                 {t('collection_detail_page.wearables')}
-                {isWearableMissingPrice ? this.renderMissingItemPricePopup(ItemType.WEARABLE) : null}
+                {isWearableMissingPrice
+                  ? this.renderMissingItemPricePopup(ItemType.WEARABLE)
+                  : isSmartWearableMissingVideo
+                  ? this.renderMissingSmartWearableVideoPopup()
+                  : null}
               </Tabs.Tab>
               <Tabs.Tab active={tab === ItemType.EMOTE} onClick={() => this.handleTabChange(ItemType.EMOTE)}>
                 <BuilderIcon name="emote" />
@@ -343,6 +351,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                     <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell>
                   ) : null}
                   <Table.HeaderCell>{t('collection_detail_page.table.status')}</Table.HeaderCell>
+                  <Table.HeaderCell />
                 </Table.Row>
               </Table.Header>
               <Table.Body>

@@ -54,9 +54,17 @@ export const getIsInspectorEnabled = (state: RootState) => {
   }
 }
 
-export const getIsProfileEnabled = (state: RootState) => {
+export const getIsProfileSiteEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.PROFILE)
+  } catch (e) {
+    return false
+  }
+}
+
+export const getIsPublishSmartWearablesEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.PUBLISH_SMART_WEARABLES)
   } catch (e) {
     return false
   }

@@ -1,4 +1,4 @@
-import { call, select, takeEvery, put } from '@redux-saga/core/effects'
+import { call, select, takeEvery, put, take } from '@redux-saga/core/effects'
 import { ToastType } from 'decentraland-ui'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
@@ -8,6 +8,7 @@ import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/a
 import { BuilderAPI } from 'lib/api/builder'
 import { getCollection } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
+import { GENERATE_IDENTITY_SUCCESS } from 'modules/identity/actions'
 import { CurationStatus } from '../types'
 import {
   approveCollectionCurationFailure,
@@ -100,6 +101,10 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
   }
 
   function* handleConnectWalletSuccess() {
+    // Wait for the identity to be generated.
+    yield take(GENERATE_IDENTITY_SUCCESS)
+
+    // Fetching curations require that the identity is already stored in redux.
     yield put(fetchCollectionCurationsRequest())
   }
 

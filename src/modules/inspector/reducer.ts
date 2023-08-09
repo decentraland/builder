@@ -1,14 +1,23 @@
-import { Action } from 'typesafe-actions'
+import { ToggleScreenshotAction, TOGGLE_SCREENSHOT } from './actions'
 
-/* eslint-disable @typescript-eslint/ban-types */
-export type InspectorState = {}
+export type InspectorState = {
+  screenshotEnabled: boolean
+}
 
-const INITIAL_STATE: InspectorState = {}
+const INITIAL_STATE: InspectorState = {
+  screenshotEnabled: true
+}
 
-type InspectorReducerAction = Action
+type InspectorReducerAction = ToggleScreenshotAction
 
 export function inspectorReducer(state = INITIAL_STATE, action: InspectorReducerAction) {
   switch (action.type) {
+    case TOGGLE_SCREENSHOT: {
+      return {
+        ...state,
+        screenshotEnabled: action.payload.enabled
+      }
+    }
     default:
       return state
   }

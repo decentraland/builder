@@ -1,8 +1,33 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { getFileSize } from './file'
 
-export function usePlayVideoOnHover() {
+export function useVideo() {
   const [hovered, setHovered] = useState(false)
+  const [isLoading, setLoading] = useState(true)
+  const [size, setSize] = useState(0)
+  const [duration, setDuration] = useState(0)
   const video = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const videoElement = video.current
+
+    const loadVideoHandler = async () => {
+      const fileSize = await getFileSize((videoElement as HTMLVideoElement).src)
+      setSize(fileSize)
+      setDuration((videoElement as HTMLVideoElement).duration)
+      setLoading(false)
+    }
+
+    if (videoElement) {
+      videoElement.addEventListener('loadedmetadata', loadVideoHandler)
+    }
+
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener('loadedmetadata', loadVideoHandler)
+      }
+    }
+  }, [])
 
   const isVideoPlaying = () => {
     return (
@@ -32,6 +57,9 @@ export function usePlayVideoOnHover() {
   return {
     hovered,
     video,
+    size,
+    duration,
+    isLoading,
     onMouseEnter: handleMouseEnter,
     onMouseLeave: handleMouseLeave
   }

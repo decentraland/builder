@@ -1,6 +1,7 @@
 import * as React from 'react'
 import classNames from 'classnames'
 import Dropzone, { DropzoneState } from 'react-dropzone'
+import { stopPropagation } from 'lib/event'
 import { Props } from './FileImport.types'
 import './FileImport.css'
 
@@ -22,7 +23,7 @@ export default class FileImport<T> extends React.Component<Props<T>> {
         {(!items || items.length === 0) && renderAction && (
           <span className="cta">
             <div className="image" />
-            <div>{renderAction(open)}</div>
+            <div>{renderAction(stopPropagation(open))}</div>
           </span>
         )}
       </div>
@@ -38,7 +39,7 @@ export default class FileImport<T> extends React.Component<Props<T>> {
   }
 
   render() {
-    const { accept } = this.props
+    const { accept, disabled } = this.props
     return (
       <div className="FileImport">
         <Dropzone
@@ -46,7 +47,7 @@ export default class FileImport<T> extends React.Component<Props<T>> {
           onDropAccepted={this.handleDropAccepted}
           onDropRejected={this.handleDropRejected}
           accept={accept}
-          noClick
+          disabled={disabled}
         />
       </div>
     )

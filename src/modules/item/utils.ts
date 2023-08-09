@@ -1,6 +1,7 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
 import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory, Entity } from '@dcl/schemas'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { ModelMetrics } from 'modules/models/types'
@@ -29,11 +30,14 @@ import {
   ItemMetadataType,
   WearableRepresentation,
   GenerateImageOptions,
-  EmotePlayMode
+  EmotePlayMode,
+  VIDEO_PATH
 } from './types'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_THUMBNAIL_FILE_SIZE = 1048576 // 1MB
+export const MAX_VIDEO_FILE_SIZE = 4194304 // 4 MB
+export const MAX_VIDEO_DURATION = 15 // 15s
 export const MAX_NFTS_PER_MINT = 50
 export const MAX_EMOTE_DURATION = 10 // seconds
 export const UNSYNCED_STATES = new Set([SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW])
@@ -150,7 +154,7 @@ export function getBackgroundStyle(rarity?: ItemRarity) {
     : { backgroundColor: 'var(--secondary)' }
 }
 
-export function getItemMetadataType(item: Item) {
+export function getItemMetadataType(item: { type: ItemType; contents: Record<string, string | Blob> }) {
   switch (item.type) {
     case ItemType.WEARABLE: {
       if (Object.keys(item.contents).some(path => path.endsWith('.js'))) {
@@ -162,6 +166,10 @@ export function getItemMetadataType(item: Item) {
       return ItemMetadataType.EMOTE
     }
   }
+}
+
+export function isSmart({ type, contents = {} }: { type?: ItemType; contents?: Record<string, string | Blob> }) {
+  return !!type && getItemMetadataType({ type, contents }) === ItemMetadataType.SMART_WEARABLE
 }
 
 export function buildItemMetadata(
@@ -305,7 +313,7 @@ export async function resizeImage(image: Blob, width = 256, height = 256) {
 }
 
 export function isComplete(item: Item) {
-  return item.beneficiary !== undefined && item.price !== undefined
+  return item.beneficiary !== undefined && item.price !== undefined && (isSmart(item) ? VIDEO_PATH in item.contents : true)
 }
 
 export function isOwner(item: Item, address?: string) {
@@ -333,6 +341,10 @@ export function canManageItem(collection: Collection, item: Item, address?: stri
 
 export function getThumbnailURL(item: Item) {
   return getContentsStorageUrl(item.contents[item.thumbnail])
+}
+
+export function getVideoURL(item: Item) {
+  return item.video ? getContentsStorageUrl(item.contents[item.video]) : ''
 }
 
 export function getRarities() {
@@ -363,7 +375,7 @@ export function getSkinHiddenCategories() {
     WearableCategory.UPPER_BODY,
     WearableCategory.LOWER_BODY,
     WearableCategory.FEET
-  ]
+  ] as WearableCategory[] & BodyPartCategory[]
 }
 
 function getCategories(contents: Record<string, any> | undefined = {}) {
@@ -406,7 +418,10 @@ export function getHideableWearableCategories(
   return hideableCategories
 }
 
-export function getHideableBodyPartCategories(contents: Record<string, any> | undefined = {}, isHandsCategoryEnabled = false) {
+export function getHideableBodyPartCategories(
+  contents: Record<string, any> | undefined = {},
+  isHandsCategoryEnabled = false
+): BodyPartCategory[] {
   const fileNames = Object.keys(contents)
 
   if (!fileNames.some(isModelFile)) {
@@ -522,6 +537,8 @@ export function isWearableSynced(item: Item, entity: Entity) {
   const contents = entity.content.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
     const hash = item.contents[path]
+    // Skip video file because it's not in the catalyst
+    if (VIDEO_PATH === path) continue
     if (contents.get(path) !== hash) {
       return false
     }
@@ -643,4 +660,46 @@ export const EMPTY_ITEM_METRICS: ModelMetrics = {
   meshes: 0,
   bodies: 0,
   entities: 1
+}
+
+export const loadVideo = (src: File | string): Promise<HTMLVideoElement> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const video = document.createElement('video')
+      video.preload = 'metadata'
+
+      video.onloadedmetadata = function () {
+        resolve(video)
+      }
+
+      video.onerror = function () {
+        reject('Invalid video. Please select a video file.')
+      }
+
+      video.src = typeof src === 'string' ? src : URL.createObjectURL(src)
+    } catch (e) {
+      reject(e)
+    }
+  })
+}
+
+export const getFirstWearableOrItem = (items: Item[]): Item | undefined => {
+  return items.length > 0 ? items.find(item => item.type === ItemType.WEARABLE) ?? items[0] : undefined
+}
+
+export const formatExtensions = (extensions: string[]): string => {
+  if (extensions.length === 0) {
+    return ''
+  }
+
+  const formattedExtensions = extensions.map(extension => extension.toUpperCase().replace('.', ''))
+  formattedExtensions.sort()
+
+  if (extensions.length > 1) {
+    const joinedExtensions = formattedExtensions.slice(0, -1).join(', ')
+    const lastExtension = formattedExtensions.slice(-1)[0]
+    return `${joinedExtensions} ${t('global.or')} ${lastExtension}`
+  }
+
+  return formattedExtensions.join(', ')
 }

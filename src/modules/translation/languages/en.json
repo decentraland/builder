@@ -95,9 +95,11 @@
     "import": {
       "action": "Import asset",
       "action_many": "Import {count} assets",
-      "cta": "Drag your Asset file here in {models_link} format, or {action}",
+      "cta": "Drag and drop your asset file here ({accepted_extensions}),{enter}or {action}",
+      "upload_manually": "browse for it on your computer",
       "description_create": "Start by adding some assets to your pack",
       "description_edit": "Add some more items to your pack",
+      "loaded": "Item imported successfully",
       "errors": {
         "duplicated": "Duplicated Asset",
         "duplicated_asset": "{name}: There's already an asset in this asset pack called \"{existingAsset}\" that has the id \"{id}\", please change the id of \"{newAsset}\" to a different one",
@@ -204,6 +206,7 @@
   "create_single_item_modal": {
     "title": "New Item",
     "thumbnail_step_title": "Edit Thumbnail",
+    "upload_video_step_title": "Upload a Video for your Smart Wearable",
     "title_emote": "New Emote",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
@@ -212,16 +215,18 @@
     "category_placeholder": "Select a category",
     "play_mode_label": "Play mode",
     "play_mode_placeholder": "Select a play mode",
-    "rarity_label": "How rare is this item?",
+    "upload_video_label": "Show users a preview of how to use this item",
+    "upload_video_placeholder": "Select a video",
+    "rarity_label": "What's this item's rarity?",
     "rarity_placeholder": "Select a rarity",
-    "rarity_learn_more_about": "{learn_more} about rarities",
     "representation_label": "Select the body shape for your item",
     "existing_item": "Is this part of an existing item?",
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
     "adding_representation": "This will be added as {bodyShape} for the following item",
     "change_item_file": "Edit representation",
-    "import_information": "For more information about uploading wearables or emotes {link}",
+    "import_information": "For more information about uploading Wearables or Emotes {link}",
     "import_information_link_label": "click here",
+    "upload_video_information": "Maximum file size {max_size} - Maximum duration {max_duration} seconds",
     "error": {
       "item_too_big": "The entire item is too big to be uploaded. The max size for all files is {size}.",
       "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
@@ -233,11 +238,33 @@
       "invalid_content_path": "Invalid path \"{path}\" for property \"{name}\", file not found.",
       "invalid_enum_value": "Invalid value \"{value}\" for property \"{name}\", possible values: {values}.",
       "invalid_model_files_representation": "The file seems to have more than one representation, please review them and try again.",
-      "emote_duration_too_long": "{title}.{enter}Duration of the emotes has a limit of {duration} seconds.{enter}Reduce the duration of the emote and try again.",
-      "emote_duration_too_long_title": "Your emote exceeds the maximum duration in seconds",
-      "invalid_model_file_type": "The file has an invalid representation for this {type} item, please review it and try again."
+      "emote_duration_too_long": "{title}.{enter}Duration of the Emotes has a limit of {duration} seconds.{enter}Reduce the duration of the Emote and try again.",
+      "emote_duration_too_long_title": "Your Emote exceeds the maximum duration in seconds",
+      "invalid_model_file_type": "The file has an invalid representation for this {type} item, please review it and try again.",
+      "wrong_video_format": "The provided video is not a MP4 video",
+      "unknown_required_permissions": {
+        "title": "Smart Wearable {count, plural, one {Permission} other {Permissions}} {wrong_configurations} {count, plural, one {doesn't} other {don't}} exist. Please correct the 'scene.json'.",
+        "message": "For more information, check the Docs to {learn_more}."
+      },
+      "duplicated_required_permissions": {
+        "title": "{wrong_configurations} Smart Wearable {count, plural, one {Permission is} other {Permissions are}} duplicated. Please correct the 'scene.json'.",
+        "message": "For more information, check the Docs to {learn_more}."
+      },
+      "missing_required_properties": {
+        "title": "The {count, plural, one {property} other {properties}} {wrong_configurations} {count, plural, one {is} other {are}} missing in the configuration. Please correct the 'scene.json'.",
+        "message": "For more information, check the Docs to {learn_more}."
+      },
+      "allowed_media_hostnames_empty_or_invalid": {
+        "title": "Given that the 'ALLOW_MEDIA_HOSTNAMES' permission is set, the 'allowedMediaHostnames' property must be set and not empty. Please correct the 'scene.json'.",
+        "message": "For more information, check the Docs to {learn_more}."
+      }
     },
-    "emote_notice": "Emotes are available for all body shapes."
+    "emote_notice": "Emotes are available for all body shapes.",
+    "smart_wearable_details_title": "Complete your Smart Wearable Details",
+    "smart_wearable_permissions_label": "Smart Wearable permissions",
+    "smart_wearable_notice": "Remember that Smart Wearables are available for all body shapes",
+    "thumbnail_preview_title": "Thumbnail",
+    "video_preview_title": "Video Detail"
   },
   "create_and_edit_multiple_items_modal": {
     "create": {
@@ -485,6 +512,11 @@
     "description": "From now on you can start downloading and using templates and scenes from the community pool. Let your imagination shape your Worlds and LANDs!",
     "go_to_scenes": "Go to my scenes"
   },
+  "smart_wearables_announcement_modal": {
+    "title": "Smart Wearables are now live! 🟢",
+    "description": "<b>Take Wearables to the next level with Portable Experiences</b><br></br>Monetize your Portable Experiences through Smart Wearables and expand the usability of Wearables by offering players new abilities (like flying!) or an extra layer of content overlaid on Decentraland scenes.",
+    "learn_more": "Learn more about Smart Wearables"
+  },
   "use_as_alias_modal": {
     "title": "Use as Alias",
     "subtitle": "This will be your name in the Metaverse",
@@ -640,6 +672,7 @@
     "reload": "Reload",
     "save": "Save",
     "send": "Send",
+    "see_in_decentraland": "See in Decentraland",
     "share": "Share",
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
@@ -710,7 +743,7 @@
     "title": "Let's build the Metaverse together!",
     "collections": {
       "card_title": "Collections",
-      "card_description": "Create, review and publish your collections of wearables and emotes.",
+      "card_description": "Create, review and publish your collections of Wearables and Emotes.",
       "cta_label": "Manage collections"
     },
     "scenes": {
@@ -780,7 +813,25 @@
     "description": "To transfer scenes between different accounts or upload a scene previously downloaded from the scene pool, utilize the 'upload scene' feature. Ensure that you upload the zip file exactly as it was downloaded.",
     "invalid_file": "Invalid file",
     "title": "Upload Scene",
-    "upload_manually": "Browse your computer"
+    "upload_manually": "browse for it on your computer"
+  },
+  "upload_video": {
+    "cta": "Drag and drop a video (.MP4 format) to showcase the Smart Wearable's functionality or {action}",
+    "upload_manually": "browse for it on your computer",
+    "error": {
+      "video_file_too_big": {
+        "title": "The file is too large and can't be uploaded.",
+        "message": "File size limit is {size}. Please reduce the size of the file and try again."
+      },
+      "video_file_too_long": {
+        "title": "your video duration exceeds {max_duration} seconds.",
+        "message": "Please reduce the duration and try again."
+      },
+      "invalid_video": {
+        "title": "Your video seems to be invalid or broken.",
+        "message": "Please review your file and try again."
+      }
+    }
   },
   "itemdrawer": {
     "opensea_credit": "Powered by {link}",
@@ -814,6 +865,10 @@
     "too_many": "Too many {metric}",
     "triangles": "triangles"
   },
+  "video_stats": {
+    "seconds": "{seconds} {seconds, plural, one {second} other {seconds}}",
+    "size": "{size} MB"
+  },
   "mobile_page": {
     "desktop_too_narrow": "The Builder doesn't work on this resolution! Try making this window wider if you can.",
     "gallery_title": "Check out work from Builder users!",
@@ -829,7 +884,7 @@
     "title": "Builder Tools are only available on desktop",
     "list_title": "From your computer, you can:",
     "first_paragraph": "Create, preview and publish {bold_text}.",
-    "first_paragraph_bold_text": "collections of wearables and emotes",
+    "first_paragraph_bold_text": "collections of Wearables and Emotes",
     "second_paragraph": "Build {bold_text}. You can use free 3D models or upload your own.",
     "second_paragraph_bold_text": "content for your LAND",
     "third_paragraph": "Publish scenes, {bold_text} of your LAND.",
@@ -1332,7 +1387,9 @@
     "notice": "You need to add your items to a collection before you can publish them",
     "add_representation": "Add {bodyShape} representation",
     "change_item_file": "Edit representation",
-    "delete_published_item": "You can't delete a published item"
+    "delete_published_item": "You can't delete a published item",
+    "required_permissions": "Permissions",
+    "edit_video": "Edit video showcase"
   },
   "third_party_collection_detail_page": {
     "notice": "Each published item takes 1 Slot. Create a draft-proposal in the DAO to ask for more slots",
@@ -1370,7 +1427,7 @@
     "new_item": "New Item",
     "mint_items": "Mint Items",
     "on_sale": "On Sale",
-    "put_for_sale": "Put for sale",
+    "put_for_sale": "Put up for sale",
     "set_on_sale_popup": "This will allow your collection to be sold in the Decentraland Marketplace.",
     "unset_on_sale_popup": "This collection is on sale in the Decentraland Marketplace.",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
@@ -1405,6 +1462,7 @@
       "status": "Status"
     },
     "missing_item_price": "You need to configure the price of one or more {item_type}.",
+    "missing_smart_wearable_video": "You need to upload a video for one or more smart wearables.",
     "unsynced_collection_title": "There are unsynced items in this collection",
     "unsynced_collection_message": "One or more items have been modified after this collection was approved.{br}These updates need to be published and reviewed again by the curation commitee.",
     "under_review_collection_message": "Updated items are being reviewed by the curation committee. Once they are approved,{br}they will be automatically visible to the current owners and in the Marketplace."
@@ -1416,7 +1474,7 @@
     "edit_urn": "Edit URN",
     "edit_in_bulk": "Edit in bulk",
     "copy_urn": "Copy URN",
-    "see_in_world": "See in world",
+    "see_in_decentraland": "See in Decentraland",
     "unpublished": "This collection is not published yet",
     "managers": "Collaborators",
     "minters": "Minters",
@@ -1467,12 +1525,12 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Set price",
+    "title": "Set Price",
     "for_me": "I'm the beneficiary",
     "free": "Make it free",
     "price_label": "Price",
     "price_message": "Keep in mind that the minimun amount supported for costless transactions is {minPrice}.{br}{br}If your item costs less than that, the buyer will need to cover the transaction cost in {token}.",
-    "beneficiary_label": "Beneficiary",
+    "beneficiary_label": "Beneficiary Wallet Address",
     "beneficiary_popup": "This is the wallet address that will receive MANA when the item is sold for the first time and Royalties when it is resold. You can set a different beneficiary address for each item in a collection.",
     "free_message": "The original Creator will be the Beneficiary for the generated Royalties"
   },
@@ -1512,7 +1570,7 @@
     "third_paragraph": "You won’t be able to change the name of the collection. Please ensure it’s spelled correctly and doesn’t violate intellectual property rights.",
     "fourth_paragraph": "You will be able to see your items in the marketplace but they will be available for sale once the collection is validated by the DAO.",
     "items_breakdown_title": "You are about to publish a collection with {count} {count, plural, one {item} other {items}}. In order to support the growth of the community, there is a publication fee of {publicationFee} {currency} per item (paid in MANA) that goes to the DAO and the Curation Committee.",
-    "learn_more": "Learn more about the publication fee",
+    "learn_more": "Learn more about the Publication Fee",
     "estimate_notice": "* Total in MANA is calculated based on the current market prices. This value can slightly change when the transaction is executed.",
     "qty_of_items": "Qty. of items",
     "fee_per_item": "Fee per item",
@@ -1533,28 +1591,28 @@
   },
   "publish_wizard_collection_modal": {
     "title_publish_collection": "Publish Collection",
-    "title_review_content_policy": "Review content policy",
-    "title_pay_publication_fee": "Pay the publication fee",
+    "title_review_content_policy": "Review Content Policy",
+    "title_pay_publication_fee": "Pay the Publication Fee",
     "title_congratulations": "Congratulations!",
     "publish_failed": "Failed to publish",
     "confirm_collection_name_step": {
-      "title": "Confirm collection name",
+      "title": "Confirm Collection Name",
       "subtitle": "The name of the collection can't be modified after sending it for review.",
       "description": "Make sure it doesn't have any typos, and it doesn't contain any Intellectual Property you don't own (E.g Star Wars, Sailor Moon, etc)",
       "collection_name_label": "Collection name",
-      "collection_name_confirmation_label": "Confirm Collection name",
+      "collection_name_confirmation_label": "Confirm Collection Name",
       "collection_name_placeholder": "Your collection name",
       "collection_names_different": "Collection name does not match",
       "confirm_name": "Confirm Name"
     },
     "confirm_collection_items_step": {
-      "title": "Confirm items",
-      "subtitle": "Items cannot be added or deleted from a collection once it is published.{enter}The rarity of items cannot be changed after publication either.",
-      "description": "Item name, description, categories and price can be modified later.",
+      "title": "Confirm Items",
+      "subtitle": "Items cannot be added or deleted from a collection nor can their rarity be changed after publication.",
+      "description": "However, items' name, description, category, and price can always be modified.",
       "confirm_items": "Confirm Items"
     },
     "review_content_policy_step": {
-      "title": "Before sending your collection for review, please confirm your acknowledgment.",
+      "title": "Before sending your collection for review, please confirm your acknowledgment of the following:",
       "content_policy_first_condition": "I understand I won't be able to add or delete items, or modify the name of the collection after it is published, and I can attest that \"{collection_name}\" as a name doesn't violate any Intellectual Property rights.",
       "terms_of_use": "Terms of Use",
       "content_policy": "Content Policy",
@@ -1565,9 +1623,9 @@
       "continue": "Continue"
     },
     "pay_publication_fee_step": {
-      "title": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}.",
-      "subtitle": "In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publicationFee} per item (paid in MANA).",
-      "learn_more": "Learn more about the publication fee",
+      "title": "You are about to send your collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}} for review.",
+      "subtitle": "In order to support the Curators Committee and the DAO treasury, there is a publication fee of {currency} {publicationFee} per item (paid in MANA).",
+      "learn_more": "Learn more about the Publication Fee",
       "quantity": "Quantity",
       "items": "{count} {count, plural, one {item} other {items}}",
       "fee_per_item": "Fee per item",
@@ -1577,8 +1635,8 @@
     },
     "congratulations_step": {
       "title": "Your collection is now available for curators to review.",
-      "subtitle": "Any feedback will be sent in the {forum_post} where you and anyone in the community will be able to participate.",
-      "description": "The collection will be published after it is approved by the Curators Committee. Since this is a manual process, it can take a few days. Please be patient and mindful.",
+      "subtitle": "Any feedback will be sent in the {forum_post} where you and anyone in the community will be able to comment.",
+      "description": "The collection will be published after it is approved by the Curation Committee. Since this is a manual process, it can take a few days. Your patience is appreciated.",
       "forum_post": "Forum Post",
       "view_forum_post": "View Forum Post"
     },
@@ -1616,7 +1674,7 @@
     "put_for_sale": {
       "title": "Do you want to put this collection for sale?",
       "description": "The collection will be available for purchase in the Decentraland Marketplace.",
-      "cta": "Put for Sale"
+      "cta": "Put up for Sale"
     },
     "remove_from_marketplace": {
       "title": "Do you want to remove this collection from the Marketplace?",
@@ -1645,8 +1703,8 @@
     "description": "Changes have been made to the collection or the items contained by it since the last time a curator has reviewed them.{br}In order to have this changes reflected on the marketplace and in the game, they have to be reviewed and approved again by the committee.{br}Are you sure you want to push the changes for review?"
   },
   "see_in_world_modal": {
-    "title": "See in world",
-    "subtitle": "Choose a location to try your items in-world",
+    "title": "See in Decentraland",
+    "subtitle": "Choose a location to try your items in Decentraland",
     "genesis": {
       "title": "Genesis Plaza",
       "subtitle": "Explore, jump and interact."
@@ -1668,7 +1726,7 @@
   "item_editor": {
     "open": "Open editor",
     "top_panel": {
-      "reviewed_counter": "Reviewed wearables: {count}/{threshold}",
+      "reviewed_counter": "Reviewed Wearables: {count}/{threshold}",
       "items_pending_to_review": "There are items pending to review",
       "not_enough_items_to_curate_more": "The collection doesn't have more items to curate",
       "approve": "Approve",
@@ -1754,8 +1812,14 @@
       "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name} event.",
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
-      "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum"
+      "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum",
+      "required_permissions": "Permissions"
     }
+  },
+  "video_showcase_modal": {
+    "title": "Detailed Video of your Smart Wearable",
+    "back": "Back",
+    "edit": "Edit Video"
   },
   "emote": {
     "category": {
@@ -1773,11 +1837,11 @@
     "play_mode": {
       "simple": {
         "text": "Play Once",
-        "description": "Once triggered, the emote will play once and return to the default pose."
+        "description": "Once triggered, the Emote will play once and return to the default pose."
       },
       "loop": {
         "text": "Loop",
-        "description": "Once triggered, the emote will play in loop until the player moves."
+        "description": "Once triggered, the Emote will play in loop until the player moves."
       }
     }
   },

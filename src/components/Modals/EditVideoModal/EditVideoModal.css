@@ -1,0 +1,42 @@
+.ui.modal.EditVideoModal > .content {
+  margin-bottom: 32px;
+}
+
+.EditVideoModal .error {
+  margin-top: 15px;
+  width: 100%;
+}
+
+.EditVideoModal .video-step-container {
+  width: 100%;
+  height: 440px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.EditVideoModal .video-actions.dcl.row.grow.shrink {
+  justify-content: space-between;
+}
+
+.EditVideoModal .content {
+  height: 500px;
+}
+
+.EditVideoModal .content > video {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.08) 100%), #37333d;
+}
+
+.EditVideoModal .actions {
+  justify-content: space-between;
+}
+
+.EditVideoModal .actions button.ui.button {
+  flex-grow: 0;
+  width: 140px;
+}
