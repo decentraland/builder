@@ -71,7 +71,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     poolSaga(builderAPI),
     profileSaga(),
     projectSaga(builderAPI),
-    sceneSaga(),
+    sceneSaga(builderAPI),
     statsSaga(),
     syncSaga(builderAPI),
     thirdPartySaga(builderAPI, catalystClient),
