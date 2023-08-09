@@ -612,6 +612,20 @@ export class BuilderAPI extends BaseAPI {
     return { hash }
   }
 
+  async uploadCrdt(file: Blob, projectId: string): Promise<void> {
+    const formData = new FormData()
+    formData.append('file', file)
+    await this.request('put', `/projects/${projectId}/crdt`, {
+      params: formData
+    })
+    return
+  }
+
+  async fetchCrdt(projectId: string): Promise<Blob> {
+    const response: Blob = await this.request('get', `/projects/${projectId}/crdt`)
+    return response
+  }
+
   async fetchProjects() {
     const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects', { retry: retryParams })
     return items.map(fromRemoteProject)

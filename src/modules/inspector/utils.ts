@@ -1,5 +1,5 @@
 import { Composite, CompositeDefinition } from '@dcl/ecs'
-import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
+import { createEngineContext, dumpEngineToComposite, dumpEngineToCrdtCommands } from '@dcl/inspector'
 import { Layout, Project } from 'modules/project/types'
 import { ComponentData, ComponentType, SceneSDK6 } from 'modules/scene/types'
 
@@ -17,7 +17,7 @@ export function toPath(path: string) {
   return `assets/scene/models/${path}`
 }
 
-export function toComposite(scene: SceneSDK6, project?: Project) {
+export function getEngine(scene: SceneSDK6, project?: Project) {
   const { engine, components } = createEngineContext()
 
   for (const entity of Object.values(scene.entities)) {
@@ -50,7 +50,11 @@ export function toComposite(scene: SceneSDK6, project?: Project) {
       }
     }
   })
+  return engine
+}
 
+export function toComposite(scene: SceneSDK6, project?: Project) {
+  const engine = getEngine(scene, project)
   const composite = dumpEngineToComposite(engine as any, 'json')
   return Composite.toJson(composite) as CompositeDefinition
 }
@@ -64,4 +68,9 @@ export function toMappings(scene: SceneSDK6): Record<string, string> {
     }
   }
   return mappings
+}
+
+export function toCrdt(scene: SceneSDK6, project?: Project) {
+  const engine = getEngine(scene, project)
+  return dumpEngineToCrdtCommands(engine as any)
 }

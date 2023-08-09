@@ -273,7 +273,6 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
 
   function* handleWriteFile(params: IframeStorage.Params['write_file']) {
     const { path, content } = params
-
     switch (path) {
       case 'scene.json': {
         // TODO: some changes to the scene.json might eventually end up in changes to the Project, like the name or the layout, but for now we can ignore it
@@ -293,7 +292,10 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         break
       }
       case 'main.crdt': {
-        // TODO: store this in scene.sdk7
+        const project: Project = yield select(getCurrentProject)
+        assets.set('main.crdt', content)
+        const blob = new Blob([content])
+        void builder.uploadCrdt(blob, project.id)
         break
       }
       default: {
