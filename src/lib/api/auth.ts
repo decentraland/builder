@@ -29,7 +29,7 @@ export class Authorization {
         }
       }
     }
-    
+
     return headers
   }
 }
