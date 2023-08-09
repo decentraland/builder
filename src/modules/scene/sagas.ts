@@ -69,14 +69,15 @@ import {
   DuplicateProjectSuccessAction,
   duplicateProjectRequest
 } from 'modules/project/actions'
-import { toComposite, toMappings } from 'modules/inspector/utils'
+import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { PreviewType } from 'modules/editor/types'
+import { BuilderAPI } from 'lib/api/builder'
 
 const editorWindow = window as EditorWindow
 
-export function* sceneSaga() {
+export function* sceneSaga(builderApi: BuilderAPI) {
   yield takeLatest(ADD_ITEM, handleAddItem)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(RESET_ITEM, handleResetItem)
@@ -88,687 +89,689 @@ export function* sceneSaga() {
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
   yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
   yield takeLatest(MIGRATE_TO_SDK7_REQUEST, handleMigrateToSDK7Request)
-}
 
-function* handleAddItem(action: AddItemAction) {
-  const isEditorReady: boolean = yield select(isReady)
+  function* handleAddItem(action: AddItemAction) {
+    const isEditorReady: boolean = yield select(isReady)
 
-  if (!isEditorReady) {
-    yield take(SET_EDITOR_READY)
-  }
-
-  const scene: Scene = yield select(getCurrentScene)
-  if (!scene) return
-
-  if (!scene.sdk6) {
-    console.error('Scene is not SDK6')
-    return
-  }
-
-  let shapeId: string | null
-  let scriptId: string | null = null
-  let { position } = action.payload
-  const { asset } = action.payload
-  const transformId = uuidv4()
-  const newComponents = { ...scene.sdk6.components }
-
-  if (!position) {
-    position = yield call(editorWindow.editor.getCameraTarget)
-    position!.y = 0
-  }
-
-  if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
-    const collectibles: ReturnType<typeof getCollectiblesByURL> = yield select(getCollectiblesByURL)
-    const collectible = collectibles[asset.model]
-    shapeId = collectible ? collectibles[asset.model].id : null
-
-    if (!shapeId) {
-      shapeId = uuidv4()
-      newComponents[shapeId] = {
-        id: shapeId,
-        type: ComponentType.NFTShape,
-        data: {
-          url: asset.model
-        }
-      }
+    if (!isEditorReady) {
+      yield take(SET_EDITOR_READY)
     }
 
-    position = { ...position!, y: 1.72 }
-  } else {
-    const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
-    const gltf = gltfs[asset.id]
-    shapeId = gltf ? gltf.id : null
+    const scene: Scene = yield select(getCurrentScene)
+    if (!scene) return
 
-    if (!shapeId) {
-      shapeId = uuidv4()
-      newComponents[shapeId] = {
-        id: shapeId,
-        type: ComponentType.GLTFShape,
-        data: {
-          assetId: asset.id
-        }
-      } as ComponentDefinition<ComponentType.GLTFShape>
+    if (!scene.sdk6) {
+      console.error('Scene is not SDK6')
+      return
     }
-  }
 
-  const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
-  if (bounds) {
-    position = snapToBounds(position!, bounds)
-  }
+    let shapeId: string | null
+    let scriptId: string | null = null
+    let { position } = action.payload
+    const { asset } = action.payload
+    const transformId = uuidv4()
+    const newComponents = { ...scene.sdk6.components }
 
-  position = snapToGrid(position!)
-
-  newComponents[transformId] = {
-    id: transformId,
-    type: ComponentType.Transform,
-    data: {
-      position,
-      rotation: { x: 0, y: 0, z: 0, w: 1 },
-      scale: { x: 1, y: 1, z: 1 }
+    if (!position) {
+      position = yield call(editorWindow.editor.getCameraTarget)
+      position!.y = 0
     }
-  } as ComponentDefinition<ComponentType.Transform>
 
-  const scriptPath = Object.keys(asset.contents).find(path => path.endsWith('.js'))
-  if (scriptPath) {
-    scriptId = uuidv4()
+    if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
+      const collectibles: ReturnType<typeof getCollectiblesByURL> = yield select(getCollectiblesByURL)
+      const collectible = collectibles[asset.model]
+      shapeId = collectible ? collectibles[asset.model].id : null
 
-    newComponents[scriptId] = {
-      id: scriptId,
-      type: ComponentType.Script,
-      data: {
-        assetId: asset.id,
-        src: asset.contents[scriptPath],
-        values: {}
-      }
-    } as ComponentDefinition<ComponentType.Script>
-  }
-
-  const newEntities = { ...scene.sdk6.entities }
-  const entityId = uuidv4()
-  const entityComponents = [transformId, shapeId]
-  if (scriptId) {
-    // Scripts components must go first
-    entityComponents.unshift(scriptId)
-  }
-  const newScene: SceneSDK6 = { ...scene.sdk6, components: newComponents, entities: newEntities }
-  const assets: DataByKey<Asset> = yield select(getAssets)
-  const entityName = getEntityName(newScene, entityComponents, assets)
-  newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
-  newScene.assets[asset.id] = asset
-
-  if (scriptId) {
-    const assets: Record<string, Asset> = yield select(getAssetsByEntityName)
-    const comp = newScene.components[scriptId] as ComponentDefinition<ComponentType.Script>
-    comp.data.values = getDefaultValues(entityName, asset.parameters, assets)
-  }
-
-  yield put(setSelectedEntities([])) // deselect all currently selected entities
-  yield put(provisionScene(newScene))
-  yield delay(500) // gotta wait for the webworker to process the updateEditor action
-
-  // wait for entity to finish loading
-  while (editorWindow.editor.getLoadingEntities() !== null && (editorWindow.editor.getLoadingEntities() as string[]).includes(entityId)) {
-    yield delay(200)
-  }
-  yield put(setSelectedEntities([entityId]))
-}
-
-function* handleUpdateTransfrom(action: UpdateTransfromAction) {
-  const scene: Scene = yield select(getCurrentScene)
-  if (!scene) return
-
-  if (!scene.sdk6) {
-    console.error('Scene is not SDK6')
-    return
-  }
-
-  const { components } = action.payload
-  const newComponents: SceneSDK6['components'] = { ...scene.sdk6.components }
-
-  for (const componentData of components) {
-    if (componentData.componentId in scene.sdk6.components) {
-      newComponents[componentData.componentId] = {
-        ...newComponents[componentData.componentId],
-        data: {
-          position: {
-            ...componentData.data.position
-          },
-          rotation: {
-            ...componentData.data.rotation
-          },
-          scale: {
-            ...componentData.data.scale
+      if (!shapeId) {
+        shapeId = uuidv4()
+        newComponents[shapeId] = {
+          id: shapeId,
+          type: ComponentType.NFTShape,
+          data: {
+            url: asset.model
           }
         }
       }
-    }
-  }
-  yield put(provisionScene({ ...scene.sdk6, components: newComponents }))
-}
 
-function* handleResetItem(_: ResetItemAction) {
-  const scene: Scene = yield select(getCurrentScene)
-  if (!scene) return
+      position = { ...position!, y: 1.72 }
+    } else {
+      const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
+      const gltf = gltfs[asset.id]
+      shapeId = gltf ? gltf.id : null
 
-  if (!scene.sdk6) {
-    console.error('Scene is not SDK6')
-    return
-  }
-
-  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
-  if (selectedEntityIds.length === 0) return
-
-  const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
-
-  const newComponents = {
-    ...scene.sdk6.components
-  }
-
-  for (const entityId of selectedEntityIds) {
-    const transform = components[entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
-    if (transform) {
-      newComponents[transform.id] = {
-        ...transform,
-        data: {
-          ...transform.data,
-          position: snapToGrid(transform.data.position),
-          rotation: { x: 0, y: 0, z: 0, w: 1 },
-          scale: { x: 1, y: 1, z: 1 }
-        }
+      if (!shapeId) {
+        shapeId = uuidv4()
+        newComponents[shapeId] = {
+          id: shapeId,
+          type: ComponentType.GLTFShape,
+          data: {
+            assetId: asset.id
+          }
+        } as ComponentDefinition<ComponentType.GLTFShape>
       }
     }
-  }
 
-  yield put(provisionScene({ ...scene.sdk6, components: newComponents }))
-}
+    const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
+    if (bounds) {
+      position = snapToBounds(position!, bounds)
+    }
 
-function* handleDuplicateItem(_: DuplicateItemAction) {
-  const assets: DataByKey<Asset> = yield select(getAssets)
-  const scene: Scene = yield select(getCurrentScene)
-  if (!scene) return
+    position = snapToGrid(position!)
 
-  if (!scene.sdk6) {
-    console.error('Scene is not SDK6')
-    return
-  }
-
-  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
-  if (selectedEntityIds.length === 0) return
-
-  const newComponents = { ...scene.sdk6.components }
-  const newEntities = { ...scene.sdk6.entities }
-  const newEntityIds: string[] = []
-
-  for (const entityId of selectedEntityIds) {
-    const entityComponents = []
-    const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
-    const shape = shapes[entityId]
-
-    entityComponents.push(shape.id)
-
-    if (shape && shape.type === ComponentType.NFTShape) continue
-
-    const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
-    const transform = components[entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
-    const script = components[entityId][ComponentType.Script] as ComponentDefinition<ComponentType.Script>
-
-    if (!shape || !transform) continue
-
-    // copy transform
-    const {
-      data: { position, rotation, scale }
-    } = transform
-    const transformId = uuidv4()
     newComponents[transformId] = {
       id: transformId,
       type: ComponentType.Transform,
       data: {
-        position: { ...position },
-        rotation: { ...rotation },
-        scale: { ...scale }
+        position,
+        rotation: { x: 0, y: 0, z: 0, w: 1 },
+        scale: { x: 1, y: 1, z: 1 }
       }
-    }
-    entityComponents.push(transformId)
+    } as ComponentDefinition<ComponentType.Transform>
 
-    const newEntityId = uuidv4()
-    // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
-    // This means that we use components before we are done creating all of them.
-    const entityName = getEntityName({ ...scene.sdk6, components: newComponents, entities: newEntities }, entityComponents, assets)
-
-    newEntities[newEntityId] = { id: newEntityId, components: entityComponents, name: entityName }
-    newEntityIds.push(newEntityId)
-
-    // copy script
-    if (script) {
-      const {
-        data: { values: parameters, assetId }
-      } = script
-      const scriptId = uuidv4()
-      const values = JSON.parse(JSON.stringify(parameters))
-
-      renameEntity(assets[assetId].parameters, values, scene.sdk6.entities[entityId].name, entityName)
+    const scriptPath = Object.keys(asset.contents).find(path => path.endsWith('.js'))
+    if (scriptPath) {
+      scriptId = uuidv4()
 
       newComponents[scriptId] = {
         id: scriptId,
         type: ComponentType.Script,
         data: {
-          values,
-          assetId
+          assetId: asset.id,
+          src: asset.contents[scriptPath],
+          values: {}
         }
       } as ComponentDefinition<ComponentType.Script>
+    }
 
+    const newEntities = { ...scene.sdk6.entities }
+    const entityId = uuidv4()
+    const entityComponents = [transformId, shapeId]
+    if (scriptId) {
       // Scripts components must go first
       entityComponents.unshift(scriptId)
     }
-  }
+    const newScene: SceneSDK6 = { ...scene.sdk6, components: newComponents, entities: newEntities }
+    const assets: DataByKey<Asset> = yield select(getAssets)
+    const entityName = getEntityName(newScene, entityComponents, assets)
+    newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
+    newScene.assets[asset.id] = asset
 
-  yield put(setSelectedEntities([]))
-  yield put(provisionScene({ ...scene.sdk6, components: newComponents, entities: newEntities }))
-  yield delay(300) // gotta wait for the webworker to process the updateEditor action
-
-  // wait for entities to finish loading
-  while (
-    editorWindow.editor.getLoadingEntities() !== null &&
-    (editorWindow.editor.getLoadingEntities() as string[]).some(id => newEntityIds.includes(id))
-  ) {
-    yield delay(200)
-  }
-
-  yield put(setSelectedEntities(newEntityIds))
-}
-
-function* handleDeleteItem(_: DeleteItemAction) {
-  const scene: Scene = yield select(getCurrentScene)
-  if (!scene) return
-
-  if (!scene.sdk6) {
-    console.error('Scene is not SDK6')
-    return
-  }
-
-  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
-  if (selectedEntityIds.length === 0) return
-
-  const newComponents = { ...scene.sdk6.components }
-  const newEntities = { ...scene.sdk6.entities }
-  const newAssets = { ...scene.sdk6.assets }
-
-  for (const entityId of selectedEntityIds) {
-    const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
-    const entityComponents = componentsByEntityId[entityId]
-    const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []
-
-    delete newEntities[entityId]
-
-    for (const componentId of idsToDelete) {
-      // check if commponentId is not used by other entities
-      if (Object.values(newEntities).some(entity => entity.components.some(id => componentId === id))) {
-        continue
-      }
-      delete newComponents[componentId]
+    if (scriptId) {
+      const assets: Record<string, Asset> = yield select(getAssetsByEntityName)
+      const comp = newScene.components[scriptId] as ComponentDefinition<ComponentType.Script>
+      comp.data.values = getDefaultValues(entityName, asset.parameters, assets)
     }
 
-    for (const componentId in newComponents) {
-      const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
-      if (component.type === ComponentType.Script) {
-        removeEntityReferences(newAssets[component.data.assetId].parameters, component.data.values, scene.sdk6.entities[entityId].name)
-      }
+    yield put(setSelectedEntities([])) // deselect all currently selected entities
+    yield put(provisionScene(newScene))
+    yield delay(500) // gotta wait for the webworker to process the updateEditor action
+
+    // wait for entity to finish loading
+    while (editorWindow.editor.getLoadingEntities() !== null && (editorWindow.editor.getLoadingEntities() as string[]).includes(entityId)) {
+      yield delay(200)
     }
+    yield put(setSelectedEntities([entityId]))
   }
 
-  // TODO: refactor
-  // gather all the models used by gltf shapes
-  const ids = Object.values(newComponents).reduce((set, component) => {
-    if (component.type === ComponentType.GLTFShape || component.type === ComponentType.Script) {
-      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-      set.add(gltfShape.data.assetId)
+  function* handleUpdateTransfrom(action: UpdateTransfromAction) {
+    const scene: Scene = yield select(getCurrentScene)
+    if (!scene) return
+
+    if (!scene.sdk6) {
+      console.error('Scene is not SDK6')
+      return
     }
-    return set
-  }, new Set<string>())
 
-  // remove assets that are not in the set
-  for (const asset of Object.values(newAssets)) {
-    if (ids.has(asset.id)) {
-      continue
-    }
-    delete newAssets[asset.id]
-  }
+    const { components } = action.payload
+    const newComponents: SceneSDK6['components'] = { ...scene.sdk6.components }
 
-  yield put(setSelectedEntities([]))
-
-  yield put(provisionScene({ ...scene.sdk6, components: newComponents, entities: newEntities, assets: newAssets }))
-}
-
-function* handleSetGround(action: SetGroundAction) {
-  const { asset, projectId } = action.payload
-  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-  const currentProject = projects[projectId]
-  if (!currentProject) return
-
-  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-  const scene = scenes[currentProject.sceneId]
-  if (!scene) return
-
-  if (!scene.sdk6) {
-    console.error('Scene is not SDK6')
-    return
-  }
-
-  const { rows, cols } = currentProject.layout
-
-  if (asset) {
-    yield applyGround(scene.sdk6, rows, cols, asset)
-  }
-}
-
-function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAction) {
-  /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids,
-      and change them for the asset id instead.
-
-      For gltf shapes that don't have a corresponding asset, a dummy one will be created
-  */
-  const { scene } = action.payload
-  const newComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
-  const newAssets: Record<string, Asset> = {}
-
-  // get asset packs
-  const assetPacks: ReturnType<typeof getAssetPacks> = yield select(getAssetPacks)
-
-  // get assets
-  const assets: ReturnType<typeof getAssets> = yield select(getAssets)
-
-  // gather all gltf shapes
-  const gltfShapes = Object.values(scene.components).filter(
-    component => component.type === ComponentType.GLTFShape
-  ) as ComponentDefinition<ComponentType.GLTFShape>[]
-  for (const gltfShape of gltfShapes) {
-    const src = (gltfShape.data as any)['src']
-    // if it doesn't have src, we continue
-    if (!src) continue
-
-    // if the src looks like <uuid>/<model-url> then it's legacy
-    const legacyRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/ // check if the path starts with a UUID
-    const isLegacy = legacyRegex.test(src.split('/')[0])
-    if (isLegacy) {
-      const [assetPackId, ...rest] = src.split('/')
-      const model = rest.join('/')
-      const assetPack = assetPacks[assetPackId]
-      // if there's an asset pack, we look for the asset and fix the legacy componment
-      if (assetPack) {
-        const asset = assetPack.assets.map(assetId => assets[assetId]).find(asset => asset.model === model)
-        if (asset) {
-          const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
-            ...gltfShape,
-            data: { assetId: asset.id }
-          }
-          newComponents[newGltfShape.id] = newGltfShape
-          continue
-        }
-      }
-      // if there's no asset pack but there are mappings, we generate a dummy asset from the mappings
-      if ('mappings' in gltfShape.data) {
-        const contents: Record<string, string> = {}
-        // TODO: Type this correctly, mappings does not appear anywhere in ComponentDefinition
-        const mappings: Record<string, string> = (gltfShape.data as Record<string, any>)['mappings']
-        for (const namespacedPath of Object.keys(mappings)) {
-          const path = namespacedPath // remove the namespace
-            .split('/') // ['<uuid>', 'folder', 'Model.gltf']
-            .slice(1) // ['folder', 'Model.gltf']
-            .join('/') // 'folder/Model.gltf'
-          contents[path] = mappings[namespacedPath]
-        }
-        const id = uuidv4()
-        const newAsset: Asset = {
-          id,
-          model,
-          assetPackId,
-          contents,
-          name: 'Dummy',
-          script: null,
-          thumbnail: '',
-          tags: [],
-          category: 'decorations',
-          metrics: getMetrics(),
-          parameters: [],
-          actions: []
-        }
-        newAssets[id] = newAsset
-
-        const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
-          ...gltfShape,
+    for (const componentData of components) {
+      if (componentData.componentId in scene.sdk6.components) {
+        newComponents[componentData.componentId] = {
+          ...newComponents[componentData.componentId],
           data: {
-            ...gltfShape.data,
-            assetId: newAsset.id
-          }
-        }
-        newComponents[newGltfShape.id] = newGltfShape
-      } else {
-        // noop
-      }
-    }
-  }
-
-  let fixedScene = scene
-  const hasUpdates = Object.keys(newComponents).length > 0
-  if (hasUpdates) {
-    fixedScene = {
-      ...scene,
-      assets: { ...scene.assets, ...newAssets },
-      components: { ...scene.components, ...newComponents }
-    }
-  }
-  yield put(fixLegacyNamespacesSuccess(fixedScene))
-}
-
-function* handleSyncSceneAssetsAction(action: SyncSceneAssetsRequestAction) {
-  const { scene } = action.payload
-
-  // assets that need to be updated in the scene
-  const updatedSceneAssets: Record<string, Asset> = {}
-  // assets that are present in the scene but not in the store
-  const missingSceneAssets: Record<string, Asset> = {}
-  // all assets in the store
-  const assets: ReturnType<typeof getAssets> = yield select(getAssets)
-
-  for (const component of Object.values(scene.components)) {
-    if (component.type === ComponentType.GLTFShape) {
-      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-      const { assetId } = gltfShape.data
-      const storeAsset = assets[assetId]
-      if (storeAsset) {
-        updatedSceneAssets[storeAsset.id] = storeAsset
-      } else {
-        const sceneAsset = scene.assets[assetId]
-        if (sceneAsset) {
-          missingSceneAssets[sceneAsset.id] = {
-            ...sceneAsset,
-            assetPackId: 'dummy-asset-pack-id' // we change this so it won't show up in the sidebar
-          }
-        }
-      }
-    }
-  }
-
-  // generate new scene
-  const newScene = { ...scene, assets: { ...scene.assets, ...updatedSceneAssets } }
-
-  // load scene assets into redux store
-  yield put(loadAssets(missingSceneAssets))
-
-  // update the scene assets
-  yield put(syncSceneAssetsSuccess(newScene))
-}
-
-function* handleApplyLayout(action: ApplyLayoutAction) {
-  const { project } = action.payload
-  const { rows, cols } = project.layout
-  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-  const scene = scenes[project.sceneId]
-
-  if (!scene) return
-  if (!scene.sdk6) {
-    console.error('Scene is not SDK6')
-    return
-  }
-
-  if (scene.sdk6.ground) {
-    const groundId = scene.sdk6.ground.assetId
-    const assets: ReturnType<typeof getGroundAssets> = yield select(getGroundAssets)
-    const ground = assets[groundId]
-    yield applyGround(scene.sdk6, rows, cols, ground)
-  }
-}
-
-function* applyGround(scene: SceneSDK6, rows: number, cols: number, asset: Asset) {
-  const assets: DataByKey<Asset> = yield select(getAssets)
-  const sceneComponents = { ...scene.components }
-  const sceneAssets = { ...scene.assets }
-  let entities = cloneEntities(scene)
-  let gltfId: string = uuidv4()
-  if (asset) {
-    const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
-    const gltf = gltfs[asset.id]
-    const foundId = gltf ? gltf.id : null
-
-    // Create the Shape component if necessary
-    if (!foundId) {
-      sceneComponents[gltfId] = {
-        id: gltfId,
-        type: ComponentType.GLTFShape,
-        data: {
-          assetId: asset.id
-        }
-      }
-    } else {
-      gltfId = foundId
-    }
-
-    if (scene.ground) {
-      entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
-    }
-
-    for (let j = 0; j < cols; j++) {
-      for (let i = 0; i < rows; i++) {
-        const entityId = uuidv4()
-        const transformId = uuidv4()
-
-        sceneComponents[transformId] = {
-          id: transformId,
-          type: ComponentType.Transform,
-          data: {
-            position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
-            rotation: { x: 0, y: 0, z: 0, w: 1 },
-            scale: { x: 1, y: 1, z: 1 }
-          }
-        }
-
-        const newComponents = [gltfId, transformId]
-
-        entities[entityId] = {
-          id: entityId,
-          components: newComponents,
-          disableGizmos: true,
-          name: getEntityName({ ...scene, entities }, newComponents, assets)
-        }
-      }
-    }
-  } else if (scene.ground) {
-    entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
-  }
-
-  const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
-
-  // remove unused components
-  for (const component of Object.values(sceneComponents)) {
-    if (!Object.values(entities).some(entity => entity.components.some(componentId => componentId === component.id))) {
-      delete sceneComponents[component.id]
-    }
-  }
-
-  // update assets removing the old ground and adding the new one
-  if (scene.ground) {
-    delete sceneAssets[scene.ground.assetId]
-  }
-  if (ground) {
-    sceneAssets[ground.assetId] = asset
-  }
-
-  yield put(provisionScene({ ...scene, components: sceneComponents, entities, ground, assets: sceneAssets }))
-}
-
-function* handleSetScriptParameters(action: SetScriptValuesAction) {
-  const { entityId, values } = action.payload
-  const scene: Scene | null = yield select(getCurrentScene)
-
-  if (scene && scene.sdk6) {
-    const components = scene.sdk6.entities[entityId].components
-    const componentId = components.find(id => scene.sdk6.components[id].type === ComponentType.Script)
-
-    if (componentId) {
-      const newScene: SceneSDK6 = {
-        ...scene.sdk6,
-        components: {
-          ...scene.sdk6.components,
-          [componentId]: {
-            ...scene.sdk6.components[componentId],
-            data: {
-              ...scene.sdk6.components[componentId].data,
-              values: {
-                ...(scene.sdk6.components[componentId] as ComponentDefinition<ComponentType.Script>).data.values,
-                ...values
-              }
+            position: {
+              ...componentData.data.position
+            },
+            rotation: {
+              ...componentData.data.rotation
+            },
+            scale: {
+              ...componentData.data.scale
             }
           }
         }
       }
-      yield put(provisionScene(newScene))
+    }
+    yield put(provisionScene({ ...scene.sdk6, components: newComponents }))
+  }
+
+  function* handleResetItem(_: ResetItemAction) {
+    const scene: Scene = yield select(getCurrentScene)
+    if (!scene) return
+
+    if (!scene.sdk6) {
+      console.error('Scene is not SDK6')
+      return
+    }
+
+    const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+    if (selectedEntityIds.length === 0) return
+
+    const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
+
+    const newComponents = {
+      ...scene.sdk6.components
+    }
+
+    for (const entityId of selectedEntityIds) {
+      const transform = components[entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
+      if (transform) {
+        newComponents[transform.id] = {
+          ...transform,
+          data: {
+            ...transform.data,
+            position: snapToGrid(transform.data.position),
+            rotation: { x: 0, y: 0, z: 0, w: 1 },
+            scale: { x: 1, y: 1, z: 1 }
+          }
+        }
+      }
+    }
+
+    yield put(provisionScene({ ...scene.sdk6, components: newComponents }))
+  }
+
+  function* handleDuplicateItem(_: DuplicateItemAction) {
+    const assets: DataByKey<Asset> = yield select(getAssets)
+    const scene: Scene = yield select(getCurrentScene)
+    if (!scene) return
+
+    if (!scene.sdk6) {
+      console.error('Scene is not SDK6')
+      return
+    }
+
+    const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+    if (selectedEntityIds.length === 0) return
+
+    const newComponents = { ...scene.sdk6.components }
+    const newEntities = { ...scene.sdk6.entities }
+    const newEntityIds: string[] = []
+
+    for (const entityId of selectedEntityIds) {
+      const entityComponents = []
+      const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
+      const shape = shapes[entityId]
+
+      entityComponents.push(shape.id)
+
+      if (shape && shape.type === ComponentType.NFTShape) continue
+
+      const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
+      const transform = components[entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
+      const script = components[entityId][ComponentType.Script] as ComponentDefinition<ComponentType.Script>
+
+      if (!shape || !transform) continue
+
+      // copy transform
+      const {
+        data: { position, rotation, scale }
+      } = transform
+      const transformId = uuidv4()
+      newComponents[transformId] = {
+        id: transformId,
+        type: ComponentType.Transform,
+        data: {
+          position: { ...position },
+          rotation: { ...rotation },
+          scale: { ...scale }
+        }
+      }
+      entityComponents.push(transformId)
+
+      const newEntityId = uuidv4()
+      // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
+      // This means that we use components before we are done creating all of them.
+      const entityName = getEntityName({ ...scene.sdk6, components: newComponents, entities: newEntities }, entityComponents, assets)
+
+      newEntities[newEntityId] = { id: newEntityId, components: entityComponents, name: entityName }
+      newEntityIds.push(newEntityId)
+
+      // copy script
+      if (script) {
+        const {
+          data: { values: parameters, assetId }
+        } = script
+        const scriptId = uuidv4()
+        const values = JSON.parse(JSON.stringify(parameters))
+
+        renameEntity(assets[assetId].parameters, values, scene.sdk6.entities[entityId].name, entityName)
+
+        newComponents[scriptId] = {
+          id: scriptId,
+          type: ComponentType.Script,
+          data: {
+            values,
+            assetId
+          }
+        } as ComponentDefinition<ComponentType.Script>
+
+        // Scripts components must go first
+        entityComponents.unshift(scriptId)
+      }
+    }
+
+    yield put(setSelectedEntities([]))
+    yield put(provisionScene({ ...scene.sdk6, components: newComponents, entities: newEntities }))
+    yield delay(300) // gotta wait for the webworker to process the updateEditor action
+
+    // wait for entities to finish loading
+    while (
+      editorWindow.editor.getLoadingEntities() !== null &&
+      (editorWindow.editor.getLoadingEntities() as string[]).some(id => newEntityIds.includes(id))
+    ) {
+      yield delay(200)
+    }
+
+    yield put(setSelectedEntities(newEntityIds))
+  }
+
+  function* handleDeleteItem(_: DeleteItemAction) {
+    const scene: Scene = yield select(getCurrentScene)
+    if (!scene) return
+
+    if (!scene.sdk6) {
+      console.error('Scene is not SDK6')
+      return
+    }
+
+    const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+    if (selectedEntityIds.length === 0) return
+
+    const newComponents = { ...scene.sdk6.components }
+    const newEntities = { ...scene.sdk6.entities }
+    const newAssets = { ...scene.sdk6.assets }
+
+    for (const entityId of selectedEntityIds) {
+      const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
+      const entityComponents = componentsByEntityId[entityId]
+      const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []
+
+      delete newEntities[entityId]
+
+      for (const componentId of idsToDelete) {
+        // check if commponentId is not used by other entities
+        if (Object.values(newEntities).some(entity => entity.components.some(id => componentId === id))) {
+          continue
+        }
+        delete newComponents[componentId]
+      }
+
+      for (const componentId in newComponents) {
+        const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
+        if (component.type === ComponentType.Script) {
+          removeEntityReferences(newAssets[component.data.assetId].parameters, component.data.values, scene.sdk6.entities[entityId].name)
+        }
+      }
+    }
+
+    // TODO: refactor
+    // gather all the models used by gltf shapes
+    const ids = Object.values(newComponents).reduce((set, component) => {
+      if (component.type === ComponentType.GLTFShape || component.type === ComponentType.Script) {
+        const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
+        set.add(gltfShape.data.assetId)
+      }
+      return set
+    }, new Set<string>())
+
+    // remove assets that are not in the set
+    for (const asset of Object.values(newAssets)) {
+      if (ids.has(asset.id)) {
+        continue
+      }
+      delete newAssets[asset.id]
+    }
+
+    yield put(setSelectedEntities([]))
+
+    yield put(provisionScene({ ...scene.sdk6, components: newComponents, entities: newEntities, assets: newAssets }))
+  }
+
+  function* handleSetGround(action: SetGroundAction) {
+    const { asset, projectId } = action.payload
+    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+    const currentProject = projects[projectId]
+    if (!currentProject) return
+
+    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+    const scene = scenes[currentProject.sceneId]
+    if (!scene) return
+
+    if (!scene.sdk6) {
+      console.error('Scene is not SDK6')
+      return
+    }
+
+    const { rows, cols } = currentProject.layout
+
+    if (asset) {
+      yield applyGround(scene.sdk6, rows, cols, asset)
     }
   }
-}
 
-function* handleMigrateToSDK7Request(action: MigrateToSDK7RequestAction) {
-  const { project, shouldSaveCopy } = action.payload
+  function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAction) {
+    /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids,
+      and change them for the asset id instead.
 
-  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-  const scene = scenes[project.sceneId]
-  if (scene.sdk7) {
-    put(migrateToSDK7Failure('Scene is already in SDK7'))
-    return
+      For gltf shapes that don't have a corresponding asset, a dummy one will be created
+  */
+    const { scene } = action.payload
+    const newComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
+    const newAssets: Record<string, Asset> = {}
+
+    // get asset packs
+    const assetPacks: ReturnType<typeof getAssetPacks> = yield select(getAssetPacks)
+
+    // get assets
+    const assets: ReturnType<typeof getAssets> = yield select(getAssets)
+
+    // gather all gltf shapes
+    const gltfShapes = Object.values(scene.components).filter(
+      component => component.type === ComponentType.GLTFShape
+    ) as ComponentDefinition<ComponentType.GLTFShape>[]
+    for (const gltfShape of gltfShapes) {
+      const src = (gltfShape.data as any)['src']
+      // if it doesn't have src, we continue
+      if (!src) continue
+
+      // if the src looks like <uuid>/<model-url> then it's legacy
+      const legacyRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/ // check if the path starts with a UUID
+      const isLegacy = legacyRegex.test(src.split('/')[0])
+      if (isLegacy) {
+        const [assetPackId, ...rest] = src.split('/')
+        const model = rest.join('/')
+        const assetPack = assetPacks[assetPackId]
+        // if there's an asset pack, we look for the asset and fix the legacy componment
+        if (assetPack) {
+          const asset = assetPack.assets.map(assetId => assets[assetId]).find(asset => asset.model === model)
+          if (asset) {
+            const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
+              ...gltfShape,
+              data: { assetId: asset.id }
+            }
+            newComponents[newGltfShape.id] = newGltfShape
+            continue
+          }
+        }
+        // if there's no asset pack but there are mappings, we generate a dummy asset from the mappings
+        if ('mappings' in gltfShape.data) {
+          const contents: Record<string, string> = {}
+          // TODO: Type this correctly, mappings does not appear anywhere in ComponentDefinition
+          const mappings: Record<string, string> = (gltfShape.data as Record<string, any>)['mappings']
+          for (const namespacedPath of Object.keys(mappings)) {
+            const path = namespacedPath // remove the namespace
+              .split('/') // ['<uuid>', 'folder', 'Model.gltf']
+              .slice(1) // ['folder', 'Model.gltf']
+              .join('/') // 'folder/Model.gltf'
+            contents[path] = mappings[namespacedPath]
+          }
+          const id = uuidv4()
+          const newAsset: Asset = {
+            id,
+            model,
+            assetPackId,
+            contents,
+            name: 'Dummy',
+            script: null,
+            thumbnail: '',
+            tags: [],
+            category: 'decorations',
+            metrics: getMetrics(),
+            parameters: [],
+            actions: []
+          }
+          newAssets[id] = newAsset
+
+          const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
+            ...gltfShape,
+            data: {
+              ...gltfShape.data,
+              assetId: newAsset.id
+            }
+          }
+          newComponents[newGltfShape.id] = newGltfShape
+        } else {
+          // noop
+        }
+      }
+    }
+
+    let fixedScene = scene
+    const hasUpdates = Object.keys(newComponents).length > 0
+    if (hasUpdates) {
+      fixedScene = {
+        ...scene,
+        assets: { ...scene.assets, ...newAssets },
+        components: { ...scene.components, ...newComponents }
+      }
+    }
+    yield put(fixLegacyNamespacesSuccess(fixedScene))
   }
-  try {
-    if (shouldSaveCopy) {
-      const oldProject = {
-        ...project,
-        title: `Old_${project.title}`
-      }
-      yield put(duplicateProjectRequest(oldProject, PreviewType.PROJECT, false))
-      const duplicateProject: {
-        success: DuplicateProjectSuccessAction
-        failure: DuplicateProjectFailureAction
-      } = yield race({
-        success: take(DUPLICATE_PROJECT_SUCCESS),
-        failure: take(DUPLICATE_PROJECT_FAILURE)
-      })
 
-      if (duplicateProject.failure) {
-        put(migrateToSDK7Failure(duplicateProject.failure.payload.error))
-        return
+  function* handleSyncSceneAssetsAction(action: SyncSceneAssetsRequestAction) {
+    const { scene } = action.payload
+
+    // assets that need to be updated in the scene
+    const updatedSceneAssets: Record<string, Asset> = {}
+    // assets that are present in the scene but not in the store
+    const missingSceneAssets: Record<string, Asset> = {}
+    // all assets in the store
+    const assets: ReturnType<typeof getAssets> = yield select(getAssets)
+
+    for (const component of Object.values(scene.components)) {
+      if (component.type === ComponentType.GLTFShape) {
+        const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
+        const { assetId } = gltfShape.data
+        const storeAsset = assets[assetId]
+        if (storeAsset) {
+          updatedSceneAssets[storeAsset.id] = storeAsset
+        } else {
+          const sceneAsset = scene.assets[assetId]
+          if (sceneAsset) {
+            missingSceneAssets[sceneAsset.id] = {
+              ...sceneAsset,
+              assetPackId: 'dummy-asset-pack-id' // we change this so it won't show up in the sidebar
+            }
+          }
+        }
       }
     }
 
-    const composite = toComposite(scene.sdk6, project)
-    const mappings = toMappings(scene.sdk6)
+    // generate new scene
+    const newScene = { ...scene, assets: { ...scene.assets, ...updatedSceneAssets } }
 
-    const newSDK7Scene: SceneSDK7 = {
-      id: scene.sdk6.id,
-      composite,
-      mappings
+    // load scene assets into redux store
+    yield put(loadAssets(missingSceneAssets))
+
+    // update the scene assets
+    yield put(syncSceneAssetsSuccess(newScene))
+  }
+
+  function* handleApplyLayout(action: ApplyLayoutAction) {
+    const { project } = action.payload
+    const { rows, cols } = project.layout
+    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+    const scene = scenes[project.sceneId]
+
+    if (!scene) return
+    if (!scene.sdk6) {
+      console.error('Scene is not SDK6')
+      return
     }
 
-    yield put(updateScene(newSDK7Scene))
-    yield put(push(locations.inspector(project.id)))
-    yield put(migrateToSDK7Success())
-  } catch (error) {
-    put(migrateToSDK7Failure(error))
+    if (scene.sdk6.ground) {
+      const groundId = scene.sdk6.ground.assetId
+      const assets: ReturnType<typeof getGroundAssets> = yield select(getGroundAssets)
+      const ground = assets[groundId]
+      yield applyGround(scene.sdk6, rows, cols, ground)
+    }
+  }
+
+  function* applyGround(scene: SceneSDK6, rows: number, cols: number, asset: Asset) {
+    const assets: DataByKey<Asset> = yield select(getAssets)
+    const sceneComponents = { ...scene.components }
+    const sceneAssets = { ...scene.assets }
+    let entities = cloneEntities(scene)
+    let gltfId: string = uuidv4()
+    if (asset) {
+      const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
+      const gltf = gltfs[asset.id]
+      const foundId = gltf ? gltf.id : null
+
+      // Create the Shape component if necessary
+      if (!foundId) {
+        sceneComponents[gltfId] = {
+          id: gltfId,
+          type: ComponentType.GLTFShape,
+          data: {
+            assetId: asset.id
+          }
+        }
+      } else {
+        gltfId = foundId
+      }
+
+      if (scene.ground) {
+        entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
+      }
+
+      for (let j = 0; j < cols; j++) {
+        for (let i = 0; i < rows; i++) {
+          const entityId = uuidv4()
+          const transformId = uuidv4()
+
+          sceneComponents[transformId] = {
+            id: transformId,
+            type: ComponentType.Transform,
+            data: {
+              position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
+              rotation: { x: 0, y: 0, z: 0, w: 1 },
+              scale: { x: 1, y: 1, z: 1 }
+            }
+          }
+
+          const newComponents = [gltfId, transformId]
+
+          entities[entityId] = {
+            id: entityId,
+            components: newComponents,
+            disableGizmos: true,
+            name: getEntityName({ ...scene, entities }, newComponents, assets)
+          }
+        }
+      }
+    } else if (scene.ground) {
+      entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
+    }
+
+    const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
+
+    // remove unused components
+    for (const component of Object.values(sceneComponents)) {
+      if (!Object.values(entities).some(entity => entity.components.some(componentId => componentId === component.id))) {
+        delete sceneComponents[component.id]
+      }
+    }
+
+    // update assets removing the old ground and adding the new one
+    if (scene.ground) {
+      delete sceneAssets[scene.ground.assetId]
+    }
+    if (ground) {
+      sceneAssets[ground.assetId] = asset
+    }
+
+    yield put(provisionScene({ ...scene, components: sceneComponents, entities, ground, assets: sceneAssets }))
+  }
+
+  function* handleSetScriptParameters(action: SetScriptValuesAction) {
+    const { entityId, values } = action.payload
+    const scene: Scene | null = yield select(getCurrentScene)
+
+    if (scene && scene.sdk6) {
+      const components = scene.sdk6.entities[entityId].components
+      const componentId = components.find(id => scene.sdk6.components[id].type === ComponentType.Script)
+
+      if (componentId) {
+        const newScene: SceneSDK6 = {
+          ...scene.sdk6,
+          components: {
+            ...scene.sdk6.components,
+            [componentId]: {
+              ...scene.sdk6.components[componentId],
+              data: {
+                ...scene.sdk6.components[componentId].data,
+                values: {
+                  ...(scene.sdk6.components[componentId] as ComponentDefinition<ComponentType.Script>).data.values,
+                  ...values
+                }
+              }
+            }
+          }
+        }
+        yield put(provisionScene(newScene))
+      }
+    }
+  }
+
+  function* handleMigrateToSDK7Request(action: MigrateToSDK7RequestAction) {
+    const { project, shouldSaveCopy } = action.payload
+
+    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+    const scene = scenes[project.sceneId]
+    if (scene.sdk7) {
+      put(migrateToSDK7Failure('Scene is already in SDK7'))
+      return
+    }
+    try {
+      if (shouldSaveCopy) {
+        const oldProject = {
+          ...project,
+          title: `Old_${project.title}`
+        }
+        yield put(duplicateProjectRequest(oldProject, PreviewType.PROJECT, false))
+        const duplicateProject: {
+          success: DuplicateProjectSuccessAction
+          failure: DuplicateProjectFailureAction
+        } = yield race({
+          success: take(DUPLICATE_PROJECT_SUCCESS),
+          failure: take(DUPLICATE_PROJECT_FAILURE)
+        })
+
+        if (duplicateProject.failure) {
+          put(migrateToSDK7Failure(duplicateProject.failure.payload.error))
+          return
+        }
+      }
+
+      const composite = toComposite(scene.sdk6, project)
+      const mappings = toMappings(scene.sdk6)
+      const crdt = new Blob([toCrdt(scene.sdk6)])
+
+      const newSDK7Scene: SceneSDK7 = {
+        id: scene.sdk6.id,
+        composite,
+        mappings
+      }
+
+      yield builderApi.uploadCrdt(crdt, project.id)
+      yield put(updateScene(newSDK7Scene))
+      yield put(push(locations.inspector(project.id)))
+      yield put(migrateToSDK7Success())
+    } catch (error) {
+      put(migrateToSDK7Failure(error))
+    }
   }
 }
