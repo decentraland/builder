@@ -61,10 +61,14 @@ const SceneDetailPage: React.FC<Props> = props => {
   }, [setIsDeleting])
 
   const handleEditScene = useCallback(() => {
-    if (scene?.sdk6 && isInspectorEnabled) {
-      setShowMigrationModal(true)
+    if (isInspectorEnabled) {
+      if (scene?.sdk6) {
+        setShowMigrationModal(true)
+      } else {
+        onNavigate(locations.inspector(project?.id))
+      }
     } else {
-      onNavigate(locations.inspector(project?.id))
+      onNavigate(locations.sceneEditor(project?.id))
     }
   }, [project, scene, onNavigate, isInspectorEnabled])
 
