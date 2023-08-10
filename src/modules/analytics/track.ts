@@ -3,7 +3,17 @@ import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getTransactionFromAction } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/dist/modules/authorization/actions'
 import { SET_PROFILE_AVATAR_ALIAS_SUCCESS } from 'decentraland-dapps/dist/modules/profile/actions'
-import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
+import {
+  DROP_ITEM,
+  RESET_ITEM,
+  DUPLICATE_ITEM,
+  SET_GROUND,
+  AddItemAction,
+  DropItemAction,
+  SetGroundAction,
+  MIGRATE_TO_SDK7_SUCCESS,
+  MIGRATE_TO_SDK7_FAILURE
+} from 'modules/scene/actions'
 import {
   EDITOR_UNDO,
   EDITOR_REDO,
@@ -115,11 +125,17 @@ function trimProject(action: AnyAction) {
   }
   const { id, layout } = action.payload.project
   const { rows, cols } = layout
-  return {
+  const payload: { projectId: string; rows: number; cols: number; sdk?: string } = {
     projectId: id,
     rows,
     cols
   }
+
+  if (action.payload.sdkVersion) {
+    payload.sdk = action.payload.sdkVersion
+  }
+
+  return payload
 }
 
 // Authorizations
@@ -371,3 +387,7 @@ add(
 )
 
 addPayload(SET_COLLECTION_CURATION_ASSIGNEE_FAILURE, 'Assign curator error')
+
+add(MIGRATE_TO_SDK7_SUCCESS, 'Migrate to SDK7')
+
+add(MIGRATE_TO_SDK7_FAILURE, 'Migrate to SDK7 error')

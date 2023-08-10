@@ -766,7 +766,7 @@ export function* sceneSaga(builderApi: BuilderAPI) {
         mappings
       }
 
-      yield builderApi.uploadCrdt(crdt, project.id)
+      yield call([builderApi, 'uploadCrdt'], crdt, project.id)
       yield put(updateScene(newSDK7Scene))
       yield put(push(locations.inspector(project.id)))
       yield put(migrateToSDK7Success())

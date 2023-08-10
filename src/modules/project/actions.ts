@@ -27,7 +27,7 @@ export type CreateProjectFromTemplateAction = ReturnType<typeof createProjectFro
 
 export const CREATE_PROJECT = 'Create project'
 
-export const createProject = (project: Project) => action(CREATE_PROJECT, { project })
+export const createProject = (project: Project, sdkVersion: SDKVersion = SDKVersion.SDK6) => action(CREATE_PROJECT, { project, sdkVersion })
 
 export type CreateProjectAction = ReturnType<typeof createProject>
 
