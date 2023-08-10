@@ -1,9 +1,13 @@
+/* eslint-disable no-debugger */
 import { select, delay, put, call, takeLatest } from 'redux-saga/effects'
+import { MessageTransport } from '@dcl/mini-rpc'
+import { CameraClient } from '@dcl/inspector'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { dataURLToBlob } from 'modules/media/utils'
 import { PARCEL_SIZE } from 'modules/project/constants'
-import { Project } from 'modules/project/types'
+import { Layout, Project } from 'modules/project/types'
+import { resizeScreenshot } from 'modules/editor/utils'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { setSelectedEntities } from 'modules/editor/actions'
@@ -74,14 +78,20 @@ export function* handleTakePictures() {
 
     yield put(recordMediaSuccess({ ...screenshots, preview }))
   } else {
-    // TODO
+    const iframe = document.getElementById('inspector') as HTMLIFrameElement | null
+    if (!iframe || !iframe.contentWindow!) return
+    const transport = new MessageTransport(window, iframe.contentWindow)
+    const camera = new CameraClient(transport)
+    yield call([camera, 'setPosition'], 0, 0, 0)
+    const preview: Blob = yield call(takeInspectorScreenshot, camera, iframe, project.layout)
     yield put(
       recordMediaSuccess({
+        // TODO: im leaving the rotations as empty because the sdk7 scenes do not support rotating the placement on the deplyoment modal yet
         north: new Blob(['']),
         east: new Blob(['']),
         south: new Blob(['']),
         west: new Blob(['']),
-        preview: new Blob([''])
+        preview
       })
     )
   }
@@ -91,4 +101,21 @@ function* takeEditorScreenshot(angle: number) {
   editorWindow.editor.setCameraRotation(angle, Math.PI / 6)
   const screenshot: string = yield call(() => editorWindow.editor.takeScreenshot())
   return dataURLToBlob(screenshot)
+}
+
+function* takeInspectorScreenshot(camera: CameraClient, iframe: HTMLIFrameElement, layout: Layout) {
+  const { rows, cols } = layout
+  const x = rows * 8
+  const z = cols * 8
+  const y = Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2))
+
+  yield call([camera, 'setPosition'], Math.min(-x, -16), Math.max(y, 24), Math.min(-z, -16))
+  yield delay(100)
+  yield call([camera, 'setTarget'], x / 2, Math.max(Math.sqrt(y), 4), z / 2)
+  yield delay(100)
+
+  const screenshot: string = yield call([camera, 'takeScreenshot'], +iframe.width, +iframe.height)
+  const resized: string = yield call(resizeScreenshot, screenshot, 1024, 1024)
+
+  return dataURLToBlob(resized)
 }

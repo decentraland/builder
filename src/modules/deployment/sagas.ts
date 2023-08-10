@@ -230,8 +230,6 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       const address: ReturnType<typeof getAddress> = yield select(getAddress)
       const name: ReturnType<typeof getName> = yield select(getName)
 
-      const previewUrl = getPreviewUrl(project.id)
-
       const files: Record<string, string | Blob> = {}
 
       files['bin/index.js'] = new Blob([getMainFile()])
@@ -241,6 +239,23 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         const hash = scene.sdk7.mappings[path]
         const file: Blob = yield call([builder, 'fetchContent'], hash)
         files[path] = file
+      }
+
+      let previewUrl: string | null = null
+      const media: Media | null = yield select(getMedia)
+      if (media) {
+        const thumbnail: Blob = yield call(objectURLToBlob, media.preview)
+        yield call(
+          [builder, 'uploadMedia'],
+          project.id,
+          thumbnail,
+          { north: thumbnail, east: thumbnail, south: thumbnail, west: thumbnail },
+          handleProgress(ProgressStage.UPLOAD_RECORDING)
+        )
+        files['scene-thumbnail.png'] = thumbnail
+        previewUrl = getPreviewUrl(project.id)
+      } else {
+        console.warn('Failed to upload scene preview')
       }
 
       const parcels = getParcelOrientation(project.layout, placement.point, placement.rotation)
