@@ -57,7 +57,7 @@ import {
   fetchWorldDeploymentsRequest
 } from './actions'
 import { makeContentFiles } from './contentUtils'
-import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
+import { getEmptyDeployment, getMainFile, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
 import { ProgressStage } from './types'
 import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
 import { getParcelOrientation } from 'modules/project/utils'
@@ -234,6 +234,9 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
       const files: Record<string, string | Blob> = {}
 
+      files['bin/index.js'] = new Blob([getMainFile()])
+      files['main.crdt'] = yield call([builder, 'fetchCrdt'], project.id)
+
       for (const path of Object.keys(scene.sdk7.mappings)) {
         const hash = scene.sdk7.mappings[path]
         const file: Blob = yield call([builder, 'fetchContent'], hash)
@@ -245,11 +248,12 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
       const toString = ({ x, y }: { x: number; y: number }) => `${x},${y}`
 
-      const definition = {
+      const definition: SceneDefinition = {
+        allowedMediaHostnames: [],
         owner: address || '',
         main: 'bin/index.js',
         contact: {
-          name,
+          name: name || '',
           email: ''
         },
         display: {
@@ -262,6 +266,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
           base: toString(base),
           parcels: parcels.map(toString)
         },
+        ecs7: true,
+        runtimeVersion: '7',
         source: {
           version: 1,
           origin: 'builder',
@@ -274,10 +280,11 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         }
       }
 
-      console.log('definition', JSON.stringify(definition, null, 2))
-
-      files['assets/scene/main.composite'] = JSON.stringify(scene.sdk7.composite)
-      files['scene.json'] = JSON.stringify(definition)
+      if (world) {
+        definition.worldConfiguration = {
+          name: world
+        }
+      }
 
       const contents: Map<string, Buffer> = yield call(makeContentFiles, files)
 
