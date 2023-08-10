@@ -16,7 +16,7 @@ import MigrateSceneToSDK7 from './MigrateSceneToSDK7'
 import './SceneDetailPage.css'
 
 const SceneDetailPage: React.FC<Props> = props => {
-  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onNavigate, onLoadProjectScene } = props
+  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onNavigate, onLoadProjectScene, isInspectorEnabled } = props
   const [isDeleting, setIsDeleting] = useState(false)
   const [showMigrationModal, setShowMigrationModal] = useState(false)
 
@@ -60,12 +60,12 @@ const SceneDetailPage: React.FC<Props> = props => {
   }, [setIsDeleting])
 
   const handleEditScene = useCallback(() => {
-    if (scene?.sdk6) {
+    if (scene?.sdk6 && isInspectorEnabled) {
       setShowMigrationModal(true)
     } else {
       onNavigate(locations.inspector(project?.id))
     }
-  }, [project, scene, onNavigate])
+  }, [project, scene, onNavigate, isInspectorEnabled])
 
   const getSceneStatus = () => {
     const { project, isLoading, isLoadingDeployments } = props
