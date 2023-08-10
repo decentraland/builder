@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { config } from 'config'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Icon, Popup } from 'decentraland-ui'
+import { Button, Icon } from 'decentraland-ui'
 import { isDevelopment } from 'lib/environment'
 import OwnIcon from 'components/Icon'
 import DeploymentStatus from 'components/DeploymentStatus'
@@ -18,10 +18,6 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
 
   const handlePublish = useCallback(() => {
     console.error('TODO: Add publish project action')
-  }, [])
-
-  const handleDownload = useCallback(() => {
-    console.error('TODO: Add download project action')
   }, [])
 
   const previewUrl = currentProject
@@ -43,21 +39,6 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
       </div>
       <div className={styles.actions}>
         {currentProject ? <DeploymentStatus projectId={currentProject.id} /> : null}
-        <Popup
-          content={t('inspector.top_bar.download')}
-          trigger={
-            <Button
-              secondary
-              aria-label={t('inspector.top_bar.download')}
-              size="small"
-              className={styles.downloadBtn}
-              disabled={isUploading}
-              onClick={handleDownload}
-            >
-              <Icon name="download" />
-            </Button>
-          }
-        />
         <Button as="a" href={previewUrl} target="_blank" secondary size="small" disabled={isUploading}>
           <Icon name="eye" />
           {t('inspector.top_bar.preview')}
