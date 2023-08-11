@@ -193,8 +193,6 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       // Remove the old communications property if it exists
       const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
 
-      console.log('definition', JSON.stringify(sceneDefinition, null, 2))
-
       const { entityId, files: hashedFiles } = yield call(buildEntity, {
         type: EntityType.SCENE,
         pointers: [...sceneDefinition.scene.parcels],
@@ -273,8 +271,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         },
         display: {
           title: project.title,
-          favicon: 'favicon_asset'
-          // navmapThumbnail: 'scene-thumbnail.png'
+          favicon: 'favicon_asset',
+          navmapThumbnail: 'scene-thumbnail.png'
         },
         tags: [],
         scene: {
