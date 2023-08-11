@@ -75,6 +75,12 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
       classes += ' has-thumbnail'
     }
 
+    const dropdownOptions = [
+      { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
+      ...(scene?.sdk6 ? [{ text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene }] : []),
+      { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
+    ]
+
     const children = (
       <>
         <div className="project-thumbnail" style={style} />
@@ -83,14 +89,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
             <DeploymentStatus projectId={project.id} className="deployment-status" />
             <div className="options-container">
               {isInspectorEnabled && <SDKTag scene={scene} />}
-              <OptionsDropdown
-                className="options-dropdown"
-                options={[
-                  { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
-                  { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
-                  { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
-                ]}
-              />
+              <OptionsDropdown className="options-dropdown" options={dropdownOptions} />
             </div>
           </>
         )}
