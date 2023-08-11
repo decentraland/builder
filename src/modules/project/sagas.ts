@@ -156,7 +156,7 @@ export function* projectSaga(builder: BuilderAPI) {
     }
 
     yield put(createScene(scene))
-    yield put(createProject(project))
+    yield put(createProject(project, sdk))
 
     if (onSuccess) {
       onSuccess(project, scene)
@@ -198,7 +198,7 @@ export function* projectSaga(builder: BuilderAPI) {
       }
 
       yield put(createScene(newScene))
-      yield put(createProject(newProject))
+      yield put(createProject(newProject, scene.sdk6 ? SDKVersion.SDK6 : SDKVersion.SDK7))
 
       if (isTemplatesEnabled && project.isTemplate) {
         yield take(SAVE_PROJECT_SUCCESS)

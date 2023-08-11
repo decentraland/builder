@@ -1,11 +1,12 @@
 /* eslint-disable no-debugger */
 import * as React from 'react'
-import { Center, Loader } from 'decentraland-ui'
+import { Loader } from 'decentraland-ui'
+import NotFoundPage from 'components/NotFoundPage'
+import SignInRequired from 'components/SignInRequired'
 
 import { Props, State } from './InspectorPage.types'
 import './InspectorPage.css'
 import TopBar from './TopBar'
-import NotFoundPage from 'components/NotFoundPage'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 
@@ -37,11 +38,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
     }
 
     if (!isLoggedIn) {
-      return (
-        <div className="InspectorPager">
-          <Center>Sign In</Center>
-        </div>
-      )
+      return <SignInRequired />
     }
 
     return (
