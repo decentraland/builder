@@ -10,6 +10,7 @@ import { Project } from 'modules/project/types'
 import { Media } from 'modules/media/types'
 import { LandTile } from 'modules/land/types'
 import { ENS } from 'modules/ens/types'
+import { Scene } from 'modules/scene/types'
 
 export type Props = {
   name: string
@@ -27,6 +28,7 @@ export type Props = {
   deploymentProgress: DeploymentState['progress']
   ethAddress: string | undefined
   project: Project
+  scene: Scene | null
   media: Media | null
   deploymentStatus: DeploymentStatus
   deployments: Deployment[]

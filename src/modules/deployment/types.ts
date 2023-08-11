@@ -57,6 +57,7 @@ export type Deployment = {
 }
 
 export type SceneDefinition = {
+  allowedMediaHostnames?: string[]
   display?: {
     title: string
     favicon: string
@@ -78,6 +79,8 @@ export type SceneDefinition = {
     name: string
     email: string
   }
+  ecs7?: boolean
+  runtimeVersion?: string
   tags: string[]
   worldConfiguration?: {
     name: string

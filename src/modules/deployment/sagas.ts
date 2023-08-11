@@ -57,9 +57,10 @@ import {
   fetchWorldDeploymentsRequest
 } from './actions'
 import { makeContentFiles } from './contentUtils'
-import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
+import { getEmptyDeployment, getMainFile, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
 import { ProgressStage } from './types'
 import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
+import { getParcelOrientation } from 'modules/project/utils'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -218,9 +219,111 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         world
       }
     } else {
-      // TODO: implement for sdk7
-      yield put(deployFailure('Unimplemented for SDK7'))
-      return
+      const identity: AuthIdentity = yield call(getIdentity)
+      if (!identity) {
+        yield put(deployFailure('Unable to Publish: Invalid identity'))
+        return
+      }
+
+      const address: ReturnType<typeof getAddress> = yield select(getAddress)
+      const name: ReturnType<typeof getName> = yield select(getName)
+
+      const files: Record<string, string | Blob> = {}
+
+      files['bin/index.js'] = new Blob([getMainFile()])
+      files['main.crdt'] = yield call([builder, 'fetchCrdt'], project.id)
+
+      for (const path of Object.keys(scene.sdk7.mappings)) {
+        const hash = scene.sdk7.mappings[path]
+        const file: Blob = yield call([builder, 'fetchContent'], hash)
+        files[path] = file
+      }
+
+      let previewUrl: string | null = null
+      const media: Media | null = yield select(getMedia)
+      if (media) {
+        const thumbnail: Blob = yield call(objectURLToBlob, media.preview)
+        yield call(
+          [builder, 'uploadMedia'],
+          project.id,
+          thumbnail,
+          { north: thumbnail, east: thumbnail, south: thumbnail, west: thumbnail },
+          handleProgress(ProgressStage.UPLOAD_RECORDING)
+        )
+        files['scene-thumbnail.png'] = thumbnail
+        previewUrl = getPreviewUrl(project.id)
+      } else {
+        console.warn('Failed to upload scene preview')
+      }
+
+      const parcels = getParcelOrientation(project.layout, placement.point, placement.rotation)
+      const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
+
+      const toString = ({ x, y }: { x: number; y: number }) => `${x},${y}`
+
+      const definition: SceneDefinition = {
+        allowedMediaHostnames: [],
+        owner: address || '',
+        main: 'bin/index.js',
+        contact: {
+          name: name || '',
+          email: ''
+        },
+        display: {
+          title: project.title,
+          favicon: 'favicon_asset',
+          navmapThumbnail: 'scene-thumbnail.png'
+        },
+        tags: [],
+        scene: {
+          base: toString(base),
+          parcels: parcels.map(toString)
+        },
+        ecs7: true,
+        runtimeVersion: '7',
+        source: {
+          version: 1,
+          origin: 'builder',
+          point: base,
+          projectId: project.id,
+          layout: {
+            rows: project.layout.rows,
+            cols: project.layout.cols
+          }
+        }
+      }
+
+      if (world) {
+        definition.worldConfiguration = {
+          name: world
+        }
+      }
+
+      const contents: Map<string, Buffer> = yield call(makeContentFiles, files)
+
+      const { entityId, files: hashedFiles } = yield call(buildEntity, {
+        type: EntityType.SCENE,
+        pointers: definition.scene.parcels,
+        metadata: definition,
+        files: contents
+      })
+
+      const authChain = Authenticator.signPayload(identity, entityId)
+      yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
+
+      return {
+        id: entityId,
+        placement,
+        owner: address,
+        timestamp: +new Date(),
+        layout: project.layout,
+        name: project.title,
+        thumbnail: previewUrl,
+        projectId: project.id,
+        base: definition.scene.base,
+        parcels: definition.scene.parcels,
+        world
+      }
     }
   }
 
