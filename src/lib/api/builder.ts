@@ -622,8 +622,11 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCrdt(projectId: string): Promise<Blob> {
-    const response: Blob = await this.request('get', `/projects/${projectId}/crdt`)
-    return response
+    const path = `/projects/${projectId}/crdt`
+    const headers = await this.authorization.createAuthHeaders('get', path)
+    const response = await fetch(this.url + path, { headers })
+    const blob = await response.blob()
+    return blob
   }
 
   async fetchProjects() {

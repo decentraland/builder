@@ -191,7 +191,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { media, project, landTiles, deployment } = this.props
+    const { media, project, landTiles, deployment, scene } = this.props
     const { placement, rotation, zoom, currentLandId } = this.state
     const hasPlacement = !!placement
     const parcelCount = Object.keys(landTiles).length
@@ -224,7 +224,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             {t('deployment_modal.land.map.occupied_warning', { name: conflictingDeployment.name })}
           </div>
         )}
-        {parcelCount !== 0 && (
+        {parcelCount !== 0 && scene && scene.sdk6 && (
           <div className={'thumbnail' + (hasPlacement ? ' disable-rotate' : '')}>
             <img src={media ? media[rotation] : ''} alt={rotation} />
             <div className="rotate anticlockwise" onClick={this.handleRotate(ANTICLOCKWISE_ROTATION)}>

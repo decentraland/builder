@@ -5,6 +5,8 @@ import { Button, Icon } from 'decentraland-ui'
 import { isDevelopment } from 'lib/environment'
 import OwnIcon from 'components/Icon'
 import DeploymentStatus from 'components/DeploymentStatus'
+import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
+import { DeployToWorldModalMetadata } from 'components/Modals/DeployModal/DeployToWorld/DeployToWorld.types'
 import { Props } from './TopBar.types'
 import styles from './TopBar.module.css'
 
@@ -17,8 +19,11 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
   }, [onOpenModal])
 
   const handlePublish = useCallback(() => {
-    console.error('TODO: Add publish project action')
-  }, [])
+    onOpenModal('DeployModal', {
+      view: DeployModalView.NONE,
+      projectId: currentProject!.id
+    } as DeployToWorldModalMetadata)
+  }, [onOpenModal, currentProject])
 
   const previewUrl = currentProject
     ? `${EXPLORER_URL}?realm=${BUILDER_SERVER_URL}/projects/${currentProject.id}${isDevelopment ? '&NETWORK=sepolia' : ''}`
