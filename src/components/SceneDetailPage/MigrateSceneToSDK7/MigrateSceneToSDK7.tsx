@@ -41,12 +41,15 @@ export default function MigrateSceneToSDK7({
       case MigrateStep.INFO:
         return infoImg
       case MigrateStep.MIGRATE:
+        if (project?.thumbnail) {
+          return project.thumbnail
+        }
         if (hasSmartItems) {
           return migrateWithSmartItemsImg
         }
         return automaticMigrateImg
     }
-  }, [step, hasSmartItems])
+  }, [step, hasSmartItems, project])
 
   const handleAction = useCallback(() => {
     switch (step) {
@@ -113,7 +116,15 @@ export default function MigrateSceneToSDK7({
             ...getAdditionalSubtitleProperties()
           })}
         </p>
-        <img src={getImgSrc()} alt={t('migrate_to_sdk7_modal.image_alt')} />
+        <div
+          style={{
+            width: '648px',
+            height: '324px',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundImage: `url(${getImgSrc()}`
+          }}
+        />
         {step === MigrateStep.MIGRATE && (
           <Checkbox
             disabled={isLoading}

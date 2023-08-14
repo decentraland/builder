@@ -1131,7 +1131,7 @@
     "title": "Create a Scene",
     "name_subtitle": "Set a name and a description for your scene",
     "size_subtitle": "Set the parcels size of your new scene",
-    "sdk_title": "Experience the new decentraland editor",
+    "sdk_title": "Experience the new Decentraland Web Editor",
     "sdk_subtitle": "Harness the power of SDK 7 without any code.",
     "sdk_description": "Enhance your scene-building process with our improved visual editor. All features from the previous Scene Builder are included, while the addition of <b>Smart Items</b> is scheduled for an upcoming update.",
     "sdk_image_alt": "SDK 7",
@@ -2039,12 +2039,12 @@
     "migrating_scene": "Migrating scene to SDK 7",
     "image_alt": "Migrate to SDK 7",
     "info": {
-      "title": "Upgrade Your Scene to SDK 7with the New Decentraland Web Editor",
+      "title": "Upgrade Your Scene to SDK 7 with the New Decentraland Web Editor",
       "subtitle": "<b>This scene is currently built with SDK 6, which will stop receiving support in a few months, but it can be automatically migrated to SDK 7.</b> All features from the previous Scene Builder are included, while smart items will be added in an upcoming update.",
       "action": "Use decentraland web editor (SDK 7)"
     },
     "info_smart_items": {
-      "title": "Upgrade Your Scene to SDK 7with the New Decentraland Web Editor",
+      "title": "Upgrade Your Scene to SDK 7 with the New Decentraland Web Editor",
       "subtitle": "<b>This scene is currently built with SDK 6, which will stop receiving support in a few months, and contains smart items</b>. If you choose to upgrade to SDK 7 using our improved visual editor, these smart items will be removed, as they are not yet supported.",
       "action": "Use decentraland web editor (SDK 7)"
     },
