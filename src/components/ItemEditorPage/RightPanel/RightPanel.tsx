@@ -16,7 +16,8 @@ import {
   getEmotePlayModes,
   getHideableBodyPartCategories,
   getHideableWearableCategories,
-  isSmart
+  isSmart,
+  hasVideo
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -527,6 +528,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
 
     const canEditItemMetadata = this.canEditItemMetadata(item)
+
     const handleOpenVideoDialog = canEditItemMetadata
       ? () => this.handleOpenVideoDialog()
       : () => this.handleOpenVideoDialog({ viewOnly: true })
@@ -541,7 +543,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
           </>
         ) : (
           <>
-            <Icon name="play" className="play-video-button" onClick={handleOpenVideoDialog} />
+            {hasVideo(item) && <Icon name="play" className="play-video-button" onClick={handleOpenVideoDialog} />}
             <ItemVideo item={item} src={this.state.video} showMetrics />
           </>
         )}

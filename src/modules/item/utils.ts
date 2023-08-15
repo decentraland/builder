@@ -347,6 +347,11 @@ export function getVideoURL(item: Item) {
   return item.video ? getContentsStorageUrl(item.contents[item.video]) : ''
 }
 
+export function hasVideo(item?: Item, src?: string) {
+  const videoSrc = src || (item ? getVideoURL(item) : '')
+  return !!videoSrc || (!!item && VIDEO_PATH in item.contents)
+}
+
 export function getRarities() {
   return ItemRarity.schema.enum as ItemRarity[]
 }

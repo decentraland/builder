@@ -1,5 +1,5 @@
 import { BodyShape, WearableCategory } from '@dcl/schemas'
-import { Item, ItemMetadataType, ItemType, WearableRepresentation } from './types'
+import { Item, ItemMetadataType, ItemType, VIDEO_PATH, WearableRepresentation } from './types'
 import {
   buildItemMetadata,
   buildZipContents,
@@ -10,7 +10,8 @@ import {
   getWearableCategories,
   isSmart,
   getFirstWearableOrItem,
-  formatExtensions
+  formatExtensions,
+  hasVideo
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -295,6 +296,54 @@ describe('when formatting accepted extensions', () => {
   describe('when the array has multiple extensions', () => {
     it('should return the extensions sorted and separated by commas', () => {
       expect(formatExtensions(['.zip', '.glb', '.gltf'])).toBe('GLB, GLTF or ZIP')
+    })
+  })
+})
+
+describe('when getting if the item has a video', () => {
+  let item: Item
+
+  beforeEach(() => {
+    item = {
+      name: 'first-name',
+      contents: {}
+    } as Item
+  })
+
+  describe('and the item does not have the video in its contents', () => {
+    describe('and the function receives an empty src in the parameters', () => {
+      it('should return false', () => {
+        expect(hasVideo(item, '')).toBe(false)
+      })
+    })
+
+    describe('and the function receives an non-empty src in the parameters', () => {
+      it('should return false', () => {
+        expect(hasVideo(item, '/video/src.mp4')).toBe(true)
+      })
+    })
+  })
+
+  describe('and the item has the video in its contents', () => {
+    beforeEach(() => {
+      item = {
+        ...item,
+        contents: {
+          [VIDEO_PATH]: 'the-video'
+        }
+      } as Item
+    })
+
+    describe('and the function receives an empty src in the parameters', () => {
+      it('should return true', () => {
+        expect(hasVideo(item, '')).toBe(true)
+      })
+    })
+
+    describe('and the function receives a non-empty src in the parameters', () => {
+      it('should return true', () => {
+        expect(hasVideo(item, 'the-video')).toBe(true)
+      })
     })
   })
 })
