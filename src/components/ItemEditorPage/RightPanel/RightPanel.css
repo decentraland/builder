@@ -5,6 +5,8 @@
   border-left: 1px solid rgba(115, 110, 125, 0.3);
   padding: 16px;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .RightPanel > .header {
@@ -26,6 +28,7 @@
 .RightPanel .container {
   overflow-y: auto;
   max-height: calc(100vh - 80px);
+  flex: 1;
 }
 
 .RightPanel .details {
