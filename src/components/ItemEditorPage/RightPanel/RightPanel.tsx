@@ -16,7 +16,8 @@ import {
   getEmotePlayModes,
   getHideableBodyPartCategories,
   getHideableWearableCategories,
-  isSmart
+  isSmart,
+  hasVideo
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -42,6 +43,7 @@ import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ItemVideo from 'components/ItemVideo'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
+import { EditVideoModalMetadata } from 'components/Modals/EditVideoModal/EditVideoModal.types'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
@@ -130,9 +132,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     onOpenModal('CreateSingleItemModal', { item: selectedItem, changeItemFile: true })
   }
 
-  handleOpenVideoDialog = () => {
+  handleOpenVideoDialog = (metadata: Partial<EditVideoModalMetadata> = {}) => {
     const { selectedItem, onOpenModal } = this.props
-    onOpenModal('EditVideoModal', { item: selectedItem, onSaveVideo: this.handleSaveVideo })
+    onOpenModal('EditVideoModal', { item: selectedItem, onSaveVideo: this.handleSaveVideo, ...metadata })
   }
 
   handleSaveVideo = (video: Blob) => {
@@ -527,16 +529,23 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
     const canEditItemMetadata = this.canEditItemMetadata(item)
 
+    const handleOpenVideoDialog = canEditItemMetadata
+      ? () => this.handleOpenVideoDialog()
+      : () => this.handleOpenVideoDialog({ viewOnly: true })
+
     return (
       <div className="details">
         {canEditItemMetadata ? (
           <>
-            <Icon name="edit" className="edit-item-file" onClick={this.handleOpenVideoDialog} />
-            <Icon name="play" className="play-video-button" onClick={this.handleOpenVideoDialog} />
-            <ItemVideo item={item} src={this.state.video} showMetrics onClick={this.handleOpenVideoDialog} />
+            <Icon name="edit" className="edit-item-file" onClick={handleOpenVideoDialog} />
+            <Icon name="play" className="play-video-button" onClick={handleOpenVideoDialog} />
+            <ItemVideo item={item} src={this.state.video} showMetrics onClick={handleOpenVideoDialog} />
           </>
         ) : (
-          <ItemVideo item={item} src={this.state.video} showMetrics />
+          <>
+            {hasVideo(item) && <Icon name="play" className="play-video-button" onClick={handleOpenVideoDialog} />}
+            <ItemVideo item={item} src={this.state.video} showMetrics />
+          </>
         )}
       </div>
     )

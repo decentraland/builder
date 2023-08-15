@@ -51,7 +51,7 @@ export default class EditVideoModal extends React.PureComponent<Props, State> {
 
   renderViewVideoStep() {
     const { metadata, onClose } = this.props
-    const { item } = metadata
+    const { item, viewOnly } = metadata
     return (
       <>
         <ModalNavigation title={t('video_showcase_modal.title')} onClose={onClose} />
@@ -64,13 +64,15 @@ export default class EditVideoModal extends React.PureComponent<Props, State> {
             disablePictureInPicture
           />
         </Modal.Content>
-        <Modal.Actions>
-          <Column align="right">
-            <Button primary onClick={this.handleOnEdit}>
-              {t('global.edit')}
-            </Button>
-          </Column>
-        </Modal.Actions>
+        {!viewOnly && (
+          <Modal.Actions>
+            <Column align="right">
+              <Button primary onClick={this.handleOnEdit}>
+                {t('global.edit')}
+              </Button>
+            </Column>
+          </Modal.Actions>
+        )}
       </>
     )
   }
