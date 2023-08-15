@@ -14,6 +14,7 @@ export type EditVideoModalMetadata = {
   onSaveVideo: (video: Blob) => void
   item: Item
   view?: EditVideoView
+  viewOnly?: boolean
 }
 
 export enum EditVideoView {
