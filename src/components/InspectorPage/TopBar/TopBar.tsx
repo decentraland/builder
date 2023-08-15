@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { config } from 'config'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Icon } from 'decentraland-ui'
+import { Button, Icon, Popup } from 'decentraland-ui'
 import { isDevelopment } from 'lib/environment'
 import OwnIcon from 'components/Icon'
 import DeploymentStatus from 'components/DeploymentStatus'
@@ -14,6 +14,10 @@ const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 
 export default function TopBar({ currentProject, isUploading, onBack, onOpenModal }: Props) {
+  const handleDownload = useCallback(() => {
+    onOpenModal('ExportModal', { project: currentProject })
+  }, [currentProject, onOpenModal])
+
   const handleEditProject = useCallback(() => {
     onOpenModal('EditProjectModal')
   }, [onOpenModal])
@@ -44,6 +48,21 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
       </div>
       <div className={styles.actions}>
         {currentProject ? <DeploymentStatus projectId={currentProject.id} /> : null}
+        <Popup
+          content={t('inspector.top_bar.download')}
+          trigger={
+            <Button
+              secondary
+              aria-label={t('inspector.top_bar.download')}
+              size="small"
+              className={styles.downloadBtn}
+              disabled={isUploading}
+              onClick={handleDownload}
+            >
+              <Icon name="download" />
+            </Button>
+          }
+        />
         <Button as="a" href={previewUrl} target="_blank" secondary size="small" disabled={isUploading}>
           <Icon name="eye" />
           {t('inspector.top_bar.preview')}

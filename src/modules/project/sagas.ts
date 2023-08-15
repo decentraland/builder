@@ -71,7 +71,7 @@ import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
-import { createFiles } from './export'
+import { createFiles, createSDK7Files } from './export'
 import { getParcels } from 'modules/inspector/utils'
 
 export function* projectSaga(builder: BuilderAPI) {
@@ -267,11 +267,12 @@ export function* projectSaga(builder: BuilderAPI) {
       project.id,
       project.isTemplate || project.isPublic ? PreviewType.PUBLIC : PreviewType.PROJECT
     )
+    yield put(setExportProgress({ loaded: 0, total: 0 }))
+    let files: Record<string, Blob | string> = {}
 
     if (scene.sdk6) {
-      yield put(setExportProgress({ loaded: 0, total: 0 }))
       const author: string = yield select(getName)
-      const files: Record<string, Blob | string> = yield call(createFiles, {
+      files = yield call(createFiles, {
         project,
         scene: scene.sdk6,
         point: { x: 0, y: 0 },
@@ -281,14 +282,15 @@ export function* projectSaga(builder: BuilderAPI) {
         author,
         onProgress: progress => store.dispatch(setExportProgress(progress))
       })
-
-      // download zip
-      const name = project.title.replace(/\s/g, '_')
-      yield call(downloadZip, name, files)
-      yield put(exportProjectSuccess())
     } else {
-      console.error('Scene is not SDK6')
+      files = yield call(createSDK7Files, { project, scene: scene.sdk7, builderAPI: builder })
+      yield put(setExportProgress({ loaded: 0, total: 0 }))
     }
+
+    // download zip
+    const name = project.title.replace(/\s/g, '_')
+    yield call(downloadZip, name, files)
+    yield put(exportProjectSuccess())
   }
 
   function* handleImportProject(action: ImportProjectAction) {

@@ -99,12 +99,10 @@ const SceneDetailPage: React.FC<Props> = props => {
             </Column>
             <Column className="actions" align="right">
               <Row>
-                {scene?.sdk6 && (
-                  <Button inverted className="download-button" onClick={() => onOpenModal('ExportModal', { project })}>
-                    <Icon name="download" />
-                    {t('scene_detail_page.download_scene')}
-                  </Button>
-                )}
+                <Button inverted className="download-button" onClick={() => onOpenModal('ExportModal', { project })}>
+                  <Icon name="download" />
+                  {t('scene_detail_page.download_scene')}
+                </Button>
                 <Button primary className="edit-button" disabled={!scene} loading={!scene} onClick={handleEditScene}>
                   <Icon name="edit outline" />
                   {t('scene_detail_page.edit_scene')}
