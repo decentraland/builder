@@ -284,7 +284,6 @@ export function* projectSaga(builder: BuilderAPI) {
       })
     } else {
       files = yield call(createSDK7Files, { project, scene: scene.sdk7, builderAPI: builder })
-      yield put(setExportProgress({ loaded: 0, total: 0 }))
     }
 
     // download zip

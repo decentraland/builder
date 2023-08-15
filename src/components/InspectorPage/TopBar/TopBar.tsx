@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import { config } from 'config'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Popup } from 'decentraland-ui'
-import { isDevelopment } from 'lib/environment'
+import { Env } from '@dcl/ui-env'
+import { config } from 'config'
 import OwnIcon from 'components/Icon'
 import DeploymentStatus from 'components/DeploymentStatus'
 import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
@@ -30,7 +30,7 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
   }, [onOpenModal, currentProject])
 
   const previewUrl = currentProject
-    ? `${EXPLORER_URL}?realm=${BUILDER_SERVER_URL}/projects/${currentProject.id}${isDevelopment ? '&NETWORK=sepolia' : ''}`
+    ? `${EXPLORER_URL}?realm=${BUILDER_SERVER_URL}/projects/${currentProject.id}${config.is(Env.DEVELOPMENT) ? '&NETWORK=sepolia' : ''}`
     : ''
   return (
     <div className={styles.container}>
