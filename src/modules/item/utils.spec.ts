@@ -330,7 +330,8 @@ describe('when getting if the item has a video', () => {
         ...item,
         contents: {
           [VIDEO_PATH]: 'the-video'
-        }
+        },
+        video: VIDEO_PATH
       } as Item
     })
 

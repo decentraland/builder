@@ -348,8 +348,8 @@ export function getVideoURL(item: Item) {
 }
 
 export function hasVideo(item?: Item, src?: string) {
-  const videoSrc = src || (item ? getVideoURL(item) : '')
-  return !!videoSrc || (!!item && VIDEO_PATH in item.contents)
+  const videoSrc = src || (item && VIDEO_PATH in item.contents ? getVideoURL(item) : '')
+  return !!videoSrc
 }
 
 export function getRarities() {
