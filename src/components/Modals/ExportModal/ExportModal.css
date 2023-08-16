@@ -42,3 +42,11 @@
 .ui.small.modal.ExportModal .export-modal-actions > .ui.button {
   margin: 0;
 }
+
+.ui.small.modal.ExportModal .export-modal-loader {
+  margin-left: 10px;
+}
+
+.ui.small.modal.ExportModal .export-modal-loader.ui.loader:before {
+  border-color: white !important; /** override important */
+}
