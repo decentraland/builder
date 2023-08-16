@@ -6,14 +6,16 @@ import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
 import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
-import { Scene, ComponentType, ComponentDefinition, SceneSDK6 } from 'modules/scene/types'
-import { getContentsStorageUrl } from 'lib/api/builder'
+import { Scene, ComponentType, ComponentDefinition, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
+import { BuilderAPI, getContentsStorageUrl } from 'lib/api/builder'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
-import { wrapSdk6 } from 'modules/migrations/utils'
+import { wrapSdk6, wrapSdk7 } from 'modules/migrations/utils'
 import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
+
+const SCENE_TEMPLATE_URL = 'https://raw.githubusercontent.com/decentraland/sdk-empty-scene-template/main'
 
 const Dockerfile = require('!raw-loader!decentraland/samples/ecs/Dockerfile').default
 const builderChannelRaw = require('raw-loader!decentraland-builder-scripts/lib/channel').default
@@ -33,7 +35,13 @@ export enum EXPORT_PATH {
   DCLIGNORE_FILE = '.dclignore',
   TSCONFIG_FILE = 'tsconfig.json',
   BUNDLED_GAME_FILE = 'bin/game.js',
-  THUMBNAIL_FILE = 'scene-thumbnail.png'
+  THUMBNAIL_FILE = 'scene-thumbnail.png',
+  GITIGNORE_FILE = '.gitignore',
+  MAIN_CRDT_FIE = 'main.crdt',
+  MAIN_COMPOSITE_FILE = 'assets/scene/main.composite',
+  INDEX_FILE = 'src/index.ts',
+  VSCODE_EXTENSIONS_FILE = '.vscode/extensions.json',
+  VSCODE_LAUNCH_FILE = '.vscode/launch.json'
 }
 
 export type Mapping = {
@@ -458,7 +466,8 @@ export function getSceneDefinition(
   thumbnail: string | null,
   author: string | null,
   isEmpty?: boolean,
-  name?: string
+  name?: string,
+  isSDK7?: boolean
 ) {
   const parcels = getParcelOrientation(project.layout, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
@@ -500,6 +509,13 @@ export function getSceneDefinition(
     sceneDefinition.worldConfiguration = {
       name: name
     }
+  }
+
+  if (isSDK7) {
+    sceneDefinition.allowedMediaHostnames = []
+    sceneDefinition.ecs7 = true
+    sceneDefinition.main = 'bin/index.js'
+    sceneDefinition.runtimeVersion = '7'
   }
 
   return sceneDefinition
@@ -546,4 +562,68 @@ async function createThumbnailBlob(thumbnail: string | null, isClearDeployment: 
 
 export function buildAssetPath(namespace: string, path: string) {
   return `${namespace}/${path}`
+}
+
+// SDK7
+
+export async function downloadSDK7File(key: string, url: string): Promise<{ path: string; file: Blob }> {
+  return fetch(url)
+    .then(resp => resp.blob())
+    .then(blob => ({ path: key, file: blob }))
+}
+
+export async function createSDK7Files({ project, scene, builderAPI }: { project: Project; scene: SceneSDK7; builderAPI: BuilderAPI }) {
+  // external files
+  const staticFiles: Record<string, string> = {
+    [EXPORT_PATH.DCLIGNORE_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.DCLIGNORE_FILE}`,
+    [EXPORT_PATH.PACKAGE_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.PACKAGE_FILE}`,
+    [EXPORT_PATH.TSCONFIG_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.TSCONFIG_FILE}`,
+    [EXPORT_PATH.GITIGNORE_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.GITIGNORE_FILE}`,
+    [EXPORT_PATH.VSCODE_EXTENSIONS_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.VSCODE_EXTENSIONS_FILE}`,
+    [EXPORT_PATH.VSCODE_LAUNCH_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.VSCODE_LAUNCH_FILE}`,
+    [EXPORT_PATH.INDEX_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.INDEX_FILE}`,
+    [EXPORT_PATH.THUMBNAIL_FILE]: project.thumbnail
+  }
+
+  const mappings: Record<string, string> = Object.keys(scene.mappings).reduce((files, key) => {
+    files[key] = getContentsStorageUrl(scene.mappings[key])
+    return files
+  }, {} as Record<string, string>)
+
+  const externalFilesUrls = { ...mappings, ...staticFiles }
+  const externalFilesPromises = Object.keys(externalFilesUrls).map(async (key: string) => {
+    return downloadSDK7File(key, externalFilesUrls[key])
+  })
+
+  const externalFiles = (await Promise.all(externalFilesPromises)).reduce((result, { path, file }) => {
+    result[path] = file
+    return result
+  }, {} as Record<string, Blob>)
+
+  // dynamic Files
+  const mainCrdt = await builderAPI.fetchCrdt(project.id)
+  const mainComposite = new Blob([new TextEncoder().encode(JSON.stringify(scene.composite))])
+  const sceneJson = new Blob([
+    new TextEncoder().encode(
+      JSON.stringify(
+        getSceneDefinition(project, { x: 0, y: 0 }, 'east', EXPORT_PATH.THUMBNAIL_FILE, project.ethAddress, undefined, undefined, true)
+      )
+    )
+  ])
+  const builderJson = new Blob([
+    new TextEncoder().encode(
+      JSON.stringify({
+        version: MANIFEST_FILE_VERSION,
+        project,
+        scene: wrapSdk7(scene)
+      })
+    )
+  ])
+  return {
+    ...externalFiles,
+    [EXPORT_PATH.MAIN_CRDT_FIE]: mainCrdt,
+    [EXPORT_PATH.MAIN_COMPOSITE_FILE]: mainComposite,
+    [EXPORT_PATH.SCENE_FILE]: sceneJson,
+    [EXPORT_PATH.MANIFEST_FILE]: builderJson
+  }
 }

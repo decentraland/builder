@@ -1,6 +1,6 @@
 import { Project } from 'modules/project/types'
 import { Migration, Versionable } from './types'
-import { ComponentType, ComponentDefinition, AnyComponent, Scene, SceneSDK6 } from 'modules/scene/types'
+import { ComponentType, ComponentDefinition, AnyComponent, Scene, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
 import { getGLTFShapeName, getUniqueName } from 'modules/scene/utils'
 
 export function addScale(scene: SceneSDK6) {
@@ -144,5 +144,12 @@ export function wrapSdk6(scene: SceneSDK6): Scene {
   return {
     sdk6: scene,
     sdk7: null
+  }
+}
+
+export function wrapSdk7(scene: SceneSDK7): Scene {
+  return {
+    sdk6: null,
+    sdk7: scene
   }
 }
