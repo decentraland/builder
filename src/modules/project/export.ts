@@ -10,7 +10,7 @@ import { Scene, ComponentType, ComponentDefinition, SceneSDK6, SceneSDK7 } from 
 import { BuilderAPI, getContentsStorageUrl } from 'lib/api/builder'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
-import { wrapSdk6 } from 'modules/migrations/utils'
+import { wrapSdk6, wrapSdk7 } from 'modules/migrations/utils'
 import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
@@ -610,10 +610,20 @@ export async function createSDK7Files({ project, scene, builderAPI }: { project:
       )
     )
   ])
+  const builderJson = new Blob([
+    new TextEncoder().encode(
+      JSON.stringify({
+        version: MANIFEST_FILE_VERSION,
+        project,
+        scene: wrapSdk7(scene)
+      })
+    )
+  ])
   return {
     ...externalFiles,
     [EXPORT_PATH.MAIN_CRDT_FIE]: mainCrdt,
     [EXPORT_PATH.MAIN_COMPOSITE_FILE]: mainComposite,
-    [EXPORT_PATH.SCENE_FILE]: sceneJson
+    [EXPORT_PATH.SCENE_FILE]: sceneJson,
+    [EXPORT_PATH.MANIFEST_FILE]: builderJson
   }
 }
