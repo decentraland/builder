@@ -9,7 +9,8 @@
     "src/modules/analytics/rollbar.ts",
     "src/modules/editor/base64.ts",
     "package.json",
-    "package-lock.json"
+    "package-lock.json",
+    "public/config/*"
   ],
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "react-app", "react-app/jest", "prettier"],
