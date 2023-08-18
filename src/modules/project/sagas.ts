@@ -54,13 +54,19 @@ import { SDKVersion, Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
-import { createScene, setGround, applyLayout } from 'modules/scene/actions'
+import { createScene, setGround, applyLayout, updateScene } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene, setGizmo } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
-import { SAVE_PROJECT_SUCCESS, saveProjectRequest } from 'modules/sync/actions'
+import {
+  SAVE_PROJECT_SUCCESS,
+  saveProjectRequest,
+  SAVE_PROJECT_FAILURE,
+  SaveProjectSuccessAction,
+  SaveProjectFailureAction
+} from 'modules/sync/actions'
 import { Gizmo, PreviewType } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
@@ -72,7 +78,8 @@ import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles, createSDK7Files } from './export'
-import { getParcels } from 'modules/inspector/utils'
+import { changeLayout, getParcels } from 'modules/inspector/utils'
+import { setInspectorReloading } from 'modules/inspector/actions'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -231,12 +238,30 @@ export function* projectSaga(builder: BuilderAPI) {
     yield put(setProject(newProject))
 
     if (shouldApplyLayout) {
-      yield put(setEditorReady(false))
-      yield put(createEditorScene(newProject))
-      yield take(SET_EDITOR_READY)
-      yield put(applyLayout(newProject))
-      yield put(ActionCreators.clearHistory())
-      yield put(takeScreenshot())
+      if (scene.sdk6) {
+        yield put(setEditorReady(false))
+        yield put(createEditorScene(newProject))
+        yield take(SET_EDITOR_READY)
+        yield put(applyLayout(newProject))
+        yield put(ActionCreators.clearHistory())
+        yield put(takeScreenshot())
+      } else if (scene.sdk7) {
+        const newScene = changeLayout(scene.sdk7, project.layout!)
+
+        yield put(setInspectorReloading(true))
+
+        yield put(updateScene(newScene))
+        const { failure }: { success: SaveProjectSuccessAction | null; failure: SaveProjectFailureAction | null } = yield race({
+          success: take(SAVE_PROJECT_SUCCESS),
+          failure: take(SAVE_PROJECT_FAILURE)
+        })
+
+        yield put(setInspectorReloading(false))
+
+        if (failure) {
+          console.error(`Error saving project=${project.id!}`)
+        }
+      }
     }
   }
 

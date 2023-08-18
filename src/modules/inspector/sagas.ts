@@ -38,7 +38,7 @@ import {
 } from './actions'
 import { Project } from 'modules/project/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { IframeStorage } from '@dcl/inspector'
+import { IframeStorage, UiClient } from '@dcl/inspector'
 import { MessageTransport } from '@dcl/mini-rpc'
 import { getParcels } from './utils'
 import { BuilderAPI, getContentsStorageUrl } from 'lib/api/builder'
@@ -122,6 +122,11 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         return promise
       })
     }
+
+    // configure UI
+    const ui = new UiClient(transport)
+    yield call([ui, 'selectAssetsTab'], 'AssetsPack')
+    yield call([ui, 'toggleComponent'], 'inspector::Scene', false)
 
     // wait for RPC to be idle (3 seconds)
     yield waitForRpcIdle(3000)

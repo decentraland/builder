@@ -1,7 +1,7 @@
 import { Composite, CompositeDefinition } from '@dcl/ecs'
 import { createEngineContext, dumpEngineToComposite, dumpEngineToCrdtCommands } from '@dcl/inspector'
 import { Layout, Project } from 'modules/project/types'
-import { ComponentData, ComponentType, SceneSDK6 } from 'modules/scene/types'
+import { ComponentData, ComponentType, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
 
 export function getParcels(layout: Layout) {
   const parcels: { x: number; y: number }[] = []
@@ -73,4 +73,37 @@ export function toMappings(scene: SceneSDK6): Record<string, string> {
 export function toCrdt(scene: SceneSDK6, project?: Project) {
   const engine = getEngine(scene, project)
   return dumpEngineToCrdtCommands(engine as any)
+}
+
+export function changeLayout(scene: SceneSDK7, layout: Layout) {
+  const sceneComponent = scene.composite.components.find(component => component.name === 'inspector::Scene')!
+  const newData = {
+    ...sceneComponent.data
+  } as any
+
+  newData[0] = {
+    ...newData[0],
+    json: {
+      ...newData[0].json,
+      layout: {
+        ...newData[0].json.layout,
+        parcels: getParcels(layout)
+      }
+    }
+  }
+
+  const newScene: SceneSDK7 = {
+    ...scene,
+    composite: {
+      ...scene.composite,
+      components: [
+        ...scene.composite.components.filter(component => component.name !== 'inspector::Scene'),
+        {
+          ...sceneComponent,
+          data: newData
+        }
+      ]
+    }
+  }
+  return newScene
 }
