@@ -65,7 +65,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   }
 
   render() {
-    const { name, deploymentStatus, currentScene, onClose } = this.props
+    const { name, deploymentStatus, onClose } = this.props
     const { title, description, rows, cols, hasError } = this.state
     const isSubmitDisabled = hasError || deploymentStatus !== DeploymentStatus.UNPUBLISHED
 
@@ -77,14 +77,12 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
             <div className="details">
               <ProjectFields.Title value={title} onChange={this.handleTitleChange} required icon="asterisk" />
               <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} />
-              {currentScene.sdk6 && (
-                <div className="picker">
-                  <Header sub className="picker-label">
-                    {t('edit_project_modal.custom_layout_label')}
-                  </Header>
-                  <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} />
-                </div>
-              )}
+              <div className="picker">
+                <Header sub className="picker-label">
+                  {t('edit_project_modal.custom_layout_label')}
+                </Header>
+                <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} />
+              </div>
             </div>
             <div className="error">{deploymentStatus !== DeploymentStatus.UNPUBLISHED && t('edit_project_modal.unpublish_needed')}</div>
           </Modal.Content>
