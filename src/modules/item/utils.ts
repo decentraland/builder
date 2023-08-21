@@ -549,6 +549,10 @@ export function isWearableSynced(item: Item, entity: Entity) {
     }
   }
 
+  if (isSmart(item) && item.contents[VIDEO_PATH] !== item.video) {
+    return false
+  }
+
   return true
 }
 
@@ -611,9 +615,13 @@ export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCurat
   }
   const isUnsynced = status === SyncStatus.UNSYNCED
   const curationHasAnotherContentHash = itemCuration && itemCuration.contentHash !== item.currentContentHash
+  // Validate after the item is updated if it is a smart wearable it contains an uploaded video.
+  const smartWearableHasUpdatedVideo = isSmart(item) && item.contents[VIDEO_PATH] !== item.video
   return (
-    isUnsynced ||
-    ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED || status === SyncStatus.LOADING) && curationHasAnotherContentHash)
+    (isUnsynced ||
+      ((status === SyncStatus.UNDER_REVIEW || status === SyncStatus.SYNCED || status === SyncStatus.LOADING) &&
+        curationHasAnotherContentHash)) &&
+    smartWearableHasUpdatedVideo
   )
 }
 
