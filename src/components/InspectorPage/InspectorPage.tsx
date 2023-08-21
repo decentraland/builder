@@ -31,7 +31,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { scene, isLoggedIn, isInspectorEnabled } = this.props
+    const { scene, isLoggedIn, isInspectorEnabled, isReloading } = this.props
 
     if (!isInspectorEnabled) {
       return <NotFoundPage />
@@ -43,8 +43,8 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
 
     return (
       <div className="InspectorPage">
-        {!this.state.isLoaded && <Loader active />}
-        {scene && (
+        {(!this.state.isLoaded || isReloading) && <Loader active />}
+        {scene && !isReloading && (
           <>
             <TopBar />
             <iframe

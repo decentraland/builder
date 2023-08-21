@@ -31,3 +31,7 @@ export type RPCFailureAction = ReturnType<typeof rpcFailure>
 export const TOGGLE_SCREENSHOT = 'Toggle Screenshot'
 export const toggleScreenshot = (enabled: boolean) => action(TOGGLE_SCREENSHOT, { enabled })
 export type ToggleScreenshotAction = ReturnType<typeof toggleScreenshot>
+
+export const SET_INSPECTOR_RELOADING = 'Set Inspector Reloading'
+export const setInspectorReloading = (value: boolean) => action(SET_INSPECTOR_RELOADING, { value })
+export type SetInspectorReloadingAction = ReturnType<typeof setInspectorReloading>
