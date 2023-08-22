@@ -14,6 +14,7 @@ import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
+import { isThirdParty } from 'lib/urn'
 import { EngineType, getEmoteMetrics, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
 import {
@@ -24,7 +25,8 @@ import {
   EmoteDurationTooLongError,
   InvalidModelFilesRepresentation,
   InvalidModelFileType,
-  CustomErrorWithTitle
+  CustomErrorWithTitle,
+  ItemNotAllowedInThirdPartyCollections
 } from 'modules/item/errors'
 import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS, SCENE_PATH } from 'modules/item/types'
 import {
@@ -178,7 +180,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
-    const { category, metadata, isRepresentation, onDropAccepted, isPublishSmartWearablesEnabled = false } = this.props
+    const { collection, category, metadata, isRepresentation, onDropAccepted, isPublishSmartWearablesEnabled = false } = this.props
 
     let changeItemFile = false
     let item = null
@@ -273,6 +275,11 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
       if (isSmart(acceptedFileProps) && !isPublishSmartWearablesEnabled) {
         throw new InvalidFilesError()
+      }
+
+      if (collection && isThirdParty(collection.urn) && (isEmote || isSmart(acceptedFileProps))) {
+        const type = acceptedFileProps.type === ItemType.WEARABLE ? (isSmart(acceptedFileProps) ? 'smart_wearable' : 'wearable') : 'emote'
+        throw new ItemNotAllowedInThirdPartyCollections(type)
       }
 
       onDropAccepted({

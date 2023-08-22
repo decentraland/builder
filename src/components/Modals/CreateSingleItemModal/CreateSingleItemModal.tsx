@@ -736,12 +736,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderImportView() {
-    const { metadata, isPublishSmartWearablesEnabled, onClose } = this.props
+    const { collection, metadata, isPublishSmartWearablesEnabled, onClose } = this.props
     const { category, isLoading, isRepresentation } = this.state
     const title = this.renderModalTitle()
 
     return (
       <ImportStep
+        collection={collection}
         category={category as WearableCategory | EmoteCategory}
         metadata={metadata}
         title={title}

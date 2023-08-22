@@ -95,10 +95,10 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
   }
 
   handleOpenThumbnailDialog = () => {
-    const { item, onOpenModal } = this.props
+    const { collection, item, onOpenModal } = this.props
 
     if (item?.type === ItemType.EMOTE) {
-      onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange, item })
+      onOpenModal('EditThumbnailModal', { onSaveThumbnail: this.handleEmoteThumbnailChange, item, collection })
     } else if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }

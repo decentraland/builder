@@ -258,7 +258,8 @@
       "allowed_media_hostnames_empty_or_invalid": {
         "title": "Dado que el permiso 'ALLOW_MEDIA_HOSTNAMES' está configurado, la propiedad 'allowedMediaHostnames' debe ser configurada y no puede ser vacía. Por favor, corrija el archivo 'scene.json'.",
         "message": "Para obtener {learn_more}, consulte la documentación."
-      }
+      },
+      "item_not_allowed_in_third_party_collections": "Este tipo {tipo} no está permitido en colecciones externas"
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
     "smart_wearable_details_title": "Completa los detalles de tu vestimenta interactiva",
@@ -1531,7 +1532,8 @@
     "copy_urn": "Copiar URN",
     "type": {
       "wearable": "Vestimenta",
-      "emote": "Emote"
+      "emote": "Emote",
+      "smart_wearable": "Vestimenta Interactiva"
     }
   },
   "edit_price_and_beneficiary_modal": {
