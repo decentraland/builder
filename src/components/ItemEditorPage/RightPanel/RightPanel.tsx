@@ -31,7 +31,8 @@ import {
   ITEM_NAME_MAX_LENGTH,
   THUMBNAIL_PATH,
   WearableData,
-  VIDEO_PATH
+  VIDEO_PATH,
+  SyncStatus
 } from 'modules/item/types'
 import { dataURLToBlob } from 'modules/media/utils'
 import { areEmoteMetrics } from 'modules/models/types'
@@ -236,7 +237,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOnSaveItem = async () => {
-    const { selectedItem, isHandsCategoryEnabled, onSaveItem } = this.props
+    const { selectedItem, itemStatus, isHandsCategoryEnabled, onSaveItem } = this.props
     const { name, description, rarity, contents, data, isDirty } = this.state
 
     if (isDirty && selectedItem) {
@@ -263,6 +264,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         data: itemData as WearableData,
         contents: itemContents
       }
+
+      if (itemStatus && [SyncStatus.UNPUBLISHED, SyncStatus.UNDER_REVIEW].includes(itemStatus)) {
+        item.video = itemContents[VIDEO_PATH]
+      }
+
       onSaveItem(item, contents)
       if (isThirdParty(item.urn)) {
         this.analytics.track('Edit Item', { contents })

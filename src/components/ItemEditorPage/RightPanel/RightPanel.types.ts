@@ -10,7 +10,7 @@ import {
   downloadItemRequest,
   DownloadItemRequestAction
 } from 'modules/item/actions'
-import { Item, ItemRarity, WearableData } from 'modules/item/types'
+import { Item, ItemRarity, SyncStatus, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 
@@ -21,6 +21,7 @@ export type Props = {
   selectedItemId: string | null
   canEditSelectedItem: boolean
   error: string | null
+  itemStatus: SyncStatus | null
   isConnected: boolean
   isDownloading: boolean
   isCommitteeMember: boolean
@@ -52,6 +53,7 @@ export type MapStateProps = Pick<
   | 'selectedItem'
   | 'selectedItemId'
   | 'error'
+  | 'itemStatus'
   | 'isConnected'
   | 'isDownloading'
   | 'isCommitteeMember'

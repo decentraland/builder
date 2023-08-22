@@ -1,10 +1,12 @@
 import React from 'react'
 import { EmoteCategory, WearableCategory } from '@dcl/schemas'
 import { ErrorMessage } from 'components/ItemImport/ErrorMessage/ErrorMessage.types'
+import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { AcceptedFileProps } from '../CreateSingleItemModal.types'
 
 export type Props = {
+  collection: Collection | null
   category?: WearableCategory | EmoteCategory
   metadata?: {
     item: Item
