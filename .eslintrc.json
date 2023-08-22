@@ -6,7 +6,7 @@
     "src/ecsScene/*",
     "scripts/*.js",
     "src/modules/project/export.ts",
-    "src/modules/analytics/rollbar.ts",
+    "src/modules/analytics/sentry.ts",
     "src/modules/editor/base64.ts",
     "package.json",
     "package-lock.json",
