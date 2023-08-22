@@ -344,7 +344,7 @@ export function getThumbnailURL(item: Item) {
 }
 
 export function getVideoURL(item: Item) {
-  return item.video ? getContentsStorageUrl(item.contents[item.video]) : ''
+  return VIDEO_PATH in item.contents ? getContentsStorageUrl(item.contents[VIDEO_PATH]) : ''
 }
 
 export function hasVideo(item?: Item, src?: string) {
