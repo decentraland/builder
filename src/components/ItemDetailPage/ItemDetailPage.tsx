@@ -11,7 +11,7 @@ import { getCollectionType, isLocked as isCollectionLocked } from 'modules/colle
 import { dataURLToBlob } from 'modules/media/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import { FromParam } from 'modules/location/types'
-import { ItemType, THUMBNAIL_PATH, VIDEO_PATH } from 'modules/item/types'
+import { ItemType, SyncStatus, THUMBNAIL_PATH, VIDEO_PATH } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { areEmoteMetrics } from 'modules/models/types'
 import { Item } from 'modules/item/types'
@@ -51,8 +51,18 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
   }
 
   handleSaveVideo = async (video: Blob) => {
-    const { onSaveItem, item } = this.props
-    onSaveItem({ ...item, contents: { ...item?.contents, ...(await computeHashes({ [VIDEO_PATH]: video })) } } as Item, {
+    const { item, status, onSaveItem } = this.props
+    const videoComputedHash = await computeHashes({ [VIDEO_PATH]: video })
+    const updatedItem = {
+      ...item,
+      contents: { ...item?.contents, [VIDEO_PATH]: videoComputedHash[VIDEO_PATH] }
+    } as Item
+
+    if (status && [SyncStatus.UNPUBLISHED, SyncStatus.UNDER_REVIEW].includes(status)) {
+      updatedItem.video = videoComputedHash[VIDEO_PATH]
+    }
+
+    onSaveItem(updatedItem, {
       [VIDEO_PATH]: video
     })
   }
