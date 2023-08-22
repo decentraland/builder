@@ -4,7 +4,7 @@ import { IPreviewController } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
-import { BodyShapeType, Item, ItemRarity, ItemType } from 'modules/item/types'
+import { BodyShapeType, Item, ItemRarity, ItemType, SyncStatus } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
@@ -22,6 +22,7 @@ export type Props = ModalProps & {
   error: string | null
   isLoading: boolean
   collection: Collection | null
+  itemStatus: SyncStatus | null
   isHandsCategoryEnabled: boolean
   isPublishSmartWearablesEnabled: boolean
   onSave: typeof saveItemRequest
@@ -99,7 +100,7 @@ export type AcceptedFileProps = Pick<
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<
   Props,
-  'address' | 'error' | 'isLoading' | 'collection' | 'isHandsCategoryEnabled' | 'isPublishSmartWearablesEnabled'
+  'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isHandsCategoryEnabled' | 'isPublishSmartWearablesEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

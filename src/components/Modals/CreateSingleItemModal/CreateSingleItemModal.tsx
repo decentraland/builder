@@ -31,7 +31,8 @@ import {
   ItemType,
   EmotePlayMode,
   VIDEO_PATH,
-  WearableData
+  WearableData,
+  SyncStatus
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -235,13 +236,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       } as EmoteDataADR74
     }
 
+    const contents = await computeHashes(sortedContents.all)
+
     const item = {
       id,
       name,
       urn,
       description: description || '',
       thumbnail: THUMBNAIL_PATH,
-      video: VIDEO_PATH,
+      video: contents[VIDEO_PATH],
       type,
       collectionId,
       totalSupply: 0,
@@ -255,7 +258,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       data,
       owner: address!,
       metrics,
-      contents: await computeHashes(sortedContents.all),
+      contents,
       createdAt: +new Date(),
       updatedAt: +new Date()
     }
@@ -305,7 +308,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   modifyItem = async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { isHandsCategoryEnabled, onSave } = this.props
+    const { itemStatus, isHandsCategoryEnabled, onSave } = this.props
     const { name, bodyShape, type, metrics, category, playMode, requiredPermissions } = this.state as StateData
 
     let data: WearableData | EmoteDataADR74
@@ -328,12 +331,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       } as EmoteDataADR74
     }
 
+    const contents = await computeHashes(sortedContents.all)
+
     const item = {
       ...pristineItem,
       data,
       name,
       metrics,
-      contents: await computeHashes(sortedContents.all),
+      contents,
       updatedAt: +new Date()
     }
 
@@ -348,6 +353,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     } else {
       // Edited representation
       item.data.representations[representationIndex] = representations[0]
+    }
+
+    if (itemStatus && [SyncStatus.UNPUBLISHED, SyncStatus.UNDER_REVIEW].includes(itemStatus) && isSmart(item) && VIDEO_PATH in contents) {
+      item.video = contents[VIDEO_PATH]
     }
 
     onSave(item as Item, sortedContents.all)
@@ -747,7 +756,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderUploadVideoView() {
-    const { onClose } = this.props
+    const { itemStatus, onClose } = this.props
     const { contents } = this.state
     const title = this.renderModalTitle()
 
@@ -759,7 +768,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         onBack={this.handleUploadVideoGoBack}
         onClose={onClose}
         onSaveVideo={this.handleSaveVideo}
-        required={false}
+        required={!!itemStatus}
       />
     )
   }
