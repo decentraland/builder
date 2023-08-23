@@ -26,7 +26,6 @@ export type Props = {
   isReady: boolean
   isTemplatesEnabled: boolean
   isInspectorEnabled: boolean
-  isProfileSiteEnabled: boolean
   isLoading: boolean
   onCloseEditor: typeof closeEditor
   onLoadProject: typeof loadPublicProjectRequest
@@ -50,7 +49,6 @@ export type MapStateProps = Pick<
   | 'currentAuthor'
   | 'isTemplatesEnabled'
   | 'isInspectorEnabled'
-  | 'isProfileSiteEnabled'
 >
 export type MapDispatchProps = Pick<
   Props,
