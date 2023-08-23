@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { getItem, getError as getItemError, isDownloading } from 'modules/item/selectors'
+import { getItem, getError as getItemError, getStatusByItemId, isDownloading } from 'modules/item/selectors'
 import { deleteItemRequest, downloadItemRequest, saveItemRequest, setCollection } from 'modules/item/actions'
 import { openModal } from 'modules/modal/actions'
 import { isOwner } from 'modules/item/utils'
@@ -17,6 +17,8 @@ const mapState = (state: RootState): MapStateProps => {
   const selectedItem = getItem(state, selectedItemId)
   const address = getAddress(state) || ''
   const collection = selectedItemId && selectedItem && selectedItem.collectionId ? getCollection(state, selectedItem.collectionId) : null
+  const statusByItemId = getStatusByItemId(state)
+  const itemStatus = selectedItemId ? statusByItemId[selectedItemId] : null
   return {
     address,
     collection,
@@ -27,6 +29,7 @@ const mapState = (state: RootState): MapStateProps => {
         ? hasViewAndEditRights(state, address, collection)
         : isOwner(selectedItem, address)
       : false,
+    itemStatus,
     error: getItemError(state),
     isConnected: isConnected(state),
     isDownloading: isDownloading(state),

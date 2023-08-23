@@ -116,3 +116,13 @@ export class InvalidModelFileType extends CustomError {
     )
   }
 }
+
+export class ItemNotAllowedInThirdPartyCollections extends CustomError {
+  constructor(type: string) {
+    super(
+      t('create_single_item_modal.error.item_not_allowed_in_third_party_collections', {
+        type: createElement('b', null, t(`item.type.${type}`))
+      })
+    )
+  }
+}

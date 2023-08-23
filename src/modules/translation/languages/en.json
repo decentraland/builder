@@ -257,7 +257,8 @@
       "allowed_media_hostnames_empty_or_invalid": {
         "title": "Given that the 'ALLOW_MEDIA_HOSTNAMES' permission is set, the 'allowedMediaHostnames' property must be set and not empty. Please correct the 'scene.json'.",
         "message": "For more information, check the Docs to {learn_more}."
-      }
+      },
+      "item_not_allowed_in_third_party_collections": "This item type {type} is not allowed in Linked Wearables Collections"
     },
     "emote_notice": "Emotes are available for all body shapes.",
     "smart_wearable_details_title": "Complete your Smart Wearable Details",
@@ -1521,7 +1522,8 @@
     "copy_urn": "Copy URN",
     "type": {
       "wearable": "Wearable",
-      "emote": "Emote"
+      "emote": "Emote",
+      "smart_wearable": "Smart Wearable"
     }
   },
   "edit_price_and_beneficiary_modal": {
