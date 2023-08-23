@@ -1,4 +1,4 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects'
+import { call, put, takeLatest, select, take } from 'redux-saga/effects'
 import {
   LoadCollectiblesRequestAction,
   LOAD_COLLECTIBLES_REQUEST,
@@ -7,6 +7,7 @@ import {
   loadCollectiblesFailure
 } from './actions'
 import { Asset } from './types'
+import { GENERATE_IDENTITY_SUCCESS } from 'modules/identity/actions'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -18,6 +19,7 @@ export function* assetSaga(client: BuilderClient) {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
 
   function* handleConnectWallet() {
+    yield take(GENERATE_IDENTITY_SUCCESS)
     yield put(loadCollectiblesRequest())
   }
 
