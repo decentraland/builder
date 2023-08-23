@@ -15,7 +15,6 @@
     "@dcl/single-sign-on-client": "^0.0.12",
     "@dcl/ui-env": "^1.2.0",
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^11.0.0",
     "@testing-library/user-event": "^13.5.0",
     "@typechain/ethers-v5": "^10.1.0",
     "@types/jszip": "^3.1.6",
@@ -74,6 +73,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@testing-library/react": "^12.1.5",
     "@types/blob-to-buffer": "^1.2.0",
     "@types/file-saver": "^2.0.0",
     "@types/interface-datastore": "^1.0.0",
@@ -92,7 +92,6 @@
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",
     "concurrently": "^7.2.2",
-    "dcl-tslint-config-standard": "^1.1.0",
     "decentraland-rpc": "^3.1.8",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.5.0",
