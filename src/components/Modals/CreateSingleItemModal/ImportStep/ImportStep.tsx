@@ -7,7 +7,8 @@ import {
   AllowedMediaHostnameIsEmptyOrInvalidError,
   DuplicatedRequiredPermissionsError,
   MissingRequiredPropertiesError,
-  UnknownRequiredPermissionsError
+  UnknownRequiredPermissionsError,
+  EmoteConfig
 } from '@dcl/builder-client/dist/files'
 import { WearableCategory } from '@dcl/builder-client/dist/item'
 import { ModalNavigation } from 'decentraland-ui'
@@ -86,9 +87,11 @@ export default class ImportStep extends React.PureComponent<Props, State> {
    *
    * @param file - The ZIP file.
    */
-  handleZippedModelFiles = async (file: File): Promise<{ modelData: ModelData; wearable?: WearableConfig; scene?: SceneConfig }> => {
+  handleZippedModelFiles = async (
+    file: File
+  ): Promise<{ modelData: ModelData; wearable?: WearableConfig; scene?: SceneConfig; emote?: EmoteConfig }> => {
     const loadedFile = await loadFile(file.name, file)
-    const { wearable, scene, content } = loadedFile
+    const { wearable, scene, content, emote } = loadedFile
 
     let modelPath: string | undefined
 
@@ -105,6 +108,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return {
       modelData: await this.processModel(modelPath, content),
       wearable,
+      emote,
       scene
     }
   }
@@ -208,7 +212,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       }
 
       if (extension === '.zip') {
-        const { modelData, wearable, scene } = await this.handleZippedModelFiles(file)
+        const { modelData, wearable, scene, emote } = await this.handleZippedModelFiles(file)
         const { type, model, contents } = modelData
 
         if (scene) {
@@ -238,6 +242,20 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             category: wearable.data.category,
             bodyShape: getBodyShapeType(wearable as Item),
             requiredPermissions: scene?.requiredPermissions
+          }
+        } else if (emote) {
+          let thumbnail: string | undefined
+
+          if (thumbnail && thumbnail in modelData.contents) {
+            thumbnail = await blobToDataURL(modelData.contents[thumbnail])
+          }
+          acceptedFileProps = {
+            ...acceptedFileProps,
+            thumbnail,
+            name: emote.name,
+            description: emote.description,
+            rarity: emote.rarity,
+            category: emote.category
           }
         } else {
           /** If the .zip file doesn't contain an asset.json file,
