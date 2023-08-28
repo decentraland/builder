@@ -98,6 +98,17 @@ export function getBodyShapes(item: Item): BodyShape[] {
   return Array.from(bodyShapes)
 }
 
+export function getEmoteAdditionalProperties(item: Item<ItemType.EMOTE>): string {
+  let additionalProperties = ''
+  if (Object.keys(item.contents).some(content => content.includes('.mp3'))) {
+    additionalProperties = `${additionalProperties}s`
+  }
+  if (item.metrics.props > 0) {
+    additionalProperties = `${additionalProperties}g`
+  }
+  return additionalProperties
+}
+
 export function getMissingBodyShapeType(item: Item) {
   const existingBodyShapeType = getBodyShapeType(item)
   if (existingBodyShapeType === BodyShapeType.MALE) {
@@ -190,9 +201,12 @@ export function buildEmoteMetada(
   description: string,
   category: string,
   bodyShapeTypes: string,
-  loop: number
+  loop: number,
+  additionalProperties?: string
 ): string {
-  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}`
+  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}${
+    additionalProperties ? `:${additionalProperties}` : ''
+  }`
 }
 
 // Metadata looks like this:
@@ -215,7 +229,17 @@ export function getMetadata(item: Item) {
       if (!data.category) {
         throw new Error(`Unknown item category "${JSON.stringify(item.data)}"`)
       }
-      return buildEmoteMetada(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes, data.loop ? 1 : 0)
+      const additionalProperties = getEmoteAdditionalProperties(item as unknown as Item<ItemType.EMOTE>)
+      return buildEmoteMetada(
+        1,
+        getItemMetadataType(item),
+        item.name,
+        item.description,
+        data.category,
+        bodyShapeTypes,
+        data.loop ? 1 : 0,
+        additionalProperties
+      )
     }
     default:
       throw new Error(`Unknown item.type "${item.type as unknown as string}"`)

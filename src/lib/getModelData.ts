@@ -236,7 +236,8 @@ export async function getEmoteMetrics(blob: Blob) {
     sequences: gltf.animations.length,
     duration: animation.duration,
     frames,
-    fps: frames / animation.duration
+    fps: frames / animation.duration,
+    props: gltf.scene.children.some(({ name }) => name === 'Armature_Prop') ? 1 : 0
   }
 }
 
