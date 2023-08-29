@@ -7,7 +7,7 @@ export default class Navbar extends React.PureComponent<Props> {
   render() {
     let props = this.props
     if (props.isConnected) {
-      props = { ...props, rightMenu: <UserMenu newMenu={props.isProfileSiteEnabled} /> }
+      props = { ...props, rightMenu: <UserMenu /> }
     }
     return <BaseNavbar activePage="builder" {...props} />
   }

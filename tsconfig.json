@@ -26,9 +26,6 @@
     "plugins": [
       {
         "name": "tslint-language-service"
-      },
-      {
-        "name": "dcl-tslint-config-standard"
       }
     ],
     "baseUrl": "src",
