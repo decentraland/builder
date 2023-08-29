@@ -17,7 +17,7 @@ import * as languages from 'modules/translation/languages'
 import Routes from 'routing'
 
 import './modules/analytics/track'
-import './modules/analytics/rollbar'
+import './modules/analytics/sentry'
 import './themes'
 import './index.css'
 

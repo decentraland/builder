@@ -14,6 +14,7 @@
     "@dcl/sdk": "7.3.10",
     "@dcl/single-sign-on-client": "^0.0.12",
     "@dcl/ui-env": "^1.2.0",
+    "@sentry/react": "^7.64.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/user-event": "^13.5.0",
     "@typechain/ethers-v5": "^10.1.0",

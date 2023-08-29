@@ -34,5 +34,6 @@
   "FORUM_URL": "https://forum.decentraland.org",
   "WORLDS_CONTENT_SERVER": "https://worlds-content-server.decentraland.org",
   "PROFILE_URL": "https://profile.decentraland.org",
-  "SSO_URL": "https://id.decentraland.org"
+  "SSO_URL": "https://id.decentraland.org",
+  "SENTRY_DSN": "https://428e8d298fb3f0fbcea645314a4a388c@o4504361728212992.ingest.sentry.io/4505748381564928"
 }
