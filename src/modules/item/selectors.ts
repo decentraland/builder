@@ -18,8 +18,8 @@ import { isEqual } from 'lib/address'
 import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
 import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
-import { Item, SyncStatus, Rarity, CatalystItem, ItemType } from './types'
-import { areSynced, canSeeItem, isOwner } from './utils'
+import { Item, SyncStatus, Rarity, CatalystItem, ItemType, VIDEO_PATH } from './types'
+import { areSynced, canSeeItem, isOwner, isSmart } from './utils'
 import { getSearch } from 'connected-react-router'
 
 export const getState = (state: RootState) => state.item
@@ -126,8 +126,10 @@ const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStat
   } else if (itemCuration && itemCuration.status === CurationStatus.PENDING) {
     return SyncStatus.UNDER_REVIEW
   } else if (itemCuration && itemCuration.status === CurationStatus.APPROVED) {
+    // Validate after the item is updated if it is a smart wearable it contains an uploaded video.
+    const smartWearableHasUpdatedVideo = isSmart(item) && item.contents[VIDEO_PATH] !== item.video
     // Blockchain content hash contains the hash in the catalyst for TP items
-    return item.currentContentHash !== item.catalystContentHash ? SyncStatus.UNSYNCED : SyncStatus.SYNCED
+    return item.currentContentHash !== item.catalystContentHash || smartWearableHasUpdatedVideo ? SyncStatus.UNSYNCED : SyncStatus.SYNCED
   }
   return SyncStatus.UNPUBLISHED
 }
