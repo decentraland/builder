@@ -25,7 +25,7 @@ import {
   hasUserOrphanItems,
   hasViewAndEditRights
 } from './selectors'
-import { Item, ItemRarity, ItemType, SyncStatus } from './types'
+import { Item, ItemRarity, ItemType, SyncStatus, VIDEO_PATH } from './types'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
@@ -305,6 +305,35 @@ describe('Item selectors', () => {
 
           it('should return a map where the item id of the tested item is set as synced', () => {
             expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.SYNCED })
+          })
+
+          describe('and the item is a smart wearable', () => {
+            beforeEach(() => {
+              state.item.data[itemId].video = 'aVideoHash'
+              state.item.data[itemId].contents['game.js'] = 'aHash'
+              state.item.data[itemId].contents[VIDEO_PATH] = 'aVideoHash'
+            })
+
+            afterEach(() => {
+              // Restore item state
+              state.item.data[itemId].video = undefined
+              delete state.item.data[itemId].contents['game.js']
+              delete state.item.data[itemId].contents[VIDEO_PATH]
+            })
+
+            it('should return a map where the item id of the tested item is set as unsynced', () => {
+              expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.SYNCED })
+            })
+
+            describe('and the item has an updated video', () => {
+              beforeEach(() => {
+                state.item.data[itemId].contents[VIDEO_PATH] = 'aDifferentVideoHash'
+              })
+
+              it('should return a map where the item id of the tested item is set as unsynced', () => {
+                expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNSYNCED })
+              })
+            })
           })
         })
       })
