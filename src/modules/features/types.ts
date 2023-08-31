@@ -7,5 +7,6 @@ export enum FeatureName {
   SCENE_TEMPLATES = 'scene-templates',
   HANDS_CATEGORY = 'hands-category',
   WEB_EDITOR = 'web-editor',
-  PUBLISH_SMART_WEARABLES = 'publish-smart-wearables'
+  PUBLISH_SMART_WEARABLES = 'publish-smart-wearables',
+  NEW_NAVBAR_DROPDOWN = 'navbar-dropdown'
 }

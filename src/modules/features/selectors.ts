@@ -61,3 +61,11 @@ export const getIsPublishSmartWearablesEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsNewNavbarDropdownEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_NAVBAR_DROPDOWN)
+  } catch (e) {
+    return false
+  }
+}
