@@ -1,0 +1,54 @@
+.metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.itemMetric {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  gap: 10px;
+}
+
+.itemMetric::before {
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  content: '';
+}
+
+.itemMetric.triangles::before {
+  background-image: url(../../images/triangles.svg);
+}
+
+.itemMetric.materials::before {
+  background-image: url(../../images/materials.svg);
+}
+
+.itemMetric.textures::before {
+  background-image: url(../../images/textures.svg);
+}
+
+.itemMetric.sequences::before {
+  background-image: url(../../icons/grid.svg);
+}
+
+.itemMetric.sound::before {
+  background-image: url(../../icons/sound.svg);
+}
+
+.itemMetric.fps::before {
+  background-image: url(../../icons/frames.svg);
+}
+
+.itemMetric.frames::before {
+  background-image: url(../../icons/image.svg);
+}
+
+.itemMetric.duration::before {
+  background-image: url(../../icons/time.svg);
+}

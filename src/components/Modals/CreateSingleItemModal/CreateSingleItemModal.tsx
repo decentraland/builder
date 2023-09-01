@@ -34,7 +34,7 @@ import {
   WearableData,
   SyncStatus
 } from 'modules/item/types'
-import { areEmoteMetrics, Metrics } from 'modules/models/types'
+import { Metrics } from 'modules/models/types'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import {
   getBodyShapeType,
@@ -73,6 +73,7 @@ import {
   ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
+import ItemProperties from 'components/ItemProperties/ItemProperties'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -841,26 +842,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderMetrics() {
-    const { metrics } = this.state
+    const { metrics, contents } = this.state
     if (metrics) {
-      if (areEmoteMetrics(metrics)) {
-        return (
-          <div className="metrics">
-            <div className="metric image circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
-            <div className="metric image circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
-            <div className="metric image circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
-            <div className="metric image circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
-          </div>
-        )
-      } else {
-        return (
-          <div className="metrics">
-            <div className="metric image triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-            <div className="metric image materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-            <div className="metric image textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
-          </div>
-        )
-      }
+      return <ItemProperties item={{ metrics, contents: contents as any }} />
     } else {
       return null
     }
@@ -977,32 +961,34 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const thumbnailStyle = getBackgroundStyle(rarity)
 
     return (
-      <>
-        <Column className="preview" width={192} grow={false}>
-          <div className="thumbnail-container">
-            <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} alt={title} />
-            <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
-            <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
-          </div>
-          {this.renderMetrics()}
-        </Column>
-        <Column className="data" grow={true}>
-          {this.renderFields()}
-          <SelectField
-            required
-            search={false}
-            className="has-description"
-            label={t('create_single_item_modal.play_mode_label')}
-            placeholder={t('create_single_item_modal.play_mode_placeholder')}
-            value={playMode as EmotePlayMode}
-            options={this.getPlayModeOptions()}
-            onChange={this.handlePlayModeChange}
-          />
-          <div className="notice">
-            <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" />} />
-          </div>
-        </Column>
-      </>
+      <Column>
+        <Row>
+          <Column className="preview" width={192} grow={false}>
+            <div className="thumbnail-container">
+              <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} alt={title} />
+              <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+              <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
+            </div>
+            {this.renderMetrics()}
+          </Column>
+          <Column className="data" grow={true}>
+            {this.renderFields()}
+            <SelectField
+              required
+              search={false}
+              className="has-description"
+              label={t('create_single_item_modal.play_mode_label')}
+              placeholder={t('create_single_item_modal.play_mode_placeholder')}
+              value={playMode as EmotePlayMode}
+              options={this.getPlayModeOptions()}
+              onChange={this.handlePlayModeChange}
+            />
+          </Column>
+        </Row>
+        <div className="notice">
+          <Message info visible content={t('create_single_item_modal.emote_notice')} icon={<Icon name="alert" />} />
+        </div>
+      </Column>
     )
   }
 

@@ -13,7 +13,6 @@ import { computeHashes } from 'modules/deployment/contentUtils'
 import { FromParam } from 'modules/location/types'
 import { ItemType, SyncStatus, THUMBNAIL_PATH, VIDEO_PATH } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { areEmoteMetrics } from 'modules/models/types'
 import { Item } from 'modules/item/types'
 import { isThirdParty } from 'lib/urn'
 import { shorten } from 'lib/address'
@@ -27,6 +26,7 @@ import NotFound from 'components/NotFound'
 import Back from 'components/Back'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import ItemVideo from 'components/ItemVideo'
+import ItemProperties from 'components/ItemProperties'
 import VideoMetrics from 'components/ItemVideo/VideoMetrics'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import { Props, State } from './ItemDetailPage.types'
@@ -129,8 +129,6 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
   renderPage(item: Item, collection: Collection | null) {
     const { onNavigate } = this.props
     const data = item.data
-    const metrics = item.metrics
-
     const isLocked = collection && isCollectionLocked(collection)
     const hasActions = !isLocked
 
@@ -154,23 +152,10 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                   {t('item_detail_page.edit_thumbnail')}
                 </Button>
               </div>
-
-              {areEmoteMetrics(metrics) ? (
-                <div className="metrics">
-                  <div className="subtitle">{t('item_detail_page.properties')}</div>
-                  <div className="metric">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
-                  <div className="metric">{t('model_metrics.duration', { count: Number(metrics.duration.toFixed(2)) })}</div>
-                  <div className="metric">{t('model_metrics.frames', { count: metrics.frames })}</div>
-                  <div className="metric">{t('model_metrics.fps', { count: Number(metrics.fps.toFixed(2)) })}</div>
-                </div>
-              ) : (
-                <div className="metrics">
-                  <div className="subtitle">{t('item_detail_page.properties')}</div>
-                  <div className="metric">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-                  <div className="metric">{t('model_metrics.materials', { count: metrics.materials })}</div>
-                  <div className="metric">{t('model_metrics.textures', { count: metrics.textures })}</div>
-                </div>
-              )}
+              <div className="metrics">
+                <span className="subtitle">{t('item_detail_page.properties')}</span>
+                <ItemProperties item={item} />
+              </div>
               {isSmart(item) ? (
                 <ItemVideo item={item} onClick={this.handleEditItemVideo}>
                   {(_video, duration, size, _isLoading) => (

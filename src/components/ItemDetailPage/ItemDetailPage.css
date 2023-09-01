@@ -96,6 +96,12 @@
   padding-top: 5px;
 }
 
+.ItemDetailPage .metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
 .ItemDetailPage .metrics .subtitle {
   text-transform: uppercase;
   color: #736e7d;
@@ -125,11 +131,6 @@
   font-size: 17px;
   line-height: 26px;
   color: #ffffff;
-}
-
-.ItemDetailPage .metrics div {
-  font-size: 17px;
-  margin-top: 18px;
 }
 
 .ItemDetailPage .cards-container {
