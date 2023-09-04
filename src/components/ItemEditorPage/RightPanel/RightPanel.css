@@ -39,6 +39,7 @@
   align-items: stretch;
   position: relative;
   margin-bottom: 20px;
+  gap: 20px;
 }
 
 .RightPanel .details .edit-item-file {
@@ -59,6 +60,7 @@
 
 .RightPanel .details .thumbnail-container {
   position: relative;
+  flex: 1;
 }
 
 .RightPanel .details .thumbnail-container .Icon.camera {
@@ -90,51 +92,8 @@
   display: none;
 }
 
-.RightPanel .details .metrics {
-  margin-left: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.RightPanel .details .metrics .metric {
-  color: var(--secondary-text);
-  font-size: 13px;
-  line-height: 18px;
-  background-repeat: no-repeat;
-  background-position-y: center;
-  text-transform: uppercase;
-}
-
-.RightPanel .details .metrics .metric {
-  margin-bottom: 8px;
-}
-
-.RightPanel .details .metrics .metric:last-child {
-  margin-bottom: 0;
-}
-
-.RightPanel .details .metrics .metric.image {
-  padding-left: 20px;
-}
-
 .RightPanel .overrides-label-panel {
   margin-right: 5px;
-}
-
-.RightPanel .details .metrics .metric.triangles {
-  background-image: url(../../../images/triangles.svg);
-}
-
-.RightPanel .details .metrics .metric.materials {
-  background-image: url(../../../images/materials.svg);
-}
-
-.RightPanel .details .metrics .metric.textures {
-  background-image: url(../../../images/textures.svg);
-}
-
-.RightPanel .details .metrics .metric.circle {
-  background-image: url(../../../images/circle.svg);
 }
 
 .RightPanel > .header > .ui.dropdown {

@@ -521,6 +521,11 @@
     "description": "<b>Lleva la Vestimenta al siguiente nivel con Experiencias Portátiles</b><br></br>Monetiza tus Experiencias Portátiles a través de la Vestimenta Interactiva y amplía la usabilidad de la Vestimenta ofreciendo a los jugadores nuevas habilidades (¡como volar!) o una capa adicional de contenido superpuesto en escenas de Decentraland.",
     "learn_more": "Más información sobre la vestimenta interactiva"
   },
+  "emotes_v2_announcement_modal": {
+    "title": "¡Sonidos y accesorios para Emotes ya estan disponibles! 🟢",
+    "description": "<b>¡Eleve su expresión emocional con nuestros sonidos y accesorios!</b> <br></br>Ahora, no solo estás limitado a las imágenes, puedes enriquecer tus emotes con accesorios y sonidos extendidos.",
+    "learn_more": "Obtenga más información sobre Emotes"
+  },
   "use_as_alias_modal": {
     "title": "Establece un nombre a tu avatar",
     "subtitle": "Establece un nuevo alias para tu avatar",

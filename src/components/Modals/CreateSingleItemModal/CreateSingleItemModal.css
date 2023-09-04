@@ -31,6 +31,8 @@
 .CreateSingleItemModal .details .notice {
   min-width: 400px;
   margin-bottom: 0;
+  width: calc(100% - 40px);
+  margin: 0 20px;
 }
 
 .CreateSingleItemModal .preview {
@@ -40,6 +42,7 @@
 .CreateSingleItemModal .preview .thumbnail-container {
   position: relative;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 .CreateSingleItemModal .preview .thumbnail-container .emote-thumbnail {
@@ -77,8 +80,8 @@
 }
 
 .CreateSingleItemModal .preview .metric,
-.CreateSingleItemModal .smart-wearable .ItemVideoContainer .metric {
-  color: var(--secondary-text);
+.CreateSingleItemModal .smart-wearable .ItemVideoContainer .item-metric {
+  color: var(--text);
   font-size: 13px;
   line-height: 18px;
   margin-bottom: 16px;
@@ -86,24 +89,8 @@
   background-position-y: center;
 }
 
-.CreateSingleItemModal .preview .metric.image {
+.CreateSingleItemModal .preview .item-metric.image {
   padding-left: 20px;
-}
-
-.CreateSingleItemModal .preview .metric.triangles {
-  background-image: url(../../../images/triangles.svg);
-}
-
-.CreateSingleItemModal .preview .metric.materials {
-  background-image: url(../../../images/materials.svg);
-}
-
-.CreateSingleItemModal .preview .metric.textures {
-  background-image: url(../../../images/textures.svg);
-}
-
-.CreateSingleItemModal .preview .metric.circle {
-  background-image: url(../../../images/circle.svg);
 }
 
 .CreateSingleItemModal .smart-wearable .previews.row {
