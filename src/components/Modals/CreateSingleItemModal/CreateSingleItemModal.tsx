@@ -57,6 +57,7 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import ItemVideo from 'components/ItemVideo'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
+import ItemProperties from 'components/ItemProperties'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
@@ -73,7 +74,6 @@ import {
   ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
-import ItemProperties from 'components/ItemProperties/ItemProperties'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -844,7 +844,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   renderMetrics() {
     const { metrics, contents } = this.state
     if (metrics) {
-      return <ItemProperties item={{ metrics, contents: contents as any }} />
+      return <ItemProperties item={{ metrics, contents } as unknown as Item} />
     } else {
       return null
     }
