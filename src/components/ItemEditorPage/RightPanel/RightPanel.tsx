@@ -35,7 +35,6 @@ import {
   SyncStatus
 } from 'modules/item/types'
 import { dataURLToBlob } from 'modules/media/utils'
-import { areEmoteMetrics } from 'modules/models/types'
 import Collapsable from 'components/Collapsable'
 import ConfirmDelete from 'components/ConfirmDelete'
 import Icon from 'components/Icon'
@@ -43,6 +42,7 @@ import Info from 'components/Info'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ItemVideo from 'components/ItemVideo'
+import ItemProperties from 'components/ItemProperties'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import { EditVideoModalMetadata } from 'components/Modals/EditVideoModal/EditVideoModal.types'
 import Input from './Input'
@@ -373,28 +373,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }))
   }
 
-  renderMetrics(item: Item) {
-    const metrics = item.metrics
-    if (areEmoteMetrics(metrics)) {
-      return (
-        <div className="metrics">
-          <div className="metric image circle">{t('model_metrics.sequences', { count: metrics.sequences })}</div>
-          <div className="metric image circle">{t('model_metrics.duration', { count: metrics.duration.toFixed(2) })}</div>
-          <div className="metric image circle">{t('model_metrics.frames', { count: metrics.frames })}</div>
-          <div className="metric image circle">{t('model_metrics.fps', { count: metrics.fps.toFixed(2) })}</div>
-        </div>
-      )
-    } else {
-      return (
-        <div className="metrics">
-          <div className="metric image triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-          <div className="metric image materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-          <div className="metric image textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
-        </div>
-      )
-    }
-  }
-
   renderOverrides(item: Item) {
     const { isHandsCategoryEnabled } = this.props
     const canEditItemMetadata = this.canEditItemMetadata(item)
@@ -523,7 +501,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
           </>
         )}
-        {this.renderMetrics(item)}
+        <ItemProperties item={item} />
       </div>
     )
   }

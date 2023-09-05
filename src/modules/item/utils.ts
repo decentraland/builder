@@ -162,7 +162,7 @@ export function getRarityIndex(rarity: ItemRarity) {
 export function getBackgroundStyle(rarity?: ItemRarity) {
   return rarity
     ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[rarity]}, ${RARITY_COLOR[rarity]})` }
-    : { backgroundColor: 'var(--secondary)' }
+    : { backgroundColor: '#393840' }
 }
 
 export function getItemMetadataType(item: { type: ItemType; contents: Record<string, string | Blob> }) {
