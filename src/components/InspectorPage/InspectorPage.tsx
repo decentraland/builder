@@ -51,7 +51,11 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
               ref={this.refIframe}
               title="inspector"
               id="inspector"
-              src={`${PUBLIC_URL}/inspector-index.html?parent=${window.location.origin}`}
+              src={`${
+                process.env.REACT_APP_INSPECTOR_PORT
+                  ? `http://localhost:${process.env.REACT_APP_INSPECTOR_PORT}`
+                  : `${PUBLIC_URL}/inspector-index.html`
+              }?parent=${window.location.origin}`}
             />
           </>
         )}
