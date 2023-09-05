@@ -69,3 +69,11 @@ export const getIsNewNavbarDropdownEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getEmotesV2Enabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.EMOTES_V2)
+  } catch (e) {
+    return false
+  }
+}

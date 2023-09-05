@@ -149,6 +149,10 @@
   position: relative;
 }
 
+.CenterPanel .emote-controls .ui.button.sound-control {
+  margin: 0 15px;
+}
+
 .CenterPanel .EmoteControls {
   padding: 0;
 }

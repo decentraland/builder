@@ -15,7 +15,7 @@ import { setCollectionPageView } from 'modules/ui/collection/actions'
 import { getCollectionPageView } from 'modules/ui/collection/selectors'
 import { isThirdPartyManager } from 'modules/thirdParty/selectors'
 import { fetchItemsRequest, fetchOrphanItemRequest, FETCH_ITEMS_REQUEST, FETCH_ORPHAN_ITEM_REQUEST } from 'modules/item/actions'
-import { getIsCampaignEnabled, getIsPublishSmartWearablesEnabled } from 'modules/features/selectors'
+import { getEmotesV2Enabled, getIsCampaignEnabled, getIsPublishSmartWearablesEnabled } from 'modules/features/selectors'
 import { fetchCollectionsRequest, FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionsPage.types'
 import CollectionsPage from './CollectionsPage'
@@ -39,6 +39,7 @@ const mapState = (state: RootState): MapStateProps => {
     isLoadingItems: isLoadingType(getLoadingItems(state), FETCH_ITEMS_REQUEST),
     isLoadingOrphanItem: isLoadingType(getLoadingItems(state), FETCH_ORPHAN_ITEM_REQUEST),
     isCampaignEnabled: getIsCampaignEnabled(state),
+    isEmotesV2Enabled: getEmotesV2Enabled(state),
     isPublishSmartWearablesEnabled: getIsPublishSmartWearablesEnabled(state),
     hasUserOrphanItems: hasUserOrphanItems(state)
   }

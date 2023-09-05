@@ -22,6 +22,10 @@
   margin: 0 !important;
 }
 
+.ui.modal .EditThumbnailStep .ui.button.sound-control {
+  background: transparent;
+}
+
 .EditThumbnailStep .ui.button.zoom-in-control {
   width: 32px;
   height: 32px;
