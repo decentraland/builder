@@ -224,10 +224,3 @@ export function getThumbnail(definition?: SceneDefinition | null, content?: Enti
 
   return thumbnail
 }
-
-export function getMainFile() {
-  return `module.exports = {
-    onStart() {},
-    onUpdate() {},
-  }`
-}

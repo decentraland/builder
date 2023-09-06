@@ -27,6 +27,7 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { isSmart } from 'modules/item/utils'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
+import { Entity } from '@dcl/schemas'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
@@ -619,6 +620,17 @@ export class BuilderAPI extends BaseAPI {
       params: formData
     })
     return
+  }
+
+  async fetchMain(projectId: string): Promise<Blob> {
+    const request = async (path: string) => fetch(this.url + path, { headers: await this.authorization.createAuthHeaders('get', path) })
+    const about: { configurations: { scenesUrn: string[] } } = await request(`/projects/${projectId}/about`).then(resp => resp.json())
+    const urn = about.configurations.scenesUrn[0]
+    const hash = urn.split('urn:decentraland:entity:').pop()!.split('?')[0]
+    const entity: Entity = await request(`/projects/${projectId}/contents/${hash}`).then(resp => resp.json())
+    const main = entity.content.find(content => content.file === 'bin/index.js')!
+    const file: string = await request(`/projects/${projectId}/contents/${main.hash}`).then(resp => resp.text())
+    return new Blob([file])
   }
 
   async fetchCrdt(projectId: string): Promise<Blob> {
