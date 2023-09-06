@@ -22,7 +22,7 @@ export type WorldInfo = {
 }
 
 export class WorldsAPI extends BaseAPI {
-  fetchWorld = async (name: string) => {
+  public async fetchWorld(name: string) {
     const req = await fetch(`${this.url}/world/${name}/about`)
     if (req.ok) {
       const res = await req.json()

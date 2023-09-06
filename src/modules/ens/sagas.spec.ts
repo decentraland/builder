@@ -1,15 +1,21 @@
+import * as matchers from 'redux-saga-test-plan/matchers'
+import { expectSaga } from 'redux-saga-test-plan'
+import { call, select } from 'redux-saga/effects'
 import { BuilderClient } from '@dcl/builder-client'
 import { ChainId, Network } from '@dcl/schemas'
-import { ERC20__factory, ERC20, DCLController__factory } from 'contracts'
+import { ERC20__factory, ERC20, DCLController__factory, DCLRegistrar__factory, ENS__factory } from 'contracts'
 import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ethers } from 'ethers'
-import { CONTROLLER_V2_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
+import { CONTROLLER_V2_ADDRESS, ENS_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
+import { DclListsAPI } from 'lib/api/lists'
+import { WorldsAPI } from 'lib/api/worlds'
+import { MarketplaceAPI } from 'lib/api/marketplace'
+import { getLands } from 'modules/land/selectors'
 import { getWallet } from 'modules/wallet/utils'
-import { expectSaga } from 'redux-saga-test-plan'
-import { call, select } from 'redux-saga/effects'
-import { allowClaimManaRequest, claimNameRequest, fetchENSAuthorizationRequest } from './actions'
+import { allowClaimManaRequest, claimNameRequest, fetchENSAuthorizationRequest, fetchENSListRequest, fetchENSListSuccess } from './actions'
 import { ensSaga } from './sagas'
+import { ENS } from './types'
 
 jest.mock('@dcl/builder-client')
 
@@ -17,6 +23,8 @@ const MockBuilderClient = BuilderClient as jest.MockedClass<typeof BuilderClient
 
 let builderClient: BuilderClient
 let manaContract: ERC20
+let dclRegistrarContract: DCLRegistrar__factory
+let ensFactoryContract: ENS__factory
 
 beforeEach(() => {
   builderClient = new MockBuilderClient(
@@ -33,6 +41,13 @@ beforeEach(() => {
     approve: jest.fn(),
     allowance: jest.fn()
   } as unknown as ERC20
+  dclRegistrarContract = {
+    getTokenId: jest.fn().mockResolvedValue('tokenId')
+  } as unknown as DCLRegistrar__factory
+  ensFactoryContract = {
+    resolver: jest.fn().mockResolvedValue(ethers.constants.AddressZero),
+    owner: jest.fn().mockResolvedValue('address')
+  } as unknown as ENS__factory
 })
 
 describe('when handling the approve claim mana request', () => {
@@ -85,5 +100,52 @@ describe('when handling the claim name request', () => {
       .call([DCLController__factory, 'connect'], CONTROLLER_V2_ADDRESS, signer)
       .dispatch(claimNameRequest('name'))
       .silentRun()
+  })
+
+  describe('when handling the fetch ens list request', () => {
+    let address: string
+
+    beforeEach(() => {
+      address = '0xanAddress'
+      jest.spyOn(WorldsAPI.prototype, 'fetchWorld').mockResolvedValue(null)
+    })
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+    it('should filter the list of names based on the banned names', async () => {
+      const bannedNames = ['name1', 'name2', 'name3']
+      const ensNames = ['name1', 'name2', 'name3', 'name4', 'name5', 'name6']
+      const validDomains = ensNames.filter(domain => !bannedNames.includes(domain))
+      const baseENSData = {
+        tokenId: 'tokenId',
+        ensOwnerAddress: 'address',
+        nftOwnerAddress: '0xanAddress',
+        resolver: '0x0000000000000000000000000000000000000000',
+        content: '',
+        landId: undefined,
+        worldStatus: null
+      }
+      const ENSList: ENS[] = validDomains.map(domain => ({
+        name: domain,
+        subdomain: `${domain}.dcl.eth`,
+        ...baseENSData
+      }))
+      const signer = {} as ethers.Signer
+
+      await expectSaga(ensSaga, builderClient)
+        .provide([
+          [call(getSigner), signer],
+          [call(getWallet), { address, chainId: ChainId.ETHEREUM_GOERLI }],
+          [select(getLands), []],
+          [matchers.call.fn(DclListsAPI.prototype.fetchBannedNames), bannedNames],
+          [matchers.call.fn(MarketplaceAPI.prototype.fetchENSList), ensNames],
+          [matchers.call.fn(WorldsAPI.prototype.fetchWorld), undefined],
+          [call([ENS__factory, 'connect'], ENS_ADDRESS, signer), ensFactoryContract],
+          [call([DCLRegistrar__factory, 'connect'], REGISTRAR_ADDRESS, signer), dclRegistrarContract]
+        ])
+        .put(fetchENSListSuccess(ENSList))
+        .dispatch(fetchENSListRequest())
+        .silentRun()
+    })
   })
 })
