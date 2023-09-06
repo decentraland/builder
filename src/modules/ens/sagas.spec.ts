@@ -8,7 +8,7 @@ import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ethers } from 'ethers'
 import { CONTROLLER_V2_ADDRESS, ENS_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
-import { DclLisstAPI } from 'lib/api/lists'
+import { DclListsAPI } from 'lib/api/lists'
 import { WorldsAPI } from 'lib/api/worlds'
 import { MarketplaceAPI } from 'lib/api/marketplace'
 import { getLands } from 'modules/land/selectors'
@@ -137,7 +137,7 @@ describe('when handling the claim name request', () => {
           [call(getSigner), signer],
           [call(getWallet), { address, chainId: ChainId.ETHEREUM_GOERLI }],
           [select(getLands), []],
-          [matchers.call.fn(DclLisstAPI.prototype.fetchBannedNames), bannedNames],
+          [matchers.call.fn(DclListsAPI.prototype.fetchBannedNames), bannedNames],
           [matchers.call.fn(MarketplaceAPI.prototype.fetchENSList), ensNames],
           [matchers.call.fn(WorldsAPI.prototype.fetchWorld), undefined],
           [call([ENS__factory, 'connect'], ENS_ADDRESS, signer), ensFactoryContract],
