@@ -12,7 +12,6 @@ if (fs.existsSync('.env')) {
 const packageJson = JSON.parse(fs.readFileSync('./package.json').toString())
 const publicPackageJson = JSON.parse(fs.readFileSync('./public/package.json').toString())
 
-ENV_CONTENT['REACT_APP_WEBSITE_NAME'] = packageJson.name
 ENV_CONTENT['REACT_APP_WEBSITE_VERSION'] = packageJson.version
 
 Object.assign(ENV_CONTENT, getPublicUrls())
