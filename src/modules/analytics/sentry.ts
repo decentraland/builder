@@ -1,4 +1,5 @@
 import { init, BrowserTracing, Replay } from '@sentry/react'
+import { isDevelopment } from 'lib/environment'
 import { config } from '../../config'
 
 init({
@@ -10,5 +11,6 @@ init({
   tracesSampleRate: 0.001, // Capture 1% of the transactions
   // Session Replay
   replaysSessionSampleRate: 0.01, // This sets the sample rate at 1%.
-  replaysOnErrorSampleRate: 0.01
+  replaysOnErrorSampleRate: 0.01,
+  enabled: !isDevelopment
 })
