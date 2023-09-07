@@ -140,6 +140,7 @@ import {
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
+import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getData, getLastFetchParams, getPaginationData, getRaritiesContract, getWalletCollections } from './selectors'
 import { CollectionPaginationData } from './reducer'
@@ -327,7 +328,12 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-    const { items, email } = action.payload
+    const { items, email, subscribeToNewsletter } = action.payload
+
+    if (subscribeToNewsletter) {
+      yield put(subscribeToNewsletterRequest(email))
+    }
+
     let { collection } = action.payload
     try {
       if (!isLocked(collection)) {
