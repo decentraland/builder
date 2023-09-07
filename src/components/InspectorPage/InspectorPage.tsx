@@ -47,7 +47,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
     // use the local @dcl/inspector running on your machine
     if (process.env.REACT_APP_INSPECTOR_PORT) {
       htmlUrl = `http://localhost:${process.env.REACT_APP_INSPECTOR_PORT}`
-      binIndexJsUrl = `http://localhost:${process.env.REACT_APP_INSPECTOR_PORT}/bin/index.js`
+      binIndexJsUrl = `${htmlUrl}/bin/index.js`
     }
 
     // use the local bin/index.js being watched an served on your machine
