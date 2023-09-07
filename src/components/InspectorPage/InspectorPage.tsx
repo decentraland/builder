@@ -41,6 +41,21 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
       return <SignInRequired />
     }
 
+    let htmlUrl = `${PUBLIC_URL}/inspector-index.html`
+    let binIndexJsUrl = `${PUBLIC_URL}/bin/index.js`
+
+    // use the local @dcl/inspector running on your machine
+    if (process.env.REACT_APP_INSPECTOR_PORT) {
+      htmlUrl = `http://localhost:${process.env.REACT_APP_INSPECTOR_PORT}`
+      binIndexJsUrl = `http://localhost:${process.env.REACT_APP_INSPECTOR_PORT}/bin/index.js`
+    }
+
+    // use the local bin/index.js being watched an served on your machine
+    if (process.env.REACT_APP_BIN_INDEX_JS_DEV_PORT && process.env.REACT_APP_BIN_INDEX_JS_DEV_PATH) {
+      const b64 = btoa(process.env.REACT_APP_BIN_INDEX_JS_DEV_PATH)
+      binIndexJsUrl = `http://localhost:${process.env.REACT_APP_BIN_INDEX_JS_DEV_PORT}/content/contents/b64-${b64}`
+    }
+
     return (
       <div className="InspectorPage">
         {(!this.state.isLoaded || isReloading) && <Loader active />}
@@ -51,11 +66,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
               ref={this.refIframe}
               title="inspector"
               id="inspector"
-              src={`${
-                process.env.REACT_APP_INSPECTOR_PORT
-                  ? `http://localhost:${process.env.REACT_APP_INSPECTOR_PORT}`
-                  : `${PUBLIC_URL}/inspector-index.html`
-              }?parent=${window.location.origin}`}
+              src={`${htmlUrl}?dataLayerRpcParentUrl=${window.location.origin}&binIndexJsUrl=${binIndexJsUrl}`}
             />
           </>
         )}
