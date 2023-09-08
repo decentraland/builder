@@ -27,6 +27,12 @@
   margin-bottom: 46px;
 }
 
+.ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container.checkbox-newsletter {
+  display: flex;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > .ui.checkbox {
   margin-top: 5px;
   margin-right: 14px;

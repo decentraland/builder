@@ -12,10 +12,12 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
     contentPolicyFirstConditionChecked,
     acceptTermsOfUseChecked,
     ackowledgeDaoTermsChecked,
+    subscribeToNewsletter,
     onChangeEmailAddress,
     onContentPolicyFirstConditionChange,
     onAcceptTermsOfUseChange,
     onAckowledgeDaoTermsChange,
+    onSubscribeToNewsletter,
     onNextStep,
     onPrevStep
   } = props
@@ -55,6 +57,13 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
       onAckowledgeDaoTermsChange(!!checked)
     },
     [onAckowledgeDaoTermsChange]
+  )
+
+  const handleOnAcceptSubscriptionNewsletter = useCallback(
+    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
+      onSubscribeToNewsletter(!!checked)
+    },
+    [onSubscribeToNewsletter]
   )
 
   const hasValidEmail = emailRegex.test(confirmedEmailAddress)
@@ -128,6 +137,12 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
                 error={showEmailError}
                 message={showEmailError ? t('publish_collection_modal_with_oracle.invalid_email') : undefined}
               />
+              <div className="content-policies-conditions">
+                <div className="checkbox-container checkbox-newsletter">
+                  <Checkbox checked={subscribeToNewsletter} onChange={handleOnAcceptSubscriptionNewsletter} />
+                  <span>{t('publish_wizard_collection_modal.review_content_policy_step.email_newsletter')}</span>
+                </div>
+              </div>
             </Column>
           </Row>
           <Row className="actions" align="right">

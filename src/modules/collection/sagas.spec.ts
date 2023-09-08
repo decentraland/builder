@@ -61,6 +61,7 @@ import {
 } from 'modules/thirdParty/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 import { Cheque } from 'modules/thirdParty/types'
 import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
 import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
@@ -924,7 +925,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(collection))
         .put(publishCollectionFailure(collection, items, errorMessage))
-        .dispatch(publishCollectionRequest(collection, items, email))
+        .dispatch(publishCollectionRequest(collection, items, email, false))
         .run({ silenceTimeout: true })
     })
   })
@@ -956,7 +957,7 @@ describe('when publishing a collection', () => {
         ])
         .not.put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(lockedCollection, items, email))
+        .dispatch(publishCollectionRequest(lockedCollection, items, email, false))
         .run({ silenceTimeout: true })
     })
   })
@@ -981,7 +982,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(saltlessCollection))
         .put(publishCollectionFailure(saltlessCollection, items, errorMessage))
-        .dispatch(publishCollectionRequest(saltlessCollection, items, email))
+        .dispatch(publishCollectionRequest(saltlessCollection, items, email, false))
         .run({ silenceTimeout: true })
     })
   })
@@ -1003,7 +1004,7 @@ describe('when publishing a collection', () => {
           [call([mockBuilder, 'fetchCollectionItems'], finalCollection.id), [{}]]
         ])
         .put(publishCollectionFailure(finalCollection, items, `${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`))
-        .dispatch(publishCollectionRequest(finalCollection, items, email))
+        .dispatch(publishCollectionRequest(finalCollection, items, email, false))
         .run({ silenceTimeout: true })
     })
   })
@@ -1033,7 +1034,67 @@ describe('when publishing a collection', () => {
             `${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`
           )
         )
-        .dispatch(publishCollectionRequest(finalCollection, items, email))
+        .dispatch(publishCollectionRequest(finalCollection, items, email, false))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when the subscribe to newsletter flag is true', () => {
+    let subscribeToNewsletter: boolean
+    let items: Item[]
+
+    beforeEach(() => {
+      subscribeToNewsletter = true
+    })
+
+    describe('and the collection contains emotes and wearables', () => {
+      beforeEach(() => {
+        items = [getItemMock(collection), getItemMock(collection, { type: ItemType.EMOTE })]
+      })
+      it('should put the subscribe to newsletter request action with the right source', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .put(subscribeToNewsletterRequest(email, 'Builder Emotes & Wearables creator'))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the collection contains only emotes', () => {
+      beforeEach(() => {
+        items = [getItemMock(collection, { type: ItemType.EMOTE }), getItemMock(collection, { type: ItemType.EMOTE })]
+      })
+      it('should put the subscribe to newsletter request action with the right source', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .put(subscribeToNewsletterRequest(email, 'Builder Emotes creator'))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the collection contains only wearables', () => {
+      beforeEach(() => {
+        items = [getItemMock(collection), getItemMock(collection)]
+      })
+      it('should put the subscribe to newsletter request action with the right source', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .run({ silenceTimeout: true })
+      })
+    })
+  })
+
+  describe('when the subscribe to newsletter flag is false', () => {
+    let subscribeToNewsletter: boolean
+
+    beforeEach(() => {
+      subscribeToNewsletter = false
+    })
+
+    it('should not put the subscribe to newsletter request action', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        .not.put(subscribeToNewsletterRequest(email, 'Builder Wearable creator'))
+        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
         .run({ silenceTimeout: true })
     })
   })
@@ -1072,7 +1133,7 @@ describe('when publishing a collection', () => {
         .put(saveItemRequest(items[0], {}))
         .put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(collection, items, email))
+        .dispatch(publishCollectionRequest(collection, items, email, false))
         .run({ silenceTimeout: true })
     })
 
@@ -1095,7 +1156,7 @@ describe('when publishing a collection', () => {
           ])
           .put(saveItemRequest(items[0], {}))
           .put(publishCollectionFailure(collection, items, error))
-          .dispatch(publishCollectionRequest(collection, items, email))
+          .dispatch(publishCollectionRequest(collection, items, email, false))
           .run({ silenceTimeout: true })
       })
     })
@@ -1129,7 +1190,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(collection, items, email))
+        .dispatch(publishCollectionRequest(collection, items, email, false))
         .run({ silenceTimeout: true })
     })
   })
