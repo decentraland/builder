@@ -389,7 +389,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
                     id="create_and_edit_multiple_items_modal.import_information"
                     values={{
                       link: (
-                        <a rel="noopener noreferrer" target="_blank" href={WEARABLES_ZIP_INFRA_URL}>
+                        <a className={styles.moreInfoLink} rel="noopener noreferrer" target="_blank" href={WEARABLES_ZIP_INFRA_URL}>
                           {t('create_and_edit_multiple_items_modal.import_information_link_label')}
                         </a>
                       )

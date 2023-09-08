@@ -254,7 +254,9 @@
         "title": "鉴于设置了 'ALLOW_MEDIA_HOSTNAMES' 权限，因此必须设置 'allowedMediaHostnames' 属性且不为空。请更正 'scene.json'。",
         "message": "有关更多信息，请查看文档 {learn_more}。"
       },
-      "item_not_allowed_in_third_party_collections": "此项目类型{type}在链接的可穿戴设备集合中不允许"
+      "item_not_allowed_in_third_party_collections": "此项目类型{type}在链接的可穿戴设备集合中不允许",
+      "emote_animations_sync_error": "<b>头像和道具动画长度不一样</b><br></br>请更正您的动画，然后再次上传以获得完美的同步.",
+      "emote_with_mesh": "<b>您的文件包括头像网。</b><br></br>对于此过程，此网格不是必需的。请，只需重新出口并再次上传即可继续。"
     },
     "emote_notice": "表情适用于所有体型。",
     "smart_wearable_details_title": "完善您的智能可穿戴设备详细信息",

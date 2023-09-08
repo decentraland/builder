@@ -42,6 +42,7 @@ body canvas.dcl-canvas {
 .link {
   color: var(--primary);
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .is-uploading {
