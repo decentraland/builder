@@ -13,10 +13,11 @@ const mockBuilder = new BuilderAPI(mockUrl, mockAuthorization)
 
 describe('newsletterSagas', () => {
   const mockEmail = 'test@example.com'
+  const mockSource = 'Builder emote creator'
 
   it('handles successful newsletter subscription', () => {
     return expectSaga(newsletterSagas, mockBuilder)
-      .provide([[call([mockBuilder, 'subscribeToNewsletter'], mockEmail), undefined]])
+      .provide([[call([mockBuilder, 'subscribeToNewsletter'], mockEmail, mockSource), undefined]])
       .put(subscribeToNewsletterSuccess())
       .dispatch({ type: SUBSCRIBE_TO_NEWSLETTER_REQUEST, payload: { email: mockEmail } })
       .silentRun()
@@ -26,7 +27,7 @@ describe('newsletterSagas', () => {
     const mockError = new Error('Subscription failed!')
 
     return expectSaga(newsletterSagas, mockBuilder)
-      .provide([[call([mockBuilder, 'subscribeToNewsletter'], mockEmail), throwError(mockError)]])
+      .provide([[call([mockBuilder, 'subscribeToNewsletter'], mockEmail, mockSource), throwError(mockError)]])
       .put(subscribeToNewsletterFailure(mockEmail, mockError.message))
       .dispatch({ type: SUBSCRIBE_TO_NEWSLETTER_REQUEST, payload: { email: mockEmail } })
       .silentRun()

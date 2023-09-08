@@ -11,10 +11,10 @@ export function* newsletterSagas(builderClient: BuilderAPI) {
   yield takeLatest(SUBSCRIBE_TO_NEWSLETTER_REQUEST, handleSubscribeToNewsletter)
 
   function* handleSubscribeToNewsletter(action: SubscribeToNewsletterRequestAction) {
-    const { email } = action.payload
+    const { email, source } = action.payload
 
     try {
-      yield call([builderClient, 'subscribeToNewsletter'], email)
+      yield call([builderClient, 'subscribeToNewsletter'], email, source)
       yield put(subscribeToNewsletterSuccess())
     } catch (e) {
       yield put(subscribeToNewsletterFailure(email, e.message))

@@ -103,7 +103,7 @@ import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
-import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData } from 'modules/item/types'
+import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
 import {
   getEntityByItemId,
@@ -331,7 +331,18 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const { items, email, subscribeToNewsletter } = action.payload
 
     if (subscribeToNewsletter) {
-      yield put(subscribeToNewsletterRequest(email))
+      const collectionHasEmotes = items.some(item => item.type === ItemType.EMOTE)
+      const collectionHasWearables = items.some(item => item.type === ItemType.WEARABLE)
+      yield put(
+        subscribeToNewsletterRequest(
+          email,
+          collectionHasEmotes && collectionHasWearables
+            ? 'Builder Emotes & Wearables creator'
+            : collectionHasEmotes
+            ? 'Builder Emote creator'
+            : 'Builder Wearable creator'
+        )
+      )
     }
 
     let { collection } = action.payload

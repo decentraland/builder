@@ -1024,7 +1024,7 @@ export class BuilderAPI extends BaseAPI {
     return error.isAxiosError as boolean
   }
 
-  subscribeToNewsletter(email: string) {
-    return this.request('post', `/newsletter`, { params: { email } })
+  subscribeToNewsletter(email: string, source: string) {
+    return this.request('post', `/newsletter`, { params: { email, source } })
   }
 }

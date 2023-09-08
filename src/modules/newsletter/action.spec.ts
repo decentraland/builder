@@ -8,11 +8,12 @@ import {
 } from './action'
 
 const email = 'anEmail@dcl.com'
+const mockSource = 'Builder emote creator'
 const error = 'an error'
 
 describe('when creating the action to request the subscription to the newsletter', () => {
   it('should return an action signaling the request to subscribe to the newsletter', () => {
-    expect(subscribeToNewsletterRequest(email)).toEqual({
+    expect(subscribeToNewsletterRequest(email, mockSource)).toEqual({
       error: undefined,
       meta: undefined,
       type: SUBSCRIBE_TO_NEWSLETTER_REQUEST,
