@@ -1041,16 +1041,46 @@ describe('when publishing a collection', () => {
 
   describe('when the subscribe to newsletter flag is true', () => {
     let subscribeToNewsletter: boolean
+    let items: Item[]
 
     beforeEach(() => {
       subscribeToNewsletter = true
     })
 
-    it('should put the subscribe to newsletter request action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
-        .put(subscribeToNewsletterRequest(email, 'Builder Wearable creator'))
-        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
-        .run({ silenceTimeout: true })
+    describe('and the collection contains emotes and wearables', () => {
+      beforeEach(() => {
+        items = [getItemMock(collection), getItemMock(collection, { type: ItemType.EMOTE })]
+      })
+      it('should put the subscribe to newsletter request action with the right source', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .put(subscribeToNewsletterRequest(email, 'Builder Emotes & Wearables creator'))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the collection contains only emotes', () => {
+      beforeEach(() => {
+        items = [getItemMock(collection, { type: ItemType.EMOTE }), getItemMock(collection, { type: ItemType.EMOTE })]
+      })
+      it('should put the subscribe to newsletter request action with the right source', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .put(subscribeToNewsletterRequest(email, 'Builder Emotes creator'))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the collection contains only wearables', () => {
+      beforeEach(() => {
+        items = [getItemMock(collection), getItemMock(collection)]
+      })
+      it('should put the subscribe to newsletter request action with the right source', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 

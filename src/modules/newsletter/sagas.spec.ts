@@ -4,11 +4,7 @@ import { call } from 'redux-saga/effects'
 import { BuilderAPI } from 'lib/api/builder'
 import { Authorization } from 'lib/api/auth'
 import { RootStore } from 'modules/common/types'
-import {
-  subscribeToNewsletterFailure,
-  subscribeToNewsletterRequest,
-  subscribeToNewsletterSuccess
-} from './action'
+import { subscribeToNewsletterFailure, subscribeToNewsletterRequest, subscribeToNewsletterSuccess } from './action'
 import { newsletterSagas } from './sagas'
 
 const mockUrl = 'https://mock.url.xyz'

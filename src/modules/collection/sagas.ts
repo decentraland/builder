@@ -339,8 +339,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           collectionHasEmotes && collectionHasWearables
             ? 'Builder Emotes & Wearables creator'
             : collectionHasEmotes
-            ? 'Builder Emote creator'
-            : 'Builder Wearable creator'
+            ? 'Builder Emotes creator'
+            : 'Builder Wearables creator'
         )
       )
     }
