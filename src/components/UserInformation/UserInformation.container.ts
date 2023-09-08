@@ -7,7 +7,7 @@ import { getTransactions } from '../../modules/transaction/selectors'
 import { locations } from '../../routing/locations'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './UserInformation.types'
 import UserMenu from './UserInformation'
-import { logout } from '../../modules/identity/actions'
+import { openLogin } from 'modules/login/actions'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
@@ -20,7 +20,7 @@ const mapState = (state: RootState): MapStateProps => {
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onClickActivity: () => dispatch(push(locations.activity())),
   onClickSettings: () => dispatch(push(locations.settings())),
-  onSignOut: () => dispatch(logout())
+  onSignIn: () => dispatch(openLogin())
 })
 
 export default connect(mapState, mapDispatch)(UserMenu)

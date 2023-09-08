@@ -8,6 +8,6 @@ export enum FeatureName {
   HANDS_CATEGORY = 'hands-category',
   WEB_EDITOR = 'web-editor',
   PUBLISH_SMART_WEARABLES = 'publish-smart-wearables',
-  NEW_NAVBAR_DROPDOWN = 'navbar-dropdown',
+  NEW_NAVBAR_DROPDOWN = 'new-navbar-dropdown',
   EMOTES_V2 = 'emotes-2.0'
 }
