@@ -18,7 +18,8 @@ describe('when creating the action to request the subscription to the newsletter
       meta: undefined,
       type: SUBSCRIBE_TO_NEWSLETTER_REQUEST,
       payload: {
-        email
+        email,
+        source: mockSource
       }
     })
   })
