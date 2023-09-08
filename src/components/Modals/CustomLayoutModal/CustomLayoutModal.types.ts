@@ -9,7 +9,6 @@ import { SDKVersion } from 'modules/scene/types'
 export type Props = ModalProps & {
   error: string | null
   isLoading: boolean
-  isInspectorEnabled: boolean
   onCreateProject: (name: string, description: string, template: Template, sdk: SDKVersion) => void
 }
 
@@ -28,6 +27,6 @@ export type State = {
   description: string
 }
 
-export type MapStateProps = Pick<Props, 'error' | 'isLoading' | 'isInspectorEnabled'>
+export type MapStateProps = Pick<Props, 'error' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onCreateProject'>
 export type MapDispatch = Dispatch<CreateProjectFromTemplateAction | CallHistoryMethodAction>
