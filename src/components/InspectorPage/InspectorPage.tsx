@@ -1,7 +1,6 @@
 /* eslint-disable no-debugger */
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
-import NotFoundPage from 'components/NotFoundPage'
 import SignInRequired from 'components/SignInRequired'
 
 import { Props, State } from './InspectorPage.types'
@@ -31,11 +30,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { scene, isLoggedIn, isInspectorEnabled, isReloading } = this.props
-
-    if (!isInspectorEnabled) {
-      return <NotFoundPage />
-    }
+    const { scene, isLoggedIn, isReloading } = this.props
 
     if (!isLoggedIn) {
       return <SignInRequired />

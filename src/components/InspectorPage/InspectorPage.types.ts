@@ -5,7 +5,6 @@ import { connectInspector, ConnectInspectorAction, openInspector, OpenInspectorA
 export type Props = {
   scene: Scene | null
   isLoggedIn: boolean
-  isInspectorEnabled: boolean
   isReloading: boolean
   onOpen: typeof openInspector
   onConnect: typeof connectInspector
@@ -15,6 +14,6 @@ export type State = {
   isLoaded: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isLoggedIn' | 'scene' | 'isInspectorEnabled' | 'isReloading'>
+export type MapStateProps = Pick<Props, 'isLoggedIn' | 'scene' | 'isReloading'>
 export type MapDispatchProps = Pick<Props, 'onOpen' | 'onConnect'>
 export type MapDispatch = Dispatch<OpenInspectorAction | ConnectInspectorAction>

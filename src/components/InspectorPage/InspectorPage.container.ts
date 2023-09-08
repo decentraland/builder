@@ -4,7 +4,6 @@ import { isLoggedIn } from 'modules/identity/selectors'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { connectInspector, openInspector } from 'modules/inspector/actions'
 import { isReloading } from 'modules/inspector/selectors'
-import { getIsInspectorEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './InspectorPage.types'
 import EditorPage from './InspectorPage'
 
@@ -12,7 +11,6 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     isLoggedIn: isLoggedIn(state),
     scene: getCurrentScene(state),
-    isInspectorEnabled: getIsInspectorEnabled(state),
     isReloading: isReloading(state)
   }
 }

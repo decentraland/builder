@@ -46,14 +46,6 @@ export const getIsHandsCategoryEnabled = (state: RootState) => {
   }
 }
 
-export const getIsInspectorEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.WEB_EDITOR)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsPublishSmartWearablesEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.PUBLISH_SMART_WEARABLES)
