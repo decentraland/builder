@@ -30,7 +30,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { scene, isLoggedIn, isReloading } = this.props
+    const { scene, isLoggedIn, isReloading, isSmartItemsEnabled } = this.props
 
     if (!isLoggedIn) {
       return <SignInRequired />
@@ -61,7 +61,9 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
               ref={this.refIframe}
               title="inspector"
               id="inspector"
-              src={`${htmlUrl}?dataLayerRpcParentUrl=${window.location.origin}&binIndexJsUrl=${binIndexJsUrl}`}
+              src={`${htmlUrl}?dataLayerRpcParentUrl=${window.location.origin}&binIndexJsUrl=${binIndexJsUrl}${
+                isSmartItemsEnabled ? '' : '&disableSmartItems'
+              }`}
             />
           </>
         )}

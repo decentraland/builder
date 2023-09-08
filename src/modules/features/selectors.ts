@@ -61,3 +61,11 @@ export const getEmotesV2Enabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsSmartItemsEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SMART_ITEMS)
+  } catch (e) {
+    return false
+  }
+}
