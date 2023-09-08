@@ -103,7 +103,7 @@ import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
-import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData } from 'modules/item/types'
+import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
 import {
   getEntityByItemId,
@@ -140,6 +140,7 @@ import {
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
+import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getData, getLastFetchParams, getPaginationData, getRaritiesContract, getWalletCollections } from './selectors'
 import { CollectionPaginationData } from './reducer'
@@ -327,7 +328,23 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-    const { items, email } = action.payload
+    const { items, email, subscribeToNewsletter } = action.payload
+
+    if (subscribeToNewsletter) {
+      const collectionHasEmotes = items.some(item => item.type === ItemType.EMOTE)
+      const collectionHasWearables = items.some(item => item.type === ItemType.WEARABLE)
+      yield put(
+        subscribeToNewsletterRequest(
+          email,
+          collectionHasEmotes && collectionHasWearables
+            ? 'Builder Emotes & Wearables creator'
+            : collectionHasEmotes
+            ? 'Builder Emotes creator'
+            : 'Builder Wearables creator'
+        )
+      )
+    }
+
     let { collection } = action.payload
     try {
       if (!isLocked(collection)) {

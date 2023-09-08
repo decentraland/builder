@@ -409,7 +409,11 @@ function* getScene() {
 
 function* isContentUploaded(path: string, hash: string) {
   if (assets.has(path)) {
-    return true
+    const currentContent = assets.get(path)!
+    const currentHash: string = yield call(hashV1, currentContent)
+    if (hash === currentHash) {
+      return true
+    }
   }
   try {
     const res: Response = yield call(fetch, `${getContentsStorageUrl(hash)}/exists`, { headers: NO_CACHE_HEADERS })

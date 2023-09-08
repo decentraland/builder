@@ -33,9 +33,11 @@ const publicPath = path.resolve(__dirname, '../public')
 console.log('Public folder:', publicPath)
 for (const file of files) {
   const source = path.resolve(inspectorAssetsPath, file)
-  const target = path.resolve(publicPath, `inspector-${file}`)
-  console.log(`> Copying ${file} as inspector-${file}...`)
-  fs.copyFileSync(source, target)
+  const isDirectory = fs.statSync(source).isDirectory()
+  const targetFile = isDirectory ? file : `inspector-${file}`
+  const target = path.resolve(publicPath, targetFile)
+  console.log(`> Copying ${file} as ${targetFile}...`)
+  fs.cpSync(source, target, { recursive: true })
 }
 console.log(`> Add "inspector-" prefix to files in inspector-index.html`)
 const htmlPath = path.resolve(publicPath, `inspector-index.html`)
