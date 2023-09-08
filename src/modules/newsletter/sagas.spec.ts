@@ -4,7 +4,11 @@ import { call } from 'redux-saga/effects'
 import { BuilderAPI } from 'lib/api/builder'
 import { Authorization } from 'lib/api/auth'
 import { RootStore } from 'modules/common/types'
-import { SUBSCRIBE_TO_NEWSLETTER_REQUEST, subscribeToNewsletterFailure, subscribeToNewsletterSuccess } from './action'
+import {
+  subscribeToNewsletterFailure,
+  subscribeToNewsletterRequest,
+  subscribeToNewsletterSuccess
+} from './action'
 import { newsletterSagas } from './sagas'
 
 const mockUrl = 'https://mock.url.xyz'
@@ -19,7 +23,7 @@ describe('newsletterSagas', () => {
     return expectSaga(newsletterSagas, mockBuilder)
       .provide([[call([mockBuilder, 'subscribeToNewsletter'], mockEmail, mockSource), undefined]])
       .put(subscribeToNewsletterSuccess())
-      .dispatch({ type: SUBSCRIBE_TO_NEWSLETTER_REQUEST, payload: { email: mockEmail } })
+      .dispatch(subscribeToNewsletterRequest(mockEmail, mockSource))
       .silentRun()
   })
 
@@ -29,7 +33,7 @@ describe('newsletterSagas', () => {
     return expectSaga(newsletterSagas, mockBuilder)
       .provide([[call([mockBuilder, 'subscribeToNewsletter'], mockEmail, mockSource), throwError(mockError)]])
       .put(subscribeToNewsletterFailure(mockEmail, mockError.message))
-      .dispatch({ type: SUBSCRIBE_TO_NEWSLETTER_REQUEST, payload: { email: mockEmail } })
+      .dispatch(subscribeToNewsletterRequest(mockEmail, mockSource))
       .silentRun()
   })
 })

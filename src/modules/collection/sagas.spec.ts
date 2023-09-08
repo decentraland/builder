@@ -1048,7 +1048,7 @@ describe('when publishing a collection', () => {
 
     it('should put the subscribe to newsletter request action', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
-        .put(subscribeToNewsletterRequest(email))
+        .put(subscribeToNewsletterRequest(email, 'Builder Wearable creator'))
         .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
         .run({ silenceTimeout: true })
     })
@@ -1063,7 +1063,7 @@ describe('when publishing a collection', () => {
 
     it('should not put the subscribe to newsletter request action', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
-        .not.put(subscribeToNewsletterRequest(email))
+        .not.put(subscribeToNewsletterRequest(email, 'Builder Wearable creator'))
         .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
         .run({ silenceTimeout: true })
     })
