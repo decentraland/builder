@@ -18,7 +18,6 @@ export type Props = {
   deployments: Deployment[]
   isLoading: boolean
   isLoadingDeployments: boolean
-  isInspectorEnabled: boolean
   scene: Scene | null
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
@@ -27,7 +26,7 @@ export type Props = {
   onLoadProjectScene: typeof loadProjectSceneRequest
 }
 
-export type MapStateProps = Pick<Props, 'project' | 'deployments' | 'isLoading' | 'isLoadingDeployments' | 'isInspectorEnabled' | 'scene'>
+export type MapStateProps = Pick<Props, 'project' | 'deployments' | 'isLoading' | 'isLoadingDeployments' | 'scene'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onDelete' | 'onDuplicate' | 'onOpenModal' | 'onLoadProjectScene'>
 export type MapDispatch = Dispatch<
   CallHistoryMethodAction | DeleteProjectAction | DuplicateProjectRequestAction | OpenModalAction | LoadProjectSceneRequestAction

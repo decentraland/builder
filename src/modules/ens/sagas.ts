@@ -25,6 +25,7 @@ import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { Land, LandType } from 'modules/land/types'
 import { closeModal } from 'modules/modal/actions'
 import { marketplace } from 'lib/api/marketplace'
+import { lists } from 'lib/api/lists'
 import { WorldInfo, content as WorldsAPIContent } from 'lib/api/worlds'
 import { extractEntityId } from 'lib/urn'
 import {
@@ -296,6 +297,16 @@ export function* ensSaga(builderClient: BuilderClient) {
     }
   }
 
+  function* fetchBannedDomains() {
+    try {
+      const bannedDomains: string[] = yield call([lists, 'fetchBannedNames'])
+      return bannedDomains
+    } catch (error) {
+      console.error('Failed to load banned domains', error)
+      return []
+    }
+  }
+
   function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
@@ -318,12 +329,18 @@ export function* ensSaga(builderClient: BuilderClient) {
         }
       }
 
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const address = wallet.address
-      const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
-      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
-      const domains: string[] = yield call(() => marketplace.fetchENSList(address))
+      const ensContract: ReturnType<typeof ENS__factory['connect']> = yield call([ENS__factory, 'connect'], ENS_ADDRESS, signer)
+      const dclRegistrarContract: ReturnType<typeof DCLRegistrar__factory['connect']> = yield call(
+        [DCLRegistrar__factory, 'connect'],
+        REGISTRAR_ADDRESS,
+        signer
+      )
+      let domains: string[] = yield call([marketplace, 'fetchENSList'], address)
+      const bannedDomains: string[] = yield call(fetchBannedDomains)
+      domains = domains.filter(domain => !bannedDomains.includes(domain))
 
       const REQUESTS_BATCH_SIZE = 25
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })

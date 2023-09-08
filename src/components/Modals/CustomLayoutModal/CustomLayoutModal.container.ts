@@ -10,15 +10,13 @@ import { MapDispatchProps, MapDispatch, MapStateProps } from './CustomLayoutModa
 import CustomLayoutModal from './CustomLayoutModal'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getLoadingProjectIds } from 'modules/sync/selectors'
-import { getIsInspectorEnabled } from 'modules/features/selectors'
 import { SDKVersion } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
     isLoading: isLoadingType(getProjectLoading(state), LOAD_MANIFEST_REQUEST) || getLoadingProjectIds(state).length > 0,
-    error: getProjectError(state),
-    isInspectorEnabled: getIsInspectorEnabled(state)
+    error: getProjectError(state)
   }
 }
 

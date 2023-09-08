@@ -26,7 +26,6 @@ export type Props = DefaultProps & {
   deployments: Deployment[]
   type: PreviewType
   scene: Scene
-  isInspectorEnabled: boolean
   onClick?: (project: Project) => any
   onDeleteProject: typeof deleteProject
   onDuplicateProject: typeof duplicateProjectRequest
@@ -42,7 +41,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'parcels' | 'items' | 'deploymentStatus' | 'deployments' | 'type' | 'isUploading' | 'hasError' | 'scene' | 'isInspectorEnabled'
+  'parcels' | 'items' | 'deploymentStatus' | 'deployments' | 'type' | 'isUploading' | 'hasError' | 'scene'
 >
 export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject' | 'onOpenModal' | 'onLoadProjectScene'>
 export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectRequestAction | OpenModalAction | LoadProjectSceneRequestAction>

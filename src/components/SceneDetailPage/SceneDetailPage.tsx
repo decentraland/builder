@@ -16,8 +16,7 @@ import MigrateSceneToSDK7 from './MigrateSceneToSDK7'
 import './SceneDetailPage.css'
 
 const SceneDetailPage: React.FC<Props> = props => {
-  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onNavigate, onLoadProjectScene, isInspectorEnabled } =
-    props
+  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onNavigate, onLoadProjectScene } = props
   const [isDeleting, setIsDeleting] = useState(false)
   const [showMigrationModal, setShowMigrationModal] = useState(false)
 
@@ -61,16 +60,12 @@ const SceneDetailPage: React.FC<Props> = props => {
   }, [setIsDeleting])
 
   const handleEditScene = useCallback(() => {
-    if (isInspectorEnabled) {
-      if (scene?.sdk6) {
-        setShowMigrationModal(true)
-      } else {
-        onNavigate(locations.inspector(project?.id))
-      }
+    if (scene?.sdk6) {
+      setShowMigrationModal(true)
     } else {
-      onNavigate(locations.sceneEditor(project?.id))
+      onNavigate(locations.inspector(project?.id))
     }
-  }, [project, scene, onNavigate, isInspectorEnabled])
+  }, [project, scene, onNavigate])
 
   const getSceneStatus = () => {
     const { project, isLoading, isLoadingDeployments } = props
@@ -83,7 +78,7 @@ const SceneDetailPage: React.FC<Props> = props => {
   }
 
   const renderPage = (project: Project, deployments: Deployment[]) => {
-    const { isLoadingDeployments, onNavigate, onOpenModal, isInspectorEnabled, scene } = props
+    const { isLoadingDeployments, onNavigate, onOpenModal, scene } = props
     return (
       <>
         <Section size="large">
@@ -126,7 +121,7 @@ const SceneDetailPage: React.FC<Props> = props => {
           </Row>
           <Row className="status-container">
             {getSceneStatus()}
-            {isInspectorEnabled && <SDKTag scene={scene} />}
+            <SDKTag scene={scene} />
           </Row>
         </Section>
         <Section>
