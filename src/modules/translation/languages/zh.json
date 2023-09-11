@@ -1621,6 +1621,7 @@
       "acknowledge_dao_terms": "我承认 DAO 可能会因违反 {content_policy_link} 和 {terms_of_use_link} 而拒绝批准该项目。 我也承认，如果被拒绝，提案费将不予退还，因为其目的是补偿策展人的时间和工作。",
       "email_disclousure": "我们需要您的电子邮件，以便将来就该系列进行交流。",
       "email_disclousure_detail": "我们只会将这封电子邮件用于特别是有关此收藏的通信。{enter}它不会与您的帐户相关联。",
+      "email_newsletter": "保持联系！使用此电子邮件获取 Decentraland 的每周新闻通讯、更新和竞赛新闻。",
       "continue": "继续"
     },
     "pay_publication_fee_step": {

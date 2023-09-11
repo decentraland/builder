@@ -27,6 +27,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(false)
   const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(false)
   const [ackowledgeDaoTermsChecked, setAckowledgeDaoTermsChecked] = useState<boolean>(false)
+  const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false)
 
   useEffect(() => {
     onFetchRarities()
@@ -67,6 +68,10 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     setAckowledgeDaoTermsChecked(value)
   }
 
+  const handleOnSubscribeToNewsletter = (value: boolean) => {
+    setSubscribeToNewsletter(value)
+  }
+
   const handleOnPublish = () => {
     const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
     const manaContract = {
@@ -84,7 +89,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       targetContractName: ContractName.MANAToken,
       requiredAllowanceInWei: ethers.BigNumber.from(rarities[0].prices!.MANA).mul(items.length).toString(),
       authorizationType: AuthorizationType.ALLOWANCE,
-      onAuthorized: () => onPublish(collection, items, emailAddress)
+      onAuthorized: () => onPublish(collection, items, emailAddress, subscribeToNewsletter)
     })
   }
 
@@ -109,10 +114,12 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
             contentPolicyFirstConditionChecked={contentPolicyFirstConditionChecked}
             acceptTermsOfUseChecked={acceptTermsOfUseChecked}
             ackowledgeDaoTermsChecked={ackowledgeDaoTermsChecked}
+            subscribeToNewsletter={subscribeToNewsletter}
             onChangeEmailAddress={handleOnChangeEmailAddress}
             onContentPolicyFirstConditionChange={handleOnContentPolicyFirstConditionChange}
             onAcceptTermsOfUseChange={handleOnAcceptTermsOfUseChange}
             onAckowledgeDaoTermsChange={handleOnAckowledgeDaoTermsChange}
+            onSubscribeToNewsletter={handleOnSubscribeToNewsletter}
             onNextStep={handleOnNextStep}
             onPrevStep={handleOnPrevStep}
           />

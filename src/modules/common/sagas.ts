@@ -39,6 +39,7 @@ import { walletSaga } from 'modules/wallet/sagas'
 import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
 import { entitySaga } from 'modules/entity/sagas'
+import { newsletterSagas } from 'modules/newsletter/sagas'
 import { collectionCurationSaga } from 'modules/curations/collectionCuration/sagas'
 import { getPeerWithNoGBCollectorURL } from './utils'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
@@ -84,6 +85,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     collectionCurationSaga(builderAPI),
     itemCurationSaga(builderAPI),
     featuresSaga({ polling: { apps: [ApplicationName.BUILDER], delay: 60000 /** 60 seconds */ } }),
-    inspectorSaga(builderAPI, store)
+    inspectorSaga(builderAPI, store),
+    newsletterSagas(builderAPI)
   ])
 }
