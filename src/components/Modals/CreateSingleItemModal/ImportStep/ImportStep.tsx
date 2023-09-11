@@ -41,7 +41,8 @@ import {
   isModelPath,
   MAX_FILE_SIZE,
   MAX_EMOTE_DURATION,
-  isSmart
+  isSmart,
+  MAX_EMOTE_SIZE
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
@@ -92,6 +93,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   ): Promise<{ modelData: ModelData; wearable?: WearableConfig; scene?: SceneConfig; emote?: EmoteConfig }> => {
     const loadedFile = await loadFile(file.name, file)
     const { wearable, scene, content, emote } = loadedFile
+
+    if (emote && file.size > MAX_EMOTE_SIZE) {
+      throw new FileTooBigError()
+    }
 
     let modelPath: string | undefined
 
