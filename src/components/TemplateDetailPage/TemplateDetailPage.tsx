@@ -12,7 +12,7 @@ import './TemplateDetailPage.css'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 const TemplateDetailPage: React.FC<Props> = props => {
-  const { template, isLoading, isInspectorEnabled, scene, onOpenModal, onNavigate, onLoadTemplateScene } = props
+  const { template, isLoading, scene, onOpenModal, onNavigate, onLoadTemplateScene } = props
 
   const analytics = getAnalytics()
 
@@ -112,7 +112,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
               <p className="description-content world">{t('template_detail_page.built_for_world')}</p>
               <p className="description-content size-scene">{t('template_detail_page.parcels', { ...template.layout })}</p>
               <p className="description-content personalize-content">{t('template_detail_page.personalize_it_yourself')}</p>
-              {scene && isInspectorEnabled && <p className="description-content sdk">{scene?.sdk6 ? 'SDK 6' : 'SDK 7'}</p>}
+              {scene && <p className="description-content sdk">{scene?.sdk6 ? 'SDK 6' : 'SDK 7'}</p>}
             </Column>
           </Row>
         </Section>
