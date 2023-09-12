@@ -55,8 +55,8 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
 
     queryParams = queryParams.concat(`&binIndexJsUrl=${binIndexJsUrl}`)
 
-    if (process.env.REACT_APP_CATALOG_SERVER_PORT) {
-      queryParams = queryParams.concat(`&catalogUrl=http://localhost:${process.env.REACT_APP_CATALOG_SERVER_PORT}`)
+    if (process.env.REACT_APP_CATALOG_URL) {
+      queryParams = queryParams.concat(`&catalogUrl=${process.env.REACT_APP_CATALOG_URL}`)
     }
 
     if (!isSmartItemsEnabled) {
