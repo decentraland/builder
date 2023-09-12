@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Navbar as BaseNavbar } from 'decentraland-dapps/dist/containers'
+import UserInformation from 'components/UserInformation'
 import UserMenu from 'components/UserMenu'
 import { Props } from './Navbar.types'
-import UserInformation from 'components/UserInformation'
 
 export default class Navbar extends React.PureComponent<Props> {
   render() {
