@@ -165,6 +165,7 @@
 .CenterPanel .EmoteControls .ui.button.play-control {
   width: 65px;
   height: 51px;
+  border-radius: 0;
 }
 
 .CenterPanel .EmoteControls .ui.button.play-control:hover {

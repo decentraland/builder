@@ -259,7 +259,9 @@
         "title": "Given that the 'ALLOW_MEDIA_HOSTNAMES' permission is set, the 'allowedMediaHostnames' property must be set and not empty. Please correct the 'scene.json'.",
         "message": "For more information, check the Docs to {learn_more}."
       },
-      "item_not_allowed_in_third_party_collections": "This item type {type} is not allowed in Linked Wearables Collections"
+      "item_not_allowed_in_third_party_collections": "This item type {type} is not allowed in Linked Wearables Collections",
+      "emote_animations_sync_error": "<b>Avatar and prop animations length are not the same</b><br></br>Please correct your animation and upload it again for a perfect sync.",
+      "emote_with_mesh": "<b>Your file includes the avatar mesh.</b><br></br>This mesh isn't necessary for this process. Please, simply re-export and upload it again to proceed."
     },
     "emote_notice": "Emotes are available for all body shapes.",
     "smart_wearable_details_title": "Complete your Smart Wearable Details",

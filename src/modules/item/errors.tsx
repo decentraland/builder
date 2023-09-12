@@ -126,3 +126,25 @@ export class ItemNotAllowedInThirdPartyCollections extends CustomError {
     )
   }
 }
+
+export class EmoteAnimationsSyncError extends CustomError {
+  constructor() {
+    super(
+      t('create_single_item_modal.error.emote_animations_sync_error', {
+        br: () => <br />,
+        b: (text: string) => <b>{text}</b>
+      })
+    )
+  }
+}
+
+export class EmoteWithMeshError extends CustomError {
+  constructor() {
+    super(
+      t('create_single_item_modal.error.emote_with_mesh', {
+        br: () => <br />,
+        b: (text: string) => <b>{text}</b>
+      })
+    )
+  }
+}
