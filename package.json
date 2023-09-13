@@ -36,7 +36,6 @@
     "decentraland-dapps": "^16.5.0",
     "decentraland-ecs": "^6.6.1-20201020183014.commit-bdc29ef-hotfix",
     "decentraland-experiments": "^1.0.2",
-    "decentraland-gatsby": "^5.84.0",
     "decentraland-transactions": "^1.47.0",
     "decentraland-ui": "^4.9.4",
     "ethers": "^5.6.8",
