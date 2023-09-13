@@ -27,12 +27,12 @@ export class ItemTooBigError extends Error {
 }
 
 export class FileTooBigError extends CustomError {
-  constructor() {
+  constructor(maxSize: number = MAX_FILE_SIZE) {
     super(
       t('create_single_item_modal.error.file_too_big', {
         title: createElement('b', null, t('create_single_item_modal.error.file_too_big_title')),
         enter: createElement('br'),
-        size: `${toMB(MAX_FILE_SIZE)}MB`
+        size: `${toMB(maxSize)}MB`
       })
     )
   }
