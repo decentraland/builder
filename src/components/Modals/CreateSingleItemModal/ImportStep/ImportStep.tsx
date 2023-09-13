@@ -147,6 +147,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   }
 
   handleErrorsOnFile = (error: any) => {
+    this.setState({ error: undefined, isLoading: false })
+
     let errorTranslationId = null
     let wrongConfigurations: string[] = []
 
@@ -163,7 +165,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       wrongConfigurations = error.getMissingProperties()
     }
 
-    console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+    if (wrongConfigurations.length) {
+      console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+    }
 
     this.setState({
       error: errorTranslationId

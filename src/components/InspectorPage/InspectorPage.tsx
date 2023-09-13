@@ -45,10 +45,22 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
       binIndexJsUrl = `${htmlUrl}/bin/index.js`
     }
 
-    // use the local bin/index.js being watched an served on your machine
+    let queryParams = `?dataLayerRpcParentUrl=${window.location.origin}`
+
+    // use the local bin/index.js being watched and served on your machine
     if (process.env.REACT_APP_BIN_INDEX_JS_DEV_PORT && process.env.REACT_APP_BIN_INDEX_JS_DEV_PATH) {
       const b64 = btoa(process.env.REACT_APP_BIN_INDEX_JS_DEV_PATH)
       binIndexJsUrl = `http://localhost:${process.env.REACT_APP_BIN_INDEX_JS_DEV_PORT}/content/contents/b64-${b64}`
+    }
+
+    queryParams = queryParams.concat(`&binIndexJsUrl=${binIndexJsUrl}`)
+
+    if (process.env.REACT_APP_CATALOG_URL) {
+      queryParams = queryParams.concat(`&catalogUrl=${process.env.REACT_APP_CATALOG_URL}`)
+    }
+
+    if (!isSmartItemsEnabled) {
+      queryParams = queryParams.concat('&disableSmartItems')
     }
 
     return (
@@ -57,14 +69,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
         {scene && !isReloading && (
           <>
             <TopBar />
-            <iframe
-              ref={this.refIframe}
-              title="inspector"
-              id="inspector"
-              src={`${htmlUrl}?dataLayerRpcParentUrl=${window.location.origin}&binIndexJsUrl=${binIndexJsUrl}${
-                isSmartItemsEnabled ? '' : '&disableSmartItems'
-              }`}
-            />
+            <iframe ref={this.refIframe} title="inspector" id="inspector" src={`${htmlUrl}${queryParams}`} />
           </>
         )}
       </div>

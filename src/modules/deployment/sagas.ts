@@ -57,7 +57,7 @@ import {
   fetchWorldDeploymentsRequest
 } from './actions'
 import { makeContentFiles } from './contentUtils'
-import { getEmptyDeployment, getMainFile, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
+import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
 import { ProgressStage } from './types'
 import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
 import { getParcelOrientation } from 'modules/project/utils'
@@ -230,7 +230,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
       const files: Record<string, string | Blob> = {}
 
-      files['bin/index.js'] = new Blob([getMainFile()])
+      files['bin/index.js'] = yield call([builder, 'fetchMain'], project.id)
       files['main.crdt'] = yield call([builder, 'fetchCrdt'], project.id)
 
       for (const path of Object.keys(scene.sdk7.mappings)) {

@@ -22,7 +22,7 @@ export class CustomErrorWithTitle {
 
 export class ItemTooBigError extends Error {
   constructor() {
-    super(t('create_single_item_modal.error.item_too_big', { size: `${toMB(MAX_FILE_SIZE)}MB` }))
+    super(t('create_single_item_modal.error.item_too_big', { size: `${toMB(MAX_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE)}MB` }))
   }
 }
 

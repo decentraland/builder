@@ -2,12 +2,14 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { RootState } from 'modules/common/types'
+import { getIsNewNavbarDropdownEnabled } from 'modules/features/selectors'
 import { locations } from 'routing/locations'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './Navbar.types'
 import Navbar from './Navbar'
 
 const mapState = (state: RootState): MapStateProps => ({
-  isConnected: isLoggedIn(state)
+  isConnected: isLoggedIn(state),
+  isNewNavbarEnabled: getIsNewNavbarDropdownEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
