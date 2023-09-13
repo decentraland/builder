@@ -388,9 +388,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           modelContents,
           legacyBuilder
         )
+        let finalThumbnailSize = 0
+        let finalVideoSize = 0
+
         // If a new thumbnail is present, this method will calculate only the thumbnail's final size with a limit of 1MB
         if (thumbnailContent) {
-          const finalThumbnailSize: number = yield call(calculateFileSize, thumbnailContent)
+          finalThumbnailSize = yield call(calculateFileSize, thumbnailContent)
           if (finalThumbnailSize > MAX_THUMBNAIL_FILE_SIZE) {
             throw new ThumbnailFileTooBigError()
           }
@@ -398,13 +401,13 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
         // If a new video is present, this method will calculate only the video's final size with a limit of 1MB
         if (videoContent) {
-          const finalVideoSize: number = yield call(calculateFileSize, videoContent)
+          finalVideoSize = yield call(calculateFileSize, videoContent)
           if (finalVideoSize > MAX_VIDEO_FILE_SIZE) {
             throw new VideoFileTooBigError()
           }
         }
 
-        if (finalModelSize > MAX_FILE_SIZE) {
+        if (finalModelSize + finalThumbnailSize > MAX_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE) {
           throw new ItemTooBigError()
         }
       }
