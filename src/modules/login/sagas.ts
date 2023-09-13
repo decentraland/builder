@@ -2,9 +2,9 @@ import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS, CONNECT_WALLET_FAIL
 import { put, race, select, take, takeEvery } from 'redux-saga/effects'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { openModal, CloseModalAction, CLOSE_MODAL, closeModal } from '../modal/actions'
-import { OpenLoginAction, OPEN_LOGIN_MODAL } from './actions'
+import { OpenLoginModalAction, OPEN_LOGIN_MODAL } from './actions'
 
-function* handleOpenLoginModal(_action: OpenLoginAction) {
+function* handleOpenLoginModal(_action: OpenLoginModalAction) {
   const address: string = yield select(isLoggedIn)
 
   if (!address) {

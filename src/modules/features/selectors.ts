@@ -77,3 +77,11 @@ export const getIsSmartItemsEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsNewNavbarEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_NAVBAR_DROPDOWN)
+  } catch (e) {
+    return false
+  }
+}
