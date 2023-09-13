@@ -54,6 +54,14 @@ export const getIsPublishSmartWearablesEnabled = (state: RootState) => {
   }
 }
 
+export const getIsNewNavbarDropdownEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_NAVBAR_DROPDOWN)
+  } catch (e) {
+    return false
+  }
+}
+
 export const getEmotesV2Enabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.EMOTES_V2)
@@ -65,6 +73,14 @@ export const getEmotesV2Enabled = (state: RootState) => {
 export const getIsSmartItemsEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SMART_ITEMS)
+  } catch (e) {
+    return false
+  }
+}
+
+export const getIsNewNavbarEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_NAVBAR_DROPDOWN)
   } catch (e) {
     return false
   }
