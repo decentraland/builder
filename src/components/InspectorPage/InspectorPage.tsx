@@ -47,7 +47,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
 
     let queryParams = `?dataLayerRpcParentUrl=${window.location.origin}`
 
-    // use the local bin/index.js being watched an served on your machine
+    // use the local bin/index.js being watched and served on your machine
     if (process.env.REACT_APP_BIN_INDEX_JS_DEV_PORT && process.env.REACT_APP_BIN_INDEX_JS_DEV_PATH) {
       const b64 = btoa(process.env.REACT_APP_BIN_INDEX_JS_DEV_PATH)
       binIndexJsUrl = `http://localhost:${process.env.REACT_APP_BIN_INDEX_JS_DEV_PORT}/content/contents/b64-${b64}`

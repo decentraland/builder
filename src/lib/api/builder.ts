@@ -1,4 +1,5 @@
 import { AxiosRequestConfig, AxiosError } from 'axios'
+import { Entity } from '@dcl/schemas'
 import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { config } from 'config'
@@ -27,7 +28,6 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { isSmart } from 'modules/item/utils'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
-import { Entity } from '@dcl/schemas'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
