@@ -129,7 +129,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   render() {
-    const { name, isLoading, mountNode, onClose, onSkip } = this.props
+    const { name, error, isLoading, mountNode, onClose, onSkip } = this.props
     const { isFree, isOwnerBeneficiary, price = '' } = this.state
     const beneficiary = this.getBeneficiary()
 
@@ -204,6 +204,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                 </Card.Content>
               </Card>
             ) : null}
+            {error ? <p className="danger-text">{error}</p> : null}
           </ModalContent>
           <ModalActions>
             <NetworkButton primary disabled={this.isDisabled()} loading={isLoading} network={Network.MATIC}>

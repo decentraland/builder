@@ -41,7 +41,8 @@ import {
   isModelPath,
   MAX_FILE_SIZE,
   MAX_EMOTE_DURATION,
-  isSmart
+  isSmart,
+  MAX_EMOTE_SIZE
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
@@ -93,6 +94,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const loadedFile = await loadFile(file.name, file)
     const { wearable, scene, content, emote } = loadedFile
 
+    if (emote && file.size > MAX_EMOTE_SIZE) {
+      throw new FileTooBigError()
+    }
+
     let modelPath: string | undefined
 
     if (wearable) {
@@ -141,6 +146,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   }
 
   handleErrorsOnFile = (error: any) => {
+    this.setState({ error: undefined, isLoading: false })
+
     let errorTranslationId = null
     let wrongConfigurations: string[] = []
 
@@ -157,7 +164,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       wrongConfigurations = error.getMissingProperties()
     }
 
-    console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+    if (wrongConfigurations.length) {
+      console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+    }
 
     this.setState({
       error: errorTranslationId

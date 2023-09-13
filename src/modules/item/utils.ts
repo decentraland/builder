@@ -40,6 +40,7 @@ export const MAX_VIDEO_FILE_SIZE = 4194304 // 4 MB
 export const MAX_VIDEO_DURATION = 15 // 15s
 export const MAX_NFTS_PER_MINT = 50
 export const MAX_EMOTE_DURATION = 10 // seconds
+export const MAX_EMOTE_SIZE = 3145728 // 3MB
 export const UNSYNCED_STATES = new Set([SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW])
 
 export function getMaxSupply(item: Item) {

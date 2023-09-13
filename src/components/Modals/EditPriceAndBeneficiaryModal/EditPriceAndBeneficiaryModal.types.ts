@@ -10,6 +10,7 @@ import {
 
 export type Props = ModalProps & {
   item: Item
+  error: string | null
   isLoading: boolean
   metadata: EditPriceAndBeneficiaryModalMetadata
   itemSortedContents?: Record<string, Blob>
@@ -31,6 +32,6 @@ export type EditPriceAndBeneficiaryModalMetadata = {
 }
 
 export type OwnProps = Pick<Props, 'metadata' | 'item' | 'mountNode'>
-export type MapStateProps = Pick<Props, 'item' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'item' | 'error' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onSave' | 'onSetPriceAndBeneficiary'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | SetPriceAndBeneficiaryRequestAction>

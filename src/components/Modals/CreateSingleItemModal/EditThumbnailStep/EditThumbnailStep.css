@@ -44,11 +44,13 @@
 .EditThumbnailStep .EmoteControls .ui.button.play-control .play.icon {
   padding-bottom: 18px;
   padding-left: 3px;
+  margin: 0;
 }
 
 .EditThumbnailStep .EmoteControls .ui.button.play-control .pause.icon {
   padding-left: 0;
   padding-bottom: 16px;
+  margin: 0;
 }
 
 .EditThumbnailStep .Preview canvas {

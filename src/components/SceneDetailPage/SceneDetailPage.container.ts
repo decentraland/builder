@@ -12,7 +12,6 @@ import { openModal } from 'modules/modal/actions'
 import { FETCH_DEPLOYMENTS_REQUEST, FETCH_WORLD_DEPLOYMENTS_REQUEST } from 'modules/deployment/actions'
 import { FETCH_ENS_LIST_REQUEST } from 'modules/ens/actions'
 import { getLoading as getLoadingENS } from 'modules/ens/selectors'
-import { getIsInspectorEnabled } from 'modules/features/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './SceneDetailPage.types'
 import SceneDetailPage from './SceneDetailPage'
@@ -33,8 +32,7 @@ const mapState = (state: RootState): MapStateProps => {
       isLoadingType(getLoadingENS(state), FETCH_ENS_LIST_REQUEST) ||
       isLoadingType(getLoadingDeployment(state), FETCH_DEPLOYMENTS_REQUEST) ||
       isLoadingType(getLoadingDeployment(state), FETCH_WORLD_DEPLOYMENTS_REQUEST) ||
-      isLoadingType(getLoadingLands(state), FETCH_LANDS_REQUEST),
-    isInspectorEnabled: getIsInspectorEnabled(state)
+      isLoadingType(getLoadingLands(state), FETCH_LANDS_REQUEST)
   }
 }
 

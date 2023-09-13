@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 import { RootState } from 'modules/common/types'
-import { getAuthorizedItems, getLoading } from 'modules/item/selectors'
+import { getAuthorizedItems, getLoading, getError } from 'modules/item/selectors'
 import {
   saveItemRequest,
   setPriceAndBeneficiaryRequest,
@@ -20,6 +20,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
   return {
     item,
+    error: getError(state),
     isLoading:
       isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) ||
       isLoadingType(getLoading(state), SAVE_ITEM_REQUEST) ||

@@ -259,7 +259,9 @@
         "title": "Dado que el permiso 'ALLOW_MEDIA_HOSTNAMES' está configurado, la propiedad 'allowedMediaHostnames' debe ser configurada y no puede ser vacía. Por favor, corrija el archivo 'scene.json'.",
         "message": "Para obtener {learn_more}, consulte la documentación."
       },
-      "item_not_allowed_in_third_party_collections": "Este tipo {tipo} no está permitido en colecciones externas"
+      "item_not_allowed_in_third_party_collections": "Este tipo {tipo} no está permitido en colecciones externas",
+      "emote_animations_sync_error": "<b>Las longitudes de las animaciones del avatar y de las props no son iguales</b><br></br>Corrija su animación y vuelva a subirla para una sincronización perfecta.",
+      "emote_with_mesh": "<b>Su archivo incluye el mesh del Avatar.</b><br></br>Esta malla no es necesaria para este proceso. Por favor, simplemente vuelva a exportarlo y vuelva a subirlo para continuar."
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
     "smart_wearable_details_title": "Completa los detalles de tu vestimenta interactiva",
@@ -1637,6 +1639,7 @@
       "acknowledge_dao_terms": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a las {content_policy_link} y los {terms_of_use_link}. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo ya que su finalidad es compensar a los curadores por su tiempo y trabajo.",
       "email_disclousure": "Necesitamos tu email para futuras comunicaciones sobre esta colección.",
       "email_disclousure_detail": "Solo utilizaremos este email para comunicaciones sobre esta colección en particular.{enter}No estará vinculado a su cuenta.",
+      "email_newsletter": "¡Manténme al tanto! Utilice este correo electrónico para recibir el boletín semanal, las actualizaciones y las noticias del concurso de Decentraland.",
       "continue": "Continar"
     },
     "pay_publication_fee_step": {

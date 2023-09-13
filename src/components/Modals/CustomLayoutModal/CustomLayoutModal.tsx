@@ -102,7 +102,6 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
 
   renderModalActions = () => {
     const { hasError, name, step } = this.state
-    const { isInspectorEnabled } = this.props
 
     switch (step) {
       case SceneCreationStep.INFO:
@@ -122,12 +121,8 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
             <Button secondary onClick={this.handleBack}>
               {t('global.back')}
             </Button>
-            <Button
-              primary
-              disabled={hasError || !name}
-              onClick={isInspectorEnabled ? this.handleNext : this.handleSubmit.bind(this, SDKVersion.SDK6)}
-            >
-              {isInspectorEnabled ? t('global.next') : t('global.create')}
+            <Button primary disabled={hasError || !name} onClick={this.handleNext}>
+              {t('global.next')}
             </Button>
           </div>
         )

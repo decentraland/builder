@@ -154,7 +154,7 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('and file size is larger than 2 MB', () => {
+  describe('and file size is larger than 3 MB', () => {
     beforeEach(() => {
       item.name = 'valid name'
       item.description = 'valid description'
@@ -167,10 +167,10 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE + 1)],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The entire item is too big to be uploaded. The max size for all files is 2MB.'))
+        .put(saveItemFailure(item, contents, 'The entire item is too big to be uploaded. The max size for all files is 3MB.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })

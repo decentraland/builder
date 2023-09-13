@@ -22,7 +22,7 @@ export class CustomErrorWithTitle {
 
 export class ItemTooBigError extends Error {
   constructor() {
-    super(t('create_single_item_modal.error.item_too_big', { size: `${toMB(MAX_FILE_SIZE)}MB` }))
+    super(t('create_single_item_modal.error.item_too_big', { size: `${toMB(MAX_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE)}MB` }))
   }
 }
 
@@ -122,6 +122,28 @@ export class ItemNotAllowedInThirdPartyCollections extends CustomError {
     super(
       t('create_single_item_modal.error.item_not_allowed_in_third_party_collections', {
         type: createElement('b', null, t(`item.type.${type}`))
+      })
+    )
+  }
+}
+
+export class EmoteAnimationsSyncError extends CustomError {
+  constructor() {
+    super(
+      t('create_single_item_modal.error.emote_animations_sync_error', {
+        br: () => <br />,
+        b: (text: string) => <b>{text}</b>
+      })
+    )
+  }
+}
+
+export class EmoteWithMeshError extends CustomError {
+  constructor() {
+    super(
+      t('create_single_item_modal.error.emote_with_mesh', {
+        br: () => <br />,
+        b: (text: string) => <b>{text}</b>
       })
     )
   }

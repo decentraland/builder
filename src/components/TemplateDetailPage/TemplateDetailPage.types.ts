@@ -9,12 +9,11 @@ export type Props = {
   template: Project | null
   isLoading: boolean
   scene: Scene | null
-  isInspectorEnabled: boolean
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
   onLoadTemplateScene: (project: Project) => void
 }
 
-export type MapStateProps = Pick<Props, 'template' | 'isLoading' | 'scene' | 'isInspectorEnabled'>
+export type MapStateProps = Pick<Props, 'template' | 'isLoading' | 'scene'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onLoadTemplateScene'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | LoadProjectSceneRequestAction>
