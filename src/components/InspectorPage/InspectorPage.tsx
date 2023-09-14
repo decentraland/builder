@@ -6,6 +6,7 @@ import SignInRequired from 'components/SignInRequired'
 import { Props, State } from './InspectorPage.types'
 import './InspectorPage.css'
 import TopBar from './TopBar'
+import { config } from 'config'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 
@@ -55,9 +56,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
 
     queryParams = queryParams.concat(`&binIndexJsUrl=${binIndexJsUrl}`)
 
-    if (process.env.REACT_APP_CATALOG_URL) {
-      queryParams = queryParams.concat(`&catalogUrl=${process.env.REACT_APP_CATALOG_URL}`)
-    }
+    queryParams = queryParams.concat(`&contentUrl=${config.get('INSPECTOR_CONTENT_URL')}`)
 
     if (!isSmartItemsEnabled) {
       queryParams = queryParams.concat('&disableSmartItems')
