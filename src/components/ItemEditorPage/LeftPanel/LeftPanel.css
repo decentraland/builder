@@ -41,3 +41,7 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.LeftPanel .dcl.toast {
+  width: calc(var(--item-editor-panel-width) - 20px);
+}
