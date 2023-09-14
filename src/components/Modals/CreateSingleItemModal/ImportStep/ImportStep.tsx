@@ -124,10 +124,6 @@ export default class ImportStep extends React.PureComponent<Props, State> {
    * @param file - The model file.
    */
   handleModelFile = async (file: File): Promise<ModelData> => {
-    if (file.size > MAX_FILE_SIZE) {
-      throw new FileTooBigError()
-    }
-
     const modelPath = file.name
     const contents = {
       [modelPath]: file
@@ -140,6 +136,11 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       if (info.duration > MAX_EMOTE_DURATION) {
         throw new EmoteDurationTooLongError()
       }
+    }
+
+    const maxFileSize = type === ItemType.EMOTE ? MAX_EMOTE_SIZE : MAX_FILE_SIZE
+    if (file.size > maxFileSize) {
+      throw new FileTooBigError(maxFileSize)
     }
 
     return { model, contents: proccessedContent, type }
