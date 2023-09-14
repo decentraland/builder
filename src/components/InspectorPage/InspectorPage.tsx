@@ -1,6 +1,7 @@
 /* eslint-disable no-debugger */
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
+import { config } from 'config'
 import SignInRequired from 'components/SignInRequired'
 
 import { Props, State } from './InspectorPage.types'
@@ -55,9 +56,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
 
     queryParams = queryParams.concat(`&binIndexJsUrl=${binIndexJsUrl}`)
 
-    if (process.env.REACT_APP_CATALOG_URL) {
-      queryParams = queryParams.concat(`&catalogUrl=${process.env.REACT_APP_CATALOG_URL}`)
-    }
+    queryParams = queryParams.concat(`&contentUrl=${config.get('INSPECTOR_CONTENT_URL')}`)
 
     if (!isSmartItemsEnabled) {
       queryParams = queryParams.concat('&disableSmartItems')

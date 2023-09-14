@@ -36,5 +36,6 @@
   "PROFILE_URL": "https://profile.decentraland.today",
   "SSO_URL": "https://id.decentraland.today",
   "SENTRY_DSN": "https://428e8d298fb3f0fbcea645314a4a388c@o4504361728212992.ingest.sentry.io/4505748381564928",
-  "DCL_LISTS_SERVER": "https://dcl-lists.decentraland.today"
+  "DCL_LISTS_SERVER": "https://dcl-lists.decentraland.today",
+  "INSPECTOR_CONTENT_URL": "https://builder-items.decentraland.zone"
 }
