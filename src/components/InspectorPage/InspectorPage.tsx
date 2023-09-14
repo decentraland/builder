@@ -1,12 +1,12 @@
 /* eslint-disable no-debugger */
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
+import { config } from 'config'
 import SignInRequired from 'components/SignInRequired'
 
 import { Props, State } from './InspectorPage.types'
 import './InspectorPage.css'
 import TopBar from './TopBar'
-import { config } from 'config'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 
