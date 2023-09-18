@@ -179,9 +179,12 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   const identity: AuthIdentity | null = yield call(getIdentity, address)
 
   // If an identity is found, store it and proceed with the login so the state acknowledges that the user is connected.
+  // If not, proceed with the login in order to retrieve user's signature.
   if (identity) {
     yield put(generateIdentitySuccess(address, identity))
     yield put(loginRequest(providerType, true))
+  } else {
+    yield put(loginRequest(providerType))
   }
 }
 
@@ -193,9 +196,12 @@ function* handleChangeAccount(action: ChangeAccountAction) {
   const identity: AuthIdentity | null = yield call(getIdentity, address)
 
   // If an identity is found, store it and proceed with the login so the state acknowledges that the user is connected.
+  // If not, proceed with the login in order to retrieve user's signature.
   if (identity) {
     yield put(generateIdentitySuccess(address, identity))
     yield put(loginRequest(providerType, true))
+  } else {
+    yield put(loginRequest(providerType))
   }
 
   yield put(clearAssetPacks())
