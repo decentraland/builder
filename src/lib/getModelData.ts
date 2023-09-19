@@ -22,7 +22,7 @@ import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from 'components/Modals/CreateSingleItemModal/utils'
 import { isImageFile } from 'modules/item/utils'
 import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
-import { EmoteAnimationsSyncError, EmoteWithMeshError } from 'modules/item/errors'
+import { EmoteWithMeshError } from 'modules/item/errors'
 import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
 
 // transparent 1x1 pixel
@@ -227,7 +227,7 @@ export async function getEmoteMetrics(blob: Blob) {
   const { gltf, renderer } = await loadGltf(URL.createObjectURL(blob))
   document.body.removeChild(renderer.domElement)
   const animation = gltf.animations[0]
-  const propsAnimation = gltf.animations.length > 1 ? gltf.animations[1] : null
+  // const propsAnimation = gltf.animations.length > 1 ? gltf.animations[1] : null
   let frames = 0
 
   for (let i = 0; i < animation.tracks.length; i++) {
@@ -243,9 +243,9 @@ export async function getEmoteMetrics(blob: Blob) {
     throw new EmoteWithMeshError()
   }
 
-  if (propsAnimation && propsAnimation.duration !== animation.duration) {
-    throw new EmoteAnimationsSyncError()
-  }
+  // if (propsAnimation && propsAnimation.duration !== animation.duration) {
+  //   throw new EmoteAnimationsSyncError()
+  // }
 
   return {
     sequences: gltf.animations.length,
