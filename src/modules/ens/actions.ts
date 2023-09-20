@@ -166,7 +166,7 @@ export const FETCH_EXTERNAL_ENS_NAMES_FAILURE = '[Failure] Fetch External ENS Na
 
 export const fetchExternadlENSNamesRequest = (owner: string) => action(FETCH_EXTERNAL_ENS_NAMES_REQUEST, { owner })
 export const fetchExternadlENSNamesSuccess = (owner: string, names: string[]) => action(FETCH_EXTERNAL_ENS_NAMES_SUCCESS, { owner, names })
-export const fetchExternadlENSNamesFailure = (owner: string, error: string) => action(ALLOW_CLAIM_MANA_FAILURE, { owner, error })
+export const fetchExternadlENSNamesFailure = (owner: string, error: ENSError) => action(FETCH_EXTERNAL_ENS_NAMES_FAILURE, { owner, error })
 
 export type FetchExternalENSNamesRequestAction = ReturnType<typeof fetchExternadlENSNamesRequest>
 export type FetchExternalENSNamesSuccessAction = ReturnType<typeof fetchExternadlENSNamesSuccess>
