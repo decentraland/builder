@@ -28,6 +28,7 @@ import { marketplace } from 'lib/api/marketplace'
 import { lists } from 'lib/api/lists'
 import { WorldInfo, content as WorldsAPIContent } from 'lib/api/worlds'
 import { extractEntityId } from 'lib/urn'
+import { ENSApi } from 'lib/api/ens'
 import {
   FETCH_ENS_REQUEST,
   FetchENSRequestAction,
@@ -67,13 +68,17 @@ import {
   FETCH_ENS_WORLD_STATUS_REQUEST,
   FetchENSWorldStatusRequestAction,
   fetchENSWorldStatusSuccess,
-  fetchENSWorldStatusFailure
+  fetchENSWorldStatusFailure,
+  FETCH_EXTERNAL_ENS_NAMES_REQUEST,
+  FetchExternalENSNamesRequestAction,
+  fetchExternalENSNamesSuccess,
+  fetchExternalENSNamesFailure
 } from './actions'
 import { getENSBySubdomain } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDomainFromName } from './utils'
 
-export function* ensSaga(builderClient: BuilderClient) {
+export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
@@ -84,6 +89,7 @@ export function* ensSaga(builderClient: BuilderClient) {
   yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
   yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
   yield takeEvery(RECLAIM_NAME_REQUEST, handleReclaimNameRequest)
+  yield takeEvery(FETCH_EXTERNAL_ENS_NAMES_REQUEST, handleFetchExternalENSNamesRequest)
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSAuthorizationRequest())
@@ -480,6 +486,17 @@ export function* ensSaga(builderClient: BuilderClient) {
     } catch (error) {
       const ensError: ENSError = { message: error.message }
       yield put(allowClaimManaFailure(ensError))
+    }
+  }
+
+  function* handleFetchExternalENSNamesRequest(action: FetchExternalENSNamesRequestAction) {
+    const owner = action.payload.owner
+    try {
+      const names: string[] = yield call([ensApi, ensApi.fetchENSList], owner)
+      yield put(fetchExternalENSNamesSuccess(owner, names))
+    } catch (error) {
+      const ensError: ENSError = { message: error.message }
+      yield put(fetchExternalENSNamesFailure(owner, ensError))
     }
   }
 }
