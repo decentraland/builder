@@ -157,7 +157,7 @@
   "create_collection_modal": {
     "title": "新系列",
     "subtitle": "输入新收藏的描述性名称",
-    "label": "名称",
+    "label": "收集名称",
     "placeholder": "我的大学",
     "message": "名称最多可以是 {maxLength} 个字符",
     "error_name_already_in_use": "使用中的名称。 尝试其他"

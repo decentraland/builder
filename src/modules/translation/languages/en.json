@@ -159,9 +159,9 @@
   "create_collection_modal": {
     "title": "New Collection",
     "subtitle": "Enter a descriptive name for your new collection",
-    "label": "Name",
+    "label": "Collection Name",
     "placeholder": "My collection",
-    "message": "The name can be {maxLength} characters at most",
+    "message": "The name can be {maxLength} characters max",
     "error_name_already_in_use": "Name already in use. Try a different one"
   },
   "create_third_party_collection_modal": {
@@ -208,7 +208,7 @@
     "title": "New Item",
     "thumbnail_step_title": "Edit Thumbnail",
     "upload_video_step_title": "Upload a Video for your Smart Wearable",
-    "title_emote": "New Emote",
+    "title_emote": "Fill Out Emote Details",
     "add_representation": "Add {bodyShape} Representation",
     "wrong_thumbnail_format": "The provided thumbnail is not a PNG image",
     "name_label": "Enter a name for your item",
@@ -261,7 +261,7 @@
       },
       "item_not_allowed_in_third_party_collections": "This item type {type} is not allowed in Linked Wearables Collections",
       "emote_animations_sync_error": "<b>Avatar and prop animations length are not the same</b><br></br>Please correct your animation and upload it again for a perfect sync.",
-      "emote_with_mesh": "<b>Your file includes the avatar mesh.</b><br></br>This mesh isn't necessary for this process. Please, simply re-export and upload it again to proceed."
+      "emote_with_mesh": "<b>Your file includes the avatar mesh.</b><br></br>This mesh isn't necessary for this process. Please re-export your Emote file and upload it again to proceed."
     },
     "emote_notice": "Emotes are available for all body shapes.",
     "smart_wearable_details_title": "Complete your Smart Wearable Details",
@@ -1607,8 +1607,8 @@
     "publish_failed": "Failed to publish",
     "confirm_collection_name_step": {
       "title": "Confirm Collection Name",
-      "subtitle": "The name of the collection can't be modified after sending it for review.",
-      "description": "Make sure it doesn't have any typos, and it doesn't contain any Intellectual Property you don't own (E.g Star Wars, Sailor Moon, etc)",
+      "subtitle": "Collection names can't be modified after being sent in for review",
+      "description": "Make sure it doesn't have any typos, or contain any Intellectual Property you don't own (E.g Star Wars, Sailor Moon, etc)",
       "collection_name_label": "Collection name",
       "collection_name_confirmation_label": "Confirm Collection Name",
       "collection_name_placeholder": "Your collection name",
@@ -1618,7 +1618,7 @@
     "confirm_collection_items_step": {
       "title": "Confirm Items",
       "subtitle": "Items cannot be added or deleted from a collection nor can their rarity be changed after publication.",
-      "description": "However, items' name, description, category, and price can always be modified.",
+      "description": "However, an item's name, description, category, and price can always be modified.",
       "confirm_items": "Confirm Items"
     },
     "review_content_policy_step": {

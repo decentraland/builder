@@ -162,7 +162,7 @@
   "create_collection_modal": {
     "title": "Nueva Colección",
     "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",
-    "label": "Nombre",
+    "label": "Nombre de la colección",
     "placeholder": "Mi colleción",
     "message": "El nombre puede tener un máximo de {maxLength} caracteres",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
