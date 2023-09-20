@@ -158,3 +158,16 @@ export const allowClaimManaFailure = (error: ENSError) => action(ALLOW_CLAIM_MAN
 export type AllowClaimManaRequestAction = ReturnType<typeof allowClaimManaRequest>
 export type AllowClaimManaSuccessAction = ReturnType<typeof allowClaimManaSuccess>
 export type AllowClaimManaFailureAction = ReturnType<typeof allowClaimManaFailure>
+
+// Fetch non dcl ENS names
+export const FETCH_EXTERNAL_ENS_NAMES_REQUEST = '[Request] Fetch External ENS Names'
+export const FETCH_EXTERNAL_ENS_NAMES_SUCCESS = '[Success] Fetch External ENS Names'
+export const FETCH_EXTERNAL_ENS_NAMES_FAILURE = '[Failure] Fetch External ENS Names'
+
+export const fetchExternadlENSNamesRequest = (owner: string) => action(FETCH_EXTERNAL_ENS_NAMES_REQUEST, { owner })
+export const fetchExternadlENSNamesSuccess = (owner: string, names: string[]) => action(FETCH_EXTERNAL_ENS_NAMES_SUCCESS, { owner, names })
+export const fetchExternadlENSNamesFailure = (owner: string, error: string) => action(ALLOW_CLAIM_MANA_FAILURE, { owner, error })
+
+export type FetchExternalENSNamesRequestAction = ReturnType<typeof fetchExternadlENSNamesRequest>
+export type FetchExternalENSNamesSuccessAction = ReturnType<typeof fetchExternadlENSNamesSuccess>
+export type FetchExternalENSNamesFailureAction = ReturnType<typeof fetchExternadlENSNamesFailure>
