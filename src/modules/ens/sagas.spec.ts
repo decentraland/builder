@@ -1,4 +1,5 @@
 import * as matchers from 'redux-saga-test-plan/matchers'
+import { throwError } from 'redux-saga-test-plan/providers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { call, select } from 'redux-saga/effects'
 import { BuilderClient } from '@dcl/builder-client'
@@ -11,17 +12,28 @@ import { CONTROLLER_V2_ADDRESS, ENS_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } f
 import { DclListsAPI } from 'lib/api/lists'
 import { WorldsAPI } from 'lib/api/worlds'
 import { MarketplaceAPI } from 'lib/api/marketplace'
+import { ENSApi } from 'lib/api/ens'
 import { getLands } from 'modules/land/selectors'
 import { getWallet } from 'modules/wallet/utils'
-import { allowClaimManaRequest, claimNameRequest, fetchENSAuthorizationRequest, fetchENSListRequest, fetchENSListSuccess } from './actions'
+import {
+  allowClaimManaRequest,
+  claimNameRequest,
+  fetchENSAuthorizationRequest,
+  fetchENSListRequest,
+  fetchENSListSuccess,
+  fetchExternalENSNamesFailure,
+  fetchExternalENSNamesRequest,
+  fetchExternalENSNamesSuccess
+} from './actions'
 import { ensSaga } from './sagas'
-import { ENS } from './types'
+import { ENS, ENSError } from './types'
 
 jest.mock('@dcl/builder-client')
 
 const MockBuilderClient = BuilderClient as jest.MockedClass<typeof BuilderClient>
 
 let builderClient: BuilderClient
+let ensApi: ENSApi
 let manaContract: ERC20
 let dclRegistrarContract: DCLRegistrar__factory
 let ensFactoryContract: ENS__factory
@@ -36,6 +48,8 @@ beforeEach(() => {
     },
     'address'
   )
+
+  ensApi = new ENSApi('https://ens-subgraph.com')
 
   manaContract = {
     approve: jest.fn(),
@@ -55,7 +69,7 @@ describe('when handling the approve claim mana request', () => {
     const allowance = '100'
     const signer = {} as ethers.Signer
 
-    await expectSaga(ensSaga, builderClient)
+    await expectSaga(ensSaga, builderClient, ensApi)
       .provide([
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
         [call(getSigner), signer],
@@ -77,7 +91,7 @@ describe('when handling the fetch of authorizations request', () => {
 
     jest.spyOn(ethers, 'Contract').mockReturnValueOnce(manaContract)
 
-    await expectSaga(ensSaga, builderClient)
+    await expectSaga(ensSaga, builderClient, ensApi)
       .provide([
         [select(getAddress), from],
         [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_GOERLI]
@@ -92,7 +106,7 @@ describe('when handling the claim name request', () => {
   it('should call DCLController__factory.connect with the dcl controller v2 address', async () => {
     const signer = {} as ethers.Signer
 
-    await expectSaga(ensSaga, builderClient)
+    await expectSaga(ensSaga, builderClient, ensApi)
       .provide([
         [call(getWallet), { address: 'address' }],
         [call(getSigner), signer]
@@ -132,7 +146,7 @@ describe('when handling the claim name request', () => {
       }))
       const signer = {} as ethers.Signer
 
-      await expectSaga(ensSaga, builderClient)
+      await expectSaga(ensSaga, builderClient, ensApi)
         .provide([
           [call(getSigner), signer],
           [call(getWallet), { address, chainId: ChainId.ETHEREUM_GOERLI }],
@@ -145,6 +159,48 @@ describe('when handling the claim name request', () => {
         ])
         .put(fetchENSListSuccess(ENSList))
         .dispatch(fetchENSListRequest())
+        .silentRun()
+    })
+  })
+})
+
+describe('when handling the fetching of external ens names for an owner', () => {
+  let owner: string
+
+  beforeEach(() => {
+    owner = '0x123'
+  })
+
+  describe('when fetchENSList throws an error', () => {
+    let error: Error
+    let ensError: ENSError
+
+    beforeEach(() => {
+      error = new Error('Some Error')
+      ensError = { message: error.message }
+    })
+
+    it('should dispatch an error action with the owner and the error', async () => {
+      await expectSaga(ensSaga, builderClient, ensApi)
+        .provide([[call([ensApi, ensApi.fetchENSList], owner), throwError(error)]])
+        .put(fetchExternalENSNamesFailure(owner, ensError))
+        .dispatch(fetchExternalENSNamesRequest(owner))
+        .silentRun()
+    })
+  })
+
+  describe('when fetchENSList returns an array of names', () => {
+    let names: string[]
+
+    beforeEach(() => {
+      names = ['name1.eth', 'name2.eth']
+    })
+
+    it('should dispatch a success action with the owner and the names', async () => {
+      await expectSaga(ensSaga, builderClient, ensApi)
+        .provide([[call([ensApi, ensApi.fetchENSList], owner), names]])
+        .put(fetchExternalENSNamesSuccess(owner, names))
+        .dispatch(fetchExternalENSNamesRequest(owner))
         .silentRun()
     })
   })

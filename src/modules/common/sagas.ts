@@ -38,6 +38,7 @@ import { uiSaga } from 'modules/ui/sagas'
 import { walletSaga } from 'modules/wallet/sagas'
 import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
+import { ENSApi } from 'lib/api/ens'
 import { entitySaga } from 'modules/entity/sagas'
 import { loginSaga } from 'modules/login/sagas'
 import { newsletterSagas } from 'modules/newsletter/sagas'
@@ -49,7 +50,13 @@ import { RootStore } from './types'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL() })
 
-export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClient, catalystClient: CatalystClient, store: RootStore) {
+export function* rootSaga(
+  builderAPI: BuilderAPI,
+  newBuilderClient: BuilderClient,
+  catalystClient: CatalystClient,
+  store: RootStore,
+  ensApi: ENSApi
+) {
   yield all([
     analyticsSaga(),
     assetPackSaga(builderAPI),
@@ -59,7 +66,7 @@ export function* rootSaga(builderAPI: BuilderAPI, newBuilderClient: BuilderClien
     committeeSaga(builderAPI),
     deploymentSaga(builderAPI, catalystClient),
     editorSaga(),
-    ensSaga(newBuilderClient),
+    ensSaga(newBuilderClient, ensApi),
     entitySaga(catalystClient),
     forumSaga(builderAPI),
     identitySaga(),

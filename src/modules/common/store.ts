@@ -34,6 +34,7 @@ import { isDevelopment } from 'lib/environment'
 import { BuilderAPI, BUILDER_SERVER_URL } from 'lib/api/builder'
 import { Authorization } from 'lib/api/auth'
 import { PEER_URL } from 'lib/api/peer'
+import { ENSApi } from 'lib/api/ens'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
@@ -168,7 +169,9 @@ const builderClientUrl: string = BUILDER_SERVER_URL.replace('/v1', '')
 
 const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, fetch)
 
-sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, store)
+const ensApi = new ENSApi(config.get('ENS_SUBGRAPH_URL'))
+
+sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, store, ensApi)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {
