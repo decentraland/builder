@@ -74,7 +74,7 @@ export type ENSState = {
   error: ENSError | null
 }
 
-const INITIAL_STATE: ENSState = {
+export const INITIAL_STATE: ENSState = {
   data: {},
   externalNames: {},
   authorizations: {},
