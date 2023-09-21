@@ -196,7 +196,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
       names = ['name1.eth', 'name2.eth']
     })
 
-    it('should dispatch an error action with the owner and the error', async () => {
+    it('should dispatch a success action with the owner and the names', async () => {
       await expectSaga(ensSaga, builderClient, ensApi)
         .provide([[call([ensApi, ensApi.fetchENSList], owner), names]])
         .put(fetchExternalENSNamesSuccess(owner, names))
