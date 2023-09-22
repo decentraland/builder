@@ -85,3 +85,11 @@ export const getIsNewNavbarEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsWorldsForEnsOwnersEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.WORLDS_FOR_ENS_OWNERS)
+  } catch (e) {
+    return false
+  }
+}
