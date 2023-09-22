@@ -21,9 +21,9 @@ import {
   fetchENSAuthorizationRequest,
   fetchENSListRequest,
   fetchENSListSuccess,
-  fetchExternalENSNamesFailure,
-  fetchExternalENSNamesRequest,
-  fetchExternalENSNamesSuccess
+  fetchExternalNamesFailure,
+  fetchExternalNamesRequest,
+  fetchExternalNamesSuccess
 } from './actions'
 import { ensSaga } from './sagas'
 import { ENS, ENSError } from './types'
@@ -165,43 +165,84 @@ describe('when handling the claim name request', () => {
 })
 
 describe('when handling the fetching of external ens names for an owner', () => {
-  let owner: string
+  const MOCK_ADDRESS = '0x123'
 
-  beforeEach(() => {
-    owner = '0x123'
+  describe('when the owner is not provided in the action', () => {
+    let storedAddress: string | undefined
+
+    describe('and the wallet address can be obtained from the store', () => {
+      beforeEach(() => {
+        storedAddress = MOCK_ADDRESS
+      })
+
+      it('should call the ens api with the store wallet address', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi)
+          .provide([
+            [select(getAddress), storedAddress],
+            [call([ensApi, ensApi.fetchENSList], storedAddress!), []]
+          ])
+          .put(fetchExternalNamesSuccess(storedAddress!, []))
+          .dispatch(fetchExternalNamesRequest())
+          .silentRun()
+      })
+    })
+    describe('and the wallet address cannot be obtained from the store', () => {
+      let ensError: ENSError
+
+      beforeEach(() => {
+        storedAddress = undefined
+        ensError = { message: 'No owner address provided' }
+      })
+
+      it('should dispatch an error action with undefined as the owner and the error', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi)
+          .provide([[select(getAddress), storedAddress]])
+          .put(fetchExternalNamesFailure(ensError, undefined))
+          .dispatch(fetchExternalNamesRequest())
+          .silentRun()
+      })
+    })
   })
 
-  describe('when fetchENSList throws an error', () => {
-    let error: Error
-    let ensError: ENSError
+  describe('when the owner is provided in the action', () => {
+    let owner: string
 
     beforeEach(() => {
-      error = new Error('Some Error')
-      ensError = { message: error.message }
+      owner = MOCK_ADDRESS
     })
 
-    it('should dispatch an error action with the owner and the error', async () => {
-      await expectSaga(ensSaga, builderClient, ensApi)
-        .provide([[call([ensApi, ensApi.fetchENSList], owner), throwError(error)]])
-        .put(fetchExternalENSNamesFailure(owner, ensError))
-        .dispatch(fetchExternalENSNamesRequest(owner))
-        .silentRun()
+    describe('when fetchENSList throws an error', () => {
+      let error: Error
+      let ensError: ENSError
+
+      beforeEach(() => {
+        error = new Error('Some Error')
+        ensError = { message: error.message }
+      })
+
+      it('should dispatch an error action with the owner and the error', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi)
+          .provide([[call([ensApi, ensApi.fetchENSList], owner), throwError(error)]])
+          .put(fetchExternalNamesFailure(ensError, owner))
+          .dispatch(fetchExternalNamesRequest(owner))
+          .silentRun()
+      })
     })
-  })
 
-  describe('when fetchENSList returns an array of names', () => {
-    let names: string[]
+    describe('when fetchENSList returns an array of names', () => {
+      let names: string[]
 
-    beforeEach(() => {
-      names = ['name1.eth', 'name2.eth']
-    })
+      beforeEach(() => {
+        names = ['name1.eth', 'name2.eth']
+      })
 
-    it('should dispatch a success action with the owner and the names', async () => {
-      await expectSaga(ensSaga, builderClient, ensApi)
-        .provide([[call([ensApi, ensApi.fetchENSList], owner), names]])
-        .put(fetchExternalENSNamesSuccess(owner, names))
-        .dispatch(fetchExternalENSNamesRequest(owner))
-        .silentRun()
+      it('should dispatch a success action with the owner and the names', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi)
+          .provide([[call([ensApi, ensApi.fetchENSList], owner), names]])
+          .put(fetchExternalNamesSuccess(owner, names))
+          .dispatch(fetchExternalNamesRequest(owner))
+          .silentRun()
+      })
     })
   })
 })

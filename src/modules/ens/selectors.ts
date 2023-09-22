@@ -23,6 +23,7 @@ import { getDomainFromName } from './utils'
 
 export const getState = (state: RootState) => state.ens
 export const getData = (state: RootState) => getState(state).data
+export const getExternalNames = (state: RootState) => getState(state).externalNames
 export const getAuthorizations = (state: RootState) => getState(state).authorizations
 export const getError = (state: RootState) => getState(state).error
 export const getLoading = (state: RootState) => getState(state).loading
@@ -31,6 +32,12 @@ export const getENSList = createSelector<RootState, ENSState['data'], ENS[]>(get
 
 export const getENSByWallet = createSelector<RootState, ENS[], string | undefined, ENS[]>(getENSList, getAddress, (ensList, address = '') =>
   ensList.filter(ens => isEqual(ens.nftOwnerAddress, address))
+)
+
+export const getExternalNamesByWallet = createSelector<RootState, Record<string, string[]>, string | undefined, string[]>(
+  getExternalNames,
+  getAddress,
+  (externalNames, address = '') => externalNames[address] ?? []
 )
 
 export const getAuthorizationByWallet = createSelector<

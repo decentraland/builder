@@ -69,10 +69,10 @@ import {
   FetchENSWorldStatusRequestAction,
   fetchENSWorldStatusSuccess,
   fetchENSWorldStatusFailure,
-  FETCH_EXTERNAL_ENS_NAMES_REQUEST,
-  FetchExternalENSNamesRequestAction,
-  fetchExternalENSNamesSuccess,
-  fetchExternalENSNamesFailure
+  FETCH_EXTERNAL_NAMES_REQUEST,
+  FetchExternalNamesRequestAction,
+  fetchExternalNamesSuccess,
+  fetchExternalNamesFailure
 } from './actions'
 import { getENSBySubdomain } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
@@ -89,7 +89,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
   yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
   yield takeEvery(RECLAIM_NAME_REQUEST, handleReclaimNameRequest)
-  yield takeEvery(FETCH_EXTERNAL_ENS_NAMES_REQUEST, handleFetchExternalENSNamesRequest)
+  yield takeEvery(FETCH_EXTERNAL_NAMES_REQUEST, handleFetchExternalNamesRequest)
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSAuthorizationRequest())
@@ -489,14 +489,19 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
     }
   }
 
-  function* handleFetchExternalENSNamesRequest(action: FetchExternalENSNamesRequestAction) {
-    const owner = action.payload.owner
+  function* handleFetchExternalNamesRequest(action: FetchExternalNamesRequestAction) {
+    const owner = action.payload.owner ?? (yield select(getAddress))
+
     try {
+      if (!owner) {
+        throw new Error('No owner address provided')
+      }
+
       const names: string[] = yield call([ensApi, ensApi.fetchENSList], owner)
-      yield put(fetchExternalENSNamesSuccess(owner, names))
+      yield put(fetchExternalNamesSuccess(owner, names))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
-      yield put(fetchExternalENSNamesFailure(owner, ensError))
+      yield put(fetchExternalNamesFailure(ensError, owner))
     }
   }
 }
