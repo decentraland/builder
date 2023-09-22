@@ -469,8 +469,13 @@
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
       "claim_name": "Obtener un nombre",
+      "claim_ens_name": "Comprar un nombre de ENS",
       "empty_state_title": "No tiene ningún mundo disponible",
       "empty_state_description": "<b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un mundo. Puedes tener tantos como quieras.",
+      "name_type": {
+        "dcl": "Nombre",
+        "ens": "Nombres de ENS"
+      },
       "success": {
         "title": "Tu escena ha sido publicada!",
         "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",

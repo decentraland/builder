@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
-import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List } from 'decentraland-ui'
+import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List, DropdownItemProps } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -12,7 +12,7 @@ import { FromParam } from 'modules/location/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
-import { DeployToWorldView, Props } from './DeployToWorld.types'
+import { DeployToWorldView, NameType, Props } from './DeployToWorld.types'
 
 import styles from './DeployToWorld.module.css'
 
@@ -25,6 +25,7 @@ export default function DeployToWorld({
   project,
   metrics,
   ensList,
+  externalNames,
   deployments,
   isLoading,
   error,
@@ -34,12 +35,14 @@ export default function DeployToWorld({
   onNavigate,
   onReplace,
   onClose,
-  onBack
+  onBack,
+  onFetchExternalNames
 }: Props) {
   const analytics = getAnalytics()
 
   const [view, setView] = useState<string>('')
   const [world, setWorld] = useState<string>(claimedName ?? '')
+  const [nameType, setNameType] = useState<NameType>(NameType.DCL)
   const [loading, setLoading] = useState<boolean>(false)
   const [confirmWorldReplaceContent, setConfirmWorldReplaceContent] = useState<boolean>(false)
   // Ref used to store current world deployment status and validate if the user is trying to deploy the same world
@@ -81,6 +84,10 @@ export default function DeployToWorld({
     }
   }, [claimedName, analytics])
 
+  useEffect(() => {
+    onFetchExternalNames()
+  }, [onFetchExternalNames])
+
   const handlePublish = useCallback(() => {
     if (world) {
       onPublish(project.id, world)
@@ -99,10 +106,14 @@ export default function DeployToWorld({
   }, [view, project, isLoading, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
-    const ensUrl = `${locations.claimENS()}?from=${FromParam.DEPLOY_TO_WORLD}&projectId=${project.id}`
-    analytics.track('Publish to World - Claim Name')
-    onReplace(ensUrl, { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
-  }, [project, onReplace, analytics])
+    if (nameType === NameType.DCL) {
+      const ensUrl = `${locations.claimENS()}?from=${FromParam.DEPLOY_TO_WORLD}&projectId=${project.id}`
+      analytics.track('Publish to World - Claim Name')
+      onReplace(ensUrl, { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
+    } else {
+      window.open('https://ens.domains/', '_blank', 'norefferer')
+    }
+  }, [nameType, project, onReplace, analytics])
 
   const handleWorldSelected = useCallback(
     (_, { value }) => {
@@ -117,6 +128,11 @@ export default function DeployToWorld({
     },
     [deployments, handleClaimName]
   )
+
+  const handleNameTypeSelected = useCallback((_, { value }) => {
+    setWorld('')
+    setNameType(value)
+  }, [])
 
   const handleNavigateToExplorer = () => {
     window.open(getExplorerUrl, '_blank,noreferrer')
@@ -133,20 +149,35 @@ export default function DeployToWorld({
     return `${EXPLORER_URL}/world/${world}`
   }, [world])
 
+  const nameTypeOptions = useMemo(
+    () => [
+      { text: t('deployment_modal.deploy_world.name_type.dcl'), value: NameType.DCL },
+      { text: t('deployment_modal.deploy_world.name_type.ens'), value: NameType.ENS }
+    ],
+    []
+  )
+
   const worldOptions = useMemo(() => {
-    return [
-      ...ensList.map(ens => ({ text: ens.name, value: ens.subdomain })),
-      {
-        text: (
-          <span>
-            <DCLIcon name="add" />
-            {t('deployment_modal.deploy_world.claim_name')}
-          </span>
-        ),
-        value: CLAIM_NAME_OPTION
-      }
-    ]
-  }, [ensList])
+    let options: DropdownItemProps[] = []
+
+    if (nameType === NameType.DCL) {
+      options = ensList.map(ens => ({ text: ens.name, value: ens.subdomain }))
+    } else {
+      options = externalNames.map(ens => ({ text: ens, value: ens }))
+    }
+
+    options.push({
+      text: (
+        <span>
+          <DCLIcon name="add" />
+          {nameType === NameType.DCL ? t('deployment_modal.deploy_world.claim_name') : t('deployment_modal.deploy_world.claim_ens_name')}
+        </span>
+      ),
+      value: CLAIM_NAME_OPTION
+    })
+
+    return options
+  }, [nameType, ensList, externalNames])
 
   const getShareInTwitterUrl = () => {
     const url = encodeURIComponent(getExplorerUrl)
@@ -300,6 +331,7 @@ export default function DeployToWorld({
         <div className={styles.modalForm}>
           {project?.thumbnail ? renderThumbnail() : null}
           <div className={styles.worldDetails}>
+            <SelectField value={nameType} disabled={isLoading || loading} options={nameTypeOptions} onChange={handleNameTypeSelected} />
             <SelectField
               label={t('deployment_modal.deploy_world.world_label')}
               placeholder={t('deployment_modal.deploy_world.world_placeholder')}

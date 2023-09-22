@@ -52,3 +52,8 @@ export type DeployToWorldModalMetadata = DeployModalMetadata & {
   projectId: string
   claimedName: string
 }
+
+export enum NameType {
+  DCL,
+  ENS
+}
