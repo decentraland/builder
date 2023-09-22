@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List, DropdownItemProps } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -118,7 +118,11 @@ export default function DeployToWorld({
   }, [nameType, project, onReplace, analytics])
 
   const handleWorldSelected = useCallback(
-    (_, { value }) => {
+    (e: React.SyntheticEvent<HTMLElement>, { value }) => {
+      if (e.type === 'blur') {
+        return
+      }
+
       if (value === CLAIM_NAME_OPTION) {
         handleClaimName()
         return
@@ -344,7 +348,19 @@ export default function DeployToWorld({
       <>
         <div className={styles.modalHeader}>
           <h3>{t('deployment_modal.deploy_world.title')}</h3>
-          <span>{t('deployment_modal.deploy_world.description')}</span>
+          <span>
+            {t('deployment_modal.deploy_world.description')}
+            <Popup
+              className="modal-tooltip"
+              content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              position="bottom center"
+              trigger={<InfoIcon className={styles.thumbnailInfo} />}
+              hideOnScroll={true}
+              on="hover"
+              inverted
+              basic
+            />
+          </span>
         </div>
         <div className={styles.modalForm}>
           {project?.thumbnail ? renderThumbnail() : null}
