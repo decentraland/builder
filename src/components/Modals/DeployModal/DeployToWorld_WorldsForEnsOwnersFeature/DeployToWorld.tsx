@@ -13,6 +13,8 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
 import { DeployToWorldView, NameType, Props } from './DeployToWorld.types'
+import dclImage from './images/dcl.svg'
+import ensImage from './images/ens.svg'
 
 import styles from './DeployToWorld.module.css'
 
@@ -151,8 +153,24 @@ export default function DeployToWorld({
 
   const nameTypeOptions = useMemo(
     () => [
-      { text: t('deployment_modal.deploy_world.name_type.dcl'), value: NameType.DCL },
-      { text: t('deployment_modal.deploy_world.name_type.ens'), value: NameType.ENS }
+      {
+        text: (
+          <span className={styles.nameTypeOption}>
+            <img src={dclImage} alt="dcl logo" />
+            <span>{t('deployment_modal.deploy_world.name_type.dcl')}</span>
+          </span>
+        ),
+        value: NameType.DCL
+      },
+      {
+        text: (
+          <span className={styles.nameTypeOption}>
+            <img src={ensImage} alt="ens logo" />
+            <span>{t('deployment_modal.deploy_world.name_type.ens')}</span>
+          </span>
+        ),
+        value: NameType.ENS
+      }
     ],
     []
   )

@@ -132,6 +132,12 @@
   width: 375px;
 }
 
+.nameTypeOption {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
 .modalForm .worldDetailsDescription {
   color: var(--text);
   font-size: 14px;
