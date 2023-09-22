@@ -2,7 +2,8 @@ import { connect } from 'react-redux'
 import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getENSByWallet } from 'modules/ens/selectors'
+import { getENSByWallet, getExternalNamesByWallet } from 'modules/ens/selectors'
+import { fetchExternalNamesRequest } from 'modules/ens/actions'
 import { deployToWorldRequest } from 'modules/deployment/actions'
 import { getCurrentMetrics } from 'modules/scene/selectors'
 import { recordMediaRequest } from 'modules/media/actions'
@@ -14,6 +15,7 @@ import DeployToWorld from './DeployToWorld'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
+  externalNames: getExternalNamesByWallet(state),
   project: getCurrentProject(state) as Project,
   metrics: getCurrentMetrics(state),
   deployments: getDeploymentsByWorlds(state),
@@ -28,7 +30,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   },
   onRecord: () => dispatch(recordMediaRequest()),
   onNavigate: path => dispatch(push(path)),
-  onReplace: (path, locationState) => dispatch(replace(path, locationState))
+  onReplace: (path, locationState) => dispatch(replace(path, locationState)),
+  onFetchExternalNames: () => dispatch(fetchExternalNamesRequest())
 })
 
 export default connect(mapState, mapDispatch)(DeployToWorld)
