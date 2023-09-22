@@ -57,12 +57,12 @@ import {
   FetchENSWorldStatusFailureAction,
   CLAIM_NAME_CLEAR,
   ClaimNameClearAction,
-  FETCH_EXTERNAL_ENS_NAMES_FAILURE,
-  FETCH_EXTERNAL_ENS_NAMES_REQUEST,
-  FetchExternalENSNamesRequestAction,
-  FetchExternalENSNamesSuccessAction,
-  FetchExternalENSNamesFailureAction,
-  FETCH_EXTERNAL_ENS_NAMES_SUCCESS
+  FETCH_EXTERNAL_NAMES_FAILURE,
+  FETCH_EXTERNAL_NAMES_REQUEST,
+  FetchExternalNamesRequestAction,
+  FetchExternalNamesSuccessAction,
+  FetchExternalNamesFailureAction,
+  FETCH_EXTERNAL_NAMES_SUCCESS
 } from './actions'
 import { ENS, ENSError, Authorization } from './types'
 
@@ -112,9 +112,9 @@ export type ENSReducerAction =
   | FetchENSWorldStatusSuccessAction
   | FetchENSWorldStatusFailureAction
   | ClaimNameClearAction
-  | FetchExternalENSNamesRequestAction
-  | FetchExternalENSNamesSuccessAction
-  | FetchExternalENSNamesFailureAction
+  | FetchExternalNamesRequestAction
+  | FetchExternalNamesSuccessAction
+  | FetchExternalNamesFailureAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
@@ -130,7 +130,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_RESOLVER_SUCCESS:
     case ALLOW_CLAIM_MANA_REQUEST:
     case ALLOW_CLAIM_MANA_SUCCESS:
-    case FETCH_EXTERNAL_ENS_NAMES_REQUEST: {
+    case FETCH_EXTERNAL_NAMES_REQUEST: {
       return {
         ...state,
         error: null,
@@ -195,7 +195,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
-    case FETCH_EXTERNAL_ENS_NAMES_SUCCESS: {
+    case FETCH_EXTERNAL_NAMES_SUCCESS: {
       const { owner, names } = action.payload
       return {
         ...state,
@@ -221,7 +221,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case FETCH_ENS_LIST_FAILURE:
     case FETCH_ENS_AUTHORIZATION_FAILURE:
     case ALLOW_CLAIM_MANA_FAILURE:
-    case FETCH_EXTERNAL_ENS_NAMES_FAILURE: {
+    case FETCH_EXTERNAL_NAMES_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

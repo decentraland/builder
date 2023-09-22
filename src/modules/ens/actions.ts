@@ -160,14 +160,14 @@ export type AllowClaimManaSuccessAction = ReturnType<typeof allowClaimManaSucces
 export type AllowClaimManaFailureAction = ReturnType<typeof allowClaimManaFailure>
 
 // Fetch non dcl ENS names
-export const FETCH_EXTERNAL_ENS_NAMES_REQUEST = '[Request] Fetch External ENS Names'
-export const FETCH_EXTERNAL_ENS_NAMES_SUCCESS = '[Success] Fetch External ENS Names'
-export const FETCH_EXTERNAL_ENS_NAMES_FAILURE = '[Failure] Fetch External ENS Names'
+export const FETCH_EXTERNAL_NAMES_REQUEST = '[Request] Fetch External Names'
+export const FETCH_EXTERNAL_NAMES_SUCCESS = '[Success] Fetch External Names'
+export const FETCH_EXTERNAL_NAMES_FAILURE = '[Failure] Fetch External Names'
 
-export const fetchExternalENSNamesRequest = (owner?: string) => action(FETCH_EXTERNAL_ENS_NAMES_REQUEST, { owner })
-export const fetchExternalENSNamesSuccess = (owner: string, names: string[]) => action(FETCH_EXTERNAL_ENS_NAMES_SUCCESS, { owner, names })
-export const fetchExternalENSNamesFailure = (error: ENSError, owner?: string) => action(FETCH_EXTERNAL_ENS_NAMES_FAILURE, { owner, error })
+export const fetchExternalNamesRequest = (owner?: string) => action(FETCH_EXTERNAL_NAMES_REQUEST, { owner })
+export const fetchExternalNamesSuccess = (owner: string, names: string[]) => action(FETCH_EXTERNAL_NAMES_SUCCESS, { owner, names })
+export const fetchExternalNamesFailure = (error: ENSError, owner?: string) => action(FETCH_EXTERNAL_NAMES_FAILURE, { owner, error })
 
-export type FetchExternalENSNamesRequestAction = ReturnType<typeof fetchExternalENSNamesRequest>
-export type FetchExternalENSNamesSuccessAction = ReturnType<typeof fetchExternalENSNamesSuccess>
-export type FetchExternalENSNamesFailureAction = ReturnType<typeof fetchExternalENSNamesFailure>
+export type FetchExternalNamesRequestAction = ReturnType<typeof fetchExternalNamesRequest>
+export type FetchExternalNamesSuccessAction = ReturnType<typeof fetchExternalNamesSuccess>
+export type FetchExternalNamesFailureAction = ReturnType<typeof fetchExternalNamesFailure>
