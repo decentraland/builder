@@ -490,13 +490,18 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   }
 
   function* handleFetchExternalENSNamesRequest(action: FetchExternalENSNamesRequestAction) {
-    const owner = action.payload.owner
+    const owner = action.payload.owner ?? (yield select(getAddress))
+
     try {
+      if (!owner) {
+        throw new Error('No owner address provided')
+      }
+
       const names: string[] = yield call([ensApi, ensApi.fetchENSList], owner)
       yield put(fetchExternalENSNamesSuccess(owner, names))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
-      yield put(fetchExternalENSNamesFailure(owner, ensError))
+      yield put(fetchExternalENSNamesFailure(ensError, owner))
     }
   }
 }
