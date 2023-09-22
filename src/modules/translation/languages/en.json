@@ -460,7 +460,7 @@
     },
     "deploy_world": {
       "title": "Publish to World",
-      "description": "Select the NAME that will define the URL:",
+      "description": "Select a Decentraland NAME or ENS Name that will define the URL",
       "action": "Publish",
       "world_label": "World (NAME)",
       "world_placeholder": "Select a NAME",
@@ -472,7 +472,7 @@
       "empty_state_description": "<b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want.",
       "name_type": {
         "dcl": "NAME",
-        "ens": "ENS names"
+        "ens": "ENS Names"
       },
       "success": {
         "title": "Your scene is published!",

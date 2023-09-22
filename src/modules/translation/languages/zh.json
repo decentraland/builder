@@ -456,7 +456,7 @@
     },
     "deploy_world": {
       "title": "发布到梦境空间",
-      "description": "选择将定义URL的名称：",
+      "description": "选择将定义 URL 的去中心化名称或 ENS 名称",
       "action": "发布",
       "world_label": "世界（名称）",
       "world_placeholder": "选择一个名称",

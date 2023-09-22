@@ -462,7 +462,7 @@
     },
     "deploy_world": {
       "title": "Publicar en tu mundo",
-      "description": "Seleccione el nombre que definirá la URL:",
+      "description": "Seleccione un nombre Decentraland o un nombre ENS que definirá la URL",
       "action": "Publicar",
       "world_label": "Nombre (mundo)",
       "world_placeholder": "Seleccione un nombre",
