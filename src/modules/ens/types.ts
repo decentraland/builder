@@ -22,6 +22,12 @@ export type ENS = {
   worldStatus?: WorldStatus | null
 }
 
+export type ExternalName = {
+  nftOwnerAddress: string
+  domain: string
+  worldStatus?: WorldStatus | null
+}
+
 export type ENSError = {
   message: string
   code?: number

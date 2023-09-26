@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { deployToWorldRequest, DeployToWorldRequestAction } from 'modules/deployment/actions'
 import { recordMediaRequest, RecordMediaRequestAction } from 'modules/media/actions'
-import { ENS } from 'modules/ens/types'
+import { ENS, ExternalName } from 'modules/ens/types'
 import { FetchExternalNamesRequestAction } from 'modules/ens/actions'
 import { Project } from 'modules/project/types'
 import { ModelMetrics } from 'modules/models/types'
@@ -16,7 +16,7 @@ export type Props = {
   project: Project
   metrics: ModelMetrics
   ensList: ENS[]
-  externalNames: string[]
+  externalNames: ExternalName[]
   deployments: Record<string, Deployment>
   deploymentProgress: DeploymentState['progress']
   error: string | null

@@ -1,6 +1,6 @@
 import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { RootState } from 'modules/common/types'
-import { getExternalNames, getExternalNamesByWallet } from './selectors'
+import { getExternalNames, getExternalNamesForConnectedWallet } from './selectors'
 import { ENSState } from './reducer'
 
 let state: RootState
@@ -45,7 +45,7 @@ describe('when getting the external names by wallet', () => {
     })
 
     it('should return the names of the wallet', () => {
-      expect(getExternalNamesByWallet(state)).toEqual(externalNames[wallet])
+      expect(getExternalNamesForConnectedWallet(state)).toEqual(externalNames[wallet])
     })
   })
 
@@ -64,7 +64,7 @@ describe('when getting the external names by wallet', () => {
     })
 
     it('should return an empty array', () => {
-      expect(getExternalNamesByWallet(state)).toEqual([])
+      expect(getExternalNamesForConnectedWallet(state)).toEqual([])
     })
   })
 
@@ -81,7 +81,7 @@ describe('when getting the external names by wallet', () => {
     })
 
     it('should return an empty array', () => {
-      expect(getExternalNamesByWallet(state)).toEqual([])
+      expect(getExternalNamesForConnectedWallet(state)).toEqual([])
     })
   })
 })

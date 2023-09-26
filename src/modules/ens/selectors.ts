@@ -34,11 +34,13 @@ export const getENSByWallet = createSelector<RootState, ENS[], string | undefine
   ensList.filter(ens => isEqual(ens.nftOwnerAddress, address))
 )
 
-export const getExternalNamesByWallet = createSelector<RootState, Record<string, string[]>, string | undefined, string[]>(
-  getExternalNames,
-  getAddress,
-  (externalNames, address = '') => externalNames[address] ?? []
-)
+export const getExternalNamesList = createSelector(getExternalNames, externalNames => {
+  return Object.values(externalNames)
+})
+
+export const getExternalNamesForConnectedWallet = createSelector(getExternalNames, getAddress, (externalNames, address = '') => {
+  return Object.values(externalNames).filter(externalName => isEqual(externalName.nftOwnerAddress, address))
+})
 
 export const getAuthorizationByWallet = createSelector<
   RootState,

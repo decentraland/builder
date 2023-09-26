@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getENSByWallet, getExternalNamesByWallet } from 'modules/ens/selectors'
+import { getENSByWallet, getExternalNamesForConnectedWallet } from 'modules/ens/selectors'
 import { fetchExternalNamesRequest } from 'modules/ens/actions'
 import { deployToWorldRequest } from 'modules/deployment/actions'
 import { getCurrentMetrics } from 'modules/scene/selectors'
@@ -13,16 +13,18 @@ import { MapDispatch, MapDispatchProps, MapStateProps } from './DeployToWorld.ty
 
 import DeployToWorld from './DeployToWorld'
 
-const mapState = (state: RootState): MapStateProps => ({
-  ensList: getENSByWallet(state),
-  externalNames: getExternalNamesByWallet(state),
-  project: getCurrentProject(state) as Project,
-  metrics: getCurrentMetrics(state),
-  deployments: getDeploymentsByWorlds(state),
-  deploymentProgress: getUploadProgress(state),
-  error: getError(state),
-  isLoading: isLoading(state)
-})
+const mapState = (state: RootState): MapStateProps => {
+  return {
+    ensList: getENSByWallet(state),
+    externalNames: getExternalNamesForConnectedWallet(state),
+    project: getCurrentProject(state) as Project,
+    metrics: getCurrentMetrics(state),
+    deployments: getDeploymentsByWorlds(state),
+    deploymentProgress: getUploadProgress(state),
+    error: getError(state),
+    isLoading: isLoading(state)
+  }
+}
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onPublish: (projectId: string, name: string) => {
