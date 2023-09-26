@@ -18,8 +18,7 @@ const EmotesV2AnnouncementModal: React.FC<ModalProps> = ({ name, onClose }) => {
 
   const handleLearnMore = () => {
     handleClose()
-    // TODO: Add documentation link
-    window.open('https://docs.decentraland.org/', '_blank', 'noopener noreferrer')
+    window.open('https://docs.decentraland.org/creator/emotes/props-and-sounds/', '_blank', 'noopener noreferrer')
   }
 
   return (
