@@ -265,7 +265,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             name: emote.name,
             description: emote.description,
             rarity: emote.rarity,
-            category: emote.category
+            category: emote.category,
+            playMode: emote.play_mode,
+            tags: emote.tags
           }
         } else {
           /** If the .zip file doesn't contain an asset.json file,

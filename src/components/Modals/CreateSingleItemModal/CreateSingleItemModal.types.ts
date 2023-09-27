@@ -52,6 +52,7 @@ export type StateData = {
   weareblePreviewUpdated: boolean
   video?: string
   requiredPermissions?: string[]
+  tags?: string[]
 }
 export type State = {
   view: CreateItemView
@@ -96,6 +97,8 @@ export type AcceptedFileProps = Pick<
   | 'hasScreenshotTaken'
   | 'requiredPermissions'
   | 'video'
+  | 'playMode'
+  | 'tags'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<
