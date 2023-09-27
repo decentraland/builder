@@ -11,8 +11,19 @@ beforeEach(() => {
   state = {} as RootState
   wallet = '0x123'
   externalNames = {
-    [wallet]: ['name1.eth', 'name2.eth']
-  }
+    'name1.eth': {
+      domain: 'name1.eth',
+      nftOwnerAddress: wallet
+    },
+    'name2.eth': {
+      domain: 'name2.eth',
+      nftOwnerAddress: wallet
+    },
+    'name3.eth': {
+      domain: 'name2.eth',
+      nftOwnerAddress: '0xOtherWallet'
+    }
+  } as unknown as ENSState['externalNames']
 })
 
 describe('when getting the external names', () => {
@@ -24,7 +35,7 @@ describe('when getting the external names', () => {
     } as RootState
   })
 
-  it('should return a record of names by address', () => {
+  it('should return a record of external names by domain', () => {
     expect(getExternalNames(state)).toEqual(externalNames)
   })
 })
@@ -45,7 +56,16 @@ describe('when getting the external names by wallet', () => {
     })
 
     it('should return the names of the wallet', () => {
-      expect(getExternalNamesForConnectedWallet(state)).toEqual(externalNames[wallet])
+      expect(getExternalNamesForConnectedWallet(state)).toEqual([
+        {
+          domain: 'name1.eth',
+          nftOwnerAddress: wallet
+        },
+        {
+          domain: 'name2.eth',
+          nftOwnerAddress: wallet
+        }
+      ])
     })
   })
 
