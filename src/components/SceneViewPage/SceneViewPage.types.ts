@@ -24,7 +24,6 @@ export type Props = {
   isFetching: boolean
   isLoggedIn: boolean
   isReady: boolean
-  isTemplatesEnabled: boolean
   isLoading: boolean
   onCloseEditor: typeof closeEditor
   onLoadProject: typeof loadPublicProjectRequest
@@ -37,16 +36,7 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  | 'isPreviewing'
-  | 'isFetching'
-  | 'isLoggedIn'
-  | 'isReady'
-  | 'isLoading'
-  | 'currentProject'
-  | 'currentPool'
-  | 'scenes'
-  | 'currentAuthor'
-  | 'isTemplatesEnabled'
+  'isPreviewing' | 'isFetching' | 'isLoggedIn' | 'isReady' | 'isLoading' | 'currentProject' | 'currentPool' | 'scenes' | 'currentAuthor'
 >
 export type MapDispatchProps = Pick<
   Props,

@@ -18,7 +18,6 @@ import { openModal } from 'modules/modal/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { getENSByWallet } from 'modules/ens/selectors'
 import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
 import { locations } from 'routing/locations'
@@ -45,8 +44,7 @@ const mapState = (state: RootState): MapStateProps => ({
   deploymentsByCoord: getDeploymentsByCoord(state),
   landTiles: getLandTiles(state),
   deployments: getCurrentDeployments(state),
-  error: getDeploymentError(state),
-  isTemplatesEnabled: getIsTemplatesEnabled(state)
+  error: getDeploymentError(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

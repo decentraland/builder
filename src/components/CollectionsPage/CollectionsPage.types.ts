@@ -27,7 +27,6 @@ export type Props = {
   isLoadingItems: boolean
   isLoadingOrphanItem: boolean
   isCampaignEnabled: boolean
-  isPublishSmartWearablesEnabled: boolean
   isEmotesV2Enabled: boolean
   hasUserOrphanItems: boolean | undefined
   onNavigate: (path: string) => void
@@ -53,7 +52,6 @@ export type MapStateProps = Pick<
   | 'isCampaignEnabled'
   | 'isEmotesV2Enabled'
   | 'hasUserOrphanItems'
-  | 'isPublishSmartWearablesEnabled'
 >
 export type MapDispatchProps = Pick<
   Props,

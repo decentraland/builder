@@ -15,9 +15,9 @@ export default class ExportModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { name, onClose, isLoading, progress, total, isTemplatesEnabled, metadata } = this.props
+    const { name, onClose, isLoading, progress, total, metadata } = this.props
 
-    let action = isTemplatesEnabled ? t('export_modal.action') : t('export_modal.old.action')
+    let action = t('export_modal.action')
     if (total > 0) {
       action = `${t('export_modal.loading')} ${((progress / total) * 100).toFixed(0)}%`
     }

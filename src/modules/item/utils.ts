@@ -413,11 +413,8 @@ function getCategories(contents: Record<string, any> | undefined = {}) {
   return fileNames.some(isModelFile) ? getModelCategories() : IMAGE_CATEGORIES
 }
 
-export function getWearableCategories(contents: Record<string, any> | undefined = {}, isHandsCategoryEnabled = false) {
+export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
   const ignoreCategories = new Set([WearableCategory.BODY_SHAPE])
-  if (!isHandsCategoryEnabled) {
-    ignoreCategories.add(WearableCategory.HANDS_WEAR)
-  }
   return getCategories(contents).filter(category => !ignoreCategories.has(category))
 }
 
@@ -429,16 +426,8 @@ export function getEmotePlayModes() {
   return Object.values(EmotePlayMode)
 }
 
-export function getHideableWearableCategories(
-  contents: Record<string, any> | undefined = {},
-  category?: WearableCategory,
-  isHandsCategoryEnabled = false
-) {
+export function getHideableWearableCategories(contents: Record<string, any> | undefined = {}, category?: WearableCategory) {
   let hideableCategories: WearableCategory[] = getCategories(contents)
-
-  if (!isHandsCategoryEnabled) {
-    hideableCategories = hideableCategories.filter(category => category !== WearableCategory.HANDS_WEAR)
-  }
 
   if (category === WearableCategory.SKIN) {
     hideableCategories = hideableCategories.filter(
@@ -448,23 +437,14 @@ export function getHideableWearableCategories(
   return hideableCategories
 }
 
-export function getHideableBodyPartCategories(
-  contents: Record<string, any> | undefined = {},
-  isHandsCategoryEnabled = false
-): BodyPartCategory[] {
+export function getHideableBodyPartCategories(contents: Record<string, any> | undefined = {}): BodyPartCategory[] {
   const fileNames = Object.keys(contents)
 
   if (!fileNames.some(isModelFile)) {
     return []
   }
 
-  let hideableCategories = BodyPartCategory.schema.enum as BodyPartCategory[]
-
-  if (!isHandsCategoryEnabled) {
-    hideableCategories = hideableCategories.filter(category => category !== BodyPartCategory.HANDS)
-  }
-
-  return hideableCategories
+  return BodyPartCategory.schema.enum as BodyPartCategory[]
 }
 
 export function isFree(item: Item) {

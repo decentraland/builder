@@ -198,7 +198,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { address, collection, isHandsCategoryEnabled } = this.props
+    const { address, collection } = this.props
     const {
       id,
       name,
@@ -230,7 +230,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     let data: WearableData | EmoteDataADR74
 
     if (type === ItemType.WEARABLE) {
-      const removesDefaultHiding = isHandsCategoryEnabled && category === WearableCategory.UPPER_BODY ? [BodyPartCategory.HANDS] : []
+      const removesDefaultHiding = category === WearableCategory.UPPER_BODY ? [BodyPartCategory.HANDS] : []
       data = {
         category: category as WearableCategory,
         replaces: [],
@@ -285,12 +285,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   addItemRepresentation = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { isHandsCategoryEnabled, onSave } = this.props
+    const { onSave } = this.props
     const { bodyShape, item: editedItem, requiredPermissions } = this.state as StateData
     const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
     const removesDefaultHiding =
-      isHandsCategoryEnabled &&
-      (editedItem.data.category === WearableCategory.UPPER_BODY || editedItem.data.hides.includes(WearableCategory.UPPER_BODY))
+      editedItem.data.category === WearableCategory.UPPER_BODY || editedItem.data.hides.includes(WearableCategory.UPPER_BODY)
         ? [BodyPartCategory.HANDS]
         : []
     const item = {
@@ -321,13 +320,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   modifyItem = async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { itemStatus, isHandsCategoryEnabled, onSave } = this.props
+    const { itemStatus, onSave } = this.props
     const { name, bodyShape, type, metrics, category, playMode, requiredPermissions } = this.state as StateData
 
     let data: WearableData | EmoteDataADR74
 
     if (type === ItemType.WEARABLE) {
-      const removesDefaultHiding = isHandsCategoryEnabled && category === WearableCategory.UPPER_BODY ? [BodyPartCategory.HANDS] : []
+      const removesDefaultHiding = category === WearableCategory.UPPER_BODY ? [BodyPartCategory.HANDS] : []
       data = {
         ...pristineItem.data,
         replaces: [],
@@ -749,7 +748,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderImportView() {
-    const { collection, metadata, isPublishSmartWearablesEnabled, onClose } = this.props
+    const { collection, metadata, onClose } = this.props
     const { category, isLoading, isRepresentation } = this.state
     const title = this.renderModalTitle()
 
@@ -764,7 +763,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         isRepresentation={!!isRepresentation}
         onDropAccepted={this.handleDropAccepted}
         onClose={onClose}
-        isPublishSmartWearablesEnabled={isPublishSmartWearablesEnabled}
       />
     )
   }
@@ -788,12 +786,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
-    const { collection, isHandsCategoryEnabled } = this.props
+    const { collection } = this.props
     const { name, category, rarity, contents, item, type } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const rarities = getRarities()
-    const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents, isHandsCategoryEnabled) : getEmoteCategories()
+    const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
 
     const raritiesLink =
       'https://docs.decentraland.org/creator/wearables-and-emotes/manage-collections' +

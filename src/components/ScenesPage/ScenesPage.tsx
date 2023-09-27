@@ -29,19 +29,7 @@ import { Props, DefaultProps } from './ScenesPage.types'
 import './ScenesPage.css'
 
 const ScenesPage: React.FC<Props> = props => {
-  const {
-    page,
-    poolList,
-    projects,
-    sortBy,
-    totalPages,
-    isFetching,
-    isLoggingIn,
-    isTemplatesEnabled,
-    onLoadFromScenePool,
-    onOpenModal,
-    onPageChange
-  } = props
+  const { page, poolList, projects, sortBy, totalPages, isFetching, isLoggingIn, onLoadFromScenePool, onOpenModal, onPageChange } = props
 
   useEffect(() => {
     onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
@@ -52,12 +40,8 @@ const ScenesPage: React.FC<Props> = props => {
   }, [onOpenModal])
 
   const handleOpenCreateModal = useCallback(() => {
-    if (isTemplatesEnabled) {
-      onOpenModal('SceneCreationModal')
-    } else {
-      onOpenModal('CustomLayoutModal')
-    }
-  }, [isTemplatesEnabled, onOpenModal])
+    onOpenModal('SceneCreationModal')
+  }, [onOpenModal])
 
   const renderImportButton = () => {
     return (
@@ -101,58 +85,19 @@ const ScenesPage: React.FC<Props> = props => {
       )
     }
 
-    if (isTemplatesEnabled) {
-      return (
-        <div className="no-scenes-container">
-          <h3 className="no-scenes-title">{t('scenes_page.no_scenes.title')}</h3>
-          <span className="no-scenes-description">
-            {t('scenes_page.no_scenes.description', {
-              a: (content: string) => (
-                <a rel="noreferrer" target="_blank" href="https://docs.decentraland.org/creator/development-guide/sdk-101/">
-                  {content}
-                </a>
-              )
-            })}
-          </span>
-          <SceneCreationSelector />
-        </div>
-      )
-    }
-
     return (
-      <div className="empty-projects">
-        <div className="empty-project-thumbnail" />
-        <p className="description">
-          {t('scenes_page.no_projects', {
-            br: <br />,
-            link: (text: string) => (
-              <span
-                className="link"
-                onClick={event => {
-                  event.preventDefault()
-                  handleOpenImportModal()
-                }}
-              >
-                {text}
-              </span>
+      <div className="no-scenes-container">
+        <h3 className="no-scenes-title">{t('scenes_page.no_scenes.title')}</h3>
+        <span className="no-scenes-description">
+          {t('scenes_page.no_scenes.description', {
+            a: (content: string) => (
+              <a rel="noreferrer" target="_blank" href="https://docs.decentraland.org/creator/development-guide/sdk-101/">
+                {content}
+              </a>
             )
           })}
-        </p>
-        <div className="actions">
-          <Button
-            as="a"
-            className="learn-more-button"
-            inverted
-            href="https://docs.decentraland.org/creator/development-guide/sdk-101/"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {t('global.learn_more')}
-          </Button>
-          <Button className="create-scene-button" primary onClick={handleOpenCreateModal}>
-            {t('scenes_page.create_scene')}
-          </Button>
-        </div>
+        </span>
+        <SceneCreationSelector />
       </div>
     )
   }
