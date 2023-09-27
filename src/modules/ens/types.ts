@@ -22,6 +22,8 @@ export type ENS = {
   worldStatus?: WorldStatus | null
 }
 
+// ENS that corresponds to non DCL names.
+// For example luffy.eth
 export type ExternalName = {
   nftOwnerAddress: string
   subdomain: string
