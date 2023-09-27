@@ -180,23 +180,20 @@ export default function DeployToWorld({
   )
 
   const worldOptions = useMemo(() => {
-    let options: DropdownItemProps[] = []
+    const names = nameType === NameType.DCL ? ensList : externalNames
+    const options: DropdownItemProps[] = names.map(ens => ({ text: ens.name, value: ens.subdomain }))
 
     if (nameType === NameType.DCL) {
-      options = ensList.map(ens => ({ text: ens.name, value: ens.subdomain }))
-    } else {
-      options = externalNames.map(ens => ({ text: ens.subdomain, value: ens.subdomain }))
+      options.push({
+        text: (
+          <span>
+            <DCLIcon name="add" />
+            {t('deployment_modal.deploy_world.claim_name')}
+          </span>
+        ),
+        value: CLAIM_NAME_OPTION
+      })
     }
-
-    options.push({
-      text: (
-        <span>
-          <DCLIcon name="add" />
-          {nameType === NameType.DCL ? t('deployment_modal.deploy_world.claim_name') : t('deployment_modal.deploy_world.claim_ens_name')}
-        </span>
-      ),
-      value: CLAIM_NAME_OPTION
-    })
 
     return options
   }, [nameType, ensList, externalNames])

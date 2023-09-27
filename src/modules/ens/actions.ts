@@ -2,7 +2,7 @@ import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Land } from 'modules/land/types'
-import { Authorization, ENS, ENSError, ExternalName } from './types'
+import { Authorization, ENS, ENSError } from './types'
 
 // Fetch ENS resolver for a land
 export const FETCH_ENS_REQUEST = '[Request] Fetch ENS'
@@ -23,7 +23,7 @@ export const FETCH_ENS_WORLD_STATUS_SUCCESS = '[Success] Fetch ENS World Status'
 export const FETCH_ENS_WORLD_STATUS_FAILURE = '[Failure] Fetch ENS World Status'
 
 export const fetchENSWorldStatusRequest = (subdomain: string) => action(FETCH_ENS_WORLD_STATUS_REQUEST, { subdomain })
-export const fetchENSWorldStatusSuccess = (ens: ENS | ExternalName) => action(FETCH_ENS_WORLD_STATUS_SUCCESS, { ens })
+export const fetchENSWorldStatusSuccess = (ens: ENS) => action(FETCH_ENS_WORLD_STATUS_SUCCESS, { ens })
 export const fetchENSWorldStatusFailure = (error: ENSError) => action(FETCH_ENS_WORLD_STATUS_FAILURE, { error })
 
 export type FetchENSWorldStatusRequestAction = ReturnType<typeof fetchENSWorldStatusRequest>

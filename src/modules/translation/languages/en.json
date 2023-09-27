@@ -467,7 +467,6 @@
       "back": "Go back to publish scene",
       "close": "Close publish modal",
       "claim_name": "Claim a new Name",
-      "claim_ens_name": "Buy an ENS Name",
       "empty_state_title": "You don't have any available World",
       "empty_state_description": "<b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want.",
       "name_type": {

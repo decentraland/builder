@@ -6,7 +6,7 @@ import { Project } from 'modules/project/types'
 import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { LandTile } from 'modules/land/types'
 import { getENSList, getExternalNamesList } from 'modules/ens/selectors'
-import { ENS, ExternalName, WorldStatus } from 'modules/ens/types'
+import { ENS, WorldStatus } from 'modules/ens/types'
 import { idToCoords, coordsToId, emptyColorByRole } from 'modules/land/utils'
 import { DeploymentState } from './reducer'
 import { getStatus, mergeStatuses } from './utils'
@@ -119,7 +119,7 @@ export const getEmptyTiles = createSelector<RootState, Record<string, Deployment
   }
 )
 
-export const getDeploymentsByWorlds = createSelector<RootState, DeploymentState['data'], ENS[], ExternalName[], Record<string, Deployment>>(
+export const getDeploymentsByWorlds = createSelector<RootState, DeploymentState['data'], ENS[], ENS[], Record<string, Deployment>>(
   getData,
   getENSList,
   getExternalNamesList,
@@ -127,7 +127,7 @@ export const getDeploymentsByWorlds = createSelector<RootState, DeploymentState[
     const out: Record<string, Deployment> = {}
     const dclNameWorlds = ensList.filter(ens => !!ens.worldStatus)
     const externalNameWorlds = externalNamesList.filter(ens => !!ens.worldStatus)
-    const worlds: (ENS | ExternalName)[] = [...dclNameWorlds, ...externalNameWorlds]
+    const worlds = [...dclNameWorlds, ...externalNameWorlds]
 
     for (const world of worlds) {
       out[world.subdomain] = deployments[(world.worldStatus as WorldStatus).scene.entityId]

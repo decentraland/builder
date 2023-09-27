@@ -75,7 +75,7 @@ import {
   fetchExternalNamesFailure
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
-import { ENS, ENSOrigin, ENSError, Authorization, ExternalName } from './types'
+import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDomainFromName, isExternalName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
@@ -196,13 +196,13 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
     const { subdomain } = action.payload
 
     try {
-      let ens: ENS | ExternalName
+      let ens: ENS
 
       if (!isExternalName(subdomain)) {
         ens = yield select(getENSBySubdomain, subdomain)
       } else {
         const externalNames: ReturnType<typeof getExternalNames> = yield select(getExternalNames)
-        const maybeEns: ExternalName | undefined = externalNames[subdomain]
+        const maybeEns: ENS | undefined = externalNames[subdomain]
 
         if (!maybeEns) {
           throw new Error(`ENS ${subdomain} not found in store`)

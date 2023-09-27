@@ -64,12 +64,12 @@ import {
   FetchExternalNamesFailureAction,
   FETCH_EXTERNAL_NAMES_SUCCESS
 } from './actions'
-import { ENS, ENSError, Authorization, ExternalName } from './types'
+import { ENS, ENSError, Authorization } from './types'
 import { isExternalName } from './utils'
 
 export type ENSState = {
   data: Record<string, ENS>
-  externalNames: Record<string, ExternalName>
+  externalNames: Record<string, ENS>
   authorizations: Record<string, Authorization>
   loading: LoadingState
   error: ENSError | null
@@ -191,7 +191,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
           externalNames: {
             ...state.externalNames,
             [ens.subdomain]: {
-              ...(ens as ExternalName)
+              ...ens
             }
           }
         }
@@ -200,7 +200,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
           data: {
             ...state.data,
             [ens.subdomain]: {
-              ...(ens as ENS)
+              ...ens
             }
           }
         }
@@ -230,17 +230,22 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case FETCH_EXTERNAL_NAMES_SUCCESS: {
       const { owner, names } = action.payload
 
-      const externalNames: ExternalName[] = names.map(name => {
+      const externalNames: ENS[] = names.map(name => {
         return {
           subdomain: name,
-          nftOwnerAddress: owner
+          nftOwnerAddress: owner,
+          content: '',
+          ensOwnerAddress: '',
+          name,
+          resolver: '',
+          tokenId: ''
         }
       })
 
       const externalNamesByDomain = externalNames.reduce((obj, ens) => {
         obj[ens.subdomain] = ens
         return obj
-      }, {} as Record<string, ExternalName>)
+      }, {} as Record<string, ENS>)
 
       return {
         ...state,
