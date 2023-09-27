@@ -460,7 +460,7 @@
     },
     "deploy_world": {
       "title": "Publish to World",
-      "description": "Select a Decentraland NAME or ENS Name that will define the URL",
+      "description": "Select the Decentraland NAME or ENS Name that will define the URL",
       "action": "Publish",
       "world_label": "World (NAME)",
       "world_placeholder": "Select a NAME",
