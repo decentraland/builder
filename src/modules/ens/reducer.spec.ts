@@ -55,8 +55,24 @@ describe('when handling the fetch external names actions', () => {
       const action = fetchExternalNamesSuccess(owner, names)
       const newState = ensReducer(state, action)
       expect(newState.externalNames).toEqual({
-        'name1.eth': { domain: 'name1.eth', nftOwnerAddress: owner },
-        'name2.eth': { domain: 'name2.eth', nftOwnerAddress: owner }
+        'name1.eth': {
+          subdomain: 'name1.eth',
+          nftOwnerAddress: owner,
+          name: 'name1.eth',
+          content: '',
+          ensOwnerAddress: '',
+          resolver: '',
+          tokenId: ''
+        },
+        'name2.eth': {
+          subdomain: 'name2.eth',
+          nftOwnerAddress: owner,
+          name: 'name2.eth',
+          content: '',
+          ensOwnerAddress: '',
+          resolver: '',
+          tokenId: ''
+        }
       })
     })
 

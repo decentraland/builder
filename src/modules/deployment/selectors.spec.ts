@@ -35,7 +35,7 @@ describe('when getting deployments by worlds', () => {
         },
         externalNames: {
           'luffy.eth': {
-            domain: 'luffy.eth',
+            subdomain: 'luffy.eth',
             worldStatus: {
               healthy: true,
               scene: {
@@ -45,7 +45,7 @@ describe('when getting deployments by worlds', () => {
             }
           },
           'zoro.eth': {
-            domain: 'zoro.eth'
+            subdomain: 'zoro.eth'
           }
         }
       },
