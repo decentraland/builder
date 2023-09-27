@@ -76,7 +76,7 @@ import {
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization, ExternalName } from './types'
-import { getDomainFromName } from './utils'
+import { getDomainFromName, isExternalName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -198,7 +198,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
     try {
       let ens: ENS | ExternalName
 
-      if (subdomain.endsWith('dcl.eth')) {
+      if (!isExternalName(subdomain)) {
         ens = yield select(getENSBySubdomain, subdomain)
       } else {
         const externalNames: ReturnType<typeof getExternalNames> = yield select(getExternalNames)
