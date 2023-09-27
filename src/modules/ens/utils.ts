@@ -82,3 +82,7 @@ export function isEnoughClaimMana(mana: string) {
   // we do not yet support the double transaction needed to set the user's allowance to 0 first and then bump it up to wichever number
   return Number(mana) >= 100
 }
+
+export function isExternalName(subdomain: string) {
+  return !subdomain.endsWith('dcl.eth')
+}

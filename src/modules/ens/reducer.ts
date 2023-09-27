@@ -65,6 +65,7 @@ import {
   FETCH_EXTERNAL_NAMES_SUCCESS
 } from './actions'
 import { ENS, ENSError, Authorization, ExternalName } from './types'
+import { isExternalName } from './utils'
 
 export type ENSState = {
   data: Record<string, ENS>
@@ -185,12 +186,12 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
 
       let update: Pick<ENSState, 'data'> | Pick<ENSState, 'externalNames'>
 
-      if ('domain' in ens) {
+      if (isExternalName(ens.subdomain)) {
         update = {
           externalNames: {
             ...state.externalNames,
-            [ens.domain]: {
-              ...ens
+            [ens.subdomain]: {
+              ...(ens as ExternalName)
             }
           }
         }
@@ -199,7 +200,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
           data: {
             ...state.data,
             [ens.subdomain]: {
-              ...ens
+              ...(ens as ENS)
             }
           }
         }
@@ -231,13 +232,13 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
 
       const externalNames: ExternalName[] = names.map(name => {
         return {
-          domain: name,
+          subdomain: name,
           nftOwnerAddress: owner
         }
       })
 
       const externalNamesByDomain = externalNames.reduce((obj, ens) => {
-        obj[ens.domain] = ens
+        obj[ens.subdomain] = ens
         return obj
       }, {} as Record<string, ExternalName>)
 

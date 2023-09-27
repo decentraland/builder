@@ -24,7 +24,7 @@ export type ENS = {
 
 export type ExternalName = {
   nftOwnerAddress: string
-  domain: string
+  subdomain: string
   worldStatus?: WorldStatus | null
 }
 

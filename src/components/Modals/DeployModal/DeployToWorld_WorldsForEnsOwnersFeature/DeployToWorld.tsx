@@ -185,7 +185,7 @@ export default function DeployToWorld({
     if (nameType === NameType.DCL) {
       options = ensList.map(ens => ({ text: ens.name, value: ens.subdomain }))
     } else {
-      options = externalNames.map(ens => ({ text: ens.domain, value: ens.domain }))
+      options = externalNames.map(ens => ({ text: ens.subdomain, value: ens.subdomain }))
     }
 
     options.push({

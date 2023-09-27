@@ -127,18 +127,10 @@ export const getDeploymentsByWorlds = createSelector<RootState, DeploymentState[
     const out: Record<string, Deployment> = {}
     const dclNameWorlds = ensList.filter(ens => !!ens.worldStatus)
     const externalNameWorlds = externalNamesList.filter(ens => !!ens.worldStatus)
-    const worlds = [...dclNameWorlds, ...externalNameWorlds]
+    const worlds: (ENS | ExternalName)[] = [...dclNameWorlds, ...externalNameWorlds]
 
     for (const world of worlds) {
-      let name: string
-
-      if ('domain' in world) {
-        name = world.domain
-      } else {
-        name = world.subdomain
-      }
-
-      out[name] = deployments[(world.worldStatus as WorldStatus).scene.entityId]
+      out[world.subdomain] = deployments[(world.worldStatus as WorldStatus).scene.entityId]
     }
     return out
   }
