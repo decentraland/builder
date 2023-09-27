@@ -21,12 +21,15 @@ import {
   fetchENSAuthorizationRequest,
   fetchENSListRequest,
   fetchENSListSuccess,
+  fetchENSWorldStatusFailure,
+  fetchENSWorldStatusRequest,
   fetchExternalNamesFailure,
   fetchExternalNamesRequest,
   fetchExternalNamesSuccess
 } from './actions'
 import { ensSaga } from './sagas'
 import { ENS, ENSError } from './types'
+import { getENSBySubdomain, getExternalNames } from './selectors'
 
 jest.mock('@dcl/builder-client')
 
@@ -241,6 +244,49 @@ describe('when handling the fetching of external ens names for an owner', () => 
           .provide([[call([ensApi, ensApi.fetchENSList], owner), names]])
           .put(fetchExternalNamesSuccess(owner, names))
           .dispatch(fetchExternalNamesRequest(owner))
+          .silentRun()
+      })
+    })
+  })
+})
+
+describe('when handling the fetch ens world status request', () => {
+  let subdomain: string
+
+  describe('when the subdomain provided is a dcl subdomain', () => {
+    beforeEach(() => {
+      subdomain = 'name.dcl.eth'
+    })
+
+    it('should get the ens object by using the getENSBySubdomain selector', async () => {
+      await expectSaga(ensSaga, builderClient, ensApi)
+        .select(getENSBySubdomain, subdomain)
+        .dispatch(fetchENSWorldStatusRequest(subdomain))
+        .silentRun()
+    })
+  })
+
+  describe('when the subdomain provided is an external subdomain', () => {
+    let getExternalNamesResult: ReturnType<typeof getExternalNames>
+
+    beforeEach(() => {
+      subdomain = 'name.eth'
+    })
+
+    it('should get the external names by using the getExternalNames selector', async () => {
+      await expectSaga(ensSaga, builderClient, ensApi).select(getExternalNames).dispatch(fetchENSWorldStatusRequest(subdomain)).silentRun()
+    })
+
+    describe('when the subdomain is not found in the store', () => {
+      beforeEach(() => {
+        getExternalNamesResult = {}
+      })
+
+      it('should put an error mentioning the subdomain cannot be found on the store', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi)
+          .provide([[select(getExternalNames), getExternalNamesResult]])
+          .put(fetchENSWorldStatusFailure({ message: `ENS ${subdomain} not found in store` }))
+          .dispatch(fetchENSWorldStatusRequest(subdomain))
           .silentRun()
       })
     })
