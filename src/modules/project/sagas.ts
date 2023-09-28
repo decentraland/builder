@@ -73,7 +73,6 @@ import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/acti
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
-import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
@@ -174,13 +173,12 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleDuplicateProjectRequest(action: DuplicateProjectRequestAction) {
     const { project, type, shouldRedirect } = action.payload
     const ethAddress: string = yield select(getAddress)
-    const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
     const scene: Scene = yield getSceneByProjectId(project.id, type)
 
     let thumbnail: string = project.thumbnail
 
     try {
-      if (isTemplatesEnabled && project.isTemplate) {
+      if (project.isTemplate) {
         thumbnail = yield call(getImageAsDataUrl, `${BUILDER_SERVER_URL}/projects/${project.id}/media/thumbnail.png`)
       } else if (thumbnail && isRemoteURL(thumbnail)) {
         thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
@@ -207,7 +205,7 @@ export function* projectSaga(builder: BuilderAPI) {
       yield put(createScene(newScene))
       yield put(createProject(newProject, scene.sdk6 ? SDKVersion.SDK6 : SDKVersion.SDK7))
 
-      if (isTemplatesEnabled && project.isTemplate) {
+      if (project.isTemplate) {
         yield take(SAVE_PROJECT_SUCCESS)
         yield put(push(locations.sceneEditor(newProject.id)))
       } else if (shouldRedirect) {
@@ -398,13 +396,8 @@ export function* projectSaga(builder: BuilderAPI) {
   }
 
   function* handleLoginSuccess(_action: LoginSuccessAction) {
-    const isTemplatesEnabled: boolean = yield select(getIsTemplatesEnabled)
     yield put(loadProjectsRequest())
-
-    // TODO: Remove this validation when the feature is fully deployed
-    if (isTemplatesEnabled) {
-      yield put(loadTemplatesRequest())
-    }
+    yield put(loadTemplatesRequest())
   }
 
   function* handleDeleteProject(_action: DeleteProjectAction) {

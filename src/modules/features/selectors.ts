@@ -22,38 +22,6 @@ export const getIsCampaignEnabled = (state: RootState) => {
   }
 }
 
-export const getIsDeployToWorldsEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.DEPLOY_WORLDS)
-  } catch (e) {
-    return false
-  }
-}
-
-export const getIsTemplatesEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SCENE_TEMPLATES)
-  } catch (e) {
-    return false
-  }
-}
-
-export const getIsHandsCategoryEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.HANDS_CATEGORY)
-  } catch (e) {
-    return false
-  }
-}
-
-export const getIsPublishSmartWearablesEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.PUBLISH_SMART_WEARABLES)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsNewNavbarDropdownEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_NAVBAR_DROPDOWN)
@@ -73,14 +41,6 @@ export const getEmotesV2Enabled = (state: RootState) => {
 export const getIsSmartItemsEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SMART_ITEMS)
-  } catch (e) {
-    return false
-  }
-}
-
-export const getIsNewNavbarEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_NAVBAR_DROPDOWN)
   } catch (e) {
     return false
   }

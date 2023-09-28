@@ -12,7 +12,6 @@ import { getData as getScenes, getIsLoading as getIsLoadingScene } from 'modules
 import { getCurrentAuthor } from 'modules/profile/selectors'
 import { togglePreview, closeEditor } from 'modules/editor/actions'
 import { getCurrentProject, getLoading as getLoadingProject } from 'modules/project/selectors'
-import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { openModal } from 'modules/modal/actions'
 import { PreviewType } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
@@ -28,7 +27,6 @@ const mapState = (state: RootState): MapStateProps => ({
   currentPool: getCurrentPool(state),
   scenes: getScenes(state),
   currentAuthor: getCurrentAuthor(state),
-  isTemplatesEnabled: getIsTemplatesEnabled(state),
   isLoading: getIsLoadingScene(state) || !!getLoadingProject(state).length
 })
 

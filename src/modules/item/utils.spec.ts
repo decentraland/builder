@@ -197,7 +197,8 @@ describe('when getting wearable categories', () => {
         'mask',
         'tiara',
         'top_head',
-        'skin'
+        'skin',
+        'hands_wear'
       ])
     })
   })

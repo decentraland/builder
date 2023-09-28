@@ -32,7 +32,6 @@ import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
 const PAGE_SIZE = 20
-export const LOCALSTORAGE_SMART_WEARABLES_ANNOUCEMENT = 'builder-smart-wearables-announcement'
 export const LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT = 'builder-emotes-2.0-announcement'
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
@@ -42,25 +41,13 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   componentDidMount() {
-    const {
-      address,
-      hasUserOrphanItems,
-      isPublishSmartWearablesEnabled,
-      isEmotesV2Enabled,
-      onFetchCollections,
-      onFetchOrphanItem,
-      onOpenModal
-    } = this.props
+    const { address, hasUserOrphanItems, isEmotesV2Enabled, onFetchCollections, onFetchOrphanItem, onOpenModal } = this.props
     // fetch if already connected
     if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.CREATED_AT_DESC })
       // TODO: Remove this call when there are no users with orphan items
       if (hasUserOrphanItems === undefined) {
         onFetchOrphanItem(address)
-      }
-
-      if (isPublishSmartWearablesEnabled && !localStorage.getItem(LOCALSTORAGE_SMART_WEARABLES_ANNOUCEMENT)) {
-        onOpenModal('SmartWearablesAnnouncementModal')
       }
 
       if (isEmotesV2Enabled && !localStorage.getItem(LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT)) {

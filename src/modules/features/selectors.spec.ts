@@ -1,12 +1,7 @@
 import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
-import {
-  getIsDeployToWorldsEnabled,
-  getIsMaintenanceEnabled,
-  getIsPublishSmartWearablesEnabled,
-  getIsWorldsForEnsOwnersEnabled
-} from './selectors'
+import { getIsMaintenanceEnabled, getIsWorldsForEnsOwnersEnabled } from './selectors'
 import { FeatureName } from './types'
 
 jest.mock('decentraland-dapps/dist/modules/features/selectors')
@@ -58,11 +53,7 @@ describe('when getting if maintainance is enabled', () => {
   })
 })
 
-const ffSelectors = [
-  { selector: getIsDeployToWorldsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.DEPLOY_WORLDS },
-  { selector: getIsPublishSmartWearablesEnabled, app: ApplicationName.BUILDER, feature: FeatureName.PUBLISH_SMART_WEARABLES },
-  { selector: getIsWorldsForEnsOwnersEnabled, app: ApplicationName.BUILDER, feature: FeatureName.WORLDS_FOR_ENS_OWNERS }
-]
+const ffSelectors = [{ selector: getIsWorldsForEnsOwnersEnabled, app: ApplicationName.BUILDER, feature: FeatureName.WORLDS_FOR_ENS_OWNERS }]
 
 ffSelectors.forEach(({ selector, app, feature }) => {
   describe(`when getting if ${feature} is enabled`, () => {

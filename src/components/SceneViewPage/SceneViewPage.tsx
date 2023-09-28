@@ -155,7 +155,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isFetching, isPreviewing, isReady, isTemplatesEnabled, onBack } = this.props
+    const { isFetching, isPreviewing, isReady, onBack } = this.props
 
     if (isFetching) {
       return this.renderLoading()
@@ -176,12 +176,10 @@ export default class SceneViewPage extends React.PureComponent<Props> {
             <Navbar isFullscreen />
             <Container className="back-container">
               <Back absolute onClick={onBack}></Back>
-              {isTemplatesEnabled && (
-                <Button secondary onClick={this.handleExportProject.bind(this)} loading={!currentProject} disabled={!currentProject}>
-                  <IconUI name="download" />
-                  {t('scene_detail_page.download_scene')}
-                </Button>
-              )}
+              <Button secondary onClick={this.handleExportProject.bind(this)} loading={!currentProject} disabled={!currentProject}>
+                <IconUI name="download" />
+                {t('scene_detail_page.download_scene')}
+              </Button>
             </Container>
           </>
         )}

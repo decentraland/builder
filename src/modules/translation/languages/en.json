@@ -631,12 +631,6 @@
     "needs_two_txs": "This change will send 2 transactions: one to add {toAdd} {toAdd, plural, one {parcel} other {parcels}} and another one to remove {toRemove} {toRemove, plural, one {parcel} other {parcels}}"
   },
   "export_modal": {
-    "old": {
-      "action": "Download",
-      "description": "You can export your Scene for use in the {sdk_link}, or the Builder. This is a great way to share Scenes and collaborate with friends! Any changes made to your Scene using the SDK will not be reflected in the Builder.",
-      "loading": "Downloading...",
-      "title": "Download Scene"
-    },
     "action": "Download scene",
     "docs": "What is the Decentraland SDK?",
     "description": "Transition seamlessly from the Builder to the SDK for a more interactive and personalized scene. Keep in mind that you have the option to download scenes from the scene pool and templates and upload it across different accounts.",

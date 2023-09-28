@@ -16,7 +16,7 @@ export default class Navigation extends React.PureComponent<Props> {
   }
 
   render() {
-    const { activeTab, isFullscreen, isCommitteeMember, children, isDeployToWorldEnabled } = this.props
+    const { activeTab, isFullscreen, isCommitteeMember, children } = this.props
     return (
       <div className="Navigation">
         <Tabs isFullscreen={isFullscreen}>
@@ -36,11 +36,9 @@ export default class Navigation extends React.PureComponent<Props> {
           <Tabs.Tab active={activeTab === NavigationTab.NAMES} onClick={() => this.handleOnTabClick(locations.ens())}>
             {t('navigation.names')}
           </Tabs.Tab>
-          {isDeployToWorldEnabled ? (
-            <Tabs.Tab active={activeTab === NavigationTab.WORLDS} onClick={() => this.handleOnTabClick(locations.worlds())}>
-              {t('navigation.worlds')}
-            </Tabs.Tab>
-          ) : null}
+          <Tabs.Tab active={activeTab === NavigationTab.WORLDS} onClick={() => this.handleOnTabClick(locations.worlds())}>
+            {t('navigation.worlds')}
+          </Tabs.Tab>
           {isCommitteeMember ? (
             <Tabs.Tab active={activeTab === NavigationTab.CURATION} onClick={() => this.handleOnTabClick(locations.curation())}>
               {t('navigation.curation')}
