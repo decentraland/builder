@@ -607,6 +607,10 @@
       "title": "Get a free World when you own a NAME",
       "description": "Each NAME grants you access to one World, <b>your own 3D space in the metaverse</b> where you can shape the space however you like and invite up to 100 people to visit.",
       "cta": "Claim Name"
+    },
+    "name_tabs": {
+      "dcl_names": "Decentraland names",
+      "ens_names": "ENS names"
     }
   },
   "error_page": {
