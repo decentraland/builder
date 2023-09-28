@@ -31,6 +31,7 @@ const LandTransferPage = React.lazy(() => import('components/LandTransferPage'))
 const LandEditPage = React.lazy(() => import('components/LandEditPage'))
 const ENSListPage = React.lazy(() => import('components/ENSListPage'))
 const WorldListPage = React.lazy(() => import('components/WorldListPage'))
+const WorldListPageWorldsForEnsOwners = React.lazy(() => import('components/WorldListPage_WorldsForEnsOwnersFeature'))
 const ClaimENSPage = React.lazy(() => import('components/ClaimENSPage'))
 const LandSelectENSPage = React.lazy(() => import('components/LandSelectENSPage'))
 const LandAssignENSPage = React.lazy(() => import('components/LandAssignENSPage'))
@@ -78,7 +79,7 @@ export default class Routes extends React.Component<Props, State> {
   }
 
   renderRoutes() {
-    const { inMaintenance } = this.props
+    const { inMaintenance, isWorldsForEnsOwnersEnabled } = this.props
     const { hasError, stackTrace } = this.state
 
     if (isDevelopment && hasError) {
@@ -90,6 +91,8 @@ export default class Routes extends React.Component<Props, State> {
     if (inMaintenance) {
       return this.renderMaintenancePage()
     }
+
+    const ToRenderWorldListPage = isWorldsForEnsOwnersEnabled ? WorldListPageWorldsForEnsOwners : WorldListPage
 
     return (
       <React.Suspense fallback={<Loader size="huge" active />}>
@@ -128,7 +131,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact key={3} path={locations.landSelectENS()} component={LandSelectENSPage} />,
             <Route exact key={4} path={locations.landAssignENS()} component={LandAssignENSPage} />,
             <Route exact key={5} path={locations.ensSelectLand()} component={ENSSelectLandPage} />
-            <Route exact path={locations.worlds()} component={WorldListPage} />,
+            <Route exact path={locations.worlds()} component={ToRenderWorldListPage} />,
             <Route exact key={1} path={locations.collections()} component={CollectionsPage} />,
             <Route exact key={2} path={locations.itemDetail()} component={ItemDetailPage} />,
             <Route exact key={3} path={locations.collectionDetail()} component={CollectionDetailPage} />,
