@@ -462,7 +462,7 @@
     },
     "deploy_world": {
       "title": "Publicar en tu mundo",
-      "description": "Seleccione el nombre que definirá la URL:",
+      "description": "Seleccione un nombre Decentraland o un nombre ENS que definirá la URL",
       "action": "Publicar",
       "world_label": "Nombre (mundo)",
       "world_placeholder": "Seleccione un nombre",
@@ -471,6 +471,10 @@
       "claim_name": "Obtener un nombre",
       "empty_state_title": "No tiene ningún mundo disponible",
       "empty_state_description": "<b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un mundo. Puedes tener tantos como quieras.",
+      "name_type": {
+        "dcl": "Nombre",
+        "ens": "Nombres de ENS"
+      },
       "success": {
         "title": "Tu escena ha sido publicada!",
         "subtitle": "Ahora puedes explorar y jugar en tu Mundo:",

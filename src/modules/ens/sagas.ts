@@ -74,9 +74,9 @@ import {
   fetchExternalNamesSuccess,
   fetchExternalNamesFailure
 } from './actions'
-import { getENSBySubdomain } from './selectors'
+import { getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
-import { getDomainFromName } from './utils'
+import { getDomainFromName, isExternalName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -194,8 +194,23 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
   function* handleFetchENSWorldStatusRequest(action: FetchENSWorldStatusRequestAction) {
     const { subdomain } = action.payload
-    const ens: ENS = yield select(getENSBySubdomain, subdomain)
+
     try {
+      let ens: ENS
+
+      if (!isExternalName(subdomain)) {
+        ens = yield select(getENSBySubdomain, subdomain)
+      } else {
+        const externalNames: ReturnType<typeof getExternalNames> = yield select(getExternalNames)
+        const maybeEns: ENS | undefined = externalNames[subdomain]
+
+        if (!maybeEns) {
+          throw new Error(`ENS ${subdomain} not found in store`)
+        }
+
+        ens = maybeEns
+      }
+
       let worldStatus = null
 
       try {

@@ -65,10 +65,11 @@ import {
   FETCH_EXTERNAL_NAMES_SUCCESS
 } from './actions'
 import { ENS, ENSError, Authorization } from './types'
+import { isExternalName } from './utils'
 
 export type ENSState = {
   data: Record<string, ENS>
-  externalNames: Record<string, string[]>
+  externalNames: Record<string, ENS>
   authorizations: Record<string, Authorization>
   loading: LoadingState
   error: ENSError | null
@@ -166,9 +167,9 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
-    case FETCH_ENS_SUCCESS:
-    case FETCH_ENS_WORLD_STATUS_SUCCESS: {
+    case FETCH_ENS_SUCCESS: {
       const { ens } = action.payload
+
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -178,6 +179,37 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
             ...ens
           }
         }
+      }
+    }
+    case FETCH_ENS_WORLD_STATUS_SUCCESS: {
+      const { ens } = action.payload
+
+      let update: Pick<ENSState, 'data'> | Pick<ENSState, 'externalNames'>
+
+      if (isExternalName(ens.subdomain)) {
+        update = {
+          externalNames: {
+            ...state.externalNames,
+            [ens.subdomain]: {
+              ...ens
+            }
+          }
+        }
+      } else {
+        update = {
+          data: {
+            ...state.data,
+            [ens.subdomain]: {
+              ...ens
+            }
+          }
+        }
+      }
+
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        ...update
       }
     }
     case RECLAIM_NAME_SUCCESS:
@@ -197,12 +229,30 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     }
     case FETCH_EXTERNAL_NAMES_SUCCESS: {
       const { owner, names } = action.payload
+
+      const externalNames: ENS[] = names.map(name => {
+        return {
+          subdomain: name,
+          nftOwnerAddress: owner,
+          content: '',
+          ensOwnerAddress: '',
+          name,
+          resolver: '',
+          tokenId: ''
+        }
+      })
+
+      const externalNamesByDomain = externalNames.reduce((obj, ens) => {
+        obj[ens.subdomain] = ens
+        return obj
+      }, {} as Record<string, ENS>)
+
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         externalNames: {
           ...state.externalNames,
-          [owner]: names
+          ...externalNamesByDomain
         }
       }
     }

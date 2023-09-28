@@ -54,7 +54,26 @@ describe('when handling the fetch external names actions', () => {
     it('should update the external names property in the state', () => {
       const action = fetchExternalNamesSuccess(owner, names)
       const newState = ensReducer(state, action)
-      expect(newState.externalNames[owner]).toEqual(names)
+      expect(newState.externalNames).toEqual({
+        'name1.eth': {
+          subdomain: 'name1.eth',
+          nftOwnerAddress: owner,
+          name: 'name1.eth',
+          content: '',
+          ensOwnerAddress: '',
+          resolver: '',
+          tokenId: ''
+        },
+        'name2.eth': {
+          subdomain: 'name2.eth',
+          nftOwnerAddress: owner,
+          name: 'name2.eth',
+          content: '',
+          ensOwnerAddress: '',
+          resolver: '',
+          tokenId: ''
+        }
+      })
     })
 
     it('should remove the fetch external names request action from the loading state', () => {
