@@ -149,7 +149,6 @@ const WorldListPage: React.FC<Props> = props => {
 
     return (
       <>
-        <div>holaaaaa</div>
         <div className="filters">
           <Container>
             <Row>
