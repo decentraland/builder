@@ -1,11 +1,10 @@
 import { expectSaga } from 'redux-saga-test-plan'
-import { call, select } from 'redux-saga/effects'
+import { call } from 'redux-saga/effects'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { AuthIdentity } from '@dcl/crypto'
 import { BuilderAPI } from 'lib/api/builder'
 import { mockTemplate, mockTemplates } from 'specs/project'
 import { loginSuccess } from 'modules/identity/actions'
-import { getIsTemplatesEnabled } from 'modules/features/selectors'
 import { loadProjectsRequest, loadTemplatesFailure, loadTemplatesRequest, loadTemplatesSuccess } from './actions'
 import { projectSaga } from './sagas'
 
@@ -47,7 +46,6 @@ describe('when handling the loginSuccess action', () => {
   describe('and the FF Templates is enabled', () => {
     it('should put a loadTemplatesRequest action', () => {
       return expectSaga(projectSaga, builderAPI)
-        .provide([[select(getIsTemplatesEnabled), true]])
         .put(loadTemplatesRequest())
         .put(loadProjectsRequest())
         .dispatch(loginSuccess(wallet, identity))

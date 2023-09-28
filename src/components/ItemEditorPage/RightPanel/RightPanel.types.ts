@@ -26,7 +26,6 @@ export type Props = {
   isDownloading: boolean
   isCommitteeMember: boolean
   isCampaignEnabled: boolean
-  isHandsCategoryEnabled: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
@@ -59,7 +58,6 @@ export type MapStateProps = Pick<
   | 'isCommitteeMember'
   | 'canEditSelectedItem'
   | 'isCampaignEnabled'
-  | 'isHandsCategoryEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>
 export type MapDispatch = Dispatch<

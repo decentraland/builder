@@ -82,10 +82,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   setItem(item: Item) {
-    const { isHandsCategoryEnabled } = this.props
     const data = item.data
 
-    if (isHandsCategoryEnabled && item.type === ItemType.WEARABLE) {
+    if (item.type === ItemType.WEARABLE && data.replaces?.length) {
       // Move all items that are in replaces array to hides array
       data.hides = data.hides.concat(data.replaces)
       data.replaces = []
@@ -212,12 +211,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   handleChangeHides = (value: HideableWearableCategory[], category?: 'wearable' | 'bodypart') => {
     const currentHides = (this.state.data as WearableData).hides
-    const { isHandsCategoryEnabled } = this.props
 
     let hides: HideableWearableCategory[] = []
-    if (!isHandsCategoryEnabled) {
-      hides = value
-    } else if (category === 'wearable') {
+    if (category === 'wearable') {
       hides = [...currentHides.filter(cat => !WearableCategory.schema.enum.includes(cat)), ...value]
     } else {
       hides = [...currentHides.filter(cat => !BodyPartCategory.schema.enum.includes(cat)), ...value]
@@ -237,13 +233,13 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOnSaveItem = async () => {
-    const { selectedItem, itemStatus, isHandsCategoryEnabled, onSaveItem } = this.props
+    const { selectedItem, itemStatus, onSaveItem } = this.props
     const { name, description, rarity, contents, data, isDirty } = this.state
 
     if (isDirty && selectedItem) {
       let itemData = data
       //override hands default hiding for all new wearables
-      if (itemData && !isEmoteData(itemData) && isHandsCategoryEnabled) {
+      if (itemData && !isEmoteData(itemData)) {
         itemData = {
           ...itemData,
           removesDefaultHiding:
@@ -374,7 +370,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   renderOverrides(item: Item) {
-    const { isHandsCategoryEnabled } = this.props
     const canEditItemMetadata = this.canEditItemMetadata(item)
     const data = this.state.data as WearableData
 
@@ -382,9 +377,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       return null
     }
 
-    const hideableWearableCategories = getHideableWearableCategories(item.contents, data.category, isHandsCategoryEnabled)
-    const hideableBodyPartCategories = getHideableBodyPartCategories(item.contents, isHandsCategoryEnabled)
-    const actionableCategories = [...hideableWearableCategories, ...hideableBodyPartCategories]
+    const hideableWearableCategories = getHideableWearableCategories(item.contents, data.category)
+    const hideableBodyPartCategories = getHideableBodyPartCategories(item.contents)
 
     const hidesWearable = data.hides.filter(category =>
       hideableWearableCategories.includes(category as WearableCategory)
@@ -393,76 +387,33 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       hideableBodyPartCategories.includes(category as BodyPartCategory)
     ) as BodyPartCategory[]
 
-    if (isHandsCategoryEnabled) {
-      return (
-        <>
-          <MultiSelect<BodyPartCategory>
-            itemId={item.id}
-            label={t('item_editor.right_panel.base_body')}
-            info={t('item_editor.right_panel.base_body_info')}
-            value={hidesBodyPart}
-            options={this.asCategorySelect(item.type, hideableBodyPartCategories)}
-            disabled={!canEditItemMetadata}
-            onChange={value => this.handleChangeHides(value, 'bodypart')}
-          />
-          <MultiSelect<WearableCategory>
-            itemId={item.id}
-            label={t('item_editor.right_panel.wearables')}
-            info={t('item_editor.right_panel.wearables_info')}
-            value={hidesWearable}
-            options={this.asCategorySelect(
-              item.type,
-              // Workaround for https://github.com/decentraland/builder/issues/2068
-              // This will only show the body shape option if the item is currenlty hiding it.
-              // Once removed, the option cannot be selected again
-              hidesWearable.some(c => c === WearableCategory.BODY_SHAPE)
-                ? hideableWearableCategories
-                : hideableWearableCategories.filter(c => c !== WearableCategory.BODY_SHAPE)
-            )}
-            disabled={!canEditItemMetadata}
-            onChange={value => this.handleChangeHides(value, 'wearable')}
-          />
-        </>
-      )
-    }
-
-    const replacesWearable = data.replaces.filter(category =>
-      hideableWearableCategories.includes(category as WearableCategory)
-    ) as WearableCategory[]
-    const replacesBodyPart = data.replaces.filter(category =>
-      hideableBodyPartCategories.includes(category as BodyPartCategory)
-    ) as BodyPartCategory[]
-    const hides = [...hidesBodyPart, ...hidesWearable]
-    const replaces = [...replacesBodyPart, ...replacesWearable]
-    const availableToHide = actionableCategories.filter(category => !replaces.includes(category))
-    const availableToOverride = actionableCategories.filter(category => !hides.includes(category))
     return (
       <>
-        <MultiSelect<WearableCategory | BodyPartCategory>
+        <MultiSelect<BodyPartCategory>
           itemId={item.id}
-          label={t('item_editor.right_panel.replaces')}
-          info={t('item_editor.right_panel.replaces_info')}
-          value={replaces}
-          options={this.asCategorySelect(item.type, availableToOverride)}
-          disabled={!canEditItemMetadata || this.isSkin()}
-          onChange={this.handleChangeReplaces}
+          label={t('item_editor.right_panel.base_body')}
+          info={t('item_editor.right_panel.base_body_info')}
+          value={hidesBodyPart}
+          options={this.asCategorySelect(item.type, hideableBodyPartCategories)}
+          disabled={!canEditItemMetadata}
+          onChange={value => this.handleChangeHides(value, 'bodypart')}
         />
-        <MultiSelect<WearableCategory | BodyPartCategory>
+        <MultiSelect<WearableCategory>
           itemId={item.id}
-          label={t('item_editor.right_panel.hides')}
-          info={t('item_editor.right_panel.hides_info')}
-          value={hides}
+          label={t('item_editor.right_panel.wearables')}
+          info={t('item_editor.right_panel.wearables_info')}
+          value={hidesWearable}
           options={this.asCategorySelect(
             item.type,
             // Workaround for https://github.com/decentraland/builder/issues/2068
             // This will only show the body shape option if the item is currenlty hiding it.
             // Once removed, the option cannot be selected again
-            item.data.hides.some(c => c === WearableCategory.BODY_SHAPE)
-              ? availableToHide
-              : availableToHide.filter(c => c !== WearableCategory.BODY_SHAPE)
+            hidesWearable.some(c => c === WearableCategory.BODY_SHAPE)
+              ? hideableWearableCategories
+              : hideableWearableCategories.filter(c => c !== WearableCategory.BODY_SHAPE)
           )}
           disabled={!canEditItemMetadata}
-          onChange={this.handleChangeHides}
+          onChange={value => this.handleChangeHides(value, 'wearable')}
         />
       </>
     )
@@ -540,7 +491,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, error, isCampaignEnabled, isHandsCategoryEnabled } = this.props
+    const { selectedItemId, address, isConnected, error, isCampaignEnabled } = this.props
     const { name, description, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
     const playModes = getEmotePlayModes()
@@ -553,11 +504,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
-              const categories = item
-                ? item.type === ItemType.WEARABLE
-                  ? getWearableCategories(item.contents, isHandsCategoryEnabled)
-                  : getEmoteCategories()
-                : []
+              const categories = item ? (item.type === ItemType.WEARABLE ? getWearableCategories(item.contents) : getEmoteCategories()) : []
 
               return isLoading ? (
                 <Loader size="massive" active />
@@ -641,9 +588,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         label={
                           <>
                             <span className="overrides-label-panel">{t('item_editor.right_panel.overrides')}</span>
-                            {isHandsCategoryEnabled ? (
-                              <Info content={t('item_editor.right_panel.overrides_info')} className="info" />
-                            ) : null}
+                            <Info content={t('item_editor.right_panel.overrides_info')} className="info" />
                           </>
                         }
                       >
