@@ -10,6 +10,7 @@ export type Props = ModalProps & {
   currentPoolGroup: PoolGroup | null
   project: Project | null
   scene: Scene | null
+  isWorldsForEnsOwnersEnabled: boolean
 }
 
 export type State = {
@@ -24,7 +25,7 @@ export type Step = {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup' | 'project' | 'scene'>
+export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup' | 'project' | 'scene' | 'isWorldsForEnsOwnersEnabled'>
 
 export enum DeployModalView {
   NONE = 'NONE',

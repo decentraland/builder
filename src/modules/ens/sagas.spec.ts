@@ -10,7 +10,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ethers } from 'ethers'
 import { CONTROLLER_V2_ADDRESS, ENS_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { DclListsAPI } from 'lib/api/lists'
-import { WorldsAPI } from 'lib/api/worlds'
+import { WorldInfo, WorldsAPI, content } from 'lib/api/worlds'
 import { MarketplaceAPI } from 'lib/api/marketplace'
 import { ENSApi } from 'lib/api/ens'
 import { getLands } from 'modules/land/selectors'
@@ -21,12 +21,16 @@ import {
   fetchENSAuthorizationRequest,
   fetchENSListRequest,
   fetchENSListSuccess,
+  fetchENSWorldStatusFailure,
+  fetchENSWorldStatusRequest,
+  fetchENSWorldStatusSuccess,
   fetchExternalNamesFailure,
   fetchExternalNamesRequest,
   fetchExternalNamesSuccess
 } from './actions'
 import { ensSaga } from './sagas'
 import { ENS, ENSError } from './types'
+import { getENSBySubdomain, getExternalNames } from './selectors'
 
 jest.mock('@dcl/builder-client')
 
@@ -242,6 +246,118 @@ describe('when handling the fetching of external ens names for an owner', () => 
           .put(fetchExternalNamesSuccess(owner, names))
           .dispatch(fetchExternalNamesRequest(owner))
           .silentRun()
+      })
+    })
+  })
+})
+
+describe('when handling the fetch ens world status request', () => {
+  let subdomain: string
+  let fetchWorldsResult: WorldInfo | null
+
+  describe('when the subdomain provided is a dcl subdomain', () => {
+    beforeEach(() => {
+      subdomain = 'name.dcl.eth'
+    })
+
+    describe('and getENSBySubdomain returns an ens object', () => {
+      let getENSBySubdomainResult: ENS
+
+      beforeEach(() => {
+        getENSBySubdomainResult = {
+          subdomain
+        } as ENS
+      })
+
+      describe('and fetchWorlds returns null', () => {
+        beforeEach(() => {
+          fetchWorldsResult = null
+        })
+
+        it('should put an action signaling the success of the fetch ens world status request', async () => {
+          await expectSaga(ensSaga, builderClient, ensApi)
+            .provide([
+              [select(getENSBySubdomain, subdomain), getENSBySubdomainResult],
+              [call([content, 'fetchWorld'], subdomain), fetchWorldsResult]
+            ])
+            .put(
+              fetchENSWorldStatusSuccess({
+                ...getENSBySubdomainResult,
+                worldStatus: null
+              })
+            )
+            .dispatch(fetchENSWorldStatusRequest(subdomain))
+            .silentRun()
+        })
+      })
+    })
+  })
+
+  describe('when the subdomain provided is an external subdomain', () => {
+    beforeEach(() => {
+      subdomain = 'name.eth'
+    })
+
+    describe('and getExternalNames returns a record with an ens object for the subdomain', () => {
+      let getExternalNamesResult: ReturnType<typeof getExternalNames>
+
+      beforeEach(() => {
+        getExternalNamesResult = {
+          [subdomain]: {
+            subdomain
+          } as ENS
+        }
+      })
+
+      describe('and fetchWorlds returns null', () => {
+        beforeEach(() => {
+          fetchWorldsResult = null
+        })
+
+        it('should put an action signaling the success of the fetch ens world status request', async () => {
+          await expectSaga(ensSaga, builderClient, ensApi)
+            .provide([
+              [select(getExternalNames), getExternalNamesResult],
+              [call([content, 'fetchWorld'], subdomain), fetchWorldsResult]
+            ])
+            .put(
+              fetchENSWorldStatusSuccess({
+                ...getExternalNamesResult[subdomain],
+                worldStatus: null
+              })
+            )
+            .dispatch(fetchENSWorldStatusRequest(subdomain))
+            .silentRun()
+        })
+      })
+    })
+
+    describe('and getExternalNames returns a record without an ens object for the subdomain', () => {
+      let getExternalNamesResult: ReturnType<typeof getExternalNames>
+
+      beforeEach(() => {
+        getExternalNamesResult = {}
+      })
+
+      describe('and fetchWorlds returns null', () => {
+        beforeEach(() => {
+          fetchWorldsResult = null
+        })
+
+        it('should put an action signaling the failure of the fetch ens world status request', async () => {
+          await expectSaga(ensSaga, builderClient, ensApi)
+            .provide([
+              [select(getExternalNames), getExternalNamesResult],
+              [call([content, 'fetchWorld'], subdomain), fetchWorldsResult]
+            ])
+            .put(
+              fetchENSWorldStatusFailure({
+                message: `ENS ${subdomain} not found in store`
+              })
+            )
+            .dispatch(fetchENSWorldStatusRequest(subdomain))
+            .silentRun()
+        })
       })
     })
   })

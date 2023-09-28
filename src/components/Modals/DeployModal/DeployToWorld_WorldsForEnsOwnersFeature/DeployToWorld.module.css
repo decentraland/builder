@@ -1,0 +1,228 @@
+.modalBody {
+  width: 750px;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.modalNavigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modalNavigation.end {
+  justify-content: end;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.emptyState .modalHeader h3 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.modalHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalHeader h3 {
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 36px;
+}
+
+.modalHeader span {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.modalBody .actionButton:global(.ui.button) {
+  height: auto;
+  width: fit-content;
+  align-self: flex-end;
+}
+
+.modalBodyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modalBodyState .description {
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.modalBodyStateActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.modalBodyStateActionButton {
+  height: 46px !important;
+  width: 475px !important;
+  margin: 8px 32px !important;
+}
+
+.modalForm {
+  display: flex;
+  gap: 36px;
+}
+
+.modalFormActions:has(.actionCheckbox):has(.actionButton) {
+  justify-content: space-between !important;
+}
+
+.actionCheckbox {
+  display: flex;
+  align-items: center;
+}
+
+.actionCheckbox div {
+  margin-right: 8px;
+}
+
+.actionCheckbox :global(.ui.checkbox input[type='checkbox'].hidden) ~ label:hover::before {
+  border: 2px solid white;
+}
+
+.thumbnail {
+  width: 240px;
+  height: 190px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid lightgray;
+}
+
+.thumbnailInfo {
+  float: right;
+  margin: 3px 7px !important;
+  filter: invert(84%) sepia(8%) saturate(12%) hue-rotate(24deg) brightness(102%) contrast(89%);
+}
+
+.thumbnailInfo:hover {
+  filter: invert(97%) sepia(97%) saturate(0%) hue-rotate(17deg) brightness(104%) contrast(104%);
+}
+
+.metricsList {
+  margin-top: 4px !important;
+}
+
+.metricsList div {
+  margin-left: 4px;
+  text-transform: capitalize;
+}
+
+.metricsList div::before {
+  content: '-\00a0';
+}
+
+.modalForm .worldDetails {
+  width: 375px;
+}
+
+.nameTypeOption {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.modalForm .worldDetailsDescription {
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 18px;
+  overflow-wrap: break-word;
+}
+
+.modalForm .worldHasContent {
+  display: flex;
+  align-items: center;
+  background-color: rgba(115, 110, 125, 0.16);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.modalForm .worldHasContent :global(.Icon) {
+  min-width: 24px;
+}
+
+.modalForm .worldHasContent div {
+  margin-right: 13px;
+}
+
+.navigationButton {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.navigationButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.modalBodyEmptyState .emptyThumbnail {
+  height: 180px;
+  width: 180px;
+  margin-bottom: 10px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../../../images/empty-deploy-to-world.svg');
+}
+
+.modalBodySuccessState .description {
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.modalBodySuccessState .shareUrlFieldInput input {
+  border: 2px solid var(--text) !important;
+  padding: 9px 15px !important;
+  font-size: 15px !important;
+}
+
+.modalBodySuccessState .shareUrlFieldInput i {
+  opacity: 1 !important;
+}
+
+.shareUrlField {
+  width: 432px;
+}
+
+.shareUrlField p {
+  display: none !important;
+}
+
+.modalBodySuccessState .successImage {
+  height: 150px;
+  width: 150px;
+  margin-bottom: 10px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../../../images/save-world-success.svg');
+}
+
+.failureImage {
+  height: 150px;
+  width: 150px;
+  margin-bottom: 10px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../../../images/scene-error.svg');
+}
