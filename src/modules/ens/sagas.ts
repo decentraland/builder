@@ -512,7 +512,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
         throw new Error('No owner address provided')
       }
 
-      const names: string[] = yield call([ensApi, ensApi.fetchENSList], owner)
+      const names: string[] = yield call([ensApi, ensApi.fetchExternalNames], owner)
       yield put(fetchExternalNamesSuccess(owner, names))
     } catch (error) {
       const ensError: ENSError = { message: error.message }

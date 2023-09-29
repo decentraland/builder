@@ -183,7 +183,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
         await expectSaga(ensSaga, builderClient, ensApi)
           .provide([
             [select(getAddress), storedAddress],
-            [call([ensApi, ensApi.fetchENSList], storedAddress!), []]
+            [call([ensApi, ensApi.fetchExternalNames], storedAddress!), []]
           ])
           .put(fetchExternalNamesSuccess(storedAddress!, []))
           .dispatch(fetchExternalNamesRequest())
@@ -226,7 +226,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
 
       it('should dispatch an error action with the owner and the error', async () => {
         await expectSaga(ensSaga, builderClient, ensApi)
-          .provide([[call([ensApi, ensApi.fetchENSList], owner), throwError(error)]])
+          .provide([[call([ensApi, ensApi.fetchExternalNames], owner), throwError(error)]])
           .put(fetchExternalNamesFailure(ensError, owner))
           .dispatch(fetchExternalNamesRequest(owner))
           .silentRun()
@@ -242,7 +242,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
 
       it('should dispatch a success action with the owner and the names', async () => {
         await expectSaga(ensSaga, builderClient, ensApi)
-          .provide([[call([ensApi, ensApi.fetchENSList], owner), names]])
+          .provide([[call([ensApi, ensApi.fetchExternalNames], owner), names]])
           .put(fetchExternalNamesSuccess(owner, names))
           .dispatch(fetchExternalNamesRequest(owner))
           .silentRun()
