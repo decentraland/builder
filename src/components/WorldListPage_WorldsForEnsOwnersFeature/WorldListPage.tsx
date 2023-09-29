@@ -25,6 +25,7 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import './WorldListPage.css'
+import WorldsStorage from './WorldsStorage/WorldsStorage'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
@@ -240,8 +241,19 @@ const WorldListPage: React.FC<Props> = props => {
       isLoading={isLoading}
       isPageFullscreen={true}
     >
-      <h1>Worlds</h1>
-      <NameTabs />
+      {/** The following elements are just for show until the feature is complete, disregard the layout, just preview the components */}
+      <Container>
+        <h1>Worlds</h1>
+        <NameTabs />
+        <div
+          style={{
+            marginBottom: '1rem'
+          }}
+        >
+          <WorldsStorage maxBytes="100000000" currentBytes="75000000" />
+        </div>
+      </Container>
+      {/** Old ens list which will be removed or replaced with the new worlds for ens owners feature */}
       {ensList.length > 0 ? renderEnsList() : renderEmptyPage()}
     </LoggedInDetailPage>
   )
