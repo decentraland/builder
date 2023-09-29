@@ -24,8 +24,8 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
+import WorldsStorage from './WorldsStorage'
 import './WorldListPage.css'
-import WorldsStorage from './WorldsStorage/WorldsStorage'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
