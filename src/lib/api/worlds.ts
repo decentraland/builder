@@ -46,7 +46,7 @@ export class WorldsAPI extends BaseAPI {
     }
   }
 
-  public async fetchWalletStats(address: string) {
+  public fetchWalletStats = async (address: string) => {
     const result = await fetch(`${this.url}/wallet/${address}/stats`)
     if (result.ok) {
       const json = await result.json()
