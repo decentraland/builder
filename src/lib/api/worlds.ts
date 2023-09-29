@@ -21,12 +21,36 @@ export type WorldInfo = {
   }
 }
 
+export type WalletStats = {
+  wallet: string
+  dclNames: {
+    name: string
+    size: string
+  }[]
+  ensNames: {
+    name: string
+    size: string
+  }[]
+  usedSpace: string
+  maxAllowedSpace: string
+}
+
 export class WorldsAPI extends BaseAPI {
   public async fetchWorld(name: string) {
-    const req = await fetch(`${this.url}/world/${name}/about`)
-    if (req.ok) {
-      const res = await req.json()
-      return res as WorldInfo
+    const result = await fetch(`${this.url}/world/${name}/about`)
+    if (result.ok) {
+      const json = await result.json()
+      return json as WorldInfo
+    } else {
+      return null
+    }
+  }
+
+  public async fetchWalletStats(address: string) {
+    const result = await fetch(`${this.url}/wallet/${address}/stats`)
+    if (result.ok) {
+      const json = await result.json()
+      return json as WalletStats
     } else {
       return null
     }

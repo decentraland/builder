@@ -1,6 +1,6 @@
 import { ENSApi } from './ens'
 
-describe('when fetching the ens list for an owner', () => {
+describe('when fetching the external names for an owner', () => {
   let owner: string
 
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('when fetching the ens list for an owner', () => {
       })
 
       it('should throw an error containing the error of the fetch request', async () => {
-        await expect(ensApi.fetchENSList(owner)).rejects.toThrowError('Failed to fetch ENS list - Some Error')
+        await expect(ensApi.fetchExternalNames(owner)).rejects.toThrowError('Failed to fetch ENS list - Some Error')
       })
     })
 
@@ -32,7 +32,7 @@ describe('when fetching the ens list for an owner', () => {
       })
 
       it('should throw an error containing the status code of the failed response', async () => {
-        await expect(ensApi.fetchENSList(owner)).rejects.toThrowError('Failed to fetch ENS list - 500')
+        await expect(ensApi.fetchExternalNames(owner)).rejects.toThrowError('Failed to fetch ENS list - 500')
       })
     })
 
@@ -44,7 +44,7 @@ describe('when fetching the ens list for an owner', () => {
       })
 
       it('should throw an error containing the stringified errors property value', async () => {
-        await expect(ensApi.fetchENSList(owner)).rejects.toThrowError('Failed to fetch ENS list - [{"message":"Some Error"}]')
+        await expect(ensApi.fetchExternalNames(owner)).rejects.toThrowError('Failed to fetch ENS list - [{"message":"Some Error"}]')
       })
     })
 
@@ -57,12 +57,12 @@ describe('when fetching the ens list for an owner', () => {
           .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ data: { domains: [{ name: 'some-name.eth' }] } }) } as any)
       })
 
-      it('should return an array of ens names', async () => {
-        await expect(ensApi.fetchENSList(owner)).resolves.toEqual(['some-name.eth'])
+      it('should return an array of external names', async () => {
+        await expect(ensApi.fetchExternalNames(owner)).resolves.toEqual(['some-name.eth'])
       })
 
       it('should add the provided owner to the fetch request', async () => {
-        await ensApi.fetchENSList(owner)
+        await ensApi.fetchExternalNames(owner)
 
         expect(mockFetch).toHaveBeenCalledWith(subgraphUrl, expect.objectContaining({ body: expect.stringContaining(owner) }))
       })

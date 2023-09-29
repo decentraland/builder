@@ -10,7 +10,7 @@ export class ENSApi {
   /**
    * Will fetch all ens domains owned by the given address.
    */
-  fetchENSList = async (owner: string): Promise<string[]> => {
+  fetchExternalNames = async (owner: string): Promise<string[]> => {
     const lowercasedOwner = owner.toLowerCase()
 
     let response: Response
