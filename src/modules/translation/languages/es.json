@@ -613,6 +613,10 @@
     "name_tabs": {
       "dcl_names": "Nombres de Decentraland",
       "ens_names": "Nombre de ENS"
+    },
+    "worlds_storage": {
+      "space_used": "Espacio utilizado",
+      "view_details": "ver detalles"
     }
   },
   "error_page": {

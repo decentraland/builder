@@ -611,6 +611,10 @@
     "name_tabs": {
       "dcl_names": "Decentraland names",
       "ens_names": "ENS names"
+    },
+    "worlds_storage": {
+      "space_used": "Space used",
+      "view_details": "view details"
     }
   },
   "error_page": {

@@ -615,6 +615,10 @@
     "name_tabs": {
       "dcl_names": "Decentraland 名称",
       "ens_names": "ENS 名称"
+    },
+    "worlds_storage": {
+      "space_used": "使用空间",
+      "view_details": "查看详情"
     }
   },
   "estate_editor": {
