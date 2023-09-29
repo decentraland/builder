@@ -1,5 +1,5 @@
 import { WorldsWalletStats } from 'lib/api/worlds'
-import { fetchWalletWorldsStatsFailure, fetchWalletWorldsStatsRequest, fetchWalletWorldsStatsSuccess } from './actions'
+import { fetchWorldsWalletStatsFailure, fetchWorldsWalletStatsRequest, fetchWorldsWalletStatsSuccess } from './actions'
 import { INITIAL_STATE, WorldsState, worldsReducer } from './reducer'
 
 let state: WorldsState
@@ -21,7 +21,7 @@ describe('when handling the action to fetch worlds stats for a wallet', () => {
     })
 
     it('should add the action to the loading state and remove the error', () => {
-      const action = fetchWalletWorldsStatsRequest(address)
+      const action = fetchWorldsWalletStatsRequest(address)
 
       expect(worldsReducer(state, action)).toEqual({
         ...state,
@@ -36,11 +36,11 @@ describe('when handling the action to fetch worlds stats for a wallet', () => {
 
     beforeEach(() => {
       error = 'some error'
-      state.loading = [fetchWalletWorldsStatsRequest(address)]
+      state.loading = [fetchWorldsWalletStatsRequest(address)]
     })
 
     it('should remove the action from loading and set the error', () => {
-      const action = fetchWalletWorldsStatsFailure(address, error)
+      const action = fetchWorldsWalletStatsFailure(address, error)
 
       expect(worldsReducer(state, action)).toEqual({
         ...state,
@@ -62,11 +62,11 @@ describe('when handling the action to fetch worlds stats for a wallet', () => {
         wallet: address
       }
 
-      state.loading = [fetchWalletWorldsStatsRequest(address)]
+      state.loading = [fetchWorldsWalletStatsRequest(address)]
     })
 
     it('should remove the action from loading and set the stats', () => {
-      const action = fetchWalletWorldsStatsSuccess(address, stats)
+      const action = fetchWorldsWalletStatsSuccess(address, stats)
 
       expect(worldsReducer(state, action)).toEqual({
         ...state,

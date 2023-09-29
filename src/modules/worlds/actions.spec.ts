@@ -1,11 +1,11 @@
 import { WorldsWalletStats } from 'lib/api/worlds'
 import {
-  FETCH_WALLET_WORLDS_STATS_FAILURE,
-  FETCH_WALLET_WORLDS_STATS_REQUEST,
-  FETCH_WALLET_WORLDS_STATS_SUCCESS,
-  fetchWalletWorldsStatsFailure,
-  fetchWalletWorldsStatsRequest,
-  fetchWalletWorldsStatsSuccess
+  FETCH_WORLDS_WALLET_STATS_FAILURE,
+  FETCH_WORLDS_WALLET_STATS_REQUEST,
+  FETCH_WORLDS_WALLET_STATS_SUCCESS,
+  fetchWorldsWalletStatsFailure,
+  fetchWorldsWalletStatsRequest,
+  fetchWorldsWalletStatsSuccess
 } from './actions'
 
 let address: string
@@ -16,8 +16,8 @@ beforeEach(() => {
 
 describe('when creating the request action to fetch worlds stats for a wallet', () => {
   it('should return the request action to fetch worlds stats for a wallet', () => {
-    expect(fetchWalletWorldsStatsRequest(address)).toEqual({
-      type: FETCH_WALLET_WORLDS_STATS_REQUEST,
+    expect(fetchWorldsWalletStatsRequest(address)).toEqual({
+      type: FETCH_WORLDS_WALLET_STATS_REQUEST,
       payload: {
         address
       }
@@ -39,8 +39,8 @@ describe('when creating the success action to fetch worlds stats for a wallet', 
   })
 
   it('should return the success action to fetch worlds stats for a wallet', () => {
-    expect(fetchWalletWorldsStatsSuccess(address, stats)).toEqual({
-      type: FETCH_WALLET_WORLDS_STATS_SUCCESS,
+    expect(fetchWorldsWalletStatsSuccess(address, stats)).toEqual({
+      type: FETCH_WORLDS_WALLET_STATS_SUCCESS,
       payload: {
         address,
         stats
@@ -57,8 +57,8 @@ describe('when creating the failure action to fetch worlds stats for a wallet', 
   })
 
   it('should return the failure action to fetch worlds stats for a wallet', () => {
-    expect(fetchWalletWorldsStatsFailure(address, error)).toEqual({
-      type: FETCH_WALLET_WORLDS_STATS_FAILURE,
+    expect(fetchWorldsWalletStatsFailure(address, error)).toEqual({
+      type: FETCH_WORLDS_WALLET_STATS_FAILURE,
       payload: {
         address,
         error

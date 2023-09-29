@@ -2,7 +2,7 @@ import { expectSaga } from 'redux-saga-test-plan'
 import { worldsSaga } from './sagas'
 import { call } from 'redux-saga/effects'
 import { WorldsWalletStats, content } from 'lib/api/worlds'
-import { fetchWalletWorldsStatsFailure, fetchWalletWorldsStatsRequest, fetchWalletWorldsStatsSuccess } from './actions'
+import { fetchWorldsWalletStatsFailure, fetchWorldsWalletStatsRequest, fetchWorldsWalletStatsSuccess } from './actions'
 import { throwError } from 'redux-saga-test-plan/providers'
 
 describe('when handling the request action to fetch worlds stats for a wallet', () => {
@@ -22,18 +22,18 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
     it('should put the failure action with the request action address and the error message', () => {
       return expectSaga(worldsSaga)
         .provide([[call([content, content.fetchWalletStats], address), throwError(error)]])
-        .put(fetchWalletWorldsStatsFailure(address, error.message))
-        .dispatch(fetchWalletWorldsStatsRequest(address))
+        .put(fetchWorldsWalletStatsFailure(address, error.message))
+        .dispatch(fetchWorldsWalletStatsRequest(address))
         .silentRun()
     })
   })
 
   describe('when the worlds api request return null', () => {
-    it('should put teh failure action with the request action address and the error message', () => {
+    it('should put the failure action with the request action address and the error message', () => {
       return expectSaga(worldsSaga)
         .provide([[call([content, content.fetchWalletStats], address), null]])
-        .put(fetchWalletWorldsStatsFailure(address, 'Could not fetch wallet stats'))
-        .dispatch(fetchWalletWorldsStatsRequest(address))
+        .put(fetchWorldsWalletStatsFailure(address, 'Could not fetch wallet stats'))
+        .dispatch(fetchWorldsWalletStatsRequest(address))
         .silentRun()
     })
   })
@@ -54,8 +54,8 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
     it('should put the success action with the request action address and the stats', () => {
       return expectSaga(worldsSaga)
         .provide([[call([content, content.fetchWalletStats], address), stats]])
-        .put(fetchWalletWorldsStatsSuccess(address, stats))
-        .dispatch(fetchWalletWorldsStatsRequest(address))
+        .put(fetchWorldsWalletStatsSuccess(address, stats))
+        .dispatch(fetchWorldsWalletStatsRequest(address))
         .silentRun()
     })
   })

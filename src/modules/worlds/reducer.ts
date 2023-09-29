@@ -3,9 +3,9 @@ import {
   FetchWalletWorldsStatsRequestAction,
   FetchWalletWorldsStatsFailureAction,
   FetchWalletWorldsStatsSuccessAction,
-  FETCH_WALLET_WORLDS_STATS_REQUEST,
-  FETCH_WALLET_WORLDS_STATS_SUCCESS,
-  FETCH_WALLET_WORLDS_STATS_FAILURE
+  FETCH_WORLDS_WALLET_STATS_REQUEST,
+  FETCH_WORLDS_WALLET_STATS_SUCCESS,
+  FETCH_WORLDS_WALLET_STATS_FAILURE
 } from './actions'
 import { WorldsWalletStats } from 'lib/api/worlds'
 
@@ -31,14 +31,14 @@ export type WorldsReducerAction =
 
 export function worldsReducer(state: WorldsState = INITIAL_STATE, action: WorldsReducerAction): WorldsState {
   switch (action.type) {
-    case FETCH_WALLET_WORLDS_STATS_REQUEST: {
+    case FETCH_WORLDS_WALLET_STATS_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         error: null
       }
     }
-    case FETCH_WALLET_WORLDS_STATS_FAILURE: {
+    case FETCH_WORLDS_WALLET_STATS_FAILURE: {
       const { error } = action.payload
 
       return {
@@ -47,7 +47,7 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
         error
       }
     }
-    case FETCH_WALLET_WORLDS_STATS_SUCCESS: {
+    case FETCH_WORLDS_WALLET_STATS_SUCCESS: {
       const { address, stats } = action.payload
 
       return {
