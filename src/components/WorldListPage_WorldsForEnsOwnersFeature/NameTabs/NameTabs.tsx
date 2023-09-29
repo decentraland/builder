@@ -1,10 +1,10 @@
 import React from 'react'
 import { useLocation } from 'react-router'
-import { Tabs } from 'decentraland-ui'
+import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, TabType } from './NameTabs.types'
 
-const TAB_QUERY_PARAM_KEY = 'tab'
+export const TAB_QUERY_PARAM_KEY = 'tab'
 
 const NameTabs = ({ onNavigate }: Props) => {
   const location = useLocation()
