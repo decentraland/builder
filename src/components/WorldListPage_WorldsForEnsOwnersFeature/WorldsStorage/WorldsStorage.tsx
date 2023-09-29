@@ -8,8 +8,8 @@ export const CURRENT_MBS_TEST_ID = 'worlds-storage-current-mbs'
 export const BAR_FRONT_TEST_ID = 'worlds-storage-bar-front'
 
 const WorldsStorage = ({ maxBytes, currentBytes }: Props) => {
-  const maxMbs = Number(BigInt(maxBytes) / BigInt(1000000))
-  const currentMbs = Number(BigInt(currentBytes) / BigInt(1000000))
+  const maxMbs = maxBytes / 1000000
+  const currentMbs = currentBytes / 1000000
   const usedPercentage = (currentMbs * 100) / maxMbs
 
   return (
@@ -25,7 +25,7 @@ const WorldsStorage = ({ maxBytes, currentBytes }: Props) => {
         <div
           data-testid={BAR_FRONT_TEST_ID}
           style={{
-            width: `${usedPercentage}%`
+            width: `${Math.trunc(usedPercentage)}%`
           }}
           className={classNames(styles.bar, styles.barFront)}
         />

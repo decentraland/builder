@@ -1,4 +1,4 @@
 export type Props = {
-  maxBytes: string
-  currentBytes: string
+  maxBytes: number
+  currentBytes: number
 }

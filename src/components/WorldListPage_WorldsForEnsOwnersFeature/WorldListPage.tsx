@@ -250,7 +250,7 @@ const WorldListPage: React.FC<Props> = props => {
             marginBottom: '1rem'
           }}
         >
-          <WorldsStorage maxBytes="100000000" currentBytes="75000000" />
+          <WorldsStorage maxBytes={100000000} currentBytes={75000000} />
         </div>
       </Container>
       {/** Old ens list which will be removed or replaced with the new worlds for ens owners feature */}
