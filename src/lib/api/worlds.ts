@@ -21,7 +21,7 @@ export type WorldInfo = {
   }
 }
 
-export type WalletStats = {
+export type WorldsWalletStats = {
   wallet: string
   dclNames: {
     name: string
@@ -50,7 +50,7 @@ export class WorldsAPI extends BaseAPI {
     const result = await fetch(`${this.url}/wallet/${address}/stats`)
     if (result.ok) {
       const json = await result.json()
-      return json as WalletStats
+      return json as WorldsWalletStats
     } else {
       return null
     }

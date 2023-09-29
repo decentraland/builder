@@ -1,5 +1,5 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
-import { WalletStats, content as WorldsAPIContent } from 'lib/api/worlds'
+import { WorldsWalletStats, content as WorldsAPIContent } from 'lib/api/worlds'
 import {
   FETCH_WALLET_WORLDS_STATS_REQUEST,
   FetchWalletWorldsStatsRequestAction,
@@ -15,7 +15,7 @@ function* handleFetchWalletWorldsStatsRequest(action: FetchWalletWorldsStatsRequ
   const { address } = action.payload
 
   try {
-    const stats: WalletStats | null = yield call([WorldsAPIContent, WorldsAPIContent.fetchWalletStats], address)
+    const stats: WorldsWalletStats | null = yield call([WorldsAPIContent, WorldsAPIContent.fetchWalletStats], address)
 
     if (!stats) {
       throw new Error('Could not fetch wallet stats')

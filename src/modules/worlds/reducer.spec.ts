@@ -1,4 +1,4 @@
-import { WalletStats } from 'lib/api/worlds'
+import { WorldsWalletStats } from 'lib/api/worlds'
 import { fetchWalletWorldsStatsFailure, fetchWalletWorldsStatsRequest, fetchWalletWorldsStatsSuccess } from './actions'
 import { INITIAL_STATE, WorldsState, worldsReducer } from './reducer'
 
@@ -51,7 +51,7 @@ describe('when handling the action to fetch worlds stats for a wallet', () => {
   })
 
   describe('when handling the success action to fetch worlds stats for a wallet', () => {
-    let stats: WalletStats
+    let stats: WorldsWalletStats
 
     beforeEach(() => {
       stats = {

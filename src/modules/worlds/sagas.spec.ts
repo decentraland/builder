@@ -1,7 +1,7 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import { worldsSaga } from './sagas'
 import { call } from 'redux-saga/effects'
-import { WalletStats, content } from 'lib/api/worlds'
+import { WorldsWalletStats, content } from 'lib/api/worlds'
 import { fetchWalletWorldsStatsFailure, fetchWalletWorldsStatsRequest, fetchWalletWorldsStatsSuccess } from './actions'
 import { throwError } from 'redux-saga-test-plan/providers'
 
@@ -39,7 +39,7 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
   })
 
   describe('when the worlds api request return the stats', () => {
-    let stats: WalletStats
+    let stats: WorldsWalletStats
 
     beforeEach(() => {
       stats = {

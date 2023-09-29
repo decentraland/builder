@@ -7,12 +7,12 @@ import {
   FETCH_WALLET_WORLDS_STATS_SUCCESS,
   FETCH_WALLET_WORLDS_STATS_FAILURE
 } from './actions'
-import { WalletStats } from 'lib/api/worlds'
+import { WorldsWalletStats } from 'lib/api/worlds'
 
 export type WorldsState = {
   // TODO: Find a use for the data object when there is something more relevant as the core data for the worlds module.
   data: Record<string, any>
-  walletStats: Record<string, WalletStats>
+  walletStats: Record<string, WorldsWalletStats>
   loading: LoadingState
   error: string | null
 }
