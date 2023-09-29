@@ -3,7 +3,7 @@ import { Props } from './WorldsStorage.types'
 import styles from './WorldsStorage.module.css'
 import classNames from 'classnames'
 
-const WorldsStorage = ({ maxBytes, currentBytes: currentBytes }: Props) => {
+const WorldsStorage = ({ maxBytes, currentBytes }: Props) => {
   const maxMbs = BigInt(maxBytes) / BigInt(1000000)
   const currentMbs = BigInt(currentBytes) / BigInt(1000000)
   const usedPercentage = (currentMbs * BigInt(100)) / maxMbs
