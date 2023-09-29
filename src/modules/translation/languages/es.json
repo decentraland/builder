@@ -609,6 +609,10 @@
       "title": "Obtenga un mundo gratis cuando tenga un nombre",
       "description": "Cada nombre le otorga acceso a un Mundo, <b>su espacio 3D personal en el metaverso</b> donde le puede dar forma como quiera e invitar hasta 100 personas a visitar su espacio.",
       "cta": "Reclamar un nuevo Nombre"
+    },
+    "name_tabs": {
+      "dcl_names": "Nombres de Decentraland",
+      "ens_names": "Nombre de ENS"
     }
   },
   "error_page": {

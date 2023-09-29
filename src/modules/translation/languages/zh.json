@@ -611,6 +611,10 @@
       "title": "当您拥有一个名字时获得一个自由的世界",
       "description": "每个名称都授予您访问一个世界的权限，<b>您自己在 metaverse 中的 3D 空间</b>，您可以在其中随心所欲地塑造空间并邀请多达 100 人参观。",
       "cta": "索赔名称"
+    },
+    "name_tabs": {
+      "dcl_names": "Decentraland 名称",
+      "ens_names": "ENS 名称"
     }
   },
   "estate_editor": {

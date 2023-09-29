@@ -23,6 +23,7 @@ import Icon from 'components/Icon'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props, SortBy } from './WorldListPage.types'
+import NameTabs from './NameTabs'
 import './WorldListPage.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
@@ -239,6 +240,8 @@ const WorldListPage: React.FC<Props> = props => {
       isLoading={isLoading}
       isPageFullscreen={true}
     >
+      <h1>Worlds</h1>
+      <NameTabs />
       {ensList.length > 0 ? renderEnsList() : renderEmptyPage()}
     </LoggedInDetailPage>
   )
