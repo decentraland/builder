@@ -153,10 +153,30 @@ describe('when handling fetch worlds deployments request', () => {
 describe('when handling the success action to fetch external names', () => {
   it('should put the request action to fetch world deployments with the external names from the actoin', () => {
     const owner = '0x123'
-    const names = ['name1', 'name2']
     return expectSaga(deploymentSaga, builderAPI, catalystClient)
-      .put(fetchWorldDeploymentsRequest(names))
-      .dispatch(fetchExternalNamesSuccess(owner, names))
+      .put(fetchWorldDeploymentsRequest(['name1.eth', 'name2.eth']))
+      .dispatch(
+        fetchExternalNamesSuccess(owner, [
+          {
+            subdomain: 'name1.eth',
+            nftOwnerAddress: owner,
+            name: 'name1.eth',
+            content: '',
+            ensOwnerAddress: '',
+            resolver: '',
+            tokenId: ''
+          },
+          {
+            subdomain: 'name2.eth',
+            nftOwnerAddress: owner,
+            name: 'name2.eth',
+            content: '',
+            ensOwnerAddress: '',
+            resolver: '',
+            tokenId: ''
+          }
+        ])
+      )
       .silentRun()
   })
 })

@@ -233,16 +233,31 @@ describe('when handling the fetching of external ens names for an owner', () => 
     })
 
     describe('when fetchENSList returns an array of names', () => {
-      let names: string[]
-
-      beforeEach(() => {
-        names = ['name1.eth', 'name2.eth']
-      })
-
       it('should dispatch a success action with the owner and the names', async () => {
         await expectSaga(ensSaga, builderClient, ensApi)
-          .provide([[call([ensApi, ensApi.fetchExternalNames], owner), names]])
-          .put(fetchExternalNamesSuccess(owner, names))
+          .provide([[call([ensApi, ensApi.fetchExternalNames], owner), ['name1.eth', 'name2.eth']]])
+          .put(
+            fetchExternalNamesSuccess(owner, [
+              {
+                subdomain: 'name1.eth',
+                nftOwnerAddress: owner,
+                name: 'name1.eth',
+                content: '',
+                ensOwnerAddress: '',
+                resolver: '',
+                tokenId: ''
+              },
+              {
+                subdomain: 'name2.eth',
+                nftOwnerAddress: owner,
+                name: 'name2.eth',
+                content: '',
+                ensOwnerAddress: '',
+                resolver: '',
+                tokenId: ''
+              }
+            ])
+          )
           .dispatch(fetchExternalNamesRequest(owner))
           .silentRun()
       })

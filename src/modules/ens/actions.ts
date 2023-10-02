@@ -165,7 +165,7 @@ export const FETCH_EXTERNAL_NAMES_SUCCESS = '[Success] Fetch External Names'
 export const FETCH_EXTERNAL_NAMES_FAILURE = '[Failure] Fetch External Names'
 
 export const fetchExternalNamesRequest = (owner?: string) => action(FETCH_EXTERNAL_NAMES_REQUEST, { owner })
-export const fetchExternalNamesSuccess = (owner: string, names: string[]) => action(FETCH_EXTERNAL_NAMES_SUCCESS, { owner, names })
+export const fetchExternalNamesSuccess = (owner: string, names: ENS[]) => action(FETCH_EXTERNAL_NAMES_SUCCESS, { owner, names })
 export const fetchExternalNamesFailure = (error: ENSError, owner?: string) => action(FETCH_EXTERNAL_NAMES_FAILURE, { owner, error })
 
 export type FetchExternalNamesRequestAction = ReturnType<typeof fetchExternalNamesRequest>

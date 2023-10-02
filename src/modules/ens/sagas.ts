@@ -73,7 +73,9 @@ import {
   FetchExternalNamesRequestAction,
   fetchExternalNamesSuccess,
   fetchExternalNamesFailure,
-  fetchExternalNamesRequest
+  fetchExternalNamesRequest,
+  FetchExternalNamesSuccessAction,
+  FETCH_EXTERNAL_NAMES_SUCCESS
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
@@ -93,6 +95,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeEvery(RECLAIM_NAME_REQUEST, handleReclaimNameRequest)
   yield takeEvery(FETCH_EXTERNAL_NAMES_REQUEST, handleFetchExternalNamesRequest)
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWallet)
+  yield takeEvery(FETCH_EXTERNAL_NAMES_SUCCESS, handleFetchExternalNamesSuccess)
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSAuthorizationRequest())
@@ -517,7 +520,19 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
       const names: string[] = yield call([ensApi, ensApi.fetchExternalNames], owner)
 
-      yield put(fetchExternalNamesSuccess(owner, names))
+      const enss: ENS[] = names.map(name => {
+        return {
+          subdomain: name,
+          nftOwnerAddress: owner,
+          content: '',
+          ensOwnerAddress: '',
+          name,
+          resolver: '',
+          tokenId: ''
+        }
+      })
+
+      yield put(fetchExternalNamesSuccess(owner, enss))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
       yield put(fetchExternalNamesFailure(ensError, owner))
@@ -526,5 +541,9 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
   function* handleConnectWallet(action: ConnectWalletSuccessAction) {
     yield put(fetchExternalNamesRequest(action.payload.wallet.address))
+  }
+
+  function* handleFetchExternalNamesSuccess(action: FetchExternalNamesSuccessAction) {
+    console.log(action)
   }
 }

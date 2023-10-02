@@ -523,6 +523,6 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   }
 
   function* handleFetchExternalNamesSuccess(action: FetchExternalNamesSuccessAction) {
-    yield put(fetchWorldDeploymentsRequest(action.payload.names))
+    yield put(fetchWorldDeploymentsRequest(action.payload.names.map(name => name.subdomain)))
   }
 }

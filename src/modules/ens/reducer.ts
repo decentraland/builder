@@ -228,21 +228,9 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       }
     }
     case FETCH_EXTERNAL_NAMES_SUCCESS: {
-      const { owner, names } = action.payload
+      const { names } = action.payload
 
-      const externalNames: ENS[] = names.map(name => {
-        return {
-          subdomain: name,
-          nftOwnerAddress: owner,
-          content: '',
-          ensOwnerAddress: '',
-          name,
-          resolver: '',
-          tokenId: ''
-        }
-      })
-
-      const externalNamesByDomain = externalNames.reduce((obj, ens) => {
+      const externalNamesByDomain = names.reduce((obj, ens) => {
         obj[ens.subdomain] = ens
         return obj
       }, {} as Record<string, ENS>)
