@@ -4,14 +4,15 @@ import { Progress } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './WorldsStorage.types'
 import styles from './WorldsStorage.module.css'
+import { fromBytesToMegabytes } from '../utils'
 
 export const CURRENT_MBS_TEST_ID = 'worlds-storage-current-mbs'
 export const PROGRESS_TEST_ID = 'worlds-storage-bar-front'
 export const WORLDS_STORAGE_TEST_ID = 'worlds-storage'
 
 const WorldsStorage = ({ maxBytes, currentBytes, className }: Props) => {
-  const maxMbs = maxBytes / 1000000
-  const currentMbs = currentBytes / 1000000
+  const maxMbs = fromBytesToMegabytes(maxBytes)
+  const currentMbs = fromBytesToMegabytes(currentBytes)
   const usedPercentage = (currentMbs * 100) / maxMbs
 
   return (

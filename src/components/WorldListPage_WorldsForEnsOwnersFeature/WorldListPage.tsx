@@ -27,6 +27,8 @@ import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
 import { TabType, useCurrentlySelectedTab } from './hooks'
 import './WorldListPage.css'
+import { WorldsWalletStats } from 'lib/api/worlds'
+import { fromBytesToMegabytes } from './utils'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
@@ -147,6 +149,11 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
+  const renderWorldSize = (_ens: ENS, stats?: WorldsWalletStats) => {
+    const bytes = stats?.dclNames.find(dclName => dclName.name === _ens.subdomain)?.size
+    return !bytes ? '-' : fromBytesToMegabytes(Number(bytes)).toFixed(2)
+  }
+
   const renderDCLNamesList = () => {
     const total = ensList.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
@@ -188,6 +195,9 @@ const WorldListPage: React.FC<Props> = props => {
                   <Table.HeaderCell width="2">{t('worlds_list_page.table.url')}</Table.HeaderCell>
                   <Table.HeaderCell width="1">{t('worlds_list_page.table.published_scene')}</Table.HeaderCell>
                   <Table.HeaderCell width="1" textAlign="center">
+                    {t('worlds_list_page.table.size')}
+                  </Table.HeaderCell>
+                  <Table.HeaderCell width="1" textAlign="center">
                     {t('worlds_list_page.table.status')}
                   </Table.HeaderCell>
                 </Table.Row>
@@ -199,6 +209,9 @@ const WorldListPage: React.FC<Props> = props => {
                       <Table.Cell width={2}>{ens.name}</Table.Cell>
                       <Table.Cell width={2}>{renderWorldUrl(ens)}</Table.Cell>
                       <Table.Cell width={1}>{renderPublishSceneButton(ens)}</Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {renderWorldSize(ens, worldsWalletStats)}
+                      </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldStatus(ens)}
                       </Table.Cell>
