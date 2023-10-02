@@ -363,7 +363,7 @@ describe('when handling the fetch ens world status request', () => {
 })
 
 describe('when handling the wallet connection', () => {
-  it('should put the action to external names ', async () => {
+  it('should put the action to external names', async () => {
     const address = '0x123'
     await expectSaga(ensSaga, builderClient, ensApi)
       .put(fetchExternalNamesRequest(address))
