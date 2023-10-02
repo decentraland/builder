@@ -106,7 +106,7 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
     })
 
     describe('and there is no address available in the store', () => {
-      let connectProvider: any
+      let connectProvide: any
       let connectionAddress: string
 
       beforeEach(() => {
@@ -115,12 +115,12 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
 
       describe('and the wallet connection fails', () => {
         beforeEach(() => {
-          connectProvider = [take(CONNECT_WALLET_FAILURE), connectWalletFailure('some error')]
+          connectProvide = [take(CONNECT_WALLET_FAILURE), connectWalletFailure('some error')]
         })
 
         it('should put a failure action with an undefined address and the error message', () => {
           return expectSaga(worldsSaga)
-            .provide([[select(getAddress), addressInStore], connectProvider])
+            .provide([[select(getAddress), addressInStore], connectProvide])
             .put(fetchWorldsWalletStatsFailure('An address is required', addressInStore))
             .dispatch(fetchWorldsWalletStatsRequest(address))
             .silentRun()
@@ -130,7 +130,7 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
       describe('and the wallet connection does not fail', () => {
         beforeEach(() => {
           connectionAddress = '0x123'
-          connectProvider = [take(CONNECT_WALLET_SUCCESS), connectWalletSuccess({ address: connectionAddress } as Wallet)]
+          connectProvide = [take(CONNECT_WALLET_SUCCESS), connectWalletSuccess({ address: connectionAddress } as Wallet)]
         })
 
         describe('and the request to fetch wallet stats responds with the worlds wallet stats', () => {
@@ -148,7 +148,7 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
             return expectSaga(worldsSaga)
               .provide([
                 [select(getAddress), addressInStore],
-                connectProvider,
+                connectProvide,
                 [call([content, content.fetchWalletStats], connectionAddress), stats]
               ])
               .put(fetchWorldsWalletStatsSuccess(connectionAddress, stats))
