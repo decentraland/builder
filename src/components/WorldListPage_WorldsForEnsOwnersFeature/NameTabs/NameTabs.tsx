@@ -1,23 +1,19 @@
 import React from 'react'
-import { useLocation } from 'react-router'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Props, TabType } from './NameTabs.types'
-
-export const TAB_QUERY_PARAM_KEY = 'tab'
+import { Props } from './NameTabs.types'
+import { TAB_QUERY_PARAM_KEY, TabType, useCurrentlySelectedTab } from '../hooks'
 
 const NameTabs = ({ onNavigate }: Props) => {
-  const location = useLocation()
-
-  const urlSearchParams = new URLSearchParams(location.search)
-  const tab = urlSearchParams.get(TAB_QUERY_PARAM_KEY)
+  const { tab, pathname, urlSearchParams } = useCurrentlySelectedTab()
 
   const navigateToTab = (tab: TabType) => {
-    urlSearchParams.set(TAB_QUERY_PARAM_KEY, tab)
-    onNavigate(`${location.pathname}?${urlSearchParams.toString()}`)
+    const urlSearchParamsCopy = new URLSearchParams(urlSearchParams)
+    urlSearchParamsCopy.set(TAB_QUERY_PARAM_KEY, tab)
+    onNavigate(`${pathname}?${urlSearchParamsCopy.toString()}`)
   }
 
-  if (tab !== TabType.DCL && tab !== TabType.ENS) {
+  if (!tab) {
     navigateToTab(TabType.DCL)
     return null
   }
