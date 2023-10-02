@@ -2,6 +2,7 @@ import { CatalystClient, createCatalystClient, createContentClient } from 'dcl-c
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { isLoggedIn } from 'modules/identity/selectors'
@@ -12,11 +13,11 @@ import { getName } from 'modules/profile/selectors'
 import { getData } from 'modules/project/selectors'
 import { createFiles } from 'modules/project/export'
 import { getSceneByProjectId } from 'modules/scene/utils'
+import { fetchExternalNamesSuccess } from 'modules/ens/actions'
 import { deployToWorldRequest, fetchWorldDeploymentsRequest, fetchWorldDeploymentsSuccess } from './actions'
 import { deploymentSaga } from './sagas'
 import { makeContentFiles } from './contentUtils'
 import { Deployment } from './types'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 let builderAPI: BuilderAPI
 let catalystClient: CatalystClient
@@ -145,6 +146,17 @@ describe('when handling fetch worlds deployments request', () => {
         ] as unknown as Deployment[])
       )
       .dispatch(fetchWorldDeploymentsRequest(worlds))
+      .silentRun()
+  })
+})
+
+describe('when handling the success action to fetch external names', () => {
+  it('should put the request action to fetch world deployments with the external names from the actoin', () => {
+    const owner = '0x123'
+    const names = ['name1', 'name2']
+    return expectSaga(deploymentSaga, builderAPI, catalystClient)
+      .put(fetchWorldDeploymentsRequest(names))
+      .dispatch(fetchExternalNamesSuccess(owner, names))
       .silentRun()
   })
 })
