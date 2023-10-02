@@ -10,7 +10,7 @@ import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
 import { takeScreenshot } from 'modules/editor/actions'
-import { fetchENSWorldStatusRequest } from 'modules/ens/actions'
+import { FETCH_EXTERNAL_NAMES_SUCCESS, FetchExternalNamesSuccessAction, fetchENSWorldStatusRequest } from 'modules/ens/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getIdentity } from 'modules/identity/utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
@@ -27,6 +27,8 @@ import { getCurrentProject, getData as getProjects } from 'modules/project/selec
 import { Project } from 'modules/project/types'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { Scene } from 'modules/scene/types'
+import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
+import { getParcelOrientation } from 'modules/project/utils'
 import {
   DEPLOY_TO_POOL_REQUEST,
   deployToPoolFailure,
@@ -59,8 +61,6 @@ import {
 import { makeContentFiles } from './contentUtils'
 import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
 import { ProgressStage } from './types'
-import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
-import { getParcelOrientation } from 'modules/project/utils'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -79,6 +79,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeLatest(DEPLOY_TO_WORLD_REQUEST, handleDeployToWorldRequest)
   yield takeLatest(FETCH_WORLD_DEPLOYMENTS_REQUEST, handleFetchWorldDeploymentsRequest)
+  yield takeLatest(FETCH_EXTERNAL_NAMES_SUCCESS, handleFetchExternalNamesSuccess)
 
   function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
     const { projectId, additionalInfo } = action.payload
@@ -519,5 +520,9 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     } catch (error) {
       yield put(fetchWorldDeploymentsFailure(worlds, error.message))
     }
+  }
+
+  function* handleFetchExternalNamesSuccess(action: FetchExternalNamesSuccessAction) {
+    yield put(fetchWorldDeploymentsRequest(action.payload.names))
   }
 }
