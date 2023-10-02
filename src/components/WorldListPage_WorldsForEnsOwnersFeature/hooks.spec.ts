@@ -1,7 +1,5 @@
 import { useLocation } from 'react-router'
-import { useCurrentlySelectedTab } from './hooks'
-import { TAB_QUERY_PARAM_KEY } from './NameTabs/NameTabs'
-import { TabType } from './NameTabs/NameTabs.types'
+import { TAB_QUERY_PARAM_KEY, TabType, useCurrentlySelectedTab } from './hooks'
 
 jest.mock('react-router')
 

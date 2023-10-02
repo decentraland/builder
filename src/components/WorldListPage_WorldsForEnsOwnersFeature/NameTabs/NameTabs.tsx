@@ -1,10 +1,8 @@
 import React from 'react'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Props, TabType } from './NameTabs.types'
-import { useCurrentlySelectedTab } from '../hooks'
-
-export const TAB_QUERY_PARAM_KEY = 'tab'
+import { Props } from './NameTabs.types'
+import { TAB_QUERY_PARAM_KEY, TabType, useCurrentlySelectedTab } from '../hooks'
 
 const NameTabs = ({ onNavigate }: Props) => {
   const { tab, pathname, urlSearchParams } = useCurrentlySelectedTab()
