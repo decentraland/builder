@@ -22,7 +22,7 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
     it('should put the failure action with the request action address and the error message', () => {
       return expectSaga(worldsSaga)
         .provide([[call([content, content.fetchWalletStats], address), throwError(error)]])
-        .put(fetchWorldsWalletStatsFailure(address, error.message))
+        .put(fetchWorldsWalletStatsFailure(error.message, address))
         .dispatch(fetchWorldsWalletStatsRequest(address))
         .silentRun()
     })
@@ -32,7 +32,7 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
     it('should put the failure action with the request action address and the error message', () => {
       return expectSaga(worldsSaga)
         .provide([[call([content, content.fetchWalletStats], address), null]])
-        .put(fetchWorldsWalletStatsFailure(address, 'Could not fetch wallet stats'))
+        .put(fetchWorldsWalletStatsFailure('Could not fetch wallet stats', address))
         .dispatch(fetchWorldsWalletStatsRequest(address))
         .silentRun()
     })
