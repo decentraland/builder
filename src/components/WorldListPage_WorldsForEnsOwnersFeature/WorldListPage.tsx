@@ -147,7 +147,7 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
-  const renderEnsList = () => {
+  const renderDCLNamesList = () => {
     const total = ensList.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
     const paginatedItems = paginate()
@@ -223,7 +223,7 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
-  const renderEmptyPage = () => {
+  const renderDCLNamesEmptyPage = () => {
     return (
       <Empty className="empty-names-container" height={500}>
         <div className="empty-icon" />
@@ -246,7 +246,7 @@ const WorldListPage: React.FC<Props> = props => {
             className="worlds-storage"
           />
         ) : null}
-        {ensList.length > 0 ? renderEnsList() : renderEmptyPage()}
+        {ensList.length > 0 ? renderDCLNamesList() : renderDCLNamesEmptyPage()}
       </div>
     )
   }
