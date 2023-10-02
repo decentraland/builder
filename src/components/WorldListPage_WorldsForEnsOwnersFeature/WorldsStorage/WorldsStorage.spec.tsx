@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import WorldsStorage, { BAR_FRONT_TEST_ID, CURRENT_MBS_TEST_ID } from './WorldsStorage'
+import WorldsStorage, { CURRENT_MBS_TEST_ID, PROGRESS_TEST_ID } from './WorldsStorage'
 
 describe('when rendering the worlds storage component', () => {
   describe('when the provided current bytes is 50550000 and the max bytes is 100000000', () => {
@@ -12,7 +12,7 @@ describe('when rendering the worlds storage component', () => {
     })
 
     it('should render the storage front bar with 50%', () => {
-      expect(screen.getByTestId(BAR_FRONT_TEST_ID).style.width).toEqual('50%')
+      expect(screen.getByTestId(PROGRESS_TEST_ID).children[0].getAttribute('style')).toEqual('width: 50%;')
     })
   })
 })
