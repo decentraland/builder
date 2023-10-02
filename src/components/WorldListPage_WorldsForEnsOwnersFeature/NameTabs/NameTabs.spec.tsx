@@ -1,60 +1,55 @@
 import { ReactNode } from 'react'
-import { useLocation } from 'react-router'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import NameTabs, { TAB_QUERY_PARAM_KEY } from './NameTabs'
 import { TabType } from './NameTabs.types'
+import { UseCurrentlySelectedTabResult, useCurrentlySelectedTab } from '../hooks'
 
-jest.mock('react-router')
 jest.mock('decentraland-ui/dist/components/Media/Media')
+jest.mock('../hooks')
 
-const mockUseLocation = useLocation as jest.Mock
+const mockUseCurrentlySelectedTab = useCurrentlySelectedTab as jest.Mock
 const mockMobile = Mobile as jest.Mock
 const mockNotMobile = NotMobile as jest.Mock
 
 describe('when rendering the name tabs component', () => {
-  let location: Location
+  let useCurrentlySelectedTabResult: UseCurrentlySelectedTabResult
   let onNavigate: jest.Mock
 
   beforeEach(() => {
-    location = {
-      pathname: '/pathname'
-    } as Location
+    useCurrentlySelectedTabResult = {
+      tab: TabType.DCL,
+      pathname: '/pathname',
+      urlSearchParams: new URLSearchParams('?foo=bar')
+    } as UseCurrentlySelectedTabResult
 
-    mockUseLocation.mockReturnValueOnce(location)
+    mockUseCurrentlySelectedTab.mockReturnValueOnce(useCurrentlySelectedTabResult)
 
     onNavigate = jest.fn()
   })
 
-  describe('when the tab param is not found in the location.search property', () => {
+  describe('when the tab param is returned as undefined by the currently selected tab hook', () => {
     beforeEach(() => {
-      location.search = '?foo=bar'
+      useCurrentlySelectedTabResult.tab = undefined
     })
 
-    it('should call the on navigate prop with the current pathname + current query params + the tab query param with dcl as value', () => {
+    it('should call the on navigate prop with the pathname, url search params and an added tab query param with dcl as value', () => {
       render(<NameTabs onNavigate={onNavigate} />)
-      expect(onNavigate).toHaveBeenCalledWith(`${location.pathname}${location.search}&${TAB_QUERY_PARAM_KEY}=${TabType.DCL}`)
+      expect(onNavigate).toHaveBeenCalledWith(
+        `${useCurrentlySelectedTabResult.pathname}?${useCurrentlySelectedTabResult.urlSearchParams.toString()}&${TAB_QUERY_PARAM_KEY}=${
+          TabType.DCL
+        }`
+      )
     })
   })
 
-  describe('when the tab param is found in the location.search property but is not ens or dcl', () => {
-    beforeEach(() => {
-      location.search = `?foo=bar&${TAB_QUERY_PARAM_KEY}=invalid-tab`
-    })
-
-    it('should call the on navigate prop with the current pathname + current query params + the tab query param with dcl as value instead of the invalid value', () => {
-      render(<NameTabs onNavigate={onNavigate} />)
-      expect(onNavigate).toHaveBeenCalledWith(`${location.pathname}?foo=bar&${TAB_QUERY_PARAM_KEY}=${TabType.DCL}`)
-    })
-  })
-
-  describe('when the tab param is found in location.search and is ens or dcl', () => {
+  describe('when the tab param is returned as dcl or ens bu the currently selected tab hook', () => {
     let dclTabText: string
     let ensTabText: string
 
     beforeEach(() => {
-      location.search = `?${TAB_QUERY_PARAM_KEY}=${TabType.ENS}`
+      useCurrentlySelectedTabResult.tab = TabType.DCL
       dclTabText = 'Decentraland names'
       ensTabText = 'ENS names'
 
@@ -70,6 +65,10 @@ describe('when rendering the name tabs component', () => {
     })
 
     describe('when the tab param is ens', () => {
+      beforeEach(() => {
+        useCurrentlySelectedTabResult.tab = TabType.ENS
+      })
+
       it('should add the active css class to the ens tab', () => {
         render(<NameTabs onNavigate={onNavigate} />)
 
@@ -80,7 +79,7 @@ describe('when rendering the name tabs component', () => {
 
     describe('when the tab param is dcl', () => {
       beforeEach(() => {
-        location.search = `?${TAB_QUERY_PARAM_KEY}=${TabType.DCL}`
+        useCurrentlySelectedTabResult.tab = TabType.DCL
       })
 
       it('should add the active css class to the dcl tab', () => {
@@ -97,7 +96,11 @@ describe('when rendering the name tabs component', () => {
 
         screen.getByText(dclTabText).click()
 
-        expect(onNavigate).toHaveBeenCalledWith(`${location.pathname}?${TAB_QUERY_PARAM_KEY}=${TabType.DCL}`)
+        expect(onNavigate).toHaveBeenCalledWith(
+          `${useCurrentlySelectedTabResult.pathname}?${useCurrentlySelectedTabResult.urlSearchParams.toString()}&${TAB_QUERY_PARAM_KEY}=${
+            TabType.DCL
+          }`
+        )
       })
     })
 
@@ -107,7 +110,11 @@ describe('when rendering the name tabs component', () => {
 
         screen.getByText(ensTabText).click()
 
-        expect(onNavigate).toHaveBeenCalledWith(`${location.pathname}?${TAB_QUERY_PARAM_KEY}=${TabType.ENS}`)
+        expect(onNavigate).toHaveBeenCalledWith(
+          `${useCurrentlySelectedTabResult.pathname}?${useCurrentlySelectedTabResult.urlSearchParams.toString()}&${TAB_QUERY_PARAM_KEY}=${
+            TabType.ENS
+          }`
+        )
       })
     })
   })
