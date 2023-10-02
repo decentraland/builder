@@ -1,0 +1,30 @@
+.worldsStorage {
+  background-color: var(--dark-two);
+  border-radius: 10px;
+  padding: 22px;
+}
+
+.spaceContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.currentMbs {
+  font-size: 1.5rem;
+}
+
+.bar {
+  margin-bottom: 1rem !important;
+  background-color: #a09ba8 !important;
+}
+
+.bar:global(.ui.progress .bar) {
+  background-color: #ff2d55;
+}
+
+.viewDetails {
+  text-align: right;
+  cursor: pointer;
+  text-decoration: underline;
+}
