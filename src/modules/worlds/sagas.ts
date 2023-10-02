@@ -1,4 +1,11 @@
-import { call, put, select, takeEvery } from 'redux-saga/effects'
+import { call, put, race, select, take, takeEvery } from 'redux-saga/effects'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import {
+  CONNECT_WALLET_FAILURE,
+  CONNECT_WALLET_SUCCESS,
+  ConnectWalletFailureAction,
+  ConnectWalletSuccessAction
+} from 'decentraland-dapps/dist/modules/wallet/actions'
 import { WorldsWalletStats, content as WorldsAPIContent } from 'lib/api/worlds'
 import {
   FETCH_WORLDS_WALLET_STATS_REQUEST,
@@ -6,7 +13,6 @@ import {
   fetchWorldsWalletStatsFailure,
   fetchWorldsWalletStatsSuccess
 } from './actions'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 export function* worldsSaga() {
   yield takeEvery(FETCH_WORLDS_WALLET_STATS_REQUEST, handlefetchWorldsWalletStatsRequest)
@@ -21,7 +27,21 @@ function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequ
 
   try {
     if (!address) {
-      throw new Error('An address is required')
+      const {
+        success
+      }: {
+        success: ConnectWalletSuccessAction
+        failure: ConnectWalletFailureAction
+      } = yield race({
+        success: take(CONNECT_WALLET_SUCCESS),
+        failure: take(CONNECT_WALLET_FAILURE)
+      })
+
+      if (success) {
+        address = success.payload.wallet.address
+      } else {
+        throw new Error('An address is required')
+      }
     }
 
     const stats: WorldsWalletStats | null = yield call([WorldsAPIContent, WorldsAPIContent.fetchWalletStats], address)
