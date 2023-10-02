@@ -1,12 +1,20 @@
 import { RootState } from 'modules/common/types'
 import { INITIAL_STATE } from './reducer'
-import { getData, getError, getLoading, getState, getWalletStats } from './selectors'
+import { getConnectedWalletStats, getData, getError, getLoading, getState, getWalletStats } from './selectors'
 
+let connectedWallet: string
 let state: RootState
 
 beforeEach(() => {
+  connectedWallet = '0x123'
+
   state = {
-    worlds: INITIAL_STATE
+    worlds: { ...INITIAL_STATE, walletStats: { [connectedWallet]: {} } },
+    wallet: {
+      data: {
+        address: connectedWallet
+      }
+    }
   } as RootState
 })
 
@@ -37,5 +45,11 @@ describe('when getting the worlds error', () => {
 describe('when getting the worlds wallet stats', () => {
   it('should return the worlds wallet stats', () => {
     expect(getWalletStats(state)).toEqual(state.worlds.walletStats)
+  })
+})
+
+describe('when getting the worlds wallet stats for the connected wallet', () => {
+  it('should return the worlds wallet stats for the connected wallet', () => {
+    expect(getConnectedWalletStats(state)).toEqual(state.worlds.walletStats[connectedWallet])
   })
 })

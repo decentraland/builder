@@ -40,7 +40,7 @@ describe('when handling the action to fetch worlds stats for a wallet', () => {
     })
 
     it('should remove the action from loading and set the error', () => {
-      const action = fetchWorldsWalletStatsFailure(address, error)
+      const action = fetchWorldsWalletStatsFailure(error, address)
 
       expect(worldsReducer(state, action)).toEqual({
         ...state,
