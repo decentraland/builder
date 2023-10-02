@@ -38,7 +38,7 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
     })
   })
 
-  describe('when the worlds api request return the stats', () => {
+  describe('when the worlds api request returns the stats', () => {
     let stats: WorldsWalletStats
 
     beforeEach(() => {
