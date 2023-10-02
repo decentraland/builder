@@ -1,11 +1,6 @@
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { Dispatch } from 'react'
 
-export enum TabType {
-  DCL = 'dcl',
-  ENS = 'ens'
-}
-
 export type Props = {
   onNavigate: (to: string) => void
 }
