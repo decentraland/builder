@@ -7,6 +7,7 @@ import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
@@ -73,14 +74,11 @@ import {
   FetchExternalNamesRequestAction,
   fetchExternalNamesSuccess,
   fetchExternalNamesFailure,
-  fetchExternalNamesRequest,
-  FetchExternalNamesSuccessAction,
-  FETCH_EXTERNAL_NAMES_SUCCESS
+  fetchExternalNamesRequest
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
-import { getDomainFromName, isExternalName } from './utils'
-import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { addWorldStatusToEachENS, getDomainFromName, isExternalName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -95,7 +93,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeEvery(RECLAIM_NAME_REQUEST, handleReclaimNameRequest)
   yield takeEvery(FETCH_EXTERNAL_NAMES_REQUEST, handleFetchExternalNamesRequest)
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWallet)
-  yield takeEvery(FETCH_EXTERNAL_NAMES_SUCCESS, handleFetchExternalNamesSuccess)
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSAuthorizationRequest())
@@ -532,7 +529,11 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
         }
       })
 
-      yield put(fetchExternalNamesSuccess(owner, enss))
+      const enssWithWorldStatus: ENS[] = yield call(addWorldStatusToEachENS, enss)
+
+      yield put(fetchWorldDeploymentsRequest(enssWithWorldStatus.filter(ens => ens.worldStatus).map(ens => ens.subdomain)))
+
+      yield put(fetchExternalNamesSuccess(owner, enssWithWorldStatus))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
       yield put(fetchExternalNamesFailure(ensError, owner))
@@ -541,9 +542,5 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
   function* handleConnectWallet(action: ConnectWalletSuccessAction) {
     yield put(fetchExternalNamesRequest(action.payload.wallet.address))
-  }
-
-  function* handleFetchExternalNamesSuccess(action: FetchExternalNamesSuccessAction) {
-    console.log(action)
   }
 }

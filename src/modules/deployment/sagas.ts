@@ -10,7 +10,7 @@ import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
 import { takeScreenshot } from 'modules/editor/actions'
-import { FETCH_EXTERNAL_NAMES_SUCCESS, FetchExternalNamesSuccessAction, fetchENSWorldStatusRequest } from 'modules/ens/actions'
+import { fetchENSWorldStatusRequest } from 'modules/ens/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getIdentity } from 'modules/identity/utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
@@ -79,7 +79,6 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeLatest(DEPLOY_TO_WORLD_REQUEST, handleDeployToWorldRequest)
   yield takeLatest(FETCH_WORLD_DEPLOYMENTS_REQUEST, handleFetchWorldDeploymentsRequest)
-  yield takeLatest(FETCH_EXTERNAL_NAMES_SUCCESS, handleFetchExternalNamesSuccess)
 
   function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
     const { projectId, additionalInfo } = action.payload
@@ -520,9 +519,5 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     } catch (error) {
       yield put(fetchWorldDeploymentsFailure(worlds, error.message))
     }
-  }
-
-  function* handleFetchExternalNamesSuccess(action: FetchExternalNamesSuccessAction) {
-    yield put(fetchWorldDeploymentsRequest(action.payload.names.map(name => name.subdomain)))
   }
 }

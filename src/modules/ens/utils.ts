@@ -2,10 +2,12 @@ import { ethers } from 'ethers'
 import { Entity } from '@dcl/schemas'
 import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
+import { extractEntityId } from 'lib/urn'
+import { WorldInfo, content } from 'lib/api/worlds'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { Land } from 'modules/land/types'
 import { REGISTRAR_ADDRESS } from 'modules/common/contracts'
-import { ENS } from './types'
+import { ENS, WorldStatus } from './types'
 
 export const PRICE_IN_WEI = '100000000000000000000' // 100 MANA
 export const PRICE = ethers.utils.formatEther(PRICE_IN_WEI)
@@ -85,4 +87,36 @@ export function isEnoughClaimMana(mana: string) {
 
 export function isExternalName(subdomain: string) {
   return !subdomain.endsWith('dcl.eth')
+}
+
+export async function addWorldStatusToEachENS(enss: ENS[]) {
+  const enssWithWorldStatus: ENS[] = []
+
+  // This will be slow for users with plenty of ens names.
+  // Same happens with dcl names as it uses a similar logic of fetching world info 1 by 1.
+  for (const ens of enss) {
+    let worldStatus: WorldStatus | null = null
+
+    const world: WorldInfo | null = await content.fetchWorld(ens.subdomain)
+
+    if (world) {
+      const { healthy, configurations } = world
+      const entityId = extractEntityId(configurations.scenesUrn[0])
+
+      worldStatus = {
+        healthy,
+        scene: {
+          urn: configurations.scenesUrn[0],
+          entityId
+        }
+      }
+    }
+
+    enssWithWorldStatus.push({
+      ...ens,
+      worldStatus
+    })
+  }
+
+  return enssWithWorldStatus
 }

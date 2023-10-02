@@ -13,7 +13,6 @@ import { getName } from 'modules/profile/selectors'
 import { getData } from 'modules/project/selectors'
 import { createFiles } from 'modules/project/export'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { fetchExternalNamesSuccess } from 'modules/ens/actions'
 import { deployToWorldRequest, fetchWorldDeploymentsRequest, fetchWorldDeploymentsSuccess } from './actions'
 import { deploymentSaga } from './sagas'
 import { makeContentFiles } from './contentUtils'
@@ -146,37 +145,6 @@ describe('when handling fetch worlds deployments request', () => {
         ] as unknown as Deployment[])
       )
       .dispatch(fetchWorldDeploymentsRequest(worlds))
-      .silentRun()
-  })
-})
-
-describe('when handling the success action to fetch external names', () => {
-  it('should put the request action to fetch world deployments with the external names from the actoin', () => {
-    const owner = '0x123'
-    return expectSaga(deploymentSaga, builderAPI, catalystClient)
-      .put(fetchWorldDeploymentsRequest(['name1.eth', 'name2.eth']))
-      .dispatch(
-        fetchExternalNamesSuccess(owner, [
-          {
-            subdomain: 'name1.eth',
-            nftOwnerAddress: owner,
-            name: 'name1.eth',
-            content: '',
-            ensOwnerAddress: '',
-            resolver: '',
-            tokenId: ''
-          },
-          {
-            subdomain: 'name2.eth',
-            nftOwnerAddress: owner,
-            name: 'name2.eth',
-            content: '',
-            ensOwnerAddress: '',
-            resolver: '',
-            tokenId: ''
-          }
-        ])
-      )
       .silentRun()
   })
 })

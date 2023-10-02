@@ -11,6 +11,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { CONTROLLER_V2_ADDRESS, ENS_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
+import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { DclListsAPI } from 'lib/api/lists'
 import { WorldInfo, WorldsAPI, content } from 'lib/api/worlds'
 import { MarketplaceAPI } from 'lib/api/marketplace'
@@ -31,8 +32,9 @@ import {
   fetchExternalNamesSuccess
 } from './actions'
 import { ensSaga } from './sagas'
-import { ENS, ENSError } from './types'
+import { ENS, ENSError, WorldStatus } from './types'
 import { getENSBySubdomain, getExternalNames } from './selectors'
+import { addWorldStatusToEachENS } from './utils'
 
 jest.mock('@dcl/builder-client')
 
@@ -187,6 +189,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
             [call(getAddressOrWaitConnection), getAddressOrWaitConnectionResult],
             [call([ensApi, ensApi.fetchExternalNames], getAddressOrWaitConnectionResult!), []]
           ])
+          .put(fetchWorldDeploymentsRequest([]))
           .put(fetchExternalNamesSuccess(getAddressOrWaitConnectionResult!, []))
           .dispatch(fetchExternalNamesRequest())
           .silentRun()
@@ -234,30 +237,41 @@ describe('when handling the fetching of external ens names for an owner', () => 
 
     describe('when fetchENSList returns an array of names', () => {
       it('should dispatch a success action with the owner and the names', async () => {
+        const enss: ENS[] = [
+          {
+            subdomain: 'name1.eth',
+            nftOwnerAddress: owner,
+            name: 'name1.eth',
+            content: '',
+            ensOwnerAddress: '',
+            resolver: '',
+            tokenId: ''
+          },
+          {
+            subdomain: 'name2.eth',
+            nftOwnerAddress: owner,
+            name: 'name2.eth',
+            content: '',
+            ensOwnerAddress: '',
+            resolver: '',
+            tokenId: ''
+          }
+        ]
+
+        const withWorldStatus: ENS[] = enss.map(ens => ({
+          ...ens,
+          worldStatus: {} as WorldStatus
+        }))
+
+        const worlds = withWorldStatus.map(ens => ens.subdomain)
+
         await expectSaga(ensSaga, builderClient, ensApi)
-          .provide([[call([ensApi, ensApi.fetchExternalNames], owner), ['name1.eth', 'name2.eth']]])
-          .put(
-            fetchExternalNamesSuccess(owner, [
-              {
-                subdomain: 'name1.eth',
-                nftOwnerAddress: owner,
-                name: 'name1.eth',
-                content: '',
-                ensOwnerAddress: '',
-                resolver: '',
-                tokenId: ''
-              },
-              {
-                subdomain: 'name2.eth',
-                nftOwnerAddress: owner,
-                name: 'name2.eth',
-                content: '',
-                ensOwnerAddress: '',
-                resolver: '',
-                tokenId: ''
-              }
-            ])
-          )
+          .provide([
+            [call([ensApi, ensApi.fetchExternalNames], owner), worlds],
+            [call(addWorldStatusToEachENS, enss), withWorldStatus]
+          ])
+          .put(fetchWorldDeploymentsRequest(worlds))
+          .put(fetchExternalNamesSuccess(owner, withWorldStatus))
           .dispatch(fetchExternalNamesRequest(owner))
           .silentRun()
       })
@@ -378,7 +392,7 @@ describe('when handling the fetch ens world status request', () => {
 })
 
 describe('when handling the wallet connection', () => {
-  it('should put the action to external names', async () => {
+  it('should put the request action to fetch external names', async () => {
     const address = '0x123'
     await expectSaga(ensSaga, builderClient, ensApi)
       .put(fetchExternalNamesRequest(address))
