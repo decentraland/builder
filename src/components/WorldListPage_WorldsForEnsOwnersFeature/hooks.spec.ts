@@ -5,7 +5,7 @@ jest.mock('react-router')
 
 const mockUseLocation = useLocation as jest.Mock
 
-describe('when calling the use currently selceted tab hook', () => {
+describe('when calling the use currently selected tab hook', () => {
   let location: Location
 
   beforeEach(() => {
