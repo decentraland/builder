@@ -2,12 +2,14 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { call, select } from 'redux-saga/effects'
+import { ethers } from 'ethers'
 import { BuilderClient } from '@dcl/builder-client'
 import { ChainId, Network } from '@dcl/schemas'
 import { ERC20__factory, ERC20, DCLController__factory, DCLRegistrar__factory, ENS__factory } from 'contracts'
 import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { ethers } from 'ethers'
+import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { CONTROLLER_V2_ADDRESS, ENS_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { DclListsAPI } from 'lib/api/lists'
 import { WorldInfo, WorldsAPI, content } from 'lib/api/worlds'
@@ -357,5 +359,15 @@ describe('when handling the fetch ens world status request', () => {
         })
       })
     })
+  })
+})
+
+describe('when handling the wallet connection', () => {
+  it('should put the action to external names ', async () => {
+    const address = '0x123'
+    await expectSaga(ensSaga, builderClient, ensApi)
+      .put(fetchExternalNamesRequest(address))
+      .dispatch(connectWalletSuccess({ address } as Wallet))
+      .silentRun()
   })
 })

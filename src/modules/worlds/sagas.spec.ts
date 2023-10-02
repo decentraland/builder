@@ -1,13 +1,16 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import { call } from 'redux-saga/effects'
 import { throwError } from 'redux-saga-test-plan/providers'
+import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { WorldsWalletStats, content } from 'lib/api/worlds'
 import { getAddressOrWaitConnection } from 'modules/wallet/utils'
 import { fetchWorldsWalletStatsFailure, fetchWorldsWalletStatsRequest, fetchWorldsWalletStatsSuccess } from './actions'
 import { worldsSaga } from './sagas'
 
+let address: string | undefined
+
 describe('when handling the request action to fetch worlds stats for a wallet', () => {
-  let address: string | undefined
   let stats: WorldsWalletStats
 
   describe('when the address is provided in the action', () => {
@@ -111,5 +114,18 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
           .silentRun()
       })
     })
+  })
+})
+
+describe('when the wallet connects', () => {
+  beforeEach(() => {
+    address = '0x123'
+  })
+
+  it('should put the action to fetch worlds stats for the connected wallet address', () => {
+    return expectSaga(worldsSaga)
+      .put(fetchWorldsWalletStatsRequest(address))
+      .dispatch(connectWalletSuccess({ address: address! } as Wallet))
+      .silentRun()
   })
 })
