@@ -72,11 +72,13 @@ import {
   FETCH_EXTERNAL_NAMES_REQUEST,
   FetchExternalNamesRequestAction,
   fetchExternalNamesSuccess,
-  fetchExternalNamesFailure
+  fetchExternalNamesFailure,
+  fetchExternalNamesRequest
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDomainFromName, isExternalName } from './utils'
+import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -90,6 +92,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
   yield takeEvery(RECLAIM_NAME_REQUEST, handleReclaimNameRequest)
   yield takeEvery(FETCH_EXTERNAL_NAMES_REQUEST, handleFetchExternalNamesRequest)
+  yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWallet)
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSAuthorizationRequest())
@@ -519,5 +522,9 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       const ensError: ENSError = { message: error.message }
       yield put(fetchExternalNamesFailure(ensError, owner))
     }
+  }
+
+  function* handleConnectWallet(action: ConnectWalletSuccessAction) {
+    yield put(fetchExternalNamesRequest(action.payload.wallet.address))
   }
 }
