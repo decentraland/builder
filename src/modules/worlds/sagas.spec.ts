@@ -28,7 +28,7 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
     })
   })
 
-  describe('when the worlds api request return null', () => {
+  describe('when the worlds api request returns null', () => {
     it('should put the failure action with the request action address and the error message', () => {
       return expectSaga(worldsSaga)
         .provide([[call([content, content.fetchWalletStats], address), null]])
