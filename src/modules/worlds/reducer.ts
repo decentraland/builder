@@ -11,7 +11,7 @@ import { WorldsWalletStats } from 'lib/api/worlds'
 
 export type WorldsState = {
   // TODO: Find a use for the data object when there is something more relevant as the core data for the worlds module.
-  data: Record<string, any>
+  data: Record<string, unknown>
   walletStats: Record<string, WorldsWalletStats>
   loading: LoadingState
   error: string | null

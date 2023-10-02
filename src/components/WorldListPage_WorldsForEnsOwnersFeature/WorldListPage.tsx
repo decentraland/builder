@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Button,
@@ -33,7 +33,7 @@ const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
-  const { ensList, error, deploymentsByWorlds, isLoading, projects, onNavigate } = props
+  const { ensList, error, deploymentsByWorlds, isLoading, projects, worldsWalletStats, onNavigate, onFetchWorldsWalletStats } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
 
@@ -239,7 +239,13 @@ const WorldListPage: React.FC<Props> = props => {
   const renderDCLNamesView = () => {
     return (
       <div>
-        <WorldsStorage maxBytes={100000000} currentBytes={75000000} className="worlds-storage" />
+        {worldsWalletStats ? (
+          <WorldsStorage
+            maxBytes={Number(worldsWalletStats.maxAllowedSpace)}
+            currentBytes={Number(worldsWalletStats.usedSpace)}
+            className="worlds-storage"
+          />
+        ) : null}
         {ensList.length > 0 ? renderEnsList() : renderEmptyPage()}
       </div>
     )
@@ -248,6 +254,10 @@ const WorldListPage: React.FC<Props> = props => {
   const renderENSNamesView = () => {
     return <div>ENS Names view</div>
   }
+
+  useEffect(() => {
+    onFetchWorldsWalletStats()
+  }, [onFetchWorldsWalletStats])
 
   return (
     <LoggedInDetailPage

@@ -46,6 +46,7 @@ import { collectionCurationSaga } from 'modules/curations/collectionCuration/sag
 import { getPeerWithNoGBCollectorURL } from './utils'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
 import { inspectorSaga } from 'modules/inspector/sagas'
+import { worldsSaga } from 'modules/worlds/sagas'
 import { RootStore } from './types'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL() })
@@ -95,6 +96,7 @@ export function* rootSaga(
     featuresSaga({ polling: { apps: [ApplicationName.BUILDER], delay: 60000 /** 60 seconds */ } }),
     inspectorSaga(builderAPI, store),
     loginSaga(),
-    newsletterSagas(builderAPI)
+    newsletterSagas(builderAPI),
+    worldsSaga()
   ])
 }
