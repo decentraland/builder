@@ -166,3 +166,7 @@
 .WorldListPage .ui.dropdown {
   margin-right: 20px;
 }
+
+.WorldListPage .worlds-storage {
+  margin-bottom: 24px;
+}

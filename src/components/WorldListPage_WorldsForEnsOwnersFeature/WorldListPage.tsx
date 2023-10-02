@@ -25,6 +25,7 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
+import { TabType, useCurrentlySelectedTab } from './hooks'
 import './WorldListPage.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
@@ -35,6 +36,8 @@ const WorldListPage: React.FC<Props> = props => {
   const { ensList, error, deploymentsByWorlds, isLoading, projects, onNavigate } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
+
+  const { tab } = useCurrentlySelectedTab()
 
   const isWorldDeployed = (ens: ENS) => {
     if (ens.worldStatus?.healthy) {
@@ -233,6 +236,19 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
+  const renderDCLNamesView = () => {
+    return (
+      <div>
+        <WorldsStorage maxBytes={100000000} currentBytes={75000000} className="worlds-storage" />
+        {ensList.length > 0 ? renderEnsList() : renderEmptyPage()}
+      </div>
+    )
+  }
+
+  const renderENSNamesView = () => {
+    return <div>ENS Names view</div>
+  }
+
   return (
     <LoggedInDetailPage
       className="WorldListPage view"
@@ -245,16 +261,8 @@ const WorldListPage: React.FC<Props> = props => {
       <Container>
         <h1>Worlds</h1>
         <NameTabs />
-        <div
-          style={{
-            marginBottom: '1rem'
-          }}
-        >
-          <WorldsStorage maxBytes={100000000} currentBytes={75000000} />
-        </div>
+        {tab === TabType.DCL ? renderDCLNamesView() : renderENSNamesView()}
       </Container>
-      {/** Old ens list which will be removed or replaced with the new worlds for ens owners feature */}
-      {ensList.length > 0 ? renderEnsList() : renderEmptyPage()}
     </LoggedInDetailPage>
   )
 }
