@@ -150,11 +150,12 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
-  const renderWorldSize = (_ens: ENS, stats?: WorldsWalletStats) => {
+  const renderWorldSize = (ens: ENS, stats?: WorldsWalletStats) => {
     const names = tab === TabType.DCL ? stats?.dclNames : stats?.ensNames
-    const bytes = names?.find(dclName => dclName.name === _ens.subdomain)?.size
+    const bytes = names?.find(dclName => dclName.name === ens.subdomain)?.size
+    const suffix = tab === TabType.ENS ? ' / 25' : ''
 
-    return !bytes ? '-' : fromBytesToMegabytes(Number(bytes)).toFixed(2) + ' / 25'
+    return !bytes ? '-' : fromBytesToMegabytes(Number(bytes)).toFixed(2) + suffix
   }
 
   const renderList = () => {
