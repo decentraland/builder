@@ -42,7 +42,7 @@ describe('when rendering the worlds storage component', () => {
     beforeEach(() => {
       render(<WorldsStorage currentBytes={currentBytes} maxBytes={maxBytes} />)
     })
-    
+
     it('should set the classname to the root element', () => {
       expect(screen.getByTestId(WORLDS_STORAGE_TEST_ID).className).toEqual('worldsStorage')
     })
