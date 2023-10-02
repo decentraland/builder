@@ -1,4 +1,4 @@
-import { WalletStats, content } from './worlds'
+import { WorldsWalletStats, content } from './worlds'
 
 beforeEach(() => {
   global.fetch = jest.fn()
@@ -22,7 +22,7 @@ describe('when fetching the world stats for a wallet', () => {
   })
 
   describe('when the fetch result is ok', () => {
-    let walletStats: WalletStats
+    let walletStats: WorldsWalletStats
 
     beforeEach(() => {
       walletStats = {
