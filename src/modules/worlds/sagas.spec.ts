@@ -1,15 +1,8 @@
 import { expectSaga } from 'redux-saga-test-plan'
-import { call, select, take } from 'redux-saga/effects'
+import { call } from 'redux-saga/effects'
 import { throwError } from 'redux-saga-test-plan/providers'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import {
-  CONNECT_WALLET_FAILURE,
-  CONNECT_WALLET_SUCCESS,
-  connectWalletFailure,
-  connectWalletSuccess
-} from 'decentraland-dapps/dist/modules/wallet/actions'
 import { WorldsWalletStats, content } from 'lib/api/worlds'
+import { getAddressOrWaitConnection } from 'modules/wallet/utils'
 import { fetchWorldsWalletStatsFailure, fetchWorldsWalletStatsRequest, fetchWorldsWalletStatsSuccess } from './actions'
 import { worldsSaga } from './sagas'
 
@@ -70,92 +63,52 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
   })
 
   describe('when the address is not provided in the action', () => {
-    let addressInStore: string | undefined
+    let getAddressOrWaitConnectionResult: string | undefined
 
     beforeEach(() => {
       address = undefined
     })
 
-    describe('and there is an address available in the store', () => {
+    describe('and the get address or wait for connection function returns an address', () => {
       beforeEach(() => {
-        addressInStore = '0x123'
+        getAddressOrWaitConnectionResult = '0x123'
       })
 
-      describe('and the request to fetch wallet stats responds with the worlds wallet stats', () => {
+      describe('and the request to fetch wallet stats responds with the wallet stats', () => {
         beforeEach(() => {
           stats = {
             dclNames: [],
             ensNames: [],
             maxAllowedSpace: '',
             usedSpace: '',
-            wallet: addressInStore!
+            wallet: getAddressOrWaitConnectionResult!
           }
         })
 
-        it('should put the success action with the address in the store and the stats', () => {
+        it('should put the success action with the address from the get address or wait for connection function and the stats', () => {
           return expectSaga(worldsSaga)
             .provide([
-              [select(getAddress), addressInStore],
-              [call([content, content.fetchWalletStats], addressInStore!), stats]
+              [call(getAddressOrWaitConnection), getAddressOrWaitConnectionResult],
+              [call([content, content.fetchWalletStats], getAddressOrWaitConnectionResult!), stats]
             ])
-            .put(fetchWorldsWalletStatsSuccess(addressInStore!, stats))
+            .put(fetchWorldsWalletStatsSuccess(getAddressOrWaitConnectionResult!, stats))
             .dispatch(fetchWorldsWalletStatsRequest(address))
             .silentRun()
         })
       })
     })
 
-    describe('and there is no address available in the store', () => {
-      let connectProvide: any
-      let connectionAddress: string
-
+    describe('and the get address or wait for connection function does not return an address', () => {
       beforeEach(() => {
-        addressInStore = undefined
+        getAddressOrWaitConnectionResult = undefined
       })
 
-      describe('and the wallet connection fails', () => {
-        beforeEach(() => {
-          connectProvide = [take(CONNECT_WALLET_FAILURE), connectWalletFailure('some error')]
-        })
-
-        it('should put a failure action with an undefined address and the error message', () => {
-          return expectSaga(worldsSaga)
-            .provide([[select(getAddress), addressInStore], connectProvide])
-            .put(fetchWorldsWalletStatsFailure('An address is required', addressInStore))
-            .dispatch(fetchWorldsWalletStatsRequest(address))
-            .silentRun()
-        })
-      })
-
-      describe('and the wallet connection does not fail', () => {
-        beforeEach(() => {
-          connectionAddress = '0x123'
-          connectProvide = [take(CONNECT_WALLET_SUCCESS), connectWalletSuccess({ address: connectionAddress } as Wallet)]
-        })
-
-        describe('and the request to fetch wallet stats responds with the worlds wallet stats', () => {
-          beforeEach(() => {
-            stats = {
-              dclNames: [],
-              ensNames: [],
-              maxAllowedSpace: '',
-              usedSpace: '',
-              wallet: connectionAddress
-            }
-          })
-
-          it('should put the success action with the connection address and the stats', () => {
-            return expectSaga(worldsSaga)
-              .provide([
-                [select(getAddress), addressInStore],
-                connectProvide,
-                [call([content, content.fetchWalletStats], connectionAddress), stats]
-              ])
-              .put(fetchWorldsWalletStatsSuccess(connectionAddress, stats))
-              .dispatch(fetchWorldsWalletStatsRequest(address))
-              .silentRun()
-          })
-        })
+      it('should put a failure action with an undefined address and the error message', () => {
+        return expectSaga(worldsSaga)
+          .provide([[call(getAddressOrWaitConnection), getAddressOrWaitConnectionResult]])
+          .put(fetchWorldsWalletStatsFailure('An address is required', getAddressOrWaitConnectionResult))
+          .dispatch(fetchWorldsWalletStatsRequest(address))
+          .silentRun()
       })
     })
   })
