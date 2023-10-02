@@ -17,7 +17,7 @@ import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory
 import { DCLController__factory } from 'contracts/factories/DCLController__factory'
 import { ERC20__factory } from 'contracts/factories/ERC20__factory'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_V2_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
-import { getWallet } from 'modules/wallet/utils'
+import { getAddressOrWaitConnection, getWallet } from 'modules/wallet/utils'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
@@ -505,7 +505,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   }
 
   function* handleFetchExternalNamesRequest(action: FetchExternalNamesRequestAction) {
-    const owner = action.payload.owner ?? (yield select(getAddress))
+    const owner = action.payload.owner ?? (yield call(getAddressOrWaitConnection))
 
     try {
       if (!owner) {
@@ -513,6 +513,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       }
 
       const names: string[] = yield call([ensApi, ensApi.fetchExternalNames], owner)
+
       yield put(fetchExternalNamesSuccess(owner, names))
     } catch (error) {
       const ensError: ENSError = { message: error.message }

@@ -19,6 +19,7 @@ export type Props = {
   worldsWalletStats?: WorldsWalletStats
   onNavigate: (path: string) => void
   onFetchWorldsWalletStats: () => void
+  onFetchExternalNames: () => void
 }
 
 export type State = {
@@ -30,5 +31,5 @@ export type MapStateProps = Pick<
   Props,
   'ensList' | 'deploymentsByWorlds' | 'isLoading' | 'error' | 'projects' | 'isLoggedIn' | 'worldsWalletStats'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onFetchWorldsWalletStats'>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onFetchWorldsWalletStats' | 'onFetchExternalNames'>
 export type MapDispatch = Dispatch

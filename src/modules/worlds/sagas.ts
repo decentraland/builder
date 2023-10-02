@@ -1,11 +1,5 @@
-import { call, put, race, select, take, takeEvery } from 'redux-saga/effects'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import {
-  CONNECT_WALLET_FAILURE,
-  CONNECT_WALLET_SUCCESS,
-  ConnectWalletFailureAction,
-  ConnectWalletSuccessAction
-} from 'decentraland-dapps/dist/modules/wallet/actions'
+import { call, put, takeEvery } from 'redux-saga/effects'
+import { getAddressOrWaitConnection } from 'modules/wallet/utils'
 import { WorldsWalletStats, content as WorldsAPIContent } from 'lib/api/worlds'
 import {
   FETCH_WORLDS_WALLET_STATS_REQUEST,
@@ -25,29 +19,11 @@ export function* worldsSaga() {
  * If called without a connected wallet and providing no address, it will get stuck until a wallet is connected.
  */
 function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequestAction) {
-  let address = action.payload.address
-
-  if (!address) {
-    address = yield select(getAddress)
-  }
+  const address = action.payload.address ?? (yield call(getAddressOrWaitConnection))
 
   try {
     if (!address) {
-      const {
-        success
-      }: {
-        success: ConnectWalletSuccessAction
-        failure: ConnectWalletFailureAction
-      } = yield race({
-        success: take(CONNECT_WALLET_SUCCESS),
-        failure: take(CONNECT_WALLET_FAILURE)
-      })
-
-      if (success) {
-        address = success.payload.wallet.address
-      } else {
-        throw new Error('An address is required')
-      }
+      throw new Error('An address is required')
     }
 
     const stats: WorldsWalletStats | null = yield call([WorldsAPIContent, WorldsAPIContent.fetchWalletStats], address)

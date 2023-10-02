@@ -35,7 +35,17 @@ const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
-  const { ensList, error, deploymentsByWorlds, isLoading, projects, worldsWalletStats, onNavigate, onFetchWorldsWalletStats } = props
+  const {
+    ensList,
+    error,
+    deploymentsByWorlds,
+    isLoading,
+    projects,
+    worldsWalletStats,
+    onNavigate,
+    onFetchWorldsWalletStats,
+    onFetchExternalNames
+  } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
 
@@ -270,7 +280,8 @@ const WorldListPage: React.FC<Props> = props => {
 
   useEffect(() => {
     onFetchWorldsWalletStats()
-  }, [onFetchWorldsWalletStats])
+    onFetchExternalNames()
+  }, [onFetchWorldsWalletStats, onFetchExternalNames])
 
   return (
     <LoggedInDetailPage
