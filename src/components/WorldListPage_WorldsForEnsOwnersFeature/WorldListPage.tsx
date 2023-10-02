@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Button,
@@ -32,7 +32,7 @@ const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
-  const { ensList, error, deploymentsByWorlds, isLoading, projects, onNavigate } = props
+  const { ensList, error, deploymentsByWorlds, isLoading, projects, worldsWalletStats, onNavigate, onFetchWorldsWalletStats } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
 
@@ -233,6 +233,10 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
+  useEffect(() => {
+    onFetchWorldsWalletStats()
+  }, [onFetchWorldsWalletStats])
+
   return (
     <LoggedInDetailPage
       className="WorldListPage view"
@@ -250,7 +254,9 @@ const WorldListPage: React.FC<Props> = props => {
             marginBottom: '1rem'
           }}
         >
-          <WorldsStorage maxBytes={100000000} currentBytes={75000000} />
+          {worldsWalletStats ? (
+            <WorldsStorage maxBytes={Number(worldsWalletStats.maxAllowedSpace)} currentBytes={Number(worldsWalletStats.usedSpace)} />
+          ) : null}
         </div>
       </Container>
       {/** Old ens list which will be removed or replaced with the new worlds for ens owners feature */}
