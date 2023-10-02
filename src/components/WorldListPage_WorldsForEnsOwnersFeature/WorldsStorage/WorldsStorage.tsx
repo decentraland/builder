@@ -1,4 +1,5 @@
 import React from 'react'
+import classnames from 'classnames'
 import { Progress } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './WorldsStorage.types'
@@ -6,14 +7,15 @@ import styles from './WorldsStorage.module.css'
 
 export const CURRENT_MBS_TEST_ID = 'worlds-storage-current-mbs'
 export const PROGRESS_TEST_ID = 'worlds-storage-bar-front'
+export const WORLDS_STORAGE_TEST_ID = 'worlds-storage'
 
-const WorldsStorage = ({ maxBytes, currentBytes }: Props) => {
+const WorldsStorage = ({ maxBytes, currentBytes, className }: Props) => {
   const maxMbs = maxBytes / 1000000
   const currentMbs = currentBytes / 1000000
   const usedPercentage = (currentMbs * 100) / maxMbs
 
   return (
-    <div className={styles.worldsStorage}>
+    <div data-testid={WORLDS_STORAGE_TEST_ID} className={classnames(styles.worldsStorage, className)}>
       <div className={styles.spaceContainer}>
         <span>{t('worlds_list_page.worlds_storage.space_used')}</span>
         <div data-testid={CURRENT_MBS_TEST_ID}>
