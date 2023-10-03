@@ -19,8 +19,8 @@ describe('when rendering the worlds storage component', () => {
       render(<WorldsStorage currentBytes={currentBytes} maxBytes={maxBytes} />)
     })
 
-    it('should render 50.55/100.00mb', () => {
-      expect(screen.getByTestId(CURRENT_MBS_TEST_ID).textContent).toEqual('50.55 / 100.00 Mb')
+    it('should render 48.21 / 95.37 Mb', () => {
+      expect(screen.getByTestId(CURRENT_MBS_TEST_ID).textContent).toEqual('48.21 / 95.37 Mb')
     })
 
     it('should render the storage front bar with 50%', () => {
