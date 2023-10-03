@@ -4,8 +4,6 @@ export const getSizesFromDeploymentError = (error: string) => {
   // eslint-disable-next-line
   const match = error.match(pattern)
 
-  console.log('baz', match)
-
   if (match?.length !== 3) {
     return null
   }
