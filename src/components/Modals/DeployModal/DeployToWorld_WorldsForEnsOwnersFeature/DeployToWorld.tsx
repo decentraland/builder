@@ -13,9 +13,9 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
 import { DeployToWorldView, NameType, Props } from './DeployToWorld.types'
+import { getSizesFromDeploymentError } from './utils'
 import dclImage from './images/dcl.svg'
 import ensImage from './images/ens.svg'
-
 import styles from './DeployToWorld.module.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
@@ -280,11 +280,28 @@ export default function DeployToWorld({
   }
 
   const renderFailureState = () => {
+    let subtitle: string = t('deployment_modal.deploy_world.failure.subtitle')
+
+    if (error) {
+      const sizes = getSizesFromDeploymentError(error)
+
+      if (sizes) {
+        const { maxSizeMbs, deployedSizedMbs } = sizes
+
+        subtitle = t('deployment_modal.deploy_world.failure.subtitle_size_error', {
+          maxSizeMbs,
+          deployedSizedMbs,
+          br: () => <br />,
+          b: (text: string) => <b>{text}</b>
+        })
+      }
+    }
+
     return (
       <div className={`${styles.modalBodyState} ${styles.modalBodyFailureState}`}>
         <div className={styles.failureImage} aria-label={project?.description} role="img" />
         <h1 className={styles.modalHeader}>{t('deployment_modal.deploy_world.failure.title')}</h1>
-        <span className={styles.description}>{t('deployment_modal.deploy_world.failure.subtitle')}</span>
+        <span className={styles.description}>{subtitle}</span>
       </div>
     )
   }
