@@ -601,6 +601,8 @@
       "status": "Status",
       "status_active": "Active",
       "status_inactive": "Inactive",
+      "status_warning": "Warning",
+      "status_blocked": "Blocked",
       "actions": "Actions",
       "empty_url": "To activate this world you need to publish a scene",
       "size": "Size Mb"

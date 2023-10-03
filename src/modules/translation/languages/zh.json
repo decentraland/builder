@@ -605,6 +605,8 @@
       "status": "地位",
       "status_active": "积极的",
       "status_inactive": "不活动",
+      "status_warning": "注意力",
+      "status_blocked": "锁定",
       "actions": "动作",
       "empty_url": "要激活这个世界，您需要发布一个场景",
       "size": "重量 Mb"

@@ -603,6 +603,8 @@
       "status": "Estado",
       "status_active": "Activo",
       "status_inactive": "Inactivo",
+      "status_warning": "Atención",
+      "status_blocked": "Bloqueado",
       "actions": "Acciones",
       "empty_url": "Para activar este mundo, necesitas publicar una escena",
       "size": "Peso Mb"

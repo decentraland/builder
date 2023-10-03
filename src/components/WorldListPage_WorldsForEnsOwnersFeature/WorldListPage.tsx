@@ -18,6 +18,7 @@ import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { WorldsWalletStats } from 'lib/api/worlds'
 import { ENS } from 'modules/ens/types'
+import { isExternalName } from 'modules/ens/utils'
 import { locations } from 'routing/locations'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
@@ -124,7 +125,21 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const renderWorldStatus = (ens: ENS) => {
-    const status = isWorldDeployed(ens) ? 'active' : 'inactive'
+    let status = isWorldDeployed(ens) ? 'active' : 'inactive'
+
+    if (status === 'active' && worldsWalletStats && !isExternalName(ens.subdomain)) {
+      const blockedSince = new Date(worldsWalletStats.blockedSince).getTime()
+      const now = new Date().getTime()
+
+      if (now >= blockedSince) {
+        if (now - blockedSince > 48 * 60 * 60 * 1000 /* 48 hours */) {
+          status = 'blocked'
+        } else {
+          status = 'warning'
+        }
+      }
+    }
+
     return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
   }
 
