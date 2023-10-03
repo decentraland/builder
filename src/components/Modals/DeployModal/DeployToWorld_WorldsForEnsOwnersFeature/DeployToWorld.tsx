@@ -37,8 +37,7 @@ export default function DeployToWorld({
   onNavigate,
   onReplace,
   onClose,
-  onBack,
-  onFetchExternalNames
+  onBack
 }: Props) {
   const analytics = getAnalytics()
 
@@ -85,10 +84,6 @@ export default function DeployToWorld({
       analytics.track('Publish to World - Minted Name', { name: claimedName })
     }
   }, [claimedName, analytics])
-
-  useEffect(() => {
-    onFetchExternalNames()
-  }, [onFetchExternalNames])
 
   const handlePublish = useCallback(() => {
     if (world) {

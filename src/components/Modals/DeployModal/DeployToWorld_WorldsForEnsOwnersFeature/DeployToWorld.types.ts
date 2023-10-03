@@ -28,14 +28,13 @@ export type Props = {
   onRecord: typeof recordMediaRequest
   onNavigate: (path: string) => void
   onReplace: (path: string, locationState?: DeployToWorldLocationStateProps) => void
-  onFetchExternalNames: () => void
 }
 
 export type MapStateProps = Pick<
   Props,
   'ensList' | 'externalNames' | 'project' | 'metrics' | 'deployments' | 'deploymentProgress' | 'error' | 'isLoading'
 >
-export type MapDispatchProps = Pick<Props, 'onPublish' | 'onNavigate' | 'onRecord' | 'onReplace' | 'onFetchExternalNames'>
+export type MapDispatchProps = Pick<Props, 'onPublish' | 'onNavigate' | 'onRecord' | 'onReplace'>
 export type MapDispatch = Dispatch<
   DeployToWorldRequestAction | CallHistoryMethodAction | RecordMediaRequestAction | FetchExternalNamesRequestAction
 >
