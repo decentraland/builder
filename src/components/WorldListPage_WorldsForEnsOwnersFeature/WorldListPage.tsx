@@ -127,7 +127,12 @@ const WorldListPage: React.FC<Props> = props => {
   const renderWorldStatus = (ens: ENS) => {
     let status = isWorldDeployed(ens) ? 'active' : 'inactive'
 
-    if (status === 'active' && worldsWalletStats && !isExternalName(ens.subdomain)) {
+    if (
+      status === 'active' &&
+      worldsWalletStats &&
+      !isExternalName(ens.subdomain) &&
+      worldsWalletStats.usedSpace > worldsWalletStats.maxAllowedSpace
+    ) {
       const blockedSince = new Date(worldsWalletStats.blockedSince).getTime()
       const now = new Date().getTime()
 
