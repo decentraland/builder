@@ -33,7 +33,7 @@ export type WorldsWalletStats = {
   }[]
   usedSpace: string
   maxAllowedSpace: string
-  blockedSince: string
+  blockedSince?: string
 }
 
 export class WorldsAPI extends BaseAPI {

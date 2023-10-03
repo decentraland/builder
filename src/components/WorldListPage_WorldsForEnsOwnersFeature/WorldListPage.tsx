@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Button,
@@ -12,7 +12,9 @@ import {
   Dropdown,
   Empty,
   Icon as DCLIcon,
-  Popup
+  Popup,
+  Message,
+  MessageContent
 } from 'decentraland-ui'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
@@ -28,7 +30,7 @@ import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
 import { TabType, useCurrentlySelectedTab } from './hooks'
-import { fromBytesToMegabytes } from './utils'
+import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
 import './WorldListPage.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
@@ -127,19 +129,15 @@ const WorldListPage: React.FC<Props> = props => {
   const renderWorldStatus = (ens: ENS) => {
     let status = isWorldDeployed(ens) ? 'active' : 'inactive'
 
-    if (
-      status === 'active' &&
-      worldsWalletStats &&
-      !isExternalName(ens.subdomain) &&
-      worldsWalletStats.usedSpace > worldsWalletStats.maxAllowedSpace
-    ) {
-      const blockedSince = new Date(worldsWalletStats.blockedSince).getTime()
-      const now = new Date().getTime()
+    if (status === 'active' && worldsWalletStats && !isExternalName(ens.subdomain)) {
+      const worldsStatus = getDCLWorldsStatus(worldsWalletStats)
 
-      if (now >= blockedSince) {
-        if (now - blockedSince > 48 * 60 * 60 * 1000 /* 48 hours */) {
+      switch (worldsStatus.status) {
+        case DCLWorldsStatus.BLOCKED: {
           status = 'blocked'
-        } else {
+          break
+        }
+        case DCLWorldsStatus.TO_BE_BLOCKED: {
           status = 'warning'
         }
       }
@@ -273,6 +271,42 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
+  const renderDCLNamesBlockedWorldsStatusMessage = () => {
+    if (!worldsWalletStats) {
+      return null
+    }
+
+    const dclWorldsStatus = getDCLWorldsStatus(worldsWalletStats)
+
+    if (dclWorldsStatus.status === DCLWorldsStatus.OK) {
+      return null
+    }
+
+    let warning = false
+    let error = false
+    let messageContent: ReactNode
+
+    if (dclWorldsStatus.status === DCLWorldsStatus.TO_BE_BLOCKED) {
+      warning = true
+      messageContent = t('worlds_list_page.worlds_warning_message.to_be_blocked', {
+        toBeBlockedAt: dclWorldsStatus.toBeBlockedAt.toLocaleDateString(),
+        b: (text: string) => <b>{text}</b>
+      })
+    } else {
+      error = true
+      messageContent = t('worlds_list_page.worlds_warning_message.blocked', {
+        blockedAt: dclWorldsStatus.blockedAt.toLocaleDateString(),
+        b: (text: string) => <b>{text}</b>
+      })
+    }
+
+    return (
+      <Message warning={warning} error={error}>
+        <MessageContent>{messageContent}</MessageContent>
+      </Message>
+    )
+  }
+
   const renderDCLNamesView = () => {
     return (
       <div>
@@ -283,6 +317,7 @@ const WorldListPage: React.FC<Props> = props => {
             className="worlds-storage"
           />
         ) : null}
+        {renderDCLNamesBlockedWorldsStatusMessage()}
         {ensList.length > 0 ? renderList() : renderEmptyPage()}
       </div>
     )
