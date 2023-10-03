@@ -484,7 +484,8 @@
       },
       "failure": {
         "title": "Algo salió mal",
-        "subtitle": "No pudimos publicar tu escena"
+        "subtitle": "No pudimos publicar tu escena",
+        "subtitle_size_error": "The scene is too big to be published in a World.<br></br>The maximum size is <b>{maxSizeMbs} mbs</b>, but the current scene is <b>{deployedSizedMbs} mbs</b> large."
       },
       "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>",
       "world_has_content": "El contenido existente en {world} mundo se reemplazará con el nuevo contenido que está a punto de publicar.",

@@ -478,7 +478,8 @@
       },
       "failure": {
         "title": "出了些问题",
-        "subtitle": "我们无法发布您的场景"
+        "subtitle": "我们无法发布您的场景",
+        "subtitle_size_error": "场景太大，无法发布到世界。<br></br>最大大小为 <b>{maxSizeMbs} mbs</b>，但当前场景为 <b>{deployedSizedMbs} mbs</b> >。"
       },
       "world_url_description": "跳入您的世界的URL将是:<br></br><b>{world_url}</b>",
       "world_has_content": "{world}梦中的现有内容将被您即将发布的新内容替换。",
