@@ -52,7 +52,7 @@ export default function DeployToWorld({
   const currenWorldLabel = world && ensList.find(ens => ens.subdomain === world)?.name
 
   useEffect(() => {
-    if (ensList.length === 0) {
+    if (ensList.length === 0 && externalNames.length === 0) {
       setView(DeployToWorldView.EMPTY)
       analytics.track('Publish to World step', { step: DeployToWorldView.EMPTY })
     } else if (!currentDeployment.current) {
@@ -355,19 +355,7 @@ export default function DeployToWorld({
       <>
         <div className={styles.modalHeader}>
           <h3>{t('deployment_modal.deploy_world.title')}</h3>
-          <span>
-            {t('deployment_modal.deploy_world.description')}
-            <Popup
-              className="modal-tooltip"
-              content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-              position="bottom center"
-              trigger={<InfoIcon className={styles.thumbnailInfo} />}
-              hideOnScroll={true}
-              on="hover"
-              inverted
-              basic
-            />
-          </span>
+          <span>{t('deployment_modal.deploy_world.description')}</span>
         </div>
         <div className={styles.modalForm}>
           {project?.thumbnail ? renderThumbnail() : null}
