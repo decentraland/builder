@@ -463,6 +463,7 @@
       "back": "回到发布场景",
       "close": "关闭发布模式",
       "claim_name": "索赔名称",
+      "claim_name_ens": "获取 ENS 名称",
       "empty_state_title": "您没有任何可用的梦境空间。",
       "empty_state_description": "<b>当您拥有一个名字时，获得一个免费的梦境空间</b>.<br></br>每个名称都会让您进入一个世界。您可以拥有想要的数量。",
       "name_type": {

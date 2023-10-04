@@ -178,17 +178,15 @@ export default function DeployToWorld({
     const names = nameType === NameType.DCL ? ensList : externalNames
     const options: DropdownItemProps[] = names.map(ens => ({ text: ens.name, value: ens.subdomain }))
 
-    if (nameType === NameType.DCL) {
-      options.push({
-        text: (
-          <span>
-            <DCLIcon name="add" />
-            {t('deployment_modal.deploy_world.claim_name')}
-          </span>
-        ),
-        value: CLAIM_NAME_OPTION
-      })
-    }
+    options.push({
+      text: (
+        <span>
+          <DCLIcon name="add" />
+          {nameType === NameType.DCL ? t('deployment_modal.deploy_world.claim_name') : t('deployment_modal.deploy_world.claim_name_ens')}
+        </span>
+      ),
+      value: CLAIM_NAME_OPTION
+    })
 
     return options
   }, [nameType, ensList, externalNames])
