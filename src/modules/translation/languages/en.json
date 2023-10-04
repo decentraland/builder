@@ -2107,6 +2107,8 @@
     "names": "NAMEs",
     "names_earn_storage": "Earn 100 MB of storage per NAME.",
     "names_holdings": "You have {mbs} MB thanks to holding {owned} Decentraland NAMEs.",
-    "names_buy": "BUY NAME"
+    "names_buy": "BUY NAME",
+    "proposal": "These storage rules were voted on and passed in a governance DAO proposal.",
+    "learn_more": "LEARN MORE"
   }
 }

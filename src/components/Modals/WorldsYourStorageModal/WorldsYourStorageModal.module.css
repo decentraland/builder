@@ -40,8 +40,10 @@
 }
 
 .proposal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
+  text-align: center;
+}
+
+.proposal .icon {
+  position: relative;
+  top:2px
 }

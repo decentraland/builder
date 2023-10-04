@@ -2108,6 +2108,8 @@
     "names": "NAMEs",
     "names_earn_storage": "每个 NAME 赚取 100 MB 存储空间。",
     "names_holdings": "由于持有 {owned} Decentraland NAMEs，您拥有 {mbs} MB。",
-    "names_buy": "购买 NAME"
+    "names_buy": "购买 NAME",
+    "proposal": "这些存储规则经过治理 DAO 提案的投票并获得通过。",
+    "learn_more": "了解更多"
   }
 }

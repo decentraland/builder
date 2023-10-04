@@ -2116,7 +2116,7 @@
     "total_available_storage": "ALMACENAMIENTO TOTAL DISPONIBLE",
     "mana": "MANA",
     "mana_earn_storage": "Gana 100 MB de almacenamiento por cada 2,000 tokens (Polygon o Ethereum).",
-    "mana_holdings": "Tienes {mbs} MB gracias a tener {owned} tokens MANA.",
+    "mana_holdings": "Tienes {mbs} MB gracias a tener {owned} MANA.",
     "mana_buy": "COMPRAR MANA",
     "lands": "LANDs",
     "lands_earn_storage": "Gana 100 MB de almacenamiento por cada LAND.",
@@ -2125,6 +2125,8 @@
     "names": "NAMEs",
     "names_earn_storage": "Gana 100 MB de almacenamiento por cada NAME.",
     "names_holdings": "Tienes {mbs} MB gracias a tener {owned} NAMEs de Decentraland.",
-    "names_buy": "COMPRAR NAME"
+    "names_buy": "COMPRAR NAME",
+    "proposal": "Estas reglas de almacenamiento fueron votadas y aprobadas en una propuesta de la DAO.",
+    "learn_more": "APRENDER MÁS"
   }
 }

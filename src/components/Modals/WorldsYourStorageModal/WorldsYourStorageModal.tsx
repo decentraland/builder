@@ -113,9 +113,10 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
             </div>
           </div>
           <div className={styles.proposal}>
-            <InfoIcon />
-            <span>These rules were voted on in the following governance proposal </span>
-            <a href="https://governance.decentraland.org/proposal/?id=c3216070-e822-11ed-b8f1-75dbe089d333">LEARN MORE</a>
+            <InfoIcon className={styles.icon} /> <span>{t('worlds_your_storage_modal.proposal')}</span>{' '}
+            <a href="https://governance.decentraland.org/proposal/?id=c3216070-e822-11ed-b8f1-75dbe089d333">
+              {t('worlds_your_storage_modal.learn_more')}
+            </a>
           </div>
         </ModalContent>
       </Modal>
