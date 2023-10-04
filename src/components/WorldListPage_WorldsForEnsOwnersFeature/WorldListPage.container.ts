@@ -18,6 +18,7 @@ import { getProjects } from 'modules/ui/dashboard/selectors'
 import { getConnectedWalletStats, getLoading as getLoadingWorlds } from 'modules/worlds/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './WorldListPage.types'
 import WorldListPage from './WorldListPage'
+import { openModal } from 'modules/modal/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
@@ -37,7 +38,8 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path))
+  onNavigate: path => dispatch(push(path)),
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)

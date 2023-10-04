@@ -3,10 +3,10 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { WorldsWalletStats } from 'lib/api/worlds'
 
 export type Props = ModalProps & {
-  metadata: Metadata
+  metadata: WorldsYourStorageModalMetadata
 }
 
-export type Metadata = {
+export type WorldsYourStorageModalMetadata = {
   stats: WorldsWalletStats
 }
 

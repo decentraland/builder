@@ -10,7 +10,7 @@ export const CURRENT_MBS_TEST_ID = 'worlds-storage-current-mbs'
 export const PROGRESS_TEST_ID = 'worlds-storage-bar-front'
 export const WORLDS_STORAGE_TEST_ID = 'worlds-storage'
 
-const WorldsStorage = ({ maxBytes, currentBytes, className }: Props) => {
+const WorldsStorage = ({ maxBytes, currentBytes, className, onViewDetails }: Props) => {
   const maxMbs = fromBytesToMegabytes(maxBytes)
   const currentMbs = fromBytesToMegabytes(currentBytes)
   const usedPercentage = (currentMbs * 100) / maxMbs
@@ -24,7 +24,9 @@ const WorldsStorage = ({ maxBytes, currentBytes, className }: Props) => {
         </div>
       </div>
       <Progress data-testid={PROGRESS_TEST_ID} percent={Math.trunc(usedPercentage)} className={styles.bar} size="small" />
-      <div className={styles.viewDetails}>{t('worlds_list_page.worlds_storage.view_details')}</div>
+      <div className={styles.viewDetails} onClick={onViewDetails}>
+        {t('worlds_list_page.worlds_storage.view_details')}
+      </div>
     </div>
   )
 }

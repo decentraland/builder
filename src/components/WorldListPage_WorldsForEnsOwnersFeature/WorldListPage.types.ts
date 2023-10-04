@@ -3,6 +3,8 @@ import { Deployment } from 'modules/deployment/types'
 import { ENS } from 'modules/ens/types'
 import { Project } from 'modules/project/types'
 import { WorldsWalletStats } from 'lib/api/worlds'
+import { openModal } from 'modules/modal/actions'
+import { WorldsYourStorageModalMetadata } from 'components/Modals/WorldsYourStorageModal/WorldsYourStorageModal.types'
 
 export enum SortBy {
   DESC = 'DESC',
@@ -19,6 +21,7 @@ export type Props = {
   isLoading: boolean
   worldsWalletStats?: WorldsWalletStats
   onNavigate: (path: string) => void
+  onOpenModal: (name: Parameters<typeof openModal>[0], metadata: WorldsYourStorageModalMetadata) => void
 }
 
 export type State = {
@@ -30,5 +33,5 @@ export type MapStateProps = Pick<
   Props,
   'ensList' | 'externalNames' | 'deploymentsByWorlds' | 'isLoading' | 'error' | 'projects' | 'isLoggedIn' | 'worldsWalletStats'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate'>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
 export type MapDispatch = Dispatch

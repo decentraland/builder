@@ -36,7 +36,7 @@ const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
-  const { ensList, externalNames, error, deploymentsByWorlds, isLoading, projects, worldsWalletStats, onNavigate } = props
+  const { ensList, externalNames, error, deploymentsByWorlds, isLoading, projects, worldsWalletStats, onNavigate, onOpenModal } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
   const { tab } = useCurrentlySelectedTab()
@@ -317,6 +317,7 @@ const WorldListPage: React.FC<Props> = props => {
             maxBytes={Number(worldsWalletStats.maxAllowedSpace)}
             currentBytes={Number(worldsWalletStats.usedSpace)}
             className="worlds-storage"
+            onViewDetails={() => onOpenModal('WorldsYourStorageModal', { stats: worldsWalletStats })}
           />
         ) : null}
         {renderDCLNamesBlockedWorldsStatusMessage()}
