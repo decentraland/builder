@@ -1,15 +1,9 @@
-import { race, select, take } from 'redux-saga/effects'
+import { select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
-import { getAddress, getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { config } from 'config'
-import {
-  CONNECT_WALLET_FAILURE,
-  CONNECT_WALLET_SUCCESS,
-  ConnectWalletFailureAction,
-  ConnectWalletSuccessAction
-} from 'decentraland-dapps/dist/modules/wallet/actions'
 
 export const TRANSACTIONS_API_URL = config.get('TRANSACTIONS_API_URL')
 
@@ -35,24 +29,4 @@ export function* getWallet() {
 export async function getMethodData(populatedTransactionPromise: Promise<ethers.PopulatedTransaction>) {
   const populatedTransaction = await populatedTransactionPromise
   return populatedTransaction.data!
-}
-
-export function* getAddressOrWaitConnection() {
-  const address: ReturnType<typeof getAddress> = yield select(getAddress)
-
-  if (address) {
-    return address
-  }
-
-  const {
-    success
-  }: {
-    success: ConnectWalletSuccessAction
-    failure: ConnectWalletFailureAction
-  } = yield race({
-    success: take(CONNECT_WALLET_SUCCESS),
-    failure: take(CONNECT_WALLET_FAILURE)
-  })
-
-  return success ? success.payload.wallet.address : undefined
 }
