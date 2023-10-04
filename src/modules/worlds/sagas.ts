@@ -1,6 +1,5 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { getAddressOrWaitConnection } from 'modules/wallet/utils'
 import { WorldsWalletStats, content as WorldsAPIContent } from 'lib/api/worlds'
 import {
   FETCH_WORLDS_WALLET_STATS_REQUEST,
@@ -16,13 +15,9 @@ export function* worldsSaga() {
 }
 
 function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequestAction) {
-  const address = action.payload.address ?? (yield call(getAddressOrWaitConnection))
+  const { address } = action.payload
 
   try {
-    if (!address) {
-      throw new Error('An address is required')
-    }
-
     const stats: WorldsWalletStats | null = yield call([WorldsAPIContent, WorldsAPIContent.fetchWalletStats], address)
 
     if (!stats) {
@@ -31,7 +26,7 @@ function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequ
 
     yield put(fetchWorldsWalletStatsSuccess(address, stats))
   } catch (e) {
-    yield put(fetchWorldsWalletStatsFailure(e.message, address))
+    yield put(fetchWorldsWalletStatsFailure(address, e.message))
   }
 }
 

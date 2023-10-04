@@ -6,10 +6,10 @@ export const FETCH_WORLDS_WALLET_STATS_REQUEST = '[Request] Fetch Worlds Wallet 
 export const FETCH_WORLDS_WALLET_STATS_SUCCESS = '[Success] Fetch Worlds Wallet Stats'
 export const FETCH_WORLDS_WALLET_STATS_FAILURE = '[Failure] Fetch Worlds Wallet Stats'
 
-export const fetchWorldsWalletStatsRequest = (address?: string) => action(FETCH_WORLDS_WALLET_STATS_REQUEST, { address })
+export const fetchWorldsWalletStatsRequest = (address: string) => action(FETCH_WORLDS_WALLET_STATS_REQUEST, { address })
 export const fetchWorldsWalletStatsSuccess = (address: string, stats: WorldsWalletStats) =>
   action(FETCH_WORLDS_WALLET_STATS_SUCCESS, { address, stats })
-export const fetchWorldsWalletStatsFailure = (error: string, address?: string) =>
+export const fetchWorldsWalletStatsFailure = (address: string, error: string) =>
   action(FETCH_WORLDS_WALLET_STATS_FAILURE, { address, error })
 
 export type FetchWalletWorldsStatsRequestAction = ReturnType<typeof fetchWorldsWalletStatsRequest>
