@@ -216,7 +216,8 @@
 }
 
 .CreateSingleItemModal .importer-thumbnail-container .WearablePreview {
-  display: none;
+  position: absolute;
+  visibility: hidden;
 }
 
 .CreateSingleItemModal .thumbnail-step-container {
