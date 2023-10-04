@@ -3,11 +3,14 @@ import { Button, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { fromBytesToMegabytes } from 'components/WorldListPage_WorldsForEnsOwnersFeature/utils'
+import { config } from 'config'
 import { InfoIcon } from 'components/InfoIcon'
 import goodImg from './images/good.svg'
 import { Props, State, WorldsYourStorageModalMetadata } from './WorldsYourStorageModal.types'
 import { fetchAccountHoldings, getMbsFromAccountHoldings } from './utils'
 import styles from './WorldsYourStorageModal.module.css'
+
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL')
 
 export default class WorldsYourStorageModal extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -62,7 +65,9 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button primary>{t('worlds_your_storage_modal.mana_buy')}</Button>
+              <Button as="a" href={MARKETPLACE_WEB_URL} primary>
+                {t('worlds_your_storage_modal.mana_buy')}
+              </Button>
             </div>
           </div>
           <div className={styles.separator} />
@@ -81,7 +86,9 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button primary>{t('worlds_your_storage_modal.lands_buy')}</Button>
+              <Button as="a" href={MARKETPLACE_WEB_URL + '/lands'} primary>
+                {t('worlds_your_storage_modal.lands_buy')}
+              </Button>
             </div>
           </div>
           <div className={styles.separator} />
@@ -100,7 +107,9 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button primary>{t('worlds_your_storage_modal.names_buy')}</Button>
+              <Button as="a" href="/claim-name" primary>
+                {t('worlds_your_storage_modal.names_buy')}
+              </Button>
             </div>
           </div>
           <div className={styles.proposal}>
