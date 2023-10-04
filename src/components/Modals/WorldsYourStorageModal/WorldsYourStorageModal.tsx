@@ -11,6 +11,7 @@ import { fetchAccountHoldings, getMbsFromAccountHoldings } from './utils'
 import styles from './WorldsYourStorageModal.module.css'
 
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL')
+const ACCOUNT_URL = config.get('ACCOUNT_URL')
 
 export default class WorldsYourStorageModal extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -65,7 +66,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button as="a" href={MARKETPLACE_WEB_URL} primary>
+              <Button as="a" href={ACCOUNT_URL} primary>
                 {t('worlds_your_storage_modal.mana_buy')}
               </Button>
             </div>
