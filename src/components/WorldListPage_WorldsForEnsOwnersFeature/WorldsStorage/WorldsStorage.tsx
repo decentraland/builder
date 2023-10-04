@@ -20,7 +20,7 @@ const WorldsStorage = ({ maxBytes, currentBytes, className }: Props) => {
       <div className={styles.spaceContainer}>
         <span>{t('worlds_list_page.worlds_storage.space_used')}</span>
         <div data-testid={CURRENT_MBS_TEST_ID}>
-          <span className={styles.currentMbs}>{currentMbs.toFixed(2)}</span> / {maxMbs.toFixed(2)} mb
+          <span className={styles.currentMbs}>{currentMbs.toFixed(2)}</span> / {maxMbs.toFixed(2)} Mb
         </div>
       </div>
       <Progress data-testid={PROGRESS_TEST_ID} percent={Math.trunc(usedPercentage)} className={styles.bar} size="small" />

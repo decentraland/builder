@@ -20,7 +20,7 @@ describe('when rendering the worlds storage component', () => {
     })
 
     it('should render 50.55/100.00mb', () => {
-      expect(screen.getByTestId(CURRENT_MBS_TEST_ID).textContent).toEqual('50.55 / 100.00 mb')
+      expect(screen.getByTestId(CURRENT_MBS_TEST_ID).textContent).toEqual('50.55 / 100.00 Mb')
     })
 
     it('should render the storage front bar with 50%', () => {
