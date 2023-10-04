@@ -178,3 +178,13 @@
 .WorldListPage .worlds-storage {
   margin-bottom: 24px;
 }
+
+.WorldListPage .insufficient-storage-message {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--dark-two);
+  border-radius: 10px;
+  padding: 22px;
+  margin-bottom: 24px;
+}
