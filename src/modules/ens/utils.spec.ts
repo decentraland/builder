@@ -67,7 +67,7 @@ describe('when adding the world status to each ens', () => {
         jest.spyOn(content, 'fetchWorld').mockResolvedValue(response)
       })
 
-      it('should return the enss with the world status set to null', async () => {
+      it('should return the enss with the world status set', async () => {
         const healthy = response!.healthy
         const urn = response!.configurations.scenesUrn[0]
 
