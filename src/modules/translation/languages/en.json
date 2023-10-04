@@ -601,6 +601,8 @@
       "status": "Status",
       "status_active": "Active",
       "status_inactive": "Inactive",
+      "status_warning": "Warning",
+      "status_blocked": "Blocked",
       "actions": "Actions",
       "empty_url": "To activate this world you need to publish a scene",
       "size": "Size Mb"
@@ -617,6 +619,10 @@
     "worlds_storage": {
       "space_used": "Space used",
       "view_details": "view details"
+    },
+    "worlds_warning_message": {
+      "to_be_blocked": "You are using more storage than you are allowed. Unpublish some scenes to free some space or increase you maximum storage before <b>{toBeBlockedAt}</b> to avoid losing access to your scenes.",
+      "blocked": "Access to your scenes has been blocked since <b>{blockedAt}</b> because you don't have enough storage to maintain your currently published worlds. Unpublish some scenes to free some space or increase your maximum storage to regain access."
     }
   },
   "error_page": {

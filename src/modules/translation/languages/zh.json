@@ -605,6 +605,8 @@
       "status": "地位",
       "status_active": "积极的",
       "status_inactive": "不活动",
+      "status_warning": "注意力",
+      "status_blocked": "锁定",
       "actions": "动作",
       "empty_url": "要激活这个世界，您需要发布一个场景",
       "size": "重量 Mb"
@@ -621,6 +623,10 @@
     "worlds_storage": {
       "space_used": "使用空间",
       "view_details": "查看详情"
+    },
+    "worlds_warning_message": {
+      "to_be_blocked": "您使用的存储空间超出了允许的范围。 在<b>{toBeBlockedAt}</b>之前取消发布某些场景以释放空间或增加最大存储空间，以避免失去对场景的访问权限。",
+      "blocked": "自 <b>{blockedAt}</b> 起，对您的场景的访问已被阻止，因为您没有足够的存储空间来维护当前发布的世界。 取消发布某些场景以释放空间或增加最大存储空间以重新获得访问权限。"
     }
   },
   "estate_editor": {

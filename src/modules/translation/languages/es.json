@@ -603,6 +603,8 @@
       "status": "Estado",
       "status_active": "Activo",
       "status_inactive": "Inactivo",
+      "status_warning": "Atención",
+      "status_blocked": "Bloqueado",
       "actions": "Acciones",
       "empty_url": "Para activar este mundo, necesitas publicar una escena",
       "size": "Peso Mb"
@@ -619,6 +621,10 @@
     "worlds_storage": {
       "space_used": "Espacio utilizado",
       "view_details": "ver detalles"
+    },
+    "worlds_warning_message": {
+      "to_be_blocked": "Está utilizando más almacenamiento del permitido. Cancele la publicación de algunas escenas para liberar espacio o aumentar su almacenamiento máximo antes de <b>{toBeBlockedAt}</b> para evitar perder el acceso a sus escenas.",
+      "blocked": "El acceso a tus escenas ha sido bloqueado desde <b>{blockedAt}</b> porque no tienes suficiente almacenamiento para mantener tus mundos publicados actualmente. Cancele la publicación de algunas escenas para liberar espacio o aumente su almacenamiento máximo para recuperar el acceso."
     }
   },
   "error_page": {

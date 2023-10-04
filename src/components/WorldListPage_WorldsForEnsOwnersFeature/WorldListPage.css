@@ -108,6 +108,14 @@
   color: #cfcdd4;
 }
 
+.WorldListPage .TableRow .world-status.warning {
+  color: var(--danger);
+}
+
+.WorldListPage .TableRow .world-status.blocked {
+  color: var(--error);
+}
+
 .WorldListPage .ui.pagination {
   width: 100%;
   display: flex;

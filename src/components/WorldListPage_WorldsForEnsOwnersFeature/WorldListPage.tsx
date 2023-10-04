@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Button,
@@ -12,12 +12,15 @@ import {
   Dropdown,
   Empty,
   Icon as DCLIcon,
-  Popup
+  Popup,
+  Message,
+  MessageContent
 } from 'decentraland-ui'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { WorldsWalletStats } from 'lib/api/worlds'
 import { ENS } from 'modules/ens/types'
+import { isExternalName } from 'modules/ens/utils'
 import { locations } from 'routing/locations'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
@@ -27,7 +30,7 @@ import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
 import { TabType, useCurrentlySelectedTab } from './hooks'
-import { fromBytesToMegabytes } from './utils'
+import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
 import './WorldListPage.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
@@ -124,7 +127,22 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const renderWorldStatus = (ens: ENS) => {
-    const status = isWorldDeployed(ens) ? 'active' : 'inactive'
+    let status = isWorldDeployed(ens) ? 'active' : 'inactive'
+
+    if (status === 'active' && worldsWalletStats && !isExternalName(ens.subdomain)) {
+      const worldsStatus = getDCLWorldsStatus(worldsWalletStats)
+
+      switch (worldsStatus.status) {
+        case DCLWorldsStatus.BLOCKED: {
+          status = 'blocked'
+          break
+        }
+        case DCLWorldsStatus.TO_BE_BLOCKED: {
+          status = 'warning'
+        }
+      }
+    }
+
     return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
   }
 
@@ -152,10 +170,15 @@ const WorldListPage: React.FC<Props> = props => {
 
   const renderWorldSize = (ens: ENS, stats?: WorldsWalletStats) => {
     const names = tab === TabType.DCL ? stats?.dclNames : stats?.ensNames
-    const bytes = names?.find(dclName => dclName.name === ens.subdomain)?.size
+
+    if (!isWorldDeployed(ens) || !names) {
+      return '-'
+    }
+
+    const bytes = names.find(dclName => dclName.name === ens.subdomain)?.size
     const suffix = tab === TabType.ENS ? ' / 25' : ''
 
-    return !bytes ? '-' : fromBytesToMegabytes(Number(bytes)).toFixed(2) + suffix
+    return fromBytesToMegabytes(Number(bytes)).toFixed(2) + suffix
   }
 
   const renderList = () => {
@@ -253,6 +276,42 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
+  const renderDCLNamesBlockedWorldsStatusMessage = () => {
+    if (!worldsWalletStats) {
+      return null
+    }
+
+    const dclWorldsStatus = getDCLWorldsStatus(worldsWalletStats)
+
+    if (dclWorldsStatus.status === DCLWorldsStatus.OK) {
+      return null
+    }
+
+    let warning = false
+    let error = false
+    let messageContent: ReactNode
+
+    if (dclWorldsStatus.status === DCLWorldsStatus.TO_BE_BLOCKED) {
+      warning = true
+      messageContent = t('worlds_list_page.worlds_warning_message.to_be_blocked', {
+        toBeBlockedAt: dclWorldsStatus.toBeBlockedAt.toLocaleDateString(),
+        b: (text: string) => <b>{text}</b>
+      })
+    } else {
+      error = true
+      messageContent = t('worlds_list_page.worlds_warning_message.blocked', {
+        blockedAt: dclWorldsStatus.blockedAt.toLocaleDateString(),
+        b: (text: string) => <b>{text}</b>
+      })
+    }
+
+    return (
+      <Message warning={warning} error={error}>
+        <MessageContent>{messageContent}</MessageContent>
+      </Message>
+    )
+  }
+
   const renderDCLNamesView = () => {
     return (
       <div>
@@ -263,6 +322,7 @@ const WorldListPage: React.FC<Props> = props => {
             className="worlds-storage"
           />
         ) : null}
+        {renderDCLNamesBlockedWorldsStatusMessage()}
         {ensList.length > 0 ? renderList() : renderEmptyPage()}
       </div>
     )
