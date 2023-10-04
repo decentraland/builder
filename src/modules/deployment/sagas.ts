@@ -27,6 +27,8 @@ import { getCurrentProject, getData as getProjects } from 'modules/project/selec
 import { Project } from 'modules/project/types'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { Scene } from 'modules/scene/types'
+import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
+import { getParcelOrientation } from 'modules/project/utils'
 import {
   DEPLOY_TO_POOL_REQUEST,
   deployToPoolFailure,
@@ -59,8 +61,6 @@ import {
 import { makeContentFiles } from './contentUtils'
 import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
 import { ProgressStage } from './types'
-import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
-import { getParcelOrientation } from 'modules/project/utils'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 

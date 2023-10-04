@@ -3,7 +3,6 @@ import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getENSByWallet, getExternalNamesForConnectedWallet } from 'modules/ens/selectors'
-import { fetchExternalNamesRequest } from 'modules/ens/actions'
 import { deployToWorldRequest } from 'modules/deployment/actions'
 import { getCurrentMetrics } from 'modules/scene/selectors'
 import { recordMediaRequest } from 'modules/media/actions'
@@ -32,8 +31,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   },
   onRecord: () => dispatch(recordMediaRequest()),
   onNavigate: path => dispatch(push(path)),
-  onReplace: (path, locationState) => dispatch(replace(path, locationState)),
-  onFetchExternalNames: () => dispatch(fetchExternalNamesRequest())
+  onReplace: (path, locationState) => dispatch(replace(path, locationState))
 })
 
 export default connect(mapState, mapDispatch)(DeployToWorld)

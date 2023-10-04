@@ -12,13 +12,13 @@ export enum SortBy {
 export type Props = {
   error?: string
   ensList: ENS[]
+  externalNames: ENS[]
   deploymentsByWorlds: Record<string, Deployment>
   projects: Project[]
   isLoggedIn: boolean
   isLoading: boolean
   worldsWalletStats?: WorldsWalletStats
   onNavigate: (path: string) => void
-  onFetchWorldsWalletStats: () => void
 }
 
 export type State = {
@@ -28,7 +28,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'ensList' | 'deploymentsByWorlds' | 'isLoading' | 'error' | 'projects' | 'isLoggedIn' | 'worldsWalletStats'
+  'ensList' | 'externalNames' | 'deploymentsByWorlds' | 'isLoading' | 'error' | 'projects' | 'isLoggedIn' | 'worldsWalletStats'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onFetchWorldsWalletStats'>
+export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch

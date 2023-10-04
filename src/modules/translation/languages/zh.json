@@ -606,7 +606,8 @@
       "status_active": "积极的",
       "status_inactive": "不活动",
       "actions": "动作",
-      "empty_url": "要激活这个世界，您需要发布一个场景"
+      "empty_url": "要激活这个世界，您需要发布一个场景",
+      "size": "重量 Mb"
     },
     "empty_list": {
       "title": "当您拥有一个名字时获得一个自由的世界",

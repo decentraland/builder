@@ -602,7 +602,8 @@
       "status_active": "Active",
       "status_inactive": "Inactive",
       "actions": "Actions",
-      "empty_url": "To activate this world you need to publish a scene"
+      "empty_url": "To activate this world you need to publish a scene",
+      "size": "Size Mb"
     },
     "empty_list": {
       "title": "Get a free World when you own a NAME",

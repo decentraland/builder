@@ -1,6 +1,6 @@
 import { FETCH_EXTERNAL_NAMES_REQUEST, fetchExternalNamesFailure, fetchExternalNamesRequest, fetchExternalNamesSuccess } from './actions'
 import { ENSState, INITIAL_STATE, ensReducer } from './reducer'
-import { ENSError } from './types'
+import { ENS, ENSError } from './types'
 
 let state: ENSState
 
@@ -31,31 +31,24 @@ describe('when handling the fetch external names actions', () => {
     })
 
     it('should set the error to the error state', () => {
-      const action = fetchExternalNamesFailure(error, owner)
+      const action = fetchExternalNamesFailure(owner, error)
       const newState = ensReducer(state, action)
       expect(newState.error).toEqual(error)
     })
 
     it('should remove the fetch external names request action from the loading state', () => {
-      const action = fetchExternalNamesFailure(error, owner)
+      const action = fetchExternalNamesFailure(owner, error)
       const newState = ensReducer(state, action)
       expect(newState.loading.length).toEqual(0)
     })
   })
 
   describe('when handling the fetch external names success action', () => {
-    let names: string[]
+    let names: ENS[]
 
     beforeEach(() => {
-      names = ['name1.eth', 'name2.eth']
-      state.loading = [{ type: FETCH_EXTERNAL_NAMES_REQUEST }]
-    })
-
-    it('should update the external names property in the state', () => {
-      const action = fetchExternalNamesSuccess(owner, names)
-      const newState = ensReducer(state, action)
-      expect(newState.externalNames).toEqual({
-        'name1.eth': {
+      names = [
+        {
           subdomain: 'name1.eth',
           nftOwnerAddress: owner,
           name: 'name1.eth',
@@ -64,7 +57,7 @@ describe('when handling the fetch external names actions', () => {
           resolver: '',
           tokenId: ''
         },
-        'name2.eth': {
+        {
           subdomain: 'name2.eth',
           nftOwnerAddress: owner,
           name: 'name2.eth',
@@ -73,6 +66,16 @@ describe('when handling the fetch external names actions', () => {
           resolver: '',
           tokenId: ''
         }
+      ]
+      state.loading = [{ type: FETCH_EXTERNAL_NAMES_REQUEST }]
+    })
+
+    it('should update the external names property in the state', () => {
+      const action = fetchExternalNamesSuccess(owner, names)
+      const newState = ensReducer(state, action)
+      expect(newState.externalNames).toEqual({
+        'name1.eth': names[0],
+        'name2.eth': names[1]
       })
     })
 

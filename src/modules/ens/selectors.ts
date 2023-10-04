@@ -42,6 +42,11 @@ export const getExternalNamesForConnectedWallet = createSelector(getExternalName
   return Object.values(externalNames).filter(externalName => isEqual(externalName.nftOwnerAddress, address))
 })
 
+export const getExternalNamesForWallet = (wallet: string) => (state: RootState) => {
+  const externalNames = getExternalNames(state)
+  return Object.values(externalNames).filter(externalName => isEqual(externalName.nftOwnerAddress, wallet))
+}
+
 export const getAuthorizationByWallet = createSelector<
   RootState,
   ENSState['authorizations'],

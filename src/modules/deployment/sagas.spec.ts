@@ -2,6 +2,7 @@ import { CatalystClient, createCatalystClient, createContentClient } from 'dcl-c
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { isLoggedIn } from 'modules/identity/selectors'
@@ -16,7 +17,6 @@ import { deployToWorldRequest, fetchWorldDeploymentsRequest, fetchWorldDeploymen
 import { deploymentSaga } from './sagas'
 import { makeContentFiles } from './contentUtils'
 import { Deployment } from './types'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 let builderAPI: BuilderAPI
 let catalystClient: CatalystClient

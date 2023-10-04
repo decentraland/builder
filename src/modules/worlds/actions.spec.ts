@@ -57,7 +57,7 @@ describe('when creating the failure action to fetch worlds stats for a wallet', 
   })
 
   it('should return the failure action to fetch worlds stats for a wallet', () => {
-    expect(fetchWorldsWalletStatsFailure(error, address)).toEqual({
+    expect(fetchWorldsWalletStatsFailure(address, error)).toEqual({
       type: FETCH_WORLDS_WALLET_STATS_FAILURE,
       payload: {
         address,

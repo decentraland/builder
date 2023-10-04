@@ -16,6 +16,7 @@ import {
 } from 'decentraland-ui'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
+import { WorldsWalletStats } from 'lib/api/worlds'
 import { ENS } from 'modules/ens/types'
 import { locations } from 'routing/locations'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
@@ -25,6 +26,8 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
+import { TabType, useCurrentlySelectedTab } from './hooks'
+import { fromBytesToMegabytes } from './utils'
 import './WorldListPage.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
@@ -32,9 +35,10 @@ const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
-  const { ensList, error, deploymentsByWorlds, isLoading, projects, worldsWalletStats, onNavigate, onFetchWorldsWalletStats } = props
+  const { ensList, externalNames, error, deploymentsByWorlds, isLoading, projects, worldsWalletStats, onNavigate } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
+  const { tab } = useCurrentlySelectedTab()
 
   const isWorldDeployed = (ens: ENS) => {
     if (ens.worldStatus?.healthy) {
@@ -81,7 +85,9 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const paginate = () => {
-    return ensList
+    const list = tab === TabType.DCL ? ensList : externalNames
+
+    return list
       .sort((a: ENS, b: ENS) => {
         switch (sortBy) {
           case SortBy.ASC: {
@@ -144,8 +150,16 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
-  const renderEnsList = () => {
-    const total = ensList.length
+  const renderWorldSize = (ens: ENS, stats?: WorldsWalletStats) => {
+    const names = tab === TabType.DCL ? stats?.dclNames : stats?.ensNames
+    const bytes = names?.find(dclName => dclName.name === ens.subdomain)?.size
+    const suffix = tab === TabType.ENS ? ' / 25' : ''
+
+    return !bytes ? '-' : fromBytesToMegabytes(Number(bytes)).toFixed(2) + suffix
+  }
+
+  const renderList = () => {
+    const total = tab === TabType.DCL ? ensList.length : externalNames.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
     const paginatedItems = paginate()
 
@@ -185,6 +199,9 @@ const WorldListPage: React.FC<Props> = props => {
                   <Table.HeaderCell width="2">{t('worlds_list_page.table.url')}</Table.HeaderCell>
                   <Table.HeaderCell width="1">{t('worlds_list_page.table.published_scene')}</Table.HeaderCell>
                   <Table.HeaderCell width="1" textAlign="center">
+                    {t('worlds_list_page.table.size')}
+                  </Table.HeaderCell>
+                  <Table.HeaderCell width="1" textAlign="center">
                     {t('worlds_list_page.table.status')}
                   </Table.HeaderCell>
                 </Table.Row>
@@ -196,6 +213,9 @@ const WorldListPage: React.FC<Props> = props => {
                       <Table.Cell width={2}>{ens.name}</Table.Cell>
                       <Table.Cell width={2}>{renderWorldUrl(ens)}</Table.Cell>
                       <Table.Cell width={1}>{renderPublishSceneButton(ens)}</Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {renderWorldSize(ens, worldsWalletStats)}
+                      </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldStatus(ens)}
                       </Table.Cell>
@@ -233,9 +253,30 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
+  const renderDCLNamesView = () => {
+    return (
+      <div>
+        {worldsWalletStats ? (
+          <WorldsStorage
+            maxBytes={Number(worldsWalletStats.maxAllowedSpace)}
+            currentBytes={Number(worldsWalletStats.usedSpace)}
+            className="worlds-storage"
+          />
+        ) : null}
+        {ensList.length > 0 ? renderList() : renderEmptyPage()}
+      </div>
+    )
+  }
+
+  const renderENSNamesView = () => {
+    return <div>{externalNames.length > 0 ? renderList() : renderEmptyPage()}</div>
+  }
+
+  // Reset values when changing tab.
   useEffect(() => {
-    onFetchWorldsWalletStats()
-  }, [onFetchWorldsWalletStats])
+    setSortBy(SortBy.ASC)
+    setPage(1)
+  }, [tab])
 
   return (
     <LoggedInDetailPage
@@ -245,22 +286,11 @@ const WorldListPage: React.FC<Props> = props => {
       isLoading={isLoading}
       isPageFullscreen={true}
     >
-      {/** The following elements are just for show until the feature is complete, disregard the layout, just preview the components */}
       <Container>
         <h1>Worlds</h1>
         <NameTabs />
-        <div
-          style={{
-            marginBottom: '1rem'
-          }}
-        >
-          {worldsWalletStats ? (
-            <WorldsStorage maxBytes={Number(worldsWalletStats.maxAllowedSpace)} currentBytes={Number(worldsWalletStats.usedSpace)} />
-          ) : null}
-        </div>
+        {tab === TabType.DCL ? renderDCLNamesView() : renderENSNamesView()}
       </Container>
-      {/** Old ens list which will be removed or replaced with the new worlds for ens owners feature */}
-      {ensList.length > 0 ? renderEnsList() : renderEmptyPage()}
     </LoggedInDetailPage>
   )
 }
