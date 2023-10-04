@@ -54,7 +54,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
             <div className={styles.texts}>
               <span>{t('worlds_your_storage_modal.mana')}</span>
               <span className={styles.subtitle}>{t('worlds_your_storage_modal.mana_earn_storage')}</span>
-              {accountHoldings && mbsFromAccountHoldings ? (
+              {accountHoldings && mbsFromAccountHoldings && mbsFromAccountHoldings.manaMbs > 0 ? (
                 <span className={styles.amount}>
                   <img src={goodImg} alt="good"></img>
                   {t('worlds_your_storage_modal.mana_holdings', {
@@ -75,7 +75,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
             <div className={styles.texts}>
               <span>{t('worlds_your_storage_modal.lands')}</span>
               <span className={styles.subtitle}>{t('worlds_your_storage_modal.lands_earn_storage')}</span>
-              {accountHoldings && mbsFromAccountHoldings ? (
+              {accountHoldings && mbsFromAccountHoldings && mbsFromAccountHoldings.landMbs > 0 ? (
                 <span className={styles.amount}>
                   <img src={goodImg} alt="good"></img>
                   {t('worlds_your_storage_modal.lands_holdings', {
@@ -96,7 +96,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
             <div className={styles.texts}>
               <span>{t('worlds_your_storage_modal.names')}</span>
               <span className={styles.subtitle}>{t('worlds_your_storage_modal.lands_earn_storage')}</span>
-              {accountHoldings && mbsFromAccountHoldings ? (
+              {accountHoldings && mbsFromAccountHoldings && mbsFromAccountHoldings.nameMbs > 0 ? (
                 <span className={styles.amount}>
                   <img src={goodImg} alt="good"></img>
                   {t('worlds_your_storage_modal.names_holdings', {
