@@ -6,15 +6,15 @@ import {
   fetchExternalNamesFailure,
   FETCH_EXTERNAL_NAMES_FAILURE
 } from './actions'
-import { ENSError } from './types'
+import { ENS, ENSError } from './types'
 
 let owner: string
-let names: string[]
+let names: ENS[]
 let error: ENSError
 
 beforeEach(() => {
   owner = '0x123'
-  names = ['name1.eth', 'name2.eth']
+  names = [{}, {}] as ENS[]
   error = { message: 'Some Error' }
 })
 
@@ -32,6 +32,6 @@ describe('when creating the action that signals the successful fetch of external
 
 describe('when creating the action that signals the unsuccessful fetch of external names', () => {
   it('should return an action signaling the unsuccessful fetch of external names', () => {
-    expect(fetchExternalNamesFailure(error, owner)).toEqual({ type: FETCH_EXTERNAL_NAMES_FAILURE, payload: { owner, error } })
+    expect(fetchExternalNamesFailure(owner, error)).toEqual({ type: FETCH_EXTERNAL_NAMES_FAILURE, payload: { owner, error } })
   })
 })

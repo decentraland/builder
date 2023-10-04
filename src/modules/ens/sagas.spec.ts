@@ -17,7 +17,7 @@ import { WorldInfo, WorldsAPI, content } from 'lib/api/worlds'
 import { MarketplaceAPI } from 'lib/api/marketplace'
 import { ENSApi } from 'lib/api/ens'
 import { getLands } from 'modules/land/selectors'
-import { getAddressOrWaitConnection, getWallet } from 'modules/wallet/utils'
+import { getWallet } from 'modules/wallet/utils'
 import {
   allowClaimManaRequest,
   claimNameRequest,
@@ -173,48 +173,11 @@ describe('when handling the claim name request', () => {
 })
 
 describe('when handling the fetching of external ens names for an owner', () => {
-  const MOCK_ADDRESS = '0x123'
-
-  describe('when the owner is not provided in the action', () => {
-    let getAddressOrWaitConnectionResult: string | undefined
-
-    describe('and the wallet address is obtained from the get address or wait connection function', () => {
-      beforeEach(() => {
-        getAddressOrWaitConnectionResult = MOCK_ADDRESS
-      })
-
-      it('should call the ens api with the address obtained from the get address or wait connection function', async () => {
-        await expectSaga(ensSaga, builderClient, ensApi)
-          .provide([
-            [call(getAddressOrWaitConnection), getAddressOrWaitConnectionResult],
-            [call([ensApi, ensApi.fetchExternalNames], getAddressOrWaitConnectionResult!), []]
-          ])
-          .put(fetchWorldDeploymentsRequest([]))
-          .put(fetchExternalNamesSuccess(getAddressOrWaitConnectionResult!, []))
-          .dispatch(fetchExternalNamesRequest())
-          .silentRun()
-      })
-    })
-    describe('and the wallet address is not obtained from the get address or wait connection function', () => {
-      beforeEach(() => {
-        getAddressOrWaitConnectionResult = undefined
-      })
-
-      it('should dispatch an error action with undefined as the owner and the error', async () => {
-        await expectSaga(ensSaga, builderClient, ensApi)
-          .provide([[call(getAddressOrWaitConnection), getAddressOrWaitConnectionResult]])
-          .put(fetchExternalNamesFailure({ message: 'No owner address provided' }, undefined))
-          .dispatch(fetchExternalNamesRequest())
-          .silentRun()
-      })
-    })
-  })
-
-  describe('when the owner is provided in the action', () => {
+  describe('when an owner is provided in the action', () => {
     let owner: string
 
     beforeEach(() => {
-      owner = MOCK_ADDRESS
+      owner = '0x123'
     })
 
     describe('when fetchENSList throws an error', () => {
@@ -229,7 +192,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
       it('should dispatch an error action with the owner and the error', async () => {
         await expectSaga(ensSaga, builderClient, ensApi)
           .provide([[call([ensApi, ensApi.fetchExternalNames], owner), throwError(error)]])
-          .put(fetchExternalNamesFailure(ensError, owner))
+          .put(fetchExternalNamesFailure(owner, ensError))
           .dispatch(fetchExternalNamesRequest(owner))
           .silentRun()
       })

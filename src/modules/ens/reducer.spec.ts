@@ -31,13 +31,13 @@ describe('when handling the fetch external names actions', () => {
     })
 
     it('should set the error to the error state', () => {
-      const action = fetchExternalNamesFailure(error, owner)
+      const action = fetchExternalNamesFailure(owner, error)
       const newState = ensReducer(state, action)
       expect(newState.error).toEqual(error)
     })
 
     it('should remove the fetch external names request action from the loading state', () => {
-      const action = fetchExternalNamesFailure(error, owner)
+      const action = fetchExternalNamesFailure(owner, error)
       const newState = ensReducer(state, action)
       expect(newState.loading.length).toEqual(0)
     })

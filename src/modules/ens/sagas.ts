@@ -18,7 +18,7 @@ import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory
 import { DCLController__factory } from 'contracts/factories/DCLController__factory'
 import { ERC20__factory } from 'contracts/factories/ERC20__factory'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_V2_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
-import { getAddressOrWaitConnection, getWallet } from 'modules/wallet/utils'
+import { getWallet } from 'modules/wallet/utils'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
@@ -508,13 +508,9 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   }
 
   function* handleFetchExternalNamesRequest(action: FetchExternalNamesRequestAction) {
-    const owner = action.payload.owner ?? (yield call(getAddressOrWaitConnection))
+    const { owner } = action.payload
 
     try {
-      if (!owner) {
-        throw new Error('No owner address provided')
-      }
-
       const names: string[] = yield call([ensApi, ensApi.fetchExternalNames], owner)
 
       const enss: ENS[] = names.map(name => {
@@ -536,7 +532,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       yield put(fetchExternalNamesSuccess(owner, enssWithWorldStatus))
     } catch (error) {
       const ensError: ENSError = { message: error.message }
-      yield put(fetchExternalNamesFailure(ensError, owner))
+      yield put(fetchExternalNamesFailure(owner, ensError))
     }
   }
 
