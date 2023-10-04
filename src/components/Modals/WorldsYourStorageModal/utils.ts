@@ -18,12 +18,10 @@ export const fetchAccountHoldings = async (account: string) => {
       method: 'POST'
     })
   } catch (e) {
-    console.warn(`Error fetching account holdings for ${account}`, e.message)
     return null
   }
 
   if (!response.ok) {
-    console.warn(`Error fetching account holdings for ${account}`, response.status)
     return null
   }
 
