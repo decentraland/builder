@@ -615,7 +615,10 @@
     "empty_list": {
       "title": "当您拥有一个名字时获得一个自由的世界",
       "description": "每个名称都授予您访问一个世界的权限，<b>您自己在 metaverse 中的 3D 空间</b>，您可以在其中随心所欲地塑造空间并邀请多达 100 人参观。",
-      "cta": "索赔名称"
+      "cta": "索赔名称",
+      "title_ens": "拥有 ENS 域名时，可获得一个免费的世界",
+      "description_ens": "拥有 ENS 域名，您可以创建一个拥有 25 MB 专用存储空间的独特世界。这是开始您在 Decentraland 之旅的绝佳方式。",
+      "cta_ens": "认领 ENS 域名"
     },
     "name_tabs": {
       "dcl_names": "Decentraland 名称",

@@ -30,6 +30,7 @@ import WorldsStorage from './WorldsStorage'
 import { TabType, useCurrentlySelectedTab } from './hooks'
 import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
 import './WorldListPage.css'
+import classNames from 'classnames'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
@@ -59,8 +60,12 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const handleClaimENS = useCallback(() => {
-    onNavigate(locations.claimENS())
-  }, [onNavigate])
+    if (tab === TabType.DCL) {
+      onNavigate(locations.claimENS())
+    } else {
+      window.location.href = 'https://ens.domains'
+    }
+  }, [onNavigate, tab])
 
   const handlePublishScene = useCallback(() => {
     onNavigate(locations.scenes())
@@ -264,11 +269,17 @@ const WorldListPage: React.FC<Props> = props => {
   const renderEmptyPage = () => {
     return (
       <Empty className="empty-names-container" height={500}>
-        <div className="empty-icon" />
-        <div className="empty-title">{t('worlds_list_page.empty_list.title')}</div>
-        <div className="empty-description">{t('worlds_list_page.empty_list.description', { b: (text: string) => <b>{text}</b> })}</div>
+        <div className={classNames('empty-icon', tab === TabType.DCL ? 'dcl-icon' : 'ens-icon')} />
+        <div className="empty-title">
+          {tab === TabType.DCL ? t('worlds_list_page.empty_list.title') : t('worlds_list_page.empty_list.title_ens')}
+        </div>
+        <div className="empty-description">
+          {tab === TabType.DCL
+            ? t('worlds_list_page.empty_list.description', { b: (text: string) => <b>{text}</b> })
+            : t('worlds_list_page.empty_list.description_ens', { b: (text: string) => <b>{text}</b> })}
+        </div>
         <Button className="empty-action" primary onClick={handleClaimENS}>
-          {t('worlds_list_page.empty_list.cta')}
+          {tab === TabType.DCL ? t('worlds_list_page.empty_list.cta') : t('worlds_list_page.empty_list.cta_ens')}
         </Button>
       </Empty>
     )
@@ -310,20 +321,24 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const renderDCLNamesView = () => {
-    return (
-      <div>
-        {worldsWalletStats ? (
-          <WorldsStorage
-            maxBytes={Number(worldsWalletStats.maxAllowedSpace)}
-            currentBytes={Number(worldsWalletStats.usedSpace)}
-            className="worlds-storage"
-            onViewDetails={() => onOpenModal({ stats: worldsWalletStats })}
-          />
-        ) : null}
-        {renderDCLNamesBlockedWorldsStatusMessage()}
-        {ensList.length > 0 ? renderList() : renderEmptyPage()}
-      </div>
-    )
+    if (ensList.length) {
+      return (
+        <div>
+          {worldsWalletStats ? (
+            <WorldsStorage
+              maxBytes={Number(worldsWalletStats.maxAllowedSpace)}
+              currentBytes={Number(worldsWalletStats.usedSpace)}
+              className="worlds-storage"
+              onViewDetails={() => onOpenModal({ stats: worldsWalletStats })}
+            />
+          ) : null}
+          {renderDCLNamesBlockedWorldsStatusMessage()}
+          {renderList()}
+        </div>
+      )
+    }
+
+    return <div>{renderEmptyPage()}</div>
   }
 
   const renderENSNamesView = () => {

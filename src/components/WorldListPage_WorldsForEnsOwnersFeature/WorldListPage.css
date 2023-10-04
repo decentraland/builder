@@ -19,15 +19,16 @@
 
 .WorldListPage .empty-names-container .empty-icon {
   margin-bottom: 30px;
-  background-image: url(../../images/empty-names.svg);
-  height: 86px;
-  width: 86px;
+  height: 87px;
+  width: 87px;
 }
 
-.WorldListPage .empty-names-container .empty-icon .icon {
-  font-size: 86px;
-  line-height: 86px;
-  color: var(--text);
+.WorldListPage .empty-names-container .empty-icon.dcl-icon {
+  background-image: url(./images/dcl-empty-state-icon.svg);
+}
+
+.WorldListPage .empty-names-container .empty-icon.ens-icon {
+  background-image: url(./images/ens-empty-state-icon.svg);
 }
 
 .WorldListPage .empty-names-container .empty-title {

@@ -613,7 +613,10 @@
     "empty_list": {
       "title": "Obtenga un mundo gratis cuando tenga un nombre",
       "description": "Cada nombre le otorga acceso a un Mundo, <b>su espacio 3D personal en el metaverso</b> donde le puede dar forma como quiera e invitar hasta 100 personas a visitar su espacio.",
-      "cta": "Reclamar un nuevo Nombre"
+      "cta": "Reclamar un nuevo Nombre",
+      "title_ens": "Obtén un Mundo gratis cuando eres dueño de un Dominio ENS",
+      "description_ens": "Con un dominio ENS, puedes crear un mundo único con 25 MB de almacenamiento dedicado. Es una excelente manera de comenzar tu viaje en Decentraland.",
+      "cta_ens": "Reclamar Dominio ENS"
     },
     "name_tabs": {
       "dcl_names": "Nombres de Decentraland",
