@@ -2092,5 +2092,21 @@
       "publish": "Publish scene",
       "preview": "Preview scene"
     }
+  },
+  "worlds_your_storage_modal": {
+    "your_storage": "Your Storage",
+    "total_available_storage": "TOTAL AVAILABLE STORAGE",
+    "mana": "MANA",
+    "mana_earn_storage": "Earn 100 MB of storage per 2,000 tokens (Polygon or Ethereum).",
+    "mana_holdings": "You have {mbs} MB thanks to holding {owned} MANA tokens.",
+    "mana_buy": "BUY MANA",
+    "lands": "LANDs",
+    "lands_earn_storage": "Earn 100 MB of storage per LAND.",
+    "lands_holdings": "You have {mbs} MB thanks to holding {owned} LANDs.",
+    "lands_buy": "BUY LAND",
+    "names": "NAMEs",
+    "names_earn_storage": "Earn 100 MB of storage per NAME.",
+    "names_holdings": "You have {mbs} MB thanks to holding {owned} Decentraland NAMEs.",
+    "names_buy": "BUY NAME"
   }
 }

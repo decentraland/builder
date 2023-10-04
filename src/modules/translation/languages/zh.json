@@ -2093,5 +2093,21 @@
       "publish": "发布",
       "preview": "预览"
     }
+  },
+  "worlds_your_storage_modal": {
+    "your_storage": "您的存储",
+    "total_available_storage": "总可用存储",
+    "mana": "MANA",
+    "mana_earn_storage": "每 2,000 个代币（Polygon 或 Ethereum）赚取 100 MB 存储空间。",
+    "mana_holdings": "由于持有 {owned} MANA 代币，您拥有 {mbs} MB。",
+    "mana_buy": "购买 MANA",
+    "lands": "LANDs",
+    "lands_earn_storage": "每个 LAND 赚取 100 MB 存储空间。",
+    "lands_holdings": "由于持有 {owned} LANDs，您拥有 {mbs} MB。",
+    "lands_buy": "购买 LAND",
+    "names": "NAMEs",
+    "names_earn_storage": "每个 NAME 赚取 100 MB 存储空间。",
+    "names_holdings": "由于持有 {owned} Decentraland NAMEs，您拥有 {mbs} MB。",
+    "names_buy": "购买 NAME"
   }
 }

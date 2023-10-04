@@ -1,12 +1,13 @@
 import * as React from 'react'
-import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Button, ModalContent, ModalNavigation } from 'decentraland-ui'
-import { Props, State, WorldsYourStorageModalMetadata } from './WorldsYourStorageModal.types'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { fromBytesToMegabytes } from 'components/WorldListPage_WorldsForEnsOwnersFeature/utils'
-import goodImg from './images/good.svg'
-import styles from './WorldsYourStorageModal.module.css'
 import { InfoIcon } from 'components/InfoIcon'
+import goodImg from './images/good.svg'
+import { Props, State, WorldsYourStorageModalMetadata } from './WorldsYourStorageModal.types'
 import { fetchAccountHoldings, getMbsFromAccountHoldings } from './utils'
+import styles from './WorldsYourStorageModal.module.css'
 
 export default class WorldsYourStorageModal extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -38,59 +39,68 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
 
     return (
       <Modal name={name} onClose={onClose}>
-        <ModalNavigation title={'Your Storage'} onClose={onClose} />
+        <ModalNavigation title={t('worlds_your_storage_modal.your_storage')} onClose={onClose} />
         <ModalContent>
           <div className={styles.total}>
-            <span>TOTAL AVAILABLE STORAGE</span>
+            <span>{t('worlds_your_storage_modal.total_available_storage')}</span>
             <span className={styles.mbs}>
               {fromBytesToMegabytes(Number(stats.maxAllowedSpace) - Number(stats.usedSpace)).toFixed(2)} Mb
             </span>
           </div>
           <div className={styles.asset}>
             <div className={styles.texts}>
-              <span>MANA</span>
-              <span className={styles.subtitle}>Earn 100 MB of storage per 2,000 tokens (Polygon or Ethereum).</span>
+              <span>{t('worlds_your_storage_modal.mana')}</span>
+              <span className={styles.subtitle}>{t('worlds_your_storage_modal.mana_earn_storage')}</span>
               {accountHoldings && mbsFromAccountHoldings ? (
                 <span className={styles.amount}>
-                  <img src={goodImg} alt="good"></img> You have {Math.trunc(mbsFromAccountHoldings.manaMbs)} MB thanks to holding{' '}
-                  {Math.trunc(accountHoldings.ownedMana)} MANA tokens.
+                  <img src={goodImg} alt="good"></img>
+                  {t('worlds_your_storage_modal.mana_holdings', {
+                    mbs: mbsFromAccountHoldings.manaMbs,
+                    owned: Math.trunc(accountHoldings.ownedMana)
+                  })}
                 </span>
               ) : null}
             </div>
             <div>
-              <Button primary>BUY MANA</Button>
+              <Button primary>{t('worlds_your_storage_modal.mana_buy')}</Button>
             </div>
           </div>
           <div className={styles.separator} />
           <div className={styles.asset}>
             <div className={styles.texts}>
-              <span>LANDs</span>
-              <span className={styles.subtitle}>Earn 100 MB of storage per LAND.</span>
+              <span>{t('worlds_your_storage_modal.lands')}</span>
+              <span className={styles.subtitle}>{t('worlds_your_storage_modal.lands_earn_storage')}</span>
               {accountHoldings && mbsFromAccountHoldings ? (
                 <span className={styles.amount}>
-                  <img src={goodImg} alt="good"></img> You have {mbsFromAccountHoldings.landMbs} MB thanks to holding{' '}
-                  {accountHoldings.ownedLands} LANDs.
+                  <img src={goodImg} alt="good"></img>
+                  {t('worlds_your_storage_modal.lands_holdings', {
+                    mbs: mbsFromAccountHoldings.landMbs,
+                    owned: accountHoldings.ownedLands
+                  })}
                 </span>
               ) : null}
             </div>
             <div>
-              <Button primary>BUY LAND</Button>
+              <Button primary>{t('worlds_your_storage_modal.lands_buy')}</Button>
             </div>
           </div>
           <div className={styles.separator} />
           <div className={styles.asset}>
             <div className={styles.texts}>
-              <span>NAMEs</span>
-              <span className={styles.subtitle}>Earn 100 MB of storage per NAME.</span>
+              <span>{t('worlds_your_storage_modal.names')}</span>
+              <span className={styles.subtitle}>{t('worlds_your_storage_modal.lands_earn_storage')}</span>
               {accountHoldings && mbsFromAccountHoldings ? (
                 <span className={styles.amount}>
-                  <img src={goodImg} alt="good"></img> You have {mbsFromAccountHoldings.nameMbs} MB thanks to holding{' '}
-                  {Math.trunc(accountHoldings.ownedNames)} NAMEs.
+                  <img src={goodImg} alt="good"></img>
+                  {t('worlds_your_storage_modal.names_holdings', {
+                    mbs: mbsFromAccountHoldings.nameMbs,
+                    owned: accountHoldings.ownedNames
+                  })}
                 </span>
               ) : null}
             </div>
             <div>
-              <Button primary>BUY NAME</Button>
+              <Button primary>{t('worlds_your_storage_modal.names_buy')}</Button>
             </div>
           </div>
           <div className={styles.proposal}>
