@@ -12,9 +12,7 @@ import {
   Dropdown,
   Empty,
   Icon as DCLIcon,
-  Popup,
-  Message,
-  MessageContent
+  Popup
 } from 'decentraland-ui'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
@@ -287,18 +285,14 @@ const WorldListPage: React.FC<Props> = props => {
       return null
     }
 
-    let warning = false
-    let error = false
     let messageContent: ReactNode
 
     if (dclWorldsStatus.status === DCLWorldsStatus.TO_BE_BLOCKED) {
-      warning = true
       messageContent = t('worlds_list_page.worlds_warning_message.to_be_blocked', {
         toBeBlockedAt: dclWorldsStatus.toBeBlockedAt.toLocaleDateString(),
         b: (text: string) => <b>{text}</b>
       })
     } else {
-      error = true
       messageContent = t('worlds_list_page.worlds_warning_message.blocked', {
         blockedAt: dclWorldsStatus.blockedAt.toLocaleDateString(),
         b: (text: string) => <b>{text}</b>
@@ -306,9 +300,12 @@ const WorldListPage: React.FC<Props> = props => {
     }
 
     return (
-      <Message warning={warning} error={error}>
-        <MessageContent>{messageContent}</MessageContent>
-      </Message>
+      <div className="insufficient-storage-message">
+        <div>
+          <Icon name="alert-warning" />
+        </div>
+        <div>{messageContent}</div>
+      </div>
     )
   }
 
