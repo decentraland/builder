@@ -39,5 +39,6 @@
   "DCL_LISTS_SERVER": "https://dcl-lists.decentraland.today",
   "INSPECTOR_CONTENT_URL": "https://builder-items.decentraland.zone",
   "ENS_SUBGRAPH_URL": "https://api.thegraph.com/subgraphs/name/ensdomains/ens",
-  "DCL_NAME_STATS_URL": "https://dcl-name-stats.decentraland.org"
+  "DCL_NAME_STATS_URL": "https://dcl-name-stats.decentraland.org",
+  "ENS_DOMAINS_URL": "https://ens.domains"
 }
