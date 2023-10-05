@@ -60,7 +60,7 @@ export default function DeployToWorld({
       analytics.track('Publish to World step', { step: DeployToWorldView.FORM })
       onRecord()
     }
-  }, [ensList, onRecord, analytics])
+  }, [ensList, externalNames, onRecord, analytics])
 
   useEffect(() => {
     if (view === DeployToWorldView.FORM && loading && error) {
