@@ -24,8 +24,10 @@ const WorldsStorage = ({ maxBytes, currentBytes, className, onViewDetails }: Pro
         </div>
       </div>
       <Progress data-testid={PROGRESS_TEST_ID} percent={Math.trunc(usedPercentage)} className={styles.bar} size="small" />
-      <div className={styles.viewDetails} onClick={onViewDetails}>
-        {t('worlds_list_page.worlds_storage.view_details')}
+      <div className={styles.viewDetailsContainer}>
+        <span className={styles.viewDetails} onClick={onViewDetails}>
+          {t('worlds_list_page.worlds_storage.view_details')}
+        </span>
       </div>
     </div>
   )

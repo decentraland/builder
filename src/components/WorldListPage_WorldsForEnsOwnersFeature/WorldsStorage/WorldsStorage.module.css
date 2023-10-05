@@ -23,8 +23,13 @@
   background-color: #ff2d55;
 }
 
+.viewDetailsContainer {
+  display: flex;
+  justify-content: end;
+}
+
+
 .viewDetails {
-  text-align: right;
   cursor: pointer;
   text-decoration: underline;
 }
