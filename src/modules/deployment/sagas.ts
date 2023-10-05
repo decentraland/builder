@@ -375,7 +375,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         throw new Error('Unable to clear deployment: Invalid deployment')
       }
 
-      const identity: AuthIdentity = yield getIdentity()
+      const identity: AuthIdentity = yield call(getIdentity)
 
       if (!identity) {
         throw new Error('Unable to clear deployment: Invalid identity')

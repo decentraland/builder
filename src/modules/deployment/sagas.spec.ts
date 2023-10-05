@@ -1,8 +1,12 @@
 import { CatalystClient, createCatalystClient, createContentClient } from 'dcl-catalyst-client'
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
+import { call, select } from 'redux-saga/effects'
+import { AuthIdentity } from '@dcl/crypto'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
+import cryptoFetch from 'decentraland-crypto-fetch'
 import { BuilderAPI } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { isLoggedIn } from 'modules/identity/selectors'
@@ -11,9 +15,17 @@ import { getMedia } from 'modules/media/selectors'
 import { objectURLToBlob } from 'modules/media/utils'
 import { getName } from 'modules/profile/selectors'
 import { getData } from 'modules/project/selectors'
+import { getData as getDeployments } from 'modules/deployment/selectors'
 import { createFiles } from 'modules/project/export'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { deployToWorldRequest, fetchWorldDeploymentsRequest, fetchWorldDeploymentsSuccess } from './actions'
+import {
+  clearDeploymentFailure,
+  clearDeploymentRequest,
+  clearDeploymentSuccess,
+  deployToWorldRequest,
+  fetchWorldDeploymentsRequest,
+  fetchWorldDeploymentsSuccess
+} from './actions'
 import { deploymentSaga } from './sagas'
 import { makeContentFiles } from './contentUtils'
 import { Deployment } from './types'
@@ -146,5 +158,104 @@ describe('when handling fetch worlds deployments request', () => {
       )
       .dispatch(fetchWorldDeploymentsRequest(worlds))
       .silentRun()
+  })
+})
+
+describe('when handling the clear deployment request action', () => {
+  let deploymentId: string
+  let identity: AuthIdentity | null
+  let deployments: DataByKey<Deployment>
+  let crytoFetchResponse: Response
+
+  beforeEach(() => {
+    deploymentId = 'deploymentId'
+    identity = null
+    deployments = {}
+    crytoFetchResponse = { ok: false, status: 500 } as Response
+  })
+
+  describe('when the stored deployments does not contain a deployment for the provided id', () => {
+    it('should put a clear deployment failure action signaling that the deployment id is invalid', async () => {
+      await expectSaga(deploymentSaga, builderAPI, catalystClient)
+        .provide([[select(getDeployments), deployments]])
+        .put(clearDeploymentFailure(deploymentId, 'Unable to clear deployment: Invalid deployment'))
+        .dispatch(clearDeploymentRequest(deploymentId))
+        .silentRun()
+    })
+  })
+
+  describe('when the stored deployments does contain a deployment for the provided id', () => {
+    beforeEach(() => {
+      deployments[deploymentId] = {} as Deployment
+    })
+
+    describe('when getting the identity returns a null or undefined value', () => {
+      it('should put a clear deployment failure action signaling that the identity cannot be obtained', async () => {
+        await expectSaga(deploymentSaga, builderAPI, catalystClient)
+          .provide([
+            [select(getDeployments), deployments],
+            [call(getIdentity), identity]
+          ])
+          .put(clearDeploymentFailure(deploymentId, 'Unable to clear deployment: Invalid identity'))
+          .dispatch(clearDeploymentRequest(deploymentId))
+          .silentRun()
+      })
+    })
+
+    describe('when getting the identity returns an identity', () => {
+      beforeEach(() => {
+        identity = {} as AuthIdentity
+      })
+
+      describe('when the stored deployment is for a world', () => {
+        beforeEach(() => {
+          deployments[deploymentId].world = 'world'
+        })
+
+        describe('when the crypto fetch response is not ok', () => {
+          it('should put a clear deployment failure action signaling that the response is not ok', async () => {
+            await expectSaga(deploymentSaga, builderAPI, catalystClient)
+              .provide([
+                [select(getDeployments), deployments],
+                [call(getIdentity), identity],
+                [
+                  call(cryptoFetch, 'https://worlds-content-server.decentraland.zone/entities/world', {
+                    method: 'DELETE',
+                    identity: identity!
+                  }),
+                  crytoFetchResponse
+                ]
+              ])
+              .put(clearDeploymentFailure(deploymentId, `Unable to clear deployment: Response is not ok, status 500`))
+              .dispatch(clearDeploymentRequest(deploymentId))
+              .silentRun()
+          })
+        })
+
+        describe('when the crypto fetch response is ok', () => {
+          beforeEach(() => {
+            crytoFetchResponse = { ok: true } as Response
+          })
+
+          it('should put a clear deployment success action signaling that the clear deployment executed successfuly', async () => {
+            await expectSaga(deploymentSaga, builderAPI, catalystClient)
+              .provide([
+                [select(getDeployments), deployments],
+                [call(getIdentity), identity],
+                [
+                  call(cryptoFetch, 'https://worlds-content-server.decentraland.zone/entities/world', {
+                    method: 'DELETE',
+                    identity: identity!
+                  }),
+                  crytoFetchResponse
+                ]
+              ])
+              .put(clearDeploymentSuccess(deploymentId))
+              .dispatch(clearDeploymentRequest(deploymentId))
+              .silentRun()
+          })
+        })
+      })
+    })
   })
 })
