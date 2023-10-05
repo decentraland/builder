@@ -29,6 +29,7 @@ import {
 import { deploymentSaga } from './sagas'
 import { makeContentFiles } from './contentUtils'
 import { Deployment } from './types'
+import { config } from 'config'
 
 let builderAPI: BuilderAPI
 let catalystClient: CatalystClient
@@ -208,8 +209,12 @@ describe('when handling the clear deployment request action', () => {
       })
 
       describe('when the stored deployment is for a world', () => {
+        let worldsContentServerUrl: string
+
         beforeEach(() => {
           deployments[deploymentId].world = 'world'
+          worldsContentServerUrl = 'https://worlds-content-server.com'
+          jest.spyOn(config, 'get').mockReturnValueOnce(worldsContentServerUrl)
         })
 
         describe('when the crypto fetch response is not ok', () => {
@@ -219,7 +224,7 @@ describe('when handling the clear deployment request action', () => {
                 [select(getDeployments), deployments],
                 [call(getIdentity), identity],
                 [
-                  call(cryptoFetch, 'https://worlds-content-server.decentraland.zone/entities/world', {
+                  call(cryptoFetch, `${worldsContentServerUrl}/entities/world`, {
                     method: 'DELETE',
                     identity: identity!
                   }),
@@ -243,7 +248,7 @@ describe('when handling the clear deployment request action', () => {
                 [select(getDeployments), deployments],
                 [call(getIdentity), identity],
                 [
-                  call(cryptoFetch, 'https://worlds-content-server.decentraland.zone/entities/world', {
+                  call(cryptoFetch, `${worldsContentServerUrl}/entities/world`, {
                     method: 'DELETE',
                     identity: identity!
                   }),
