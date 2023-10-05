@@ -45,7 +45,7 @@ describe('when fetching the account holdings', () => {
         } as Response)
       })
 
-      it('should return null', async () => {
+      it('should return the account holdings', async () => {
         expect(await fetchAccountHoldings(account)).toEqual(accountHoldings)
       })
     })
