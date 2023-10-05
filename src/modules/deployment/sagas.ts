@@ -6,8 +6,8 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
 import { config } from 'config'
-import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
-import { getData as getDeployments } from 'modules/deployment/selectors'
+import { BuilderAPI, getPreviewUrl } from 'lib/api/builder'
+import { Authorization } from 'lib/api/auth'
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
 import { takeScreenshot } from 'modules/editor/actions'
 import { fetchENSWorldStatusRequest } from 'modules/ens/actions'
@@ -24,6 +24,7 @@ import { Media } from 'modules/media/types'
 import { getName } from 'modules/profile/selectors'
 import { createFiles, EXPORT_PATH } from 'modules/project/export'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
+import { getData as getDeployments } from 'modules/deployment/selectors'
 import { Project } from 'modules/project/types'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { Scene } from 'modules/scene/types'
@@ -59,10 +60,10 @@ import {
   fetchWorldDeploymentsRequest
 } from './actions'
 import { makeContentFiles } from './contentUtils'
-import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
+import { getThumbnail } from './utils'
 import { ProgressStage } from './types'
 
-type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
+const WORLDS_CONTENT_SERVER = config.get('WORLDS_CONTENT_SERVER', '')
 
 // TODO: Remove this. This is using the store directly which it shouldn't and causes a circular dependency.
 const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: number }) => {
@@ -330,7 +331,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   function* handleDeployToWorldRequest(action: DeployToWorldRequestAction) {
     const { world, projectId } = action.payload
     const contentClient = createContentClient({
-      url: config.get('WORLDS_CONTENT_SERVER', ''),
+      url: WORLDS_CONTENT_SERVER,
       fetcher: createFetchComponent()
     })
     try {
@@ -364,57 +365,28 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     const { deploymentId } = action.payload
 
-    const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
-    const deployment = deployments[deploymentId]
-    if (!deployment) {
-      yield put(deployToLandFailure('Unable to Publish: Invalid deployment'))
-      return
-    }
-
-    let contentClient: ContentClient
-    if (deployment.world) {
-      contentClient = createContentClient({
-        url: config.get('WORLDS_CONTENT_SERVER', ''),
-        fetcher: createFetchComponent()
-      })
-    } else {
-      contentClient = yield call([catalystClient, 'getContentClient'])
-    }
-
-    const identity: AuthIdentity = yield getIdentity()
-    if (!identity) {
-      yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
-      return
-    }
-
     try {
-      const { placement } = deployment
-      const [emptyProject, emptyScene] = getEmptyDeployment(deployment.projectId || UNPUBLISHED_PROJECT_ID)
-      const files: UnwrapPromise<ReturnType<typeof createFiles>> = yield call(createFiles, {
-        project: emptyProject,
-        scene: emptyScene,
-        point: placement.point,
-        rotation: placement.rotation,
-        thumbnail: getEmptySceneUrl(),
-        author: null,
-        isDeploy: true,
-        isEmpty: true,
-        onProgress: handleProgress(ProgressStage.CREATE_FILES),
-        world: deployment.world ?? undefined
-      })
-      const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
-      const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-      const { entityId, files: hashedFiles } = yield call(buildEntity, {
-        type: EntityType.SCENE,
-        pointers: [...sceneDefinition.scene.parcels],
-        metadata: sceneDefinition,
-        files: contentFiles
-      })
-      const authChain = Authenticator.signPayload(identity, entityId)
-      yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
+      const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
+      const deployment = deployments[deploymentId]
+
+      if (!deployment) {
+        throw new Error('Deployment not found')
+      }
+
+      const world = deployment.world
+
+      if (!world) {
+        throw new Error('Deployment does not have a world')
+      }
+
+      const authorization: Authorization = new Authorization(store)
+      const path = `/entities/${world}`
+      const authHeaders: Record<string, string> = yield call([authorization, 'createAuthHeaders'], 'DELETE', path)
+
+      yield call(fetch, `${WORLDS_CONTENT_SERVER}${path}`, { method: 'DELETE', headers: { ...authHeaders } })
       yield put(clearDeploymentSuccess(deploymentId))
-    } catch (error) {
-      yield put(clearDeploymentFailure(deploymentId, error.message))
+    } catch (e) {
+      yield put(clearDeploymentFailure(deploymentId, e.message))
     }
   }
 
@@ -502,7 +474,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handleFetchWorldDeploymentsRequest(action: FetchWorldDeploymentsRequestAction) {
     const { worlds } = action.payload
-    const worldContentClient = createContentClient({ url: config.get('WORLDS_CONTENT_SERVER', ''), fetcher: createFetchComponent() })
+    const worldContentClient = createContentClient({ url: WORLDS_CONTENT_SERVER, fetcher: createFetchComponent() })
     try {
       const entities: Entity[] = []
 
