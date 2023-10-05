@@ -1,5 +1,6 @@
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, select, takeEvery } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { WorldsWalletStats, content as WorldsAPIContent } from 'lib/api/worlds'
 import {
   FETCH_WORLDS_WALLET_STATS_REQUEST,
@@ -8,10 +9,13 @@ import {
   fetchWorldsWalletStatsRequest,
   fetchWorldsWalletStatsSuccess
 } from './actions'
+import { CLEAR_DEPLOYMENT_SUCCESS, DEPLOY_TO_WORLD_SUCCESS } from 'modules/deployment/actions'
 
 export function* worldsSaga() {
   yield takeEvery(FETCH_WORLDS_WALLET_STATS_REQUEST, handlefetchWorldsWalletStatsRequest)
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWallet)
+  yield takeEvery(DEPLOY_TO_WORLD_SUCCESS, handleDeployToWorldSuccess)
+  yield takeEvery(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
 }
 
 function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequestAction) {
@@ -32,4 +36,24 @@ function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequ
 
 function* handleConnectWallet(action: ConnectWalletSuccessAction) {
   yield put(fetchWorldsWalletStatsRequest(action.payload.wallet.address))
+}
+
+function* handleDeployToWorldSuccess() {
+  const address: string | undefined = yield select(getAddress)
+
+  if (!address) {
+    return
+  }
+
+  yield put(fetchWorldsWalletStatsRequest(address))
+}
+
+function* handleClearDeploymentSuccess() {
+  const address: string | undefined = yield select(getAddress)
+
+  if (!address) {
+    return
+  }
+
+  yield put(fetchWorldsWalletStatsRequest(address))
 }
