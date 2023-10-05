@@ -1,0 +1,50 @@
+.total {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.total .mbs {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.asset {
+  margin: 4rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.asset .texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.asset .texts .subtitle {
+  color: var(--secondary-text);
+}
+
+.asset .texts .amount {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.separator {
+  height: 1px;
+  background-color: var(--text);
+  width: 100%;
+}
+
+.proposal {
+  text-align: center;
+  font-size: 1rem;
+}
+
+.proposal .icon {
+  position: relative;
+  top: 2px;
+}

@@ -38,5 +38,6 @@
   "SENTRY_DSN": "https://428e8d298fb3f0fbcea645314a4a388c@o4504361728212992.ingest.sentry.io/4505748381564928",
   "DCL_LISTS_SERVER": "https://dcl-lists.decentraland.zone",
   "INSPECTOR_CONTENT_URL": "https://builder-items.decentraland.zone",
-  "ENS_SUBGRAPH_URL": "https://api.studio.thegraph.com/query/49574/enssepolia/version/latest"
+  "ENS_SUBGRAPH_URL": "https://api.studio.thegraph.com/query/49574/enssepolia/version/latest",
+  "DCL_NAME_STATS_URL": "https://dcl-name-stats.decentraland.zone"
 }
