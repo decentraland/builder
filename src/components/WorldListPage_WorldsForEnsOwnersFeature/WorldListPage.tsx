@@ -34,6 +34,7 @@ import classNames from 'classnames'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
+const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
@@ -63,7 +64,7 @@ const WorldListPage: React.FC<Props> = props => {
     if (tab === TabType.DCL) {
       onNavigate(locations.claimENS())
     } else {
-      window.location.href = 'https://ens.domains'
+      window.location.href = ENS_DOMAINS_URL
     }
   }, [onNavigate, tab])
 

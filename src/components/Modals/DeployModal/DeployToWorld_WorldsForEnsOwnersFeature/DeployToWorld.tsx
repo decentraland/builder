@@ -20,6 +20,7 @@ import styles from './DeployToWorld.module.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
+const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
 
 export default function DeployToWorld({
@@ -108,7 +109,7 @@ export default function DeployToWorld({
       analytics.track('Publish to World - Claim Name')
       onReplace(ensUrl, { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
     } else {
-      window.open('https://ens.domains/', '_blank', 'norefferer')
+      window.open(ENS_DOMAINS_URL, '_blank', 'norefferer')
     }
   }, [nameType, project, onReplace, analytics])
 
