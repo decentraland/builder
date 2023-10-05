@@ -1,4 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Button,
@@ -30,7 +31,6 @@ import WorldsStorage from './WorldsStorage'
 import { TabType, useCurrentlySelectedTab } from './hooks'
 import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
 import './WorldListPage.css'
-import classNames from 'classnames'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
