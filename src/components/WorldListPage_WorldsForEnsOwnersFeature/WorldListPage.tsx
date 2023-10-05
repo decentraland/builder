@@ -317,7 +317,7 @@ const WorldListPage: React.FC<Props> = props => {
             maxBytes={Number(worldsWalletStats.maxAllowedSpace)}
             currentBytes={Number(worldsWalletStats.usedSpace)}
             className="worlds-storage"
-            onViewDetails={() => onOpenModal('WorldsYourStorageModal', { stats: worldsWalletStats })}
+            onViewDetails={() => onOpenModal({ stats: worldsWalletStats })}
           />
         ) : null}
         {renderDCLNamesBlockedWorldsStatusMessage()}
