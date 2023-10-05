@@ -66,12 +66,25 @@ describe('when handling the request action to fetch worlds stats for a wallet', 
   })
 })
 
-describe('when the wallet connects', () => {
-  it('should put the action to fetch worlds stats for the connected wallet address', () => {
-    return expectSaga(worldsSaga)
-      .put(fetchWorldsWalletStatsRequest(address))
-      .dispatch(connectWalletSuccess({ address } as Wallet))
-      .silentRun()
+describe('when handling the connect wallet success action', () => {
+  describe('when there is no address in the store', () => {
+    it('should not put the request action to fetch worlds wallet stats', () => {
+      return expectSaga(worldsSaga)
+        .provide([[select(getAddress), undefined]])
+        .not.put(fetchWorldsWalletStatsRequest(address))
+        .dispatch(connectWalletSuccess({} as Wallet))
+        .silentRun()
+    })
+  })
+
+  describe('when there is an address in the store', () => {
+    it('should put the request action to fetch worlds wallet stats with the stored address', () => {
+      return expectSaga(worldsSaga)
+        .provide([[select(getAddress), address]])
+        .put(fetchWorldsWalletStatsRequest(address))
+        .dispatch(connectWalletSuccess({} as Wallet))
+        .silentRun()
+    })
   })
 })
 
