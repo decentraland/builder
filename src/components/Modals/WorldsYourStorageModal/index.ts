@@ -1,3 +1,3 @@
-import WorldsYourStorageModal from './WorldsYourStorageModal.container'
+import WorldsYourStorageModal from './WorldsYourStorageModal'
 
 export default WorldsYourStorageModal
