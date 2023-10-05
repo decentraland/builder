@@ -1,7 +1,9 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Button, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { locations } from 'routing/locations'
 import { fromBytesToMegabytes } from 'components/WorldListPage_WorldsForEnsOwnersFeature/utils'
 import { config } from 'config'
 import { InfoIcon } from 'components/InfoIcon'
@@ -108,7 +110,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button as="a" href="/claim-name" primary>
+              <Button as={Link} to={locations.claimENS()} primary>
                 {t('worlds_your_storage_modal.names_buy')}
               </Button>
             </div>
