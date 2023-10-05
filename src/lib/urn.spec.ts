@@ -163,7 +163,7 @@ describe('when decoding an URN', () => {
 
   describe('when a valid entity urn is used', () => {
     describe('and the URN is an entity with a baseUrl', () => {
-      it.only('should decode and return each group', () => {
+      it('should decode and return each group', () => {
         expect(decodeURN('urn:decentraland:entity:anEntityId?=&baseUrl=https://aContentServerUrl')).toEqual({
           type: URNType.ENTITY,
           suffix: 'anEntityId?=&baseUrl=https://aContentServerUrl',
