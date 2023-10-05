@@ -63,7 +63,7 @@ import { makeContentFiles } from './contentUtils'
 import { UNPUBLISHED_PROJECT_ID, getEmptyDeployment, getThumbnail } from './utils'
 import { ProgressStage } from './types'
 
-const WORLDS_CONTENT_SERVER = config.get('WORLDS_CONTENT_SERVER', '')
+const getWorldsContentServerUrl = () => config.get('WORLDS_CONTENT_SERVER', '')
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -333,7 +333,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   function* handleDeployToWorldRequest(action: DeployToWorldRequestAction) {
     const { world, projectId } = action.payload
     const contentClient = createContentClient({
-      url: WORLDS_CONTENT_SERVER,
+      url: getWorldsContentServerUrl(),
       fetcher: createFetchComponent()
     })
     try {
@@ -382,7 +382,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       }
 
       if (deployment.world) {
-        const response: Response = yield call(cryptoFetch, `${WORLDS_CONTENT_SERVER}/entities/${deployment.world}`, {
+        const response: Response = yield call(cryptoFetch, `${getWorldsContentServerUrl()}/entities/${deployment.world}`, {
           method: 'DELETE',
           identity
         })
@@ -508,7 +508,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handleFetchWorldDeploymentsRequest(action: FetchWorldDeploymentsRequestAction) {
     const { worlds } = action.payload
-    const worldContentClient = createContentClient({ url: WORLDS_CONTENT_SERVER, fetcher: createFetchComponent() })
+    const worldContentClient = createContentClient({ url: getWorldsContentServerUrl(), fetcher: createFetchComponent() })
     try {
       const entities: Entity[] = []
 

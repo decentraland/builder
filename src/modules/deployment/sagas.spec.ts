@@ -7,6 +7,7 @@ import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBui
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import cryptoFetch from 'decentraland-crypto-fetch'
+import { config } from 'config'
 import { BuilderAPI } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { isLoggedIn } from 'modules/identity/selectors'
@@ -29,7 +30,6 @@ import {
 import { deploymentSaga } from './sagas'
 import { makeContentFiles } from './contentUtils'
 import { Deployment } from './types'
-import { config } from 'config'
 
 let builderAPI: BuilderAPI
 let catalystClient: CatalystClient
