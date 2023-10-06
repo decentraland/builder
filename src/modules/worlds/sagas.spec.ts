@@ -1,5 +1,5 @@
 import { expectSaga } from 'redux-saga-test-plan'
-import { call, select } from 'redux-saga/effects'
+import { call, put, select } from 'redux-saga/effects'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -80,7 +80,10 @@ describe('when handling the connect wallet success action', () => {
   describe('when there is an address in the store', () => {
     it('should put the request action to fetch worlds wallet stats with the stored address', () => {
       return expectSaga(worldsSaga)
-        .provide([[select(getAddress), address]])
+        .provide([
+          [select(getAddress), address],
+          [put(fetchWorldsWalletStatsRequest(address)), undefined]
+        ])
         .put(fetchWorldsWalletStatsRequest(address))
         .dispatch(connectWalletSuccess({} as Wallet))
         .silentRun()
@@ -102,7 +105,10 @@ describe('when handling the deploy to world success action', () => {
   describe('when there is an address in the store', () => {
     it('should put the request action to fetch worlds wallet stats with the stored address', () => {
       return expectSaga(worldsSaga)
-        .provide([[select(getAddress), address]])
+        .provide([
+          [select(getAddress), address],
+          [put(fetchWorldsWalletStatsRequest(address)), undefined]
+        ])
         .put(fetchWorldsWalletStatsRequest(address))
         .dispatch(deployToWorldSuccess({} as Deployment))
         .silentRun()
@@ -124,7 +130,10 @@ describe('when handling the clear deployment success action', () => {
   describe('when there is an address in the store', () => {
     it('should put the request action to fetch worlds wallet stats with the stored address', () => {
       return expectSaga(worldsSaga)
-        .provide([[select(getAddress), address]])
+        .provide([
+          [select(getAddress), address],
+          [put(fetchWorldsWalletStatsRequest(address)), undefined]
+        ])
         .put(fetchWorldsWalletStatsRequest(address))
         .dispatch(clearDeploymentSuccess(''))
         .silentRun()
