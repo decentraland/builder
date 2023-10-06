@@ -97,7 +97,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
           <div className={styles.asset}>
             <div className={styles.texts}>
               <span className={styles.name}>{t('worlds_your_storage_modal.names')}</span>
-              <span className={styles.subtitle}>{t('worlds_your_storage_modal.lands_earn_storage')}</span>
+              <span className={styles.subtitle}>{t('worlds_your_storage_modal.names_earn_storage')}</span>
               {accountHoldings && mbsFromAccountHoldings && mbsFromAccountHoldings.nameMbs > 0 ? (
                 <span className={styles.amount}>
                   <img src={goodImg} alt="good"></img>
