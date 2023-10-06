@@ -622,15 +622,15 @@
     },
     "name_tabs": {
       "dcl_names": "Decentraland 名称",
-      "ens_names": "ENS 名称"
+      "ens_names": "ENS 域名"
     },
     "worlds_storage": {
-      "space_used": "使用空间",
+      "space_used": "已使用空间",
       "view_details": "查看详情"
     },
     "worlds_warning_message": {
-      "to_be_blocked": "您使用的存储空间超出了允许的范围。 在<b>{toBeBlockedAt}</b>之前取消发布某些场景以释放空间或增加最大存储空间，以避免失去对场景的访问权限。",
-      "blocked": "自 <b>{blockedAt}</b> 起，对您的场景的访问已被阻止，因为您没有足够的存储空间来维护当前发布的世界。 取消发布某些场景以释放空间或增加最大存储空间以重新获得访问权限。"
+      "to_be_blocked": "您使用的存储空间超过了允许的量。取消发布一些场景以释放一些空间，或在 <b>{toBeBlockedAt}</b> 之前增加您的最大存储空间，以避免失去对您场景的访问权限。",
+      "blocked": "由于您没有足够的存储空间来维护您当前发布的世界，自 <b>{blockedAt}</b> 起，您的场景访问权限已被阻止。取消发布一些场景以释放一些空间，或增加您的最大存储空间以重新获得访问权限。"
     }
   },
   "estate_editor": {

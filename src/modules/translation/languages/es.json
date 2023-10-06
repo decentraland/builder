@@ -620,15 +620,15 @@
     },
     "name_tabs": {
       "dcl_names": "NAMEs de Decentraland",
-      "ens_names": "Dominio de ENS"
+      "ens_names": "Dominio ENS"
     },
     "worlds_storage": {
       "space_used": "Espacio utilizado",
       "view_details": "ver detalles"
     },
     "worlds_warning_message": {
-      "to_be_blocked": "Está utilizando más almacenamiento del permitido. Cancele la publicación de algunas escenas para liberar espacio o aumentar su almacenamiento máximo antes de <b>{toBeBlockedAt}</b> para evitar perder el acceso a sus escenas.",
-      "blocked": "El acceso a tus escenas ha sido bloqueado desde <b>{blockedAt}</b> porque no tienes suficiente almacenamiento para mantener tus mundos publicados actualmente. Cancele la publicación de algunas escenas para liberar espacio o aumente su almacenamiento máximo para recuperar el acceso."
+      "to_be_blocked": "Estás utilizando más almacenamiento del permitido. Despublica algunas escenas para liberar espacio o aumenta tu almacenamiento máximo antes del <b>{toBeBlockedAt}</b> para evitar perder el acceso a tus escenas.",
+      "blocked": "El acceso a tus escenas ha sido bloqueado desde <b>{blockedAt}</b> porque no tienes suficiente almacenamiento para mantener tus Mundos publicados actualmente. Despublica algunas escenas para liberar espacio o aumenta tu almacenamiento máximo para recuperar el acceso."
     }
   },
   "error_page": {
