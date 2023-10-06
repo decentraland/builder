@@ -109,7 +109,7 @@ export default function DeployToWorld({
       analytics.track('Publish to World - Claim Name')
       onReplace(ensUrl, { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
     } else {
-      window.open(ENS_DOMAINS_URL, '_blank', 'norefferer')
+      window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer')
     }
   }, [nameType, project, onReplace, analytics])
 
