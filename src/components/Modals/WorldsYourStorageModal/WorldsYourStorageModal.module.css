@@ -17,6 +17,10 @@
   align-items: center;
 }
 
+.asset .name {
+  font-weight: 700;
+}
+
 .asset .texts {
   display: flex;
   flex-direction: column;
