@@ -471,7 +471,7 @@
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
       "claim_name": "Obtener un NAME",
-      "claim_name_ens": "Obtener un dominio ENS",
+      "claim_name_ens": "Obtener un Dominio ENS",
       "empty_state_title": "No tiene ningún Mundo disponible",
       "empty_state_description": "<b>Obtenga un Mundo gratis cuando tenga un NAME</b>.<br></br>Cada NAME le otorga acceso a un mundo. Puedes tener tantos como quieras.",
       "name_type": {
