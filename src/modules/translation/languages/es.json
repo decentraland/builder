@@ -462,19 +462,19 @@
     },
     "deploy_world": {
       "title": "Publicar en tu mundo",
-      "description": "Seleccione un nombre Decentraland o un nombre ENS que definirá la URL",
+      "description": "Seleccione un NAME de Decentraland o un Dominio ENS que definirá la URL",
       "action": "Publicar",
-      "world_label": "Nombre (mundo)",
-      "world_placeholder": "Seleccione un nombre",
+      "world_label": "NAME (mundo)",
+      "world_placeholder": "Seleccione un NAME",
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
-      "claim_name": "Obtener un nombre",
-      "claim_name_ens": "Obtener un nombre ENS",
-      "empty_state_title": "No tiene ningún mundo disponible",
-      "empty_state_description": "<b>Obtenga un mundo gratis cuando tenga un nombre</b>.<br></br>Cada nombre le otorga acceso a un mundo. Puedes tener tantos como quieras.",
+      "claim_name": "Obtener un NAME",
+      "claim_name_ens": "Obtener un dominio ENS",
+      "empty_state_title": "No tiene ningún Mundo disponible",
+      "empty_state_description": "<b>Obtenga un Mundo gratis cuando tenga un NAME</b>.<br></br>Cada NAME le otorga acceso a un mundo. Puedes tener tantos como quieras.",
       "name_type": {
-        "dcl": "Nombre",
-        "ens": "Nombres de ENS"
+        "dcl": "NAME",
+        "ens": "Dominio ENS"
       },
       "success": {
         "title": "Tu escena ha sido publicada!",
@@ -611,16 +611,16 @@
       "size": "Peso Mb"
     },
     "empty_list": {
-      "title": "Obtenga un mundo gratis cuando tenga un nombre",
-      "description": "Cada nombre le otorga acceso a un Mundo, <b>su espacio 3D personal en el metaverso</b> donde le puede dar forma como quiera e invitar hasta 100 personas a visitar su espacio.",
-      "cta": "Reclamar un nuevo Nombre",
+      "title": "Obtenga un mundo gratis cuando tenga un NAME",
+      "description": "Cada NAME le otorga acceso a un Mundo, <b>su espacio 3D personal en el metaverso</b> donde le puede dar forma como quiera e invitar hasta 100 personas a visitar su espacio.",
+      "cta": "Reclamar un nuevo NAME",
       "title_ens": "Obtén un Mundo gratis cuando eres dueño de un Dominio ENS",
-      "description_ens": "Con un dominio ENS, puedes crear un mundo único con 25 MB de almacenamiento dedicado. Es una excelente manera de comenzar tu viaje en Decentraland.",
+      "description_ens": "Con un Dominio ENS, puedes crear un mundo único con 25 MB de almacenamiento dedicado. Es una excelente manera de comenzar tu viaje en Decentraland.",
       "cta_ens": "Reclamar Dominio ENS"
     },
     "name_tabs": {
-      "dcl_names": "Nombres de Decentraland",
-      "ens_names": "Nombre de ENS"
+      "dcl_names": "NAMEs de Decentraland",
+      "ens_names": "Dominio de ENS"
     },
     "worlds_storage": {
       "space_used": "Espacio utilizado",
