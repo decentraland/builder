@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 import { Button, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -68,7 +67,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button as="a" href={ACCOUNT_URL} primary>
+              <Button as="a" href={ACCOUNT_URL} primary target="_blank" rel="noopener noreferrer">
                 {t('worlds_your_storage_modal.mana_buy')}
               </Button>
             </div>
@@ -89,7 +88,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button as="a" href={MARKETPLACE_WEB_URL + '/lands'} primary>
+              <Button as="a" href={MARKETPLACE_WEB_URL + '/lands'} primary target="_blank" rel="noopener noreferrer">
                 {t('worlds_your_storage_modal.lands_buy')}
               </Button>
             </div>
@@ -110,7 +109,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button as={Link} to={locations.claimENS()} primary>
+              <Button as="a" href={locations.claimENS()} primary target="_blank" rel="noopener noreferrer">
                 {t('worlds_your_storage_modal.names_buy')}
               </Button>
             </div>
