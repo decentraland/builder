@@ -64,7 +64,7 @@ const WorldListPage: React.FC<Props> = props => {
     if (tab === TabType.DCL) {
       onNavigate(locations.claimENS())
     } else {
-      window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer');
+      window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer')
     }
   }, [onNavigate, tab])
 
