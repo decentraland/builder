@@ -464,6 +464,8 @@
       "action": "Publish",
       "world_label": "World (NAME)",
       "world_placeholder": "Select a NAME",
+      "world_label_ens": "World (ENS Domain)",
+      "world_placeholder_ens": "Select an ENS Domain",
       "back": "Go back to publish scene",
       "close": "Close publish modal",
       "claim_name": "Claim a new NAME",

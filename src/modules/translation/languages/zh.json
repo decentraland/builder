@@ -460,6 +460,8 @@
       "action": "发布",
       "world_label": "世界（NAME）",
       "world_placeholder": "选择一个 NAME",
+      "world_label_ens": "世界 (ENS 域名)",
+      "world_placeholder_ens": "选择一个 ENS 域名",
       "back": "返回以发布场景",
       "close": "关闭发布模态",
       "claim_name": "声明一个新的 NAME",

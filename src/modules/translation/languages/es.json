@@ -461,11 +461,13 @@
       "uploading": "Subiendo..."
     },
     "deploy_world": {
-      "title": "Publicar en tu mundo",
+      "title": "Publicar en tu Mundo",
       "description": "Seleccione un NAME de Decentraland o un Dominio ENS que definirá la URL",
       "action": "Publicar",
-      "world_label": "NAME (mundo)",
+      "world_label": "Mundo (NAME)",
       "world_placeholder": "Seleccione un NAME",
+      "world_label_ens": "Mundo (ENS Domain)",
+      "world_placeholder_ens": "Seleccione un Dominio ENS",
       "back": "Volver a elegir donde publicar",
       "close": "Cerrar modal publicación",
       "claim_name": "Obtener un NAME",
