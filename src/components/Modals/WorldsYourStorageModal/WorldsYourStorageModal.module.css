@@ -27,7 +27,7 @@
 }
 
 .asset .texts .subtitle {
-  color: var(--secondary-text);
+  color: var(--clear-divider);
 }
 
 .asset .texts .amount {
@@ -39,7 +39,7 @@
 
 .separator {
   height: 1px;
-  background-color: var(--text);
+  background-color: var(--divider);
   width: 100%;
 }
 
