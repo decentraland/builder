@@ -23,7 +23,7 @@
 }
 
 .asset .texts .subtitle {
-  color: var(--secondary-text);
+  color: var(--clear-divider);
 }
 
 .asset .texts .amount {
