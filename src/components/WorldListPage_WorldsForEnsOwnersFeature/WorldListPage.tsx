@@ -1,6 +1,7 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { formatNumber } from 'decentraland-dapps/dist/lib/utils'
 import {
   Button,
   Table,
@@ -182,7 +183,7 @@ const WorldListPage: React.FC<Props> = props => {
     const bytes = names.find(dclName => dclName.name === ens.subdomain)?.size
     const suffix = tab === TabType.ENS ? ' / 25' : ''
 
-    return fromBytesToMegabytes(Number(bytes)).toFixed(2) + suffix
+    return formatNumber(fromBytesToMegabytes(Number(bytes))) + suffix
   }
 
   const renderList = () => {
