@@ -623,8 +623,9 @@
       "ens_names": "Nombre de ENS"
     },
     "worlds_storage": {
-      "space_used": "Espacio utilizado",
-      "view_details": "ver detalles"
+      "used": "Espacio Utilizado",
+      "description": "El almacenamiento total se calcula en base a las tenencias de MANA, LAND y NAME.",
+      "link": "Ver Detalles"
     },
     "worlds_warning_message": {
       "to_be_blocked": "Está utilizando más almacenamiento del permitido. Cancele la publicación de algunas escenas para liberar espacio o aumentar su almacenamiento máximo antes de <b>{toBeBlockedAt}</b> para evitar perder el acceso a sus escenas.",

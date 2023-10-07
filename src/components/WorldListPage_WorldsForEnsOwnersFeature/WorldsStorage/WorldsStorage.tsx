@@ -14,20 +14,22 @@ const WorldsStorage = ({ maxBytes, currentBytes, className, onViewDetails }: Pro
   const maxMbs = fromBytesToMegabytes(maxBytes)
   const currentMbs = fromBytesToMegabytes(currentBytes)
   const usedPercentage = (currentMbs * 100) / maxMbs
+  const numFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 })
 
   return (
-    <div data-testid={WORLDS_STORAGE_TEST_ID} className={classnames(styles.worldsStorage, className)}>
-      <div className={styles.spaceContainer}>
-        <span>{t('worlds_list_page.worlds_storage.space_used')}</span>
-        <div data-testid={CURRENT_MBS_TEST_ID}>
-          <span className={styles.currentMbs}>{currentMbs.toFixed(2)}</span> / {maxMbs.toFixed(2)} Mb
-        </div>
-      </div>
-      <Progress data-testid={PROGRESS_TEST_ID} percent={Math.trunc(usedPercentage)} className={styles.bar} size="small" />
-      <div className={styles.viewDetailsContainer}>
-        <span className={styles.viewDetails} onClick={onViewDetails}>
-          {t('worlds_list_page.worlds_storage.view_details')}
+    <div data-testid={WORLDS_STORAGE_TEST_ID} className={classnames(styles.container, className)}>
+      <span className={styles.used}>{t('worlds_list_page.worlds_storage.used')}</span>
+      <div className={styles.description}>
+        <span>{t('worlds_list_page.worlds_storage.description')}</span>{' '}
+        <span className={styles.link} onClick={onViewDetails}>
+          {t('worlds_list_page.worlds_storage.link')}
         </span>
+      </div>
+      <div className={styles.space}>
+        <div data-testid={CURRENT_MBS_TEST_ID}>
+          <span className={styles.current}>{numFormat.format(currentMbs)}</span> / {numFormat.format(maxMbs)} Mb
+        </div>
+        <Progress data-testid={PROGRESS_TEST_ID} percent={Math.trunc(usedPercentage)} className={styles.bar} size="small" />
       </div>
     </div>
   )
