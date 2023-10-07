@@ -2,6 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import { Progress } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { formatNumber } from 'decentraland-dapps/dist/lib/utils'
 import { Props } from './WorldsStorage.types'
 import styles from './WorldsStorage.module.css'
 import { fromBytesToMegabytes } from '../utils'
@@ -14,7 +15,6 @@ const WorldsStorage = ({ maxBytes, currentBytes, className, onViewDetails }: Pro
   const maxMbs = fromBytesToMegabytes(maxBytes)
   const currentMbs = fromBytesToMegabytes(currentBytes)
   const usedPercentage = (currentMbs * 100) / maxMbs
-  const numFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 })
 
   return (
     <div data-testid={WORLDS_STORAGE_TEST_ID} className={classnames(styles.container, className)}>
@@ -27,7 +27,7 @@ const WorldsStorage = ({ maxBytes, currentBytes, className, onViewDetails }: Pro
       </div>
       <div className={styles.space}>
         <div data-testid={CURRENT_MBS_TEST_ID}>
-          <span className={styles.current}>{numFormat.format(currentMbs)}</span> / {numFormat.format(maxMbs)} Mb
+          <span className={styles.current}>{formatNumber(currentMbs)}</span> / {formatNumber(maxMbs)} Mb
         </div>
         <Progress data-testid={PROGRESS_TEST_ID} percent={Math.trunc(usedPercentage)} className={styles.bar} size="small" />
       </div>
