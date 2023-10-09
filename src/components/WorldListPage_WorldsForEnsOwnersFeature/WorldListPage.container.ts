@@ -39,7 +39,8 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
-  onOpenModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata))
+  onOpenYourStorageModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata)),
+  onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal'))
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)
