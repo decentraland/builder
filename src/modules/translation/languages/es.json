@@ -2134,5 +2134,12 @@
     "names_buy": "COMPRAR NAME",
     "proposal": "Estas reglas de almacenamiento fueron votadas y aprobadas en una propuesta de la DAO.",
     "learn_more": "APRENDER MÁS"
+  },
+  "worlds_for_ens_owners_announcement_modal": {
+    "title": "Introduciendo Mundos ENS y Almacenamiento Mejorado para Mundos Decentraland",
+    "description_ens": "Los titulares de Dominios ENS ahora pueden crear Mundos con 25 MB de almacenamiento dedicado.",
+    "description_dcl": "Los titulares de NAMEs de Decentraland obtienen <b>100 MB de almacenamiento</b> por <b>NAME, LAND, o 2,000 MANA</b>, ahora con la flexibilidad del almacenamiento compartido para mayor libertad creativa.",
+    "start_building": "comenzar a construir",
+    "learn_more": "aprende más sobre los mundos"
   }
 }

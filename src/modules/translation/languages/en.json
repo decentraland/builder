@@ -2116,5 +2116,12 @@
     "names_buy": "BUY NAME",
     "proposal": "These storage rules were voted on and passed in a governance DAO proposal.",
     "learn_more": "LEARN MORE"
+  },
+  "worlds_for_ens_owners_announcement_modal": {
+    "title": "Introducing ENS Worlds and Enhanced Storage for Decentraland Worlds",
+    "description_ens": "ENS domain holders can now create Worlds with 25 MB of dedicated storage.",
+    "description_dcl": "Decentraland NAME holders get <b>100 MB of storage</b> per <b>NAME, LAND, or 2,000 MANA</b>, now with the flexibility of shared storage for more creative freedom.",
+    "start_building": "start building",
+    "learn_more": "learn more about worlds"
   }
 }
