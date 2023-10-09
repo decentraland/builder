@@ -460,19 +460,21 @@
     },
     "deploy_world": {
       "title": "Publish to World",
-      "description": "Select the Decentraland NAME or ENS Name that will define the URL",
+      "description": "Select the Decentraland NAME or ENS Domain that will define the URL",
       "action": "Publish",
       "world_label": "World (NAME)",
       "world_placeholder": "Select a NAME",
+      "world_label_ens": "World (ENS Domain)",
+      "world_placeholder_ens": "Select an ENS Domain",
       "back": "Go back to publish scene",
       "close": "Close publish modal",
       "claim_name": "Claim a new NAME",
-      "claim_name_ens": "Claim an ENS name",
+      "claim_name_ens": "Claim an ENS Domain",
       "empty_state_title": "You don't have any available World",
-      "empty_state_description": "<b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one world. You can have as many as you want.",
+      "empty_state_description": "<b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one World. You can have as many as you want.",
       "name_type": {
         "dcl": "NAME",
-        "ens": "ENS Names"
+        "ens": "ENS Domain"
       },
       "success": {
         "title": "Your scene is published!",
@@ -613,12 +615,12 @@
       "description": "Each NAME grants you access to one World, <b>your own 3D space in the metaverse</b> where you can shape the space however you like and invite up to 100 people to visit.",
       "cta": "Claim Name",
       "title_ens": "Get a free World when you own a ENS Domain",
-      "description_ens": "With an ENS domain, you can create a unique world with 25 MB of dedicated storage. It's a great way to start your journey in Decentraland.",
+      "description_ens": "With an ENS Domain, you can create a unique World with 25 MB of dedicated storage. It's a great way to start your journey in Decentraland.",
       "cta_ens": "Claim ENS Domain"
     },
     "name_tabs": {
-      "dcl_names": "Decentraland names",
-      "ens_names": "ENS names"
+      "dcl_names": "Decentraland NAMEs",
+      "ens_names": "ENS Domains"
     },
     "worlds_storage": {
       "space_used": "Space used",
@@ -626,7 +628,7 @@
     },
     "worlds_warning_message": {
       "to_be_blocked": "You are using more storage than you are allowed. Unpublish some scenes to free some space or increase you maximum storage before <b>{toBeBlockedAt}</b> to avoid losing access to your scenes.",
-      "blocked": "Access to your scenes has been blocked since <b>{blockedAt}</b> because you don't have enough storage to maintain your currently published worlds. Unpublish some scenes to free some space or increase your maximum storage to regain access."
+      "blocked": "Access to your scenes has been blocked since <b>{blockedAt}</b> because you don't have enough storage to maintain your currently published Worlds. Unpublish some scenes to free some space or increase your maximum storage to regain access."
     }
   },
   "error_page": {

@@ -363,8 +363,8 @@ export default function DeployToWorld({
           <div className={styles.worldDetails}>
             <SelectField value={nameType} disabled={isLoading || loading} options={nameTypeOptions} onChange={handleNameTypeSelected} />
             <SelectField
-              label={t('deployment_modal.deploy_world.world_label')}
-              placeholder={t('deployment_modal.deploy_world.world_placeholder')}
+              label={t('deployment_modal.deploy_world.world_label' + (nameType === NameType.DCL ? '' : '_ens'))}
+              placeholder={t('deployment_modal.deploy_world.world_placeholder' + (nameType === NameType.DCL ? '' : '_ens'))}
               value={world}
               disabled={isLoading || loading}
               options={worldOptions}

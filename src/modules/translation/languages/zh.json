@@ -455,20 +455,22 @@
       "uploading": "上传中..."
     },
     "deploy_world": {
-      "title": "发布到梦境空间",
-      "description": "选择将定义 URL 的去中心化名称或 ENS 名称",
+      "title": "发布至世界",
+      "description": "选择将定义 URL 的 Decentraland NAME 或 ENS 域名",
       "action": "发布",
-      "world_label": "世界（名称）",
-      "world_placeholder": "选择一个名称",
-      "back": "回到发布场景",
-      "close": "关闭发布模式",
-      "claim_name": "索赔名称",
-      "claim_name_ens": "获取 ENS 名称",
-      "empty_state_title": "您没有任何可用的梦境空间。",
-      "empty_state_description": "<b>当您拥有一个名字时，获得一个免费的梦境空间</b>.<br></br>每个名称都会让您进入一个世界。您可以拥有想要的数量。",
+      "world_label": "世界（NAME）",
+      "world_placeholder": "选择一个 NAME",
+      "world_label_ens": "世界 (ENS 域名)",
+      "world_placeholder_ens": "选择一个 ENS 域名",
+      "back": "返回以发布场景",
+      "close": "关闭发布模态",
+      "claim_name": "声明一个新的 NAME",
+      "claim_name_ens": "声明一个 ENS 域名",
+      "empty_state_title": "您没有任何可用的世界",
+      "empty_state_description": "<b>拥有 NAME 时可免费获得一个世界</b>。<br></br>每个 NAME 都会让你访问一个世界。你可以拥有任意多个。",
       "name_type": {
-        "dcl": "数",
-        "ens": "ENS 编号"
+        "dcl": "NAME",
+        "ens": "ENS 域名"
       },
       "success": {
         "title": "您的场景已出版！",
@@ -622,15 +624,15 @@
     },
     "name_tabs": {
       "dcl_names": "Decentraland 名称",
-      "ens_names": "ENS 名称"
+      "ens_names": "ENS 域名"
     },
     "worlds_storage": {
-      "space_used": "使用空间",
+      "space_used": "已使用空间",
       "view_details": "查看详情"
     },
     "worlds_warning_message": {
-      "to_be_blocked": "您使用的存储空间超出了允许的范围。 在<b>{toBeBlockedAt}</b>之前取消发布某些场景以释放空间或增加最大存储空间，以避免失去对场景的访问权限。",
-      "blocked": "自 <b>{blockedAt}</b> 起，对您的场景的访问已被阻止，因为您没有足够的存储空间来维护当前发布的世界。 取消发布某些场景以释放空间或增加最大存储空间以重新获得访问权限。"
+      "to_be_blocked": "您使用的存储空间超过了允许的量。取消发布一些场景以释放一些空间，或在 <b>{toBeBlockedAt}</b> 之前增加您的最大存储空间，以避免失去对您场景的访问权限。",
+      "blocked": "由于您没有足够的存储空间来维护您当前发布的世界，自 <b>{blockedAt}</b> 起，您的场景访问权限已被阻止。取消发布一些场景以释放一些空间，或增加您的最大存储空间以重新获得访问权限。"
     }
   },
   "estate_editor": {
