@@ -1,7 +1,7 @@
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { LocalStorage } from 'decentraland-dapps/dist/lib/types'
 import {
-  LOCALSTORAGE_WORLDS_FOR_ENS_OWNERS_ANNOUCEMENT,
+  LOCALSTORAGE_WORLDS_FOR_ENS_OWNERS_ANNOUNCEMENT,
   canOpenWorldsForENSOwnersAnnouncementModal,
   persistCanOpenWorldsForENSOwnersAnnouncementModal
 } from './utils'
@@ -47,7 +47,7 @@ describe('when persisting if the worlds for ens owners announcement modal can be
     it('should call the set item local storage method with undefined', () => {
       persistCanOpenWorldsForENSOwnersAnnouncementModal(true)
 
-      expect(setItem).toHaveBeenCalledWith(LOCALSTORAGE_WORLDS_FOR_ENS_OWNERS_ANNOUCEMENT, undefined)
+      expect(setItem).toHaveBeenCalledWith(LOCALSTORAGE_WORLDS_FOR_ENS_OWNERS_ANNOUNCEMENT, undefined)
     })
   })
 
@@ -55,7 +55,7 @@ describe('when persisting if the worlds for ens owners announcement modal can be
     it('should call the set item local storage method with "1"', () => {
       persistCanOpenWorldsForENSOwnersAnnouncementModal(false)
 
-      expect(setItem).toHaveBeenCalledWith(LOCALSTORAGE_WORLDS_FOR_ENS_OWNERS_ANNOUCEMENT, '1')
+      expect(setItem).toHaveBeenCalledWith(LOCALSTORAGE_WORLDS_FOR_ENS_OWNERS_ANNOUNCEMENT, '1')
     })
   })
 })
