@@ -20,7 +20,8 @@ export type Props = {
   isLoading: boolean
   worldsWalletStats?: WorldsWalletStats
   onNavigate: (path: string) => void
-  onOpenModal: (metadata: WorldsYourStorageModalMetadata) => void
+  onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
+  onOpenWorldsForENSOwnersAnnouncementModal: () => void
 }
 
 export type State = {
@@ -32,5 +33,5 @@ export type MapStateProps = Pick<
   Props,
   'ensList' | 'externalNames' | 'deploymentsByWorlds' | 'isLoading' | 'error' | 'projects' | 'isLoggedIn' | 'worldsWalletStats'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenYourStorageModal' | 'onOpenWorldsForENSOwnersAnnouncementModal'>
 export type MapDispatch = Dispatch

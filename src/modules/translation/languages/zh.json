@@ -2117,5 +2117,12 @@
     "names_buy": "购买 NAME",
     "proposal": "这些存储规则经过治理 DAO 提案的投票并获得通过。",
     "learn_more": "了解更多"
+  },
+  "worlds_for_ens_owners_announcement_modal": {
+    "title": "介绍 ENS 世界和 Decentraland 世界的增强存储",
+    "description_ens": "ENS 域名持有者现在可以创建具有 25 MB 专用存储空间的世界。",
+    "description_dcl": "Decentraland NAME 持有者每个 <b>NAME、LAND 或 2000 MANA</b> 获得 <b>100 MB 的存储空间</b>，现在具有共享存储的灵活性，以实现更多的创造自由。",
+    "start_building": "开始构建",
+    "learn_more": "了解更多关于世界的信息"
   }
 }

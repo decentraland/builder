@@ -26,6 +26,7 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import { canOpenWorldsForENSOwnersAnnouncementModal } from 'components/Modals/WorldsForENSOwnersAnnouncementModal/utils'
 import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
@@ -39,7 +40,18 @@ const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
-  const { ensList, externalNames, error, deploymentsByWorlds, isLoading, projects, worldsWalletStats, onNavigate, onOpenModal } = props
+  const {
+    ensList,
+    externalNames,
+    error,
+    deploymentsByWorlds,
+    isLoading,
+    projects,
+    worldsWalletStats,
+    onNavigate,
+    onOpenYourStorageModal,
+    onOpenWorldsForENSOwnersAnnouncementModal
+  } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
   const { tab } = useCurrentlySelectedTab()
@@ -332,7 +344,7 @@ const WorldListPage: React.FC<Props> = props => {
               currentBytes={Number(worldsWalletStats.usedSpace)}
               className="worlds-storage"
               onViewDetails={() => {
-                onOpenModal({ stats: worldsWalletStats })
+                onOpenYourStorageModal({ stats: worldsWalletStats })
               }}
             />
           ) : null}
@@ -354,6 +366,12 @@ const WorldListPage: React.FC<Props> = props => {
     setSortBy(SortBy.ASC)
     setPage(1)
   }, [tab])
+
+  useEffect(() => {
+    if (canOpenWorldsForENSOwnersAnnouncementModal()) {
+      onOpenWorldsForENSOwnersAnnouncementModal()
+    }
+  }, [onOpenWorldsForENSOwnersAnnouncementModal])
 
   return (
     <LoggedInDetailPage
