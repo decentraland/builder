@@ -16,7 +16,7 @@ const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose })
   }, [onClose])
 
   return (
-    <Modal name={name} onClose={onClose}>
+    <Modal name={name} onClose={handleOnClose}>
       <ModalNavigation
         title={<div className={styles.title}>{t('worlds_for_ens_owners_announcement_modal.title')}</div>}
         onClose={handleOnClose}
