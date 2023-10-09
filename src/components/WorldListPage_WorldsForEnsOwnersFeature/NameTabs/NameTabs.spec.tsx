@@ -49,8 +49,8 @@ describe('when rendering the name tabs component', () => {
 
     beforeEach(() => {
       useCurrentlySelectedTabResult.tab = TabType.DCL
-      dclTabText = 'Decentraland names'
-      ensTabText = 'ENS names'
+      dclTabText = 'Decentraland NAMEs'
+      ensTabText = 'ENS Domains'
 
       mockMobile.mockImplementation(({ children }) => children as ReactNode)
       mockNotMobile.mockImplementation(() => null)
