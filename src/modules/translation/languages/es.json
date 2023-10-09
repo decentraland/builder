@@ -623,7 +623,7 @@
       "ens_names": "Nombre de ENS"
     },
     "worlds_storage": {
-      "used": "Espacio Utilizado",
+      "used": "Espacio utilizado",
       "description": "El almacenamiento total se calcula en base a las tenencias de MANA, LAND y NAME.",
       "link": "Ver Detalles"
     },
