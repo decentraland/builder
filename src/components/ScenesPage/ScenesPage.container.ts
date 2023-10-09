@@ -9,6 +9,7 @@ import { isLoggingIn } from 'modules/identity/selectors'
 import { getProjects, getPage, getSortBy, getTotalPages, didCreate } from 'modules/ui/dashboard/selectors'
 import { loadPoolsRequest } from 'modules/pool/actions'
 import { getPoolList } from 'modules/pool/selectors'
+import { getIsWorldsForEnsOwnersEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ScenesPage.types'
 import ScenesPage from './ScenesPage'
 
@@ -20,7 +21,8 @@ const mapState = (state: RootState): MapStateProps => ({
   sortBy: getSortBy(state),
   totalPages: getTotalPages(state),
   didCreate: didCreate(state),
-  poolList: getPoolList(state)
+  poolList: getPoolList(state),
+  isWorldsForENSOwnersEnabled: getIsWorldsForEnsOwnersEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

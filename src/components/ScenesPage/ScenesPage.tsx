@@ -23,17 +23,36 @@ import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import SceneCreationSelector from 'components/SceneCreationSelector'
+import { canOpenWorldsForENSOwnersAnnouncementModal } from 'components/Modals/WorldsForENSOwnersAnnouncementModal/utils'
 import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
 import { Props, DefaultProps } from './ScenesPage.types'
 import './ScenesPage.css'
 
 const ScenesPage: React.FC<Props> = props => {
-  const { page, poolList, projects, sortBy, totalPages, isFetching, isLoggingIn, onLoadFromScenePool, onOpenModal, onPageChange } = props
+  const {
+    page,
+    poolList,
+    projects,
+    sortBy,
+    totalPages,
+    isFetching,
+    isLoggingIn,
+    isWorldsForENSOwnersEnabled,
+    onLoadFromScenePool,
+    onOpenModal,
+    onPageChange
+  } = props
 
   useEffect(() => {
     onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
   }, [onLoadFromScenePool, onOpenModal])
+
+  useEffect(() => {
+    if (isWorldsForENSOwnersEnabled && canOpenWorldsForENSOwnersAnnouncementModal()) {
+      onOpenModal('WorldsForENSOwnersAnnouncementModal')
+    }
+  }, [isWorldsForENSOwnersEnabled, onOpenModal])
 
   const handleOpenImportModal = useCallback(() => {
     onOpenModal('ImportModal')
