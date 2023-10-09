@@ -1,34 +1,46 @@
-.worldsStorage {
+.container {
   background-color: var(--dark-two);
   border-radius: 10px;
   padding: 22px;
 }
 
-.spaceContainer {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
+.container .used {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 8px;
 }
 
-.currentMbs {
+.container .description {
+  color: #cfcdd4;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+.container .description .link {
+  color: white;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+.container .space {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.container .space .current {
+  flex: 1;
   font-size: 1.5rem;
 }
 
-.bar {
-  margin-bottom: 1rem !important;
+.container .space .bar {
+  flex: 1;
+  margin-bottom: 0 !important;
   background-color: #a09ba8 !important;
 }
 
-.bar:global(.ui.progress .bar) {
+.container .space .bar:global(.ui.progress .bar) {
   background-color: #ff2d55;
-}
-
-.viewDetailsContainer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.viewDetails {
-  cursor: pointer;
-  text-decoration: underline;
 }

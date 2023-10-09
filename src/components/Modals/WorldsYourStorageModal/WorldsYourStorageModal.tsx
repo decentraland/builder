@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Button, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { formatNumber } from 'decentraland-dapps/dist/lib/utils'
 import { locations } from 'routing/locations'
 import { fromBytesToMegabytes } from 'components/WorldListPage_WorldsForEnsOwnersFeature/utils'
 import { config } from 'config'
@@ -49,7 +50,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
           <div className={styles.total}>
             <span>{t('worlds_your_storage_modal.total_available_storage')}</span>
             <span className={styles.mbs}>
-              {fromBytesToMegabytes(Number(stats.maxAllowedSpace) - Number(stats.usedSpace)).toFixed(2)} Mb
+              {formatNumber(fromBytesToMegabytes(Number(stats.maxAllowedSpace) - Number(stats.usedSpace)))} Mb
             </span>
           </div>
           <div className={styles.asset}>

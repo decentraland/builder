@@ -623,8 +623,9 @@
       "ens_names": "ENS Domains"
     },
     "worlds_storage": {
-      "space_used": "Space used",
-      "view_details": "view details"
+      "used": "Space Used",
+      "description": "Total storage is calculated based on MANA, LAND, and NAME holdings.",
+      "link": "View Details"
     },
     "worlds_warning_message": {
       "to_be_blocked": "You are using more storage than you are allowed. Unpublish some scenes to free some space or increase you maximum storage before <b>{toBeBlockedAt}</b> to avoid losing access to your scenes.",
