@@ -1,4 +1,4 @@
-import { takeLatest, select, all } from 'redux-saga/effects'
+import { takeLatest, select, all, call } from 'redux-saga/effects'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { createAnalyticsSaga } from 'decentraland-dapps/dist/modules/analytics/sagas'
@@ -23,7 +23,9 @@ import {
   DEPLOY_TO_LAND_SUCCESS,
   CLEAR_DEPLOYMENT_SUCCESS,
   DeployToLandSuccessAction,
-  ClearDeploymentSuccessAction
+  ClearDeploymentSuccessAction,
+  DEPLOY_TO_WORLD_SUCCESS,
+  DeployToWorldSuccessAction
 } from 'modules/deployment/actions'
 import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
@@ -67,13 +69,14 @@ function* builderAnalyticsSaga() {
   yield takeLatest(SAVE_ASSET_PACK_FAILURE, handleSaveAssetPackFailure)
   yield takeLatest(DELETE_ASSET_PACK_FAILURE, handleDeleteAssetPackFailure)
   yield takeLatest(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishTPItemSuccess)
+  yield takeLatest(DEPLOY_TO_WORLD_SUCCESS, handleDeployToWorldSuccess)
 }
 
 export function* analyticsSaga() {
   yield all([baseAnalyticsSaga(), builderAnalyticsSaga()])
 }
 
-const track = (event: string, params: any) => getAnalytics().track(event, params) as void
+export const track = (event: string, params: any) => getAnalytics().track(event, params) as void
 
 function handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
   const { items } = action.payload
@@ -213,4 +216,18 @@ function* handleDeleteAssetPackFailure(action: DeleteAssetPackFailureAction) {
   if (!project) return
   const ethAddress: string = yield select(getAddress)
   track('[Failure] Delete AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
+}
+
+function* handleDeployToWorldSuccess(action: DeployToWorldSuccessAction) {
+  const { deployment } = action.payload
+
+  const world = deployment.world
+  const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
+  const ethAddress: ReturnType<typeof getAddress> = yield select(getAddress)
+
+  if (!world || !project || !ethAddress) {
+    return
+  }
+
+  yield call(track, '[Success] Deploy to World', { project_id: project.id, eth_address: ethAddress, subdomain: deployment.world })
 }
