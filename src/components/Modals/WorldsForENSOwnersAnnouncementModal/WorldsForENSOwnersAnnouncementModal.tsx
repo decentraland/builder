@@ -8,6 +8,7 @@ import { persistCanOpenWorldsForENSOwnersAnnouncementModal } from './utils'
 import ensImg from './images/ens.svg'
 import styles from './WorldsForENSOwnersAnnouncementModal.module.css'
 
+export const MODAL_ACTION_EVENT = 'Worlds For ENS Owners Announcement Modal Action'
 export const DOCUMENTATION_URL = 'https://docs.decentraland.org/creator/worlds/about/'
 
 const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose }) => {
@@ -17,17 +18,17 @@ const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose })
   }, [onClose])
 
   const handleOnModalClose = useCallback(() => {
-    track('Worlds For ENS Owners Announcement Modal - Close Modal', {})
+    track(MODAL_ACTION_EVENT, { action: 'Close Modal' })
     handleOnClose()
   }, [handleOnClose])
 
   const handleOnStartBuilding = useCallback(() => {
-    track('Worlds For ENS Owners Announcement Modal - Click Start Building', {})
+    track(MODAL_ACTION_EVENT, { action: 'Click Start Building' })
     handleOnClose()
   }, [handleOnClose])
 
   const handleOnLearnMore = useCallback(() => {
-    track('Worlds For ENS Owners Announcement Modal - Click Learn More', {})
+    track(MODAL_ACTION_EVENT, { action: 'Click Learn Modal' })
   }, [])
 
   return (
