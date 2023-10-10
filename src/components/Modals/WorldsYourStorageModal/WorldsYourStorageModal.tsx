@@ -3,6 +3,7 @@ import { Button, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { formatNumber } from 'decentraland-dapps/dist/lib/utils'
+import { track } from 'modules/analytics/sagas'
 import { locations } from 'routing/locations'
 import { fromBytesToMegabytes } from 'components/WorldListPage_WorldsForEnsOwnersFeature/utils'
 import { config } from 'config'
@@ -12,6 +13,7 @@ import { Props, State, WorldsYourStorageModalMetadata } from './WorldsYourStorag
 import { fetchAccountHoldings, getMbsFromAccountHoldings } from './utils'
 import styles from './WorldsYourStorageModal.module.css'
 
+const MODAL_ACTION_EVENT = 'Worlds Your Storage Modal Action'
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL')
 const ACCOUNT_URL = config.get('ACCOUNT_URL')
 
@@ -68,7 +70,16 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button as="a" href={ACCOUNT_URL} primary target="_blank" rel="noopener noreferrer">
+              <Button
+                as="a"
+                href={ACCOUNT_URL}
+                primary
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  track(MODAL_ACTION_EVENT, { action: 'Click Buy MANA' })
+                }}
+              >
                 {t('worlds_your_storage_modal.mana_buy')}
               </Button>
             </div>
@@ -89,7 +100,16 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button as="a" href={MARKETPLACE_WEB_URL + '/lands'} primary target="_blank" rel="noopener noreferrer">
+              <Button
+                as="a"
+                href={MARKETPLACE_WEB_URL + '/lands'}
+                primary
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  track(MODAL_ACTION_EVENT, { action: 'Click Buy LAND' })
+                }}
+              >
                 {t('worlds_your_storage_modal.lands_buy')}
               </Button>
             </div>
@@ -110,14 +130,28 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
               ) : null}
             </div>
             <div>
-              <Button as="a" href={locations.claimENS()} primary target="_blank" rel="noopener noreferrer">
+              <Button
+                as="a"
+                href={locations.claimENS()}
+                primary
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  track(MODAL_ACTION_EVENT, { action: 'Click Buy NAME' })
+                }}
+              >
                 {t('worlds_your_storage_modal.names_buy')}
               </Button>
             </div>
           </div>
           <div className={styles.proposal}>
             <InfoIcon className={styles.icon} /> <span>{t('worlds_your_storage_modal.proposal')}</span>{' '}
-            <a href="https://governance.decentraland.org/proposal/?id=c3216070-e822-11ed-b8f1-75dbe089d333">
+            <a
+              href="https://governance.decentraland.org/proposal/?id=c3216070-e822-11ed-b8f1-75dbe089d333"
+              onClick={() => {
+                track('Worlds Your Storage Modal Action', { action: 'Click Learn More' })
+              }}
+            >
               {t('worlds_your_storage_modal.learn_more')}
             </a>
           </div>

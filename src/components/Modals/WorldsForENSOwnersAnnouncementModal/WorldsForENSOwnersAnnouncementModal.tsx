@@ -8,8 +8,8 @@ import { persistCanOpenWorldsForENSOwnersAnnouncementModal } from './utils'
 import ensImg from './images/ens.svg'
 import styles from './WorldsForENSOwnersAnnouncementModal.module.css'
 
-export const MODAL_ACTION_EVENT = 'Worlds For ENS Owners Announcement Modal Action'
-export const DOCUMENTATION_URL = 'https://docs.decentraland.org/creator/worlds/about/'
+const MODAL_ACTION_EVENT = 'Worlds For ENS Owners Announcement Modal Action'
+const DOCUMENTATION_URL = 'https://docs.decentraland.org/creator/worlds/about/'
 
 const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose }) => {
   const handleOnClose = useCallback(() => {
