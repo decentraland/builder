@@ -2119,10 +2119,10 @@
     "learn_more": "了解更多"
   },
   "worlds_for_ens_owners_announcement_modal": {
-    "title": "介绍 ENS 世界和 Decentraland 世界的增强存储",
-    "description_ens": "ENS 域名持有者现在可以创建具有 25 MB 专用存储空间的世界。",
-    "description_dcl": "Decentraland NAME 持有者每个 <b>NAME、LAND 或 2000 MANA</b> 获得 <b>100 MB 的存储空间</b>，现在具有共享存储的灵活性，以实现更多的创造自由。",
-    "start_building": "开始构建",
-    "learn_more": "了解更多关于世界的信息"
+    "title": "为ENS持有者介绍世界与扩展的世界大小限制",
+    "description_ens": "ENS域名持有者现在将自动获得自己的Decentraland世界，场景大小限制为25 MB。",
+    "description_dcl": "同时，来自Decentraland NAME的世界将具有动态的最大文件大小限制，具体取决于用户的Decentraland持有量。 <b>每个NAME、LAND和2,000个MANA代币的集合所拥有的</b>将在Worlds内容服务器上额外获得<b>100 MB的存储空间</b>，可随意使用。",
+    "start_building": "开始建设",
+    "learn_more": "了解更多"
   }
 }
