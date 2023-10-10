@@ -2,18 +2,29 @@ import React, { useCallback } from 'react'
 import { Button, ModalActions, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { track } from 'modules/analytics/sagas'
 import { Props } from './WorldsForENSOwnersAnnouncementModal.types'
 import { persistCanOpenWorldsForENSOwnersAnnouncementModal } from './utils'
 import ensImg from './images/ens.svg'
 import styles from './WorldsForENSOwnersAnnouncementModal.module.css'
 
-export const DOCUMENTATION_URL = 'https://docs.decentraland.org/creator/worlds/about/'
+const MODAL_ACTION_EVENT = 'Worlds For ENS Owners Announcement Modal Action'
+const DOCUMENTATION_URL = 'https://docs.decentraland.org/creator/worlds/about/'
 
 const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose }) => {
   const handleOnClose = useCallback(() => {
     persistCanOpenWorldsForENSOwnersAnnouncementModal(false)
     onClose()
   }, [onClose])
+
+  const handleOnStartBuilding = useCallback(() => {
+    track(MODAL_ACTION_EVENT, { action: 'Click Start Building' })
+    handleOnClose()
+  }, [handleOnClose])
+
+  const handleOnLearnMore = useCallback(() => {
+    track(MODAL_ACTION_EVENT, { action: 'Click Learn Modal' })
+  }, [])
 
   return (
     <Modal name={name} onClose={handleOnClose}>
@@ -35,10 +46,10 @@ const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose })
         </div>
       </ModalContent>
       <ModalActions className={styles.actions}>
-        <Button primary onClick={handleOnClose}>
+        <Button primary onClick={handleOnStartBuilding}>
           {t('worlds_for_ens_owners_announcement_modal.start_building')}
         </Button>
-        <Button as="a" href={DOCUMENTATION_URL} target="_blank" rel="noopener noreferrer">
+        <Button as="a" href={DOCUMENTATION_URL} target="_blank" rel="noopener noreferrer" onClick={handleOnLearnMore}>
           {t('worlds_for_ens_owners_announcement_modal.learn_more')}
         </Button>
       </ModalActions>

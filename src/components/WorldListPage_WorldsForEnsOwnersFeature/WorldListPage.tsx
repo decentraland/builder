@@ -21,6 +21,7 @@ import { isDevelopment } from 'lib/environment'
 import { WorldsWalletStats } from 'lib/api/worlds'
 import { ENS } from 'modules/ens/types'
 import { isExternalName } from 'modules/ens/utils'
+import { track } from 'modules/analytics/sagas'
 import { locations } from 'routing/locations'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
@@ -34,6 +35,7 @@ import { TabType, useCurrentlySelectedTab } from './hooks'
 import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
 import './WorldListPage.css'
 
+const PAGE_ACTION_EVENT = 'Worlds List Page Action'
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
@@ -75,8 +77,10 @@ const WorldListPage: React.FC<Props> = props => {
 
   const handleClaimENS = useCallback(() => {
     if (tab === TabType.DCL) {
+      track(PAGE_ACTION_EVENT, { action: 'Click Claim NAME' })
       onNavigate(locations.claimENS())
     } else {
+      track(PAGE_ACTION_EVENT, { action: 'Click Claim ENS Domain' })
       window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer')
     }
   }, [onNavigate, tab])
