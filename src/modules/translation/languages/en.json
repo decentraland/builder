@@ -2120,7 +2120,7 @@
   "worlds_for_ens_owners_announcement_modal": {
     "title": "Introducing Worlds for ENS Holders & Expanded World Size Limits",
     "description_ens": "ENS domain holders will now automatically have access to their own Decentraland World with a scene size limit of 25 MB.",
-    "description_dcl": "Meanwhile, Worlds from Decentraland NAMEs will have a dynamic maximum file size limit depending on a user's Decentraland holdings. <b>Each NAME, LAND, and set of 2,000 MANA tokens owned </b> will grant an additional <b>100 MB of storage</b> on the Worlds content server to be used as you wish.",
+    "description_dcl": "Meanwhile, Worlds from Decentraland NAMEs will have a dynamic maximum file size limit depending on your holdings. <b>Each NAME, LAND, and set of 2,000 MANA tokens owned </b> will grant an additional <b>100 MB of storage</b> on the Worlds content server to be used as you wish.",
     "start_building": "start building",
     "learn_more": "learn more"
   }

@@ -2138,7 +2138,7 @@
   "worlds_for_ens_owners_announcement_modal": {
     "title": "Presentamos Mundos para Titulares de dominios ENS y Límites de Tamaño de Mundo Ampliados",
     "description_ens": "Los titulares de dominios ENS ahora tendrán acceso automático a su propio Mundo de Decentraland con un límite de tamaño de escena de 25 MB.",
-    "description_dcl": "Mientras tanto, los Mundos de los NAMEs de Decentraland tendrán un límite de tamaño máximo dinámico dependiendo de las tenencias del usuario. <b>Cada NAME, LAND y 2,000 tokens MANA poseídos</b> otorgarán un adicional de <b>100 MB de almacenamiento</b> en el servidor de contenido de Mundos para ser utilizado como desee.",
+    "description_dcl": "Mientras tanto, los Mundos de los NAMEs de Decentraland tendrán un límite de tamaño máximo dinámico dependiendo de tus tenencias. <b>Cada NAME, LAND y 2,000 tokens MANA poseídos</b> otorgarán un adicional de <b>100 MB de almacenamiento</b> en el servidor de contenido de Mundos para ser utilizado como desee.",
     "start_building": "comenzar a construir",
     "learn_more": "aprende más"
   }
