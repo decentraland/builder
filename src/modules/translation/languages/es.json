@@ -617,7 +617,7 @@
       "description": "Cada NAME le otorga acceso a un Mundo, <b>su espacio 3D personal en el metaverso</b> donde le puede dar forma como quiera e invitar hasta 100 personas a visitar su espacio.",
       "cta": "Reclamar un nuevo NAME",
       "title_ens": "Obtén un Mundo gratis cuando eres dueño de un Dominio ENS",
-      "description_ens": "Con un Dominio ENS, puedes crear un mundo único con 25 MB de almacenamiento dedicado. Es una excelente manera de comenzar tu viaje en Decentraland.",
+      "description_ens": "Con un Dominio ENS, puedes crear un mundo único con 25 Mb de almacenamiento dedicado. Es una excelente manera de comenzar tu viaje en Decentraland.",
       "cta_ens": "Reclamar Dominio ENS"
     },
     "name_tabs": {
@@ -2121,25 +2121,25 @@
     "your_storage": "Su Almacenamiento",
     "total_available_storage": "ALMACENAMIENTO TOTAL DISPONIBLE",
     "mana": "MANA",
-    "mana_earn_storage": "Gana 100 MB de almacenamiento por cada 2,000 tokens (Polygon o Ethereum).",
-    "mana_holdings": "Tienes {mbs} MB gracias a tener {owned} MANA.",
+    "mana_earn_storage": "Gana 100 Mb de almacenamiento por cada 2,000 tokens (Polygon o Ethereum).",
+    "mana_holdings": "Tienes {mbs} Mb gracias a tener {owned} MANA.",
     "mana_buy": "COMPRAR MANA",
     "lands": "LANDs",
-    "lands_earn_storage": "Gana 100 MB de almacenamiento por cada LAND.",
-    "lands_holdings": "Tienes {mbs} MB gracias a tener {owned} LANDs.",
+    "lands_earn_storage": "Gana 100 Mb de almacenamiento por cada LAND.",
+    "lands_holdings": "Tienes {mbs} Mb gracias a tener {owned} LANDs.",
     "lands_buy": "COMPRAR LAND",
     "names": "NAMEs",
-    "names_earn_storage": "Gana 100 MB de almacenamiento por cada NAME.",
-    "names_holdings": "Tienes {mbs} MB gracias a tener {owned} NAMEs de Decentraland.",
+    "names_earn_storage": "Gana 100 Mb de almacenamiento por cada NAME.",
+    "names_holdings": "Tienes {mbs} Mb gracias a tener {owned} NAMEs de Decentraland.",
     "names_buy": "COMPRAR NAME",
     "proposal": "Estas reglas de almacenamiento fueron votadas y aprobadas en una propuesta de la DAO.",
     "learn_more": "APRENDER MÁS"
   },
   "worlds_for_ens_owners_announcement_modal": {
-    "title": "Introduciendo Mundos ENS y Almacenamiento Mejorado para Mundos Decentraland",
-    "description_ens": "Los titulares de Dominios ENS ahora pueden crear Mundos con 25 MB de almacenamiento dedicado.",
-    "description_dcl": "Los titulares de NAMEs de Decentraland obtienen <b>100 MB de almacenamiento</b> por <b>NAME, LAND, o 2,000 MANA</b>, ahora con la flexibilidad del almacenamiento compartido para mayor libertad creativa.",
+    "title": "Presentamos Mundos para Titulares de dominios ENS y Límites de Tamaño de Mundo Ampliados",
+    "description_ens": "Los titulares de dominios ENS ahora tendrán acceso automático a su propio Mundo de Decentraland con un límite de tamaño de escena de 25 Mb.",
+    "description_dcl": "Mientras tanto, los Mundos de los NAMEs de Decentraland tendrán un límite de tamaño máximo dinámico dependiendo de las tenencias del usuario. <b>Cada NAME, LAND y 2,000 tokens MANA poseídos</b> otorgarán un adicional de <b>100 Mb de almacenamiento</b> en el servidor de contenido de Mundos para ser utilizado como desee.",
     "start_building": "comenzar a construir",
-    "learn_more": "aprende más sobre los mundos"
+    "learn_more": "aprende más"
   }
 }

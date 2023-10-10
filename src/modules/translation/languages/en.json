@@ -615,7 +615,7 @@
       "description": "Each NAME grants you access to one World, <b>your own 3D space in the metaverse</b> where you can shape the space however you like and invite up to 100 people to visit.",
       "cta": "Claim Name",
       "title_ens": "Get a free World when you own a ENS Domain",
-      "description_ens": "With an ENS Domain, you can create a unique World with 25 MB of dedicated storage. It's a great way to start your journey in Decentraland.",
+      "description_ens": "With an ENS Domain, you can create a unique World with 25 Mb of dedicated storage. It's a great way to start your journey in Decentraland.",
       "cta_ens": "Claim ENS Domain"
     },
     "name_tabs": {
@@ -2103,25 +2103,25 @@
     "your_storage": "Your Storage",
     "total_available_storage": "TOTAL AVAILABLE STORAGE",
     "mana": "MANA",
-    "mana_earn_storage": "Earn 100 MB of storage per 2,000 tokens (Polygon or Ethereum).",
-    "mana_holdings": "You have {mbs} MB thanks to holding {owned} MANA tokens.",
+    "mana_earn_storage": "Earn 100 Mb of storage per 2,000 tokens (Polygon or Ethereum).",
+    "mana_holdings": "You have {mbs} Mb thanks to holding {owned} MANA tokens.",
     "mana_buy": "BUY MANA",
     "lands": "LANDs",
-    "lands_earn_storage": "Earn 100 MB of storage per LAND.",
-    "lands_holdings": "You have {mbs} MB thanks to holding {owned} LANDs.",
+    "lands_earn_storage": "Earn 100 Mb of storage per LAND.",
+    "lands_holdings": "You have {mbs} Mb thanks to holding {owned} LANDs.",
     "lands_buy": "BUY LAND",
     "names": "NAMEs",
-    "names_earn_storage": "Earn 100 MB of storage per NAME.",
-    "names_holdings": "You have {mbs} MB thanks to holding {owned} Decentraland NAMEs.",
+    "names_earn_storage": "Earn 100 Mb of storage per NAME.",
+    "names_holdings": "You have {mbs} Mb thanks to holding {owned} Decentraland NAMEs.",
     "names_buy": "BUY NAME",
     "proposal": "These storage rules were voted on and passed in a governance DAO proposal.",
     "learn_more": "LEARN MORE"
   },
   "worlds_for_ens_owners_announcement_modal": {
-    "title": "Introducing ENS Worlds and Enhanced Storage for Decentraland Worlds",
-    "description_ens": "ENS domain holders can now create Worlds with 25 MB of dedicated storage.",
-    "description_dcl": "Decentraland NAME holders get <b>100 MB of storage</b> per <b>NAME, LAND, or 2,000 MANA</b>, now with the flexibility of shared storage for more creative freedom.",
+    "title": "Introducing Worlds for ENS Holders & Expanded World Size Limits",
+    "description_ens": "ENS domain holders will now automatically have access to their own Decentraland World with a scene size limit of 25 Mb.",
+    "description_dcl": "Meanwhile, Worlds from Decentraland NAMEs will have a dynamic maximum file size limit depending on a user's Decentraland holdings. <b>Each NAME, LAND, and set of 2,000 MANA tokens owned </b> will grant an additional <b>100 Mb of storage</b> on the Worlds content server to be used as you wish.",
     "start_building": "start building",
-    "learn_more": "learn more about worlds"
+    "learn_more": "learn more"
   }
 }

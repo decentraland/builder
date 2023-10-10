@@ -25,6 +25,16 @@ describe('when checking if a subdomain is an external subdomain', () => {
       expect(isExternalName(subdomain)).toBe(true)
     })
   })
+
+  describe('when providing a non dcl subdomain that ends with dcl', () => {
+    beforeEach(() => {
+      subdomain = 'name-dcl.eth'
+    })
+
+    it('should return true', () => {
+      expect(isExternalName(subdomain)).toBe(true)
+    })
+  })
 })
 
 describe('when adding the world status to each ens', () => {

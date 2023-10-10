@@ -211,7 +211,7 @@ const WorldListPage: React.FC<Props> = props => {
               <Column>
                 <Row>
                   <Header sub className="items-count">
-                    {t('ens_list_page.items', { count: ensList.length.toLocaleString() })}
+                    {t('ens_list_page.items', { count: total.toLocaleString() })}
                   </Header>
                 </Row>
               </Column>

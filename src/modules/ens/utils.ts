@@ -86,7 +86,7 @@ export function isEnoughClaimMana(mana: string) {
 }
 
 export function isExternalName(subdomain: string) {
-  return !subdomain.endsWith('dcl.eth')
+  return !subdomain.endsWith('.dcl.eth')
 }
 
 export async function addWorldStatusToEachENS(enss: ENS[]) {
