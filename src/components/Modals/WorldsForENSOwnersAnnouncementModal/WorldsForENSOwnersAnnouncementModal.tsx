@@ -17,11 +17,6 @@ const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose })
     onClose()
   }, [onClose])
 
-  const handleOnModalClose = useCallback(() => {
-    track(MODAL_ACTION_EVENT, { action: 'Close Modal' })
-    handleOnClose()
-  }, [handleOnClose])
-
   const handleOnStartBuilding = useCallback(() => {
     track(MODAL_ACTION_EVENT, { action: 'Click Start Building' })
     handleOnClose()
@@ -32,10 +27,10 @@ const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose })
   }, [])
 
   return (
-    <Modal name={name} onClose={handleOnModalClose}>
+    <Modal name={name} onClose={handleOnClose}>
       <ModalNavigation
         title={<div className={styles.title}>{t('worlds_for_ens_owners_announcement_modal.title')}</div>}
-        onClose={handleOnModalClose}
+        onClose={handleOnClose}
       />
       <ModalContent>
         <div className={styles.img}>
