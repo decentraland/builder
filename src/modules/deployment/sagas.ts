@@ -236,10 +236,15 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       files['bin/index.js'] = yield call([builder, 'fetchMain'], project.id)
       files['main.crdt'] = yield call([builder, 'fetchCrdt'], project.id)
 
+      const promises: Promise<{ path: string; blob: Blob }>[] = []
       for (const path of Object.keys(scene.sdk7.mappings)) {
         const hash = scene.sdk7.mappings[path]
-        const file: Blob = yield call([builder, 'fetchContent'], hash)
-        files[path] = file
+        const promise = builder.fetchContent(hash).then(blob => ({ path, blob }))
+        promises.push(promise)
+      }
+      const results: { path: string; blob: Blob }[] = yield call([Promise, 'all'], promises)
+      for (const { path, blob } of results) {
+        files[path] = blob
       }
 
       let previewUrl: string | null = null
@@ -264,6 +269,13 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
       const toString = ({ x, y }: { x: number; y: number }) => `${x},${y}`
 
+      const componentNames = scene.sdk7.composite.components.reduce(
+        (components, component) => components.add(component.name),
+        new Set<string>()
+      )
+      const smartItemComponents = ['asset-packs::Actions', 'asset-packs::Triggers']
+      const hasSmartItems = Array.from(componentNames).some(componentName => smartItemComponents.includes(componentName))
+
       const definition: SceneDefinition = {
         allowedMediaHostnames: [],
         owner: address || '',
@@ -277,7 +289,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
           favicon: 'favicon_asset',
           navmapThumbnail: 'scene-thumbnail.png'
         },
-        tags: [],
+        tags: hasSmartItems ? ['is_smart'] : [],
         scene: {
           base: toString(base),
           parcels: parcels.map(toString)
