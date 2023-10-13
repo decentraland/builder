@@ -58,6 +58,10 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
 
     queryParams = queryParams.concat(`&contentUrl=${config.get('INSPECTOR_CONTENT_URL')}`)
 
+    queryParams = queryParams.concat(`&segmentKey=${config.get('INSPECTOR_SEGMENT_API_KEY')}`)
+
+    queryParams = queryParams.concat(`&segmentAppId=${config.get('INSPECTOR_APP_ID')}`)
+
     if (!isSmartItemsEnabled) {
       queryParams = queryParams.concat('&disableSmartItems')
     }
