@@ -59,7 +59,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
 
     queryParams = queryParams.concat(`&segmentKey=${config.get('INSPECTOR_SEGMENT_API_KEY')}`)
 
-    queryParams = queryParams.concat(`&segmentAppId=${config.get('INSPECTOR_APP_ID')}`)
+    queryParams = queryParams.concat(`&segmentAppId=${config.get('INSPECTOR_SEGMENT_APP_ID')}`)
 
     queryParams = queryParams.concat(`&segmentUserId=${address}`)
 
