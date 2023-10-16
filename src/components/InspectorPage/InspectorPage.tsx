@@ -3,10 +3,9 @@ import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { config } from 'config'
 import SignInRequired from 'components/SignInRequired'
-
+import TopBar from './TopBar'
 import { Props, State } from './InspectorPage.types'
 import './InspectorPage.css'
-import TopBar from './TopBar'
 
 const PUBLIC_URL = process.env.PUBLIC_URL
 
@@ -31,7 +30,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { scene, isLoggedIn, isReloading, isSmartItemsEnabled } = this.props
+    const { scene, isLoggedIn, isReloading, isSmartItemsEnabled, address = '' } = this.props
 
     if (!isLoggedIn) {
       return <SignInRequired />
@@ -57,6 +56,12 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
     queryParams = queryParams.concat(`&binIndexJsUrl=${binIndexJsUrl}`)
 
     queryParams = queryParams.concat(`&contentUrl=${config.get('INSPECTOR_CONTENT_URL')}`)
+
+    queryParams = queryParams.concat(`&segmentKey=${config.get('INSPECTOR_SEGMENT_API_KEY')}`)
+
+    queryParams = queryParams.concat(`&segmentAppId=${config.get('INSPECTOR_SEGMENT_APP_ID')}`)
+
+    queryParams = queryParams.concat(`&segmentUserId=${address}`)
 
     if (!isSmartItemsEnabled) {
       queryParams = queryParams.concat('&disableSmartItems')

@@ -40,5 +40,7 @@
   "INSPECTOR_CONTENT_URL": "https://builder-items.decentraland.zone",
   "ENS_SUBGRAPH_URL": "https://api.studio.thegraph.com/query/49574/enssepolia/version/latest",
   "DCL_NAME_STATS_URL": "https://dcl-name-stats.decentraland.zone",
-  "ENS_DOMAINS_URL": "https://ens.domains"
+  "ENS_DOMAINS_URL": "https://ens.domains",
+  "INSPECTOR_SEGMENT_API_KEY": "RmfAUVW7o1EEuvYJGqmVjK9q48BUpnCr",
+  "INSPECTOR_SEGMENT_APP_ID": "web-editor"
 }
