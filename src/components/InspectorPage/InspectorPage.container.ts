@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getCurrentScene } from 'modules/scene/selectors'
@@ -10,6 +11,7 @@ import EditorPage from './InspectorPage'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
+    address: getAddress(state),
     isLoggedIn: isLoggedIn(state),
     scene: getCurrentScene(state),
     isReloading: isReloading(state),
