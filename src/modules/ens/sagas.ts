@@ -511,7 +511,12 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
     const { owner } = action.payload
 
     try {
-      const names: string[] = yield call([ensApi, ensApi.fetchExternalNames], owner)
+      let names: string[] = yield call([ensApi, ensApi.fetchExternalNames], owner)
+
+      const bannedNames: string[] = yield call([lists, 'fetchBannedNames'])
+      const bannedNamesSet = new Set(bannedNames.map(x => x.toLowerCase()))
+
+      names = names.filter(name => name.split('.').every(nameSegment => !bannedNamesSet.has(nameSegment)))
 
       const enss: ENS[] = names.map(name => {
         return {
