@@ -12,7 +12,7 @@ import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/act
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { CONTROLLER_V2_ADDRESS, ENS_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
-import { DclListsAPI } from 'lib/api/lists'
+import { DclListsAPI, lists } from 'lib/api/lists'
 import { WorldInfo, WorldsAPI, content } from 'lib/api/worlds'
 import { MarketplaceAPI } from 'lib/api/marketplace'
 import { ENSApi } from 'lib/api/ens'
@@ -199,44 +199,48 @@ describe('when handling the fetching of external ens names for an owner', () => 
     })
 
     describe('when fetchENSList returns an array of names', () => {
-      it('should dispatch a success action with the owner and the names', async () => {
-        const enss: ENS[] = [
-          {
-            subdomain: 'name1.eth',
-            nftOwnerAddress: owner,
-            name: 'name1.eth',
-            content: '',
-            ensOwnerAddress: '',
-            resolver: '',
-            tokenId: ''
-          },
-          {
-            subdomain: 'name2.eth',
-            nftOwnerAddress: owner,
-            name: 'name2.eth',
-            content: '',
-            ensOwnerAddress: '',
-            resolver: '',
-            tokenId: ''
-          }
-        ]
+      let names: string[]
 
-        const withWorldStatus: ENS[] = enss.map(ens => ({
-          ...ens,
-          worldStatus: {} as WorldStatus
-        }))
+      beforeEach(() => {
+        names = ['name1.eth', 'name2.eth', 'name2.subdomain.eth']
+      })
 
-        const worlds = withWorldStatus.map(ens => ens.subdomain)
+      describe('when fetchBannedNames returns an array of banned names', () => {
+        let bannedNames: string[]
 
-        await expectSaga(ensSaga, builderClient, ensApi)
-          .provide([
-            [call([ensApi, ensApi.fetchExternalNames], owner), worlds],
-            [call(addWorldStatusToEachENS, enss), withWorldStatus]
-          ])
-          .put(fetchWorldDeploymentsRequest(worlds))
-          .put(fetchExternalNamesSuccess(owner, withWorldStatus))
-          .dispatch(fetchExternalNamesRequest(owner))
-          .silentRun()
+        beforeEach(() => {
+          bannedNames = ['NAME2']
+        })
+
+        it('should dispatch a request action to fetch world deployments for unbanned names and a success action for fetching external names with the owner and a list of unbanned ENSs with their world status', async () => {
+          const enss: ENS[] = [
+            {
+              subdomain: 'name1.eth',
+              nftOwnerAddress: owner,
+              name: 'name1.eth',
+              content: '',
+              ensOwnerAddress: '',
+              resolver: '',
+              tokenId: ''
+            }
+          ]
+
+          const enssWithWorldStatus: ENS[] = enss.map(ens => ({
+            ...ens,
+            worldStatus: {} as WorldStatus
+          }))
+
+          await expectSaga(ensSaga, builderClient, ensApi)
+            .provide([
+              [call([ensApi, ensApi.fetchExternalNames], owner), names],
+              [call([lists, lists.fetchBannedNames]), bannedNames],
+              [call(addWorldStatusToEachENS, enss), enssWithWorldStatus]
+            ])
+            .put(fetchWorldDeploymentsRequest(['name1.eth']))
+            .put(fetchExternalNamesSuccess(owner, enssWithWorldStatus))
+            .dispatch(fetchExternalNamesRequest(owner))
+            .silentRun()
+        })
       })
     })
   })
