@@ -342,7 +342,7 @@ export function toEmote(item: Item<ItemType.EMOTE>): EmoteDefinition {
 export function toBase64(item: Item | Item<ItemType.EMOTE>): string {
   const wearable = item.type === ItemType.EMOTE ? toEmote(item as Item<ItemType.EMOTE>) : toWearable(item as Item)
   const stringified = JSON.stringify(wearable)
-  const sanitized = stringified.replace(/[\u0250-\ue007]/g, '')
+  const sanitized = stringified.replace(/[^\x20-\x7F]/g, '')
   return btoa(sanitized)
 }
 
