@@ -2043,16 +2043,14 @@
   },
   "event_banner": {
     "small": {
-      "title": "Prepare for Metaverse Pride '23",
-      "subtitle": "ADD THE TAG {event_tag} TO YOUR WEARABLES & EMOTES PROMOTING PRIDE, INCLUSIVITY, AND DIVERSITY IN THE METAVERSE TO GET THEM FEATURED IN A SPECIAL PRIDE TAB OF THE MARKETPLACE FOR THE BIG EVENT.",
-      "dates": "JUNE 27-29",
-      "information": "CELEBRATE DIVERSITY AND INCLUSIVITY IN THE METAVERSE"
+      "title": "Get Your Items Featured During Decentraland Music Festival!",
+      "subtitle": "Just Tag Your Festival-Themed Wearables & Emotes With {event_tag} And They'll Appear In A Special Marketplace Tab During The Event."
     },
-    "event_tag": "PRIDE23"
+    "event_tag": "DCLMF23"
   },
   "campaign": {
-    "name": "Metaverse Pride",
-    "tag": "PRIDE23"
+    "name": "Decentraland Music Festival",
+    "tag": "DCLMF23"
   },
   "logged_in_detail_page": {
     "error_title": "An error ocurred while loading the detail page"
