@@ -2044,16 +2044,14 @@
   },
   "event_banner": {
     "small": {
-      "title": "為 元界 自豪 '23 做準備",
-      "subtitle": "將標籤 {event_tag} 添加到您的收藏品和動畫中，以促進 元界 中的自豪感、包容性和多樣性，以出現在大型活動的特殊驕傲市場標籤中",
-      "dates": "月 27 日至 29 日",
-      "information": "慶祝 元界 的多樣性和包容性"
+      "title": "在分散音乐节期间获得您的项目！",
+      "subtitle": "只需标记您的节日主题可穿戴设备和情感 {event_tag} 活动期间，它们将出现在特殊的市场选项卡中。"
     },
-    "event_tag": "PRIDE23"
+    "event_tag": "DCLMF23"
   },
   "campaign": {
-    "name": "做準備 '23",
-    "tag": "PRIDE23"
+    "name": "Decentraland Music Festival",
+    "tag": "DCLMF23"
   },
   "logged_in_detail_page": {
     "error_title": "加载详细信息页面时出错"
