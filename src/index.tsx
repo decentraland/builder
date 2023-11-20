@@ -10,9 +10,9 @@ import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationPr
 import WalletProvider from 'decentraland-dapps/dist/providers/WalletProvider'
 import * as SingleSignOn from '@dcl/single-sign-on-client'
 
+import { config } from 'config'
 import { store, history } from 'modules/common/store'
 import * as modals from 'components/Modals'
-import { config } from 'config'
 import * as languages from 'modules/translation/languages'
 import Routes from 'routing'
 
