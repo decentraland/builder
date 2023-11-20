@@ -30,7 +30,7 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { scene, isLoggedIn, isReloading, isSmartItemsEnabled, address = '' } = this.props
+    const { scene, project, isLoggedIn, isReloading, isSmartItemsEnabled, address = '' } = this.props
 
     if (!isLoggedIn) {
       return <SignInRequired />
@@ -62,6 +62,10 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
     queryParams = queryParams.concat(`&segmentAppId=${config.get('INSPECTOR_SEGMENT_APP_ID')}`)
 
     queryParams = queryParams.concat(`&segmentUserId=${address}`)
+
+    if (project?.id) {
+      queryParams = queryParams.concat(`&projectId=${project.id}`)
+    }
 
     if (!isSmartItemsEnabled) {
       queryParams = queryParams.concat('&disableSmartItems')
