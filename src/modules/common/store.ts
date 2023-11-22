@@ -62,7 +62,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   })
   : compose
 
-const history = createBrowserHistory()
+const history = createBrowserHistory({ basename: config.get('BASE_NAME') ?? undefined })
 const rootReducer = createRootReducer(history)
 
 const historyMiddleware = routerMiddleware(history)

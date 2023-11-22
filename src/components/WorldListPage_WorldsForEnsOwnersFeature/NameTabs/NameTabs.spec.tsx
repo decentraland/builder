@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import NameTabs from './NameTabs'
 import { TAB_QUERY_PARAM_KEY, TabType, UseCurrentlySelectedTabResult, useCurrentlySelectedTab } from '../hooks'
