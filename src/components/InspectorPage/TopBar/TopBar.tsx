@@ -30,7 +30,9 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
   }, [onOpenModal, currentProject])
 
   const previewUrl = currentProject
-    ? `${EXPLORER_URL}?realm=${BUILDER_SERVER_URL}/projects/${currentProject.id}${config.is(Env.DEVELOPMENT) ? '&NETWORK=sepolia' : ''}`
+    ? `${EXPLORER_URL}?realm=${BUILDER_SERVER_URL}/projects/${currentProject.id}${
+        config.is(Env.DEVELOPMENT) ? '&NETWORK=sepolia&DEBUG_SCENE_LOG' : ''
+      }`
     : ''
   return (
     <div className={styles.container}>
