@@ -1,33 +1,33 @@
-name: Set rollout - Manual
+name: Set rollout by path - Manual
 
 on:
   workflow_dispatch:
     inputs:
       packageVersion:
-        description: 'NPM Version of the release (@dcl/builder-site)'
+        description: "NPM Version of the release (@dcl/builder-site)"
         required: true
-        default: ''
-      deploymentDomain:
-        type: 'choice'
-        description: 'Deployment domain'
+        default: ""
+      deploymentEnvironment:
+        type: "choice"
+        description: "Deployment environment"
         required: true
-        default: '.zone'
+        default: "zone"
         options:
-          - .zone
-          - .today
-          - .org
+          - zone
+          - today
+          - org
       rolloutPercentage:
-        description: 'The percentage for this rollout'
+        description: "The percentage for this rollout"
         required: true
-        default: '100'
+        default: "100"
 
 jobs:
-  set-manual-rollout:
+  set-manual-by-path-rollout:
     runs-on: ubuntu-latest
     steps:
       - uses: hmarr/debug-action@v2
       - name: Set Rollout
-        uses: decentraland/set-rollout-action@main
+        uses: decentraland/set-rollout-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -36,10 +36,11 @@ jobs:
           sha: ${{ github.sha }}
 
           # CDN information
-          packageName: '@dcl/builder-site'
+          packageName: "@dcl/builder-site"
           packageVersion: ${{ github.event.inputs.packageVersion }}
 
           # Rollout information
-          deploymentDomain: builder.decentraland${{ github.event.inputs.deploymentDomain }}
-          deploymentName: '_site'
+          deploymentPath: "builder"
+          deploymentEnvironment: ${{ github.event.inputs.deploymentEnvironment }}
+          deploymentName: "_site"
           percentage: ${{ github.event.inputs.rolloutPercentage }}

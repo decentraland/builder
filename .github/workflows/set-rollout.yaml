@@ -1,4 +1,4 @@
-name: Set rollout
+name: Set rollout by path
 
 on: [deployment_status]
 
@@ -11,7 +11,7 @@ jobs:
 
       # Dev
       - name: Set Rollout - Development
-        uses: decentraland/set-rollout-action@main
+        uses: decentraland/set-rollout-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -24,13 +24,14 @@ jobs:
           packageVersion: ${{ github.event.deployment.payload.packageVersion }}
 
           # Rollout information
-          deploymentDomain: 'builder.decentraland.zone'
+          deploymentPath: 'builder'
+          deploymentEnvironment: 'zone'
           deploymentName: '_site'
           percentage: 100
 
       # Stg
       - name: Set Rollout - Staging
-        uses: decentraland/set-rollout-action@main
+        uses: decentraland/set-rollout-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -43,6 +44,7 @@ jobs:
           packageVersion: ${{ github.event.deployment.payload.packageVersion }}
 
           # Rollout information
-          deploymentDomain: 'builder.decentraland.today'
+          deploymentPath: 'builder'
+          deploymentEnvironment: 'today'
           deploymentName: '_site'
           percentage: 100
