@@ -2,6 +2,7 @@ import * as React from 'react'
 import { DropTarget } from 'react-dnd'
 import Lottie from 'lottie-react'
 import { config } from 'config'
+import { Link } from 'react-router-dom'
 
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -125,10 +126,10 @@ class Preview extends React.Component<Props & CollectedProps> {
       <Modal name="SceneEditorErrorModal" size="tiny">
         <Modal.Content>{t('editor_preview.loading_unity_error', { br: <br /> })}</Modal.Content>
         <Modal.Actions>
-          <Button secondary as="a" href={locations.sceneDetail(project.id)}>
+          <Button secondary as={Link} to={locations.sceneDetail(project.id)}>
             {t('global.back')}
           </Button>
-          <Button primary as="a" href={locations.sceneEditor(project.id)}>
+          <Button primary as={Link} to={locations.sceneEditor(project.id)}>
             {t('global.reload')}
           </Button>
         </Modal.Actions>
