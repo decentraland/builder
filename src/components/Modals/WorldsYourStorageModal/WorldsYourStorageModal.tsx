@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Button, ModalContent, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -131,8 +132,8 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
             </div>
             <div>
               <Button
-                as="a"
-                href={locations.claimENS()}
+                as={Link}
+                to={locations.claimENS()}
                 primary
                 target="_blank"
                 rel="noopener noreferrer"

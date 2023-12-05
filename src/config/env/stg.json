@@ -1,7 +1,6 @@
 {
   "CHAIN_ID": "1",
   "ENVIRONMENT": "staging",
-  "BASE_NAME": "/builder",
   "LOCAL_STORAGE_KEY": "builder",
   "EMAIL_SERVER_URL": "https://subscription.decentraland.org/subscribe",
   "PEER_URL": "https://peer.decentraland.org",

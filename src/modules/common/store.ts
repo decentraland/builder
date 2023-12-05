@@ -62,7 +62,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   })
   : compose
 
-const history = createBrowserHistory({ basename: config.get('BASE_NAME') ?? undefined })
+const basename = /^decentraland.(zone|org|today)$/.test(window.location.host) ? '/builder' : undefined
+
+const history = createBrowserHistory({ basename })
 const rootReducer = createRootReducer(history)
 
 const historyMiddleware = routerMiddleware(history)
