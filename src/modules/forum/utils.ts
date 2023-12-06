@@ -10,7 +10,8 @@ import { ForumPost } from './types'
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 
 export function buildCollectionForumPost(collection: Collection, items: Item[], ownerName = ''): ForumPost {
-  const collectionURL = window.location.origin + locations.itemEditor({ collectionId: collection.id })
+  const basename = /^decentraland.(zone|org|today)$/.test(window.location.host) ? '/builder' : undefined
+  const collectionURL = `${window.location.origin}${basename || ''}${locations.itemEditor({ collectionId: collection.id })}`
 
   // We only post in English
   return {
