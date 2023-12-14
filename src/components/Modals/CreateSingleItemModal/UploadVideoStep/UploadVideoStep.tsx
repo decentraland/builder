@@ -3,8 +3,8 @@ import { Button, Column, Loader, ModalNavigation, Row } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension, toMB } from 'lib/file'
-import { WrongExtensionError, VideoFileTooBigError, VideoFileTooLongError, InvalidVideoError } from 'modules/item/errors'
-import { MAX_VIDEO_DURATION, MAX_VIDEO_FILE_SIZE, loadVideo } from 'modules/item/utils'
+import { WrongExtensionError, VideoFileTooBigError, InvalidVideoError } from 'modules/item/errors'
+import { MAX_VIDEO_FILE_SIZE, loadVideo } from 'modules/item/utils'
 import { VIDEO_EXTENSIONS, VIDEO_PATH } from 'modules/item/types'
 import FileImport from 'components/FileImport'
 import { InfoIcon } from 'components/InfoIcon'
@@ -44,9 +44,6 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
       }
 
       const video = await loadVideo(file)
-      if (video.duration > MAX_VIDEO_DURATION) {
-        throw new VideoFileTooLongError()
-      }
 
       this.setState({ video: video.src, isLoading: false })
 
@@ -93,8 +90,7 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
         <div className={styles.zipInfo}>
           <InfoIcon className={styles.infoIcon} />
           {t('create_single_item_modal.upload_video_information', {
-            max_size: `${toMB(MAX_VIDEO_FILE_SIZE)}MB`,
-            max_duration: MAX_VIDEO_DURATION
+            max_size: `${toMB(MAX_VIDEO_FILE_SIZE)}MB`
           })}
         </div>
       </>
