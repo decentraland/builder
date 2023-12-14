@@ -222,7 +222,7 @@
     "pick_item": "选择没有{bodyShape}的商品",
     "adding_representation": "这将添加为以下项目的{body Shape}",
     "change_item_file": "编辑制图表达",
-    "upload_video_information": "最大文件大小 {max_size} - 最大持续时间 {max_duration} 秒",
+    "upload_video_information": "最大文件大小 {max_size}",
     "error": {
       "item_too_big": "整个项目太大，无法上传。 所有文件的最大大小为 {size}。",
       "file_too_big": "{title}.{enter}文件大小限制为 {size}。减小文件的大小，然后重试。",

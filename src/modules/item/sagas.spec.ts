@@ -198,7 +198,7 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('and video file size is larger than 4MB', () => {
+  describe('and video file size is larger than 250MB', () => {
     it('should put a saveItemFailure action with video too big message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
@@ -212,7 +212,7 @@ describe('when handling the save item request action', () => {
           saveItemFailure(
             item,
             { ...contents, [VIDEO_PATH]: blob },
-            'File size limit is 4MB. Please reduce the size of the file and try again.'
+            'File size limit is 250MB. Please reduce the size of the file and try again.'
           )
         )
         .dispatch(saveItemRequest(item, { ...contents, [VIDEO_PATH]: blob }))

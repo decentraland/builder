@@ -227,7 +227,7 @@
     "change_item_file": "Edit representation",
     "import_information": "For more information about uploading Wearables or Emotes {link}",
     "import_information_link_label": "click here",
-    "upload_video_information": "Maximum file size {max_size} - Maximum duration {max_duration} seconds",
+    "upload_video_information": "Maximum file size {max_size}",
     "error": {
       "item_too_big": "The entire item is too big to be uploaded. The max size for all files is {size}.",
       "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
