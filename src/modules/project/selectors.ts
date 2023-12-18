@@ -22,7 +22,9 @@ export const getUserProjects = createSelector(getAddress, getData, (address, pro
     const project = projects[projectId]
     const isOwnedByUser = !!project.ethAddress && !!address && isEqual(project.ethAddress, address)
     if (isOwnedByUser || project.ethAddress === null) {
-      record[projectId] = project
+      if (!project.isTemplate) {
+        record[projectId] = project
+      }
     }
     return record
   }, {} as ProjectState['data'])
