@@ -10,11 +10,13 @@ export type Props = ModalProps & {
   error: string | null
   isLoading: boolean
   onCreateProject: (name: string, description: string, template: Template, sdk: SDKVersion) => void
+  isSDK7TemplatesEnabled: boolean
 }
 
 export enum SceneCreationStep {
   INFO = 'info',
   SIZE = 'size',
+  // TODO: remove this after removing the SDK7_TEMPLATES feature flag
   SDK = 'sdk'
 }
 
@@ -27,6 +29,6 @@ export type State = {
   description: string
 }
 
-export type MapStateProps = Pick<Props, 'error' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'error' | 'isLoading' | 'isSDK7TemplatesEnabled'>
 export type MapDispatchProps = Pick<Props, 'onCreateProject'>
 export type MapDispatch = Dispatch<CreateProjectFromTemplateAction | CallHistoryMethodAction>

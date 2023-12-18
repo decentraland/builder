@@ -12,6 +12,7 @@ const builderAPI = {
   fetchTemplates: jest.fn()
 } as unknown as BuilderAPI
 
+// TODO: remove this after removing the SDK7_TEMPLATES feature flag
 describe('when handling the loadTemplatesRequest action', () => {
   describe('and the request is successful', () => {
     it('should put a loadTemplatesSuccess action with the project templates', () => {

@@ -27,6 +27,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   handleBack = () => {
     const { step } = this.state
     switch (step) {
+      // TODO: remove this after removing the SDK7_TEMPLATES feature flag
       case SceneCreationStep.SDK:
         this.setState({ step: SceneCreationStep.SIZE })
         break
@@ -45,15 +46,16 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
     const { step } = this.state
     if (step === SceneCreationStep.INFO) {
       this.setState({ step: SceneCreationStep.SIZE })
+      // TODO: remove this after removing the SDK7_TEMPLATES feature flag
     } else if (step === SceneCreationStep.SIZE) {
       this.setState({ step: SceneCreationStep.SDK })
     }
   }
 
   handleSubmit = (sdk: SDKVersion) => {
-    const { onCreateProject, onClose } = this.props
+    const { onCreateProject, onClose, isSDK7TemplatesEnabled } = this.props
     const { name, description, rows, cols } = this.state
-    onCreateProject(name, description, fromLayout(rows, cols), sdk)
+    onCreateProject(name, description, fromLayout(rows, cols), isSDK7TemplatesEnabled ? SDKVersion.SDK7 : sdk)
     onClose()
   }
 
@@ -64,6 +66,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
         return t('create_modal.name_subtitle')
       case SceneCreationStep.SIZE:
         return t('create_modal.size_subtitle')
+      // TODO: remove this after removing the SDK7_TEMPLATES feature flag
       case SceneCreationStep.SDK:
         return t('create_modal.sdk_subtitle')
     }
@@ -101,6 +104,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   }
 
   renderModalActions = () => {
+    const { isSDK7TemplatesEnabled } = this.props
     const { hasError, name, step } = this.state
 
     switch (step) {
@@ -121,11 +125,16 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
             <Button secondary onClick={this.handleBack}>
               {t('global.back')}
             </Button>
-            <Button primary disabled={hasError || !name} onClick={this.handleNext}>
+            <Button
+              primary
+              disabled={hasError || !name}
+              onClick={isSDK7TemplatesEnabled ? this.handleSubmit.bind(this, SDKVersion.SDK7) : this.handleNext}
+            >
               {t('global.next')}
             </Button>
           </div>
         )
+      // TODO: remove this after removing the SDK7_TEMPLATES feature flag
       case SceneCreationStep.SDK:
         return (
           <div className={styles.sdkActionContainer}>
@@ -147,6 +156,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
     return (
       <Modal name={modalName}>
         <ModalNavigation
+          // TODO: remove this after removing the SDK7_TEMPLATES feature flag
           title={step !== SceneCreationStep.SDK ? t('create_modal.title') : t('create_modal.sdk_title')}
           subtitle={this.getSubtitle()}
           onBack={step !== SceneCreationStep.INFO ? this.handleBack : undefined}

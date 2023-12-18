@@ -1,7 +1,10 @@
-import { Project, Layout } from 'modules/project/types'
+import { Project, Layout, Manifest } from 'modules/project/types'
 import { Coordinate, Rotation } from 'modules/deployment/types'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getDimensions } from 'lib/layout'
+import _templateData from '@dcl/builder-templates/templates.json'
+
+const templates = _templateData.templates as unknown as Manifest[]
 
 export function getProjectDimensions(project: Project): string {
   const { rows, cols } = project.layout
@@ -82,4 +85,17 @@ export async function getImageAsDataUrl(url: string): Promise<string> {
   reader.readAsDataURL(imgBlob)
 
   return out
+}
+
+export function getTemplates(): Manifest[] {
+  return templates
+}
+
+export function getTemplate(projectId: string) {
+  const templates = getTemplates()
+  const template = templates.find(template => template.project.id === projectId)
+  if (!template) {
+    throw new Error(`Could not find template with projectId="${projectId}"`)
+  }
+  return template
 }
