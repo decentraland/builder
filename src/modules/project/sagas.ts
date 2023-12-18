@@ -173,13 +173,15 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleDuplicateProjectRequest(action: DuplicateProjectRequestAction) {
     const { project, type, shouldRedirect } = action.payload
+    const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
     const ethAddress: string = yield select(getAddress)
     const scene: Scene = yield getSceneByProjectId(project.id, type)
 
     let thumbnail: string = project.thumbnail
 
     try {
-      if (project.isTemplate) {
+      // TODO: remove this when the SDK7_TEMPLATES feature flag is removed
+      if (!isSDK7TemplatesEnabled && project.isTemplate) {
         thumbnail = yield call(getImageAsDataUrl, `${BUILDER_SERVER_URL}/projects/${project.id}/media/thumbnail.png`)
       } else if (thumbnail && isRemoteURL(thumbnail)) {
         thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
