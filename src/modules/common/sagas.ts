@@ -1,4 +1,5 @@
 import { all } from 'redux-saga/effects'
+import { AuthIdentity } from 'decentraland-crypto-fetch'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { BuilderClient } from '@dcl/builder-client'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
@@ -49,12 +50,11 @@ import { inspectorSaga } from 'modules/inspector/sagas'
 import { worldsSaga } from 'modules/worlds/sagas'
 import { RootStore } from './types'
 
-const profileSaga = createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL() })
-
 export function* rootSaga(
   builderAPI: BuilderAPI,
   newBuilderClient: BuilderClient,
   catalystClient: CatalystClient,
+  getIdentity: () => AuthIdentity | undefined,
   store: RootStore,
   ensApi: ENSApi
 ) {
@@ -79,7 +79,7 @@ export function* rootSaga(
     modalSaga(),
     poolGroupSaga(builderAPI),
     poolSaga(builderAPI),
-    profileSaga(),
+    createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL(), getIdentity })(),
     projectSaga(builderAPI),
     sceneSaga(builderAPI),
     statsSaga(),
