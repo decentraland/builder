@@ -7,5 +7,6 @@ export enum FeatureName {
   EMOTES_V2 = 'emotes-2.0',
   SMART_ITEMS = 'smart-items',
   WORLDS_FOR_ENS_OWNERS = 'worlds-for-ens-owners',
-  SDK7_TEMPLATES = 'sdk7-templates'
+  SDK7_TEMPLATES = 'sdk7-templates',
+  CREATE_SCENE_ONLY_SDK7 = 'create-scene-only-sdk7'
 }

@@ -104,7 +104,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   }
 
   renderModalActions = () => {
-    const { isSDK7TemplatesEnabled } = this.props
+    const { isCreateSceneOnlySDK7Enabled } = this.props
     const { hasError, name, step } = this.state
 
     switch (step) {
@@ -128,7 +128,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
             <Button
               primary
               disabled={hasError || !name}
-              onClick={isSDK7TemplatesEnabled ? this.handleSubmit.bind(this, SDKVersion.SDK7) : this.handleNext}
+              onClick={isCreateSceneOnlySDK7Enabled ? this.handleSubmit.bind(this, SDKVersion.SDK7) : this.handleNext}
             >
               {t('global.next')}
             </Button>

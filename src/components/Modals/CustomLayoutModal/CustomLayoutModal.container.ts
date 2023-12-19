@@ -12,13 +12,14 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { getLoadingProjectIds } from 'modules/sync/selectors'
 import { SDKVersion } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { getIsSDK7TemplatesEnabled } from 'modules/features/selectors'
+import { getIsCreateSceneOnlySDK7Enabled, getIsSDK7TemplatesEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
     isLoading: isLoadingType(getProjectLoading(state), LOAD_MANIFEST_REQUEST) || getLoadingProjectIds(state).length > 0,
     error: getProjectError(state),
-    isSDK7TemplatesEnabled: getIsSDK7TemplatesEnabled(state)
+    isSDK7TemplatesEnabled: getIsSDK7TemplatesEnabled(state),
+    isCreateSceneOnlySDK7Enabled: getIsCreateSceneOnlySDK7Enabled(state)
   }
 }
 

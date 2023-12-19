@@ -133,7 +133,8 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   },
   onError: (err, store) => {
     const isQuotaModalOpen = !!getOpenModals(store.getState())['QuotaExceededModal']
-    if (err instanceof DOMException && err.name === 'QuotaExceededError' && !isQuotaModalOpen) {
+    const isCloneTemplateModalOpen = !!getOpenModals(store.getState())['CloneTemplateModal']
+    if (err instanceof DOMException && err.name === 'QuotaExceededError' && !isQuotaModalOpen && !isCloneTemplateModalOpen) {
       store.dispatch(openModal('QuotaExceededModal'))
     }
   }

@@ -61,3 +61,11 @@ export const getIsSDK7TemplatesEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsCreateSceneOnlySDK7Enabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CREATE_SCENE_ONLY_SDK7)
+  } catch (e) {
+    return false
+  }
+}
