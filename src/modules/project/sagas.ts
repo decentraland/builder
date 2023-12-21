@@ -71,14 +71,15 @@ import { Gizmo, PreviewType } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
+import { changeLayout, getParcels } from 'modules/inspector/utils'
+import { setInspectorReloading } from 'modules/inspector/actions'
 import { getName } from 'modules/profile/selectors'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
 import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
-import { didUpdateLayout, getImageAsDataUrl } from './utils'
+import { didUpdateLayout, getImageAsDataUrl, getTemplate, getTemplates } from './utils'
 import { createFiles, createSDK7Files } from './export'
-import { changeLayout, getParcels } from 'modules/inspector/utils'
-import { setInspectorReloading } from 'modules/inspector/actions'
+import { getIsSDK7TemplatesEnabled } from 'modules/features/selectors'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -172,13 +173,15 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleDuplicateProjectRequest(action: DuplicateProjectRequestAction) {
     const { project, type, shouldRedirect } = action.payload
+    const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
     const ethAddress: string = yield select(getAddress)
     const scene: Scene = yield getSceneByProjectId(project.id, type)
 
     let thumbnail: string = project.thumbnail
 
     try {
-      if (project.isTemplate) {
+      // TODO: remove this when the SDK7_TEMPLATES feature flag is removed
+      if (!isSDK7TemplatesEnabled && project.isTemplate) {
         thumbnail = yield call(getImageAsDataUrl, `${BUILDER_SERVER_URL}/projects/${project.id}/media/thumbnail.png`)
       } else if (thumbnail && isRemoteURL(thumbnail)) {
         thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
@@ -207,7 +210,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
       if (project.isTemplate) {
         yield take(SAVE_PROJECT_SUCCESS)
-        yield put(push(locations.sceneEditor(newProject.id)))
+        yield put(push(scene.sdk6 ? locations.sceneEditor(newProject.id) : locations.inspector(newProject.id)))
       } else if (shouldRedirect) {
         yield put(push(locations.scenes()))
       }
@@ -358,13 +361,19 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleLoadProjectSceneRequest(action: LoadProjectSceneRequestAction) {
     const { project, type } = action.payload
     try {
-      const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-      if (scenes && scenes[project.sceneId]) {
-        yield put(loadProjectSceneSuccess(scenes[project.sceneId]))
-        return
+      const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
+      if (isSDK7TemplatesEnabled && type === PreviewType.TEMPLATE) {
+        const template = getTemplate(project.id)
+        yield put(loadProjectSceneSuccess(template.scene))
+      } else {
+        const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+        if (scenes && scenes[project.sceneId]) {
+          yield put(loadProjectSceneSuccess(scenes[project.sceneId]))
+          return
+        }
+        const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], project.id, type)
+        yield put(loadProjectSceneSuccess(manifest.scene))
       }
-      const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], project.id, type)
-      yield put(loadProjectSceneSuccess(manifest.scene))
     } catch (e) {
       yield put(loadProjectSceneFailure(e.message))
     }
@@ -373,8 +382,14 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleLoadManifestRequest(action: LoadManifestRequestAction) {
     const { id, type } = action.payload
     try {
-      const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], id, type)
-      yield put(loadManifestSuccess(manifest))
+      const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
+      if (isSDK7TemplatesEnabled && type === PreviewType.TEMPLATE) {
+        const manifest = getTemplate(id)
+        yield put(loadManifestSuccess(manifest))
+      } else {
+        const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], id, type)
+        yield put(loadManifestSuccess(manifest))
+      }
     } catch (e) {
       yield put(loadManifestFailure(e.message))
     }
@@ -382,7 +397,10 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleLoadTemplatesRequest() {
     try {
-      const projects: Project[] = yield call([builder, 'fetchTemplates'])
+      const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
+      const projects: Project[] = isSDK7TemplatesEnabled
+        ? getTemplates().map(template => template.project)
+        : yield call([builder, 'fetchTemplates'])
       const record: ModelById<Project> = {}
 
       for (const project of projects) {

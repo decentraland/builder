@@ -21,7 +21,7 @@ export const getUserProjects = createSelector(getAddress, getData, (address, pro
   return Object.keys(projects).reduce((record, projectId) => {
     const project = projects[projectId]
     const isOwnedByUser = !!project.ethAddress && !!address && isEqual(project.ethAddress, address)
-    if (isOwnedByUser || project.ethAddress === null) {
+    if ((isOwnedByUser || project.ethAddress === null) && !project.isTemplate) {
       record[projectId] = project
     }
     return record

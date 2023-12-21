@@ -661,6 +661,7 @@ export class BuilderAPI extends BaseAPI {
     return items.map(fromPoolGroup)
   }
 
+  // TODO: remove this after removing the SDK7_TEMPLATES feature flag
   async fetchTemplates() {
     const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/templates', {
       retry: retryParams,
