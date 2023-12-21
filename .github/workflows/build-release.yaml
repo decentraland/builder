@@ -29,6 +29,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
+          CI: 'false'
           NODE_PATH: 'src'
           NODE_OPTIONS: '--max-old-space-size=6144'
       - name: Publish
