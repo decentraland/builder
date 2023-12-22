@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { config } from 'config'
 import { Form, Row, Button, Section, Header, Dropdown, DropdownProps } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
@@ -8,6 +9,8 @@ import { locations } from 'routing/locations'
 import { isEqualContent } from 'modules/ens/utils'
 import { Props, State } from './LandSelectENSForm.types'
 import './LandSelectENSForm.css'
+
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 
 export default class LandSelectENSForm extends React.PureComponent<Props, State> {
   state: State = {
@@ -46,7 +49,7 @@ export default class LandSelectENSForm extends React.PureComponent<Props, State>
               <Link className="cancel" to={locations.landDetail(land.id)}>
                 <Button>{t('global.cancel')}</Button>
               </Link>
-              <Link to={locations.claimENS()}>
+              <Link to={`${MARKETPLACE_WEB_URL}/names/mints`}>
                 <Button primary>{t('land_select_ens_page.claim_new_name')}</Button>
               </Link>
             </Row>
@@ -73,7 +76,7 @@ export default class LandSelectENSForm extends React.PureComponent<Props, State>
                   <T
                     id="land_select_ens_page.click_to_claim_new_name"
                     values={{
-                      click_here: <Link to={locations.claimENS()}>{t('global.click_here')}</Link>
+                      click_here: <Link to={`${MARKETPLACE_WEB_URL}/names/mints`}>{t('global.click_here')}</Link>
                     }}
                   />
                 )}

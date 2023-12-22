@@ -8,7 +8,6 @@ import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { locations } from 'routing/locations'
 import { Deployment } from 'modules/deployment/types'
-import { FromParam } from 'modules/location/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
@@ -18,6 +17,7 @@ import styles from './DeployToWorld.module.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
 
 export default function DeployToWorld({
@@ -32,7 +32,6 @@ export default function DeployToWorld({
   onPublish,
   onRecord,
   onNavigate,
-  onReplace,
   onClose,
   onBack
 }: Props) {
@@ -99,10 +98,9 @@ export default function DeployToWorld({
   }, [view, project, isLoading, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
-    const ensUrl = `${locations.claimENS()}?from=${FromParam.DEPLOY_TO_WORLD}&projectId=${project.id}`
+    window.open(`${MARKETPLACE_WEB_URL}/names/mints`, '_blank', 'noopener,noreferrer')
     analytics.track('Publish to World - Claim Name')
-    onReplace(ensUrl, { fromParam: FromParam.DEPLOY_TO_WORLD, projectId: project.id })
-  }, [project, onReplace, analytics])
+  }, [analytics])
 
   const handleWorldSelected = useCallback(
     (_, { value }) => {

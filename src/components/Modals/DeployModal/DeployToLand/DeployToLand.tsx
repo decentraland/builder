@@ -355,7 +355,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
               {t('deployment_modal.land.not_enough_land.publish_world')}
             </Button>
           ) : (
-            <Button primary as={Link} className="action-button" to={locations.claimENS()}>
+            <Button primary as={Link} className="action-button" to={`${MARKETPLACE_WEB_URL}/names/mints`}>
               {t('deployment_modal.land.not_enough_land.claim_name')}
             </Button>
           )}
