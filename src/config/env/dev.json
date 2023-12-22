@@ -42,5 +42,6 @@
   "DCL_NAME_STATS_URL": "https://dcl-name-stats.decentraland.zone",
   "ENS_DOMAINS_URL": "https://ens.domains",
   "INSPECTOR_SEGMENT_API_KEY": "RmfAUVW7o1EEuvYJGqmVjK9q48BUpnCr",
-  "INSPECTOR_SEGMENT_APP_ID": "web-editor"
+  "INSPECTOR_SEGMENT_APP_ID": "web-editor",
+  "AUTH_URL": "/auth"
 }

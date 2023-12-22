@@ -1,3 +1,4 @@
+import { config } from 'config'
 import { CollectionType } from 'modules/collection/types'
 import { PaginationOptions, injectPagination, injectParams, CollectionDetailOptions } from './utils'
 
@@ -51,4 +52,8 @@ export const locations = {
   curation: () => '/curation',
   templates: () => '/templates',
   templateDetail: (templateId = ':templateId') => `/templates/${templateId}`
+}
+
+export function redirectToAuthDapp() {
+  window.location.replace(`${config.get('AUTH_URL')}/login?redirectTo=${encodeURIComponent(window.location.href)}`)
 }

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { ProviderType } from '@dcl/schemas'
 import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
 import { Props } from './WalletLoginModal.types'
+import { redirectToAuthDapp } from 'routing/locations'
 
 export default class WalletLoginModal extends React.PureComponent<Props> {
   handleClose = () => {
@@ -13,6 +14,18 @@ export default class WalletLoginModal extends React.PureComponent<Props> {
 
   handleConnect = (providerType: ProviderType) => {
     this.props.onConnect(providerType)
+  }
+
+  componentDidMount(): void {
+    if (this.props.isAuthDappEnabled) {
+      redirectToAuthDapp()
+    }
+  }
+
+  componentDidUpdate(): void {
+    if (this.props.isAuthDappEnabled) {
+      redirectToAuthDapp()
+    }
   }
 
   render() {

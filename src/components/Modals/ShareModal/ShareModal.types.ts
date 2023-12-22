@@ -10,6 +10,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   isLoggedIn: boolean
   isScreenshotReady: boolean
+  isAuthDappEnabled: boolean
   onUpdate: typeof shareProject
   onLogin: typeof loginRequest
   onShare: typeof shareScene
@@ -23,7 +24,7 @@ export type State = {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'project' | 'isLoading' | 'isLoggedIn' | 'isScreenshotReady'>
+export type MapStateProps = Pick<Props, 'project' | 'isLoading' | 'isLoggedIn' | 'isScreenshotReady' | 'isAuthDappEnabled'>
 export type MapDispatchProps = Pick<Props, 'onUpdate' | 'onLogin' | 'onShare'>
 
 export enum ShareModalType {
