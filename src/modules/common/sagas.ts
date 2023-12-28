@@ -93,7 +93,7 @@ export function* rootSaga(
     walletSaga(),
     collectionCurationSaga(builderAPI),
     itemCurationSaga(builderAPI),
-    featuresSaga({ polling: { apps: [ApplicationName.BUILDER], delay: 60000 /** 60 seconds */ } }),
+    featuresSaga({ polling: { apps: [ApplicationName.BUILDER, ApplicationName.DAPPS], delay: 60000 /** 60 seconds */ } }),
     inspectorSaga(builderAPI, store),
     loginSaga(),
     newsletterSagas(builderAPI),
