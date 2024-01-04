@@ -2,7 +2,7 @@ import { all, takeLatest, put, select, take, race } from 'redux-saga/effects'
 import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
-import { CLAIM_NAME_SUCCESS, SetENSContentSuccessAction, SET_ENS_CONTENT_SUCCESS, ClaimNameSuccessAction } from 'modules/ens/actions'
+import { SetENSContentSuccessAction, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
 import {
   FetchCollectionsSuccessAction,
   FetchCollectionsFailureAction,
@@ -11,13 +11,12 @@ import {
 } from 'modules/collection/actions'
 import { getCollectionsByContractAddress } from 'modules/collection/selectors'
 import { redirectToFailure, redirectToRequest, RedirectToRequestAction, redirectToSuccess, REDIRECT_TO_REQUEST } from './actions'
-import { DeployToWorldLocationStateProps, FromParam, RedirectTo, RedirectToTypes } from './types'
+import { RedirectTo, RedirectToTypes } from './types'
 
 export function* locationSaga() {
   yield all([
     takeLatest(LOGIN_SUCCESS, handleLoginSuccess),
     takeLatest(SET_ENS_CONTENT_SUCCESS, handleSetENSContentSuccess),
-    takeLatest(CLAIM_NAME_SUCCESS, handleClaimNameSuccess),
     takeLatest(LOCATION_CHANGE, handleLocationChange),
     takeLatest(REDIRECT_TO_REQUEST, handleRedirectToRequest)
   ])
@@ -40,24 +39,6 @@ function* handleLoginSuccess(_action: LoginSuccessAction) {
 function* handleSetENSContentSuccess(action: SetENSContentSuccessAction) {
   const { land } = action.payload
   if (!land) {
-    yield put(replace(locations.activity()))
-  }
-}
-
-function* handleClaimNameSuccess(action: ClaimNameSuccessAction | null = null) {
-  const location: ReturnType<typeof getLocation> = yield select(getLocation)
-  const isFromDeployToWorld =
-    (location.state as DeployToWorldLocationStateProps)?.fromParam === FromParam.DEPLOY_TO_WORLD ||
-    location.query.from === FromParam.DEPLOY_TO_WORLD
-  if (location.pathname === locations.claimENS() && isFromDeployToWorld && action) {
-    const projectId = (location.state as DeployToWorldLocationStateProps)?.projectId || location.query.projectId
-    yield put(
-      replace(locations.sceneEditor(projectId), {
-        fromParam: FromParam.CLAIM_NAME,
-        claimedName: action.payload.ens.subdomain
-      })
-    )
-  } else {
     yield put(replace(locations.activity()))
   }
 }

@@ -13,6 +13,7 @@ import { Props, State, SortBy } from './ENSListPage.types'
 import './ENSListPage.css'
 
 const PAGE_SIZE = 12
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 
 export default class ENSListPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -21,8 +22,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
-
-  handleClaimENS = () => this.props.onNavigate(locations.claimENS())
 
   handleAssignENS = (ens: ENS) => {
     this.props.onNavigate(locations.ensSelectLand(ens.subdomain))
@@ -123,15 +122,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               <Column align="right">
                 <Row>{ensList.length > 1 ? this.renderSortDropdown() : null}</Row>
               </Column>
-              <Column align="right" grow={false} shrink>
-                <Row>
-                  <div className="actions">
-                    <Button basic onClick={this.handleClaimENS}>
-                      <Icon name="add-active" />
-                    </Button>
-                  </div>
-                </Row>
-              </Column>
             </Row>
           </Container>
         </div>
@@ -227,7 +217,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                     id="ens_list_page.empty_names"
                     values={{
                       br: <br />,
-                      link: <Link to={locations.claimENS()}>{t('global.click_here')}</Link>
+                      link: <Link to={`${MARKETPLACE_WEB_URL}/names/mint`}>{t('global.click_here')}</Link>
                     }}
                   />
                 </div>

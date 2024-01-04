@@ -39,6 +39,7 @@ const PAGE_ACTION_EVENT = 'Worlds List Page Action'
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
@@ -78,12 +79,12 @@ const WorldListPage: React.FC<Props> = props => {
   const handleClaimENS = useCallback(() => {
     if (tab === TabType.DCL) {
       track(PAGE_ACTION_EVENT, { action: 'Click Claim NAME' })
-      onNavigate(locations.claimENS())
+      window.open(`${MARKETPLACE_WEB_URL}/names/mint`, '_blank', 'noopener,noreferrer')
     } else {
       track(PAGE_ACTION_EVENT, { action: 'Click Claim ENS Domain' })
       window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer')
     }
-  }, [onNavigate, tab])
+  }, [tab])
 
   const handlePublishScene = useCallback(() => {
     onNavigate(locations.scenes())

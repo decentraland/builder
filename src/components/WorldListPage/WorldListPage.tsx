@@ -27,6 +27,7 @@ import './WorldListPage.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
@@ -50,10 +51,6 @@ const WorldListPage: React.FC<Props> = props => {
     }
     return `${EXPLORER_URL}/world/${world}`
   }
-
-  const handleClaimENS = useCallback(() => {
-    onNavigate(locations.claimENS())
-  }, [onNavigate])
 
   const handlePublishScene = useCallback(() => {
     onNavigate(locations.scenes())
@@ -165,7 +162,7 @@ const WorldListPage: React.FC<Props> = props => {
               <Column align="right" grow={false} shrink>
                 <Row>
                   <div className="actions">
-                    <Button basic onClick={handleClaimENS}>
+                    <Button basic as="a" target="_blank" rel="noopener noreferrer" to={`${MARKETPLACE_WEB_URL}/names/mints`}>
                       <Icon name="add-active" />
                     </Button>
                   </div>
@@ -224,7 +221,7 @@ const WorldListPage: React.FC<Props> = props => {
         <div className="empty-icon" />
         <div className="empty-title">{t('worlds_list_page.empty_list.title')}</div>
         <div className="empty-description">{t('worlds_list_page.empty_list.description', { b: (text: string) => <b>{text}</b> })}</div>
-        <Button className="empty-action" primary onClick={handleClaimENS}>
+        <Button className="empty-action" primary as="a" to={`${MARKETPLACE_WEB_URL}/names/mints`} target="_blank" rel="noopener noreferrer">
           {t('worlds_list_page.empty_list.cta')}
         </Button>
       </Empty>

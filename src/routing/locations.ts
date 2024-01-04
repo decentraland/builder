@@ -26,7 +26,6 @@ export const locations = {
   landSelectENS: (landId = ':landId') => `/land/${landId}/select-name`,
   landAssignENS: (landId = ':landId', subdomain = ':subdomain') => `/land/${landId}/name/${subdomain}/assign`,
   ensSelectLand: (subdomain = ':subdomain') => `/name/${subdomain}/set-land`,
-  claimENS: () => '/claim-name',
   landOperator: (landId = ':landId') => `/land/${landId}/operator`,
   activity: () => '/activity',
   settings: () => '/settings',
