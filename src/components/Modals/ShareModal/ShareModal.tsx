@@ -7,6 +7,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
 import Icon from 'components/Icon'
 import { ShareTarget } from 'modules/ui/share/types'
+import { redirectToAuthDapp } from 'routing/locations'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import WalletLoginModal from '../WalletLoginModal'
 import { Props, ShareModalType, State } from './ShareModal.types'
@@ -84,7 +85,11 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   handleShareWithTwitter = (e: React.MouseEvent<HTMLAnchorElement>) => this.handleShare(e, ShareTarget.TWITTER)
 
   handleLogin = (providerType: ProviderType) => {
-    this.props.onLogin(providerType)
+    if (this.props.isAuthDappEnabled) {
+      redirectToAuthDapp()
+    } else {
+      this.props.onLogin(providerType)
+    }
   }
 
   getFacebookLink = () => {

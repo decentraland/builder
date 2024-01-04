@@ -8,11 +8,13 @@ import { getTransactions } from '../../modules/transaction/selectors'
 import { locations } from '../../routing/locations'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './UserInformation.types'
 import UserMenu from './UserInformation'
+import { getIsAuthDappEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
     isSignedIn: isConnected(state),
     isSigningIn: isConnecting(state),
+    isAuthDappEnabled: getIsAuthDappEnabled(state),
     hasActivity: getTransactions(state).some(tx => isPending(tx.status))
   }
 }

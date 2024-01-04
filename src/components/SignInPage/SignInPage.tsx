@@ -1,14 +1,29 @@
 import React from 'react'
-import Navbar from 'components/Navbar'
 import { Page } from 'decentraland-ui'
-import { ProviderType } from '@dcl/schemas'
-import Footer from 'components/Footer'
 import { default as SignIn } from 'decentraland-dapps/dist/containers/SignInPage'
+import { ProviderType } from '@dcl/schemas'
+import Navbar from 'components/Navbar'
+import Footer from 'components/Footer'
+import { redirectToAuthDapp } from 'routing/locations'
 import { Props } from './SignInPage.types'
 
 export default class SignInPage extends React.PureComponent<Props> {
   handleOnConnect = (providerType: ProviderType) => {
     this.props.onConnect(providerType)
+  }
+
+  handleRedirectToAuthDapp = () => {
+    if (this.props.isAuthDappEnabled && !this.props.isConnected && !this.props.isConnecting) {
+      redirectToAuthDapp()
+    }
+  }
+
+  componentDidMount() {
+    this.handleRedirectToAuthDapp()
+  }
+
+  componentDidUpdate(): void {
+    this.handleRedirectToAuthDapp()
   }
 
   render() {

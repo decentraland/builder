@@ -10,7 +10,8 @@
     "src/modules/editor/base64.ts",
     "package.json",
     "package-lock.json",
-    "public/config/*"
+    "public/config/*",
+    "src/setupProxy.js"
   ],
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "react-app", "react-app/jest", "prettier"],

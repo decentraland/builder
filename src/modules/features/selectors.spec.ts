@@ -2,6 +2,7 @@ import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/se
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
 import {
+  getIsAuthDappEnabled,
   getIsCreateSceneOnlySDK7Enabled,
   getIsMaintenanceEnabled,
   getIsSDK7TemplatesEnabled,
@@ -61,7 +62,8 @@ describe('when getting if maintainance is enabled', () => {
 const ffSelectors = [
   { selector: getIsWorldsForEnsOwnersEnabled, app: ApplicationName.BUILDER, feature: FeatureName.WORLDS_FOR_ENS_OWNERS },
   { selector: getIsSDK7TemplatesEnabled, app: ApplicationName.BUILDER, feature: FeatureName.SDK7_TEMPLATES },
-  { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 }
+  { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 },
+  { selector: getIsAuthDappEnabled, app: ApplicationName.DAPPS, feature: FeatureName.AUTH_DAPP }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

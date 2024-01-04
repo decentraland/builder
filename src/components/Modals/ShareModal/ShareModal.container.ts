@@ -9,13 +9,15 @@ import { shareScene } from 'modules/ui/share/actions'
 import { ShareTarget } from 'modules/ui/share/types'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { loginRequest } from 'modules/identity/actions'
+import { getIsAuthDappEnabled } from 'modules/features/selectors'
 import ShareModal from './ShareModal'
 
 const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
   project: getCurrentProject(state)!,
   isLoading: !isReady(state) || isLoading(state),
   isScreenshotReady: isScreenshotReady(state),
-  isLoggedIn: isLoggedIn(state)
+  isLoggedIn: isLoggedIn(state),
+  isAuthDappEnabled: getIsAuthDappEnabled(state)
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
