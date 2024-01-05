@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button, Responsive } from 'decentraland-ui'
 
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import UserMenu from 'components/UserMenu'
+import UserInformation from 'components/UserInformation'
 import { Props } from './SceneViewMenu.types'
 
 import './SceneViewMenu.css'
@@ -16,7 +16,7 @@ export default class SceneViewMenu extends React.PureComponent<Props> {
     const { isLoggedIn } = this.props
 
     if (isLoggedIn) {
-      return <UserMenu />
+      return <UserInformation />
     }
 
     return (
