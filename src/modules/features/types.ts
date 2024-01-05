@@ -9,5 +9,6 @@ export enum FeatureName {
   WORLDS_FOR_ENS_OWNERS = 'worlds-for-ens-owners',
   SDK7_TEMPLATES = 'sdk7-templates',
   CREATE_SCENE_ONLY_SDK7 = 'create-scene-only-sdk7',
-  AUTH_DAPP = 'auth-dapp'
+  AUTH_DAPP = 'auth-dapp',
+  NAVBAR_V2 = 'navbar2_variant'
 }

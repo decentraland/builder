@@ -6,7 +6,8 @@ import {
   getIsCreateSceneOnlySDK7Enabled,
   getIsMaintenanceEnabled,
   getIsSDK7TemplatesEnabled,
-  getIsWorldsForEnsOwnersEnabled
+  getIsWorldsForEnsOwnersEnabled,
+  getIsNavbarV2Enabled
 } from './selectors'
 import { FeatureName } from './types'
 
@@ -63,7 +64,8 @@ const ffSelectors = [
   { selector: getIsWorldsForEnsOwnersEnabled, app: ApplicationName.BUILDER, feature: FeatureName.WORLDS_FOR_ENS_OWNERS },
   { selector: getIsSDK7TemplatesEnabled, app: ApplicationName.BUILDER, feature: FeatureName.SDK7_TEMPLATES },
   { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 },
-  { selector: getIsAuthDappEnabled, app: ApplicationName.DAPPS, feature: FeatureName.AUTH_DAPP }
+  { selector: getIsAuthDappEnabled, app: ApplicationName.DAPPS, feature: FeatureName.AUTH_DAPP },
+  { selector: getIsNavbarV2Enabled, app: ApplicationName.DAPPS, feature: FeatureName.NAVBAR_V2 }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {
