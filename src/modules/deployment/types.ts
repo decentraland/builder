@@ -62,6 +62,7 @@ export type SceneDefinition = {
     title: string
     favicon: string
     navmapThumbnail?: string
+    description?: string
   }
   main: string
   owner: string
