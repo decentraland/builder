@@ -1,13 +1,16 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
+import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { RootState } from 'modules/common/types'
 import { getIsNavbarV2Enabled, getIsNewNavbarDropdownEnabled } from 'modules/features/selectors'
+import { getTransactions } from 'modules/transaction/selectors'
 import { locations } from 'routing/locations'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './Navbar.types'
 import Navbar from './Navbar'
 
 const mapState = (state: RootState): MapStateProps => ({
+  hasPendingTransactions: getTransactions(state).some(tx => isPending(tx.status)),
   isConnected: isLoggedIn(state),
   isNewNavbarEnabled: getIsNewNavbarDropdownEnabled(state),
   isNavbarV2Enabled: getIsNavbarV2Enabled(state)
