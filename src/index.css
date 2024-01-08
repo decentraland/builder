@@ -73,7 +73,6 @@ body canvas.dcl-canvas {
 
 .ui.container {
   width: 100%;
-  max-width: 1360px !important;
 }
 
 @keyframes uploading {
