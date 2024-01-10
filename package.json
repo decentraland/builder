@@ -148,5 +148,10 @@
     "opera >= 54",
     "safari >= 14"
   ],
-  "homepage": ""
+  "homepage": "",
+  "overrides": {
+    "@walletconnect/ethereum-provider": "2.9.2",
+    "@walletconnect/core": "2.9.2",
+    "@walletconnect/keyvaluestorage": "1.0.0"
+  }
 }
