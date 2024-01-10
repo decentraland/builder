@@ -53,6 +53,8 @@ export const locations = {
   templateDetail: (templateId = ':templateId') => `/templates/${templateId}`
 }
 
-export function redirectToAuthDapp() {
-  window.location.replace(`${config.get('AUTH_URL')}/login?redirectTo=${encodeURIComponent(window.location.href)}`)
+export function redirectToAuthDapp(customRedirect?: string) {
+  window.location.replace(
+    `${config.get('AUTH_URL')}/login?redirectTo=${encodeURIComponent(customRedirect ? customRedirect : window.location.href)}`
+  )
 }

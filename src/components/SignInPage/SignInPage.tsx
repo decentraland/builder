@@ -14,7 +14,9 @@ export default class SignInPage extends React.PureComponent<Props> {
 
   handleRedirectToAuthDapp = () => {
     if (this.props.isAuthDappEnabled && !this.props.isConnected && !this.props.isConnecting) {
-      redirectToAuthDapp()
+      const params = new URLSearchParams(window.location.search)
+      const basename = /^decentraland.(zone|org|today)$/.test(window.location.host) ? '/builder' : ''
+      redirectToAuthDapp(`${basename}${params.get('redirectTo') || '/'}`)
     }
   }
 
