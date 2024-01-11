@@ -20,21 +20,17 @@ export default class SignInPage extends React.PureComponent<Props> {
     }
   }
 
-  componentDidMount() {
-    this.handleRedirectToAuthDapp()
-  }
-
-  componentDidUpdate(): void {
-    this.handleRedirectToAuthDapp()
-  }
-
   render() {
-    const { isConnected } = this.props
+    const { isConnected, isAuthDappEnabled } = this.props
     return (
       <>
         <Navbar isSignIn />
         <Page>
-          <SignIn isConnected={isConnected} handleLoginConnect={this.handleOnConnect} />
+          <SignIn
+            onConnect={isAuthDappEnabled ? this.handleRedirectToAuthDapp : undefined}
+            isConnected={isConnected}
+            handleLoginConnect={this.handleOnConnect}
+          />
         </Page>
         <Footer />
       </>

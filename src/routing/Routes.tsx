@@ -11,6 +11,7 @@ import Navbar from 'components/Navbar'
 import ErrorPage from 'components/ErrorPage'
 import LoadingPage from 'components/LoadingPage'
 import MobilePage from 'components/MobilePage'
+import { ProtectedRoute } from 'modules/ProtectedRoute'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
 import { isDevelopment } from 'lib/environment'
 
@@ -120,7 +121,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.landOperator()} component={LandOperatorPage} />
             <Route exact path={locations.activity()} component={ActivityPage} />
             <Route exact path={locations.settings()} component={SettingsPage} />
-            <Route exact path={locations.scenes()} component={ScenesPage} />
+            <ProtectedRoute exact path={locations.scenes()} component={ScenesPage} />
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
             <Route exact path={locations.templates()} component={TemplatesPage} />
             <Route exact path={locations.templateDetail()} component={TemplateDetailPage} />
