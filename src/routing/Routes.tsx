@@ -5,13 +5,13 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 
-import { ProtectedRoute } from 'modules/ProtectedRoute'
 import Intercom from 'components/Intercom'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import ErrorPage from 'components/ErrorPage'
 import LoadingPage from 'components/LoadingPage'
 import MobilePage from 'components/MobilePage'
+import { ProtectedRoute } from 'modules/ProtectedRoute'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
 import { isDevelopment } from 'lib/environment'
 
