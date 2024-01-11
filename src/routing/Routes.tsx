@@ -5,7 +5,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 
-import { ProtectedRoute } from 'modules/ProtectedRoute'
 import Intercom from 'components/Intercom'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
@@ -121,7 +120,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.landOperator()} component={LandOperatorPage} />
             <Route exact path={locations.activity()} component={ActivityPage} />
             <Route exact path={locations.settings()} component={SettingsPage} />
-            <ProtectedRoute exact path={locations.scenes()} component={ScenesPage} />
+            <Route exact path={locations.scenes()} component={ScenesPage} />
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
             <Route exact path={locations.templates()} component={TemplatesPage} />
             <Route exact path={locations.templateDetail()} component={TemplateDetailPage} />
