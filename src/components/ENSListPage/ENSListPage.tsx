@@ -217,7 +217,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                     id="ens_list_page.empty_names"
                     values={{
                       br: <br />,
-                      link: <Link to={`${MARKETPLACE_WEB_URL}/names/mint`}>{t('global.click_here')}</Link>
+                      link: <a href={`${MARKETPLACE_WEB_URL}/names/claim`}>{t('global.click_here')}</a>
                     }}
                   />
                 </div>
