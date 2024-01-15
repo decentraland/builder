@@ -145,7 +145,8 @@ describe('when handling the claim name request', () => {
         resolver: '0x0000000000000000000000000000000000000000',
         content: '',
         landId: undefined,
-        worldStatus: null
+        worldStatus: null,
+        ensAddressRecord: ''
       }
       const ENSList: ENS[] = validDomains.map(domain => ({
         name: domain,
