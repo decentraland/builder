@@ -74,7 +74,11 @@ import {
   FetchExternalNamesRequestAction,
   fetchExternalNamesSuccess,
   fetchExternalNamesFailure,
-  fetchExternalNamesRequest
+  fetchExternalNamesRequest,
+  SetENSAddressRequestAction,
+  setENSAddressSuccess,
+  setENSAddressFailure,
+  SET_ENS_ADDRESS_REQUEST
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
@@ -93,6 +97,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeEvery(RECLAIM_NAME_REQUEST, handleReclaimNameRequest)
   yield takeEvery(FETCH_EXTERNAL_NAMES_REQUEST, handleFetchExternalNamesRequest)
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWallet)
+  yield takeEvery(SET_ENS_ADDRESS_REQUEST, handleSetENSAddressRequest)
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSAuthorizationRequest())
@@ -304,6 +309,25 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
     }
   }
 
+  function* handleSetENSAddressRequest(action: SetENSAddressRequestAction) {
+    const { ens, address } = action.payload
+    try {
+      const wallet: Wallet = yield getWallet()
+      const signer: ethers.Signer = yield getSigner()
+
+      const nodehash = namehash(ens.subdomain)
+      const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+
+      const transaction: ethers.ContractTransaction = yield call(() => resolverContract['setAddr(bytes32,address)'](nodehash, address))
+      yield put(setENSAddressSuccess(ens, address, wallet.chainId, transaction.hash))
+      yield call(waitForTx, transaction.hash)
+      yield put(closeModal('EnsMapAddressModal'))
+    } catch (error) {
+      const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.ADDRESS }
+      yield put(setENSAddressFailure(ens, address, ensError))
+    }
+  }
+
   function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestAction) {
     try {
       const from: string = yield select(getAddress)
@@ -377,6 +401,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
           let landId: string | undefined = undefined
           let content = ''
           let worldStatus = null
+          let ensAddressRecord = ''
 
           const nodehash = namehash(subdomain)
           const [resolverAddress, owner, tokenId]: [string, string, string] = await Promise.all([
@@ -385,6 +410,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
             dclRegistrarContract.getTokenId(name).then(name => name.toString())
           ])
           const resolver = resolverAddress.toString()
+
+          try {
+            const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+            const resolvedAddress = await resolverContract['addr(bytes32)'](nodehash)
+            ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
+          } catch (e) {
+            console.error('Failed to fetch ens address record')
+          }
 
           if (resolver !== ethers.constants.AddressZero) {
             try {
@@ -426,6 +459,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
             subdomain,
             resolver,
             content,
+            ensAddressRecord,
             landId,
             worldStatus
           }

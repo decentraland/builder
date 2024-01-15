@@ -598,6 +598,19 @@
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配",
     "not_profile_created": "您需要先进入世界才能设置别名。"
   },
+  "ens_map_address_modal": {
+    "title": "链接到以太坊地址",
+    "description": "通过定义您的分散名称来定义以太坊地址，使其他人可以参考您的帐户。这使您只需提供姓名即可获得资产。",
+    "address": {
+      "label": "链接的以太坊地址",
+      "placeholder": "地址"
+    },
+    "network": "网络",
+    "ethereum": "以太坊主网网络",
+    "error_title": "设置地址时发生错误",
+    "learn_more": "了解更多",
+    "save": "节省"
+  },
   "worlds_list_page": {
     "table": {
       "name": "姓名",

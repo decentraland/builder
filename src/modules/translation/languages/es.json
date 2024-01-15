@@ -596,6 +596,19 @@
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado",
     "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias."
   },
+  "ens_map_address_modal": {
+    "title": "Enlace a una dirección de Ethereum",
+    "description": "Permita que otros hagan referencia a su cuenta definiendo una dirección de Ethereum con su nombre Decentraland. Esto le permite recibir activos simplemente proporcionando su nombre.",
+    "address": {
+      "label": "Dirección de Ethereum vinculada",
+      "placeholder": "DIRECCIÓN"
+    },
+    "network": "Red",
+    "ethereum": "Ethereum Mainnet",
+    "error_title": "Se produjo un error al configurar la dirección",
+    "learn_more": "Aprende más",
+    "save": "Guardar"
+  },
   "worlds_list_page": {
     "table": {
       "name": "NOMBRE",

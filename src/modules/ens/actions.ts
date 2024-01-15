@@ -74,6 +74,24 @@ export type SetENSContentRequestAction = ReturnType<typeof setENSContentRequest>
 export type SetENSContentSuccessAction = ReturnType<typeof setENSContentSuccess>
 export type SetENSContentFailureAction = ReturnType<typeof setENSContentFailure>
 
+// set address to ens
+export const SET_ENS_ADDRESS_REQUEST = '[Request] Set ENS Address'
+export const SET_ENS_ADDRESS_SUCCESS = '[Success] Set ENS Address'
+export const SET_ENS_ADDRESS_FAILURE = '[Failure] Set ENS Address'
+
+export const setENSAddressRequest = (ens: ENS, address: string) => action(SET_ENS_ADDRESS_REQUEST, { ens, address })
+export const setENSAddressSuccess = (ens: ENS, address: string, chainId: ChainId, txHash: string) =>
+  action(SET_ENS_ADDRESS_SUCCESS, {
+    ...buildTransactionPayload(chainId, txHash, { ens, address }),
+    ens,
+    address
+  })
+export const setENSAddressFailure = (ens: ENS, address: string, error: ENSError) => action(SET_ENS_ADDRESS_FAILURE, { ens, address, error })
+
+export type SetENSAddressRequestAction = ReturnType<typeof setENSAddressRequest>
+export type SetENSAddressSuccessAction = ReturnType<typeof setENSAddressSuccess>
+export type SetENSAddressFailureAction = ReturnType<typeof setENSAddressFailure>
+
 // Get a ENS List (list of names) owned by the current account
 export const FETCH_ENS_LIST_REQUEST = '[Request] Fetch ENS List'
 export const FETCH_ENS_LIST_SUCCESS = '[Success] Fetch ENS List'

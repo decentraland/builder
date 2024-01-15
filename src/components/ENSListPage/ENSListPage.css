@@ -90,3 +90,88 @@
 .ENSListPage .ui.dropdown {
   margin-right: 20px;
 }
+
+.ENSListPage .ens-list-btn.ui.button {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  text-transform: none;
+}
+
+.ENSListPage .ens-list-btn .Icon.pin {
+  width: 15px;
+  height: 15px;
+}
+
+.ENSListPage .ens-list-owner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ENSListPage .ens-list-land {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ENSListPage .ens-list-land-coord {
+  display: flex;
+  height: 34px;
+  align-items: center;
+  padding: 0 10px;
+  background: var(--secondary);
+  border-radius: 6px;
+}
+
+.ENSListPage .ens-list-land-redirect-icon {
+  filter: grayscale(1) brightness(5);
+}
+
+.ENSListPage .ens-list-land-redirect {
+  width: fit-content;
+  min-width: unset;
+  height: 34px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+}
+
+.ENSListPage .ens-list-address {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.ENSListPage .ens-list-address-icon {
+  width: 25px;
+}
+
+.ENSListPage .ens-address-copy {
+  background: var(--secondary);
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  font-size: 12px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.ENSListPage .ens-address-copy:hover {
+  background-color: var(--secondary-hover);
+}
+
+.ENSListPage .ens-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ENSListPage .ens-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}

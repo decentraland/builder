@@ -580,19 +580,40 @@
     "table": {
       "name": "Name",
       "link": "Link",
-      "assigned_to": "Assigned To"
+      "assigned_to": "Assigned To",
+      "address": "Address",
+      "alias": "Alias",
+      "land": "Land",
+      "actions": "Actions",
+      "owner": "Owner"
     },
     "assigned_to_land": "Land ({landId})",
     "assigned_to_estate": "Estate ({landId})",
     "button": {
       "assign": "Use as Link",
       "edit": "Edit Link",
-      "use_as_alias": "Use as Alias"
+      "use_as_alias": "Use as Alias",
+      "add_to_avatar": "Add to Avatar",
+      "link_to_address": "Link to an Ethereum Address",
+      "assign_to_land": "Assign to Land o WORLDs"
     },
     "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
     "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned",
     "not_profile_created": "You need to get into the world first to set an alias."
+  },
+  "ens_map_address_modal": {
+    "title": "Link to an Ethereum Address",
+    "description": "Enable others to reference your account by defining an Ethereum address with your Decentraland NAME. This allows you to receive assets simply by providing your NAME.",
+    "address": {
+      "label": "Linked Ethereum Address",
+      "placeholder": "Address"
+    },
+    "network": "Network",
+    "ethereum": "Ethereum Mainnet Network",
+    "error_title": "An error occur while setting the address",
+    "learn_more": "Learn more",
+    "save": "Save"
   },
   "worlds_list_page": {
     "table": {

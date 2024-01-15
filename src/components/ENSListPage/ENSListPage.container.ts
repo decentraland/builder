@@ -9,6 +9,7 @@ import { FETCH_ENS_LIST_REQUEST } from 'modules/ens/actions'
 import { getLands, getLoading as getLandsLoading, getError as getLandsError } from 'modules/land/selectors'
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getAvatar, getName } from 'modules/profile/selectors'
+import { getIsEnsAddressEnabled } from 'modules/features/selectors'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ENSListPage.types'
 import ENSListPage from './ENSListPage'
@@ -24,7 +25,8 @@ const mapState = (state: RootState): MapStateProps => ({
     isLoadingType(getLandsLoading(state), FETCH_LANDS_REQUEST) ||
     isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) ||
     isLoggingIn(state),
-  isLoggedIn: isLoggedIn(state)
+  isLoggedIn: isLoggedIn(state),
+  isEnsAddressEnabled: getIsEnsAddressEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
