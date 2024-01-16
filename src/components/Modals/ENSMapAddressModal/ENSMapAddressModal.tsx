@@ -26,7 +26,7 @@ export default function EnsMapAddressModal(props: Props) {
   }, [])
 
   return (
-    <Modal closeIcon={<Close />} onClose={onClose} size="tiny">
+    <Modal closeIcon={isLoading ? undefined : <Close />} onClose={isLoading ? undefined : onClose} size="tiny">
       <div className={styles.main}>
         <div className={styles.info}>
           <h1 className={styles.title}>{t('ens_map_address_modal.title')}</h1>
@@ -39,6 +39,8 @@ export default function EnsMapAddressModal(props: Props) {
             value={address}
             placeholder={t('ens_map_address_modal.address.placeholder')}
             onChange={handleAddressChange}
+            type="address"
+            disabled={isLoading}
           />
           <div className={styles.network}>
             <span className="ui header sub">{t('ens_map_address_modal.network')}</span>

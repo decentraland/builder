@@ -312,13 +312,13 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   function* handleSetENSAddressRequest(action: SetENSAddressRequestAction) {
     const { ens, address } = action.payload
     try {
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
-
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const nodehash = namehash(ens.subdomain)
       const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
 
-      const transaction: ethers.ContractTransaction = yield call(() => resolverContract['setAddr(bytes32,address)'](nodehash, address))
+      const transaction: ethers.ContractTransaction = yield call([resolverContract, 'setAddr(bytes32,address)'], nodehash, address)
+
       yield put(setENSAddressSuccess(ens, address, wallet.chainId, transaction.hash))
       yield call(waitForTx, transaction.hash)
       yield put(closeModal('EnsMapAddressModal'))

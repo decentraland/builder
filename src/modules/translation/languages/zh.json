@@ -584,14 +584,22 @@
     "table": {
       "name": "名称",
       "link": "链接",
-      "assigned_to": "分配给"
+      "assigned_to": "分配给",
+      "address": "地址",
+      "alias": "别名",
+      "land": "土地",
+      "actions": "动作",
+      "owner": "所有者"
     },
     "assigned_to_land": "土地 ({landId})",
     "assigned_to_estate": "州 ({landId})",
     "button": {
       "assign": "分配",
       "edit": "修",
-      "use_as_alias": "用作别名"
+      "use_as_alias": "用作别名",
+      "add_to_avatar": "添加到头像",
+      "link_to_address": "链接到以太坊地址",
+      "assign_to_land": "分配土地或世界"
     },
     "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
     "items": "{count}结果",

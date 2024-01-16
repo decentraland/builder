@@ -68,7 +68,8 @@ import {
   SET_ENS_ADDRESS_FAILURE,
   SetENSAddressRequestAction,
   SetENSAddressFailureAction,
-  SetENSAddressSuccessAction
+  SetENSAddressSuccessAction,
+  setENSAddressSuccess
 } from './actions'
 import { ENS, ENSError, Authorization } from './types'
 import { isExternalName } from './utils'
@@ -297,10 +298,10 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
           }
         }
         case SET_ENS_ADDRESS_SUCCESS: {
-          const { ens, address } = transaction.payload
+          const { ens, address, chainId, txHash } = transaction.payload
           return {
             ...state,
-            loading: loadingReducer(state.loading, action),
+            loading: loadingReducer(state.loading, setENSAddressSuccess(ens, address, chainId, txHash)),
             error: null,
             data: {
               ...state.data,

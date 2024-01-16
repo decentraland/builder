@@ -582,14 +582,22 @@
     "table": {
       "name": "Nombre",
       "link": "Enlace",
-      "assigned_to": "Asignado a"
+      "assigned_to": "Asignado a",
+      "address": "Dirección",
+      "alias": "alias",
+      "land": "Tierra",
+      "actions": "Acciones",
+      "owner": "Dueño"
     },
     "assigned_to_land": "Tierra ({landId})",
     "assigned_to_estate": "Estate ({landId})",
     "button": {
       "assign": "Usar como link",
       "edit": "Editar link",
-      "use_as_alias": "Usar como alias"
+      "use_as_alias": "Usar como alias",
+      "add_to_avatar": "Agregar a Avatar",
+      "link_to_address": "Enlazar a una dirección de Ethereum",
+      "assign_to_land": "Asignar a tierra o mundo"
     },
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
     "items": "{count} {count, plural, one {resultado} other {resultados}}",

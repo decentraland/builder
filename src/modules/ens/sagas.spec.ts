@@ -1,14 +1,25 @@
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { expectSaga } from 'redux-saga-test-plan'
+import { namehash } from '@ethersproject/hash'
 import { call, select } from 'redux-saga/effects'
-import { ethers } from 'ethers'
+import { Signer, ethers } from 'ethers'
 import { BuilderClient } from '@dcl/builder-client'
 import { ChainId, Network } from '@dcl/schemas'
-import { ERC20__factory, ERC20, DCLController__factory, DCLRegistrar__factory, ENS__factory } from 'contracts'
+import {
+  ERC20__factory,
+  ERC20,
+  DCLController__factory,
+  DCLRegistrar__factory,
+  ENS__factory,
+  ENSResolver__factory,
+  ENSResolver
+} from 'contracts'
 import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { closeModal } from 'modules/modal/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { CONTROLLER_V2_ADDRESS, ENS_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
@@ -29,10 +40,13 @@ import {
   fetchENSWorldStatusSuccess,
   fetchExternalNamesFailure,
   fetchExternalNamesRequest,
-  fetchExternalNamesSuccess
+  fetchExternalNamesSuccess,
+  setENSAddressFailure,
+  setENSAddressRequest,
+  setENSAddressSuccess
 } from './actions'
 import { ensSaga } from './sagas'
-import { ENS, ENSError, WorldStatus } from './types'
+import { ENS, ENSError, ENSOrigin, WorldStatus } from './types'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { addWorldStatusToEachENS } from './utils'
 
@@ -43,6 +57,7 @@ const MockBuilderClient = BuilderClient as jest.MockedClass<typeof BuilderClient
 let builderClient: BuilderClient
 let ensApi: ENSApi
 let manaContract: ERC20
+let ensResolverContract: ENSResolver
 let dclRegistrarContract: DCLRegistrar__factory
 let ensFactoryContract: ENS__factory
 
@@ -70,6 +85,10 @@ beforeEach(() => {
     resolver: jest.fn().mockResolvedValue(ethers.constants.AddressZero),
     owner: jest.fn().mockResolvedValue('address')
   } as unknown as ENS__factory
+  ensResolverContract = {
+    'setAddr(bytes32,address)': jest.fn().mockResolvedValue(''),
+    'addr(bytes32)': jest.fn().mockResolvedValue('0xaddr')
+  } as unknown as ENSResolver
 })
 
 describe('when handling the approve claim mana request', () => {
@@ -130,6 +149,7 @@ describe('when handling the claim name request', () => {
     beforeEach(() => {
       address = '0xanAddress'
       jest.spyOn(WorldsAPI.prototype, 'fetchWorld').mockResolvedValue(null)
+      ENSResolver__factory.connect = jest.fn().mockReturnValue(ensResolverContract)
     })
     afterEach(() => {
       jest.restoreAllMocks()
@@ -146,7 +166,7 @@ describe('when handling the claim name request', () => {
         content: '',
         landId: undefined,
         worldStatus: null,
-        ensAddressRecord: ''
+        ensAddressRecord: '0xaddr'
       }
       const ENSList: ENS[] = validDomains.map(domain => ({
         name: domain,
@@ -365,6 +385,52 @@ describe('when handling the wallet connection', () => {
     await expectSaga(ensSaga, builderClient, ensApi)
       .put(fetchExternalNamesRequest(address))
       .dispatch(connectWalletSuccess({ address } as Wallet))
+      .silentRun()
+  })
+})
+
+describe('when handling the set ens address request', () => {
+  let signer: Signer
+  let address: string
+  let ens: ENS
+  let hash: string
+
+  beforeEach(() => {
+    ens = {
+      subdomain: 'test.dcl.eth',
+      name: 'test'
+    } as ENS
+    signer = {} as Signer
+    address = '0xtest'
+    hash = 'tx-hash'
+    ENSResolver__factory.connect = jest.fn().mockReturnValue(ensResolverContract)
+  })
+
+  it('should call resolver contract with the ens domain and address', () => {
+    return expectSaga(ensSaga, builderClient, ensApi)
+      .provide([
+        [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
+        [call(getSigner), { signer }],
+        [call([ensResolverContract, 'setAddr(bytes32,address)'], namehash(ens.subdomain), address), { hash } as ethers.ContractTransaction],
+        [call(waitForTx, hash), true]
+      ])
+      .put(setENSAddressSuccess(ens, address, ChainId.ETHEREUM_GOERLI, hash))
+      .put(closeModal('EnsMapAddressModal'))
+      .dispatch(setENSAddressRequest(ens, address))
+      .silentRun()
+  })
+
+  it('should put the failure action when something goes wrong', () => {
+    const error = { message: 'an error message', code: 1, name: 'error' }
+    return expectSaga(ensSaga, builderClient, ensApi)
+      .provide([
+        [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
+        [call(getSigner), { signer }],
+        [call([ensResolverContract, 'setAddr(bytes32,address)'], namehash(ens.subdomain), address), throwError(error)],
+        [call(waitForTx, hash), true]
+      ])
+      .put(setENSAddressFailure(ens, address, { message: error.message, code: error.code, origin: ENSOrigin.ADDRESS }))
+      .dispatch(setENSAddressRequest(ens, address))
       .silentRun()
   })
 })
