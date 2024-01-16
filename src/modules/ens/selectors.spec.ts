@@ -1,6 +1,9 @@
 import { RootState } from 'modules/common/types'
-import { getExternalNames, getExternalNamesForConnectedWallet, getExternalNamesForWallet } from './selectors'
+import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/reducer'
+import { Transaction, TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
+import { getExternalNames, getExternalNamesForConnectedWallet, getExternalNamesForWallet, isWaitingTxSetAddress } from './selectors'
 import { ENSState } from './reducer'
+import { SET_ENS_ADDRESS_SUCCESS, SET_ENS_CONTENT_SUCCESS } from './actions'
 
 let state: RootState
 let wallet1: string
@@ -106,6 +109,78 @@ describe('when getting the external names for a provided wallet', () => {
           nftOwnerAddress: wallet2
         }
       ])
+    })
+  })
+})
+
+describe('when using isWaitingTxSetAddress selector', () => {
+  describe('and there are no pending transactions', () => {
+    beforeEach(() => {
+      state = {
+        transaction: { data: [], loading: [], error: null } as TransactionState,
+        wallet: {
+          data: {
+            address: wallet1
+          }
+        }
+      } as RootState
+    })
+    it('should return false', () => {
+      expect(isWaitingTxSetAddress(state)).toEqual(false)
+    })
+  })
+
+  describe('and there are pending transactions', () => {
+    describe('and the transaction actionType is SET_ENS_ADDRESS_SUCCESS', () => {
+      beforeEach(() => {
+        state = {
+          transaction: {
+            data: [
+              {
+                actionType: SET_ENS_ADDRESS_SUCCESS,
+                status: TransactionStatus.PENDING,
+                from: wallet1
+              } as Transaction
+            ],
+            loading: [],
+            error: null
+          } as TransactionState,
+          wallet: {
+            data: {
+              address: wallet1
+            }
+          }
+        } as RootState
+      })
+      it('should return true', () => {
+        expect(isWaitingTxSetAddress(state)).toEqual(true)
+      })
+    })
+
+    describe('and the transaction actionType is not SET_ENS_ADDRESS_SUCCESS', () => {
+      beforeEach(() => {
+        state = {
+          transaction: {
+            data: [
+              {
+                actionType: SET_ENS_CONTENT_SUCCESS,
+                status: TransactionStatus.PENDING,
+                from: wallet1
+              } as Transaction
+            ],
+            loading: [],
+            error: null
+          } as TransactionState,
+          wallet: {
+            data: {
+              address: wallet1
+            }
+          }
+        } as RootState
+      })
+      it('should return false', () => {
+        expect(isWaitingTxSetAddress(state)).toEqual(false)
+      })
     })
   })
 })

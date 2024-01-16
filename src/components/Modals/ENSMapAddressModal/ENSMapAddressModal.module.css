@@ -1,0 +1,49 @@
+.main {
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.network {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.actions {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.actions :global(.ui.button) {
+  flex: 1;
+}
+
+.title {
+  font-size: 20px;
+  margin-bottom: 0;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.ethereum {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.ethereum img {
+  width: 24px;
+}

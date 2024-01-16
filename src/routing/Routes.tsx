@@ -30,6 +30,7 @@ const LandDetailPage = React.lazy(() => import('components/LandDetailPage'))
 const LandTransferPage = React.lazy(() => import('components/LandTransferPage'))
 const LandEditPage = React.lazy(() => import('components/LandEditPage'))
 const ENSListPage = React.lazy(() => import('components/ENSListPage'))
+const ENSDetailPage = React.lazy(() => import('components/ENSDetailPage'))
 const WorldListPage = React.lazy(() => import('components/WorldListPage'))
 const WorldListPageWorldsForEnsOwners = React.lazy(() => import('components/WorldListPage_WorldsForEnsOwnersFeature'))
 const LandSelectENSPage = React.lazy(() => import('components/LandSelectENSPage'))
@@ -126,6 +127,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.templates()} component={TemplatesPage} />
             <Route exact path={locations.templateDetail()} component={TemplateDetailPage} />
             <Route exact key={1} path={locations.ens()} component={ENSListPage} />,
+            <Route exact path={locations.ensDetail()} component={ENSDetailPage} />
             <Route exact key={3} path={locations.landSelectENS()} component={LandSelectENSPage} />,
             <Route exact key={4} path={locations.landAssignENS()} component={LandAssignENSPage} />,
             <Route exact key={5} path={locations.ensSelectLand()} component={ENSSelectLandPage} />

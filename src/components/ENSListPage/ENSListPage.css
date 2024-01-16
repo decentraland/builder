@@ -90,3 +90,128 @@
 .ENSListPage .ui.dropdown {
   margin-right: 20px;
 }
+
+.ENSListPage .ens-list-btn.ui.button {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  text-transform: none;
+}
+
+.ENSListPage .ens-list-btn .Icon.pin {
+  width: 15px;
+  height: 15px;
+}
+
+.ENSListPage .ens-list-avatar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--secondary-text);
+}
+
+.ENSListPage .ens-list-land {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ENSListPage .ens-list-land-coord {
+  display: flex;
+  height: 34px;
+  align-items: center;
+  padding: 0 10px;
+  background: var(--secondary);
+  border-radius: 6px;
+}
+
+.ENSListPage .ens-list-land-redirect-icon {
+  filter: grayscale(1) brightness(5);
+}
+
+.ENSListPage .ens-list-land-redirect {
+  width: fit-content;
+  min-width: unset;
+  height: 34px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+}
+
+.ENSListPage .ens-list-address {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.ENSListPage .ens-list-address-icon {
+  width: 25px;
+}
+
+.ENSListPage .ens-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ENSListPage .ens-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ENSListPage .ens-list-subdomain {
+  font-weight: bold;
+  color: var(--secondary-text);
+}
+
+.ENSListPage .ens-list-subdomain span {
+  color: white;
+}
+
+.ENSListPage .ens-list-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ENSListPage .ens-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ENSListPage .ens-page-actions .ui.dropdown {
+  margin-left: 15px;
+}
+
+.ENSListPage .ens-list-edit-btn.ui.button {
+  min-width: unset;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-transform: none;
+}
+
+.ENSListPage .ens-list-name-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.ENSListPage .ens-list-avatar-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #43404a;
+}
+
+.ENSListPage .ens-list-avatar-name {
+  color: white;
+  font-weight: bold;
+}
+
+.ENSListPage .ens-list-actions {
+  display: flex;
+  gap: 10px;
+}

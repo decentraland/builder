@@ -581,22 +581,58 @@
     "title": "糟糕！"
   },
   "ens_list_page": {
+    "title": "名称",
+    "sort_by": "排序方式",
+    "mint_name": "薄荷名称",
+    "result": "{count} {count, plural, one {结果} other {结果}}",
+    "edit": "编辑",
+    "transfer": "转移",
     "table": {
       "name": "名称",
       "link": "链接",
-      "assigned_to": "分配给"
+      "assigned_to": "分配给",
+      "address": "地址",
+      "alias": "别名",
+      "land": "土地",
+      "actions": "动作",
+      "you": "你"
     },
     "assigned_to_land": "土地 ({landId})",
     "assigned_to_estate": "州 ({landId})",
     "button": {
       "assign": "分配",
       "edit": "修",
-      "use_as_alias": "用作别名"
+      "use_as_alias": "用作别名",
+      "add_to_avatar": "添加到头像",
+      "link_to_address": "链接到以太坊地址",
+      "assign_to_land": "分配土地或世界"
     },
     "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
     "items": "{count}结果",
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配",
     "not_profile_created": "您需要先进入世界才能设置别名。"
+  },
+  "ens_detail_page": {
+    "name": "姓名",
+    "address": "地址",
+    "alias": "别名",
+    "land": "土地",
+    "unassign": "未分配",
+    "set_as_primary": "设置为主要",
+    "edit_address": "编辑地址"
+  },
+  "ens_map_address_modal": {
+    "title": "链接到以太坊地址",
+    "description": "通过定义您的分散名称来定义以太坊地址，使其他人可以参考您的帐户。这使您只需提供姓名即可获得资产。",
+    "address": {
+      "label": "链接的以太坊地址",
+      "placeholder": "地址"
+    },
+    "network": "网络",
+    "ethereum": "以太坊主网网络",
+    "error_title": "设置地址时发生错误",
+    "learn_more": "了解更多",
+    "save": "节省"
   },
   "worlds_list_page": {
     "table": {

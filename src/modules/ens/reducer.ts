@@ -62,7 +62,14 @@ import {
   FetchExternalNamesRequestAction,
   FetchExternalNamesSuccessAction,
   FetchExternalNamesFailureAction,
-  FETCH_EXTERNAL_NAMES_SUCCESS
+  FETCH_EXTERNAL_NAMES_SUCCESS,
+  SET_ENS_ADDRESS_REQUEST,
+  SET_ENS_ADDRESS_SUCCESS,
+  SET_ENS_ADDRESS_FAILURE,
+  SetENSAddressRequestAction,
+  SetENSAddressFailureAction,
+  SetENSAddressSuccessAction,
+  setENSAddressSuccess
 } from './actions'
 import { ENS, ENSError, Authorization } from './types'
 import { isExternalName } from './utils'
@@ -116,6 +123,9 @@ export type ENSReducerAction =
   | FetchExternalNamesRequestAction
   | FetchExternalNamesSuccessAction
   | FetchExternalNamesFailureAction
+  | SetENSAddressRequestAction
+  | SetENSAddressSuccessAction
+  | SetENSAddressFailureAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
@@ -131,7 +141,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_RESOLVER_SUCCESS:
     case ALLOW_CLAIM_MANA_REQUEST:
     case ALLOW_CLAIM_MANA_SUCCESS:
-    case FETCH_EXTERNAL_NAMES_REQUEST: {
+    case FETCH_EXTERNAL_NAMES_REQUEST:
+    case SET_ENS_ADDRESS_REQUEST: {
       return {
         ...state,
         error: null,
@@ -259,7 +270,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case FETCH_ENS_LIST_FAILURE:
     case FETCH_ENS_AUTHORIZATION_FAILURE:
     case ALLOW_CLAIM_MANA_FAILURE:
-    case FETCH_EXTERNAL_NAMES_FAILURE: {
+    case FETCH_EXTERNAL_NAMES_FAILURE:
+    case SET_ENS_ADDRESS_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -281,6 +293,21 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
               [subdomain]: {
                 ...state.data[subdomain],
                 resolver
+              }
+            }
+          }
+        }
+        case SET_ENS_ADDRESS_SUCCESS: {
+          const { ens, address, chainId, txHash } = transaction.payload
+          return {
+            ...state,
+            loading: loadingReducer(state.loading, setENSAddressSuccess(ens, address, chainId, txHash)),
+            error: null,
+            data: {
+              ...state.data,
+              [ens.subdomain]: {
+                ...state.data[ens.subdomain],
+                ensAddressRecord: address
               }
             }
           }

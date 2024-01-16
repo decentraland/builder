@@ -1,0 +1,112 @@
+.main {
+  display: flex;
+  padding: 35px;
+  background: var(--secondary);
+  border-radius: 10px;
+  gap: 50px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 20px;
+}
+
+.ensImage {
+  width: 326px;
+  height: 326px;
+  border-radius: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 24px;
+}
+
+.fieldContainer {
+  display: flex;
+}
+
+.fieldContainer:first-child {
+  border-bottom: 1px solid var(--secondary-text);
+  padding: 40px 0 20px 0;
+}
+
+.fieldTitle {
+  font-size: 14px;
+  color: var(--secondary-text);
+}
+
+.subdomain {
+  display: flex;
+  font-weight: bold;
+  font-size: 40px;
+  line-height: 40px;
+  color: var(--secondary-text);
+  align-items: center;
+  gap: 10px;
+}
+
+.subdomain span span {
+  color: white;
+}
+
+.unassign {
+  border-radius: 8px;
+  background: #302c36;
+  color: white;
+  font-size: 16px;
+  padding: 0 20px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.actionBtn {
+  width: fit-content;
+  min-width: none;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--secondary-text);
+}
+
+.avatarImg {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #43404a;
+}
+
+.avatarName {
+  color: white;
+  font-weight: bold;
+}
+
+.ensBtn:global(.ui.button) {
+  background: #302c36;
+  color: white;
+  width: fit-content;
+  min-width: none;
+}
+
+.address {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.returnLink:global(.ui.button) {
+  color: var(--secondary-text) !important;
+  font-size: 20px;
+  margin-bottom: 30px;
+  text-transform: none;
+}

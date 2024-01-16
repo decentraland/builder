@@ -579,22 +579,58 @@
     "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la misma"
   },
   "ens_list_page": {
+    "title": "Nombres",
+    "sort_by": "Ordernar por",
+    "mint_name": "Comprar nombre",
+    "result": "{count} {count, plural, one {resultado} other {resultados}}",
+    "edit": "Editar",
+    "transfer": "Transferir",
     "table": {
       "name": "Nombre",
       "link": "Enlace",
-      "assigned_to": "Asignado a"
+      "assigned_to": "Asignado a",
+      "address": "Dirección",
+      "alias": "alias",
+      "land": "Tierra",
+      "actions": "Acciones",
+      "you": "tú"
     },
     "assigned_to_land": "Tierra ({landId})",
     "assigned_to_estate": "Estate ({landId})",
     "button": {
       "assign": "Usar como link",
       "edit": "Editar link",
-      "use_as_alias": "Usar como alias"
+      "use_as_alias": "Usar como alias",
+      "add_to_avatar": "Agregar a Avatar",
+      "link_to_address": "Enlazar a una dirección de Ethereum",
+      "assign_to_land": "Asignar a tierra o mundo"
     },
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
     "items": "{count} {count, plural, one {resultado} other {resultados}}",
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado",
     "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias."
+  },
+  "ens_detail_page": {
+    "name": "Nombre",
+    "address": "Dirección",
+    "alias": "Alias",
+    "land": "Tierra",
+    "unassign": "Sin asignar",
+    "set_as_primary": "Usar como alias",
+    "edit_address": "Editar dirección"
+  },
+  "ens_map_address_modal": {
+    "title": "Enlace a una dirección de Ethereum",
+    "description": "Permita que otros hagan referencia a su cuenta definiendo una dirección de Ethereum con su nombre Decentraland. Esto le permite recibir activos simplemente proporcionando su nombre.",
+    "address": {
+      "label": "Dirección de Ethereum vinculada",
+      "placeholder": "DIRECCIÓN"
+    },
+    "network": "Red",
+    "ethereum": "Ethereum Mainnet",
+    "error_title": "Se produjo un error al configurar la dirección",
+    "learn_more": "Aprende más",
+    "save": "Guardar"
   },
   "worlds_list_page": {
     "table": {
