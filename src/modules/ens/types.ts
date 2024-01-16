@@ -20,6 +20,8 @@ export type ENS = {
   landId?: string
 
   worldStatus?: WorldStatus | null
+
+  ensAddressRecord?: string
 }
 
 export type ENSError = {
@@ -30,7 +32,8 @@ export type ENSError = {
 
 export enum ENSOrigin {
   RESOLVER = 'Resolver',
-  CONTENT = 'Content'
+  CONTENT = 'Content',
+  ADDRESS = 'Address'
 }
 
 export type Authorization = {

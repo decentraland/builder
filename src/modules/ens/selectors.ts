@@ -15,7 +15,8 @@ import {
   ALLOW_CLAIM_MANA_SUCCESS,
   RECLAIM_NAME_SUCCESS,
   CLAIM_NAME_REQUEST,
-  CLAIM_NAME_TRANSACTION_SUBMITTED
+  CLAIM_NAME_TRANSACTION_SUBMITTED,
+  SET_ENS_ADDRESS_SUCCESS
 } from './actions'
 import { Authorization, ENS } from './types'
 import { ENSState } from './reducer'
@@ -93,6 +94,10 @@ export const isWaitingTxAllowMana = createSelector<RootState, Transaction[], boo
 
 export const isWaitingTxSetResolver = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
   transactions.some(transaction => SET_ENS_RESOLVER_SUCCESS === transaction.actionType)
+)
+
+export const isWaitingTxSetAddress = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
+  transactions.some(transaction => SET_ENS_ADDRESS_SUCCESS === transaction.actionType)
 )
 
 export const isWaitingTxSetLandContent = (state: RootState, landId: string) =>
