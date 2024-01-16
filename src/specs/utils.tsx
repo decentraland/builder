@@ -11,10 +11,8 @@ import { RootState } from 'modules/common/types'
 import { initTestStore } from 'modules/common/store'
 import { ConnectedRouter } from 'connected-react-router'
 
-const allTranslations = mergeTranslations(
-  flatten(en) as unknown as Record<string, string>,
-  flatten(locales.en) as unknown as Record<string, string>
-)
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+const allTranslations = mergeTranslations(flatten(en) as unknown as Record<string, string>, flatten(locales.en))
 
 export function renderWithProviders(
   component: JSX.Element,
