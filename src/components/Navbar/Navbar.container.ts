@@ -12,7 +12,7 @@ import Navbar from './Navbar'
 const mapState = (state: RootState): MapStateProps => ({
   hasPendingTransactions: getTransactions(state).some(tx => isPending(tx.status)),
   isSignedIn: isLoggedIn(state),
-  isNewNavbarEnabled: getIsNewNavbarDropdownEnabled(state),
+  isNewNavbarEnabled: getIsNewNavbarDropdownEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
