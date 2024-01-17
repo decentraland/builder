@@ -78,14 +78,6 @@ export const getIsAuthDappEnabled = (state: RootState) => {
   }
 }
 
-export const getIsNavbarV2Enabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.NAVBAR_V2)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsEnsAddressEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.ENS_ADDRESS)
