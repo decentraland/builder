@@ -38,7 +38,7 @@ export default class ErrorPage extends React.PureComponent<Props> {
     const { stackTrace } = this.props
     return (
       <>
-        <Navbar isFullscreen />
+        <Navbar />
         <Page isFullscreen>
           <div className="ErrorPage">
             <h1 className="title">{t('error_page.title')}</h1>

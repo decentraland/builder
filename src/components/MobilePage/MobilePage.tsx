@@ -19,7 +19,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
   render() {
     return (
       <>
-        <Navbar isFullscreen isOverlay />
+        <Navbar />
         <Page isFullscreen className="MobilePage">
           <Container>
             <div className="slot-image" />

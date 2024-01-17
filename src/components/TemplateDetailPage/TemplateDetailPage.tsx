@@ -122,7 +122,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
 
   return (
     <>
-      <Navbar isFullscreen />
+      <Navbar />
       <Page className="TemplateDetailPage" isFullscreen>
         {isLoading && !template ? renderLoading() : null}
         {!isLoading && !template ? renderNotFound() : null}

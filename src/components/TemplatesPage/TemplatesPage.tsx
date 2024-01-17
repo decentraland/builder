@@ -38,7 +38,7 @@ export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTe
 
   return (
     <>
-      <Navbar isFullscreen />
+      <Navbar />
       <Page isFullscreen className="ScenesPage">
         <Navigation activeTab={NavigationTab.SCENES} />
         <div className={styles.titleContainer}>
