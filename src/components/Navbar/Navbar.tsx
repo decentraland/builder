@@ -5,7 +5,7 @@ import { Props } from './Navbar.types'
 
 import './Navbar.css'
 
-const Navbar: React.FC<Props> = ({ hasPendingTransactions, isNavbarV2Enabled, ...props }: Props) => {
+const Navbar: React.FC<Props> = ({ hasPendingTransactions, ...props }: Props) => {
   return <BaseNavbar activePage={NavbarPages.CREATE} {...props} hasActivity={hasPendingTransactions} />
 }
 
