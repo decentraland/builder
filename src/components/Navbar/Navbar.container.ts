@@ -16,7 +16,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onClickSignIn: () => dispatch(push(locations.signIn()))
+  onSignIn: () => dispatch(push(locations.signIn()))
 })
 
 const mergeProps = (mapStateProps: MapStateProps, mapDispatchProps: MapDispatchProps, ownProps: OwnProps) => ({
