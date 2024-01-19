@@ -10,7 +10,6 @@ export type Props = ModalProps & {
   currentPoolGroup: PoolGroup | null
   project: Project | null
   scene: Scene | null
-  isWorldsForEnsOwnersEnabled: boolean
 }
 
 export type State = {

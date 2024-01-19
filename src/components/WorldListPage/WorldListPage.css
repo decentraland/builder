@@ -19,15 +19,16 @@
 
 .WorldListPage .empty-names-container .empty-icon {
   margin-bottom: 30px;
-  background-image: url(../../images/empty-names.svg);
-  height: 86px;
-  width: 86px;
+  height: 87px;
+  width: 87px;
 }
 
-.WorldListPage .empty-names-container .empty-icon .icon {
-  font-size: 86px;
-  line-height: 86px;
-  color: var(--text);
+.WorldListPage .empty-names-container .empty-icon.dcl-icon {
+  background-image: url(./images/dcl-empty-state-icon.svg);
+}
+
+.WorldListPage .empty-names-container .empty-icon.ens-icon {
+  background-image: url(./images/ens-empty-state-icon.svg);
 }
 
 .WorldListPage .empty-names-container .empty-title {
@@ -108,6 +109,14 @@
   color: #cfcdd4;
 }
 
+.WorldListPage .TableRow .world-status.warning {
+  color: var(--danger);
+}
+
+.WorldListPage .TableRow .world-status.blocked {
+  color: var(--error);
+}
+
 .WorldListPage .ui.pagination {
   width: 100%;
   display: flex;
@@ -165,4 +174,18 @@
 
 .WorldListPage .ui.dropdown {
   margin-right: 20px;
+}
+
+.WorldListPage .worlds-storage {
+  margin-bottom: 24px;
+}
+
+.WorldListPage .insufficient-storage-message {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--dark-two);
+  border-radius: 10px;
+  padding: 22px;
+  margin-bottom: 24px;
 }

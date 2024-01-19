@@ -20,7 +20,6 @@ export type Props = DefaultProps & {
   sortBy: SortBy
   totalPages: number
   poolList: Pool[] | null
-  isWorldsForENSOwnersEnabled: boolean
   onOpenModal: typeof openModal
   onPageChange: (options: PaginationOptions) => void
   onLoadFromScenePool: typeof loadPoolsRequest

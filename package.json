@@ -112,7 +112,7 @@
     "test:coverage": "npm run test -- --coverage",
     "eject": "react-scripts eject",
     "prebuild": "node scripts/prebuild.js",
-    "build": "npm run postinstall && npm run prebuild && npm run build:scene && react-scripts build",
+    "build": "npm run postinstall && npm run prebuild && npm run build:scene && node --max-old-space-size=8192 ./node_modules/.bin/react-scripts build",
     "build:ci": "npm run lint && npm run build",
     "start": "npm run build:scene && concurrently -n \"scene,builder\" \"decentraland-compiler buildScene.json --watch\" \"npm run start:website\"",
     "start:website": "react-scripts start",

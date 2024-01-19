@@ -1,5 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { formatNumber } from 'decentraland-dapps/dist/lib/utils'
 import {
   Button,
   Table,
@@ -16,24 +18,46 @@ import {
 } from 'decentraland-ui'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
+import { WorldsWalletStats } from 'lib/api/worlds'
 import { ENS } from 'modules/ens/types'
+import { isExternalName } from 'modules/ens/utils'
+import { track } from 'modules/analytics/sagas'
 import { locations } from 'routing/locations'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import { canOpenWorldsForENSOwnersAnnouncementModal } from 'components/Modals/WorldsForENSOwnersAnnouncementModal/utils'
 import { Props, SortBy } from './WorldListPage.types'
+import NameTabs from './NameTabs'
+import WorldsStorage from './WorldsStorage'
+import { TabType, useCurrentlySelectedTab } from './hooks'
+import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
 import './WorldListPage.css'
 
+const PAGE_ACTION_EVENT = 'Worlds List Page Action'
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
+const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL')
 const PAGE_SIZE = 12
 
 const WorldListPage: React.FC<Props> = props => {
-  const { ensList, error, deploymentsByWorlds, isLoading, projects, onNavigate } = props
+  const {
+    ensList,
+    externalNames,
+    error,
+    deploymentsByWorlds,
+    isLoading,
+    projects,
+    worldsWalletStats,
+    onNavigate,
+    onOpenYourStorageModal,
+    onOpenWorldsForENSOwnersAnnouncementModal
+  } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
+  const { tab } = useCurrentlySelectedTab()
 
   const isWorldDeployed = (ens: ENS) => {
     if (ens.worldStatus?.healthy) {
@@ -51,6 +75,16 @@ const WorldListPage: React.FC<Props> = props => {
     }
     return `${EXPLORER_URL}/world/${world}`
   }
+
+  const handleClaimENS = useCallback(() => {
+    if (tab === TabType.DCL) {
+      track(PAGE_ACTION_EVENT, { action: 'Click Claim NAME' })
+      window.open(`${MARKETPLACE_WEB_URL}/names/mint`, '_blank', 'noopener,noreferrer')
+    } else {
+      track(PAGE_ACTION_EVENT, { action: 'Click Claim ENS Domain' })
+      window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer')
+    }
+  }, [tab])
 
   const handlePublishScene = useCallback(() => {
     onNavigate(locations.scenes())
@@ -75,8 +109,10 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
-  const paginate = () => {
-    return ensList
+  const paginate = (): ENS[] => {
+    const list = tab === TabType.DCL ? ensList : externalNames
+
+    return list
       .sort((a: ENS, b: ENS) => {
         switch (sortBy) {
           case SortBy.ASC: {
@@ -113,7 +149,22 @@ const WorldListPage: React.FC<Props> = props => {
   }
 
   const renderWorldStatus = (ens: ENS) => {
-    const status = isWorldDeployed(ens) ? 'active' : 'inactive'
+    let status = isWorldDeployed(ens) ? 'active' : 'inactive'
+
+    if (status === 'active' && worldsWalletStats && !isExternalName(ens.subdomain)) {
+      const worldsStatus = getDCLWorldsStatus(worldsWalletStats)
+
+      switch (worldsStatus.status) {
+        case DCLWorldsStatus.BLOCKED: {
+          status = 'blocked'
+          break
+        }
+        case DCLWorldsStatus.TO_BE_BLOCKED: {
+          status = 'warning'
+        }
+      }
+    }
+
     return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
   }
 
@@ -139,8 +190,21 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }
 
-  const renderEnsList = () => {
-    const total = ensList.length
+  const renderWorldSize = (ens: ENS, stats?: WorldsWalletStats) => {
+    const names = tab === TabType.DCL ? stats?.dclNames : stats?.ensNames
+
+    if (!isWorldDeployed(ens) || !names) {
+      return '-'
+    }
+
+    const bytes = names.find(dclName => dclName.name === ens.subdomain)?.size
+    const suffix = tab === TabType.ENS ? ' / 25' : ''
+
+    return formatNumber(fromBytesToMegabytes(Number(bytes))) + suffix
+  }
+
+  const renderList = () => {
+    const total = tab === TabType.DCL ? ensList.length : externalNames.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
     const paginatedItems = paginate()
 
@@ -152,7 +216,7 @@ const WorldListPage: React.FC<Props> = props => {
               <Column>
                 <Row>
                   <Header sub className="items-count">
-                    {t('ens_list_page.items', { count: ensList.length.toLocaleString() })}
+                    {t('ens_list_page.items', { count: total.toLocaleString() })}
                   </Header>
                 </Row>
               </Column>
@@ -162,7 +226,7 @@ const WorldListPage: React.FC<Props> = props => {
               <Column align="right" grow={false} shrink>
                 <Row>
                   <div className="actions">
-                    <Button basic as="a" target="_blank" rel="noopener noreferrer" to={`${MARKETPLACE_WEB_URL}/names/mints`}>
+                    <Button basic onClick={handleClaimENS}>
                       <Icon name="add-active" />
                     </Button>
                   </div>
@@ -180,6 +244,9 @@ const WorldListPage: React.FC<Props> = props => {
                   <Table.HeaderCell width="2">{t('worlds_list_page.table.url')}</Table.HeaderCell>
                   <Table.HeaderCell width="1">{t('worlds_list_page.table.published_scene')}</Table.HeaderCell>
                   <Table.HeaderCell width="1" textAlign="center">
+                    {t('worlds_list_page.table.size')}
+                  </Table.HeaderCell>
+                  <Table.HeaderCell width="1" textAlign="center">
                     {t('worlds_list_page.table.status')}
                   </Table.HeaderCell>
                 </Table.Row>
@@ -191,6 +258,9 @@ const WorldListPage: React.FC<Props> = props => {
                       <Table.Cell width={2}>{ens.name}</Table.Cell>
                       <Table.Cell width={2}>{renderWorldUrl(ens)}</Table.Cell>
                       <Table.Cell width={1}>{renderPublishSceneButton(ens)}</Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {renderWorldSize(ens, worldsWalletStats)}
+                      </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldStatus(ens)}
                       </Table.Cell>
@@ -218,15 +288,95 @@ const WorldListPage: React.FC<Props> = props => {
   const renderEmptyPage = () => {
     return (
       <Empty className="empty-names-container" height={500}>
-        <div className="empty-icon" />
-        <div className="empty-title">{t('worlds_list_page.empty_list.title')}</div>
-        <div className="empty-description">{t('worlds_list_page.empty_list.description', { b: (text: string) => <b>{text}</b> })}</div>
-        <Button className="empty-action" primary as="a" to={`${MARKETPLACE_WEB_URL}/names/mints`} target="_blank" rel="noopener noreferrer">
-          {t('worlds_list_page.empty_list.cta')}
+        <div className={classNames('empty-icon', tab === TabType.DCL ? 'dcl-icon' : 'ens-icon')} />
+        <div className="empty-title">
+          {tab === TabType.DCL ? t('worlds_list_page.empty_list.title') : t('worlds_list_page.empty_list.title_ens')}
+        </div>
+        <div className="empty-description">
+          {tab === TabType.DCL
+            ? t('worlds_list_page.empty_list.description', { b: (text: string) => <b>{text}</b> })
+            : t('worlds_list_page.empty_list.description_ens', { b: (text: string) => <b>{text}</b> })}
+        </div>
+        <Button className="empty-action" primary onClick={handleClaimENS}>
+          {tab === TabType.DCL ? t('worlds_list_page.empty_list.cta') : t('worlds_list_page.empty_list.cta_ens')}
         </Button>
       </Empty>
     )
   }
+
+  const renderDCLNamesBlockedWorldsStatusMessage = () => {
+    if (!worldsWalletStats) {
+      return null
+    }
+
+    const dclWorldsStatus = getDCLWorldsStatus(worldsWalletStats)
+
+    if (dclWorldsStatus.status === DCLWorldsStatus.OK) {
+      return null
+    }
+
+    let messageContent: ReactNode
+
+    if (dclWorldsStatus.status === DCLWorldsStatus.TO_BE_BLOCKED) {
+      messageContent = t('worlds_list_page.worlds_warning_message.to_be_blocked', {
+        toBeBlockedAt: dclWorldsStatus.toBeBlockedAt.toLocaleDateString(),
+        b: (text: string) => <b>{text}</b>
+      })
+    } else {
+      messageContent = t('worlds_list_page.worlds_warning_message.blocked', {
+        blockedAt: dclWorldsStatus.blockedAt.toLocaleDateString(),
+        b: (text: string) => <b>{text}</b>
+      })
+    }
+
+    return (
+      <div className="insufficient-storage-message">
+        <div>
+          <Icon name="alert-warning" />
+        </div>
+        <div>{messageContent}</div>
+      </div>
+    )
+  }
+
+  const renderDCLNamesView = () => {
+    if (ensList.length) {
+      return (
+        <div>
+          {worldsWalletStats ? (
+            <WorldsStorage
+              maxBytes={Number(worldsWalletStats.maxAllowedSpace)}
+              currentBytes={Number(worldsWalletStats.usedSpace)}
+              className="worlds-storage"
+              onViewDetails={() => {
+                onOpenYourStorageModal({ stats: worldsWalletStats })
+              }}
+            />
+          ) : null}
+          {renderDCLNamesBlockedWorldsStatusMessage()}
+          {renderList()}
+        </div>
+      )
+    }
+
+    return <div>{renderEmptyPage()}</div>
+  }
+
+  const renderENSNamesView = () => {
+    return <div>{externalNames.length > 0 ? renderList() : renderEmptyPage()}</div>
+  }
+
+  // Reset values when changing tab.
+  useEffect(() => {
+    setSortBy(SortBy.ASC)
+    setPage(1)
+  }, [tab])
+
+  useEffect(() => {
+    if (canOpenWorldsForENSOwnersAnnouncementModal()) {
+      onOpenWorldsForENSOwnersAnnouncementModal()
+    }
+  }, [onOpenWorldsForENSOwnersAnnouncementModal])
 
   return (
     <LoggedInDetailPage
@@ -236,7 +386,11 @@ const WorldListPage: React.FC<Props> = props => {
       isLoading={isLoading}
       isPageFullscreen={true}
     >
-      {ensList.length > 0 ? renderEnsList() : renderEmptyPage()}
+      <Container>
+        <h1>Worlds</h1>
+        <NameTabs />
+        {tab === TabType.DCL ? renderDCLNamesView() : renderENSNamesView()}
+      </Container>
     </LoggedInDetailPage>
   )
 }
