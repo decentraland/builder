@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
-import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List } from 'decentraland-ui'
+import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List, DropdownItemProps } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -11,12 +11,15 @@ import { Deployment } from 'modules/deployment/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
-import { DeployToWorldView, Props } from './DeployToWorld.types'
-
+import { DeployToWorldView, NameType, Props } from './DeployToWorld.types'
+import { getSizesFromDeploymentError } from './utils'
+import dclImage from './images/dcl.svg'
+import ensImage from './images/ens.svg'
 import styles from './DeployToWorld.module.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
+const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
 
@@ -25,6 +28,7 @@ export default function DeployToWorld({
   project,
   metrics,
   ensList,
+  externalNames,
   deployments,
   isLoading,
   error,
@@ -39,6 +43,7 @@ export default function DeployToWorld({
 
   const [view, setView] = useState<string>('')
   const [world, setWorld] = useState<string>(claimedName ?? '')
+  const [nameType, setNameType] = useState<NameType>(NameType.DCL)
   const [loading, setLoading] = useState<boolean>(false)
   const [confirmWorldReplaceContent, setConfirmWorldReplaceContent] = useState<boolean>(false)
   // Ref used to store current world deployment status and validate if the user is trying to deploy the same world
@@ -47,7 +52,7 @@ export default function DeployToWorld({
   const currenWorldLabel = world && ensList.find(ens => ens.subdomain === world)?.name
 
   useEffect(() => {
-    if (ensList.length === 0) {
+    if (ensList.length === 0 && externalNames.length === 0) {
       setView(DeployToWorldView.EMPTY)
       analytics.track('Publish to World step', { step: DeployToWorldView.EMPTY })
     } else if (!currentDeployment.current) {
@@ -55,7 +60,7 @@ export default function DeployToWorld({
       analytics.track('Publish to World step', { step: DeployToWorldView.FORM })
       onRecord()
     }
-  }, [ensList, onRecord, analytics])
+  }, [ensList, externalNames, onRecord, analytics])
 
   useEffect(() => {
     if (view === DeployToWorldView.FORM && loading && error) {
@@ -98,12 +103,21 @@ export default function DeployToWorld({
   }, [view, project, isLoading, onClose, onNavigate])
 
   const handleClaimName = useCallback(() => {
-    window.open(`${MARKETPLACE_WEB_URL}/names/mints`, '_blank', 'noopener,noreferrer')
-    analytics.track('Publish to World - Claim Name')
-  }, [analytics])
+    if (nameType === NameType.DCL) {
+      window.open(`${MARKETPLACE_WEB_URL}/names/mints`, '_blank', 'noopener,noreferrer')
+      analytics.track('Publish to World - Claim Name')
+    } else {
+      analytics.track('Publish to World - Claim ENS Domain')
+      window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer')
+    }
+  }, [nameType, analytics])
 
   const handleWorldSelected = useCallback(
-    (_, { value }) => {
+    (e: React.SyntheticEvent<HTMLElement>, { value }) => {
+      if (e.type === 'blur') {
+        return
+      }
+
       if (value === CLAIM_NAME_OPTION) {
         handleClaimName()
         return
@@ -115,6 +129,11 @@ export default function DeployToWorld({
     },
     [deployments, handleClaimName]
   )
+
+  const handleNameTypeSelected = useCallback((_, { value }) => {
+    setWorld('')
+    setNameType(value)
+  }, [])
 
   const handleNavigateToExplorer = () => {
     window.open(getExplorerUrl, '_blank,noreferrer')
@@ -131,20 +150,46 @@ export default function DeployToWorld({
     return `${EXPLORER_URL}/world/${world}`
   }, [world])
 
-  const worldOptions = useMemo(() => {
-    return [
-      ...ensList.map(ens => ({ text: ens.name, value: ens.subdomain })),
+  const nameTypeOptions = useMemo(
+    () => [
       {
         text: (
-          <span>
-            <DCLIcon name="add" />
-            {t('deployment_modal.deploy_world.claim_name')}
+          <span className={styles.nameTypeOption}>
+            <img src={dclImage} alt="dcl logo" />
+            <span>{t('deployment_modal.deploy_world.name_type.dcl')}</span>
           </span>
         ),
-        value: CLAIM_NAME_OPTION
+        value: NameType.DCL
+      },
+      {
+        text: (
+          <span className={styles.nameTypeOption}>
+            <img src={ensImage} alt="ens logo" />
+            <span>{t('deployment_modal.deploy_world.name_type.ens')}</span>
+          </span>
+        ),
+        value: NameType.ENS
       }
-    ]
-  }, [ensList])
+    ],
+    []
+  )
+
+  const worldOptions = useMemo(() => {
+    const names = nameType === NameType.DCL ? ensList : externalNames
+    const options: DropdownItemProps[] = names.map(ens => ({ text: ens.name, value: ens.subdomain }))
+
+    options.push({
+      text: (
+        <span>
+          <DCLIcon name="add" />
+          {nameType === NameType.DCL ? t('deployment_modal.deploy_world.claim_name') : t('deployment_modal.deploy_world.claim_name_ens')}
+        </span>
+      ),
+      value: CLAIM_NAME_OPTION
+    })
+
+    return options
+  }, [nameType, ensList, externalNames])
 
   const getShareInTwitterUrl = () => {
     const url = encodeURIComponent(getExplorerUrl)
@@ -228,11 +273,28 @@ export default function DeployToWorld({
   }
 
   const renderFailureState = () => {
+    let subtitle: string = t('deployment_modal.deploy_world.failure.subtitle')
+
+    if (error) {
+      const sizes = getSizesFromDeploymentError(error)
+
+      if (sizes) {
+        const { maxSizeMbs, deployedSizedMbs } = sizes
+
+        subtitle = t('deployment_modal.deploy_world.failure.subtitle_size_error', {
+          maxSizeMbs,
+          deployedSizedMbs,
+          br: () => <br />,
+          b: (text: string) => <b>{text}</b>
+        })
+      }
+    }
+
     return (
       <div className={`${styles.modalBodyState} ${styles.modalBodyFailureState}`}>
         <div className={styles.failureImage} aria-label={project?.description} role="img" />
         <h1 className={styles.modalHeader}>{t('deployment_modal.deploy_world.failure.title')}</h1>
-        <span className={styles.description}>{t('deployment_modal.deploy_world.failure.subtitle')}</span>
+        <span className={styles.description}>{subtitle}</span>
       </div>
     )
   }
@@ -298,9 +360,10 @@ export default function DeployToWorld({
         <div className={styles.modalForm}>
           {project?.thumbnail ? renderThumbnail() : null}
           <div className={styles.worldDetails}>
+            <SelectField value={nameType} disabled={isLoading || loading} options={nameTypeOptions} onChange={handleNameTypeSelected} />
             <SelectField
-              label={t('deployment_modal.deploy_world.world_label')}
-              placeholder={t('deployment_modal.deploy_world.world_placeholder')}
+              label={t('deployment_modal.deploy_world.world_label' + (nameType === NameType.DCL ? '' : '_ens'))}
+              placeholder={t('deployment_modal.deploy_world.world_placeholder' + (nameType === NameType.DCL ? '' : '_ens'))}
               value={world}
               disabled={isLoading || loading}
               options={worldOptions}

@@ -41,7 +41,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   componentDidMount() {
-    const { address, hasUserOrphanItems, isEmotesV2Enabled, onFetchCollections, onFetchOrphanItem, onOpenModal } = this.props
+    const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem, onOpenModal } = this.props
     // fetch if already connected
     if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort: CurationSortOptions.CREATED_AT_DESC })
@@ -50,7 +50,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
         onFetchOrphanItem(address)
       }
 
-      if (isEmotesV2Enabled && !localStorage.getItem(LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT)) {
+      if (!localStorage.getItem(LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT)) {
         onOpenModal('EmotesV2AnnouncementModal')
       }
     }

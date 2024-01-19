@@ -9,7 +9,6 @@ export type Props = {
   project?: Project | null
   isLoggedIn: boolean
   isReloading: boolean
-  isSmartItemsEnabled: boolean
   onOpen: typeof openInspector
   onConnect: typeof connectInspector
 }
@@ -18,6 +17,6 @@ export type State = {
   isLoaded: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isLoggedIn' | 'scene' | 'project' | 'isReloading' | 'isSmartItemsEnabled' | 'address'>
+export type MapStateProps = Pick<Props, 'isLoggedIn' | 'scene' | 'project' | 'isReloading' | 'address'>
 export type MapDispatchProps = Pick<Props, 'onOpen' | 'onConnect'>
 export type MapDispatch = Dispatch<OpenInspectorAction | ConnectInspectorAction>

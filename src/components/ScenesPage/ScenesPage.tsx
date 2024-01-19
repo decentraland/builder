@@ -30,29 +30,17 @@ import { Props, DefaultProps } from './ScenesPage.types'
 import './ScenesPage.css'
 
 const ScenesPage: React.FC<Props> = props => {
-  const {
-    page,
-    poolList,
-    projects,
-    sortBy,
-    totalPages,
-    isFetching,
-    isLoggingIn,
-    isWorldsForENSOwnersEnabled,
-    onLoadFromScenePool,
-    onOpenModal,
-    onPageChange
-  } = props
+  const { page, poolList, projects, sortBy, totalPages, isFetching, isLoggingIn, onLoadFromScenePool, onOpenModal, onPageChange } = props
 
   useEffect(() => {
     onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
   }, [onLoadFromScenePool, onOpenModal])
 
   useEffect(() => {
-    if (isWorldsForENSOwnersEnabled && canOpenWorldsForENSOwnersAnnouncementModal()) {
+    if (canOpenWorldsForENSOwnersAnnouncementModal()) {
       onOpenModal('WorldsForENSOwnersAnnouncementModal')
     }
-  }, [isWorldsForENSOwnersEnabled, onOpenModal])
+  }, [onOpenModal])
 
   const handleOpenImportModal = useCallback(() => {
     onOpenModal('ImportModal')
