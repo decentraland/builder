@@ -34,7 +34,7 @@
     "dcl-catalyst-client": "^21.5.5",
     "dcl-scene-writer": "^1.1.2",
     "decentraland": "^3.3.0",
-    "decentraland-ui": "^4.35.3",
+    "decentraland-ui": "^5.2.0",
     "decentraland-builder-scripts": "^0.24.0",
     "decentraland-crypto-fetch": "^2.0.1",
     "decentraland-dapps": "^17.0.0",
