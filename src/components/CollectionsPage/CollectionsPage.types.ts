@@ -27,7 +27,6 @@ export type Props = {
   isLoadingItems: boolean
   isLoadingOrphanItem: boolean
   isCampaignEnabled: boolean
-  isEmotesV2Enabled: boolean
   hasUserOrphanItems: boolean | undefined
   onNavigate: (path: string) => void
   onSetView: typeof setCollectionPageView
@@ -50,7 +49,6 @@ export type MapStateProps = Pick<
   | 'isLoadingItems'
   | 'isLoadingOrphanItem'
   | 'isCampaignEnabled'
-  | 'isEmotesV2Enabled'
   | 'hasUserOrphanItems'
 >
 export type MapDispatchProps = Pick<

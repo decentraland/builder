@@ -5,7 +5,7 @@ export type Props = RouteComponentProps & {
   isWorldsForEnsOwnersEnabled: boolean
 }
 
-export type MapStateProps = Pick<Props, 'inMaintenance' | 'isWorldsForEnsOwnersEnabled'>
+export type MapStateProps = Pick<Props, 'inMaintenance'>
 
 export type State = {
   hasError: boolean

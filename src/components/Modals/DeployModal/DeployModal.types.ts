@@ -25,7 +25,7 @@ export type Step = {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup' | 'project' | 'scene' | 'isWorldsForEnsOwnersEnabled'>
+export type MapStateProps = Pick<Props, 'deployment' | 'currentPoolGroup' | 'project' | 'scene'>
 
 export enum DeployModalView {
   NONE = 'NONE',

@@ -3,6 +3,7 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 import { deployToWorldRequest, DeployToWorldRequestAction } from 'modules/deployment/actions'
 import { recordMediaRequest, RecordMediaRequestAction } from 'modules/media/actions'
 import { ENS } from 'modules/ens/types'
+import { FetchExternalNamesRequestAction } from 'modules/ens/actions'
 import { Project } from 'modules/project/types'
 import { ModelMetrics } from 'modules/models/types'
 import { DeploymentState } from 'modules/deployment/reducer'
@@ -15,6 +16,7 @@ export type Props = {
   project: Project
   metrics: ModelMetrics
   ensList: ENS[]
+  externalNames: ENS[]
   deployments: Record<string, Deployment>
   deploymentProgress: DeploymentState['progress']
   error: string | null
@@ -28,9 +30,14 @@ export type Props = {
   onReplace: (path: string, locationState?: DeployToWorldLocationStateProps) => void
 }
 
-export type MapStateProps = Pick<Props, 'ensList' | 'project' | 'metrics' | 'deployments' | 'deploymentProgress' | 'error' | 'isLoading'>
+export type MapStateProps = Pick<
+  Props,
+  'ensList' | 'externalNames' | 'project' | 'metrics' | 'deployments' | 'deploymentProgress' | 'error' | 'isLoading'
+>
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onNavigate' | 'onRecord' | 'onReplace'>
-export type MapDispatch = Dispatch<DeployToWorldRequestAction | CallHistoryMethodAction | RecordMediaRequestAction>
+export type MapDispatch = Dispatch<
+  DeployToWorldRequestAction | CallHistoryMethodAction | RecordMediaRequestAction | FetchExternalNamesRequestAction
+>
 
 export enum DeployToWorldView {
   FORM = 'FORM',
@@ -43,4 +50,9 @@ export enum DeployToWorldView {
 export type DeployToWorldModalMetadata = DeployModalMetadata & {
   projectId: string
   claimedName: string
+}
+
+export enum NameType {
+  DCL,
+  ENS
 }
