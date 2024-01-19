@@ -24,7 +24,7 @@ export default class SignInPage extends React.PureComponent<Props> {
     const { isConnected, isAuthDappEnabled } = this.props
     return (
       <>
-        <Navbar isSignIn />
+        <Navbar />
         <Page>
           <SignIn
             onConnect={isAuthDappEnabled ? this.handleRedirectToAuthDapp : undefined}

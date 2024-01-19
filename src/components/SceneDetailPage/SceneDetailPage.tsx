@@ -159,7 +159,7 @@ const SceneDetailPage: React.FC<Props> = props => {
 
   return (
     <>
-      <Navbar isFullscreen />
+      <Navbar />
       <Page className="SceneDetailPage" isFullscreen>
         {isLoading && !project ? renderLoading() : null}
         {!isLoading && !project ? renderNotFound() : null}
