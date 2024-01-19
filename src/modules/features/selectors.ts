@@ -30,30 +30,6 @@ export const getIsNewNavbarDropdownEnabled = (state: RootState) => {
   }
 }
 
-export const getEmotesV2Enabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.EMOTES_V2)
-  } catch (e) {
-    return false
-  }
-}
-
-export const getIsSmartItemsEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SMART_ITEMS)
-  } catch (e) {
-    return false
-  }
-}
-
-export const getIsWorldsForEnsOwnersEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.WORLDS_FOR_ENS_OWNERS)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsSDK7TemplatesEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SDK7_TEMPLATES)
@@ -78,9 +54,9 @@ export const getIsAuthDappEnabled = (state: RootState) => {
   }
 }
 
-export const getIsNavbarV2Enabled = (state: RootState) => {
+export const getIsEnsAddressEnabled = (state: RootState) => {
   try {
-    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.NAVBAR_V2)
+    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.ENS_ADDRESS)
   } catch (e) {
     return false
   }

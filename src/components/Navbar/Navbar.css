@@ -1,3 +1,3 @@
-.dui-navbar2 > .dui-submenu-container:not(.unselected) > .item.submenu {
+.dui-navbar > .dui-submenu-container:not(.unselected) > .item.submenu {
   width: 100%;
 }

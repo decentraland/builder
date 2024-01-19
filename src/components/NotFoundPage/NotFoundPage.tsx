@@ -30,7 +30,7 @@ export default function NotFoundPage(props: Props) {
 
   return (
     <div className="notfound-body">
-      <Navbar isFullscreen />
+      <Navbar />
       <Page isFullscreen />
       <div className="NotFoundPage">
         <h1 className="title">{t('not_found_page.title')}</h1>

@@ -70,7 +70,7 @@ export const HomePage: React.FC<Props> = props => {
 
   return (
     <>
-      <Navbar isFullscreen />
+      <Navbar />
       <Page isFullscreen className="HomePage">
         <Navigation activeTab={NavigationTab.OVERVIEW}>
           <SyncToast />

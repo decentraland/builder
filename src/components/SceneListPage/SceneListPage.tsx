@@ -114,7 +114,7 @@ export default class SceneListPage extends React.PureComponent<Props> {
 
     return (
       <>
-        <Navbar isFullscreen />
+        <Navbar />
         <Page isFullscreen>
           <div className="SceneListPage">
             <Container>
