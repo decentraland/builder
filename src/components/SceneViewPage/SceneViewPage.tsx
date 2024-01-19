@@ -123,7 +123,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
   renderLoading() {
     return (
       <>
-        <Navbar isFullscreen />
+        <Navbar />
         <Page isFullscreen>
           <Loader active size="huge" />
         </Page>
@@ -173,7 +173,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
       <>
         {!isPreviewing && (
           <>
-            <Navbar isFullscreen />
+            <Navbar />
             <Container className="back-container">
               <Back absolute onClick={onBack}></Back>
               <Button secondary onClick={this.handleExportProject.bind(this)} loading={!currentProject} disabled={!currentProject}>

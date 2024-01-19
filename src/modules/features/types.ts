@@ -10,6 +10,5 @@ export enum FeatureName {
   SDK7_TEMPLATES = 'sdk7-templates',
   CREATE_SCENE_ONLY_SDK7 = 'create-scene-only-sdk7',
   AUTH_DAPP = 'auth-dapp',
-  NAVBAR_V2 = 'navbar2_variant',
   ENS_ADDRESS = 'ens-address'
 }

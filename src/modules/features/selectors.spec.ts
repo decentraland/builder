@@ -6,7 +6,6 @@ import {
   getIsCreateSceneOnlySDK7Enabled,
   getIsMaintenanceEnabled,
   getIsSDK7TemplatesEnabled,
-  getIsNavbarV2Enabled,
   getIsEnsAddressEnabled
 } from './selectors'
 import { FeatureName } from './types'
@@ -64,7 +63,6 @@ const ffSelectors = [
   { selector: getIsSDK7TemplatesEnabled, app: ApplicationName.BUILDER, feature: FeatureName.SDK7_TEMPLATES },
   { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 },
   { selector: getIsAuthDappEnabled, app: ApplicationName.DAPPS, feature: FeatureName.AUTH_DAPP },
-  { selector: getIsNavbarV2Enabled, app: ApplicationName.DAPPS, feature: FeatureName.NAVBAR_V2 },
   { selector: getIsEnsAddressEnabled, app: ApplicationName.DAPPS, feature: FeatureName.ENS_ADDRESS }
 ]
 
