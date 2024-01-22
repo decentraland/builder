@@ -61,11 +61,3 @@ export const getIsEnsAddressEnabled = (state: RootState) => {
     return false
   }
 }
-
-export const getIsEnsAddressEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.ENS_ADDRESS)
-  } catch (e) {
-    return false
-  }
-}
