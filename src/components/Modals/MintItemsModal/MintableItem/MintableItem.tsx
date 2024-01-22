@@ -10,6 +10,7 @@ import { Props } from './MintableItem.types'
 import ItemStatus from 'components/ItemStatus'
 
 import './MintableItem.css'
+import AddressField from 'components/AddressField'
 
 export default class MintableItem extends React.PureComponent<Props> {
   handleAddNewMint = () => {
@@ -100,21 +101,14 @@ export default class MintableItem extends React.PureComponent<Props> {
             </div>
           </Column>
         </Row>
-        {mints.map(({ address, amount }, index) => (
+        {mints.map(({ amount }, index) => (
           <Section key={index} className="mint" size="tiny">
-            <Field
-              className="rounded"
-              type="address"
-              placeholder={t('global.address')}
-              value={address || ''}
-              message={undefined}
-              error={!this.isValidAddress(address)}
-              onChange={this.getChangeAddressHandler(index)}
-            />
+            <AddressField className="rounded" onChange={this.getChangeAddressHandler(index)} />
             <Field
               className="rounded"
               type="number"
               placeholder={t('global.amount')}
+              label={t('global.amount')}
               value={amount || ''}
               message={undefined}
               error={!this.isValidAmount(amount)}

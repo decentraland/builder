@@ -13,6 +13,7 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { locations } from 'routing/locations'
 import { Props } from './HomePage.types'
 import './HomePage.css'
+import AddressField from 'components/AddressField'
 
 export const LOCALSTORAGE_LAST_VISITED_SECTION_KEY = 'builder-last-visited-section'
 
@@ -77,6 +78,7 @@ export const HomePage: React.FC<Props> = props => {
         </Navigation>
         <EventBannerContainer />
         <Container>
+          <AddressField />
           <h1 className="title">{t('home_page.title')}</h1>
           <Card.Group itemsPerRow={4} centered>
             {cards.map((card, index) => (

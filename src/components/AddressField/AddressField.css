@@ -1,0 +1,10 @@
+.dui-address-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.dui-address-field__address {
+  color: #a09ba8;
+  font-size: 14px;
+}
