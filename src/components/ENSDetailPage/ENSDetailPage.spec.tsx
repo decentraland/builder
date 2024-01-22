@@ -116,7 +116,7 @@ describe('when ens is defined', () => {
           landId: '4,4'
         }
       })
-      it('should show land field info', () => {
+      it('should the show land field info', () => {
         const screen = renderENSDetailPage({ ens })
         expect(screen.getByTestId('land-field')).toBeInTheDocument()
       })
@@ -130,7 +130,7 @@ describe('when ens is defined', () => {
             landId: '4'
           }
         })
-        it('should estate field button', () => {
+        it('should show the estate field button', () => {
           const screen = renderENSDetailPage({ ens })
           expect(screen.getByTestId('estate-field')).toBeInTheDocument()
         })
