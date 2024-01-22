@@ -103,12 +103,11 @@ export default class MintableItem extends React.PureComponent<Props> {
         </Row>
         {mints.map(({ amount }, index) => (
           <Section key={index} className="mint" size="tiny">
-            <AddressField className="rounded" onChange={this.getChangeAddressHandler(index)} />
+            <AddressField className="rounded-address" fieldClassName="rounded" onChange={this.getChangeAddressHandler(index)} />
             <Field
               className="rounded"
               type="number"
               placeholder={t('global.amount')}
-              label={t('global.amount')}
               value={amount || ''}
               message={undefined}
               error={!this.isValidAmount(amount)}

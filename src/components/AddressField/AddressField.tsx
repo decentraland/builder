@@ -1,17 +1,24 @@
-import { useCallback, useRef, useState } from 'react'
-import { Field, FieldProps, Icon, InputOnChangeData } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import classNames from 'classnames'
+import { Field, Icon, InputOnChangeData, Popup } from 'decentraland-ui'
 import { isValid } from 'lib/address'
-import { resolveName } from './utils'
+import { resolveName, shorten } from './utils'
+import { Props } from './AddressField.types'
 import './AddressField.css'
 
-export default function AddressField(props: FieldProps) {
-  const { onChange } = props
+export default function AddressField(props: Props) {
+  const { className, fieldClassName, onChange, ...otherProps } = props
   const [inputValue, setInputValue] = useState('')
   const [address, setAddress] = useState('')
   const timeout = useRef<NodeJS.Timeout>()
   const [valid, setValid] = useState<boolean>()
   const [loading, setLaoding] = useState<boolean>()
+
+  useEffect(() => {
+    if (props.value && props.value !== address) {
+      setInputValue(props.value)
+    }
+  }, [props.value, address])
 
   const handleChange = useCallback(
     (evt, data: InputOnChangeData) => {
@@ -55,24 +62,29 @@ export default function AddressField(props: FieldProps) {
     : {}
 
   return (
-    <div className="dui-address-field">
-      <label className="ui sub header" htmlFor="address">
-        {t('global.address')}
-      </label>
-      {address && <span className="dui-address-field__address">{address}</span>}
+    <div className={classNames('dui-address-field', className)}>
+      {address && (
+        <Popup
+          position="top center"
+          className="dui-address-field__address-popup"
+          on="hover"
+          content={address}
+          trigger={<span className="dui-address-field__address">{shorten(address)}</span>}
+        />
+      )}
       <Field
-        {...props}
+        {...otherProps}
         type="text"
-        placeholder="Address or name"
+        placeholder={props.placeholder ?? 'Address or name'}
         value={inputValue || ''}
         message={valid === false ? 'This is not a valid name or address' : undefined}
         error={valid === false}
         loading={loading}
-        info={address}
         input={{ autocomplete: 'off', name: 'address', id: 'address' }}
         onChange={handleChange}
+        className={classNames(fieldClassName, { 'dui-address-field__input--with-address': !!address })}
         {...additionalProps}
-      />
+      ></Field>
     </div>
   )
 }

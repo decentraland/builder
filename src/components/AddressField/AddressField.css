@@ -2,9 +2,22 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  position: relative;
 }
 
 .dui-address-field__address {
-  color: #a09ba8;
-  font-size: 14px;
+  color: var(--secondary-text);
+  position: absolute;
+  top: 10px;
+  right: 48px;
+  font-size: 20px;
+  z-index: 1;
+}
+
+.dui-address-field__input--with-address.ui.icon.input input {
+  padding-right: 200px !important;
+}
+
+.dui-address-field__address-popup.ui.popup {
+  z-index: 9999;
 }

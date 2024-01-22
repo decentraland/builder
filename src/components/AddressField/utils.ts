@@ -28,3 +28,7 @@ export async function resolveName(name: string) {
 
   return undefined
 }
+
+export function shorten(address: string) {
+  return address ? address.slice(0, 6) + '...' + address.slice(42 - 5) : ''
+}
