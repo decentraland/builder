@@ -617,7 +617,14 @@
     "land": "Tierra",
     "unassign": "Sin asignar",
     "set_as_primary": "Usar como alias",
-    "edit_address": "Editar dirección"
+    "edit_address": "Editar dirección",
+    "assign_address": "Asignar valor a dirección",
+    "point_location": "Asignar una tierra o mundo",
+    "tooltips": {
+      "alias": "El alias asignado puede ser solo uno por avatar",
+      "address": "Se puede usar externamente en cualquier transacción Web3. Leer los <a>beneficios de ENS</a>",
+      "land": "Las tierras se encuentran activos espaciales, las unidades mínimas son parcelas, leer mas sobre <a>los beneficios del metaverso</a>"
+    }
   },
   "ens_map_address_modal": {
     "title": "Enlace a una dirección de Ethereum",
