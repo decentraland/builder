@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Row, Column, Field, Section, InputOnChangeData } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { AddressField } from 'decentraland-dapps/dist/components/AddressField'
 
 import { isValid } from 'lib/address'
 import ItemImage from 'components/ItemImage'
@@ -10,7 +11,6 @@ import { Props } from './MintableItem.types'
 import ItemStatus from 'components/ItemStatus'
 
 import './MintableItem.css'
-import AddressField from 'components/AddressField'
 
 export default class MintableItem extends React.PureComponent<Props> {
   handleAddNewMint = () => {
@@ -79,7 +79,7 @@ export default class MintableItem extends React.PureComponent<Props> {
   }
 
   render() {
-    const { item, mints } = this.props
+    const { item, mints, isEnsAddressEnabled } = this.props
 
     return (
       <div className="MintableItem">
@@ -103,7 +103,11 @@ export default class MintableItem extends React.PureComponent<Props> {
         </Row>
         {mints.map(({ amount }, index) => (
           <Section key={index} className="mint" size="tiny">
-            <AddressField className="rounded-address" fieldClassName="rounded" onChange={this.getChangeAddressHandler(index)} />
+            {isEnsAddressEnabled ? (
+              <AddressField className="rounded-address" fieldClassName="rounded" onChange={this.getChangeAddressHandler(index)} />
+            ) : (
+              <Field />
+            )}
             <Field
               className="rounded"
               type="number"

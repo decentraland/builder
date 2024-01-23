@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { Network } from '@dcl/schemas'
-import { Form, Field, Row, Button, InputOnChangeData } from 'decentraland-ui'
+import { Form, Row, Button, InputOnChangeData } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { AddressField } from 'decentraland-dapps/dist/components/AddressField'
 import { Link } from 'react-router-dom'
 import { getUpdateOperator, hasAnyRole } from 'modules/land/utils'
 import { locations } from 'routing/locations'
@@ -72,7 +73,7 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
 
     return (
       <Form className="LandOperatorForm">
-        <Field
+        <AddressField
           placeholder="0x..."
           label={t('operator_page.address')}
           className={classes.join(' ')}

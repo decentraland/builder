@@ -93,7 +93,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
   handleView = (newConfirmState: View) => this.setState({ confirm: newConfirmState })
 
   render() {
-    const { collection, totalCollectionItems, isLoading, hasUnsyncedItems, onClose } = this.props
+    const { collection, totalCollectionItems, isLoading, isEnsAddressEnabled, hasUnsyncedItems, onClose } = this.props
     const { itemMints, error, confirm } = this.state
 
     const items = this.props.items.concat(this.state.items)
@@ -195,7 +195,15 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
               {isEmpty ? (
                 <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
               ) : (
-                items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
+                items.map(item => (
+                  <MintableItem
+                    key={item.id}
+                    item={item}
+                    mints={itemMints[item.id]}
+                    onChange={this.handleMintsChange}
+                    isEnsAddressEnabled={isEnsAddressEnabled}
+                  />
+                ))
               )}
               {isFull ? null : (
                 <ItemDropdown placeholder={t('mint_items_modal.add_item')} onChange={this.handleAddItems} filter={filterAddableItems} />
