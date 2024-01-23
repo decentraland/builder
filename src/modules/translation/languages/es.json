@@ -623,7 +623,7 @@
     "tooltips": {
       "alias": "El alias asignado puede ser solo uno por avatar",
       "address": "Se puede usar externamente en cualquier transacción Web3. Leer los <a>beneficios de ENS</a>",
-      "land": "Las tierras se encuentran activos espaciales, las unidades mínimas son parcelas, leer mas sobre <a>los beneficios del metaverso</a>"
+      "land": "Las tierras son activos espaciales, las unidades mínimas son parcelas, leer mas sobre <a>los beneficios del Metaverso</a>"
     }
   },
   "ens_map_address_modal": {
