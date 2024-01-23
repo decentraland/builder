@@ -290,3 +290,59 @@
   color: white;
   text-decoration: underline;
 }
+
+.ENSListPage .ens-list-subdomain {
+  font-weight: bold;
+  color: var(--secondary-text);
+}
+
+.ENSListPage .ens-list-subdomain span {
+  color: white;
+}
+
+.ENSListPage .ens-list-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ENSListPage .ens-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ENSListPage .ens-page-actions .ui.dropdown {
+  margin-left: 15px;
+}
+
+.ENSListPage .ens-list-edit-btn.ui.button {
+  min-width: unset;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-transform: none;
+}
+
+.ENSListPage .ens-list-name-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.ENSListPage .ens-list-avatar-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #43404a;
+}
+
+.ENSListPage .ens-list-avatar-name {
+  color: white;
+  font-weight: bold;
+}
+
+.ENSListPage .ens-list-actions {
+  display: flex;
+  gap: 10px;
+}
