@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Project } from 'modules/project/types'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { PaginationOptions } from 'routing/utils'

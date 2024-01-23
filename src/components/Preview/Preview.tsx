@@ -18,7 +18,7 @@ import './Preview.css'
 
 const editorWindow = window as EditorWindow
 const unityDebugParams = config.get('UNITY_DEBUG_PARAMS')
-const PUBLIC_URL = process.env.PUBLIC_URL
+const PUBLIC_URL = process.env.VITE_BASE_URL
 
 let canvas: HTMLCanvasElement | null = null
 let isDCLInitialized = false

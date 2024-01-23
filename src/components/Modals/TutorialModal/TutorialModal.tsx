@@ -11,7 +11,7 @@ import { getSlides } from './slides'
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
 
-const PUBLIC_URL = process.env.PUBLIC_URL
+const PUBLIC_URL = process.env.VITE_BASE_URL
 const localStorage = getLocalStorage()
 
 // Segment Events

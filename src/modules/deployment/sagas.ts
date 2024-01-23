@@ -5,6 +5,7 @@ import { Entity, EntityType } from '@dcl/schemas'
 import cryptoFetch from 'decentraland-crypto-fetch'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
 import { config } from 'config'
 import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
@@ -112,7 +113,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         yield put(setProgress(ProgressStage.NONE, 100))
         yield put(deployToPoolSuccess(window.URL.createObjectURL(preview)))
       } catch (e) {
-        yield put(deployToPoolFailure(e.message))
+        yield put(deployToPoolFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
       }
     } else if (rawProject) {
       yield put(deployToPoolFailure('Unable to Publish: Not current project'))
@@ -361,7 +362,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       yield put(fetchWorldDeploymentsRequest([world]))
       yield put(deployToWorldSuccess(deployment))
     } catch (e) {
-      yield put(deployToWorldFailure(e.message.split('\n')[0]))
+      yield put(deployToWorldFailure(isErrorWithMessage(e) ? e.message.split('\n')[0] : 'Unknown error'))
     }
   }
 
@@ -372,7 +373,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       const deployment: Deployment = yield call(deployScene, deployToLandFailure, contentClient, projectId, placement)
       yield put(deployToLandSuccess(deployment, overrideDeploymentId))
     } catch (e) {
-      yield put(deployToLandFailure(e.message.split('\n')[0]))
+      yield put(deployToLandFailure(isErrorWithMessage(e) ? e.message.split('\n')[0] : 'Unknown error'))
     }
   }
 
@@ -432,7 +433,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
       yield put(clearDeploymentSuccess(deploymentId))
     } catch (e) {
-      yield put(clearDeploymentFailure(deploymentId, e.message))
+      yield put(clearDeploymentFailure(deploymentId, isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
@@ -514,7 +515,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       const getSceneDeploymentId = (entity: Entity) => entity.pointers[0]
       yield put(fetchDeploymentsSuccess(coords, formatDeployments(entities, getSceneDeploymentId)))
     } catch (error) {
-      yield put(fetchDeploymentsFailure(coords, error.message))
+      yield put(fetchDeploymentsFailure(coords, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -535,7 +536,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       const getWorldDeploymentId = (entity: Entity) => entity.id
       yield put(fetchWorldDeploymentsSuccess(worlds, formatDeployments(entities, getWorldDeploymentId)))
     } catch (error) {
-      yield put(fetchWorldDeploymentsFailure(worlds, error.message))
+      yield put(fetchWorldDeploymentsFailure(worlds, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }

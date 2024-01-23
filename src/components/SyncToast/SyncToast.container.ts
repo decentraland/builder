@@ -6,7 +6,7 @@ import { retrySync } from 'modules/sync/actions'
 import { didDismissSignInToast, didDismissSyncedToast, getProjects } from 'modules/ui/dashboard/selectors'
 import { dismissSignInToast, dismissSyncedToast } from 'modules/ui/dashboard/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './SyncToast.types'
 import SyncToast from './SyncToast'
 

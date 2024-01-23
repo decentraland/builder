@@ -40,15 +40,10 @@ import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const builderVersion = require('../../../package.json').version
+// const builderVersion = require('../../../package.json').version
 const isTestEnv = process.env.NODE_ENV === 'test'
 
-configureAnalytics({
-  transformPayload: payload => {
-    if (typeof payload === 'string' || payload === undefined) return payload
-    return { ...payload, version: builderVersion }
-  }
-})
+configureAnalytics({})
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Dev tools

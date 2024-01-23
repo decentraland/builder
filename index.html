@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <!-- <link rel="shortcut icon" href="%VITE_BASE_URL%/favicon.ico" /> -->
     <meta
       name="description"
       content="Add your own 3D elements or choose from hundreds of pre-loaded items. Select, drag and drop them onto the canvas to create cool interactive scenes. No coding required, no design skills needed!"
@@ -32,8 +32,8 @@
     <meta itemprop="image" content="https://decentraland.org/images/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="theme-color" content="#000000" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script type="text/javascript" src="%PUBLIC_URL%/config/hotjar.js"></script>
+    <!-- <link rel="manifest" href="%VITE_BASE_URL%/manifest.json" /> -->
+    <!-- <script type="text/javascript" src="%VITE_BASE_URL%/config/hotjar.js"></script> -->
 
     <style>
       .loading-overlay {
@@ -81,5 +81,7 @@
     </div>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script type="module" src="/src/node.ts"></script>
+    <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

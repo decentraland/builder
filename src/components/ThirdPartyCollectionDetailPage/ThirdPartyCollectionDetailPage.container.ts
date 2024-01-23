@@ -10,7 +10,7 @@ import { getCollection, getLoading as getLoadingCollection } from 'modules/colle
 import { getCollectionItems, getLoading as getLoadingItem, getPaginationData } from 'modules/item/selectors'
 import { FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'

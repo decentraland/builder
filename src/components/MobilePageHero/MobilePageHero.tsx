@@ -6,7 +6,7 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './MobilePageHero.types'
 import './MobilePageHero.css'
 
-const PUBLIC_URL = process.env.PUBLIC_URL
+const PUBLIC_URL = process.env.VITE_BASE_URL
 
 export default class MobilePageHero extends React.PureComponent<Props> {
   handleSubmit = () => {

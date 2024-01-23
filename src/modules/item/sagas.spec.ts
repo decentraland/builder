@@ -9,6 +9,7 @@ import { call, select, take, race, delay } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
 import { ToastProps, ToastType } from 'decentraland-ui'
+import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -1779,7 +1780,7 @@ describe('when handling the setItemCollection action', () => {
       type: ToastType.INFO,
       title: 'Title',
       body: 'Body'
-    }
+    } as Omit<Toast, 'id'>
     jest.spyOn(toasts, 'getSuccessfulMoveItemToAnotherCollectionToast').mockReturnValueOnce(toast)
   })
 

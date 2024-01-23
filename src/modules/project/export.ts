@@ -1,6 +1,7 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 import * as ECS from 'decentraland-ecs'
 import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import packageJson from 'decentraland/samples/ecs/package.json'
 import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
 import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
@@ -15,11 +16,21 @@ import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
 
+// Raw load
+import sceneECS from '../../ecsScene/ecs.js.raw?raw'
+import amd from '../../ecsScene/amd-loader.js.raw?raw'
+import ecsAPI from 'decentraland-ecs/types/dcl/decentraland-ecs.api?raw'
+import scriptLoader from '../../ecsScene/remote-loader.js.raw?raw'
+
 const SCENE_TEMPLATE_URL = 'https://raw.githubusercontent.com/decentraland/sdk-empty-scene-template/main'
 
-const Dockerfile = require('!raw-loader!decentraland/samples/ecs/Dockerfile').default
-const builderChannelRaw = require('raw-loader!decentraland-builder-scripts/lib/channel').default
-const builderInventoryRaw = require('raw-loader!decentraland-builder-scripts/lib/inventory').default
+// TODO VITE CHECK IF IT WORKS
+import Dockerfile from 'decentraland/samples/ecs/Dockerfile?raw'
+import builderChannelRaw from 'decentraland-builder-scripts/lib/channel?raw'
+import builderInventoryRaw from 'decentraland-builder-scripts/lib/inventory?raw'
+// const Dockerfile = require('!raw-loader!decentraland/samples/ecs/Dockerfile').default
+// const builderChannelRaw = require('raw-loader!decentraland-builder-scripts/lib/channel').default
+// const builderInventoryRaw = require('raw-loader!decentraland-builder-scripts/lib/inventory').default
 
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
 
@@ -88,7 +99,9 @@ export async function createGameFile(args: { project: Project; scene: SceneSDK6;
   const { scene, project, rotation } = args
   const useLightweight = isDeploy && !hasScripts(scene)
   const Writer = useLightweight ? LightweightWriter : SceneWriter
-  const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
+  const writer = new Writer(ECS, ecsAPI)
+  // TODO VITE CHECK IF IT WORKS
+  // const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
   const { cols, rows } = project.layout
   const sceneEntity = new ECS.Entity()
 
@@ -199,17 +212,18 @@ export async function createGameFile(args: { project: Project; scene: SceneSDK6;
 
       writer.addEntity(name, ecsEntity as any)
     } catch (e) {
-      console.warn(e.message)
+      console.warn(isErrorWithMessage(e) ? e.message : 'Unknown error')
       continue
     }
   }
-
+  console.log('Has reached here!')
   let code = writer.emitCode()
 
   // SCRIPTS SECTION
   if (scripts.size > 0) {
     if (isDeploy) {
-      const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw').default
+      // TODO VITE SEE IF IT WORKS
+      // const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw').default
 
       // create executeScripts function
       let executeScripts = 'async function executeScripts() {'
@@ -301,11 +315,12 @@ export async function createGameFile(args: { project: Project; scene: SceneSDK6;
 }
 
 export function createGameFileBundle(gameFile: string): string {
-  const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw').default
-  const amd = require('!raw-loader!../../ecsScene/amd-loader.js.raw').default
+  // TODO VITE, check if it works
+  // const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw').default
+  // const amd = require('!raw-loader!../../ecsScene/amd-loader.js.raw').default
 
   const code = `// ECS
-${ecs}
+${sceneECS}
 // AMD
 ${amd}
 // Builder generated code below
@@ -554,7 +569,7 @@ async function createThumbnailBlob(thumbnail: string | null, isClearDeployment: 
       const blob = await resp.blob()
       return blob
     } catch (error) {
-      console.error(error.message)
+      console.error(isErrorWithMessage(error) ? error.message : 'Unknown error')
     }
   }
   return new Blob([])

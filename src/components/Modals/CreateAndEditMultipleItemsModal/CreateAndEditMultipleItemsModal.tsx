@@ -4,6 +4,7 @@ import uuid from 'uuid'
 import { FileTooBigError, ItemFactory, loadFile, LocalItem, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -196,7 +197,11 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       return { type: ImportedFileType.ACCEPTED, ...builtItem, fileName: file.name }
     } catch (error) {
-      return { type: ImportedFileType.REJECTED, fileName: file.name, reason: error.message }
+      return {
+        type: ImportedFileType.REJECTED,
+        fileName: file.name,
+        reason: isErrorWithMessage(error) ? error.message : 'Unknown error'
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
-import { closeModal } from 'modules/modal/actions'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { MapDispatchProps } from './TutorialModal.types'
 import TutorialModal from './TutorialModal'
 

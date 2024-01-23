@@ -1,4 +1,5 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { analytics } from 'lib/api/analytics'
 import {
   fetchWeeklySceneStatsFailure,
@@ -17,7 +18,7 @@ export function* statsSaga() {
       const stats: WeeklyStats = yield call(() => analytics.fetchWeeklyStats(base))
       yield put(fetchWeeklySceneStatsSuccess(base, stats))
     } catch (error) {
-      yield put(fetchWeeklySceneStatsFailure(base, error.message))
+      yield put(fetchWeeklySceneStatsFailure(base, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }

@@ -14,6 +14,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Network } from '@dcl/schemas'
@@ -102,7 +103,7 @@ import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
-import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
+import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
 import {
@@ -156,6 +157,7 @@ import {
   getCollectionFactoryContract,
   toPaginationStats
 } from './utils'
+import { isErrorWithCode } from 'lib/error'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
 
@@ -216,7 +218,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         yield put(fetchCollectionsSuccess(response, undefined, params))
       }
     } catch (error) {
-      yield put(fetchCollectionsFailure(error.message))
+      yield put(fetchCollectionsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -226,7 +228,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const collection: Collection = yield call([legacyBuilderClient, 'fetchCollection'], id)
       yield put(fetchCollectionSuccess(id, collection))
     } catch (error) {
-      yield put(fetchCollectionFailure(id, error.message))
+      yield put(fetchCollectionFailure(id, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -308,7 +310,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       yield put(saveCollectionSuccess(newCollection))
     } catch (error) {
-      yield put(saveCollectionFailure(collection, error.message))
+      yield put(saveCollectionFailure(collection, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -323,7 +325,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         yield put(replace(locations.collections()))
       }
     } catch (error) {
-      yield put(deleteCollectionFailure(collection, error.message))
+      yield put(deleteCollectionFailure(collection, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -437,7 +439,12 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
     } catch (error) {
-      const message = error?.code === ErrorCode.HIGH_CONGESTION ? '' : error.message
+      let message: string
+      if (isErrorWithCode(error) && error.code.toString() === ErrorCode.HIGH_CONGESTION) {
+        message = ''
+      } else {
+        message = isErrorWithMessage(error) ? error.message : 'Unknown error'
+      }
       yield put(publishCollectionFailure(collection, items, message))
     }
   }
@@ -469,7 +476,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), maticChainId, txHash))
       yield put(replace(locations.activity()))
     } catch (error) {
-      yield put(setCollectionMintersFailure(collection, accessList, error.message))
+      yield put(setCollectionMintersFailure(collection, accessList, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -500,7 +507,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), maticChainId, txHash))
       yield put(replace(locations.activity()))
     } catch (error) {
-      yield put(setCollectionManagersFailure(collection, accessList, error.message))
+      yield put(setCollectionManagersFailure(collection, accessList, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -527,7 +534,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       yield put(closeModal('MintItemsModal'))
       yield put(replace(locations.activity()))
     } catch (error) {
-      yield put(mintCollectionItemsFailure(collection, mints, error.message))
+      yield put(mintCollectionItemsFailure(collection, mints, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -537,7 +544,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const txHash: string = yield changeCollectionStatus(collection, true)
       yield put(approveCollectionSuccess(collection, getChainIdByNetwork(Network.MATIC), txHash))
     } catch (error) {
-      yield put(approveCollectionFailure(collection, error.message))
+      yield put(approveCollectionFailure(collection, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -550,7 +557,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const txHash: string = yield changeCollectionStatus(collection, false)
       yield put(rejectCollectionSuccess(collection, maticChainId, txHash))
     } catch (error) {
-      yield put(rejectCollectionFailure(collection, error.message))
+      yield put(rejectCollectionFailure(collection, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -821,7 +828,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
         view: ApprovalFlowModalView.ERROR,
         collection,
-        error: error.message
+        error: isErrorWithMessage(error) ? error.message : 'Unknown error'
       }
       yield put(openModal('ApprovalFlowModal', modalMetadata))
     }
@@ -1016,7 +1023,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
         view: ApprovalFlowModalView.ERROR,
         collection,
-        error: error.message
+        error: isErrorWithMessage(error) ? error.message : 'Unknown error'
       }
       yield put(openModal('ApprovalFlowModal', modalMetadata))
     }

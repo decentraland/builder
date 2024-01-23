@@ -1,6 +1,7 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { WorldsWalletStats, content as WorldsAPIContent } from 'lib/api/worlds'
 import {
   FETCH_WORLDS_WALLET_STATS_REQUEST,
@@ -31,7 +32,7 @@ function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequ
 
     yield put(fetchWorldsWalletStatsSuccess(address, stats))
   } catch (e) {
-    yield put(fetchWorldsWalletStatsFailure(address, e.message))
+    yield put(fetchWorldsWalletStatsFailure(address, isErrorWithMessage(e) ? e.message : 'Unknown'))
   }
 }
 

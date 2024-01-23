@@ -4,7 +4,7 @@ import { RawAssetPack, AssetPack } from 'modules/assetPack/types'
 import { saveAssetPackRequest, SaveAssetPackRequestAction } from 'modules/assetPack/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Project } from 'modules/project/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export enum CreateAssetPackView {
   LOGIN,

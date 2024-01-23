@@ -10,7 +10,14 @@ export async function computeHashes(contents: Record<string, Blob>): Promise<Rec
   for (const path in contents) {
     const blob = contents[path]
     const blobBuffer = await blob.arrayBuffer()
-    contentsAsHashes[path] = await hashV1(new Uint8Array(blobBuffer))
+    console.log('About to compute hashes')
+    try {
+      contentsAsHashes[path] = await hashV1(new Uint8Array(blobBuffer))
+      console.log('Computed hash', contentsAsHashes[path])
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   }
   return contentsAsHashes
 }

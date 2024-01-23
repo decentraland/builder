@@ -686,7 +686,7 @@ export const loadVideo = (src: File | string): Promise<HTMLVideoElement> => {
       }
 
       video.onerror = function () {
-        reject('Invalid video. Please select a video file.')
+        reject(new Error('Invalid video. Please select a video file.'))
       }
 
       video.src = typeof src === 'string' ? src : URL.createObjectURL(src)

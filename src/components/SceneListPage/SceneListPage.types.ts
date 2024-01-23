@@ -4,7 +4,7 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 
 import { Pool, PoolsRequestFilters } from 'modules/pool/types'
 import { LikePoolRequestAction, LoadPoolsRequestAction, loadPoolsRequest } from 'modules/pool/actions'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { PoolGroup } from 'modules/poolGroup/types'
 
 export type Props = PoolsRequestFilters & {

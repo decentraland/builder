@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { ENS } from 'modules/ens/types'
 import { Land } from 'modules/land/types'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export enum SortBy {
   DESC = 'DESC',

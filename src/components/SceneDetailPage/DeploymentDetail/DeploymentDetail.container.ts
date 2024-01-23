@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getLandTiles } from 'modules/land/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './DeploymentDetail.types'
 import DeploymentDetail from './DeploymentDetail'

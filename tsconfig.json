@@ -1,36 +1,42 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "react-jsx",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "noEmit": true,
-    "allowJs": true,
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
     "skipLibCheck": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "isolatedModules": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "strictNullChecks": true,
-    "noImplicitReturns": true,
     "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "downlevelIteration": true,
-    "useUnknownInCatchVariables": false,
-    "importHelpers": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "plugins": [
-      {
-        "name": "tslint-language-service"
-      }
-    ],
-    "baseUrl": "src",
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "components/*": ["components/*"],
+      "config/*": ["config/*"],
+      "contracts/*": ["contracts/*"],
+      "ecsScene/*": ["ecsScene/*"],
+      "experiments/*": ["experiments/*"],
+      "icons/*": ["icons/*"],
+      "images/*": ["images/*"],
+      "lib/*": ["lib/*"],
+      "modules/*": ["modules/*"],
+      "routing/*": ["routing/*"],
+      "specs/*": ["specs/*"],
+      "themes/*": ["themes/*"]
+    },
+    "baseUrl": "src"
   },
-  "include": ["src", "src/typings.d.ts", "react-app=env.d.ts", "./node_modules/decentraland-builder-scripts/types.d.ts"],
-  "exclude": ["src/modules/editor/ecs.js"]
+  "include": ["src", ".eslintrc.js", "vite.config.ts", "jest.config.ts", "./node_modules/decentraland-builder-scripts/types.d.ts"],
+  "exclude": ["src/modules/editor/ecs.js", "src/ecsScene/scene.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

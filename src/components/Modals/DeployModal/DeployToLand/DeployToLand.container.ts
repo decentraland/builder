@@ -14,7 +14,7 @@ import {
 import { RootState } from 'modules/common/types'
 import { deployToLandRequest } from 'modules/deployment/actions'
 import { recordMediaRequest } from 'modules/media/actions'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'

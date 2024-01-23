@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import { Project } from 'modules/project/types'
 import { deployToPoolRequest, DeployToPoolRequestAction } from 'modules/deployment/actions'
 import { Media } from 'modules/media/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
   name: string

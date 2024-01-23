@@ -13,7 +13,7 @@ import {
   ResetCameraAction,
   TakeScreenshotAction
 } from 'modules/editor/actions'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Project } from 'modules/project/types'
 
 export type Props = {

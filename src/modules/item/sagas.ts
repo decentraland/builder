@@ -11,6 +11,7 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { closeAllModals, closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
@@ -118,6 +119,7 @@ import { getMethodData } from 'modules/wallet/utils'
 import { setItems } from 'modules/editor/actions'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
+import { isErrorWithCode } from 'lib/error'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, ItemType, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
@@ -172,7 +174,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const rarities: Rarity[] = yield call([legacyBuilder, 'fetchRarities'])
       yield put(fetchRaritiesSuccess(rarities))
     } catch (error) {
-      yield put(fetchRaritiesFailure(error.message))
+      yield put(fetchRaritiesFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -184,7 +186,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const { limit, page, pages, results, total } = response
       yield put(fetchItemsSuccess(results, { limit, page, pages, total }, address))
     } catch (error) {
-      yield put(fetchItemsFailure(error.message))
+      yield put(fetchItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -194,7 +196,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const item: Item = yield call(() => legacyBuilder.fetchItem(id))
       yield put(fetchItemSuccess(id, item))
     } catch (error) {
-      yield put(fetchItemFailure(id, error.message))
+      yield put(fetchItemFailure(id, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -211,7 +213,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const { total } = response
       yield put(fetchOrphanItemSuccess(total > 0))
     } catch (error) {
-      yield put(fetchOrphanItemFailure(error.message))
+      yield put(fetchOrphanItemFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -249,7 +251,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       )
       yield put(fetchCollectionItemsSuccess(collectionId, items, overridePaginationData ? paginationStats : undefined))
     } catch (error) {
-      yield put(fetchCollectionItemsFailure(collectionId, error.message))
+      yield put(fetchCollectionItemsFailure(collectionId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -263,7 +265,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       })
       yield put(fetchCollectionThumbnailsSuccess(collectionId, results))
     } catch (error) {
-      yield put(fetchCollectionThumbnailsFailure(collectionId, error.message))
+      yield put(fetchCollectionThumbnailsFailure(collectionId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -416,7 +418,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       yield put(saveItemSuccess(item, contents))
     } catch (error) {
-      yield put(saveItemFailure(actionItem, actionContents, error.message))
+      yield put(saveItemFailure(actionItem, actionContents, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -522,7 +524,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       yield put(setPriceAndBeneficiarySuccess(newItem, chainId, txHash))
     } catch (error) {
-      yield put(setPriceAndBeneficiaryFailure(itemId, price, beneficiary, error.message))
+      yield put(setPriceAndBeneficiaryFailure(itemId, price, beneficiary, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -538,7 +540,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(closeModal('DeleteItemModal'))
       yield put(showToast(getSuccessfulDeletedItemToast(item), 'bottom center'))
     } catch (error) {
-      yield put(deleteItemFailure(item, error.message))
+      yield put(deleteItemFailure(item, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -606,7 +608,14 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(setItemsTokenIdSuccess(newItems))
     } catch (error) {
       // Parse error.code to int because axiosError.code is string
-      yield put(setItemsTokenIdFailure(collection, items, error.message, parseInt(error.code)))
+      yield put(
+        setItemsTokenIdFailure(
+          collection,
+          items,
+          isErrorWithMessage(error) ? error.message : 'Unknown error',
+          parseInt(isErrorWithCode(error) ? error.code.toString() : '0')
+        )
+      )
     }
   }
 
@@ -688,7 +697,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const newItems = items.map<Item>((item, index) => ({ ...item, blockchainContentHash: contentHashes[index] }))
       yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHashes))
     } catch (error) {
-      yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
+      yield put(rescueItemsFailure(collection, items, contentHashes, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -729,7 +738,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       // success 🎉
       yield put(downloadItemSuccess(itemId))
     } catch (error) {
-      yield put(downloadItemFailure(itemId, error.message))
+      yield put(downloadItemFailure(itemId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }
@@ -792,6 +801,6 @@ export function* handleResetItemRequest(action: ResetItemRequestAction) {
       yield put(resetItemFailure(itemId, saveItemResult.failure.payload.error))
     }
   } catch (error) {
-    yield put(resetItemFailure(itemId, error.message))
+    yield put(resetItemFailure(itemId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }

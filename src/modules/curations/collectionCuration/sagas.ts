@@ -5,6 +5,7 @@ import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { BuilderAPI } from 'lib/api/builder'
 import { getCollection } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
@@ -54,7 +55,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
       const curations: CollectionCuration[] = yield call([builder, 'fetchCurations'])
       yield put(fetchCollectionCurationsSuccess(curations))
     } catch (error) {
-      yield put(fetchCollectionCurationsFailure(error.message))
+      yield put(fetchCollectionCurationsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -64,7 +65,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
       const curation: CollectionCuration | undefined = yield call([builder, 'fetchCuration'], collectionId)
       yield put(fetchCollectionCurationSuccess(collectionId, curation))
     } catch (error) {
-      yield put(fetchCollectionCurationFailure(error.message))
+      yield put(fetchCollectionCurationFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -76,7 +77,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
       yield put(pushCollectionCurationSuccess())
       yield put(fetchCollectionCurationRequest(collectionId))
     } catch (error) {
-      yield put(pushCollectionCurationFailure(error.message))
+      yield put(pushCollectionCurationFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -86,7 +87,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
       yield call([builder, 'updateCurationStatus'], collectionId, CurationStatus.APPROVED)
       yield put(approveCollectionCurationSuccess(collectionId))
     } catch (error) {
-      yield put(approveCollectionCurationFailure(collectionId, error.message))
+      yield put(approveCollectionCurationFailure(collectionId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -96,7 +97,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
       yield call([builder, 'updateCurationStatus'], collectionId, CurationStatus.REJECTED)
       yield put(rejectCollectionCurationSuccess(collectionId))
     } catch (error) {
-      yield put(rejectCollectionCurationFailure(collectionId, error.message))
+      yield put(rejectCollectionCurationFailure(collectionId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -139,7 +140,7 @@ export function* collectionCurationSaga(builder: BuilderAPI) {
           closable: true
         })
       )
-      yield put(setCollectionCurationAssigneeFailure(collectionId, error.message))
+      yield put(setCollectionCurationAssigneeFailure(collectionId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     } finally {
       yield put(closeModal('EditCurationAssigneeModal'))
     }

@@ -6,8 +6,6 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { isEqual } from 'lib/address'
 
-export * from 'decentraland-dapps/dist/modules/transaction/selectors'
-
 export const getTransactions = createSelector<RootState, Transaction[], string | undefined, Transaction[]>(
   getData,
   getAddress,

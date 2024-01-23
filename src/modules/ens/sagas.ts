@@ -11,6 +11,7 @@ import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { DCLController } from 'contracts'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
@@ -24,11 +25,12 @@ import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { Land, LandType } from 'modules/land/types'
-import { closeModal } from 'modules/modal/actions'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { marketplace } from 'lib/api/marketplace'
 import { lists } from 'lib/api/lists'
 import { WorldInfo, content as WorldsAPIContent } from 'lib/api/worlds'
 import { extractEntityId } from 'lib/urn'
+import { isErrorWithCode } from 'lib/error'
 import { ENSApi } from 'lib/api/ens'
 import {
   FETCH_ENS_REQUEST,
@@ -195,7 +197,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
         })
       )
     } catch (error) {
-      const ensError: ENSError = { message: error.message }
+      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(fetchENSFailure(ensError))
     }
   }
@@ -245,7 +247,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
         })
       )
     } catch (error) {
-      const ensError: ENSError = { message: error.message }
+      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(fetchENSWorldStatusFailure(ensError))
     }
   }
@@ -263,7 +265,11 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
       yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from, wallet.chainId, transaction.hash))
     } catch (error) {
-      const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.RESOLVER }
+      const ensError: ENSError = {
+        message: isErrorWithMessage(error) ? error.message : 'Unknown error',
+        code: isErrorWithCode(error) ? error.code : undefined,
+        origin: ENSOrigin.RESOLVER
+      }
       yield put(setENSResolverFailure(ens, ensError))
     }
   }
@@ -304,7 +310,11 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
         yield put(closeModal('UnsetENSContentModal'))
       }
     } catch (error) {
-      const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.CONTENT }
+      const ensError: ENSError = {
+        message: isErrorWithMessage(error) ? error.message : 'Unknown error',
+        code: isErrorWithCode(error) ? error.code : undefined,
+        origin: ENSOrigin.CONTENT
+      }
       yield put(setENSContentFailure(ens, land, ensError))
     }
   }
@@ -323,7 +333,11 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       yield call(waitForTx, transaction.hash)
       yield put(closeModal('EnsMapAddressModal'))
     } catch (error) {
-      const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.ADDRESS }
+      const ensError: ENSError = {
+        message: isErrorWithMessage(error) ? error.message : 'Unknown error',
+        code: isErrorWithCode(error) ? error.code : undefined,
+        origin: ENSOrigin.ADDRESS
+      }
       yield put(setENSAddressFailure(ens, address, ensError))
     }
   }
@@ -340,7 +354,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
       yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))
     } catch (error) {
-      const allowError: ENSError = { message: error.message }
+      const allowError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(fetchENSAuthorizationFailure(allowError))
     }
   }
@@ -476,7 +490,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
       yield put(fetchENSListSuccess(ensList))
     } catch (error) {
-      const ensError: ENSError = { message: error.message }
+      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(fetchENSListFailure(ensError))
     }
   }
@@ -506,7 +520,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       yield put(claimNameSuccess(ens, name))
       yield put(closeModal('ClaimNameFatFingerModal'))
     } catch (error) {
-      const ensError: ENSError = { message: error.message }
+      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(claimNameFailure(ensError))
     }
   }
@@ -520,7 +534,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       const transaction: ethers.ContractTransaction = yield call([dclRegistrarContract, 'reclaim'], ens.tokenId, wallet.address)
       yield put(reclaimNameSuccess(transaction.hash, wallet.chainId, { ...ens, ensOwnerAddress: wallet.address }))
     } catch (error) {
-      const ensError: ENSError = { message: error.message }
+      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(reclaimNameFailure(ensError))
     }
   }
@@ -536,7 +550,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
       yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))
     } catch (error) {
-      const ensError: ENSError = { message: error.message }
+      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(allowClaimManaFailure(ensError))
     }
   }
@@ -570,7 +584,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
       yield put(fetchExternalNamesSuccess(owner, enssWithWorldStatus))
     } catch (error) {
-      const ensError: ENSError = { message: error.message }
+      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(fetchExternalNamesFailure(owner, ensError))
     }
   }

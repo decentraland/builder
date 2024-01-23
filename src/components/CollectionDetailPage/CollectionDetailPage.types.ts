@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, ItemType, SyncStatus } from 'modules/item/types'
 import { fetchCollectionForumPostReplyRequest, FetchCollectionForumPostReplyRequestAction } from 'modules/forum/actions'

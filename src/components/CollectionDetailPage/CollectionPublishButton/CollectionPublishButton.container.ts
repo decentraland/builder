@@ -4,7 +4,7 @@ import { fetchCollectionCurationRequest } from 'modules/curations/collectionCura
 import { getStatusByCollectionId } from 'modules/collection/selectors'
 import { getHasPendingCollectionCuration } from 'modules/curations/collectionCuration/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionPublishButton.types'
 import CollectionPublishButton from './CollectionPublishButton'
 
