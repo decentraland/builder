@@ -6,3 +6,20 @@
   opacity: 0;
   transition: opacity 0.5s ease-out;
 }
+
+.copy-to-clipboard i {
+  background: #43404a;
+  width: 25px;
+  height: 25px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+}
+
+.copy-to-clipboard:hover i {
+  background: #555459;
+}

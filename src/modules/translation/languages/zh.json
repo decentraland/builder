@@ -581,6 +581,12 @@
     "title": "糟糕！"
   },
   "ens_list_page": {
+    "title": "名称",
+    "sort_by": "排序方式",
+    "mint_name": "薄荷名称",
+    "result": "{count} {count, plural, one {结果} other {结果}}",
+    "edit": "编辑",
+    "transfer": "转移",
     "table": {
       "name": "名称",
       "link": "链接",
@@ -589,7 +595,7 @@
       "alias": "别名",
       "land": "土地",
       "actions": "动作",
-      "owner": "所有者"
+      "you": "你"
     },
     "assigned_to_land": "土地 ({landId})",
     "assigned_to_estate": "州 ({landId})",
@@ -605,6 +611,15 @@
     "items": "{count}结果",
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配",
     "not_profile_created": "您需要先进入世界才能设置别名。"
+  },
+  "ens_detail_page": {
+    "name": "姓名",
+    "address": "地址",
+    "alias": "别名",
+    "land": "土地",
+    "unassign": "未分配",
+    "set_as_primary": "设置为主要",
+    "edit_address": "编辑地址"
   },
   "ens_map_address_modal": {
     "title": "链接到以太坊地址",

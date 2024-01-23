@@ -7,6 +7,7 @@
   "ERC721_COLLECTION_BASE_URI": "https://peer.decentraland.org/lambdas/collections/standard/erc721/",
   "BUILDER_SERVER_URL": "https://builder-api.decentraland.today/v1",
   "MARKETPLACE_URL": "https://api.decentraland.org/v1",
+  "MARKETPLACE_API": "https://marketplace-api.decentraland.org/v1",
   "MARKETPLACE_WEB_URL": "https://decentraland.today/marketplace",
   "LAND_MANAGER_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/land-manager",
   "MARKETPLACE_GRAPH_URL": "https://api.thegraph.com/subgraphs/name/decentraland/marketplace",

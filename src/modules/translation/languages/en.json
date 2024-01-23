@@ -577,6 +577,12 @@
     "subtitle": "Your are editing {name}."
   },
   "ens_list_page": {
+    "title": "NAMEs",
+    "sort_by": "Sort by",
+    "mint_name": "Mint name",
+    "result": "{count} {count, plural, one {result} other {results}}",
+    "edit": "Edit",
+    "transfer": "Transfer",
     "table": {
       "name": "Name",
       "link": "Link",
@@ -585,7 +591,7 @@
       "alias": "Alias",
       "land": "Land",
       "actions": "Actions",
-      "owner": "Owner"
+      "you": "you"
     },
     "assigned_to_land": "Land ({landId})",
     "assigned_to_estate": "Estate ({landId})",
@@ -601,6 +607,15 @@
     "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned",
     "not_profile_created": "You need to get into the world first to set an alias."
+  },
+  "ens_detail_page": {
+    "name": "Name",
+    "address": "Address",
+    "alias": "Alias",
+    "land": "Land",
+    "unassign": "Unassigned",
+    "set_as_primary": "Set as primary",
+    "edit_address": "Edit address"
   },
   "ens_map_address_modal": {
     "title": "Link to an Ethereum Address",
