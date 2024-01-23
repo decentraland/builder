@@ -8,7 +8,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export default function EnsMapAddressModal(props: Props) {
   const { isLoading, error, onClose, onSave } = props
-  const [address, setAddress] = useState<string>('')
+  const [address, setAddress] = useState<string>(props.metadata.ens.ensAddressRecord)
 
   const handleSave = useCallback(() => {
     onSave(address)

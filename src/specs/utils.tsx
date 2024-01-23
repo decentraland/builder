@@ -13,7 +13,6 @@ import { ConnectedRouter } from 'connected-react-router'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 const allTranslations = mergeTranslations(flatten(en) as unknown as Record<string, string>, flatten(locales.en))
-
 export function renderWithProviders(
   component: JSX.Element,
   { preloadedState, store }: { preloadedState?: Partial<RootState>; store?: Store } = {}
@@ -25,9 +24,10 @@ export function renderWithProviders(
       storage: { loading: false },
       translation: {
         data: {
-          en: allTranslations
+          en: allTranslations,
+          'en-EN': allTranslations
         },
-        locale: 'en'
+        locale: 'en-EN'
       }
     })
 
@@ -36,7 +36,7 @@ export function renderWithProviders(
   function AppProviders({ children }: { children: JSX.Element }) {
     return (
       <Provider store={initializedStore}>
-        <TranslationProvider locales={['en']}>
+        <TranslationProvider locales={['en', 'en-EN']}>
           <ConnectedRouter history={history}>{children}</ConnectedRouter>
         </TranslationProvider>
       </Provider>

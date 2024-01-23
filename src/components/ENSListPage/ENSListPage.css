@@ -32,30 +32,30 @@
   margin-left: 10px;
 }
 
-.ENSListPage .ui.pagination {
+.ENSListPage > div:not(.ens-page-content) .ui.pagination {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.ENSListPage .ui.pagination .item[type='nextItem'],
-.ENSListPage .ui.pagination .item[type='prevItem'] {
+.ENSListPage > div:not(.ens-page-content) .ui.pagination .item[type='nextItem'],
+.ENSListPage > div:not(.ens-page-content) .ui.pagination .item[type='prevItem'] {
   position: absolute;
   background-color: var(--secondary);
 }
 
-.ENSListPage .ui.pagination .item[type='prevItem'] {
+.ENSListPage > div:not(.ens-page-content) .ui.pagination .item[type='prevItem'] {
   left: 0px;
 }
 
-.ENSListPage .ui.pagination .item[type='nextItem'] {
+.ENSListPage > div:not(.ens-page-content) .ui.pagination .item[type='nextItem'] {
   right: 0px;
 }
 
-.ENSListPage .pagination-section {
+.ENSListPage > div:not(.ens-page-content) .pagination-section {
   width: 100%;
 }
-.ENSListPage .ui.sub.header.items-count {
+.ENSListPage > div:not(.ens-page-content) .ui.sub.header.items-count {
   flex: 1 0 auto;
   color: var(--secondary-text);
   text-transform: uppercase;
@@ -94,8 +94,23 @@
 .ENSListPage .ens-list-btn.ui.button {
   display: flex;
   gap: 5px;
+  color: #716b7c;
   align-items: center;
+  padding: 0;
   text-transform: none;
+}
+
+.ENSListPage .ens-list-btn.ui.button:hover {
+  color: white;
+  background: none;
+}
+
+.ENSListPage .ens-list-btn .Icon {
+  filter: invert(45%) sepia(13%) saturate(399%) hue-rotate(220deg) brightness(90%) contrast(90%);
+}
+
+.ENSListPage .ens-list-btn:hover .Icon {
+  filter: none;
 }
 
 .ENSListPage .ens-list-btn .Icon.pin {
@@ -103,10 +118,17 @@
   height: 15px;
 }
 
-.ENSListPage .ens-list-owner {
+.ENSListPage .ens-list-avatar {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  color: #716b7c;
+  background: #393640;
+  width: fit-content;
+  padding: 5px;
+  border-radius: 16px;
+  font-weight: bold;
+  padding-right: 10px;
 }
 
 .ENSListPage .ens-list-land {
@@ -120,7 +142,7 @@
   height: 34px;
   align-items: center;
   padding: 0 10px;
-  background: var(--secondary);
+  background: #393640;
   border-radius: 6px;
 }
 
@@ -135,33 +157,21 @@
   padding: 0 6px;
   display: flex;
   align-items: center;
+  background: #393640;
 }
 
 .ENSListPage .ens-list-address {
   display: flex;
   gap: 5px;
   align-items: center;
+  background: #393640;
+  width: fit-content;
+  padding: 5px;
+  border-radius: 16px;
 }
 
 .ENSListPage .ens-list-address-icon {
   width: 25px;
-}
-
-.ENSListPage .ens-address-copy {
-  background: var(--secondary);
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  font-size: 12px;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.ENSListPage .ens-address-copy:hover {
-  background-color: var(--secondary-hover);
 }
 
 .ENSListPage .ens-page-content {
@@ -174,4 +184,165 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.ENSListPage .ens-list-subdomain {
+  font-weight: bold;
+  color: var(--secondary-text);
+}
+
+.ENSListPage .ens-list-subdomain span {
+  color: white;
+}
+
+.ENSListPage .ens-list-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ENSListPage .ens-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ENSListPage .ens-page-actions .ui.dropdown {
+  margin-left: 15px;
+}
+
+.ENSListPage .ens-list-edit-btn.ui.button,
+.ENSListPage .ens-list-transfer-btn.ui.button {
+  min-width: unset;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-transform: none;
+}
+
+.ENSListPage .ens-list-transfer-btn.ui.button {
+  background: #393640;
+}
+
+.ENSListPage .ens-list-edit-btn.ui.button {
+  background: white;
+  color: black;
+}
+
+.ENSListPage .ens-list-name-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.ENSListPage .ens-list-avatar-img {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #43404a;
+}
+
+.ENSListPage .ens-list-avatar-name {
+  color: white;
+  font-weight: bold;
+}
+
+.ENSListPage .ens-list-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.ENSListPage .dui-table-container {
+  margin-top: 0;
+}
+
+.ENSListPage .dui-table-content .ui.table tr td,
+.ENSListPage .dui-table-content .ui.table th {
+  border-right: none;
+  border-left: none;
+}
+
+.ENSListPage .ens-list-add-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.ENSListPage .ens-list-btn:hover .ens-list-add-icon {
+  filter: brightness(5);
+}
+
+.ENSListPage .ens-page-title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.ENSListPage .ens-list-page-table-headers {
+  color: #a09ba8;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: flex;
+  gap: 5px;
+}
+
+.ens-list-page-ext-link {
+  color: white;
+  text-decoration: underline;
+}
+
+.ENSListPage .ens-list-subdomain {
+  font-weight: bold;
+  color: var(--secondary-text);
+}
+
+.ENSListPage .ens-list-subdomain span {
+  color: white;
+}
+
+.ENSListPage .ens-list-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ENSListPage .ens-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ENSListPage .ens-page-actions .ui.dropdown {
+  margin-left: 15px;
+}
+
+.ENSListPage .ens-list-edit-btn.ui.button {
+  min-width: unset;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-transform: none;
+}
+
+.ENSListPage .ens-list-name-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.ENSListPage .ens-list-avatar-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #43404a;
+}
+
+.ENSListPage .ens-list-avatar-name {
+  color: white;
+  font-weight: bold;
+}
+
+.ENSListPage .ens-list-actions {
+  display: flex;
+  gap: 10px;
 }

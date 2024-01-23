@@ -579,6 +579,12 @@
     "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la misma"
   },
   "ens_list_page": {
+    "title": "Nombres",
+    "sort_by": "Ordernar por",
+    "mint_name": "Comprar nombre",
+    "result": "{count} {count, plural, one {resultado} other {resultados}}",
+    "edit": "Editar",
+    "transfer": "Transferir",
     "table": {
       "name": "Nombre",
       "link": "Enlace",
@@ -587,7 +593,7 @@
       "alias": "alias",
       "land": "Tierra",
       "actions": "Acciones",
-      "owner": "Dueño"
+      "you": "tú"
     },
     "assigned_to_land": "Tierra ({landId})",
     "assigned_to_estate": "Estate ({landId})",
@@ -603,6 +609,22 @@
     "items": "{count} {count, plural, one {resultado} other {resultados}}",
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado",
     "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias."
+  },
+  "ens_detail_page": {
+    "name": "Nombre",
+    "address": "Dirección",
+    "alias": "Alias",
+    "land": "Tierra",
+    "unassign": "Sin asignar",
+    "set_as_primary": "Usar como alias",
+    "edit_address": "Editar dirección",
+    "assign_address": "Asignar valor a dirección",
+    "point_location": "Asignar una tierra o mundo",
+    "tooltips": {
+      "alias": "El alias asignado puede ser solo uno por avatar",
+      "address": "Se puede usar externamente en cualquier transacción Web3. Leer los <a>beneficios de ENS</a>",
+      "land": "Las tierras son activos espaciales, las unidades mínimas son parcelas, leer mas sobre <a>los beneficios del Metaverso</a>"
+    }
   },
   "ens_map_address_modal": {
     "title": "Enlace a una dirección de Ethereum",
