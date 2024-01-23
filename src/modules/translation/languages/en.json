@@ -606,7 +606,13 @@
     "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
     "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned",
-    "not_profile_created": "You need to get into the world first to set an alias."
+    "not_profile_created": "You need to get into the world first to set an alias.",
+    "empty_state": {
+      "title": "Nothing here yet",
+      "subtitle": "Own your presence in the metaverse with a username free from numbers on the end (e.g. Genesis#1234).",
+      "mint_name": "Mint name",
+      "go_to_marketplace": "Visit marketplace"
+    }
   },
   "ens_detail_page": {
     "name": "Name",
