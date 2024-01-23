@@ -4,6 +4,7 @@ import ENSDetailPage from './ENSDetailPage'
 import { Props } from './ENSDetailPage.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getCroppedAddress } from 'components/ENSListPage/utils'
+import userEvent from '@testing-library/user-event'
 
 jest.mock('components/LoggedInDetailPage', () => ({ children }: any) => <div>{children}</div>)
 function renderENSDetailPage(props: Partial<Props>) {
@@ -71,6 +72,14 @@ describe('when ens is defined', () => {
       const screen = renderENSDetailPage({ ens, alias })
       expect(screen.getByRole('button', { name: t('ens_detail_page.set_as_primary') })).toBeInTheDocument()
     })
+
+    it('should open assign alias modal when button is clicked', () => {
+      const openModalMock = jest.fn()
+      const screen = renderENSDetailPage({ ens, alias, onOpenModal: openModalMock })
+      const assignAliasButton = screen.getByRole('button', { name: t('ens_detail_page.set_as_primary') })
+      userEvent.click(assignAliasButton)
+      expect(openModalMock).toHaveBeenCalledWith('UseAsAliasModal', { newName: ens.name })
+    })
   })
 
   describe('and there is already an address assigned to the ens', () => {
@@ -92,6 +101,14 @@ describe('when ens is defined', () => {
       const screen = renderENSDetailPage({ ens })
       expect(screen.getByRole('button', { name: t('ens_detail_page.edit_address') })).toBeInTheDocument()
     })
+
+    it('should open EnsMapAddressModal when edit button is clicked', () => {
+      const openModalMock = jest.fn()
+      const screen = renderENSDetailPage({ ens, onOpenModal: openModalMock })
+      const editButton = screen.getByRole('button', { name: t('ens_detail_page.edit_address') })
+      userEvent.click(editButton)
+      expect(openModalMock).toHaveBeenCalledWith('EnsMapAddressModal', { ens })
+    })
   })
 
   describe('and there is no address assigned to the ens', () => {
@@ -105,6 +122,14 @@ describe('when ens is defined', () => {
     it('should show add address button', () => {
       const screen = renderENSDetailPage({ ens })
       expect(screen.getByRole('button', { name: t('ens_list_page.button.link_to_address') })).toBeInTheDocument()
+    })
+
+    it('should open EnsMapAddressModal when link button is clicked', () => {
+      const openModalMock = jest.fn()
+      const screen = renderENSDetailPage({ ens, onOpenModal: openModalMock })
+      const linkAddressBtn = screen.getByRole('button', { name: t('ens_list_page.button.link_to_address') })
+      userEvent.click(linkAddressBtn)
+      expect(openModalMock).toHaveBeenCalledWith('EnsMapAddressModal', { ens })
     })
   })
 
@@ -149,6 +174,14 @@ describe('when ens is defined', () => {
     it('should show add address button', () => {
       const screen = renderENSDetailPage({ ens })
       expect(screen.getByRole('button', { name: t('ens_list_page.button.assign_to_land') })).toBeInTheDocument()
+    })
+
+    it('should open redirect to ens page when button is clicked', () => {
+      const onNavigateMock = jest.fn()
+      const screen = renderENSDetailPage({ ens, onNavigate: onNavigateMock })
+      const assignLandButton = screen.getByRole('button', { name: t('ens_list_page.button.assign_to_land') })
+      userEvent.click(assignLandButton)
+      expect(onNavigateMock).toHaveBeenCalledWith('/name/test/set-land')
     })
   })
 })

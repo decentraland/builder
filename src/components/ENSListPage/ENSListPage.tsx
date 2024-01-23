@@ -30,6 +30,7 @@ import './ENSListPage.css'
 
 const PAGE_SIZE = 12
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
+const MARKETPLACE_API = config.get('MARKETPLACE_API', '')
 const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
 export default class ENSListPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -352,7 +353,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                       <img
                         className="ens-list-name-icon"
                         alt={ens.subdomain}
-                        src={`http://marketplace-api.decentraland.zone/v1/ens/generate?ens=${ens.name}&width=330&height=330`}
+                        src={`${MARKETPLACE_API}/ens/generate?ens=${ens.name}&width=330&height=330`}
                       />
                       <span className="ens-list-subdomain">
                         <span>{ens.name}</span>.dcl.eth

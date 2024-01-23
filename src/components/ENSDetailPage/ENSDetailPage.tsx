@@ -17,7 +17,7 @@ import styles from './ENSDetailPage.module.css'
 export default function ENSDetailPage(props: Props) {
   const { ens, isLoading, alias, avatar, name, onNavigate, onOpenModal, onFetchENS } = props
   const imgUrl = useMemo<string>(
-    () => (ens ? `http://marketplace-api.decentraland.zone/v1/ens/generate?ens=${ens.name}&width=330&height=330` : ''),
+    () => (ens ? `${config.get('MARKETPLACE_API')}/ens/generate?ens=${ens.name}&width=330&height=330` : ''),
     [ens]
   )
 
