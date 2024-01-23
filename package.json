@@ -40,7 +40,7 @@
     "decentraland-ecs": "^6.6.1-20201020183014.commit-bdc29ef-hotfix",
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^1.47.0",
-    "decentraland-ui": "^5.4.0",
+    "decentraland-ui": "^5.4.3",
     "ethers": "^5.6.8",
     "file-saver": "^2.0.1",
     "graphql": "^15.8.0",

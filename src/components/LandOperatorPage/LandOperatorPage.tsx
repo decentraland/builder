@@ -7,7 +7,7 @@ import { Props } from './LandOperatorPage.types'
 
 export default class LandOperatorPage extends React.PureComponent<Props> {
   render() {
-    const { onSetOperator } = this.props
+    const { isEnsAddressEnabled, onSetOperator } = this.props
     return (
       <LandProviderPage>
         {land => (
@@ -25,7 +25,7 @@ export default class LandOperatorPage extends React.PureComponent<Props> {
               />
             }
           >
-            <LandOperatorForm land={land} onSetOperator={onSetOperator} />
+            <LandOperatorForm land={land} onSetOperator={onSetOperator} isEnsAddressEnabled={isEnsAddressEnabled} />
           </LandAction>
         )}
       </LandProviderPage>

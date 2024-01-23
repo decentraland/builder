@@ -101,12 +101,25 @@ export default class MintableItem extends React.PureComponent<Props> {
             </div>
           </Column>
         </Row>
-        {mints.map(({ amount }, index) => (
+        {mints.map(({ address, amount }, index) => (
           <Section key={index} className="mint" size="tiny">
             {isEnsAddressEnabled ? (
-              <AddressField className="rounded-address" fieldClassName="rounded" onChange={this.getChangeAddressHandler(index)} />
+              <AddressField
+                value={address}
+                className="rounded-address"
+                fieldClassName="rounded"
+                onChange={this.getChangeAddressHandler(index)}
+              />
             ) : (
-              <Field />
+              <Field
+                className="rounded"
+                type="address"
+                placeholder={t('global.address')}
+                value={address || ''}
+                message={undefined}
+                error={!this.isValidAddress(address)}
+                onChange={this.getChangeAddressHandler(index)}
+              />
             )}
             <Field
               className="rounded"
