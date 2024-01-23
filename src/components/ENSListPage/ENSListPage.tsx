@@ -353,7 +353,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                       <img
                         className="ens-list-name-icon"
                         alt={ens.subdomain}
-                        src={`${MARKETPLACE_API}/ens/generate?ens=${ens.name}&width=330&height=330`}
+                        src={`${MARKETPLACE_API}/ens/generate?ens=${ens.name}&width=330&height=330&onlyLogo=true`}
                       />
                       <span className="ens-list-subdomain">
                         <span>{ens.name}</span>.dcl.eth
