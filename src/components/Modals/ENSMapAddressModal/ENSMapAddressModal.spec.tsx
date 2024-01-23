@@ -1,12 +1,15 @@
-import { renderWithProviders } from 'specs/utils'
-import { Props } from './ENSMapAddressModal.types'
-import EnsMapAddressModal from './ENSMapAddressModal'
 import userEvent from '@testing-library/user-event'
 import { RenderResult } from '@testing-library/react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { ENS } from 'modules/ens/types'
+import { renderWithProviders } from 'specs/utils'
+import { Props } from './ENSMapAddressModal.types'
+import EnsMapAddressModal from './ENSMapAddressModal'
 
 function renderENSMapAddressModal(props: Partial<Props> = {}) {
-  return renderWithProviders(<EnsMapAddressModal isLoading={false} error={null} onSave={jest.fn()} onClose={jest.fn()} {...props} />)
+  return renderWithProviders(
+    <EnsMapAddressModal isLoading={false} error={null} onSave={jest.fn()} onClose={jest.fn()} metadata={{ ens: {} }} {...props} />
+  )
 }
 
 let screen: RenderResult
@@ -57,5 +60,19 @@ describe('when linking address is loading', () => {
   it('should not show close icon', () => {
     const closeBtn = document.querySelector('.dcl.close')
     expect(closeBtn).toBe(null)
+  })
+})
+
+describe('when editing an address', () => {
+  let ens: ENS
+  beforeEach(() => {
+    ens = {
+      ensAddressRecord: '0xtest123'
+    } as ENS
+    screen = renderENSMapAddressModal({ isLoading: true, metadata: { ens } })
+  })
+
+  it('should set the existing address as the input value', () => {
+    expect(screen.getByLabelText(t('ens_map_address_modal.address.label'))).toHaveValue(ens.ensAddressRecord)
   })
 })

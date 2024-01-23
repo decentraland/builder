@@ -15,16 +15,19 @@ import {
   Empty,
   Icon as DCLIcon
 } from 'decentraland-ui'
+import { TableContainer, TableContent } from 'decentraland-ui/dist/components/v2'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { DataTableType } from 'decentraland-ui/dist/components/v2/Table/TableContent/TableContent.types'
+import { shorten } from 'lib/address'
 import { locations } from 'routing/locations'
 import { isCoords } from 'modules/land/utils'
 import { ENS } from 'modules/ens/types'
 import Icon from 'components/Icon'
+import addRounded from 'icons/add-rounded.svg'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ethereumImg from '../../icons/ethereum.svg'
-import { getCroppedAddress } from './utils'
 import { Props, State, SortBy } from './ENSListPage.types'
 import './ENSListPage.css'
 
@@ -311,8 +314,84 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     )
   }
 
+  formatToTable(ensList: ENS[]): DataTableType[] {
+    return ensList.map(ens => ({
+      name: (
+        <div className="ens-list-name">
+          <img
+            className="ens-list-name-icon"
+            alt={ens.subdomain}
+            src={`${MARKETPLACE_API}/ens/generate?ens=${ens.name}&width=330&height=330&onlyLogo=true`}
+          />
+          <span className="ens-list-subdomain">
+            <span>{ens.name}</span>.dcl.eth
+          </span>
+          <CopyToClipboard role="button" text={ens.subdomain} showPopup={true} className="copy-to-clipboard">
+            <DCLIcon aria-label="copy subdomain" aria-hidden="false" name="clone outline" />
+          </CopyToClipboard>
+        </div>
+      ),
+      alias: this.isAlias(ens) ? (
+        <span className="ens-list-avatar">
+          {this.props.avatar ? (
+            <img className="ens-list-avatar-img" src={this.props.avatar.avatar.snapshots.face256} alt={this.props.avatar.realName} />
+          ) : (
+            <Icon name="profile" />
+          )}
+          <span className="ens-list-avatar-name">{ens.name}</span>
+          {t('ens_list_page.table.you')}
+        </span>
+      ) : (
+        <Button
+          compact
+          className="ens-list-btn"
+          onClick={this.handleUseAsAlias.bind(null, ens.name)}
+          disabled={!this.props.hasProfileCreated}
+        >
+          <img src={addRounded} alt={t('ens_list_page.button.add_to_avatar')} className="ens-list-add-icon" />
+          {t('ens_list_page.button.add_to_avatar')}
+        </Button>
+      ),
+      address: ens.ensAddressRecord ? (
+        <span className="ens-list-address">
+          <img className="ens-list-address-icon" src={ethereumImg} alt="Ethereum" />
+          {shorten(ens.ensAddressRecord)}
+          <CopyToClipboard role="button" text={ens.ensAddressRecord} showPopup={true} className="copy-to-clipboard">
+            <DCLIcon aria-label="copy address" aria-hidden="false" name="clone outline" />
+          </CopyToClipboard>
+        </span>
+      ) : (
+        <Button compact className="ens-list-btn" onClick={this.handleAssignENSAddress.bind(null, ens)}>
+          <img src={addRounded} alt={t('ens_list_page.button.link_to_address')} className="ens-list-add-icon" />
+          {t('ens_list_page.button.link_to_address')}
+        </Button>
+      ),
+      land: this.renderLandLinkInfo(ens),
+      actions: (
+        <div className="ens-list-actions">
+          <Button
+            secondary
+            compact
+            className="ens-list-transfer-btn"
+            target="_blank"
+            href={`${MARKETPLACE_WEB_URL}/contracts/${REGISTRAR_CONTRACT_ADDRESS}/tokens/${ens.tokenId}/transfer`}
+          >
+            <DCLIcon name="exchange" />
+            {t('ens_list_page.transfer')}
+          </Button>
+          <Link to={locations.ensDetail(ens.name)}>
+            <Button primary compact className="ens-list-edit-btn">
+              <DCLIcon name="pencil alternate" />
+              {t('ens_list_page.edit')}
+            </Button>
+          </Link>
+        </div>
+      )
+    }))
+  }
+
   renderNewEnsList() {
-    const { hasProfileCreated, ensList } = this.props
+    const { ensList } = this.props
     const { page } = this.state
 
     const total = ensList.length
@@ -321,7 +400,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     return (
       <div className="ens-page-content">
         <div className="ens-page-header">
-          <div>
+          <div className="ens-page-title">
             <h1>{t('ens_list_page.title')}</h1>
             {t('ens_list_page.result', { count: ensList.length })}
           </div>
@@ -334,113 +413,63 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
             </Button>
           </div>
         </div>
-        <Table basic="very">
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell width="2">{t('ens_list_page.table.name')}</Table.HeaderCell>
-              <Table.HeaderCell width="1">{t('ens_list_page.table.alias')}</Table.HeaderCell>
-              <Table.HeaderCell width="2">{t('ens_list_page.table.address')}</Table.HeaderCell>
-              <Table.HeaderCell width="2">{t('ens_list_page.table.land')}</Table.HeaderCell>
-              <Table.HeaderCell width="2">{t('ens_list_page.table.actions')}</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {paginatedItems.map((ens: ENS, index) => {
-              return (
-                <Table.Row className="TableRow" key={index}>
-                  <Table.Cell>
-                    <div className="ens-list-name">
-                      <img
-                        className="ens-list-name-icon"
-                        alt={ens.subdomain}
-                        src={`${MARKETPLACE_API}/ens/generate?ens=${ens.name}&width=330&height=330&onlyLogo=true`}
-                      />
-                      <span className="ens-list-subdomain">
-                        <span>{ens.name}</span>.dcl.eth
-                      </span>
-                      <CopyToClipboard role="button" text={ens.subdomain} showPopup={true} className="copy-to-clipboard">
-                        <DCLIcon aria-label="Copy urn" aria-hidden="false" name="copy outline" />
-                      </CopyToClipboard>
-                    </div>
-                  </Table.Cell>
-                  <Table.Cell>
-                    {this.isAlias(ens) ? (
-                      <span className="ens-list-avatar">
-                        {this.props.avatar ? (
-                          <img
-                            className="ens-list-avatar-img"
-                            src={this.props.avatar.avatar.snapshots.face256}
-                            alt={this.props.avatar.realName}
-                          />
-                        ) : (
-                          <Icon name="profile" />
-                        )}
-                        <span className="ens-list-avatar-name">{ens.name}</span>
-                        {t('ens_list_page.table.you')}
-                      </span>
-                    ) : (
-                      <Button
-                        compact
-                        className="ens-list-btn"
-                        onClick={this.handleUseAsAlias.bind(null, ens.name)}
-                        disabled={!hasProfileCreated}
-                      >
-                        <Icon name="add" />
-                        {t('ens_list_page.button.add_to_avatar')}
-                      </Button>
-                    )}
-                  </Table.Cell>
-                  <Table.Cell>
-                    {ens.ensAddressRecord ? (
-                      <span className="ens-list-address">
-                        <img className="ens-list-address-icon" src={ethereumImg} alt="Ethereum" />
-                        {getCroppedAddress(ens.ensAddressRecord)}
-                        <CopyToClipboard role="button" text={ens.ensAddressRecord} showPopup={true} className="copy-to-clipboard">
-                          <DCLIcon aria-label="Copy urn" aria-hidden="false" name="copy outline" />
-                        </CopyToClipboard>
-                      </span>
-                    ) : (
-                      <Button compact className="ens-list-btn" onClick={this.handleAssignENSAddress.bind(null, ens)}>
-                        <Icon name="add" />
-                        {t('ens_list_page.button.link_to_address')}
-                      </Button>
-                    )}
-                  </Table.Cell>
-                  <Table.Cell>{this.renderLandLinkInfo(ens)}</Table.Cell>
-                  <Table.Cell>
-                    <div className="ens-list-actions">
-                      <Button
-                        secondary
-                        compact
-                        className="ens-list-edit-btn"
-                        target="_blank"
-                        href={`${MARKETPLACE_WEB_URL}/contracts/${REGISTRAR_CONTRACT_ADDRESS}/tokens/${ens.tokenId}/transfer`}
-                      >
-                        <DCLIcon name="exchange" />
-                        {t('ens_list_page.transfer')}
-                      </Button>
-                      <Link to={locations.ensDetail(ens.name)}>
-                        <Button primary compact className="ens-list-edit-btn">
-                          <DCLIcon name="pencil alternate" />
-                          {t('ens_list_page.edit')}
-                        </Button>
-                      </Link>
-                    </div>
-                  </Table.Cell>
-                </Table.Row>
-              )
-            })}
-          </Table.Body>
-        </Table>
-        {totalPages > 1 && (
-          <Pagination
-            firstItem={null}
-            lastItem={null}
-            totalPages={totalPages}
-            activePage={page}
-            onPageChange={(_event, props) => this.setState({ page: +props.activePage! })}
-          />
-        )}
+        <TableContainer
+          children={
+            <TableContent
+              data={this.formatToTable(paginatedItems)}
+              isLoading={this.props.isLoading}
+              activePage={page}
+              setPage={page => this.setState({ page })}
+              totalPages={totalPages}
+              empty={() => null}
+              total={PAGE_SIZE}
+              hasHeaders
+              customHeaders={{
+                name: <span className="ens-list-page-table-headers">{t('ens_list_page.table.name')}</span>,
+                alias: (
+                  <span className="ens-list-page-table-headers">
+                    {t('ens_list_page.table.alias')}
+                    <Popup on="click" content={t('ens_detail_page.tooltips.alias')} trigger={<DCLIcon name="info circle" />} />
+                  </span>
+                ),
+                address: (
+                  <span className="ens-list-page-table-headers">
+                    {t('ens_list_page.table.address')}
+                    <Popup
+                      on="click"
+                      content={t('ens_detail_page.tooltips.address', {
+                        a: (content: string) => (
+                          <a href="https://docs.decentraland.org" rel="noreferrer" className="ens-list-page-ext-link" target="_blank">
+                            {content}
+                          </a>
+                        )
+                      })}
+                      trigger={<DCLIcon name="info circle" />}
+                    />
+                  </span>
+                ),
+                land: (
+                  <span className="ens-list-page-table-headers">
+                    {t('ens_list_page.table.land')}
+                    <Popup
+                      on="click"
+                      content={t('ens_detail_page.tooltips.land', {
+                        a: (content: string) => (
+                          <a href="https://docs.decentraland.org" rel="noreferrer" className="ens-list-page-ext-link" target="_blank">
+                            {content}
+                          </a>
+                        )
+                      })}
+                      trigger={<DCLIcon name="info circle" />}
+                    />
+                  </span>
+                ),
+                actions: <span className="ens-list-page-table-headers">{t('ens_list_page.table.actions')}</span>
+              }}
+            />
+          }
+          tabsList={[]}
+        />
       </div>
     )
   }

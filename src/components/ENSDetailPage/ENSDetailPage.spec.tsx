@@ -1,10 +1,10 @@
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import userEvent from '@testing-library/user-event'
+import { shorten } from 'lib/address'
 import { ENS } from 'modules/ens/types'
 import { renderWithProviders } from 'specs/utils'
 import ENSDetailPage from './ENSDetailPage'
 import { Props } from './ENSDetailPage.types'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getCroppedAddress } from 'components/ENSListPage/utils'
-import userEvent from '@testing-library/user-event'
 
 jest.mock('components/LoggedInDetailPage', () => ({ children }: any) => <div>{children}</div>)
 function renderENSDetailPage(props: Partial<Props>) {
@@ -94,7 +94,7 @@ describe('when ens is defined', () => {
 
     it('should show cropped address info', () => {
       const screen = renderENSDetailPage({ ens })
-      expect(screen.getByText(getCroppedAddress(address))).toBeInTheDocument()
+      expect(screen.getByText(shorten(address))).toBeInTheDocument()
     })
 
     it('should show edit address button', () => {
@@ -121,13 +121,13 @@ describe('when ens is defined', () => {
 
     it('should show add address button', () => {
       const screen = renderENSDetailPage({ ens })
-      expect(screen.getByRole('button', { name: t('ens_list_page.button.link_to_address') })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: t('ens_detail_page.assign_address') })).toBeInTheDocument()
     })
 
     it('should open EnsMapAddressModal when link button is clicked', () => {
       const openModalMock = jest.fn()
       const screen = renderENSDetailPage({ ens, onOpenModal: openModalMock })
-      const linkAddressBtn = screen.getByRole('button', { name: t('ens_list_page.button.link_to_address') })
+      const linkAddressBtn = screen.getByRole('button', { name: t('ens_detail_page.assign_address') })
       userEvent.click(linkAddressBtn)
       expect(openModalMock).toHaveBeenCalledWith('EnsMapAddressModal', { ens })
     })

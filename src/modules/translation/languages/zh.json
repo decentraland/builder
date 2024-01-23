@@ -619,7 +619,14 @@
     "land": "土地",
     "unassign": "未分配",
     "set_as_primary": "设置为主要",
-    "edit_address": "编辑地址"
+    "edit_address": "编辑地址",
+    "assign_address": "分配地址值",
+    "point_location": "点位置",
+    "tooltips": {
+      "alias": "分配的别名可以是每个头像",
+      "address": "它可以在任何Web3事务中的外部使用. <a>阅读ENS控制器名称的好处</a>",
+      "land": "土地位于空间资产，最低单位是包裹, <a>了解有关元优势的更多信息</a>"
+    }
   },
   "ens_map_address_modal": {
     "title": "链接到以太坊地址",
