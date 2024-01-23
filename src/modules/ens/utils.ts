@@ -5,9 +5,12 @@ import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { extractEntityId } from 'lib/urn'
 import { WorldInfo, content } from 'lib/api/worlds'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
-import { Land } from 'modules/land/types'
+import { Land, LandType } from 'modules/land/types'
 import { REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { ENS, WorldStatus } from './types'
+import { getCenter, getSelection } from 'modules/land/utils'
+import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
+import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export const PRICE_IN_WEI = '100000000000000000000' // 100 MANA
 export const PRICE = ethers.utils.formatEther(PRICE_IN_WEI)
@@ -119,4 +122,28 @@ export async function addWorldStatusToEachENS(enss: ENS[]) {
   }
 
   return enssWithWorldStatus
+}
+
+export async function getLandRedirectionHashes(builderClient: BuilderClient, lands: Land[]) {
+  const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
+  let coordsWithHashesList: (LandCoords & LandHashes)[] = []
+  if (coordsList.length > 0) {
+    coordsWithHashesList = await builderClient.getLandRedirectionHashes(coordsList, getCurrentLocale().locale)
+  }
+  const landHashes: { id: string; hash: string }[] = []
+
+  for (const { x, y, contentHash } of coordsWithHashesList) {
+    const land = lands.find(land => {
+      if (land.type === LandType.ESTATE) {
+        return land.parcels!.some(parcel => parcel.x === x && parcel.y === y)
+      }
+      return land.x === x && land.y === y
+    })
+
+    if (land) {
+      landHashes.push({ hash: `0x${contentHash}`, id: land.id })
+    }
+  }
+
+  return landHashes
 }

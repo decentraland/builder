@@ -615,7 +615,14 @@
     "land": "Land",
     "unassign": "Unassigned",
     "set_as_primary": "Set as primary",
-    "edit_address": "Edit address"
+    "edit_address": "Edit address",
+    "assign_address": "Assign address value",
+    "point_location": "Point location",
+    "tooltips": {
+      "alias": "The assigned alias can be only one per Avatar",
+      "address": "It can be used in external in any WEB3 transaction. Read the <a>benefits of a ENS</a> controller NAME",
+      "land": "Lands are Located spacial Assets, minimum units are Parcels, learn more about <a>Metaverse advantages</a>"
+    }
   },
   "ens_map_address_modal": {
     "title": "Link to an Ethereum Address",

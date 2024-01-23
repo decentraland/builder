@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo } from 'react'
+import classNames from 'classnames'
 import { config } from 'config'
 import { Link } from 'react-router-dom'
-import { Button, Icon as DCLIcon } from 'decentraland-ui'
+import { Button, Icon as DCLIcon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { shorten } from 'lib/address'
 import { isCoords } from 'modules/land/utils'
 import { locations } from 'routing/locations'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { getCroppedAddress } from 'components/ENSListPage/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import Icon from 'components/Icon'
 import ethereumImg from '../../icons/ethereum.svg'
@@ -40,118 +41,162 @@ export default function ENSDetailPage(props: Props) {
   }, [onNavigate, ens?.subdomain])
 
   const aliasField = useMemo(() => {
+    let field: React.ReactNode
     if (alias !== ens?.name) {
-      return (
-        <div className={styles.field}>
-          <span className={styles.fieldTitle}>{t('ens_detail_page.alias')}</span>
-          <span className={styles.unassign}>{t('ens_detail_page.unassign')}</span>
-          <Button compact primary onClick={handleSetAsAlias} className={styles.actionBtn}>
-            {t('ens_detail_page.set_as_primary')}
+      field = (
+        <div className={styles.editableField}>
+          <span className={styles.emptyFieldPlaceholder}>{t('ens_detail_page.unassign')}</span>
+          <Button compact primary onClick={handleSetAsAlias} className={styles.actionBtn} aria-label={t('ens_detail_page.set_as_primary')}>
+            <DCLIcon name="user plus" />
           </Button>
         </div>
       )
+    } else {
+      field = (
+        <div className={styles.editableField}>
+          <span className={styles.avatar} data-testid="alias-avatar">
+            {avatar ? (
+              <img className={styles.avatarImg} src={avatar.avatar.snapshots.face256} alt={avatar.realName} />
+            ) : (
+              <Icon name="profile" />
+            )}
+            <span className={styles.avatarName}>{ens.name}</span>
+            {t('ens_list_page.table.you')}
+          </span>
+        </div>
+      )
     }
+
     return (
       <div className={styles.field}>
-        <span className={styles.fieldTitle}>{t('ens_detail_page.alias')}</span>
-        <span className={styles.avatar} data-testid="alias-avatar">
-          {avatar ? (
-            <img className={styles.avatarImg} src={avatar.avatar.snapshots.face256} alt={avatar.realName} />
-          ) : (
-            <Icon name="profile" />
-          )}
-          <span className={styles.avatarName}>{ens.name}</span>
-          {t('ens_list_page.table.you')}
+        <span className={styles.fieldTitle}>
+          {t('ens_detail_page.alias')}
+          <Popup on="click" content={t('ens_detail_page.tooltips.alias')} trigger={<DCLIcon name="info circle" />} />
         </span>
+        {field}
       </div>
     )
   }, [ens?.name, avatar, alias, handleSetAsAlias])
 
   const addressField = useMemo(() => {
+    let field: React.ReactNode = null
     if (!ens?.ensAddressRecord) {
-      return (
-        <div className={styles.field}>
-          <span className={styles.fieldTitle}>{t('ens_detail_page.address')}</span>
-          <Button compact secondary onClick={handleAssignENSAddress} className={styles.ensBtn}>
-            <DCLIcon name="add" />
-            {t('ens_list_page.button.link_to_address')}
+      field = (
+        <div className={styles.editableField}>
+          <span className={styles.emptyFieldPlaceholder}>{t('ens_detail_page.assign_address')}</span>
+          <Button
+            compact
+            secondary
+            onClick={handleAssignENSAddress}
+            className={styles.actionBtn}
+            aria-label={t('ens_detail_page.assign_address')}
+          >
+            <DCLIcon name="pencil alternate" />
           </Button>
         </div>
+      )
+    } else {
+      field = (
+        <span className={classNames(styles.editableField, styles.address)}>
+          <span className={styles.editableFieldValue}>
+            <img src={ethereumImg} alt="Ethereum" />
+            {shorten(ens.ensAddressRecord)}
+          </span>
+          <Button
+            compact
+            secondary
+            inverted
+            onClick={handleAssignENSAddress}
+            className={styles.actionBtn}
+            aria-label={t('ens_detail_page.edit_address')}
+          >
+            <DCLIcon name="pencil alternate" />
+          </Button>
+        </span>
       )
     }
     return (
       <div className={styles.field}>
-        <span className={styles.fieldTitle}>{t('ens_detail_page.address')}</span>
-        <span className={styles.address}>
-          <img src={ethereumImg} alt="Ethereum" />
-          {getCroppedAddress(ens.ensAddressRecord)}
-          <CopyToClipboard role="button" text={ens.ensAddressRecord} showPopup={true} className="copy-to-clipboard">
-            <DCLIcon aria-label="Copy urn" aria-hidden="false" name="copy outline" />
-          </CopyToClipboard>
+        <span className={styles.fieldTitle}>
+          {t('ens_detail_page.address')}
+          <Popup
+            on="click"
+            content={t('ens_detail_page.tooltips.address', {
+              a: (content: string) => (
+                <a href="https://docs.decentraland.org" rel="noreferrer" className={styles.externalLink} target="_blank">
+                  {content}
+                </a>
+              )
+            })}
+            trigger={<DCLIcon name="info circle" />}
+          />
         </span>
-        <Button compact primary onClick={handleAssignENSAddress} className={styles.actionBtn}>
-          {t('ens_detail_page.edit_address')}
-        </Button>
+        {field}
       </div>
     )
   }, [ens?.ensAddressRecord, handleAssignENSAddress])
 
   const landField = useMemo(() => {
+    let field: React.ReactNode = null
     if (!ens?.landId) {
-      return (
-        <div className={styles.field}>
-          <span className={styles.fieldTitle}>{t('ens_detail_page.land')}</span>
-          <Button compact className="ens-list-btn" onClick={handleAssignENS}>
-            <Icon name="pin" />
-            {t('ens_list_page.button.assign_to_land')}
+      field = (
+        <div className={styles.editableField}>
+          <span className={styles.emptyFieldPlaceholder}>{t('ens_detail_page.point_location')}</span>
+          <Button compact className={styles.actionBtn} onClick={handleAssignENS} aria-label={t('ens_list_page.button.assign_to_land')}>
+            <DCLIcon name="crosshairs" />
+          </Button>
+        </div>
+      )
+    } else if (isCoords(ens.landId)) {
+      field = (
+        <div className={styles.editableField} data-testid="land-field">
+          <span className={styles.editableFieldValue}>
+            <div className={styles.pin}>
+              <Icon name="pin" />
+            </div>
+            {ens?.landId}
+          </span>
+          <Button compact onClick={handleAssignENS} className={styles.actionBtn} aria-label={t('ens_list_page.button.assign_to_land')}>
+            <DCLIcon name="pencil alternate" />
+          </Button>
+        </div>
+      )
+    } else {
+      field = (
+        <div className={styles.editableField} data-testid="estate-field">
+          <span className={styles.editableFieldValue}>
+            <div className={styles.pin}>
+              <Icon name="pin" />
+            </div>
+            {`Estate (${ens.landId})`}
+          </span>
+          <Button compact className={styles.actionBtn} onClick={handleAssignENS} aria-label={t('ens_list_page.button.assign_to_land')}>
+            <DCLIcon name="pencil alternate" />
           </Button>
         </div>
       )
     }
-    if (isCoords(ens.landId)) {
-      return (
-        <div className={styles.field} data-testid="land-field">
-          <span className={styles.fieldTitle}>{t('ens_detail_page.land')}</span>
-          <div className="ens-list-land">
-            <span className="ens-list-land-coord">
-              <Icon name="pin" />
-              {ens?.landId}
-            </span>
-            <Button
-              compact
-              className="ens-list-land-redirect"
-              target="_blank"
-              href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`}
-              rel="noopener noreferrer"
-            >
-              <Icon name="right-round-arrow" className="ens-list-land-redirect-icon" />
-            </Button>
-          </div>
-        </div>
-      )
-    } else {
-      return (
-        <div className={styles.field} data-testid="estate-field">
-          <span className={styles.fieldTitle}>{t('ens_detail_page.land')}</span>
-          <div className="ens-list-land">
-            <span className="ens-list-land-coord">
-              <Icon name="pin" />
-              {`Estate (${ens.landId})`}
-            </span>
-            <Button
-              compact
-              className="ens-list-land-redirect"
-              target="_blank"
-              href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`}
-              rel="noopener noreferrer"
-            >
-              <Icon name="right-round-arrow" className="ens-list-land-redirect-icon" />
-            </Button>
-          </div>
-        </div>
-      )
-    }
-  }, [ens?.landId, ens?.subdomain, handleAssignENS])
+
+    return (
+      <div className={styles.field}>
+        <span className={styles.fieldTitle}>
+          {t('ens_detail_page.land')}
+          <Popup
+            on="click"
+            content={t('ens_detail_page.tooltips.land', {
+              a: (content: string) => (
+                <a href="https://docs.decentraland.org" rel="noreferrer" className={styles.externalLink} target="_blank">
+                  {content}
+                </a>
+              )
+            })}
+            trigger={<DCLIcon name="info circle" />}
+          />
+        </span>
+        {field}
+      </div>
+    )
+  }, [ens?.landId, handleAssignENS])
 
   return (
     <LoggedInDetailPage activeTab={NavigationTab.NAMES} isPageFullscreen={true} isLoading={isLoading || !ens}>
@@ -172,7 +217,7 @@ export default function ENSDetailPage(props: Props) {
                   <span>{ens?.name}</span>.dcl.eth
                 </span>
                 <CopyToClipboard role="button" text={ens?.subdomain || ''} showPopup={true} className="copy-to-clipboard">
-                  <DCLIcon aria-label="Copy urn" aria-hidden="false" name="copy outline" />
+                  <DCLIcon aria-label="copy name" aria-hidden="false" name="clone outline" />
                 </CopyToClipboard>
               </span>
             </div>
