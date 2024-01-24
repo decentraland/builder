@@ -136,7 +136,8 @@
       "^@babylonjs.*$": "identity-obj-proxy",
       "^.*/modules/curations/collectionCuration/toasts.*$": "identity-obj-proxy",
       "@dcl/ecs": "identity-obj-proxy",
-      "@dcl/single-sign-on-client": "identity-obj-proxy"
+      "@dcl/single-sign-on-client": "identity-obj-proxy",
+      "@0xsquid/sdk": "identity-obj-proxy"
     }
   },
   "engines": {
