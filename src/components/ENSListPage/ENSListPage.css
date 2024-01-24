@@ -126,7 +126,7 @@
   background: #393640;
   width: fit-content;
   padding: 5px;
-  border-radius: 16px;
+  border-radius: 32px;
   font-weight: bold;
   padding-right: 10px;
 }
@@ -139,7 +139,7 @@
 
 .ENSListPage .ens-list-land-coord {
   display: flex;
-  height: 34px;
+  height: 40px;
   align-items: center;
   padding: 0 10px;
   background: #393640;
@@ -153,7 +153,7 @@
 .ENSListPage .ens-list-land-redirect {
   width: fit-content;
   min-width: unset;
-  height: 34px;
+  height: 40px;
   padding: 0 6px;
   display: flex;
   align-items: center;
@@ -167,11 +167,11 @@
   background: #393640;
   width: fit-content;
   padding: 5px;
-  border-radius: 16px;
+  border-radius: 32px;
 }
 
 .ENSListPage .ens-list-address-icon {
-  width: 25px;
+  width: 32px;
 }
 
 .ENSListPage .ens-page-content {
@@ -217,6 +217,15 @@
   padding-left: 10px;
   padding-right: 10px;
   text-transform: none;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.ENSListPage .ens-list-edit-btn.ui.button i,
+.ENSListPage .ens-list-transfer-btn.ui.button i {
+  font-size: 13px;
+  line-height: 13px;
 }
 
 .ENSListPage .ens-list-transfer-btn.ui.button {
@@ -229,15 +238,15 @@
 }
 
 .ENSListPage .ens-list-name-icon {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 5px;
   margin-right: 5px;
 }
 
 .ENSListPage .ens-list-avatar-img {
-  width: 25px;
-  height: 25px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #43404a;
 }
@@ -324,15 +333,15 @@
 }
 
 .ENSListPage .ens-list-name-icon {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 5px;
   margin-right: 5px;
 }
 
 .ENSListPage .ens-list-avatar-img {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #43404a;
 }

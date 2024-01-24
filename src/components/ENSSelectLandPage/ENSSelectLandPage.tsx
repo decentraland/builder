@@ -23,10 +23,6 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
     }
   }
 
-  handleBack = () => {
-    this.props.onNavigate(locations.root())
-  }
-
   handleSelectLand = (x: number, y: number) => {
     const selectedLand = this.getOwnedLand(x, y)
     if (selectedLand) {
@@ -101,7 +97,7 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
           <NotFound />
         ) : (
           <>
-            <Back absolute onClick={this.handleBack} />
+            <Back absolute onClick={onBack} />
             <Narrow>
               <Row>
                 <Column>
