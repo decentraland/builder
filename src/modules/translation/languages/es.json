@@ -608,7 +608,13 @@
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
     "items": "{count} {count, plural, one {resultado} other {resultados}}",
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado",
-    "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias."
+    "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias.",
+    "empty_state": {
+      "title": "Nada aquí todavía",
+      "subtitle": "Tenga presencia en el Metaverso con un nombre de usuario libre de números al final (e.j. Genesis#1234).",
+      "mint_name": "Agregar nombre",
+      "go_to_marketplace": "Visitar el marketplace"
+    }
   },
   "ens_detail_page": {
     "name": "Nombre",
