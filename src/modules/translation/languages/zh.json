@@ -610,7 +610,13 @@
     "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
     "items": "{count}结果",
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配",
-    "not_profile_created": "您需要先进入世界才能设置别名。"
+    "not_profile_created": "您需要先进入世界才能设置别名。",
+    "empty_state": {
+      "title": "这里什么都没有",
+      "subtitle": "用用户名在元元中拥有无数数字 (例如。 Genesis#1234).",
+      "mint_name": "薄荷名称",
+      "go_to_marketplace": "访问市场"
+    }
   },
   "ens_detail_page": {
     "name": "姓名",

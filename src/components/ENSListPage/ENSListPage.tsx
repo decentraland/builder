@@ -28,6 +28,7 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ethereumImg from '../../icons/ethereum.svg'
+import namesImg from '../../images/empty-names.svg'
 import { Props, State, SortBy } from './ENSListPage.types'
 import './ENSListPage.css'
 
@@ -390,6 +391,26 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     }))
   }
 
+  renderEmptyEnsList() {
+    return (
+      <div className="ens-list-page-empty">
+        <div className="ens-list-page-empty-image">
+          <img src={namesImg} alt="empty names" />
+        </div>
+        <h3 className="ens-list-page-empty-title">{t('ens_list_page.empty_state.title')}</h3>
+        <span className="ens-list-page-empty-subtitle">{t('ens_list_page.empty_state.subtitle')}</span>
+        <div className="ens-list-page-empty-actions">
+          <Button primary href={`${MARKETPLACE_WEB_URL}/names/claim`} target="_blank">
+            {t('ens_list_page.empty_state.mint_name')}
+          </Button>
+          <Button secondary href={`${MARKETPLACE_WEB_URL}/names/browse?section=ens`} target="_blank">
+            {t('ens_list_page.empty_state.go_to_marketplace')}
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   renderNewEnsList() {
     const { ensList } = this.props
     const { page } = this.state
@@ -397,6 +418,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     const total = ensList.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
     const paginatedItems = this.paginate()
+
     return (
       <div className="ens-page-content">
         <div className="ens-page-header">
@@ -405,9 +427,11 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
             {t('ens_list_page.result', { count: ensList.length })}
           </div>
           <div className="ens-page-actions">
-            <div>
-              {t('ens_list_page.sort_by')} {ensList.length > 1 ? this.renderSortDropdown() : null}
-            </div>
+            {ensList.length > 1 ? (
+              <div>
+                {t('ens_list_page.sort_by')} {this.renderSortDropdown()}
+              </div>
+            ) : null}
             <Button compact href={`${MARKETPLACE_WEB_URL}/names/claim`} target="_blank" primary>
               {t('ens_list_page.mint_name')}
             </Button>
@@ -421,7 +445,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               activePage={page}
               setPage={page => this.setState({ page })}
               totalPages={totalPages}
-              empty={() => null}
+              empty={() => this.renderEmptyEnsList()}
               total={PAGE_SIZE}
               hasHeaders
               customHeaders={{
