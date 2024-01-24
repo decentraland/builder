@@ -2,6 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "ignorePatterns": [
+    "__mocks__/*",
     "src/contracts/*",
     "src/ecsScene/*",
     "scripts/*.cjs",

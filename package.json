@@ -41,7 +41,7 @@
     "decentraland-ecs": "^6.6.1-20201020183014.commit-bdc29ef-hotfix",
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^1.47.0",
-    "decentraland-ui": "^5.2.0",
+    "decentraland-ui": "^5.4.3",
     "ethers": "^5.6.8",
     "file-saver": "^2.0.1",
     "graphql": "^15.8.0",
@@ -126,6 +126,7 @@
     "test:coverage": "npm run test -- --coverage",
     "eject": "react-scripts eject",
     "prebuild": "node scripts/prebuild.cjs",
+    "build:website": "tsc && node --max_old_space_size=8192 ./node_modules/vite/bin/vite.js build",
     "build": "npm run postinstall && npm run prebuild && npm run build:scene && tsc && node --max_old_space_size=8192 ./node_modules/vite/bin/vite.js build",
     "build:ci": "npm run lint && npm run build",
     "preview": "vite preview",
@@ -143,31 +144,8 @@
     "pre-commit:fix:prettier": "prettier --config .prettierrc.json --write",
     "prepare": "husky install"
   },
-  "jest": {
-    "moduleNameMapper": {
-      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
-      "^!?raw-loader!.*$": "identity-obj-proxy",
-      "^three/.*$": "identity-obj-proxy",
-      "^@babylonjs.*$": "identity-obj-proxy",
-      "^.*/modules/curations/collectionCuration/toasts.*$": "identity-obj-proxy",
-      "@dcl/ecs": "identity-obj-proxy",
-      "@dcl/single-sign-on-client": "identity-obj-proxy"
-    }
-  },
   "engines": {
-    "node": "16.13.0"
+    "node": "18"
   },
-  "browserslist": [
-    "chrome >= 67",
-    "edge >= 79",
-    "firefox >= 68",
-    "opera >= 54",
-    "safari >= 14"
-  ],
-  "homepage": "",
-  "overrides": {
-    "@walletconnect/ethereum-provider": "2.9.2",
-    "@walletconnect/core": "2.9.2",
-    "@walletconnect/keyvaluestorage": "1.0.0"
-  }
+  "homepage": "https://decentraland.org"
 }

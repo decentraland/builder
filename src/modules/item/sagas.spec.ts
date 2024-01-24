@@ -1781,7 +1781,6 @@ describe('when handling the setItemCollection action', () => {
       title: 'Title',
       body: 'Body'
     } as Omit<Toast, 'id'>
-    jest.spyOn(toasts, 'getSuccessfulMoveItemToAnotherCollectionToast').mockReturnValueOnce(toast)
   })
 
   it('should put a save item success action and show the successful move item to another collection toast', () => {
@@ -1789,12 +1788,13 @@ describe('when handling the setItemCollection action', () => {
       .provide([
         [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
         [select(getLocation), { pathname: 'collections' }],
-        [select(getCollection, collection.id), collection.id],
+        [select(getCollection, collection.id), collection],
         [select(getItem, item.id), item],
         [select(getAddress), mockAddress],
-        [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
+        [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()],
+        [call(toasts.getSuccessfulMoveItemToAnotherCollectionToast, item, collection), toast]
       ])
-      .put.like({ action: { type: SHOW_TOAST, payload: { toast, position: 'bottom center' } } })
+      .put.like({ action: { type: SHOW_TOAST, payload: { toast, position: 'bottom center' }, meta: undefined } })
       .put(closeModal('MoveItemToAnotherCollectionModal'))
       .dispatch(saveItemSuccess(item, {}))
       .dispatch(setItemCollection(item, collection.id))

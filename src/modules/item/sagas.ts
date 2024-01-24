@@ -12,6 +12,7 @@ import { closeAllModals, closeModal } from 'decentraland-dapps/dist/modules/moda
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
+import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
@@ -588,7 +589,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     yield put(saveItemRequest(newItem, {}))
     yield take(SAVE_ITEM_SUCCESS)
     yield put(closeModal('MoveItemToAnotherCollectionModal'))
-    yield put(showToast(getSuccessfulMoveItemToAnotherCollectionToast(item, collection), 'bottom center'))
+    const toast: Omit<Toast, 'id'> = yield call(getSuccessfulMoveItemToAnotherCollectionToast, item, collection)
+    yield put(showToast(toast, 'bottom center'))
     // Get the created toast id to close if the user clicks on the redirect link or changes the page
     const {
       payload: { id: toastId }
