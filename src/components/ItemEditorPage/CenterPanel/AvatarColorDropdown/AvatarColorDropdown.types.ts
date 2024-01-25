@@ -1,4 +1,4 @@
-import { Color4 } from 'decentraland-ecs'
+import type { Color4 } from 'decentraland-ecs'
 
 export type Props = {
   currentColor: Color4

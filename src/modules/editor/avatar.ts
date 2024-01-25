@@ -1,5 +1,5 @@
 import { BodyShape } from '@dcl/schemas'
-import { Color4 } from 'decentraland-ecs'
+import { Color4 } from '@babylonjs/core'
 
 export function getSkinColors() {
   return [

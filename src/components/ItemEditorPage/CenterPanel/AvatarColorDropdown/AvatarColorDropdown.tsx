@@ -1,5 +1,5 @@
 import React from 'react'
-import { Color4 } from 'decentraland-ecs'
+import type { Color4 } from 'decentraland-ecs'
 import { Dropdown, DropdownItemProps } from 'decentraland-ui'
 import { Props } from './AvatarColorDropdown.types'
 import './AvatarColorDropdown.css'

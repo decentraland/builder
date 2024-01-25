@@ -1,4 +1,4 @@
-import { Wearable } from 'decentraland-ecs'
+import type { Wearable } from 'decentraland-ecs'
 import { takeLatest, select, put, call, delay, take } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
 import { IPreviewController, PreviewEmoteEventType } from '@dcl/schemas'

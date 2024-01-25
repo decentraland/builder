@@ -1,5 +1,4 @@
 /* eslint-disable import/no-webpack-loader-syntax */
-import * as ECS from 'decentraland-ecs'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
@@ -81,9 +80,10 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
 export async function createGameFile(args: { project: Project; scene: SceneSDK6; rotation: Rotation }, isDeploy = false) {
   const { scene, project, rotation } = args
   const useLightweight = isDeploy && !hasScripts(scene)
-  const [SceneWriterModule, ecsAPI] = await Promise.all([
+  const [SceneWriterModule, ecsAPI, ECS] = await Promise.all([
     import('dcl-scene-writer'),
-    import('decentraland-ecs/types/dcl/decentraland-ecs.api?raw').then(module => JSON.parse(module.default))
+    import('decentraland-ecs/types/dcl/decentraland-ecs.api?raw').then(module => JSON.parse(module.default)),
+    import('decentraland-ecs')
   ])
   const Writer = useLightweight ? SceneWriterModule.LightweightWriter : SceneWriterModule.SceneWriter
   const writer = new Writer(ECS, ecsAPI)
