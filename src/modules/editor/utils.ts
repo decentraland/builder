@@ -13,11 +13,6 @@ import { EntityDefinition, ComponentDefinition, ComponentType, SceneSDK6 } from 
 import { injectScript } from 'routing/utils'
 import { base64ArrayBuffer } from './base64'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-// const script = require('raw-loader!../../ecsScene/scene.js').default
-// TODO VITE CHECK IF DEFAULT IS NEEDED
-import script from '../../ecsScene/scene.js?raw'
-
 const PUBLIC_URL = process.env.VITE_BASE_URL
 export const THUMBNAIL_WIDTH = 984
 export const THUMBNAIL_HEIGHT = 728
@@ -26,8 +21,9 @@ export const ROTATION_GRID_RESOLUTION = Math.PI / 16
 export const SCALE_GRID_RESOLUTION = 0.5
 export const SCALE_MIN_LIMIT = 0.001
 
-export function getNewEditorScene(project: Project): EditorScene {
+export async function getNewEditorScene(project: Project): Promise<EditorScene> {
   const encoder = new TextEncoder()
+  const script = (await import('../../ecsScene/scene.js?raw')).default as unknown as string
   const mappings = {
     'game.js': `data:application/javascript;base64,${base64ArrayBuffer(encoder.encode(script))}`,
     'scene.json': 'Qm' // stub required by the client

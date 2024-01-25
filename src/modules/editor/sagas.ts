@@ -186,7 +186,7 @@ function* handleCreateEditorScene(action: CreateEditorSceneAction) {
 }
 
 function* createNewEditorScene(project: Project) {
-  const newScene: EditorScene = getNewEditorScene(project)
+  const newScene: EditorScene = yield call(getNewEditorScene, project)
 
   const msg = {
     type: 'update',

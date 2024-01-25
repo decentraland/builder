@@ -30,7 +30,6 @@ export default async (): Promise<Config> => {
       '^.*/modules/curations/collectionCuration/toasts.*$': 'identity-obj-proxy',
       '@dcl/ecs': 'identity-obj-proxy',
       canvas: 'identity-obj-proxy',
-      // 'decentraland-ecs': 'identity-obj-proxy',
       '^.+?raw': 'identity-obj-proxy',
       '@dcl/single-sign-on-client': 'identity-obj-proxy',
       '\\.(css|less)$': 'identity-obj-proxy',

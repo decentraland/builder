@@ -1,10 +1,7 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 import * as ECS from 'decentraland-ecs'
-import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import packageJson from 'decentraland/samples/ecs/package.json'
 import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
-import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentType, ComponentDefinition, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
@@ -16,21 +13,7 @@ import { reHashContent } from 'modules/deployment/contentUtils'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getParcelOrientation } from './utils'
 
-// Raw load
-import sceneECS from '../../ecsScene/ecs.js.raw?raw'
-import amd from '../../ecsScene/amd-loader.js.raw?raw'
-import ecsAPI from 'decentraland-ecs/types/dcl/decentraland-ecs.api?raw'
-import scriptLoader from '../../ecsScene/remote-loader.js.raw?raw'
-
 const SCENE_TEMPLATE_URL = 'https://raw.githubusercontent.com/decentraland/sdk-empty-scene-template/main'
-
-// TODO VITE CHECK IF IT WORKS
-import Dockerfile from 'decentraland/samples/ecs/Dockerfile?raw'
-import builderChannelRaw from 'decentraland-builder-scripts/lib/channel?raw'
-import builderInventoryRaw from 'decentraland-builder-scripts/lib/inventory?raw'
-// const Dockerfile = require('!raw-loader!decentraland/samples/ecs/Dockerfile').default
-// const builderChannelRaw = require('raw-loader!decentraland-builder-scripts/lib/channel').default
-// const builderInventoryRaw = require('raw-loader!decentraland-builder-scripts/lib/inventory').default
 
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
 
@@ -83,10 +66,10 @@ export async function createFiles(args: {
     // @ts-ignore: 'builder.json' is specified more than once, but don't want to break anything
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
-    [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
+    [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? await createGameFileBundle(gameFile) : gameFile,
     [EXPORT_PATH.THUMBNAIL_FILE]: await createThumbnailBlob(thumbnail, isEmpty),
-    ...createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty, world }),
-    ...createStaticFiles(),
+    ...(await createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty, world })),
+    ...(await createStaticFiles()),
     ...files
   }
 }
@@ -98,10 +81,12 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
 export async function createGameFile(args: { project: Project; scene: SceneSDK6; rotation: Rotation }, isDeploy = false) {
   const { scene, project, rotation } = args
   const useLightweight = isDeploy && !hasScripts(scene)
-  const Writer = useLightweight ? LightweightWriter : SceneWriter
+  const [SceneWriterModule, ecsAPI] = await Promise.all([
+    import('dcl-scene-writer'),
+    import('decentraland-ecs/types/dcl/decentraland-ecs.api?raw').then(module => JSON.parse(module.default))
+  ])
+  const Writer = useLightweight ? SceneWriterModule.LightweightWriter : SceneWriterModule.SceneWriter
   const writer = new Writer(ECS, ecsAPI)
-  // TODO VITE CHECK IF IT WORKS
-  // const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
   const { cols, rows } = project.layout
   const sceneEntity = new ECS.Entity()
 
@@ -216,14 +201,16 @@ export async function createGameFile(args: { project: Project; scene: SceneSDK6;
       continue
     }
   }
-  console.log('Has reached here!')
   let code = writer.emitCode()
 
   // SCRIPTS SECTION
   if (scripts.size > 0) {
     if (isDeploy) {
-      // TODO VITE SEE IF IT WORKS
-      // const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw').default
+      const [scriptLoader, builderChannelRaw, builderInventoryRaw] = await Promise.all([
+        import('../../ecsScene/remote-loader.js.raw?raw').then(module => module.default),
+        import('decentraland-builder-scripts/lib/channel?raw').then(module => module.default),
+        import('decentraland-builder-scripts/lib/inventory?raw').then(module => module.default)
+      ])
 
       // create executeScripts function
       let executeScripts = 'async function executeScripts() {'
@@ -314,11 +301,11 @@ export async function createGameFile(args: { project: Project; scene: SceneSDK6;
   return code
 }
 
-export function createGameFileBundle(gameFile: string): string {
-  // TODO VITE, check if it works
-  // const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw').default
-  // const amd = require('!raw-loader!../../ecsScene/amd-loader.js.raw').default
-
+export async function createGameFileBundle(gameFile: string): Promise<string> {
+  const [sceneECS, amd] = await Promise.all([
+    import('../../ecsScene/ecs.js.raw?raw').then(module => module.default),
+    import('../../ecsScene/amd-loader.js.raw?raw').then(module => module.default)
+  ])
   const code = `// ECS
 ${sceneECS}
 // AMD
@@ -328,9 +315,9 @@ ${gameFile}`
   return code
 }
 
-export function createStaticFiles() {
+export async function createStaticFiles() {
   return {
-    [EXPORT_PATH.DOCKER_FILE]: Dockerfile,
+    [EXPORT_PATH.DOCKER_FILE]: (await import('decentraland/samples/ecs/Dockerfile?raw')).default,
     [EXPORT_PATH.DCLIGNORE_FILE]: [
       '.*',
       'package.json',
@@ -430,7 +417,7 @@ export async function downloadFiles(args: {
   return files
 }
 
-export function createDynamicFiles(args: {
+export async function createDynamicFiles(args: {
   project: Project
   scene: SceneSDK6
   point: Coordinate
@@ -441,7 +428,10 @@ export function createDynamicFiles(args: {
   world?: string
 }) {
   const { project, scene, rotation, point, thumbnail, author, isEmpty, world } = args
-
+  const [packageJson, tsconfig] = await Promise.all([
+    import('decentraland/samples/ecs/package.json'),
+    import('decentraland/samples/ecs/tsconfig.json')
+  ])
   const files = {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify({
       version: MANIFEST_FILE_VERSION,

@@ -118,7 +118,8 @@
     "rollup-plugin-polyfill-node": "^0.13.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
-    "vite": "^5.0.12"
+    "vite": "^5.0.12",
+    "vite-plugin-node-polyfills": "^0.19.0"
   },
   "scripts": {
     "postinstall": "node ./scripts/postinstall.cjs",
@@ -147,5 +148,5 @@
   "engines": {
     "node": "18"
   },
-  "homepage": "https://decentraland.org"
+  "homepage": ""
 }
