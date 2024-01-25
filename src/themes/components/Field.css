@@ -42,3 +42,12 @@
 .dcl.field .ui.input.rounded ~ .message {
   display: none;
 }
+
+.rounded-address .dui-address-field__address {
+  font-size: 15px;
+  bottom: 8px;
+}
+
+.dui-address-field__input--with-address.ui.icon.input.rounded input {
+  padding-right: 160px !important;
+}

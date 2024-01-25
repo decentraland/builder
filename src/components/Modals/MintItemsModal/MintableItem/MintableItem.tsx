@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Row, Column, Field, Section, InputOnChangeData } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { AddressField } from 'decentraland-dapps/dist/components/AddressField'
 
 import { isValid } from 'lib/address'
 import ItemImage from 'components/ItemImage'
@@ -78,7 +79,7 @@ export default class MintableItem extends React.PureComponent<Props> {
   }
 
   render() {
-    const { item, mints } = this.props
+    const { item, mints, isEnsAddressEnabled } = this.props
 
     return (
       <div className="MintableItem">
@@ -102,15 +103,24 @@ export default class MintableItem extends React.PureComponent<Props> {
         </Row>
         {mints.map(({ address, amount }, index) => (
           <Section key={index} className="mint" size="tiny">
-            <Field
-              className="rounded"
-              type="address"
-              placeholder={t('global.address')}
-              value={address || ''}
-              message={undefined}
-              error={!this.isValidAddress(address)}
-              onChange={this.getChangeAddressHandler(index)}
-            />
+            {isEnsAddressEnabled ? (
+              <AddressField
+                value={address}
+                className="rounded-address"
+                fieldClassName="rounded"
+                onChange={this.getChangeAddressHandler(index)}
+              />
+            ) : (
+              <Field
+                className="rounded"
+                type="address"
+                placeholder={t('global.address')}
+                value={address || ''}
+                message={undefined}
+                error={!this.isValidAddress(address)}
+                onChange={this.getChangeAddressHandler(index)}
+              />
+            )}
             <Field
               className="rounded"
               type="number"

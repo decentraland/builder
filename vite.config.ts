@@ -33,7 +33,6 @@ export default defineConfig(({ mode }) => {
         modules: path.resolve(__dirname, 'src/modules'),
         routing: path.resolve(__dirname, 'src/routing'),
         specs: path.resolve(__dirname, 'src/specs')
-        // themes: path.resolve(__dirname, 'src/themes')
       }
     },
     server: {

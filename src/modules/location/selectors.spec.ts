@@ -3,7 +3,7 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { RootState } from 'modules/common/types'
 import { Item, ItemType } from 'modules/item/types'
 import { locations } from 'routing/locations'
-import { getCollectionId, getSelectedItemId, getTemplateId } from './selectors'
+import { getCollectionId, getSelectedItemId, getTemplateId, getENSName } from './selectors'
 
 jest.mock('decentraland-dapps/dist/modules/wallet/selectors')
 
@@ -322,5 +322,21 @@ describe('when getting the selected item id using the current url', () => {
         })
       })
     })
+  })
+})
+
+describe('when getting the name from the current url', () => {
+  it('should return the name section of the url', () => {
+    const name = 'test'
+    const mockState = {
+      router: {
+        action: 'POP',
+        location: {
+          pathname: locations.ensDetail(name)
+        }
+      }
+    } as unknown
+
+    expect(getENSName(mockState as RootState)).toEqual(name)
   })
 })

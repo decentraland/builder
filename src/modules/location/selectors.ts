@@ -85,3 +85,15 @@ export const getSelectedCollectionId = (state: RootState) => new URLSearchParams
 export const isReviewing = (state: RootState) => !!new URLSearchParams(getSearch(state)).get('reviewing')
 export const getState = (state: RootState) => state.location
 export const hasHistory = (state: RootState) => getState(state).hasHistory
+
+export const ensNameMatchSelector = createMatchSelector<
+  RootState,
+  {
+    name: string
+  }
+>(locations.ensDetail())
+
+export const getENSName = (state: RootState) => {
+  const result = ensNameMatchSelector(state)
+  return result ? result.params.name : null
+}

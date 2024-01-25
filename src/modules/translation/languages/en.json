@@ -578,6 +578,12 @@
     "subtitle": "Your are editing {name}."
   },
   "ens_list_page": {
+    "title": "NAMEs",
+    "sort_by": "Sort by",
+    "mint_name": "Mint name",
+    "result": "{count} {count, plural, one {result} other {results}}",
+    "edit": "Edit",
+    "transfer": "Transfer",
     "table": {
       "name": "Name",
       "link": "Link",
@@ -586,7 +592,7 @@
       "alias": "Alias",
       "land": "Land",
       "actions": "Actions",
-      "owner": "Owner"
+      "you": "you"
     },
     "assigned_to_land": "Land ({landId})",
     "assigned_to_estate": "Estate ({landId})",
@@ -601,7 +607,29 @@
     "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
     "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned",
-    "not_profile_created": "You need to get into the world first to set an alias."
+    "not_profile_created": "You need to get into the world first to set an alias.",
+    "empty_state": {
+      "title": "Nothing here yet",
+      "subtitle": "Own your presence in the metaverse with a username free from numbers on the end (e.g. Genesis#1234).",
+      "mint_name": "Mint name",
+      "go_to_marketplace": "Visit marketplace"
+    }
+  },
+  "ens_detail_page": {
+    "name": "Name",
+    "address": "Address",
+    "alias": "Alias",
+    "land": "Land",
+    "unassign": "Unassigned",
+    "set_as_primary": "Set as primary",
+    "edit_address": "Edit address",
+    "assign_address": "Assign address value",
+    "point_location": "Point location",
+    "tooltips": {
+      "alias": "The assigned alias can be only one per Avatar",
+      "address": "It can be used in external in any WEB3 transaction. Read the <a>benefits of a ENS</a> controller NAME",
+      "land": "Lands are Located spacial Assets, minimum units are Parcels, learn more about <a>Metaverse advantages</a>"
+    }
   },
   "ens_map_address_modal": {
     "title": "Link to an Ethereum Address",

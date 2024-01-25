@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { Network } from '@dcl/schemas'
-import { Form, Field, Row, Button, InputOnChangeData } from 'decentraland-ui'
+import { Form, Row, Button, InputOnChangeData, Field } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { AddressField } from 'decentraland-dapps/dist/components/AddressField'
 import { Link } from 'react-router-dom'
 import { getUpdateOperator, hasAnyRole } from 'modules/land/utils'
 import { locations } from 'routing/locations'
@@ -51,7 +52,7 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
   }
 
   render() {
-    const { land } = this.props
+    const { land, isEnsAddressEnabled } = this.props
     const { address, loading, dirty, revoked, editing, initial } = this.state
 
     const isRevokable = editing && isEqual(address, initial)
@@ -72,18 +73,34 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
 
     return (
       <Form className="LandOperatorForm">
-        <Field
-          placeholder="0x..."
-          label={t('operator_page.address')}
-          className={classes.join(' ')}
-          value={address}
-          onChange={this.handleChange}
-          loading={loading}
-          action={isRevokable ? (revoked ? t('operator_page.undo') : t('operator_page.revoke')) : undefined}
-          onAction={isRevokable ? (revoked ? this.handleUndo : this.handleRevoke) : undefined}
-          error={hasError}
-          message={hasError ? t('operator_page.invalid_address') : undefined}
-        />
+        {isEnsAddressEnabled ? (
+          <AddressField
+            placeholder="0x..."
+            label={t('operator_page.address')}
+            className={classes.join(' ')}
+            value={address}
+            onChange={this.handleChange}
+            loading={loading}
+            action={isRevokable ? (revoked ? t('operator_page.undo') : t('operator_page.revoke')) : undefined}
+            onAction={isRevokable ? (revoked ? this.handleUndo : this.handleRevoke) : undefined}
+            error={hasError}
+            message={hasError ? t('operator_page.invalid_address') : undefined}
+          />
+        ) : (
+          <Field
+            placeholder="0x..."
+            label={t('operator_page.address')}
+            className={classes.join(' ')}
+            value={address}
+            onChange={this.handleChange}
+            loading={loading}
+            action={isRevokable ? (revoked ? t('operator_page.undo') : t('operator_page.revoke')) : undefined}
+            onAction={isRevokable ? (revoked ? this.handleUndo : this.handleRevoke) : undefined}
+            error={hasError}
+            message={hasError ? t('operator_page.invalid_address') : undefined}
+          />
+        )}
+
         <Row>
           <Link className="cancel" to={locations.landDetail(land.id)}>
             <Button>{t('global.cancel')}</Button>

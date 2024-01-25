@@ -26,7 +26,8 @@ const mapState = (state: RootState): MapStateProps => ({
     isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) ||
     isLoggingIn(state),
   isLoggedIn: isLoggedIn(state),
-  isEnsAddressEnabled: getIsEnsAddressEnabled(state)
+  isEnsAddressEnabled: getIsEnsAddressEnabled(state),
+  avatar: getAvatar(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

@@ -1,0 +1,155 @@
+.main {
+  display: flex;
+  padding: 35px;
+  background: var(--secondary);
+  border-radius: 10px;
+  gap: 50px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 20px;
+}
+
+.ensImage {
+  width: 268px;
+  height: 268px;
+  border-radius: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 24px;
+}
+
+.fieldContainer {
+  display: flex;
+  gap: 32px;
+}
+
+.fieldContainer:first-child {
+  border-bottom: 1px solid var(--secondary-text);
+  padding: 40px 0 20px 0;
+}
+
+.fieldTitle {
+  font-size: 14px;
+  color: #a09ba8;
+  text-transform: uppercase;
+  display: flex;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.subdomain {
+  display: flex;
+  font-weight: bold;
+  font-size: 40px;
+  line-height: 40px;
+  color: var(--secondary-text);
+  align-items: center;
+  gap: 10px;
+}
+
+.subdomain span span {
+  color: white;
+}
+
+.main .field .actionBtn:global(.ui.button) {
+  width: fit-content;
+  min-width: unset;
+  background: white;
+  color: black;
+  border: 0;
+  box-shadow: unset !important;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main .field .actionBtn > :global(.icon:not(.button):not(.dropdown)) {
+  margin: 0;
+  height: fit-content;
+}
+
+.editableFieldValue {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--secondary-text);
+}
+
+.avatarImg {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #43404a;
+}
+
+.avatarName {
+  color: white;
+  font-weight: bold;
+}
+
+.ensBtn:global(.ui.button) {
+  background: #302c36;
+  color: white;
+  width: fit-content;
+  min-width: none;
+}
+
+.address {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.returnLink:global(.ui.button) {
+  color: var(--secondary-text) !important;
+  font-size: 20px;
+  margin-bottom: 30px;
+  text-transform: none;
+}
+
+.editableField {
+  display: flex;
+  border-radius: 8px;
+  background: #393640;
+  justify-content: space-between;
+  padding: 5px 10px;
+  align-items: center;
+}
+
+.emptyFieldPlaceholder {
+  text-transform: uppercase;
+  color: #cfcdd4;
+  font-size: 14px;
+}
+
+.pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #716b7c;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+}
+
+.externalLink {
+  text-decoration: underline;
+  color: white;
+}

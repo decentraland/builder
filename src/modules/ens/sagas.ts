@@ -3,7 +3,7 @@ import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
-import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
+import { BuilderClient, LandHashes } from '@dcl/builder-client'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -24,7 +24,7 @@ import { getCenter, getSelection } from 'modules/land/utils'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
-import { Land, LandType } from 'modules/land/types'
+import { Land } from 'modules/land/types'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { marketplace } from 'lib/api/marketplace'
 import { lists } from 'lib/api/lists'
@@ -84,7 +84,7 @@ import {
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
-import { addWorldStatusToEachENS, getDomainFromName, isExternalName } from './utils'
+import { addWorldStatusToEachENS, getDomainFromName, getLandRedirectionHashes, isExternalName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -124,6 +124,9 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
 
       const owner = ownerAddress.toLowerCase()
       const tokenId = nftTokenId.toString()
+      const ensResolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+      const resolvedAddress: string = yield call([ensResolverContract, 'addr(bytes32)'], nodehash)
+      const ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
 
       if (resolverAddress.toString() === ethers.constants.AddressZero) {
         yield put(
@@ -134,56 +137,64 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
             nftOwnerAddress: address,
             subdomain,
             resolver: ethers.constants.AddressZero,
-            content: ethers.constants.AddressZero
+            content: ethers.constants.AddressZero,
+            ensAddressRecord
           })
         )
         return
       }
 
       const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
-
-      const [x, y] = getCenter(getSelection(land))
-
-      const { ipfsHash, contentHash }: LandHashes = yield call(
-        [builderClient, 'createLandRedirectionFile'],
-        { x, y },
-        getCurrentLocale().locale
-      )
-
       const currentContent: string = yield call([resolverContract, 'contenthash'], nodehash)
-      if (currentContent === ethers.constants.AddressZero) {
-        yield put(
-          fetchENSSuccess({
-            name,
-            tokenId,
-            ensOwnerAddress: owner,
-            nftOwnerAddress: address,
-            subdomain,
-            resolver: resolverAddress.toString(),
-            content: ethers.constants.AddressZero,
-            ipfsHash
-          })
+
+      if (land) {
+        const [x, y] = getCenter(getSelection(land))
+
+        const { ipfsHash, contentHash }: LandHashes = yield call(
+          [builderClient, 'createLandRedirectionFile'],
+          { x, y },
+          getCurrentLocale().locale
         )
-        return
+
+        if (currentContent === ethers.constants.AddressZero) {
+          yield put(
+            fetchENSSuccess({
+              name,
+              tokenId,
+              ensOwnerAddress: owner,
+              nftOwnerAddress: address,
+              subdomain,
+              resolver: resolverAddress.toString(),
+              content: ethers.constants.AddressZero,
+              ipfsHash,
+              ensAddressRecord
+            })
+          )
+          return
+        }
+
+        if (`0x${contentHash}` === currentContent) {
+          yield put(
+            fetchENSSuccess({
+              name,
+              tokenId,
+              ensOwnerAddress: owner,
+              nftOwnerAddress: address,
+              subdomain,
+              resolver: ENS_RESOLVER_ADDRESS,
+              content: contentHash,
+              ipfsHash,
+              landId: land.id,
+              ensAddressRecord
+            })
+          )
+          return
+        }
       }
 
-      if (`0x${contentHash}` === currentContent) {
-        yield put(
-          fetchENSSuccess({
-            name,
-            tokenId,
-            ensOwnerAddress: owner,
-            nftOwnerAddress: address,
-            subdomain,
-            resolver: ENS_RESOLVER_ADDRESS,
-            content: contentHash,
-            ipfsHash,
-            landId: land.id
-          })
-        )
-        return
-      }
-
+      const lands: Land[] = yield select(getLands)
+      const redirectionHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
+      const redirectionLand = redirectionHashes.find(lh => lh.hash === currentContent)
       yield put(
         fetchENSSuccess({
           name,
@@ -193,7 +204,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
           subdomain,
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent ?? ethers.constants.AddressZero,
-          landId: ''
+          landId: redirectionLand?.id || '',
+          ensAddressRecord
         })
       )
     } catch (error) {
@@ -372,25 +384,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
-      const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
-      const coordsWithHashesList: (LandCoords & LandHashes)[] =
-        coordsList.length > 0 ? yield call([builderClient, 'getLandRedirectionHashes'], coordsList, getCurrentLocale().locale) : []
-
-      const landHashes: { id: string; hash: string }[] = []
-
-      for (const { x, y, contentHash } of coordsWithHashesList) {
-        const land = lands.find(land => {
-          if (land.type === LandType.ESTATE) {
-            return land.parcels!.some(parcel => parcel.x === x && parcel.y === y)
-          }
-          return land.x === x && land.y === y
-        })
-
-        if (land) {
-          landHashes.push({ hash: `0x${contentHash}`, id: land.id })
-        }
-      }
-
+      const landHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
       const wallet: Wallet = yield call(getWallet)
       const signer: ethers.Signer = yield call(getSigner)
       const address = wallet.address
