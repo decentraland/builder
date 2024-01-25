@@ -1,4 +1,3 @@
-/* eslint-disable import/no-webpack-loader-syntax */
 import type { Color4, Wearable } from 'decentraland-ecs'
 import { Locale, BodyShape, WearableCategory, WearableDefinition, EmoteDefinition } from '@dcl/schemas'
 import { Item, ItemType } from 'modules/item/types'
@@ -23,14 +22,18 @@ export const SCALE_MIN_LIMIT = 0.001
 
 export async function getNewEditorScene(project: Project): Promise<EditorScene> {
   const encoder = new TextEncoder()
-  const script = (await import('../../ecsScene/scene.js?raw')).default as unknown as string
+
+  const [sceneDefinition, script] = await Promise.all([
+    getSceneDefinition(project, { x: 0, y: 0 }, 'east', null, null),
+    import('../../ecsScene/scene.js?raw').then(module => module.default.toString())
+  ])
   const mappings = {
     'game.js': `data:application/javascript;base64,${base64ArrayBuffer(encoder.encode(script))}`,
     'scene.json': 'Qm' // stub required by the client
   }
 
   return {
-    ...getSceneDefinition(project, { x: 0, y: 0 }, 'east', null, null),
+    ...sceneDefinition,
     baseUrl: getContentsStorageUrl(),
     display: {
       title: project.title

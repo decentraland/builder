@@ -895,7 +895,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
   })
 
   it('should put a reset item success action', () => {
-    return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+    return expectSaga(handleResetItemRequest as SagaType<any>, resetItemRequest(itemId))
       .provide([
         [select(getItemsById), itemsById],
         [saveItemRequest(replacedItem, replacedContents), undefined],
@@ -918,7 +918,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
     it('should put a resetItemFailure action with the saveItemFailure action action message', () => {
       const saveItemFailureMessage = 'saveItemFailure action message'
 
-      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+      return expectSaga(handleResetItemRequest as SagaType<any>, resetItemRequest(itemId))
         .provide([
           [select(getItemsById), itemsById],
           [saveItemRequest(replacedItem, replacedContents), undefined],
@@ -942,7 +942,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
 
   describe('and the entity has no content', () => {
     it('should put a resetItemFailure action with a content missing message', () => {
-      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+      return expectSaga(handleResetItemRequest as SagaType<any>, resetItemRequest(itemId))
         .provide([
           [select(getItemsById), itemsById],
           [

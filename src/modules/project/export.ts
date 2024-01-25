@@ -1,6 +1,5 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentType, ComponentDefinition, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
@@ -15,9 +14,6 @@ import { getParcelOrientation } from './utils'
 const SCENE_TEMPLATE_URL = 'https://raw.githubusercontent.com/decentraland/sdk-empty-scene-template/main'
 
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
-
-const { communications: _communications, policy: _policy, ...sceneWithoutOutdatedProperties } = sceneJsonSample
-const sceneJson: SceneDefinition = sceneWithoutOutdatedProperties
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
@@ -464,7 +460,7 @@ export async function createDynamicFiles(args: {
   return files
 }
 
-export function getSceneDefinition(
+export async function getSceneDefinition(
   project: Project,
   point: Coordinate,
   rotation: Rotation,
@@ -473,9 +469,12 @@ export function getSceneDefinition(
   isEmpty?: boolean,
   name?: string,
   isSDK7?: boolean
-) {
+): Promise<SceneDefinition> {
   const parcels = getParcelOrientation(project.layout, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
+  const sceneJsonSample = await import('decentraland/samples/ecs/scene.json')
+  const { communications: _communications, policy: _policy, ...sceneWithoutOutdatedProperties } = sceneJsonSample
+  const sceneJson: SceneDefinition = sceneWithoutOutdatedProperties
 
   const sceneDefinition: SceneDefinition = {
     ...sceneJson,
