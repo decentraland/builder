@@ -39,7 +39,6 @@ export function formatTime(seconds: number) {
 }
 
 function includeLocale(options: Options): Options {
-  console.log('Current locale', getCurrentLocale)
   const locale = locales[getCurrentLocale().locale]
   return locale ? { ...options, locale } : { ...options }
 }
