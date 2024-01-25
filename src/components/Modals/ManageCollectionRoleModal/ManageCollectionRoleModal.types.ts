@@ -14,6 +14,7 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   wallet: Wallet
   collection: Collection
   isLoading: boolean
+  isEnsAddressEnabled: boolean
   onSetManagers: typeof setCollectionManagersRequest
   onSetMinters: typeof setCollectionMintersRequest
 }
@@ -28,7 +29,7 @@ export type ManageCollectionRoleModalMetadata = {
   roles: string[]
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'isLoading' | 'isEnsAddressEnabled'>
 export type MapDispatchProps = Pick<Props, 'onSetManagers' | 'onSetMinters'>
 export type MapDispatch = Dispatch<SetCollectionManagersRequestAction | SetCollectionMintersRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

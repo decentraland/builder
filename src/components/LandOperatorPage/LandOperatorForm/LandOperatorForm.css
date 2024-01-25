@@ -16,3 +16,8 @@
 .LandOperatorForm.ui.form .dcl.field .ui.input.is-revokable input {
   padding-right: 86px;
 }
+
+.LandOperatorForm .dui-address-field__address {
+  font-size: 16px;
+  bottom: 38px;
+}

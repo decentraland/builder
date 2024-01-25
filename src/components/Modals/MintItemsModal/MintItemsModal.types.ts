@@ -11,6 +11,7 @@ export type Props = ModalProps & {
   items: Item[]
   totalCollectionItems: number
   isLoading: boolean
+  isEnsAddressEnabled: boolean
   hasUnsyncedItems: (items: Item[]) => boolean
   onMint: typeof mintCollectionItemsRequest
 }
@@ -34,7 +35,10 @@ export type State = {
   confirm: View
 }
 
-export type MapStateProps = Pick<Props, 'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading' | 'hasUnsyncedItems'>
+export type MapStateProps = Pick<
+  Props,
+  'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading' | 'hasUnsyncedItems' | 'isEnsAddressEnabled'
+>
 export type MapDispatchProps = Pick<Props, 'onMint'>
 export type MapDispatch = Dispatch<MintCollectionItemsRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

@@ -31,16 +31,16 @@
 .MintableItem .mint {
   display: flex;
   align-items: center;
-}
-
-.MintableItem .mint .dcl.field.address {
-  flex: 1 1 auto;
-  margin-right: 10px;
+  gap: 10px;
 }
 
 .MintableItem .mint .dcl.field,
 .MintableItem .mint.dcl.section:last-child {
   margin-bottom: 0;
+}
+
+.MintableItem .mint .dcl.field.address {
+  flex: 1;
 }
 
 .MintableItem .mint .dcl.field {
