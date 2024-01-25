@@ -105,6 +105,7 @@
     "canvas": "^2.11.2",
     "concurrently": "^7.2.2",
     "decentraland-rpc": "^3.1.8",
+    "dotenv": "^16.4.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-flowtype": "^8.0.3",
