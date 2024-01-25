@@ -26,7 +26,7 @@ export default async (): Promise<Config> => {
     testRegex: '(/__tests__/.*|(\\.|/)(spec))\\.[jt]sx?$',
     moduleNameMapper: {
       '^three/.*$': 'identity-obj-proxy',
-      '^@babylonjs.*$': 'identity-obj-proxy',
+      'decentraland-ecs': 'identity-obj-proxy',
       '^.*/modules/curations/collectionCuration/toasts.*$': 'identity-obj-proxy',
       '@dcl/ecs': 'identity-obj-proxy',
       canvas: 'identity-obj-proxy',
