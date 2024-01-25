@@ -10,20 +10,23 @@ on:
 
 jobs:
   build-release:
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4.0.1
         with:
-          node-version: 16.x
+          node-version: 18.x
+          cache: 'npm'
       - name: Set package.json version
         uses: menduz/oddish-action@master
         with:
           deterministic-snapshot: true
           only-update-versions: true
       - name: Install
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
         env:
           HUSKY: 0
       - name: Build
@@ -35,7 +38,7 @@ jobs:
       - name: Publish
         uses: menduz/oddish-action@master
         with:
-          cwd: './build'
+          cwd: './dist'
           deterministic-snapshot: true
           registry-url: 'https://registry.npmjs.org'
           access: public

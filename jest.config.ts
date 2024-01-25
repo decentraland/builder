@@ -45,8 +45,7 @@ export default async (): Promise<Config> => {
       '^lib/(.*)$': '<rootDir>/src/lib/$1',
       '^modules/(.*)$': '<rootDir>/src/modules/$1',
       '^routing/(.*)$': '<rootDir>/src/routing/$1',
-      '^specs/(.*)$': '<rootDir>/src/specs/$1',
-      '^themes/(.*)$': '<rootDir>/src/themes/$1'
+      '^specs/(.*)$': '<rootDir>/src/specs/$1'
     },
     transformIgnorePatterns: ['node_modules/?!@0xsquid|eccrypto|libsodium-wrappers-sumo']
   }

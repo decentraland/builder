@@ -42,8 +42,8 @@ export default defineConfig(({ command, mode }) => {
         lib: path.resolve(__dirname, 'src/lib'),
         modules: path.resolve(__dirname, 'src/modules'),
         routing: path.resolve(__dirname, 'src/routing'),
-        specs: path.resolve(__dirname, 'src/specs'),
-        themes: path.resolve(__dirname, 'src/themes')
+        specs: path.resolve(__dirname, 'src/specs')
+        // themes: path.resolve(__dirname, 'src/themes')
       }
     },
     server: {

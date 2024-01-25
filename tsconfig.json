@@ -31,12 +31,11 @@
       "lib/*": ["lib/*"],
       "modules/*": ["modules/*"],
       "routing/*": ["routing/*"],
-      "specs/*": ["specs/*"],
-      "themes/*": ["themes/*"]
+      "specs/*": ["specs/*"]
     },
     "baseUrl": "src"
   },
   "include": ["src", ".eslintrc.js", "vite.config.ts", "jest.config.ts", "./node_modules/decentraland-builder-scripts/types.d.ts"],
-  "exclude": ["src/modules/editor/ecs.js", "src/ecsScene/scene.ts"],
+  "exclude": ["src/modules/editor/ecs.js", "src/ecsScene/scene.ts", "dist", "node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
