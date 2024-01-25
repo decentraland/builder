@@ -143,6 +143,10 @@
     "pre-commit:fix:prettier": "prettier --config .prettierrc.json --write",
     "prepare": "husky install"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/decentraland/builder.git"
+  },
   "engines": {
     "node": "18"
   },
