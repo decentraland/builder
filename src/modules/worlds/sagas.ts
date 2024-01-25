@@ -32,7 +32,7 @@ function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequ
 
     yield put(fetchWorldsWalletStatsSuccess(address, stats))
   } catch (e) {
-    yield put(fetchWorldsWalletStatsFailure(address, isErrorWithMessage(e) ? e.message : 'Unknown'))
+    yield put(fetchWorldsWalletStatsFailure(address, isErrorWithMessage(e) ? e.message : 'Unknown error'))
   }
 }
 
