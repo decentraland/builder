@@ -14,7 +14,7 @@ import { Props, State } from './SettingsPage.types'
 import './SettingsPage.css'
 
 export default class SettingsPage extends React.PureComponent<Props, State> {
-  timeoutId: NodeJS.Timer | null = null
+  timeoutId: ReturnType<typeof setTimeout> | null = null
 
   state: State = {
     hasCopiedText: false,

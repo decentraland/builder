@@ -5,7 +5,7 @@ import { deleteProject, duplicateProjectRequest, loadProjectSceneRequest } from 
 import { getDeploymentStatusByProjectId, getDeploymentsByProjectId } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { getData as getPoolProjects } from 'modules/pool/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
 import { PreviewType } from 'modules/editor/types'
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './ProjectCard.types'

@@ -1,3 +1,5 @@
+import type { ExtendedKeyboardEvent } from 'mousetrap'
+
 export const WHITE_SPACE_KEY_CODE = 32
 export const ENTER_KEY_CODE = 13
 export const COMMA_KEY_CODE = 118

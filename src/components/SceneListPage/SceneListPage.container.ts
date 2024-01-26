@@ -13,7 +13,7 @@ import {
   getTotalPages
 } from 'modules/pool/selectors'
 import { RootState } from 'modules/common/types'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { PoolsRequestFilters } from 'modules/pool/types'
 import { loadPoolsRequest } from 'modules/pool/actions'
 import { getAllPoolGroups } from 'modules/poolGroup/selectors'

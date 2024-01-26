@@ -1,4 +1,4 @@
-import { Color4, Wearable } from 'decentraland-ecs'
+import type { Color4, Wearable } from 'decentraland-ecs'
 import { PreviewEmote, BodyShape, WearableCategory, IPreviewController } from '@dcl/schemas'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 

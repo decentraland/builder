@@ -1,7 +1,7 @@
 import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS, CONNECT_WALLET_FAILURE } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { openModal, CloseModalAction, CLOSE_MODAL, closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { put, race, select, take, takeEvery } from 'redux-saga/effects'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { openModal, CloseModalAction, CLOSE_MODAL, closeModal } from '../modal/actions'
 import { OpenLoginModalAction, OPEN_LOGIN_MODAL } from './actions'
 
 function* handleOpenLoginModal(_action: OpenLoginModalAction) {

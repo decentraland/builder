@@ -6,7 +6,7 @@ import SceneCard from '../SceneCard'
 import { Props } from './SceneCreationSelector.types'
 import styles from './SceneCreationSelector.module.css'
 
-const PUBLIC_URL = process.env.PUBLIC_URL
+const PUBLIC_URL = process.env.VITE_BASE_URL
 const videoSrc = {
   scratch: `${PUBLIC_URL}/videos/scratch-preview.mov`,
   template: `${PUBLIC_URL}/videos/template-preview.mp4`

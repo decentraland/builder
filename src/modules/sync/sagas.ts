@@ -15,6 +15,7 @@ import {
   EditProjectThumbnailAction
 } from 'modules/project/actions'
 import { PROVISION_SCENE, ProvisionSceneAction, UpdateSceneAction, UPDATE_SCENE } from 'modules/scene/actions'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 
 import {
   SAVE_PROJECT_REQUEST,
@@ -82,7 +83,7 @@ export function* syncSaga(builder: BuilderAPI) {
       yield call(() => saveProject(project.id, project, scene, builder, debounce))
       yield put(saveProjectSuccess(project))
     } catch (e) {
-      yield put(saveProjectFailure(project, e))
+      yield put(saveProjectFailure(project, isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
@@ -110,7 +111,7 @@ export function* syncSaga(builder: BuilderAPI) {
       yield call(() => builder.deleteProject(id))
       yield put(deleteProjectSuccess(id))
     } catch (e) {
-      yield put(deleteProjectFailure(id, e))
+      yield put(deleteProjectFailure(id, isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 

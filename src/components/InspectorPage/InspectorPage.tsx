@@ -7,7 +7,7 @@ import TopBar from './TopBar'
 import { Props, State } from './InspectorPage.types'
 import './InspectorPage.css'
 
-const PUBLIC_URL = process.env.PUBLIC_URL
+const PUBLIC_URL = process.env.VITE_BASE_URL
 
 export default class InspectorPage extends React.PureComponent<Props, State> {
   state: State = {

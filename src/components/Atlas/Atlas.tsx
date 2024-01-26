@@ -36,7 +36,7 @@ const Atlas: React.FC<Props> = props => {
   const [x, setX] = useState(0)
   const [y, setY] = useState(0)
   const [zoom, setZoom] = useState<number>(props.zoom || 1)
-  const timeout = useRef<NodeJS.Timer | null>(null)
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   let isEstate = false
   if (landId) {

@@ -4,7 +4,7 @@ import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'
 import { LocationStateProps } from 'modules/location/types'
 import { deleteItemRequest, DeleteItemRequestAction } from 'modules/item/actions'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
   collection: Collection

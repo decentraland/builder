@@ -12,7 +12,7 @@ import { getData as getScenes, getIsLoading as getIsLoadingScene } from 'modules
 import { getCurrentAuthor } from 'modules/profile/selectors'
 import { togglePreview, closeEditor } from 'modules/editor/actions'
 import { getCurrentProject, getLoading as getLoadingProject } from 'modules/project/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { PreviewType } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'

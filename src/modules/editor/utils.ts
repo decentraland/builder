@@ -1,5 +1,4 @@
-/* eslint-disable import/no-webpack-loader-syntax */
-import { Color4, Wearable } from 'decentraland-ecs'
+import type { Color4, Wearable } from 'decentraland-ecs'
 import { Locale, BodyShape, WearableCategory, WearableDefinition, EmoteDefinition } from '@dcl/schemas'
 import { Item, ItemType } from 'modules/item/types'
 import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
@@ -13,10 +12,7 @@ import { EntityDefinition, ComponentDefinition, ComponentType, SceneSDK6 } from 
 import { injectScript } from 'routing/utils'
 import { base64ArrayBuffer } from './base64'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const script = require('raw-loader!../../ecsScene/scene.js').default
-
-const PUBLIC_URL = process.env.PUBLIC_URL
+const PUBLIC_URL = process.env.VITE_BASE_URL
 export const THUMBNAIL_WIDTH = 984
 export const THUMBNAIL_HEIGHT = 728
 export const POSITION_GRID_RESOLUTION = 0.5
@@ -24,15 +20,20 @@ export const ROTATION_GRID_RESOLUTION = Math.PI / 16
 export const SCALE_GRID_RESOLUTION = 0.5
 export const SCALE_MIN_LIMIT = 0.001
 
-export function getNewEditorScene(project: Project): EditorScene {
+export async function getNewEditorScene(project: Project): Promise<EditorScene> {
   const encoder = new TextEncoder()
+
+  const [sceneDefinition, script] = await Promise.all([
+    getSceneDefinition(project, { x: 0, y: 0 }, 'east', null, null),
+    import('../../ecsScene/scene.js?raw').then(module => module.default.toString())
+  ])
   const mappings = {
     'game.js': `data:application/javascript;base64,${base64ArrayBuffer(encoder.encode(script))}`,
     'scene.json': 'Qm' // stub required by the client
   }
 
   return {
-    ...getSceneDefinition(project, { x: 0, y: 0 }, 'east', null, null),
+    ...sceneDefinition,
     baseUrl: getContentsStorageUrl(),
     display: {
       title: project.title

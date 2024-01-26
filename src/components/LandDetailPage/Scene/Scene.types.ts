@@ -1,6 +1,6 @@
 import { Deployment } from 'modules/deployment/types'
 import { ProjectState } from 'modules/project/reducer'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
   deployment: Deployment

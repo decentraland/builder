@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { RootState } from 'modules/common/types'
 import { getStatusByItemId } from 'modules/item/selectors'
 import { deleteItemRequest } from 'modules/item/actions'

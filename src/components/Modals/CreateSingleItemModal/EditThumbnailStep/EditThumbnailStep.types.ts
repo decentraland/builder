@@ -29,7 +29,7 @@ export type Props = {
 
 export type State = {
   hasBeenUpdated: boolean
-  playingIntervalId?: NodeJS.Timer
+  playingIntervalId?: ReturnType<typeof setTimeout>
   previewController?: IPreviewController
   blob?: EmoteWithBlobs
   zoom: number

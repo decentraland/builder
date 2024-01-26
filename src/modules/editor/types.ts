@@ -1,5 +1,5 @@
 import { BodyShape, HideableWearableCategory, WearableCategory } from '@dcl/schemas'
-import { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
+import type { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
 
 export enum Gizmo {
   MOVE = 'MOVE',

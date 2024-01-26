@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { Button, Column, Loader, ModalNavigation, Row } from 'decentraland-ui'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension, toMB } from 'lib/file'
+import { isErrorWithTitle } from 'lib/error'
 import { WrongExtensionError, VideoFileTooBigError, InvalidVideoError } from 'modules/item/errors'
 import { MAX_VIDEO_FILE_SIZE, loadVideo } from 'modules/item/utils'
 import { VIDEO_EXTENSIONS, VIDEO_PATH } from 'modules/item/types'
@@ -55,7 +57,13 @@ export default class UploadVideoStep extends React.PureComponent<Props, State> {
         }
       })
     } catch (error) {
-      this.setState({ error, isLoading: false })
+      this.setState({
+        error: {
+          title: isErrorWithTitle(error) ? error.title : undefined,
+          message: isErrorWithMessage(error) ? error.message : 'Unknown error'
+        },
+        isLoading: false
+      })
     }
   }
 

@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 
 import { AssetPack } from 'modules/assetPack/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { selectAssetPack, SelectAssetPackAction } from 'modules/ui/sidebar/actions'
 
 export type Props = {

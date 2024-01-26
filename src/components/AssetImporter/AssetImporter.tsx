@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { basename } from 'path'
-import * as crypto from 'crypto'
 import uuidv4 from 'uuid/v4'
 import JSZip from 'jszip'
 import { Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { truncateFileName, getExtension } from 'lib/file'
 import { getModelData, ThumbnailType } from 'lib/getModelData'
@@ -19,10 +19,6 @@ import AssetThumbnail from 'components/AssetThumbnail'
 import { createDefaultImportedFile, getMetrics, ASSET_MANIFEST, prepareScript } from './utils'
 import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
-
-export const getSHA256 = (data: string) => {
-  return crypto.createHash('sha256').update(data).digest('hex')
-}
 
 export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   state: State = {
@@ -279,7 +275,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           id: uuidv4(),
           asset: outFile ? outFile.asset : null,
           fileName: file.name,
-          error: e.message || t('asset_pack.import.errors.invalid')
+          error: isErrorWithMessage(e) ? e.message : t('asset_pack.import.errors.invalid')
         } as ImportedFile
       }
 

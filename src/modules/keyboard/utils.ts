@@ -16,7 +16,7 @@ import {
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isPreviewing, isSidebarOpen, getGizmo } from 'modules/editor/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
-import { toggleModal, openModal } from 'modules/modal/actions'
+import { toggleModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import {
   ShortcutDefinition,
   Shortcut,

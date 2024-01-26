@@ -1,5 +1,5 @@
 import { BodyShape, WearableCategory } from '@dcl/schemas'
-import { Wearable } from 'decentraland-ecs'
+import type { Wearable } from 'decentraland-ecs'
 import { anotherWearable, convertWearable, wearable } from 'specs/editor'
 import { fetchBaseWearablesFailure, fetchBaseWearablesRequest, fetchBaseWearablesSuccess, setBaseWearable } from './actions'
 import { editorReducer, EditorState, INITIAL_STATE } from './reducer'

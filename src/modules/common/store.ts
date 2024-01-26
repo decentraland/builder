@@ -35,18 +35,17 @@ import { BuilderAPI, BUILDER_SERVER_URL } from 'lib/api/builder'
 import { Authorization } from 'lib/api/auth'
 import { PEER_URL } from 'lib/api/peer'
 import { ENSApi } from 'lib/api/ens'
+import builderPackage from '../../../package.json'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const builderVersion = require('../../../package.json').version
 const isTestEnv = process.env.NODE_ENV === 'test'
 
 configureAnalytics({
   transformPayload: payload => {
     if (typeof payload === 'string' || payload === undefined) return payload
-    return { ...payload, version: builderVersion }
+    return { ...payload, version: builderPackage.version }
   }
 })
 

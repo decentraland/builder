@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
 import { isLoading, isReady } from 'modules/editor/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { MapDispatch, MapDispatchProps, MapStateProps } from './DeployContestButton.types'
 import DeployContestButton from './DeployContestButton'

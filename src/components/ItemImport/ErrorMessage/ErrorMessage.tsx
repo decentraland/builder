@@ -12,7 +12,7 @@ function isErrorMessage(error: unknown): error is ErrorMessageType {
 
 const ErrorMessage: React.FC<Props> = ({ error, className }: Props) => {
   const [showError, setShowError] = useState(false)
-  const timeout = useRef<NodeJS.Timer | null>(null)
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (error) {

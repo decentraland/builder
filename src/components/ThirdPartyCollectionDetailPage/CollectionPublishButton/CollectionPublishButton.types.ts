@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { OpenModalAction } from 'modules/modal/actions'
+import { OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'

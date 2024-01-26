@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { Project } from 'modules/project/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
   project: Project | null

@@ -11,8 +11,9 @@ import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { ContentServiceFile, Deployment, DeploymentStatus, SceneDefinition } from './types'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Importer = require('ipfs-unixfs-engine').Importer
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { Importer } from 'ipfs-unixfs-engine'
 
 export const UNPUBLISHED_PROJECT_ID = 'unpublished-project'
 

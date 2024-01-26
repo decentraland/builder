@@ -1,4 +1,5 @@
 import { getData } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { RootState } from 'modules/common/types'
 import { Item, ItemType } from 'modules/item/types'
 import { locations } from 'routing/locations'
@@ -129,7 +130,7 @@ describe('when getting the selected item id using the current url', () => {
             }
           }
         } as unknown as RootState
-        ;(getData as jest.MockedFunction<typeof getData>).mockResolvedValueOnce('some-address')
+        ;(getData as jest.MockedFunction<typeof getData>).mockReturnValueOnce({ address: 'some-address' } as Wallet)
       })
 
       describe('and the collection is a standard collection', () => {
