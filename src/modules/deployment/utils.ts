@@ -1,6 +1,5 @@
 import uuid from 'uuid'
 import CID from 'cids'
-import toBuffer from 'blob-to-buffer'
 import pull from 'pull-stream'
 import { MemoryDatastore } from 'interface-datastore'
 import { EntityContentItemReference } from '@dcl/hashing'
@@ -69,7 +68,8 @@ export async function getCID(files: ContentServiceFile[]): Promise<string> {
   })
 }
 
-export function makeContentFile(path: string, content: string | Blob): Promise<ContentServiceFile> {
+export async function makeContentFile(path: string, content: string | Blob): Promise<ContentServiceFile> {
+  const toBuffer = (await import('blob-to-buffer')).default
   return new Promise((resolve, reject) => {
     if (typeof content === 'string') {
       const buffer = Buffer.from(content)

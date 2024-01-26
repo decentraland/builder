@@ -1,24 +1,13 @@
-import {
-  BoundingInfo,
-  Camera,
-  Color4,
-  DirectionalLight,
-  Engine,
-  HemisphericLight,
-  Mesh,
-  Scene,
-  SceneLoader,
-  SpotLight,
-  TargetCamera,
-  Tools,
-  Vector3
-} from '@babylonjs/core'
-import '@babylonjs/loaders'
+import type { Mesh } from '@babylonjs/core'
+// import
 import { defaults, Options, ThumbnailType } from './getModelData'
 
 export const EMOTE_ERROR = 'Model is EMOTE'
 
-function refreshBoundingInfo(parent: Mesh) {
+async function refreshBoundingInfo(parent: Mesh) {
+  const babylonCore = await import('@babylonjs/core')
+  // Check if it works
+  await import('@babylonjs/loaders')
   const children = parent.getChildren().filter(mesh => mesh.id !== '__root__')
 
   if (children.length > 0) {
@@ -36,17 +25,19 @@ function refreshBoundingInfo(parent: Mesh) {
       const siblingMin = boundingInfo.boundingBox.minimumWorld.add(child.position)
       const siblingMax = boundingInfo.boundingBox.maximumWorld.add(child.position)
 
-      min = Vector3.Minimize(min, siblingMin)
-      max = Vector3.Maximize(max, siblingMax)
+      min = babylonCore.Vector3.Minimize(min, siblingMin)
+      max = babylonCore.Vector3.Maximize(max, siblingMax)
     }
 
-    parent.setBoundingInfo(new BoundingInfo(min, max))
+    parent.setBoundingInfo(new babylonCore.BoundingInfo(min, max))
   }
 }
 
 const hideMaterialList = ['hair_mat', 'avatarskin_mat']
 
 export async function getScreenshot(url: string, options: Partial<Options> = {}) {
+  const babylonCore = await import('@babylonjs/core')
+  await import('@babylonjs/loaders')
   // add defaults to options
   const { width, height, extension, thumbnailType } = {
     ...defaults,
@@ -59,17 +50,17 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   canvas.height = height
   canvas.style.visibility = 'hidden'
   document.body.appendChild(canvas)
-  const engine = new Engine(canvas, true, {
+  const engine = new babylonCore.Engine(canvas, true, {
     preserveDrawingBuffer: true,
     stencil: true
   })
 
   // Load GLTF
-  const scene = new Scene(engine)
+  const scene = new babylonCore.Scene(engine)
   scene.autoClear = true
-  scene.clearColor = new Color4(0, 0, 0, 0)
+  scene.clearColor = new babylonCore.Color4(0, 0, 0, 0)
 
-  await SceneLoader.AppendAsync(url, '', scene, undefined, extension)
+  await babylonCore.SceneLoader.AppendAsync(url, '', scene, undefined, extension)
   await scene.whenReadyAsync()
 
   // check if it's emote
@@ -78,8 +69,8 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   }
 
   // Setup Camera
-  const camera = new TargetCamera('targetCamera', new Vector3(0, 0, 0), scene)
-  camera.mode = Camera.ORTHOGRAPHIC_CAMERA
+  const camera = new babylonCore.TargetCamera('targetCamera', new babylonCore.Vector3(0, 0, 0), scene)
+  camera.mode = babylonCore.Camera.ORTHOGRAPHIC_CAMERA
   camera.orthoTop = 1
   camera.orthoBottom = -1
   camera.orthoLeft = -1
@@ -87,32 +78,39 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
 
   switch (thumbnailType) {
     case ThumbnailType.FRONT: {
-      camera.position = new Vector3(0, 0, 2)
+      camera.position = new babylonCore.Vector3(0, 0, 2)
       break
     }
     case ThumbnailType.TOP: {
-      camera.position = new Vector3(0, 1, 0)
+      camera.position = new babylonCore.Vector3(0, 1, 0)
       break
     }
     default:
-      camera.position = new Vector3(-2, 2, 2)
+      camera.position = new babylonCore.Vector3(-2, 2, 2)
   }
 
-  camera.setTarget(Vector3.Zero())
+  camera.setTarget(babylonCore.Vector3.Zero())
   camera.attachControl(canvas, true)
 
   // Setup lights
-  const directional = new DirectionalLight('directional', new Vector3(0, 0, 1), scene)
+  const directional = new babylonCore.DirectionalLight('directional', new babylonCore.Vector3(0, 0, 1), scene)
   directional.intensity = 1
-  const top = new HemisphericLight('top', new Vector3(0, -1, 0), scene)
+  const top = new babylonCore.HemisphericLight('top', new babylonCore.Vector3(0, -1, 0), scene)
   top.intensity = 1
-  const bottom = new HemisphericLight('bottom', new Vector3(0, 1, 0), scene)
+  const bottom = new babylonCore.HemisphericLight('bottom', new babylonCore.Vector3(0, 1, 0), scene)
   bottom.intensity = 1
-  const spot = new SpotLight('spot', new Vector3(-2, 2, 2), new Vector3(2, -2, -2), Math.PI / 2, 1000, scene)
+  const spot = new babylonCore.SpotLight(
+    'spot',
+    new babylonCore.Vector3(-2, 2, 2),
+    new babylonCore.Vector3(2, -2, -2),
+    Math.PI / 2,
+    1000,
+    scene
+  )
   spot.intensity = 1
 
   // Setup parent
-  const parent = new Mesh('parent', scene)
+  const parent = new babylonCore.Mesh('parent', scene)
   for (const mesh of scene.meshes) {
     if (mesh !== parent) {
       mesh.setParent(parent)
@@ -136,10 +134,10 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   }
 
   // resize and center
-  refreshBoundingInfo(parent)
+  await refreshBoundingInfo(parent)
   const bounds = parent.getBoundingInfo().boundingBox.extendSize
   const size = bounds.length()
-  const scale = new Vector3(1 / size, 1 / size, 1 / size)
+  const scale = new babylonCore.Vector3(1 / size, 1 / size, 1 / size)
   parent.scaling = scale
   const center = parent.getBoundingInfo().boundingBox.center.multiply(scale)
   parent.position.subtractInPlace(center)
@@ -148,5 +146,5 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   document.body.removeChild(canvas)
 
   // render
-  return Tools.CreateScreenshotUsingRenderTargetAsync(engine, camera, { width, height }, undefined, undefined, true)
+  return babylonCore.Tools.CreateScreenshotUsingRenderTargetAsync(engine, camera, { width, height }, undefined, undefined, true)
 }

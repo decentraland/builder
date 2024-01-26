@@ -1,19 +1,4 @@
-import {
-  Vector3,
-  WebGLRenderer,
-  LoadingManager,
-  Mesh,
-  Scene,
-  Box3,
-  OrthographicCamera,
-  Geometry,
-  BufferGeometry,
-  DirectionalLight,
-  AmbientLight,
-  RectAreaLight,
-  MeshStandardMaterial,
-  Material
-} from 'three'
+import type { OrthographicCamera, Material } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { IPreviewController, WearableCategory } from '@dcl/schemas'
@@ -58,13 +43,14 @@ export const defaults: Options = {
 }
 
 async function loadGltf(url: string, options: Partial<Options> = {}) {
+  const Three = await import('three')
   const { width, height, mappings } = {
     ...defaults,
     ...options
   }
 
   // setup renderer
-  const renderer = new WebGLRenderer({ alpha: true })
+  const renderer = new Three.WebGLRenderer({ alpha: true })
   renderer.setSize(width, height, false)
   renderer.domElement.style.visibility = 'hidden'
   document.body.appendChild(renderer.domElement)
@@ -72,7 +58,7 @@ async function loadGltf(url: string, options: Partial<Options> = {}) {
   // configure mappings
   let manager
   if (mappings) {
-    manager = new LoadingManager()
+    manager = new Three.LoadingManager()
     manager.setURLModifier(url => {
       const path = basename(new URL(url.replace('blob:', '')).pathname.slice(1))
       const key = Object.keys(mappings).find(key => key.endsWith(path))
@@ -88,6 +74,7 @@ async function loadGltf(url: string, options: Partial<Options> = {}) {
 }
 
 export async function getModelData(url: string, options: Partial<Options> = {}) {
+  const Three = await import('three')
   // add defaults to options
   const { width, height, mappings, engine, thumbnailType } = {
     ...defaults,
@@ -106,20 +93,20 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     })
 
     gltf.scene.traverse(node => {
-      if (node instanceof Mesh) {
+      if (node instanceof Three.Mesh) {
         bodies++
         if (node.material) {
           materials.add((node.material as Material).name)
         }
         if (node.name.includes('_collider')) {
-          if (node.geometry instanceof Geometry) {
+          if (node.geometry instanceof Three.Geometry) {
             colliderTriangles += node.geometry.faces.length
-          } else if (node.geometry instanceof BufferGeometry) {
-            const geometry = new Geometry().fromBufferGeometry(node.geometry)
+          } else if (node.geometry instanceof Three.BufferGeometry) {
+            const geometry = new Three.Geometry().fromBufferGeometry(node.geometry)
             colliderTriangles += geometry.faces.length
           }
           node.visible = false
-        } else if (node.material instanceof MeshStandardMaterial && node.material.name.toLowerCase().includes('hair_mat')) {
+        } else if (node.material instanceof Three.MeshStandardMaterial && node.material.name.toLowerCase().includes('hair_mat')) {
           node.visible = false
         }
       }
@@ -127,27 +114,27 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     const root = gltf.scene
 
     // create scene
-    const scene = new Scene()
+    const scene = new Three.Scene()
     scene.add(root)
 
     // center camera
     let camera: OrthographicCamera
-    const size = new Box3().setFromObject(root).getSize(new Vector3()).length()
+    const size = new Three.Box3().setFromObject(root).getSize(new Three.Vector3()).length()
     root.scale.multiplyScalar(1 / size)
-    const center = new Box3().setFromObject(root).getCenter(new Vector3())
+    const center = new Three.Box3().setFromObject(root).getCenter(new Three.Vector3())
     switch (thumbnailType) {
       case ThumbnailType.FRONT: {
-        camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
+        camera = new Three.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
         camera.position.set(center.x + 0, center.y + 0, center.z + 1)
         break
       }
       case ThumbnailType.TOP: {
-        camera = new OrthographicCamera(-0.25, 0.25, 0.25, -0.25, 0, 1000)
+        camera = new Three.OrthographicCamera(-0.25, 0.25, 0.25, -0.25, 0, 1000)
         camera.position.set(center.x + 0, center.y + 1, center.z + 0)
         break
       }
       default: {
-        camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
+        camera = new Three.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
         camera.position.set(center.x + 1, center.y + 1, center.z + 1)
         break
       }
@@ -156,23 +143,23 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     camera.updateProjectionMatrix()
 
     // light
-    const ambient = new AmbientLight(0xffffff, 1.2)
+    const ambient = new Three.AmbientLight(0xffffff, 1.2)
     scene.add(ambient)
 
     switch (thumbnailType) {
       case ThumbnailType.FRONT: {
-        const directional = new DirectionalLight(0xffffff, 1)
+        const directional = new Three.DirectionalLight(0xffffff, 1)
         directional.position.set(center.x + 0, center.y + 1, center.z + 0)
         directional.lookAt(center)
         scene.add(directional)
         break
       }
       default: {
-        const directional = new DirectionalLight(0xffffff, 0.8)
+        const directional = new Three.DirectionalLight(0xffffff, 0.8)
         directional.position.set(center.x + 1, center.y + 1, center.z - 1)
         directional.lookAt(center)
         scene.add(directional)
-        const rectarea = new RectAreaLight(0xffffff, 0.5, width, height)
+        const rectarea = new Three.RectAreaLight(0xffffff, 0.5, width, height)
         rectarea.position.set(-3, 0, 0)
         rectarea.lookAt(center)
         scene.add(rectarea)
