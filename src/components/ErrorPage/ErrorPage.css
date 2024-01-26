@@ -46,7 +46,7 @@
 
 /* This is attached to the body */
 .error-body {
-  background-image: url('../../images/dev-hero.png');
+  background-image: url('../../images/dev-hero.webp');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 50%;

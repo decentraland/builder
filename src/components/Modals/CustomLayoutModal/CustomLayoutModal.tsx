@@ -8,7 +8,7 @@ import { fromLayout } from 'modules/template/utils'
 import { ProjectLayout } from 'modules/project/types'
 import { Props, SceneCreationStep, State } from './CustomLayoutModal.types'
 import { SDKVersion } from 'modules/scene/types'
-import webEditorSrc from 'images/web-editor-image.png'
+import webEditorSrc from 'images/web-editor-image.webp'
 import styles from './CustomLayoutModal.module.css'
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state: State = {

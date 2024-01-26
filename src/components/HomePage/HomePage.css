@@ -69,20 +69,20 @@
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-image.collections {
-  background-image: url('../../images/home-page-collections.png');
+  background-image: url('../../images/home-page-collections.webp');
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-image.scenes {
-  background-image: url('../../images/home-page-scenes.png');
+  background-image: url('../../images/home-page-scenes.webp');
   background-size: 90%;
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-image.land {
-  background-image: url('../../images/home-page-land.png');
+  background-image: url('../../images/home-page-land.webp');
 }
 
 .HomePage .ui.cards .ui.card > .content > .description > .card-image.names {
-  background-image: url('../../images/home-page-names.png');
+  background-image: url('../../images/home-page-names.webp');
   background-size: 60%;
 }
 
