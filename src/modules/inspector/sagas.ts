@@ -3,6 +3,7 @@ import { call, delay, put, race, select, take, takeEvery } from 'redux-saga/effe
 import { future, IFuture } from 'fp-future'
 import { hashV1 } from '@dcl/hashing'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
+import { merge } from 'ts-deepmerge'
 import { LoginFailureAction, LoginSuccessAction, LOGIN_FAILURE, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { isLoggingIn } from 'modules/identity/selectors'
 import { getProjectId } from 'modules/location/utils'
@@ -127,7 +128,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     // configure UI
     const ui = new UiClient(transport)
     yield call([ui, 'selectAssetsTab'], 'AssetsPack')
-    yield call([ui, 'toggleComponent'], 'inspector::Scene', false)
+    yield call([ui, 'toggleSceneInspectorTab'], 'layout', false)
 
     // wait for RPC to be idle (3 seconds)
     yield waitForRpcIdle(3000)
@@ -209,12 +210,19 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     switch (path) {
       case 'scene.json': {
         const project: Project = yield select(getCurrentProject)
-        file = JSON.stringify({
+        let metadata: SceneSDK7['metadata'] = {
+          display: {
+            title: project.title
+          },
           scene: {
             parcels: getParcels(project.layout).map($ => `${$.x},${$.y}`),
             base: '0,0'
           }
-        })
+        }
+        if (scene.metadata) {
+          metadata = merge.withOptions({ mergeArrays: true }, metadata, scene.metadata)
+        }
+        file = JSON.stringify(metadata)
         break
       }
       case 'assets/scene/main.composite': {
@@ -281,7 +289,14 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     const { path, content } = params
     switch (path) {
       case 'scene.json': {
-        // TODO: some changes to the scene.json might eventually end up in changes to the Project, like the name or the layout, but for now we can ignore it
+        const metadata = JSON.parse(new TextDecoder().decode(content))
+        console.log('saving scene.json', metadata)
+        const scene: SceneSDK7 = yield getScene()
+        const newScene: SceneSDK7 = {
+          ...scene,
+          metadata
+        }
+        yield put(updateScene(newScene))
         break
       }
       case 'assets/scene/main.composite': {
