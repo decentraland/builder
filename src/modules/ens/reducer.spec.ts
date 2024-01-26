@@ -2,6 +2,7 @@ import { ChainId } from '@dcl/schemas'
 import {
   FETCH_EXTERNAL_NAMES_REQUEST,
   SET_ENS_ADDRESS_SUCCESS,
+  clearENSErrors,
   fetchExternalNamesFailure,
   fetchExternalNamesRequest,
   fetchExternalNamesSuccess,
@@ -184,5 +185,18 @@ describe('when handling set ens address actions', () => {
       const newState = ensReducer(state, action)
       expect(newState.data['test.dcl.eth'].ensAddressRecord).toEqual(address)
     })
+  })
+})
+
+describe('when handling the CLEAR_ENS_ERRORS action', () => {
+  it('should remove the existing error from the state', () => {
+    const newState = ensReducer(
+      {
+        ...state,
+        error: { message: 'some error' }
+      },
+      clearENSErrors()
+    )
+    expect(newState.error).toEqual(null)
   })
 })

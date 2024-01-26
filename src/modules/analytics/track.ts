@@ -85,7 +85,8 @@ import {
   CLAIM_NAME_SUCCESS,
   SET_ENS_CONTENT_SUCCESS,
   SET_ENS_RESOLVER_SUCCESS,
-  ClaimNameSuccessAction
+  ClaimNameSuccessAction,
+  SET_ENS_ADDRESS_SUCCESS
 } from 'modules/ens/actions'
 import { CREATE_COLLECTION_FORUM_POST_FAILURE, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
 import {
@@ -391,3 +392,8 @@ addPayload(SET_COLLECTION_CURATION_ASSIGNEE_FAILURE, 'Assign curator error')
 add(MIGRATE_TO_SDK7_SUCCESS, 'Migrate to SDK7')
 
 add(MIGRATE_TO_SDK7_FAILURE, 'Migrate to SDK7 error')
+
+add(SET_ENS_ADDRESS_SUCCESS, 'Map Address to Name', action => ({
+  address: action.payload.address,
+  name: action.payload.ens.name
+}))

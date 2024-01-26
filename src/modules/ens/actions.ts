@@ -189,3 +189,7 @@ export const fetchExternalNamesFailure = (owner: string, error: ENSError) => act
 export type FetchExternalNamesRequestAction = ReturnType<typeof fetchExternalNamesRequest>
 export type FetchExternalNamesSuccessAction = ReturnType<typeof fetchExternalNamesSuccess>
 export type FetchExternalNamesFailureAction = ReturnType<typeof fetchExternalNamesFailure>
+
+export const CLEAR_ENS_ERRORS = '[Clear] ENS errors'
+export const clearENSErrors = () => action(CLEAR_ENS_ERRORS)
+export type ClearENSErrorsAction = ReturnType<typeof clearENSErrors>

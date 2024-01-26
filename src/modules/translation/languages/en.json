@@ -642,7 +642,15 @@
     "ethereum": "Ethereum Mainnet Network",
     "error_title": "An error occur while setting the address",
     "learn_more": "Learn more",
-    "save": "Save"
+    "save": "Save",
+    "set_resolver": {
+      "title": "Grant Permission",
+      "info": "Enable others to reference your account by defining an Ethereum address with your Decentraland NAME.<br></br> <br></br>This allows you to receive assets simply by providing your NAME. Authorize the public ENS resolver to set the address record on your behalf in Decentraland.",
+      "action": "Authorize",
+      "error": "Something went wrong"
+    },
+    "confirm_transaction": "Confirm the transaction...",
+    "processing": "Processing..."
   },
   "worlds_list_page": {
     "table": {
