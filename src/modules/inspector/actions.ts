@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { IframeStorage } from '@dcl/inspector'
+import type { IframeStorage } from '@dcl/inspector'
 
 export const OPEN_INSPECTOR = 'Open Inspector'
 export const openInspector = () => action(OPEN_INSPECTOR)
