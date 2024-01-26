@@ -9,7 +9,7 @@ import { LoadProjectSceneRequestAction, loadPublicProjectRequest, LoadPublicProj
 import { Scene } from 'modules/scene/types'
 import { togglePreview, TogglePreviewAction, closeEditor, CloseEditorAction } from 'modules/editor/actions'
 import { likePoolRequest, LikePoolRequestAction } from 'modules/pool/actions'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { PreviewType } from 'modules/editor/types'
 
 export type Props = {

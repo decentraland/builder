@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { Wearable } from 'decentraland-ecs'
+import type { Wearable } from 'decentraland-ecs'
 import { BodyShape } from '@dcl/schemas'
 
 import { RootState } from 'modules/common/types'

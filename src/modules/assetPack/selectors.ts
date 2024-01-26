@@ -16,7 +16,7 @@ export const getData = createSelector<RootState, AssetPackState, string | undefi
     assetPacks[COLLECTIBLE_ASSET_PACK_ID] = {
       id: COLLECTIBLE_ASSET_PACK_ID,
       title: 'Collectibles',
-      thumbnail: `${process.env.PUBLIC_URL}/images/nft-icon.png`,
+      thumbnail: `${process.env.VITE_BASE_URL}/images/nft-icon.png`,
       ethAddress: address || null,
       assets: []
     }

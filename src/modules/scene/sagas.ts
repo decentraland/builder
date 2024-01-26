@@ -1,5 +1,6 @@
 import uuidv4 from 'uuid/v4'
 import { takeLatest, put, select, call, delay, take, race } from 'redux-saga/effects'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -771,7 +772,7 @@ export function* sceneSaga(builderApi: BuilderAPI) {
       yield put(push(locations.inspector(project.id)))
       yield put(migrateToSDK7Success())
     } catch (error) {
-      put(migrateToSDK7Failure(error))
+      put(migrateToSDK7Failure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }

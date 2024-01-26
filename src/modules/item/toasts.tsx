@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
 import { ToastType } from 'decentraland-ui'
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { locations } from 'routing/locations'
 import { Collection } from 'modules/collection/types'
 import { Item } from './types'
 
-export const getSuccessfulMoveItemToAnotherCollectionToast = (item: Item, collection: Collection) => {
+export const getSuccessfulMoveItemToAnotherCollectionToast = (item: Item, collection: Collection): Omit<Toast, 'id'> => {
   return {
     type: ToastType.INFO,
     className: 'CollectionDetailPage move-item-to-another-collection',
@@ -32,7 +33,7 @@ export const getSuccessfulMoveItemToAnotherCollectionToast = (item: Item, collec
   }
 }
 
-export const getSuccessfulDeletedItemToast = (item: Item) => {
+export const getSuccessfulDeletedItemToast = (item: Item): Omit<Toast, 'id'> => {
   return {
     type: ToastType.INFO,
     className: 'CollectionDetailPage deleted-item',

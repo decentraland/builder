@@ -1,6 +1,7 @@
 import { takeEvery, call, put, delay, select } from 'redux-saga/effects'
 import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile/selectors'
 import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { BuilderAPI } from 'lib/api/builder'
 import {
   SetCollectionCurationAssigneeSuccessAction,
@@ -67,7 +68,7 @@ export function* forumSaga(builder: BuilderAPI) {
         }
       }
 
-      yield put(createCollectionForumPostFailure(collection, forumPost, error.message))
+      yield put(createCollectionForumPostFailure(collection, forumPost, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -88,7 +89,7 @@ export function* forumSaga(builder: BuilderAPI) {
         throw new Error(`Invalid forum topic id for the collection id: ${collectionId}`)
       }
     } catch (error) {
-      yield put(fetchCollectionForumPostReplyFailure(collection, error.message))
+      yield put(fetchCollectionForumPostReplyFailure(collection, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -107,7 +108,9 @@ export function* forumSaga(builder: BuilderAPI) {
         yield call([builder, 'createCollectionNewAssigneeForumPost'], collection, forumPost)
         yield put(createCollectionAssigneeForumPostSuccess())
       } catch (error) {
-        yield put(createCollectionAssigneeForumPostFailure(collectionId, forumPost, error.message))
+        yield put(
+          createCollectionAssigneeForumPostFailure(collectionId, forumPost, isErrorWithMessage(error) ? error.message : 'Unknown error')
+        )
       }
     }
   }

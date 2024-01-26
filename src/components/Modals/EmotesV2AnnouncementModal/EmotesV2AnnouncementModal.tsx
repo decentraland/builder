@@ -8,7 +8,7 @@ import { LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT } from 'components/CollectionsPage/C
 import styles from './EmotesV2AnnouncementModal.module.css'
 
 const localStorage = getLocalStorage()
-const PUBLIC_URL = process.env.PUBLIC_URL
+const PUBLIC_URL = process.env.VITE_BASE_URL
 
 const EmotesV2AnnouncementModal: React.FC<ModalProps> = ({ name, onClose }) => {
   const handleClose = () => {

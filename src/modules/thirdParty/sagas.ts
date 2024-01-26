@@ -12,6 +12,7 @@ import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { ToastType } from 'decentraland-ui'
 import { BuilderAPI } from 'lib/api/builder'
 import { ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
@@ -116,7 +117,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       const thirdParties: ThirdParty[] = yield call([builder, 'fetchThirdParties'], address)
       yield put(fetchThirdPartiesSuccess(thirdParties))
     } catch (error) {
-      yield put(fetchThirdPartiesFailure(error.message))
+      yield put(fetchThirdPartiesFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -126,7 +127,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       const availableSlots: number = yield call([builder, 'fetchThirdPartyAvailableSlots'], thirdPartyId)
       yield put(fetchThirdPartyAvailableSlotsSuccess(thirdPartyId, availableSlots))
     } catch (error) {
-      yield put(fetchThirdPartyAvailableSlotsFailure(error.message))
+      yield put(fetchThirdPartyAvailableSlotsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -185,7 +186,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       yield put(publishThirdPartyItemsSuccess(thirdParty.id, collectionId, newItems, newItemCurations))
     } catch (error) {
       yield showActionErrorToast()
-      yield put(publishThirdPartyItemsFailure(error.message))
+      yield put(publishThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     } finally {
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
@@ -230,7 +231,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       yield put(pushChangesThirdPartyItemsSuccess(collectionId, newItemsCurations))
     } catch (error) {
       yield showActionErrorToast()
-      yield put(pushChangesThirdPartyItemsFailure(error.message))
+      yield put(pushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     } finally {
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
@@ -256,7 +257,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
     } catch (error) {
       yield showActionErrorToast()
-      yield put(publishAndPushChangesThirdPartyItemsFailure(error.message)) // TODO: show to the user that something went wrong
+      yield put(publishAndPushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error')) // TODO: show to the user that something went wrong
     } finally {
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
@@ -279,7 +280,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       yield call(waitForTx, txHash)
       yield put(reviewThirdPartySuccess())
     } catch (error) {
-      yield put(reviewThirdPartyFailure(error))
+      yield put(reviewThirdPartyFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 

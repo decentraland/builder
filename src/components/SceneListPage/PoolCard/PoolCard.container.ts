@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { getDeploymentStatusByProjectId } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './PoolCard.types'
 import ProjectCard from './PoolCard'

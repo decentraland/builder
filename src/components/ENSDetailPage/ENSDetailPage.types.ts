@@ -1,7 +1,7 @@
 import { Avatar } from '@dcl/schemas'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { fetchENSRequest } from 'modules/ens/actions'
 import { ENS } from 'modules/ens/types'
-import { openModal } from 'modules/modal/actions'
 
 export type Props = {
   name: string | null

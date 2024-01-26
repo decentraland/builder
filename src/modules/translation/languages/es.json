@@ -146,6 +146,7 @@
     "smart_wearable": "Vestimenta Interactiva"
   },
   "emotes": {
+    "wave": "Saludar",
     "idle": "Inactivo",
     "clap": "Aplaudir",
     "dab": "Dab",

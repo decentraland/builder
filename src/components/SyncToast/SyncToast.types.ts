@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { retrySync, RetrySyncAction } from 'modules/sync/actions'
 import { dismissSyncedToast, dismissSignInToast, DismissSyncedToastAction, DismissSignInToastAction } from 'modules/ui/dashboard/actions'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
   syncCount: number

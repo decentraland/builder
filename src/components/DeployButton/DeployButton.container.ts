@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCurrentDeploymentStatus } from 'modules/deployment/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './DeployButton.types'
 import DeployButton from './DeployButton'

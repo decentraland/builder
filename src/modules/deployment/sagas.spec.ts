@@ -108,7 +108,7 @@ describe('when handling deploy to world request', () => {
         [matchers.call.fn(buildEntity), { entityId: 'entityId', files: [] }]
       ])
       .call.like({ fn: buildEntity, args: [{ type: 'scene', pointers: [], metadata: sceneDefinition, files: {} }] })
-      .call.like({ fn: deployMock, args: [{ entityId: 'entityId', files: [], authChain: undefined }] })
+      .call.like({ fn: deployMock, args: [{ entityId: 'entityId', files: [], authChain: 'auth' }] })
       .dispatch(deployToWorldRequest('project-id', 'world-name'))
       .silentRun()
   })

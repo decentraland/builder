@@ -1,9 +1,5 @@
 /* eslint-disable import/no-webpack-loader-syntax */
-import * as ECS from 'decentraland-ecs'
-import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
-import packageJson from 'decentraland/samples/ecs/package.json'
-import sceneJsonSample from 'decentraland/samples/ecs/scene.json'
-import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentType, ComponentDefinition, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
@@ -17,14 +13,7 @@ import { getParcelOrientation } from './utils'
 
 const SCENE_TEMPLATE_URL = 'https://raw.githubusercontent.com/decentraland/sdk-empty-scene-template/main'
 
-const Dockerfile = require('!raw-loader!decentraland/samples/ecs/Dockerfile').default
-const builderChannelRaw = require('raw-loader!decentraland-builder-scripts/lib/channel').default
-const builderInventoryRaw = require('raw-loader!decentraland-builder-scripts/lib/inventory').default
-
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
-
-const { communications: _communications, policy: _policy, ...sceneWithoutOutdatedProperties } = sceneJsonSample
-const sceneJson: SceneDefinition = sceneWithoutOutdatedProperties
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
@@ -72,10 +61,10 @@ export async function createFiles(args: {
     // @ts-ignore: 'builder.json' is specified more than once, but don't want to break anything
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
-    [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
+    [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? await createGameFileBundle(gameFile) : gameFile,
     [EXPORT_PATH.THUMBNAIL_FILE]: await createThumbnailBlob(thumbnail, isEmpty),
-    ...createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty, world }),
-    ...createStaticFiles(),
+    ...(await createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty, world })),
+    ...(await createStaticFiles()),
     ...files
   }
 }
@@ -87,8 +76,13 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
 export async function createGameFile(args: { project: Project; scene: SceneSDK6; rotation: Rotation }, isDeploy = false) {
   const { scene, project, rotation } = args
   const useLightweight = isDeploy && !hasScripts(scene)
-  const Writer = useLightweight ? LightweightWriter : SceneWriter
-  const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
+  const [SceneWriterModule, ecsAPI, ECS] = await Promise.all([
+    import('dcl-scene-writer'),
+    import('decentraland-ecs/types/dcl/decentraland-ecs.api?raw').then(module => JSON.parse(module.default)),
+    import('decentraland-ecs')
+  ])
+  const Writer = useLightweight ? SceneWriterModule.LightweightWriter : SceneWriterModule.SceneWriter
+  const writer = new Writer(ECS, ecsAPI)
   const { cols, rows } = project.layout
   const sceneEntity = new ECS.Entity()
 
@@ -199,17 +193,20 @@ export async function createGameFile(args: { project: Project; scene: SceneSDK6;
 
       writer.addEntity(name, ecsEntity as any)
     } catch (e) {
-      console.warn(e.message)
+      console.warn(isErrorWithMessage(e) ? e.message : 'Unknown error')
       continue
     }
   }
-
   let code = writer.emitCode()
 
   // SCRIPTS SECTION
   if (scripts.size > 0) {
     if (isDeploy) {
-      const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw').default
+      const [scriptLoader, builderChannelRaw, builderInventoryRaw] = await Promise.all([
+        import('../../ecsScene/remote-loader.js.raw?raw').then(module => module.default),
+        import('decentraland-builder-scripts/lib/channel?raw').then(module => module.default),
+        import('decentraland-builder-scripts/lib/inventory?raw').then(module => module.default)
+      ])
 
       // create executeScripts function
       let executeScripts = 'async function executeScripts() {'
@@ -300,12 +297,13 @@ export async function createGameFile(args: { project: Project; scene: SceneSDK6;
   return code
 }
 
-export function createGameFileBundle(gameFile: string): string {
-  const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw').default
-  const amd = require('!raw-loader!../../ecsScene/amd-loader.js.raw').default
-
+export async function createGameFileBundle(gameFile: string): Promise<string> {
+  const [sceneECS, amd] = await Promise.all([
+    import('../../ecsScene/ecs.js.raw?raw').then(module => module.default),
+    import('../../ecsScene/amd-loader.js.raw?raw').then(module => module.default)
+  ])
   const code = `// ECS
-${ecs}
+${sceneECS}
 // AMD
 ${amd}
 // Builder generated code below
@@ -313,9 +311,9 @@ ${gameFile}`
   return code
 }
 
-export function createStaticFiles() {
+export async function createStaticFiles() {
   return {
-    [EXPORT_PATH.DOCKER_FILE]: Dockerfile,
+    [EXPORT_PATH.DOCKER_FILE]: (await import('decentraland/samples/ecs/Dockerfile?raw')).default,
     [EXPORT_PATH.DCLIGNORE_FILE]: [
       '.*',
       'package.json',
@@ -415,7 +413,7 @@ export async function downloadFiles(args: {
   return files
 }
 
-export function createDynamicFiles(args: {
+export async function createDynamicFiles(args: {
   project: Project
   scene: SceneSDK6
   point: Coordinate
@@ -426,7 +424,10 @@ export function createDynamicFiles(args: {
   world?: string
 }) {
   const { project, scene, rotation, point, thumbnail, author, isEmpty, world } = args
-
+  const [packageJson, tsconfig] = await Promise.all([
+    import('decentraland/samples/ecs/package.json'),
+    import('decentraland/samples/ecs/tsconfig.json')
+  ])
   const files = {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify({
       version: MANIFEST_FILE_VERSION,
@@ -459,7 +460,7 @@ export function createDynamicFiles(args: {
   return files
 }
 
-export function getSceneDefinition(
+export async function getSceneDefinition(
   project: Project,
   point: Coordinate,
   rotation: Rotation,
@@ -468,9 +469,12 @@ export function getSceneDefinition(
   isEmpty?: boolean,
   name?: string,
   isSDK7?: boolean
-) {
+): Promise<SceneDefinition> {
   const parcels = getParcelOrientation(project.layout, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
+  const sceneJsonSample = await import('decentraland/samples/ecs/scene.json')
+  const { communications: _communications, policy: _policy, ...sceneWithoutOutdatedProperties } = sceneJsonSample
+  const sceneJson: SceneDefinition = sceneWithoutOutdatedProperties
 
   const sceneDefinition: SceneDefinition = {
     ...sceneJson,
@@ -554,7 +558,7 @@ async function createThumbnailBlob(thumbnail: string | null, isClearDeployment: 
       const blob = await resp.blob()
       return blob
     } catch (error) {
-      console.error(error.message)
+      console.error(isErrorWithMessage(error) ? error.message : 'Unknown error')
     }
   }
   return new Blob([])

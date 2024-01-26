@@ -3,6 +3,7 @@ import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getTransactionFromAction } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/dist/modules/authorization/actions'
 import { SET_PROFILE_AVATAR_ALIAS_SUCCESS } from 'decentraland-dapps/dist/modules/profile/actions'
+import { OPEN_MODAL, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import {
   DROP_ITEM,
   RESET_ITEM,
@@ -27,7 +28,6 @@ import {
 import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
 import { SET_PROJECT, EXPORT_PROJECT_REQUEST, IMPORT_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
-import { OPEN_MODAL, CLOSE_MODAL } from 'modules/modal/actions'
 import { SHARE_SCENE } from 'modules/ui/share/actions'
 import { LIKE_POOL_REQUEST } from 'modules/pool/actions'
 import { LOGIN_REQUEST, LOGOUT } from 'modules/identity/actions'

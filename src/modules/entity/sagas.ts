@@ -3,6 +3,7 @@ import { CatalystClient, ContentClient } from 'dcl-catalyst-client'
 import { Entity, EntityType } from '@dcl/schemas'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { getIdentity } from 'modules/identity/utils'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import {
   deployEntitiesFailure,
   DeployEntitiesRequestAction,
@@ -36,7 +37,7 @@ export function* entitySaga(catalystClient: CatalystClient) {
       const entities: Entity[] = yield call([contentClient, 'fetchEntitiesByPointers'], pointers)
       yield put(fetchEntitiesByPointersSuccess(type, pointers, entities))
     } catch (error) {
-      yield put(fetchEntitiesByPointersFailure(type, pointers, error.message))
+      yield put(fetchEntitiesByPointersFailure(type, pointers, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -47,7 +48,7 @@ export function* entitySaga(catalystClient: CatalystClient) {
       const entities: Entity[] = yield call([contentClient, 'fetchEntitiesByIds'], ids)
       yield put(fetchEntitiesByIdsSuccess(type, ids, entities))
     } catch (error) {
-      yield put(fetchEntitiesByIdsFailure(type, ids, error.message))
+      yield put(fetchEntitiesByIdsFailure(type, ids, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -68,7 +69,7 @@ export function* entitySaga(catalystClient: CatalystClient) {
 
       yield put(deployEntitiesSuccess(entities))
     } catch (error) {
-      yield put(deployEntitiesFailure(entities, error.message))
+      yield put(deployEntitiesFailure(entities, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 

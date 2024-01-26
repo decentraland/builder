@@ -8,6 +8,7 @@ import {
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getSigner } from 'decentraland-dapps/dist/lib/eth'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
   FETCH_LANDS_REQUEST,
@@ -51,7 +52,7 @@ import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory
 import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
 import { Rentals__factory } from 'contracts/factories/Rentals__factory'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS, RENTALS_ADDRESS } from 'modules/common/contracts'
-import { closeModal } from 'modules/modal/actions'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization, RoleType } from './types'
@@ -92,7 +93,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
     }
     yield put(push(locations.activity()))
   } catch (error) {
-    yield put(setUpdateManagerFailure(address, type, isApproved, error.message))
+    yield put(setUpdateManagerFailure(address, type, isApproved, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 
@@ -114,7 +115,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     yield put(closeModal('DissolveModal'))
     yield put(push(locations.activity()))
   } catch (error) {
-    yield put(dissolveEstateFailure(land, error.message))
+    yield put(dissolveEstateFailure(land, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 
@@ -133,7 +134,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
     yield put(closeModal('EstateEditorModal'))
     yield put(push(locations.activity()))
   } catch (error) {
-    yield put(createEstateFailure(name, description, coords, error.message))
+    yield put(createEstateFailure(name, description, coords, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 
@@ -160,7 +161,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
     yield put(closeModal('EstateEditorModal'))
     yield put(push(locations.activity()))
   } catch (error) {
-    yield put(editEstateFailure(land, toAdd, toRemove, error.message))
+    yield put(editEstateFailure(land, toAdd, toRemove, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 
@@ -205,7 +206,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
     }
     yield put(push(locations.activity()))
   } catch (error) {
-    yield put(setOperatorFailure(land, address, error.message))
+    yield put(setOperatorFailure(land, address, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 
@@ -236,7 +237,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
     }
     yield put(push(locations.activity()))
   } catch (error) {
-    yield put(editLandFailure(land, name, description, error.message))
+    yield put(editLandFailure(land, name, description, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 
@@ -268,7 +269,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
     }
     yield put(push(locations.activity()))
   } catch (error) {
-    yield put(transferLandFailure(land, address, error.message))
+    yield put(transferLandFailure(land, address, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 
@@ -282,7 +283,7 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
     const [land, authorizations]: [Land[], Authorization[]] = yield call([manager, 'fetchLand'], address, tenantTokenIds, lessorTokenIds)
     yield put(fetchLandsSuccess(address, land, authorizations, rentals.tenantRentals.concat(rentals.lessorRentals)))
   } catch (error) {
-    yield put(fetchLandsFailure(address, error.message))
+    yield put(fetchLandsFailure(address, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 

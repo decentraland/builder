@@ -3,7 +3,7 @@ import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/
 import { RootState } from 'modules/common/types'
 import { getItem, getError as getItemError, getStatusByItemId, isDownloading } from 'modules/item/selectors'
 import { deleteItemRequest, downloadItemRequest, saveItemRequest, setCollection } from 'modules/item/actions'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { isOwner } from 'modules/item/utils'
 import { getSelectedItemId } from 'modules/location/selectors'
 import { getCollection, hasViewAndEditRights } from 'modules/collection/selectors'

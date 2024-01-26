@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { setCollectionPageView, SetCollectionPageViewAction } from 'modules/ui/collection/actions'
 import { CollectionPageView } from 'modules/ui/collection/types'
 import { Item } from 'modules/item/types'

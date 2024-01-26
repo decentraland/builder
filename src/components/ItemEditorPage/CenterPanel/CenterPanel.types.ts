@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { Color4, Wearable } from 'decentraland-ecs'
+import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, IPreviewController, PreviewEmote, WearableCategory } from '@dcl/schemas'
 import { Collection } from 'modules/collection/types'
 import {
@@ -30,6 +30,7 @@ import {
   FetchItemsRequestAction
 } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
+import { Color4 } from 'lib/colors'
 
 export type Props = {
   address?: string

@@ -6,7 +6,8 @@ import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
 import { Gizmo, OpenEditorOptions, PreviewType } from './types'
 import { Item } from 'modules/item/types'
-import { Color4, Wearable } from 'decentraland-ecs'
+import type { Wearable } from 'decentraland-ecs'
+import { Color4 } from 'lib/colors'
 
 // Bind keyboard shortcuts
 

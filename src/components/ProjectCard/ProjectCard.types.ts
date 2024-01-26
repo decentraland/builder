@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Deployment, DeploymentStatus } from 'modules/deployment/types'
 import {
   deleteProject,

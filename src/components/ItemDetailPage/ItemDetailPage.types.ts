@@ -4,7 +4,7 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { deleteItemRequest, DeleteItemRequestAction, saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { LocationStateProps } from 'modules/location/types'
 
 export type State = {

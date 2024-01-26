@@ -2,6 +2,7 @@
 import { call, delay, put, race, select, take, takeEvery } from 'redux-saga/effects'
 import { future, IFuture } from 'fp-future'
 import { hashV1 } from '@dcl/hashing'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { LoginFailureAction, LoginSuccessAction, LOGIN_FAILURE, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { isLoggingIn } from 'modules/identity/selectors'
 import { getProjectId } from 'modules/location/utils'
@@ -151,7 +152,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
       const result: IframeStorage.Result[IframeStorage.Method] = yield handler(params)
       yield put(rpcSuccess(method, result, nonce))
     } catch (error) {
-      yield put(rpcFailure(method, params, error.message, nonce))
+      yield put(rpcFailure(method, params, isErrorWithMessage(error) ? error.message : 'Unknown error', nonce))
     }
   }
 

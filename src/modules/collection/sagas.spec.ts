@@ -26,7 +26,7 @@ import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
 import { getCollection } from 'modules/collection/selectors'
 import { EntityHashingType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
-import { openModal, closeModal, CLOSE_MODAL } from 'modules/modal/actions'
+import { openModal, closeModal, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import { mockedItem } from 'specs/item'
 import {
   fetchCollectionItemsRequest,

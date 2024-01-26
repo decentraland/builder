@@ -19,6 +19,7 @@ import {
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { getImageType, dataURLToBlob, convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
 import {
@@ -425,7 +426,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             await this.createItem(sortedContents, representations)
           }
         } catch (error) {
-          this.setState({ error: error.message })
+          this.setState({ error: isErrorWithMessage(error) ? error.message : 'Unknown error' })
         }
       } else if (this.state.view === CreateItemView.SET_PRICE && !!this.state.item && !!this.state.itemSortedContents) {
         onSave(this.state.item, this.state.itemSortedContents)

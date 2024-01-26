@@ -4,7 +4,7 @@ import { Project } from 'modules/project/types'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { shareProject, ShareProjectAction } from 'modules/project/actions'
 import { shareScene, ShareAction } from 'modules/ui/share/actions'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { deployToPoolRequest, DeployToPoolRequestAction } from 'modules/deployment/actions'
 
 export type Props = ModalProps & {

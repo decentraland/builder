@@ -1,5 +1,6 @@
 import PQueue from 'p-queue'
 import { call, takeEvery, takeLatest, put } from '@redux-saga/core/effects'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { BuilderAPI } from 'lib/api/builder'
 import { FetchCollectionItemsSuccessAction, FETCH_COLLECTION_ITEMS_SUCCESS } from 'modules/item/actions'
 import { isThirdParty } from 'lib/urn'
@@ -65,7 +66,7 @@ export function* itemCurationSaga(builder: BuilderAPI) {
 
       yield put(fetchItemCurationsSuccess(collectionId, itemCurations))
     } catch (error) {
-      yield put(fetchItemCurationsFailure(error.message))
+      yield put(fetchItemCurationsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -75,7 +76,7 @@ export function* itemCurationSaga(builder: BuilderAPI) {
       const curation: ItemCuration = yield call([builder, 'fetchItemCuration'], itemId)
       yield put(fetchItemCurationSuccess(collectionId, curation))
     } catch (error) {
-      yield put(fetchItemCurationFailure(error.message))
+      yield put(fetchItemCurationFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }

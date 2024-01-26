@@ -1,6 +1,6 @@
 import { select, put, race, take, delay } from 'redux-saga/effects'
 import { getCurrentIdentity, isLoggedIn } from 'modules/identity/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { LOGIN_SUCCESS, LOGIN_FAILURE } from './actions'
 
 export const ONE_MONTH_IN_MINUTES = 31 * 24 * 60

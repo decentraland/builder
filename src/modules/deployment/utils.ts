@@ -1,6 +1,5 @@
 import uuid from 'uuid'
 import CID from 'cids'
-import toBuffer from 'blob-to-buffer'
 import pull from 'pull-stream'
 import { MemoryDatastore } from 'interface-datastore'
 import { EntityContentItemReference } from '@dcl/hashing'
@@ -11,8 +10,9 @@ import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { ContentServiceFile, Deployment, DeploymentStatus, SceneDefinition } from './types'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Importer = require('ipfs-unixfs-engine').Importer
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { Importer } from 'ipfs-unixfs-engine'
 
 export const UNPUBLISHED_PROJECT_ID = 'unpublished-project'
 
@@ -68,7 +68,8 @@ export async function getCID(files: ContentServiceFile[]): Promise<string> {
   })
 }
 
-export function makeContentFile(path: string, content: string | Blob): Promise<ContentServiceFile> {
+export async function makeContentFile(path: string, content: string | Blob): Promise<ContentServiceFile> {
+  const toBuffer = (await import('blob-to-buffer')).default
   return new Promise((resolve, reject) => {
     if (typeof content === 'string') {
       const buffer = Buffer.from(content)
