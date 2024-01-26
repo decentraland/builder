@@ -47,6 +47,7 @@ import { LandTile, Rental } from 'modules/land/types'
 import { getLandTiles, getRentals } from 'modules/land/selectors'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
+import { SET_ENS_ADDRESS_SUCCESS, SetENSAddressSuccessAction } from 'modules/ens/actions'
 
 const baseAnalyticsSaga = createAnalyticsSaga()
 
@@ -70,6 +71,7 @@ function* builderAnalyticsSaga() {
   yield takeLatest(DELETE_ASSET_PACK_FAILURE, handleDeleteAssetPackFailure)
   yield takeLatest(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishTPItemSuccess)
   yield takeLatest(DEPLOY_TO_WORLD_SUCCESS, handleDeployToWorldSuccess)
+  yield takeLatest(SET_ENS_ADDRESS_SUCCESS, handleSetENSAddressSuccess)
 }
 
 export function* analyticsSaga() {
@@ -230,4 +232,8 @@ function* handleDeployToWorldSuccess(action: DeployToWorldSuccessAction) {
   }
 
   yield call(track, '[Success] Deploy to World', { project_id: project.id, eth_address: ethAddress, subdomain: deployment.world })
+}
+
+function* handleSetENSAddressSuccess(action: SetENSAddressSuccessAction) {
+  yield call(track, 'Map Address to Name', { name: action.payload.ens.name, address: action.payload.address })
 }

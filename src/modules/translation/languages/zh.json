@@ -645,7 +645,15 @@
     "ethereum": "以太坊主网网络",
     "error_title": "设置地址时发生错误",
     "learn_more": "了解更多",
-    "save": "节省"
+    "save": "节省",
+    "set_resolver": {
+      "title": "授予权限",
+      "info": "通过定义您的分散名称来定义以太坊地址，使其他人可以参考您的帐户。<br></br> <br></br>这使您只需提供姓名即可获得资产。授权公共ENS解析器代表您在分散的情况下设置地址记录。",
+      "action": "授权",
+      "error": "出了些问题"
+    },
+    "confirm_transaction": "确认交易...",
+    "processing": "加工..."
   },
   "worlds_list_page": {
     "table": {

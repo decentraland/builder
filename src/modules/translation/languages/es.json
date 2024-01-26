@@ -643,7 +643,15 @@
     "ethereum": "Ethereum Mainnet",
     "error_title": "Se produjo un error al configurar la dirección",
     "learn_more": "Aprende más",
-    "save": "Guardar"
+    "save": "Guardar",
+    "set_resolver": {
+      "title": "Conceder permiso",
+      "info": "Permitir que otros hagan referencia a su cuenta definiendo una dirección de Ethereum con su nombre Decentraland.<br></br> <br></br>Esto le permite recibir activos simplemente proporcionando su nombre. Autorice al resolución pública de ENS para establecer el registro de la dirección en su nombre en Decentraland.",
+      "action": "Autorizar",
+      "error": "Algo salió mal"
+    },
+    "confirm_transaction": "Confirmar transacción...",
+    "processing": "Procesando..."
   },
   "worlds_list_page": {
     "table": {

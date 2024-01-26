@@ -47,3 +47,26 @@
 .ethereum img {
   width: 24px;
 }
+
+.setResolverInfo {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.setResolverActions {
+  display: flex;
+  gap: 20px;
+}
+
+.setResolverStatus {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.setResolverStatus .icon {
+  color: var(--primary);
+}

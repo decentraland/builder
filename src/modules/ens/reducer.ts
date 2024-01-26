@@ -69,7 +69,9 @@ import {
   SetENSAddressRequestAction,
   SetENSAddressFailureAction,
   SetENSAddressSuccessAction,
-  setENSAddressSuccess
+  setENSAddressSuccess,
+  CLEAR_ENS_ERRORS,
+  ClearENSErrorsAction
 } from './actions'
 import { ENS, ENSError, Authorization } from './types'
 import { isExternalName } from './utils'
@@ -126,6 +128,7 @@ export type ENSReducerAction =
   | SetENSAddressRequestAction
   | SetENSAddressSuccessAction
   | SetENSAddressFailureAction
+  | ClearENSErrorsAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
@@ -276,6 +279,12 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         ...state,
         loading: loadingReducer(state.loading, action),
         error: { ...action.payload.error }
+      }
+    }
+    case CLEAR_ENS_ERRORS: {
+      return {
+        ...state,
+        error: null
       }
     }
     case FETCH_TRANSACTION_SUCCESS: {
