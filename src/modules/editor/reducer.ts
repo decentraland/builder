@@ -1,4 +1,4 @@
-import type { Color4, Wearable } from 'decentraland-ecs'
+import type { Wearable } from 'decentraland-ecs'
 import { PreviewEmote, BodyShape, WearableCategory, IPreviewController } from '@dcl/schemas'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
@@ -13,6 +13,7 @@ import {
 import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
 import { hasBodyShape } from 'modules/item/utils'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
+import { Color4 } from 'lib/colors'
 import {
   SetGizmoAction,
   TogglePreviewAction,

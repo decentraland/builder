@@ -1,8 +1,8 @@
 import { Locale, BodyShape, WearableCategory, WearableDefinition } from '@dcl/schemas'
 import type { Wearable } from 'decentraland-ecs'
-import { Color4 } from '@babylonjs/core'
 import { Item, ItemType } from 'modules/item/types'
 import { getSkinHiddenCategories } from 'modules/item/utils'
+import { Color4 } from 'lib/colors'
 import { convertWearable, wearable, catalystWearable } from 'specs/editor'
 import { CatalystWearable, PatchedWearable } from './types'
 import {

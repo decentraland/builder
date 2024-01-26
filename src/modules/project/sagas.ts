@@ -364,7 +364,7 @@ export function* projectSaga(builder: BuilderAPI) {
     try {
       const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
       if (isSDK7TemplatesEnabled && type === PreviewType.TEMPLATE) {
-        const template = getTemplate(project.id)
+        const template: Manifest = yield call(getTemplate, project.id)
         yield put(loadProjectSceneSuccess(template.scene))
       } else {
         const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
@@ -385,7 +385,7 @@ export function* projectSaga(builder: BuilderAPI) {
     try {
       const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
       if (isSDK7TemplatesEnabled && type === PreviewType.TEMPLATE) {
-        const manifest = getTemplate(id)
+        const manifest: Manifest = yield call(getTemplate, id)
         yield put(loadManifestSuccess(manifest))
       } else {
         const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], id, type)
@@ -400,7 +400,7 @@ export function* projectSaga(builder: BuilderAPI) {
     try {
       const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
       const projects: Project[] = isSDK7TemplatesEnabled
-        ? getTemplates().map(template => template.project)
+        ? ((yield call(getTemplates)) as Manifest[]).map(template => template.project)
         : yield call([builder, 'fetchTemplates'])
       const record: ModelById<Project> = {}
 

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button } from 'decentraland-ui'
-import JSZip from 'jszip'
+import type JSZip from 'jszip'
 import uuidv4 from 'uuid/v4'
 
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -95,6 +95,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
     for (const file of acceptedFiles) {
       try {
+        const JSZip = (await import('jszip')).default
         const zip: JSZip = await JSZip.loadAsync(file)
         const contentRaw = zip.file(EXPORT_PATH.MANIFEST_FILE)
         if (!contentRaw) {

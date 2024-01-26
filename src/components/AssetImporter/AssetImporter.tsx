@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { basename } from 'path'
 import uuidv4 from 'uuid/v4'
-import JSZip from 'jszip'
+import type JSZip from 'jszip'
 import { Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
@@ -94,6 +94,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
 
   handleZipFile = async (file: File) => {
     const { assetPackId } = this.state
+    const JSZip = (await import('jszip')).default
     const zip: JSZip = await JSZip.loadAsync(file)
     const manifestPath = Object.keys(zip.files).find(path => basename(path) === ASSET_MANIFEST)
     let manifestParsed: Asset | null = null
