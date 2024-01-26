@@ -17,7 +17,7 @@
 }
 
 .ui.small.modal.ExportModal .content .export-modal-content-image {
-  background-image: url('../../../images/export_modal_img.png');
+  background-image: url('../../../images/export_modal_img.webp');
   height: 180px;
   width: 100%;
   background-size: contain;

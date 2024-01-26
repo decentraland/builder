@@ -12,8 +12,8 @@ const videoSrc = {
   template: `${PUBLIC_URL}/videos/template-preview.mp4`
 }
 const imgSrc = {
-  scratch: `${PUBLIC_URL}/images/scratch-preview-img.png`,
-  template: `${PUBLIC_URL}/images/template-preview-img.png`
+  scratch: `${PUBLIC_URL}/images/scratch-preview-img.webp`,
+  template: `${PUBLIC_URL}/images/template-preview-img.webp`
 }
 
 export default function SceneCreationSelector({ onOpenModal, onNavigate }: Props) {
