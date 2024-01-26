@@ -215,7 +215,8 @@ describe('Item selectors', () => {
           rarities: [],
           loading: [],
           error: null,
-          pagination: null
+          pagination: null,
+          hasUserOrphanItems: undefined
         } as ItemState,
         collection: {
           data: {
@@ -225,7 +226,8 @@ describe('Item selectors', () => {
           },
           loading: [],
           error: null,
-          pagination: null
+          pagination: null,
+          lastFetchParams: undefined
         } as CollectionState,
         entity: {
           data: {},

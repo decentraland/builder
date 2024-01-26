@@ -5,13 +5,14 @@ on: [push, pull_request]
 jobs:
   audit:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Clean install dependencies
-        run: npm ci
-
+      - uses: actions/checkout@master
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4.0.1
+        with:
+          node-version: 18.x
+          cache: 'npm'
+      - name: Install
+        run: npm i --legacy-peer-deps
       - name: Audit signatures
         run: npm audit signatures

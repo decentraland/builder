@@ -9,6 +9,7 @@ import { call, select, take, race, delay } from 'redux-saga/effects'
 import { BuilderClient, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
 import { ToastProps, ToastType } from 'decentraland-ui'
+import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -894,7 +895,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
   })
 
   it('should put a reset item success action', () => {
-    return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+    return expectSaga(handleResetItemRequest as SagaType<any>, resetItemRequest(itemId))
       .provide([
         [select(getItemsById), itemsById],
         [saveItemRequest(replacedItem, replacedContents), undefined],
@@ -917,7 +918,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
     it('should put a resetItemFailure action with the saveItemFailure action action message', () => {
       const saveItemFailureMessage = 'saveItemFailure action message'
 
-      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+      return expectSaga(handleResetItemRequest as SagaType<any>, resetItemRequest(itemId))
         .provide([
           [select(getItemsById), itemsById],
           [saveItemRequest(replacedItem, replacedContents), undefined],
@@ -941,7 +942,7 @@ describe('when resetting an item to the state found in the catalyst', () => {
 
   describe('and the entity has no content', () => {
     it('should put a resetItemFailure action with a content missing message', () => {
-      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+      return expectSaga(handleResetItemRequest as SagaType<any>, resetItemRequest(itemId))
         .provide([
           [select(getItemsById), itemsById],
           [
@@ -1779,8 +1780,7 @@ describe('when handling the setItemCollection action', () => {
       type: ToastType.INFO,
       title: 'Title',
       body: 'Body'
-    }
-    jest.spyOn(toasts, 'getSuccessfulMoveItemToAnotherCollectionToast').mockReturnValueOnce(toast)
+    } as Omit<Toast, 'id'>
   })
 
   it('should put a save item success action and show the successful move item to another collection toast', () => {
@@ -1788,12 +1788,13 @@ describe('when handling the setItemCollection action', () => {
       .provide([
         [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
         [select(getLocation), { pathname: 'collections' }],
-        [select(getCollection, collection.id), collection.id],
+        [select(getCollection, collection.id), collection],
         [select(getItem, item.id), item],
         [select(getAddress), mockAddress],
-        [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
+        [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()],
+        [call(toasts.getSuccessfulMoveItemToAnotherCollectionToast, item, collection), toast]
       ])
-      .put.like({ action: { type: SHOW_TOAST, payload: { toast, position: 'bottom center' } } })
+      .put.like({ action: { type: SHOW_TOAST, payload: { toast, position: 'bottom center' }, meta: undefined } })
       .put(closeModal('MoveItemToAnotherCollectionModal'))
       .dispatch(saveItemSuccess(item, {}))
       .dispatch(setItemCollection(item, collection.id))

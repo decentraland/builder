@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { ProjectState } from 'modules/project/reducer'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Deployment } from 'modules/deployment/types'
 import { LandTile } from 'modules/land/types'
 import { ENS } from 'modules/ens/types'

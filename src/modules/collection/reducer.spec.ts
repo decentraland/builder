@@ -7,7 +7,7 @@ import {
   fetchCollectionForumPostReplySuccess
 } from 'modules/forum/actions'
 import { ForumPostReply } from 'modules/forum/types'
-import { closeAllModals, closeModal } from 'modules/modal/actions'
+import { closeAllModals, closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { fetchCollectionsRequest, fetchCollectionsSuccess, PUBLISH_COLLECTION_SUCCESS } from './actions'
 import { collectionReducer as reducer, CollectionState } from './reducer'
 import { Collection } from './types'

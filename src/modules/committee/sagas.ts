@@ -1,5 +1,6 @@
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { BuilderAPI } from 'lib/api/builder'
 import {
   fetchCommitteeMembersRequest,
@@ -19,7 +20,7 @@ export function* committeeSaga(builder: BuilderAPI) {
       const members = committee.map(account => account.address)
       yield put(fetchCommitteeMembersSuccess(members))
     } catch (error) {
-      yield put(fetchCommitteeMembersFailure(error.message))
+      yield put(fetchCommitteeMembersFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }

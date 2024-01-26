@@ -5,7 +5,7 @@ import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/sel
 import { RootState } from 'modules/common/types'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { getName } from 'modules/profile/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { createCollectionForumPostRequest, CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { getLoading } from 'modules/collection/selectors'
 import { getCollectionItems } from 'modules/item/selectors'

@@ -11,6 +11,7 @@ import { GENERATE_IDENTITY_SUCCESS } from 'modules/identity/actions'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { TRANSPARENT_PIXEL } from 'lib/getModelData'
 import { BuilderClient, NFT } from '@dcl/builder-client'
 
@@ -58,7 +59,7 @@ export function* assetSaga(client: BuilderClient) {
       }
       yield put(loadCollectiblesSuccess(assets))
     } catch (error) {
-      yield put(loadCollectiblesFailure(error.message))
+      yield put(loadCollectiblesFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 

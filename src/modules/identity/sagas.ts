@@ -22,7 +22,8 @@ import {
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { locations, redirectToAuthDapp } from 'routing/locations'
 import { clearAssetPacks } from 'modules/assetPack/actions'
-import { closeModal } from 'modules/modal/actions'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { getEth } from 'modules/wallet/utils'
 
 import {
@@ -90,7 +91,7 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
 
     yield put(generateIdentitySuccess(address, identity))
   } catch (error) {
-    yield put(generateIdentityFailure(address, error))
+    yield put(generateIdentityFailure(address, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
 }
 

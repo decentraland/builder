@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
 import { Deployment } from 'modules/deployment/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { clearDeploymentRequest, ClearDeploymentRequestAction } from 'modules/deployment/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
 

@@ -6,7 +6,7 @@ import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors
 import { FromParam, LocationStateProps } from 'modules/location/types'
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { deleteItemRequest } from 'modules/item/actions'
 import { isLoggedIn } from 'modules/identity/selectors'

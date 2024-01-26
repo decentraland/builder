@@ -1,4 +1,5 @@
 import { takeLatest, put, call, fork } from 'redux-saga/effects'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { BuilderAPI } from 'lib/api/builder'
 import {
   LOAD_POOL_GROUPS_REQUEST,
@@ -25,7 +26,7 @@ export function* poolGroupSaga(builder: BuilderAPI) {
 
       yield put(loadPoolGroupsSuccess(record))
     } catch (e) {
-      yield put(loadPoolGroupsFailure(e.message))
+      yield put(loadPoolGroupsFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 }

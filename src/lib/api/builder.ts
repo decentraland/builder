@@ -29,7 +29,7 @@ import { isSmart } from 'modules/item/utils'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource } from './pagination'
 import { Authorization } from './auth'
 
-const PUBLIC_URL = process.env.PUBLIC_URL
+const PUBLIC_URL = process.env.VITE_BASE_URL
 export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 export const FORUM_URL = config.get('FORUM_URL', '')
 

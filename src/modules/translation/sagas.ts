@@ -8,7 +8,7 @@ import { createTranslationSaga } from 'decentraland-dapps/dist/modules/translati
 import * as languages from './languages'
 
 export function* translationSaga() {
-  const mainSaga = createTranslationSaga({ translations: languages })
+  const mainSaga = createTranslationSaga({ translations: languages as any })
 
   yield takeLatest(STORAGE_LOAD, handleStorageLoad)
   yield mainSaga() // This should be last

@@ -2,9 +2,10 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "ignorePatterns": [
+    "__mocks__/*",
     "src/contracts/*",
     "src/ecsScene/*",
-    "scripts/*.js",
+    "scripts/*.cjs",
     "src/modules/project/export.ts",
     "src/modules/analytics/sentry.ts",
     "src/modules/editor/base64.ts",
@@ -14,16 +15,20 @@
     "src/setupProxy.js"
   ],
   "plugins": ["@typescript-eslint"],
-  "extends": ["eslint:recommended", "react-app", "react-app/jest", "prettier"],
+  "extends": ["eslint:recommended", "prettier"],
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "jest": true
   },
   "rules": {
     "@typescript-eslint/ban-types": "error",
     "@typescript-eslint/ban-tslint-comment": "error",
     "@typescript-eslint/quotes": ["error", "single", { "avoidEscape": true }],
     "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }]
+  },
+  "parserOptions": {
+    "project": ["./tsconfig.json"]
   },
   "overrides": [
     {
@@ -38,7 +43,8 @@
         "@typescript-eslint/no-unsafe-member-access": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-member-access/
         "@typescript-eslint/no-unsafe-argument": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-unsafe-argument/
         "@typescript-eslint/no-explicit-any": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-explicit-any
-        "@typescript-eslint/no-non-null-assertion": "off" // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-non-null-assertion
+        "@typescript-eslint/no-non-null-assertion": "off", // TODO: migrate code progressively to remove this line. https://typescript-eslint.io/rules/no-non-null-assertion
+        "@typescript-eslint/no-unsafe-enum-comparison": "off"
       },
       "parserOptions": {
         "project": ["./tsconfig.json"]

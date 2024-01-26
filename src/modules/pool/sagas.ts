@@ -1,5 +1,6 @@
 import { put, call, takeLatest } from 'redux-saga/effects'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import {
   LikePoolRequestAction,
   likePoolFailure,
@@ -22,7 +23,7 @@ export function* poolSaga(builder: BuilderAPI) {
         yield call(() => builder.likePool(pool, like))
         yield put(likePoolSuccess())
       } catch (e) {
-        yield put(likePoolFailure(e.message))
+        yield put(likePoolFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
       }
     },
     function mergeLikeAction(
@@ -60,7 +61,7 @@ export function* poolSaga(builder: BuilderAPI) {
       }
       yield put(loadPoolsSuccess(records, total))
     } catch (e) {
-      yield put(loadPoolsFailure(e.message))
+      yield put(loadPoolsFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { Pool } from 'modules/pool/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { DeploymentStatus } from 'modules/deployment/types'
 
 export type DefaultProps = {

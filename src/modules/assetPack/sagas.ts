@@ -1,6 +1,7 @@
 import { call, put, takeLatest, all, select } from 'redux-saga/effects'
 
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import {
   LOAD_ASSET_PACKS_REQUEST,
   loadAssetPacksSuccess,
@@ -49,7 +50,7 @@ export function* assetPackSaga(builder: BuilderAPI) {
       const assetPacks: FullAssetPack[] = yield call([builder, 'fetchAssetPacks'], wallet?.address)
       yield put(loadAssetPacksSuccess(assetPacks))
     } catch (error) {
-      yield put(loadAssetPacksFailure(error.message))
+      yield put(loadAssetPacksFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -85,7 +86,7 @@ export function* assetPackSaga(builder: BuilderAPI) {
       yield put(setProgress(ProgressStage.NONE, 0))
       yield put(loadAssetPacksRequest())
     } catch (e) {
-      yield put(saveAssetPackFailure(assetPack, e.message))
+      yield put(saveAssetPackFailure(assetPack, isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
@@ -98,7 +99,7 @@ export function* assetPackSaga(builder: BuilderAPI) {
       yield put(selectAssetPack(null))
       yield put(selectCategory(null))
     } catch (e) {
-      yield put(deleteAssetPackFailure(assetPack, e.message))
+      yield put(deleteAssetPackFailure(assetPack, isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 }

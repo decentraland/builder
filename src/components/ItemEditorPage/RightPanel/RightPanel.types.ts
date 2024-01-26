@@ -12,7 +12,7 @@ import {
 } from 'modules/item/actions'
 import { Item, ItemRarity, SyncStatus, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
   address?: string

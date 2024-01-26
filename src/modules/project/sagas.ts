@@ -5,6 +5,7 @@ import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
 import { takeLatest, put, select, take, call, all, race, delay, takeEvery } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
@@ -217,7 +218,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
       yield put(duplicateProjectSuccess(newProject, type))
     } catch (error) {
-      yield put(duplicateProjectFailure(error.message))
+      yield put(duplicateProjectFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 
@@ -339,7 +340,7 @@ export function* projectSaga(builder: BuilderAPI) {
         }
       }
     } catch (e) {
-      yield put(loadPublicProjectFailure(e.message))
+      yield put(loadPublicProjectFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
@@ -354,7 +355,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
       yield put(loadProjectsSuccess(record))
     } catch (e) {
-      yield put(loadProjectsFailure(e.message))
+      yield put(loadProjectsFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
@@ -375,7 +376,7 @@ export function* projectSaga(builder: BuilderAPI) {
         yield put(loadProjectSceneSuccess(manifest.scene))
       }
     } catch (e) {
-      yield put(loadProjectSceneFailure(e.message))
+      yield put(loadProjectSceneFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
@@ -391,7 +392,7 @@ export function* projectSaga(builder: BuilderAPI) {
         yield put(loadManifestSuccess(manifest))
       }
     } catch (e) {
-      yield put(loadManifestFailure(e.message))
+      yield put(loadManifestFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
@@ -409,7 +410,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
       yield put(loadTemplatesSuccess(record))
     } catch (e) {
-      yield put(loadTemplatesFailure(e.message))
+      yield put(loadTemplatesFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 

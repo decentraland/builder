@@ -16,7 +16,7 @@ import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
 
-const RentedLandWrapper = ({ children, land }: { children: React.ReactNode; land: Land }) => {
+const RentedLandWrapper = ({ children, land }: { children: React.ReactElement<{ disabled: boolean }>; land: Land }) => {
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { disabled: land.roles.includes(RoleType.LESSOR) })

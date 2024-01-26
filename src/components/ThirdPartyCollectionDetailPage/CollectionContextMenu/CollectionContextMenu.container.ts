@@ -3,7 +3,7 @@ import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { getName } from 'modules/profile/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { MapDispatchProps, MapDispatch, MapStateProps } from './CollectionContextMenu.types'
 import CollectionContextMenu from './CollectionContextMenu'
 

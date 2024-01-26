@@ -12,7 +12,7 @@ export const takeLatestCancellable = <A extends Action>(
   fork(function* () {
     let lastTask: Task | undefined
     while (true) {
-      const action: A = yield take([initializer, cancellable] as ActionPattern<Action<A>>)
+      const action: A = yield take([initializer, cancellable] as any)
       if (lastTask) {
         yield cancel(lastTask) // cancel is no-op if the task has already terminated
       }

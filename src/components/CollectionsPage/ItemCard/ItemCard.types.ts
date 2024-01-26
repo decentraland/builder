@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { DeleteItemRequestAction } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
   item: Item

@@ -4,7 +4,7 @@ import { isLoading, getError, isUploadingRecording } from 'modules/deployment/se
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { isReady } from 'modules/editor/selectors'
 import { PoolDeploymentAdditionalFields } from 'lib/api/builder'
 import { isLoggedIn } from 'modules/identity/selectors'

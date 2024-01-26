@@ -18,7 +18,7 @@ import { getProjects } from 'modules/ui/dashboard/selectors'
 import { getConnectedWalletStats, getLoading as getLoadingWorlds } from 'modules/worlds/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './WorldListPage.types'
 import WorldListPage from './WorldListPage'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),

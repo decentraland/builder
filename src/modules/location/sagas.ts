@@ -1,5 +1,6 @@
 import { all, takeLatest, put, select, take, race } from 'redux-saga/effects'
 import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { locations } from 'routing/locations'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { SetENSContentSuccessAction, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
@@ -96,6 +97,6 @@ export function* handleRedirectToRequest(action: RedirectToRequestAction) {
         yield fail(`Invalid redirect to type "${redirectTo.type as unknown as string}"`)
     }
   } catch (error) {
-    yield fail(error.message)
+    yield fail(isErrorWithMessage(error) ? error.message : 'Unknown error')
   }
 }

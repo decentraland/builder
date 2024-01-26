@@ -1,7 +1,8 @@
-import { Wearable } from 'decentraland-ecs'
+import type { Wearable } from 'decentraland-ecs'
 import { takeLatest, select, put, call, delay, take } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
 import { IPreviewController, PreviewEmoteEventType } from '@dcl/schemas'
+import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import {
   updateEditor,
@@ -185,7 +186,7 @@ function* handleCreateEditorScene(action: CreateEditorSceneAction) {
 }
 
 function* createNewEditorScene(project: Project) {
-  const newScene: EditorScene = getNewEditorScene(project)
+  const newScene: EditorScene = yield call(getNewEditorScene, project)
 
   const msg = {
     type: 'update',
@@ -682,6 +683,6 @@ function* handleFetchBaseWearables() {
       .map(fromCatalystWearableToWearable)
     yield put(fetchBaseWearablesSuccess(wearables))
   } catch (e) {
-    yield put(fetchBaseWearablesFailure(e.message))
+    yield put(fetchBaseWearablesFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
   }
 }

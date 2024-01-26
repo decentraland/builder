@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { deleteItemRequest } from 'modules/item/actions'
-import { openModal } from 'modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import ItemCard from './ItemCard'
 import { MapDispatchProps, MapDispatch, OwnProps } from './ItemCard.types'
 
