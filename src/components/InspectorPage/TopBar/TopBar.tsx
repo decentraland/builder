@@ -43,7 +43,7 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
         {currentProject && (
           <Button basic onClick={handleEditProject} disabled={isUploading} className={styles.editNameBtn}>
             {currentProject.title}
-            <OwnIcon name="edit" className="edit-project-icon" />
+            <OwnIcon name="layout" className="edit-project-icon" />
           </Button>
         )}
         {isUploading && <OwnIcon name="cloud-upload" className="cloud-upload-indicator is-uploading" />}

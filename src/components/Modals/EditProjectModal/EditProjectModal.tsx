@@ -65,18 +65,22 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   }
 
   render() {
-    const { name, deploymentStatus, onClose } = this.props
+    const { name, deploymentStatus, onClose, currentScene } = this.props
     const { title, description, rows, cols, hasError } = this.state
     const isSubmitDisabled = hasError || deploymentStatus !== DeploymentStatus.UNPUBLISHED
 
     return (
       <Modal name={name} onClose={this.handleClose}>
         <Form onSubmit={this.handleSubmit}>
-          <Modal.Header>{t('edit_project_modal.title')}</Modal.Header>
+          {currentScene.sdk6 ? <Modal.Header>{t('edit_project_modal.title')}</Modal.Header> : null}
           <Modal.Content>
             <div className="details">
-              <ProjectFields.Title value={title} onChange={this.handleTitleChange} required icon="asterisk" />
-              <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} />
+              {currentScene.sdk6 ? (
+                <>
+                  <ProjectFields.Title value={title} onChange={this.handleTitleChange} required icon="asterisk" />
+                  <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} />
+                </>
+              ) : null}
               <div className="picker">
                 <Header sub className="picker-label">
                   {t('edit_project_modal.custom_layout_label')}

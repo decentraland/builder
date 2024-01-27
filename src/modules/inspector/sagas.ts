@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { call, delay, put, race, select, take, takeEvery } from 'redux-saga/effects'
 import { future, IFuture } from 'fp-future'
@@ -18,7 +19,8 @@ import {
   LOAD_PROJECTS_REQUEST,
   LOAD_PROJECTS_SUCCESS,
   LOAD_PROJECT_SCENE_FAILURE,
-  LOAD_PROJECT_SCENE_SUCCESS
+  LOAD_PROJECT_SCENE_SUCCESS,
+  editProject
 } from 'modules/project/actions'
 import { getCurrentProject, getData as getProjects, getLoading as getLoadingProjects } from 'modules/project/selectors'
 import { getCurrentScene } from 'modules/scene/selectors'
@@ -212,7 +214,8 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         const project: Project = yield select(getCurrentProject)
         let metadata: SceneSDK7['metadata'] = {
           display: {
-            title: project.title
+            title: project.title,
+            description: project.description
           },
           scene: {
             parcels: getParcels(project.layout).map($ => `${$.x},${$.y}`),
@@ -290,7 +293,16 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     switch (path) {
       case 'scene.json': {
         const metadata = JSON.parse(new TextDecoder().decode(content))
-        console.log('saving scene.json', metadata)
+        const project: Project = yield select(getCurrentProject)
+        if (project.title !== metadata.display.title || project.description !== metadata.display.description) {
+          yield put(
+            editProject(project.id, {
+              ...project,
+              title: metadata.display.title,
+              description: metadata.display.description
+            })
+          )
+        }
         const scene: SceneSDK7 = yield getScene()
         const newScene: SceneSDK7 = {
           ...scene,

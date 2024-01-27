@@ -51,6 +51,7 @@ export type IconName =
   | 'import'
   | 'import'
   | 'landscape'
+  | 'layout'
   | 'list-active'
   | 'list'
   | 'locate-land'
