@@ -276,6 +276,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
       case 'scene.json':
       case 'assets/scene/main.composite':
       case 'assets/scene/thumbnail.png':
+      case 'thumbnails/scene/thumbnail.png':
       case 'inspector-preferences.json': {
         return true
       }
