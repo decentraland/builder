@@ -201,6 +201,18 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
       return assets.get(path)
     }
 
+    if (path === 'assets/scene/thumbnail.png' || path === 'thumbnails/scene/thumbnail.png') {
+      const project: Project = yield select(getCurrentProject)
+      if (project.thumbnail.startsWith('data:')) {
+        const data = project.thumbnail.split(',')[1]
+        return Buffer.from(data, 'base64')
+      } else {
+        const response: Response = yield call(fetch, project.thumbnail, { headers: NO_CACHE_HEADERS })
+        const buffer: ArrayBuffer = yield call([response, 'arrayBuffer'])
+        return Buffer.from(buffer)
+      }
+    }
+
     if (path in scene.mappings) {
       const hash = scene.mappings[path]
       const response: Response = yield call(fetch, getContentsStorageUrl(hash), { headers: NO_CACHE_HEADERS })
@@ -215,7 +227,8 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         let metadata: SceneSDK7['metadata'] = {
           display: {
             title: project.title,
-            description: project.description
+            description: project.description,
+            navmapThumbnail: 'assets/scene/thumbnail.png'
           },
           scene: {
             parcels: getParcels(project.layout).map($ => `${$.x},${$.y}`),
@@ -253,6 +266,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     switch (path) {
       case 'scene.json':
       case 'assets/scene/main.composite':
+      case 'assets/scene/thumbnail.png':
       case 'inspector-preferences.json': {
         return true
       }
@@ -268,6 +282,13 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
 
     const scene: SceneSDK7 = yield getScene()
     const paths = [...Object.keys(scene.mappings), 'assets/scene/main.composite']
+
+    const project: Project = yield select(getCurrentProject)
+    if (project.thumbnail) {
+      paths.push('assets/scene/thumbnail.png')
+      paths.push('thumbnails/scene/thumbnail.png')
+    }
+
     const files: { name: string; isDirectory: boolean }[] = []
 
     for (const _path of paths) {
