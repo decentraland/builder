@@ -236,7 +236,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
           }
         }
         if (scene.metadata) {
-          metadata = merge.withOptions({ mergeArrays: true }, metadata, scene.metadata)
+          metadata = merge.withOptions({ mergeArrays: false }, metadata, scene.metadata)
         }
         file = JSON.stringify(metadata)
         break

@@ -1,3 +1,4 @@
+import { merge } from 'ts-deepmerge'
 import { Composite, CompositeDefinition } from '@dcl/ecs'
 import { createEngineContext, dumpEngineToComposite, dumpEngineToCrdtCommands } from '@dcl/inspector'
 import { Layout, Project } from 'modules/project/types'
@@ -76,34 +77,12 @@ export function toCrdt(scene: SceneSDK6, project?: Project) {
 }
 
 export function changeLayout(scene: SceneSDK7, layout: Layout) {
-  const sceneComponent = scene.composite.components.find(component => component.name === 'inspector::Scene')!
-  const newData = {
-    ...sceneComponent.data
-  } as any
-
-  newData[0] = {
-    ...newData[0],
-    json: {
-      ...newData[0].json,
-      layout: {
-        ...newData[0].json.layout,
-        parcels: getParcels(layout)
-      }
+  const newScene: SceneSDK7 = merge({}, scene)
+  const parcels = getParcels(layout).map(({ x, y }) => `${x},${y}`)
+  newScene.metadata = merge.withOptions({ mergeArrays: false }, newScene.metadata!, {
+    scene: {
+      parcels
     }
-  }
-
-  const newScene: SceneSDK7 = {
-    ...scene,
-    composite: {
-      ...scene.composite,
-      components: [
-        ...scene.composite.components.filter(component => component.name !== 'inspector::Scene'),
-        {
-          ...sceneComponent,
-          data: newData
-        }
-      ]
-    }
-  }
+  })
   return newScene
 }
