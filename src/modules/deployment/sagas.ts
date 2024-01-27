@@ -1,3 +1,4 @@
+import { merge } from 'ts-deepmerge'
 import { createFetchComponent } from '@well-known-components/fetch-component'
 import { CatalystClient, ContentClient, createContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
@@ -259,7 +260,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
           { north: thumbnail, east: thumbnail, south: thumbnail, west: thumbnail },
           handleProgress(ProgressStage.UPLOAD_RECORDING)
         )
-        files['scene-thumbnail.png'] = thumbnail
+        files['assets/scene/thumbnail.png'] = thumbnail
         previewUrl = getPreviewUrl(project.id)
       } else {
         console.warn('Failed to upload scene preview')
@@ -277,7 +278,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       const smartItemComponents = ['asset-packs::Actions', 'asset-packs::Triggers']
       const hasSmartItems = Array.from(componentNames).some(componentName => smartItemComponents.includes(componentName))
 
-      const definition: SceneDefinition = {
+      let definition: SceneDefinition = {
         allowedMediaHostnames: [],
         owner: address || '',
         main: 'bin/index.js',
@@ -288,7 +289,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
         display: {
           title: project.title,
           favicon: 'favicon_asset',
-          navmapThumbnail: 'scene-thumbnail.png'
+          navmapThumbnail: 'assets/scene/thumbnail.png'
         },
         tags: hasSmartItems ? ['is_smart'] : [],
         scene: {
@@ -307,6 +308,22 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
             cols: project.layout.cols
           }
         }
+      }
+
+      if (scene.sdk7.metadata) {
+        definition = merge.withOptions(
+          { mergeArrays: false },
+          definition,
+          // override base definition with configuration in the scene.json
+          scene.sdk7.metadata as unknown as SceneDefinition,
+          {
+            // override coords with actual placement
+            scene: {
+              base: toString(base),
+              parcels: parcels.map(toString)
+            } as unknown as SceneDefinition
+          }
+        )
       }
 
       if (world) {

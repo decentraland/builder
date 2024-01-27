@@ -10,10 +10,12 @@ import { DeploymentState } from 'modules/deployment/reducer'
 import { Deployment } from 'modules/deployment/types'
 import { DeployToWorldLocationStateProps } from 'modules/location/types'
 import { DeployModalMetadata } from '../DeployModal.types'
+import { Scene } from 'modules/scene/types'
 
 export type Props = {
   name: string
   project: Project
+  scene: Scene | null
   metrics: ModelMetrics
   ensList: ENS[]
   externalNames: ENS[]
@@ -32,7 +34,7 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'ensList' | 'externalNames' | 'project' | 'metrics' | 'deployments' | 'deploymentProgress' | 'error' | 'isLoading'
+  'ensList' | 'externalNames' | 'project' | 'metrics' | 'deployments' | 'deploymentProgress' | 'error' | 'isLoading' | 'scene'
 >
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onNavigate' | 'onRecord' | 'onReplace'>
 export type MapDispatch = Dispatch<

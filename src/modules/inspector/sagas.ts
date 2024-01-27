@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { call, delay, put, race, select, take, takeEvery } from 'redux-saga/effects'
 import { future, IFuture } from 'fp-future'
@@ -242,7 +241,18 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         break
       }
       case 'assets/scene/main.composite': {
-        file = JSON.stringify(scene.composite)
+        const sceneMetadataComponent = scene.composite.components.find(component => component.name === 'inspector::SceneMetadata')
+        const newComponents = [
+          ...scene.composite.components.filter(component => component.name !== 'inspector::Scene'),
+          {
+            ...sceneMetadataComponent,
+            name: 'inspector::Scene'
+          }
+        ]
+
+        const newComposite = { ...scene.composite, components: newComponents }
+        console.log('newComposite', newComposite)
+        file = JSON.stringify(newComposite)
         break
       }
       case 'inspector-preferences.json': {

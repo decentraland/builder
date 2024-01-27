@@ -14,6 +14,7 @@ import LandAtlas from './LandAtlas'
 import { hasEnoughSpaceForScene } from './utils'
 import { Props, State, DeployToLandView } from './DeployToLand.types'
 import './DeployToLand.css'
+import { getThumbnailUrl } from 'modules/project/utils'
 
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 export default class DeployToLand extends React.PureComponent<Props, State> {
@@ -198,9 +199,11 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderConfirmation = () => {
-    const { media, project, error, deployments } = this.props
+    const { media, project, error, scene, deployments } = this.props
     const { placement } = this.state
     const { rows, cols } = project.layout
+
+    const thumbnailUrl = getThumbnailUrl(project, scene, media)
 
     return (
       <div className="DeployToLand confirmation">
@@ -214,7 +217,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
         <p className="modal-subtitle">{t('deployment_modal.land.confirmation.description')}</p>
 
         <div className="details">
-          <img src={media ? media.preview : ''} alt={project.title} />
+          <img src={thumbnailUrl} alt={project.title} />
 
           <div className="details-row">
             <div className="detail">

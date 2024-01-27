@@ -4,7 +4,7 @@ import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getENSByWallet, getExternalNamesForConnectedWallet } from 'modules/ens/selectors'
 import { deployToWorldRequest } from 'modules/deployment/actions'
-import { getCurrentMetrics } from 'modules/scene/selectors'
+import { getCurrentMetrics, getCurrentScene } from 'modules/scene/selectors'
 import { recordMediaRequest } from 'modules/media/actions'
 import { getDeploymentsByWorlds, getProgress as getUploadProgress, getError, isLoading } from 'modules/deployment/selectors'
 import { Project } from 'modules/project/types'
@@ -17,6 +17,7 @@ const mapState = (state: RootState): MapStateProps => {
     ensList: getENSByWallet(state),
     externalNames: getExternalNamesForConnectedWallet(state),
     project: getCurrentProject(state) as Project,
+    scene: getCurrentScene(state),
     metrics: getCurrentMetrics(state),
     deployments: getDeploymentsByWorlds(state),
     deploymentProgress: getUploadProgress(state),

@@ -2,6 +2,9 @@ import { Project, Layout, Manifest } from 'modules/project/types'
 import { Coordinate, Rotation } from 'modules/deployment/types'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getDimensions } from 'lib/layout'
+import { Scene } from 'modules/scene/types'
+import { getContentsStorageUrl } from 'lib/api/builder'
+import { Media } from 'modules/media/types'
 
 export function getProjectDimensions(project: Project): string {
   const { rows, cols } = project.layout
@@ -95,4 +98,15 @@ export async function getTemplate(projectId: string) {
     throw new Error(`Could not find template with projectId="${projectId}"`)
   }
   return template
+}
+
+export function getThumbnailUrl(project: Project, scene?: Scene | null, media?: Media | null) {
+  let thumbnailUrl = media ? media.preview : project.thumbnail
+  if (scene && scene.sdk7?.metadata?.display?.navmapThumbnail) {
+    const hash = scene.sdk7.mappings[scene.sdk7?.metadata?.display?.navmapThumbnail]
+    if (hash) {
+      thumbnailUrl = getContentsStorageUrl(hash)
+    }
+  }
+  return thumbnailUrl
 }
