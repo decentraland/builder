@@ -6,23 +6,23 @@ export type IconName =
   | 'alert-warning'
   | 'arrow-down'
   | 'arrow-key-down'
-  | 'arrow-key-down'
+   
   | 'arrow-key-left'
-  | 'arrow-key-left'
+   
   | 'arrow-key-right'
-  | 'arrow-key-right'
+   
   | 'arrow-key-up'
-  | 'arrow-key-up'
+   
   | 'arrow-up'
   | 'atlas-zoom-in'
-  | 'atlas-zoom-in'
+   
   | 'atlas-zoom-out'
-  | 'atlas-zoom-out'
+   
   | 'camera'
-  | 'camera'
+   
   | 'cat'
   | 'center-camera'
-  | 'center-camera'
+   
   | 'chevron-right'
   | 'circle'
   | 'cylinder'
@@ -34,33 +34,33 @@ export type IconName =
   | 'dress'
   | 'duplicate'
   | 'edit-active'
-  | 'edit-active'
+   
   | 'edit'
-  | 'edit'
+   
   | 'ellipsis'
   | 'emote'
   | 'export'
-  | 'export'
+   
   | 'facebook'
   | 'geometries'
-  | 'geometries'
+   
   | 'grid-active'
   | 'grid'
   | 'heart-full'
   | 'heart'
   | 'import'
-  | 'import'
+   
   | 'landscape'
   | 'layout'
   | 'list-active'
   | 'list'
   | 'locate-land'
-  | 'locate-land'
+   
   | 'minus'
   | 'modal-back'
-  | 'modal-back'
+   
   | 'modal-close'
-  | 'modal-close'
+   
   | 'move-active'
   | 'move'
   | 'pin'
@@ -74,9 +74,9 @@ export type IconName =
   | 'rotate-control'
   | 'rotate-active'
   | 'rotate-left'
-  | 'rotate-left'
+   
   | 'rotate-right'
-  | 'rotate-right'
+   
   | 'rotate'
   | 'scale'
   | 'scene-object'
