@@ -241,6 +241,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         break
       }
       case 'assets/scene/main.composite': {
+        // keep a copy of the SceneMetadata as Scene component, this is for backwards compatibility in the builder server.
         const sceneMetadataComponent = scene.composite.components.find(component => component.name === 'inspector::SceneMetadata')
         const newComponents = [
           ...scene.composite.components.filter(component => component.name !== 'inspector::Scene'),
@@ -249,9 +250,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
             name: 'inspector::Scene'
           }
         ]
-
         const newComposite = { ...scene.composite, components: newComponents }
-        console.log('newComposite', newComposite)
         file = JSON.stringify(newComposite)
         break
       }
