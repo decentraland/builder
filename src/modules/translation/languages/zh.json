@@ -582,9 +582,9 @@
     "title": "糟糕！"
   },
   "ens_list_page": {
-    "title": "名称",
+    "title": "",
     "sort_by": "排序方式",
-    "mint_name": "薄荷名称",
+    "mint_name": "Mint a New NAME",
     "result": "{count} {count, plural, one {结果} other {结果}}",
     "edit": "编辑",
     "transfer": "转移",
@@ -592,21 +592,24 @@
       "name": "名称",
       "link": "链接",
       "assigned_to": "分配给",
-      "address": "地址",
-      "alias": "别名",
-      "land": "土地",
+      "address": "相关地址",
+      "alias": "链接的头像",
+      "land": "链接的土地",
       "actions": "动作",
       "you": "你"
     },
+    "unclaimed": "无人认领",
     "assigned_to_land": "土地 ({landId})",
     "assigned_to_estate": "州 ({landId})",
     "button": {
       "assign": "分配",
       "edit": "修",
       "use_as_alias": "用作别名",
-      "add_to_avatar": "添加到头像",
-      "link_to_address": "链接到以太坊地址",
-      "assign_to_land": "分配土地或世界"
+      "add_to_avatar": "分配给阿凡达",
+      "link_to_address": "分配ETH地址",
+      "assign_to_land": "分配到位置",
+      "reclaim_land": "收回分配到位置",
+      "reclaim_address": "收回分配ETH地址"
     },
     "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
     "items": "{count}结果",
@@ -614,30 +617,33 @@
     "not_profile_created": "您需要先进入世界才能设置别名。",
     "empty_state": {
       "title": "这里什么都没有",
-      "subtitle": "用用户名在元元中拥有无数数字 (例如。 Genesis#1234).",
-      "mint_name": "薄荷名称",
-      "go_to_marketplace": "访问市场"
+      "subtitle": "在元视频中拥有无数数字的用户名（例如Genesis＃1234），并享受投票权和访问您自己的世界的额外好处！",
+      "mint_name": "要求您的名字"
     }
   },
   "ens_detail_page": {
     "name": "姓名",
-    "address": "地址",
-    "alias": "别名",
-    "land": "土地",
-    "unassign": "未分配",
-    "set_as_primary": "设置为主要",
+    "address": "相关地址",
+    "alias": "链接的头像",
+    "land": "链接的土地",
+    "unassign": "分配给阿凡达",
+    "set_as_primary": "分配给阿凡达",
     "edit_address": "编辑地址",
-    "assign_address": "分配地址值",
-    "point_location": "点位置",
+    "assign_address": "分配ETH地址",
+    "point_location": "分配到位置",
     "tooltips": {
-      "alias": "分配的别名可以是每个头像",
-      "address": "它可以在任何Web3事务中的外部使用. <a>阅读ENS控制器名称的好处</a>",
-      "land": "土地位于空间资产，最低单位是包裹, <a>了解有关元优势的更多信息</a>"
-    }
+      "alias": "您只能为每个头像分配一个名称",
+      "address": "得益于与ENS的合作伙伴关系，请在整个Web3上使用您的分散名称。",
+      "land": "当您分配土地包裹或遗产时，可以使用专用URL轻松导航到（例如https：//name.dcl.eth）。"
+    },
+    "unclaimed": "无人认领",
+    "reclaim_name": "回收名称",
+    "reclaim_for_location": "收回分配位置",
+    "reclaim_for_address": "收回分配地址"
   },
   "ens_map_address_modal": {
-    "title": "链接到以太坊地址",
-    "description": "通过定义您的分散名称来定义以太坊地址，使其他人可以参考您的帐户。这使您只需提供姓名即可获得资产。",
+    "title": "分配的地址",
+    "description": "通过将以太坊地址分配给您的分散名称，使其他人可以参考您的帐户。这使您只需提供姓名即可获得资产。",
     "address": {
       "label": "链接的以太坊地址",
       "placeholder": "地址"
@@ -651,10 +657,18 @@
       "title": "授予权限",
       "info": "通过定义您的分散名称来定义以太坊地址，使其他人可以参考您的帐户。<br></br> <br></br>这使您只需提供姓名即可获得资产。授权公共ENS解析器代表您在分散的情况下设置地址记录。",
       "action": "授权",
-      "error": "出了些问题"
+      "error": "出了问题，请重试。"
     },
     "confirm_transaction": "确认交易...",
     "processing": "加工..."
+  },
+  "ens_reclaim_name_modal": {
+    "title": "回收名称",
+    "info": "这将在将其转移给您后收回对您的名字的控制。",
+    "action": "回收",
+    "confirm_transaction": "确认交易...",
+    "processing": "加工...",
+    "error": "出了问题，请重试。"
   },
   "worlds_list_page": {
     "table": {

@@ -580,9 +580,9 @@
     "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la misma"
   },
   "ens_list_page": {
-    "title": "Nombres",
+    "title": "Tus Nombres",
     "sort_by": "Ordernar por",
-    "mint_name": "Comprar nombre",
+    "mint_name": "Comprar un nuevo nombre",
     "result": "{count} {count, plural, one {resultado} other {resultados}}",
     "edit": "Editar",
     "transfer": "Transferir",
@@ -590,31 +590,33 @@
       "name": "Nombre",
       "link": "Enlace",
       "assigned_to": "Asignado a",
-      "address": "Dirección",
-      "alias": "alias",
-      "land": "Tierra",
+      "address": "Dirección asociada",
+      "alias": "Alias vinculado",
+      "land": "Tierra vinculada",
       "actions": "Acciones",
       "you": "tú"
     },
+    "unclaimed": "No recuperado",
     "assigned_to_land": "Tierra ({landId})",
     "assigned_to_estate": "Estate ({landId})",
     "button": {
       "assign": "Usar como link",
       "edit": "Editar link",
       "use_as_alias": "Usar como alias",
-      "add_to_avatar": "Agregar a Avatar",
-      "link_to_address": "Enlazar a una dirección de Ethereum",
-      "assign_to_land": "Asignar a tierra o mundo"
+      "add_to_avatar": "Asignar a Avatar",
+      "link_to_address": "Asignar a una dirección de Ethereum",
+      "assign_to_land": "Asignar a ubicación",
+      "reclaim_land": "Recuperar para asignar a ubicación",
+      "reclaim_address": "Recuperar para asigner a dirección de ETH"
     },
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
     "items": "{count} {count, plural, one {resultado} other {resultados}}",
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado",
     "not_profile_created": "Primero necesitas entrar en el mundo antes de asignar un alias.",
     "empty_state": {
-      "title": "Nada aquí todavía",
-      "subtitle": "Tenga presencia en el Metaverso con un nombre de usuario libre de números al final (e.j. Genesis#1234).",
-      "mint_name": "Agregar nombre",
-      "go_to_marketplace": "Visitar el marketplace"
+      "title": "Nada Aquí Todavía",
+      "subtitle": "¡Posee su presencia en el metalto con un nombre de usuario libre de números al final (por ejemplo, Génesis#1234), además de disfrutar de los beneficios adicionales del poder de votación y el acceso a su propio mundo!",
+      "mint_name": "Comprar un nuevo nombre"
     }
   },
   "ens_detail_page": {
@@ -631,7 +633,11 @@
       "alias": "El alias asignado puede ser solo uno por avatar",
       "address": "Se puede usar externamente en cualquier transacción Web3. Leer los <a>beneficios de ENS</a>",
       "land": "Las tierras son activos espaciales, las unidades mínimas son parcelas, leer mas sobre <a>los beneficios del Metaverso</a>"
-    }
+    },
+    "unclaimed": "Sin recuperar",
+    "reclaim_name": "Recuperar nombre",
+    "reclaim_for_location": "Recuperar para asignar a ubicación",
+    "reclaim_for_address": "Recuperar para asigner a dirección de ETH"
   },
   "ens_map_address_modal": {
     "title": "Enlace a una dirección de Ethereum",
@@ -649,10 +655,18 @@
       "title": "Conceder permiso",
       "info": "Permitir que otros hagan referencia a su cuenta definiendo una dirección de Ethereum con su nombre Decentraland.<br></br> <br></br>Esto le permite recibir activos simplemente proporcionando su nombre. Autorice al resolución pública de ENS para establecer el registro de la dirección en su nombre en Decentraland.",
       "action": "Autorizar",
-      "error": "Algo salió mal"
+      "error": "Algo salió mal. Por favor, vuelva a intentarlo."
     },
     "confirm_transaction": "Confirmar transacción...",
     "processing": "Procesando..."
+  },
+  "ens_reclaim_name_modal": {
+    "title": "Recuperar nombre",
+    "info": "Esto recupera el control de su nombre después de que se le haya transferido.",
+    "action": "Recuperar",
+    "confirm_transaction": "Confirmar la transacción...",
+    "processing": "Procesando...",
+    "error": "Algo salió mal. Por favor, vuelva a intentarlo."
   },
   "worlds_list_page": {
     "table": {

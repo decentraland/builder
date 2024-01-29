@@ -1,0 +1,29 @@
+.main {
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.info {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.status .icon {
+  color: var(--primary);
+}

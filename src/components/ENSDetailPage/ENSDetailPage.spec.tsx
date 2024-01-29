@@ -27,7 +27,7 @@ const ensSample: ENS = {
   name: 'test',
   subdomain: 'test',
   content: '',
-  ensOwnerAddress: '0xtest2',
+  ensOwnerAddress: '0xtest1',
   nftOwnerAddress: '0xtest1',
   resolver: '0xtest3',
   tokenId: '',
@@ -182,6 +182,34 @@ describe('when ens is defined', () => {
       const assignLandButton = screen.getByRole('button', { name: t('ens_list_page.button.assign_to_land') })
       userEvent.click(assignLandButton)
       expect(onNavigateMock).toHaveBeenCalledWith('/name/test/set-land')
+    })
+  })
+
+  describe('and the ens owner is different from the nft address', () => {
+    beforeEach(() => {
+      ens = {
+        ...ensSample,
+        nftOwnerAddress: '0xtest1',
+        ensOwnerAddress: '0xtest2'
+      }
+    })
+
+    it('should call onReclaim when reclaim button is pressed', () => {
+      const openModalMock = jest.fn()
+      const screen = renderENSDetailPage({ ens, onOpenModal: openModalMock })
+      const reclaimNameBtn = screen.getByRole('button', { name: t('ens_detail_page.reclaim_name') })
+      userEvent.click(reclaimNameBtn)
+      expect(openModalMock).toHaveBeenCalledWith('ReclaimNameModal', { ens })
+    })
+
+    it('should disable assign address button', () => {
+      const screen = renderENSDetailPage({ ens })
+      expect(screen.getByRole('button', { name: t('ens_detail_page.reclaim_for_address') })).toBeDisabled()
+    })
+
+    it('should disable assign location button', () => {
+      const screen = renderENSDetailPage({ ens })
+      expect(screen.getByRole('button', { name: t('ens_detail_page.reclaim_for_location') })).toBeDisabled()
     })
   })
 })
