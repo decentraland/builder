@@ -662,7 +662,7 @@
   },
   "ens_reclaim_name_modal": {
     "title": "Recuperar nombre",
-    "info": "Esto recupera el control de su nombre después de que se le haya transferido.",
+    "info": "Recuperar posesión del dominio ETH asociado con este nombre para ser registrado como su propietario por el ENS público.<br></br><br></br>Esto le permitirá vincular una tierra a su nombre o asignarle una dirección de billetera para que pueda recibir activos en Web3 simplemente proporcionando su nombre.",
     "action": "Recuperar",
     "confirm_transaction": "Confirmar la transacción...",
     "processing": "Procesando...",

@@ -664,7 +664,7 @@
   },
   "ens_reclaim_name_modal": {
     "title": "回收名称",
-    "info": "这将在将其转移给您后收回对您的名字的控制。",
+    "info": "与此名称相关的ETH域的索赔所有权将由公共ENS解析器注册为其所有者。<br></br><br></br>这将使您可以将土地包裹链接到您的姓名或为其分配一个钱包地址.",
     "action": "回收",
     "confirm_transaction": "确认交易...",
     "processing": "加工...",
