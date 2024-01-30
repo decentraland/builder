@@ -578,9 +578,9 @@
     "subtitle": "Your are editing {name}."
   },
   "ens_list_page": {
-    "title": "NAMEs",
+    "title": "Your NAMEs",
     "sort_by": "Sort by",
-    "mint_name": "Mint name",
+    "mint_name": "Mint a New NAME",
     "result": "{count} {count, plural, one {result} other {results}}",
     "edit": "Edit",
     "transfer": "Transfer",
@@ -588,52 +588,58 @@
       "name": "Name",
       "link": "Link",
       "assigned_to": "Assigned To",
-      "address": "Address",
-      "alias": "Alias",
-      "land": "Land",
+      "address": "Associated Address",
+      "alias": "Linked Avatar",
+      "land": "Linked LAND",
       "actions": "Actions",
       "you": "you"
     },
+    "unclaimed": "Unclaimed",
     "assigned_to_land": "Land ({landId})",
     "assigned_to_estate": "Estate ({landId})",
     "button": {
       "assign": "Use as Link",
       "edit": "Edit Link",
       "use_as_alias": "Use as Alias",
-      "add_to_avatar": "Add to Avatar",
-      "link_to_address": "Link to an Ethereum Address",
-      "assign_to_land": "Assign to Land or World"
+      "add_to_avatar": "Assign to Avatar",
+      "link_to_address": "Assign ETH address",
+      "assign_to_land": "Assign to Location",
+      "reclaim_land": "Reclaim to assign to location",
+      "reclaim_address": "Reclaim to assign ETH address"
     },
     "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
     "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned",
     "not_profile_created": "You need to get into the world first to set an alias.",
     "empty_state": {
-      "title": "Nothing here yet",
-      "subtitle": "Own your presence in the metaverse with a username free from numbers on the end (e.g. Genesis#1234).",
-      "mint_name": "Mint name",
-      "go_to_marketplace": "Visit marketplace"
+      "title": "Nothing Here Yet",
+      "subtitle": "Own your presence in the metaverse with a username free from numbers on the end (e.g. Genesis#1234), plus enjoy the added benefits of Voting Power and access to your own World!",
+      "mint_name": "Claim Your Name"
     }
   },
   "ens_detail_page": {
     "name": "Name",
-    "address": "Address",
-    "alias": "Alias",
-    "land": "Land",
-    "unassign": "Unassigned",
-    "set_as_primary": "Set as primary",
+    "address": "Associated Address",
+    "alias": "Linked Avatar",
+    "land": "Linked LAND",
+    "unassign": "Assign to Avatar",
+    "set_as_primary": "Assign to Avatar",
     "edit_address": "Edit address",
-    "assign_address": "Assign address value",
-    "point_location": "Point location",
+    "assign_address": "Assign ETH address",
+    "point_location": "Assign to Location",
     "tooltips": {
-      "alias": "The assigned alias can be only one per Avatar",
-      "address": "It can be used in external in any WEB3 transaction. Read the <a>benefits of a ENS</a> controller NAME",
-      "land": "Lands are Located spacial Assets, minimum units are Parcels, learn more about <a>Metaverse advantages</a>"
-    }
+      "alias": "You can only assign one NAME per avatar",
+      "address": "Use your Decentraland NAME across Web3 thanks to a partnership with ENS.",
+      "land": "When you assign a LAND parcel or estate a NAME it can be easily navigated to with a dedicated URL (e.g. https://name.dcl.eth)."
+    },
+    "unclaimed": "Unclaimed",
+    "reclaim_name": "Reclaim name",
+    "reclaim_for_location": "Reclaim to assign location",
+    "reclaim_for_address": "Reclaim to assign address"
   },
   "ens_map_address_modal": {
-    "title": "Link to an Ethereum Address",
-    "description": "Enable others to reference your account by defining an Ethereum address with your Decentraland NAME. This allows you to receive assets simply by providing your NAME.",
+    "title": "Assigned Address",
+    "description": "Enable others to reference your account by assigning an Ethereum address to your Decentraland NAME. This allows you to receive assets simply by providing your NAME.",
     "address": {
       "label": "Linked Ethereum Address",
       "placeholder": "Address"
@@ -647,10 +653,18 @@
       "title": "Grant Permission",
       "info": "Enable others to reference your account by defining an Ethereum address with your Decentraland NAME.<br></br> <br></br>This allows you to receive assets simply by providing your NAME. Authorize the public ENS resolver to set the address record on your behalf in Decentraland.",
       "action": "Authorize",
-      "error": "Something went wrong"
+      "error": "Something went wrong, please try again."
     },
     "confirm_transaction": "Confirm the transaction...",
     "processing": "Processing..."
+  },
+  "ens_reclaim_name_modal": {
+    "title": "Reclaim name",
+    "info": "This reclaims control of your NAME after it has been transferred to you.",
+    "action": "Reclaim",
+    "confirm_transaction": "Confirm the transaction...",
+    "processing": "Processing...",
+    "error": "Something went wrong, please try again."
   },
   "worlds_list_page": {
     "table": {
@@ -1053,9 +1067,7 @@
   "land_assign_ens_page": {
     "title": "Use {name} as link",
     "subtitle": "This link will take you to {land}",
-    "set_name_message": "<strong>Before you can assign this name to your land, you need to submit 2 or 3 transactions:</strong> The first transaction reclaims your ENS name so you become its controller and it's only required if the name was bought or transferred from another user, the second one allows you to use your name as a link and the third transaction links your name to your LAND.",
-    "reclaim": "Reclaim",
-    "reclaim_explanation": "This reclaims the control of your name after it has been transferred to you. The owner of the name has the control over it until it gets reclaimed.",
+    "set_name_message": "<strong>Before you can assign this name to your land, you need to submit 1 or 2 transactions:</strong> The first transaction allows you to use your name as a link and the second transaction links your name to your LAND.",
     "set_resolver": "Set Resolver",
     "set_resolver_explanation": "This allows your name to be linked to a land.",
     "set_content": "Set Content",

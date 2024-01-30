@@ -16,7 +16,8 @@ import {
   RECLAIM_NAME_SUCCESS,
   CLAIM_NAME_REQUEST,
   CLAIM_NAME_TRANSACTION_SUBMITTED,
-  SET_ENS_ADDRESS_SUCCESS
+  SET_ENS_ADDRESS_SUCCESS,
+  RECLAIM_NAME_REQUEST
 } from './actions'
 import { Authorization, ENS } from './types'
 import { ENSState } from './reducer'
@@ -105,8 +106,8 @@ export const isWaitingTxSetLandContent = (state: RootState, landId: string) =>
     transaction => SET_ENS_CONTENT_SUCCESS === transaction.actionType && transaction.payload.land.id === landId
   )
 
-export const isReclaimingName = (state: RootState, name: string) =>
-  getLoading(state).some(loadingAction => loadingAction.type === CLAIM_NAME_REQUEST && loadingAction.name === name)
+export const isReclaimingName = (state: RootState, subdomain: string) =>
+  getLoading(state).some(loadingAction => loadingAction.type === RECLAIM_NAME_REQUEST && loadingAction.payload.ens.subdomain === subdomain)
 
 export const isLoadingContentBySubdomain = createSelector<RootState, ENS[], LoadingState, Record<string, boolean>>(
   getENSList,

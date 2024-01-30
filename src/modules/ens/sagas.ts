@@ -388,8 +388,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       const wallet: Wallet = yield call(getWallet)
       const signer: ethers.Signer = yield call(getSigner)
       const address = wallet.address
-      const ensContract: ReturnType<typeof ENS__factory['connect']> = yield call([ENS__factory, 'connect'], ENS_ADDRESS, signer)
-      const dclRegistrarContract: ReturnType<typeof DCLRegistrar__factory['connect']> = yield call(
+      const ensContract: ReturnType<(typeof ENS__factory)['connect']> = yield call([ENS__factory, 'connect'], ENS_ADDRESS, signer)
+      const dclRegistrarContract: ReturnType<(typeof DCLRegistrar__factory)['connect']> = yield call(
         [DCLRegistrar__factory, 'connect'],
         REGISTRAR_ADDRESS,
         signer
@@ -527,6 +527,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const transaction: ethers.ContractTransaction = yield call([dclRegistrarContract, 'reclaim'], ens.tokenId, wallet.address)
       yield put(reclaimNameSuccess(transaction.hash, wallet.chainId, { ...ens, ensOwnerAddress: wallet.address }))
+      yield put(closeModal('ReclaimNameModal'))
     } catch (error) {
       const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(reclaimNameFailure(ensError))
@@ -539,7 +540,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       const wallet: Wallet = yield call(getWallet)
       const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
-      const manaContract: ReturnType<typeof ERC20__factory['connect']> = yield call([ERC20__factory, 'connect'], MANA_ADDRESS, signer)
+      const manaContract: ReturnType<(typeof ERC20__factory)['connect']> = yield call([ERC20__factory, 'connect'], MANA_ADDRESS, signer)
       const transaction: ethers.ContractTransaction = yield call([manaContract, 'approve'], CONTROLLER_V2_ADDRESS, allowance)
 
       yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))

@@ -387,3 +387,19 @@
   border-radius: 50%;
   background: var(--secondary);
 }
+
+.ENSListPage .ens-list-reclaim-icon {
+  margin: 0 !important;
+  width: fit-content;
+  font-size: 15px;
+  line-height: 15px;
+}
+
+.ENSListPage .ens-list-unclaimed-badge {
+  padding: 0 8px;
+  border-radius: 24px;
+  font-size: 12px;
+  background-color: #393640;
+  text-transform: uppercase;
+  font-weight: 600;
+}
