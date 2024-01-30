@@ -660,7 +660,7 @@
   },
   "ens_reclaim_name_modal": {
     "title": "Reclaim name",
-    "info": "This reclaims control of your NAME after it has been transferred to you.",
+    "info": "Claim ownership of the ETH domain associated with this NAME to be registered as its owner by the public ENS resolver.<br></br><br></br>This will allow you to link a LAND parcel to your NAME or assign it a wallet address so you can recieve assets across Web3 by simply providing your NAME.",
     "action": "Reclaim",
     "confirm_transaction": "Confirm the transaction...",
     "processing": "Processing...",

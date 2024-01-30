@@ -31,9 +31,9 @@ beforeEach(() => {
   } as ENS
 })
 
-it('should render reclaim name info', () => {
+it('should render reclaim name title', () => {
   const screen = renderReclaimNameModal({ ens })
-  expect(screen.getByText(t('ens_reclaim_name_modal.info'))).toBeInTheDocument()
+  expect(screen.getByText(t('ens_reclaim_name_modal.title'))).toBeInTheDocument()
 })
 
 describe('when clicking the action button', () => {
