@@ -10,7 +10,7 @@
     "@dcl/content-hash-tree": "^1.1.3",
     "@dcl/crypto": "^3.4.5",
     "@dcl/hashing": "^3.0.4",
-    "@dcl/inspector": "^7.3.39",
+    "@dcl/inspector": "^7.3.40",
     "@dcl/mini-rpc": "^1.0.7",
     "@dcl/schemas": "^9.4.1",
     "@dcl/sdk": "^7.3.35",

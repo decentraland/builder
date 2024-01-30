@@ -15,7 +15,10 @@ export default defineConfig(({ mode }) => {
       'process.env': {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         VITE_REACT_APP_DCL_DEFAULT_ENV: envVariables.VITE_REACT_APP_DCL_DEFAULT_ENV,
-        VITE_BASE_URL: envVariables.VITE_BASE_URL
+        VITE_BASE_URL: envVariables.VITE_BASE_URL,
+        VITE_INSPECTOR_PORT: envVariables.VITE_INSPECTOR_PORT,
+        VITE_BIN_INDEX_JS_DEV_PORT: envVariables.VITE_BIN_INDEX_JS_DEV_PORT,
+        VITE_BIN_INDEX_JS_DEV_PATH: envVariables.VITE_BIN_INDEX_JS_DEV_PATH
       },
       global: {}
     },
