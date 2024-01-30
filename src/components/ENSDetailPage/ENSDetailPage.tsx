@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import classNames from 'classnames'
 import { config } from 'config'
 import { Link } from 'react-router-dom'
-import { Button, Icon as DCLIcon, Popup } from 'decentraland-ui'
+import { Button, Icon as DCLIcon, InfoTooltip } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { shorten } from 'lib/address'
 import { isCoords } from 'modules/land/utils'
@@ -77,7 +77,7 @@ export default function ENSDetailPage(props: Props) {
       <div className={styles.field}>
         <span className={styles.fieldTitle}>
           {t('ens_detail_page.alias')}
-          <Popup on="click" content={t('ens_detail_page.tooltips.alias')} trigger={<DCLIcon name="info circle" />} />
+          <InfoTooltip on="click" content={t('ens_detail_page.tooltips.alias')} />
         </span>
         {field}
       </div>
@@ -134,7 +134,7 @@ export default function ENSDetailPage(props: Props) {
       <div className={classNames(styles.field, { [styles.disabled]: shouldReclaim })}>
         <span className={styles.fieldTitle}>
           {t('ens_detail_page.address')}
-          <Popup on="click" content={t('ens_detail_page.tooltips.address')} trigger={<DCLIcon name="info circle" />} />
+          <InfoTooltip on="click" content={t('ens_detail_page.tooltips.address')} />
         </span>
         {field}
       </div>
@@ -195,7 +195,7 @@ export default function ENSDetailPage(props: Props) {
       <div className={classNames(styles.field, { [styles.disabled]: shouldReclaim })}>
         <span className={styles.fieldTitle}>
           {t('ens_detail_page.land')}
-          <Popup on="click" content={t('ens_detail_page.tooltips.land')} trigger={<DCLIcon name="info circle" />} />
+          <InfoTooltip on="click" content={t('ens_detail_page.tooltips.land')} />
         </span>
         {field}
       </div>

@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { RenderResult } from '@testing-library/react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ENS } from 'modules/ens/types'
 import { renderWithProviders } from 'specs/utils'
@@ -19,8 +20,9 @@ function renderReclaimNameModal(props: Partial<Props> = {}) {
     />
   )
 }
-
+let screen: RenderResult
 let ens: ENS
+
 beforeEach(() => {
   ens = {
     name: 'test',
@@ -37,29 +39,50 @@ it('should render reclaim name info', () => {
 describe('when clicking the action button', () => {
   let onReclaimNameMock: jest.Mock
   let screen: ReturnType<typeof renderReclaimNameModal>
-  
+
   beforeEach(() => {
-      onReclaimNameMock = jest.fn()
-      screen = renderReclaimNameModal({ ens, onReclaim: onReclaimNameMock })
-      const actionBtn = screen.getByRole('button', { name: t('ens_reclaim_name_modal.action') })
-      userEvent.click(actionBtn)
+    onReclaimNameMock = jest.fn()
+    screen = renderReclaimNameModal({ ens, onReclaim: onReclaimNameMock })
+    const actionBtn = screen.getByRole('button', { name: t('ens_reclaim_name_modal.action') })
+    userEvent.click(actionBtn)
   })
-  
+
   it('should call onReclaim callback when clicking the action button', () => {
     expect(onReclaimNameMock).toHaveBeenCalledWith(ens)
   })
 })
-it('should show error message when an error ocurred', () => {
-  const screen = renderReclaimNameModal({ ens, error: 'Some error ocurr' })
-  expect(screen.getByText(t('ens_reclaim_name_modal.error'))).toBeInTheDocument()
+
+describe('when there is an error', () => {
+  it('should show error message', () => {
+    const screen = renderReclaimNameModal({ ens, error: 'Some error ocurr' })
+    expect(screen.getByText(t('ens_reclaim_name_modal.error'))).toBeInTheDocument()
+  })
 })
 
-it('should show confirm transaction message when set resolver is loading', () => {
-  const screen = renderReclaimNameModal({ ens, isLoadingReclaim: true })
-  expect(screen.getByText(t('ens_reclaim_name_modal.confirm_transaction'))).toBeInTheDocument()
+describe('when reclaim is loading', () => {
+  beforeEach(() => {
+    screen = renderReclaimNameModal({ ens, isLoadingReclaim: true })
+  })
+
+  it('should show confirm transaction message', () => {
+    expect(screen.getByText(t('ens_reclaim_name_modal.confirm_transaction'))).toBeInTheDocument()
+  })
+
+  it('should disable reclaim button', () => {
+    const actionBtn = screen.getByRole('button', { name: t('ens_reclaim_name_modal.action') })
+    expect(actionBtn).toBeDisabled()
+  })
 })
 
-it('should show processing message when set resolver tx is loading', () => {
-  const screen = renderReclaimNameModal({ ens, isWaitingTxReclaim: true })
-  expect(screen.getByText(t('ens_reclaim_name_modal.processing'))).toBeInTheDocument()
+describe('when waiting for reclaim tx to be confirmed', () => {
+  beforeEach(() => {
+    screen = renderReclaimNameModal({ ens, isWaitingTxReclaim: true })
+  })
+  it('should show processing message', () => {
+    expect(screen.getByText(t('ens_reclaim_name_modal.processing'))).toBeInTheDocument()
+  })
+  it('should disable reclaim button', () => {
+    const actionBtn = screen.getByRole('button', { name: t('ens_reclaim_name_modal.action') })
+    expect(actionBtn).toBeDisabled()
+  })
 })

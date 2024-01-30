@@ -22,6 +22,7 @@ export default class SignInPage extends React.PureComponent<Props> {
 
   render() {
     const { isConnected, isAuthDappEnabled } = this.props
+    console.log({ isAuthDappEnabled }, 'HDASDASD')
     return (
       <>
         <Navbar />
