@@ -580,7 +580,7 @@
     "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la misma"
   },
   "ens_list_page": {
-    "title": "Tus Nombres",
+    "title": "Tus NOMBREs",
     "sort_by": "Ordernar por",
     "mint_name": "Comprar un nuevo nombre",
     "result": "{count} {count, plural, one {resultado} other {resultados}}",

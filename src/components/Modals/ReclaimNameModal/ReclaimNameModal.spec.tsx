@@ -34,14 +34,21 @@ it('should render reclaim name info', () => {
   expect(screen.getByText(t('ens_reclaim_name_modal.info'))).toBeInTheDocument()
 })
 
-it('should call onReclaim callback when clicking the action button', () => {
-  const onReclaimNameMock = jest.fn()
-  const screen = renderReclaimNameModal({ ens, onReclaim: onReclaimNameMock })
-  const actionBtn = screen.getByRole('button', { name: t('ens_reclaim_name_modal.action') })
-  userEvent.click(actionBtn)
-  expect(onReclaimNameMock).toHaveBeenCalledWith(ens)
+describe('when clicking the action button', () => {
+  let onReclaimNameMock: jest.Mock
+  let screen: ReturnType<typeof renderReclaimNameModal>
+  
+  beforeEach(() => {
+      onReclaimNameMock = jest.fn()
+      screen = renderReclaimNameModal({ ens, onReclaim: onReclaimNameMock })
+      const actionBtn = screen.getByRole('button', { name: t('ens_reclaim_name_modal.action') })
+      userEvent.click(actionBtn)
+  })
+  
+  it('should call onReclaim callback when clicking the action button', () => {
+    expect(onReclaimNameMock).toHaveBeenCalledWith(ens)
+  })
 })
-
 it('should show error message when an error ocurred', () => {
   const screen = renderReclaimNameModal({ ens, error: 'Some error ocurr' })
   expect(screen.getByText(t('ens_reclaim_name_modal.error'))).toBeInTheDocument()

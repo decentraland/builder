@@ -194,7 +194,8 @@ describe('when ens is defined', () => {
       }
     })
 
-    it('should call onReclaim when reclaim button is pressed', () => {
+describe('when the reclaim button is pressed', () => {
+    it('should call onReclaim', () => {
       const openModalMock = jest.fn()
       const screen = renderENSDetailPage({ ens, onOpenModal: openModalMock })
       const reclaimNameBtn = screen.getByRole('button', { name: t('ens_detail_page.reclaim_name') })
