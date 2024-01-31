@@ -10,6 +10,7 @@ import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
 import { OptionsDropdown } from 'components/OptionsDropdown'
 import SDKTag from 'components/SDKTag/SDKTag'
+import { getThumbnailUrl } from 'modules/project/utils'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
 
@@ -65,13 +66,13 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     let style = {}
     let classes = 'ProjectCard'
 
-    if (project.thumbnail) {
+    let thumbnailUrl = getThumbnailUrl(project, scene)
+    if (thumbnailUrl) {
       // prevent caching remote images when they are updated
-      let url = project.thumbnail
-      if (url && isRemoteURL(url)) {
-        url += `?updated_at=${+new Date(project.updatedAt)}`
+      if (thumbnailUrl && isRemoteURL(thumbnailUrl)) {
+        thumbnailUrl += `?updated_at=${+new Date(project.updatedAt)}`
       }
-      style = { backgroundImage: `url(${url})` }
+      style = { backgroundImage: `url(${thumbnailUrl})` }
       classes += ' has-thumbnail'
     }
 

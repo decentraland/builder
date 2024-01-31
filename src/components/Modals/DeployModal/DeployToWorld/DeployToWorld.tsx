@@ -11,6 +11,7 @@ import { Deployment } from 'modules/deployment/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
+import { getThumbnailUrl } from 'modules/project/utils'
 import { DeployToWorldView, NameType, Props } from './DeployToWorld.types'
 import { getSizesFromDeploymentError } from './utils'
 import dclImage from './images/dcl.svg'
@@ -26,6 +27,7 @@ const CLAIM_NAME_OPTION = 'claim_name_option'
 export default function DeployToWorld({
   name,
   project,
+  scene,
   metrics,
   ensList,
   externalNames,
@@ -332,7 +334,7 @@ export default function DeployToWorld({
   }
 
   const renderThumbnail = () => {
-    const thumbnailUrl = project.thumbnail
+    const thumbnailUrl = getThumbnailUrl(project, scene)
     return (
       <div className={styles.thumbnail} style={{ backgroundImage: `url(${thumbnailUrl})` }} aria-label={project?.description} role="img">
         <Popup

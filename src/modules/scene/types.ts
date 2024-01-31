@@ -1,4 +1,5 @@
 import { CompositeDefinition } from '@dcl/ecs'
+import { Scene as SceneMetadata } from '@dcl/schemas'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
 import { ModelMetrics, Vector3, Quaternion } from 'modules/models/types'
 
@@ -78,4 +79,5 @@ export type SceneSDK7 = {
   id: string
   composite: CompositeDefinition
   mappings: Record<string, string>
+  metadata?: Omit<SceneMetadata, 'main'> & { rating?: 'T' | 'A' }
 }

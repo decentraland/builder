@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { config } from 'config'
@@ -40,17 +39,17 @@ export default class InspectorPage extends React.PureComponent<Props, State> {
     let binIndexJsUrl = `${PUBLIC_URL}/bin/index.js`
 
     // use the local @dcl/inspector running on your machine
-    if (process.env.REACT_APP_INSPECTOR_PORT) {
-      htmlUrl = `http://localhost:${process.env.REACT_APP_INSPECTOR_PORT}`
+    if (process.env.VITE_INSPECTOR_PORT) {
+      htmlUrl = `http://localhost:${process.env.VITE_INSPECTOR_PORT}`
       binIndexJsUrl = `${htmlUrl}/bin/index.js`
     }
 
     let queryParams = `?dataLayerRpcParentUrl=${window.location.origin}`
 
     // use the local bin/index.js being watched and served on your machine
-    if (process.env.REACT_APP_BIN_INDEX_JS_DEV_PORT && process.env.REACT_APP_BIN_INDEX_JS_DEV_PATH) {
-      const b64 = btoa(process.env.REACT_APP_BIN_INDEX_JS_DEV_PATH)
-      binIndexJsUrl = `http://localhost:${process.env.REACT_APP_BIN_INDEX_JS_DEV_PORT}/content/contents/b64-${b64}`
+    if (process.env.VITE_BIN_INDEX_JS_DEV_PORT && process.env.VITE_BIN_INDEX_JS_DEV_PATH) {
+      const b64 = btoa(process.env.VITE_BIN_INDEX_JS_DEV_PATH)
+      binIndexJsUrl = `http://localhost:${process.env.VITE_BIN_INDEX_JS_DEV_PORT}/content/contents/b64-${b64}`
     }
 
     queryParams = queryParams.concat(`&binIndexJsUrl=${binIndexJsUrl}`)

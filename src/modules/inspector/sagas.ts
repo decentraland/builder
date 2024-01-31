@@ -3,6 +3,7 @@ import { call, delay, put, race, select, take, takeEvery } from 'redux-saga/effe
 import { future, IFuture } from 'fp-future'
 import { hashV1 } from '@dcl/hashing'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
+import { merge } from 'ts-deepmerge'
 import { LoginFailureAction, LoginSuccessAction, LOGIN_FAILURE, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { isLoggingIn } from 'modules/identity/selectors'
 import { getProjectId } from 'modules/location/utils'
@@ -17,7 +18,8 @@ import {
   LOAD_PROJECTS_REQUEST,
   LOAD_PROJECTS_SUCCESS,
   LOAD_PROJECT_SCENE_FAILURE,
-  LOAD_PROJECT_SCENE_SUCCESS
+  LOAD_PROJECT_SCENE_SUCCESS,
+  editProject
 } from 'modules/project/actions'
 import { getCurrentProject, getData as getProjects, getLoading as getLoadingProjects } from 'modules/project/selectors'
 import { getCurrentScene } from 'modules/scene/selectors'
@@ -127,7 +129,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     // configure UI
     const ui = new UiClient(transport)
     yield call([ui, 'selectAssetsTab'], 'AssetsPack')
-    yield call([ui, 'toggleComponent'], 'inspector::Scene', false)
+    yield call([ui, 'toggleSceneInspectorTab'], 'layout', false)
 
     // wait for RPC to be idle (3 seconds)
     yield waitForRpcIdle(3000)
@@ -198,6 +200,18 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
       return assets.get(path)
     }
 
+    if (path === 'assets/scene/thumbnail.png' || path === 'thumbnails/scene/thumbnail.png') {
+      const project: Project = yield select(getCurrentProject)
+      if (project.thumbnail.startsWith('data:')) {
+        const data = project.thumbnail.split(',')[1]
+        return Buffer.from(data, 'base64')
+      } else {
+        const response: Response = yield call(fetch, project.thumbnail, { headers: NO_CACHE_HEADERS })
+        const buffer: ArrayBuffer = yield call([response, 'arrayBuffer'])
+        return Buffer.from(buffer)
+      }
+    }
+
     if (path in scene.mappings) {
       const hash = scene.mappings[path]
       const response: Response = yield call(fetch, getContentsStorageUrl(hash), { headers: NO_CACHE_HEADERS })
@@ -209,16 +223,35 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     switch (path) {
       case 'scene.json': {
         const project: Project = yield select(getCurrentProject)
-        file = JSON.stringify({
+        let metadata: SceneSDK7['metadata'] = {
+          display: {
+            title: project.title,
+            description: project.description,
+            navmapThumbnail: 'assets/scene/thumbnail.png'
+          },
           scene: {
             parcels: getParcels(project.layout).map($ => `${$.x},${$.y}`),
             base: '0,0'
           }
-        })
+        }
+        if (scene.metadata) {
+          metadata = merge.withOptions({ mergeArrays: false }, metadata, scene.metadata)
+        }
+        file = JSON.stringify(metadata)
         break
       }
       case 'assets/scene/main.composite': {
-        file = JSON.stringify(scene.composite)
+        // keep a copy of the SceneMetadata as Scene component, this is for backwards compatibility in the builder server.
+        const sceneMetadataComponent = scene.composite.components.find(component => component.name === 'inspector::SceneMetadata')
+        const newComponents = [
+          ...scene.composite.components.filter(component => component.name !== 'inspector::Scene'),
+          {
+            ...sceneMetadataComponent,
+            name: 'inspector::Scene'
+          }
+        ]
+        const newComposite = { ...scene.composite, components: newComponents }
+        file = JSON.stringify(newComposite)
         break
       }
       case 'inspector-preferences.json': {
@@ -242,6 +275,8 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     switch (path) {
       case 'scene.json':
       case 'assets/scene/main.composite':
+      case 'assets/scene/thumbnail.png':
+      case 'thumbnails/scene/thumbnail.png':
       case 'inspector-preferences.json': {
         return true
       }
@@ -257,6 +292,13 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
 
     const scene: SceneSDK7 = yield getScene()
     const paths = [...Object.keys(scene.mappings), 'assets/scene/main.composite']
+
+    const project: Project = yield select(getCurrentProject)
+    if (project.thumbnail) {
+      paths.push('assets/scene/thumbnail.png')
+      paths.push('thumbnails/scene/thumbnail.png')
+    }
+
     const files: { name: string; isDirectory: boolean }[] = []
 
     for (const _path of paths) {
@@ -281,7 +323,23 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     const { path, content } = params
     switch (path) {
       case 'scene.json': {
-        // TODO: some changes to the scene.json might eventually end up in changes to the Project, like the name or the layout, but for now we can ignore it
+        const metadata = JSON.parse(new TextDecoder().decode(content))
+        const project: Project = yield select(getCurrentProject)
+        if (project.title !== metadata.display.title || project.description !== metadata.display.description) {
+          yield put(
+            editProject(project.id, {
+              ...project,
+              title: metadata.display.title,
+              description: metadata.display.description
+            })
+          )
+        }
+        const scene: SceneSDK7 = yield getScene()
+        const newScene: SceneSDK7 = {
+          ...scene,
+          metadata
+        }
+        yield put(updateScene(newScene))
         break
       }
       case 'assets/scene/main.composite': {

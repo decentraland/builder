@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { select, delay, put, call, takeLatest } from 'redux-saga/effects'
 import { MessageTransport } from '@dcl/mini-rpc'
 import { CameraClient } from '@dcl/inspector'
