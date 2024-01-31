@@ -23,6 +23,7 @@ import {
 } from 'modules/ens/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './LandAssignENSPage.types'
 import LandAssignENSPage from './LandAssignENSPage'
+import { getIsEnsAddressEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { landId, subdomain } = ownProps.match.params
@@ -36,6 +37,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     isWaitingTxSetResolver: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) || isWaitingTxSetResolver(state),
     isWaitingTxSetContent: isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) || isWaitingTxSetLandContent(state, landId),
     isWaitingTxReclaim: ens ? isReclaimingName(state, ens.subdomain) || isWaitingTxReclaim(state) : false,
+    isEnsAddressEnabled: getIsEnsAddressEnabled(state),
     isLoading:
       isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
       isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||

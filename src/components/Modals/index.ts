@@ -51,3 +51,4 @@ export { default as EmotesV2AnnouncementModal } from './EmotesV2AnnouncementModa
 export { default as WorldsYourStorageModal } from './WorldsYourStorageModal'
 export { default as WorldsForENSOwnersAnnouncementModal } from './WorldsForENSOwnersAnnouncementModal'
 export { default as EnsMapAddressModal } from './ENSMapAddressModal'
+export { default as ReclaimNameModal } from './ReclaimNameModal'

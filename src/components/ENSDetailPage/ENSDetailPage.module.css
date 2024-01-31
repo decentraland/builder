@@ -28,6 +28,8 @@
 
 .fieldContainer {
   display: flex;
+  justify-content: space-between;
+  align-items: start;
   gap: 32px;
 }
 
@@ -152,4 +154,19 @@
 .externalLink {
   text-decoration: underline;
   color: white;
+}
+
+.unclaimedBadge {
+  padding: 0 8px;
+  border-radius: 24px;
+  font-size: 14px;
+  line-height: 24px;
+  background-color: #393640;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: white;
+}
+
+.field.disabled {
+  opacity: 0.4;
 }

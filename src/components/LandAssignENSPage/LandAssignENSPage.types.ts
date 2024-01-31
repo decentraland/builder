@@ -23,6 +23,7 @@ export type Props = {
   isWaitingTxSetContent: boolean
   isWaitingTxSetResolver: boolean
   isWaitingTxReclaim: boolean
+  isEnsAddressEnabled: boolean
   onSetENSResolver: typeof setENSResolverRequest
   onSetENSContent: typeof setENSContentRequest
   onReclaimName: typeof reclaimNameRequest
@@ -32,7 +33,7 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'ens' | 'isLoading' | 'error' | 'isWaitingTxSetContent' | 'isWaitingTxSetResolver' | 'isWaitingTxReclaim'
+  'ens' | 'isLoading' | 'error' | 'isWaitingTxSetContent' | 'isWaitingTxSetResolver' | 'isWaitingTxReclaim' | 'isEnsAddressEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSetENSResolver' | 'onSetENSContent' | 'onReclaimName' | 'onBack' | 'onNavigate'>
 export type MapDispatch = Dispatch<

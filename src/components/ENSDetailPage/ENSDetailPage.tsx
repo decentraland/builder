@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import classNames from 'classnames'
 import { config } from 'config'
 import { Link } from 'react-router-dom'
-import { Button, Icon as DCLIcon, Popup } from 'decentraland-ui'
+import { Button, Icon as DCLIcon, InfoTooltip } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { shorten } from 'lib/address'
 import { isCoords } from 'modules/land/utils'
@@ -22,6 +22,8 @@ export default function ENSDetailPage(props: Props) {
     [ens]
   )
 
+  const shouldReclaim = ens?.ensOwnerAddress !== ens?.nftOwnerAddress
+
   useEffect(() => {
     if (name) {
       onFetchENS(name)
@@ -39,6 +41,10 @@ export default function ENSDetailPage(props: Props) {
   const handleAssignENS = useCallback(() => {
     onNavigate(locations.ensSelectLand(ens?.subdomain))
   }, [onNavigate, ens?.subdomain])
+
+  const handleReclaim = useCallback(() => {
+    onOpenModal('ReclaimNameModal', { ens })
+  }, [onOpenModal])
 
   const aliasField = useMemo(() => {
     let field: React.ReactNode
@@ -71,16 +77,25 @@ export default function ENSDetailPage(props: Props) {
       <div className={styles.field}>
         <span className={styles.fieldTitle}>
           {t('ens_detail_page.alias')}
-          <Popup on="click" content={t('ens_detail_page.tooltips.alias')} trigger={<DCLIcon name="info circle" />} />
+          <InfoTooltip on="click" content={t('ens_detail_page.tooltips.alias')} />
         </span>
         {field}
       </div>
     )
-  }, [ens?.name, avatar, alias, handleSetAsAlias])
+  }, [ens?.name, shouldReclaim, avatar, alias, handleSetAsAlias])
 
   const addressField = useMemo(() => {
     let field: React.ReactNode = null
-    if (!ens?.ensAddressRecord) {
+    if (shouldReclaim) {
+      field = (
+        <div className={classNames(styles.editableField, styles.disabled)}>
+          <span className={styles.emptyFieldPlaceholder}>{t('ens_detail_page.reclaim_for_address')}</span>
+          <Button compact secondary disabled className={styles.actionBtn} aria-label={t('ens_detail_page.reclaim_for_address')}>
+            <DCLIcon name="pencil alternate" />
+          </Button>
+        </div>
+      )
+    } else if (!ens?.ensAddressRecord) {
       field = (
         <div className={styles.editableField}>
           <span className={styles.emptyFieldPlaceholder}>{t('ens_detail_page.assign_address')}</span>
@@ -97,7 +112,7 @@ export default function ENSDetailPage(props: Props) {
       )
     } else {
       field = (
-        <span className={classNames(styles.editableField, styles.address)}>
+        <span className={styles.editableField}>
           <span className={styles.editableFieldValue}>
             <img src={ethereumImg} alt="Ethereum" />
             {shorten(ens.ensAddressRecord)}
@@ -116,29 +131,28 @@ export default function ENSDetailPage(props: Props) {
       )
     }
     return (
-      <div className={styles.field}>
+      <div className={classNames(styles.field, { [styles.disabled]: shouldReclaim })}>
         <span className={styles.fieldTitle}>
           {t('ens_detail_page.address')}
-          <Popup
-            on="click"
-            content={t('ens_detail_page.tooltips.address', {
-              a: (content: string) => (
-                <a href="https://docs.decentraland.org" rel="noreferrer" className={styles.externalLink} target="_blank">
-                  {content}
-                </a>
-              )
-            })}
-            trigger={<DCLIcon name="info circle" />}
-          />
+          <InfoTooltip on="click" content={t('ens_detail_page.tooltips.address')} />
         </span>
         {field}
       </div>
     )
-  }, [ens?.ensAddressRecord, handleAssignENSAddress])
+  }, [ens?.ensAddressRecord, shouldReclaim, handleAssignENSAddress])
 
   const landField = useMemo(() => {
     let field: React.ReactNode = null
-    if (!ens?.landId) {
+    if (shouldReclaim) {
+      field = (
+        <div className={styles.editableField}>
+          <span className={styles.emptyFieldPlaceholder}>{t('ens_detail_page.reclaim_for_location')}</span>
+          <Button compact disabled className={styles.actionBtn} aria-label={t('ens_detail_page.reclaim_for_location')}>
+            <DCLIcon name="crosshairs" />
+          </Button>
+        </div>
+      )
+    } else if (!ens?.landId) {
       field = (
         <div className={styles.editableField}>
           <span className={styles.emptyFieldPlaceholder}>{t('ens_detail_page.point_location')}</span>
@@ -178,25 +192,15 @@ export default function ENSDetailPage(props: Props) {
     }
 
     return (
-      <div className={styles.field}>
+      <div className={classNames(styles.field, { [styles.disabled]: shouldReclaim })}>
         <span className={styles.fieldTitle}>
           {t('ens_detail_page.land')}
-          <Popup
-            on="click"
-            content={t('ens_detail_page.tooltips.land', {
-              a: (content: string) => (
-                <a href="https://docs.decentraland.org" rel="noreferrer" className={styles.externalLink} target="_blank">
-                  {content}
-                </a>
-              )
-            })}
-            trigger={<DCLIcon name="info circle" />}
-          />
+          <InfoTooltip on="click" content={t('ens_detail_page.tooltips.land')} />
         </span>
         {field}
       </div>
     )
-  }, [ens?.landId, handleAssignENS])
+  }, [ens?.landId, shouldReclaim, handleAssignENS])
 
   return (
     <LoggedInDetailPage activeTab={NavigationTab.NAMES} isPageFullscreen={true} isLoading={isLoading || !ens}>
@@ -219,8 +223,14 @@ export default function ENSDetailPage(props: Props) {
                 <CopyToClipboard role="button" text={ens?.subdomain || ''} showPopup={true} className="copy-to-clipboard">
                   <DCLIcon aria-label="copy name" aria-hidden="false" name="clone outline" />
                 </CopyToClipboard>
+                {ens?.ensOwnerAddress !== ens?.nftOwnerAddress ? (
+                  <span className={styles.unclaimedBadge}>{t('ens_detail_page.unclaimed')}</span>
+                ) : null}
               </span>
             </div>
+            <Button primary onClick={handleReclaim}>
+              {t('ens_detail_page.reclaim_name')}
+            </Button>
           </div>
           <div className={styles.fieldContainer}>
             {aliasField}

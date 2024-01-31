@@ -62,6 +62,11 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     onOpenModal('UseAsAliasModal', { newName })
   }
 
+  handleReclaim = (ens: ENS) => {
+    const { onOpenModal } = this.props
+    onOpenModal('ReclaimNameModal', { ens })
+  }
+
   renderSortDropdown = () => {
     const { sortBy } = this.state
     return (
@@ -130,6 +135,15 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   renderLandLinkInfo(ens: ENS) {
+    if (ens.ensOwnerAddress !== ens.nftOwnerAddress) {
+      return (
+        <Button compact className="ens-list-btn" onClick={this.handleReclaim.bind(null, ens)}>
+          <DCLIcon name="arrow alternate circle down outline" className="ens-list-reclaim-icon" />
+          {t('ens_list_page.button.reclaim_land')}
+        </Button>
+      )
+    }
+
     if (!ens.landId) {
       return (
         <Button compact className="ens-list-btn" onClick={this.handleAssignENS.bind(null, ens)}>
@@ -175,6 +189,35 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         </div>
       )
     }
+  }
+
+  renderAddressInfo(ens: ENS) {
+    if (ens.ensOwnerAddress !== ens.nftOwnerAddress) {
+      return (
+        <Button compact className="ens-list-btn" onClick={this.handleReclaim.bind(null, ens)}>
+          <DCLIcon name="arrow alternate circle down outline" className="ens-list-reclaim-icon" />
+          {t('ens_list_page.button.reclaim_address')}
+        </Button>
+      )
+    }
+
+    if (ens.ensAddressRecord) {
+      return (
+        <span className="ens-list-address">
+          <img className="ens-list-address-icon" src={ethereumImg} alt="Ethereum" />
+          {shorten(ens.ensAddressRecord)}
+          <CopyToClipboard role="button" text={ens.ensAddressRecord} showPopup={true} className="copy-to-clipboard">
+            <DCLIcon aria-label="copy address" aria-hidden="false" name="clone outline" />
+          </CopyToClipboard>
+        </span>
+      )
+    }
+    return (
+      <Button compact className="ens-list-btn" onClick={this.handleAssignENSAddress.bind(null, ens)}>
+        <img src={addRounded} alt={t('ens_list_page.button.link_to_address')} className="ens-list-add-icon" />
+        {t('ens_list_page.button.link_to_address')}
+      </Button>
+    )
   }
 
   renderEnsList() {
@@ -330,6 +373,9 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
           <CopyToClipboard role="button" text={ens.subdomain} showPopup={true} className="copy-to-clipboard">
             <DCLIcon aria-label="copy subdomain" aria-hidden="false" name="clone outline" />
           </CopyToClipboard>
+          {ens.ensOwnerAddress !== ens.nftOwnerAddress ? (
+            <span className="ens-list-unclaimed-badge">{t('ens_list_page.unclaimed')}</span>
+          ) : null}
         </div>
       ),
       alias: this.isAlias(ens) ? (
@@ -353,20 +399,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
           {t('ens_list_page.button.add_to_avatar')}
         </Button>
       ),
-      address: ens.ensAddressRecord ? (
-        <span className="ens-list-address">
-          <img className="ens-list-address-icon" src={ethereumImg} alt="Ethereum" />
-          {shorten(ens.ensAddressRecord)}
-          <CopyToClipboard role="button" text={ens.ensAddressRecord} showPopup={true} className="copy-to-clipboard">
-            <DCLIcon aria-label="copy address" aria-hidden="false" name="clone outline" />
-          </CopyToClipboard>
-        </span>
-      ) : (
-        <Button compact className="ens-list-btn" onClick={this.handleAssignENSAddress.bind(null, ens)}>
-          <img src={addRounded} alt={t('ens_list_page.button.link_to_address')} className="ens-list-add-icon" />
-          {t('ens_list_page.button.link_to_address')}
-        </Button>
-      ),
+      address: this.renderAddressInfo(ens),
       land: this.renderLandLinkInfo(ens),
       actions: (
         <div className="ens-list-actions">
@@ -402,9 +435,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         <div className="ens-list-page-empty-actions">
           <Button primary href={`${MARKETPLACE_WEB_URL}/names/claim`} target="_blank">
             {t('ens_list_page.empty_state.mint_name')}
-          </Button>
-          <Button secondary href={`${MARKETPLACE_WEB_URL}/names/browse?section=ens`} target="_blank">
-            {t('ens_list_page.empty_state.go_to_marketplace')}
           </Button>
         </div>
       </div>
@@ -459,33 +489,13 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 address: (
                   <span className="ens-list-page-table-headers">
                     {t('ens_list_page.table.address')}
-                    <Popup
-                      on="click"
-                      content={t('ens_detail_page.tooltips.address', {
-                        a: (content: string) => (
-                          <a href="https://docs.decentraland.org" rel="noreferrer" className="ens-list-page-ext-link" target="_blank">
-                            {content}
-                          </a>
-                        )
-                      })}
-                      trigger={<DCLIcon name="info circle" />}
-                    />
+                    <Popup on="click" content={t('ens_detail_page.tooltips.address')} trigger={<DCLIcon name="info circle" />} />
                   </span>
                 ),
                 land: (
                   <span className="ens-list-page-table-headers">
                     {t('ens_list_page.table.land')}
-                    <Popup
-                      on="click"
-                      content={t('ens_detail_page.tooltips.land', {
-                        a: (content: string) => (
-                          <a href="https://docs.decentraland.org" rel="noreferrer" className="ens-list-page-ext-link" target="_blank">
-                            {content}
-                          </a>
-                        )
-                      })}
-                      trigger={<DCLIcon name="info circle" />}
-                    />
+                    <Popup on="click" content={t('ens_detail_page.tooltips.land')} trigger={<DCLIcon name="info circle" />} />
                   </span>
                 ),
                 actions: <span className="ens-list-page-table-headers">{t('ens_list_page.table.actions')}</span>
