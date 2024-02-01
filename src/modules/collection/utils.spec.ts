@@ -17,6 +17,14 @@ import { CollectionPaginationData } from './reducer'
 
 jest.mock('modules/item/export')
 
+jest.mock('decentraland-dapps/dist/lib/eth', () => {
+  const original = jest.requireActual<typeof dappsEth>('decentraland-dapps/dist/lib/eth')
+  return {
+    ...original,
+    getChainIdByNetwork: jest.fn()
+  }
+})
+
 beforeEach(() => {
   jest.clearAllMocks()
 })
