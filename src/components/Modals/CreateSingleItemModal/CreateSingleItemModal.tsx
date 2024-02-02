@@ -181,20 +181,36 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   sortContentZipBothBodyShape = (bodyShape: BodyShapeType, contents: Record<string, Blob>): SortedContent => {
-    const male: Record<string, Blob> = {},
-      female: Record<string, Blob> = {}
-    for (const key in contents) {
+    let male: Record<string, Blob> = {}
+    let female: Record<string, Blob> = {}
+    let all: Record<string, Blob> = {}
+
+    for (const [key, value] of Object.entries(contents)) {
       if (key.startsWith('male/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE)) {
-        male[key] = contents[key]
+        male[key] = value
       } else if (key.startsWith('female/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE)) {
-        female[key] = contents[key]
+        female[key] = value
+      } else {
+        all[key] = value
       }
     }
-    const all = {
+
+    male = {
+      ...male,
+      ...(bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE ? this.prefixContents(BodyShapeType.MALE, all) : {})
+    }
+
+    female = {
+      ...female,
+      ...(bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, all) : {})
+    }
+
+    all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
       ...male,
       ...female
     }
+
     return { male, female, all }
   }
 
@@ -628,7 +644,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
         bodyShapes: [BodyShape.MALE],
-        mainFile: Object.keys(contents.male).pop()!,
+        mainFile: Object.keys(contents.male).find(content => content.includes('glb'))!,
         contents: Object.keys(contents.male),
         overrideHides: [],
         overrideReplaces: []
@@ -639,7 +655,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
         bodyShapes: [BodyShape.FEMALE],
-        mainFile: Object.keys(contents.female).pop()!,
+        mainFile: Object.keys(contents.female).find(content => content.includes('glb'))!,
         contents: Object.keys(contents.female),
         overrideHides: [],
         overrideReplaces: []
