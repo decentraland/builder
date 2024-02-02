@@ -571,7 +571,8 @@ export function buildAssetPath(namespace: string, path: string) {
 // SDK7
 
 export async function downloadSDK7File(key: string, url: string): Promise<{ path: string; file: Blob }> {
-  return fetch(url)
+  const headers = key === EXPORT_PATH.THUMBNAIL_FILE ? { headers: NO_CACHE_HEADERS } : {}
+  return fetch(url, headers)
     .then(resp => resp.blob())
     .then(blob => ({ path: key, file: blob }))
 }

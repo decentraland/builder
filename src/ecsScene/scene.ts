@@ -1,16 +1,13 @@
 // This file is compiled using the decentraland-compiler, it's not using Vite as the compiler
 
 import { EventEmitter } from 'events'
-import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity, Gizmos, SmartItem } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { createChannel } from 'decentraland-builder-scripts/channel'
 import { createInventory } from 'decentraland-builder-scripts/inventory'
-import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType, SceneSDK6 } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
 
-// @ts-ignore
-const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
 const inventory = createInventory(ECS.UICanvas, ECS.UIContainerStack, ECS.UIImage)
