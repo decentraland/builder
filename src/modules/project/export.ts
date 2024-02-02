@@ -446,7 +446,11 @@ export async function createDynamicFiles(args: {
       null,
       2
     ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(await getSceneDefinition(project, point, rotation, thumbnail, author, isEmpty, world), null, 2),
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(
+      await getSceneDefinition(project, point, rotation, thumbnail, author, isEmpty, world),
+      null,
+      2
+    ),
     [EXPORT_PATH.TSCONFIG_FILE]: JSON.stringify(
       {
         ...tsconfig,
@@ -611,7 +615,16 @@ export async function createSDK7Files({ project, scene, builderAPI }: { project:
   const sceneJson = new Blob([
     new TextEncoder().encode(
       JSON.stringify(
-        await getSceneDefinition(project, { x: 0, y: 0 }, 'east', EXPORT_PATH.THUMBNAIL_FILE, project.ethAddress, undefined, undefined, true)
+        await getSceneDefinition(
+          project,
+          { x: 0, y: 0 },
+          'east',
+          EXPORT_PATH.THUMBNAIL_FILE,
+          project.ethAddress,
+          undefined,
+          undefined,
+          true
+        )
       )
     )
   ])
