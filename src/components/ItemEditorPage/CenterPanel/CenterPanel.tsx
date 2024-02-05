@@ -1,21 +1,31 @@
 import * as React from 'react'
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
-import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps, Button } from 'decentraland-ui'
-import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
+import {
+  Dropdown,
+  DropdownProps,
+  Popup,
+  Icon,
+  Loader,
+  Center,
+  EmoteControls,
+  DropdownItemProps,
+  Button,
+  WearablePreview
+} from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Color4 } from 'lib/colors'
+import { isDevelopment } from 'lib/environment'
 import { isTPCollection } from 'modules/collection/utils'
 import { ItemType } from 'modules/item/types'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import BuilderIcon from 'components/Icon'
 import { ControlOptionAction } from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep.types'
-import { Color4 } from 'lib/colors'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
-import { isDevelopment } from 'lib/environment'
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
@@ -245,6 +255,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     } = this.props
     const { isShowingAvatarAttributes, showSceneBoundaries, isLoading } = this.state
     const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE) && selectedItem?.type === ItemType.EMOTE
+    const zoom = emote === PreviewEmote.JUMP ? 1 : undefined
 
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
@@ -253,6 +264,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           profile="default"
           bodyShape={bodyShape}
           emote={emote}
+          zoom={zoom}
           skin={toHex(skinColor)}
           eyes={toHex(eyeColor)}
           hair={toHex(hairColor)}
