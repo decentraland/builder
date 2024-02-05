@@ -451,7 +451,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   getMetricsAndScreenshot = async () => {
-    const { type, previewController, model, contents, category } = this.state
+    const { type, previewController, model, contents, category, thumbnail } = this.state
     if (type && model && contents) {
       const data = await getItemData({
         wearablePreviewController: previewController,
@@ -460,7 +460,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         contents,
         category
       })
-      this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
+      this.setState({ metrics: data.info, thumbnail: thumbnail ?? data.image, isLoading: false }, () => {
         if (isSmart({ type, contents })) {
           this.timer = setTimeout(() => this.setState({ view: CreateItemView.UPLOAD_VIDEO }), ITEM_LOADED_CHECK_DELAY)
           return
@@ -1052,7 +1052,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
                 <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
               </div>
-              {this.renderMetrics()}
+              <div className="thumbnail-metrics">{this.renderMetrics()}</div>
             </div>
           </div>
 

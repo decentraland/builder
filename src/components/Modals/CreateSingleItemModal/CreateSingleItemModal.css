@@ -45,6 +45,10 @@
   margin-bottom: 20px;
 }
 
+.CreateSingleItemModal .smart-wearable .preview .thumbnail-container {
+  margin-bottom: 0;
+}
+
 .CreateSingleItemModal .preview .thumbnail-container .emote-thumbnail {
   position: absolute;
   height: 100%;
@@ -120,7 +124,7 @@
   height: 144px;
 }
 
-.CreateSingleItemModal .smart-wearable .previews .metrics {
+.CreateSingleItemModal .smart-wearable .previews .thumbnail-metrics {
   margin-left: 20px;
 }
 
