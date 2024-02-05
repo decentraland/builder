@@ -143,6 +143,9 @@
   "emotes": {
     "wave": "打招呼",
     "idle": "闲",
+    "run": "跑",
+    "walk": "走",
+    "jump": "跳",
     "clap": "拍",
     "dab": "轻拍",
     "dance": "舞",

@@ -145,6 +145,9 @@
   "emotes": {
     "wave": "Wave",
     "idle": "Idle",
+    "run": "Run",
+    "walk": "Walk",
+    "jump": "Jump",
     "clap": "Clap",
     "dab": "Dab",
     "dance": "Dance",

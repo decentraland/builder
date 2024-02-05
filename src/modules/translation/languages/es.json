@@ -148,6 +148,9 @@
   "emotes": {
     "wave": "Saludar",
     "idle": "Inactivo",
+    "run": "Correr",
+    "walk": "Caminar",
+    "jump": "Saltar",
     "clap": "Aplaudir",
     "dab": "Dab",
     "dance": "Bailar",
