@@ -183,7 +183,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   sortContentZipBothBodyShape = (bodyShape: BodyShapeType, contents: Record<string, Blob>): SortedContent => {
     let male: Record<string, Blob> = {}
     let female: Record<string, Blob> = {}
-    let all: Record<string, Blob> = {}
+    const both: Record<string, Blob> = {}
 
     for (const [key, value] of Object.entries(contents)) {
       if (key.startsWith('male/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE)) {
@@ -191,21 +191,21 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       } else if (key.startsWith('female/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE)) {
         female[key] = value
       } else {
-        all[key] = value
+        both[key] = value
       }
     }
 
     male = {
       ...male,
-      ...(bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE ? this.prefixContents(BodyShapeType.MALE, all) : {})
+      ...(bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE ? this.prefixContents(BodyShapeType.MALE, both) : {})
     }
 
     female = {
       ...female,
-      ...(bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, all) : {})
+      ...(bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, both) : {})
     }
 
-    all = {
+    const all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
       ...male,
       ...female
