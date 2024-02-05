@@ -446,7 +446,11 @@ export async function createDynamicFiles(args: {
       null,
       2
     ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation, thumbnail, author, isEmpty, world), null, 2),
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(
+      await getSceneDefinition(project, point, rotation, thumbnail, author, isEmpty, world),
+      null,
+      2
+    ),
     [EXPORT_PATH.TSCONFIG_FILE]: JSON.stringify(
       {
         ...tsconfig,
@@ -571,7 +575,8 @@ export function buildAssetPath(namespace: string, path: string) {
 // SDK7
 
 export async function downloadSDK7File(key: string, url: string): Promise<{ path: string; file: Blob }> {
-  return fetch(url)
+  const headers = key === EXPORT_PATH.THUMBNAIL_FILE ? { headers: NO_CACHE_HEADERS } : {}
+  return fetch(url, headers)
     .then(resp => resp.blob())
     .then(blob => ({ path: key, file: blob }))
 }
@@ -610,7 +615,16 @@ export async function createSDK7Files({ project, scene, builderAPI }: { project:
   const sceneJson = new Blob([
     new TextEncoder().encode(
       JSON.stringify(
-        getSceneDefinition(project, { x: 0, y: 0 }, 'east', EXPORT_PATH.THUMBNAIL_FILE, project.ethAddress, undefined, undefined, true)
+        await getSceneDefinition(
+          project,
+          { x: 0, y: 0 },
+          'east',
+          EXPORT_PATH.THUMBNAIL_FILE,
+          project.ethAddress,
+          undefined,
+          undefined,
+          true
+        )
       )
     )
   ])
