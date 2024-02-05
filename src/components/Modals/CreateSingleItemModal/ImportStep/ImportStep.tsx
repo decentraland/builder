@@ -29,7 +29,16 @@ import {
   CustomErrorWithTitle,
   ItemNotAllowedInThirdPartyCollections
 } from 'modules/item/errors'
-import { BodyShapeType, IMAGE_EXTENSIONS, Item, ItemType, ITEM_EXTENSIONS, MODEL_EXTENSIONS, SCENE_PATH } from 'modules/item/types'
+import {
+  BodyShapeType,
+  IMAGE_EXTENSIONS,
+  Item,
+  ItemType,
+  ITEM_EXTENSIONS,
+  MODEL_EXTENSIONS,
+  SCENE_PATH,
+  THUMBNAIL_PATH
+} from 'modules/item/types'
 import {
   getBodyShapeType,
   getBodyShapeTypeFromContents,
@@ -233,19 +242,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
           ...acceptedFileProps,
           type,
           model,
-          contents
+          contents,
+          thumbnail: THUMBNAIL_PATH in modelData.contents ? await blobToDataURL(modelData.contents[THUMBNAIL_PATH]) : undefined
         }
-
         if (wearable) {
-          let thumbnail: string | undefined
-
-          if (thumbnail && thumbnail in modelData.contents) {
-            thumbnail = await blobToDataURL(modelData.contents[thumbnail])
-          }
-
           acceptedFileProps = {
             ...acceptedFileProps,
-            thumbnail,
             name: wearable.name,
             description: wearable.description,
             rarity: wearable.rarity,
@@ -254,14 +256,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             requiredPermissions: scene?.requiredPermissions
           }
         } else if (emote) {
-          let thumbnail: string | undefined
-
-          if (thumbnail && thumbnail in modelData.contents) {
-            thumbnail = await blobToDataURL(modelData.contents[thumbnail])
-          }
           acceptedFileProps = {
             ...acceptedFileProps,
-            thumbnail,
             name: emote.name,
             description: emote.description,
             rarity: emote.rarity,

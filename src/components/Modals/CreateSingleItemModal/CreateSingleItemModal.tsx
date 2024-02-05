@@ -181,20 +181,36 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   sortContentZipBothBodyShape = (bodyShape: BodyShapeType, contents: Record<string, Blob>): SortedContent => {
-    const male: Record<string, Blob> = {},
-      female: Record<string, Blob> = {}
-    for (const key in contents) {
+    let male: Record<string, Blob> = {}
+    let female: Record<string, Blob> = {}
+    const both: Record<string, Blob> = {}
+
+    for (const [key, value] of Object.entries(contents)) {
       if (key.startsWith('male/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE)) {
-        male[key] = contents[key]
+        male[key] = value
       } else if (key.startsWith('female/') && (bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE)) {
-        female[key] = contents[key]
+        female[key] = value
+      } else {
+        both[key] = value
       }
     }
+
+    male = {
+      ...male,
+      ...(bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE ? this.prefixContents(BodyShapeType.MALE, both) : {})
+    }
+
+    female = {
+      ...female,
+      ...(bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, both) : {})
+    }
+
     const all = {
       [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH],
       ...male,
       ...female
     }
+
     return { male, female, all }
   }
 
@@ -435,7 +451,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   getMetricsAndScreenshot = async () => {
-    const { type, previewController, model, contents, category } = this.state
+    const { type, previewController, model, contents, category, thumbnail } = this.state
     if (type && model && contents) {
       const data = await getItemData({
         wearablePreviewController: previewController,
@@ -444,7 +460,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         contents,
         category
       })
-      this.setState({ metrics: data.info, thumbnail: data.image, isLoading: false }, () => {
+      this.setState({ metrics: data.info, thumbnail: thumbnail ?? data.image, isLoading: false }, () => {
         if (isSmart({ type, contents })) {
           this.timer = setTimeout(() => this.setState({ view: CreateItemView.UPLOAD_VIDEO }), ITEM_LOADED_CHECK_DELAY)
           return
@@ -628,7 +644,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
         bodyShapes: [BodyShape.MALE],
-        mainFile: Object.keys(contents.male).pop()!,
+        mainFile: Object.keys(contents.male).find(content => content.includes('glb'))!,
         contents: Object.keys(contents.male),
         overrideHides: [],
         overrideReplaces: []
@@ -639,7 +655,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
         bodyShapes: [BodyShape.FEMALE],
-        mainFile: Object.keys(contents.female).pop()!,
+        mainFile: Object.keys(contents.female).find(content => content.includes('glb'))!,
         contents: Object.keys(contents.female),
         overrideHides: [],
         overrideReplaces: []
@@ -1036,7 +1052,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
                 <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
               </div>
-              {this.renderMetrics()}
+              <div className="thumbnail-metrics">{this.renderMetrics()}</div>
             </div>
           </div>
 
