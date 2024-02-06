@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Popup } from 'decentraland-ui'
 import { Env } from '@dcl/ui-env'
@@ -29,11 +29,24 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
     } as DeployToWorldModalMetadata)
   }, [onOpenModal, currentProject])
 
-  const previewUrl = currentProject
-    ? `${EXPLORER_URL}?realm=${BUILDER_SERVER_URL}/projects/${currentProject.id}${
-        config.is(Env.DEVELOPMENT) ? '&NETWORK=sepolia&DEBUG_SCENE_LOG' : ''
-      }`
-    : ''
+  const previewUrl = useMemo(() => {
+    if (!currentProject) {
+      return ''
+    }
+
+    const url = new URL(EXPLORER_URL)
+
+    url.searchParams.set('skipSetup', 'true')
+    url.searchParams.set('realm', `${BUILDER_SERVER_URL}/projects/${currentProject.id}`)
+
+    if (config.is(Env.DEVELOPMENT)) {
+      url.searchParams.set('NETWORK', 'sepolia')
+      url.searchParams.set('DEBUG_SCENE_LOG', '')
+    }
+
+    return url.toString()
+  }, [])
+
   return (
     <div className={styles.container}>
       <div className={styles.nameContainer}>
