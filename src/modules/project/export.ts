@@ -484,7 +484,8 @@ export async function getSceneDefinition(
     ...sceneJson,
     display: {
       ...sceneJson.display!,
-      title: project.title
+      title: project.title,
+      description: ''
     },
     scene: {
       ...sceneJson.scene,
