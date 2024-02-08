@@ -1,5 +1,6 @@
 import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
 import { ethers } from 'ethers'
+import { getLocation, replace } from 'connected-react-router'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ProviderType } from '@dcl/schemas'
 import { localStorageClearIdentity, localStorageGetIdentity, localStorageStoreIdentity } from '@dcl/single-sign-on-client'
@@ -19,11 +20,11 @@ import {
   CHANGE_ACCOUNT,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { redirectToAuthDapp } from 'routing/locations'
+import { locations, redirectToAuthDapp } from 'routing/locations'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { getEth } from 'modules/wallet/utils'
-
+import { clearAssetPacks } from 'modules/assetPack/actions'
 import {
   GENERATE_IDENTITY_REQUEST,
   GenerateIdentityRequestAction,
@@ -188,10 +189,21 @@ function* handleChangeAccount(action: ChangeAccountAction) {
   const { address, providerType } = wallet
 
   const identity = localStorageGetIdentity(address)
+
   if (identity) {
     yield put(generateIdentitySuccess(address, identity))
     yield put(loginRequest(providerType, true))
   } else {
     redirectToAuthDapp()
+  }
+
+  yield put(clearAssetPacks())
+
+  const location: ReturnType<typeof getLocation> = yield select(getLocation)
+
+  const isEditor = location.pathname.includes('editor')
+
+  if (isEditor) {
+    yield put(replace(locations.root()))
   }
 }
