@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { ProviderType } from '@dcl/schemas'
 import { Loader, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -84,12 +83,8 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   handleShareWithFacebook = (e: React.MouseEvent<HTMLAnchorElement>) => this.handleShare(e, ShareTarget.FACEBOOK)
   handleShareWithTwitter = (e: React.MouseEvent<HTMLAnchorElement>) => this.handleShare(e, ShareTarget.TWITTER)
 
-  handleLogin = (providerType: ProviderType) => {
-    if (this.props.isAuthDappEnabled) {
-      redirectToAuthDapp()
-    } else {
-      this.props.onLogin(providerType)
-    }
+  handleLogin = () => {
+    redirectToAuthDapp()
   }
 
   getFacebookLink = () => {

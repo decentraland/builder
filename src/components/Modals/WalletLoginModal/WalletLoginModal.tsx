@@ -17,15 +17,11 @@ export default class WalletLoginModal extends React.PureComponent<Props> {
   }
 
   componentDidMount(): void {
-    if (this.props.isAuthDappEnabled) {
-      redirectToAuthDapp()
-    }
+    redirectToAuthDapp()
   }
 
   componentDidUpdate(): void {
-    if (this.props.isAuthDappEnabled) {
-      redirectToAuthDapp()
-    }
+    redirectToAuthDapp()
   }
 
   render() {

@@ -173,7 +173,7 @@ export function locateNextLand(landTiles: Record<string, LandTile>, currentLandI
   const nextIndex = (((index + 1) % landIds.length) + landIds.length) % landIds.length
 
   const nextLandId = landIds[nextIndex]
-  return landTiles[nextLandId]!.land
+  return landTiles[nextLandId].land
 }
 
 export function getExplorerURL(x: string | number, y: string | number) {

@@ -1,6 +1,5 @@
 import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { replace, getLocation } from 'connected-react-router'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ProviderType } from '@dcl/schemas'
 import { localStorageClearIdentity, localStorageGetIdentity, localStorageStoreIdentity } from '@dcl/single-sign-on-client'
@@ -20,8 +19,7 @@ import {
   CHANGE_ACCOUNT,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { locations, redirectToAuthDapp } from 'routing/locations'
-import { clearAssetPacks } from 'modules/assetPack/actions'
+import { redirectToAuthDapp } from 'routing/locations'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { getEth } from 'modules/wallet/utils'
@@ -48,7 +46,6 @@ import {
 import { ONE_MONTH_IN_MINUTES, takeRace } from './utils'
 import { isLoggedIn, getCurrentIdentity } from './selectors'
 import { Race } from './types'
-import { getIsAuthDappEnabled } from 'modules/features/selectors'
 
 export function* identitySaga() {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
@@ -176,29 +173,13 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   const { wallet } = action.payload
   const { address, providerType } = wallet
 
-  const isAuthDappEnabled: boolean = yield select(getIsAuthDappEnabled)
+  const identity = localStorageGetIdentity(address)
 
-  if (isAuthDappEnabled) {
-    const identity = localStorageGetIdentity(address)
-    if (identity) {
-      yield put(generateIdentitySuccess(address, identity))
-      yield put(loginRequest(providerType, true))
-    } else {
-      redirectToAuthDapp()
-    }
-    return
-  }
-
-  // Obtains the identity from the SSO iframe.
-  const identity: AuthIdentity | null = yield call(localStorageGetIdentity, address)
-
-  // If an identity is found, store it and proceed with the login so the state acknowledges that the user is connected.
-  // If not, proceed with the login in order to retrieve user's signature.
   if (identity) {
     yield put(generateIdentitySuccess(address, identity))
     yield put(loginRequest(providerType, true))
   } else {
-    yield put(loginRequest(providerType))
+    redirectToAuthDapp()
   }
 }
 
@@ -206,38 +187,11 @@ function* handleChangeAccount(action: ChangeAccountAction) {
   const { wallet } = action.payload
   const { address, providerType } = wallet
 
-  const isAuthDappEnabled: boolean = yield select(getIsAuthDappEnabled)
-
-  if (isAuthDappEnabled) {
-    const identity = localStorageGetIdentity(address)
-    if (identity) {
-      yield put(generateIdentitySuccess(address, identity))
-      yield put(loginRequest(providerType, true))
-    } else {
-      redirectToAuthDapp()
-    }
-    return
-  }
-
-  // Obtains the identity from the SSO iframe.
-  const identity: AuthIdentity | null = yield call(localStorageGetIdentity, address)
-
-  // If an identity is found, store it and proceed with the login so the state acknowledges that the user is connected.
-  // If not, proceed with the login in order to retrieve user's signature.
+  const identity = localStorageGetIdentity(address)
   if (identity) {
     yield put(generateIdentitySuccess(address, identity))
     yield put(loginRequest(providerType, true))
   } else {
-    yield put(loginRequest(providerType))
-  }
-
-  yield put(clearAssetPacks())
-
-  const location: ReturnType<typeof getLocation> = yield select(getLocation)
-
-  const isEditor = location.pathname.includes('editor')
-
-  if (isEditor) {
-    yield put(replace(locations.root()))
+    redirectToAuthDapp()
   }
 }
