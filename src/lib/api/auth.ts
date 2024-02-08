@@ -1,5 +1,5 @@
 import { Authenticator } from '@dcl/crypto'
-import { getIdentity } from '@dcl/single-sign-on-client'
+import { localStorageGetIdentity } from '@dcl/single-sign-on-client'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootStore } from 'modules/common/types'
 
@@ -12,13 +12,13 @@ export class Authorization {
     this.store = store
   }
 
-  async createAuthHeaders(method = 'get', path = '') {
+  createAuthHeaders(method = 'get', path = '') {
     const headers: Record<string, string> = {}
     const state = this.store.getState()
     const address = getAddress(state)
 
     if (address) {
-      const identity = await getIdentity(address)
+      const identity = localStorageGetIdentity(address)
 
       if (identity) {
         const endpoint = (method + ':' + path).toLowerCase()

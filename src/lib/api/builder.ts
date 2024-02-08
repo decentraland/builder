@@ -558,7 +558,7 @@ export class BuilderAPI extends BaseAPI {
         headers = { ...config.headers }
       }
     }
-    const authHeaders = await this.authorization.createAuthHeaders(method, path)
+    const authHeaders = this.authorization.createAuthHeaders(method, path)
     headers = {
       ...headers,
       ...authHeaders
@@ -623,7 +623,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchMain(projectId: string): Promise<Blob> {
-    const request = async (path: string) => fetch(this.url + path, { headers: await this.authorization.createAuthHeaders('get', path) })
+    const request = async (path: string) => fetch(this.url + path, { headers: this.authorization.createAuthHeaders('get', path) })
     const about: { configurations: { scenesUrn: string[] } } = await request(`/projects/${projectId}/about`).then(resp => resp.json())
     const urn = about.configurations.scenesUrn[0]
     const hash = urn.split('urn:decentraland:entity:').pop()!.split('?')[0]
@@ -635,7 +635,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCrdt(projectId: string): Promise<Blob> {
     const path = `/projects/${projectId}/crdt`
-    const headers = await this.authorization.createAuthHeaders('get', path)
+    const headers = this.authorization.createAuthHeaders('get', path)
     const response = await fetch(this.url + path, { headers })
     const blob = await response.blob()
     return blob

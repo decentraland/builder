@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ProviderType } from '@dcl/schemas'
-import { getIdentity, storeIdentity, clearIdentity, localStorageGetIdentity } from '@dcl/single-sign-on-client'
+import { localStorageClearIdentity, localStorageGetIdentity, localStorageStoreIdentity } from '@dcl/single-sign-on-client'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { config } from 'config'
@@ -87,7 +87,7 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
       signer.signMessage(message)
     )
 
-    yield call(storeIdentity, address, identity)
+    yield call(localStorageStoreIdentity, address, identity)
 
     yield put(generateIdentitySuccess(address, identity))
   } catch (error) {
@@ -133,7 +133,7 @@ function* handleLogin(action: LoginRequestAction) {
     }
 
     const address: string = yield select(getAddress)
-    const identity: AuthIdentity | null = yield call(getIdentity, address)
+    const identity: AuthIdentity | null = yield call(localStorageGetIdentity, address)
 
     if (identity) {
       yield put(generateIdentitySuccess(address, identity))
@@ -168,8 +168,7 @@ function* handleLogout(_action: LogoutAction) {
   if (address) {
     yield put(disconnectWallet())
     yield put(destroyIdentity(address))
-    // Clear the identity from the SSO iframe. Doing so will log you out of all DCL applications (That use SSO).
-    yield call(clearIdentity, address)
+    yield call(localStorageClearIdentity, address)
   }
 }
 
@@ -191,7 +190,7 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   }
 
   // Obtains the identity from the SSO iframe.
-  const identity: AuthIdentity | null = yield call(getIdentity, address)
+  const identity: AuthIdentity | null = yield call(localStorageGetIdentity, address)
 
   // If an identity is found, store it and proceed with the login so the state acknowledges that the user is connected.
   // If not, proceed with the login in order to retrieve user's signature.
@@ -221,7 +220,7 @@ function* handleChangeAccount(action: ChangeAccountAction) {
   }
 
   // Obtains the identity from the SSO iframe.
-  const identity: AuthIdentity | null = yield call(getIdentity, address)
+  const identity: AuthIdentity | null = yield call(localStorageGetIdentity, address)
 
   // If an identity is found, store it and proceed with the login so the state acknowledges that the user is connected.
   // If not, proceed with the login in order to retrieve user's signature.
