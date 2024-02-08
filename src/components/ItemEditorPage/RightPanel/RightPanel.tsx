@@ -194,7 +194,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleChangeReplaces = (replaces: HideableWearableCategory[]) => {
-    const data = this.setReplaces((this.state.data as WearableData), replaces)
+    const data = this.setReplaces(this.state.data as WearableData, replaces)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
@@ -219,7 +219,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       hides = [...currentHides.filter(cat => !BodyPartCategory.schema.enum.includes(cat)), ...value]
     }
 
-    const data = this.setHides((this.state.data as WearableData), hides)
+    const data = this.setHides(this.state.data as WearableData, hides)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
