@@ -224,8 +224,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       }
 
       let acceptedFileProps: AcceptedFileProps = {
-        id: changeItemFile ? item!.id : uuid.v4(),
-        name: changeItemFile ? item!.name : cleanAssetName(file.name),
+        id: changeItemFile ? item?.id : uuid.v4(),
+        name: changeItemFile ? item?.name : cleanAssetName(file.name),
         file,
         category: isRepresentation || changeItemFile ? category : undefined
       }

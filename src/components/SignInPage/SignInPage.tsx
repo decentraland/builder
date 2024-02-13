@@ -13,7 +13,7 @@ export default class SignInPage extends React.PureComponent<Props> {
   }
 
   handleRedirectToAuthDapp = () => {
-    if (this.props.isAuthDappEnabled && !this.props.isConnected && !this.props.isConnecting) {
+    if (!this.props.isConnected && !this.props.isConnecting) {
       const params = new URLSearchParams(window.location.search)
       const basename = /^decentraland.(zone|org|today)$/.test(window.location.host) ? '/builder' : ''
       redirectToAuthDapp(`${basename}${params.get('redirectTo') || '/'}`)
@@ -21,16 +21,12 @@ export default class SignInPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isConnected, isAuthDappEnabled } = this.props
+    const { isConnected } = this.props
     return (
       <>
         <Navbar />
         <Page>
-          <SignIn
-            onConnect={isAuthDappEnabled ? this.handleRedirectToAuthDapp : undefined}
-            isConnected={isConnected}
-            handleLoginConnect={this.handleOnConnect}
-          />
+          <SignIn onConnect={this.handleRedirectToAuthDapp} isConnected={isConnected} handleLoginConnect={this.handleOnConnect} />
         </Page>
         <Footer />
       </>

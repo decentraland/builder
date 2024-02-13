@@ -15,7 +15,7 @@ jest.mock('decentraland-dapps/dist/modules/translation/utils', () => {
   const module = jest.requireActual('decentraland-dapps/dist/modules/translation/utils')
   return {
     ...module,
-    T: ({ id, values }: typeof module['T']) => module.t(id, values) as unknown
+    T: ({ id, values }: (typeof module)['T']) => module.t(id, values) as unknown
   } as unknown
 })
 
@@ -23,7 +23,7 @@ jest.mock('decentraland-dapps/dist/modules/translation/utils', () => {
   const module = jest.requireActual('decentraland-dapps/dist/modules/translation/utils')
   return {
     ...module,
-    T: ({ id, values }: typeof module['T']) => module.t(id, values) as unknown
+    T: ({ id, values }: (typeof module)['T']) => module.t(id, values) as unknown
   } as unknown
 })
 

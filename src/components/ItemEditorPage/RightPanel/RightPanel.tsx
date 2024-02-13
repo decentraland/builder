@@ -176,7 +176,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   handlePlayModeChange = (playMode: EmotePlayMode) => {
     const data: EmoteDataADR74 = {
-      ...(this.state.data as EmoteDataADR74)!,
+      ...(this.state.data as EmoteDataADR74),
       loop: playMode === EmotePlayMode.LOOP
     }
     this.setState({ data, isDirty: this.isDirty({ data }) })
@@ -194,7 +194,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleChangeReplaces = (replaces: HideableWearableCategory[]) => {
-    const data = this.setReplaces((this.state.data as WearableData)!, replaces)
+    const data = this.setReplaces(this.state.data as WearableData, replaces)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
@@ -219,7 +219,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       hides = [...currentHides.filter(cat => !BodyPartCategory.schema.enum.includes(cat)), ...value]
     }
 
-    const data = this.setHides((this.state.data as WearableData)!, hides)
+    const data = this.setHides(this.state.data as WearableData, hides)
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
@@ -601,7 +601,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           <Select<EmotePlayMode>
                             itemId={item.id}
                             label={t('create_single_item_modal.play_mode_label')}
-                            value={(data as EmoteDataADR74)!.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
+                            value={(data as EmoteDataADR74).loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
                             options={this.asPlayModeSelect(playModes)}
                             disabled={!canEditItemMetadata}
                             onChange={this.handlePlayModeChange}

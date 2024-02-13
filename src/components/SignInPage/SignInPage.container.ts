@@ -5,12 +5,10 @@ import { loginRequest } from 'modules/identity/actions'
 import { RootState } from 'modules/common/types'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './SignInPage.types'
 import SignInPage from './SignInPage'
-import { getIsAuthDappEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   isConnected: isLoggedIn(state),
-  isConnecting: isConnecting(state),
-  isAuthDappEnabled: getIsAuthDappEnabled(state)
+  isConnecting: isConnecting(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
