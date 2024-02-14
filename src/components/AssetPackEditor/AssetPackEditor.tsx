@@ -158,7 +158,7 @@ export default class AssetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
     const { onEditAsset } = this.props
     if (onEditAsset) {
       this.analytics.track('Asset Pack Editor Edit Asset', {
-        asset
+        assetId: asset.id
       })
       onEditAsset(asset)
     }
