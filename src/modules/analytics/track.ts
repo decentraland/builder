@@ -58,7 +58,11 @@ import {
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
   SET_PRICE_AND_BENEFICIARY_FAILURE,
-  SET_PRICE_AND_BENEFICIARY_SUCCESS
+  SET_PRICE_AND_BENEFICIARY_SUCCESS,
+  DeleteItemSuccessAction,
+  DeleteItemFailureAction,
+  SetPriceAndBeneficiarySuccessAction,
+  SetPriceAndBeneficiaryFailureAction
 } from 'modules/item/actions'
 import {
   APPROVE_COLLECTION_FAILURE,
@@ -158,7 +162,7 @@ addPayload(TOGGLE_SIDEBAR, 'Toggle sidebar')
 addPayload(SET_SIDEBAR_VIEW, 'Set sidebar view')
 addPayload(SELECT_ASSET_PACK, 'Select asset pack')
 addPayload(SELECT_CATEGORY, 'Select category')
-addPayload(OPEN_MODAL, 'Open modal')
+addPayload(OPEN_MODAL, 'Open modal', () => ({}))
 addPayload(CLOSE_MODAL, 'Close modal')
 addPayload(SET_GIZMO, 'Set gizmo')
 addPayload(SET_GROUND, 'Set ground', trimAsset)
@@ -267,22 +271,44 @@ add(
 add(SAVE_ITEM_SUCCESS, 'Save item', action => {
   const { payload } = action as SaveItemSuccessAction
   return {
-    item: payload.item
+    itemId: payload.item.id
   }
 })
 add(SAVE_ITEM_FAILURE, 'Save item error', action => {
   const { payload } = action as SaveItemFailureAction
   return {
-    item: payload.item,
+    itemId: payload.item.id,
     error: payload.error
   }
 })
 
-addPayload(DELETE_ITEM_SUCCESS, 'Delete item')
-addPayload(DELETE_ITEM_FAILURE, 'Delete item error')
+addPayload(DELETE_ITEM_SUCCESS, 'Delete item', action => {
+  const { payload } = action as DeleteItemSuccessAction
+  return {
+    itemId: payload.item.id
+  }
+})
+addPayload(DELETE_ITEM_FAILURE, 'Delete item error', action => {
+  const { payload } = action as DeleteItemFailureAction
+  return {
+    itemId: payload.item.id,
+    error: payload.error
+  }
+})
 
-addPayload(SET_PRICE_AND_BENEFICIARY_SUCCESS, 'Set price and beneficiary')
-addPayload(SET_PRICE_AND_BENEFICIARY_FAILURE, 'Set price and beneficiary failure')
+addPayload(SET_PRICE_AND_BENEFICIARY_SUCCESS, 'Set price and beneficiary', action => {
+  const { payload } = action as SetPriceAndBeneficiarySuccessAction
+  return {
+    itemId: payload.item.id
+  }
+})
+addPayload(SET_PRICE_AND_BENEFICIARY_FAILURE, 'Set price and beneficiary failure', action => {
+  const { payload } = action as SetPriceAndBeneficiaryFailureAction
+  return {
+    itemId: payload.itemId,
+    error: payload.error
+  }
+})
 
 addPayload(SAVE_COLLECTION_SUCCESS, 'Save collection')
 addPayload(SAVE_COLLECTION_FAILURE, 'Save collection error')
