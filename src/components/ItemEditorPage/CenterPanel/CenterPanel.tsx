@@ -99,7 +99,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       EMOTE_PLAYED_BASE: !emote,
       EMOTE_PLAYED_ITEM_ID: emote?.urn ? extractTokenId(emote.urn) : null,
       EMOTE_PLAYED_NAME: emote ? emote.name : value,
-      PREVIEWED_WEARABLE_ITEM_ID: visibleItems.map(item => item?.urn ? isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn) : null),
+      PREVIEWED_WEARABLE_ITEM_ID: visibleItems.map(item =>
+        item?.urn ? (isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn)) : null
+      ),
       PREVIEWED_WEARABLE_NAME: visibleItems.map(item => item.name)
     })
 

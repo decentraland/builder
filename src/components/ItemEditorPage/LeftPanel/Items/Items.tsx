@@ -94,7 +94,7 @@ export default class Items extends React.PureComponent<Props, State> {
     if (!this.isVisible(item)) {
       newVisibleItemIds.push(item)
       this.analytics.track('Preview Item', {
-        ITEM_ID: item?.urn ? isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn) : null,
+        ITEM_ID: item?.urn ? (isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn)) : null,
         ITEM_TYPE: item.type,
         ITEM_NAME: item.name,
         ITEM_IS_THIRD_PARTY: isThirdParty(item.urn)

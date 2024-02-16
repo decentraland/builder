@@ -45,7 +45,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onSetItems([item])
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }), { fromParam: FromParam.COLLECTIONS })
     this.analytics.track('Preview Item', {
-      ITEM_ID: item?.urn ? isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn) : null,
+      ITEM_ID: item?.urn ? (isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn)) : null,
       ITEM_TYPE: item.type,
       ITEM_NAME: item.name,
       ITEM_IS_THIRD_PARTY: isThirdParty(item.urn)

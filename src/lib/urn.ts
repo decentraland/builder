@@ -162,7 +162,6 @@ export function extractCollectionAddress(urn: URN): string {
   const { collectionAddress } = decodedURN
 
   return collectionAddress
-
 }
 
 export function extractTokenId(urn: URN): string {
