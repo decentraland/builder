@@ -2,6 +2,7 @@ import React from 'react'
 import { ethers } from 'ethers'
 import { EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
@@ -17,10 +18,13 @@ import ItemImage from 'components/ItemImage'
 import ResetItemButton from './ResetItemButton'
 import { Props } from './CollectionItem.types'
 import styles from './CollectionItem.module.css'
+import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 
 const LENGTH_LIMIT = 25
 
 export default class CollectionItem extends React.PureComponent<Props> {
+  analytics = getAnalytics()
+
   handleEditPriceAndBeneficiary = () => {
     const { onOpenModal, item } = this.props
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
@@ -40,6 +44,12 @@ export default class CollectionItem extends React.PureComponent<Props> {
     const { onNavigate, item, onSetItems } = this.props
     onSetItems([item])
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }), { fromParam: FromParam.COLLECTIONS })
+    this.analytics.track('Preview Item', {
+      ITEM_ID: item?.urn ? isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn) : null,
+      ITEM_TYPE: item.type,
+      ITEM_NAME: item.name,
+      ITEM_IS_THIRD_PARTY: isThirdParty(item.urn)
+    })
   }
 
   handleDeleteItem = () => {

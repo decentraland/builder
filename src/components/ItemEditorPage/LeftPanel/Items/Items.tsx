@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { isThirdParty } from 'lib/urn'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import {
   Section,
   Loader,
@@ -17,6 +17,7 @@ import {
 import { Item, ItemType } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
 import { TP_TRESHOLD_TO_REVIEW } from 'modules/collection/constants'
+import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { LEFT_PANEL_PAGE_SIZE } from '../../constants'
 import Collapsable from 'components/Collapsable'
 import Icon from 'components/Icon'
@@ -40,6 +41,8 @@ export default class Items extends React.PureComponent<Props, State> {
     showGetMoreSamplesModal: false,
     doNotShowSamplesModalAgain: false
   }
+
+  analytics = getAnalytics()
 
   componentDidMount() {
     const { items, onSetReviewedItems } = this.props
@@ -90,6 +93,12 @@ export default class Items extends React.PureComponent<Props, State> {
 
     if (!this.isVisible(item)) {
       newVisibleItemIds.push(item)
+      this.analytics.track('Preview Item', {
+        ITEM_ID: item?.urn ? isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn) : null,
+        ITEM_TYPE: item.type,
+        ITEM_NAME: item.name,
+        ITEM_IS_THIRD_PARTY: isThirdParty(item.urn)
+      })
     }
 
     onSetItems(newVisibleItemIds)
