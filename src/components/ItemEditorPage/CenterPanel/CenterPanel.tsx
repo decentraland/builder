@@ -13,6 +13,7 @@ import {
   Button,
   WearablePreview
 } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Color4 } from 'lib/colors'
 import { isDevelopment } from 'lib/environment'
@@ -20,6 +21,7 @@ import { isTPCollection } from 'modules/collection/utils'
 import { ItemType } from 'modules/item/types'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
+import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import BuilderIcon from 'components/Icon'
 import { ControlOptionAction } from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep.types'
 import AvatarColorDropdown from './AvatarColorDropdown'
@@ -33,6 +35,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     isShowingAvatarAttributes: false,
     isLoading: false
   }
+
+  analytics = getAnalytics()
 
   componentDidMount() {
     const {
@@ -90,6 +94,14 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     } else {
       onSetAvatarAnimation(value as PreviewEmote)
     }
+
+    this.analytics.track('Play Emote', {
+      EMOTE_PLAYED_BASE: !emote,
+      EMOTE_PLAYED_ITEM_ID: emote?.urn ? extractTokenId(emote.urn) : null,
+      EMOTE_PLAYED_NAME: emote ? emote.name : value,
+      PREVIEWED_WEARABLE_ITEM_ID: visibleItems.map(item => item?.urn ? isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn) : null),
+      PREVIEWED_WEARABLE_NAME: visibleItems.map(item => item.name)
+    })
 
     onSetItems(newVisibleItems)
   }
