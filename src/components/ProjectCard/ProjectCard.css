@@ -94,11 +94,14 @@
   position: absolute;
   top: 0;
   width: 100%;
-  visibility: hidden;
   padding: 8px;
 }
 
-.ProjectCard:hover .options-container {
+.ProjectCard .options-container .options-dropdown {
+  visibility: hidden;
+}
+
+.ProjectCard:hover .options-container .options-dropdown {
   visibility: visible;
 }
 
