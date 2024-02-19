@@ -1,7 +1,7 @@
 import React from 'react'
 import { ModalNavigation, Field, Button, Form } from 'decentraland-ui'
 import { ContractName } from 'decentraland-transactions'
-import { NFTCategory, Network } from '@dcl/schemas'
+import { Contract, NFTCategory, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -20,7 +20,7 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
     const { onClaim, onAuthorizedAction, onClaimNameClear } = this.props
     const { currentName } = this.state
 
-    const manaContract = {
+    const manaContract: Contract = {
       name: ContractName.MANAToken,
       address: MANA_ADDRESS,
       chainId: getChainIdByNetwork(Network.ETHEREUM),

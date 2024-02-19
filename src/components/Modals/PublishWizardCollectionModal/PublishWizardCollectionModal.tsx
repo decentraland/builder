@@ -8,7 +8,7 @@ import { withAuthorizedAction } from 'decentraland-dapps/dist/containers'
 import { AuthorizedAction } from 'decentraland-dapps/dist/containers/withAuthorizedAction/AuthorizationModal'
 import { ContractName } from 'decentraland-transactions'
 import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
-import { NFTCategory, Network } from '@dcl/schemas'
+import { Contract, NFTCategory, Network } from '@dcl/schemas'
 import { buildManaAuthorization } from 'lib/mana'
 import { getPublishStatus, getError } from 'modules/collection/selectors'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
@@ -74,7 +74,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
 
   const handleOnPublish = () => {
     const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
-    const manaContract = {
+    const manaContract: Contract = {
       name: authorization.contractName,
       address: authorization.contractAddress,
       chainId: authorization.chainId,

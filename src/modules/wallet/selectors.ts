@@ -6,7 +6,9 @@ import { RootState } from 'modules/common/types'
 
 export function getManaBalanceForNetwork(state: RootState, network: Network): number {
   const networks = getNetworks(state)
-  return networks && networks[network] && networks[network].mana ? networks[network].mana : 0
+  return networks && (network === Network.ETHEREUM || network === Network.MATIC) && networks[network] && networks[network].mana
+    ? networks[network].mana
+    : 0
 }
 
 export const getWallet = createSelector<RootState, Wallet | null, Wallet | null>(getData, wallet =>
