@@ -89,21 +89,25 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     const emote = emotes.find(emote => emote.id === value)
     const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
 
+    newVisibleItems.forEach(item => {
+      this.analytics.track('Play Emote', {
+        EMOTE_PLAYED_BASE: !emote,
+        EMOTE_PLAYED_ITEM_ID: emote?.urn ? extractTokenId(emote.urn) : null,
+        EMOTE_PLAYED_NAME: emote ? emote.name : value,
+        PREVIEWED_WEARABLE_ITEM_ID: item?.urn
+          ? isThirdParty(item.urn)
+            ? extractThirdPartyTokenId(item.urn)
+            : extractTokenId(item.urn)
+          : null,
+        PREVIEWED_WEARABLE_NAME: item.name
+      })
+    })
+
     if (emote) {
       newVisibleItems.push(emote)
     } else {
       onSetAvatarAnimation(value as PreviewEmote)
     }
-
-    this.analytics.track('Play Emote', {
-      EMOTE_PLAYED_BASE: !emote,
-      EMOTE_PLAYED_ITEM_ID: emote?.urn ? extractTokenId(emote.urn) : null,
-      EMOTE_PLAYED_NAME: emote ? emote.name : value,
-      PREVIEWED_WEARABLE_ITEM_ID: visibleItems.map(item =>
-        item?.urn ? (isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn)) : null
-      ),
-      PREVIEWED_WEARABLE_NAME: visibleItems.map(item => item.name)
-    })
 
     onSetItems(newVisibleItems)
   }
