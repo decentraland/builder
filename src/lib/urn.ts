@@ -152,3 +152,29 @@ export function decodeURN(urn: URN): DecodedURN {
 function getNetworkURNProtocol(network: Network) {
   return getURNProtocol(getChainIdByNetwork(network))
 }
+
+export function extractCollectionAddress(urn: URN): string {
+  const decodedURN = decodeURN(urn)
+  if (decodedURN.type !== URNType.COLLECTIONS_V2) {
+    throw new Error('URN is not a collections-v2 URN')
+  }
+
+  const { collectionAddress } = decodedURN
+
+  return collectionAddress
+}
+
+export function extractTokenId(urn: URN): string {
+  const decodedURN = decodeURN(urn)
+  if (decodedURN.type !== URNType.COLLECTIONS_V2) {
+    throw new Error('URN is not a collections-v2 URN')
+  }
+
+  const { collectionAddress, tokenId } = decodedURN
+
+  if (!tokenId) {
+    throw new Error('URN is not an Item URN')
+  }
+
+  return `${collectionAddress}:${tokenId ?? ''}`
+}

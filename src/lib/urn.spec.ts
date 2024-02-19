@@ -9,7 +9,9 @@ import {
   URNProtocol,
   extractThirdPartyTokenId,
   isThirdParty,
-  extractEntityId
+  extractEntityId,
+  extractCollectionAddress,
+  extractTokenId
 } from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
@@ -266,6 +268,41 @@ describe('when extracting the entity id from an URN', () => {
   describe('when the URN is an entity URN', () => {
     it('should extract the entity id', () => {
       expect(extractEntityId('urn:decentraland:entity:anEntityId')).toBe('anEntityId')
+    })
+  })
+})
+
+describe('when extracting the collection address from an URN', () => {
+  it('should extract the collection address', () => {
+    const urn = 'urn:decentraland:sepolia:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8'
+    expect(extractCollectionAddress(urn)).toBe('0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+  })
+
+  it('should throw an error if the URN is not a collections-v2 URN', () => {
+    const urn = 'urn:decentraland:sepolia:some-other-urn'
+    expect(() => extractCollectionAddress(urn)).toThrowError('Invalid URN: "urn:decentraland:sepolia:some-other-urn"')
+  })
+})
+
+describe('when extracting the token id from an URN', () => {
+  describe('when the URN is not a collections-v2 URN', () => {
+    it('should throw an error', () => {
+      const urn = 'urn:decentraland:off-chain:base-avatars:BaseMale'
+      expect(() => extractTokenId(urn)).toThrow('URN is not a collections-v2 URN')
+    })
+  })
+
+  describe('when the URN is not an Item URN', () => {
+    it('should throw an error', () => {
+      const urn = 'urn:decentraland:goerli:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8'
+      expect(() => extractTokenId(urn)).toThrow('URN is not an Item URN')
+    })
+  })
+
+  describe('when the URN is a valid collections-v2 Item URN', () => {
+    it('should extract the collection address and token id', () => {
+      const urn = 'urn:decentraland:goerli:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8:tokenId'
+      expect(extractTokenId(urn)).toBe('0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8:tokenId')
     })
   })
 })
