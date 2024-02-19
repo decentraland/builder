@@ -14,10 +14,10 @@ import {
   Checkbox,
   Popup
 } from 'decentraland-ui'
+import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { Item, ItemType } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
 import { TP_TRESHOLD_TO_REVIEW } from 'modules/collection/constants'
-import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { LEFT_PANEL_PAGE_SIZE } from '../../constants'
 import Collapsable from 'components/Collapsable'
 import Icon from 'components/Icon'

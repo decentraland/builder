@@ -7,6 +7,7 @@ import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
+import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { isComplete, isFree, canManageItem, getMaxSupply, isSmart } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { isEmoteData, ItemType, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
@@ -18,7 +19,6 @@ import ItemImage from 'components/ItemImage'
 import ResetItemButton from './ResetItemButton'
 import { Props } from './CollectionItem.types'
 import styles from './CollectionItem.module.css'
-import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 
 const LENGTH_LIMIT = 25
 
