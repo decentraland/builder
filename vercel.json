@@ -9,13 +9,14 @@
       "VITE_REACT_APP_DCL_DEFAULT_ENV": "dev"
     }
   },
-  "routes": [
+  "rewrites": [
     {
-      "handle": "filesystem"
+      "source": "/auth/:match*",
+      "destination": "https://decentraland.zone/auth/:match*"
     },
     {
-      "src": "/.*",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
