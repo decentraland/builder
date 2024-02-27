@@ -6,8 +6,8 @@ import { ComponentData, ComponentType, SceneSDK6, SceneSDK7 } from 'modules/scen
 
 export function getParcels(layout: Layout) {
   const parcels: { x: number; y: number }[] = []
-  for (let x = 0; x < layout.rows; x++) {
-    for (let y = 0; y < layout.cols; y++) {
+  for (let x = 0; x < layout.cols; x++) {
+    for (let y = 0; y < layout.rows; y++) {
       parcels.push({ x, y })
     }
   }
