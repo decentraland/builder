@@ -8,11 +8,12 @@ import DeployButton from './DeployButton'
 import { getCurrentLimits, getCurrentMetrics } from 'modules/scene/selectors'
 import { isReady, isLoading, areEntitiesOutOfBoundaries } from 'modules/editor/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
+import { ModelMetrics } from 'modules/models/types'
 
 const mapState = (state: RootState): MapStateProps => ({
   project: getCurrentProject(state)!,
-  limits: getCurrentLimits(state),
-  metrics: getCurrentMetrics(state),
+  limits: getCurrentLimits(state) as ModelMetrics,
+  metrics: getCurrentMetrics(state) as ModelMetrics,
   isLoading: !isReady(state) || isLoading(state),
   areEntitiesOutOfBoundaries: areEntitiesOutOfBoundaries(state),
   deploymentStatus: getCurrentDeploymentStatus(state)

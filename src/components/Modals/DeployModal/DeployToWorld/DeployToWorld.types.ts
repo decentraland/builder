@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
+import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 import { deployToWorldRequest, DeployToWorldRequestAction } from 'modules/deployment/actions'
 import { recordMediaRequest, RecordMediaRequestAction } from 'modules/media/actions'
 import { ENS } from 'modules/ens/types'
@@ -16,7 +17,7 @@ export type Props = {
   name: string
   project: Project
   scene: Scene | null
-  metrics: ModelMetrics
+  metrics: ModelMetrics | SceneMetrics
   ensList: ENS[]
   externalNames: ENS[]
   deployments: Record<string, Deployment>

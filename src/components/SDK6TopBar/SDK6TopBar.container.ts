@@ -12,12 +12,13 @@ import { isSavingCurrentProject } from 'modules/sync/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './SDK6TopBar.types'
 import SDK6TopBar from './SDK6TopBar'
 import { hasHistory } from 'modules/location/selectors'
+import { ModelMetrics } from 'modules/models/types'
 
 const mapState = (state: RootState): MapStateProps => ({
   gizmo: getGizmo(state),
   currentProject: getCurrentProject(state),
   currentPoolGroup: getActivePoolGroup(state),
-  metrics: getCurrentMetrics(state),
+  metrics: getCurrentMetrics(state) as ModelMetrics,
   selectedEntityIds: getSelectedEntityIds(state),
   isLoading: !isReady(state) || isLoading(state),
   isPreviewing: isPreviewing(state),
