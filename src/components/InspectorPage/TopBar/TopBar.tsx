@@ -48,10 +48,22 @@ export default function TopBar({ currentProject, metrics, limits, areEntitiesOut
     return url.toString()
   }, [])
 
+  const someMetricExceedsLimit = useMemo(
+    () => Object.keys(metrics).some(key => metrics[key as keyof SceneMetrics] > limits[key as keyof SceneMetrics]),
+    [metrics]
+  )
+
   const isPublishDisabled = useMemo(() => {
-    const someMetricExceedsLimit = Object.keys(metrics).some(key => metrics[key as keyof SceneMetrics] > limits[key as keyof SceneMetrics])
     return isUploading || areEntitiesOutOfBoundaries || someMetricExceedsLimit
-  }, [metrics, limits, areEntitiesOutOfBoundaries, isUploading])
+  }, [metrics, limits, areEntitiesOutOfBoundaries, someMetricExceedsLimit, isUploading])
+
+  const isPopupDisabled = useMemo(() => isUploading || !isPublishDisabled, [isUploading, isPublishDisabled])
+
+  const renderPopupContent = useCallback(() => {
+    if (areEntitiesOutOfBoundaries) return t('topbar.bounds_exceeded', { br: <br /> })
+    if (someMetricExceedsLimit) return t('topbar.limits_exceeded')
+    return null
+  }, [areEntitiesOutOfBoundaries, someMetricExceedsLimit])
 
   return (
     <div className={styles.container}>
@@ -88,10 +100,20 @@ export default function TopBar({ currentProject, metrics, limits, areEntitiesOut
           <Icon name="eye" />
           {t('inspector.top_bar.preview')}
         </Button>
-        <Button primary size="small" disabled={isPublishDisabled} onClick={handlePublish}>
-          <Icon name="globe" />
-          {t('inspector.top_bar.publish')}
-        </Button>
+        <Popup
+          content={renderPopupContent()}
+          position="bottom center"
+          disabled={isPopupDisabled}
+          trigger={
+            <span>
+              <Button primary size="small" disabled={isPublishDisabled} onClick={handlePublish}>
+                <Icon name="globe" />
+                {t('inspector.top_bar.publish')}
+              </Button>
+            </span>
+          }
+          on="hover"
+        />
       </div>
     </div>
   )
