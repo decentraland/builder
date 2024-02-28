@@ -121,7 +121,7 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
       }
     }
     case UPDATE_METRICS: {
-      const { sceneId, metrics, limits } = action.payload
+      const { sceneId, metrics, limits, entitiesOutOfBoundaries } = action.payload
       const scene = state.data[sceneId]
       if (scene.sdk6) {
         return {
@@ -142,6 +142,22 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
                   // INCREASE MATERIALS LIMIT FOR TEMPLATES
                   materials: limits.materials * 1.1
                 }
+              }
+            }
+          }
+        }
+      } else if (scene.sdk7) {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            [sceneId]: {
+              ...scene,
+              sdk7: {
+                ...scene.sdk7,
+                metrics,
+                limits,
+                entitiesOutOfBoundaries
               }
             }
           }

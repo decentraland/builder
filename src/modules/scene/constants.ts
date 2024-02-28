@@ -10,4 +10,13 @@ export const EMPTY_SCENE_METRICS: ModelMetrics = {
   textures: 0
 }
 
+export const DEFAULT_SCENE_LIMITS: ModelMetrics = {
+  triangles: 10000,
+  materials: 20,
+  meshes: 200,
+  bodies: 300,
+  entities: 200,
+  textures: 10
+}
+
 export const ShapeComponents = [ComponentType.GLTFShape, ComponentType.NFTShape]

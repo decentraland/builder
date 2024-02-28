@@ -6,6 +6,7 @@ import { Project } from 'modules/project/types'
 import { ModelMetrics } from 'modules/models/types'
 import { ComponentDefinition, ComponentType, Scene, AnyComponent, ShapeComponent, SceneSDK6 } from './types'
 import { EMPTY_SCENE_METRICS, ShapeComponents } from './constants'
+import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 
 export const getState: (state: RootState) => SceneState = state => state.scene.present
 
@@ -21,13 +22,33 @@ export const getCurrentScene = createSelector<RootState, Project | null, SceneSt
   (project, scenes) => (project ? scenes[project.sceneId] : null)
 )
 
-export const getCurrentMetrics = createSelector<RootState, Scene | null, ModelMetrics>(getCurrentScene, scene =>
-  scene && scene.sdk6 ? scene.sdk6.metrics : EMPTY_SCENE_METRICS
-)
+export const getCurrentMetrics = createSelector<RootState, Scene | null, ModelMetrics | SceneMetrics>(getCurrentScene, scene => {
+  if (scene) {
+    if (scene.sdk6) {
+      return scene.sdk6.metrics
+    } else if (scene.sdk7 && scene.sdk7.metrics) {
+      return scene.sdk7.metrics
+    }
+  }
 
-export const getCurrentLimits = createSelector<RootState, Scene | null, ModelMetrics>(getCurrentScene, scene =>
-  scene && scene.sdk6 ? scene.sdk6.limits : EMPTY_SCENE_METRICS
-)
+  return EMPTY_SCENE_METRICS
+})
+
+export const getCurrentLimits = createSelector<RootState, Scene | null, ModelMetrics | SceneMetrics>(getCurrentScene, scene => {
+  if (scene) {
+    if (scene.sdk6) {
+      return scene.sdk6.limits
+    } else if (scene.sdk7 && scene.sdk7.limits) {
+      return scene.sdk7.limits
+    }
+  }
+
+  return EMPTY_SCENE_METRICS
+})
+
+export const getEntitiesOutOfBoundaries = createSelector<RootState, Scene | null, number>(getCurrentScene, scene => {
+  return scene?.sdk7?.entitiesOutOfBoundaries || 0
+})
 
 export const getComponents = createSelector<RootState, Scene | null, SceneSDK6['components']>(getCurrentScene, scene =>
   scene && scene.sdk6 ? scene.sdk6.components : {}

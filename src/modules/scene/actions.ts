@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
 import { Scene, ComponentType, ComponentData, SceneSDK6, SceneSDK7 } from './types'
 import { ModelMetrics, Vector3 } from 'modules/models/types'
@@ -24,8 +25,12 @@ export type ProvisionSceneAction = ReturnType<typeof provisionScene>
 
 export const UPDATE_METRICS = 'Update metrics'
 
-export const updateMetrics = (sceneId: string, metrics: ModelMetrics, limits: ModelMetrics) =>
-  action(UPDATE_METRICS, { sceneId, metrics, limits })
+export const updateMetrics = (
+  sceneId: string,
+  metrics: ModelMetrics | SceneMetrics,
+  limits: ModelMetrics | SceneMetrics,
+  entitiesOutOfBoundaries?: number
+) => action(UPDATE_METRICS, { sceneId, metrics, limits, entitiesOutOfBoundaries })
 
 export type UpdateMetricsAction = ReturnType<typeof updateMetrics>
 

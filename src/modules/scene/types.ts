@@ -1,4 +1,5 @@
 import { CompositeDefinition } from '@dcl/ecs'
+import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 import { Scene as SceneMetadata } from '@dcl/schemas'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
 import { ModelMetrics, Vector3, Quaternion } from 'modules/models/types'
@@ -80,4 +81,7 @@ export type SceneSDK7 = {
   composite: CompositeDefinition
   mappings: Record<string, string>
   metadata?: Omit<SceneMetadata, 'main'> & { rating?: 'T' | 'A' }
+  metrics?: SceneMetrics
+  limits?: SceneMetrics
+  entitiesOutOfBoundaries?: number
 }
