@@ -6,7 +6,16 @@ import TopBar from './TopBar'
 import { Props, State } from './InspectorPage.types'
 import './InspectorPage.css'
 
-const PUBLIC_URL = process.env.VITE_BASE_URL
+/**
+ * Sanitizes a URL by removing the last '/' segment of the path.
+ * @param url - The URL to sanitize.
+ * @returns The sanitized URL.
+ */
+const sanitizeUrl = (url: string) => {
+  return url.replace(/\/([^/]*)$/, '')
+}
+
+const PUBLIC_URL = sanitizeUrl(process.env.VITE_BASE_URL ?? '')
 
 export default class InspectorPage extends React.PureComponent<Props, State> {
   state: State = {
