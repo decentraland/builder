@@ -17,6 +17,7 @@ import { getSizesFromDeploymentError } from './utils'
 import dclImage from './images/dcl.svg'
 import ensImage from './images/ens.svg'
 import styles from './DeployToWorld.module.css'
+import { ModelMetrics } from 'modules/models/types'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
@@ -316,9 +317,11 @@ export default function DeployToWorld({
           <List.Item>
             {t('metrics.materials')}: {metrics.materials}
           </List.Item>
-          <List.Item>
-            {t('metrics.meshes')}: {metrics.meshes}
-          </List.Item>
+          {Object.prototype.hasOwnProperty.call(metrics, 'meshes') ? (
+            <List.Item>
+              {t('metrics.meshes')}: {(metrics as ModelMetrics).meshes}
+            </List.Item>
+          ) : null}
           <List.Item>
             {t('metrics.bodies')}: {metrics.bodies}
           </List.Item>

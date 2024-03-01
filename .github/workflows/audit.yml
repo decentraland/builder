@@ -12,7 +12,9 @@ jobs:
         with:
           node-version: 18.x
           cache: 'npm'
+      - name: Upgrade npm
+        run: npm i -g npm
       - name: Install
-        run: npm i --legacy-peer-deps
+        run: npm ci
       - name: Audit signatures
         run: npm audit signatures

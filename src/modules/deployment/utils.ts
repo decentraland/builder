@@ -5,6 +5,7 @@ import { MemoryDatastore } from 'interface-datastore'
 import { EntityContentItemReference } from '@dcl/hashing'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
+import { DEFAULT_SCENE_LIMITS } from 'modules/scene/constants'
 import { ComponentType, SceneSDK6 } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
@@ -185,14 +186,7 @@ export const getEmptyDeployment = (projectId: string): [Project, SceneSDK6] => {
       entities: 1,
       textures: 0
     },
-    limits: {
-      triangles: 10000,
-      materials: 20,
-      meshes: 200,
-      bodies: 300,
-      entities: 200,
-      textures: 10
-    },
+    limits: DEFAULT_SCENE_LIMITS,
     ground: {
       assetId: 'c9b17021-765c-4d9a-9966-ce93a9c323d1',
       componentId: '25783992-5e2f-4879-b734-eda41c0cc4c0'

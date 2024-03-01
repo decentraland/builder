@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Popup } from 'decentraland-ui'
+import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 import { Env } from '@dcl/ui-env'
 import { config } from 'config'
 import OwnIcon from 'components/Icon'
@@ -13,7 +14,7 @@ import styles from './TopBar.module.css'
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 
-export default function TopBar({ currentProject, isUploading, onBack, onOpenModal }: Props) {
+export default function TopBar({ currentProject, metrics, limits, areEntitiesOutOfBoundaries, isUploading, onBack, onOpenModal }: Props) {
   const handleDownload = useCallback(() => {
     onOpenModal('ExportModal', { project: currentProject })
   }, [currentProject, onOpenModal])
@@ -46,6 +47,23 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
 
     return url.toString()
   }, [])
+
+  const someMetricExceedsLimit = useMemo(
+    () => Object.keys(metrics).some(key => metrics[key as keyof SceneMetrics] > limits[key as keyof SceneMetrics]),
+    [metrics]
+  )
+
+  const isPublishDisabled = useMemo(() => {
+    return isUploading || areEntitiesOutOfBoundaries || someMetricExceedsLimit
+  }, [metrics, limits, areEntitiesOutOfBoundaries, someMetricExceedsLimit, isUploading])
+
+  const isPopupDisabled = useMemo(() => isUploading || !isPublishDisabled, [isUploading, isPublishDisabled])
+
+  const renderPopupContent = useCallback(() => {
+    if (areEntitiesOutOfBoundaries) return t('topbar.bounds_exceeded', { br: <br /> })
+    if (someMetricExceedsLimit) return t('topbar.limits_exceeded')
+    return null
+  }, [areEntitiesOutOfBoundaries, someMetricExceedsLimit])
 
   return (
     <div className={styles.container}>
@@ -82,10 +100,20 @@ export default function TopBar({ currentProject, isUploading, onBack, onOpenModa
           <Icon name="eye" />
           {t('inspector.top_bar.preview')}
         </Button>
-        <Button primary size="small" disabled={isUploading} onClick={handlePublish}>
-          <Icon name="globe" />
-          {t('inspector.top_bar.publish')}
-        </Button>
+        <Popup
+          content={renderPopupContent()}
+          position="bottom center"
+          disabled={isPopupDisabled}
+          trigger={
+            <span>
+              <Button primary size="small" disabled={isPublishDisabled} onClick={handlePublish}>
+                <Icon name="globe" />
+                {t('inspector.top_bar.publish')}
+              </Button>
+            </span>
+          }
+          on="hover"
+        />
       </div>
     </div>
   )
