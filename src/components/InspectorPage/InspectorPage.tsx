@@ -12,7 +12,7 @@ import './InspectorPage.css'
  * @returns The sanitized URL.
  */
 const sanitizeUrl = (url: string) => {
-  return url.replace(/\/([^/]*)$/, '')
+  return url.replace(/\/$/, '')
 }
 
 const PUBLIC_URL = sanitizeUrl(process.env.VITE_BASE_URL ?? '')
