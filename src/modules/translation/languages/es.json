@@ -233,7 +233,7 @@
     "change_item_file": "Editar representación",
     "upload_video_information": "Tamaño máximo de archivo {max_size}",
     "error": {
-      "item_too_big": "El item entero es demasiado grande para cargarlo. El tamaño máximo de todos los archivos es {size}.",
+      "item_too_big": "El item entero es demasiado grande para cargarlo. El tamaño máximo de todos los archivos es {size} para wearables y {size_skin} para skins.",
       "file_too_big": "{title}.{enter}El límite máximo de tamaño de archivo es {size}. Reduzca el tamaño del archivo e intente nuevamente.",
       "file_too_big_title": "El archivo es demasiado grande y no se puede cargar",
       "thumbnail_file_too_big": "El archivo thumbnail es demasiado grande para cargarlo. El tamaño maximo es {size}.",
@@ -298,6 +298,7 @@
     "wrong_file_extension": "La extensión del artchivo no es correcta.",
     "wearable_file_not_found": "El archivo wearable.json no se encontró.",
     "thumbnail_file_not_generated": "El archivo thumbnail.png no pudo ser generado.",
+    "max_file_size": "{name}: El tamaño del archivo junto al thumbnail excede el límite de {max}mb",
     "saved_items_table_title": "Items salvados",
     "not_saved_items_table_title": "Invalid items",
     "cancelled_items_table_title": "Cancelled items",

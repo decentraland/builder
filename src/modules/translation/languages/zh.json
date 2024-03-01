@@ -228,7 +228,7 @@
     "change_item_file": "编辑制图表达",
     "upload_video_information": "最大文件大小 {max_size}",
     "error": {
-      "item_too_big": "整个项目太大，无法上传。 所有文件的最大大小为 {size}。",
+      "item_too_big": "整个项目太大，无法上传。可穿戴设备的所有文件的最大尺寸为 {size}，皮肤的最大尺寸为 {size_skin}。",
       "file_too_big": "{title}.{enter}文件大小限制为 {size}。减小文件的大小，然后重试。",
       "file_too_big_title": "文件太大，无法上传",
       "thumbnail_file_too_big": "文件太大，无法上传。 最大文件大小限制为 {size}。",
@@ -293,6 +293,7 @@
     "wrong_file_extension": "文件扩展名不正确。",
     "wearable_file_not_found": "找不到wearable.json 文件。",
     "thumbnail_file_not_generated": "无法生成 thumbnail.png 文件。",
+    "max_file_size": "{name}：缩略图旁边的文件大小超过 {max}mb 限制。",
     "not_saved_items_table_title": "无效的可穿戴设备",
     "cancelled_items_table_title": "取消的可穿戴设备",
     "invalid_urn": "wearable.json 文件包含此集合的无效 URN",

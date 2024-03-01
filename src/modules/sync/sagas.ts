@@ -82,14 +82,14 @@ export function* syncSaga(builder: BuilderAPI) {
 
     try {
       yield call(() => saveProject(project.id, project, scene, builder, debounce))
-      
+
       if (scene.sdk7) {
         const iframe = document.getElementById('inspector') as HTMLIFrameElement | null
         if (!iframe || !iframe.contentWindow!) return
-    
+
         const transport = new MessageTransport(window, iframe.contentWindow, '*')
         const sceneMetrics = new SceneMetricsClient(transport)
-    
+
         const metrics: SceneMetrics = yield call(sceneMetrics.getMetrics)
         const limits: SceneMetrics = yield call(sceneMetrics.getLimits)
         const entitiesOutOfBoundaries: number = yield call(sceneMetrics.getEntitiesOutOfBoundaries)

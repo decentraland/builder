@@ -1,7 +1,17 @@
 import * as React from 'react'
 import PQueue from 'p-queue'
 import uuid from 'uuid'
-import { FileTooBigError, ItemFactory, loadFile, LocalItem, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
+import {
+  FileTooBigError,
+  ItemFactory,
+  loadFile,
+  LocalItem,
+  MAX_SKIN_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE,
+  Rarity,
+  THUMBNAIL_PATH,
+  WearableCategory
+} from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
@@ -97,10 +107,6 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   processAcceptedFile = async (file: File) => {
     const { collection, metadata } = this.props
     try {
-      if (file.size > MAX_FILE_SIZE) {
-        throw new FileTooBigError(file.name, file.size)
-      }
-
       const fileArrayBuffer = await file.arrayBuffer()
       const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
 
@@ -139,6 +145,18 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       if (!thumbnail) {
         throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
+      }
+
+      const maxWearableFileSize = loadedFile.wearable.data.category == WearableCategory.SKIN ? MAX_SKIN_FILE_SIZE : MAX_WEARABLE_FILE_SIZE
+
+      if (file.size > maxWearableFileSize) {
+        throw new FileTooBigError(
+          t('create_and_edit_multiple_items_modal.max_file_size', {
+            name: file.name,
+            max: maxWearableFileSize
+          }),
+          file.size
+        )
       }
 
       itemFactory.withThumbnail(thumbnail)

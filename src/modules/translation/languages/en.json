@@ -233,7 +233,7 @@
     "import_information_link_label": "click here",
     "upload_video_information": "Maximum file size {max_size}",
     "error": {
-      "item_too_big": "The entire item is too big to be uploaded. The max size for all files is {size}.",
+      "item_too_big": "The entire item is too big to be uploaded. The max size for all files is {size} for wearables and {size_skin} for skins.",
       "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
       "file_too_big_title": "The file is too large and can't be uploaded",
       "thumbnail_file_too_big": "The thumbnail file is too big to be uploaded. The max size is {size}.",
@@ -298,6 +298,7 @@
     "wrong_file_extension": "File extension is not correct.",
     "wearable_file_not_found": "The wearable.json file was not found.",
     "thumbnail_file_not_generated": "The thumbnail.png file couldn't be generated.",
+    "max_file_size": "{name}: File plus thumbnail size exceeds {max}mb limit",
     "not_saved_items_table_title": "Invalid items",
     "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "The wearable.json file has an invalid URN for this collection",

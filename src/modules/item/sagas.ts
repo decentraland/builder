@@ -16,7 +16,7 @@ import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import { BuilderClient, RemoteItem } from '@dcl/builder-client'
+import { BuilderClient, RemoteItem, MAX_THUMBNAIL_FILE_SIZE, MAX_WEARABLE_FILE_SIZE } from '@dcl/builder-client'
 import {
   FetchItemsRequestAction,
   fetchItemsSuccess,
@@ -125,16 +125,7 @@ import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from 
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, ItemType, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import { ItemTooBigError, ThumbnailFileTooBigError, VideoFileTooBigError } from './errors'
-import {
-  buildZipContents,
-  getMetadata,
-  groupsOf,
-  isValidText,
-  generateCatalystImage,
-  MAX_FILE_SIZE,
-  MAX_THUMBNAIL_FILE_SIZE,
-  MAX_VIDEO_FILE_SIZE
-} from './utils'
+import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_VIDEO_FILE_SIZE } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
 
@@ -410,7 +401,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         }
 
-        if (finalModelSize + finalThumbnailSize > MAX_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE) {
+        // TODO: we should treat separatly the thumbnails size. Is the MAX_WEARABLE_FILE_SIZE correct here?
+        if (finalModelSize + finalThumbnailSize > MAX_WEARABLE_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE) {
           throw new ItemTooBigError()
         }
       }
