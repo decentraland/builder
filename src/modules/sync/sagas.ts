@@ -82,7 +82,7 @@ export function* syncSaga(builder: BuilderAPI) {
 
     try {
       yield call(() => saveProject(project.id, project, scene, builder, debounce))
-      
+      yield put(saveProjectSuccess(project))
       if (scene.sdk7) {
         const iframe = document.getElementById('inspector') as HTMLIFrameElement | null
         if (!iframe || !iframe.contentWindow!) return
@@ -95,8 +95,6 @@ export function* syncSaga(builder: BuilderAPI) {
         const entitiesOutOfBoundaries: number = yield call(sceneMetrics.getEntitiesOutOfBoundaries)
         yield put(updateMetrics(scene.sdk7.id, metrics, limits, entitiesOutOfBoundaries))
       }
-
-      yield put(saveProjectSuccess(project))
     } catch (e) {
       yield put(saveProjectFailure(project, isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
