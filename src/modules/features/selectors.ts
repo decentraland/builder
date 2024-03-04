@@ -22,14 +22,6 @@ export const getIsCampaignEnabled = (state: RootState) => {
   }
 }
 
-export const getIsNewNavbarDropdownEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_NAVBAR_DROPDOWN)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsSDK7TemplatesEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SDK7_TEMPLATES)
