@@ -35,10 +35,7 @@ export type State = {
   confirm: View
 }
 
-export type MapStateProps = Pick<
-  Props,
-  'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading' | 'hasUnsyncedItems' | 'isEnsAddressEnabled'
->
+export type MapStateProps = Pick<Props, 'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading' | 'hasUnsyncedItems'>
 export type MapDispatchProps = Pick<Props, 'onMint'>
 export type MapDispatch = Dispatch<MintCollectionItemsRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

@@ -11,7 +11,6 @@ import {
 import { getCollection, getLoading } from 'modules/collection/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ManageCollectionRoleModal.types'
 import ManageCollectionRoleModal from './ManageCollectionRoleModal'
-import { getIsEnsAddressEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { collectionId } = ownProps.metadata
@@ -23,7 +22,6 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return {
     wallet: getWallet(state)!,
     collection: getCollection(state, collectionId)!,
-    isEnsAddressEnabled: getIsEnsAddressEnabled(state),
     isLoading:
       isLoadingType(getLoading(state), SET_COLLECTION_MANAGERS_REQUEST) || isLoadingType(getLoading(state), SET_COLLECTION_MINTERS_REQUEST)
   }
