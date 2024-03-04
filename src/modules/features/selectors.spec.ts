@@ -1,7 +1,7 @@
 import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
-import { getIsCreateSceneOnlySDK7Enabled, getIsMaintenanceEnabled, getIsSDK7TemplatesEnabled, getIsEnsAddressEnabled } from './selectors'
+import { getIsCreateSceneOnlySDK7Enabled, getIsMaintenanceEnabled, getIsSDK7TemplatesEnabled } from './selectors'
 import { FeatureName } from './types'
 
 jest.mock('decentraland-dapps/dist/modules/features/selectors')
@@ -55,8 +55,7 @@ describe('when getting if maintainance is enabled', () => {
 
 const ffSelectors = [
   { selector: getIsSDK7TemplatesEnabled, app: ApplicationName.BUILDER, feature: FeatureName.SDK7_TEMPLATES },
-  { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 },
-  { selector: getIsEnsAddressEnabled, app: ApplicationName.DAPPS, feature: FeatureName.ENS_ADDRESS }
+  { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

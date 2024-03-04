@@ -79,7 +79,7 @@ export default class MintableItem extends React.PureComponent<Props> {
   }
 
   render() {
-    const { item, mints, isEnsAddressEnabled } = this.props
+    const { item, mints } = this.props
 
     return (
       <div className="MintableItem">
@@ -103,24 +103,12 @@ export default class MintableItem extends React.PureComponent<Props> {
         </Row>
         {mints.map(({ address, amount }, index) => (
           <Section key={index} className="mint" size="tiny">
-            {isEnsAddressEnabled ? (
-              <AddressField
-                value={address}
-                className="rounded-address"
-                fieldClassName="rounded"
-                onChange={this.getChangeAddressHandler(index)}
-              />
-            ) : (
-              <Field
-                className="rounded"
-                type="address"
-                placeholder={t('global.address')}
-                value={address || ''}
-                message={undefined}
-                error={!this.isValidAddress(address)}
-                onChange={this.getChangeAddressHandler(index)}
-              />
-            )}
+            <AddressField
+              value={address}
+              className="rounded-address"
+              fieldClassName="rounded"
+              onChange={this.getChangeAddressHandler(index)}
+            />
             <Field
               className="rounded"
               type="number"
