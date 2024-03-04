@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Field, InputOnChangeData, Form, Row, Button, Section } from 'decentraland-ui'
+import { InputOnChangeData, Form, Row, Button, Section } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -24,7 +24,7 @@ export default class LandTransferPage extends React.PureComponent<Props, State> 
   }
 
   render() {
-    const { onTransfer, isEnsAddressEnabled } = this.props
+    const { onTransfer } = this.props
     const { address, isValid } = this.state
     return (
       <LandProviderPage className="LandTransferPage">
@@ -43,26 +43,14 @@ export default class LandTransferPage extends React.PureComponent<Props, State> 
               subtitle={<T id="transfer_page.subtitle" values={{ name: <strong>{land.name}</strong> }} />}
             >
               <Form onSubmit={() => onTransfer(land, address)}>
-                {isEnsAddressEnabled ? (
-                  <AddressField
-                    label="Address"
-                    value={address}
-                    onChange={this.handleChange}
-                    placeholder="0x..."
-                    error={!isValid || isOwner}
-                    message={message}
-                  />
-                ) : (
-                  <Field
-                    label="Address"
-                    type="address"
-                    value={address}
-                    onChange={this.handleChange}
-                    placeholder="0x..."
-                    error={!isValid || isOwner}
-                    message={message}
-                  />
-                )}
+                <AddressField
+                  label="Address"
+                  value={address}
+                  onChange={this.handleChange}
+                  placeholder="0x..."
+                  error={!isValid || isOwner}
+                  message={message}
+                />
                 <Section className="disclaimer">
                   <p className="danger-text">
                     <T id="transfer_page.disclaimer" values={{ br: <br /> }} />

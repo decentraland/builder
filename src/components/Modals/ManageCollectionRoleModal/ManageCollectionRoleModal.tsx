@@ -108,7 +108,7 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
   }
 
   render() {
-    const { metadata, isLoading, isEnsAddressEnabled, onClose } = this.props
+    const { metadata, isLoading, onClose } = this.props
     const { roles } = this.state
     const { type } = metadata
 
@@ -132,7 +132,6 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
                         key={index}
                         onAdd={(role: string) => this.handleAddRole(index, role)}
                         onCancel={() => this.handleCancelNew(index)}
-                        isEnsAddressEnabled={isEnsAddressEnabled}
                       />
                     )
                   )}

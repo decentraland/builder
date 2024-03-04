@@ -21,7 +21,6 @@ export default class LandAssignENSPage extends React.PureComponent<Props> {
       isWaitingTxSetContent,
       isWaitingTxReclaim,
       isWaitingTxSetResolver,
-      isEnsAddressEnabled,
       onSetENSResolver,
       onSetENSContent,
       onReclaimName,
@@ -42,7 +41,6 @@ export default class LandAssignENSPage extends React.PureComponent<Props> {
               }
             >
               <LandAssignENSForm
-                isEnsAddressEnabled={isEnsAddressEnabled}
                 land={land}
                 ens={ens}
                 error={error}
