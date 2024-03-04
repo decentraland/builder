@@ -84,14 +84,7 @@ import {
   SET_COLLECTION_MINTERS_FAILURE,
   SET_COLLECTION_MINTERS_SUCCESS
 } from 'modules/collection/actions'
-import {
-  ALLOW_CLAIM_MANA_SUCCESS,
-  CLAIM_NAME_SUCCESS,
-  SET_ENS_CONTENT_SUCCESS,
-  SET_ENS_RESOLVER_SUCCESS,
-  ClaimNameSuccessAction,
-  SET_ENS_ADDRESS_SUCCESS
-} from 'modules/ens/actions'
+import { SET_ENS_CONTENT_SUCCESS, SET_ENS_RESOLVER_SUCCESS, SET_ENS_ADDRESS_SUCCESS } from 'modules/ens/actions'
 import { CREATE_COLLECTION_FORUM_POST_FAILURE, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
 import {
   APPROVE_COLLECTION_CURATION_FAILURE,
@@ -389,17 +382,6 @@ add(SET_ENS_CONTENT_SUCCESS, 'Set ENS Content', action => {
 })
 
 addPayload(SET_PROFILE_AVATAR_ALIAS_SUCCESS, 'Use as Alias')
-
-addPayload(ALLOW_CLAIM_MANA_SUCCESS, 'Allow Claim Mana')
-
-add(CLAIM_NAME_SUCCESS, 'Claim Name', action => {
-  const { payload } = action as ClaimNameSuccessAction
-  const { name, ens } = payload
-  return {
-    name,
-    ens
-  }
-})
 
 add(
   SET_COLLECTION_CURATION_ASSIGNEE_SUCCESS,

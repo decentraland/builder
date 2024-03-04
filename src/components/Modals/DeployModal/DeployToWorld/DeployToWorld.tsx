@@ -107,7 +107,7 @@ export default function DeployToWorld({
 
   const handleClaimName = useCallback(() => {
     if (nameType === NameType.DCL) {
-      window.open(`${MARKETPLACE_WEB_URL}/names/mints`, '_blank', 'noopener,noreferrer')
+      window.open(`${MARKETPLACE_WEB_URL}/names/claim`, '_blank', 'noopener,noreferrer')
       analytics.track('Publish to World - Claim Name')
     } else {
       analytics.track('Publish to World - Claim ENS Domain')
