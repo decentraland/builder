@@ -54,8 +54,8 @@ export default function TopBar({ currentProject, metrics, limits, areEntitiesOut
   )
 
   const isPublishDisabled = useMemo(() => {
-    return isUploading || areEntitiesOutOfBoundaries || someMetricExceedsLimit
-  }, [metrics, limits, areEntitiesOutOfBoundaries, someMetricExceedsLimit, isUploading])
+    return isUploading || areEntitiesOutOfBoundaries
+  }, [metrics, limits, areEntitiesOutOfBoundaries, isUploading])
 
   const isPopupDisabled = useMemo(() => isUploading || !isPublishDisabled, [isUploading, isPublishDisabled])
 
