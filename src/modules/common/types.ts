@@ -10,6 +10,7 @@ import { ToastState } from 'decentraland-dapps/dist/modules/toast/reducer'
 import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { FeaturesState } from 'decentraland-dapps/dist/modules/features/reducer'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
+import { GatewayState } from 'decentraland-dapps/dist/modules/gateway'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
@@ -79,6 +80,7 @@ export type RootState = {
   features: FeaturesState
   inspector: InspectorState
   worlds: WorldsState
+  gateway: GatewayState
 }
 
 export type RootStore = Store<RootState>

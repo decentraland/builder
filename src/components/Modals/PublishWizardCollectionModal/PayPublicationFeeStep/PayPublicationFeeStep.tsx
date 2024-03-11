@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { config } from 'config'
@@ -6,10 +6,13 @@ import { Button, Column, Mana, Modal, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { Currency, Rarity } from 'modules/item/types'
+import { PaymentMethod } from 'modules/collection/types'
 import { MapStateProps } from '../PublishWizardCollectionModal.types'
 import './PayPublicationFeeStep.css'
 
-export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () => void; onPrevStep: () => void }> = props => {
+export const PayPublicationFeeStep: React.FC<
+  MapStateProps & { onNextStep: (paymentMethod: PaymentMethod) => void; onPrevStep: () => void }
+> = props => {
   const { collection, items, rarities, wallet, collectionError, unsyncedCollectionError, isLoading, onNextStep, onPrevStep } = props
 
   // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
@@ -62,6 +65,14 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
 
     return null
   }
+
+  const handleBuyWithMana = useCallback(() => {
+    onNextStep(PaymentMethod.MANA)
+  }, [onNextStep])
+
+  const handleBuyWithFiat = useCallback(() => {
+    onNextStep(PaymentMethod.FIAT)
+  }, [onNextStep])
 
   return (
     <Modal.Content className="PayPublicationFeeStep">
@@ -122,7 +133,16 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
           <Button className="back" secondary onClick={onPrevStep} disabled={isLoading}>
             {t('global.back')}
           </Button>
-          <Button className="proceed" primary onClick={onNextStep} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
+          <Button className="proceed" primary onClick={handleBuyWithFiat} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
+            {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
+              value: (
+                <Mana showTooltip network={Network.MATIC} size="medium">
+                  {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
+                </Mana>
+              )
+            })}
+          </Button>
+          <Button className="proceed" primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
             {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
               value: (
                 <Mana showTooltip network={Network.MATIC} size="medium">

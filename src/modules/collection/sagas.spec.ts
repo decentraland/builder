@@ -84,7 +84,7 @@ import {
   approveCollectionSuccess
 } from './actions'
 import { collectionSaga } from './sagas'
-import { Collection } from './types'
+import { Collection, PaymentMethod } from './types'
 import { getData, getPaginationData as getCollectionPaginationData, getLastFetchParams } from './selectors'
 import { CollectionPaginationData } from './reducer'
 import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
@@ -925,7 +925,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(collection))
         .put(publishCollectionFailure(collection, items, errorMessage))
-        .dispatch(publishCollectionRequest(collection, items, email, false))
+        .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -957,7 +957,7 @@ describe('when publishing a collection', () => {
         ])
         .not.put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(lockedCollection, items, email, false))
+        .dispatch(publishCollectionRequest(lockedCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -982,7 +982,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(saltlessCollection))
         .put(publishCollectionFailure(saltlessCollection, items, errorMessage))
-        .dispatch(publishCollectionRequest(saltlessCollection, items, email, false))
+        .dispatch(publishCollectionRequest(saltlessCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -1004,7 +1004,7 @@ describe('when publishing a collection', () => {
           [call([mockBuilder, 'fetchCollectionItems'], finalCollection.id), [{}]]
         ])
         .put(publishCollectionFailure(finalCollection, items, `${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`))
-        .dispatch(publishCollectionRequest(finalCollection, items, email, false))
+        .dispatch(publishCollectionRequest(finalCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -1034,7 +1034,7 @@ describe('when publishing a collection', () => {
             `${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`
           )
         )
-        .dispatch(publishCollectionRequest(finalCollection, items, email, false))
+        .dispatch(publishCollectionRequest(finalCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -1054,7 +1054,7 @@ describe('when publishing a collection', () => {
       it('should put the subscribe to newsletter request action with the right source', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
           .put(subscribeToNewsletterRequest(email, 'Builder Emotes & Wearables creator'))
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
     })
@@ -1066,7 +1066,7 @@ describe('when publishing a collection', () => {
       it('should put the subscribe to newsletter request action with the right source', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
           .put(subscribeToNewsletterRequest(email, 'Builder Emotes creator'))
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
     })
@@ -1078,7 +1078,7 @@ describe('when publishing a collection', () => {
       it('should put the subscribe to newsletter request action with the right source', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
           .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
     })
@@ -1094,7 +1094,7 @@ describe('when publishing a collection', () => {
     it('should not put the subscribe to newsletter request action', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
         .not.put(subscribeToNewsletterRequest(email, 'Builder Wearable creator'))
-        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -1133,7 +1133,7 @@ describe('when publishing a collection', () => {
         .put(saveItemRequest(items[0], {}))
         .put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(collection, items, email, false))
+        .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
 
@@ -1156,7 +1156,7 @@ describe('when publishing a collection', () => {
           ])
           .put(saveItemRequest(items[0], {}))
           .put(publishCollectionFailure(collection, items, error))
-          .dispatch(publishCollectionRequest(collection, items, email, false))
+          .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
     })
@@ -1190,7 +1190,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(collection))
         .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(collection, items, email, false))
+        .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })

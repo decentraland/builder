@@ -11,6 +11,7 @@ import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization
 import { NFTCategory, Network } from '@dcl/schemas'
 import { buildManaAuthorization } from 'lib/mana'
 import { getPublishStatus, getError } from 'modules/collection/selectors'
+import { PaymentMethod } from 'modules/collection/types'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
 import ConfirmCollectionNameStep from './ConfirmCollectionNameStep/ConfirmCollectionNameStep'
 import ConfirmCollectionItemsStep from './ConfirmCollectionItemsStep/ConfirmCollectionItemsStep'
@@ -72,24 +73,28 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     setSubscribeToNewsletter(value)
   }
 
-  const handleOnPublish = () => {
-    const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
-    const manaContract = {
-      name: authorization.contractName,
-      address: authorization.contractAddress,
-      chainId: authorization.chainId,
-      network: Network.MATIC,
-      category: NFTCategory.ENS
+  const handleOnPublish = (paymentMethod: PaymentMethod) => {
+    if (paymentMethod === PaymentMethod.FIAT) {
+      onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
+      return
     }
+
+    const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
 
     onAuthorizedAction({
       authorizedAddress: authorization.authorizedAddress,
       authorizedContractLabel: ContractName.CollectionManager,
-      targetContract: manaContract,
+      targetContract: {
+        name: authorization.contractName,
+        address: authorization.contractAddress,
+        chainId: authorization.chainId,
+        network: Network.MATIC,
+        category: NFTCategory.ENS
+      },
       targetContractName: ContractName.MANAToken,
       requiredAllowanceInWei: ethers.BigNumber.from(rarities[0].prices!.MANA).mul(items.length).toString(),
       authorizationType: AuthorizationType.ALLOWANCE,
-      onAuthorized: () => onPublish(collection, items, emailAddress, subscribeToNewsletter)
+      onAuthorized: () => onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
     })
   }
 

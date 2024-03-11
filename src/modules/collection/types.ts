@@ -45,3 +45,8 @@ export type Access = {
 
 export const COLLECTION_NAME_MAX_LENGTH = 32
 export const TP_COLLECTION_NAME_MAX_LENGTH = 42
+
+export enum PaymentMethod {
+  MANA = 'mana',
+  FIAT = 'fiat'
+}

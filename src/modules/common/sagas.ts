@@ -9,6 +9,7 @@ import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sag
 import { authorizationSaga } from 'decentraland-dapps/dist/modules/authorization/sagas'
 import { toastSaga } from 'decentraland-dapps/dist/modules/toast/sagas'
 import { featuresSaga } from 'decentraland-dapps/dist/modules/features/sagas'
+import { createIdentitySaga } from 'decentraland-dapps/dist/modules/identity/sagas'
 
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
@@ -49,6 +50,19 @@ import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
 import { inspectorSaga } from 'modules/inspector/sagas'
 import { worldsSaga } from 'modules/worlds/sagas'
 import { RootStore } from './types'
+import { FiatGateway, createGatewaySaga } from 'decentraland-dapps/dist/modules/gateway'
+import { config } from 'config/index'
+
+const newIdentitySaga = createIdentitySaga({
+  authURL: config.get('AUTH_URL')
+})
+
+const gatewaySaga = createGatewaySaga({
+  [FiatGateway.WERT]: {
+    marketplaceServerURL: config.get('MARKETPLACE_SERVER_URL'),
+    url: 'this is not used???'
+  }
+})
 
 export function* rootSaga(
   builderAPI: BuilderAPI,
@@ -71,6 +85,7 @@ export function* rootSaga(
     entitySaga(catalystClient),
     forumSaga(builderAPI),
     identitySaga(),
+    newIdentitySaga(),
     itemSaga(builderAPI, newBuilderClient),
     keyboardSaga(),
     landSaga(),
@@ -97,6 +112,7 @@ export function* rootSaga(
     inspectorSaga(builderAPI, store),
     loginSaga(),
     newsletterSagas(builderAPI),
-    worldsSaga()
+    worldsSaga(),
+    gatewaySaga()
   ])
 }
