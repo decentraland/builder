@@ -134,7 +134,7 @@ export const PayPublicationFeeStep: React.FC<
             {t('global.back')}
           </Button>
           <div className="actions-right">
-            <Button className='pay-with-card' onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
+            <Button className="pay-with-card" onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
               {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}
             </Button>
             <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
