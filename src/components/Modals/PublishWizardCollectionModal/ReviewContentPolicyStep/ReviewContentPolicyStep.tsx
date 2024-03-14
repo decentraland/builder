@@ -145,7 +145,7 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
               </div>
             </Column>
           </Row>
-          <Row className="actions" align="right">
+          <Row className="actions">
             <Button className="back" secondary onClick={onPrevStep}>
               {t('global.back')}
             </Button>

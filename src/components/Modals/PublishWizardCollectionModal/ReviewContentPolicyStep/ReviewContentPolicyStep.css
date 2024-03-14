@@ -64,6 +64,7 @@
 .ReviewContentPolicyStep .actions {
   margin-top: 24px;
   width: 100%;
+  justify-content: space-between !important;
 }
 
 .ReviewContentPolicyStep .actions .button {
