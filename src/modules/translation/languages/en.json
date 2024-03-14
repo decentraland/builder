@@ -1725,7 +1725,8 @@
       "fee_per_item": "Fee per item",
       "total_in_usd": "Total in {currency}",
       "total_in_mana": "Total in MANA",
-      "pay": "Pay {value} MANA"
+      "pay_card": "pay with card",
+      "pay_mana": "pay with mana"
     },
     "congratulations_step": {
       "title": "Your collection is now available for curators to review.",

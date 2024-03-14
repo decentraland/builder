@@ -71,6 +71,17 @@
 .PayPublicationFeeStep .actions {
   margin-top: 24px;
   width: 100%;
+  justify-content: space-between !important;
+}
+
+.PayPublicationFeeStep .actions .actions-right {
+  display: flex;
+  gap: 1rem;
+}
+
+.PayPublicationFeeStep .actions .actions-right .pay-with-card {
+  background-color: white !important;
+  color: black;
 }
 
 .PayPublicationFeeStep .actions .button {

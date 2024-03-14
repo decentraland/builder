@@ -1718,7 +1718,8 @@
       "fee_per_item": "每件费用",
       "total_in_usd": "总计 {currency}",
       "total_in_mana": "总计 MANA",
-      "pay": "支付 {value} MANA"
+      "pay_card": "用卡支付",
+      "pay_mana": "用法力支付"
     },
     "congratulations_step": {
       "title": "您的收藏现在可供策展人查看。",

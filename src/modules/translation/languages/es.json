@@ -1736,7 +1736,8 @@
       "fee_per_item": "Tarifa por artículo",
       "total_in_usd": "Total en {currency}",
       "total_in_mana": "Total en MANA",
-      "pay": "Pagar {value} MANA"
+      "pay_card": "pagar con tarjeta",
+      "pay_mana": "pagar con mana"
     },
     "congratulations_step": {
       "title": "Su colección ya esta disponible para ser verificada por los curadores.",

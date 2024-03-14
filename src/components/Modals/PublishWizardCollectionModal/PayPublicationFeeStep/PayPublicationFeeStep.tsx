@@ -128,29 +128,19 @@ export const PayPublicationFeeStep: React.FC<
             </div>
           </Column>
         </Row>
-        <Row className="actions" align="right">
+        <Row className="actions">
           {renderErrorMessage()}
           <Button className="back" secondary onClick={onPrevStep} disabled={isLoading}>
             {t('global.back')}
           </Button>
-          <Button className="proceed" primary onClick={handleBuyWithFiat} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
-            {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
-              value: (
-                <Mana showTooltip network={Network.MATIC} size="medium">
-                  {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
-                </Mana>
-              )
-            })}
-          </Button>
-          <Button className="proceed" primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
-            {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
-              value: (
-                <Mana showTooltip network={Network.MATIC} size="medium">
-                  {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
-                </Mana>
-              )
-            })}
-          </Button>
+          <div className="actions-right">
+            <Button className='pay-with-card' onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
+              {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}
+            </Button>
+            <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
+              {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}
+            </Button>
+          </div>
         </Row>
       </Column>
     </Modal.Content>
