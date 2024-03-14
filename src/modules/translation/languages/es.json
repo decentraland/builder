@@ -1710,9 +1710,9 @@
       "confirm_name": "Confirmar Nombre"
     },
     "confirm_collection_items_step": {
-      "title": "Confirmar artículos",
-      "subtitle": "No se pueden agregar o eliminar elementos de una colección ni se puede cambiar su rareza después de la publicación.",
-      "description": "Sin embargo, el nombre, la descripción, la categoría y el precio de los artículos siempre se pueden modificar.",
+      "title": "Confirmar ítems",
+      "subtitle": "Los ítems no pueden ser añadidos o eliminados de una colección una vez que está publicada.{br}La rareza de los ítems tampoco puede ser cambiada después de la publicación.",
+      "description": "El nombre, descripción y categorías de los ítems pueden ser modificados.",
       "confirm_items": "Confirmar Artículos"
     },
     "review_content_policy_step": {

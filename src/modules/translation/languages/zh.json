@@ -1693,8 +1693,8 @@
     },
     "confirm_collection_items_step": {
       "title": "确认项目",
-      "subtitle": "项目不能在集合中添加或删除，也不能在发布后更改其稀有度。",
-      "description": "但是，商品的名称、描述、类别和价格始终可以修改。",
+      "subtitle": "一旦发布，便不能从集合中添加或删除项目。{br}发布后也不能更改项目的稀有度。",
+      "description": "可以修改项目名称、描述和类别。",
       "confirm_items": "确认项目"
     },
     "review_content_policy_step": {
