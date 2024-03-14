@@ -6,21 +6,30 @@
 }
 
 .ConfirmCollectionNameStep .details .title {
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
 }
 
 .ConfirmCollectionNameStep .details .subtitle {
+  font-size: 15px;
   font-weight: 600;
-  margin-bottom: 0;
+  line-height: 24px;
+  color: var(--clear-divider);
+  margin-bottom: 0px;
 }
 
 .ConfirmCollectionNameStep .details .description {
-  font-weight: 200;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--clear-divider);
 }
 
 .ConfirmCollectionNameStep .details .fields .dcl.field {
   margin-top: 32px;
 }
+
 .ConfirmCollectionNameStep .details .fields .confirm-collection-name .has-label .header {
   color: white;
 }

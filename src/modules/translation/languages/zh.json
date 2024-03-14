@@ -1683,8 +1683,8 @@
     "publish_failed": "發布失敗",
     "confirm_collection_name_step": {
       "title": "确认收藏名称",
-      "subtitle": "作品集名称送审后不可修改。",
-      "description": "确保它没有任何拼写错误，并且不包含您不拥有的任何知识产权 (E.g Star Wars, Sailor Moon, etc)",
+      "subtitle": "提交审核后无法修改收藏名称。",
+      "description": "确保它没有任何拼写错误，并且不包含您不拥有的任何知识产权（例如：星球大战、美少女战士等）。",
       "collection_name_label": "集合名称",
       "collection_name_confirmation_label": "确认收藏名称",
       "collection_name_placeholder": "您的收藏名称",

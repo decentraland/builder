@@ -1689,9 +1689,9 @@
     "title_congratulations": "Congratulations!",
     "publish_failed": "Failed to publish",
     "confirm_collection_name_step": {
-      "title": "Confirm Collection Name",
-      "subtitle": "Collection names can't be modified after being sent in for review",
-      "description": "Make sure it doesn't have any typos, or contain any Intellectual Property you don't own (E.g Star Wars, Sailor Moon, etc)",
+      "title": "Confirm collection name",
+      "subtitle": "The name of the collection can't be modified after sending it for review.",
+      "description": "Make sure it doesn't have any typos, and it doesn't contain any Intellectual Property you don't own (E.g: Star Wars, Sailor Moon, etc)",
       "collection_name_label": "Collection name",
       "collection_name_confirmation_label": "Confirm Collection Name",
       "collection_name_placeholder": "Your collection name",

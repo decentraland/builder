@@ -1700,9 +1700,9 @@
     "title_congratulations": "Felicidades!",
     "publish_failed": "Error al publicar",
     "confirm_collection_name_step": {
-      "title": "Confirmar nombre de la colección",
-      "subtitle": "El nombre de la colección no podra ser modificado despues de ser enviado para su revisión.",
-      "description": "Asegúrese de que esté escrito correctamente y que no viole los derechos de propiedad intelectual (ej. Star Wars, Sailor Moon, etc)",
+      "title": "Confirma el nombre de la colección",
+      "subtitle": "El nombre de la colección no se puede modificar después de enviarlo para revisión.",
+      "description": "Asegúrate de que no tenga errores tipográficos y de que no contenga ninguna Propiedad Intelectual que no poseas (Por ejemplo: Star Wars, Sailor Moon, etc).",
       "collection_name_label": "Nombre de la Colección",
       "collection_name_confirmation_label": "Confirme el nombre de la Colección",
       "collection_name_placeholder": "Nombre de la Colección",
