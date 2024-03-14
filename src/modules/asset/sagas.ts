@@ -44,7 +44,7 @@ export function* assetSaga(client: BuilderClient) {
           name: openseaAsset.name || '',
           model: uri,
           script: null,
-          thumbnail: openseaAsset.imageThumbnailUrl || TRANSPARENT_PIXEL,
+          thumbnail: openseaAsset.imageUrl || TRANSPARENT_PIXEL,
           metrics: {
             triangles: 0,
             materials: 0,
