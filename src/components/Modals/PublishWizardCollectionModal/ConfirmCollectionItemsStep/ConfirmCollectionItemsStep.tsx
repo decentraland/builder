@@ -93,7 +93,7 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
             <div className="items">{renderItemsTable()}</div>
           </Column>
         </Row>
-        <Row className="actions" >
+        <Row className="actions">
           <Button className="back" secondary onClick={onPrevStep}>
             {t('global.back')}
           </Button>
