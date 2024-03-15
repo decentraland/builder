@@ -49,11 +49,11 @@
 
 .ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > span {
   text-align: justify;
-  color: #A09BA8;
+  color: var(--clear-divider);
 }
 
 .ReviewContentPolicyStep .details .content-policies-conditions .checkbox-container > span > a {
-  color: #A09BA8;
+  color: var(--clear-divider);
   text-decoration: underline;
   font-weight: 400;
 }
