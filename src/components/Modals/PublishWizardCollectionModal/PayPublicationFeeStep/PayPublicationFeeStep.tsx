@@ -79,8 +79,8 @@ export const PayPublicationFeeStep: React.FC<
       <Column>
         <Row className="details">
           <Column grow={true}>
-            <span className='title'>{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
-            <span className='subtitle'>
+            <span className="title">{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
+            <span className="subtitle">
               {t('publish_wizard_collection_modal.pay_publication_fee_step.subtitle', {
                 collection_name: <b>{collection.name}</b>,
                 count: items.length,
