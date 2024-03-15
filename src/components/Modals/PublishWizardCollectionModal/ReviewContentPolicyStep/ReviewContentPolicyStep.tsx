@@ -78,6 +78,7 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
           <Row className="details">
             <Column grow={true}>
               <p className="title">{t('publish_wizard_collection_modal.review_content_policy_step.title')}</p>
+              <p className="subtitle">{t('publish_wizard_collection_modal.review_content_policy_step.subtitle')}</p>
               <div className="content-policies-conditions">
                 <div className="checkbox-container">
                   <Checkbox checked={contentPolicyFirstConditionChecked} onChange={handleOnContentPolicyFirstConditionChecked} />
@@ -123,7 +124,7 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
                 </div>
               </div>
               <p className="description">{t('publish_wizard_collection_modal.review_content_policy_step.email_disclousure')}</p>
-              <p className="subtitle">
+              <p className="email-disclosure">
                 {t('publish_wizard_collection_modal.review_content_policy_step.email_disclousure_detail', {
                   enter: <br />
                 })}

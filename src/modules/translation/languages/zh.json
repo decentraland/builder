@@ -1698,8 +1698,9 @@
       "confirm_items": "确认项目"
     },
     "review_content_policy_step": {
-      "title": "在将您的收藏发送以供审核之前，请确认您已确认以下内容：",
-      "content_policy_first_condition": "我了解我将无法添加或删除项目，或在集合发布后修改其名称，并且我可以证明\"{collection_name}\"作为名称不侵犯任何知识产权。",
+      "title": "在提交您的收藏审核之前",
+      "subtitle": "请确认您的确认。",
+      "content_policy_first_condition": "我了解我将无法修改收藏的名称，并且我可以证明“{collection_name}”作为名称不违反任何知识产权。",
       "terms_of_use": "使用条款",
       "content_policy": "内容政策",
       "accept_terms_of_use": "我保证提交的项目完全符合我承认并接受的 {terms_of_use_link} 和 {content_policy_link}。",
