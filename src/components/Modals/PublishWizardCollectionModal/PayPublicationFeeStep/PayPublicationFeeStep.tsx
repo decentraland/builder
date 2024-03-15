@@ -35,10 +35,12 @@ export const PayPublicationFeeStep: React.FC<
   }
 
   const renderErrorMessage = () => {
+    let content: React.ReactNode | undefined = undefined
+
     if (!refRarity) {
-      return <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
+      content = <small className="error">{t('publish_collection_modal_with_oracle.rarities_error')}</small>
     } else if (hasInsufficientMANA) {
-      return (
+      content = (
         <small className="not-enough-mana-notice error">
           {t('publish_collection_modal_with_oracle.not_enough_mana', {
             symbol: (
@@ -58,12 +60,12 @@ export const PayPublicationFeeStep: React.FC<
         </small>
       )
     } else if (unsyncedCollectionError && !isLoading) {
-      return <p className="error danger-text">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>
+      content = <small className="error ">{t('publish_collection_modal_with_oracle.unsynced_collection')}</small>
     } else if (collectionError && !isLoading) {
-      return <p className="error danger-text">{collectionError}</p>
+      content = <small className="error">{collectionError}</small>
     }
 
-    return null
+    return content ? <div className="error-container">{content}</div> : null
   }
 
   const handleBuyWithMana = useCallback(() => {
@@ -125,8 +127,8 @@ export const PayPublicationFeeStep: React.FC<
             </div>
           </Column>
         </Row>
+        {renderErrorMessage()}
         <Row className="actions">
-          {renderErrorMessage()}
           <Button className="back" secondary onClick={onPrevStep} disabled={isLoading}>
             {t('global.back')}
           </Button>
