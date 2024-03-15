@@ -20,6 +20,7 @@ import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { FiatGateway, WertTarget, openFiatGatewayWidgetRequest } from 'decentraland-dapps/dist/modules/gateway'
+import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile/selectors'
 import { Network } from '@dcl/schemas'
 import {
   FetchCollectionsRequestAction,
@@ -534,6 +535,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           return () => document.removeEventListener(onPendingEventName, handler)
         })
 
+        const profile: ReturnType<typeof getProfileOfAddress> = yield select(state => getProfileOfAddress(state, from))
+
         yield put(
           openFiatGatewayWidgetRequest(
             FiatGateway.WERT,
@@ -548,7 +551,14 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
               lang: 'en',
               click_id: uuid(),
               network,
-              target: WertTarget.PUBLICATION_FEES
+              target: WertTarget.PUBLICATION_FEES,
+              extra: {
+                item_info: {
+                  name: collection.name,
+                  author_image_url: profile?.avatars[0].avatar.snapshots.face256,
+                  author: profile?.avatars[0].name
+                }
+              }
             },
             {
               onPending: event => {
