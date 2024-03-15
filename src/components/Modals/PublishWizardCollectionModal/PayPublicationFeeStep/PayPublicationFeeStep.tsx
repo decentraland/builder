@@ -79,16 +79,13 @@ export const PayPublicationFeeStep: React.FC<
       <Column>
         <Row className="details">
           <Column grow={true}>
-            <span>
-              {t('publish_wizard_collection_modal.pay_publication_fee_step.title', {
-                collection_name: <b>{collection.name}</b>,
-                count: items.length
-              })}
-            </span>
-            <span>
+            <span className='title'>{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
+            <span className='subtitle'>
               {t('publish_wizard_collection_modal.pay_publication_fee_step.subtitle', {
+                collection_name: <b>{collection.name}</b>,
+                count: items.length,
                 currency: 'USD',
-                publicationFee: toFixedMANAValue(ethers.utils.formatEther(priceUSD))
+                publication_fee: toFixedMANAValue(ethers.utils.formatEther(priceUSD))
               })}
             </span>
             <span className="learn-more">

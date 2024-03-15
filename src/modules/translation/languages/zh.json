@@ -1712,9 +1712,9 @@
       "continue": "继续"
     },
     "pay_publication_fee_step": {
-      "title": "您即将发送您的收藏\"{collection_name}\"，其中包括 {count} {count, plural, one {物品} other {项目}} 供审核。",
-      "subtitle": "为了支持策展人委员会和 DAO 金库，每件作品需支付 {currency} {publicationFee} 的出版费（以 MANA 支付）。",
-      "learn_more": "详细了解发布费",
+      "title": "确认项目",
+      "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。",
+      "learn_more": "了解出版费",
       "quantity": "数量",
       "items": "{count} {count, plural, one {物品} other {项目}}",
       "fee_per_item": "每件费用",

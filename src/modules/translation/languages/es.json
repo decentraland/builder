@@ -1730,9 +1730,9 @@
       "continue": "Continar"
     },
     "pay_publication_fee_step": {
-      "title": "Estás por enviar tu colección \"{collection_name}\" que incluye {count} {count, plural, one {artículo} other {artículos}} a revisión.",
-      "subtitle": "Para apoyar al Comité de Curadores y la tesorería de DAO, hay una tarifa de publicación de {currency} {publicationFee} por artículo (pagado en MANA).",
-      "learn_more": "Más información sobre la tarifa de publicación",
+      "title": "Confirmar ítems",
+      "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count} ítems. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA).",
+      "learn_more": "Aprender sobre la tarifa de publicación",
       "quantity": "Cantidad",
       "items": "{count} {count, plural, one {artículo} other {artículos}}",
       "fee_per_item": "Tarifa por artículo",

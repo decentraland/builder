@@ -1719,9 +1719,9 @@
       "continue": "Continue"
     },
     "pay_publication_fee_step": {
-      "title": "You are about to send your collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}} for review.",
-      "subtitle": "In order to support the Curators Committee and the DAO treasury, there is a publication fee of {currency} {publicationFee} per item (paid in MANA).",
-      "learn_more": "Learn more about the Publication Fee",
+      "title": "Confirm items",
+      "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} items. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per item (paid in MANA).",
+      "learn_more": "Learn about the publication fee",
       "quantity": "Quantity",
       "items": "{count} {count, plural, one {item} other {items}}",
       "fee_per_item": "Fee per item",
