@@ -27,7 +27,8 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const [emailAddress, setEmailAddress] = useState<string>('')
   const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(false)
   const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(false)
-  const [ackowledgeDaoTermsChecked, setAckowledgeDaoTermsChecked] = useState<boolean>(false)
+  const [acknowledgeImmutability, setAcknowledgeImmutability] = useState<boolean>(false)
+  const [acknowledgeDaoTermsChecked, setAcknowledgeDaoTermsChecked] = useState<boolean>(false)
   const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false)
 
   useEffect(() => {
@@ -65,8 +66,12 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     setAcceptTermsOfUseChecked(value)
   }
 
-  const handleOnAckowledgeDaoTermsChange = (value: boolean) => {
-    setAckowledgeDaoTermsChecked(value)
+  const handleOnAcknowledgeImmutability = (value: boolean) => {
+    setAcknowledgeImmutability(value)
+  }
+
+  const handleOnAcknowledgeDaoTermsChange = (value: boolean) => {
+    setAcknowledgeDaoTermsChecked(value)
   }
 
   const handleOnSubscribeToNewsletter = (value: boolean) => {
@@ -118,12 +123,14 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
             confirmedEmailAddress={emailAddress}
             contentPolicyFirstConditionChecked={contentPolicyFirstConditionChecked}
             acceptTermsOfUseChecked={acceptTermsOfUseChecked}
-            ackowledgeDaoTermsChecked={ackowledgeDaoTermsChecked}
+            acknowledgeImmutability={acknowledgeImmutability}
+            acknowledgeDaoTermsChecked={acknowledgeDaoTermsChecked}
             subscribeToNewsletter={subscribeToNewsletter}
             onChangeEmailAddress={handleOnChangeEmailAddress}
             onContentPolicyFirstConditionChange={handleOnContentPolicyFirstConditionChange}
             onAcceptTermsOfUseChange={handleOnAcceptTermsOfUseChange}
-            onAckowledgeDaoTermsChange={handleOnAckowledgeDaoTermsChange}
+            onAcknowledgeImmutability={handleOnAcknowledgeImmutability}
+            onAcknowledgeDaoTermsChange={handleOnAcknowledgeDaoTermsChange}
             onSubscribeToNewsletter={handleOnSubscribeToNewsletter}
             onNextStep={handleOnNextStep}
             onPrevStep={handleOnPrevStep}

@@ -11,12 +11,14 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
     confirmedEmailAddress,
     contentPolicyFirstConditionChecked,
     acceptTermsOfUseChecked,
-    ackowledgeDaoTermsChecked,
+    acknowledgeImmutability,
+    acknowledgeDaoTermsChecked,
     subscribeToNewsletter,
     onChangeEmailAddress,
     onContentPolicyFirstConditionChange,
     onAcceptTermsOfUseChange,
-    onAckowledgeDaoTermsChange,
+    onAcknowledgeImmutability,
+    onAcknowledgeDaoTermsChange,
     onSubscribeToNewsletter,
     onNextStep,
     onPrevStep
@@ -52,11 +54,18 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
     [onAcceptTermsOfUseChange]
   )
 
-  const handleOnAckowledgeDaoTermsChecked = useCallback(
+  const handleOnAcknowledgeImmutability = useCallback(
     (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-      onAckowledgeDaoTermsChange(!!checked)
+      onAcknowledgeImmutability(!!checked)
     },
-    [onAckowledgeDaoTermsChange]
+    [onAcknowledgeImmutability]
+  )
+
+  const handleOnAcknowledgeDaoTermsChecked = useCallback(
+    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
+      onAcknowledgeDaoTermsChange(!!checked)
+    },
+    [onAcknowledgeDaoTermsChange]
   )
 
   const handleOnAcceptSubscriptionNewsletter = useCallback(
@@ -69,7 +78,12 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
   const hasValidEmail = emailRegex.test(confirmedEmailAddress)
   const showEmailError = !hasValidEmail && !emailAddressFocus && !!confirmedEmailAddress
 
-  const isDisabled = !hasValidEmail || !contentPolicyFirstConditionChecked || !acceptTermsOfUseChecked || !ackowledgeDaoTermsChecked
+  const isDisabled =
+    !hasValidEmail ||
+    !contentPolicyFirstConditionChecked ||
+    !acceptTermsOfUseChecked ||
+    !acknowledgeImmutability ||
+    !acknowledgeDaoTermsChecked
 
   return (
     <>
@@ -106,7 +120,11 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
                   </span>
                 </div>
                 <div className="checkbox-container">
-                  <Checkbox checked={ackowledgeDaoTermsChecked} onChange={handleOnAckowledgeDaoTermsChecked} />
+                  <Checkbox checked={acknowledgeImmutability} onChange={handleOnAcknowledgeImmutability} />
+                  <span>{t('publish_wizard_collection_modal.review_content_policy_step.acknowledge_immutability')}</span>
+                </div>
+                <div className="checkbox-container">
+                  <Checkbox checked={acknowledgeDaoTermsChecked} onChange={handleOnAcknowledgeDaoTermsChecked} />
                   <span>
                     {t('publish_wizard_collection_modal.review_content_policy_step.acknowledge_dao_terms', {
                       terms_of_use_link: (
