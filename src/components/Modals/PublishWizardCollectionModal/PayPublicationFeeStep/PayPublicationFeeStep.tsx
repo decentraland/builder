@@ -13,7 +13,18 @@ import './PayPublicationFeeStep.css'
 export const PayPublicationFeeStep: React.FC<
   MapStateProps & { onNextStep: (paymentMethod: PaymentMethod) => void; onPrevStep: () => void }
 > = props => {
-  const { collection, items, rarities, wallet, collectionError, unsyncedCollectionError, isLoading, onNextStep, onPrevStep } = props
+  const {
+    collection,
+    items,
+    rarities,
+    wallet,
+    collectionError,
+    unsyncedCollectionError,
+    isLoading,
+    isPublishCollectionsWertEnabled,
+    onNextStep,
+    onPrevStep
+  } = props
 
   // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
   // as reference for the prices is enough.
@@ -133,9 +144,11 @@ export const PayPublicationFeeStep: React.FC<
             {t('global.back')}
           </Button>
           <div className="actions-right">
-            <Button className="pay-with-card" onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
-              {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}
-            </Button>
+            {isPublishCollectionsWertEnabled ? (
+              <Button className="pay-with-card" onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
+                {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}
+              </Button>
+            ) : null}
             <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
               {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}
             </Button>

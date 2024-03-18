@@ -13,6 +13,7 @@ import { publishCollectionRequest, PUBLISH_COLLECTION_REQUEST } from 'modules/co
 import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { getRarities } from 'modules/item/selectors'
+import { getIsPublishCollectionsWertEnabled } from 'modules/features/selectors'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './PublishWizardCollectionModal.types'
 import PublishWizardCollectionModal from './PublishWizardCollectionModal'
 
@@ -23,6 +24,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const isFetchingItems = isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST)
   const isFetchingRarities = isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST)
   const isCreatingForumPost = isLoadingType(getCollectionLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST)
+  const isPublishCollectionsWertEnabled = getIsPublishCollectionsWertEnabled(state)
 
   return {
     wallet: getWallet(state)!,
@@ -32,7 +34,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     unsyncedCollectionError: getUnsyncedCollectionError(state),
     itemError: getItemError(state),
     collectionError: getCollectionError(state),
-    isLoading: isPublishLoading || isFetchingItems || isFetchingRarities || isCreatingForumPost || !!collection.lock
+    isLoading: isPublishLoading || isFetchingItems || isFetchingRarities || isCreatingForumPost || !!collection.lock,
+    isPublishCollectionsWertEnabled
   }
 }
 
