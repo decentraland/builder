@@ -2,8 +2,8 @@ import React from 'react'
 import { Button, Column, Modal, Row } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
-import './CongratulationsStep.css'
 import CollectionImage from 'components/CollectionImage'
+import './CongratulationsStep.css'
 
 export const CongratulationsStep: React.FC<{ collection: Collection; onClose: () => void }> = props => {
   const { collection, onClose } = props
