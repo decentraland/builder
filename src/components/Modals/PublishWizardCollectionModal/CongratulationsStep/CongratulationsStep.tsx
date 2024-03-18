@@ -13,7 +13,7 @@ export const CongratulationsStep: React.FC<{ collection: Collection; onClose: ()
       <Column>
         <Row className="details">
           <Column>
-          <CollectionImage className='collection-image' collectionId={collection.id}/>
+            <CollectionImage className="collection-image" collectionId={collection.id} />
             <div className="texts-container">
               <span className="title">{t('publish_wizard_collection_modal.congratulations_step.title')}</span>
               <div className="subtitle-container">
