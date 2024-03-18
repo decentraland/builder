@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button, Column, Modal, Row } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import './CongratulationsStep.css'
+import CollectionImage from 'components/CollectionImage'
 
 export const CongratulationsStep: React.FC<{ collection: Collection; onClose: () => void }> = props => {
   const { collection, onClose } = props
@@ -11,19 +12,34 @@ export const CongratulationsStep: React.FC<{ collection: Collection; onClose: ()
     <Modal.Content className="CongratulationsStep">
       <Column>
         <Row className="details">
-          <Column grow={true}>
-            <i className="sparkles"></i>
-            <span>{t('publish_wizard_collection_modal.congratulations_step.title')}</span>
-            <span>
-              {t('publish_wizard_collection_modal.congratulations_step.subtitle', {
-                forum_post: (
-                  <a className="forum-post" href={collection.forumLink} rel="noopener noreferrer" target="_blank">
-                    {t('publish_wizard_collection_modal.congratulations_step.forum_post')}
-                  </a>
-                )
-              })}
-            </span>
-            <p className="description">{t('publish_wizard_collection_modal.congratulations_step.description')}</p>
+          <Column>
+          <CollectionImage className='collection-image' collectionId={collection.id}/>
+            <div className="texts-container">
+              <span className="title">{t('publish_wizard_collection_modal.congratulations_step.title')}</span>
+              <div className="subtitle-container">
+                <span className="dot"></span>
+                <span className="subtitle">
+                  {t('publish_wizard_collection_modal.congratulations_step.subtitle', {
+                    forum_post: (
+                      <a className="forum-post" href={collection.forumLink} rel="noopener noreferrer" target="_blank">
+                        {t('publish_wizard_collection_modal.congratulations_step.forum_post')}
+                      </a>
+                    )
+                  })}
+                </span>
+              </div>
+              <div className="description-container">
+                <span className="dot"></span>
+                <p className="description">
+                  <T
+                    id="publish_wizard_collection_modal.congratulations_step.description"
+                    values={{
+                      b: (chunks: string) => <strong>{chunks}</strong>
+                    }}
+                  ></T>
+                </p>
+              </div>
+            </div>
           </Column>
         </Row>
         <Row className="actions" align="right">

@@ -1731,9 +1731,9 @@
       "pay_mana": "pay with mana"
     },
     "congratulations_step": {
-      "title": "Your collection is now available for curators to review.",
+      "title": "Your collection is now available for curators to review",
       "subtitle": "Any feedback will be sent in the {forum_post} where you and anyone in the community will be able to comment.",
-      "description": "The collection will be published after it is approved by the Curation Committee. Since this is a manual process, it can take a few days. Your patience is appreciated.",
+      "description": "The collection will be published after it is approved by the Curation Committee. <b>Since this is a manual process, it can take a few days. Your patience is appreciated.</b>",
       "forum_post": "Forum Post",
       "view_forum_post": "View Forum Post"
     },

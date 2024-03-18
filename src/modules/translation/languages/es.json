@@ -1742,9 +1742,9 @@
       "pay_mana": "pagar con mana"
     },
     "congratulations_step": {
-      "title": "Su colección ya esta disponible para ser verificada por los curadores.",
+      "title": "Su colección ya esta disponible para ser verificada por los curadores",
       "subtitle": "Todos los comentarios seran enviados al {forum_post} donde usted y cualquier miembro de la comunidad podrán comentar.",
-      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curación. Dado que este es un proceso manual, podria tomar unos días. Se agradece su paciencia.",
+      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curación. <b>Dado que este es un proceso manual, podria tomar unos días. Se agradece su paciencia.</b>",
       "forum_post": "Post en el foro",
       "view_forum_post": "Ver el Post en el foro"
     },
