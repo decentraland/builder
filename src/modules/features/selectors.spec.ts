@@ -1,7 +1,12 @@
 import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
-import { getIsCreateSceneOnlySDK7Enabled, getIsMaintenanceEnabled, getIsPublishCollectionsWertEnabled, getIsSDK7TemplatesEnabled } from './selectors'
+import {
+  getIsCreateSceneOnlySDK7Enabled,
+  getIsMaintenanceEnabled,
+  getIsPublishCollectionsWertEnabled,
+  getIsSDK7TemplatesEnabled
+} from './selectors'
 import { FeatureName } from './types'
 
 jest.mock('decentraland-dapps/dist/modules/features/selectors')
