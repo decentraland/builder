@@ -7,12 +7,6 @@ import {
   FETCH_ENS_LIST_REQUEST,
   FETCH_ENS_LIST_SUCCESS,
   FETCH_ENS_LIST_FAILURE,
-  FetchENSAuthorizationRequestAction,
-  FetchENSAuthorizationSuccessAction,
-  FetchENSAuthorizationFailureAction,
-  FETCH_ENS_AUTHORIZATION_REQUEST,
-  FETCH_ENS_AUTHORIZATION_SUCCESS,
-  FETCH_ENS_AUTHORIZATION_FAILURE,
   FetchENSRequestAction,
   FetchENSSuccessAction,
   FetchENSFailureAction,
@@ -31,18 +25,6 @@ import {
   SET_ENS_RESOLVER_REQUEST,
   SET_ENS_RESOLVER_SUCCESS,
   SET_ENS_RESOLVER_FAILURE,
-  CLAIM_NAME_REQUEST,
-  ClaimNameRequestAction,
-  ClaimNameFailureAction,
-  ClaimNameSuccessAction,
-  CLAIM_NAME_FAILURE,
-  CLAIM_NAME_SUCCESS,
-  ALLOW_CLAIM_MANA_REQUEST,
-  ALLOW_CLAIM_MANA_FAILURE,
-  ALLOW_CLAIM_MANA_SUCCESS,
-  AllowClaimManaRequestAction,
-  AllowClaimManaSuccessAction,
-  AllowClaimManaFailureAction,
   RECLAIM_NAME_SUCCESS,
   RECLAIM_NAME_FAILURE,
   RECLAIM_NAME_REQUEST,
@@ -55,8 +37,6 @@ import {
   FetchENSWorldStatusRequestAction,
   FetchENSWorldStatusSuccessAction,
   FetchENSWorldStatusFailureAction,
-  CLAIM_NAME_CLEAR,
-  ClaimNameClearAction,
   FETCH_EXTERNAL_NAMES_FAILURE,
   FETCH_EXTERNAL_NAMES_REQUEST,
   FetchExternalNamesRequestAction,
@@ -73,13 +53,12 @@ import {
   CLEAR_ENS_ERRORS,
   ClearENSErrorsAction
 } from './actions'
-import { ENS, ENSError, Authorization } from './types'
+import { ENS, ENSError } from './types'
 import { isExternalName } from './utils'
 
 export type ENSState = {
   data: Record<string, ENS>
   externalNames: Record<string, ENS>
-  authorizations: Record<string, Authorization>
   loading: LoadingState
   error: ENSError | null
 }
@@ -87,7 +66,6 @@ export type ENSState = {
 export const INITIAL_STATE: ENSState = {
   data: {},
   externalNames: {},
-  authorizations: {},
   loading: [],
   error: null
 }
@@ -105,23 +83,13 @@ export type ENSReducerAction =
   | FetchENSListRequestAction
   | FetchENSListSuccessAction
   | FetchENSListFailureAction
-  | FetchENSAuthorizationRequestAction
-  | FetchENSAuthorizationSuccessAction
-  | FetchENSAuthorizationFailureAction
   | FetchTransactionSuccessAction
-  | ClaimNameRequestAction
-  | ClaimNameFailureAction
-  | ClaimNameSuccessAction
-  | AllowClaimManaRequestAction
-  | AllowClaimManaSuccessAction
-  | AllowClaimManaFailureAction
   | ReclaimNameRequestAction
   | ReclaimNameSuccessAction
   | ReclaimNameFailureAction
   | FetchENSWorldStatusRequestAction
   | FetchENSWorldStatusSuccessAction
   | FetchENSWorldStatusFailureAction
-  | ClaimNameClearAction
   | FetchExternalNamesRequestAction
   | FetchExternalNamesSuccessAction
   | FetchExternalNamesFailureAction
@@ -132,18 +100,14 @@ export type ENSReducerAction =
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
-    case CLAIM_NAME_REQUEST:
     case RECLAIM_NAME_REQUEST:
     case FETCH_ENS_LIST_REQUEST:
-    case FETCH_ENS_AUTHORIZATION_REQUEST:
     case FETCH_ENS_REQUEST:
     case FETCH_ENS_WORLD_STATUS_REQUEST:
     case SET_ENS_CONTENT_REQUEST:
     case SET_ENS_RESOLVER_REQUEST:
     case SET_ENS_CONTENT_SUCCESS:
     case SET_ENS_RESOLVER_SUCCESS:
-    case ALLOW_CLAIM_MANA_REQUEST:
-    case ALLOW_CLAIM_MANA_SUCCESS:
     case FETCH_EXTERNAL_NAMES_REQUEST:
     case SET_ENS_ADDRESS_REQUEST: {
       return {
@@ -168,19 +132,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
-    case FETCH_ENS_AUTHORIZATION_SUCCESS: {
-      const { authorization, address } = action.payload
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        authorizations: {
-          ...state.authorizations,
-          [address]: {
-            ...authorization
-          }
-        }
-      }
-    }
+
     case FETCH_ENS_SUCCESS: {
       const { ens } = action.payload
 
@@ -226,8 +178,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         ...update
       }
     }
-    case RECLAIM_NAME_SUCCESS:
-    case CLAIM_NAME_SUCCESS: {
+    case RECLAIM_NAME_SUCCESS: {
       const { ens } = action.payload
       return {
         ...state,
@@ -258,21 +209,12 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
-    case CLAIM_NAME_CLEAR: {
-      return {
-        ...state,
-        error: null
-      }
-    }
     case RECLAIM_NAME_FAILURE:
-    case CLAIM_NAME_FAILURE:
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
     case FETCH_ENS_WORLD_STATUS_FAILURE:
     case FETCH_ENS_LIST_FAILURE:
-    case FETCH_ENS_AUTHORIZATION_FAILURE:
-    case ALLOW_CLAIM_MANA_FAILURE:
     case FETCH_EXTERNAL_NAMES_FAILURE:
     case SET_ENS_ADDRESS_FAILURE: {
       return {
@@ -335,20 +277,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
                 landId: land ? land.id : ''
               }
             }
-          }
-        }
-        case ALLOW_CLAIM_MANA_SUCCESS: {
-          const { allowance, address } = transaction.payload
-          return {
-            ...state,
-            authorizations: {
-              ...state.authorizations,
-              [address]: {
-                ...state.authorizations[address],
-                allowance
-              }
-            },
-            loading: loadingReducer(state.loading, action)
           }
         }
         default:

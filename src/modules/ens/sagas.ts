@@ -2,23 +2,17 @@ import { BigNumber, ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
-import { ChainId, Network } from '@dcl/schemas'
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
-import { ContractName, getContract } from 'decentraland-transactions'
-import { getChainIdByNetwork, getNetworkProvider, getSigner } from 'decentraland-dapps/dist/lib/eth'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import { DCLController } from 'contracts'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
-import { DCLController__factory } from 'contracts/factories/DCLController__factory'
-import { ERC20__factory } from 'contracts/factories/ERC20__factory'
-import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_V2_ADDRESS, MANA_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
+import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
@@ -45,29 +39,15 @@ import {
   SetENSResolverRequestAction,
   setENSResolverSuccess,
   setENSResolverFailure,
-  FETCH_ENS_AUTHORIZATION_REQUEST,
-  FetchENSAuthorizationRequestAction,
-  fetchENSAuthorizationRequest,
-  fetchENSAuthorizationSuccess,
-  fetchENSAuthorizationFailure,
   FETCH_ENS_LIST_REQUEST,
   FetchENSListRequestAction,
   fetchENSListRequest,
   fetchENSListSuccess,
   fetchENSListFailure,
-  CLAIM_NAME_REQUEST,
-  ClaimNameRequestAction,
-  claimNameSuccess,
-  claimNameFailure,
-  ALLOW_CLAIM_MANA_REQUEST,
-  AllowClaimManaRequestAction,
-  allowClaimManaSuccess,
-  allowClaimManaFailure,
   ReclaimNameRequestAction,
   reclaimNameSuccess,
   reclaimNameFailure,
   RECLAIM_NAME_REQUEST,
-  claimNameTransactionSubmitted,
   FETCH_ENS_WORLD_STATUS_REQUEST,
   FetchENSWorldStatusRequestAction,
   fetchENSWorldStatusSuccess,
@@ -83,8 +63,8 @@ import {
   SET_ENS_ADDRESS_REQUEST
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
-import { ENS, ENSOrigin, ENSError, Authorization } from './types'
-import { addWorldStatusToEachENS, getDomainFromName, getLandRedirectionHashes, isExternalName } from './utils'
+import { ENS, ENSOrigin, ENSError } from './types'
+import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -92,17 +72,13 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
   yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
-  yield takeEvery(FETCH_ENS_AUTHORIZATION_REQUEST, handleFetchAuthorizationRequest)
   yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
-  yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
-  yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
   yield takeEvery(RECLAIM_NAME_REQUEST, handleReclaimNameRequest)
   yield takeEvery(FETCH_EXTERNAL_NAMES_REQUEST, handleFetchExternalNamesRequest)
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeEvery(SET_ENS_ADDRESS_REQUEST, handleSetENSAddressRequest)
 
   function* handleFetchLandsSuccess() {
-    yield put(fetchENSAuthorizationRequest())
     yield put(fetchENSListRequest())
   }
 
@@ -354,23 +330,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
     }
   }
 
-  function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestAction) {
-    try {
-      const from: string = yield select(getAddress)
-      const chainId: ChainId = yield call(getChainIdByNetwork, Network.ETHEREUM)
-      const contract = getContract(ContractName.MANAToken, chainId)
-      const provider: Awaited<ReturnType<typeof getNetworkProvider>> = yield call(getNetworkProvider, chainId)
-      const mana = new ethers.Contract(contract.address, contract.abi, new ethers.providers.Web3Provider(provider))
-      const allowance: string = yield call(mana.allowance, from, CONTROLLER_V2_ADDRESS)
-      const authorization: Authorization = { allowance }
-
-      yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))
-    } catch (error) {
-      const allowError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
-      yield put(fetchENSAuthorizationFailure(allowError))
-    }
-  }
-
   function* fetchBannedDomains() {
     try {
       const bannedDomains: string[] = yield call([lists, 'fetchBannedNames'])
@@ -489,36 +448,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
     }
   }
 
-  function* handleClaimNameRequest(action: ClaimNameRequestAction) {
-    const { name } = action.payload
-    try {
-      const wallet: Wallet = yield call(getWallet)
-      const signer: ethers.Signer = yield call(getSigner)
-      const from = wallet.address
-
-      const controllerContract: DCLController = yield call([DCLController__factory, 'connect'], CONTROLLER_V2_ADDRESS, signer)
-      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
-      const transaction: ethers.ContractTransaction = yield call([controllerContract, 'register'], name, from)
-      yield put(claimNameTransactionSubmitted(name, wallet.address, wallet.chainId, transaction.hash))
-      yield call(waitForTx, transaction.hash)
-      const tokenId: BigNumber = yield call([dclRegistrarContract, 'getTokenId'], name)
-      const ens: ENS = {
-        name: name,
-        tokenId: tokenId.toString(),
-        ensOwnerAddress: wallet.address,
-        nftOwnerAddress: wallet.address,
-        subdomain: getDomainFromName(name),
-        resolver: ethers.constants.AddressZero,
-        content: ethers.constants.AddressZero
-      }
-      yield put(claimNameSuccess(ens, name))
-      yield put(closeModal('ClaimNameFatFingerModal'))
-    } catch (error) {
-      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
-      yield put(claimNameFailure(ensError))
-    }
-  }
-
   function* handleReclaimNameRequest(action: ReclaimNameRequestAction) {
     const { ens } = action.payload
     try {
@@ -531,22 +460,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
     } catch (error) {
       const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(reclaimNameFailure(ensError))
-    }
-  }
-
-  function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
-    const { allowance } = action.payload
-    try {
-      const wallet: Wallet = yield call(getWallet)
-      const signer: ethers.Signer = yield call(getSigner)
-      const from = wallet.address
-      const manaContract: ReturnType<(typeof ERC20__factory)['connect']> = yield call([ERC20__factory, 'connect'], MANA_ADDRESS, signer)
-      const transaction: ethers.ContractTransaction = yield call([manaContract, 'approve'], CONTROLLER_V2_ADDRESS, allowance)
-
-      yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, transaction.hash))
-    } catch (error) {
-      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
-      yield put(allowClaimManaFailure(ensError))
     }
   }
 

@@ -156,7 +156,11 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
               sdk7: {
                 ...scene.sdk7,
                 metrics,
-                limits,
+                limits: {
+                  ...limits,
+                  // INCREASE MATERIALS LIMIT FOR TEMPLATES
+                  materials: limits.materials * 1.1
+                },
                 entitiesOutOfBoundaries
               }
             }

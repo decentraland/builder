@@ -11,7 +11,6 @@ import { canMintItem, UNSYNCED_STATES } from 'modules/item/utils'
 import { getAuthorizedItems, getStatusByItemId } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './MintItemsModal.types'
 import MintItemsModal from './MintItemsModal'
-import { getIsEnsAddressEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { itemIds } = ownProps.metadata
@@ -45,7 +44,6 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     ethAddress,
     collection,
     totalCollectionItems,
-    isEnsAddressEnabled: getIsEnsAddressEnabled(state),
     hasUnsyncedItems
   }
 }

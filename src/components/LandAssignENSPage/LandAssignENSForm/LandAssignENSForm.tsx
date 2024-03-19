@@ -36,8 +36,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
   }
 
   render() {
-    const { ens, land, isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, isWaitingTxReclaim, error, isEnsAddressEnabled } =
-      this.props
+    const { ens, land, isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, isWaitingTxReclaim, error } = this.props
 
     const needsReclaiming = ens.ensOwnerAddress !== ens.nftOwnerAddress
     const hasResolver = !isResolverEmpty(ens) && ens.resolver.toLowerCase() === ENS_RESOLVER_ADDRESS.toLowerCase()
@@ -52,9 +51,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
 
     const setResolverButtonClassName = hasResolver && !isWaitingTxSetResolver && !hasResolverError ? 'grey-button' : ''
     const setContentButtonClassName = hasContent && !isWaitingTxSetContent && !hasContentError ? 'grey-button' : ''
-    const reclaimContentButtonClassName = !needsReclaiming && !isWaitingTxReclaim && !hasReclaimError ? 'grey-button' : ''
 
-    const isReclaimButtonDisabled = hasReclaimError || !needsReclaiming
     const isSetResolverButtonDisabled = hasResolverError || hasData || needsReclaiming || isWaitingTxSetResolver || isWaitingTxReclaim
     const isSetContentButtonDisabled =
       hasContentError ||
@@ -74,36 +71,6 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
             {t('land_assign_ens_page.set_name_message', { strong: (children: React.ReactElement) => <strong>{children}</strong> })}
           </p>
         </Row>
-        {!isEnsAddressEnabled ? (
-          <Row>
-            <div className={isReclaimButtonDisabled ? 'box box-disabled' : 'box'}>
-              <h3>{t('land_assign_ens_page.reclaim')}</h3>
-              <div className="message-box">
-                <p>{t('land_assign_ens_page.reclaim_explanation')}</p>
-                <NetworkButton
-                  type="submit"
-                  disabled={isReclaimButtonDisabled}
-                  onClick={this.handleReclaim}
-                  className={reclaimContentButtonClassName}
-                  loading={isWaitingTxReclaim}
-                  primary
-                  network={Network.ETHEREUM}
-                >
-                  {hasReclaimError ? (
-                    t('global.retry_tx')
-                  ) : !needsReclaiming ? (
-                    <>
-                      {t('global.approved_tx')}
-                      {!isWaitingTxReclaim ? <Icon name="check" /> : null}
-                    </>
-                  ) : (
-                    t('global.submit')
-                  )}
-                </NetworkButton>
-              </div>
-            </div>
-          </Row>
-        ) : null}
         <Row>
           <div className={isSetResolverButtonDisabled ? 'box box-disabled' : 'box'}>
             <h3>{t('land_assign_ens_page.set_resolver')}</h3>

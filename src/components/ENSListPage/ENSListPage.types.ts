@@ -18,7 +18,6 @@ export type Props = {
   hasProfileCreated: boolean
   isLoggedIn: boolean
   isLoading: boolean
-  isEnsAddressEnabled: boolean
   avatar: Avatar | null
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
@@ -31,7 +30,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'address' | 'alias' | 'ensList' | 'lands' | 'hasProfileCreated' | 'isLoading' | 'error' | 'isLoggedIn' | 'isEnsAddressEnabled' | 'avatar'
+  'address' | 'alias' | 'ensList' | 'lands' | 'hasProfileCreated' | 'isLoading' | 'error' | 'isLoggedIn' | 'avatar'
 >
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
 export type MapDispatch = Dispatch

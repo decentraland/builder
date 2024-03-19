@@ -22,14 +22,6 @@ export const getIsCampaignEnabled = (state: RootState) => {
   }
 }
 
-export const getIsNewNavbarDropdownEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.NEW_NAVBAR_DROPDOWN)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsSDK7TemplatesEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SDK7_TEMPLATES)
@@ -41,14 +33,6 @@ export const getIsSDK7TemplatesEnabled = (state: RootState) => {
 export const getIsCreateSceneOnlySDK7Enabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CREATE_SCENE_ONLY_SDK7)
-  } catch (e) {
-    return false
-  }
-}
-
-export const getIsEnsAddressEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.ENS_ADDRESS)
   } catch (e) {
     return false
   }

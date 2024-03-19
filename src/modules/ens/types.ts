@@ -36,10 +36,6 @@ export enum ENSOrigin {
   ADDRESS = 'Address'
 }
 
-export type Authorization = {
-  allowance: string
-}
-
 export type WorldStatus = {
   healthy: boolean
   scene: {
