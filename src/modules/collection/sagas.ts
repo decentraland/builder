@@ -525,14 +525,13 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           return Math.ceil(Number(totalPriceEth) * factor) / factor
         })()
 
-        // Event and event channel to handle the success event of the wert widget.
-        // This is required in order to be able to handle this inside the same sagas.
-        const onPendingEventName = 'publish-collection-request-on-success'
-        const onPendingEventChannel = eventChannel(emitter => {
-          // @ts-expect-error - We are expecting an event with detail which is not supported by the given type.
+        // Event channel to handle in this same saga, the events dispatched by the fiat gateway widget.
+        const onFiatGatewayEventName = 'publish-collection-request-fiat-gateway-event'
+        const onFiatGatewayEventChannel = eventChannel(emitter => {
+          // @ts-expect-error - The event listener should have a detail property.
           const handler: Parameters<typeof document.addEventListener>[1] = event => emitter(event.detail)
-          document.addEventListener(onPendingEventName, handler)
-          return () => document.removeEventListener(onPendingEventName, handler)
+          document.addEventListener(onFiatGatewayEventName, handler)
+          return () => document.removeEventListener(onFiatGatewayEventName, handler)
         })
 
         const profile: ReturnType<typeof getProfileOfAddress> = yield select(state => getProfileOfAddress(state, from))
@@ -563,17 +562,44 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
             },
             {
               onPending: event => {
-                const onPendingEvent = new CustomEvent(onPendingEventName, { detail: event })
-                document.dispatchEvent(onPendingEvent)
+                const customEvent = new CustomEvent(onFiatGatewayEventName, {
+                  detail: {
+                    type: 'pending',
+                    event
+                  }
+                })
+                document.dispatchEvent(customEvent)
+              },
+              onClose: () => {
+                const customEvent = new CustomEvent(onFiatGatewayEventName, {
+                  detail: {
+                    type: 'close'
+                  }
+                })
+                document.dispatchEvent(customEvent)
               }
             }
           )
         )
 
-        const pendingData: { data: { tx_id: string } } = yield take(onPendingEventChannel)
-        onPendingEventChannel.close()
+        const fiatGatewayEventChannelResult:
+          | {
+              type: 'pending'
+              event: {
+                data: {
+                  tx_id: string
+                }
+              }
+            }
+          | { type: 'close' } = yield take(onFiatGatewayEventChannel)
 
-        txHash = pendingData.data.tx_id
+        onFiatGatewayEventChannel.close()
+
+        if (fiatGatewayEventChannelResult.type === 'close') {
+          throw new Error('Modal was closed')
+        }
+
+        txHash = fiatGatewayEventChannelResult.event.data.tx_id
       } else {
         txHash = yield call(sendTransaction, manager, collectionManager =>
           collectionManager.createCollection(
