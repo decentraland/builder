@@ -147,12 +147,12 @@ export const PayPublicationFeeStep: React.FC<
             {isPublishCollectionsWertEnabled ? (
               <Button className="pay-with-card" onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
                 <Icon name="credit card outline" />
-                {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}
+                <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
               </Button>
             ) : null}
             <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
               <Mana inline size="small" network={Network.MATIC} />
-              {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}
+              <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}</span>
             </Button>
           </div>
         </Row>

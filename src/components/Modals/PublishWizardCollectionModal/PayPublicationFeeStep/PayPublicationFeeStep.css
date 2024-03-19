@@ -93,6 +93,15 @@
   gap: 1rem;
 }
 
+.PayPublicationFeeStep .actions .actions-right button {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.PayPublicationFeeStep .actions .actions-right button span {
+  margin-left: 6px;
+}
+
 .PayPublicationFeeStep .actions .actions-right .pay-with-card {
   background-color: white !important;
   color: black;
