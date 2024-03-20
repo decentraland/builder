@@ -12,6 +12,9 @@ import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
+import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile'
+import { FiatGateway, WertTarget } from 'decentraland-dapps/dist/modules/gateway'
+import { config } from 'config'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import {
@@ -20,12 +23,13 @@ import {
   getData as getItemsById,
   getPaginationData,
   getWalletItems,
-  getCollectionItems
+  getCollectionItems,
+  getRarities
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
 import { getCollection } from 'modules/collection/selectors'
-import { EntityHashingType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
+import { EntityHashingType, Item, ItemApprovalData, ItemType, Rarity } from 'modules/item/types'
 import { openModal, closeModal, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import { mockedItem } from 'specs/item'
 import {
@@ -2007,6 +2011,205 @@ describe('when handling the fetch of a collection', () => {
           })
         )
         .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when publishing a collection with fiat', () => {
+  let subscribeToNewsletter: boolean
+  let collection: Collection
+  let items: Item[]
+  let serverItems: Item[]
+  let email: string
+  let paymentMethod: PaymentMethod
+  let wertEnv: string
+  let from: string
+  let rarities: Rarity[]
+
+  beforeEach(() => {
+    email = ''
+    collection = {
+      name: 'name'
+    } as Collection
+    from = '0x' + '123'.padStart(40, '0')
+  })
+
+  describe('when subscribe to newsletter is false', () => {
+    beforeEach(() => {
+      subscribeToNewsletter = false
+    })
+
+    describe('when collection is not locked', () => {
+      beforeEach(() => {
+        collection.isPublished = false
+        collection.lock = new Date(new Date().setDate(new Date().getDate() + 1)).getTime() // Tomorrow
+      })
+
+      describe('when collection has salt', () => {
+        beforeEach(() => {
+          collection.salt = '0x' + '123'.padStart(64, '0')
+        })
+
+        describe('when no items are provided', () => {
+          beforeEach(() => {
+            items = []
+          })
+
+          describe('when the collection has the same amount of items in the server as locally', () => {
+            beforeEach(() => {
+              serverItems = []
+            })
+
+            describe('when the payment method is fiat', () => {
+              beforeEach(() => {
+                paymentMethod = PaymentMethod.FIAT
+              })
+
+              describe('when the wert env is not defined', () => {
+                beforeEach(() => {
+                  wertEnv = ''
+                })
+
+                it('should dispatch a failure action', () => {
+                  return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                    .provide([
+                      [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                      [select(getAddress), 'address'],
+                      [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                      [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                      [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv]
+                    ])
+                    .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                    .put(publishCollectionFailure(collection, items, 'Missing WERT_PUBLISH_FEES_ENV'))
+                    .silentRun()
+                })
+              })
+
+              describe('when the wert env is defined but is not valid', () => {
+                beforeEach(() => {
+                  wertEnv = 'invalid'
+                })
+
+                it('should dispatch a failure action', () => {
+                  return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                    .provide([
+                      [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                      [select(getAddress), 'address'],
+                      [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                      [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                      [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv]
+                    ])
+                    .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                    .put(publishCollectionFailure(collection, items, 'Invalid WERT_PUBLISH_FEES_ENV'))
+                    .silentRun()
+                })
+              })
+
+              describe('when the wert env is defined and is valid', () => {
+                beforeEach(() => {
+                  wertEnv = 'dev'
+                })
+
+                describe('when there are no rarities', () => {
+                  beforeEach(() => {
+                    rarities = []
+                  })
+
+                  it('should dispatch a failure action', () => {
+                    return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                      .provide([
+                        [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                        [select(getAddress), from],
+                        [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                        [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                        [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                        [select(getRarities), rarities]
+                      ])
+                      .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                      .put(publishCollectionFailure(collection, items, 'Rarity not found'))
+                      .silentRun()
+                  })
+                })
+
+                describe('when there is a rarity', () => {
+                  describe('when that rarity does no have prices', () => {
+                    beforeEach(() => {
+                      rarities = [{} as Rarity]
+                    })
+
+                    it('should dispatch a failure action', () => {
+                      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                        .provide([
+                          [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                          [select(getAddress), from],
+                          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                          [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                          [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                          [select(getRarities), rarities]
+                        ])
+                        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                        .put(publishCollectionFailure(collection, items, 'Rarity prices not found'))
+                        .silentRun()
+                    })
+                  })
+
+                  describe('when that rarity has MANA prices', () => {
+                    beforeEach(() => {
+                      rarities = [
+                        {
+                          prices: {
+                            MANA: '25000000000000000000'
+                          }
+                        } as Rarity
+                      ]
+                    })
+
+                    it('should dispatch the action to open the fiat gateway widget', () => {
+                      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                        .provide([
+                          [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                          [select(getAddress), from],
+                          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                          [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                          [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                          [select(getRarities), rarities],
+                          [select(getProfileOfAddress, from), undefined]
+                        ])
+                        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                        .put.like({
+                          action: {
+                            type: '[Request] Open FIAT Gateway Widget',
+                            payload: {
+                              gateway: FiatGateway.WERT,
+                              data: {
+                                partner_id: '01HRRQQ70YK4SP88GHM9A61P6B',
+                                address: from,
+                                commodity: 'TT',
+                                sc_address: '0xe539E0AED3C1971560517D58277f8dd9aC296281',
+                                sc_input_data:
+                                  '0x35a629c200000000000000000000000071e56ad57eca3faae5077b7f9ea731a25785ff92000000000000000000000000ddb3781fff645325c8896aa1f067baa381607ecc00000000000000000000000000000000000000000000000000000000000001230000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000123000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000046e616d6500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000644434c2d4e4d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004368747470733a2f2f706565722e646563656e7472616c616e642e7a6f6e652f6c616d626461732f636f6c6c656374696f6e732f7374616e646172642f6572633732312f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+                                origin: 'https://sandbox.wert.io',
+                                lang: 'en',
+                                network: 'mumbai',
+                                target: WertTarget.PUBLICATION_FEES,
+                                extra: {
+                                  item_info: {
+                                    name: collection.name
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        })
+                        .silentRun()
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
     })
   })
 })

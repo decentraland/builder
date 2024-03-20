@@ -430,7 +430,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       let txHash: string
 
       if (paymentMethod === PaymentMethod.FIAT) {
-        const wertPublishFeesEnv = config.get('WERT_PUBLISH_FEES_ENV')
+        const wertPublishFeesEnv: string = yield call([config, config.get], 'WERT_PUBLISH_FEES_ENV')
 
         if (!wertPublishFeesEnv) {
           throw new Error('Missing WERT_PUBLISH_FEES_ENV')
@@ -507,7 +507,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           return () => document.removeEventListener(onFiatGatewayEventName, handler)
         })
 
-        const profile: ReturnType<typeof getProfileOfAddress> = yield select(state => getProfileOfAddress(state, from))
+        const profile: ReturnType<typeof getProfileOfAddress> = yield select(getProfileOfAddress, from)
 
         yield put(
           openFiatGatewayWidgetRequest(
@@ -578,7 +578,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           collectionManager.createCollection(
             forwarder.address,
             factory.address,
-            collection.salt!,
+            collection.salt,
             collection.name,
             getCollectionSymbol(collection),
             getCollectionBaseURI(),
