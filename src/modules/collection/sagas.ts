@@ -149,8 +149,6 @@ import {
 import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getData, getLastFetchParams, getPaginationData, getRaritiesContract, getWalletCollections } from './selectors'
-import { CollectionPaginationData } from './reducer'
-import { Collection, CollectionType, PaymentMethod } from './types'
 import {
   isOwner,
   getCollectionBaseURI,
@@ -164,6 +162,8 @@ import {
 } from './utils'
 import { isErrorWithCode } from 'lib/error'
 import { config } from 'config'
+import { CollectionPaginationData } from './reducer'
+import { Collection, CollectionType, PaymentMethod } from './types'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
 

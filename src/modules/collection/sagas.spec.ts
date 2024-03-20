@@ -13,7 +13,6 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile'
-import { FiatGateway, WertTarget } from 'decentraland-dapps/dist/modules/gateway'
 import { config } from 'config'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
@@ -2164,44 +2163,74 @@ describe('when publishing a collection with fiat', () => {
                       ]
                     })
 
-                    it('should dispatch the action to open the fiat gateway widget', () => {
-                      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
-                        .provide([
-                          [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
-                          [select(getAddress), from],
-                          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-                          [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
-                          [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
-                          [select(getRarities), rarities],
-                          [select(getProfileOfAddress, from), undefined]
-                        ])
-                        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                        .put.like({
-                          action: {
-                            type: '[Request] Open FIAT Gateway Widget',
-                            payload: {
-                              gateway: FiatGateway.WERT,
-                              data: {
-                                partner_id: '01HRRQQ70YK4SP88GHM9A61P6B',
-                                address: from,
-                                commodity: 'TT',
-                                sc_address: '0xe539E0AED3C1971560517D58277f8dd9aC296281',
-                                sc_input_data:
-                                  '0x35a629c200000000000000000000000071e56ad57eca3faae5077b7f9ea731a25785ff92000000000000000000000000ddb3781fff645325c8896aa1f067baa381607ecc00000000000000000000000000000000000000000000000000000000000001230000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000123000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000046e616d6500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000644434c2d4e4d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004368747470733a2f2f706565722e646563656e7472616c616e642e7a6f6e652f6c616d626461732f636f6c6c656374696f6e732f7374616e646172642f6572633732312f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-                                origin: 'https://sandbox.wert.io',
-                                lang: 'en',
-                                network: 'mumbai',
-                                target: WertTarget.PUBLICATION_FEES,
-                                extra: {
-                                  item_info: {
-                                    name: collection.name
-                                  }
+                    describe('when the wert env is dev', () => {
+                      beforeEach(() => {
+                        wertEnv = 'dev'
+                      })
+
+                      it('should dispatch the action to open the fiat gateway widget with dev parameters', () => {
+                        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                          .provide([
+                            [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                            [select(getAddress), from],
+                            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                            [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                            [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                            [select(getRarities), rarities],
+                            [select(getProfileOfAddress, from), undefined]
+                          ])
+                          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                          .put.like({
+                            action: {
+                              type: '[Request] Open FIAT Gateway Widget',
+                              payload: {
+                                data: {
+                                  partner_id: '01HRRQQ70YK4SP88GHM9A61P6B',
+                                  commodity: 'TT',
+                                  sc_address: '0xe539E0AED3C1971560517D58277f8dd9aC296281',
+                                  origin: 'https://sandbox.wert.io',
+                                  network: 'mumbai'
                                 }
                               }
                             }
-                          }
-                        })
-                        .silentRun()
+                          })
+                          .silentRun()
+                      })
+                    })
+
+                    describe('when the wert env is prod', () => {
+                      beforeEach(() => {
+                        wertEnv = 'prod'
+                      })
+
+                      it('should dispatch the action to open the fiat gateway widget with prod parameters', () => {
+                        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                          .provide([
+                            [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                            [select(getAddress), from],
+                            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                            [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                            [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                            [select(getRarities), rarities],
+                            [select(getProfileOfAddress, from), undefined]
+                          ])
+                          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                          .put.like({
+                            action: {
+                              type: '[Request] Open FIAT Gateway Widget',
+                              payload: {
+                                data: {
+                                  partner_id: '01HR4TB274GD2VNZW0VEAXNHW2',
+                                  commodity: 'MANA',
+                                  sc_address: '0x9D32AaC179153A991e832550d9F96441Ea27763A',
+                                  origin: 'https://widget.wert.io',
+                                  network: 'polygon'
+                                }
+                              }
+                            }
+                          })
+                          .silentRun()
+                      })
                     })
                   })
                 })
