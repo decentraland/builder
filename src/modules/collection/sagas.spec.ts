@@ -956,7 +956,7 @@ describe('when publishing a collection', () => {
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .not.put(saveCollectionRequest(collection))
-        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
+        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash, false))
         .dispatch(publishCollectionRequest(lockedCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
@@ -1132,7 +1132,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveItemRequest(items[0], {}))
         .put(saveCollectionRequest(collection))
-        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
+        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash, false))
         .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
@@ -1189,7 +1189,7 @@ describe('when publishing a collection', () => {
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .put(saveCollectionRequest(collection))
-        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
+        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash, false))
         .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })

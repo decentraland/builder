@@ -463,34 +463,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         }
 
         // The transaction input data for publishing the collection.
-        const scInputData = new ethers.utils.Interface([
-          {
-            inputs: [
-              { internalType: 'contract IForwarder', name: '_forwarder', type: 'address' },
-              { internalType: 'contract IERC721CollectionFactoryV2', name: '_factory', type: 'address' },
-              { internalType: 'bytes32', name: '_salt', type: 'bytes32' },
-              { internalType: 'string', name: '_name', type: 'string' },
-              { internalType: 'string', name: '_symbol', type: 'string' },
-              { internalType: 'string', name: '_baseURI', type: 'string' },
-              { internalType: 'address', name: '_creator', type: 'address' },
-              {
-                components: [
-                  { internalType: 'string', name: 'rarity', type: 'string' },
-                  { internalType: 'uint256', name: 'price', type: 'uint256' },
-                  { internalType: 'address', name: 'beneficiary', type: 'address' },
-                  { internalType: 'string', name: 'metadata', type: 'string' }
-                ],
-                internalType: 'struct IERC721CollectionV2.ItemParam[]',
-                name: '_items',
-                type: 'tuple[]'
-              }
-            ],
-            name: 'createCollection',
-            outputs: [],
-            stateMutability: 'nonpayable',
-            type: 'function'
-          }
-        ]).encodeFunctionData('createCollection', [
+        const scInputData = new ethers.utils.Interface(manager.abi).encodeFunctionData('createCollection', [
           forwarder.address,
           factory.address,
           collection.salt,
@@ -618,7 +591,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const lock: string = yield retry(10, 500, legacyBuilderClient.lockCollection, collection)
       collection = { ...collection, lock: +new Date(lock) }
 
-      yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
+      yield put(publishCollectionSuccess(collection, items, maticChainId, txHash, paymentMethod === PaymentMethod.FIAT))
     } catch (error) {
       let message: string
       if (isErrorWithCode(error) && error.code.toString() === ErrorCode.HIGH_CONGESTION) {

@@ -77,11 +77,12 @@ export const publishCollectionRequest = (
   subscribeToNewsletter: boolean,
   paymentMethod: PaymentMethod
 ) => action(PUBLISH_COLLECTION_REQUEST, { collection, items, email, subscribeToNewsletter, paymentMethod })
-export const publishCollectionSuccess = (collection: Collection, items: Item[], chainId: ChainId, txHash: string) =>
+export const publishCollectionSuccess = (collection: Collection, items: Item[], chainId: ChainId, txHash: string, isFiat: boolean) =>
   action(PUBLISH_COLLECTION_SUCCESS, {
     collection,
     items,
-    ...buildTransactionPayload(chainId, txHash, { collection, items })
+    isFiat,
+    ...buildTransactionPayload(chainId, txHash, { collection, items, isFiat })
   })
 export const publishCollectionFailure = (collection: Collection, items: Item[], error: string) =>
   action(PUBLISH_COLLECTION_FAILURE, { collection, items, error })
