@@ -2231,6 +2231,10 @@ describe('when publishing a collection with fiat', () => {
                           })
                           .silentRun()
                       })
+
+                      // TODO: Test the rest of the saga.
+                      // Not included in this PR given that I don't know how to test event channels yet. 👌
+                      // What comes next in the saga are the events emitted from the wert modal for close and success which are handled by the emitter.
                     })
                   })
                 })
