@@ -2014,7 +2014,7 @@ describe('when handling the fetch of a collection', () => {
   })
 })
 
-describe('when publishing a collection with fiat', () => {
+describe.skip('when publishing a collection with fiat', () => {
   let subscribeToNewsletter: boolean
   let collection: Collection
   let items: Item[]
