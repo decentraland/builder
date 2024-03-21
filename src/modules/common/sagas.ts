@@ -60,7 +60,7 @@ const newIdentitySaga = createIdentitySaga({
 const gatewaySaga = createGatewaySaga({
   [FiatGateway.WERT]: {
     marketplaceServerURL: config.get('MARKETPLACE_SERVER_URL'),
-    url: 'this is not used???'
+    url: '' // TODO: This is not used, it should be removed from decentraland-dapps.
   }
 })
 
