@@ -429,6 +429,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       let txHash: string
 
+      // Arguments used in the publish collection transaction.
       const createCollectionArgs = [
         forwarder.address,
         factory.address,
