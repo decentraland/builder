@@ -429,6 +429,17 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       let txHash: string
 
+      const createCollectionArgs = [
+        forwarder.address,
+        factory.address,
+        collection.salt,
+        collection.name,
+        getCollectionSymbol(collection),
+        getCollectionBaseURI(),
+        from,
+        toInitializeItems(items)
+      ]
+
       if (paymentMethod === PaymentMethod.FIAT) {
         const wertPublishFeesEnv: string = yield call([config, config.get], 'WERT_PUBLISH_FEES_ENV')
 
@@ -463,16 +474,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         }
 
         // The transaction input data for publishing the collection.
-        const scInputData = new ethers.utils.Interface(manager.abi).encodeFunctionData('createCollection', [
-          forwarder.address,
-          factory.address,
-          collection.salt,
-          collection.name,
-          getCollectionSymbol(collection),
-          getCollectionBaseURI(),
-          from,
-          toInitializeItems(items)
-        ])
+        const scInputData = new ethers.utils.Interface(manager.abi).encodeFunctionData('createCollection', createCollectionArgs)
 
         // The amount of MANA to be purchased required to publish the collection is determined by the price of the rarities.
         // Given that rarities have the same price, we can use the first rarity and multiply it by the amount of items to get the final price.
@@ -574,18 +576,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
         txHash = fiatGatewayEventChannelResult.event.data.tx_id
       } else {
-        txHash = yield call(sendTransaction, manager, collectionManager =>
-          collectionManager.createCollection(
-            forwarder.address,
-            factory.address,
-            collection.salt,
-            collection.name,
-            getCollectionSymbol(collection),
-            getCollectionBaseURI(),
-            from,
-            toInitializeItems(items)
-          )
-        )
+        txHash = yield call(sendTransaction, manager, collectionManager => collectionManager.createCollection(...createCollectionArgs))
       }
 
       const lock: string = yield retry(10, 500, legacyBuilderClient.lockCollection, collection)
