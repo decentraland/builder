@@ -158,7 +158,8 @@ import {
   UNSYNCED_COLLECTION_ERROR_PREFIX,
   isTPCollection,
   getCollectionFactoryContract,
-  toPaginationStats
+  toPaginationStats,
+  getFiatGatewayCommodityAmount
 } from './utils'
 import { isErrorWithCode } from 'lib/error'
 import { config } from 'config'
@@ -490,17 +491,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           throw new Error('Rarity prices not found')
         }
 
-        const commodityAmount = (() => {
-          const rarityPriceWei = ethers.BigNumber.from(rarity.prices.MANA)
-          const totalPriceWei = rarityPriceWei.mul(items.length)
-          const totalPriceEth = ethers.utils.formatEther(totalPriceWei.toString())
-          const factor = Math.pow(10, 8)
-
-          // Wert supports up to 8 decimal places.
-          // It is important to round up to this amount of decimal places to avoid issues with the widget.
-          return Math.ceil(Number(totalPriceEth) * factor) / factor
-        })()
-
+        // Amount of MANA required to publish the collection.
+        const commodityAmount = getFiatGatewayCommodityAmount(rarity.prices.MANA, items.length)
+        
         // Event channel to handle in this same saga, the events dispatched by the fiat gateway widget.
         const onFiatGatewayEventName = 'publish-collection-request-fiat-gateway-event'
         const onFiatGatewayEventChannel = eventChannel(emitter => {
