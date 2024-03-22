@@ -10,7 +10,8 @@ import {
   getCollectionType,
   isTPCollection,
   getTPThresholdToReview,
-  toPaginationStats
+  toPaginationStats,
+  getFiatGatewayCommodityAmount
 } from './utils'
 import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
 import { CollectionPaginationData } from './reducer'
@@ -236,6 +237,85 @@ describe('when transforming a CollectionPaginationData to PaginationStats', () =
       total: collectionPaginationData.total,
       pages: collectionPaginationData.totalPages,
       page: collectionPaginationData.currentPage
+    })
+  })
+})
+
+describe.only('when getting the fiat commodity amount', () => {
+  let unitPrice: string
+  let items: number
+
+  describe('when the amount of items is 1', () => {
+    beforeEach(() => {
+      items = 1
+    })
+
+    describe('when the unit price is not a string of a number', () => {
+      beforeEach(() => {
+        unitPrice = 'not-a-number'
+      })
+
+      it('should fail', () => {
+        expect(() => getFiatGatewayCommodityAmount(unitPrice, items)).toThrow(
+          'invalid BigNumber string (argument="value", value="not-a-number", code=INVALID_ARGUMENT, version=bignumber/5.7.0)'
+        )
+      })
+    })
+
+    describe('when the unit price is 1 wei', () => {
+      beforeEach(() => {
+        unitPrice = '1'
+      })
+
+      it('should return 0.00000001', () => {
+        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(0.00000001)
+      })
+    })
+
+    describe('when the unit price is 10000000000 wei', () => {
+      beforeEach(() => {
+        unitPrice = '10000000000'
+      })
+
+      it('should return 0.00000001', () => {
+        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(0.00000001)
+      })
+    })
+
+    describe('when the unit price is 0.123456789 eth', () => {
+      beforeEach(() => {
+        unitPrice = '123456789000000000'
+      })
+
+      it('should return 0.12345679', () => {
+        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(0.12345679)
+      })
+    })
+
+    describe('when the unit price is 1 eth', () => {
+      beforeEach(() => {
+        unitPrice = '1000000000000000000'
+      })
+
+      it('should return 1', () => {
+        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(1)
+      })
+    })
+  })
+
+  describe('when the amount of items is 10', () => {
+    beforeEach(() => {
+      items = 10
+    })
+
+    describe('when the unit price is 1 eth', () => {
+      beforeEach(() => {
+        unitPrice = '1000000000000000000'
+      })
+
+      it('should return 10', () => {
+        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(10)
+      })
     })
   })
 })
