@@ -241,7 +241,7 @@ describe('when transforming a CollectionPaginationData to PaginationStats', () =
   })
 })
 
-describe.only('when getting the fiat commodity amount', () => {
+describe('when getting the fiat commodity amount', () => {
   let unitPrice: string
   let items: number
 
