@@ -35,4 +35,3 @@ Here are the basic requirements to run the project:
 
 NODE_PATH=src
 ```
-
