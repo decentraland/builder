@@ -3,6 +3,8 @@ import equal from 'fast-deep-equal'
 import { Contract, providers, constants, ethers } from 'ethers'
 import { push, replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
+import { eventChannel } from 'redux-saga'
+import { v4 as uuid } from 'uuid'
 import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
@@ -17,6 +19,8 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { FiatGateway, WertTarget, openFiatGatewayWidgetRequest } from 'decentraland-dapps/dist/modules/gateway'
+import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile/selectors'
 import { Network } from '@dcl/schemas'
 import {
   FetchCollectionsRequestAction,
@@ -112,7 +116,8 @@ import {
   getCollectionItems,
   getWalletItems,
   getData as getItemsById,
-  getPaginationData as getItemPaginationData
+  getPaginationData as getItemPaginationData,
+  getRarities
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash, hasOldHashedContents } from 'modules/item/export'
@@ -144,8 +149,6 @@ import {
 import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getData, getLastFetchParams, getPaginationData, getRaritiesContract, getWalletCollections } from './selectors'
-import { CollectionPaginationData } from './reducer'
-import { Collection, CollectionType } from './types'
 import {
   isOwner,
   getCollectionBaseURI,
@@ -155,9 +158,13 @@ import {
   UNSYNCED_COLLECTION_ERROR_PREFIX,
   isTPCollection,
   getCollectionFactoryContract,
-  toPaginationStats
+  toPaginationStats,
+  getFiatGatewayCommodityAmount
 } from './utils'
 import { isErrorWithCode } from 'lib/error'
+import { config } from 'config'
+import { CollectionPaginationData } from './reducer'
+import { Collection, CollectionType, PaymentMethod } from './types'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
 
@@ -330,7 +337,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-    const { items, email, subscribeToNewsletter } = action.payload
+    const { items, email, subscribeToNewsletter, paymentMethod } = action.payload
 
     if (subscribeToNewsletter) {
       const collectionHasEmotes = items.some(item => item.type === ItemType.EMOTE)
@@ -421,23 +428,155 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
       yield retry(10, 500, legacyBuilderClient.saveTOS, collection, email)
 
-      const txHash: string = yield call(sendTransaction, manager, collectionManager =>
-        collectionManager.createCollection(
-          forwarder.address,
-          factory.address,
-          collection.salt!,
-          collection.name,
-          getCollectionSymbol(collection),
-          getCollectionBaseURI(),
-          from,
-          toInitializeItems(items)
+      let txHash: string
+
+      // Arguments used in the publish collection transaction.
+      const createCollectionArgs = [
+        forwarder.address,
+        factory.address,
+        collection.salt,
+        collection.name,
+        getCollectionSymbol(collection),
+        getCollectionBaseURI(),
+        from,
+        toInitializeItems(items)
+      ]
+
+      if (paymentMethod === PaymentMethod.FIAT) {
+        const wertPublishFeesEnv: string = yield call([config, config.get], 'WERT_PUBLISH_FEES_ENV')
+
+        if (!wertPublishFeesEnv) {
+          throw new Error('Missing WERT_PUBLISH_FEES_ENV')
+        }
+
+        // Wert variables that depend on the desired environment.
+        let partnerId: string
+        let commodity: string
+        let scAddress: string
+        let network: string
+        let origin: string
+
+        switch (wertPublishFeesEnv) {
+          case 'dev':
+            partnerId = '01HRRQQ70YK4SP88GHM9A61P6B'
+            commodity = 'TT'
+            scAddress = '0xe539E0AED3C1971560517D58277f8dd9aC296281'
+            network = 'mumbai'
+            origin = 'https://sandbox.wert.io'
+            break
+          case 'prod':
+            partnerId = '01HR4TB274GD2VNZW0VEAXNHW2'
+            commodity = 'MANA'
+            scAddress = '0x9D32AaC179153A991e832550d9F96441Ea27763A'
+            network = 'polygon'
+            origin = 'https://widget.wert.io'
+            break
+          default:
+            throw new Error('Invalid WERT_PUBLISH_FEES_ENV')
+        }
+
+        // The transaction input data for publishing the collection.
+        const scInputData = new ethers.utils.Interface(manager.abi).encodeFunctionData('createCollection', createCollectionArgs)
+
+        // The amount of MANA to be purchased required to publish the collection is determined by the price of the rarities.
+        // Given that rarities have the same price, we can use the first rarity and multiply it by the amount of items to get the final price.
+        const rarities: ReturnType<typeof getRarities> = yield select(getRarities)
+        const rarity = rarities[0]
+
+        if (!rarity) {
+          throw new Error('Rarity not found')
+        }
+
+        if (!rarity.prices) {
+          throw new Error('Rarity prices not found')
+        }
+
+        // Amount of MANA required to publish the collection.
+        const commodityAmount = getFiatGatewayCommodityAmount(rarity.prices.MANA, items.length)
+
+        // Event channel to handle in this same saga, the events dispatched by the fiat gateway widget.
+        const onFiatGatewayEventName = 'publish-collection-request-fiat-gateway-event'
+        const onFiatGatewayEventChannel = eventChannel(emitter => {
+          // @ts-expect-error - The event listener should have a detail property.
+          const handler: Parameters<typeof document.addEventListener>[1] = event => emitter(event.detail)
+          document.addEventListener(onFiatGatewayEventName, handler)
+          return () => document.removeEventListener(onFiatGatewayEventName, handler)
+        })
+
+        const profile: ReturnType<typeof getProfileOfAddress> = yield select(getProfileOfAddress, from)
+
+        yield put(
+          openFiatGatewayWidgetRequest(
+            FiatGateway.WERT,
+            {
+              partner_id: partnerId,
+              address: from,
+              commodity,
+              commodity_amount: commodityAmount,
+              sc_address: scAddress,
+              sc_input_data: scInputData,
+              origin,
+              lang: 'en',
+              click_id: uuid(),
+              network,
+              target: WertTarget.PUBLICATION_FEES,
+              extra: {
+                item_info: {
+                  name: collection.name,
+                  image_url: (process.env.VITE_BASE_URL || window.location.origin) + '/images/cards.webp',
+                  author_image_url: profile?.avatars[0].avatar.snapshots.face256,
+                  author: profile?.avatars[0].name
+                }
+              }
+            },
+            {
+              onPending: event => {
+                const customEvent = new CustomEvent(onFiatGatewayEventName, {
+                  detail: {
+                    type: 'pending',
+                    event
+                  }
+                })
+                document.dispatchEvent(customEvent)
+              },
+              onClose: () => {
+                const customEvent = new CustomEvent(onFiatGatewayEventName, {
+                  detail: {
+                    type: 'close'
+                  }
+                })
+                document.dispatchEvent(customEvent)
+              }
+            }
+          )
         )
-      )
+
+        const fiatGatewayEventChannelResult:
+          | {
+              type: 'pending'
+              event: {
+                data: {
+                  tx_id: string
+                }
+              }
+            }
+          | { type: 'close' } = yield take(onFiatGatewayEventChannel)
+
+        onFiatGatewayEventChannel.close()
+
+        if (fiatGatewayEventChannelResult.type === 'close') {
+          throw new Error('Modal was closed')
+        }
+
+        txHash = fiatGatewayEventChannelResult.event.data.tx_id
+      } else {
+        txHash = yield call(sendTransaction, manager, collectionManager => collectionManager.createCollection(...createCollectionArgs))
+      }
 
       const lock: string = yield retry(10, 500, legacyBuilderClient.lockCollection, collection)
       collection = { ...collection, lock: +new Date(lock) }
 
-      yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
+      yield put(publishCollectionSuccess(collection, items, maticChainId, txHash, paymentMethod === PaymentMethod.FIAT))
     } catch (error) {
       let message: string
       if (isErrorWithCode(error) && error.code.toString() === ErrorCode.HIGH_CONGESTION) {

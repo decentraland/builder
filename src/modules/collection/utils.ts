@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -197,4 +198,15 @@ export const toPaginationStats = (collectionPaginationData: CollectionPagination
     pages: totalPages,
     page: currentPage
   }
+}
+
+export const getFiatGatewayCommodityAmount = (unitPrice: string, items: number) => {
+  const unitPriceWei = ethers.BigNumber.from(unitPrice)
+  const totalPriceWei = unitPriceWei.mul(items)
+  const totalPriceEth = ethers.utils.formatEther(totalPriceWei.toString())
+  const factor = Math.pow(10, 8)
+
+  // Wert supports up to 8 decimal places.
+  // It is important to round up to this amount of decimal places to avoid issues with the widget.
+  return Math.ceil(Number(totalPriceEth) * factor) / factor
 }

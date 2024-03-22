@@ -1,16 +1,30 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { config } from 'config'
-import { Button, Column, Mana, Modal, Row } from 'decentraland-ui'
+import { Button, Column, Icon, Mana, Modal, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { Currency, Rarity } from 'modules/item/types'
+import { PaymentMethod } from 'modules/collection/types'
 import { MapStateProps } from '../PublishWizardCollectionModal.types'
 import './PayPublicationFeeStep.css'
 
-export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () => void; onPrevStep: () => void }> = props => {
-  const { collection, items, rarities, wallet, collectionError, unsyncedCollectionError, isLoading, onNextStep, onPrevStep } = props
+export const PayPublicationFeeStep: React.FC<
+  MapStateProps & { onNextStep: (paymentMethod: PaymentMethod) => void; onPrevStep: () => void }
+> = props => {
+  const {
+    collection,
+    items,
+    rarities,
+    wallet,
+    collectionError,
+    unsyncedCollectionError,
+    isLoading,
+    isPublishCollectionsWertEnabled,
+    onNextStep,
+    onPrevStep
+  } = props
 
   // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
   // as reference for the prices is enough.
@@ -32,10 +46,12 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
   }
 
   const renderErrorMessage = () => {
+    let content: React.ReactNode | undefined = undefined
+
     if (!refRarity) {
-      return <p className="rarities-error error">{t('publish_collection_modal_with_oracle.rarities_error')}</p>
+      content = <small className="error">{t('publish_collection_modal_with_oracle.rarities_error')}</small>
     } else if (hasInsufficientMANA) {
-      return (
+      content = (
         <small className="not-enough-mana-notice error">
           {t('publish_collection_modal_with_oracle.not_enough_mana', {
             symbol: (
@@ -48,36 +64,41 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
           {t('publish_collection_modal_with_oracle.get_mana', {
             link: (
               <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
-                Account
+                Account dapp.
               </a>
             )
           })}
         </small>
       )
     } else if (unsyncedCollectionError && !isLoading) {
-      return <p className="error danger-text">{t('publish_collection_modal_with_oracle.unsynced_collection')}</p>
+      content = <small className="error ">{t('publish_collection_modal_with_oracle.unsynced_collection')}</small>
     } else if (collectionError && !isLoading) {
-      return <p className="error danger-text">{collectionError}</p>
+      content = <small className="error">{collectionError}</small>
     }
 
-    return null
+    return content ? <div className="error-container">{content}</div> : null
   }
+
+  const handleBuyWithMana = useCallback(() => {
+    onNextStep(PaymentMethod.MANA)
+  }, [onNextStep])
+
+  const handleBuyWithFiat = useCallback(() => {
+    onNextStep(PaymentMethod.FIAT)
+  }, [onNextStep])
 
   return (
     <Modal.Content className="PayPublicationFeeStep">
       <Column>
         <Row className="details">
           <Column grow={true}>
-            <span>
-              {t('publish_wizard_collection_modal.pay_publication_fee_step.title', {
-                collection_name: <b>{collection.name}</b>,
-                count: items.length
-              })}
-            </span>
-            <span>
+            <span className="title">{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
+            <span className="subtitle">
               {t('publish_wizard_collection_modal.pay_publication_fee_step.subtitle', {
+                collection_name: <b>{collection.name}</b>,
+                count: items.length,
                 currency: 'USD',
-                publicationFee: toFixedMANAValue(ethers.utils.formatEther(priceUSD))
+                publication_fee: toFixedMANAValue(ethers.utils.formatEther(priceUSD))
               })}
             </span>
             <span className="learn-more">
@@ -117,20 +138,23 @@ export const PayPublicationFeeStep: React.FC<MapStateProps & { onNextStep: () =>
             </div>
           </Column>
         </Row>
-        <Row className="actions" align="right">
-          {renderErrorMessage()}
+        {renderErrorMessage()}
+        <Row className="actions">
           <Button className="back" secondary onClick={onPrevStep} disabled={isLoading}>
             {t('global.back')}
           </Button>
-          <Button className="proceed" primary onClick={onNextStep} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
-            {t('publish_wizard_collection_modal.pay_publication_fee_step.pay', {
-              value: (
-                <Mana showTooltip network={Network.MATIC} size="medium">
-                  {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
-                </Mana>
-              )
-            })}
-          </Button>
+          <div className="actions-right">
+            {isPublishCollectionsWertEnabled ? (
+              <Button className="pay-with-card" onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
+                <Icon name="credit card outline" />
+                <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
+              </Button>
+            ) : null}
+            <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
+              <Mana inline size="small" network={Network.MATIC} />
+              <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}</span>
+            </Button>
+          </div>
         </Row>
       </Column>
     </Modal.Content>

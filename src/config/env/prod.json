@@ -42,5 +42,7 @@
   "ENS_DOMAINS_URL": "https://ens.domains",
   "INSPECTOR_SEGMENT_API_KEY": "8PrGcB0XsogabYgo02gXqfqVM20KKzva",
   "INSPECTOR_SEGMENT_APP_ID": "web-editor",
-  "AUTH_URL": "/auth"
+  "AUTH_URL": "/auth",
+  "MARKETPLACE_SERVER_URL": "https://marketplace-api.decentraland.org/v1",
+  "WERT_PUBLISH_FEES_ENV": "prod"
 }
