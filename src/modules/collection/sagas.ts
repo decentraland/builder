@@ -493,7 +493,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
         // Amount of MANA required to publish the collection.
         const commodityAmount = getFiatGatewayCommodityAmount(rarity.prices.MANA, items.length)
-        
+
         // Event channel to handle in this same saga, the events dispatched by the fiat gateway widget.
         const onFiatGatewayEventName = 'publish-collection-request-fiat-gateway-event'
         const onFiatGatewayEventChannel = eventChannel(emitter => {
