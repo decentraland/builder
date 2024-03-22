@@ -907,7 +907,7 @@ describe('when publishing a collection', () => {
   const txHash = '0xdeadbeef'
 
   beforeEach(() => {
-    collection = { salt: 'some salt', id: 'someId' } as Collection
+    collection = { salt: 'some salt', id: 'someId', name: 'name' } as Collection
     items = []
   })
 
