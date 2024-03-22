@@ -2014,7 +2014,7 @@ describe('when handling the fetch of a collection', () => {
   })
 })
 
-describe.skip('when publishing a collection with fiat', () => {
+describe('when publishing a collection with fiat', () => {
   let subscribeToNewsletter: boolean
   let collection: Collection
   let items: Item[]
@@ -2168,7 +2168,8 @@ describe.skip('when publishing a collection with fiat', () => {
                         wertEnv = 'dev'
                       })
 
-                      it('should dispatch the action to open the fiat gateway widget with dev parameters', () => {
+                      // TODO: Unskip once the success action can be reached.
+                      it.skip('should dispatch the action to open the fiat gateway widget with dev parameters', () => {
                         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
                           .provide([
                             [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
@@ -2203,7 +2204,8 @@ describe.skip('when publishing a collection with fiat', () => {
                         wertEnv = 'prod'
                       })
 
-                      it('should dispatch the action to open the fiat gateway widget with prod parameters', () => {
+                      // TODO: Unskip once the success action can be reached.
+                      it.skip('should dispatch the action to open the fiat gateway widget with prod parameters', () => {
                         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
                           .provide([
                             [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
