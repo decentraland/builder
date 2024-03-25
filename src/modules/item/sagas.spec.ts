@@ -6,7 +6,14 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { ethers } from 'ethers'
 import { Entity, EntityType } from '@dcl/schemas'
 import { call, select, take, race, delay } from 'redux-saga/effects'
-import { BuilderClient, MAX_EMOTE_FILE_SIZE, MAX_SKIN_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE, MAX_WEARABLE_FILE_SIZE, RemoteItem } from '@dcl/builder-client'
+import {
+  BuilderClient,
+  MAX_EMOTE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_THUMBNAIL_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE,
+  RemoteItem
+} from '@dcl/builder-client'
 import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
 import { ToastProps, ToastType } from 'decentraland-ui'
 import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
@@ -230,13 +237,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE + 1]
         ])
-        .put(
-          saveItemFailure(
-            item,
-            { ...contents, [THUMBNAIL_PATH]: blob },
-            'The thumbnail file size exceeds 1MB limit.'
-          )
-        )
+        .put(saveItemFailure(item, { ...contents, [THUMBNAIL_PATH]: blob }, 'The thumbnail file size exceeds 1MB limit.'))
         .dispatch(saveItemRequest(item, { ...contents, [THUMBNAIL_PATH]: blob }))
         .run({ silenceTimeout: true })
     })

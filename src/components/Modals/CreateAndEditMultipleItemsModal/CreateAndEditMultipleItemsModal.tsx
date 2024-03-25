@@ -172,21 +172,15 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       // Generate or set the correct URN for the items taking into consideration the selected collection
       const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
-      console.log("decodedCollectionUrn > ", decodedCollectionUrn)
       if (
         decodedCollectionUrn &&
         decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
         decodedCollectionUrn.thirdPartyCollectionId
       ) {
         const decodedUrn: DecodedURN<any> | null = loadedFile.wearable.id ? decodeURN(loadedFile.wearable.id) : null
-        console.log("decodedUrn > ", decodedUrn)
         if (loadedFile.wearable.id && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY) {
           const { thirdPartyName, thirdPartyCollectionId } = decodedUrn
 
-          console.log("thirdPartyCollectionId > ", thirdPartyCollectionId)
-          console.log("decodedCollectionUrn.thirdPartyCollectionId > ", decodedCollectionUrn.thirdPartyCollectionId)
-          console.log("thirdPartyName > ", thirdPartyName)
-          console.log("decodedCollectionUrn.thirdPartyName > ", decodedCollectionUrn.thirdPartyName)
           if (
             (thirdPartyCollectionId && thirdPartyCollectionId !== decodedCollectionUrn.thirdPartyCollectionId) ||
             (thirdPartyName && thirdPartyName !== decodedCollectionUrn.thirdPartyName)

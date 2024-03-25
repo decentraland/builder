@@ -16,7 +16,14 @@ import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import { BuilderClient, RemoteItem, MAX_THUMBNAIL_FILE_SIZE, MAX_WEARABLE_FILE_SIZE, MAX_SKIN_FILE_SIZE, MAX_EMOTE_FILE_SIZE } from '@dcl/builder-client'
+import {
+  BuilderClient,
+  RemoteItem,
+  MAX_THUMBNAIL_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_EMOTE_FILE_SIZE
+} from '@dcl/builder-client'
 import {
   FetchItemsRequestAction,
   fetchItemsSuccess,
@@ -124,7 +131,13 @@ import { isErrorWithCode } from 'lib/error'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, ItemType, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
-import { ItemEmoteTooBigError, ItemSkinTooBigError, ItemWearableTooBigError, ThumbnailFileTooBigError, VideoFileTooBigError } from './errors'
+import {
+  ItemEmoteTooBigError,
+  ItemSkinTooBigError,
+  ItemWearableTooBigError,
+  ThumbnailFileTooBigError,
+  VideoFileTooBigError
+} from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_VIDEO_FILE_SIZE } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
@@ -353,7 +366,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       // Re-write the contents so the files have the new hash
       item.contents = { ...item.contents, ...oldReHashedContent }
-
 
       // Add the old content to be uploaded again with the new hash
       const contents = { ...actionContents, ...oldReHashedContentWithNewHashes }
