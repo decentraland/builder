@@ -111,6 +111,7 @@ import {
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
+import { CLOSE_MODAL, CloseModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type ItemPaginationData = {
   ids: string[]
@@ -189,9 +190,11 @@ type ItemReducerAction =
   | FetchOrphanItemRequestAction
   | FetchOrphanItemSuccessAction
   | FetchOrphanItemFailureAction
+  | CloseModalAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
+    case CLOSE_MODAL:
     case LOCATION_CHANGE: {
       return {
         ...state,

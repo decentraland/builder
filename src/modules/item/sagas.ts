@@ -426,13 +426,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           throw new ItemSkinTooBigError()
         }
 
-        if (finalModelSize > MAX_WEARABLE_FILE_SIZE) {
+        if (!isSkin && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
           throw new ItemWearableTooBigError()
         }
       }
 
       yield call([legacyBuilder, 'saveItem'], item, contents)
-
       yield put(saveItemSuccess(item, contents))
     } catch (error) {
       yield put(saveItemFailure(actionItem, actionContents, isErrorWithMessage(error) ? error.message : 'Unknown error'))
@@ -454,6 +453,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { items } = action.payload
     const collectionId = items.length > 0 ? items[0].collectionId : null
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    
     if (collectionId && location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId, items.length)
     }
