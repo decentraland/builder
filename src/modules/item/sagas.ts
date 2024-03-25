@@ -453,7 +453,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { items } = action.payload
     const collectionId = items.length > 0 ? items[0].collectionId : null
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
-    
+
     if (collectionId && location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId, items.length)
     }

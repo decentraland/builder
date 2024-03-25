@@ -12,7 +12,7 @@ import {
   MAX_WEARABLE_FILE_SIZE,
   MAX_SKIN_FILE_SIZE,
   MAX_EMOTE_FILE_SIZE,
-  FileTooBigError as FileTooBigErrorBuilderClient,
+  FileTooBigError as FileTooBigErrorBuilderClient
 } from '@dcl/builder-client/dist/files'
 import { WearableCategory } from '@dcl/builder-client/dist/item'
 import { ModalNavigation } from 'decentraland-ui'
@@ -31,7 +31,7 @@ import {
   InvalidModelFilesRepresentation,
   InvalidModelFileType,
   CustomErrorWithTitle,
-  ItemNotAllowedInThirdPartyCollections,
+  ItemNotAllowedInThirdPartyCollections
 } from 'modules/item/errors'
 import {
   BodyShapeType,
@@ -183,7 +183,6 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     }
 
     if (error instanceof FileTooBigErrorBuilderClient) {
-
       const type = error.getType()
 
       this.setState({
@@ -197,7 +196,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       if (wrongConfigurations.length) {
         console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
       }
-  
+
       this.setState({
         error: errorTranslationId
           ? new CustomErrorWithTitle(
