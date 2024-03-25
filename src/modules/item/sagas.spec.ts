@@ -6,7 +6,7 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { ethers } from 'ethers'
 import { Entity, EntityType } from '@dcl/schemas'
 import { call, select, take, race, delay } from 'redux-saga/effects'
-import { BuilderClient, RemoteItem } from '@dcl/builder-client'
+import { BuilderClient, MAX_EMOTE_FILE_SIZE, MAX_SKIN_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE, MAX_WEARABLE_FILE_SIZE, RemoteItem } from '@dcl/builder-client'
 import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
 import { ToastProps, ToastType } from 'decentraland-ui'
 import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
@@ -83,7 +83,7 @@ import {
   WearableRepresentation
 } from './types'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE, MAX_VIDEO_FILE_SIZE } from './utils'
+import { buildZipContents, generateCatalystImage, groupsOf, MAX_VIDEO_FILE_SIZE } from './utils'
 import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
 import * as toasts from './toasts'
@@ -155,7 +155,7 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('and file size is larger than 3 MB', () => {
+  describe('and file size of the wearable is larger than 2 MB', () => {
     beforeEach(() => {
       item.name = 'valid name'
       item.description = 'valid description'
@@ -168,10 +168,53 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE + 1)],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The entire item is too big to be uploaded. The max size for all files is 3MB.'))
+        .put(saveItemFailure(item, contents, 'The item is too big to be uploaded. The max file size is 2MB for wearable.'))
+        .dispatch(saveItemRequest(item, contents))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and file size of the skin is larger than 8 MB', () => {
+    beforeEach(() => {
+      item.name = 'valid name'
+      item.description = 'valid description'
+      item.updatedAt = updatedAt
+      item.data.category = WearableCategory.SKIN
+    })
+
+    it('should put a saveItemFailure action with item too big message', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getItem, item.id), undefined],
+          [matchers.call.fn(reHashOlderContents), {}],
+          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_SKIN_FILE_SIZE + 1)],
+          [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
+        ])
+        .put(saveItemFailure(item, contents, 'The item is too big to be uploaded. The max file size is 8MB for skin.'))
+        .dispatch(saveItemRequest(item, contents))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and file size of the emote is larger than 2 MB', () => {
+    beforeEach(() => {
+      item = { ...item, type: ItemType.EMOTE }
+    })
+
+    it('should put a saveItemFailure action with item too big message', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getItem, item.id), undefined],
+          [matchers.call.fn(reHashOlderContents), {}],
+          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_EMOTE_FILE_SIZE + 1)],
+          [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
+        ])
+        .put(saveItemFailure(item, contents, 'The item is too big to be uploaded. The max file size is 2MB for emote.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -184,14 +227,14 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE)],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE + 1]
         ])
         .put(
           saveItemFailure(
             item,
             { ...contents, [THUMBNAIL_PATH]: blob },
-            'The thumbnail file is too big to be uploaded. The max size is 1MB.'
+            'The thumbnail file size exceeds 1MB limit.'
           )
         )
         .dispatch(saveItemRequest(item, { ...contents, [THUMBNAIL_PATH]: blob }))
@@ -206,7 +249,7 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE)],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
           [matchers.call.fn(calculateFileSize), MAX_VIDEO_FILE_SIZE + 1]
         ])
         .put(

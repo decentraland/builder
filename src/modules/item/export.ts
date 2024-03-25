@@ -87,19 +87,8 @@ export async function calculateModelFinalSize(
   const allBlobs = { ...newContents, ...blobs }
   const allHashes = { ...newHashes, ...filesToDownload }
 
-  let imageSize = 0
-  // Only generate the catalyst image if there isn't one already
-  if (!allBlobs[IMAGE_PATH]) {
-    try {
-      const image = await generateImage(item, { thumbnail: allBlobs[THUMBNAIL_PATH] })
-      imageSize = image.size
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   const uniqueFiles = getUniqueFiles(allHashes, allBlobs)
-  return imageSize + calculateFilesSize(uniqueFiles)
+  return calculateFilesSize(uniqueFiles)
 }
 
 export function calculateFileSize(file: Blob): number {

@@ -2,7 +2,7 @@ import { ReactNode, createElement } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toMB } from 'lib/file'
 import { MAX_EMOTE_DURATION, MAX_VIDEO_FILE_SIZE } from 'modules/item/utils'
-import { MAX_SKIN_FILE_SIZE, MAX_WEARABLE_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE } from '@dcl/builder-client'
+import { MAX_SKIN_FILE_SIZE, MAX_WEARABLE_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE, MAX_EMOTE_FILE_SIZE } from '@dcl/builder-client'
 
 class CustomError {
   message: ReactNode
@@ -21,20 +21,41 @@ export class CustomErrorWithTitle {
   }
 }
 
-export class ItemTooBigError extends Error {
+export class ItemWearableTooBigError extends Error {
   constructor() {
     super(
       t('create_single_item_modal.error.item_too_big', {
         size: `${toMB(MAX_WEARABLE_FILE_SIZE)}MB`,
-        size_skin: `${toMB(MAX_SKIN_FILE_SIZE)}MB`
+        type: `wearable`
       })
     )
   }
 }
 
-// TODO: review default maxSize
+export class ItemSkinTooBigError extends Error {
+  constructor() {
+    super(
+      t('create_single_item_modal.error.item_too_big', {
+        size: `${toMB(MAX_SKIN_FILE_SIZE)}MB`,
+        type: `skin`
+      })
+    )
+  }
+}
+
+export class ItemEmoteTooBigError extends Error {
+  constructor() {
+    super(
+      t('create_single_item_modal.error.item_too_big', {
+        size: `${toMB(MAX_EMOTE_FILE_SIZE)}MB`,
+        type: `emote`
+      })
+    )
+  }
+}
+
 export class FileTooBigError extends CustomError {
-  constructor(maxSize: number = MAX_WEARABLE_FILE_SIZE) {
+  constructor(maxSize: number) {
     super(
       t('create_single_item_modal.error.file_too_big', {
         title: createElement('b', null, t('create_single_item_modal.error.file_too_big_title')),
@@ -47,7 +68,7 @@ export class FileTooBigError extends CustomError {
 
 export class ThumbnailFileTooBigError extends Error {
   constructor() {
-    super(t('create_single_item_modal.error.thumbnail_file_too_big', { size: `${toMB(MAX_THUMBNAIL_FILE_SIZE)}MB` }))
+    super(t('create_single_item_modal.error.thumbnail_file_too_big', { maxSize: `${toMB(MAX_THUMBNAIL_FILE_SIZE)}MB` }))
   }
 }
 

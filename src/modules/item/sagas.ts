@@ -3,7 +3,7 @@ import { Contract, providers } from 'ethers'
 import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
-import { ChainId, Network, Entity, EntityType } from '@dcl/schemas'
+import { ChainId, Network, Entity, EntityType, WearableCategory } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
@@ -16,7 +16,7 @@ import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import { BuilderClient, RemoteItem, MAX_THUMBNAIL_FILE_SIZE, MAX_WEARABLE_FILE_SIZE } from '@dcl/builder-client'
+import { BuilderClient, RemoteItem, MAX_THUMBNAIL_FILE_SIZE, MAX_WEARABLE_FILE_SIZE, MAX_SKIN_FILE_SIZE, MAX_EMOTE_FILE_SIZE } from '@dcl/builder-client'
 import {
   FetchItemsRequestAction,
   fetchItemsSuccess,
@@ -124,7 +124,7 @@ import { isErrorWithCode } from 'lib/error'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, ItemType, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
-import { ItemTooBigError, ThumbnailFileTooBigError, VideoFileTooBigError } from './errors'
+import { ItemEmoteTooBigError, ItemSkinTooBigError, ItemWearableTooBigError, ThumbnailFileTooBigError, VideoFileTooBigError } from './errors'
 import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_VIDEO_FILE_SIZE } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
@@ -330,6 +330,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleSaveItemRequest(action: SaveItemRequestAction) {
     const { item: actionItem, contents: actionContents } = action.payload
+
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
@@ -353,6 +354,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       // Re-write the contents so the files have the new hash
       item.contents = { ...item.contents, ...oldReHashedContent }
 
+
       // Add the old content to be uploaded again with the new hash
       const contents = { ...actionContents, ...oldReHashedContentWithNewHashes }
 
@@ -375,7 +377,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         // Extract the thumbnail from the contents to calculate the size using another limit
         const { [THUMBNAIL_PATH]: thumbnailContent, [VIDEO_PATH]: videoContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _thumbnailContent, [VIDEO_PATH]: _videoContent, ...itemContents } = item.contents
-        // This will calculate the model's final size without the thumbnail with a limit of 2MB
+        // This will calculate the model's final size without the thumbnail with a limit of 2MB for wearables/emotes and 8MB for skins
         const finalModelSize: number = yield call(
           calculateModelFinalSize,
           { ...item, contents: itemContents },
@@ -401,9 +403,19 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         }
 
-        // TODO: we should treat separatly the thumbnails size. Is the MAX_WEARABLE_FILE_SIZE correct here?
-        if (finalModelSize + finalThumbnailSize > MAX_WEARABLE_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE) {
-          throw new ItemTooBigError()
+        const isEmote = item.type === ItemType.EMOTE
+        const isSkin = !isEmote && item.data.category === WearableCategory.SKIN
+
+        if (isEmote && finalModelSize > MAX_EMOTE_FILE_SIZE) {
+          throw new ItemEmoteTooBigError()
+        }
+
+        if (isSkin && finalModelSize > MAX_SKIN_FILE_SIZE) {
+          throw new ItemSkinTooBigError()
+        }
+
+        if (finalModelSize > MAX_WEARABLE_FILE_SIZE) {
+          throw new ItemWearableTooBigError()
         }
       }
 
