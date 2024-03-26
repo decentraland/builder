@@ -9,14 +9,28 @@
   text-align: justify;
 }
 
+.PayPublicationFeeStep .details .title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.PayPublicationFeeStep .details .subtitle {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--clear-divider);
+}
+
 .PayPublicationFeeStep .details .learn-more {
-  margin-top: 32px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
 }
 
 .PayPublicationFeeStep .details .learn-more > a {
-  color: white;
+  color: var(--clear-divider);
   text-decoration: underline;
-  font-weight: 400;
 }
 
 .PayPublicationFeeStep .price-breakdown-container {
@@ -71,6 +85,26 @@
 .PayPublicationFeeStep .actions {
   margin-top: 24px;
   width: 100%;
+  justify-content: space-between !important;
+}
+
+.PayPublicationFeeStep .actions .actions-right {
+  display: flex;
+  gap: 1rem;
+}
+
+.PayPublicationFeeStep .actions .actions-right button {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.PayPublicationFeeStep .actions .actions-right button span {
+  margin-left: 6px;
+}
+
+.PayPublicationFeeStep .actions .actions-right .pay-with-card {
+  background-color: white !important;
+  color: black;
 }
 
 .PayPublicationFeeStep .actions .button {
@@ -87,12 +121,19 @@
   visibility: hidden;
 }
 
-.PayPublicationFeeStep .error {
-  flex: 1 1 0;
+.PayPublicationFeeStep .error-container {
+  border-radius: 8px;
+  background: #ff2d5533;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  margin-top: 16px;
+  text-align: center;
 }
 
-.PayPublicationFeeStep .rarities-error {
-  color: var(--error);
+.PayPublicationFeeStep .error {
+  flex: 1 1 0;
 }
 
 .PayPublicationFeeStep .not-enough-mana-notice .dcl.mana .symbol {

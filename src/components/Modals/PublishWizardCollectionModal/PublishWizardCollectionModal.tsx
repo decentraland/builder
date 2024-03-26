@@ -11,6 +11,7 @@ import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization
 import { NFTCategory, Network } from '@dcl/schemas'
 import { buildManaAuthorization } from 'lib/mana'
 import { getPublishStatus, getError } from 'modules/collection/selectors'
+import { PaymentMethod } from 'modules/collection/types'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
 import ConfirmCollectionNameStep from './ConfirmCollectionNameStep/ConfirmCollectionNameStep'
 import ConfirmCollectionItemsStep from './ConfirmCollectionItemsStep/ConfirmCollectionItemsStep'
@@ -26,7 +27,8 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const [emailAddress, setEmailAddress] = useState<string>('')
   const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(false)
   const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(false)
-  const [ackowledgeDaoTermsChecked, setAckowledgeDaoTermsChecked] = useState<boolean>(false)
+  const [acknowledgeImmutability, setAcknowledgeImmutability] = useState<boolean>(false)
+  const [acknowledgeDaoTermsChecked, setAcknowledgeDaoTermsChecked] = useState<boolean>(false)
   const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false)
 
   useEffect(() => {
@@ -64,32 +66,40 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     setAcceptTermsOfUseChecked(value)
   }
 
-  const handleOnAckowledgeDaoTermsChange = (value: boolean) => {
-    setAckowledgeDaoTermsChecked(value)
+  const handleOnAcknowledgeImmutability = (value: boolean) => {
+    setAcknowledgeImmutability(value)
+  }
+
+  const handleOnAcknowledgeDaoTermsChange = (value: boolean) => {
+    setAcknowledgeDaoTermsChecked(value)
   }
 
   const handleOnSubscribeToNewsletter = (value: boolean) => {
     setSubscribeToNewsletter(value)
   }
 
-  const handleOnPublish = () => {
-    const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
-    const manaContract = {
-      name: authorization.contractName,
-      address: authorization.contractAddress,
-      chainId: authorization.chainId,
-      network: Network.MATIC,
-      category: NFTCategory.ENS
+  const handleOnPublish = (paymentMethod: PaymentMethod) => {
+    if (paymentMethod === PaymentMethod.FIAT) {
+      onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
+      return
     }
+
+    const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
 
     onAuthorizedAction({
       authorizedAddress: authorization.authorizedAddress,
       authorizedContractLabel: ContractName.CollectionManager,
-      targetContract: manaContract,
+      targetContract: {
+        name: authorization.contractName,
+        address: authorization.contractAddress,
+        chainId: authorization.chainId,
+        network: Network.MATIC,
+        category: NFTCategory.ENS
+      },
       targetContractName: ContractName.MANAToken,
       requiredAllowanceInWei: ethers.BigNumber.from(rarities[0].prices!.MANA).mul(items.length).toString(),
       authorizationType: AuthorizationType.ALLOWANCE,
-      onAuthorized: () => onPublish(collection, items, emailAddress, subscribeToNewsletter)
+      onAuthorized: () => onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
     })
   }
 
@@ -113,12 +123,14 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
             confirmedEmailAddress={emailAddress}
             contentPolicyFirstConditionChecked={contentPolicyFirstConditionChecked}
             acceptTermsOfUseChecked={acceptTermsOfUseChecked}
-            ackowledgeDaoTermsChecked={ackowledgeDaoTermsChecked}
+            acknowledgeImmutability={acknowledgeImmutability}
+            acknowledgeDaoTermsChecked={acknowledgeDaoTermsChecked}
             subscribeToNewsletter={subscribeToNewsletter}
             onChangeEmailAddress={handleOnChangeEmailAddress}
             onContentPolicyFirstConditionChange={handleOnContentPolicyFirstConditionChange}
             onAcceptTermsOfUseChange={handleOnAcceptTermsOfUseChange}
-            onAckowledgeDaoTermsChange={handleOnAckowledgeDaoTermsChange}
+            onAcknowledgeImmutability={handleOnAcknowledgeImmutability}
+            onAcknowledgeDaoTermsChange={handleOnAcknowledgeDaoTermsChange}
             onSubscribeToNewsletter={handleOnSubscribeToNewsletter}
             onNextStep={handleOnNextStep}
             onPrevStep={handleOnPrevStep}

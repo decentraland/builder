@@ -37,3 +37,11 @@ export const getIsCreateSceneOnlySDK7Enabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsPublishCollectionsWertEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.PUBLISH_COLLECTIONS_WERT)
+  } catch (e) {
+    return false
+  }
+}

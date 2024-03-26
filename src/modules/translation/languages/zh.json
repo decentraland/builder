@@ -1675,7 +1675,7 @@
     "accept_by_publishing": "通过点击发表您接受我们的条件",
     "publish": "发布",
     "not_enough_mana": "您没有足够的{symbol} 来发布此收藏集。",
-    "get_mana": "您可以使用{link} dapp获得更多信息。",
+    "get_mana": "您可以使用 {link} 获得更多信息。",
     "unsynced_collection": "您尝试发布的集合中的项与服务器上的项存在差异。请刷新浏览器，然后重试。"
   },
   "publish_wizard_collection_modal": {
@@ -1686,8 +1686,8 @@
     "publish_failed": "發布失敗",
     "confirm_collection_name_step": {
       "title": "确认收藏名称",
-      "subtitle": "作品集名称送审后不可修改。",
-      "description": "确保它没有任何拼写错误，并且不包含您不拥有的任何知识产权 (E.g Star Wars, Sailor Moon, etc)",
+      "subtitle": "提交审核后无法修改收藏名称。",
+      "description": "确保它没有任何拼写错误，并且不包含您不拥有的任何知识产权（例如：星球大战、美少女战士等）。",
       "collection_name_label": "集合名称",
       "collection_name_confirmation_label": "确认收藏名称",
       "collection_name_placeholder": "您的收藏名称",
@@ -1696,16 +1696,18 @@
     },
     "confirm_collection_items_step": {
       "title": "确认项目",
-      "subtitle": "项目不能在集合中添加或删除，也不能在发布后更改其稀有度。",
-      "description": "但是，商品的名称、描述、类别和价格始终可以修改。",
+      "subtitle": "一旦发布，便不能从集合中添加或删除项目。{br}发布后也不能更改项目的稀有度。",
+      "description": "可以修改项目名称、描述和类别。",
       "confirm_items": "确认项目"
     },
     "review_content_policy_step": {
-      "title": "在将您的收藏发送以供审核之前，请确认您已确认以下内容：",
-      "content_policy_first_condition": "我了解我将无法添加或删除项目，或在集合发布后修改其名称，并且我可以证明\"{collection_name}\"作为名称不侵犯任何知识产权。",
+      "title": "在提交您的收藏审核之前",
+      "subtitle": "请确认您的确认。",
+      "content_policy_first_condition": "我了解我将无法修改收藏的名称，并且我可以证明“{collection_name}”作为名称不违反任何知识产权。",
       "terms_of_use": "使用条款",
       "content_policy": "内容政策",
       "accept_terms_of_use": "我保证提交的项目完全符合我承认并接受的 {terms_of_use_link} 和 {content_policy_link}。",
+      "acknowledge_immutability": "我了解一旦收藏发布后，我将无法添加或删除项目。",
       "acknowledge_dao_terms": "我承认 DAO 可能会因违反 {content_policy_link} 和 {terms_of_use_link} 而拒绝批准该项目。 我也承认，如果被拒绝，提案费将不予退还，因为其目的是补偿策展人的时间和工作。",
       "email_disclousure": "我们需要您的电子邮件，以便将来就该系列进行交流。",
       "email_disclousure_detail": "我们只会将这封电子邮件用于特别是有关此收藏的通信。{enter}它不会与您的帐户相关联。",
@@ -1713,20 +1715,21 @@
       "continue": "继续"
     },
     "pay_publication_fee_step": {
-      "title": "您即将发送您的收藏\"{collection_name}\"，其中包括 {count} {count, plural, one {物品} other {项目}} 供审核。",
-      "subtitle": "为了支持策展人委员会和 DAO 金库，每件作品需支付 {currency} {publicationFee} 的出版费（以 MANA 支付）。",
-      "learn_more": "详细了解发布费",
+      "title": "确认项目",
+      "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。",
+      "learn_more": "了解出版费",
       "quantity": "数量",
       "items": "{count} {count, plural, one {物品} other {项目}}",
       "fee_per_item": "每件费用",
       "total_in_usd": "总计 {currency}",
       "total_in_mana": "总计 MANA",
-      "pay": "支付 {value} MANA"
+      "pay_card": "用卡支付",
+      "pay_mana": "用法力支付"
     },
     "congratulations_step": {
-      "title": "您的收藏现在可供策展人查看。",
+      "title": "您的收藏现在可供策展人查看",
       "subtitle": "任何反馈都将在 {forum_post} 中发送，您和社区中的任何人都可以发表评论。",
-      "description": "该合集将在策展委员会批准后发布。由于这是一个手动过程，可能需要几天时间。感谢您的耐心等待。",
+      "description": "该合集将在策展委员会批准后发布。<b>由于这是一个手动过程，可能需要几天时间。感谢您的耐心等待。</b>",
       "forum_post": "论坛帖子",
       "view_forum_post": "查看论坛帖子"
     },

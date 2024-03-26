@@ -1693,7 +1693,7 @@
     "content_policy": "Política de contenido",
     "accept_by_publishing": "Al presionar Publish estás aceptando nuestros términos y condiciones",
     "not_enough_mana": "No tienes suficiente {symbol} para publicar la collección.",
-    "get_mana": "Puedes obtener más usando la {link} dapp.",
+    "get_mana": "Puedes obtener más usando la {link}",
     "unsynced_collection": "La colección que está intentando publicar tiene diferencias con la que hay en el servidor. Por favor, refresque el navegador e intente de nuevo."
   },
   "publish_wizard_collection_modal": {
@@ -1703,9 +1703,9 @@
     "title_congratulations": "Felicidades!",
     "publish_failed": "Error al publicar",
     "confirm_collection_name_step": {
-      "title": "Confirmar nombre de la colección",
-      "subtitle": "El nombre de la colección no podra ser modificado despues de ser enviado para su revisión.",
-      "description": "Asegúrese de que esté escrito correctamente y que no viole los derechos de propiedad intelectual (ej. Star Wars, Sailor Moon, etc)",
+      "title": "Confirma el nombre de la colección",
+      "subtitle": "El nombre de la colección no se puede modificar después de enviarlo para revisión.",
+      "description": "Asegúrate de que no tenga errores tipográficos y de que no contenga ninguna Propiedad Intelectual que no poseas (Por ejemplo: Star Wars, Sailor Moon, etc).",
       "collection_name_label": "Nombre de la Colección",
       "collection_name_confirmation_label": "Confirme el nombre de la Colección",
       "collection_name_placeholder": "Nombre de la Colección",
@@ -1713,17 +1713,19 @@
       "confirm_name": "Confirmar Nombre"
     },
     "confirm_collection_items_step": {
-      "title": "Confirmar artículos",
-      "subtitle": "No se pueden agregar o eliminar elementos de una colección ni se puede cambiar su rareza después de la publicación.",
-      "description": "Sin embargo, el nombre, la descripción, la categoría y el precio de los artículos siempre se pueden modificar.",
+      "title": "Confirmar ítems",
+      "subtitle": "Los ítems no pueden ser añadidos o eliminados de una colección una vez que está publicada.{br}La rareza de los ítems tampoco puede ser cambiada después de la publicación.",
+      "description": "El nombre, descripción y categorías de los ítems pueden ser modificados.",
       "confirm_items": "Confirmar Artículos"
     },
     "review_content_policy_step": {
-      "title": "Antes de enviar su colección para su revisión, confirme su reconocimiento de lo siguiente:",
-      "content_policy_first_condition": "Entiendo que no podré agregar o eliminar artículos, ni modificar el nombre de la colección después de que se publique, y puedo dar fe de que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
+      "title": "Antes de enviar tu colección para revisión",
+      "subtitle": "Por favor, confirma tu reconocimiento.",
+      "content_policy_first_condition": "Entiendo que no podré modificar el nombre de la colección y puedo afirmar que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
       "terms_of_use": "Términos de uso",
       "content_policy": "Política de contenido",
       "accept_terms_of_use": "Garantizo que los artículos enviados cumplen plenamente con los {terms_of_use_link} y las {content_policy_link}, que reconozco y acepto.",
+      "acknowledge_immutability": "Entiendo que no podré añadir o eliminar ítems después de que la colección sea publicada.",
       "acknowledge_dao_terms": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a las {content_policy_link} y los {terms_of_use_link}. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo ya que su finalidad es compensar a los curadores por su tiempo y trabajo.",
       "email_disclousure": "Necesitamos tu email para futuras comunicaciones sobre esta colección.",
       "email_disclousure_detail": "Solo utilizaremos este email para comunicaciones sobre esta colección en particular.{enter}No estará vinculado a su cuenta.",
@@ -1731,20 +1733,21 @@
       "continue": "Continar"
     },
     "pay_publication_fee_step": {
-      "title": "Estás por enviar tu colección \"{collection_name}\" que incluye {count} {count, plural, one {artículo} other {artículos}} a revisión.",
-      "subtitle": "Para apoyar al Comité de Curadores y la tesorería de DAO, hay una tarifa de publicación de {currency} {publicationFee} por artículo (pagado en MANA).",
-      "learn_more": "Más información sobre la tarifa de publicación",
+      "title": "Confirmar ítems",
+      "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count} ítems. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA).",
+      "learn_more": "Aprender sobre la tarifa de publicación",
       "quantity": "Cantidad",
       "items": "{count} {count, plural, one {artículo} other {artículos}}",
       "fee_per_item": "Tarifa por artículo",
       "total_in_usd": "Total en {currency}",
       "total_in_mana": "Total en MANA",
-      "pay": "Pagar {value} MANA"
+      "pay_card": "pagar con tarjeta",
+      "pay_mana": "pagar con mana"
     },
     "congratulations_step": {
-      "title": "Su colección ya esta disponible para ser verificada por los curadores.",
+      "title": "Su colección ya esta disponible para ser verificada por los curadores",
       "subtitle": "Todos los comentarios seran enviados al {forum_post} donde usted y cualquier miembro de la comunidad podrán comentar.",
-      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curación. Dado que este es un proceso manual, podria tomar unos días. Se agradece su paciencia.",
+      "description": "La colección sera publicada luego de ser aprobada por el Comité de Curación. <b>Dado que este es un proceso manual, podria tomar unos días. Se agradece su paciencia.</b>",
       "forum_post": "Post en el foro",
       "view_forum_post": "Ver el Post en el foro"
     },

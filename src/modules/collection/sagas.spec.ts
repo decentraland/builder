@@ -12,6 +12,8 @@ import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
+import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile'
+import { config } from 'config'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import {
@@ -20,12 +22,13 @@ import {
   getData as getItemsById,
   getPaginationData,
   getWalletItems,
-  getCollectionItems
+  getCollectionItems,
+  getRarities
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
 import { getCollection } from 'modules/collection/selectors'
-import { EntityHashingType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
+import { EntityHashingType, Item, ItemApprovalData, ItemType, Rarity } from 'modules/item/types'
 import { openModal, closeModal, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import { mockedItem } from 'specs/item'
 import {
@@ -84,7 +87,7 @@ import {
   approveCollectionSuccess
 } from './actions'
 import { collectionSaga } from './sagas'
-import { Collection } from './types'
+import { Collection, PaymentMethod } from './types'
 import { getData, getPaginationData as getCollectionPaginationData, getLastFetchParams } from './selectors'
 import { CollectionPaginationData } from './reducer'
 import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
@@ -904,7 +907,7 @@ describe('when publishing a collection', () => {
   const txHash = '0xdeadbeef'
 
   beforeEach(() => {
-    collection = { salt: 'some salt', id: 'someId' } as Collection
+    collection = { salt: 'some salt', id: 'someId', name: 'name' } as Collection
     items = []
   })
 
@@ -925,7 +928,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(collection))
         .put(publishCollectionFailure(collection, items, errorMessage))
-        .dispatch(publishCollectionRequest(collection, items, email, false))
+        .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -956,8 +959,8 @@ describe('when publishing a collection', () => {
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .not.put(saveCollectionRequest(collection))
-        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(lockedCollection, items, email, false))
+        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash, false))
+        .dispatch(publishCollectionRequest(lockedCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -982,7 +985,7 @@ describe('when publishing a collection', () => {
         ])
         .put(saveCollectionRequest(saltlessCollection))
         .put(publishCollectionFailure(saltlessCollection, items, errorMessage))
-        .dispatch(publishCollectionRequest(saltlessCollection, items, email, false))
+        .dispatch(publishCollectionRequest(saltlessCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -1004,7 +1007,7 @@ describe('when publishing a collection', () => {
           [call([mockBuilder, 'fetchCollectionItems'], finalCollection.id), [{}]]
         ])
         .put(publishCollectionFailure(finalCollection, items, `${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`))
-        .dispatch(publishCollectionRequest(finalCollection, items, email, false))
+        .dispatch(publishCollectionRequest(finalCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -1034,7 +1037,7 @@ describe('when publishing a collection', () => {
             `${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`
           )
         )
-        .dispatch(publishCollectionRequest(finalCollection, items, email, false))
+        .dispatch(publishCollectionRequest(finalCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -1054,7 +1057,7 @@ describe('when publishing a collection', () => {
       it('should put the subscribe to newsletter request action with the right source', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
           .put(subscribeToNewsletterRequest(email, 'Builder Emotes & Wearables creator'))
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
     })
@@ -1066,7 +1069,7 @@ describe('when publishing a collection', () => {
       it('should put the subscribe to newsletter request action with the right source', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
           .put(subscribeToNewsletterRequest(email, 'Builder Emotes creator'))
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
     })
@@ -1078,7 +1081,7 @@ describe('when publishing a collection', () => {
       it('should put the subscribe to newsletter request action with the right source', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
           .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
     })
@@ -1094,7 +1097,7 @@ describe('when publishing a collection', () => {
     it('should not put the subscribe to newsletter request action', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
         .not.put(subscribeToNewsletterRequest(email, 'Builder Wearable creator'))
-        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter))
+        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -1132,8 +1135,8 @@ describe('when publishing a collection', () => {
         ])
         .put(saveItemRequest(items[0], {}))
         .put(saveCollectionRequest(collection))
-        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(collection, items, email, false))
+        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash, false))
+        .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
 
@@ -1156,7 +1159,7 @@ describe('when publishing a collection', () => {
           ])
           .put(saveItemRequest(items[0], {}))
           .put(publishCollectionFailure(collection, items, error))
-          .dispatch(publishCollectionRequest(collection, items, email, false))
+          .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
     })
@@ -1189,8 +1192,8 @@ describe('when publishing a collection', () => {
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .put(saveCollectionRequest(collection))
-        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash))
-        .dispatch(publishCollectionRequest(collection, items, email, false))
+        .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MUMBAI, txHash, false))
+        .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
   })
@@ -2007,6 +2010,241 @@ describe('when handling the fetch of a collection', () => {
           })
         )
         .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when publishing a collection with fiat', () => {
+  let subscribeToNewsletter: boolean
+  let collection: Collection
+  let items: Item[]
+  let serverItems: Item[]
+  let email: string
+  let paymentMethod: PaymentMethod
+  let wertEnv: string
+  let from: string
+  let rarities: Rarity[]
+
+  beforeEach(() => {
+    email = ''
+    collection = {
+      name: 'name'
+    } as Collection
+    from = '0x' + '123'.padStart(40, '0')
+  })
+
+  describe('when subscribe to newsletter is false', () => {
+    beforeEach(() => {
+      subscribeToNewsletter = false
+    })
+
+    describe('when collection is not locked', () => {
+      beforeEach(() => {
+        collection.isPublished = false
+        collection.lock = new Date(new Date().setDate(new Date().getDate() + 1)).getTime() // Tomorrow
+      })
+
+      describe('when collection has salt', () => {
+        beforeEach(() => {
+          collection.salt = '0x' + '123'.padStart(64, '0')
+        })
+
+        describe('when no items are provided', () => {
+          beforeEach(() => {
+            items = []
+          })
+
+          describe('when the collection has the same amount of items in the server as locally', () => {
+            beforeEach(() => {
+              serverItems = []
+            })
+
+            describe('when the payment method is fiat', () => {
+              beforeEach(() => {
+                paymentMethod = PaymentMethod.FIAT
+              })
+
+              describe('when the wert env is not defined', () => {
+                beforeEach(() => {
+                  wertEnv = ''
+                })
+
+                it('should dispatch a failure action', () => {
+                  return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                    .provide([
+                      [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                      [select(getAddress), 'address'],
+                      [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                      [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                      [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv]
+                    ])
+                    .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                    .put(publishCollectionFailure(collection, items, 'Missing WERT_PUBLISH_FEES_ENV'))
+                    .silentRun()
+                })
+              })
+
+              describe('when the wert env is defined but is not valid', () => {
+                beforeEach(() => {
+                  wertEnv = 'invalid'
+                })
+
+                it('should dispatch a failure action', () => {
+                  return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                    .provide([
+                      [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                      [select(getAddress), 'address'],
+                      [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                      [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                      [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv]
+                    ])
+                    .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                    .put(publishCollectionFailure(collection, items, 'Invalid WERT_PUBLISH_FEES_ENV'))
+                    .silentRun()
+                })
+              })
+
+              describe('when the wert env is defined and is valid', () => {
+                beforeEach(() => {
+                  wertEnv = 'dev'
+                })
+
+                describe('when there are no rarities', () => {
+                  beforeEach(() => {
+                    rarities = []
+                  })
+
+                  it('should dispatch a failure action', () => {
+                    return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                      .provide([
+                        [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                        [select(getAddress), from],
+                        [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                        [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                        [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                        [select(getRarities), rarities]
+                      ])
+                      .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                      .put(publishCollectionFailure(collection, items, 'Rarity not found'))
+                      .silentRun()
+                  })
+                })
+
+                describe('when there is a rarity', () => {
+                  describe('when that rarity does no have prices', () => {
+                    beforeEach(() => {
+                      rarities = [{} as Rarity]
+                    })
+
+                    it('should dispatch a failure action', () => {
+                      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                        .provide([
+                          [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                          [select(getAddress), from],
+                          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                          [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                          [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                          [select(getRarities), rarities]
+                        ])
+                        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                        .put(publishCollectionFailure(collection, items, 'Rarity prices not found'))
+                        .silentRun()
+                    })
+                  })
+
+                  describe('when that rarity has MANA prices', () => {
+                    beforeEach(() => {
+                      rarities = [
+                        {
+                          prices: {
+                            MANA: '25000000000000000000'
+                          }
+                        } as Rarity
+                      ]
+                    })
+
+                    describe('when the wert env is dev', () => {
+                      beforeEach(() => {
+                        wertEnv = 'dev'
+                      })
+
+                      // TODO: Unskip once the success action can be reached.
+                      it.skip('should dispatch the action to open the fiat gateway widget with dev parameters', () => {
+                        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                          .provide([
+                            [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                            [select(getAddress), from],
+                            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                            [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                            [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                            [select(getRarities), rarities],
+                            [select(getProfileOfAddress, from), undefined]
+                          ])
+                          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                          .put.like({
+                            action: {
+                              type: '[Request] Open FIAT Gateway Widget',
+                              payload: {
+                                data: {
+                                  partner_id: '01HRRQQ70YK4SP88GHM9A61P6B',
+                                  commodity: 'TT',
+                                  sc_address: '0xe539E0AED3C1971560517D58277f8dd9aC296281',
+                                  origin: 'https://sandbox.wert.io',
+                                  network: 'mumbai'
+                                }
+                              }
+                            }
+                          })
+                          .silentRun()
+                      })
+                    })
+
+                    describe('when the wert env is prod', () => {
+                      beforeEach(() => {
+                        wertEnv = 'prod'
+                      })
+
+                      // TODO: Unskip once the success action can be reached.
+                      it.skip('should dispatch the action to open the fiat gateway widget with prod parameters', () => {
+                        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                          .provide([
+                            [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
+                            [select(getAddress), from],
+                            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
+                            [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                            [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
+                            [select(getRarities), rarities],
+                            [select(getProfileOfAddress, from), undefined]
+                          ])
+                          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
+                          .put.like({
+                            action: {
+                              type: '[Request] Open FIAT Gateway Widget',
+                              payload: {
+                                data: {
+                                  partner_id: '01HR4TB274GD2VNZW0VEAXNHW2',
+                                  commodity: 'MANA',
+                                  sc_address: '0x9D32AaC179153A991e832550d9F96441Ea27763A',
+                                  origin: 'https://widget.wert.io',
+                                  network: 'polygon'
+                                }
+                              }
+                            }
+                          })
+                          .silentRun()
+                      })
+
+                      // TODO: Test the rest of the saga.
+                      // Not included in this PR given that I don't know how to test event channels yet. 👌
+                      // What comes next in the saga are the events emitted from the wert modal for close and success which are handled by the emitter.
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
     })
   })
 })

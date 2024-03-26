@@ -88,12 +88,12 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
         <Row className="details">
           <Column grow={true}>
             <p className="title">{t('publish_wizard_collection_modal.confirm_collection_items_step.title')}</p>
-            <p className="subtitle">{t('publish_wizard_collection_modal.confirm_collection_items_step.subtitle', { enter: <br /> })}</p>
+            <p className="subtitle">{t('publish_wizard_collection_modal.confirm_collection_items_step.subtitle', { br: <br /> })}</p>
             <p className="description">{t('publish_wizard_collection_modal.confirm_collection_items_step.description')}</p>
             <div className="items">{renderItemsTable()}</div>
           </Column>
         </Row>
-        <Row className="actions" align="right">
+        <Row className="actions">
           <Button className="back" secondary onClick={onPrevStep}>
             {t('global.back')}
           </Button>

@@ -9,6 +9,8 @@ import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sag
 import { authorizationSaga } from 'decentraland-dapps/dist/modules/authorization/sagas'
 import { toastSaga } from 'decentraland-dapps/dist/modules/toast/sagas'
 import { featuresSaga } from 'decentraland-dapps/dist/modules/features/sagas'
+import { createIdentitySaga } from 'decentraland-dapps/dist/modules/identity/sagas'
+import { FiatGateway, createGatewaySaga } from 'decentraland-dapps/dist/modules/gateway'
 
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
@@ -37,18 +39,30 @@ import { tileSaga } from 'modules/tile/sagas'
 import { translationSaga } from 'modules/translation/sagas'
 import { uiSaga } from 'modules/ui/sagas'
 import { walletSaga } from 'modules/wallet/sagas'
-import { PEER_URL } from 'lib/api/peer'
-import { BuilderAPI } from 'lib/api/builder'
-import { ENSApi } from 'lib/api/ens'
 import { entitySaga } from 'modules/entity/sagas'
 import { loginSaga } from 'modules/login/sagas'
 import { newsletterSagas } from 'modules/newsletter/sagas'
 import { collectionCurationSaga } from 'modules/curations/collectionCuration/sagas'
-import { getPeerWithNoGBCollectorURL } from './utils'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
 import { inspectorSaga } from 'modules/inspector/sagas'
 import { worldsSaga } from 'modules/worlds/sagas'
+import { PEER_URL } from 'lib/api/peer'
+import { BuilderAPI } from 'lib/api/builder'
+import { ENSApi } from 'lib/api/ens'
+import { config } from 'config'
+import { getPeerWithNoGBCollectorURL } from './utils'
 import { RootStore } from './types'
+
+const newIdentitySaga = createIdentitySaga({
+  authURL: config.get('AUTH_URL')
+})
+
+const gatewaySaga = createGatewaySaga({
+  [FiatGateway.WERT]: {
+    marketplaceServerURL: config.get('MARKETPLACE_SERVER_URL'),
+    url: '' // TODO: This is not used, it should be removed from decentraland-dapps.
+  }
+})
 
 export function* rootSaga(
   builderAPI: BuilderAPI,
@@ -71,6 +85,7 @@ export function* rootSaga(
     entitySaga(catalystClient),
     forumSaga(builderAPI),
     identitySaga(),
+    newIdentitySaga(),
     itemSaga(builderAPI, newBuilderClient),
     keyboardSaga(),
     landSaga(),
@@ -97,6 +112,7 @@ export function* rootSaga(
     inspectorSaga(builderAPI, store),
     loginSaga(),
     newsletterSagas(builderAPI),
-    worldsSaga()
+    worldsSaga(),
+    gatewaySaga()
   ])
 }

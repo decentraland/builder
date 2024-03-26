@@ -4,7 +4,7 @@ import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transac
 import { FetchCollectionsParams } from 'lib/api/builder'
 import { PaginationStats } from 'lib/api/pagination'
 import { Item } from 'modules/item/types'
-import { Collection, Mint, Access } from './types'
+import { Collection, Mint, Access, PaymentMethod } from './types'
 
 // Fetch collections
 
@@ -70,13 +70,19 @@ export const PUBLISH_COLLECTION_REQUEST = '[Request] Publish Collection'
 export const PUBLISH_COLLECTION_SUCCESS = '[Success] Publish Collection'
 export const PUBLISH_COLLECTION_FAILURE = '[Failure] Publish Collection'
 
-export const publishCollectionRequest = (collection: Collection, items: Item[], email: string, subscribeToNewsletter: boolean) =>
-  action(PUBLISH_COLLECTION_REQUEST, { collection, items, email, subscribeToNewsletter })
-export const publishCollectionSuccess = (collection: Collection, items: Item[], chainId: ChainId, txHash: string) =>
+export const publishCollectionRequest = (
+  collection: Collection,
+  items: Item[],
+  email: string,
+  subscribeToNewsletter: boolean,
+  paymentMethod: PaymentMethod
+) => action(PUBLISH_COLLECTION_REQUEST, { collection, items, email, subscribeToNewsletter, paymentMethod })
+export const publishCollectionSuccess = (collection: Collection, items: Item[], chainId: ChainId, txHash: string, isFiat: boolean) =>
   action(PUBLISH_COLLECTION_SUCCESS, {
     collection,
     items,
-    ...buildTransactionPayload(chainId, txHash, { collection, items })
+    isFiat,
+    ...buildTransactionPayload(chainId, txHash, { collection, items, isFiat })
   })
 export const publishCollectionFailure = (collection: Collection, items: Item[], error: string) =>
   action(PUBLISH_COLLECTION_FAILURE, { collection, items, error })
