@@ -94,6 +94,7 @@ import { buildZipContents, generateCatalystImage, groupsOf, MAX_VIDEO_FILE_SIZE 
 import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
 import * as toasts from './toasts'
+import { fromRemoteItem } from 'lib/api/transformations'
 
 const blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -1150,7 +1151,13 @@ describe('when handling the save multiple items requests action', () => {
         .put(updateProgressSaveMultipleItems(33))
         .put(updateProgressSaveMultipleItems(67))
         .put(updateProgressSaveMultipleItems(100))
-        .put(saveMultipleItemsSuccess(items, savedFiles, []))
+        .put(
+          saveMultipleItemsSuccess(
+            remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
+            savedFiles,
+            []
+          )
+        )
         .dispatch(saveMultipleItemsRequest(builtFiles))
         .run({ silenceTimeout: true })
     })
@@ -1209,7 +1216,13 @@ describe('when handling the save multiple items requests action', () => {
           [select(getPaginationData, items[0].collectionId!), paginationData]
         ])
         .put(updateProgressSaveMultipleItems(100))
-        .put(saveMultipleItemsSuccess([items[0], items[2]], [savedFiles[0], savedFiles[2]], [savedFiles[1]]))
+        .put(
+          saveMultipleItemsSuccess(
+            [fromRemoteItem(remoteItems[0]), fromRemoteItem(remoteItems[2])],
+            [savedFiles[0], savedFiles[2]],
+            [savedFiles[1]]
+          )
+        )
         .dispatch(saveMultipleItemsRequest(builtFiles))
         .run({ silenceTimeout: true })
     })
@@ -1228,6 +1241,7 @@ describe('when handling the save multiple items requests action', () => {
       savedFilesWithCancelled = builtFilesThatWillCancelled.map(file => file.fileName)
       ;(builderClient.upsertItem as jest.Mock).mockResolvedValue(remoteItems[0])
     })
+
     it('should dispatch the update progress action for the first non-cancelled upsert and the cancelling action with the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
@@ -1241,7 +1255,7 @@ describe('when handling the save multiple items requests action', () => {
         )
         .put(
           saveMultipleItemsCancelled(
-            Array(SAVE_AND_EDIT_FILES_BATCH_SIZE).fill(items[0]),
+            Array(SAVE_AND_EDIT_FILES_BATCH_SIZE).fill(fromRemoteItem(remoteItems[0])),
             savedFilesWithCancelled.slice(0, SAVE_AND_EDIT_FILES_BATCH_SIZE),
             [],
             savedFilesWithCancelled.slice(-amountOfFilesThatWillBeCancelled)
