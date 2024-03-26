@@ -6,7 +6,7 @@ import { Props } from './Navbar.types'
 import './Navbar.css'
 
 const Navbar: React.FC<Props> = ({ hasPendingTransactions, ...props }: Props) => {
-  return <BaseNavbar activePage={NavbarPages.CREATE} {...props} hasActivity={hasPendingTransactions} />
+  return <BaseNavbar activePage={NavbarPages.CREATE} {...props} hasActivity={hasPendingTransactions} withNotifications />
 }
 
 export default React.memo(Navbar)
