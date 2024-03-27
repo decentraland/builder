@@ -567,7 +567,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         onFiatGatewayEventChannel.close()
 
         if (fiatGatewayEventChannelResult.type === 'close') {
+          // Fetch rarities again to keep the price as updated as possible.
           yield put(fetchRaritiesRequest())
+
           throw new Error('Modal was closed')
         }
 
