@@ -525,7 +525,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
                   name: collection.name,
                   image_url: (process.env.VITE_BASE_URL || window.location.origin) + '/images/cards.webp',
                   author_image_url: profile?.avatars[0].avatar.snapshots.face256,
-                  author: profile?.avatars[0].name
+                  author: profile?.avatars[0].name,
+                  category: "| Publish Collection"
                 }
               }
             },
