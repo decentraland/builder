@@ -99,7 +99,8 @@ import {
   saveItemRequest,
   SAVE_ITEM_FAILURE,
   SET_ITEMS_TOKEN_ID_SUCCESS,
-  FetchCollectionItemsSuccessAction
+  FetchCollectionItemsSuccessAction,
+  fetchRaritiesRequest
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
@@ -566,6 +567,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         onFiatGatewayEventChannel.close()
 
         if (fiatGatewayEventChannelResult.type === 'close') {
+          // Fetch rarities again to keep the price as updated as possible.
+          yield put(fetchRaritiesRequest())
+
           throw new Error('Modal was closed')
         }
 
