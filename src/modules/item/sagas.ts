@@ -390,12 +390,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         const { [THUMBNAIL_PATH]: thumbnailContent, [VIDEO_PATH]: videoContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _thumbnailContent, [VIDEO_PATH]: _videoContent, ...itemContents } = item.contents
         // This will calculate the model's final size without the thumbnail with a limit of 2MB for wearables/emotes and 8MB for skins
-        const finalModelSize: number = yield call(
-          calculateModelFinalSize,
-          { ...item, contents: itemContents },
-          modelContents,
-          legacyBuilder
-        )
+        const finalModelSize: number = yield call(calculateModelFinalSize, itemContents, modelContents, legacyBuilder)
         let finalThumbnailSize = 0
         let finalVideoSize = 0
 

@@ -52,7 +52,7 @@ import {
   isSmart
 } from 'modules/item/utils'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
-import { getExtension } from 'lib/file'
+import { getExtension, toMB } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
@@ -75,6 +75,16 @@ import {
   ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
+import { calculateFileSize, calculateModelFinalSize } from 'modules/item/export'
+import { MAX_THUMBNAIL_SIZE } from 'modules/assetPack/utils'
+import { Authorization } from 'lib/api/auth'
+import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
+import {
+  MAX_EMOTE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_THUMBNAIL_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE
+} from '@dcl/builder-client/dist/files/constants'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -699,7 +709,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleFileLoad = async () => {
-    const { weareblePreviewUpdated, type, model } = this.state
+    const { weareblePreviewUpdated, type, model, item, contents } = this.state
+
+    const modelSize = await calculateModelFinalSize(
+      item?.contents ?? {},
+      contents ?? {},
+      new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => this.props.address))
+    )
+
+    this.setState({ modelSize })
 
     // if model is an image, the wearable preview won't be needed
     if (model && isImageFile(model)) {
@@ -884,12 +902,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   isValid(): boolean {
-    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type } = this.state
+    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize } = this.state
     const { collection } = this.props
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
 
-    let required: (string | Metrics | Item | undefined)[]
+    if (this.state.error) {
+      this.setState({ error: undefined })
+    }
 
+    let required: (string | Metrics | Item | undefined)[]
     if (isRepresentation) {
       required = [item]
     } else if (belongsToAThirdPartyCollection) {
@@ -900,7 +921,48 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
     }
 
-    return required.every(prop => prop !== undefined)
+    const thumbnailSize = thumbnail && dataURLToBlob(thumbnail) && calculateFileSize(dataURLToBlob(thumbnail)!)
+    if (thumbnailSize && thumbnailSize > MAX_THUMBNAIL_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.thumbnail_file_too_big', { maxSize: `${toMB(MAX_THUMBNAIL_FILE_SIZE)}MB` })
+      })
+      return false
+    }
+    const isSkin = category === WearableCategory.SKIN
+    const isEmote = type === ItemType.EMOTE
+    const isRequirementMet = required.every(prop => prop !== undefined)
+
+    if (isRequirementMet && isEmote && modelSize && modelSize > MAX_EMOTE_FILE_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.item_too_big', {
+          size: `${toMB(MAX_EMOTE_FILE_SIZE)}MB`,
+          type: `emote`
+        })
+      })
+      return false
+    }
+
+    if (isRequirementMet && isSkin && modelSize && modelSize > MAX_SKIN_FILE_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.item_too_big', {
+          size: `${toMB(MAX_SKIN_FILE_SIZE)}MB`,
+          type: `skin`
+        })
+      })
+      return false
+    }
+
+    if (isRequirementMet && !isSkin && modelSize && modelSize > MAX_WEARABLE_FILE_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.item_too_big', {
+          size: `${toMB(MAX_WEARABLE_FILE_SIZE)}MB`,
+          type: `wearable`
+        })
+      })
+      return false
+    }
+
+    return isRequirementMet
   }
 
   renderWearableDetails() {

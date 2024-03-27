@@ -188,7 +188,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       this.setState({
         error: new CustomErrorWithTitle(
           t('create_single_item_modal.error.file_too_big_title'),
-          t(`create_single_item_modal.error.${type}_file_too_big`, { maxSize: `${toMB(error.getMaxFileSize())}MB` })
+          t(`create_single_item_modal.error.item_too_big`, { size: `${toMB(error.getMaxFileSize())}MB`, type })
         ) as any,
         isLoading: false
       })

@@ -366,10 +366,7 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [
-              call(calculateModelFinalSize, { ...itemWithCatalystImage, contents: itemContents }, modelContents, builderAPI),
-              Promise.resolve(1)
-            ],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
           ])
@@ -394,7 +391,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -433,10 +430,7 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [
-              call(calculateModelFinalSize, { ...itemWithCatalystImage, contents: itemContents }, modelContents, builderAPI),
-              Promise.resolve(1)
-            ],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage), Promise.resolve()]
           ])
@@ -461,7 +455,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -486,7 +480,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -542,10 +536,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), item],
             [select(getAddress), mockAddress],
-            [
-              call(calculateModelFinalSize, { ...itemWithNewHashes, contents: itemContents }, modelContents, builderAPI),
-              Promise.resolve(1)
-            ],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve()]
           ])
