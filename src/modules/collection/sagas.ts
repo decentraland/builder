@@ -100,7 +100,11 @@ import {
   SAVE_ITEM_FAILURE,
   SET_ITEMS_TOKEN_ID_SUCCESS,
   FetchCollectionItemsSuccessAction,
-  fetchRaritiesRequest
+  fetchRaritiesRequest,
+  FETCH_RARITIES_SUCCESS,
+  FETCH_RARITIES_FAILURE,
+  FetchRaritiesFailureAction,
+  FetchRaritiesSuccessAction
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
@@ -117,8 +121,7 @@ import {
   getCollectionItems,
   getWalletItems,
   getData as getItemsById,
-  getPaginationData as getItemPaginationData,
-  getRarities
+  getPaginationData as getItemPaginationData
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash, hasOldHashedContents } from 'modules/item/export'
@@ -480,8 +483,24 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         const scInputData = new ethers.utils.Interface(manager.abi).encodeFunctionData('createCollection', createCollectionArgs)
 
         // The amount of MANA to be purchased required to publish the collection is determined by the price of the rarities.
-        // Given that rarities have the same price, we can use the first rarity and multiply it by the amount of items to get the final price.
-        const rarities: ReturnType<typeof getRarities> = yield select(getRarities)
+        // Fetch rarities now to keep the price as updated as possible.
+        yield put(fetchRaritiesRequest())
+
+        // Wait for success or failure.
+        const fetchRaritiesRequestResult: { success: FetchRaritiesSuccessAction; failure: FetchRaritiesFailureAction } = yield race({
+          success: take(FETCH_RARITIES_SUCCESS),
+          failure: take(FETCH_RARITIES_FAILURE)
+        })
+
+        // If there is a failure, stop execution.
+        if (fetchRaritiesRequestResult.failure) {
+          throw new Error('Could not fetch rarities: ' + fetchRaritiesRequestResult.failure.payload.error)
+        }
+
+        // Get the rarities from the successful response.
+        // The success action should always be present if the failure action is not, so we don't need to assert it.
+        const rarities = fetchRaritiesRequestResult.success.payload.rarities
+        // Given that all rarities have the same price atm, we can just use the first one.
         const rarity = rarities[0]
 
         if (!rarity) {
