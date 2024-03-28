@@ -287,8 +287,8 @@ describe('when getting the fiat commodity amount', () => {
         unitPrice = '123456789000000000'
       })
 
-      it('should return 0.12382716', () => {
-        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(0.12382716)
+      it('should return 0.12407408', () => {
+        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(0.12407408)
       })
     })
 
@@ -298,7 +298,7 @@ describe('when getting the fiat commodity amount', () => {
       })
 
       it('should return 1', () => {
-        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(1.003)
+        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(1.005)
       })
     })
   })
@@ -314,7 +314,7 @@ describe('when getting the fiat commodity amount', () => {
       })
 
       it('should return 10', () => {
-        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(10.03)
+        expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(10.05)
       })
     })
   })

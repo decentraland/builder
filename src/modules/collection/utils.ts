@@ -203,7 +203,7 @@ export const toPaginationStats = (collectionPaginationData: CollectionPagination
 export const getFiatGatewayCommodityAmount = (unitPrice: string, items: number) => {
   const unitPriceWei = ethers.BigNumber.from(unitPrice)
   const totalPriceWei = unitPriceWei.mul(items)
-  const totalPriceEth = Number(ethers.utils.formatEther(totalPriceWei.toString())) * 1.003 // 0.3% extra to safeguard against price fluctuations.
+  const totalPriceEth = Number(ethers.utils.formatEther(totalPriceWei.toString())) * 1.005 // 0.5% extra to safeguard against price fluctuations.
   const factor = Math.pow(10, 8)
 
   // Wert supports up to 8 decimal places.
