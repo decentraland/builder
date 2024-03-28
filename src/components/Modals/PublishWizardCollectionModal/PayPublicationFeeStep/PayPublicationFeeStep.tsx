@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { config } from 'config'
-import { Button, Column, Icon, Mana, Modal, Row } from 'decentraland-ui'
+import { Button, Column, Icon, InfoTooltip, Mana, Modal, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { Currency, Rarity } from 'modules/item/types'
@@ -145,10 +145,17 @@ export const PayPublicationFeeStep: React.FC<
           </Button>
           <div className="actions-right">
             {isPublishCollectionsWertEnabled ? (
-              <Button className="pay-with-card" onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
-                <Icon name="credit card outline" />
-                <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
-              </Button>
+              <>
+                <InfoTooltip
+                  className="pay-with-card-info-tooltip"
+                  position="bottom center"
+                  content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
+                />
+                <Button className="pay-with-card" onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
+                  <Icon name="credit card outline" />
+                  <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
+                </Button>
+              </>
             ) : null}
             <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
               <Mana inline size="small" network={Network.MATIC} />
