@@ -64,7 +64,7 @@ export const PayPublicationFeeStep: React.FC<
           {t('publish_collection_modal_with_oracle.get_mana', {
             link: (
               <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
-                Account dapp.
+                Account dapp
               </a>
             )
           })}
