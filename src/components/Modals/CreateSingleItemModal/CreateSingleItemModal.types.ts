@@ -51,6 +51,7 @@ export type StateData = {
   video?: string
   requiredPermissions?: string[]
   tags?: string[]
+  modelSize?: number
 }
 export type State = {
   view: CreateItemView

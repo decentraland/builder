@@ -1,7 +1,20 @@
 import * as React from 'react'
 import PQueue from 'p-queue'
 import uuid from 'uuid'
-import { FileTooBigError, ItemFactory, loadFile, LocalItem, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
+import {
+  ItemFactory,
+  loadFile,
+  LocalItem,
+  MAX_SKIN_FILE_SIZE,
+  MAX_THUMBNAIL_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE,
+  Rarity,
+  THUMBNAIL_PATH,
+  WearableCategory,
+  FileTooBigError as FileTooBigErrorBuilderClient,
+  FileType,
+  MAX_EMOTE_FILE_SIZE
+} from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
@@ -10,7 +23,7 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
 import { EngineType, getModelData } from 'lib/getModelData'
-import { getExtension } from 'lib/file'
+import { getExtension, toMB } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
 import { convertImageIntoWearableThumbnail, dataURLToBlob, getImageType } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
@@ -29,6 +42,7 @@ import {
   State
 } from './CreateAndEditMultipleItemsModal.types'
 import styles from './CreateAndEditMultipleItemsModal.module.css'
+import { FileTooBigError, ThumbnailFileTooBigError } from 'modules/item/errors'
 
 const WEARABLES_ZIP_INFRA_URL = config.get('WEARABLES_ZIP_INFRA_URL', '')
 const AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY = 4
@@ -97,13 +111,8 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   processAcceptedFile = async (file: File) => {
     const { collection, metadata } = this.props
     try {
-      if (file.size > MAX_FILE_SIZE) {
-        throw new FileTooBigError(file.name, file.size)
-      }
-
       const fileArrayBuffer = await file.arrayBuffer()
       const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
-
       // Multiple files must contain an asset file
       if (!loadedFile.wearable) {
         throw new Error(t('create_and_edit_multiple_items_modal.wearable_file_not_found'))
@@ -141,6 +150,16 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
         throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
       }
 
+      if (thumbnail.size > MAX_THUMBNAIL_FILE_SIZE) {
+        throw new ThumbnailFileTooBigError()
+      }
+
+      const maxWearableFileSize = loadedFile.wearable.data.category == WearableCategory.SKIN ? MAX_SKIN_FILE_SIZE : MAX_WEARABLE_FILE_SIZE
+
+      if (file.size > maxWearableFileSize) {
+        throw new FileTooBigError(maxWearableFileSize)
+      }
+
       itemFactory.withThumbnail(thumbnail)
 
       // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
@@ -153,7 +172,6 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       // Generate or set the correct URN for the items taking into consideration the selected collection
       const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
-
       if (
         decodedCollectionUrn &&
         decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
@@ -162,6 +180,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
         const decodedUrn: DecodedURN<any> | null = loadedFile.wearable.id ? decodeURN(loadedFile.wearable.id) : null
         if (loadedFile.wearable.id && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY) {
           const { thirdPartyName, thirdPartyCollectionId } = decodedUrn
+
           if (
             (thirdPartyCollectionId && thirdPartyCollectionId !== decodedCollectionUrn.thirdPartyCollectionId) ||
             (thirdPartyName && thirdPartyName !== decodedCollectionUrn.thirdPartyName)
@@ -197,10 +216,44 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       return { type: ImportedFileType.ACCEPTED, ...builtItem, fileName: file.name }
     } catch (error) {
+      if (!(error instanceof FileTooBigErrorBuilderClient)) {
+        return {
+          type: ImportedFileType.REJECTED,
+          fileName: file.name,
+          reason: isErrorWithMessage(error) ? error.message : 'Unknown error'
+        }
+      }
+
+      const fileName = error.geFileName()
+      const maxSize = error.getMaxFileSize()
+      const type = error.getType()
+      let reason: string = ''
+
+      if (type === FileType.THUMBNAIL) {
+        reason = t('create_single_item_modal.error.thumbnail_file_too_big', {
+          maxSize: `${toMB(maxSize)}MB`
+        })
+      } else if (type === FileType.WEARABLE) {
+        reason = t('create_and_edit_multiple_items_modal.max_file_size', {
+          name: fileName,
+          max: `${toMB(MAX_WEARABLE_FILE_SIZE)}`
+        })
+      } else if (type === FileType.SKIN) {
+        reason = t('create_and_edit_multiple_items_modal.max_file_size_skin', {
+          name: fileName,
+          max: `${toMB(MAX_SKIN_FILE_SIZE)}`
+        })
+      } else if (type === FileType.EMOTE) {
+        reason = t('create_and_edit_multiple_items_modal.max_file_size_emote', {
+          name: fileName,
+          max: `${toMB(MAX_EMOTE_FILE_SIZE)}`
+        })
+      }
+
       return {
         type: ImportedFileType.REJECTED,
-        fileName: file.name,
-        reason: isErrorWithMessage(error) ? error.message : 'Unknown error'
+        fileName,
+        reason: reason
       }
     }
   }

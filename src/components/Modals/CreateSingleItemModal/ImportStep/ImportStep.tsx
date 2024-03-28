@@ -8,13 +8,17 @@ import {
   DuplicatedRequiredPermissionsError,
   MissingRequiredPropertiesError,
   UnknownRequiredPermissionsError,
-  EmoteConfig
+  EmoteConfig,
+  MAX_WEARABLE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_EMOTE_FILE_SIZE,
+  FileTooBigError as FileTooBigErrorBuilderClient
 } from '@dcl/builder-client/dist/files'
 import { WearableCategory } from '@dcl/builder-client/dist/item'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getExtension } from 'lib/file'
+import { getExtension, toMB } from 'lib/file'
 import { isThirdParty } from 'lib/urn'
 import { EngineType, getEmoteMetrics, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
@@ -48,10 +52,9 @@ import {
   isImageFile,
   isModelFile,
   isModelPath,
-  MAX_FILE_SIZE,
   MAX_EMOTE_DURATION,
   isSmart,
-  MAX_EMOTE_SIZE
+  getWearableCategories
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
@@ -103,8 +106,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const loadedFile = await loadFile(file.name, file)
     const { wearable, scene, content, emote } = loadedFile
 
-    if (emote && file.size > MAX_EMOTE_SIZE) {
-      throw new FileTooBigError()
+    if (emote && file.size > MAX_EMOTE_FILE_SIZE) {
+      throw new FileTooBigError(MAX_EMOTE_FILE_SIZE)
     }
 
     let modelPath: string | undefined
@@ -147,7 +150,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       }
     }
 
-    const maxFileSize = type === ItemType.EMOTE ? MAX_EMOTE_SIZE : MAX_FILE_SIZE
+    const maxWearableFileSize =
+      type === ItemType.WEARABLE && getWearableCategories(contents).includes(WearableCategory.SKIN)
+        ? MAX_SKIN_FILE_SIZE
+        : MAX_WEARABLE_FILE_SIZE
+
+    const maxFileSize = type === ItemType.EMOTE ? MAX_EMOTE_FILE_SIZE : maxWearableFileSize
     if (file.size > maxFileSize) {
       throw new FileTooBigError(maxFileSize)
     }
@@ -174,28 +182,40 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       wrongConfigurations = error.getMissingProperties()
     }
 
-    if (wrongConfigurations.length) {
-      console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
-    }
+    if (error instanceof FileTooBigErrorBuilderClient) {
+      const type = error.getType()
 
-    this.setState({
-      error: errorTranslationId
-        ? new CustomErrorWithTitle(
-            t(`create_single_item_modal.error.${errorTranslationId}.title`, {
-              wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
-              count: wrongConfigurations.length
-            }),
-            t(`create_single_item_modal.error.${errorTranslationId}.message`, {
-              learn_more: (
-                <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
-                  {t('global.learn_more')}
-                </span>
-              )
-            })
-          )
-        : error.message,
-      isLoading: false
-    })
+      this.setState({
+        error: new CustomErrorWithTitle(
+          t('create_single_item_modal.error.file_too_big_title'),
+          t(`create_single_item_modal.error.item_too_big`, { size: `${toMB(error.getMaxFileSize())}MB`, type })
+        ) as any,
+        isLoading: false
+      })
+    } else {
+      if (wrongConfigurations.length) {
+        console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+      }
+
+      this.setState({
+        error: errorTranslationId
+          ? new CustomErrorWithTitle(
+              t(`create_single_item_modal.error.${errorTranslationId}.title`, {
+                wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
+                count: wrongConfigurations.length
+              }),
+              t(`create_single_item_modal.error.${errorTranslationId}.message`, {
+                learn_more: (
+                  <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
+                    {t('global.learn_more')}
+                  </span>
+                )
+              })
+            )
+          : error.message,
+        isLoading: false
+      })
+    }
   }
 
   handleOpenLearnMoreOnError = () => {
