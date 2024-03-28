@@ -1742,6 +1742,7 @@
       "total_in_usd": "Total en {currency}",
       "total_in_mana": "Total en MANA",
       "pay_card": "pagar con tarjeta",
+      "pay_card_info": "Al pagar con tarjeta, se cobrará un extra del 0.5% del monto total para manejar las fluctuaciones de precios.",
       "pay_mana": "pagar con mana"
     },
     "congratulations_step": {

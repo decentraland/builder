@@ -1731,6 +1731,7 @@
       "total_in_usd": "Total in {currency}",
       "total_in_mana": "Total in MANA",
       "pay_card": "pay by card",
+      "pay_card_info": "When paying by card, an extra 0.5% of the total amount will be charged to handle price fluctuations.",
       "pay_mana": "pay with mana"
     },
     "congratulations_step": {
