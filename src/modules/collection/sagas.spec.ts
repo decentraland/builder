@@ -12,7 +12,6 @@ import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
-import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile'
 import { config } from 'config'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
@@ -23,7 +22,6 @@ import {
   getPaginationData,
   getWalletItems,
   getCollectionItems,
-  getRarities
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
@@ -42,7 +40,12 @@ import {
   saveMultipleItemsSuccess,
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
-  setItemsTokenIdRequest
+  setItemsTokenIdRequest,
+  fetchRaritiesRequest,
+  FETCH_RARITIES_SUCCESS,
+  FETCH_RARITIES_FAILURE,
+  FetchRaritiesFailureAction,
+  FetchRaritiesSuccessAction
 } from 'modules/item/actions'
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
 import {
@@ -2109,11 +2112,7 @@ describe('when publishing a collection with fiat', () => {
                   wertEnv = 'dev'
                 })
 
-                describe('when there are no rarities', () => {
-                  beforeEach(() => {
-                    rarities = []
-                  })
-
+                describe('when fetching rarities fails', () => {
                   it('should dispatch a failure action', () => {
                     return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
                       .provide([
@@ -2122,18 +2121,22 @@ describe('when publishing a collection with fiat', () => {
                         [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
                         [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
                         [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
-                        [select(getRarities), rarities]
+                        [put(fetchRaritiesRequest()), undefined],
+                        [
+                          race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
+                          { failure: { payload: { error: 'error' } } as FetchRaritiesFailureAction }
+                        ]
                       ])
                       .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                      .put(publishCollectionFailure(collection, items, 'Rarity not found'))
+                      .put(publishCollectionFailure(collection, items, 'Could not fetch rarities: error'))
                       .silentRun()
                   })
                 })
 
-                describe('when there is a rarity', () => {
-                  describe('when that rarity does no have prices', () => {
+                describe('when fetching rarities succeeds', () => {
+                  describe('when there are no rarities', () => {
                     beforeEach(() => {
-                      rarities = [{} as Rarity]
+                      rarities = []
                     })
 
                     it('should dispatch a failure action', () => {
@@ -2144,32 +2147,25 @@ describe('when publishing a collection with fiat', () => {
                           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
                           [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
                           [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
-                          [select(getRarities), rarities]
+                          [put(fetchRaritiesRequest()), undefined],
+                          [
+                            race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
+                            { success: { payload: { rarities } } as FetchRaritiesSuccessAction }
+                          ]
                         ])
                         .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                        .put(publishCollectionFailure(collection, items, 'Rarity prices not found'))
+                        .put(publishCollectionFailure(collection, items, 'Rarity not found'))
                         .silentRun()
                     })
                   })
 
-                  describe('when that rarity has MANA prices', () => {
-                    beforeEach(() => {
-                      rarities = [
-                        {
-                          prices: {
-                            MANA: '25000000000000000000'
-                          }
-                        } as Rarity
-                      ]
-                    })
-
-                    describe('when the wert env is dev', () => {
+                  describe('when there is a rarity', () => {
+                    describe('when that rarity does no have prices', () => {
                       beforeEach(() => {
-                        wertEnv = 'dev'
+                        rarities = [{} as Rarity]
                       })
 
-                      // TODO: Unskip once the success action can be reached.
-                      it.skip('should dispatch the action to open the fiat gateway widget with dev parameters', () => {
+                      it('should dispatch a failure action', () => {
                         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
                           .provide([
                             [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
@@ -2177,66 +2173,16 @@ describe('when publishing a collection with fiat', () => {
                             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
                             [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
                             [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
-                            [select(getRarities), rarities],
-                            [select(getProfileOfAddress, from), undefined]
+                            [put(fetchRaritiesRequest()), undefined],
+                            [
+                              race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
+                              { success: { payload: { rarities } } as FetchRaritiesSuccessAction }
+                            ]
                           ])
                           .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                          .put.like({
-                            action: {
-                              type: '[Request] Open FIAT Gateway Widget',
-                              payload: {
-                                data: {
-                                  partner_id: '01HRRQQ70YK4SP88GHM9A61P6B',
-                                  commodity: 'TT',
-                                  sc_address: '0xe539E0AED3C1971560517D58277f8dd9aC296281',
-                                  origin: 'https://sandbox.wert.io',
-                                  network: 'mumbai'
-                                }
-                              }
-                            }
-                          })
+                          .put(publishCollectionFailure(collection, items, 'Rarity prices not found'))
                           .silentRun()
                       })
-                    })
-
-                    describe('when the wert env is prod', () => {
-                      beforeEach(() => {
-                        wertEnv = 'prod'
-                      })
-
-                      // TODO: Unskip once the success action can be reached.
-                      it.skip('should dispatch the action to open the fiat gateway widget with prod parameters', () => {
-                        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
-                          .provide([
-                            [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
-                            [select(getAddress), from],
-                            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-                            [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
-                            [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
-                            [select(getRarities), rarities],
-                            [select(getProfileOfAddress, from), undefined]
-                          ])
-                          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                          .put.like({
-                            action: {
-                              type: '[Request] Open FIAT Gateway Widget',
-                              payload: {
-                                data: {
-                                  partner_id: '01HR4TB274GD2VNZW0VEAXNHW2',
-                                  commodity: 'MANA',
-                                  sc_address: '0x9D32AaC179153A991e832550d9F96441Ea27763A',
-                                  origin: 'https://widget.wert.io',
-                                  network: 'polygon'
-                                }
-                              }
-                            }
-                          })
-                          .silentRun()
-                      })
-
-                      // TODO: Test the rest of the saga.
-                      // Not included in this PR given that I don't know how to test event channels yet. 👌
-                      // What comes next in the saga are the events emitted from the wert modal for close and success which are handled by the emitter.
                     })
                   })
                 })
