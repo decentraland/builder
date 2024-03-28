@@ -21,7 +21,7 @@ import {
   getData as getItemsById,
   getPaginationData,
   getWalletItems,
-  getCollectionItems,
+  getCollectionItems
 } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
