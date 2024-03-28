@@ -91,6 +91,7 @@
 .PayPublicationFeeStep .actions .actions-right {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
 .PayPublicationFeeStep .actions .actions-right button {
@@ -105,6 +106,10 @@
 .PayPublicationFeeStep .actions .actions-right .pay-with-card {
   background-color: white !important;
   color: black;
+}
+
+.pay-with-card-info-tooltip {
+  z-index: 3000 !important;
 }
 
 .PayPublicationFeeStep .actions .button {
