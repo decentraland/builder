@@ -238,7 +238,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE + 1]
         ])
-        .put(saveItemFailure(item, { ...contents, [THUMBNAIL_PATH]: blob }, 'The thumbnail file size exceeds 1MB limit.'))
+        .put(saveItemFailure(item, { ...contents, [THUMBNAIL_PATH]: blob }, 'The thumbnail file size exceeds the 1MB limit.'))
         .dispatch(saveItemRequest(item, { ...contents, [THUMBNAIL_PATH]: blob }))
         .run({ silenceTimeout: true })
     })
