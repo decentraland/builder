@@ -233,7 +233,8 @@
     "import_information_link_label": "click here",
     "upload_video_information": "Maximum file size {max_size}",
     "error": {
-      "item_too_big": "The item is too big to be uploaded. The max file size is {size} for {type}.",
+      "item_too_big": "The item is too large to be uploaded. The maximum file size for {type} is {size}.",
+      "item_wearable_too_big": "The item is too big to be uploaded. The max file size is 2MB for Wearables and 8MB for Skins.",
       "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
       "file_too_big_title": "The file is too large and can't be uploaded",
       "thumbnail_file_too_big": "The thumbnail file size exceeds the {maxSize} limit.",

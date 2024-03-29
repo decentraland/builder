@@ -179,7 +179,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The item is too big to be uploaded. The max file size is 2MB for wearable.'))
+        .put(saveItemFailure(item, contents, 'The item is too big to be uploaded. The max file size is 2MB for Wearables and 8MB for Skins.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -202,7 +202,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_SKIN_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The item is too big to be uploaded. The max file size is 8MB for skin.'))
+        .put(saveItemFailure(item, contents, 'The item is too big to be uploaded. The max file size is 2MB for Wearables and 8MB for Skins.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -222,7 +222,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_EMOTE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The item is too big to be uploaded. The max file size is 2MB for emote.'))
+        .put(saveItemFailure(item, contents, 'The item is too large to be uploaded. The maximum file size for emote is 2MB.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })

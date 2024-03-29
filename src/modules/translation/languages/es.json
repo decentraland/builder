@@ -234,6 +234,7 @@
     "upload_video_information": "Tamaño máximo de archivo {max_size}",
     "error": {
       "item_too_big": "El item es demasiado grande para cargarlo. El tamaño máximo de los archivos es {size} para {type}.",
+      "item_wearable_too_big": "El elemento es demasiado grande para cargarlo. El tamaño máximo de archivo es de 2 MB para Wearables y 8 MB para Skins.",
       "file_too_big": "{title}.{enter}El límite máximo de tamaño de archivo es {size}. Reduzca el tamaño del archivo e intente nuevamente.",
       "file_too_big_title": "El archivo es demasiado grande y no se puede cargar",
       "thumbnail_file_too_big": "El archivo thumbnail excede el límite de {size}.",

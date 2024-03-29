@@ -348,6 +348,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const item = { ...actionItem, updatedAt: Date.now() }
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
       const rarityChanged = oldItem && oldItem.rarity !== item.rarity
+      const shouldValidateCategoryChanged =
+        !!oldItem &&
+        oldItem.type === ItemType.WEARABLE &&
+        oldItem.data.category !== item.data.category &&
+        oldItem.data.category === WearableCategory.SKIN
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
@@ -385,7 +390,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         item.contents[IMAGE_PATH] = catalystImage.hash
       }
 
-      if (Object.keys(contents).length > 0) {
+      if (Object.keys(contents).length > 0 || shouldValidateCategoryChanged) {
         // Extract the thumbnail from the contents to calculate the size using another limit
         const { [THUMBNAIL_PATH]: thumbnailContent, [VIDEO_PATH]: videoContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _thumbnailContent, [VIDEO_PATH]: _videoContent, ...itemContents } = item.contents

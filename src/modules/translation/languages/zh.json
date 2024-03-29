@@ -229,6 +229,7 @@
     "upload_video_information": "最大文件大小 {max_size}",
     "error": {
       "item_too_big": "該項目太大，無法上傳。 {type} 的最大檔案大小為 {size}。",
+      "item_wearable_too_big": "該項目太大，無法上傳。 穿戴式裝置的最大檔案大小為 2MB，皮膚的最大檔案大小為 8MB。",
       "file_too_big": "{title}.{enter}文件大小限制为 {size}。减小文件的大小，然后重试。",
       "file_too_big_title": "文件太大，无法上传",
       "thumbnail_file_too_big": "縮圖檔案大小超過 {maxSize} 限制。",

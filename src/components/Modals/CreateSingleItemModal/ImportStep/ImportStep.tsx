@@ -12,7 +12,8 @@ import {
   MAX_WEARABLE_FILE_SIZE,
   MAX_SKIN_FILE_SIZE,
   MAX_EMOTE_FILE_SIZE,
-  FileTooBigError as FileTooBigErrorBuilderClient
+  FileTooBigError as FileTooBigErrorBuilderClient,
+  FileType
 } from '@dcl/builder-client/dist/files'
 import { WearableCategory } from '@dcl/builder-client/dist/item'
 import { ModalNavigation } from 'decentraland-ui'
@@ -184,12 +185,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
     if (error instanceof FileTooBigErrorBuilderClient) {
       const type = error.getType()
-
+      const errorMessage =
+        type === FileType.WEARABLE || FileType.SKIN
+          ? t(`create_single_item_modal.error.item_wearable_too_big`)
+          : t(`create_single_item_modal.error.item_too_big`, { size: `${toMB(error.getMaxFileSize())}MB`, type })
       this.setState({
-        error: new CustomErrorWithTitle(
-          t('create_single_item_modal.error.file_too_big_title'),
-          t(`create_single_item_modal.error.item_too_big`, { size: `${toMB(error.getMaxFileSize())}MB`, type })
-        ) as any,
+        error: new CustomErrorWithTitle(t('create_single_item_modal.error.file_too_big_title'), errorMessage) as any,
         isLoading: false
       })
     } else {
