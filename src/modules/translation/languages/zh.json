@@ -1725,7 +1725,7 @@
       "total_in_usd": "总计 {currency}",
       "total_in_mana": "总计 MANA",
       "pay_card": "用卡支付",
-      "pay_card_info": "使用卡支付时，将额外收取总金额的0.5%以应对价格波动。",
+      "pay_card_info": "支付处理方将在您的总额中加收 5% 的交易费，以及额外的 0.5% 以应对可能的货币波动。",
       "pay_mana": "用法力支付"
     },
     "congratulations_step": {
