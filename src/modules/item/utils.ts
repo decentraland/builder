@@ -1,6 +1,6 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, WearableCategory, Entity } from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, Rarity, WearableCategory, Entity } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -15,12 +15,8 @@ import { extractThirdPartyTokenId, decodeURN } from 'lib/urn'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import {
   Item,
-  ItemRarity,
   ItemType,
   BodyShapeType,
-  RARITY_MAX_SUPPLY,
-  RARITY_COLOR_LIGHT,
-  RARITY_COLOR,
   WearableBodyShapeType,
   IMAGE_CATEGORIES,
   THUMBNAIL_PATH,
@@ -42,12 +38,11 @@ export const MAX_EMOTE_DURATION = 10 // seconds
 export const MAX_EMOTE_SIZE = 3145728 // 3MB
 export const UNSYNCED_STATES = new Set([SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW])
 
-export function getMaxSupply(item: Item) {
-  return getMaxSupplyForRarity(item.rarity!)
-}
-
-export function getMaxSupplyForRarity(rarity: ItemRarity) {
-  return RARITY_MAX_SUPPLY[rarity]
+export function getMaxSupply(item: Item): number {
+  if (!item.rarity) {
+    return 0
+  }
+  return Rarity.getMaxSupply(item.rarity)
 }
 
 export function getBodyShapeType(item: Item): BodyShapeType {
@@ -147,21 +142,23 @@ export function toBodyShapeType(wearableBodyShape: BodyShape): BodyShapeType {
   }
 }
 
-export function getRarityIndex(rarity: ItemRarity) {
+export function getRarityIndex(rarity: Rarity): number {
+  // TODO: Change the rarity to its index
   return {
-    [ItemRarity.COMMON]: 0,
-    [ItemRarity.UNCOMMON]: 1,
-    [ItemRarity.RARE]: 2,
-    [ItemRarity.EPIC]: 3,
-    [ItemRarity.LEGENDARY]: 4,
-    [ItemRarity.MYTHIC]: 5,
-    [ItemRarity.UNIQUE]: 6
+    [Rarity.COMMON]: 0,
+    [Rarity.UNCOMMON]: 1,
+    [Rarity.RARE]: 2,
+    [Rarity.EPIC]: 3,
+    [Rarity.LEGENDARY]: 4,
+    [Rarity.MYTHIC]: 5,
+    [Rarity.UNIQUE]: 6,
+    [Rarity.EXOTIC]: 7
   }[rarity]
 }
 
-export function getBackgroundStyle(rarity?: ItemRarity) {
+export function getBackgroundStyle(rarity?: Rarity) {
   return rarity
-    ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[rarity]}, ${RARITY_COLOR[rarity]})` }
+    ? { backgroundImage: `radial-gradient(${Rarity.getGradient(rarity)[0]}, ${Rarity.getGradient(rarity)[1]})` }
     : { backgroundColor: '#393840' }
 }
 
@@ -291,8 +288,9 @@ export async function generateImage(item: Item | Item<ItemType.EMOTE> | LocalIte
 
   // render gradient
   const gradient = context.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width / 1.75)
-  gradient.addColorStop(0, RARITY_COLOR_LIGHT[item.rarity])
-  gradient.addColorStop(1, RARITY_COLOR[item.rarity])
+  const rarityGradient = Rarity.getGradient(item.rarity)
+  gradient.addColorStop(0, rarityGradient[0])
+  gradient.addColorStop(1, rarityGradient[1])
   context.fillStyle = gradient
   context.fillRect(0, 0, width, height)
 
@@ -374,10 +372,6 @@ export function getVideoURL(item: Item) {
 export function hasVideo(item?: Item, src?: string) {
   const videoSrc = src || (item && VIDEO_PATH in item.contents ? getVideoURL(item) : '')
   return !!videoSrc
-}
-
-export function getRarities() {
-  return ItemRarity.schema.enum as ItemRarity[]
 }
 
 export function isImageCategory(category: WearableCategory) {

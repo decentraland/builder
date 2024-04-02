@@ -1,5 +1,5 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
-import { BodyShape, EmoteDataADR74, Wearable, WearableCategory, Rarity as ItemRarity, HideableWearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteDataADR74, Wearable, WearableCategory, Rarity, HideableWearableCategory } from '@dcl/schemas'
 import { AnimationMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
@@ -60,36 +60,6 @@ export type EmoteRepresentation = {
   contents: string[]
 }
 
-export const RARITY_COLOR_LIGHT: Record<ItemRarity, string> = {
-  [ItemRarity.UNIQUE]: '#fde97b',
-  [ItemRarity.MYTHIC]: '#ffc3f0',
-  [ItemRarity.LEGENDARY]: '#d4a2fb',
-  [ItemRarity.EPIC]: '#96befb',
-  [ItemRarity.RARE]: '#5dfdbe',
-  [ItemRarity.UNCOMMON]: '#ffb3a0',
-  [ItemRarity.COMMON]: '#f6f7fa'
-}
-
-export const RARITY_COLOR: Record<ItemRarity, string> = {
-  [ItemRarity.UNIQUE]: '#cd8f1b',
-  [ItemRarity.MYTHIC]: '#e347b8',
-  [ItemRarity.LEGENDARY]: '#7a2fb3',
-  [ItemRarity.EPIC]: '#2062af',
-  [ItemRarity.RARE]: '#00a566',
-  [ItemRarity.UNCOMMON]: '#f1643b',
-  [ItemRarity.COMMON]: '#888d8f'
-}
-
-export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
-  [ItemRarity.UNIQUE]: 1,
-  [ItemRarity.MYTHIC]: 10,
-  [ItemRarity.LEGENDARY]: 100,
-  [ItemRarity.EPIC]: 1000,
-  [ItemRarity.RARE]: 5000,
-  [ItemRarity.UNCOMMON]: 10000,
-  [ItemRarity.COMMON]: 100000
-}
-
 export type WearableData = {
   category?: WearableCategory
   representations: WearableRepresentation[]
@@ -107,7 +77,7 @@ type BaseItem = {
   thumbnail: string
   video?: string
   description: string
-  rarity?: ItemRarity
+  rarity?: Rarity
   metrics: ModelMetrics
   createdAt: number
   updatedAt: number
@@ -152,9 +122,9 @@ export enum Currency {
   USD = 'USD'
 }
 
-export type Rarity = {
-  id: ItemRarity
-  name: ItemRarity
+export type BlockchainRarity = {
+  id: Rarity
+  name: Rarity
   price: string
   maxSupply: string
   prices?: Record<Currency, string>
@@ -177,5 +147,3 @@ export const IMAGE_EXTENSIONS = ['.zip', '.png']
 export const VIDEO_EXTENSIONS = ['.mp4']
 export const ITEM_EXTENSIONS = ['.zip', '.gltf', '.glb', '.png']
 export const IMAGE_CATEGORIES = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
-
-export { ItemRarity }

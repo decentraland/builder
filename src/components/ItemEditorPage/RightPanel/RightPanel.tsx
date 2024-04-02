@@ -1,14 +1,13 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
 import { Loader, Dropdown, Button } from 'decentraland-ui'
-import { BodyPartCategory, EmoteCategory, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
+import { BodyPartCategory, EmoteCategory, Rarity, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { isThirdParty } from 'lib/urn'
 import {
   getMissingBodyShapeType,
-  getRarities,
   getWearableCategories,
   isOwner,
   resizeImage,
@@ -25,7 +24,6 @@ import {
   EmotePlayMode,
   isEmoteData,
   Item,
-  ItemRarity,
   ItemType,
   ITEM_DESCRIPTION_MAX_LENGTH,
   ITEM_NAME_MAX_LENGTH,
@@ -149,7 +147,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ description, isDirty: this.isDirty({ description }) })
   }
 
-  handleChangeRarity = (rarity: ItemRarity) => {
+  handleChangeRarity = (rarity: Rarity) => {
     this.setState({ rarity, isDirty: this.isDirty({ rarity }) })
   }
 
@@ -357,7 +355,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return values.map(value => ({ value, text: t(`${type}.category.${value as string}`) }))
   }
 
-  asRaritySelect(values: ItemRarity[]) {
+  asRaritySelect(values: Rarity[]) {
     return values.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))
   }
 
@@ -491,9 +489,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, error, isCampaignEnabled } = this.props
+    const { selectedItemId, address, isConnected, error, isCampaignEnabled, isExoticRarityEnabled } = this.props
     const { name, description, rarity, data, isDirty, hasItem } = this.state
-    const rarities = getRarities()
+    const rarities = Rarity.getRarities().filter(rarity => isExoticRarityEnabled || rarity !== Rarity.EXOTIC)
     const playModes = getEmotePlayModes()
 
     return (
@@ -571,7 +569,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           />
 
                           {!(item.urn && isThirdParty(item.urn)) && (
-                            <Select<ItemRarity>
+                            <Select<Rarity>
                               itemId={item.id}
                               label={t('global.rarity')}
                               value={rarity}

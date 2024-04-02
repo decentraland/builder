@@ -45,3 +45,11 @@ export const getIsPublishCollectionsWertEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsExoticRarityEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.EXOTIC_RARITY)
+  } catch (e) {
+    return false
+  }
+}

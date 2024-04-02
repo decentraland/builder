@@ -26,7 +26,7 @@ import {
 import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
 import { getCollection } from 'modules/collection/selectors'
-import { EntityHashingType, Item, ItemApprovalData, ItemType, Rarity } from 'modules/item/types'
+import { EntityHashingType, Item, ItemApprovalData, ItemType, BlockchainRarity } from 'modules/item/types'
 import { openModal, closeModal, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import { mockedItem } from 'specs/item'
 import {
@@ -2026,7 +2026,7 @@ describe('when publishing a collection with fiat', () => {
   let paymentMethod: PaymentMethod
   let wertEnv: string
   let from: string
-  let rarities: Rarity[]
+  let rarities: BlockchainRarity[]
 
   beforeEach(() => {
     email = ''
@@ -2162,7 +2162,7 @@ describe('when publishing a collection with fiat', () => {
                   describe('when there is a rarity', () => {
                     describe('when that rarity does no have prices', () => {
                       beforeEach(() => {
-                        rarities = [{} as Rarity]
+                        rarities = [{} as BlockchainRarity]
                       })
 
                       it('should dispatch a failure action', () => {

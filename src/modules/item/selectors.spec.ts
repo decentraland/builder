@@ -1,4 +1,4 @@
-import { ChainId, Entity } from '@dcl/schemas'
+import { ChainId, Rarity, Entity } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CollectionState } from 'modules/collection/reducer'
 import { Collection } from 'modules/collection/types'
@@ -25,7 +25,7 @@ import {
   hasUserOrphanItems,
   hasViewAndEditRights
 } from './selectors'
-import { Item, ItemRarity, ItemType, SyncStatus, VIDEO_PATH } from './types'
+import { Item, ItemType, SyncStatus, VIDEO_PATH } from './types'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
@@ -66,7 +66,7 @@ describe('Item selectors', () => {
           }
         }
       },
-      rarities: [{ id: ItemRarity.COMMON, name: ItemRarity.COMMON, price: '100', maxSupply: 100 }]
+      rarities: [{ id: Rarity.COMMON, name: Rarity.COMMON, price: '100', maxSupply: 100 }]
     } as any
   })
 

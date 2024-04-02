@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { EmoteDataADR74 } from '@dcl/schemas'
+import { EmoteDataADR74, Rarity } from '@dcl/schemas'
 import {
   deleteItemRequest,
   DeleteItemRequestAction,
@@ -10,7 +10,7 @@ import {
   downloadItemRequest,
   DownloadItemRequestAction
 } from 'modules/item/actions'
-import { Item, ItemRarity, SyncStatus, WearableData } from 'modules/item/types'
+import { Item, SyncStatus, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
@@ -26,6 +26,7 @@ export type Props = {
   isDownloading: boolean
   isCommitteeMember: boolean
   isCampaignEnabled: boolean
+  isExoticRarityEnabled: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
@@ -38,7 +39,7 @@ export type State = {
   description: string
   thumbnail: string
   video: string
-  rarity?: ItemRarity
+  rarity?: Rarity
   contents: Record<string, Blob>
   data?: WearableData | EmoteDataADR74
   hasItem: boolean
@@ -58,6 +59,7 @@ export type MapStateProps = Pick<
   | 'isCommitteeMember'
   | 'canEditSelectedItem'
   | 'isCampaignEnabled'
+  | 'isExoticRarityEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>
 export type MapDispatch = Dispatch<

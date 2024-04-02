@@ -1,7 +1,7 @@
 import * as React from 'react'
 import PQueue from 'p-queue'
 import uuid from 'uuid'
-import { FileTooBigError, ItemFactory, loadFile, LocalItem, MAX_FILE_SIZE, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
+import { ItemFactory, loadFile, LocalItem, Rarity, THUMBNAIL_PATH } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
@@ -97,10 +97,6 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   processAcceptedFile = async (file: File) => {
     const { collection, metadata } = this.props
     try {
-      if (file.size > MAX_FILE_SIZE) {
-        throw new FileTooBigError(file.name, file.size)
-      }
-
       const fileArrayBuffer = await file.arrayBuffer()
       const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
 

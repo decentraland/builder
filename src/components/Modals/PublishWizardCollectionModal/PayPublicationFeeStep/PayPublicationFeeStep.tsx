@@ -5,7 +5,7 @@ import { config } from 'config'
 import { Button, Column, Icon, InfoTooltip, Mana, Modal, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
-import { Currency, Rarity } from 'modules/item/types'
+import { Currency, BlockchainRarity } from 'modules/item/types'
 import { PaymentMethod } from 'modules/collection/types'
 import { MapStateProps } from '../PublishWizardCollectionModal.types'
 import './PayPublicationFeeStep.css'
@@ -28,7 +28,7 @@ export const PayPublicationFeeStep: React.FC<
 
   // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
   // as reference for the prices is enough.
-  const refRarity: Rarity | undefined = rarities[0]
+  const refRarity: BlockchainRarity | undefined = rarities[0]
 
   let priceUSD = '0'
   let totalPrice = '0'
