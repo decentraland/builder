@@ -525,7 +525,8 @@ export function isWearableSynced(item: Item, entity: Entity) {
     item.data.hides.toString() !== catalystItem.data.hides.toString() ||
     item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
     item.data.tags.toString() !== catalystItem.data.tags.toString() ||
-    item.data.removesDefaultHiding?.toString() !== catalystItem.data.removesDefaultHiding?.toString()
+    item.data.removesDefaultHiding?.toString() !== catalystItem.data.removesDefaultHiding?.toString() ||
+    item.data.blockVrmExport !== catalystItem.data.blockVrmExport
 
   if (hasMetadataChanged) {
     return false

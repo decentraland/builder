@@ -1931,7 +1931,8 @@
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro",
-      "required_permissions": "Permisos"
+      "required_permissions": "Permisos",
+      "vrm_export": "Permitir la exportación en VRM"
     }
   },
   "video_showcase_modal": {

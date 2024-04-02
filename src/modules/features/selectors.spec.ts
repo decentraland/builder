@@ -5,7 +5,8 @@ import {
   getIsCreateSceneOnlySDK7Enabled,
   getIsMaintenanceEnabled,
   getIsPublishCollectionsWertEnabled,
-  getIsSDK7TemplatesEnabled
+  getIsSDK7TemplatesEnabled,
+  getIsVrmOptOutEnabled
 } from './selectors'
 import { FeatureName } from './types'
 
@@ -61,7 +62,8 @@ describe('when getting if maintainance is enabled', () => {
 const ffSelectors = [
   { selector: getIsSDK7TemplatesEnabled, app: ApplicationName.BUILDER, feature: FeatureName.SDK7_TEMPLATES },
   { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 },
-  { selector: getIsPublishCollectionsWertEnabled, app: ApplicationName.BUILDER, feature: FeatureName.PUBLISH_COLLECTIONS_WERT }
+  { selector: getIsPublishCollectionsWertEnabled, app: ApplicationName.BUILDER, feature: FeatureName.PUBLISH_COLLECTIONS_WERT },
+  { selector: getIsVrmOptOutEnabled, app: ApplicationName.BUILDER, feature: FeatureName.VRM_OPTOUT }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

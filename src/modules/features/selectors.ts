@@ -53,3 +53,11 @@ export const getIsExoticRarityEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsVrmOptOutEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.VRM_OPTOUT)
+  } catch (e) {
+    return false
+  }
+}

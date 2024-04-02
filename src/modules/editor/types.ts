@@ -65,6 +65,7 @@ export type CatalystWearable = {
         url: string
       }[]
     }[]
+    blockVrmExport?: boolean
   }
   i18n: { code: string; text: string }[]
   createdAt: number

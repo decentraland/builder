@@ -225,7 +225,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       rarity,
       hasScreenshotTaken,
       requiredPermissions,
-      tags
+      tags,
+      blockVrmExport
     } = this.state as StateData
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
@@ -250,9 +251,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         replaces: [],
         hides: [],
         removesDefaultHiding,
-        tags: [],
+        tags: tags || [],
         representations: [...representations],
-        requiredPermissions: requiredPermissions || []
+        requiredPermissions: requiredPermissions || [],
+        blockVrmExport: blockVrmExport ?? false
       } as WearableData
     } else {
       data = {
@@ -319,7 +321,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         hides: [...editedItem.data.hides],
         removesDefaultHiding: removesDefaultHiding,
         tags: [...editedItem.data.tags],
-        requiredPermissions: requiredPermissions || []
+        requiredPermissions: requiredPermissions || [],
+        blockVrmExport: editedItem.data.blockVrmExport
       },
       contents: {
         ...editedItem.contents,

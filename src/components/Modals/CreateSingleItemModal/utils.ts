@@ -55,7 +55,8 @@ export function toWearableWithBlobs({ contents, file }: { contents?: Record<stri
           overrideHides: [],
           overrideReplaces: []
         }
-      ]
+      ],
+      blockVrmExport: false
     }
   }
 }
