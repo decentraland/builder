@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { RenderResult } from '@testing-library/react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { ENS } from 'modules/ens/types'
 import { renderWithProviders } from 'specs/utils'
 import { Props } from './ENSMapAddressModal.types'
 import EnsMapAddressModal from './ENSMapAddressModal'
-import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 
 function renderENSMapAddressModal(props: Partial<Props> = {}) {
   return renderWithProviders(
@@ -60,10 +60,10 @@ describe('when the resolver is defined for the ens', () => {
       const onSave = jest.fn()
       const screen = renderENSMapAddressModal({ onSave, ens })
       const addressInput = screen.getByLabelText(t('ens_map_address_modal.address.label'))
-      userEvent.type(addressInput, '0xtestaddress')
+      userEvent.type(addressInput, '0xeDaE96F7739aF8A7fB16E2a888C1E578E1328299')
       const saveButton = screen.getByRole('button', { name: t('ens_map_address_modal.save') })
       userEvent.click(saveButton)
-      expect(onSave).toHaveBeenCalledWith('0xtestaddress')
+      expect(onSave).toHaveBeenCalledWith('0xeDaE96F7739aF8A7fB16E2a888C1E578E1328299')
     })
   })
 
