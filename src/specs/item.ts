@@ -1,6 +1,6 @@
-import { LocalItem, Rarity, WearableCategory as LocalItemWearableCategory, RemoteItem } from '@dcl/builder-client'
-import { BodyShape, WearableCategory } from '@dcl/schemas'
-import { Item, ItemRarity, ItemType } from 'modules/item/types'
+import { LocalItem, WearableCategory as LocalItemWearableCategory, RemoteItem } from '@dcl/builder-client'
+import { BodyShape, WearableCategory, Rarity } from '@dcl/schemas'
+import { Item, ItemType } from 'modules/item/types'
 
 export const mockedItem: Item = {
   type: ItemType.WEARABLE,
@@ -8,7 +8,7 @@ export const mockedItem: Item = {
   name: 'anItemName',
   thumbnail: 'thumbnail.png',
   description: 'aDescription',
-  rarity: ItemRarity.LEGENDARY,
+  rarity: Rarity.LEGENDARY,
   metrics: {
     triangles: 0,
     materials: 0,

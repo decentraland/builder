@@ -4,7 +4,7 @@ import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transac
 import { PaginationStats } from 'lib/api/pagination'
 import { FetchCollectionsParams } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
-import { BuiltFile, Item, Rarity } from './types'
+import { BuiltFile, Item, BlockchainRarity } from './types'
 
 // Fetch items
 
@@ -204,7 +204,7 @@ export const FETCH_RARITIES_SUCCESS = '[Success] Fetch Rarities'
 export const FETCH_RARITIES_FAILURE = '[Failure] Fetch Rarities'
 
 export const fetchRaritiesRequest = () => action(FETCH_RARITIES_REQUEST)
-export const fetchRaritiesSuccess = (rarities: Rarity[]) => action(FETCH_RARITIES_SUCCESS, { rarities })
+export const fetchRaritiesSuccess = (rarities: BlockchainRarity[]) => action(FETCH_RARITIES_SUCCESS, { rarities })
 export const fetchRaritiesFailure = (error: string) => action(FETCH_RARITIES_FAILURE, { error })
 
 export type FetchRaritiesRequestAction = ReturnType<typeof fetchRaritiesRequest>

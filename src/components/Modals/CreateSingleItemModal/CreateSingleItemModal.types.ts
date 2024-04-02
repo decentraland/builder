@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { IPreviewController } from '@dcl/schemas'
+import { IPreviewController, Rarity } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
-import { BodyShapeType, Item, ItemRarity, ItemType, SyncStatus } from 'modules/item/types'
+import { BodyShapeType, Item, ItemType, SyncStatus } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
@@ -23,6 +23,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   collection: Collection | null
   itemStatus: SyncStatus | null
+  isExoticRarityEnabled: boolean
   onSave: typeof saveItemRequest
 }
 
@@ -33,7 +34,7 @@ export type StateData = {
   type: ItemType
   category: string
   playMode?: string
-  rarity: ItemRarity
+  rarity: Rarity
   bodyShape: BodyShapeType
   thumbnail: string
   model: string
@@ -99,6 +100,6 @@ export type AcceptedFileProps = Pick<
   | 'tags'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus'>
+export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isExoticRarityEnabled'>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

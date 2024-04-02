@@ -1,6 +1,5 @@
 import { RemoteItem } from '@dcl/builder-client'
-import { Rarity } from '@dcl/schemas'
-import { Item, ItemRarity, WearableData } from 'modules/item/types'
+import { Item, WearableData } from 'modules/item/types'
 
 export function fromRemoteItem(remoteItem: RemoteItem): Item {
   const item: Item = {
@@ -28,29 +27,8 @@ export function fromRemoteItem(remoteItem: RemoteItem): Item {
   if (remoteItem.price) item.price = remoteItem.price
   if (remoteItem.urn) item.urn = remoteItem.urn
   if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
-  if (remoteItem.rarity) item.rarity = rarityToItemRarity(remoteItem.rarity)
+  if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
 
   return item
-}
-
-function rarityToItemRarity(rarity: Rarity): ItemRarity {
-  switch (rarity) {
-    case Rarity.UNIQUE:
-      return ItemRarity.UNIQUE
-    case Rarity.MYTHIC:
-      return ItemRarity.MYTHIC
-    case Rarity.LEGENDARY:
-      return ItemRarity.LEGENDARY
-    case Rarity.EPIC:
-      return ItemRarity.EPIC
-    case Rarity.RARE:
-      return ItemRarity.RARE
-    case Rarity.UNCOMMON:
-      return ItemRarity.UNCOMMON
-    case Rarity.COMMON:
-      return ItemRarity.COMMON
-    default:
-      throw new Error('Unknown rarity')
-  }
 }

@@ -4,7 +4,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
 import { publishCollectionRequest, PublishCollectionRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
-import { Item, Rarity } from 'modules/item/types'
+import { Item, BlockchainRarity } from 'modules/item/types'
 import { fetchRaritiesRequest, FetchRaritiesRequestAction } from 'modules/item/actions'
 
 export enum PublishWizardCollectionSteps {
@@ -20,7 +20,7 @@ export type Props = ModalProps & {
   wallet: Wallet
   collection: Collection
   items: Item[]
-  rarities: Rarity[]
+  rarities: BlockchainRarity[]
   unsyncedCollectionError: string | null
   collectionError: string | null
   itemError: string | null

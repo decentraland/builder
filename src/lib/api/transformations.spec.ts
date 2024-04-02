@@ -1,6 +1,6 @@
 import { ItemType, RemoteItem } from '@dcl/builder-client'
 import { Rarity, BodyShape, WearableCategory } from '@dcl/schemas'
-import { Item, ItemRarity } from 'modules/item/types'
+import { Item } from 'modules/item/types'
 import { fromRemoteItem } from './transformations'
 
 describe('when converting a RemoteItem into an Item', () => {
@@ -64,7 +64,7 @@ describe('when converting a RemoteItem into an Item', () => {
       thumbnail: 'thumbnail.png',
       owner: '0x0',
       urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:tercer-fiesta-2',
-      rarity: ItemRarity.LEGENDARY,
+      rarity: Rarity.LEGENDARY,
       type: ItemType.WEARABLE,
       totalSupply: 0,
       data: {
