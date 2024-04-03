@@ -109,7 +109,7 @@ import {
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS
 } from 'modules/thirdParty/actions'
 import { toItemObject } from './utils'
-import { Item, Rarity } from './types'
+import { Item, BlockchainRarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, URNType } from 'lib/urn'
 import { CLOSE_MODAL, CloseModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
@@ -123,7 +123,7 @@ export type ItemPaginationData = {
 
 export type ItemState = {
   data: Record<string, Item>
-  rarities: Rarity[]
+  rarities: BlockchainRarity[]
   loading: LoadingState
   hasUserOrphanItems: boolean | undefined
   error: string | null

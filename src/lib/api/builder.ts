@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosError } from 'axios'
-import { Entity } from '@dcl/schemas'
+import { Entity, Rarity } from '@dcl/schemas'
 import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { config } from 'config'
@@ -14,7 +14,7 @@ import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
-import { Item, ItemType, ItemRarity, WearableData, Rarity, ItemApprovalData } from 'modules/item/types'
+import { Item, ItemType, WearableData, BlockchainRarity, ItemApprovalData } from 'modules/item/types'
 import { Account } from 'modules/committee/types'
 import { retryParams } from 'modules/common/utils'
 import { Collection, CollectionType } from 'modules/collection/types'
@@ -63,7 +63,7 @@ export type RemoteItem = {
   price: string | null
   urn: string | null
   beneficiary: string | null
-  rarity: ItemRarity | null
+  rarity: Rarity | null
   total_supply: number | null
   is_published: boolean
   is_approved: boolean
@@ -973,8 +973,8 @@ export class BuilderAPI extends BaseAPI {
     return this.request('post', `/collections/${collection.id}/curation/post`, { params: { forumPost } }) as Promise<string>
   }
 
-  async fetchRarities(): Promise<Rarity[]> {
-    return this.request('get', '/rarities') as Promise<Rarity[]>
+  async fetchRarities(): Promise<BlockchainRarity[]> {
+    return this.request('get', '/rarities') as Promise<BlockchainRarity[]>
   }
 
   async fetchThirdParties(manager?: string): Promise<ThirdParty[]> {

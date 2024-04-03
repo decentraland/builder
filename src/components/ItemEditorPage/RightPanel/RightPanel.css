@@ -196,3 +196,16 @@
 .RightPanel .details .ItemVideoContainer .ItemEmptyVideoContainer .empty-video-text {
   display: none;
 }
+
+.RightPanel .right-panel-copyright-section {
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.right-panel-export-protection {
+  display: grid;
+  grid-template-columns: 1fr 105px;
+  align-items: center;
+  color: var(--secondary-text);
+}

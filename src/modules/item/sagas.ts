@@ -129,7 +129,17 @@ import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import { Item, Rarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, ItemType, VIDEO_PATH } from './types'
+import {
+  Item,
+  BlockchainRarity,
+  CatalystItem,
+  BodyShapeType,
+  IMAGE_PATH,
+  THUMBNAIL_PATH,
+  WearableData,
+  ItemType,
+  VIDEO_PATH
+} from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import {
   ItemEmoteTooBigError,
@@ -176,7 +186,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleFetchRaritiesRequest() {
     try {
-      const rarities: Rarity[] = yield call([legacyBuilder, 'fetchRarities'])
+      const rarities: BlockchainRarity[] = yield call([legacyBuilder, 'fetchRarities'])
       yield put(fetchRaritiesSuccess(rarities))
     } catch (error) {
       yield put(fetchRaritiesFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))

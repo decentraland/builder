@@ -6,6 +6,7 @@ import { getCollection } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SAVE_ITEM_REQUEST } from 'modules/item/actions'
 import { getLoading, getError, getStatusByItemId } from 'modules/item/selectors'
+import { getIsExoticRarityEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CreateSingleItemModal.types'
 import CreateSingleItemModal from './CreateSingleItemModal'
 
@@ -19,7 +20,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     address: getAddress(state),
     error: getError(state),
     itemStatus,
-    isLoading: isLoadingType(getLoading(state), SAVE_ITEM_REQUEST)
+    isLoading: isLoadingType(getLoading(state), SAVE_ITEM_REQUEST),
+    isExoticRarityEnabled: getIsExoticRarityEnabled(state)
   }
 }
 

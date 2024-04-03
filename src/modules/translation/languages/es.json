@@ -1935,7 +1935,14 @@
       "select_placeholder": "Selecciona una opción",
       "request_for_changes": "Solicitud de cambios",
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro",
-      "required_permissions": "Permisos"
+      "required_permissions": "Permisos",
+      "copyright": {
+        "title": "Derechos de autor",
+        "vrm_export": "Protección de exportación de VRM",
+        "enabled": "Activada",
+        "disabled": "Desactivada",
+        "info": "Protección de exportación de VRM"
+      }
     }
   },
   "video_showcase_modal": {
@@ -1972,6 +1979,7 @@
     "rarity": {
       "unique": "Único",
       "mythic": "Mítico",
+      "exotic": "Exotic",
       "legendary": "Legendario",
       "epic": "Épico",
       "rare": "Raro",

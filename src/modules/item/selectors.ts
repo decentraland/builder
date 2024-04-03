@@ -18,7 +18,7 @@ import { isEqual } from 'lib/address'
 import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
 import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
-import { Item, SyncStatus, Rarity, CatalystItem, ItemType, VIDEO_PATH } from './types'
+import { Item, SyncStatus, BlockchainRarity, CatalystItem, ItemType, VIDEO_PATH } from './types'
 import { areSynced, canSeeItem, isOwner, isSmart } from './utils'
 import { getSearch } from 'connected-react-router'
 
@@ -80,7 +80,7 @@ export const getPaginatedCollectionItems = (state: RootState, collectionId: stri
   return ids.map(itemId => allItems[itemId]).filter(Boolean)
 }
 
-export const getRarities = (state: RootState): Rarity[] => {
+export const getRarities = (state: RootState): BlockchainRarity[] => {
   return getState(state).rarities
 }
 

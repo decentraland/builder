@@ -1,6 +1,6 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, PreviewProjection, WearableCategory } from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Rarity, PreviewProjection, WearableCategory } from '@dcl/schemas'
 import {
   ModalNavigation,
   Row,
@@ -26,7 +26,6 @@ import {
   THUMBNAIL_PATH,
   Item,
   BodyShapeType,
-  ItemRarity,
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation,
   ItemType,
@@ -40,12 +39,10 @@ import { computeHashes } from 'modules/deployment/contentUtils'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
-  getRarities,
   getWearableCategories,
   getBackgroundStyle,
   isImageFile,
   resizeImage,
-  getMaxSupplyForRarity,
   getEmoteCategories,
   getEmotePlayModes,
   getBodyShapeTypeFromContents,
@@ -238,7 +235,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       rarity,
       hasScreenshotTaken,
       requiredPermissions,
-      tags
+      tags,
+      blockVrmExport
     } = this.state as StateData
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
@@ -263,9 +261,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         replaces: [],
         hides: [],
         removesDefaultHiding,
-        tags: [],
+        tags: tags || [],
         representations: [...representations],
-        requiredPermissions: requiredPermissions || []
+        requiredPermissions: requiredPermissions || [],
+        blockVrmExport: blockVrmExport ?? false
       } as WearableData
     } else {
       data = {
@@ -294,7 +293,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       blockchainContentHash: null,
       currentContentHash: null,
       catalystContentHash: null,
-      rarity: belongsToAThirdPartyCollection ? ItemRarity.UNIQUE : rarity,
+      rarity: belongsToAThirdPartyCollection ? Rarity.UNIQUE : rarity,
       data,
       owner: address!,
       metrics,
@@ -332,7 +331,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         hides: [...editedItem.data.hides],
         removesDefaultHiding: removesDefaultHiding,
         tags: [...editedItem.data.tags],
-        requiredPermissions: requiredPermissions || []
+        requiredPermissions: requiredPermissions || [],
+        blockVrmExport: editedItem.data.blockVrmExport
       },
       contents: {
         ...editedItem.contents,
@@ -525,7 +525,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleRarityChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-    const rarity = value as ItemRarity
+    const rarity = value as Rarity
     this.setState({ rarity })
   }
 
@@ -821,11 +821,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
-    const { collection } = this.props
+    const { collection, isExoticRarityEnabled } = this.props
     const { name, category, rarity, contents, item, type } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
-    const rarities = getRarities()
+    const rarities = Rarity.getRarities().filter(rarity => isExoticRarityEnabled || rarity !== Rarity.EXOTIC)
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
 
     const raritiesLink =
@@ -855,8 +855,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
               options={rarities.map(value => ({
                 value,
                 label: t('wearable.supply', {
-                  count: getMaxSupplyForRarity(value),
-                  formatted: getMaxSupplyForRarity(value).toLocaleString()
+                  count: Rarity.getMaxSupply(value),
+                  formatted: Rarity.getMaxSupply(value).toLocaleString()
                 }),
                 text: t(`wearable.rarity.${value}`)
               }))}

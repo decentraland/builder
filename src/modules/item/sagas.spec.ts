@@ -4,7 +4,7 @@ import { locations } from 'routing/locations'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { ethers } from 'ethers'
-import { Entity, EntityType } from '@dcl/schemas'
+import { Entity, Rarity, EntityType } from '@dcl/schemas'
 import { call, select, take, race, delay } from 'redux-saga/effects'
 import {
   BuilderClient,
@@ -82,9 +82,8 @@ import {
   Currency,
   IMAGE_PATH,
   Item,
-  ItemRarity,
   ItemType,
-  Rarity,
+  BlockchainRarity,
   THUMBNAIL_PATH,
   VIDEO_PATH,
   WearableRepresentation
@@ -410,7 +409,7 @@ describe('when handling the save item request action', () => {
       let newContentsContainingNewCatalystImage: Record<string, Blob>
 
       beforeEach(() => {
-        item = { ...item, rarity: ItemRarity.UNIQUE, contents: { ...item.contents, [IMAGE_PATH]: 'someOtherCatalystHash' } }
+        item = { ...item, rarity: Rarity.UNIQUE, contents: { ...item.contents, [IMAGE_PATH]: 'someOtherCatalystHash' } }
         itemWithCatalystImage = { ...item, contents: { ...item.contents, [IMAGE_PATH]: catalystImageHash } }
         newContentsContainingNewCatalystImage = { ...contents, [IMAGE_PATH]: blob }
       })
@@ -425,7 +424,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [
               select(getItem, item.id),
-              { ...item, contents: { ...item.contents, [IMAGE_PATH]: item.contents[IMAGE_PATH] }, rarity: ItemRarity.COMMON }
+              { ...item, contents: { ...item.contents, [IMAGE_PATH]: item.contents[IMAGE_PATH] }, rarity: Rarity.COMMON }
             ],
             [select(getAddress), mockAddress],
             [
@@ -1648,13 +1647,13 @@ describe('when handling the save item curation success action', () => {
 })
 
 describe('when handling the fetch of rarities', () => {
-  let rarities: Rarity[]
+  let rarities: BlockchainRarity[]
 
   beforeEach(() => {
     rarities = [
       {
-        id: ItemRarity.COMMON,
-        name: ItemRarity.COMMON,
+        id: Rarity.COMMON,
+        name: Rarity.COMMON,
         price: '4000000000000000000',
         maxSupply: '100000',
         prices: {
