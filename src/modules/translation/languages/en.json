@@ -1912,7 +1912,13 @@
       "request_for_changes": "Request for changes",
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum",
       "required_permissions": "Permissions",
-      "vrm_export": "Allow VRM export of the wearable"
+      "copyright": {
+        "title": "Copyright",
+        "vrm_export": "VRM Exportation Protection",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "info": "VRM Exportation Protection"
+      }
     }
   },
   "video_showcase_modal": {

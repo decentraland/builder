@@ -154,7 +154,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleAllowVrmExport = (_event: React.FormEvent, { checked }: CheckboxProps) => {
     const data = {
       ...this.state.data,
-      blockVrmExport: !checked
+      blockVrmExport: checked
     } as WearableData
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
@@ -635,12 +635,31 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       ) : null}
                     </Collapsable>
                     {item?.type === ItemType.WEARABLE && isVrmOptOutEnabled && (
-                      <Checkbox
-                        toggle
-                        label={t('item_editor.right_panel.vrm_export')}
-                        checked={!(data as WearableData)?.blockVrmExport}
-                        onChange={this.handleAllowVrmExport}
-                      />
+                      <Collapsable
+                        label={
+                          <>
+                            <span className="overrides-label-panel">{t('item_editor.right_panel.copyright.title')}</span>
+                            <Info content={t('item_editor.right_panel.copyright.info')} className="info" />
+                          </>
+                        }
+                      >
+                        <div className="right-panel-copyright-section">
+                          <div className="right-panel-export-protection">
+                            <span>{t('item_editor.right_panel.copyright.vrm_export')}</span>
+                            <Checkbox
+                              toggle
+                              label={
+                                (data as WearableData)?.blockVrmExport
+                                  ? t('item_editor.right_panel.copyright.enabled')
+                                  : t('item_editor.right_panel.copyright.disabled')
+                              }
+                              checked={(data as WearableData)?.blockVrmExport}
+                              onChange={this.handleAllowVrmExport}
+                              aria-label={t('item_editor.right_panel.copyright.vrm_export')}
+                            />
+                          </div>
+                        </div>
+                      </Collapsable>
                     )}
                     {isDirty ? (
                       <div className="edit-buttons">

@@ -1915,7 +1915,13 @@
       "request_for_changes": "要求变更",
       "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权",
       "required_permissions": "权限",
-      "vrm_export": "允许VRM导出可穿戴"
+      "copyright": {
+        "title": "版权",
+        "vrm_export": "VRM出口保护",
+        "enabled": "启用",
+        "disabled": "禁用",
+        "info": "VRM出口保护"
+      }
     }
   },
   "video_showcase_modal": {
