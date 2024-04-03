@@ -1,6 +1,6 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
-import { Loader, Dropdown, Button } from 'decentraland-ui'
+import { Loader, Dropdown, Button, Checkbox, CheckboxProps } from 'decentraland-ui'
 import { BodyPartCategory, EmoteCategory, Rarity, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -151,6 +151,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ rarity, isDirty: this.isDirty({ rarity }) })
   }
 
+  handleAllowVrmExport = (_event: React.FormEvent, { checked }: CheckboxProps) => {
+    const data = {
+      ...this.state.data,
+      blockVrmExport: checked
+    } as WearableData
+    this.setState({ data, isDirty: this.isDirty({ data }) })
+  }
+
   handleChangeCategory = (category: HideableWearableCategory | EmoteCategory) => {
     let data
     if (isEmoteData(this.state.data!)) {
@@ -243,7 +251,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
           removesDefaultHiding:
             itemData.category === WearableCategory.UPPER_BODY || itemData.hides?.includes(WearableCategory.UPPER_BODY)
               ? [BodyPartCategory.HANDS]
-              : []
+              : [],
+          blockVrmExport: itemData.blockVrmExport ?? false
         }
       }
       const itemContents = {
@@ -489,7 +498,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, error, isCampaignEnabled, isExoticRarityEnabled } = this.props
+    const { selectedItemId, address, isConnected, error, isCampaignEnabled, isExoticRarityEnabled, isVrmOptOutEnabled } = this.props
     const { name, description, rarity, data, isDirty, hasItem } = this.state
     const rarities = Rarity.getRarities().filter(rarity => isExoticRarityEnabled || rarity !== Rarity.EXOTIC)
     const playModes = getEmotePlayModes()
@@ -625,6 +634,33 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         </>
                       ) : null}
                     </Collapsable>
+                    {item?.type === ItemType.WEARABLE && isVrmOptOutEnabled && (
+                      <Collapsable
+                        label={
+                          <>
+                            <span className="overrides-label-panel">{t('item_editor.right_panel.copyright.title')}</span>
+                            <Info content={t('item_editor.right_panel.copyright.info')} className="info" />
+                          </>
+                        }
+                      >
+                        <div className="right-panel-copyright-section">
+                          <div className="right-panel-export-protection">
+                            <span>{t('item_editor.right_panel.copyright.vrm_export')}</span>
+                            <Checkbox
+                              toggle
+                              label={
+                                (data as WearableData)?.blockVrmExport
+                                  ? t('item_editor.right_panel.copyright.enabled')
+                                  : t('item_editor.right_panel.copyright.disabled')
+                              }
+                              checked={(data as WearableData)?.blockVrmExport}
+                              onChange={this.handleAllowVrmExport}
+                              aria-label={t('item_editor.right_panel.copyright.vrm_export')}
+                            />
+                          </div>
+                        </div>
+                      </Collapsable>
+                    )}
                     {isDirty ? (
                       <div className="edit-buttons">
                         <Button secondary onClick={this.handleOnResetItem}>

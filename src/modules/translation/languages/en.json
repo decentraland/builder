@@ -1911,7 +1911,14 @@
       "select_placeholder": "Select an option",
       "request_for_changes": "Request for changes",
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum",
-      "required_permissions": "Permissions"
+      "required_permissions": "Permissions",
+      "copyright": {
+        "title": "Copyright",
+        "vrm_export": "VRM Exportation Protection",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "info": "VRM Exportation Protection"
+      }
     }
   },
   "video_showcase_modal": {

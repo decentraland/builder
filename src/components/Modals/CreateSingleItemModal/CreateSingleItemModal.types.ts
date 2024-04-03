@@ -52,6 +52,7 @@ export type StateData = {
   video?: string
   requiredPermissions?: string[]
   tags?: string[]
+  blockVrmExport?: boolean
 }
 export type State = {
   view: CreateItemView
@@ -98,6 +99,7 @@ export type AcceptedFileProps = Pick<
   | 'video'
   | 'playMode'
   | 'tags'
+  | 'blockVrmExport'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isExoticRarityEnabled'>

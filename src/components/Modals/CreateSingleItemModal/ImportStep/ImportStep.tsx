@@ -253,7 +253,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             rarity: wearable.rarity,
             category: wearable.data.category,
             bodyShape: getBodyShapeType(wearable as Item),
-            requiredPermissions: scene?.requiredPermissions
+            requiredPermissions: scene?.requiredPermissions,
+            tags: wearable.data.tags,
+            blockVrmExport: wearable.data.blockVrmExport
           }
         } else if (emote) {
           acceptedFileProps = {
