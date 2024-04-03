@@ -515,9 +515,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
+    const hasChangedThumbnailType =
+      (this.state.category && getThumbnailType(category) !== getThumbnailType(this.state.category as WearableCategory)) ||
+      !this.state.category
+
     if (this.state.category !== category) {
       this.setState({ category })
-      if (this.state.type === ItemType.WEARABLE) {
+      if (this.state.type === ItemType.WEARABLE && hasChangedThumbnailType) {
         // As it's not required to wait for the promise, use the void operator to return undefined
         void this.updateThumbnailByCategory(category)
       }
@@ -600,6 +604,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     const isCustom = !!contents && THUMBNAIL_PATH in contents
     if (!isCustom) {
+      this.setState({ isLoading: true })
       let thumbnail
       if (contents && isImageFile(model!)) {
         thumbnail = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model!], category)
@@ -615,7 +620,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         thumbnail = image
         URL.revokeObjectURL(url)
       }
-      this.setState({ thumbnail })
+      this.setState({ thumbnail, isLoading: false })
     }
   }
 
@@ -822,7 +827,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderFields() {
     const { collection, isExoticRarityEnabled } = this.props
-    const { name, category, rarity, contents, item, type } = this.state
+    const { name, category, rarity, contents, item, type, isLoading } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const rarities = Rarity.getRarities().filter(rarity => isExoticRarityEnabled || rarity !== Rarity.EXOTIC)
@@ -838,7 +843,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     return (
       <>
-        <Field className="name" label={t('create_single_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
+        <Field
+          className="name"
+          label={t('create_single_item_modal.name_label')}
+          value={name}
+          disabled={isLoading}
+          onChange={this.handleNameChange}
+        />
         {(!item || !item.isPublished) && !belongsToAThirdPartyCollection ? (
           <>
             <SelectField
@@ -860,12 +871,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 }),
                 text: t(`wearable.rarity.${value}`)
               }))}
+              disabled={isLoading}
               onChange={this.handleRarityChange}
             />
           </>
         ) : null}
         <SelectField
           required
+          disabled={isLoading}
           label={t('create_single_item_modal.category_label')}
           placeholder={t('create_single_item_modal.category_placeholder')}
           value={categories.includes(category!) ? category : undefined}
@@ -897,8 +910,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   isDisabled(): boolean {
     const { isLoading } = this.props
+    const { isLoading: isStateLoading } = this.state
 
-    return !this.isValid() || isLoading
+    return !this.isValid() || isLoading || Boolean(isStateLoading)
   }
 
   isValid(): boolean {
@@ -1155,7 +1169,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderDetailsView() {
     const { onClose, metadata, error, isLoading } = this.props
-    const { isRepresentation, error: stateError, type, contents } = this.state
+    const { isRepresentation, error: stateError, type, contents, isLoading: isStateLoading } = this.state
     const isDisabled = this.isDisabled()
     const title = this.renderModalTitle()
 
@@ -1175,7 +1189,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                   </Column>
                 ) : null}
                 <Column align="right">
-                  <Button primary disabled={isDisabled} loading={isLoading}>
+                  <Button primary disabled={isDisabled} loading={isLoading || isStateLoading}>
                     {(metadata && metadata.changeItemFile) || isRepresentation ? t('global.save') : t('global.next')}
                   </Button>
                 </Column>
