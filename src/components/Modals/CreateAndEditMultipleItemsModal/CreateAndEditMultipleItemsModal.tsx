@@ -10,7 +10,6 @@ import {
   MAX_WEARABLE_FILE_SIZE,
   Rarity,
   THUMBNAIL_PATH,
-  WearableCategory,
   FileTooBigError as FileTooBigErrorBuilderClient,
   FileType,
   MAX_EMOTE_FILE_SIZE
@@ -30,6 +29,7 @@ import { ImageType } from 'modules/media/types'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
 import { BuiltFile, IMAGE_PATH } from 'modules/item/types'
 import { generateCatalystImage, getModelPath } from 'modules/item/utils'
+import { ThumbnailFileTooBigError } from 'modules/item/errors'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
 import {
@@ -42,7 +42,6 @@ import {
   State
 } from './CreateAndEditMultipleItemsModal.types'
 import styles from './CreateAndEditMultipleItemsModal.module.css'
-import { FileTooBigError, ThumbnailFileTooBigError } from 'modules/item/errors'
 
 const WEARABLES_ZIP_INFRA_URL = config.get('WEARABLES_ZIP_INFRA_URL', '')
 const AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY = 4
@@ -152,12 +151,6 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       if (thumbnail.size > MAX_THUMBNAIL_FILE_SIZE) {
         throw new ThumbnailFileTooBigError()
-      }
-
-      const maxWearableFileSize = loadedFile.wearable.data.category == WearableCategory.SKIN ? MAX_SKIN_FILE_SIZE : MAX_WEARABLE_FILE_SIZE
-
-      if (file.size > maxWearableFileSize) {
-        throw new FileTooBigError(maxWearableFileSize)
       }
 
       itemFactory.withThumbnail(thumbnail)
