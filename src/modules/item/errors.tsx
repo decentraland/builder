@@ -23,13 +23,13 @@ export class CustomErrorWithTitle {
 
 export class ItemWearableTooBigError extends Error {
   constructor() {
-    super(t('create_single_item_modal.error.item_wearable_too_big'))
+    super(t('create_single_item_modal.error.wearable_too_big.message'))
   }
 }
 
 export class ItemSkinTooBigError extends Error {
   constructor() {
-    super(t('create_single_item_modal.error.item_wearable_too_big'))
+    super(t('create_single_item_modal.error.wearable_too_big.message'))
   }
 }
 
