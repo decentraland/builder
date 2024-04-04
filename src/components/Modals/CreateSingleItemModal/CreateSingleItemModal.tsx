@@ -935,7 +935,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
     }
 
-    const thumbnailSize = thumbnail && dataURLToBlob(thumbnail) && calculateFileSize(dataURLToBlob(thumbnail)!)
+    const thumbnailBlob = thumbnail ? dataURLToBlob(thumbnail) : undefined
+    const thumbnailSize = thumbnailBlob ? calculateFileSize(thumbnailBlob) : 0
+
     if (thumbnailSize && thumbnailSize > MAX_THUMBNAIL_SIZE) {
       this.setState({
         error: t('create_single_item_modal.error.thumbnail_file_too_big', { maxSize: `${toMB(MAX_THUMBNAIL_FILE_SIZE)}MB` })
@@ -975,7 +977,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       })
       return false
     }
-
     return isRequirementMet
   }
 

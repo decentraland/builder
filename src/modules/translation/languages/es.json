@@ -234,7 +234,6 @@
     "upload_video_information": "Tamaño máximo de archivo {max_size}",
     "error": {
       "item_too_big": "El item es demasiado grande para cargarlo. El tamaño máximo de los archivos es {size} para {type}.",
-      "item_wearable_too_big": "El elemento es demasiado grande para cargarlo. El tamaño máximo de archivo es de 2 MB para Wearables y 8 MB para Skins.",
       "file_too_big": "{title}.{enter}El límite máximo de tamaño de archivo es {size}. Reduzca el tamaño del archivo e intente nuevamente.",
       "file_too_big_title": "El archivo es demasiado grande y no se puede cargar",
       "thumbnail_file_too_big": "El archivo thumbnail excede el límite de {size}.",
@@ -248,6 +247,18 @@
       "emote_duration_too_long_title": "El emote supera la duración máxima en segundos",
       "invalid_model_file_type": "El archivo tiene una representación inválida para este {type}. Por favor revíselo y vuelva a intentarlo.",
       "wrong_video_format": "El video provisto no es un video MP4",
+      "thumbnail_too_big": {
+        "title": "El item es demasiado grande para cargarlo",
+        "message": "El tamaño máximo de archivo es de 2 MB para miniaturas."
+      },
+      "wearable_too_big": {
+        "title": "El item es demasiado grande para cargarlo",
+        "message": "El tamaño máximo de archivo es de 2 MB para Wearables y de 8 MB para Skins."
+      },
+      "emote_too_big": {
+        "title": "El item es demasiado grande para cargarlo",
+        "message": "The max file size is 3MB for Emotes."
+      },
       "unknown_required_permissions": {
         "title": "{count, plural, one {El permiso} other {Los permisos}} {wrong_configurations} de la vestimenta interactiva no {count, plural, one {existe} other {existen}}. Por favor, corrija el archivo 'scene.json'.",
         "message": "Para obtener {learn_more}, consulte la documentación."

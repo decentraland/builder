@@ -19,7 +19,7 @@ import { WearableCategory } from '@dcl/builder-client/dist/item'
 import { ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getExtension, toMB } from 'lib/file'
+import { getExtension } from 'lib/file'
 import { isThirdParty } from 'lib/urn'
 import { EngineType, getEmoteMetrics, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
@@ -181,42 +181,50 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     } else if (error instanceof MissingRequiredPropertiesError) {
       errorTranslationId = 'missing_required_properties'
       wrongConfigurations = error.getMissingProperties()
-    }
-
-    if (error instanceof FileTooBigErrorBuilderClient) {
-      const type = error.getType()
-      const errorMessage =
-        type === FileType.WEARABLE || FileType.SKIN
-          ? t(`create_single_item_modal.error.item_wearable_too_big`)
-          : t(`create_single_item_modal.error.item_too_big`, { size: `${toMB(error.getMaxFileSize())}MB`, type })
-      this.setState({
-        error: new CustomErrorWithTitle(t('create_single_item_modal.error.file_too_big_title'), errorMessage) as any,
-        isLoading: false
-      })
-    } else {
-      if (wrongConfigurations.length) {
-        console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+    } else if (error instanceof FileTooBigErrorBuilderClient) {
+      switch (error.getType()) {
+        case FileType.WEARABLE:
+        case FileType.SKIN: {
+          errorTranslationId = 'wearable_too_big'
+          break
+        }
+        case FileType.EMOTE: {
+          errorTranslationId = 'emote_too_big'
+          break
+        }
+        case FileType.THUMBNAIL: {
+          errorTranslationId = 'thumbnail_too_big'
+          break
+        }
+        default: {
+          errorTranslationId = 'file_too_big'
+          break
+        }
       }
-
-      this.setState({
-        error: errorTranslationId
-          ? new CustomErrorWithTitle(
-              t(`create_single_item_modal.error.${errorTranslationId}.title`, {
-                wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
-                count: wrongConfigurations.length
-              }),
-              t(`create_single_item_modal.error.${errorTranslationId}.message`, {
-                learn_more: (
-                  <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
-                    {t('global.learn_more')}
-                  </span>
-                )
-              })
-            )
-          : error.message,
-        isLoading: false
-      })
+      wrongConfigurations = []
     }
+    if (wrongConfigurations.length) {
+      console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
+    }
+
+    this.setState({
+      error: errorTranslationId
+        ? new CustomErrorWithTitle(
+            t(`create_single_item_modal.error.${errorTranslationId}.title`, {
+              wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
+              count: wrongConfigurations.length
+            }),
+            t(`create_single_item_modal.error.${errorTranslationId}.message`, {
+              learn_more: (
+                <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
+                  {t('global.learn_more')}
+                </span>
+              )
+            })
+          )
+        : error.message,
+      isLoading: false
+    })
   }
 
   handleOpenLearnMoreOnError = () => {

@@ -243,6 +243,18 @@
       "emote_duration_too_long_title": "您的表情超过了最长持续时间（以秒为单位）",
       "invalid_model_file_type": "该文件对此 {type} 项目的表示无效，请检查它并重试。",
       "wrong_video_format": "提供的视频不是MP4视频",
+      "thumbnail_too_big": {
+        "title": "文件太大，无法上传",
+        "message": "缩略图的最大文件大小为 2MB。"
+      },
+      "wearable_too_big": {
+        "title": "文件太大，无法上传",
+        "message": "可穿戴设备的最大文件大小为 2MB，皮肤的最大文件大小为 8MB。"
+      },
+      "emote_too_big": {
+        "title": "文件太大，无法上传",
+        "message": "表情的最大文件大小为 3MB。"
+      },
       "unknown_required_permissions": {
         "title": "智能穿戴设备{count,plural,一个{权限}其他{权限}}{wrong_configurations}{count,plural,一个{不}其他{不}}存在。请更正' 场景.json'。",
         "message": "有关更多信息，请查看文档 {learn_more}。"
