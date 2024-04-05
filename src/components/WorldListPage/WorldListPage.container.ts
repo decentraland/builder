@@ -41,7 +41,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenYourStorageModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata)),
   onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
-  onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId)),
+  onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId))
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)

@@ -35,5 +35,8 @@ export type MapStateProps = Pick<
   Props,
   'ensList' | 'externalNames' | 'deploymentsByWorlds' | 'isLoading' | 'error' | 'projects' | 'isLoggedIn' | 'worldsWalletStats'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenYourStorageModal' | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onNavigate' | 'onOpenYourStorageModal' | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'
+>
 export type MapDispatch = Dispatch
