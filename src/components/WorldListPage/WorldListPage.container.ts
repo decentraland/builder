@@ -9,7 +9,7 @@ import {
   getExternalNamesForConnectedWallet,
   getLoading as getLoadingENS
 } from 'modules/ens/selectors'
-import { FETCH_WORLD_DEPLOYMENTS_REQUEST } from 'modules/deployment/actions'
+import { FETCH_WORLD_DEPLOYMENTS_REQUEST, clearDeploymentRequest } from 'modules/deployment/actions'
 import { getDeploymentsByWorlds, getError as getDeploymentsError, getLoading as getDeploymentsLoading } from 'modules/deployment/selectors'
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getLoading as getLandsLoading } from 'modules/land/selectors'
@@ -40,7 +40,8 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenYourStorageModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata)),
-  onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal'))
+  onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
+  onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId)),
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)

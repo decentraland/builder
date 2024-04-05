@@ -692,6 +692,7 @@
       "url": "URL",
       "published_scene": "Escena Publicada",
       "publish_scene": "Publicar Escena",
+      "unpublish_scene": "Despublicar Escene",
       "edit_scene": "Editar Escena",
       "status": "Estado",
       "status_active": "Activo",
@@ -700,7 +701,8 @@
       "status_blocked": "Bloqueado",
       "actions": "Acciones",
       "empty_url": "Para activar este mundo, necesitas publicar una escena",
-      "size": "Peso Mb"
+      "size": "Peso Mb",
+      "scene_published_outside_builder": "Es posible que esta escena se haya eliminado o fuera publicada mediante el SDK."
     },
     "empty_list": {
       "title": "Obtenga un mundo gratis cuando tenga un NAME",

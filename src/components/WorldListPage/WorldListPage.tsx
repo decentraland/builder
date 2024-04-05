@@ -53,28 +53,33 @@ const WorldListPage: React.FC<Props> = props => {
     worldsWalletStats,
     onNavigate,
     onOpenYourStorageModal,
-    onOpenWorldsForENSOwnersAnnouncementModal
+    onOpenWorldsForENSOwnersAnnouncementModal,
+    onUnpublishWorld
   } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
   const { tab } = useCurrentlySelectedTab()
 
-  const isWorldDeployed = (ens: ENS) => {
-    if (ens.worldStatus?.healthy) {
-      const deployment = deploymentsByWorlds[ens.subdomain]
+  const isWorldDeployed = useCallback(
+    (ens: ENS) => {
+      if (ens.worldStatus?.healthy) {
+        return !!deploymentsByWorlds[ens.subdomain]
+      }
 
-      return deployment && deployment.projectId && !!projects.find(project => project.id === deployment.projectId)
-    }
+      return false
+    },
+    [deploymentsByWorlds]
+  )
 
-    return false
-  }
-
-  const getExplorerUrl = (world: string) => {
-    if (isDevelopment) {
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
-    }
-    return `${EXPLORER_URL}/world/${world}`
-  }
+  const getExplorerUrl = useCallback(
+    (world: string) => {
+      if (isDevelopment) {
+        return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
+      }
+      return `${EXPLORER_URL}/world/${world}`
+    },
+    [isDevelopment]
+  )
 
   const handleClaimENS = useCallback(() => {
     if (tab === TabType.DCL) {
@@ -88,14 +93,27 @@ const WorldListPage: React.FC<Props> = props => {
 
   const handlePublishScene = useCallback(() => {
     onNavigate(locations.scenes())
-  }, [onNavigate])
+  }, [locations, onNavigate])
 
-  const handleEditScene = (ens: ENS) => {
-    const { projectId } = deploymentsByWorlds[ens.subdomain]
-    onNavigate(locations.sceneDetail(projectId as string))
-  }
+  const handleEditScene = useCallback(
+    (ens: ENS) => {
+      const { projectId } = deploymentsByWorlds[ens.subdomain]
+      onNavigate(locations.sceneDetail(projectId as string))
+    },
+    [deploymentsByWorlds, locations, onNavigate]
+  )
 
-  const renderSortDropdown = () => {
+  const handleUnpublishScene = useCallback(
+    (ens: ENS) => {
+      const deploymentId = deploymentsByWorlds[ens.subdomain]?.id
+      if (deploymentId) {
+        onUnpublishWorld(deploymentId)
+      }
+    },
+    [deploymentsByWorlds, onUnpublishWorld]
+  )
+
+  const renderSortDropdown = useCallback(() => {
     return (
       <Dropdown
         direction="left"
@@ -107,9 +125,9 @@ const WorldListPage: React.FC<Props> = props => {
         onChange={(_event, { value }) => setSortBy(value as SortBy)}
       />
     )
-  }
+  }, [sortBy, setSortBy])
 
-  const paginate = (): ENS[] => {
+  const paginate = useCallback((): ENS[] => {
     const list = tab === TabType.DCL ? ensList : externalNames
 
     return list
@@ -127,83 +145,105 @@ const WorldListPage: React.FC<Props> = props => {
         }
       })
       .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  }
+  }, [ensList, externalNames, page, sortBy, tab])
 
-  const renderWorldUrl = (ens: ENS) => {
-    const url = getExplorerUrl(ens.subdomain)
-    return isWorldDeployed(ens) ? (
-      <div className="world-url">
-        <span>{url}</span>
-        <div className="right">
-          <CopyToClipboard role="button" text={url} showPopup={true}>
-            <DCLIcon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
-          </CopyToClipboard>
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            <DCLIcon name="external alternate" />
-          </a>
+  const renderWorldUrl = useCallback(
+    (ens: ENS) => {
+      const url = getExplorerUrl(ens.subdomain)
+      return isWorldDeployed(ens) ? (
+        <div className="world-url">
+          <span>{url}</span>
+          <div className="right">
+            <CopyToClipboard role="button" text={url} showPopup={true}>
+              <DCLIcon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
+            </CopyToClipboard>
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              <DCLIcon name="external alternate" />
+            </a>
+          </div>
         </div>
-      </div>
-    ) : (
-      <span className="empty-url">{t('worlds_list_page.table.empty_url')}</span>
-    )
-  }
+      ) : (
+        <span className="empty-url">{t('worlds_list_page.table.empty_url')}</span>
+      )
+    },
+    [getExplorerUrl, isWorldDeployed]
+  )
 
-  const renderWorldStatus = (ens: ENS) => {
-    let status = isWorldDeployed(ens) ? 'active' : 'inactive'
+  const renderWorldStatus = useCallback(
+    (ens: ENS) => {
+      let status = isWorldDeployed(ens) ? 'active' : 'inactive'
 
-    if (status === 'active' && worldsWalletStats && !isExternalName(ens.subdomain)) {
-      const worldsStatus = getDCLWorldsStatus(worldsWalletStats)
+      if (status === 'active' && worldsWalletStats && !isExternalName(ens.subdomain)) {
+        const worldsStatus = getDCLWorldsStatus(worldsWalletStats)
 
-      switch (worldsStatus.status) {
-        case DCLWorldsStatus.BLOCKED: {
-          status = 'blocked'
-          break
-        }
-        case DCLWorldsStatus.TO_BE_BLOCKED: {
-          status = 'warning'
+        switch (worldsStatus.status) {
+          case DCLWorldsStatus.BLOCKED: {
+            status = 'blocked'
+            break
+          }
+          case DCLWorldsStatus.TO_BE_BLOCKED: {
+            status = 'warning'
+          }
         }
       }
-    }
 
-    return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
-  }
+      return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
+    },
+    [getDCLWorldsStatus, isExternalName, isWorldDeployed]
+  )
 
-  const renderPublishSceneButton = (ens: ENS) => {
-    return isWorldDeployed(ens) ? (
-      <div className="publish-scene">
-        <Popup
-          content={deploymentsByWorlds[ens.subdomain]?.name}
-          on="hover"
-          trigger={<span>{deploymentsByWorlds[ens.subdomain]?.name}</span>}
-        />
-        <Button inverted size="small" onClick={() => handleEditScene(ens)}>
-          {t('worlds_list_page.table.edit_scene')}
-        </Button>
-      </div>
-    ) : (
-      <div className="publish-scene">
-        <span>-</span>
-        <Button primary size="small" onClick={handlePublishScene}>
-          {t('worlds_list_page.table.publish_scene')}
-        </Button>
-      </div>
-    )
-  }
+  const renderPublishSceneButton = useCallback(
+    (ens: ENS) => {
+      const deployment = deploymentsByWorlds[ens.subdomain]
+      return isWorldDeployed(ens) ? (
+        <div className="publish-scene">
+          <Popup content={deployment?.name} on="hover" trigger={<span>{deployment?.name}</span>} />
+          {projects.find(project => project.id === deployment?.projectId) ? (
+            <Button inverted size="small" onClick={() => handleEditScene(ens)}>
+              {t('worlds_list_page.table.edit_scene')}
+            </Button>
+          ) : (
+            <Popup
+              content={t('worlds_list_page.table.scene_published_outside_builder')}
+              on="hover"
+              position="top center"
+              trigger={
+                <Button inverted size="small" onClick={() => handleUnpublishScene(ens)}>
+                  {t('worlds_list_page.table.unpublish_scene')}
+                </Button>
+              }
+            />
+          )}
+        </div>
+      ) : (
+        <div className="publish-scene">
+          <span>-</span>
+          <Button primary size="small" onClick={handlePublishScene}>
+            {t('worlds_list_page.table.publish_scene')}
+          </Button>
+        </div>
+      )
+    },
+    [deploymentsByWorlds, projects, isWorldDeployed, handleEditScene, handlePublishScene, handleUnpublishScene]
+  )
 
-  const renderWorldSize = (ens: ENS, stats?: WorldsWalletStats) => {
-    const names = tab === TabType.DCL ? stats?.dclNames : stats?.ensNames
+  const renderWorldSize = useCallback(
+    (ens: ENS, stats?: WorldsWalletStats) => {
+      const names = tab === TabType.DCL ? stats?.dclNames : stats?.ensNames
 
-    if (!isWorldDeployed(ens) || !names) {
-      return '-'
-    }
+      if (!isWorldDeployed(ens) || !names) {
+        return '-'
+      }
 
-    const bytes = names.find(dclName => dclName.name === ens.subdomain)?.size
-    const suffix = tab === TabType.ENS ? ' / 25' : ''
+      const bytes = names.find(dclName => dclName.name === ens.subdomain)?.size
+      const suffix = tab === TabType.ENS ? ' / 25' : ''
 
-    return formatNumber(fromBytesToMegabytes(Number(bytes))) + suffix
-  }
+      return formatNumber(fromBytesToMegabytes(Number(bytes))) + suffix
+    },
+    [tab, isWorldDeployed]
+  )
 
-  const renderList = () => {
+  const renderList = useCallback(() => {
     const total = tab === TabType.DCL ? ensList.length : externalNames.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
     const paginatedItems = paginate()
@@ -283,9 +323,21 @@ const WorldListPage: React.FC<Props> = props => {
         </Container>
       </>
     )
-  }
+  }, [
+    tab,
+    ensList,
+    externalNames,
+    handleClaimENS,
+    paginate,
+    renderPublishSceneButton,
+    renderSortDropdown,
+    renderWorldUrl,
+    renderWorldSize,
+    renderWorldStatus,
+    setPage
+  ])
 
-  const renderEmptyPage = () => {
+  const renderEmptyPage = useCallback(() => {
     return (
       <Empty className="empty-names-container" height={500}>
         <div className={classNames('empty-icon', tab === TabType.DCL ? 'dcl-icon' : 'ens-icon')} />
@@ -302,9 +354,9 @@ const WorldListPage: React.FC<Props> = props => {
         </Button>
       </Empty>
     )
-  }
+  }, [tab, handleClaimENS])
 
-  const renderDCLNamesBlockedWorldsStatusMessage = () => {
+  const renderDCLNamesBlockedWorldsStatusMessage = useCallback(() => {
     if (!worldsWalletStats) {
       return null
     }
@@ -337,9 +389,9 @@ const WorldListPage: React.FC<Props> = props => {
         <div>{messageContent}</div>
       </div>
     )
-  }
+  }, [worldsWalletStats, getDCLWorldsStatus])
 
-  const renderDCLNamesView = () => {
+  const renderDCLNamesView = useCallback(() => {
     if (ensList.length) {
       return (
         <div>
@@ -360,23 +412,23 @@ const WorldListPage: React.FC<Props> = props => {
     }
 
     return <div>{renderEmptyPage()}</div>
-  }
+  }, [ensList, worldsWalletStats, renderList, renderEmptyPage, renderDCLNamesBlockedWorldsStatusMessage, onOpenYourStorageModal])
 
-  const renderENSNamesView = () => {
+  const renderENSNamesView = useCallback(() => {
     return <div>{externalNames.length > 0 ? renderList() : renderEmptyPage()}</div>
-  }
+  }, [externalNames, renderEmptyPage, renderList])
 
   // Reset values when changing tab.
   useEffect(() => {
     setSortBy(SortBy.ASC)
     setPage(1)
-  }, [tab])
+  }, [tab, setPage, setSortBy])
 
   useEffect(() => {
     if (canOpenWorldsForENSOwnersAnnouncementModal()) {
       onOpenWorldsForENSOwnersAnnouncementModal()
     }
-  }, [onOpenWorldsForENSOwnersAnnouncementModal])
+  }, [canOpenWorldsForENSOwnersAnnouncementModal, onOpenWorldsForENSOwnersAnnouncementModal])
 
   return (
     <LoggedInDetailPage
