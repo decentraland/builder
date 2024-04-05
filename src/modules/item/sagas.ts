@@ -3,7 +3,7 @@ import { Contract, providers } from 'ethers'
 import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
-import { ChainId, Network, Entity, EntityType } from '@dcl/schemas'
+import { ChainId, Network, Entity, EntityType, WearableCategory } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
@@ -16,7 +16,14 @@ import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import { BuilderClient, RemoteItem } from '@dcl/builder-client'
+import {
+  BuilderClient,
+  RemoteItem,
+  MAX_THUMBNAIL_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_EMOTE_FILE_SIZE
+} from '@dcl/builder-client'
 import {
   FetchItemsRequestAction,
   fetchItemsSuccess,
@@ -134,17 +141,14 @@ import {
   VIDEO_PATH
 } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
-import { ItemTooBigError, ThumbnailFileTooBigError, VideoFileTooBigError } from './errors'
 import {
-  buildZipContents,
-  getMetadata,
-  groupsOf,
-  isValidText,
-  generateCatalystImage,
-  MAX_FILE_SIZE,
-  MAX_THUMBNAIL_FILE_SIZE,
-  MAX_VIDEO_FILE_SIZE
-} from './utils'
+  ItemEmoteTooBigError,
+  ItemSkinTooBigError,
+  ItemWearableTooBigError,
+  ThumbnailFileTooBigError,
+  VideoFileTooBigError
+} from './errors'
+import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_VIDEO_FILE_SIZE } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
 
@@ -349,10 +353,16 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleSaveItemRequest(action: SaveItemRequestAction) {
     const { item: actionItem, contents: actionContents } = action.payload
+
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
       const rarityChanged = oldItem && oldItem.rarity !== item.rarity
+      const shouldValidateCategoryChanged =
+        !!oldItem &&
+        oldItem.type === ItemType.WEARABLE &&
+        oldItem.data.category !== item.data.category &&
+        oldItem.data.category === WearableCategory.SKIN
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
@@ -390,17 +400,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         item.contents[IMAGE_PATH] = catalystImage.hash
       }
 
-      if (Object.keys(contents).length > 0) {
+      if (Object.keys(contents).length > 0 || shouldValidateCategoryChanged) {
         // Extract the thumbnail from the contents to calculate the size using another limit
         const { [THUMBNAIL_PATH]: thumbnailContent, [VIDEO_PATH]: videoContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _thumbnailContent, [VIDEO_PATH]: _videoContent, ...itemContents } = item.contents
-        // This will calculate the model's final size without the thumbnail with a limit of 2MB
-        const finalModelSize: number = yield call(
-          calculateModelFinalSize,
-          { ...item, contents: itemContents },
-          modelContents,
-          legacyBuilder
-        )
+        // This will calculate the model's final size without the thumbnail with a limit of 2MB for wearables/emotes and 8MB for skins
+        const finalModelSize: number = yield call(calculateModelFinalSize, itemContents, modelContents, legacyBuilder)
         let finalThumbnailSize = 0
         let finalVideoSize = 0
 
@@ -420,13 +425,23 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         }
 
-        if (finalModelSize + finalThumbnailSize > MAX_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE) {
-          throw new ItemTooBigError()
+        const isEmote = item.type === ItemType.EMOTE
+        const isSkin = !isEmote && item.data.category === WearableCategory.SKIN
+
+        if (isEmote && finalModelSize > MAX_EMOTE_FILE_SIZE) {
+          throw new ItemEmoteTooBigError()
+        }
+
+        if (isSkin && finalModelSize > MAX_SKIN_FILE_SIZE) {
+          throw new ItemSkinTooBigError()
+        }
+
+        if (!isSkin && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
+          throw new ItemWearableTooBigError()
         }
       }
 
       yield call([legacyBuilder, 'saveItem'], item, contents)
-
       yield put(saveItemSuccess(item, contents))
     } catch (error) {
       yield put(saveItemFailure(actionItem, actionContents, isErrorWithMessage(error) ? error.message : 'Unknown error'))
@@ -448,6 +463,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { items } = action.payload
     const collectionId = items.length > 0 ? items[0].collectionId : null
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
+
     if (collectionId && location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId, items.length)
     }

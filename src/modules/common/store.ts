@@ -156,7 +156,7 @@ const middleware = applyMiddleware(...middlewares)
 const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer) as RootStore
 
-const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
+const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => getAddress(store.getState())))
 const catalystClient = createCatalystClient({ url: PEER_URL, fetcher: createFetchComponent() })
 
 const getClientAddress = () => getAddress(store.getState())!

@@ -1,6 +1,5 @@
 import { AxiosError, AxiosRequestConfig } from 'axios'
 import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
-import { RootStore } from 'modules/common/types'
 import { Authorization } from './auth'
 import { BuilderAPI } from './builder'
 import { Item } from 'modules/item/types'
@@ -8,7 +7,7 @@ import { Item } from 'modules/item/types'
 jest.mock('./auth')
 
 const mockUrl = 'https://mock.url.xyz'
-const mockAuthorization: Authorization = new Authorization({} as RootStore)
+const mockAuthorization: Authorization = new Authorization(() => 'mockAddress')
 const mockBuilder = new BuilderAPI(mockUrl, mockAuthorization)
 
 describe('when making a request to the builder server', () => {

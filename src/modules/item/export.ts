@@ -71,15 +71,15 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
  * @param newContents - The new content that is going to be added to the item.
  */
 export async function calculateModelFinalSize(
-  item: Item,
+  oldContents: Record<string, string>,
   newContents: Record<string, Blob>,
   legacyBuilderClient: BuilderAPI
 ): Promise<number> {
   const newHashes = await computeHashes(newContents)
   const filesToDownload: Record<string, string> = {}
-  for (const fileName in item.contents) {
-    if (!newHashes[fileName] || item.contents[fileName] !== newHashes[fileName]) {
-      filesToDownload[fileName] = item.contents[fileName]
+  for (const fileName in oldContents) {
+    if (!newHashes[fileName] || oldContents[fileName] !== newHashes[fileName]) {
+      filesToDownload[fileName] = oldContents[fileName]
     }
   }
 
@@ -87,19 +87,8 @@ export async function calculateModelFinalSize(
   const allBlobs = { ...newContents, ...blobs }
   const allHashes = { ...newHashes, ...filesToDownload }
 
-  let imageSize = 0
-  // Only generate the catalyst image if there isn't one already
-  if (!allBlobs[IMAGE_PATH]) {
-    try {
-      const image = await generateImage(item, { thumbnail: allBlobs[THUMBNAIL_PATH] })
-      imageSize = image.size
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   const uniqueFiles = getUniqueFiles(allHashes, allBlobs)
-  return imageSize + calculateFilesSize(uniqueFiles)
+  return calculateFilesSize(uniqueFiles)
 }
 
 export function calculateFileSize(file: Blob): number {
