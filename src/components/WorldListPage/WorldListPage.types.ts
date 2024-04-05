@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { ENS } from 'modules/ens/types'
 import { Project } from 'modules/project/types'
@@ -22,6 +23,7 @@ export type Props = {
   onNavigate: (path: string) => void
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
   onOpenWorldsForENSOwnersAnnouncementModal: () => void
+  onUnpublishWorld: typeof clearDeploymentRequest
 }
 
 export type State = {
@@ -33,5 +35,8 @@ export type MapStateProps = Pick<
   Props,
   'ensList' | 'externalNames' | 'deploymentsByWorlds' | 'isLoading' | 'error' | 'projects' | 'isLoggedIn' | 'worldsWalletStats'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenYourStorageModal' | 'onOpenWorldsForENSOwnersAnnouncementModal'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onNavigate' | 'onOpenYourStorageModal' | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'
+>
 export type MapDispatch = Dispatch

@@ -690,6 +690,7 @@
       "url": "URL",
       "published_scene": "Published Scene",
       "publish_scene": "Publish Scene",
+      "unpublish_scene": "Unpublish Scene",
       "edit_scene": "Edit Scene",
       "status": "Status",
       "status_active": "Active",
@@ -698,7 +699,8 @@
       "status_blocked": "Blocked",
       "actions": "Actions",
       "empty_url": "To activate this world you need to publish a scene",
-      "size": "Size Mb"
+      "size": "Size Mb",
+      "scene_published_outside_builder": "The scene project may have been deleted or published using the SDK."
     },
     "empty_list": {
       "title": "Get a free World when you own a NAME",
