@@ -15,16 +15,23 @@ import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getLoading as getLandsLoading } from 'modules/land/selectors'
 import { isLoggingIn, isLoggedIn } from 'modules/identity/selectors'
 import { getProjects } from 'modules/ui/dashboard/selectors'
-import { getConnectedWalletStats, getLoading as getLoadingWorlds } from 'modules/worlds/selectors'
+import { getConnectedWalletStats, getLoading as getLoadingWorlds, getWorldsPermissions } from 'modules/worlds/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './WorldListPage.types'
 import WorldListPage from './WorldListPage'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import {
+  deleteWorldPermissionsRequest,
+  getWorldPermissionsRequest,
+  postWorldPermissionsRequest,
+  putWorldPermissionsRequest
+} from 'modules/worlds/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
   externalNames: getExternalNamesForConnectedWallet(state),
   deploymentsByWorlds: getDeploymentsByWorlds(state),
   projects: getProjects(state),
+  worldsPermissions: getWorldsPermissions(state),
   error: getENSError(state)?.message ?? getDeploymentsError(state) ?? undefined,
   isLoading:
     isLoadingType(getLoadingENS(state), FETCH_ENS_LIST_REQUEST) ||
@@ -40,7 +47,14 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenYourStorageModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata)),
-  onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal'))
+  onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
+  getWorldPermissionsRequest: worldName => dispatch(getWorldPermissionsRequest(worldName)),
+  postWorldPermissionsRequest: (worldName, permissionName, permissionType) =>
+    dispatch(postWorldPermissionsRequest(worldName, permissionName, permissionType)),
+  putWorldPermissionsRequest: (worldName, permissionName, permissionType, newData) =>
+    dispatch(putWorldPermissionsRequest(worldName, permissionName, permissionType, newData)),
+  deleteWorldPermissionsRequest: (worldName, permissionName, permissionType, newData) =>
+    dispatch(deleteWorldPermissionsRequest(worldName, permissionName, permissionType, newData))
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)

@@ -18,7 +18,7 @@ import {
 } from 'decentraland-ui'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
-import { WorldsWalletStats } from 'lib/api/worlds'
+import { WorldPermissionNames, WorldPermissionType, WorldsWalletStats } from 'lib/api/worlds'
 import { ENS } from 'modules/ens/types'
 import { isExternalName } from 'modules/ens/utils'
 import { track } from 'modules/analytics/sagas'
@@ -34,6 +34,9 @@ import WorldsStorage from './WorldsStorage'
 import { TabType, useCurrentlySelectedTab } from './hooks'
 import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
 import './WorldListPage.css'
+import RightsModal from './RightsModal'
+import { preventDefault } from 'lib/event'
+import { WorldPermissionsEssentials } from './RightsModal/RightsModal.types'
 
 const PAGE_ACTION_EVENT = 'Worlds List Page Action'
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
@@ -51,12 +54,19 @@ const WorldListPage: React.FC<Props> = props => {
     isLoading,
     projects,
     worldsWalletStats,
+    worldsPermissions,
     onNavigate,
     onOpenYourStorageModal,
-    onOpenWorldsForENSOwnersAnnouncementModal
+    onOpenWorldsForENSOwnersAnnouncementModal,
+    getWorldPermissionsRequest,
+    postWorldPermissionsRequest,
+    putWorldPermissionsRequest
+    // deleteWorldPermissionsRequest,
   } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
+  const [showRightsModal, setShowRightsModal] = useState(false)
+  const [worldPermissionsEssentialsModal, setWorldPermissionsEssentialsModal] = useState<WorldPermissionsEssentials | undefined>()
   const { tab } = useCurrentlySelectedTab()
 
   const isWorldDeployed = (ens: ENS) => {
@@ -203,6 +213,87 @@ const WorldListPage: React.FC<Props> = props => {
     return formatNumber(fromBytesToMegabytes(Number(bytes))) + suffix
   }
 
+  const handleShowRightsModal = useCallback(
+    (_event: React.MouseEvent<HTMLDivElement, MouseEvent>, data) => {
+      setWorldPermissionsEssentialsModal({
+        name: data.worldName as string,
+        permissionName: data.permissionName as WorldPermissionNames,
+        permissionType: data.permissionType as WorldPermissionType
+      })
+      getWorldPermissionsRequest(data.worldName)
+      setShowRightsModal(true)
+    },
+    [setShowRightsModal]
+  )
+
+  const renderWorldOptions = (worldName: string) => (
+    <Dropdown
+      trigger={
+        <Button basic>
+          <DCLIcon name="ellipsis vertical" />
+        </Button>
+      }
+      inline
+      direction="left"
+      /* className={styles.action} */
+      onClick={preventDefault()}
+    >
+      <Dropdown.Menu>
+        <Popup
+          content="Here you can update the permissions for this world."
+          position="right center"
+          trigger={
+            <Dropdown.Item
+              text="Deployment Permissions"
+              worldName={worldName}
+              permissionName={WorldPermissionNames.Deployment}
+              permissionType={WorldPermissionType.AllowList}
+              onClick={handleShowRightsModal}
+            />
+          }
+          hideOnScroll={true}
+          on="hover"
+          inverted
+          flowing
+        />
+        <Popup
+          content="Here you can update the permissions for this world."
+          position="right center"
+          trigger={
+            <Dropdown.Item
+              text="Access Permissions"
+              worldName={worldName}
+              permissionName={WorldPermissionNames.Access}
+              permissionType={WorldPermissionType.AllowList}
+              onClick={handleShowRightsModal}
+            />
+          }
+          hideOnScroll={true}
+          on="hover"
+          inverted
+          flowing
+        />
+        <Popup
+          content="Here you can update the permissions for this world."
+          position="right center"
+          trigger={
+            <Dropdown.Item
+              text="Access Unrestricted Permissions"
+              worldName={worldName}
+              permissionName={WorldPermissionNames.Access}
+              permissionType={WorldPermissionType.Unrestricted}
+              onClick={handleShowRightsModal}
+            />
+          }
+          hideOnScroll={true}
+          on="hover"
+          inverted
+          flowing
+        />
+      </Dropdown.Menu>
+    </Dropdown>
+  )
+
   const renderList = () => {
     const total = tab === TabType.DCL ? ensList.length : externalNames.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
@@ -249,6 +340,7 @@ const WorldListPage: React.FC<Props> = props => {
                   <Table.HeaderCell width="1" textAlign="center">
                     {t('worlds_list_page.table.status')}
                   </Table.HeaderCell>
+                  <Table.HeaderCell width="1" textAlign="center"></Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -263,6 +355,9 @@ const WorldListPage: React.FC<Props> = props => {
                       </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldStatus(ens)}
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {renderWorldOptions(ens.subdomain)}
                       </Table.Cell>
                     </Table.Row>
                   )
@@ -378,6 +473,47 @@ const WorldListPage: React.FC<Props> = props => {
     }
   }, [onOpenWorldsForENSOwnersAnnouncementModal])
 
+  const handleClear = useCallback(e => console.log(e), [])
+
+  const handleCancel = useCallback(() => {
+    setShowRightsModal(false)
+  }, [setShowRightsModal])
+
+  const handleSave = useCallback(
+    (
+      _event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+      worldPermissionsEssentials: WorldPermissionsEssentials,
+      newAddress: string
+    ) => {
+      if (
+        worldsPermissions[worldPermissionsEssentials.name][worldPermissionsEssentials.permissionName].type !==
+        worldPermissionsEssentials.permissionType
+      ) {
+        postWorldPermissionsRequest(
+          worldPermissionsEssentials.name,
+          worldPermissionsEssentials.permissionName,
+          worldPermissionsEssentials.permissionType
+        )
+      }
+      if (
+        [WorldPermissionType.AllowList, WorldPermissionType.NFTOwnership, WorldPermissionType.SharedSecret].includes(
+          worldPermissionsEssentials.permissionType
+        )
+      ) {
+        putWorldPermissionsRequest(
+          worldPermissionsEssentials.name,
+          worldPermissionsEssentials.permissionName,
+          worldPermissionsEssentials.permissionType as
+            | WorldPermissionType.AllowList
+            | WorldPermissionType.NFTOwnership
+            | WorldPermissionType.SharedSecret,
+          newAddress
+        )
+      }
+    },
+    [worldsPermissions]
+  )
+
   return (
     <LoggedInDetailPage
       className="WorldListPage view"
@@ -386,8 +522,17 @@ const WorldListPage: React.FC<Props> = props => {
       isLoading={isLoading}
       isPageFullscreen={true}
     >
+      <RightsModal
+        show={showRightsModal}
+        onSave={handleSave}
+        onClear={handleClear}
+        onCancel={handleCancel}
+        loading={isLoading}
+        addresses={[]}
+        worldPermissionsEssentials={worldPermissionsEssentialsModal}
+      />
       <Container>
-        <h1>Worlds</h1>
+        <h1>{t('worlds_list_page.title')}</h1>
         <NameTabs />
         {tab === TabType.DCL ? renderDCLNamesView() : renderENSNamesView()}
       </Container>

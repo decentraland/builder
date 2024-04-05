@@ -1,5 +1,6 @@
 import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 import { config } from 'config'
+import { Authorization } from './auth'
 
 export const WORLDS_CONTENT_SERVER = config.get('WORLDS_CONTENT_SERVER', '')
 
@@ -36,7 +37,64 @@ export type WorldsWalletStats = {
   blockedSince?: string
 }
 
+export enum WorldPermissionType {
+  Unrestricted = 'unrestricted',
+  SharedSecret = 'shared-secret',
+  NFTOwnership = 'nft-ownership',
+  AllowList = 'allow-list'
+}
+
+export type UnrestrictedPermissionSetting = {
+  type: WorldPermissionType.Unrestricted
+}
+
+export type SharedSecretPermissionSetting = {
+  type: WorldPermissionType.SharedSecret
+  secret: string
+}
+
+export type NftOwnershipPermissionSetting = {
+  type: WorldPermissionType.NFTOwnership
+  nft: string
+}
+
+export type AllowListPermissionSetting = {
+  type: WorldPermissionType.AllowList
+  wallets: string[]
+}
+
+type AccessPermissionSetting =
+  | UnrestrictedPermissionSetting
+  | SharedSecretPermissionSetting
+  | NftOwnershipPermissionSetting
+  | AllowListPermissionSetting
+
+export type WorldPermissions = {
+  deployment: AllowListPermissionSetting
+  access: AccessPermissionSetting
+  streaming: UnrestrictedPermissionSetting | AllowListPermissionSetting
+}
+
+export type WorldPermissionsResponse = {
+  permissions: WorldPermissions
+}
+
+export enum WorldPermissionNames {
+  Deployment = 'deployment',
+  Access = 'access',
+  Streaming = 'streaming'
+}
+
 export class WorldsAPI extends BaseAPI {
+  private authorization?: Authorization
+
+  constructor(authorization?: Authorization) {
+    super(WORLDS_CONTENT_SERVER)
+    if (authorization) {
+      this.authorization = authorization
+    }
+  }
+
   public async fetchWorld(name: string) {
     const result = await fetch(`${this.url}/world/${name}/about`)
     if (result.ok) {
@@ -56,6 +114,68 @@ export class WorldsAPI extends BaseAPI {
       return null
     }
   }
-}
 
-export const content = new WorldsAPI(WORLDS_CONTENT_SERVER)
+  public getPermissions = async (worldName: string) => {
+    if (!this.authorization) {
+      return null
+    }
+
+    const path = `/world/${worldName}/permissions`
+    const headers = this.authorization.createAuthHeaders('get', path)
+    const result = await fetch(this.url + path, { headers })
+
+    if (result.ok) {
+      const json: WorldPermissionsResponse = await result.json()
+      return json.permissions
+    } else {
+      return null
+    }
+  }
+
+  public postPermissionType = async (
+    worldName: string,
+    worldPermissionNames: WorldPermissionNames,
+    worldPermissionType: WorldPermissionType
+  ) => {
+    if (!this.authorization) {
+      return null
+    }
+
+    const path = `/world/${worldName}/permissions/${worldPermissionNames}`
+    const headers = this.authorization.createAuthHeaders('post', path, { type: worldPermissionType })
+    const result = await fetch(this.url + path, {
+      method: 'POST',
+      headers
+    })
+
+    return result.status === 204
+  }
+
+  public putPermissionType = async (worldName: string, worldPermissionNames: WorldPermissionNames, address: string) => {
+    if (!this.authorization) {
+      return null
+    }
+
+    const path = `/world/${worldName}/permissions/${worldPermissionNames}/${address}`
+    const headers = this.authorization.createAuthHeaders('put', path, {})
+    const result = await fetch(this.url + path, {
+      method: 'PUT',
+      headers
+    })
+    return result.status === 204
+  }
+
+  public deletePermissionType = async (worldName: string, worldPermissionNames: WorldPermissionNames, address: string) => {
+    if (!this.authorization) {
+      return null
+    }
+
+    const path = `/world/${worldName}/permissions/${worldPermissionNames}/${address}`
+    const headers = this.authorization.createAuthHeaders('delete', path, {})
+    const result = await fetch(this.url + path, {
+      method: 'DELETE',
+      headers
+    })
+    return result.status === 204
+  }
+}

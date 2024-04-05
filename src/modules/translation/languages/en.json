@@ -670,6 +670,7 @@
     "error": "Something went wrong, please try again."
   },
   "worlds_list_page": {
+    "title": "Worlds",
     "table": {
       "name": "NAME",
       "url": "URL",

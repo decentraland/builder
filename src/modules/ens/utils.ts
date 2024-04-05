@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { Entity } from '@dcl/schemas'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { extractEntityId } from 'lib/urn'
-import { WorldInfo, content } from 'lib/api/worlds'
+import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { Land, LandType } from 'modules/land/types'
 import { ENS, WorldStatus } from './types'
 import { getCenter, getSelection } from 'modules/land/utils'
@@ -63,8 +63,8 @@ export async function addWorldStatusToEachENS(enss: ENS[]) {
   // Same happens with dcl names as it uses a similar logic of fetching world info 1 by 1.
   for (const ens of enss) {
     let worldStatus: WorldStatus | null = null
-
-    const world: WorldInfo | null = await content.fetchWorld(ens.subdomain)
+    const worldsApi = new WorldsAPI()
+    const world: WorldInfo | null = await worldsApi.fetchWorld(ens.subdomain)
 
     if (world) {
       const { healthy, configurations } = world
