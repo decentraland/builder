@@ -2008,9 +2008,10 @@
       "hands_wear": "手工"
     }
   },
-  "rarity_tooltip": {
+  "rarity_description": {
     "unique": "像圣杯一样：独一无二",
     "mythic": "给幸运的人：最多10个",
+    "exotic": "限量供应：最多50个",
     "legendary": "限量供应：最多100个",
     "epic": "最大供应量：1000个",
     "rare": "最大供应量：5000个",

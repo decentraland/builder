@@ -2028,6 +2028,7 @@
   "rarity_description": {
     "unique": "Único en su tipo: uno solo en existencia",
     "mythic": "Para algunos pocos: máximo 10",
+    "exotic": "Edición limitada: máximo 50",
     "legendary": "Edición limitada: máximo 100",
     "epic": "Suministro máximo: 1000",
     "rare": "Suministro máximo: 5000",

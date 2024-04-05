@@ -2008,6 +2008,7 @@
   "rarity_description": {
     "unique": "Grail-like: One-of-a-kind",
     "mythic": "For the lucky few: max 10",
+    "exotic": "Limited supply: max 50",
     "legendary": "Limited supply: max 100",
     "epic": "Max supply: 1000",
     "rare": "Max supply: 5000",
