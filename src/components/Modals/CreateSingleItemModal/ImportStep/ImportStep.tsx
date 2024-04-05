@@ -8,7 +8,12 @@ import {
   DuplicatedRequiredPermissionsError,
   MissingRequiredPropertiesError,
   UnknownRequiredPermissionsError,
-  EmoteConfig
+  EmoteConfig,
+  MAX_WEARABLE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_EMOTE_FILE_SIZE,
+  FileTooBigError as FileTooBigErrorBuilderClient,
+  FileType
 } from '@dcl/builder-client/dist/files'
 import { WearableCategory } from '@dcl/builder-client/dist/item'
 import { ModalNavigation } from 'decentraland-ui'
@@ -48,10 +53,9 @@ import {
   isImageFile,
   isModelFile,
   isModelPath,
-  MAX_FILE_SIZE,
   MAX_EMOTE_DURATION,
   isSmart,
-  MAX_EMOTE_SIZE
+  getWearableCategories
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
@@ -103,8 +107,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const loadedFile = await loadFile(file.name, file)
     const { wearable, scene, content, emote } = loadedFile
 
-    if (emote && file.size > MAX_EMOTE_SIZE) {
-      throw new FileTooBigError()
+    if (emote && file.size > MAX_EMOTE_FILE_SIZE) {
+      throw new FileTooBigError(MAX_EMOTE_FILE_SIZE)
     }
 
     let modelPath: string | undefined
@@ -147,7 +151,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       }
     }
 
-    const maxFileSize = type === ItemType.EMOTE ? MAX_EMOTE_SIZE : MAX_FILE_SIZE
+    const maxWearableFileSize =
+      type === ItemType.WEARABLE && getWearableCategories(contents).includes(WearableCategory.SKIN)
+        ? MAX_SKIN_FILE_SIZE
+        : MAX_WEARABLE_FILE_SIZE
+
+    const maxFileSize = type === ItemType.EMOTE ? MAX_EMOTE_FILE_SIZE : maxWearableFileSize
     if (file.size > maxFileSize) {
       throw new FileTooBigError(maxFileSize)
     }
@@ -172,8 +181,28 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     } else if (error instanceof MissingRequiredPropertiesError) {
       errorTranslationId = 'missing_required_properties'
       wrongConfigurations = error.getMissingProperties()
+    } else if (error instanceof FileTooBigErrorBuilderClient) {
+      switch (error.getType()) {
+        case FileType.WEARABLE:
+        case FileType.SKIN: {
+          errorTranslationId = 'wearable_too_big'
+          break
+        }
+        case FileType.EMOTE: {
+          errorTranslationId = 'emote_too_big'
+          break
+        }
+        case FileType.THUMBNAIL: {
+          errorTranslationId = 'thumbnail_too_big'
+          break
+        }
+        default: {
+          errorTranslationId = 'file_too_big'
+          break
+        }
+      }
+      wrongConfigurations = []
     }
-
     if (wrongConfigurations.length) {
       console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
     }

@@ -52,6 +52,7 @@ export type StateData = {
   video?: string
   requiredPermissions?: string[]
   tags?: string[]
+  modelSize?: number
   blockVrmExport?: boolean
 }
 export type State = {

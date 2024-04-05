@@ -6,7 +6,14 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { ethers } from 'ethers'
 import { Entity, Rarity, EntityType } from '@dcl/schemas'
 import { call, select, take, race, delay } from 'redux-saga/effects'
-import { BuilderClient, RemoteItem } from '@dcl/builder-client'
+import {
+  BuilderClient,
+  MAX_EMOTE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_THUMBNAIL_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE,
+  RemoteItem
+} from '@dcl/builder-client'
 import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
 import { ToastProps, ToastType } from 'decentraland-ui'
 import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
@@ -82,10 +89,11 @@ import {
   WearableRepresentation
 } from './types'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import { buildZipContents, generateCatalystImage, groupsOf, MAX_FILE_SIZE, MAX_THUMBNAIL_FILE_SIZE, MAX_VIDEO_FILE_SIZE } from './utils'
+import { buildZipContents, generateCatalystImage, groupsOf, MAX_VIDEO_FILE_SIZE } from './utils'
 import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
 import * as toasts from './toasts'
+import { fromRemoteItem } from 'lib/api/transformations'
 
 const blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -154,7 +162,7 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('and file size is larger than 3 MB', () => {
+  describe('and file size of the wearable is larger than 2 MB', () => {
     beforeEach(() => {
       item.name = 'valid name'
       item.description = 'valid description'
@@ -167,10 +175,53 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE + MAX_THUMBNAIL_FILE_SIZE + 1)],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The entire item is too big to be uploaded. The max size for all files is 3MB.'))
+        .put(saveItemFailure(item, contents, 'The max file size is 2MB for Wearables and 8MB for Skins.'))
+        .dispatch(saveItemRequest(item, contents))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and file size of the skin is larger than 8 MB', () => {
+    beforeEach(() => {
+      item.name = 'valid name'
+      item.description = 'valid description'
+      item.updatedAt = updatedAt
+      item.data.category = WearableCategory.SKIN
+    })
+
+    it('should put a saveItemFailure action with item too big message', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getItem, item.id), undefined],
+          [matchers.call.fn(reHashOlderContents), {}],
+          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_SKIN_FILE_SIZE + 1)],
+          [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
+        ])
+        .put(saveItemFailure(item, contents, 'The max file size is 2MB for Wearables and 8MB for Skins.'))
+        .dispatch(saveItemRequest(item, contents))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and file size of the emote is larger than 2 MB', () => {
+    beforeEach(() => {
+      item = { ...item, type: ItemType.EMOTE }
+    })
+
+    it('should put a saveItemFailure action with item too big message', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getItem, item.id), undefined],
+          [matchers.call.fn(reHashOlderContents), {}],
+          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_EMOTE_FILE_SIZE + 1)],
+          [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
+        ])
+        .put(saveItemFailure(item, contents, 'The item is too large to be uploaded. The maximum file size for emote is 2MB.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -183,16 +234,10 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE)],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE + 1]
         ])
-        .put(
-          saveItemFailure(
-            item,
-            { ...contents, [THUMBNAIL_PATH]: blob },
-            'The thumbnail file is too big to be uploaded. The max size is 1MB.'
-          )
-        )
+        .put(saveItemFailure(item, { ...contents, [THUMBNAIL_PATH]: blob }, 'The thumbnail file size exceeds the 1MB limit.'))
         .dispatch(saveItemRequest(item, { ...contents, [THUMBNAIL_PATH]: blob }))
         .run({ silenceTimeout: true })
     })
@@ -205,7 +250,7 @@ describe('when handling the save item request action', () => {
           [select(getItem, item.id), undefined],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
-          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_FILE_SIZE)],
+          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
           [matchers.call.fn(calculateFileSize), MAX_VIDEO_FILE_SIZE + 1]
         ])
         .put(
@@ -320,10 +365,7 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [
-              call(calculateModelFinalSize, { ...itemWithCatalystImage, contents: itemContents }, modelContents, builderAPI),
-              Promise.resolve(1)
-            ],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
           ])
@@ -348,7 +390,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -387,10 +429,7 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [
-              call(calculateModelFinalSize, { ...itemWithCatalystImage, contents: itemContents }, modelContents, builderAPI),
-              Promise.resolve(1)
-            ],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage), Promise.resolve()]
           ])
@@ -415,7 +454,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -440,7 +479,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, { ...item, contents: itemContents }, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
           ])
@@ -496,10 +535,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), item],
             [select(getAddress), mockAddress],
-            [
-              call(calculateModelFinalSize, { ...itemWithNewHashes, contents: itemContents }, modelContents, builderAPI),
-              Promise.resolve(1)
-            ],
+            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve()]
           ])
@@ -1105,7 +1141,13 @@ describe('when handling the save multiple items requests action', () => {
         .put(updateProgressSaveMultipleItems(33))
         .put(updateProgressSaveMultipleItems(67))
         .put(updateProgressSaveMultipleItems(100))
-        .put(saveMultipleItemsSuccess(items, savedFiles, []))
+        .put(
+          saveMultipleItemsSuccess(
+            remoteItems.map(remoteItem => fromRemoteItem(remoteItem)),
+            savedFiles,
+            []
+          )
+        )
         .dispatch(saveMultipleItemsRequest(builtFiles))
         .run({ silenceTimeout: true })
     })
@@ -1164,7 +1206,13 @@ describe('when handling the save multiple items requests action', () => {
           [select(getPaginationData, items[0].collectionId!), paginationData]
         ])
         .put(updateProgressSaveMultipleItems(100))
-        .put(saveMultipleItemsSuccess([items[0], items[2]], [savedFiles[0], savedFiles[2]], [savedFiles[1]]))
+        .put(
+          saveMultipleItemsSuccess(
+            [fromRemoteItem(remoteItems[0]), fromRemoteItem(remoteItems[2])],
+            [savedFiles[0], savedFiles[2]],
+            [savedFiles[1]]
+          )
+        )
         .dispatch(saveMultipleItemsRequest(builtFiles))
         .run({ silenceTimeout: true })
     })
@@ -1183,6 +1231,7 @@ describe('when handling the save multiple items requests action', () => {
       savedFilesWithCancelled = builtFilesThatWillCancelled.map(file => file.fileName)
       ;(builderClient.upsertItem as jest.Mock).mockResolvedValue(remoteItems[0])
     })
+
     it('should dispatch the update progress action for the first non-cancelled upsert and the cancelling action with the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
@@ -1196,7 +1245,7 @@ describe('when handling the save multiple items requests action', () => {
         )
         .put(
           saveMultipleItemsCancelled(
-            Array(SAVE_AND_EDIT_FILES_BATCH_SIZE).fill(items[0]),
+            Array(SAVE_AND_EDIT_FILES_BATCH_SIZE).fill(fromRemoteItem(remoteItems[0])),
             savedFilesWithCancelled.slice(0, SAVE_AND_EDIT_FILES_BATCH_SIZE),
             [],
             savedFilesWithCancelled.slice(-amountOfFilesThatWillBeCancelled)

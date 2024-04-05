@@ -49,7 +49,7 @@ import {
   isSmart
 } from 'modules/item/utils'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
-import { getExtension } from 'lib/file'
+import { getExtension, toMB } from 'lib/file'
 import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
@@ -72,6 +72,16 @@ import {
   ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
+import { calculateFileSize, calculateModelFinalSize } from 'modules/item/export'
+import { MAX_THUMBNAIL_SIZE } from 'modules/assetPack/utils'
+import { Authorization } from 'lib/api/auth'
+import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
+import {
+  MAX_EMOTE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_THUMBNAIL_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE
+} from '@dcl/builder-client/dist/files/constants'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -505,9 +515,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
+    const hasChangedThumbnailType =
+      (this.state.category && getThumbnailType(category) !== getThumbnailType(this.state.category as WearableCategory)) ||
+      !this.state.category
+
     if (this.state.category !== category) {
       this.setState({ category })
-      if (this.state.type === ItemType.WEARABLE) {
+      if (this.state.type === ItemType.WEARABLE && hasChangedThumbnailType) {
         // As it's not required to wait for the promise, use the void operator to return undefined
         void this.updateThumbnailByCategory(category)
       }
@@ -590,6 +604,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     const isCustom = !!contents && THUMBNAIL_PATH in contents
     if (!isCustom) {
+      this.setState({ isLoading: true })
       let thumbnail
       if (contents && isImageFile(model!)) {
         thumbnail = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model!], category)
@@ -605,7 +620,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         thumbnail = image
         URL.revokeObjectURL(url)
       }
-      this.setState({ thumbnail })
+      this.setState({ thumbnail, isLoading: false })
     }
   }
 
@@ -699,7 +714,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleFileLoad = async () => {
-    const { weareblePreviewUpdated, type, model } = this.state
+    const { weareblePreviewUpdated, type, model, item, contents } = this.state
+
+    const modelSize = await calculateModelFinalSize(
+      item?.contents ?? {},
+      contents ?? {},
+      new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => this.props.address))
+    )
+
+    this.setState({ modelSize })
 
     // if model is an image, the wearable preview won't be needed
     if (model && isImageFile(model)) {
@@ -804,7 +827,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderFields() {
     const { collection, isExoticRarityEnabled } = this.props
-    const { name, category, rarity, contents, item, type } = this.state
+    const { name, category, rarity, contents, item, type, isLoading } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const rarities = Rarity.getRarities().filter(rarity => isExoticRarityEnabled || rarity !== Rarity.EXOTIC)
@@ -820,7 +843,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     return (
       <>
-        <Field className="name" label={t('create_single_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
+        <Field
+          className="name"
+          label={t('create_single_item_modal.name_label')}
+          value={name}
+          disabled={isLoading}
+          onChange={this.handleNameChange}
+        />
         {(!item || !item.isPublished) && !belongsToAThirdPartyCollection ? (
           <>
             <SelectField
@@ -842,12 +871,14 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 }),
                 text: t(`wearable.rarity.${value}`)
               }))}
+              disabled={isLoading}
               onChange={this.handleRarityChange}
             />
           </>
         ) : null}
         <SelectField
           required
+          disabled={isLoading}
           label={t('create_single_item_modal.category_label')}
           placeholder={t('create_single_item_modal.category_placeholder')}
           value={categories.includes(category!) ? category : undefined}
@@ -879,17 +910,21 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   isDisabled(): boolean {
     const { isLoading } = this.props
+    const { isLoading: isStateLoading } = this.state
 
-    return !this.isValid() || isLoading
+    return !this.isValid() || isLoading || Boolean(isStateLoading)
   }
 
   isValid(): boolean {
-    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type } = this.state
+    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize } = this.state
     const { collection } = this.props
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
 
-    let required: (string | Metrics | Item | undefined)[]
+    if (this.state.error) {
+      this.setState({ error: undefined })
+    }
 
+    let required: (string | Metrics | Item | undefined)[]
     if (isRepresentation) {
       required = [item]
     } else if (belongsToAThirdPartyCollection) {
@@ -900,7 +935,49 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
     }
 
-    return required.every(prop => prop !== undefined)
+    const thumbnailBlob = thumbnail ? dataURLToBlob(thumbnail) : undefined
+    const thumbnailSize = thumbnailBlob ? calculateFileSize(thumbnailBlob) : 0
+
+    if (thumbnailSize && thumbnailSize > MAX_THUMBNAIL_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.thumbnail_file_too_big', { maxSize: `${toMB(MAX_THUMBNAIL_FILE_SIZE)}MB` })
+      })
+      return false
+    }
+    const isSkin = category === WearableCategory.SKIN
+    const isEmote = type === ItemType.EMOTE
+    const isRequirementMet = required.every(prop => prop !== undefined)
+
+    if (isRequirementMet && isEmote && modelSize && modelSize > MAX_EMOTE_FILE_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.item_too_big', {
+          size: `${toMB(MAX_EMOTE_FILE_SIZE)}MB`,
+          type: `emote`
+        })
+      })
+      return false
+    }
+
+    if (isRequirementMet && isSkin && modelSize && modelSize > MAX_SKIN_FILE_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.item_too_big', {
+          size: `${toMB(MAX_SKIN_FILE_SIZE)}MB`,
+          type: `skin`
+        })
+      })
+      return false
+    }
+
+    if (isRequirementMet && !isSkin && modelSize && modelSize > MAX_WEARABLE_FILE_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.item_too_big', {
+          size: `${toMB(MAX_WEARABLE_FILE_SIZE)}MB`,
+          type: `wearable`
+        })
+      })
+      return false
+    }
+    return isRequirementMet
   }
 
   renderWearableDetails() {
@@ -1093,7 +1170,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderDetailsView() {
     const { onClose, metadata, error, isLoading } = this.props
-    const { isRepresentation, error: stateError, type, contents } = this.state
+    const { isRepresentation, error: stateError, type, contents, isLoading: isStateLoading } = this.state
     const isDisabled = this.isDisabled()
     const title = this.renderModalTitle()
 
@@ -1113,7 +1190,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                   </Column>
                 ) : null}
                 <Column align="right">
-                  <Button primary disabled={isDisabled} loading={isLoading}>
+                  <Button primary disabled={isDisabled} loading={isLoading || isStateLoading}>
                     {(metadata && metadata.changeItemFile) || isRepresentation ? t('global.save') : t('global.next')}
                   </Button>
                 </Column>

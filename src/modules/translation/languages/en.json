@@ -233,10 +233,10 @@
     "import_information_link_label": "click here",
     "upload_video_information": "Maximum file size {max_size}",
     "error": {
-      "item_too_big": "The entire item is too big to be uploaded. The max size for all files is {size}.",
+      "item_too_big": "The item is too large to be uploaded. The maximum file size for {type} is {size}.",
       "file_too_big": "{title}.{enter}File size limit is {size}. Reduce the size of the file and try again.",
       "file_too_big_title": "The file is too large and can't be uploaded",
-      "thumbnail_file_too_big": "The thumbnail file is too big to be uploaded. The max size is {size}.",
+      "thumbnail_file_too_big": "The thumbnail file size exceeds the {maxSize} limit.",
       "wrong_extension": "The file has an invalid extension.",
       "invalid_files": "Files seem to be invalid or broken, please review them and try again.",
       "missing_model_file": "Couldn't find a valid model file.",
@@ -247,6 +247,18 @@
       "emote_duration_too_long_title": "Your Emote exceeds the maximum duration in seconds",
       "invalid_model_file_type": "The file has an invalid representation for this {type} item, please review it and try again.",
       "wrong_video_format": "The provided video is not a MP4 video",
+      "thumbnail_too_big": {
+        "title": "The file is too large and can't be uploaded",
+        "message": "The max file size is 2MB for thumbnails."
+      },
+      "wearable_too_big": {
+        "title": "The file is too large and can't be uploaded",
+        "message": "The max file size is 2MB for Wearables and 8MB for Skins."
+      },
+      "emote_too_big": {
+        "title": "The file is too large and can't be uploaded",
+        "message": "The max file size is 2MB for Emotes."
+      },
       "unknown_required_permissions": {
         "title": "Smart Wearable {count, plural, one {Permission} other {Permissions}} {wrong_configurations} {count, plural, one {doesn't} other {don't}} exist. Please correct the 'scene.json'.",
         "message": "For more information, check the Docs to {learn_more}."
@@ -298,6 +310,9 @@
     "wrong_file_extension": "File extension is not correct.",
     "wearable_file_not_found": "The wearable.json file was not found.",
     "thumbnail_file_not_generated": "The thumbnail.png file couldn't be generated.",
+    "max_file_size": "{name}: Wearable file size exceeds the {max}mb limit.",
+    "max_file_size_skin": "{name}: Skin file size exceeds the {max}mb limit.",
+    "max_file_size_emote": "{name}: Emote file size exceeds the {max}mb limit.",
     "not_saved_items_table_title": "Invalid items",
     "cancelled_items_table_title": "Cancelled items",
     "invalid_urn": "The wearable.json file has an invalid URN for this collection",
