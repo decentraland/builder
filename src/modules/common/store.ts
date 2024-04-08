@@ -174,7 +174,7 @@ const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthor
 
 const ensApi = new ENSApi(config.get('ENS_SUBGRAPH_URL'))
 
-const worldsAPI = new WorldsAPI(new Authorization(store))
+const worldsAPI = new WorldsAPI(new Authorization(() => getAddress(store.getState())))
 
 sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, getClientAuthAuthority, store, ensApi, worldsAPI)
 loadStorageMiddleware(store)
