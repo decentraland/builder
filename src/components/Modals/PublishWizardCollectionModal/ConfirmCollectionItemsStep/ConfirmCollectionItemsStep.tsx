@@ -3,12 +3,12 @@ import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { Button, Column, Mana, Modal, Popup, Row, Table } from 'decentraland-ui'
+import { RarityBadge } from 'decentraland-dapps/dist/containers/RarityBadge'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
 import { isFree } from 'modules/item/utils'
 import ItemImage from 'components/ItemImage'
 import ItemBadge from 'components/ItemBadge'
-import RarityBadge from 'components/RarityBadge'
 import './ConfirmCollectionItemsStep.css'
 
 export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: () => void; onPrevStep: () => void }> = props => {
@@ -69,7 +69,7 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
                 </div>
               </Table.Cell>
               <Table.Cell className="column">
-                <RarityBadge category={item.data.category!} rarity={item.rarity!} size="small" />
+                {item.rarity ? <RarityBadge rarity={item.rarity} size="small" withTooltip={false} /> : null}
               </Table.Cell>
               <Table.Cell className="column">
                 <div>{t(`${item.type}.category.${item.data.category!}`)}</div>

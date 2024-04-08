@@ -1,7 +1,8 @@
 import React from 'react'
 import { ethers } from 'ethers'
-import { EmoteDataADR74, Network, WearableCategory } from '@dcl/schemas'
+import { EmoteDataADR74, Network } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { RarityBadge } from 'decentraland-dapps/dist/containers/RarityBadge'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
@@ -14,7 +15,6 @@ import { isEmoteData, ItemType, SyncStatus, VIDEO_PATH, WearableData } from 'mod
 import { FromParam } from 'modules/location/types'
 import ItemStatus from 'components/ItemStatus'
 import ItemBadge from 'components/ItemBadge'
-import RarityBadge from 'components/RarityBadge'
 import ItemImage from 'components/ItemImage'
 import ResetItemButton from './ResetItemButton'
 import { Props } from './CollectionItem.types'
@@ -181,7 +181,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
           </Link>
         </Table.Cell>
         <Table.Cell className={styles.column}>
-          {item.rarity && data.category ? <RarityBadge category={data.category as WearableCategory} rarity={item.rarity} /> : null}
+          {item.rarity && data.category ? <RarityBadge size="medium" rarity={item.rarity} withTooltip /> : null}
         </Table.Cell>
         <Table.Cell className={styles.column}>{data.category ? <div>{t(`${item.type}.category.${data.category}`)}</div> : null}</Table.Cell>
         {item.type === ItemType.EMOTE && isEmoteData(data) ? (

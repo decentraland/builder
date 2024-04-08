@@ -1,8 +1,8 @@
 import * as React from 'react'
 import classNames from 'classnames'
+import { RarityBadge } from 'decentraland-dapps/dist/containers/RarityBadge'
 
 import { getBackgroundStyle, getThumbnailURL } from 'modules/item/utils'
-import RarityBadge from 'components/RarityBadge'
 import ItemBadge from 'components/ItemBadge'
 import { Props } from './ItemImage.types'
 import './ItemImage.css'
@@ -25,7 +25,7 @@ export default class ItemImage extends React.PureComponent<Props> {
         <img className="item-image" src={src || getThumbnailURL(item)} alt={item.name} />
         <div className="badges-container">
           {hasRarityBadge && item.rarity && item.data.category ? (
-            <RarityBadge className="rarity-badge" category={item.data.category} rarity={item.rarity} />
+            <RarityBadge className="rarity-badge" rarity={item.rarity} size="medium" withTooltip />
           ) : null}
           {hasBadge ? <ItemBadge item={item} size={badgeSize} /> : null}
         </div>
