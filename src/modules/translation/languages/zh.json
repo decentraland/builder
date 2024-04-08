@@ -694,6 +694,7 @@
       "url": "url",
       "published_scene": "出版的场景",
       "publish_scene": "发布场景",
+      "unpublish_scene": "取消发布场景",
       "edit_scene": "编辑场景",
       "status": "地位",
       "status_active": "积极的",
@@ -702,7 +703,8 @@
       "status_blocked": "锁定",
       "actions": "动作",
       "empty_url": "要激活这个世界，您需要发布一个场景",
-      "size": "重量 Mb"
+      "size": "重量 Mb",
+      "scene_published_outside_builder": "场景项目可能已被删除或使用 SDK 发布。"
     },
     "empty_list": {
       "title": "当您拥有一个名字时获得一个自由的世界",

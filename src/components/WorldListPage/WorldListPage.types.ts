@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { ENS } from 'modules/ens/types'
 import { Project } from 'modules/project/types'
@@ -37,6 +38,7 @@ export type Props = {
     permissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
     newData: string
   ) => void
+  onUnpublishWorld: typeof clearDeploymentRequest
 }
 
 export type State = {
@@ -57,10 +59,13 @@ export type MapStateProps = Pick<
   | 'worldsPermissions'
 >
 export type MapDispatchProps = Pick<
+  
   Props,
-  | 'onNavigate'
+  |
+  'onNavigate'
   | 'onOpenYourStorageModal'
-  | 'onOpenWorldsForENSOwnersAnnouncementModal'
+  | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'
+
   | 'getWorldPermissionsRequest'
   | 'postWorldPermissionsRequest'
   | 'putWorldPermissionsRequest'
