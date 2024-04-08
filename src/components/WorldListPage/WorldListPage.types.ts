@@ -59,13 +59,11 @@ export type MapStateProps = Pick<
   | 'worldsPermissions'
 >
 export type MapDispatchProps = Pick<
-  
   Props,
-  |
-  'onNavigate'
+  | 'onNavigate'
   | 'onOpenYourStorageModal'
-  | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'
-
+  | 'onOpenWorldsForENSOwnersAnnouncementModal'
+  | 'onUnpublishWorld'
   | 'getWorldPermissionsRequest'
   | 'postWorldPermissionsRequest'
   | 'putWorldPermissionsRequest'
