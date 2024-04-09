@@ -84,8 +84,8 @@ export const publishCollectionSuccess = (collection: Collection, items: Item[], 
     isFiat,
     ...buildTransactionPayload(chainId, txHash, { collection, items, isFiat })
   })
-export const publishCollectionFailure = (collection: Collection, items: Item[], error: string) =>
-  action(PUBLISH_COLLECTION_FAILURE, { collection, items, error })
+export const publishCollectionFailure = (collection: Collection, items: Item[], error: string, isFiat: boolean) =>
+  action(PUBLISH_COLLECTION_FAILURE, { collection, items, error, isFiat })
 
 export type PublishCollectionRequestAction = ReturnType<typeof publishCollectionRequest>
 export type PublishCollectionSuccessAction = ReturnType<typeof publishCollectionSuccess>
