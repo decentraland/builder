@@ -608,7 +608,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       } else {
         message = isErrorWithMessage(error) ? error.message : 'Unknown error'
       }
-      yield put(publishCollectionFailure(collection, items, message))
+      yield put(publishCollectionFailure(collection, items, message, paymentMethod === PaymentMethod.FIAT))
     }
   }
 
