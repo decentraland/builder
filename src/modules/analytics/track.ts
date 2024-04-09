@@ -312,14 +312,16 @@ addPayload(DELETE_COLLECTION_FAILURE, 'Delete collection error')
 add(PUBLISH_COLLECTION_SUCCESS, 'Publish collection', action => {
   const { payload } = action as PublishCollectionSuccessAction
   return {
-    collection: payload.collection
+    collection: payload.collection,
+    isFiat: payload.isFiat
   }
 })
 add(PUBLISH_COLLECTION_FAILURE, 'Publish collection error', action => {
   const { payload } = action as PublishCollectionFailureAction
   return {
     collection: payload.collection,
-    error: payload.error
+    error: payload.error,
+    isFiat: payload.isFiat
   }
 })
 
