@@ -4,6 +4,7 @@ import { getTransactionFromAction } from 'decentraland-dapps/dist/modules/transa
 import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/dist/modules/authorization/actions'
 import { SET_PROFILE_AVATAR_ALIAS_SUCCESS } from 'decentraland-dapps/dist/modules/profile/actions'
 import { OPEN_MODAL, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
+import { TRANSACTION_ACTION_FLAG } from 'decentraland-dapps/dist/modules/transaction'
 import {
   DROP_ITEM,
   RESET_ITEM,
@@ -312,15 +313,15 @@ addPayload(DELETE_COLLECTION_FAILURE, 'Delete collection error')
 add(PUBLISH_COLLECTION_SUCCESS, 'Publish collection', action => {
   const { payload } = action as PublishCollectionSuccessAction
   return {
-    collection: payload.collection,
+    txHash: payload[TRANSACTION_ACTION_FLAG].hash,
+    collectionId: payload.collection.id,
     isFiat: payload.isFiat
   }
 })
 add(PUBLISH_COLLECTION_FAILURE, 'Publish collection error', action => {
   const { payload } = action as PublishCollectionFailureAction
   return {
-    collection: payload.collection,
-    error: payload.error,
+    collectionId: payload.collection.id,
     isFiat: payload.isFiat
   }
 })
