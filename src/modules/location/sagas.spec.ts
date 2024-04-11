@@ -31,7 +31,7 @@ describe('when handling redirect', () => {
       const encoded = 'cannot parse this'
 
       return expectSaga(handleRedirectToRequest, redirectToRequest(encoded))
-        .put(redirectToFailure(encoded, 'Unexpected token c in JSON at position 0'))
+        .put(redirectToFailure(encoded, 'Unexpected token \'c\', "cannot parse this" is not valid JSON'))
         .silentRun()
     })
   })
