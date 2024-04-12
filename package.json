@@ -87,7 +87,7 @@
     "@types/interface-datastore": "^1.0.0",
     "@types/jest": "^29.5.11",
     "@types/mousetrap": "^1.6.3",
-    "@types/node": "^18.19.8",
+    "@types/node": "^20.12.7",
     "@types/pull-stream": "^3.6.2",
     "@types/rc-slider": "^8.6.5",
     "@types/react": "^17.0.69",
@@ -151,7 +151,7 @@
     "url": "https://github.com/decentraland/builder.git"
   },
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "homepage": "",
   "overrides": {
