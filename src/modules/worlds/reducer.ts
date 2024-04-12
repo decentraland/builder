@@ -15,6 +15,9 @@ import {
   DeleteWorldPermissionsRequestAction,
   DeleteWorldPermissionsSuccessAction,
   PutWorldPermissionsFailureAction,
+  GetProfilesFailureAction,
+  GetProfilesRequestAction,
+  GetProfilesSuccessAction,
   FETCH_WORLDS_WALLET_STATS_REQUEST,
   FETCH_WORLDS_WALLET_STATS_SUCCESS,
   FETCH_WORLDS_WALLET_STATS_FAILURE,
@@ -29,15 +32,19 @@ import {
   POST_WORLD_PERMISSIONS_SUCCESS,
   PUT_WORLD_PERMISSIONS_FAILURE,
   PUT_WORLD_PERMISSIONS_REQUEST,
-  PUT_WORLD_PERMISSIONS_SUCCESS
+  PUT_WORLD_PERMISSIONS_SUCCESS,
+  GET_PROFILES_REQUEST,
+  GET_PROFILES_SUCCESS
 } from './actions'
-import { AllowListPermissionSetting, WorldPermissionNames, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
+import { AllowListPermissionSetting, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
+import { Avatar } from '@dcl/schemas/dist/platform/profile/avatar'
 
 export type WorldsState = {
   // TODO: Find a use for the data object when there is something more relevant as the core data for the worlds module.
   data: Record<string, unknown>
   walletStats: Record<string, WorldsWalletStats>
   worldsPermissions: Record<string, WorldPermissions>
+  profiles: Record<string, Avatar>
   loading: LoadingState
   error: string | null
 }
@@ -46,6 +53,7 @@ export const INITIAL_STATE: WorldsState = {
   data: {},
   walletStats: {},
   worldsPermissions: {},
+  profiles: {},
   loading: [],
   error: null
 }
@@ -66,6 +74,9 @@ export type WorldsReducerAction =
   | DeleteWorldPermissionsRequestAction
   | DeleteWorldPermissionsSuccessAction
   | DeleteWorldPermissionsFailureAction
+  | GetProfilesRequestAction
+  | GetProfilesSuccessAction
+  | GetProfilesFailureAction
 
 export function worldsReducer(state: WorldsState = INITIAL_STATE, action: WorldsReducerAction): WorldsState {
   switch (action.type) {
@@ -73,7 +84,8 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
     case GET_WORLD_PERMISSIONS_REQUEST:
     case POST_WORLD_PERMISSIONS_REQUEST:
     case PUT_WORLD_PERMISSIONS_REQUEST:
-    case DELETE_WORLD_PERMISSIONS_REQUEST: {
+    case DELETE_WORLD_PERMISSIONS_REQUEST:
+    case GET_PROFILES_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -126,7 +138,8 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
           [worldName]: {
             ...state.worldsPermissions[worldName],
             [worldPermissionNames]: {
-              type: worldPermissionType
+              type: worldPermissionType,
+              ...(worldPermissionType === WorldPermissionType.AllowList && { wallets: [] })
             }
           }
         }
@@ -137,34 +150,16 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
 
       let worldPermissions: WorldPermissions = state.worldsPermissions[worldName]
 
-      if (worldPermissionNames === WorldPermissionNames.Access && worldPermissionType === WorldPermissionType.SharedSecret) {
-        worldPermissions = {
-          ...worldPermissions,
-          [worldPermissionNames]: {
-            type: worldPermissionType,
-            secret: newData
-          }
-        }
-      } else if (worldPermissionNames === WorldPermissionNames.Access && worldPermissionType === WorldPermissionType.NFTOwnership) {
-        worldPermissions = {
-          ...worldPermissions,
-          [worldPermissionNames]: {
-            type: worldPermissionType,
-            nft: newData
-          }
-        }
-      } else {
-        let newArrayWallet: string[] = []
-        if ((worldPermissions[worldPermissionNames] as AllowListPermissionSetting).wallets) {
-          newArrayWallet = (worldPermissions[worldPermissionNames] as AllowListPermissionSetting).wallets
-        }
-        newArrayWallet.push(newData)
-        worldPermissions = {
-          ...worldPermissions,
-          [worldPermissionNames]: {
-            type: worldPermissionType,
-            wallets: newArrayWallet
-          }
+      let newArrayWallet: string[] = []
+      if ((worldPermissions[worldPermissionNames] as AllowListPermissionSetting).wallets) {
+        newArrayWallet = (worldPermissions[worldPermissionNames] as AllowListPermissionSetting).wallets
+      }
+      newArrayWallet.push(newData)
+      worldPermissions = {
+        ...worldPermissions,
+        [worldPermissionNames]: {
+          type: worldPermissionType,
+          wallets: newArrayWallet
         }
       }
 
@@ -180,7 +175,48 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
         }
       }
     }
-    case DELETE_WORLD_PERMISSIONS_SUCCESS:
+    case DELETE_WORLD_PERMISSIONS_SUCCESS: {
+      const { worldName, worldPermissionNames, worldPermissionType, address } = action.payload
+
+      let worldPermissions: WorldPermissions = state.worldsPermissions[worldName]
+
+      const newArrayWallet: string[] = (worldPermissions[worldPermissionNames] as AllowListPermissionSetting).wallets.filter(
+        wallet => wallet !== address
+      )
+
+      worldPermissions = {
+        ...worldPermissions,
+        [worldPermissionNames]: {
+          type: worldPermissionType,
+          wallets: newArrayWallet
+        }
+      }
+
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        worldsPermissions: {
+          ...state.worldsPermissions,
+          [worldName]: {
+            ...state.worldsPermissions[worldName],
+            ...worldPermissions
+          }
+        }
+      }
+    }
+    case GET_PROFILES_SUCCESS: {
+      const { profiles } = action.payload
+      const newProfiles = { ...state.profiles }
+
+      profiles.forEach(avatar => {
+        newProfiles[avatar.ethAddress.toLocaleLowerCase()] = avatar
+      })
+
+      return {
+        ...state,
+        profiles: newProfiles
+      }
+    }
     default:
       return state
   }

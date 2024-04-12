@@ -19,12 +19,7 @@ import { getConnectedWalletStats, getLoading as getLoadingWorlds, getWorldsPermi
 import { MapStateProps, MapDispatchProps, MapDispatch } from './WorldListPage.types'
 import WorldListPage from './WorldListPage'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import {
-  deleteWorldPermissionsRequest,
-  getWorldPermissionsRequest,
-  postWorldPermissionsRequest,
-  putWorldPermissionsRequest
-} from 'modules/worlds/actions'
+import { getWorldPermissionsRequest } from 'modules/worlds/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
@@ -47,15 +42,10 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenYourStorageModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata)),
+  onOpenPermissionsModal: name => dispatch(openModal('WorldPermissionsModal', { worldName: name })),
   onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
   onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId)),
-  getWorldPermissionsRequest: worldName => dispatch(getWorldPermissionsRequest(worldName)),
-  postWorldPermissionsRequest: (worldName, permissionName, permissionType) =>
-    dispatch(postWorldPermissionsRequest(worldName, permissionName, permissionType)),
-  putWorldPermissionsRequest: (worldName, permissionName, permissionType, newData) =>
-    dispatch(putWorldPermissionsRequest(worldName, permissionName, permissionType, newData)),
-  deleteWorldPermissionsRequest: (worldName, permissionName, permissionType, newData) =>
-    dispatch(deleteWorldPermissionsRequest(worldName, permissionName, permissionType, newData))
+  getWorldPermissions: worldName => dispatch(getWorldPermissionsRequest(worldName))
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)

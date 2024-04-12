@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions'
 import { WorldPermissionNames, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
+import { Avatar } from '@dcl/schemas/dist/platform/profile/avatar'
 
 // Fetch Worlds Wallet Stats
 export const FETCH_WORLDS_WALLET_STATS_REQUEST = '[Request] Fetch Worlds Wallet Stats'
@@ -64,19 +65,19 @@ export const PUT_WORLD_PERMISSIONS_FAILURE = '[Failure] Put World Permissions'
 export const putWorldPermissionsRequest = (
   worldName: string,
   worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
+  worldPermissionType: WorldPermissionType.AllowList,
   newData: string
 ) => action(PUT_WORLD_PERMISSIONS_REQUEST, { worldName, worldPermissionNames, worldPermissionType, newData })
 export const putWorldPermissionsSuccess = (
   worldName: string,
   worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
+  worldPermissionType: WorldPermissionType.AllowList,
   newData: string
 ) => action(PUT_WORLD_PERMISSIONS_SUCCESS, { worldName, worldPermissionNames, worldPermissionType, newData })
 export const putWorldPermissionsFailure = (
   worldName: string,
   worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
+  worldPermissionType: WorldPermissionType.AllowList,
   newData: string,
   error: string
 ) => action(PUT_WORLD_PERMISSIONS_FAILURE, { worldName, worldPermissionNames, worldPermissionType, newData, error })
@@ -93,23 +94,36 @@ export const DELETE_WORLD_PERMISSIONS_FAILURE = '[Failure] Delete World Permissi
 export const deleteWorldPermissionsRequest = (
   worldName: string,
   worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
-  newData: string
-) => action(DELETE_WORLD_PERMISSIONS_REQUEST, { worldName, worldPermissionNames, worldPermissionType, newData })
+  worldPermissionType: WorldPermissionType.AllowList,
+  address: string
+) => action(DELETE_WORLD_PERMISSIONS_REQUEST, { worldName, worldPermissionNames, worldPermissionType, address })
 export const deleteWorldPermissionsSuccess = (
   worldName: string,
   worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
-  newData: string
-) => action(DELETE_WORLD_PERMISSIONS_SUCCESS, { worldName, worldPermissionNames, worldPermissionType, newData })
+  worldPermissionType: WorldPermissionType.AllowList,
+  address: string
+) => action(DELETE_WORLD_PERMISSIONS_SUCCESS, { worldName, worldPermissionNames, worldPermissionType, address })
 export const deleteWorldPermissionsFailure = (
   worldName: string,
   worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
-  newData: string,
+  worldPermissionType: WorldPermissionType.AllowList,
+  address: string,
   error: string
-) => action(DELETE_WORLD_PERMISSIONS_FAILURE, { worldName, worldPermissionNames, worldPermissionType, newData, error })
+) => action(DELETE_WORLD_PERMISSIONS_FAILURE, { worldName, worldPermissionNames, worldPermissionType, address, error })
 
 export type DeleteWorldPermissionsRequestAction = ReturnType<typeof deleteWorldPermissionsRequest>
 export type DeleteWorldPermissionsSuccessAction = ReturnType<typeof deleteWorldPermissionsSuccess>
 export type DeleteWorldPermissionsFailureAction = ReturnType<typeof deleteWorldPermissionsFailure>
+
+// Get Profiles Type
+export const GET_PROFILES_REQUEST = '[Request] Get Profiles'
+export const GET_PROFILES_SUCCESS = '[Success] Get Profiles'
+export const GET_PROFILES_FAILURE = '[Failure] Get Profiles'
+
+export const getProfilesRequest = (wallets: string[]) => action(GET_PROFILES_REQUEST, { wallets })
+export const getProfilesSuccess = (profiles: Avatar[]) => action(GET_PROFILES_SUCCESS, { profiles })
+export const getProfilesFailure = (wallets: string[], error: string) => action(GET_PROFILES_FAILURE, { wallets, error })
+
+export type GetProfilesRequestAction = ReturnType<typeof getProfilesRequest>
+export type GetProfilesSuccessAction = ReturnType<typeof getProfilesSuccess>
+export type GetProfilesFailureAction = ReturnType<typeof getProfilesFailure>

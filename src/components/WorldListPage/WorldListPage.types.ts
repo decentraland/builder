@@ -3,7 +3,7 @@ import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { ENS } from 'modules/ens/types'
 import { Project } from 'modules/project/types'
-import { WorldPermissionNames, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
+import { WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
 import { WorldsYourStorageModalMetadata } from 'components/Modals/WorldsYourStorageModal/WorldsYourStorageModal.types'
 
 export enum SortBy {
@@ -23,21 +23,10 @@ export type Props = {
   worldsWalletStats?: WorldsWalletStats
   onNavigate: (path: string) => void
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
+  onOpenPermissionsModal: (worldName: string) => void
   onOpenWorldsForENSOwnersAnnouncementModal: () => void
-  getWorldPermissionsRequest: (worldName: string) => void
-  postWorldPermissionsRequest: (worldName: string, permissionName: WorldPermissionNames, permissionType: WorldPermissionType) => void
-  putWorldPermissionsRequest: (
-    worldName: string,
-    permissionName: WorldPermissionNames,
-    permissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
-    newData: string
-  ) => void
-  deleteWorldPermissionsRequest: (
-    worldName: string,
-    permissionName: WorldPermissionNames,
-    permissionType: WorldPermissionType.AllowList | WorldPermissionType.NFTOwnership | WorldPermissionType.SharedSecret,
-    newData: string
-  ) => void
+  getWorldPermissions: (worldName: string) => void
+  getProfiles: (worldName: string) => void
   onUnpublishWorld: typeof clearDeploymentRequest
 }
 
@@ -62,11 +51,9 @@ export type MapDispatchProps = Pick<
   Props,
   | 'onNavigate'
   | 'onOpenYourStorageModal'
+  | 'onOpenPermissionsModal'
   | 'onOpenWorldsForENSOwnersAnnouncementModal'
   | 'onUnpublishWorld'
-  | 'getWorldPermissionsRequest'
-  | 'postWorldPermissionsRequest'
-  | 'putWorldPermissionsRequest'
-  | 'deleteWorldPermissionsRequest'
+  | 'getWorldPermissions'
 >
 export type MapDispatch = Dispatch

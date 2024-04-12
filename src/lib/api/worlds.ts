@@ -48,31 +48,15 @@ export type UnrestrictedPermissionSetting = {
   type: WorldPermissionType.Unrestricted
 }
 
-export type SharedSecretPermissionSetting = {
-  type: WorldPermissionType.SharedSecret
-  secret: string
-}
-
-export type NftOwnershipPermissionSetting = {
-  type: WorldPermissionType.NFTOwnership
-  nft: string
-}
-
 export type AllowListPermissionSetting = {
   type: WorldPermissionType.AllowList
   wallets: string[]
 }
 
-type AccessPermissionSetting =
-  | UnrestrictedPermissionSetting
-  | SharedSecretPermissionSetting
-  | NftOwnershipPermissionSetting
-  | AllowListPermissionSetting
-
 export type WorldPermissions = {
   deployment: AllowListPermissionSetting
-  access: AccessPermissionSetting
-  streaming: UnrestrictedPermissionSetting | AllowListPermissionSetting
+  access: AllowListPermissionSetting | UnrestrictedPermissionSetting
+  streaming: AllowListPermissionSetting
 }
 
 export type WorldPermissionsResponse = {
