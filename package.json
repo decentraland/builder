@@ -11,7 +11,7 @@
     "@dcl/crypto": "^3.4.5",
     "@dcl/hashing": "^3.0.4",
     "@dcl/mini-rpc": "^1.0.7",
-    "@dcl/schemas": "^11.4.1-20240412130706.commit-0f2e689",
+    "@dcl/schemas": "^11.5.0",
     "@dcl/sdk": "7.4.15",
     "@dcl/single-sign-on-client": "^0.1.0",
     "@dcl/ui-env": "^1.5.0",
