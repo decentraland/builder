@@ -214,6 +214,7 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
 
       return {
         ...state,
+        loading: loadingReducer(state.loading, action),
         profiles: newProfiles
       }
     }

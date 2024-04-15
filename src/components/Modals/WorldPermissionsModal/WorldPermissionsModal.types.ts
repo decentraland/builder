@@ -19,13 +19,14 @@ export type WorldPermissionsModalProps = {
   onPostWorldPermissionsRequest: typeof postWorldPermissionsRequest
   onDeleteWorldPermissionsRequest: typeof deleteWorldPermissionsRequest
   isLoading?: boolean
+  isLoadingNewUser?: boolean
 }
 
 export type Props = Omit<ModalProps, 'metadata'> & WorldPermissionsModalProps
 
 export type OwnProps = Pick<WorldPermissionsModalProps, 'metadata'>
 
-export type MapStateProps = Pick<Props, 'isLoading' | 'worldPermissions' | 'profiles' | 'error'>
+export type MapStateProps = Pick<Props, 'isLoading' | 'isLoadingNewUser' | 'worldPermissions' | 'profiles' | 'error'>
 export type MapDispatchProps = Pick<
   Props,
   'onPutWorldPermissionsRequest' | 'onPostWorldPermissionsRequest' | 'onDeleteWorldPermissionsRequest'

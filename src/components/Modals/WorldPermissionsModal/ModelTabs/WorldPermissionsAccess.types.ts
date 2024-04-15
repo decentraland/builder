@@ -4,6 +4,7 @@ import { AllowListPermissionSetting, UnrestrictedPermissionSetting, WorldPermiss
 
 export type WorldPermissionsAccessProps = {
   loading: boolean
+  isLoadingNewUser: boolean
   worldAccessPermissions?: AllowListPermissionSetting | UnrestrictedPermissionSetting
   isAccessUnrestricted: boolean
   showAddUserForm: boolean

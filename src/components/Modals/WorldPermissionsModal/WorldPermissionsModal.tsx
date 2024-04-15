@@ -17,6 +17,7 @@ const WorldPermissionsModal = (props: Props) => {
     worldPermissions,
     profiles,
     isLoading,
+    isLoadingNewUser,
     onPutWorldPermissionsRequest,
     onPostWorldPermissionsRequest,
     onDeleteWorldPermissionsRequest,
@@ -27,20 +28,35 @@ const WorldPermissionsModal = (props: Props) => {
   const [errorInvalidAddress, setErrorInvalidAddress] = useState(false)
   const [isAccessUnrestricted, setAccessUnrestricted] = useState(worldPermissions?.access.type === WorldPermissionType.Unrestricted)
   const [collaboratorUserList, setCollaboratorUserList] = useState<string[]>([])
-  const localLoading = isLoading || !metadata.worldName || !worldPermissions
+  const loading = isLoading || !metadata.worldName || !worldPermissions
 
   useEffect(() => {
-    setCollaboratorUserList(() => {
-      const newCollaboratorUserList: string[] = []
+    setAccessUnrestricted(worldPermissions?.access.type === WorldPermissionType.Unrestricted)
+  }, [worldPermissions?.access.type])
 
-      if (worldPermissions?.deployment.type === WorldPermissionType.AllowList && worldPermissions.deployment.wallets.length > 0) {
-        newCollaboratorUserList.push(...worldPermissions.deployment.wallets)
+  useEffect(() => {
+    if (worldPermissions?.access.type === WorldPermissionType.AllowList && worldPermissions?.access.wallets.length > 0) {
+      const allowedWallets = new Set(worldPermissions.access.wallets)
+      allowedWallets.has(newAddress.toLowerCase()) && setNewAddress('')
+    }
+  }, [worldPermissions?.access, newAddress])
+
+  useEffect(() => {
+    setCollaboratorUserList(collaboratorUserList => {
+      const newCollaboratorUserList = new Set(collaboratorUserList)
+
+      if (worldPermissions?.deployment.type === WorldPermissionType.AllowList) {
+        worldPermissions.deployment.wallets.forEach(wallet => {
+          !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet)
+        })
       }
-      if (worldPermissions?.streaming.type === WorldPermissionType.AllowList && worldPermissions.streaming.wallets.length > 0) {
-        newCollaboratorUserList.push(...worldPermissions.streaming.wallets)
+      if (worldPermissions?.streaming.type === WorldPermissionType.AllowList) {
+        worldPermissions.streaming.wallets.forEach(wallet => {
+          !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet)
+        })
       }
 
-      return [...new Set(newCollaboratorUserList)]
+      return [...newCollaboratorUserList]
     })
   }, [worldPermissions])
 
@@ -66,15 +82,20 @@ const WorldPermissionsModal = (props: Props) => {
     (_event: React.MouseEvent, data: CheckboxProps & { worldPermissionName: WorldPermissionNames; wallet: string }) => {
       if (
         worldPermissions?.[data.worldPermissionName].type === WorldPermissionType.AllowList &&
-        !(worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet)
+        !(worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet.toLowerCase())
       ) {
-        onPutWorldPermissionsRequest(metadata.worldName, data.worldPermissionName, WorldPermissionType.AllowList, data.wallet)
+        onPutWorldPermissionsRequest(metadata.worldName, data.worldPermissionName, WorldPermissionType.AllowList, data.wallet.toLowerCase())
       }
       if (
         worldPermissions?.[data.worldPermissionName].type === WorldPermissionType.AllowList &&
-        (worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet)
+        (worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet.toLowerCase())
       ) {
-        onDeleteWorldPermissionsRequest(metadata.worldName, data.worldPermissionName, WorldPermissionType.AllowList, data.wallet)
+        onDeleteWorldPermissionsRequest(
+          metadata.worldName,
+          data.worldPermissionName,
+          WorldPermissionType.AllowList,
+          data.wallet.toLowerCase()
+        )
       }
     },
     [metadata.worldName, worldPermissions, newAddress]
@@ -84,7 +105,6 @@ const WorldPermissionsModal = (props: Props) => {
     (_event: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => {
       const nextPermissionType = !data.checked ? WorldPermissionType.AllowList : WorldPermissionType.Unrestricted
       if (metadata.worldName && worldPermissions?.access.type !== nextPermissionType) {
-        setAccessUnrestricted(!!data.checked)
         onPostWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Access, nextPermissionType)
       }
     },
@@ -108,6 +128,11 @@ const WorldPermissionsModal = (props: Props) => {
       ) {
         onDeleteWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Streaming, WorldPermissionType.AllowList, data.wallet)
       }
+      setCollaboratorUserList(collaboratorUserList => {
+        const newCollaboratorUserList = new Set(collaboratorUserList)
+        newCollaboratorUserList.delete(data.wallet)
+        return [...newCollaboratorUserList]
+      })
     },
     [metadata.worldName, worldPermissions, newAddress]
   )
@@ -141,14 +166,14 @@ const WorldPermissionsModal = (props: Props) => {
 
   return (
     <Modal name={name} onClose={onClose} className="world-permissions">
-      <ModalNavigation title={localLoading ? <LoadingText type="h1" size="large"></LoadingText> : 'World Permissions'} onClose={onClose} />
+      <ModalNavigation title={loading ? <LoadingText type="h1" size="large"></LoadingText> : 'World Permissions'} onClose={onClose} />
       <ModalContent>
         <Tabs className="world-permissions__tabs">
           <Tabs.Tab active={tabSelected === TabsSection.Access} onClick={e => handleChangeTab(e, TabsSection.Access)}>
-            {localLoading ? <LoadingText type="span" size="small"></LoadingText> : 'Access'}
+            {loading ? <LoadingText type="span" size="small"></LoadingText> : 'Access'}
           </Tabs.Tab>
           <Tabs.Tab active={tabSelected === TabsSection.Collaborators} onClick={e => handleChangeTab(e, TabsSection.Collaborators)}>
-            {localLoading ? <LoadingText type="span" size="small"></LoadingText> : 'Collaborators'}
+            {loading ? <LoadingText type="span" size="small"></LoadingText> : 'Collaborators'}
           </Tabs.Tab>
         </Tabs>
 
@@ -163,14 +188,15 @@ const WorldPermissionsModal = (props: Props) => {
             onShowAddUserForm={handleShowAddUserForm}
             onNewAddressChange={handleNewAddressChange}
             onUserPermissionListChange={handleUserPermissionList}
+            isLoadingNewUser={!!isLoadingNewUser}
             isAccessUnrestricted={isAccessUnrestricted}
-            loading={localLoading}
+            loading={loading}
           />
         )}
 
         {tabSelected === TabsSection.Collaborators && (
           <WorldPermissionsCollaborators
-            loading={localLoading}
+            loading={loading}
             newAddress={newAddress}
             collaboratorUserList={collaboratorUserList}
             worldDeploymentPermissions={worldPermissions?.deployment}

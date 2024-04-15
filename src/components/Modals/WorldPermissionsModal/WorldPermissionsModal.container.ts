@@ -1,13 +1,25 @@
 import { connect } from 'react-redux'
 import { isLoadingSetProfileAvatarAlias, getError } from 'decentraland-dapps/dist/modules/profile/selectors'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { deleteWorldPermissionsRequest, postWorldPermissionsRequest, putWorldPermissionsRequest } from 'modules/worlds/actions'
-import { getAllProfiles, getWorldPermissions } from 'modules/worlds/selectors'
+import {
+  GET_WORLD_PERMISSIONS_REQUEST,
+  PUT_WORLD_PERMISSIONS_REQUEST,
+  deleteWorldPermissionsRequest,
+  postWorldPermissionsRequest,
+  putWorldPermissionsRequest
+} from 'modules/worlds/actions'
+import { getAllProfiles, getWorldPermissions, getLoading } from 'modules/worlds/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './WorldPermissionsModal.types'
 import WorldPermissionsModal from './WorldPermissionsModal'
 
+/* isLoadingType(getLoading(state), POST_WORLD_PERMISSIONS_REQUEST) ||
+isLoadingType(getLoading(state), PUT_WORLD_PERMISSIONS_REQUEST) ||
+isLoadingType(getLoading(state), DELETE_WORLD_PERMISSIONS_REQUEST) ||
+isLoadingType(getLoading(state), GET_PROFILES_REQUEST) */
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
-  isLoading: isLoadingSetProfileAvatarAlias(state),
+  isLoading: isLoadingSetProfileAvatarAlias(state) || isLoadingType(getLoading(state), GET_WORLD_PERMISSIONS_REQUEST),
+  isLoadingNewUser: isLoadingType(getLoading(state), PUT_WORLD_PERMISSIONS_REQUEST),
   error: getError(state),
   worldPermissions: getWorldPermissions(state, ownProps.metadata.worldName),
   profiles: getAllProfiles(state)
