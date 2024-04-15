@@ -1,4 +1,4 @@
-import { Entity } from '@dcl/schemas'
+import { Entity, Rarity } from '@dcl/schemas'
 import { createSelector } from 'reselect'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -13,6 +13,7 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { getItemCurationsByItemId } from 'modules/curations/itemCuration/selectors'
 import { CurationStatus } from 'modules/curations/types'
 import { getItemThirdParty } from 'modules/thirdParty/selectors'
+import { getIsExoticRarityEnabled } from 'modules/features/selectors'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { isEqual } from 'lib/address'
 import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
@@ -83,6 +84,13 @@ export const getPaginatedCollectionItems = (state: RootState, collectionId: stri
 export const getRarities = (state: RootState): BlockchainRarity[] => {
   return getState(state).rarities
 }
+
+// Temporal rarity selector to filter out the exotic rarity in accordance to the feature flag
+export const getFilteredRarities = createSelector<RootState, boolean, BlockchainRarity[], BlockchainRarity[]>(
+  getIsExoticRarityEnabled,
+  getRarities,
+  (isExoticRarityEnabled, rarities) => rarities.filter(rarity => isExoticRarityEnabled || rarity.name !== Rarity.EXOTIC)
+)
 
 export const getWearables = createSelector<RootState, Item[], Item[]>(getItems, items =>
   items.filter(item => item.type === ItemType.WEARABLE)
