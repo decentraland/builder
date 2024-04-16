@@ -12,7 +12,7 @@
     "@dcl/hashing": "^3.0.4",
     "@dcl/mini-rpc": "^1.0.7",
     "@dcl/schemas": "^11.4.0",
-    "@dcl/sdk": "7.4.15",
+    "@dcl/sdk": "7.4.17",
     "@dcl/single-sign-on-client": "^0.1.0",
     "@dcl/ui-env": "^1.5.0",
     "@sentry/react": "^7.64.0",
