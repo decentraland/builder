@@ -1950,11 +1950,11 @@
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro",
       "required_permissions": "Permisos",
       "copyright": {
-        "title": "Derechos de autor",
-        "vrm_export": "Protección de exportación de VRM",
+        "title": "Permiso de exportación de VRM",
+        "vrm_export": "Permitir la exportación de VRM",
         "enabled": "Activada",
         "disabled": "Desactivada",
-        "info": "Protección de exportación de VRM"
+        "info": "¡Bonito wearable! Permitir que los propietarios de su artículo lo incluyan en las exportaciones de avatar de VRM para que puedan mostrarlo fuera de Decentraland."
       }
     }
   },

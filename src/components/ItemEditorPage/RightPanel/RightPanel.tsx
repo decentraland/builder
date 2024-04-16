@@ -154,7 +154,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleAllowVrmExport = (_event: React.FormEvent, { checked }: CheckboxProps) => {
     const data = {
       ...this.state.data,
-      blockVrmExport: checked
+      blockVrmExport: !checked
     } as WearableData
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
@@ -650,10 +650,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               toggle
                               label={
                                 (data as WearableData)?.blockVrmExport
-                                  ? t('item_editor.right_panel.copyright.enabled')
-                                  : t('item_editor.right_panel.copyright.disabled')
+                                  ? t('item_editor.right_panel.copyright.disabled')
+                                  : t('item_editor.right_panel.copyright.enabled')
                               }
-                              checked={(data as WearableData)?.blockVrmExport}
+                              checked={!(data as WearableData)?.blockVrmExport}
                               onChange={this.handleAllowVrmExport}
                               aria-label={t('item_editor.right_panel.copyright.vrm_export')}
                             />

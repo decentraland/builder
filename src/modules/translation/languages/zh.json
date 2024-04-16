@@ -1933,11 +1933,11 @@
       "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权",
       "required_permissions": "权限",
       "copyright": {
-        "title": "版权",
-        "vrm_export": "VRM出口保护",
+        "title": "VRM出口许可",
+        "vrm_export": "允许VRM导出",
         "enabled": "启用",
         "disabled": "禁用",
-        "info": "VRM出口保护"
+        "info": "漂亮的可穿戴！允许您的物品的所有者将其包含在VRM Avatar出口中，以便他们可以在分散的外部出现。"
       }
     }
   },
