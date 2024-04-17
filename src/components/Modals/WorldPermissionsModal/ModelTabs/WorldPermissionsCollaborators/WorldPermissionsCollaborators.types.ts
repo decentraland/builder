@@ -19,8 +19,4 @@ export type WorldPermissionsCollaboratorsProps = {
     event: React.MouseEvent<HTMLInputElement, MouseEvent>,
     data: { worldPermissionName: WorldPermissionNames; wallet: string }
   ) => void
-  /* onRemoveDeploymentUser: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { wallet: string }) => void
-  onRemoveStreamingUser: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { wallet: string }) => void
-  onAddDeploymentUser: (_event: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => void
-  onAddStreamingUser: (_event: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => void */
 }

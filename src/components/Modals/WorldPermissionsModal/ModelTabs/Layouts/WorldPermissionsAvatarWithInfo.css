@@ -1,0 +1,29 @@
+.world-permission-avatar {
+  display: flex;
+  align-items: center;
+}
+
+.world-permission-avatar div.dcl.avatar-face {
+  margin-right: 12px;
+}
+
+.world-permission-avatar div.dui-loading-text.p.dui-loading-text__medium {
+  margin-bottom: 0;
+}
+
+.world-permission-avatar p {
+  color: #a09ba8;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.world-permission-avatar p span {
+  color: #fcfcfc;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-right: 8px;
+}

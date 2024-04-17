@@ -5,10 +5,15 @@ import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 import { isValid } from 'lib/address'
 import { Props } from './WorldPermissionsModal.types'
 import { AllowListPermissionSetting, WorldPermissionNames, WorldPermissionType } from 'lib/api/worlds'
-import WorldPermissionsAccess from './ModelTabs/WorldPermissionsAccess'
+import WorldPermissionsAccess from './ModelTabs/WorldPermissionsAccess/WorldPermissionsAccess'
 
 import './WorldPermissionsModal.css'
-import WorldPermissionsCollaborators from './ModelTabs/WorldPermissionsCollaborators'
+import WorldPermissionsCollaborators from './ModelTabs/WorldPermissionsCollaborators/WorldPermissionsCollaborators'
+
+enum TabsSection {
+  Access = 'Access',
+  Collaborators = 'Collaborators'
+}
 
 const WorldPermissionsModal = (props: Props) => {
   const {
@@ -28,6 +33,8 @@ const WorldPermissionsModal = (props: Props) => {
   const [errorInvalidAddress, setErrorInvalidAddress] = useState(false)
   const [isAccessUnrestricted, setAccessUnrestricted] = useState(worldPermissions?.access.type === WorldPermissionType.Unrestricted)
   const [collaboratorUserList, setCollaboratorUserList] = useState<string[]>([])
+  const [tabSelected, setTabSelected] = useState<TabsSection>(TabsSection.Access)
+
   const loading = isLoading || !metadata.worldName || !worldPermissions
 
   useEffect(() => {
@@ -35,11 +42,22 @@ const WorldPermissionsModal = (props: Props) => {
   }, [worldPermissions?.access.type])
 
   useEffect(() => {
-    if (worldPermissions?.access.type === WorldPermissionType.AllowList && worldPermissions?.access.wallets.length > 0) {
+    if (
+      tabSelected === TabsSection.Access &&
+      worldPermissions?.access.type === WorldPermissionType.AllowList &&
+      worldPermissions?.access.wallets.length > 0
+    ) {
       const allowedWallets = new Set(worldPermissions.access.wallets)
       allowedWallets.has(newAddress.toLowerCase()) && setNewAddress('')
     }
-  }, [worldPermissions?.access, newAddress])
+  }, [worldPermissions?.access, newAddress, tabSelected])
+
+  useEffect(() => {
+    if (tabSelected === TabsSection.Collaborators && collaboratorUserList.length > 0) {
+      const allowedWallets = new Set(collaboratorUserList)
+      allowedWallets.has(newAddress.toLowerCase()) && setNewAddress('')
+    }
+  }, [collaboratorUserList, newAddress, tabSelected])
 
   useEffect(() => {
     setCollaboratorUserList(collaboratorUserList => {
@@ -47,12 +65,12 @@ const WorldPermissionsModal = (props: Props) => {
 
       if (worldPermissions?.deployment.type === WorldPermissionType.AllowList) {
         worldPermissions.deployment.wallets.forEach(wallet => {
-          !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet)
+          !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet.toLowerCase())
         })
       }
       if (worldPermissions?.streaming.type === WorldPermissionType.AllowList) {
         worldPermissions.streaming.wallets.forEach(wallet => {
-          !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet)
+          !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet.toLowerCase())
         })
       }
 
@@ -67,12 +85,13 @@ const WorldPermissionsModal = (props: Props) => {
       if (newAddress === '') {
         setShowAddUserForm(false)
       }
+      setErrorInvalidAddress(false)
       const isValidAddress = isValid(newAddress)
       if (!isValidAddress) {
         setErrorInvalidAddress(true)
       }
       if (isValidAddress && metadata.worldName && newAddress && !collaboratorUserList.includes(newAddress)) {
-        setCollaboratorUserList(prev => [...prev, newAddress])
+        setCollaboratorUserList(prev => [...prev, newAddress.toLowerCase()])
       }
     },
     [metadata.worldName, worldPermissions, newAddress, collaboratorUserList]
@@ -80,16 +99,24 @@ const WorldPermissionsModal = (props: Props) => {
 
   const handleUserPermissionList = useCallback(
     (_event: React.MouseEvent, data: CheckboxProps & { worldPermissionName: WorldPermissionNames; wallet: string }) => {
+      const isValidAddress = isValid(data.wallet)
+      if (!isValidAddress) {
+        setErrorInvalidAddress(true)
+      }
+
       if (
+        isValidAddress &&
         worldPermissions?.[data.worldPermissionName].type === WorldPermissionType.AllowList &&
         !(worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet.toLowerCase())
       ) {
+        setErrorInvalidAddress(false)
         onPutWorldPermissionsRequest(metadata.worldName, data.worldPermissionName, WorldPermissionType.AllowList, data.wallet.toLowerCase())
       }
       if (
         worldPermissions?.[data.worldPermissionName].type === WorldPermissionType.AllowList &&
         (worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet.toLowerCase())
       ) {
+        setErrorInvalidAddress(false)
         onDeleteWorldPermissionsRequest(
           metadata.worldName,
           data.worldPermissionName,
@@ -130,7 +157,7 @@ const WorldPermissionsModal = (props: Props) => {
       }
       setCollaboratorUserList(collaboratorUserList => {
         const newCollaboratorUserList = new Set(collaboratorUserList)
-        newCollaboratorUserList.delete(data.wallet)
+        newCollaboratorUserList.delete(data.wallet.toLowerCase())
         return [...newCollaboratorUserList]
       })
     },
@@ -156,13 +183,6 @@ const WorldPermissionsModal = (props: Props) => {
     setNewAddress('')
     setTabSelected(nextTab)
   }, [])
-
-  enum TabsSection {
-    Access = 'Access',
-    Collaborators = 'Collaborators'
-  }
-
-  const [tabSelected, setTabSelected] = useState<TabsSection>(TabsSection.Access)
 
   return (
     <Modal name={name} onClose={onClose} className="world-permissions">
