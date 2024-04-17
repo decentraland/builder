@@ -930,7 +930,7 @@ describe('when publishing a collection', () => {
           ]
         ])
         .put(saveCollectionRequest(collection))
-        .put(publishCollectionFailure(collection, items, errorMessage))
+        .put(publishCollectionFailure(collection, items, errorMessage, false))
         .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
@@ -987,7 +987,7 @@ describe('when publishing a collection', () => {
           [call(t, 'sagas.item.missing_salt'), errorMessage]
         ])
         .put(saveCollectionRequest(saltlessCollection))
-        .put(publishCollectionFailure(saltlessCollection, items, errorMessage))
+        .put(publishCollectionFailure(saltlessCollection, items, errorMessage, false))
         .dispatch(publishCollectionRequest(saltlessCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
@@ -1009,7 +1009,7 @@ describe('when publishing a collection', () => {
           ],
           [call([mockBuilder, 'fetchCollectionItems'], finalCollection.id), [{}]]
         ])
-        .put(publishCollectionFailure(finalCollection, items, `${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`))
+        .put(publishCollectionFailure(finalCollection, items, `${UNSYNCED_COLLECTION_ERROR_PREFIX} Different items length`, false))
         .dispatch(publishCollectionRequest(finalCollection, items, email, false, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
     })
@@ -1037,7 +1037,8 @@ describe('when publishing a collection', () => {
           publishCollectionFailure(
             finalCollection,
             items,
-            `${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`
+            `${UNSYNCED_COLLECTION_ERROR_PREFIX} Item found in the server but not in the browser`,
+            false
           )
         )
         .dispatch(publishCollectionRequest(finalCollection, items, email, false, PaymentMethod.MANA))
@@ -1161,7 +1162,7 @@ describe('when publishing a collection', () => {
             ]
           ])
           .put(saveItemRequest(items[0], {}))
-          .put(publishCollectionFailure(collection, items, error))
+          .put(publishCollectionFailure(collection, items, error, false))
           .dispatch(publishCollectionRequest(collection, items, email, false, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
       })
@@ -2082,7 +2083,7 @@ describe('when publishing a collection with fiat', () => {
                       [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv]
                     ])
                     .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                    .put(publishCollectionFailure(collection, items, 'Missing WERT_PUBLISH_FEES_ENV'))
+                    .put(publishCollectionFailure(collection, items, 'Missing WERT_PUBLISH_FEES_ENV', true))
                     .silentRun()
                 })
               })
@@ -2102,7 +2103,7 @@ describe('when publishing a collection with fiat', () => {
                       [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv]
                     ])
                     .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                    .put(publishCollectionFailure(collection, items, 'Invalid WERT_PUBLISH_FEES_ENV'))
+                    .put(publishCollectionFailure(collection, items, 'Invalid WERT_PUBLISH_FEES_ENV', true))
                     .silentRun()
                 })
               })
@@ -2128,7 +2129,7 @@ describe('when publishing a collection with fiat', () => {
                         ]
                       ])
                       .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                      .put(publishCollectionFailure(collection, items, 'Could not fetch rarities: error'))
+                      .put(publishCollectionFailure(collection, items, 'Could not fetch rarities: error', true))
                       .silentRun()
                   })
                 })
@@ -2154,7 +2155,7 @@ describe('when publishing a collection with fiat', () => {
                           ]
                         ])
                         .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                        .put(publishCollectionFailure(collection, items, 'Rarity not found'))
+                        .put(publishCollectionFailure(collection, items, 'Rarity not found', true))
                         .silentRun()
                     })
                   })
@@ -2180,7 +2181,7 @@ describe('when publishing a collection with fiat', () => {
                             ]
                           ])
                           .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
-                          .put(publishCollectionFailure(collection, items, 'Rarity prices not found'))
+                          .put(publishCollectionFailure(collection, items, 'Rarity prices not found', true))
                           .silentRun()
                       })
                     })

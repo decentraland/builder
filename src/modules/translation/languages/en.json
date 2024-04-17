@@ -1931,11 +1931,11 @@
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum",
       "required_permissions": "Permissions",
       "copyright": {
-        "title": "Copyright",
-        "vrm_export": "VRM Exportation Protection",
+        "title": "VRM Export Permission",
+        "vrm_export": "Allow VRM Export",
         "enabled": "Enabled",
         "disabled": "Disabled",
-        "info": "VRM Exportation Protection"
+        "info": "Nice Wearable! Allow owners of your item to include it in VRM Avatar Exports so they can show it off outside of Decentraland."
       }
     }
   },
