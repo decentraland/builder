@@ -76,7 +76,7 @@ const WorldListPage: React.FC<Props> = props => {
       if (isDevelopment) {
         return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
       }
-      return `${EXPLORER_URL}?realm=${world}`
+      return `${EXPLORER_URL}/world/${world}`
     },
     [isDevelopment]
   )
