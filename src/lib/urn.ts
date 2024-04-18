@@ -7,8 +7,10 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
  *     (?<protocol>
  *       mainnet|
  *       goerli|
+ *       sepolia|
  *       matic|
  *       mumbai|
+ *       amoy|
  *       off-chain
  *     ):
  *   )?
@@ -32,7 +34,7 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
  *   )
  */
 const baseMatcher = 'urn:decentraland'
-const protocolMatcher = '(?<protocol>mainnet|goerli|sepolia|matic|mumbai|off-chain)'
+const protocolMatcher = '(?<protocol>mainnet|goerli|sepolia|matic|mumbai|amoy|off-chain)'
 const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty|entity)'
 
 const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
@@ -47,6 +49,7 @@ export enum URNProtocol {
   SEPOLIA = 'sepolia',
   MATIC = 'matic',
   MUMBAI = 'mumbai',
+  AMOY = 'amoy',
   OFF_CHAIN = 'off-chain'
 }
 export enum URNType {

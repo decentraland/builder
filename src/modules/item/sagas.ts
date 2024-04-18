@@ -436,7 +436,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           throw new ItemSkinTooBigError()
         }
 
-        if (!isSkin && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
+        if (!isSkin && !isEmote && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
           throw new ItemWearableTooBigError()
         }
       }

@@ -465,7 +465,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
             partnerId = '01HRRQQ70YK4SP88GHM9A61P6B'
             commodity = 'TT'
             scAddress = '0xe539E0AED3C1971560517D58277f8dd9aC296281'
-            network = 'mumbai'
+            network = 'mumbai' // TODO: Update to amoy when wert support it
             origin = 'https://sandbox.wert.io'
             break
           case 'prod':
