@@ -35,9 +35,6 @@ import { TabType, useCurrentlySelectedTab } from './hooks'
 import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
 import './WorldListPage.css'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { preventDefault } from 'lib/event'
-
 const PAGE_ACTION_EVENT = 'Worlds List Page Action'
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
