@@ -500,6 +500,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   handleSaveVideo = () => {
     this.setState({
       fromView: undefined,
+      isLoading: false,
       view: CreateItemView.DETAILS
     })
   }
