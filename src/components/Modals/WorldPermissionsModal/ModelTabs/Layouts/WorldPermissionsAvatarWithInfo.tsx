@@ -22,7 +22,7 @@ export default React.memo(function WorldPermissionsAvatarWithInfo(props: WorldPe
   return (
     <div className="world-permission-avatar">
       <AvatarFace avatar={profiles[wallet]} size="small" inline />
-      <CopyToClipboard role="option" text={wallet}>
+      <CopyToClipboard role="option" text={wallet} showPopup>
         <p>
           {profiles[wallet] && profiles[wallet].name && <span>{profiles[wallet].name}</span>}
           {profiles[wallet] && !profiles[wallet].hasClaimedName && <sup>NO NAME</sup>}

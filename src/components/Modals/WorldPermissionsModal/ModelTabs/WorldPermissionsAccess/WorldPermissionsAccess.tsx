@@ -2,6 +2,7 @@ import React from 'react'
 
 import classNames from 'classnames'
 import { Checkbox } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { WorldPermissionType } from 'lib/api/worlds'
 import { WorldPermissionsAccessProps } from './WorldPermissionsAccess.types'
@@ -30,22 +31,29 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
   return (
     <div className={classNames(['world-permissions__tab-access', isAccessUnrestricted && 'unrestricted'])}>
       <WorldPermissionsHeader
-        title="Accessibility"
-        description="In this sections you can update the access to your WORLD up to 100 addresses."
+        title={t('world_permissions_modal.tab_access.title')}
+        description={t('world_permissions_modal.tab_access.description', {
+          br: () => <br />
+        })}
         loading={loading}
       />
 
       {!loading && (
         <div className="public-access-container">
           <span>
-            {worldAccessPermissions?.type === WorldPermissionType.AllowList && `ALLOWED LIST ${worldAccessPermissions?.wallets.length}/100`}
+            {worldAccessPermissions?.type === WorldPermissionType.AllowList &&
+              t('world_permissions_modal.tab_access.approved_addresses', { number: `${worldAccessPermissions?.wallets.length}/100` })}
           </span>
           <Checkbox
             toggle
-            label={isAccessUnrestricted ? 'public' : 'private'}
+            label={t('world_permissions_modal.tab_access.world_is', {
+              type: isAccessUnrestricted ? t('world_permissions_modal.tab_access.public') : t('world_permissions_modal.tab_access.private')
+            })}
             checked={isAccessUnrestricted}
             onChange={onChangeAccessPermission}
-            aria-label={isAccessUnrestricted ? 'public' : 'private'}
+            aria-label={t('world_permissions_modal.tab_access.world_is', {
+              type: isAccessUnrestricted ? t('world_permissions_modal.tab_access.public') : t('world_permissions_modal.tab_access.private')
+            })}
           />
         </div>
       )}
@@ -55,7 +63,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
           showAddUserForm={showAddUserForm}
           newAddress={newAddress}
           isLoadingNewUser={isLoadingNewUser}
-          addButtonLabel="Add Address"
+          addButtonLabel={t('world_permissions_modal.tab_access.button_add_address_label')}
           error={error}
           onShowAddUserForm={onShowAddUserForm}
           onNewAddressChange={onNewAddressChange}

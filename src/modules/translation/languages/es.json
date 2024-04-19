@@ -25,6 +25,31 @@
     "confirm": "Mover",
     "cancel": "Cancelar"
   },
+  "world_permissions_modal": {
+    "title": "Permisos de World para {world_name}",
+    "button_add_label": "agregar",
+    "button_cancel_label": "cancelar",
+    "close": "cerrar",
+    "tab_access": {
+      "label": "acceso",
+      "title": "acceso",
+      "description": "Gestiona quién puede acceder a tu Mundo alternando entre 'Privado' y 'Público'.<br></br><br></br>En modo Privado, puedes conceder acceso a un máximo de 100 wallets (usuarios de Decentraland). Por favor, ten en cuenta que si vuelves al modo Público, tu lista de wallets aprobadas será borrada.",
+      "world_is": "Este World es {type}",
+      "public": "publico",
+      "private": "privado",
+      "approved_addresses": "Wallets aprobadas {number}",
+      "button_add_address_label": "agregar wallet"
+    },
+    "tab_collaborators": {
+      "label": "colaboradores",
+      "title": "colaboradores",
+      "description": "Añade hasta 10 wallets (usuarios de Decentraland) como colaboradores y gestiona sus permisos deploy o transmitir en tu World.",
+      "button_add_collaborator_label": "agregar colaborador",
+      "column_name_label": "colaboradores {number}",
+      "column_deploy_label": "deploy",
+      "column_stream_label": "transmisión"
+    }
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "Eliminar Asset Pack",

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, ButtonProps, CheckboxProps, InputOnChangeData, ModalActions, ModalContent, ModalNavigation, Tabs } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 import { isValid } from 'lib/address'
 import { Props } from './WorldPermissionsModal.types'
@@ -186,14 +187,17 @@ const WorldPermissionsModal = (props: Props) => {
 
   return (
     <Modal name={name} onClose={onClose} className="world-permissions">
-      <ModalNavigation title={loading ? <LoadingText type="h1" size="large"></LoadingText> : 'World Permissions'} onClose={onClose} />
+      <ModalNavigation
+        title={loading ? <LoadingText type="h1" size="large"></LoadingText> : t('world_permissions_modal.title', {world_name: metadata.worldName})}
+        onClose={onClose}
+      />
       <ModalContent>
         <Tabs className="world-permissions__tabs">
           <Tabs.Tab active={tabSelected === TabsSection.Access} onClick={e => handleChangeTab(e, TabsSection.Access)}>
-            {loading ? <LoadingText type="span" size="small"></LoadingText> : 'Access'}
+            {loading ? <LoadingText type="span" size="small"></LoadingText> : t('world_permissions_modal.tab_access.label')}
           </Tabs.Tab>
           <Tabs.Tab active={tabSelected === TabsSection.Collaborators} onClick={e => handleChangeTab(e, TabsSection.Collaborators)}>
-            {loading ? <LoadingText type="span" size="small"></LoadingText> : 'Collaborators'}
+            {loading ? <LoadingText type="span" size="small"></LoadingText> : t('world_permissions_modal.tab_collaborators.label')}
           </Tabs.Tab>
         </Tabs>
 
@@ -234,7 +238,7 @@ const WorldPermissionsModal = (props: Props) => {
       </ModalContent>
       <ModalActions>
         <Button primary onClick={onClose}>
-          Close
+          {t('world_permissions_modal.close')}
         </Button>
       </ModalActions>
     </Modal>

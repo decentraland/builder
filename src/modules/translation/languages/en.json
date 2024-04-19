@@ -25,6 +25,31 @@
     "confirm": "Confirm",
     "cancel": "Cancel"
   },
+  "world_permissions_modal": {
+    "title": "World Permissions for {world_name}",
+    "button_add_label": "add",
+    "button_cancel_label": "cancel",
+    "close": "done",
+    "tab_access": {
+      "label": "access",
+      "title": "Access",
+      "description": "Manage who can access your World by toggling between 'Private' and 'Public'.<br></br><br></br>In Private mode, you can grant access to a max of 100 addresses (Decentraland users). Please note, if you revert to Public mode, your list of approved addresses will be erased.",
+      "world_is": "World is {type}",
+      "public": "public",
+      "private": "private",
+      "approved_addresses": "Approved Addresses {number}",
+      "button_add_address_label": "add address"
+    },
+    "tab_collaborators": {
+      "label": "collaborators",
+      "title": "Collaborators",
+      "description": "Add up to 10 addresses (Decentraland users) as collaborators and manage their permission deploy, or stream into your World.",
+      "button_add_collaborator_label": "add collaborator",
+      "column_name_label": "collaborators {number}",
+      "column_deploy_label": "deploy",
+      "column_stream_label": "stream"
+    }
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "Delete Asset Pack",

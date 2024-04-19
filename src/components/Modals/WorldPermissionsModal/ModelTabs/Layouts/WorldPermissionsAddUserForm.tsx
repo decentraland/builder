@@ -1,6 +1,7 @@
 import React from 'react'
 import { Icon } from 'decentraland-ui'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { WorldPermissionNames } from 'lib/api/worlds'
@@ -58,7 +59,7 @@ export default React.memo(function WorldPermissionsAddUserForm(props: WorldPermi
             loading={isLoadingNewUser}
             disabled={isLoadingNewUser}
           >
-            {newAddress === '' ? 'Cancel' : 'Add'}
+            {newAddress === '' ? t('world_permissions_modal.button_cancel_label') : t('world_permissions_modal.button_add_label')}
           </Button>
         </div>
       )}

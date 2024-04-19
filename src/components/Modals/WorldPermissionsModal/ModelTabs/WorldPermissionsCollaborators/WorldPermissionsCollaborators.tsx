@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Table } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { WorldPermissionsCollaboratorsProps } from './WorldPermissionsCollaborators.types'
 import WorldPermissionsAddUserForm from '../Layouts/WorldPermissionsAddUserForm'
@@ -26,8 +27,8 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
   return (
     <div className="world-permissions__tab-collaborators">
       <WorldPermissionsHeader
-        title="Collaborators"
-        description="Manage other’s users role permissions to your WORLD up to 10 addresses."
+        title={t('world_permissions_modal.tab_collaborators.title')}
+        description={t('world_permissions_modal.tab_collaborators.description')}
         loading={loading}
       />
 
@@ -35,7 +36,7 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
         showAddUserForm={showAddUserForm}
         newAddress={newAddress}
         isLoadingNewUser={loading}
-        addButtonLabel="Add Colaborator"
+        addButtonLabel={t('world_permissions_modal.tab_collaborators.button_add_collaborator_label')}
         error={error}
         onShowAddUserForm={onShowAddUserForm}
         onNewAddressChange={onNewAddressChange}
@@ -46,10 +47,28 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
         <Table basic="very">
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>{loading ? <LoadingText type="p" size="medium"></LoadingText> : 'Collaboratos'}</Table.HeaderCell>
-              <Table.HeaderCell>{loading ? <LoadingText type="p" size="medium"></LoadingText> : 'Deploy'}</Table.HeaderCell>
-              <Table.HeaderCell>{loading ? <LoadingText type="p" size="medium"></LoadingText> : 'Streaming'}</Table.HeaderCell>
-              <Table.HeaderCell>{loading ? <LoadingText type="p" size="medium"></LoadingText> : 'Actions'}</Table.HeaderCell>
+              <Table.HeaderCell>
+                {loading ? (
+                  <LoadingText type="p" size="medium"></LoadingText>
+                ) : (
+                  t('world_permissions_modal.tab_collaborators.column_name_label', { number: `${collaboratorUserList?.length}/10` })
+                )}
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                {loading ? (
+                  <LoadingText type="p" size="medium"></LoadingText>
+                ) : (
+                  t('world_permissions_modal.tab_collaborators.column_deploy_label')
+                )}
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                {loading ? (
+                  <LoadingText type="p" size="medium"></LoadingText>
+                ) : (
+                  t('world_permissions_modal.tab_collaborators.column_stream_label')
+                )}
+              </Table.HeaderCell>
+              <Table.HeaderCell></Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>

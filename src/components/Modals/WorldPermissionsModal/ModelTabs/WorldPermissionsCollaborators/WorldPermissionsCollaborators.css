@@ -1,3 +1,7 @@
+.world-permissions__collaborators-list > table.ui.very.basic.table > thead > tr > th {
+  text-transform: capitalize;
+}
+
 .world-permissions__collaborators-list > table.ui.very.basic.table > thead > tr > th,
 .world-permissions__collaborators-list > table.ui.very.basic.table > tbody > tr > td {
   text-align: center;
