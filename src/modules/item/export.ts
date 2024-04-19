@@ -76,9 +76,14 @@ export async function calculateModelFinalSize(
   legacyBuilderClient: BuilderAPI
 ): Promise<number> {
   const newHashes = await computeHashes(newContents)
+  const newContentHasModel = Object.keys(newContents).some(key => key.endsWith('.glb'))
   const filesToDownload: Record<string, string> = {}
   for (const fileName in oldContents) {
-    if (!newHashes[fileName] || oldContents[fileName] !== newHashes[fileName]) {
+    const isModel = fileName.endsWith('.glb')
+    const isNotPartOfNewContent = !newContents[fileName]
+    const fileHasDifferentHash = oldContents[fileName] !== newHashes[fileName]
+    // download the file if it's not part of the new content or if it has a different hash
+    if ((isNotPartOfNewContent || fileHasDifferentHash) && (!newContentHasModel || (newContentHasModel && !isModel))) {
       filesToDownload[fileName] = oldContents[fileName]
     }
   }
