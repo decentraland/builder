@@ -188,7 +188,13 @@ const WorldPermissionsModal = (props: Props) => {
   return (
     <Modal name={name} onClose={onClose} className="world-permissions">
       <ModalNavigation
-        title={loading ? <LoadingText type="h1" size="large"></LoadingText> : t('world_permissions_modal.title', {world_name: metadata.worldName})}
+        title={
+          loading ? (
+            <LoadingText type="h1" size="large"></LoadingText>
+          ) : (
+            t('world_permissions_modal.title', { world_name: metadata.worldName })
+          )
+        }
         onClose={onClose}
       />
       <ModalContent>
