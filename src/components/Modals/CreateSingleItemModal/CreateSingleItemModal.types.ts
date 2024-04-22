@@ -23,7 +23,6 @@ export type Props = ModalProps & {
   isLoading: boolean
   collection: Collection | null
   itemStatus: SyncStatus | null
-  isExoticRarityEnabled: boolean
   onSave: typeof saveItemRequest
 }
 
