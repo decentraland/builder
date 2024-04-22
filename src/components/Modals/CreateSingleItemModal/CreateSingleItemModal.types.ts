@@ -103,6 +103,6 @@ export type AcceptedFileProps = Pick<
   | 'blockVrmExport'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isExoticRarityEnabled'>
+export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus'>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

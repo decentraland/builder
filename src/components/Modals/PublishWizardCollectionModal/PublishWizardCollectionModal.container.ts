@@ -8,7 +8,7 @@ import {
   getUnsyncedCollectionError,
   getError as getCollectionError
 } from 'modules/collection/selectors'
-import { getLoading as getItemLoading, getCollectionItems, getError as getItemError, getFilteredRarities } from 'modules/item/selectors'
+import { getLoading as getItemLoading, getCollectionItems, getError as getItemError, getRarities } from 'modules/item/selectors'
 import { publishCollectionRequest, PUBLISH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
@@ -29,7 +29,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     wallet: getWallet(state)!,
     collection,
     items: getCollectionItems(state, collectionId),
-    rarities: getFilteredRarities(state),
+    rarities: getRarities(state),
     unsyncedCollectionError: getUnsyncedCollectionError(state),
     itemError: getItemError(state),
     collectionError: getCollectionError(state),
