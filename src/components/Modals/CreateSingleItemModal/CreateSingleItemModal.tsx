@@ -827,11 +827,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
-    const { collection, isExoticRarityEnabled } = this.props
+    const { collection } = this.props
     const { name, category, rarity, contents, item, type, isLoading } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
-    const rarities = Rarity.getRarities().filter(rarity => isExoticRarityEnabled || rarity !== Rarity.EXOTIC)
+    const rarities = Rarity.getRarities()
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
 
     const raritiesLink =

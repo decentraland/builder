@@ -26,7 +26,6 @@ export type Props = {
   isDownloading: boolean
   isCommitteeMember: boolean
   isCampaignEnabled: boolean
-  isExoticRarityEnabled: boolean
   isVrmOptOutEnabled: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
@@ -60,7 +59,6 @@ export type MapStateProps = Pick<
   | 'isCommitteeMember'
   | 'canEditSelectedItem'
   | 'isCampaignEnabled'
-  | 'isExoticRarityEnabled'
   | 'isVrmOptOutEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>

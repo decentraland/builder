@@ -498,9 +498,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, error, isCampaignEnabled, isExoticRarityEnabled, isVrmOptOutEnabled } = this.props
+    const { selectedItemId, address, isConnected, error, isCampaignEnabled, isVrmOptOutEnabled } = this.props
     const { name, description, rarity, data, isDirty, hasItem } = this.state
-    const rarities = Rarity.getRarities().filter(rarity => isExoticRarityEnabled || rarity !== Rarity.EXOTIC)
+    const rarities = Rarity.getRarities()
     const playModes = getEmotePlayModes()
 
     return (
