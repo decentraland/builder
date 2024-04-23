@@ -1,10 +1,12 @@
 .ui.modal.world-permissions .dcl.modal-navigation-title {
-  color: #cfcdd4;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .ui.modal.world-permissions .dcl.modal-navigation-title span {
-  font-weight: 600;
-  color: var(--text);
+  color: var(--navbar-item-text-enabled);
+  font-size: 18px;
+  font-weight: 400;
 }
 
 .ui.modal.world-permissions > .content {
