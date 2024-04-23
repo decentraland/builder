@@ -13,7 +13,6 @@ import { mockedItem } from 'specs/item'
 import { ItemState } from './reducer'
 import {
   getAuthorizedItems,
-  getFilteredRarities,
   getItem,
   getItems,
   getPaginatedCollectionItems,
@@ -181,60 +180,6 @@ describe('Item selectors', () => {
     it('should return the items that belong to the wallet', () => {
       const anItemThatDoesntBelongToTheWallet = { id: 'anItemID', owner: 'someAddress' } as Item
       expect(getWalletItems.resultFunc([anItemThatDoesntBelongToTheWallet, item], item.owner)).toEqual([item])
-    })
-  })
-
-  describe('when getting the filtered rarities', () => {
-    describe('and the feature flag is enabled', () => {
-      beforeEach(() => {
-        state = {
-          ...state,
-          features: {
-            data: {
-              dapps: {
-                name: 'dapps',
-                flags: {
-                  'dapps-exotic-rarity': true
-                },
-                variants: {}
-              }
-            },
-            error: null,
-            loading: [],
-            hasLoadedInitialFlags: true
-          }
-        } as RootState
-      })
-
-      it('should return the rarities with the exotic rarity', () => {
-        expect(getFilteredRarities(state)).toEqual(state.item.rarities)
-      })
-    })
-
-    describe('and the feature flag is not enabled', () => {
-      beforeEach(() => {
-        state = {
-          ...state,
-          features: {
-            data: {
-              dapps: {
-                name: 'dapps',
-                flags: {
-                  'dapps-exotic-rarity': false
-                },
-                variants: {}
-              }
-            },
-            error: null,
-            loading: [],
-            hasLoadedInitialFlags: true
-          }
-        } as RootState
-      })
-
-      it('should return the rarities without the exotic rarity', () => {
-        expect(getFilteredRarities(state)).toEqual(state.item.rarities.filter(rarity => rarity.name !== Rarity.EXOTIC))
-      })
     })
   })
 

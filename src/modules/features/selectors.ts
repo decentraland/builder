@@ -46,14 +46,6 @@ export const getIsPublishCollectionsWertEnabled = (state: RootState) => {
   }
 }
 
-export const getIsExoticRarityEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.EXOTIC_RARITY)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsVrmOptOutEnabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.VRM_OPTOUT)
