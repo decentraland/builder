@@ -3,7 +3,12 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { Avatar } from '@dcl/schemas/dist/platform/profile/avatar'
 
 import { WorldPermissionNames, WorldPermissionType, WorldPermissions } from 'lib/api/worlds'
-import { deleteWorldPermissionsRequest, postWorldPermissionsRequest, putWorldPermissionsRequest } from 'modules/worlds/actions'
+import {
+  deleteWorldPermissionsRequest,
+  getProfilesRequest,
+  postWorldPermissionsRequest,
+  putWorldPermissionsRequest
+} from 'modules/worlds/actions'
 
 export type WorldPermissionsEssentials = { name: string; permissionName?: WorldPermissionNames; permissionType?: WorldPermissionType }
 
@@ -18,6 +23,7 @@ export type WorldPermissionsModalProps = {
   onPutWorldPermissionsRequest: typeof putWorldPermissionsRequest
   onPostWorldPermissionsRequest: typeof postWorldPermissionsRequest
   onDeleteWorldPermissionsRequest: typeof deleteWorldPermissionsRequest
+  onGetProfilesRequest: typeof getProfilesRequest
   isLoading?: boolean
   isLoadingNewUser?: boolean
 }
@@ -29,6 +35,6 @@ export type OwnProps = Pick<WorldPermissionsModalProps, 'metadata'>
 export type MapStateProps = Pick<Props, 'isLoading' | 'isLoadingNewUser' | 'worldPermissions' | 'profiles' | 'error'>
 export type MapDispatchProps = Pick<
   Props,
-  'onPutWorldPermissionsRequest' | 'onPostWorldPermissionsRequest' | 'onDeleteWorldPermissionsRequest'
+  'onPutWorldPermissionsRequest' | 'onPostWorldPermissionsRequest' | 'onDeleteWorldPermissionsRequest' | 'onGetProfilesRequest'
 >
 export type MapDispatch = Dispatch

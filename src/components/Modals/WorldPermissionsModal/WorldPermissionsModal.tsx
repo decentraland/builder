@@ -27,6 +27,7 @@ const WorldPermissionsModal = (props: Props) => {
     onPutWorldPermissionsRequest,
     onPostWorldPermissionsRequest,
     onDeleteWorldPermissionsRequest,
+    onGetProfilesRequest,
     onClose
   } = props
   const [newAddress, setNewAddress] = useState('')
@@ -74,7 +75,6 @@ const WorldPermissionsModal = (props: Props) => {
           !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet.toLowerCase())
         })
       }
-
       return [...newCollaboratorUserList]
     })
   }, [worldPermissions])
@@ -94,6 +94,7 @@ const WorldPermissionsModal = (props: Props) => {
       if (isValidAddress && metadata.worldName && newAddress && !collaboratorUserList.includes(newAddress)) {
         setCollaboratorUserList(prev => [...prev, newAddress.toLowerCase()])
       }
+      onGetProfilesRequest([newAddress])
     },
     [metadata.worldName, worldPermissions, newAddress, collaboratorUserList]
   )
@@ -192,7 +193,7 @@ const WorldPermissionsModal = (props: Props) => {
           loading ? (
             <LoadingText type="h1" size="large"></LoadingText>
           ) : (
-            t('world_permissions_modal.title', { world_name: metadata.worldName })
+            t('world_permissions_modal.title', { world_name: <span>{metadata.worldName}</span>, br: () => <br /> })
           )
         }
         onClose={onClose}

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Table } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { WorldPermissionsCollaboratorsProps } from './WorldPermissionsCollaborators.types'
 import WorldPermissionsAddUserForm from '../Layouts/WorldPermissionsAddUserForm'
@@ -13,7 +13,7 @@ import './WorldPermissionsCollaborators.css'
 
 export default React.memo(function WorldPermissionsCollaborators(props: WorldPermissionsCollaboratorsProps) {
   const {
-    loading: newLoading,
+    loading,
     newAddress,
     collaboratorUserList,
     showAddUserForm,
@@ -23,25 +23,32 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
     error,
     ...worldPermissionsCollaboratorsItemProps
   } = props
-  const loading = false
   return (
     <div className="world-permissions__tab-collaborators">
       <WorldPermissionsHeader
-        title={t('world_permissions_modal.tab_collaborators.title')}
-        description={t('world_permissions_modal.tab_collaborators.description')}
+        description={
+          <T
+            id="world_permissions_modal.tab_collaborators.description"
+            values={{
+              span: (text: string) => <span>{text}</span>
+            }}
+          />
+        }
         loading={loading}
       />
 
-      <WorldPermissionsAddUserForm
-        showAddUserForm={showAddUserForm}
-        newAddress={newAddress}
-        isLoadingNewUser={loading}
-        addButtonLabel={t('world_permissions_modal.tab_collaborators.button_add_collaborator_label')}
-        error={error}
-        onShowAddUserForm={onShowAddUserForm}
-        onNewAddressChange={onNewAddressChange}
-        onUserPermissionListChange={onAddUserToColaboratorList}
-      />
+      {(!collaboratorUserList || collaboratorUserList.length < 10) && (
+        <WorldPermissionsAddUserForm
+          showAddUserForm={showAddUserForm}
+          newAddress={newAddress}
+          isLoadingNewUser={loading}
+          addButtonLabel={t('world_permissions_modal.tab_collaborators.button_add_collaborator_label')}
+          error={error}
+          onShowAddUserForm={onShowAddUserForm}
+          onNewAddressChange={onNewAddressChange}
+          onUserPermissionListChange={onAddUserToColaboratorList}
+        />
+      )}
 
       <div className="world-permissions__collaborators-list">
         <Table basic="very">
@@ -76,6 +83,17 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
               collaboratorUserList?.map((wallet, index) => (
                 <WorldPermissionsCollaboratorsItem {...worldPermissionsCollaboratorsItemProps} key={index} wallet={wallet} />
               ))}
+            {!loading &&
+              (!collaboratorUserList ||
+                (collaboratorUserList.length === 0 && (
+                  <Table.Row>
+                    <Table.Cell colSpan="4">
+                      <div className="world-permissions__empty-list">
+                        <T id="world_permissions_modal.tab_collaborators.empty_list" />
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                )))}
 
             {loading && Array.from(Array(4), (_, key) => <WorldPermissionsCollaboratorsItem key={key} loading={loading} />)}
           </Table.Body>

@@ -26,14 +26,15 @@
     "cancel": "Cancel"
   },
   "world_permissions_modal": {
-    "title": "World Permissions for {world_name}",
+    "title": "World Permissions<br></br>{world_name}",
     "button_add_label": "add",
     "button_cancel_label": "cancel",
     "close": "done",
     "tab_access": {
       "label": "access",
-      "title": "Access",
-      "description": "Manage who can access your World by toggling between 'Private' and 'Public'.<br></br><br></br>In Private mode, you can grant access to a max of 100 addresses (Decentraland users). Please note, if you revert to Public mode, your list of approved addresses will be erased.",
+      "description": "Manage who can access your World by toggling between <span>\"Private\"</span> and <span>\"Public\"</span>.<br></br><br></br><span>In Private mode</span>, you can grant access to a max of 100 addresses (Decentraland users). Please note, if you revert to Public mode, your list of approved addresses will be erased.",
+      "warning": "<b>Warning</b>: If you switch this function to private, you might loose your list",
+      "empty_list": "You haven't approved any addresses yet",
       "world_is": "World is {type}",
       "public": "public",
       "private": "private",
@@ -42,8 +43,8 @@
     },
     "tab_collaborators": {
       "label": "collaborators",
-      "title": "Collaborators",
-      "description": "Add up to 10 addresses (Decentraland users) as collaborators and manage their permission deploy, or stream into your World.",
+      "description": "<span>Add up to 10 addresses</span> (Decentraland users) as collaborators and manage their permission deploy, or stream into your World.",
+      "empty_list": "Here you’ll see your Collaborators list",
       "button_add_collaborator_label": "add collaborator",
       "column_name_label": "collaborators {number}",
       "column_deploy_label": "deploy",

@@ -25,7 +25,6 @@ export default React.memo(function WorldPermissionsAvatarWithInfo(props: WorldPe
       <CopyToClipboard role="option" text={wallet} showPopup>
         <p>
           {profiles[wallet] && profiles[wallet].name && <span>{profiles[wallet].name}</span>}
-          {profiles[wallet] && !profiles[wallet].hasClaimedName && <sup>NO NAME</sup>}
           {getResumedAddress(wallet)}{' '}
         </p>
       </CopyToClipboard>

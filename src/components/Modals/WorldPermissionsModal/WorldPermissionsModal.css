@@ -1,3 +1,16 @@
+.ui.modal.world-permissions .dcl.modal-navigation-title {
+  color: #cfcdd4;
+}
+
+.ui.modal.world-permissions .dcl.modal-navigation-title span {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ui.modal.world-permissions > .content {
+  margin-top: 0;
+}
+
 .world-permissions .modal-navigation-title {
   width: 100%;
   text-align: center;
@@ -6,6 +19,10 @@
 .world-permissions .world-permissions__tabs > .ui.container {
   display: flex;
   justify-content: center;
+}
+
+.world-permissions .world-permissions__tabs > .ui.container > .dcl.tab {
+  text-transform: uppercase;
 }
 
 .world-permissions .tab-content__add-user-wrapper {
@@ -41,4 +58,16 @@
 .world-permissions .tab-content__add-user-form-container button {
   width: 155px;
   height: 52px;
+}
+
+.world-permissions__empty-list {
+  display: flex;
+  width: 100%;
+  height: 80px;
+  padding: 16px;
+  align-items: center;
+  border-radius: 8px;
+  background-color: #161518;
+  color: #716b7c;
+  justify-content: center;
 }
