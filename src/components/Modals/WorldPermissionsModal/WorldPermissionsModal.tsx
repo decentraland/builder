@@ -28,6 +28,7 @@ const WorldPermissionsModal = (props: Props) => {
     onPostWorldPermissionsRequest,
     onDeleteWorldPermissionsRequest,
     onGetProfilesRequest,
+    onGetWorldPermissions,
     onClose
   } = props
   const [newAddress, setNewAddress] = useState('')
@@ -38,6 +39,10 @@ const WorldPermissionsModal = (props: Props) => {
   const [tabSelected, setTabSelected] = useState<TabsSection>(
     metadata.isCollaboratorsTabShown ? TabsSection.Collaborators : TabsSection.Access
   )
+
+  useEffect(() => {
+    metadata.worldName && onGetWorldPermissions(metadata.worldName)
+  }, [metadata.worldName])
 
   const loading = isLoading || !metadata.worldName || !worldPermissions
 

@@ -25,7 +25,6 @@ export type Props = {
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
   onOpenPermissionsModal: (worldName: string, isCollaboratorsTabShown?: boolean) => void
   onOpenWorldsForENSOwnersAnnouncementModal: () => void
-  getWorldPermissions: (worldName: string) => void
   getProfiles: (worldName: string) => void
   onUnpublishWorld: typeof clearDeploymentRequest
 }
@@ -49,11 +48,6 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<
   Props,
-  | 'onNavigate'
-  | 'onOpenYourStorageModal'
-  | 'onOpenPermissionsModal'
-  | 'onOpenWorldsForENSOwnersAnnouncementModal'
-  | 'onUnpublishWorld'
-  | 'getWorldPermissions'
+  'onNavigate' | 'onOpenYourStorageModal' | 'onOpenPermissionsModal' | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'
 >
 export type MapDispatch = Dispatch

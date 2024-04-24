@@ -58,12 +58,12 @@ export function isExternalName(subdomain: string) {
 
 export async function addWorldStatusToEachENS(enss: ENS[]) {
   const enssWithWorldStatus: ENS[] = []
+  const worldsApi = new WorldsAPI()
 
   // This will be slow for users with plenty of ens names.
   // Same happens with dcl names as it uses a similar logic of fetching world info 1 by 1.
   for (const ens of enss) {
     let worldStatus: WorldStatus | null = null
-    const worldsApi = new WorldsAPI()
     const world: WorldInfo | null = await worldsApi.fetchWorld(ens.subdomain)
 
     if (world) {

@@ -19,7 +19,6 @@ import { getConnectedWalletStats, getLoading as getLoadingWorlds, getWorldsPermi
 import { MapStateProps, MapDispatchProps, MapDispatch } from './WorldListPage.types'
 import WorldListPage from './WorldListPage'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { getWorldPermissionsRequest } from 'modules/worlds/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
@@ -45,8 +44,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenPermissionsModal: (name, isCollaboratorsTabShown) =>
     dispatch(openModal('WorldPermissionsModal', { worldName: name, isCollaboratorsTabShown })),
   onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
-  onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId)),
-  getWorldPermissions: worldName => dispatch(getWorldPermissionsRequest(worldName))
+  onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId))
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)

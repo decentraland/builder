@@ -55,7 +55,6 @@ const WorldListPage: React.FC<Props> = props => {
     onOpenYourStorageModal,
     onOpenWorldsForENSOwnersAnnouncementModal,
     onUnpublishWorld,
-    getWorldPermissions,
     onOpenPermissionsModal
   } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
@@ -246,7 +245,6 @@ const WorldListPage: React.FC<Props> = props => {
   )
 
   const handleOpenPermissionsModal = useCallback((_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, worldName: string) => {
-    getWorldPermissions(worldName)
     onOpenPermissionsModal(worldName)
   }, [])
 

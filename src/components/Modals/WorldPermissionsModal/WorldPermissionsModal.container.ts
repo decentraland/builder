@@ -7,6 +7,7 @@ import {
   PUT_WORLD_PERMISSIONS_REQUEST,
   deleteWorldPermissionsRequest,
   getProfilesRequest,
+  getWorldPermissionsRequest,
   postWorldPermissionsRequest,
   putWorldPermissionsRequest
 } from 'modules/worlds/actions'
@@ -29,7 +30,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
     dispatch(postWorldPermissionsRequest(worldName, permissionName, permissionType)),
   onDeleteWorldPermissionsRequest: (worldName, permissionName, permissionType, address) =>
     dispatch(deleteWorldPermissionsRequest(worldName, permissionName, permissionType, address)),
-  onGetProfilesRequest: wallets => dispatch(getProfilesRequest(wallets))
+  onGetProfilesRequest: wallets => dispatch(getProfilesRequest(wallets)),
+  onGetWorldPermissions: worldName => dispatch(getWorldPermissionsRequest(worldName))
 })
 
 export default connect(mapState, mapDispatch)(WorldPermissionsModal)
