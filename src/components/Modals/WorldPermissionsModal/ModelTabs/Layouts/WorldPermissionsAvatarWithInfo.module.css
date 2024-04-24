@@ -1,18 +1,18 @@
-.world-permission-avatar {
+.avatar {
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.world-permission-avatar div.dcl.avatar-face {
+.avatar .avatarface {
   margin-right: 12px;
 }
 
-.world-permission-avatar div.dui-loading-text.p.dui-loading-text__medium {
+.avatar .loadingtext {
   margin-bottom: 0;
 }
 
-.world-permission-avatar p {
+.avatar .paragraph {
   color: #a09ba8;
   font-size: 16px;
   font-style: normal;
@@ -21,7 +21,7 @@
   cursor: pointer;
 }
 
-.world-permission-avatar p span {
+.avatar .paragraph .span {
   color: #fcfcfc;
   font-size: 16px;
   font-style: normal;

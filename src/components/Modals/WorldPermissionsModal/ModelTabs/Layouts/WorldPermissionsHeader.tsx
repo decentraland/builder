@@ -2,7 +2,7 @@ import React from 'react'
 
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 
-import './WorldPermissionsHeader.css'
+import styles from './WorldPermissionsHeader.module.css'
 
 type WorldPermissionsHeaderProps = {
   description: React.ReactNode
@@ -15,7 +15,7 @@ export default React.memo(function WorldPermissionsHeader(props: WorldPermission
   return (
     <>
       {loading && <LoadingText type="p" size="full"></LoadingText>}
-      {!loading && <p className="world-permissions-header">{description}</p>}
+      {!loading && <p className={styles.header}>{description}</p>}
     </>
   )
 })

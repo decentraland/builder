@@ -33,7 +33,7 @@
     "tab_access": {
       "label": "acceso",
       "description": "Gestiona quién puede acceder a tu Mundo alternando entre <span>\"Privado\"</span> y <span>\"Público\"</span>.<br></br><br></br><span>En modo Privado</span>, puedes conceder acceso a un máximo de 100 wallets (usuarios de Decentraland). Por favor, ten en cuenta que si vuelves al modo Público, tu lista de wallets aprobadas será borrada.",
-      "warning": "<b>Cuidado</b>: Si cambias esta función a privada, podrías perder tu lista",
+      "warning": "<b>Cuidado</b>: Si vuelve al modo público, se borrará su lista de direcciones aprobadas.",
       "empty_list": "Aún no has aprobado ninguna dirección",
       "world_is": "Este World es {type}",
       "public": "publico",
@@ -44,10 +44,13 @@
     "tab_collaborators": {
       "label": "colaboradores",
       "description": "Añade hasta 10 wallets (usuarios de Decentraland) como colaboradores y gestiona sus permisos deploy o transmitir en tu World.",
+      "empty_list": "Aún no has agregado ningún colaborador/dirección",
       "button_add_collaborator_label": "agregar colaborador",
       "column_name_label": "colaboradores {number}",
       "column_deploy_label": "deploy",
-      "column_stream_label": "transmisión"
+      "column_deploy_tooltip": "El usuario podrá implementar nuevas escenas en su mundo.",
+      "column_stream_label": "transmisión",
+      "column_stream_tooltip": "El usuario podrá transmitir contenido a su mundo"
     }
   },
   "asset_pack": {

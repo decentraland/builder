@@ -5,26 +5,26 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { getResumedAddress } from '../../utils'
 import { WorldPermissionsAvatarWithInfoProps } from './WorldPermissionsAvatarWithInfo.types'
 
-import './WorldPermissionsAvatarWithInfo.css'
+import styles from './WorldPermissionsAvatarWithInfo.module.css'
 
 export default React.memo(function WorldPermissionsAvatarWithInfo(props: WorldPermissionsAvatarWithInfoProps) {
   const { wallet, profiles, loading } = props
 
   if (loading || !profiles || !wallet) {
     return (
-      <div className="world-permission-avatar">
+      <div className={styles.avatar}>
         <AvatarFace size="small" inline />
-        <LoadingText type="p" size="medium"></LoadingText>
+        <LoadingText className={styles.loadingtext} type="p" size="medium"></LoadingText>
       </div>
     )
   }
 
   return (
-    <div className="world-permission-avatar">
-      <AvatarFace avatar={profiles[wallet]} size="small" inline />
+    <div className={styles.avatar}>
+      <AvatarFace className={styles.avatarface} avatar={profiles[wallet]} size="small" inline />
       <CopyToClipboard role="option" text={wallet} showPopup>
-        <p>
-          {profiles[wallet] && profiles[wallet].name && <span>{profiles[wallet].name}</span>}
+        <p className={styles.paragraph}>
+          {profiles[wallet] && profiles[wallet].name && <span className={styles.span}>{profiles[wallet].name}</span>}
           {getResumedAddress(wallet)}{' '}
         </p>
       </CopyToClipboard>

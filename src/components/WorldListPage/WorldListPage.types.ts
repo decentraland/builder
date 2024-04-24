@@ -23,7 +23,7 @@ export type Props = {
   worldsWalletStats?: WorldsWalletStats
   onNavigate: (path: string) => void
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
-  onOpenPermissionsModal: (worldName: string) => void
+  onOpenPermissionsModal: (worldName: string, isCollaboratorsTabShown?: boolean) => void
   onOpenWorldsForENSOwnersAnnouncementModal: () => void
   getWorldPermissions: (worldName: string) => void
   getProfiles: (worldName: string) => void

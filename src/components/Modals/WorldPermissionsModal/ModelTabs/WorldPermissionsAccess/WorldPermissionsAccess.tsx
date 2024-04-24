@@ -11,7 +11,7 @@ import WorldPermissionsAccessItem from './WorldPermissionsAccessItem'
 import WorldPermissionsAddUserForm from '../Layouts/WorldPermissionsAddUserForm'
 import WorldPermissionsHeader from '../Layouts/WorldPermissionsHeader'
 
-import './WorldPermissionsAccess.css'
+import styles from './WorldPermissionsAccess.module.css'
 
 export default React.memo(function WorldPermissionsAccess(props: WorldPermissionsAccessProps) {
   const {
@@ -29,7 +29,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
     error
   } = props
   return (
-    <div className={classNames(['world-permissions__tab-access', isAccessUnrestricted && 'unrestricted'])}>
+    <div className={classNames([styles.tabAccess, isAccessUnrestricted && 'unrestricted'])}>
       <WorldPermissionsHeader
         description={
           <T
@@ -44,9 +44,9 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
       />
 
       {!loading && !isAccessUnrestricted && (
-        <div className="access-warning-container">
-          <Icon name="exclamation triangle" />
-          <p>
+        <div className={styles.warning}>
+          <Icon className={styles.warningIcon} name="exclamation triangle" />
+          <p className={styles.warningParagraph}>
             <T
               id="world_permissions_modal.tab_access.warning"
               values={{
@@ -58,9 +58,9 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
       )}
 
       {!loading && (
-        <div className="public-access-container">
+        <div className={styles.publicAccess}>
           <div>
-            <span>{t('world_permissions_modal.tab_access.private')}</span>
+            <span className={styles.privateLabel}>{t('world_permissions_modal.tab_access.private')}</span>
             <Checkbox
               toggle
               label={t('world_permissions_modal.tab_access.public')}
@@ -69,7 +69,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
               aria-label={t('world_permissions_modal.tab_access.public')}
             />
           </div>
-          <span>
+          <span className={styles.approvedCount}>
             {worldAccessPermissions?.type === WorldPermissionType.AllowList &&
               t('world_permissions_modal.tab_access.approved_addresses', { number: `${worldAccessPermissions?.wallets.length}/100` })}
           </span>
@@ -90,7 +90,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
       )}
 
       {!isAccessUnrestricted && !loading && (
-        <div className="access-list">
+        <div className={styles.accessList}>
           {worldAccessPermissions?.type === WorldPermissionType.AllowList &&
             worldAccessPermissions.wallets?.map((wallet, index) => {
               const address = wallet.toLowerCase()
@@ -106,7 +106,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
           {worldAccessPermissions?.type === WorldPermissionType.AllowList &&
             !isLoadingNewUser &&
             worldAccessPermissions.wallets.length === 0 && (
-              <div className="world-permissions__empty-list">
+              <div className={styles.emptyList}>
                 <T id="world_permissions_modal.tab_access.empty_list" />
               </div>
             )}
@@ -115,7 +115,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
       )}
 
       {loading && (
-        <div className="access-list">
+        <div className={styles.accessList}>
           {Array.from(Array(4), (_, key) => (
             <WorldPermissionsAccessItem key={key} loading={loading} />
           ))}

@@ -6,6 +6,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { WorldPermissionNames } from 'lib/api/worlds'
 
+import styles from './WorldPermissionsAddUserForm.module.css'
+
 type WorldPermissionsAddUserFormProps = {
   showAddUserForm: boolean
   newAddress: string
@@ -30,9 +32,9 @@ export default React.memo(function WorldPermissionsAddUserForm(props: WorldPermi
   } = props
 
   return (
-    <div className="tab-content__add-user-wrapper">
+    <div className={styles.addWserWrapper}>
       {!showAddUserForm && (
-        <div className="tab-content__add-user-button-container">
+        <div className={styles.addUserButtonContainer}>
           <Button onClick={onShowAddUserForm}>
             <Icon name="plus" />
             {addButtonLabel}
@@ -40,9 +42,8 @@ export default React.memo(function WorldPermissionsAddUserForm(props: WorldPermi
         </div>
       )}
       {showAddUserForm && (
-        <div className="tab-content__add-user-form-container">
+        <div className={styles.addWserFormContainer}>
           <Field
-            className="tab-content__new-address-input"
             placeholder="0x..."
             value={newAddress}
             onChange={onNewAddressChange}

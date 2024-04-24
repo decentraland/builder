@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Table } from 'decentraland-ui'
+import { Icon, Popup, Table } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { WorldPermissionsCollaboratorsProps } from './WorldPermissionsCollaborators.types'
@@ -9,7 +9,7 @@ import WorldPermissionsHeader from '../Layouts/WorldPermissionsHeader'
 import WorldPermissionsCollaboratorsItem from './WorldPermissionsCollaboratorsItem'
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 
-import './WorldPermissionsCollaborators.css'
+import styles from './WorldPermissionsCollaborators.module.css'
 
 export default React.memo(function WorldPermissionsCollaborators(props: WorldPermissionsCollaboratorsProps) {
   const {
@@ -24,7 +24,7 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
     ...worldPermissionsCollaboratorsItemProps
   } = props
   return (
-    <div className="world-permissions__tab-collaborators">
+    <div>
       <WorldPermissionsHeader
         description={
           <T
@@ -50,7 +50,7 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
         />
       )}
 
-      <div className="world-permissions__collaborators-list">
+      <div className={styles.collaboratorsList}>
         <Table basic="very">
           <Table.Header>
             <Table.Row>
@@ -62,17 +62,27 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
                 )}
               </Table.HeaderCell>
               <Table.HeaderCell>
-                {loading ? (
-                  <LoadingText type="p" size="medium"></LoadingText>
-                ) : (
-                  t('world_permissions_modal.tab_collaborators.column_deploy_label')
+                {loading && <LoadingText type="p" size="medium"></LoadingText>}
+                {!loading && t('world_permissions_modal.tab_collaborators.column_deploy_label')}
+                {!loading && (
+                  <Popup
+                    className="modal-tooltip"
+                    content={t('world_permissions_modal.tab_collaborators.column_deploy_tooltip')}
+                    position="top center"
+                    trigger={<Icon name="info" />}
+                  />
                 )}
               </Table.HeaderCell>
               <Table.HeaderCell>
-                {loading ? (
-                  <LoadingText type="p" size="medium"></LoadingText>
-                ) : (
-                  t('world_permissions_modal.tab_collaborators.column_stream_label')
+                {loading && <LoadingText type="p" size="medium"></LoadingText>}
+                {!loading && t('world_permissions_modal.tab_collaborators.column_stream_label')}
+                {!loading && (
+                  <Popup
+                    className="modal-tooltip"
+                    content={t('world_permissions_modal.tab_collaborators.column_stream_tooltip')}
+                    position="top center"
+                    trigger={<Icon name="info" />}
+                  />
                 )}
               </Table.HeaderCell>
               <Table.HeaderCell></Table.HeaderCell>
@@ -88,7 +98,7 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
                 (collaboratorUserList.length === 0 && (
                   <Table.Row>
                     <Table.Cell colSpan="4">
-                      <div className="world-permissions__empty-list">
+                      <div className={styles.emptyList}>
                         <T id="world_permissions_modal.tab_collaborators.empty_list" />
                       </div>
                     </Table.Cell>

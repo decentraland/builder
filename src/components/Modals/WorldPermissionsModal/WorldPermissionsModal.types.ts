@@ -17,6 +17,7 @@ export type WorldPermissionsModalProps = {
   error: string | null
   metadata: {
     worldName: string
+    isCollaboratorsTabShown?: boolean
   }
   worldPermissions?: WorldPermissions
   profiles: Record<string, Avatar>

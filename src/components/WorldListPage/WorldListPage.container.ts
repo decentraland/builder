@@ -42,7 +42,8 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenYourStorageModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata)),
-  onOpenPermissionsModal: name => dispatch(openModal('WorldPermissionsModal', { worldName: name })),
+  onOpenPermissionsModal: (name, isCollaboratorsTabShown) =>
+    dispatch(openModal('WorldPermissionsModal', { worldName: name, isCollaboratorsTabShown })),
   onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
   onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId)),
   getWorldPermissions: worldName => dispatch(getWorldPermissionsRequest(worldName))

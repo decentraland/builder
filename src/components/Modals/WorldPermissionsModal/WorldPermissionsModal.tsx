@@ -7,9 +7,9 @@ import { isValid } from 'lib/address'
 import { Props } from './WorldPermissionsModal.types'
 import { AllowListPermissionSetting, WorldPermissionNames, WorldPermissionType } from 'lib/api/worlds'
 import WorldPermissionsAccess from './ModelTabs/WorldPermissionsAccess/WorldPermissionsAccess'
-
-import './WorldPermissionsModal.css'
 import WorldPermissionsCollaborators from './ModelTabs/WorldPermissionsCollaborators/WorldPermissionsCollaborators'
+
+import styles from './WorldPermissionsModal.module.css'
 
 enum TabsSection {
   Access = 'Access',
@@ -35,7 +35,9 @@ const WorldPermissionsModal = (props: Props) => {
   const [errorInvalidAddress, setErrorInvalidAddress] = useState(false)
   const [isAccessUnrestricted, setAccessUnrestricted] = useState(worldPermissions?.access.type === WorldPermissionType.Unrestricted)
   const [collaboratorUserList, setCollaboratorUserList] = useState<string[]>([])
-  const [tabSelected, setTabSelected] = useState<TabsSection>(TabsSection.Access)
+  const [tabSelected, setTabSelected] = useState<TabsSection>(
+    metadata.isCollaboratorsTabShown ? TabsSection.Collaborators : TabsSection.Access
+  )
 
   const loading = isLoading || !metadata.worldName || !worldPermissions
 
@@ -187,7 +189,7 @@ const WorldPermissionsModal = (props: Props) => {
   }, [])
 
   return (
-    <Modal name={name} onClose={onClose} className="world-permissions">
+    <Modal name={name} onClose={onClose} className={styles.worldPermissions}>
       <ModalNavigation
         title={
           loading ? (
@@ -199,7 +201,7 @@ const WorldPermissionsModal = (props: Props) => {
         onClose={onClose}
       />
       <ModalContent>
-        <Tabs className="world-permissions__tabs">
+        <Tabs className={styles.permissionsTabs}>
           <Tabs.Tab active={tabSelected === TabsSection.Access} onClick={e => handleChangeTab(e, TabsSection.Access)}>
             {loading ? <LoadingText type="span" size="small"></LoadingText> : t('world_permissions_modal.tab_access.label')}
           </Tabs.Tab>

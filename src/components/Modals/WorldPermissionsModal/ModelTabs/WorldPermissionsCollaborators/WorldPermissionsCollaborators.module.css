@@ -1,0 +1,28 @@
+.collaboratorsList > :global(table.ui.very.basic.table > thead > tr > th) {
+  text-transform: capitalize;
+}
+
+.collaboratorsList > :global(table.ui.very.basic.table > thead > tr > th .icon) {
+  margin-left: 4px;
+}
+
+.collaboratorsList > :global(table.ui.very.basic.table > thead > tr > th),
+.collaboratorsList > :global(table.ui.very.basic.table > tbody > tr > td) {
+  text-align: center;
+}
+
+.collaboratorsList > :global(table.ui.very.basic.table > thead > tr > th:first-child) {
+  text-align: left;
+}
+
+.emptyList {
+  display: flex;
+  width: 100%;
+  height: 80px;
+  padding: 16px;
+  align-items: center;
+  border-radius: 8px;
+  background-color: #161518;
+  color: #716b7c;
+  justify-content: center;
+}

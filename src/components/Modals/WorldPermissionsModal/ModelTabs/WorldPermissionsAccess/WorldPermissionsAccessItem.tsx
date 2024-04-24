@@ -5,14 +5,14 @@ import Icon from 'components/Icon'
 import { WorldPermissionsAccessItemProps } from './WorldPermissionsAccessItem.types'
 import WorldPermissionsAvatarWithInfo from '../Layouts/WorldPermissionsAvatarWithInfo'
 
-import './WorldPermissionsAccessItem.css'
+import styles from './WorldPermissionsAccessItem.module.css'
 
 export default React.memo(function WorldPermissionsAccessItem(props: WorldPermissionsAccessItemProps) {
   const { address, profiles, onUserPermissionListChange, loading } = props
 
   if (loading || !profiles || !address || !onUserPermissionListChange) {
     return (
-      <div className="access-list__item">
+      <div className={styles.listItem}>
         <WorldPermissionsAvatarWithInfo loading />
         <Button basic loading />
       </div>
@@ -20,7 +20,7 @@ export default React.memo(function WorldPermissionsAccessItem(props: WorldPermis
   }
 
   return (
-    <div className="access-list__item">
+    <div className={styles.listItem}>
       <WorldPermissionsAvatarWithInfo profiles={profiles} wallet={address} />
       <Button
         basic
