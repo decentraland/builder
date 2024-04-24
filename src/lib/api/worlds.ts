@@ -101,7 +101,7 @@ export class WorldsAPI extends BaseAPI {
 
   public getPermissions = async (worldName: string) => {
     if (!this.authorization) {
-      return null
+      throw new Error('Unauthorized')
     }
 
     const path = `/world/${worldName}/permissions`
@@ -122,7 +122,7 @@ export class WorldsAPI extends BaseAPI {
     worldPermissionType: WorldPermissionType
   ) => {
     if (!this.authorization) {
-      return null
+      throw new Error('Unauthorized')
     }
 
     const path = `/world/${worldName}/permissions/${worldPermissionNames}`
@@ -137,7 +137,7 @@ export class WorldsAPI extends BaseAPI {
 
   public putPermissionType = async (worldName: string, worldPermissionNames: WorldPermissionNames, address: string) => {
     if (!this.authorization) {
-      return null
+      throw new Error('Unauthorized')
     }
 
     const path = `/world/${worldName}/permissions/${worldPermissionNames}/${address}`
@@ -151,7 +151,7 @@ export class WorldsAPI extends BaseAPI {
 
   public deletePermissionType = async (worldName: string, worldPermissionNames: WorldPermissionNames, address: string) => {
     if (!this.authorization) {
-      return null
+      throw new Error('Unauthorized')
     }
 
     const path = `/world/${worldName}/permissions/${worldPermissionNames}/${address}`

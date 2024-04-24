@@ -74,21 +74,22 @@ describe('when fetching the world permissions for a wallet', () => {
   })
 
   describe('when the get permision result is ok', () => {
-    const worldPermission: WorldPermissions = {
-      deployment: {
-        type: 'allow-list',
-        wallets: []
-      } as AllowListPermissionSetting,
-      access: {
-        type: 'unrestricted'
-      } as UnrestrictedPermissionSetting,
-      streaming: {
-        type: 'allow-list',
-        wallets: []
-      } as AllowListPermissionSetting
-    }
+    let worldPermission: WorldPermissions
 
     beforeEach(() => {
+      worldPermission = {
+        deployment: {
+          type: 'allow-list',
+          wallets: []
+        } as AllowListPermissionSetting,
+        access: {
+          type: 'unrestricted'
+        } as UnrestrictedPermissionSetting,
+        streaming: {
+          type: 'allow-list',
+          wallets: []
+        } as AllowListPermissionSetting
+      }
       global.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({ permissions: worldPermission }) } as Response)
     })
 
@@ -97,7 +98,7 @@ describe('when fetching the world permissions for a wallet', () => {
     })
   })
 
-  describe('when the post permision deployment result is ok', () => {
+  describe('when the post permission deployment result is ok', () => {
     beforeEach(() => {
       global.fetch = () => Promise.resolve({ status: 204 } as Response)
     })
@@ -107,22 +108,22 @@ describe('when fetching the world permissions for a wallet', () => {
     })
   })
 
-  describe('when the put permision deployment to a specific user', () => {
+  describe('when putting the permission deployment for a specific user', () => {
     beforeEach(() => {
       global.fetch = () => Promise.resolve({ status: 204 } as Response)
     })
 
-    it('should return a 204 status code', async () => {
+    it('should resolve to true', async () => {
       expect(await worldsApi.putPermissionType(worldName, WorldPermissionNames.Deployment, '0x456')).toEqual(true)
     })
   })
 
-  describe('when the delete permision deployment to a specific user', () => {
+  describe('when deleting the permission deployment for a specific user', () => {
     beforeEach(() => {
       global.fetch = () => Promise.resolve({ status: 204 } as Response)
     })
 
-    it('should return a 204 status code', async () => {
+    it('should resolve to true', async () => {
       expect(await worldsApi.deletePermissionType(worldName, WorldPermissionNames.Deployment, '0x456')).toEqual(true)
     })
   })

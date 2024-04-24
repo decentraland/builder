@@ -101,74 +101,59 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   function* handlePostWorldPermissionsRequest(action: PostWorldPermissionsRequestAction) {
     const { worldName, worldPermissionNames, worldPermissionType } = action.payload
     try {
-      const worldPremissions: boolean | null = yield call(
+      const hasDeletedPermissions: boolean | null = yield call(
         WorldsAPIContent.postPermissionType,
         worldName,
         worldPermissionNames,
         worldPermissionType
       )
 
-      if (!worldPremissions) {
+      if (!hasDeletedPermissions) {
+        postWorldPermissionsFailure(`Couldn't update permission type`)
         return
       }
 
       yield put(postWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType))
     } catch (e) {
-      yield put(
-        postWorldPermissionsFailure(
-          worldName,
-          worldPermissionNames,
-          worldPermissionType,
-          isErrorWithMessage(e) ? e.message : 'Unknown error'
-        )
-      )
+      yield put(postWorldPermissionsFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
   function* handlePutWorldPermissionsRequest(action: PutWorldPermissionsRequestAction) {
     const { worldName, worldPermissionNames, worldPermissionType, newData } = action.payload
     try {
-      const worldPremissions: boolean | null = yield call(WorldsAPIContent.putPermissionType, worldName, worldPermissionNames, newData)
+      const hasDeletedPermissions: boolean | null = yield call(WorldsAPIContent.putPermissionType, worldName, worldPermissionNames, newData)
 
-      if (!worldPremissions) {
+      if (!hasDeletedPermissions) {
+        putWorldPermissionsFailure(`Couldn't update permission`)
         return
       }
 
       yield put(putWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, newData))
       yield put(getProfilesRequest([newData]))
     } catch (e) {
-      yield put(
-        putWorldPermissionsFailure(
-          worldName,
-          worldPermissionNames,
-          worldPermissionType,
-          newData,
-          isErrorWithMessage(e) ? e.message : 'Unknown error'
-        )
-      )
+      yield put(putWorldPermissionsFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
   function* handleDeleteWorldPermissionsRequest(action: DeleteWorldPermissionsRequestAction) {
     const { worldName, worldPermissionNames, worldPermissionType, address } = action.payload
     try {
-      const worldPremissions: boolean | null = yield call(WorldsAPIContent.deletePermissionType, worldName, worldPermissionNames, address)
+      const hasDeletedPermissions: boolean | null = yield call(
+        WorldsAPIContent.deletePermissionType,
+        worldName,
+        worldPermissionNames,
+        address
+      )
 
-      if (!worldPremissions) {
+      if (!hasDeletedPermissions) {
+        deleteWorldPermissionsFailure(`Couldn't delete permission`)
         return
       }
 
       yield put(deleteWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, address))
     } catch (e) {
-      yield put(
-        deleteWorldPermissionsFailure(
-          worldName,
-          worldPermissionNames,
-          worldPermissionType,
-          address,
-          isErrorWithMessage(e) ? e.message : 'Unknown error'
-        )
-      )
+      yield put(deleteWorldPermissionsFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 

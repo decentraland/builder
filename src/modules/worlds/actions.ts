@@ -46,12 +46,7 @@ export const postWorldPermissionsSuccess = (
   worldPermissionNames: WorldPermissionNames,
   worldPermissionType: WorldPermissionType
 ) => action(POST_WORLD_PERMISSIONS_SUCCESS, { worldName, worldPermissionNames, worldPermissionType })
-export const postWorldPermissionsFailure = (
-  worldName: string,
-  worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType,
-  error: string
-) => action(POST_WORLD_PERMISSIONS_FAILURE, { worldName, worldPermissionNames, worldPermissionType, error })
+export const postWorldPermissionsFailure = (error: string) => action(POST_WORLD_PERMISSIONS_FAILURE, { error })
 
 export type PostWorldPermissionsRequestAction = ReturnType<typeof postWorldPermissionsRequest>
 export type PostWorldPermissionsSuccessAction = ReturnType<typeof postWorldPermissionsSuccess>
@@ -74,13 +69,7 @@ export const putWorldPermissionsSuccess = (
   worldPermissionType: WorldPermissionType.AllowList,
   newData: string
 ) => action(PUT_WORLD_PERMISSIONS_SUCCESS, { worldName, worldPermissionNames, worldPermissionType, newData })
-export const putWorldPermissionsFailure = (
-  worldName: string,
-  worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType.AllowList,
-  newData: string,
-  error: string
-) => action(PUT_WORLD_PERMISSIONS_FAILURE, { worldName, worldPermissionNames, worldPermissionType, newData, error })
+export const putWorldPermissionsFailure = (error: string) => action(PUT_WORLD_PERMISSIONS_FAILURE, { error })
 
 export type PutWorldPermissionsRequestAction = ReturnType<typeof putWorldPermissionsRequest>
 export type PutWorldPermissionsSuccessAction = ReturnType<typeof putWorldPermissionsSuccess>
@@ -103,13 +92,7 @@ export const deleteWorldPermissionsSuccess = (
   worldPermissionType: WorldPermissionType.AllowList,
   address: string
 ) => action(DELETE_WORLD_PERMISSIONS_SUCCESS, { worldName, worldPermissionNames, worldPermissionType, address })
-export const deleteWorldPermissionsFailure = (
-  worldName: string,
-  worldPermissionNames: WorldPermissionNames,
-  worldPermissionType: WorldPermissionType.AllowList,
-  address: string,
-  error: string
-) => action(DELETE_WORLD_PERMISSIONS_FAILURE, { worldName, worldPermissionNames, worldPermissionType, address, error })
+export const deleteWorldPermissionsFailure = (error: string) => action(DELETE_WORLD_PERMISSIONS_FAILURE, { error })
 
 export type DeleteWorldPermissionsRequestAction = ReturnType<typeof deleteWorldPermissionsRequest>
 export type DeleteWorldPermissionsSuccessAction = ReturnType<typeof deleteWorldPermissionsSuccess>
