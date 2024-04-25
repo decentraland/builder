@@ -4,7 +4,7 @@ import { Icon, Popup, Table } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { WorldPermissionsCollaboratorsProps } from './WorldPermissionsCollaborators.types'
-import WorldPermissionsAddUserForm from '../Layouts/WorldPermissionsAddUserForm'
+import { WorldPermissionsAddUserForm } from '../Layouts/WorldPermissionsAddUserForm'
 import { WorldPermissionsHeader } from '../Layouts/WorldPermissionsHeader'
 import WorldPermissionsCollaboratorsItem from './WorldPermissionsCollaboratorsItem'
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'

@@ -8,7 +8,7 @@ import { WorldPermissionType } from 'lib/api/worlds'
 import { WorldPermissionsAccessProps } from './WorldPermissionsAccess.types'
 
 import WorldPermissionsAccessItem from './WorldPermissionsAccessItem'
-import WorldPermissionsAddUserForm from '../Layouts/WorldPermissionsAddUserForm'
+import { WorldPermissionsAddUserForm } from '../Layouts/WorldPermissionsAddUserForm'
 import { WorldPermissionsHeader } from '../Layouts/WorldPermissionsHeader'
 
 import styles from './WorldPermissionsAccess.module.css'

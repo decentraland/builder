@@ -1,4 +1,4 @@
-.addWserWrapper {
+.addUserWrapper {
   margin-top: 16px;
 }
 
@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-.addWserFormContainer {
+.addUserFormContainer {
   display: flex;
   justify-content: space-between;
   border-radius: 10px;
@@ -15,20 +15,20 @@
   width: 100%;
 }
 
-.addWserFormContainer :global(.dcl.field.full.address) {
+.addUserFormContainer :global(.dcl.field.full.address) {
   flex: 1;
   margin-right: 16px;
 }
 
-.addWserFormContainer :global(.dcl.field.full:not(.error) p.message) {
+.addUserFormContainer :global(.dcl.field.full:not(.error) p.message) {
   display: none;
 }
 
-.addWserFormContainer :global(button:nth-child(2)) {
+.addUserFormContainer :global(button:nth-child(2)) {
   margin-right: 16px;
 }
 
-.addWserFormContainer :global(button) {
+.addUserFormContainer :global(button) {
   width: 155px;
   height: 52px;
 }

@@ -7,19 +7,14 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { WorldPermissionNames } from 'lib/api/worlds'
 
 import styles from './WorldPermissionsAddUserForm.module.css'
+import { Props } from './WorldPermissionsAddUserForm.types'
 
-type WorldPermissionsAddUserFormProps = {
-  showAddUserForm: boolean
-  newAddress: string
-  isLoadingNewUser: boolean
-  addButtonLabel: string
-  error: boolean
-  onShowAddUserForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: any) => void
-  onNewAddressChange: (e: React.ChangeEvent<HTMLInputElement>, data: any) => void
-  onUserPermissionListChange: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: any) => void
-}
+export const WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID = 'world-permissions-add-user-form-show-form-button-data-test-id'
+export const WORLD_PERMISSIONS_ADD_USER_FORM_FIELD_DATA_TEST_ID = 'world-permissions-add-user-form-field-data-test-id'
+export const WORLD_PERMISSIONS_ADD_USER_FORM_CHANGE_PERMISSION_BUTTON_DATA_TEST_ID =
+  'world-permissions-add-user-form-change-permission-button-data-test-id'
 
-export default React.memo(function WorldPermissionsAddUserForm(props: WorldPermissionsAddUserFormProps) {
+export const WorldPermissionsAddUserForm = React.memo((props: Props) => {
   const {
     showAddUserForm,
     newAddress,
@@ -32,33 +27,36 @@ export default React.memo(function WorldPermissionsAddUserForm(props: WorldPermi
   } = props
 
   return (
-    <div className={styles.addWserWrapper}>
-      {!showAddUserForm && (
+    <div className={styles.addUserWrapper}>
+      {!showAddUserForm ? (
         <div className={styles.addUserButtonContainer}>
-          <Button onClick={onShowAddUserForm}>
+          <Button data-testid={WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID} onClick={onShowAddUserForm}>
             <Icon name="plus" />
             {addButtonLabel}
           </Button>
         </div>
-      )}
-      {showAddUserForm && (
-        <div className={styles.addWserFormContainer}>
+      ) : (
+        <div className={styles.addUserFormContainer}>
           <Field
+            data-testid={WORLD_PERMISSIONS_ADD_USER_FORM_FIELD_DATA_TEST_ID}
             placeholder="0x..."
             value={newAddress}
             onChange={onNewAddressChange}
             kind="full"
+            loading={isLoadingNewUser}
+            disabled={isLoadingNewUser}
             error={error}
             message={error ? 'invalid address' : ''}
           />
           <Button
+            data-testid={WORLD_PERMISSIONS_ADD_USER_FORM_CHANGE_PERMISSION_BUTTON_DATA_TEST_ID}
             onClick={e =>
               newAddress === ''
                 ? onShowAddUserForm(e, {})
                 : onUserPermissionListChange(e, { wallet: newAddress, worldPermissionName: WorldPermissionNames.Access })
             }
             loading={isLoadingNewUser}
-            disabled={isLoadingNewUser}
+            disabled={isLoadingNewUser || error}
           >
             {newAddress === '' ? t('world_permissions_modal.button_cancel_label') : t('world_permissions_modal.button_add_label')}
           </Button>
