@@ -13,13 +13,16 @@ import {
   getWorldPermissionsSuccess,
   postWorldPermissionsFailure,
   postWorldPermissionsRequest,
-  postWorldPermissionsSuccess
+  postWorldPermissionsSuccess,
+  putWorldPermissionsFailure,
+  putWorldPermissionsRequest,
+  putWorldPermissionsSuccess
 } from './actions'
 import { worldsSaga } from './sagas'
 import { clearDeploymentSuccess, deployToWorldSuccess } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { loadProfilesRequest } from 'decentraland-dapps/dist/modules/profile/actions'
+import { loadProfileRequest, loadProfilesRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { Authorization } from 'lib/api/auth'
 
 let address: string
@@ -228,7 +231,7 @@ describe('when handling the request of permissions of a world', () => {
   })
 })
 
-describe('when handling the request of permissions of a world', () => {
+describe('when handling the request of changing permissions type of a world', () => {
   const worldName = 'some-world.dcl.eth'
   const worldPermissionNames = WorldPermissionNames.Access
   const worldPermissionType = WorldPermissionType.AllowList
@@ -259,6 +262,43 @@ describe('when handling the request of permissions of a world', () => {
         .provide([[call(worldsApi.postPermissionType, worldName, worldPermissionNames, worldPermissionType), Promise.resolve(true)]])
         .put(postWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType))
         .dispatch(postWorldPermissionsRequest(worldName, worldPermissionNames, worldPermissionType))
+        .silentRun()
+    })
+  })
+})
+
+describe('when handling the request of putting an address to a world', () => {
+  const worldName = 'some-world.dcl.eth'
+  const worldPermissionNames = WorldPermissionNames.Access
+  const worldPermissionType = WorldPermissionType.AllowList
+
+  beforeEach(() => {
+    worldsApi = new MockWorldsAPI(new AuthMock())
+  })
+
+  describe('when there is an error with the fetch', () => {
+    let error: Error
+
+    beforeEach(() => {
+      error = new Error(`Couldn't add address`)
+    })
+
+    it('should put the failure action with the request action and the error message', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.putPermissionType, worldName, worldPermissionNames, address), Promise.resolve(null)]])
+        .put(putWorldPermissionsFailure(error.message))
+        .dispatch(putWorldPermissionsRequest(worldName, worldPermissionNames, worldPermissionType, address))
+        .silentRun()
+    })
+  })
+
+  describe('when the permission fetch is successful', () => {
+    it('should put the success action and request the new profile', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.putPermissionType, worldName, worldPermissionNames, address), Promise.resolve(true)]])
+        .put(putWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, address))
+        .put(loadProfileRequest(address))
+        .dispatch(putWorldPermissionsRequest(worldName, worldPermissionNames, worldPermissionType, address))
         .silentRun()
     })
   })

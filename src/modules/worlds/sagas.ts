@@ -122,8 +122,7 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
       const hasAddedWallet: boolean | null = yield call(WorldsAPIContent.putPermissionType, worldName, worldPermissionNames, newData)
 
       if (!hasAddedWallet) {
-        putWorldPermissionsFailure(`Couldn't update permission`)
-        return
+        throw new Error(`Couldn't add address`)
       }
 
       yield put(putWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, newData))
@@ -144,8 +143,7 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
       )
 
       if (!hasDeletedPermissions) {
-        deleteWorldPermissionsFailure(`Couldn't delete permission`)
-        return
+        throw new Error(`Couldn't delete address`)
       }
 
       yield put(deleteWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, address))
