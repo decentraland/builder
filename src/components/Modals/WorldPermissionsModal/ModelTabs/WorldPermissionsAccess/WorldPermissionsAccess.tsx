@@ -7,7 +7,7 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { WorldPermissionType } from 'lib/api/worlds'
 import { WorldPermissionsAccessProps } from './WorldPermissionsAccess.types'
 
-import WorldPermissionsAccessItem from './WorldPermissionsAccessItem'
+import { WorldPermissionsAccessItem } from './WorldPermissionsAccessItem/WorldPermissionsAccessItem'
 import { WorldPermissionsAddUserForm } from '../Layouts/WorldPermissionsAddUserForm'
 import { WorldPermissionsHeader } from '../Layouts/WorldPermissionsHeader'
 
@@ -94,7 +94,9 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
           {worldAccessPermissions?.type === WorldPermissionType.AllowList &&
             worldAccessPermissions.wallets?.map((wallet, index) => {
               const address = wallet.toLowerCase()
-              return <WorldPermissionsAccessItem key={index} address={address} onUserPermissionListChange={onUserPermissionListChange} />
+              return (
+                <WorldPermissionsAccessItem key={index} walletAddress={address} onUserPermissionListChange={onUserPermissionListChange} />
+              )
             })}
           {worldAccessPermissions?.type === WorldPermissionType.AllowList &&
             !isLoadingNewUser &&
@@ -103,14 +105,16 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
                 <T id="world_permissions_modal.tab_access.empty_list" />
               </div>
             )}
-          {isLoadingNewUser && <WorldPermissionsAccessItem loading={isLoadingNewUser} />}
+          {isLoadingNewUser && (
+            <WorldPermissionsAccessItem onUserPermissionListChange={onUserPermissionListChange} loading={isLoadingNewUser} />
+          )}
         </div>
       )}
 
       {loading && (
         <div className={styles.accessList}>
           {Array.from(Array(4), (_, key) => (
-            <WorldPermissionsAccessItem key={key} loading={loading} />
+            <WorldPermissionsAccessItem onUserPermissionListChange={onUserPermissionListChange} key={key} loading={loading} />
           ))}
         </div>
       )}
