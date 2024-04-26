@@ -11,7 +11,7 @@ export type WorldPermissionsCollaboratorsProps = {
   error: boolean
   onShowAddUserForm: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => void
   onNewAddressChange: (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void
-  onAddUserToColaboratorList: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps) => void
+  onAddUserToCollaboratorsList: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps) => void
   onRemoveCollaborator: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { wallet: string }) => void
   onUserPermissionListChange: (
     event: React.MouseEvent<HTMLInputElement, MouseEvent>,

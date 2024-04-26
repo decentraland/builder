@@ -89,7 +89,7 @@ const WorldPermissionsModal = (props: Props) => {
     })
   }, [worldPermissions])
 
-  const handleAddUserToColaboratorList = useCallback(
+  const handleAddUserToCollaboratorsList = useCallback(
     (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => {
       if (newAddress === '') {
         setShowAddUserForm(false)
@@ -247,7 +247,7 @@ const WorldPermissionsModal = (props: Props) => {
             onShowAddUserForm={handleShowAddUserForm}
             onNewAddressChange={handleNewAddressChange}
             onRemoveCollaborator={handleRemoveCollaborators}
-            onAddUserToColaboratorList={handleAddUserToColaboratorList}
+            onAddUserToCollaboratorsList={handleAddUserToCollaboratorsList}
             onUserPermissionListChange={handleUserPermissionList}
             error={errorInvalidAddress}
           />

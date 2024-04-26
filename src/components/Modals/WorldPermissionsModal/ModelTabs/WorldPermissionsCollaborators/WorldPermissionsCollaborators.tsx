@@ -11,7 +11,7 @@ import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 
 import styles from './WorldPermissionsCollaborators.module.css'
 
-export default React.memo(function WorldPermissionsCollaborators(props: WorldPermissionsCollaboratorsProps) {
+export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
   const {
     loading,
     newAddress,
@@ -19,7 +19,7 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
     showAddUserForm,
     onShowAddUserForm,
     onNewAddressChange,
-    onAddUserToColaboratorList,
+    onAddUserToCollaboratorsList,
     error,
     ...worldPermissionsCollaboratorsItemProps
   } = props
@@ -47,7 +47,7 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
           error={error}
           onShowAddUserForm={onShowAddUserForm}
           onNewAddressChange={onNewAddressChange}
-          onUserPermissionListChange={onAddUserToColaboratorList}
+          onUserPermissionListChange={onAddUserToCollaboratorsList}
         />
       )}
 
@@ -96,23 +96,23 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {!loading &&
-              collaboratorUserList?.map((wallet, index) => (
-                <WorldPermissionsCollaboratorsItem {...worldPermissionsCollaboratorsItemProps} key={index} wallet={wallet} />
-              ))}
-            {!loading &&
-              (!collaboratorUserList ||
-                (collaboratorUserList.length === 0 && (
-                  <Table.Row>
-                    <Table.Cell colSpan="4">
-                      <div className={styles.emptyList}>
-                        <T id="world_permissions_modal.tab_collaborators.empty_list" />
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                )))}
-
-            {loading && Array.from(Array(4), (_, key) => <WorldPermissionsCollaboratorsItem key={key} loading={loading} />)}
+            {!loading ? (
+              !collaboratorUserList || collaboratorUserList.length === 0 ? (
+                <Table.Row>
+                  <Table.Cell colSpan="4">
+                    <div className={styles.emptyList}>
+                      <T id="world_permissions_modal.tab_collaborators.empty_list" />
+                    </div>
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                collaboratorUserList?.map((wallet, index) => (
+                  <WorldPermissionsCollaboratorsItem {...worldPermissionsCollaboratorsItemProps} key={index} wallet={wallet} />
+                ))
+              )
+            ) : (
+              Array.from(Array(4), (_, key) => <WorldPermissionsCollaboratorsItem key={key} loading={loading} />)
+            )}
           </Table.Body>
         </Table>
       </div>
