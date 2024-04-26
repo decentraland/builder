@@ -160,7 +160,7 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   function* handleGetProfilesRequest(action: GetProfilesRequestAction) {
     const { wallets } = action.payload
     try {
-      const profiles: Avatar[] = yield call(getCatalystProfiles, wallets)
+      const profiles: Avatar[] = yield call(getCatalystProfiles, [...new Set(wallets)])
 
       yield put(getProfilesSuccess(profiles))
     } catch (e) {
