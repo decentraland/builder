@@ -19,7 +19,7 @@ export const WorldPermissionsAvatarWithInfo = React.memo((props: Props) => {
     return (
       <div className={styles.avatar} data-testid={WORLD_PERMISSIONS_AVATAR_WITH_INFO_LOADING_TEST_ID}>
         <AvatarFace size="small" inline />
-        <LoadingText className={styles.loadingtext} type="p" size="medium"></LoadingText>
+        <LoadingText className={styles.loadingText} type="p" size="medium"></LoadingText>
       </div>
     )
   }

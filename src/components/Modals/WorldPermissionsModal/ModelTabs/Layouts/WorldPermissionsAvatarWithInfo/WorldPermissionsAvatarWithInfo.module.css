@@ -8,8 +8,9 @@
   margin-right: 12px;
 }
 
-.avatar .loadingtext {
+.avatar .loadingText:global(.dui-loading-text) {
   margin-bottom: 0;
+  margin-left: 10px;
 }
 
 .avatar .paragraph {
