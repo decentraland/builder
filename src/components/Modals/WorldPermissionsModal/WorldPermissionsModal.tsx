@@ -89,6 +89,9 @@ const WorldPermissionsModal = (props: Props) => {
     })
   }, [worldPermissions])
 
+  // Lista de collaborators
+  // Add user, agrega un address a la lista del estado
+
   const handleAddUserToColaboratorList = useCallback(
     (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => {
       if (newAddress === '') {
@@ -177,6 +180,7 @@ const WorldPermissionsModal = (props: Props) => {
   const handleNewAddressChange = useCallback(
     (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
       setNewAddress(data.value || '')
+      setErrorInvalidAddress(false)
     },
     [setNewAddress]
   )
