@@ -3,24 +3,36 @@ import { call, put, select } from 'redux-saga/effects'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { WorldsWalletStats, WorldsAPI, WorldPermissions, WorldPermissionType } from 'lib/api/worlds'
+import { WorldsWalletStats, WorldsAPI, WorldPermissions, WorldPermissionType, WorldPermissionNames } from 'lib/api/worlds'
 import {
   fetchWorldsWalletStatsFailure,
   fetchWorldsWalletStatsRequest,
   fetchWorldsWalletStatsSuccess,
   getWorldPermissionsFailure,
   getWorldPermissionsRequest,
-  getWorldPermissionsSuccess
+  getWorldPermissionsSuccess,
+  postWorldPermissionsFailure,
+  postWorldPermissionsRequest,
+  postWorldPermissionsSuccess
 } from './actions'
 import { worldsSaga } from './sagas'
 import { clearDeploymentSuccess, deployToWorldSuccess } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { loadProfilesRequest } from 'decentraland-dapps/dist/modules/profile/actions'
+import { Authorization } from 'lib/api/auth'
 
 let address: string
 const MockWorldsAPI = WorldsAPI as jest.MockedClass<typeof WorldsAPI>
 let worldsApi: WorldsAPI
+
+class AuthMock extends Authorization {
+  constructor() {
+    super(() => 'mockAddress')
+  }
+  createAuthHeaders = jest.fn().mockReturnValue({})
+}
+
 const worldPermissionsMock: WorldPermissions = {
   access: {
     type: WorldPermissionType.Unrestricted
@@ -211,6 +223,42 @@ describe('when handling the request of permissions of a world', () => {
         .put(loadProfilesRequest(['0x123']))
         .put(getWorldPermissionsSuccess(worldName, worldPermissionsMockTemp))
         .dispatch(getWorldPermissionsRequest(worldName))
+        .silentRun()
+    })
+  })
+})
+
+describe('when handling the request of permissions of a world', () => {
+  const worldName = 'some-world.dcl.eth'
+  const worldPermissionNames = WorldPermissionNames.Access
+  const worldPermissionType = WorldPermissionType.AllowList
+
+  beforeEach(() => {
+    worldsApi = new MockWorldsAPI(new AuthMock())
+  })
+
+  describe('when there is an error with the fetch', () => {
+    let error: Error
+
+    beforeEach(() => {
+      error = new Error(`Couldn't update permission type`)
+    })
+
+    it('should put the failure action with the request action and the error message', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.postPermissionType, worldName, worldPermissionNames, worldPermissionType), Promise.resolve(null)]])
+        .put(postWorldPermissionsFailure(error.message))
+        .dispatch(postWorldPermissionsRequest(worldName, worldPermissionNames, worldPermissionType))
+        .silentRun()
+    })
+  })
+
+  describe('when the permission fetch is successful', () => {
+    it('should put the success action with the retrieved permissions', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.postPermissionType, worldName, worldPermissionNames, worldPermissionType), Promise.resolve(true)]])
+        .put(postWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType))
+        .dispatch(postWorldPermissionsRequest(worldName, worldPermissionNames, worldPermissionType))
         .silentRun()
     })
   })

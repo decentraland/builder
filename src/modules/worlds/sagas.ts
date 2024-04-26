@@ -99,16 +99,15 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   function* handlePostWorldPermissionsRequest(action: PostWorldPermissionsRequestAction) {
     const { worldName, worldPermissionNames, worldPermissionType } = action.payload
     try {
-      const hasDeletedPermissions: boolean | null = yield call(
+      const hasUpdatedPermissions: boolean | null = yield call(
         WorldsAPIContent.postPermissionType,
         worldName,
         worldPermissionNames,
         worldPermissionType
       )
 
-      if (!hasDeletedPermissions) {
-        postWorldPermissionsFailure(`Couldn't update permission type`)
-        return
+      if (!hasUpdatedPermissions) {
+        throw new Error(`Couldn't update permission type`)
       }
 
       yield put(postWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType))
@@ -120,9 +119,9 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   function* handlePutWorldPermissionsRequest(action: PutWorldPermissionsRequestAction) {
     const { worldName, worldPermissionNames, worldPermissionType, newData } = action.payload
     try {
-      const hasDeletedPermissions: boolean | null = yield call(WorldsAPIContent.putPermissionType, worldName, worldPermissionNames, newData)
+      const hasAddedWallet: boolean | null = yield call(WorldsAPIContent.putPermissionType, worldName, worldPermissionNames, newData)
 
-      if (!hasDeletedPermissions) {
+      if (!hasAddedWallet) {
         putWorldPermissionsFailure(`Couldn't update permission`)
         return
       }
