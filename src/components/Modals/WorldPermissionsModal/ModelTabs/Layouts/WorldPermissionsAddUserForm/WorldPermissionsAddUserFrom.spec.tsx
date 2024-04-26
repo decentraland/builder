@@ -25,10 +25,8 @@ const renderWorldPermissionsAddUserForm = (props: Partial<Props> = {}) =>
   )
 
 describe("when rendering the Worlds Permissions Add User Form it's loading", () => {
-  const renderedComponent = renderWorldPermissionsAddUserForm({ isLoading: true })
-
   it('should not render the description', () => {
-    const { queryByTestId } = renderedComponent
+    const { queryByTestId } = renderWorldPermissionsAddUserForm({ isLoading: true })
     expect(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID)).toBeInTheDocument()
     console.log(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID))
     expect(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID)).toHaveClass('loading')
