@@ -67,28 +67,28 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
 
   function* handleGetWorldPermissionsRequest(action: GetWorldPermissionsRequestAction) {
     const { worldName } = action.payload
-    const worldPremissions: WorldPermissions | null = yield call(WorldsAPIContent.getPermissions, worldName)
-    if (!worldPremissions) {
+    const worldPermissions: WorldPermissions | null = yield call(WorldsAPIContent.getPermissions, worldName)
+    if (!worldPermissions) {
       return
     }
 
     let newWallets: string[] = []
 
-    if (worldPremissions.access.type === WorldPermissionType.AllowList) {
-      newWallets = [...newWallets, ...worldPremissions.access.wallets]
+    if (worldPermissions.access.type === WorldPermissionType.AllowList) {
+      newWallets = [...newWallets, ...worldPermissions.access.wallets]
     }
-    if (worldPremissions.deployment.type === WorldPermissionType.AllowList) {
-      newWallets = [...newWallets, ...worldPremissions.deployment.wallets]
+    if (worldPermissions.deployment.type === WorldPermissionType.AllowList) {
+      newWallets = [...newWallets, ...worldPermissions.deployment.wallets]
     }
-    if (worldPremissions.streaming.type === WorldPermissionType.AllowList) {
-      newWallets = [...newWallets, ...worldPremissions.streaming.wallets]
+    if (worldPermissions.streaming.type === WorldPermissionType.AllowList) {
+      newWallets = [...newWallets, ...worldPermissions.streaming.wallets]
     }
 
     if (newWallets.length > 0) {
       yield put(loadProfilesRequest([...new Set(newWallets)]))
     }
 
-    yield put(getWorldPermissionsSuccess(worldName, worldPremissions))
+    yield put(getWorldPermissionsSuccess(worldName, worldPermissions))
   }
 
   function* handlePostWorldPermissionsRequest(action: PostWorldPermissionsRequestAction) {
