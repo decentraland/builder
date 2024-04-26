@@ -1,16 +1,15 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { loadProfileRequest, loadProfilesRequest } from 'decentraland-dapps/dist/modules/profile'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { WorldsWalletStats, WorldsAPI, WorldPermissions, WorldPermissionType } from 'lib/api/worlds'
-import { getCatalystProfiles } from 'lib/api/peer'
 import {
   FETCH_WORLDS_WALLET_STATS_REQUEST,
   GET_WORLD_PERMISSIONS_REQUEST,
   POST_WORLD_PERMISSIONS_REQUEST,
   PUT_WORLD_PERMISSIONS_REQUEST,
   DELETE_WORLD_PERMISSIONS_REQUEST,
-  GET_PROFILES_REQUEST,
   FetchWalletWorldsStatsRequestAction,
   fetchWorldsWalletStatsFailure,
   fetchWorldsWalletStatsRequest,
@@ -25,14 +24,9 @@ import {
   putWorldPermissionsFailure,
   DeleteWorldPermissionsRequestAction,
   deleteWorldPermissionsSuccess,
-  deleteWorldPermissionsFailure,
-  GetProfilesRequestAction,
-  getProfilesRequest,
-  getProfilesSuccess,
-  getProfilesFailure
+  deleteWorldPermissionsFailure
 } from './actions'
 import { CLEAR_DEPLOYMENT_SUCCESS, DEPLOY_TO_WORLD_SUCCESS } from 'modules/deployment/actions'
-import { Avatar } from '@dcl/schemas/dist/platform/profile/avatar'
 
 export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   yield takeEvery(FETCH_WORLDS_WALLET_STATS_REQUEST, handlefetchWorldsWalletStatsRequest)
@@ -44,7 +38,6 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   yield takeEvery(POST_WORLD_PERMISSIONS_REQUEST, handlePostWorldPermissionsRequest)
   yield takeEvery(PUT_WORLD_PERMISSIONS_REQUEST, handlePutWorldPermissionsRequest)
   yield takeEvery(DELETE_WORLD_PERMISSIONS_REQUEST, handleDeleteWorldPermissionsRequest)
-  yield takeEvery(GET_PROFILES_REQUEST, handleGetProfilesRequest)
 
   function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequestAction) {
     const { address } = action.payload
@@ -92,7 +85,7 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
     }
 
     if (newWallets.length > 0) {
-      yield put(getProfilesRequest(newWallets))
+      yield put(loadProfilesRequest([...new Set(newWallets)]))
     }
 
     yield put(getWorldPermissionsSuccess(worldName, worldPremissions))
@@ -130,7 +123,7 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
       }
 
       yield put(putWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, newData))
-      yield put(getProfilesRequest([newData]))
+      yield put(loadProfileRequest(newData))
     } catch (e) {
       yield put(putWorldPermissionsFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
@@ -154,17 +147,6 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
       yield put(deleteWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, address))
     } catch (e) {
       yield put(deleteWorldPermissionsFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
-    }
-  }
-
-  function* handleGetProfilesRequest(action: GetProfilesRequestAction) {
-    const { wallets } = action.payload
-    try {
-      const profiles: Avatar[] = yield call(getCatalystProfiles, [...new Set(wallets)])
-
-      yield put(getProfilesSuccess(profiles))
-    } catch (e) {
-      yield put(getProfilesFailure(wallets, isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 }

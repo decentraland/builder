@@ -1,4 +1,3 @@
-import { Avatar } from '@dcl/schemas'
 import { ButtonProps, InputOnChangeData } from 'decentraland-ui'
 import { AllowListPermissionSetting, WorldPermissionNames } from 'lib/api/worlds'
 
@@ -9,7 +8,6 @@ export type WorldPermissionsCollaboratorsProps = {
   collaboratorUserList?: string[]
   showAddUserForm: boolean
   newAddress: string
-  profiles: Record<string, Avatar>
   error: boolean
   onShowAddUserForm: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => void
   onNewAddressChange: (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void

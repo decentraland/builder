@@ -21,13 +21,12 @@ const WorldPermissionsModal = (props: Props) => {
     name,
     metadata,
     worldPermissions,
-    profiles,
     isLoading,
     isLoadingNewUser,
     onPutWorldPermissionsRequest,
     onPostWorldPermissionsRequest,
     onDeleteWorldPermissionsRequest,
-    onGetProfilesRequest,
+    onGetProfile,
     onGetWorldPermissions,
     onClose
   } = props
@@ -103,7 +102,7 @@ const WorldPermissionsModal = (props: Props) => {
       if (isValidAddress && metadata.worldName && newAddress && !collaboratorUserList.includes(newAddress)) {
         setCollaboratorUserList(prev => [...prev, newAddress.toLowerCase()])
       }
-      onGetProfilesRequest([newAddress])
+      onGetProfile(newAddress)
     },
     [metadata.worldName, worldPermissions, newAddress, collaboratorUserList]
   )
@@ -153,17 +152,17 @@ const WorldPermissionsModal = (props: Props) => {
       if (!metadata.worldName) {
         return
       }
+
+      // Delete the collaborator's deployment permission
       if (
-        metadata.worldName &&
         worldPermissions?.deployment.type === WorldPermissionType.AllowList &&
         worldPermissions.deployment.wallets.includes(data.wallet)
       ) {
         onDeleteWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList, data.wallet)
-      } else if (
-        metadata.worldName &&
-        worldPermissions?.streaming.type === WorldPermissionType.AllowList &&
-        worldPermissions.streaming.wallets.includes(data.wallet)
-      ) {
+      }
+
+      // Delete the collaborator's streaming permission
+      if (worldPermissions?.streaming.type === WorldPermissionType.AllowList && worldPermissions.streaming.wallets.includes(data.wallet)) {
         onDeleteWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Streaming, WorldPermissionType.AllowList, data.wallet)
       }
       setCollaboratorUserList(collaboratorUserList => {
@@ -223,7 +222,6 @@ const WorldPermissionsModal = (props: Props) => {
             error={errorInvalidAddress}
             worldAccessPermissions={worldPermissions?.access}
             showAddUserForm={showAddUserForm}
-            profiles={profiles}
             onChangeAccessPermission={handleChangeAccessPermission}
             onShowAddUserForm={handleShowAddUserForm}
             onNewAddressChange={handleNewAddressChange}
@@ -242,7 +240,6 @@ const WorldPermissionsModal = (props: Props) => {
             worldDeploymentPermissions={worldPermissions?.deployment}
             worldStreamingPermissions={worldPermissions?.streaming}
             showAddUserForm={showAddUserForm}
-            profiles={profiles}
             onShowAddUserForm={handleShowAddUserForm}
             onNewAddressChange={handleNewAddressChange}
             onRemoveCollaborator={handleRemoveCollaborators}

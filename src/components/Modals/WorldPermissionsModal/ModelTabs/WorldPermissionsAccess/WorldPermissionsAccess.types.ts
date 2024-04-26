@@ -1,4 +1,3 @@
-import { Avatar } from '@dcl/schemas'
 import { CheckboxProps, ButtonProps, InputOnChangeData } from 'decentraland-ui'
 import { AllowListPermissionSetting, UnrestrictedPermissionSetting, WorldPermissionNames } from 'lib/api/worlds'
 
@@ -9,7 +8,6 @@ export type WorldPermissionsAccessProps = {
   isAccessUnrestricted: boolean
   showAddUserForm: boolean
   newAddress: string
-  profiles: Record<string, Avatar>
   error: boolean
   onChangeAccessPermission: (_event: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => void
   onShowAddUserForm: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => void

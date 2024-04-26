@@ -1,7 +1,10 @@
 import { Avatar } from '@dcl/schemas'
 
-export type WorldPermissionsAvatarWithInfoProps = {
-  loading?: boolean
-  wallet?: string
-  profiles?: Record<string, Avatar>
+export type Props = {
+  walletAddress: string
+  isLoading?: boolean
+  profileAvatar?: Avatar
 }
+
+export type OwnProps = Pick<Props, 'walletAddress' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'profileAvatar' | 'isLoading'>

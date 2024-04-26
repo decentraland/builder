@@ -7,7 +7,6 @@ export const getWalletStats = (state: RootState) => getState(state).walletStats
 export const getWorldsPermissions = (state: RootState) => getState(state).worldsPermissions
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
-export const getAllProfiles = (state: RootState) => getState(state).profiles
 
 export const getConnectedWalletStats = (state: RootState) => {
   const address = getAddress(state)

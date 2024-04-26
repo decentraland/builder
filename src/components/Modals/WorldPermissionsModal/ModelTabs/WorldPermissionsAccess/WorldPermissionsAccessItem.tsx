@@ -8,12 +8,12 @@ import { WorldPermissionsAvatarWithInfo } from '../Layouts/WorldPermissionsAvata
 import styles from './WorldPermissionsAccessItem.module.css'
 
 export default React.memo(function WorldPermissionsAccessItem(props: WorldPermissionsAccessItemProps) {
-  const { address, profiles, onUserPermissionListChange, loading } = props
+  const { address, onUserPermissionListChange, loading } = props
 
-  if (loading || !profiles || !address || !onUserPermissionListChange) {
+  if (loading || !address || !onUserPermissionListChange) {
     return (
       <div className={styles.listItem}>
-        <WorldPermissionsAvatarWithInfo loading />
+        <WorldPermissionsAvatarWithInfo isLoading walletAddress="" />
         <Button basic loading />
       </div>
     )
@@ -21,7 +21,7 @@ export default React.memo(function WorldPermissionsAccessItem(props: WorldPermis
 
   return (
     <div className={styles.listItem}>
-      <WorldPermissionsAvatarWithInfo profiles={profiles} wallet={address} />
+      <WorldPermissionsAvatarWithInfo walletAddress={address} />
       <Button
         basic
         onClick={e =>

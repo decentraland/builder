@@ -21,7 +21,6 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
     worldAccessPermissions,
     isAccessUnrestricted,
     showAddUserForm,
-    profiles,
     onChangeAccessPermission,
     onShowAddUserForm,
     onNewAddressChange,
@@ -95,14 +94,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
           {worldAccessPermissions?.type === WorldPermissionType.AllowList &&
             worldAccessPermissions.wallets?.map((wallet, index) => {
               const address = wallet.toLowerCase()
-              return (
-                <WorldPermissionsAccessItem
-                  key={index}
-                  address={address}
-                  profiles={profiles}
-                  onUserPermissionListChange={onUserPermissionListChange}
-                />
-              )
+              return <WorldPermissionsAccessItem key={index} address={address} onUserPermissionListChange={onUserPermissionListChange} />
             })}
           {worldAccessPermissions?.type === WorldPermissionType.AllowList &&
             !isLoadingNewUser &&

@@ -1,4 +1,3 @@
-import { Avatar } from '@dcl/schemas'
 import { ButtonProps } from 'decentraland-ui'
 import { AllowListPermissionSetting, WorldPermissionNames } from 'lib/api/worlds'
 
@@ -6,7 +5,6 @@ export type WorldPermissionsCollaboratorsItemProps = {
   wallet?: string
   worldDeploymentPermissions?: AllowListPermissionSetting
   worldStreamingPermissions?: AllowListPermissionSetting
-  profiles?: Record<string, Avatar>
   loading?: boolean
   onRemoveCollaborator?: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { wallet: string }) => void
   onUserPermissionListChange?: (

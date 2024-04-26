@@ -15,9 +15,6 @@ import {
   DeleteWorldPermissionsRequestAction,
   DeleteWorldPermissionsSuccessAction,
   PutWorldPermissionsFailureAction,
-  GetProfilesFailureAction,
-  GetProfilesRequestAction,
-  GetProfilesSuccessAction,
   FETCH_WORLDS_WALLET_STATS_REQUEST,
   FETCH_WORLDS_WALLET_STATS_SUCCESS,
   FETCH_WORLDS_WALLET_STATS_FAILURE,
@@ -32,9 +29,7 @@ import {
   POST_WORLD_PERMISSIONS_SUCCESS,
   PUT_WORLD_PERMISSIONS_FAILURE,
   PUT_WORLD_PERMISSIONS_REQUEST,
-  PUT_WORLD_PERMISSIONS_SUCCESS,
-  GET_PROFILES_REQUEST,
-  GET_PROFILES_SUCCESS
+  PUT_WORLD_PERMISSIONS_SUCCESS
 } from './actions'
 import { AllowListPermissionSetting, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
 import { Avatar } from '@dcl/schemas/dist/platform/profile/avatar'
@@ -74,9 +69,6 @@ export type WorldsReducerAction =
   | DeleteWorldPermissionsRequestAction
   | DeleteWorldPermissionsSuccessAction
   | DeleteWorldPermissionsFailureAction
-  | GetProfilesRequestAction
-  | GetProfilesSuccessAction
-  | GetProfilesFailureAction
 
 export function worldsReducer(state: WorldsState = INITIAL_STATE, action: WorldsReducerAction): WorldsState {
   switch (action.type) {
@@ -84,8 +76,7 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
     case GET_WORLD_PERMISSIONS_REQUEST:
     case POST_WORLD_PERMISSIONS_REQUEST:
     case PUT_WORLD_PERMISSIONS_REQUEST:
-    case DELETE_WORLD_PERMISSIONS_REQUEST:
-    case GET_PROFILES_REQUEST: {
+    case DELETE_WORLD_PERMISSIONS_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -198,24 +189,9 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
         worldsPermissions: {
           ...state.worldsPermissions,
           [worldName]: {
-            ...state.worldsPermissions[worldName],
             ...worldPermissions
           }
         }
-      }
-    }
-    case GET_PROFILES_SUCCESS: {
-      const { profiles } = action.payload
-      const newProfiles = { ...state.profiles }
-
-      profiles.forEach(avatar => {
-        newProfiles[avatar.ethAddress.toLocaleLowerCase()] = avatar
-      })
-
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        profiles: newProfiles
       }
     }
     default:

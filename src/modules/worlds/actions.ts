@@ -1,6 +1,5 @@
 import { action } from 'typesafe-actions'
 import { WorldPermissionNames, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
-import { Avatar } from '@dcl/schemas/dist/platform/profile/avatar'
 
 // Fetch Worlds Wallet Stats
 export const FETCH_WORLDS_WALLET_STATS_REQUEST = '[Request] Fetch Worlds Wallet Stats'
@@ -97,16 +96,3 @@ export const deleteWorldPermissionsFailure = (error: string) => action(DELETE_WO
 export type DeleteWorldPermissionsRequestAction = ReturnType<typeof deleteWorldPermissionsRequest>
 export type DeleteWorldPermissionsSuccessAction = ReturnType<typeof deleteWorldPermissionsSuccess>
 export type DeleteWorldPermissionsFailureAction = ReturnType<typeof deleteWorldPermissionsFailure>
-
-// Get Profiles Type
-export const GET_PROFILES_REQUEST = '[Request] Get Profiles'
-export const GET_PROFILES_SUCCESS = '[Success] Get Profiles'
-export const GET_PROFILES_FAILURE = '[Failure] Get Profiles'
-
-export const getProfilesRequest = (wallets: string[]) => action(GET_PROFILES_REQUEST, { wallets })
-export const getProfilesSuccess = (profiles: Avatar[]) => action(GET_PROFILES_SUCCESS, { profiles })
-export const getProfilesFailure = (wallets: string[], error: string) => action(GET_PROFILES_FAILURE, { wallets, error })
-
-export type GetProfilesRequestAction = ReturnType<typeof getProfilesRequest>
-export type GetProfilesSuccessAction = ReturnType<typeof getProfilesSuccess>
-export type GetProfilesFailureAction = ReturnType<typeof getProfilesFailure>

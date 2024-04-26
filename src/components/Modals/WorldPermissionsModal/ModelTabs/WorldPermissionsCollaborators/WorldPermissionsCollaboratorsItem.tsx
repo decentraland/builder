@@ -8,21 +8,13 @@ import { WorldPermissionsCollaboratorsItemProps } from './WorldPermissionsCollab
 import { WorldPermissionsAvatarWithInfo } from '../Layouts/WorldPermissionsAvatarWithInfo'
 
 export default React.memo(function WorldPermissionsCollaboratorsItem(props: WorldPermissionsCollaboratorsItemProps) {
-  const {
-    wallet,
-    worldDeploymentPermissions,
-    worldStreamingPermissions,
-    profiles,
-    onUserPermissionListChange,
-    onRemoveCollaborator,
-    loading
-  } = props
+  const { wallet, worldDeploymentPermissions, worldStreamingPermissions, onUserPermissionListChange, onRemoveCollaborator, loading } = props
 
-  if (loading || !profiles || !wallet || !onUserPermissionListChange) {
+  if (loading || !wallet || !onUserPermissionListChange) {
     return (
       <Table.Row>
         <Table.Cell>
-          <WorldPermissionsAvatarWithInfo loading />
+          <WorldPermissionsAvatarWithInfo isLoading walletAddress="" />
         </Table.Cell>
         <Table.Cell>
           <LoadingText type="span" size="small"></LoadingText>
@@ -40,7 +32,7 @@ export default React.memo(function WorldPermissionsCollaboratorsItem(props: Worl
   return (
     <Table.Row>
       <Table.Cell>
-        <WorldPermissionsAvatarWithInfo profiles={profiles} wallet={wallet} />
+        <WorldPermissionsAvatarWithInfo walletAddress={wallet} />
       </Table.Cell>
       <Table.Cell>
         <Checkbox

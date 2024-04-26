@@ -1,14 +1,9 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { Avatar } from '@dcl/schemas/dist/platform/profile/avatar'
+import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile'
 
 import { WorldPermissionNames, WorldPermissionType, WorldPermissions } from 'lib/api/worlds'
-import {
-  deleteWorldPermissionsRequest,
-  getProfilesRequest,
-  postWorldPermissionsRequest,
-  putWorldPermissionsRequest
-} from 'modules/worlds/actions'
+import { deleteWorldPermissionsRequest, postWorldPermissionsRequest, putWorldPermissionsRequest } from 'modules/worlds/actions'
 
 export type WorldPermissionsEssentials = { name: string; permissionName?: WorldPermissionNames; permissionType?: WorldPermissionType }
 
@@ -20,11 +15,10 @@ export type WorldPermissionsModalProps = {
     isCollaboratorsTabShown?: boolean
   }
   worldPermissions?: WorldPermissions
-  profiles: Record<string, Avatar>
   onPutWorldPermissionsRequest: typeof putWorldPermissionsRequest
   onPostWorldPermissionsRequest: typeof postWorldPermissionsRequest
   onDeleteWorldPermissionsRequest: typeof deleteWorldPermissionsRequest
-  onGetProfilesRequest: typeof getProfilesRequest
+  onGetProfile: typeof loadProfileRequest
   onGetWorldPermissions: (worldName: string) => void
   isLoading?: boolean
   isLoadingNewUser?: boolean
@@ -34,13 +28,13 @@ export type Props = Omit<ModalProps, 'metadata'> & WorldPermissionsModalProps
 
 export type OwnProps = Pick<WorldPermissionsModalProps, 'metadata'>
 
-export type MapStateProps = Pick<Props, 'isLoading' | 'isLoadingNewUser' | 'worldPermissions' | 'profiles' | 'error'>
+export type MapStateProps = Pick<Props, 'isLoading' | 'isLoadingNewUser' | 'worldPermissions' | 'error'>
 export type MapDispatchProps = Pick<
   Props,
   | 'onPutWorldPermissionsRequest'
   | 'onPostWorldPermissionsRequest'
   | 'onDeleteWorldPermissionsRequest'
-  | 'onGetProfilesRequest'
+  | 'onGetProfile'
   | 'onGetWorldPermissions'
 >
 export type MapDispatch = Dispatch
