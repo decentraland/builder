@@ -63,27 +63,33 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
                 )}
               </Table.HeaderCell>
               <Table.HeaderCell>
-                {loading && <LoadingText type="p" size="medium"></LoadingText>}
-                {!loading && t('world_permissions_modal.tab_collaborators.column_deploy_label')}
-                {!loading && (
-                  <Popup
-                    className="modal-tooltip"
-                    content={t('world_permissions_modal.tab_collaborators.column_deploy_tooltip')}
-                    position="top center"
-                    trigger={<Icon name="info" />}
-                  />
+                {loading ? (
+                  <LoadingText type="p" size="medium"></LoadingText>
+                ) : (
+                  <>
+                    {t('world_permissions_modal.tab_collaborators.column_deploy_label')}
+                    <Popup
+                      className="modal-tooltip"
+                      content={t('world_permissions_modal.tab_collaborators.column_deploy_tooltip')}
+                      position="top center"
+                      trigger={<Icon name="info" />}
+                    />
+                  </>
                 )}
               </Table.HeaderCell>
               <Table.HeaderCell>
-                {loading && <LoadingText type="p" size="medium"></LoadingText>}
-                {!loading && t('world_permissions_modal.tab_collaborators.column_stream_label')}
-                {!loading && (
-                  <Popup
-                    className="modal-tooltip"
-                    content={t('world_permissions_modal.tab_collaborators.column_stream_tooltip')}
-                    position="top center"
-                    trigger={<Icon name="info" />}
-                  />
+                {loading ? (
+                  <LoadingText type="p" size="medium"></LoadingText>
+                ) : (
+                  <>
+                    {t('world_permissions_modal.tab_collaborators.column_stream_label')}
+                    <Popup
+                      className="modal-tooltip"
+                      content={t('world_permissions_modal.tab_collaborators.column_stream_tooltip')}
+                      position="top center"
+                      trigger={<Icon name="info" />}
+                    />
+                  </>
                 )}
               </Table.HeaderCell>
               <Table.HeaderCell></Table.HeaderCell>
