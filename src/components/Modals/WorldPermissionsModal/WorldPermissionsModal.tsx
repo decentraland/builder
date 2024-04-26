@@ -89,9 +89,6 @@ const WorldPermissionsModal = (props: Props) => {
     })
   }, [worldPermissions])
 
-  // Lista de collaborators
-  // Add user, agrega un address a la lista del estado
-
   const handleAddUserToColaboratorList = useCallback(
     (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => {
       if (newAddress === '') {
@@ -115,10 +112,11 @@ const WorldPermissionsModal = (props: Props) => {
       const isValidAddress = isValid(data.wallet)
       if (!isValidAddress) {
         setErrorInvalidAddress(true)
+        return
       }
 
+      // If the permission doesn't exist, add it, if not, delete it
       if (
-        isValidAddress &&
         worldPermissions?.[data.worldPermissionName].type === WorldPermissionType.AllowList &&
         !(worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet.toLowerCase())
       ) {
@@ -168,6 +166,8 @@ const WorldPermissionsModal = (props: Props) => {
       if (worldPermissions?.streaming.type === WorldPermissionType.AllowList && worldPermissions.streaming.wallets.includes(data.wallet)) {
         onDeleteWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Streaming, WorldPermissionType.AllowList, data.wallet)
       }
+
+      // As the list can have temporarily collaborators without permissions, remove them from the list
       setCollaboratorUserList(collaboratorUserList => {
         const newCollaboratorUserList = new Set(collaboratorUserList)
         newCollaboratorUserList.delete(data.wallet.toLowerCase())
