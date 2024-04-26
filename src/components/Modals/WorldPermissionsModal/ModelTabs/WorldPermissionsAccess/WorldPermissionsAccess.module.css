@@ -45,7 +45,7 @@
 }
 
 .publicAccess .approvedCount,
-.publicAccess .ui.toggle.checkbox input[type='checkbox'].hidden + label {
+.publicAccess :global(.ui.toggle.checkbox input[type='checkbox'].hidden + label) {
   color: #fcfcfc !important;
   line-height: normal;
   text-transform: uppercase;
