@@ -243,14 +243,14 @@ describe('when handling the request of changing permissions type of a world', ()
     worldsApi = new MockWorldsAPI(new AuthMock())
   })
 
-  describe('when there is an error with the fetch', () => {
+  describe('when there is an error changing the permissions', () => {
     let error: Error
 
     beforeEach(() => {
       error = new Error(`Couldn't update permission type`)
     })
 
-    it('should put the failure action with the request action and the error message', () => {
+    it('should put the post world permission failure action with the error message', () => {
       return expectSaga(worldsSaga, worldsApi)
         .provide([[call(worldsApi.postPermissionType, worldName, worldPermissionNames, worldPermissionType), Promise.resolve(null)]])
         .put(postWorldPermissionsFailure(error.message))
@@ -259,7 +259,7 @@ describe('when handling the request of changing permissions type of a world', ()
     })
   })
 
-  describe('when the permission fetch is successful', () => {
+  describe('when changing the permission succeeds', () => {
     it('should put the success action with the retrieved permissions', () => {
       return expectSaga(worldsSaga, worldsApi)
         .provide([[call(worldsApi.postPermissionType, worldName, worldPermissionNames, worldPermissionType), Promise.resolve(true)]])
@@ -279,14 +279,14 @@ describe('when handling the request of putting an address from a world access li
     worldsApi = new MockWorldsAPI(new AuthMock())
   })
 
-  describe('when there is an error with the fetch', () => {
+  describe('when there putting an address to the world access list', () => {
     let error: Error
 
     beforeEach(() => {
       error = new Error(`Couldn't add address`)
     })
 
-    it('should put the failure action with the request action and the error message', () => {
+    it('should put the world permissions failure action with the error message', () => {
       return expectSaga(worldsSaga, worldsApi)
         .provide([[call(worldsApi.putPermissionType, worldName, worldPermissionNames, address), Promise.resolve(null)]])
         .put(putWorldPermissionsFailure(error.message))
@@ -295,8 +295,8 @@ describe('when handling the request of putting an address from a world access li
     })
   })
 
-  describe('when the permission fetch is successful', () => {
-    it('should put the success action and request the new profile', () => {
+  describe('when putting the address to the world access list succeeds', () => {
+    it('should put the world permissions success action and request the new profile', () => {
       return expectSaga(worldsSaga, worldsApi)
         .provide([[call(worldsApi.putPermissionType, worldName, worldPermissionNames, address), Promise.resolve(true)]])
         .put(putWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, address))
@@ -316,14 +316,14 @@ describe('when handling the request of deleting an address from a world access l
     worldsApi = new MockWorldsAPI(new AuthMock())
   })
 
-  describe('when there is an error with the fetch', () => {
+  describe('when there is an error deleting an address from the world access list', () => {
     let error: Error
 
     beforeEach(() => {
       error = new Error(`Couldn't delete address`)
     })
 
-    it('should put the failure action with the request action and the error message', () => {
+    it('should put the delete world permissions failure action with the error message', () => {
       return expectSaga(worldsSaga, worldsApi)
         .provide([[call(worldsApi.deletePermissionType, worldName, worldPermissionNames, address), Promise.resolve(null)]])
         .put(deleteWorldPermissionsFailure(error.message))
@@ -332,8 +332,8 @@ describe('when handling the request of deleting an address from a world access l
     })
   })
 
-  describe('when the permission fetch is successful', () => {
-    it('should put the success action', () => {
+  describe('when deleting the address from the world permission list succeeds', () => {
+    it('should put the delete world permissions success action', () => {
       return expectSaga(worldsSaga, worldsApi)
         .provide([[call(worldsApi.deletePermissionType, worldName, worldPermissionNames, address), Promise.resolve(true)]])
         .put(deleteWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, address))
