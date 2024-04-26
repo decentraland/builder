@@ -58,7 +58,7 @@ export const WorldPermissionsAddUserForm = React.memo((props: Props) => {
             onClick={e =>
               newAddress === ''
                 ? onShowAddUserForm(e, {})
-                : onUserPermissionListChange(e, { wallet: newAddress, worldPermissionName: WorldPermissionNames.Access })
+                : onUserPermissionListChange(e, { walletAddress: newAddress, worldPermissionName: WorldPermissionNames.Access })
             }
             loading={isLoadingNewUser}
             disabled={isLoadingNewUser || error}
