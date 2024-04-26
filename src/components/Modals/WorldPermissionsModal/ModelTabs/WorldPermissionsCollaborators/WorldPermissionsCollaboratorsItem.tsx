@@ -5,7 +5,7 @@ import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 import { WorldPermissionNames } from 'lib/api/worlds'
 import Icon from 'components/Icon'
 import { WorldPermissionsCollaboratorsItemProps } from './WorldPermissionsCollaboratorsItem.types'
-import WorldPermissionsAvatarWithInfo from '../Layouts/WorldPermissionsAvatarWithInfo'
+import { WorldPermissionsAvatarWithInfo } from '../Layouts/WorldPermissionsAvatarWithInfo'
 
 export default React.memo(function WorldPermissionsCollaboratorsItem(props: WorldPermissionsCollaboratorsItemProps) {
   const {

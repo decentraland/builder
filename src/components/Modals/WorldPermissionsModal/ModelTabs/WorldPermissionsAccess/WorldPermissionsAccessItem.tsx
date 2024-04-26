@@ -3,7 +3,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { WorldPermissionNames } from 'lib/api/worlds'
 import Icon from 'components/Icon'
 import { WorldPermissionsAccessItemProps } from './WorldPermissionsAccessItem.types'
-import WorldPermissionsAvatarWithInfo from '../Layouts/WorldPermissionsAvatarWithInfo'
+import { WorldPermissionsAvatarWithInfo } from '../Layouts/WorldPermissionsAvatarWithInfo'
 
 import styles from './WorldPermissionsAccessItem.module.css'
 
