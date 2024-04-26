@@ -1,6 +1,7 @@
 export type Props = {
   showAddUserForm: boolean
   newAddress: string
+  isLoading: boolean
   isLoadingNewUser: boolean
   addButtonLabel: string
   error: boolean

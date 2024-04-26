@@ -41,6 +41,7 @@ export default React.memo(function WorldPermissionsCollaborators(props: WorldPer
         <WorldPermissionsAddUserForm
           showAddUserForm={showAddUserForm}
           newAddress={newAddress}
+          isLoading={loading}
           isLoadingNewUser={loading}
           addButtonLabel={t('world_permissions_modal.tab_collaborators.button_add_collaborator_label')}
           error={error}

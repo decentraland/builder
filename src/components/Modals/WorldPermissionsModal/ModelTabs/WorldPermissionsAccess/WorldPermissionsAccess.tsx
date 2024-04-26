@@ -80,6 +80,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
         <WorldPermissionsAddUserForm
           showAddUserForm={showAddUserForm}
           newAddress={newAddress}
+          isLoading={loading}
           isLoadingNewUser={isLoadingNewUser}
           addButtonLabel={t('world_permissions_modal.tab_access.button_add_address_label')}
           error={error}

@@ -29,6 +29,7 @@
     "title": "{world_name}<br></br>世界權限",
     "button_add_label": "新增",
     "button_cancel_label": "取消",
+    "invalid_address": "無效地址",
     "close": "完成",
     "tab_access": {
       "label": "訪問",

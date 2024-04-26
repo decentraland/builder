@@ -18,6 +18,7 @@ export const WorldPermissionsAddUserForm = React.memo((props: Props) => {
   const {
     showAddUserForm,
     newAddress,
+    isLoading,
     isLoadingNewUser,
     addButtonLabel,
     error,
@@ -30,7 +31,11 @@ export const WorldPermissionsAddUserForm = React.memo((props: Props) => {
     <div className={styles.addUserWrapper}>
       {!showAddUserForm ? (
         <div className={styles.addUserButtonContainer}>
-          <Button data-testid={WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID} onClick={onShowAddUserForm}>
+          <Button
+            data-testid={WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID}
+            onClick={onShowAddUserForm}
+            loading={isLoading}
+          >
             <Icon name="plus" />
             {addButtonLabel}
           </Button>
@@ -46,7 +51,7 @@ export const WorldPermissionsAddUserForm = React.memo((props: Props) => {
             loading={isLoadingNewUser}
             disabled={isLoadingNewUser}
             error={error}
-            message={error ? 'invalid address' : ''}
+            message={error ? t('world_permissions_modal.invalid_address') : ''}
           />
           <Button
             data-testid={WORLD_PERMISSIONS_ADD_USER_FORM_CHANGE_PERMISSION_BUTTON_DATA_TEST_ID}

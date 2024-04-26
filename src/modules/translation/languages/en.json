@@ -29,6 +29,7 @@
     "title": "World Permissions<br></br>{world_name}",
     "button_add_label": "add",
     "button_cancel_label": "cancel",
+    "invalid_address": "Invalid address",
     "close": "done",
     "tab_access": {
       "label": "access",
