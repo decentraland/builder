@@ -26,7 +26,7 @@ export default React.memo(function WorldPermissionsAccessItem(props: WorldPermis
         basic
         onClick={e =>
           onUserPermissionListChange(e as React.MouseEvent, {
-            wallet: address.toLowerCase(),
+            walletAddress: address.toLowerCase(),
             worldPermissionName: WorldPermissionNames.Access
           })
         }
