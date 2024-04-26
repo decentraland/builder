@@ -5,6 +5,9 @@ import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/act
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { WorldsWalletStats, WorldsAPI, WorldPermissions, WorldPermissionType, WorldPermissionNames } from 'lib/api/worlds'
 import {
+  deleteWorldPermissionsFailure,
+  deleteWorldPermissionsRequest,
+  deleteWorldPermissionsSuccess,
   fetchWorldsWalletStatsFailure,
   fetchWorldsWalletStatsRequest,
   fetchWorldsWalletStatsSuccess,
@@ -267,7 +270,7 @@ describe('when handling the request of changing permissions type of a world', ()
   })
 })
 
-describe('when handling the request of putting an address to a world', () => {
+describe('when handling the request of putting an address from a world access list', () => {
   const worldName = 'some-world.dcl.eth'
   const worldPermissionNames = WorldPermissionNames.Access
   const worldPermissionType = WorldPermissionType.AllowList
@@ -299,6 +302,42 @@ describe('when handling the request of putting an address to a world', () => {
         .put(putWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, address))
         .put(loadProfileRequest(address))
         .dispatch(putWorldPermissionsRequest(worldName, worldPermissionNames, worldPermissionType, address))
+        .silentRun()
+    })
+  })
+})
+
+describe('when handling the request of deleting an address from a world access list', () => {
+  const worldName = 'some-world.dcl.eth'
+  const worldPermissionNames = WorldPermissionNames.Access
+  const worldPermissionType = WorldPermissionType.AllowList
+
+  beforeEach(() => {
+    worldsApi = new MockWorldsAPI(new AuthMock())
+  })
+
+  describe('when there is an error with the fetch', () => {
+    let error: Error
+
+    beforeEach(() => {
+      error = new Error(`Couldn't delete address`)
+    })
+
+    it('should put the failure action with the request action and the error message', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.deletePermissionType, worldName, worldPermissionNames, address), Promise.resolve(null)]])
+        .put(deleteWorldPermissionsFailure(error.message))
+        .dispatch(deleteWorldPermissionsRequest(worldName, worldPermissionNames, worldPermissionType, address))
+        .silentRun()
+    })
+  })
+
+  describe('when the permission fetch is successful', () => {
+    it('should put the success action', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.deletePermissionType, worldName, worldPermissionNames, address), Promise.resolve(true)]])
+        .put(deleteWorldPermissionsSuccess(worldName, worldPermissionNames, worldPermissionType, address))
+        .dispatch(deleteWorldPermissionsRequest(worldName, worldPermissionNames, worldPermissionType, address))
         .silentRun()
     })
   })
