@@ -6,7 +6,7 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { WorldPermissionsCollaboratorsProps } from './WorldPermissionsCollaborators.types'
 import { WorldPermissionsAddUserForm } from '../Layouts/WorldPermissionsAddUserForm'
 import { WorldPermissionsHeader } from '../Layouts/WorldPermissionsHeader'
-import WorldPermissionsCollaboratorsItem from './WorldPermissionsCollaboratorsItem'
+import { WorldPermissionsCollaboratorsItem } from './WorldPermissionsCollaboratorsItem/WorldPermissionsCollaboratorsItem'
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 
 import styles from './WorldPermissionsCollaborators.module.css'
@@ -20,8 +20,11 @@ export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
     onShowAddUserForm,
     onNewAddressChange,
     onAddUserToCollaboratorsList,
+    onUserPermissionListChange,
+    onRemoveCollaborator,
     error,
-    ...worldPermissionsCollaboratorsItemProps
+    worldDeploymentPermissions,
+    worldStreamingPermissions
   } = props
   return (
     <div>
@@ -107,7 +110,14 @@ export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
                 </Table.Row>
               ) : (
                 collaboratorUserList?.map((wallet, index) => (
-                  <WorldPermissionsCollaboratorsItem {...worldPermissionsCollaboratorsItemProps} key={index} wallet={wallet} />
+                  <WorldPermissionsCollaboratorsItem
+                    onUserPermissionListChange={onUserPermissionListChange}
+                    onRemoveCollaborator={onRemoveCollaborator}
+                    hasWorldDeploymentPermission={worldDeploymentPermissions?.wallets.includes(wallet)}
+                    hasWorldStreamingPermission={worldStreamingPermissions?.wallets.includes(wallet)}
+                    key={index}
+                    walletAddress={wallet}
+                  />
                 ))
               )
             ) : (

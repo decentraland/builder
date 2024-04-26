@@ -12,9 +12,9 @@ export type WorldPermissionsCollaboratorsProps = {
   onShowAddUserForm: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => void
   onNewAddressChange: (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void
   onAddUserToCollaboratorsList: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps) => void
-  onRemoveCollaborator: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { wallet: string }) => void
+  onRemoveCollaborator: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { walletAddress: string }) => void
   onUserPermissionListChange: (
     event: React.MouseEvent<HTMLInputElement, MouseEvent>,
-    data: { worldPermissionName: WorldPermissionNames; wallet: string }
+    data: { worldPermissionName: WorldPermissionNames; walletAddress: string }
   ) => void
 }

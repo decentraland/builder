@@ -108,8 +108,8 @@ const WorldPermissionsModal = (props: Props) => {
   )
 
   const handleUserPermissionList = useCallback(
-    (_event: React.MouseEvent, data: CheckboxProps & { worldPermissionName: WorldPermissionNames; wallet: string }) => {
-      const isValidAddress = isValid(data.wallet)
+    (_event: React.MouseEvent, data: { worldPermissionName: WorldPermissionNames; walletAddress: string }) => {
+      const isValidAddress = isValid(data.walletAddress)
       if (!isValidAddress) {
         setErrorInvalidAddress(true)
         return
@@ -118,20 +118,25 @@ const WorldPermissionsModal = (props: Props) => {
       // If the permission doesn't exist, add it, if not, delete it
       if (
         worldPermissions?.[data.worldPermissionName].type === WorldPermissionType.AllowList &&
-        !(worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet.toLowerCase())
+        !(worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.walletAddress.toLowerCase())
       ) {
         setErrorInvalidAddress(false)
-        onPutWorldPermissionsRequest(metadata.worldName, data.worldPermissionName, WorldPermissionType.AllowList, data.wallet.toLowerCase())
+        onPutWorldPermissionsRequest(
+          metadata.worldName,
+          data.worldPermissionName,
+          WorldPermissionType.AllowList,
+          data.walletAddress.toLowerCase()
+        )
       } else if (
         worldPermissions?.[data.worldPermissionName].type === WorldPermissionType.AllowList &&
-        (worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet.toLowerCase())
+        (worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.walletAddress.toLowerCase())
       ) {
         setErrorInvalidAddress(false)
         onDeleteWorldPermissionsRequest(
           metadata.worldName,
           data.worldPermissionName,
           WorldPermissionType.AllowList,
-          data.wallet.toLowerCase()
+          data.walletAddress.toLowerCase()
         )
       }
     },
@@ -149,7 +154,7 @@ const WorldPermissionsModal = (props: Props) => {
   )
 
   const handleRemoveCollaborators = useCallback(
-    (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { wallet: string }) => {
+    (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: { walletAddress: string }) => {
       if (!metadata.worldName) {
         return
       }
@@ -157,20 +162,33 @@ const WorldPermissionsModal = (props: Props) => {
       // Delete the collaborator's deployment permission
       if (
         worldPermissions?.deployment.type === WorldPermissionType.AllowList &&
-        worldPermissions.deployment.wallets.includes(data.wallet)
+        worldPermissions.deployment.wallets.includes(data.walletAddress)
       ) {
-        onDeleteWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList, data.wallet)
+        onDeleteWorldPermissionsRequest(
+          metadata.worldName,
+          WorldPermissionNames.Deployment,
+          WorldPermissionType.AllowList,
+          data.walletAddress
+        )
       }
 
       // Delete the collaborator's streaming permission
-      if (worldPermissions?.streaming.type === WorldPermissionType.AllowList && worldPermissions.streaming.wallets.includes(data.wallet)) {
-        onDeleteWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Streaming, WorldPermissionType.AllowList, data.wallet)
+      if (
+        worldPermissions?.streaming.type === WorldPermissionType.AllowList &&
+        worldPermissions.streaming.wallets.includes(data.walletAddress)
+      ) {
+        onDeleteWorldPermissionsRequest(
+          metadata.worldName,
+          WorldPermissionNames.Streaming,
+          WorldPermissionType.AllowList,
+          data.walletAddress
+        )
       }
 
       // As the list can have temporarily collaborators without permissions, remove them from the list
       setCollaboratorUserList(collaboratorUserList => {
         const newCollaboratorUserList = new Set(collaboratorUserList)
-        newCollaboratorUserList.delete(data.wallet.toLowerCase())
+        newCollaboratorUserList.delete(data.walletAddress.toLowerCase())
         return [...newCollaboratorUserList]
       })
     },

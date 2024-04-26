@@ -16,7 +16,7 @@ export type WorldPermissionsAccessProps = {
     _event: React.MouseEvent,
     data: {
       worldPermissionName: WorldPermissionNames
-      wallet: string
+      walletAddress: string
     }
   ) => void
 }
