@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Button, ButtonProps, CheckboxProps, InputOnChangeData, ModalActions, ModalContent, ModalNavigation, Tabs } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -57,14 +57,18 @@ const WorldPermissionsModal = (props: Props) => {
       worldPermissions?.access.wallets.length > 0
     ) {
       const allowedWallets = new Set(worldPermissions.access.wallets)
-      allowedWallets.has(newAddress.toLowerCase()) && setNewAddress('')
+      if (allowedWallets.has(newAddress.toLowerCase())) {
+        setNewAddress('')
+      }
     }
   }, [worldPermissions?.access, newAddress, tabSelected])
 
   useEffect(() => {
     if (tabSelected === TabsSection.Collaborators && collaboratorUserList.length > 0) {
       const allowedWallets = new Set(collaboratorUserList)
-      allowedWallets.has(newAddress.toLowerCase()) && setNewAddress('')
+      if (allowedWallets.has(newAddress.toLowerCase())) {
+        setNewAddress('')
+      }
     }
   }, [collaboratorUserList, newAddress, tabSelected])
 
@@ -85,8 +89,6 @@ const WorldPermissionsModal = (props: Props) => {
       return [...newCollaboratorUserList]
     })
   }, [worldPermissions])
-
-  const profilesByWallets = useMemo(() => profiles, [profiles])
 
   const handleAddUserToColaboratorList = useCallback(
     (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => {
@@ -120,8 +122,7 @@ const WorldPermissionsModal = (props: Props) => {
       ) {
         setErrorInvalidAddress(false)
         onPutWorldPermissionsRequest(metadata.worldName, data.worldPermissionName, WorldPermissionType.AllowList, data.wallet.toLowerCase())
-      }
-      if (
+      } else if (
         worldPermissions?.[data.worldPermissionName].type === WorldPermissionType.AllowList &&
         (worldPermissions[data.worldPermissionName] as AllowListPermissionSetting).wallets.includes(data.wallet.toLowerCase())
       ) {
@@ -149,15 +150,16 @@ const WorldPermissionsModal = (props: Props) => {
 
   const handleRemoveCollaborators = useCallback(
     (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { wallet: string }) => {
+      if (!metadata.worldName) {
+        return
+      }
       if (
         metadata.worldName &&
         worldPermissions?.deployment.type === WorldPermissionType.AllowList &&
         worldPermissions.deployment.wallets.includes(data.wallet)
       ) {
         onDeleteWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList, data.wallet)
-      }
-
-      if (
+      } else if (
         metadata.worldName &&
         worldPermissions?.streaming.type === WorldPermissionType.AllowList &&
         worldPermissions.streaming.wallets.includes(data.wallet)
@@ -221,7 +223,7 @@ const WorldPermissionsModal = (props: Props) => {
             error={errorInvalidAddress}
             worldAccessPermissions={worldPermissions?.access}
             showAddUserForm={showAddUserForm}
-            profiles={profilesByWallets}
+            profiles={profiles}
             onChangeAccessPermission={handleChangeAccessPermission}
             onShowAddUserForm={handleShowAddUserForm}
             onNewAddressChange={handleNewAddressChange}
@@ -240,7 +242,7 @@ const WorldPermissionsModal = (props: Props) => {
             worldDeploymentPermissions={worldPermissions?.deployment}
             worldStreamingPermissions={worldPermissions?.streaming}
             showAddUserForm={showAddUserForm}
-            profiles={profilesByWallets}
+            profiles={profiles}
             onShowAddUserForm={handleShowAddUserForm}
             onNewAddressChange={handleNewAddressChange}
             onRemoveCollaborator={handleRemoveCollaborators}
