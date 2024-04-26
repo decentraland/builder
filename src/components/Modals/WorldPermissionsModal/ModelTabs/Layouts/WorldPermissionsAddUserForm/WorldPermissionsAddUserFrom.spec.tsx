@@ -13,6 +13,7 @@ const renderWorldPermissionsAddUserForm = (props: Partial<Props> = {}) =>
     <WorldPermissionsAddUserForm
       showAddUserForm={false}
       newAddress={'aNewAddress'}
+      isLoading={false}
       isLoadingNewUser={false}
       addButtonLabel={'aButtonLabel'}
       error={false}
@@ -22,6 +23,17 @@ const renderWorldPermissionsAddUserForm = (props: Partial<Props> = {}) =>
       {...props}
     />
   )
+
+describe("when rendering the Worlds Permissions Add User Form it's loading", () => {
+  const renderedComponent = renderWorldPermissionsAddUserForm({ isLoading: true })
+
+  it('should not render the description', () => {
+    const { queryByTestId } = renderedComponent
+    expect(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID)).toBeInTheDocument()
+    console.log(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID))
+    expect(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID)).toHaveClass('loading')
+  })
+})
 
 describe('when rendering the Worlds Permissions Add User Form', () => {
   let renderedComponent: ReturnType<typeof renderWorldPermissionsAddUserForm>
