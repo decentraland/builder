@@ -3,16 +3,37 @@ import { call, put, select } from 'redux-saga/effects'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { WorldsWalletStats, WorldsAPI } from 'lib/api/worlds'
-import { fetchWorldsWalletStatsFailure, fetchWorldsWalletStatsRequest, fetchWorldsWalletStatsSuccess } from './actions'
+import { WorldsWalletStats, WorldsAPI, WorldPermissions, WorldPermissionType } from 'lib/api/worlds'
+import {
+  fetchWorldsWalletStatsFailure,
+  fetchWorldsWalletStatsRequest,
+  fetchWorldsWalletStatsSuccess,
+  getWorldPermissionsFailure,
+  getWorldPermissionsRequest,
+  getWorldPermissionsSuccess
+} from './actions'
 import { worldsSaga } from './sagas'
 import { clearDeploymentSuccess, deployToWorldSuccess } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { loadProfilesRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 
 let address: string
 const MockWorldsAPI = WorldsAPI as jest.MockedClass<typeof WorldsAPI>
 let worldsApi: WorldsAPI
+const worldPermissionsMock: WorldPermissions = {
+  access: {
+    type: WorldPermissionType.Unrestricted
+  },
+  deployment: {
+    type: WorldPermissionType.AllowList,
+    wallets: []
+  },
+  streaming: {
+    type: WorldPermissionType.AllowList,
+    wallets: []
+  }
+}
 
 beforeEach(() => {
   address = '0x123'
@@ -139,6 +160,57 @@ describe('when handling the clear deployment success action', () => {
         ])
         .put(fetchWorldsWalletStatsRequest(address))
         .dispatch(clearDeploymentSuccess(''))
+        .silentRun()
+    })
+  })
+})
+
+describe('when handling the request of permissions of a world', () => {
+  const worldName = 'some-world.dcl.eth'
+  describe('when there is an error with the fetch', () => {
+    let error: Error
+
+    beforeEach(() => {
+      error = new Error('Could not fetch world permissions')
+    })
+
+    it('should put the failure action with the request action world name and the error message', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.getPermissions, worldName), null], throwError(error)])
+        .put(getWorldPermissionsFailure(worldName, error.message))
+        .dispatch(getWorldPermissionsRequest(worldName))
+        .silentRun()
+    })
+  })
+
+  describe('when the permission fetch is successful and there aren`t any wallets in the permissions', () => {
+    it('should put the success action with the retrieved permissions', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.getPermissions, worldName), worldPermissionsMock]])
+        .put(getWorldPermissionsSuccess(worldName, worldPermissionsMock))
+        .dispatch(getWorldPermissionsRequest(worldName))
+        .silentRun()
+    })
+  })
+
+  describe('when the permission fetch is successful and there are wallets in the permissions', () => {
+    let worldPermissionsMockTemp: WorldPermissions
+    beforeEach(() => {
+      worldPermissionsMockTemp = {
+        ...worldPermissionsMock,
+        deployment: {
+          type: WorldPermissionType.AllowList,
+          wallets: ['0x123']
+        }
+      }
+    })
+
+    it('should put the success action with the retrieved permissions and the load profile request for each wallet address', () => {
+      return expectSaga(worldsSaga, worldsApi)
+        .provide([[call(worldsApi.getPermissions, worldName), worldPermissionsMockTemp]])
+        .put(loadProfilesRequest(['0x123']))
+        .put(getWorldPermissionsSuccess(worldName, worldPermissionsMockTemp))
+        .dispatch(getWorldPermissionsRequest(worldName))
         .silentRun()
     })
   })

@@ -100,13 +100,8 @@ export class WorldsAPI extends BaseAPI {
   }
 
   public getPermissions = async (worldName: string) => {
-    if (!this.authorization) {
-      throw new Error('Unauthorized')
-    }
-
     const path = `/world/${worldName}/permissions`
-    const headers = this.authorization.createAuthHeaders('get', path)
-    const result = await fetch(this.url + path, { headers })
+    const result = await fetch(this.url + path)
 
     if (result.ok) {
       const json: WorldPermissionsResponse = await result.json()

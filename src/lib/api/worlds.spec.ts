@@ -103,8 +103,8 @@ describe('when fetching the world permissions for a wallet', () => {
       global.fetch = () => Promise.resolve({ status: 204 } as Response)
     })
 
-    it('should return an object with the permissions', async () => {
-      expect(await worldsApi.postPermissionType(worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList)).toEqual(true)
+    it('should resolve to true', async () => {
+      expect(await worldsApi.postPermissionType(worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList)).toBe(true)
     })
   })
 
@@ -114,7 +114,7 @@ describe('when fetching the world permissions for a wallet', () => {
     })
 
     it('should resolve to true', async () => {
-      expect(await worldsApi.putPermissionType(worldName, WorldPermissionNames.Deployment, '0x456')).toEqual(true)
+      expect(await worldsApi.putPermissionType(worldName, WorldPermissionNames.Deployment, '0x456')).toBe(true)
     })
   })
 
@@ -124,7 +124,7 @@ describe('when fetching the world permissions for a wallet', () => {
     })
 
     it('should resolve to true', async () => {
-      expect(await worldsApi.deletePermissionType(worldName, WorldPermissionNames.Deployment, '0x456')).toEqual(true)
+      expect(await worldsApi.deletePermissionType(worldName, WorldPermissionNames.Deployment, '0x456')).toBe(true)
     })
   })
 })

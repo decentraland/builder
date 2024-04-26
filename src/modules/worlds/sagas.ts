@@ -24,12 +24,13 @@ import {
   putWorldPermissionsFailure,
   DeleteWorldPermissionsRequestAction,
   deleteWorldPermissionsSuccess,
-  deleteWorldPermissionsFailure
+  deleteWorldPermissionsFailure,
+  getWorldPermissionsFailure
 } from './actions'
 import { CLEAR_DEPLOYMENT_SUCCESS, DEPLOY_TO_WORLD_SUCCESS } from 'modules/deployment/actions'
 
 export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
-  yield takeEvery(FETCH_WORLDS_WALLET_STATS_REQUEST, handlefetchWorldsWalletStatsRequest)
+  yield takeEvery(FETCH_WORLDS_WALLET_STATS_REQUEST, handleFetchWorldsWalletStatsRequest)
   yield takeEvery(
     [CONNECT_WALLET_SUCCESS, DEPLOY_TO_WORLD_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS],
     handleActionsThatTriggerFetchWorldsWalletStatsRequest
@@ -39,7 +40,7 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   yield takeEvery(PUT_WORLD_PERMISSIONS_REQUEST, handlePutWorldPermissionsRequest)
   yield takeEvery(DELETE_WORLD_PERMISSIONS_REQUEST, handleDeleteWorldPermissionsRequest)
 
-  function* handlefetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequestAction) {
+  function* handleFetchWorldsWalletStatsRequest(action: FetchWalletWorldsStatsRequestAction) {
     const { address } = action.payload
 
     try {
@@ -67,28 +68,32 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
 
   function* handleGetWorldPermissionsRequest(action: GetWorldPermissionsRequestAction) {
     const { worldName } = action.payload
-    const worldPermissions: WorldPermissions | null = yield call(WorldsAPIContent.getPermissions, worldName)
-    if (!worldPermissions) {
-      return
-    }
+    try {
+      const worldPermissions: WorldPermissions | null = yield call(WorldsAPIContent.getPermissions, worldName)
+      if (!worldPermissions) {
+        throw new Error('Could not fetch world permissions')
+      }
 
-    let newWallets: string[] = []
+      let newWallets: string[] = []
 
-    if (worldPermissions.access.type === WorldPermissionType.AllowList) {
-      newWallets = [...newWallets, ...worldPermissions.access.wallets]
-    }
-    if (worldPermissions.deployment.type === WorldPermissionType.AllowList) {
-      newWallets = [...newWallets, ...worldPermissions.deployment.wallets]
-    }
-    if (worldPermissions.streaming.type === WorldPermissionType.AllowList) {
-      newWallets = [...newWallets, ...worldPermissions.streaming.wallets]
-    }
+      if (worldPermissions.access.type === WorldPermissionType.AllowList) {
+        newWallets = [...newWallets, ...worldPermissions.access.wallets]
+      }
+      if (worldPermissions.deployment.type === WorldPermissionType.AllowList) {
+        newWallets = [...newWallets, ...worldPermissions.deployment.wallets]
+      }
+      if (worldPermissions.streaming.type === WorldPermissionType.AllowList) {
+        newWallets = [...newWallets, ...worldPermissions.streaming.wallets]
+      }
 
-    if (newWallets.length > 0) {
-      yield put(loadProfilesRequest([...new Set(newWallets)]))
-    }
+      if (newWallets.length > 0) {
+        yield put(loadProfilesRequest([...new Set(newWallets)]))
+      }
 
-    yield put(getWorldPermissionsSuccess(worldName, worldPermissions))
+      yield put(getWorldPermissionsSuccess(worldName, worldPermissions))
+    } catch (error) {
+      yield put(getWorldPermissionsFailure(worldName, isErrorWithMessage(error) ? error.message : 'Unknown error'))
+    }
   }
 
   function* handlePostWorldPermissionsRequest(action: PostWorldPermissionsRequestAction) {
