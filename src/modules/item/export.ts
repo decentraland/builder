@@ -80,10 +80,12 @@ export async function calculateModelFinalSize(
   const filesToDownload: Record<string, string> = {}
   for (const fileName in oldContents) {
     const isModel = fileName.endsWith('.glb')
+    const isVideo = fileName.endsWith('.mp4') // do not take into account the video size for the smart wearables
     const isNotPartOfNewContent = !newContents[fileName]
     const fileHasDifferentHash = oldContents[fileName] !== newHashes[fileName]
-    // download the file if it's not part of the new content or if it has a different hash
-    if ((isNotPartOfNewContent || fileHasDifferentHash) && (!newContentHasModel || (newContentHasModel && !isModel))) {
+    // download the old file if it's not part of the new content or if it has a different hash from the actual
+    // and it's not a model or if it's a model and the new content doesn't have a model and it's not a video
+    if ((isNotPartOfNewContent || fileHasDifferentHash) && (!newContentHasModel || (newContentHasModel && !isModel)) && !isVideo) {
       filesToDownload[fileName] = oldContents[fileName]
     }
   }
