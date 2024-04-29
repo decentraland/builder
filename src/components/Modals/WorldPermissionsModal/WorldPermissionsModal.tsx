@@ -72,22 +72,23 @@ const WorldPermissionsModal = (props: Props) => {
   }, [collaboratorUserList, newAddress, tabSelected])
 
   useEffect(() => {
-    setCollaboratorUserList(collaboratorUserList => {
-      const newCollaboratorUserList = new Set(collaboratorUserList)
+    !loading &&
+      setCollaboratorUserList(collaboratorUserList => {
+        const newCollaboratorUserList = new Set(collaboratorUserList)
 
-      if (worldPermissions?.deployment.type === WorldPermissionType.AllowList) {
-        worldPermissions.deployment.wallets.forEach(wallet => {
-          !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet.toLowerCase())
-        })
-      }
-      if (worldPermissions?.streaming.type === WorldPermissionType.AllowList) {
-        worldPermissions.streaming.wallets.forEach(wallet => {
-          !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet.toLowerCase())
-        })
-      }
-      return [...newCollaboratorUserList]
-    })
-  }, [worldPermissions])
+        if (worldPermissions?.deployment.type === WorldPermissionType.AllowList) {
+          worldPermissions.deployment.wallets.forEach(wallet => {
+            !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet.toLowerCase())
+          })
+        }
+        if (worldPermissions?.streaming.type === WorldPermissionType.AllowList) {
+          worldPermissions.streaming.wallets.forEach(wallet => {
+            !newCollaboratorUserList.has(wallet) && newCollaboratorUserList.add(wallet.toLowerCase())
+          })
+        }
+        return [...newCollaboratorUserList]
+      })
+  }, [loading])
 
   const handleAddUserToCollaboratorsList = useCallback(
     (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, _data: ButtonProps) => {
