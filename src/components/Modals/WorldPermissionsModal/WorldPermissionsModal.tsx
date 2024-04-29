@@ -71,6 +71,7 @@ const WorldPermissionsModal = (props: Props) => {
     }
   }, [collaboratorUserList, newAddress, tabSelected])
 
+  // Creates the collaborators users list after loading the worlds permissions
   useEffect(() => {
     !loading &&
       setCollaboratorUserList(collaboratorUserList => {
