@@ -160,7 +160,7 @@ describe('when rendering the Worlds Permissions Add User Form', () => {
 
         it('should call the onUserPermissionListChange method prop', () => {
           expect(onUserPermissionListChange).toHaveBeenCalledWith(expect.anything(), {
-            wallet: newAddress,
+            walletAddress: newAddress,
             worldPermissionName: WorldPermissionNames.Access
           })
         })
