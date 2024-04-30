@@ -13,7 +13,7 @@ import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { lists } from 'lib/api/lists'
-import { WorldInfo, content } from 'lib/api/worlds'
+import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { ENSApi } from 'lib/api/ens'
 import { getWallet } from 'modules/wallet/utils'
 import {
@@ -31,14 +31,18 @@ import { ensSaga } from './sagas'
 import { ENS, ENSError, ENSOrigin, WorldStatus } from './types'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { addWorldStatusToEachENS } from './utils'
+import { Authorization } from 'lib/api/auth'
 
 jest.mock('@dcl/builder-client')
 
 const MockBuilderClient = BuilderClient as jest.MockedClass<typeof BuilderClient>
+const MockWorldsAPI = WorldsAPI as jest.MockedClass<typeof WorldsAPI>
+const mockAuthorization: Authorization = new Authorization(() => 'mockAddress')
 
 let builderClient: BuilderClient
 let ensApi: ENSApi
 let ensResolverContract: ENSResolver
+let worldsAPIContent: WorldsAPI
 
 beforeEach(() => {
   builderClient = new MockBuilderClient(
@@ -57,6 +61,8 @@ beforeEach(() => {
     'setAddr(bytes32,address)': jest.fn().mockResolvedValue(''),
     'addr(bytes32)': jest.fn().mockResolvedValue('0xaddr')
   } as unknown as ENSResolver
+
+  worldsAPIContent = new MockWorldsAPI(mockAuthorization)
 })
 
 describe('when handling the fetching of external ens names for an owner', () => {
@@ -77,7 +83,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
       })
 
       it('should dispatch an error action with the owner and the error', async () => {
-        await expectSaga(ensSaga, builderClient, ensApi)
+        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
           .provide([[call([ensApi, ensApi.fetchExternalNames], owner), throwError(error)]])
           .put(fetchExternalNamesFailure(owner, ensError))
           .dispatch(fetchExternalNamesRequest(owner))
@@ -117,7 +123,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
             worldStatus: {} as WorldStatus
           }))
 
-          await expectSaga(ensSaga, builderClient, ensApi)
+          await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
             .provide([
               [call([ensApi, ensApi.fetchExternalNames], owner), names],
               [call([lists, lists.fetchBannedNames]), bannedNames],
@@ -157,10 +163,10 @@ describe('when handling the fetch ens world status request', () => {
         })
 
         it('should put an action signaling the success of the fetch ens world status request', async () => {
-          await expectSaga(ensSaga, builderClient, ensApi)
+          await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
             .provide([
               [select(getENSBySubdomain, subdomain), getENSBySubdomainResult],
-              [call([content, 'fetchWorld'], subdomain), fetchWorldsResult]
+              [call([worldsAPIContent, 'fetchWorld'], subdomain), fetchWorldsResult]
             ])
             .put(
               fetchENSWorldStatusSuccess({
@@ -197,10 +203,10 @@ describe('when handling the fetch ens world status request', () => {
         })
 
         it('should put an action signaling the success of the fetch ens world status request', async () => {
-          await expectSaga(ensSaga, builderClient, ensApi)
+          await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
             .provide([
               [select(getExternalNames), getExternalNamesResult],
-              [call([content, 'fetchWorld'], subdomain), fetchWorldsResult]
+              [call([worldsAPIContent, 'fetchWorld'], subdomain), fetchWorldsResult]
             ])
             .put(
               fetchENSWorldStatusSuccess({
@@ -227,10 +233,10 @@ describe('when handling the fetch ens world status request', () => {
         })
 
         it('should put an action signaling the failure of the fetch ens world status request', async () => {
-          await expectSaga(ensSaga, builderClient, ensApi)
+          await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
             .provide([
               [select(getExternalNames), getExternalNamesResult],
-              [call([content, 'fetchWorld'], subdomain), fetchWorldsResult]
+              [call([worldsAPIContent, 'fetchWorld'], subdomain), fetchWorldsResult]
             ])
             .put(
               fetchENSWorldStatusFailure({
@@ -248,7 +254,7 @@ describe('when handling the fetch ens world status request', () => {
 describe('when handling the wallet connection', () => {
   it('should put the request action to fetch external names', async () => {
     const address = '0x123'
-    await expectSaga(ensSaga, builderClient, ensApi)
+    await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
       .put(fetchExternalNamesRequest(address))
       .dispatch(connectWalletSuccess({ address } as Wallet))
       .silentRun()
@@ -273,7 +279,7 @@ describe('when handling the set ens address request', () => {
   })
 
   it('should call resolver contract with the ens domain and address', () => {
-    return expectSaga(ensSaga, builderClient, ensApi)
+    return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
       .provide([
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
         [call(getSigner), { signer }],
@@ -288,7 +294,7 @@ describe('when handling the set ens address request', () => {
 
   it('should put the failure action when something goes wrong', () => {
     const error = { message: 'an error message', code: 1, name: 'error' }
-    return expectSaga(ensSaga, builderClient, ensApi)
+    return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
       .provide([
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
         [call(getSigner), { signer }],

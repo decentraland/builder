@@ -39,6 +39,7 @@ import builderPackage from '../../../package.json'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
+import { WorldsAPI } from 'lib/api/worlds'
 
 const isTestEnv = process.env.NODE_ENV === 'test'
 
@@ -173,7 +174,9 @@ const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthor
 
 const ensApi = new ENSApi(config.get('ENS_SUBGRAPH_URL'))
 
-sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, getClientAuthAuthority, store, ensApi)
+const worldsAPI = new WorldsAPI(new Authorization(() => getAddress(store.getState())))
+
+sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, getClientAuthAuthority, store, ensApi, worldsAPI)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {

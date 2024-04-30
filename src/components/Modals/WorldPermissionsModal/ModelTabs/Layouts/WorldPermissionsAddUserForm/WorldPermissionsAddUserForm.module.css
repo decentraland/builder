@@ -1,0 +1,34 @@
+.addUserWrapper {
+  margin-top: 16px;
+}
+
+.addUserButtonContainer :global(button) {
+  width: 100%;
+}
+
+.addUserFormContainer {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 10px;
+  background: #1b1a1f;
+  padding: 24px;
+  width: 100%;
+}
+
+.addUserFormContainer :global(.dcl.field.full.address) {
+  flex: 1;
+  margin-right: 16px;
+}
+
+.addUserFormContainer :global(.dcl.field.full:not(.error) p.message) {
+  display: none;
+}
+
+.addUserFormContainer :global(button:nth-child(2)) {
+  margin-right: 16px;
+}
+
+.addUserFormContainer :global(button) {
+  width: 155px;
+  height: 52px;
+}

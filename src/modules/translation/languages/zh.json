@@ -25,6 +25,35 @@
     "confirm": "确认",
     "cancel": "取消"
   },
+  "world_permissions_modal": {
+    "title": "{world_name}<br></br>世界權限",
+    "button_add_label": "新增",
+    "button_cancel_label": "取消",
+    "invalid_address": "無效地址",
+    "close": "完成",
+    "tab_access": {
+      "label": "訪問",
+      "description": "透過在'私人'和'公共'之間切換來管理誰可以訪問您的世界。<br></br><br></br>在私人模式下，您最多可以授予100個位址的存取權限（Decentraland 使用者）請注意，如果您恢復到公用模式，您的核准位址清單將會被刪除。",
+      "warning": "<b>警告</b>：如果您恢復到公共模式，您的核准位址清單將被刪除。",
+      "empty_list": "您尚未批准任何地址",
+      "world_is": "世界是 {type}",
+      "public": "公共",
+      "private": "私人",
+      "approved_addresses": "核准的位址 {number}",
+      "button_add_address_label": "新增位址"
+    },
+    "tab_collaborators": {
+      "label": "合作者",
+      "description": "最多可添加 10 个地址（Decentraland 用户）作为合作者，并管理他们的权限部署，或将数据流导入你的世界。",
+      "empty_list": "您尚未新增任何協作者/地址",
+      "button_add_collaborator_label": "新增協作者",
+      "column_name_label": "協作者 {number}",
+      "column_deploy_label": "部署",
+      "column_deploy_tooltip": "用戶將能夠將新場景部署到您的世界",
+      "column_stream_label": "流",
+      "column_stream_tooltip": "用戶將能夠將內容傳輸到您的世界"
+    }
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "清除Asset Pack",

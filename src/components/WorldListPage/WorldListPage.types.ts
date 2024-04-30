@@ -3,7 +3,7 @@ import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { ENS } from 'modules/ens/types'
 import { Project } from 'modules/project/types'
-import { WorldsWalletStats } from 'lib/api/worlds'
+import { WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
 import { WorldsYourStorageModalMetadata } from 'components/Modals/WorldsYourStorageModal/WorldsYourStorageModal.types'
 
 export enum SortBy {
@@ -18,11 +18,14 @@ export type Props = {
   deploymentsByWorlds: Record<string, Deployment>
   projects: Project[]
   isLoggedIn: boolean
+  worldsPermissions: Record<string, WorldPermissions>
   isLoading: boolean
   worldsWalletStats?: WorldsWalletStats
   onNavigate: (path: string) => void
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
+  onOpenPermissionsModal: (worldName: string, isCollaboratorsTabShown?: boolean) => void
   onOpenWorldsForENSOwnersAnnouncementModal: () => void
+  getProfiles: (worldName: string) => void
   onUnpublishWorld: typeof clearDeploymentRequest
 }
 
@@ -33,10 +36,18 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'ensList' | 'externalNames' | 'deploymentsByWorlds' | 'isLoading' | 'error' | 'projects' | 'isLoggedIn' | 'worldsWalletStats'
+  | 'ensList'
+  | 'externalNames'
+  | 'deploymentsByWorlds'
+  | 'isLoading'
+  | 'error'
+  | 'projects'
+  | 'isLoggedIn'
+  | 'worldsWalletStats'
+  | 'worldsPermissions'
 >
 export type MapDispatchProps = Pick<
   Props,
-  'onNavigate' | 'onOpenYourStorageModal' | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'
+  'onNavigate' | 'onOpenYourStorageModal' | 'onOpenPermissionsModal' | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'
 >
 export type MapDispatch = Dispatch

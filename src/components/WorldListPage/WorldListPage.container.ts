@@ -15,7 +15,7 @@ import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getLoading as getLandsLoading } from 'modules/land/selectors'
 import { isLoggingIn, isLoggedIn } from 'modules/identity/selectors'
 import { getProjects } from 'modules/ui/dashboard/selectors'
-import { getConnectedWalletStats, getLoading as getLoadingWorlds } from 'modules/worlds/selectors'
+import { getConnectedWalletStats, getLoading as getLoadingWorlds, getWorldsPermissions } from 'modules/worlds/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './WorldListPage.types'
 import WorldListPage from './WorldListPage'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -25,6 +25,7 @@ const mapState = (state: RootState): MapStateProps => ({
   externalNames: getExternalNamesForConnectedWallet(state),
   deploymentsByWorlds: getDeploymentsByWorlds(state),
   projects: getProjects(state),
+  worldsPermissions: getWorldsPermissions(state),
   error: getENSError(state)?.message ?? getDeploymentsError(state) ?? undefined,
   isLoading:
     isLoadingType(getLoadingENS(state), FETCH_ENS_LIST_REQUEST) ||
@@ -40,6 +41,8 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onOpenYourStorageModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata)),
+  onOpenPermissionsModal: (name, isCollaboratorsTabShown) =>
+    dispatch(openModal('WorldPermissionsModal', { worldName: name, isCollaboratorsTabShown })),
   onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
   onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId))
 })

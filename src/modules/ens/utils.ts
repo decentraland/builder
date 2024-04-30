@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { Entity } from '@dcl/schemas'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { extractEntityId } from 'lib/urn'
-import { WorldInfo, content } from 'lib/api/worlds'
+import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { Land, LandType } from 'modules/land/types'
 import { ENS, WorldStatus } from './types'
 import { getCenter, getSelection } from 'modules/land/utils'
@@ -58,13 +58,13 @@ export function isExternalName(subdomain: string) {
 
 export async function addWorldStatusToEachENS(enss: ENS[]) {
   const enssWithWorldStatus: ENS[] = []
+  const worldsApi = new WorldsAPI()
 
   // This will be slow for users with plenty of ens names.
   // Same happens with dcl names as it uses a similar logic of fetching world info 1 by 1.
   for (const ens of enss) {
     let worldStatus: WorldStatus | null = null
-
-    const world: WorldInfo | null = await content.fetchWorld(ens.subdomain)
+    const world: WorldInfo | null = await worldsApi.fetchWorld(ens.subdomain)
 
     if (world) {
       const { healthy, configurations } = world

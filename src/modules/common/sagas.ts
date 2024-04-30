@@ -52,6 +52,7 @@ import { ENSApi } from 'lib/api/ens'
 import { config } from 'config'
 import { getPeerWithNoGBCollectorURL } from './utils'
 import { RootStore } from './types'
+import { WorldsAPI } from 'lib/api/worlds'
 
 const newIdentitySaga = createIdentitySaga({
   authURL: config.get('AUTH_URL')
@@ -70,7 +71,8 @@ export function* rootSaga(
   catalystClient: CatalystClient,
   getIdentity: () => AuthIdentity | undefined,
   store: RootStore,
-  ensApi: ENSApi
+  ensApi: ENSApi,
+  worldsApi: WorldsAPI
 ) {
   yield all([
     analyticsSaga(),
@@ -81,7 +83,7 @@ export function* rootSaga(
     committeeSaga(builderAPI),
     deploymentSaga(builderAPI, catalystClient),
     editorSaga(),
-    ensSaga(newBuilderClient, ensApi),
+    ensSaga(newBuilderClient, ensApi, worldsApi),
     entitySaga(catalystClient),
     forumSaga(builderAPI),
     identitySaga(),
@@ -112,7 +114,7 @@ export function* rootSaga(
     inspectorSaga(builderAPI, store),
     loginSaga(),
     newsletterSagas(builderAPI),
-    worldsSaga(),
+    worldsSaga(worldsApi),
     gatewaySaga()
   ])
 }

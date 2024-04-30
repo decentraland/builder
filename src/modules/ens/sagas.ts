@@ -22,7 +22,7 @@ import { Land } from 'modules/land/types'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { marketplace } from 'lib/api/marketplace'
 import { lists } from 'lib/api/lists'
-import { WorldInfo, content as WorldsAPIContent } from 'lib/api/worlds'
+import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { extractEntityId } from 'lib/urn'
 import { isErrorWithCode } from 'lib/error'
 import { ENSApi } from 'lib/api/ens'
@@ -66,7 +66,7 @@ import { getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError } from './types'
 import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
 
-export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
+export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPIContent: WorldsAPI) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
@@ -212,7 +212,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
       let worldStatus = null
 
       try {
-        const world: WorldInfo = yield call([WorldsAPIContent, 'fetchWorld'], subdomain)
+        const world: WorldInfo = yield call([worldsAPIContent, 'fetchWorld'], subdomain)
         if (world) {
           const { healthy, configurations } = world
           const entityId = extractEntityId(configurations.scenesUrn[0])
@@ -401,7 +401,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi) {
           }
 
           try {
-            const world = await WorldsAPIContent.fetchWorld(subdomain)
+            const world = await worldsAPIContent.fetchWorld(subdomain)
             if (world) {
               const { healthy, configurations } = world
               const entityId = extractEntityId(configurations.scenesUrn[0])
