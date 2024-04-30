@@ -32,14 +32,12 @@ import {
   PUT_WORLD_PERMISSIONS_SUCCESS
 } from './actions'
 import { AllowListPermissionSetting, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
-import { Avatar } from '@dcl/schemas/dist/platform/profile/avatar'
 
 export type WorldsState = {
   // TODO: Find a use for the data object when there is something more relevant as the core data for the worlds module.
   data: Record<string, unknown>
   walletStats: Record<string, WorldsWalletStats>
   worldsPermissions: Record<string, WorldPermissions>
-  profiles: Record<string, Avatar>
   loading: LoadingState
   error: string | null
 }
@@ -48,7 +46,6 @@ export const INITIAL_STATE: WorldsState = {
   data: {},
   walletStats: {},
   worldsPermissions: {},
-  profiles: {},
   loading: [],
   error: null
 }

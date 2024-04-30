@@ -154,7 +154,7 @@ describe('when handling the action to get worlds permissions for a world name', 
       state.loading = [getWorldPermissionsRequest(worldName)]
     })
 
-    it('should remove the action from loading and set the stats', () => {
+    it('should remove the action from loading and set the permissions', () => {
       const action = getWorldPermissionsSuccess(worldName, worldPermissionsMock)
 
       expect(worldsReducer(state, action)).toEqual({
@@ -236,7 +236,7 @@ describe('when handling the action to post permission type for a world name', ()
   })
 })
 
-describe('when handling the action to put an address in deployment permission for a world name', () => {
+describe('when handling the action to add an address to the deployment permission for a world name', () => {
   let worldName: string
   let addressWallet: string
 
@@ -245,7 +245,7 @@ describe('when handling the action to put an address in deployment permission fo
     addressWallet = '0x123'
   })
 
-  describe('when handling the request action to put an address in deployment permission for a world name', () => {
+  describe('when handling the request action to add an address to the deployment permission for a world name', () => {
     beforeEach(() => {
       state.error = 'some error'
       state.loading = []
@@ -261,7 +261,7 @@ describe('when handling the action to put an address in deployment permission fo
     })
   })
 
-  describe('when handling the failure action to put an address in deployment permission for a world name', () => {
+  describe('when handling the failure action to add an address to the deployment permission for a world name', () => {
     let error: string
 
     beforeEach(() => {
@@ -280,13 +280,13 @@ describe('when handling the action to put an address in deployment permission fo
     })
   })
 
-  describe('when handling the success action to put an address in deployment permission for a world name', () => {
+  describe('when handling the success action to add an address to the deployment permission for a world name', () => {
     beforeEach(() => {
       state.loading = [putWorldPermissionsRequest(worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList, addressWallet)]
       state.worldsPermissions[worldName] = worldPermissionsMock
     })
 
-    it('should remove the action from loading and set the stats', () => {
+    it('should remove the action from loading and set the new address in the wallets for deployment permission', () => {
       const action = putWorldPermissionsSuccess(worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList, addressWallet)
 
       expect(worldsReducer(state, action)).toEqual({
@@ -366,7 +366,7 @@ describe('when handling the action to delete an address from deployment permissi
       }
     })
 
-    it('should remove the action from loading and set the stats', () => {
+    it('should remove the action from loading and remove the wallet address from the wallets list of the given permission', () => {
       const action = deleteWorldPermissionsSuccess(worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList, addressWallet)
 
       expect(worldsReducer(state, action)).toEqual({
