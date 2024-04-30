@@ -216,7 +216,7 @@ describe('when handling the action to post permission type for a world name', ()
       state.worldsPermissions[worldName] = worldPermissionsMock
     })
 
-    it('should remove the action from loading and set the stats', () => {
+    it('should remove the action from loading and set the new permission', () => {
       const action = postWorldPermissionsSuccess(worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList)
 
       expect(worldsReducer(state, action)).toEqual({
