@@ -993,7 +993,7 @@ describe('when publishing a collection', () => {
     })
   })
 
-  describe('when the the provided items length does not match the length of server items', () => {
+  describe('when the provided items length does not match the length of server items', () => {
     let finalCollection: Collection
     beforeEach(() => {
       finalCollection = { ...collection, id: 'collection-id', lock: Date.now() + 1000 /* Will be locked */ }
@@ -1015,7 +1015,7 @@ describe('when publishing a collection', () => {
     })
   })
 
-  describe('when the the provided items do not match the items found in the server', () => {
+  describe('when the provided items do not match the items found in the server', () => {
     let finalCollection: Collection
 
     beforeEach(() => {

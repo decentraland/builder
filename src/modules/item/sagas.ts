@@ -512,7 +512,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         yield put(closeModal('CreateSingleItemModal'))
       }
     }
-    // Fetch the the collection items again, we don't know where the item is going to be in the pagination data
+    // Fetch the collection items again, we don't know where the item is going to be in the pagination data
     if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)
     }
