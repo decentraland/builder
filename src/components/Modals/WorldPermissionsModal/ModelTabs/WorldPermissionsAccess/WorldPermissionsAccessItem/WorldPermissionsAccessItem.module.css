@@ -1,0 +1,10 @@
+.listItem {
+  display: flex;
+  width: 100%;
+  padding: 16px;
+  justify-content: space-between;
+  align-items: center;
+  background: #161518;
+  margin-bottom: 8px;
+  border-radius: 10px;
+}

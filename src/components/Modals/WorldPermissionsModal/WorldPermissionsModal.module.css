@@ -1,0 +1,28 @@
+:global(.ui.modal).worldPermissions :global(.dcl.modal-navigation-title) {
+  font-weight: 600;
+  color: var(--text);
+}
+
+:global(.ui.modal).worldPermissions :global(.dcl.modal-navigation-title span) {
+  color: var(--navbar-item-text-enabled);
+  font-size: 18px;
+  font-weight: 400;
+}
+
+:global(.ui.modal).worldPermissions > :global(.content) {
+  margin-top: 0;
+}
+
+.worldPermissions :global(.modal-navigation-title) {
+  width: 100%;
+  text-align: center;
+}
+
+.worldPermissions .permissionsTabs > :global(.ui.container) {
+  display: flex;
+  justify-content: center;
+}
+
+.worldPermissions .permissionsTabs > :global(.ui.container > .dcl.tab) {
+  text-transform: uppercase;
+}

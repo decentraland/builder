@@ -54,7 +54,8 @@ const WorldListPage: React.FC<Props> = props => {
     onNavigate,
     onOpenYourStorageModal,
     onOpenWorldsForENSOwnersAnnouncementModal,
-    onUnpublishWorld
+    onUnpublishWorld,
+    onOpenPermissionsModal
   } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
@@ -243,6 +244,10 @@ const WorldListPage: React.FC<Props> = props => {
     [tab, isWorldDeployed]
   )
 
+  const handleOpenPermissionsModal = useCallback((_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, worldName: string) => {
+    onOpenPermissionsModal(worldName)
+  }, [])
+
   const renderList = useCallback(() => {
     const total = tab === TabType.DCL ? ensList.length : externalNames.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
@@ -289,6 +294,7 @@ const WorldListPage: React.FC<Props> = props => {
                   <Table.HeaderCell width="1" textAlign="center">
                     {t('worlds_list_page.table.status')}
                   </Table.HeaderCell>
+                  <Table.HeaderCell width="1" textAlign="center"></Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -303,6 +309,11 @@ const WorldListPage: React.FC<Props> = props => {
                       </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldStatus(ens)}
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        <Button basic onClick={e => handleOpenPermissionsModal(e, ens.subdomain)}>
+                          Permissions
+                        </Button>
                       </Table.Cell>
                     </Table.Row>
                   )
@@ -439,7 +450,7 @@ const WorldListPage: React.FC<Props> = props => {
       isPageFullscreen={true}
     >
       <Container>
-        <h1>Worlds</h1>
+        <h1>{t('worlds_list_page.title')}</h1>
         <NameTabs />
         {tab === TabType.DCL ? renderDCLNamesView() : renderENSNamesView()}
       </Container>

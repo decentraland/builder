@@ -1,7 +1,10 @@
-import { WorldInfo, content } from 'lib/api/worlds'
+import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { extractEntityId } from 'lib/urn'
 import { ENS } from './types'
 import { addWorldStatusToEachENS, isExternalName } from './utils'
+
+const MockWorldsAPI = WorldsAPI as jest.MockedClass<typeof WorldsAPI>
+let worldsApi: WorldsAPI
 
 describe('when checking if a subdomain is an external subdomain', () => {
   let subdomain: string
@@ -49,13 +52,15 @@ describe('when adding the world status to each ens', () => {
           subdomain: 'name.dcl.eth'
         }
       ] as ENS[]
+
+      worldsApi = new MockWorldsAPI()
     })
 
     describe('when the fetch world request returns null', () => {
       beforeEach(() => {
         response = null
 
-        jest.spyOn(content, 'fetchWorld').mockResolvedValue(response)
+        jest.spyOn(worldsApi, 'fetchWorld').mockResolvedValue(response)
       })
 
       it('should return the enss with the world status set to null', async () => {
@@ -74,7 +79,7 @@ describe('when adding the world status to each ens', () => {
           }
         } as WorldInfo
 
-        jest.spyOn(content, 'fetchWorld').mockResolvedValue(response)
+        global.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve(response) } as Response)
       })
 
       it('should return the enss with the world status set', async () => {
