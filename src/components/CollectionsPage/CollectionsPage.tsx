@@ -13,7 +13,10 @@ import {
   Loader,
   Pagination,
   PaginationProps,
-  DropdownProps
+  DropdownProps,
+  Field,
+  InputOnChangeData,
+  Icon as UIIcon
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
@@ -31,13 +34,15 @@ import CollectionRow from './CollectionRow'
 import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
+let timeout: NodeJS.Timeout
 const PAGE_SIZE = 20
 export const LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT = 'builder-emotes-2.0-announcement'
 export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
     currentTab: TABS.COLLECTIONS,
     sort: CurationSortOptions.CREATED_AT_DESC,
-    page: 1
+    page: 1,
+    search: ''
   }
 
   componentDidMount() {
@@ -75,6 +80,17 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
   handleNewThirdPartyCollection = () => {
     this.props.onOpenModal('CreateThirdPartyCollectionModal')
+  }
+
+  handleSearchChange = (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    const { onFetchCollections, address } = this.props
+    this.setState({ search: data.value })
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+    timeout = setTimeout(() => {
+      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, q: data.value })
+    }, 500)
   }
 
   handleOpenEditor = () => {
@@ -187,8 +203,19 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
   renderMainActions = () => {
     const { isThirdPartyManager } = this.props
+    const { search } = this.state
     return (
-      <Column align="right">
+      <div className="collections-main-actions">
+        <Field
+          placeholder={t('itemdrawer.search_items')}
+          className="collections-search-field"
+          input={{ icon: 'search', iconPosition: 'left', inverted: true }}
+          onChange={this.handleSearchChange}
+          icon={<UIIcon name="search" className="searchIcon" />}
+          iconPosition="left"
+          value={search}
+          isClearable
+        />
         <Row className="actions">
           {isThirdPartyManager && (
             <Button className="action-button" size="small" basic onClick={this.handleNewThirdPartyCollection}>
@@ -203,7 +230,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
             {t('collections_page.new_collection')}
           </Button>
         </Row>
-      </Column>
+      </div>
     )
   }
 
@@ -283,8 +310,8 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                   </Tabs.Tab>
                 </>
               )}
-              {this.renderMainActions()}
             </Tabs>
+            {this.renderMainActions()}
             <Row height={30}>
               <Column>
                 <Row>{!isLoadingItems && !!count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
