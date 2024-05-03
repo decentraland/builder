@@ -30,7 +30,7 @@ export default class ItemImage extends React.PureComponent<Props> {
             <RarityBadge className="rarity-badge" rarity={item.rarity} size="medium" withTooltip />
           ) : null}
           {hasBadge ? <ItemBadge item={item} size={badgeSize} /> : null}
-          {hasUtilityBadge ? <IconBadge text={t('global.utility')} icon="utility" /> : null}
+          {hasUtilityBadge && !!item.utility ? <IconBadge text={t('global.utility')} icon="utility" /> : null}
         </div>
       </div>
     )
