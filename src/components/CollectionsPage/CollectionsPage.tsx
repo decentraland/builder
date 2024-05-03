@@ -13,7 +13,10 @@ import {
   Loader,
   Pagination,
   PaginationProps,
-  DropdownProps
+  DropdownProps,
+  Field,
+  InputOnChangeData,
+  Icon as UIIcon
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
@@ -37,8 +40,11 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   state = {
     currentTab: TABS.COLLECTIONS,
     sort: CurationSortOptions.CREATED_AT_DESC,
-    page: 1
+    page: 1,
+    search: ''
   }
+
+  timeout: ReturnType<typeof setTimeout> | undefined = undefined
 
   componentDidMount() {
     const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem, onOpenModal } = this.props
@@ -75,6 +81,17 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
   handleNewThirdPartyCollection = () => {
     this.props.onOpenModal('CreateThirdPartyCollectionModal')
+  }
+
+  handleSearchChange = (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    const { onFetchCollections, address } = this.props
+    this.setState({ search: data.value })
+    if (this.timeout) {
+      clearTimeout(this.timeout)
+    }
+    this.timeout = setTimeout(() => {
+      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, q: data.value })
+    }, 500)
   }
 
   handleOpenEditor = () => {
@@ -187,9 +204,20 @@ export default class CollectionsPage extends React.PureComponent<Props> {
 
   renderMainActions = () => {
     const { isThirdPartyManager } = this.props
+    const { search } = this.state
     return (
-      <Column align="right">
-        <Row className="actions">
+      <div className="collections-main-actions">
+        <Field
+          placeholder={t('itemdrawer.search_items')}
+          className="collections-search-field"
+          input={{ icon: 'search', iconPosition: 'left', inverted: true }}
+          onChange={this.handleSearchChange}
+          icon={<UIIcon name="search" className="searchIcon" />}
+          iconPosition="left"
+          value={search}
+          isClearable
+        />
+        <Row className="actions" grow={false}>
           {isThirdPartyManager && (
             <Button className="action-button" size="small" basic onClick={this.handleNewThirdPartyCollection}>
               {t('collections_page.new_third_party_collection')}
@@ -203,7 +231,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
             {t('collections_page.new_collection')}
           </Button>
         </Row>
-      </Column>
+      </div>
     )
   }
 
@@ -271,20 +299,18 @@ export default class CollectionsPage extends React.PureComponent<Props> {
         <EventBanner />
         <div className="filters">
           <Container>
-            <Tabs isFullscreen>
-              {hasUserOrphanItems && (
-                // TODO: Remove tabs when there are no users with orphan items
-                <>
-                  <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.COLLECTIONS)}>
-                    {t('collections_page.collections')}
-                  </Tabs.Tab>
-                  <Tabs.Tab active={!this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.ITEMS)}>
-                    {t('collections_page.single_items')}
-                  </Tabs.Tab>
-                </>
-              )}
-              {this.renderMainActions()}
-            </Tabs>
+            {hasUserOrphanItems && (
+              // TODO: Remove tabs when there are no users with orphan items
+              <Tabs isFullscreen>
+                <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.COLLECTIONS)}>
+                  {t('collections_page.collections')}
+                </Tabs.Tab>
+                <Tabs.Tab active={!this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.ITEMS)}>
+                  {t('collections_page.single_items')}
+                </Tabs.Tab>
+              </Tabs>
+            )}
+            {this.renderMainActions()}
             <Row height={30}>
               <Column>
                 <Row>{!isLoadingItems && !!count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>

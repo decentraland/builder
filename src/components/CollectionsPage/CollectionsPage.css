@@ -177,3 +177,27 @@
 .CollectionsPage .dcl.tabs .ui.container {
   margin-bottom: 20px;
 }
+
+.CollectionsPage .collections-main-actions {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.CollectionsPage .collections-main-actions > :first-child {
+  flex: 1;
+}
+
+.CollectionsPage .dcl.field .collections-search-field.ui.input input {
+  padding: 8px;
+  background: var(--shadows);
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+}
+
+.CollectionsPage .collections-main-actions > .actions {
+  align-self: baseline;
+  justify-self: end;
+  flex: none;
+}
