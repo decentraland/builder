@@ -6,7 +6,8 @@ import {
   getIsMaintenanceEnabled,
   getIsPublishCollectionsWertEnabled,
   getIsSDK7TemplatesEnabled,
-  getIsVrmOptOutEnabled
+  getIsVrmOptOutEnabled,
+  getIsWearableUtilityEnabled
 } from './selectors'
 import { FeatureName } from './types'
 
@@ -63,7 +64,8 @@ const ffSelectors = [
   { selector: getIsSDK7TemplatesEnabled, app: ApplicationName.BUILDER, feature: FeatureName.SDK7_TEMPLATES },
   { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 },
   { selector: getIsPublishCollectionsWertEnabled, app: ApplicationName.BUILDER, feature: FeatureName.PUBLISH_COLLECTIONS_WERT },
-  { selector: getIsVrmOptOutEnabled, app: ApplicationName.BUILDER, feature: FeatureName.VRM_OPTOUT }
+  { selector: getIsVrmOptOutEnabled, app: ApplicationName.BUILDER, feature: FeatureName.VRM_OPTOUT },
+  { selector: getIsWearableUtilityEnabled, app: ApplicationName.DAPPS, feature: FeatureName.WEARABLE_UTILITY }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

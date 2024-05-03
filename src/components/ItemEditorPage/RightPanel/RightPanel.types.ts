@@ -27,6 +27,7 @@ export type Props = {
   isCommitteeMember: boolean
   isCampaignEnabled: boolean
   isVrmOptOutEnabled: boolean
+  isWearableUtilityEnabled: boolean
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
@@ -37,6 +38,7 @@ export type Props = {
 export type State = {
   name: string
   description: string
+  utility: string
   thumbnail: string
   video: string
   rarity?: Rarity
@@ -60,6 +62,7 @@ export type MapStateProps = Pick<
   | 'canEditSelectedItem'
   | 'isCampaignEnabled'
   | 'isVrmOptOutEnabled'
+  | 'isWearableUtilityEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>
 export type MapDispatch = Dispatch<

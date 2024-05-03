@@ -31,9 +31,27 @@
   flex: 1;
 }
 
+.dcl.text-area {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.dcl.text-area > textarea::placeholder {
+  color: var(--secondary-text);
+}
+
+.RightPanel .dcl.text-area > textarea {
+  font-size: 14px;
+  border: 1px solid var(--text-area-border);
+}
+
+.RightPanel .dcl.text-area > p {
+  display: none;
+}
+
 .RightPanel .details {
   display: flex;
-  border: 1px solid var(--gray);
+  border: 1px solid var(--text-area-border);
   border-radius: 6px;
   padding: 8px;
   align-items: stretch;

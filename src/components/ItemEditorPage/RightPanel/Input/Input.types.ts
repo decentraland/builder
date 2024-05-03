@@ -1,5 +1,4 @@
 export type Props = {
-  itemId: string
   label: string
   disabled?: boolean
   maxLength?: number

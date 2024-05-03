@@ -1,6 +1,8 @@
 import * as React from 'react'
 import classNames from 'classnames'
+import { IconBadge } from 'decentraland-ui'
 import { RarityBadge } from 'decentraland-dapps/dist/containers/RarityBadge'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { getBackgroundStyle, getThumbnailURL } from 'modules/item/utils'
 import ItemBadge from 'components/ItemBadge'
@@ -15,7 +17,7 @@ export default class ItemImage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { className, item, src, badgeSize, hasBadge, hasRarityBadge, hasRarityBackground } = this.props
+    const { className, item, src, badgeSize, hasBadge, hasUtilityBadge, hasRarityBadge, hasRarityBackground } = this.props
 
     return (
       <div
@@ -28,6 +30,7 @@ export default class ItemImage extends React.PureComponent<Props> {
             <RarityBadge className="rarity-badge" rarity={item.rarity} size="medium" withTooltip />
           ) : null}
           {hasBadge ? <ItemBadge item={item} size={badgeSize} /> : null}
+          {hasUtilityBadge ? <IconBadge text={t('global.utility')} icon="utility" /> : null}
         </div>
       </div>
     )

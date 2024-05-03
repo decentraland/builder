@@ -102,6 +102,7 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
   urn?: string
   beneficiary?: string
   totalSupply?: number
+  utility?: string
   isPublished: boolean
   isApproved: boolean
   inCatalyst: boolean
@@ -143,6 +144,7 @@ export const SCENE_PATH = 'scene.json'
 export const SCENE_LOGIC_PATH = 'bin/game.js'
 export const ITEM_NAME_MAX_LENGTH = 32
 export const ITEM_DESCRIPTION_MAX_LENGTH = 64
+export const ITEM_UTILITY_MAX_LENGTH = 64
 export const MODEL_EXTENSIONS = ['.zip', '.gltf', '.glb']
 export const IMAGE_EXTENSIONS = ['.zip', '.png']
 export const VIDEO_EXTENSIONS = ['.mp4']
