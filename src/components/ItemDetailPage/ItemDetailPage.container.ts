@@ -10,6 +10,7 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { FETCH_ITEMS_REQUEST, DELETE_ITEM_REQUEST, deleteItemRequest, saveItemRequest, SAVE_ITEM_REQUEST } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDetailPage.types'
 import ItemDetailPage from './ItemDetailPage'
+import { getIsWearableUtilityEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   const itemId = getItemId(state)
@@ -25,6 +26,7 @@ const mapState = (state: RootState): MapStateProps => {
     item,
     collection,
     status,
+    isWearableUtilityEnabled: getIsWearableUtilityEnabled(state),
     isLoading:
       isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) ||
       isLoadingType(getLoading(state), DELETE_ITEM_REQUEST) ||
