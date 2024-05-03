@@ -34,7 +34,6 @@ import CollectionRow from './CollectionRow'
 import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
-let timeout: NodeJS.Timeout
 const PAGE_SIZE = 20
 export const LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT = 'builder-emotes-2.0-announcement'
 export default class CollectionsPage extends React.PureComponent<Props> {
@@ -44,6 +43,8 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     page: 1,
     search: ''
   }
+
+  timeout: ReturnType<typeof setTimeout> | undefined = undefined
 
   componentDidMount() {
     const { address, hasUserOrphanItems, onFetchCollections, onFetchOrphanItem, onOpenModal } = this.props
@@ -85,10 +86,10 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   handleSearchChange = (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     const { onFetchCollections, address } = this.props
     this.setState({ search: data.value })
-    if (timeout) {
-      clearTimeout(timeout)
+    if (this.timeout) {
+      clearTimeout(this.timeout)
     }
-    timeout = setTimeout(() => {
+    this.timeout = setTimeout(() => {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE, q: data.value })
     }, 500)
   }
@@ -216,7 +217,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
           value={search}
           isClearable
         />
-        <Row className="actions">
+        <Row className="actions" grow={false}>
           {isThirdPartyManager && (
             <Button className="action-button" size="small" basic onClick={this.handleNewThirdPartyCollection}>
               {t('collections_page.new_third_party_collection')}
@@ -298,19 +299,17 @@ export default class CollectionsPage extends React.PureComponent<Props> {
         <EventBanner />
         <div className="filters">
           <Container>
-            <Tabs isFullscreen>
-              {hasUserOrphanItems && (
-                // TODO: Remove tabs when there are no users with orphan items
-                <>
-                  <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.COLLECTIONS)}>
-                    {t('collections_page.collections')}
-                  </Tabs.Tab>
-                  <Tabs.Tab active={!this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.ITEMS)}>
-                    {t('collections_page.single_items')}
-                  </Tabs.Tab>
-                </>
-              )}
-            </Tabs>
+            {hasUserOrphanItems && (
+              // TODO: Remove tabs when there are no users with orphan items
+              <Tabs isFullscreen>
+                <Tabs.Tab active={this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.COLLECTIONS)}>
+                  {t('collections_page.collections')}
+                </Tabs.Tab>
+                <Tabs.Tab active={!this.isCollectionTabActive()} onClick={() => this.handleTabChange(TABS.ITEMS)}>
+                  {t('collections_page.single_items')}
+                </Tabs.Tab>
+              </Tabs>
+            )}
             {this.renderMainActions()}
             <Row height={30}>
               <Column>
