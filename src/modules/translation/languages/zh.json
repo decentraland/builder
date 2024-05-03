@@ -862,7 +862,8 @@
     "estate_plural": "庄园",
     "role": "角色",
     "none": "没有任何",
-    "emote": "表情"
+    "emote": "表情",
+    "utility": "物品效用"
   },
   "roles": {
     "1": "持有者",
@@ -1961,6 +1962,8 @@
       "request_for_changes": "要求变更",
       "request_for_changes_explanation": "如果您想更改{name}，请在论坛中请求委员会成员的授权",
       "required_permissions": "权限",
+      "description_placeholder": "是什么让您的物品与众不同？",
+      "utility_placeholder": "描述您的物品功能",
       "copyright": {
         "title": "VRM出口许可",
         "vrm_export": "允许VRM导出",

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
-import { Loader, Dropdown, Button, Checkbox, CheckboxProps } from 'decentraland-ui'
+import { Loader, Dropdown, Button, Checkbox, CheckboxProps, TextAreaField, TextAreaProps } from 'decentraland-ui'
 import { BodyPartCategory, EmoteCategory, Rarity, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -30,7 +30,8 @@ import {
   THUMBNAIL_PATH,
   WearableData,
   VIDEO_PATH,
-  SyncStatus
+  SyncStatus,
+  ITEM_UTILITY_MAX_LENGTH
 } from 'modules/item/types'
 import { dataURLToBlob } from 'modules/media/utils'
 import Collapsable from 'components/Collapsable'
@@ -93,6 +94,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       video: '',
       name: item.name,
       description: item.description,
+      utility: item.utility || '',
       rarity: item.rarity,
       data: item.data,
       hasItem: true,
@@ -104,6 +106,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     return {
       name: '',
       description: '',
+      utility: '',
       thumbnail: '',
       video: '',
       rarity: undefined,
@@ -143,8 +146,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ name, isDirty: this.isDirty({ name }) })
   }
 
-  handleChangeDescription = (description: string) => {
+  handleChangeDescription = (_event: React.ChangeEvent<HTMLTextAreaElement>, data: TextAreaProps) => {
+    const description = (data.value as string | undefined) ?? ''
     this.setState({ description, isDirty: this.isDirty({ description }) })
+  }
+
+  handleChangeUtility = (_event: React.ChangeEvent<HTMLTextAreaElement>, data: TextAreaProps) => {
+    const utility = (data.value as string | undefined) ?? ''
+    this.setState({ utility, isDirty: this.isDirty({ utility }) })
   }
 
   handleChangeRarity = (rarity: Rarity) => {
@@ -240,7 +249,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   handleOnSaveItem = async () => {
     const { selectedItem, itemStatus, onSaveItem } = this.props
-    const { name, description, rarity, contents, data, isDirty } = this.state
+    const { name, description, utility, rarity, contents, data, isDirty } = this.state
 
     if (isDirty && selectedItem) {
       let itemData = data
@@ -265,7 +274,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         description,
         rarity,
         data: itemData as WearableData,
-        contents: itemContents
+        contents: itemContents,
+        utility: utility ?? undefined
       }
 
       if (itemStatus && [SyncStatus.UNPUBLISHED, SyncStatus.UNDER_REVIEW].includes(itemStatus)) {
@@ -353,7 +363,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   hasStateItemChanged(state: Partial<State>, item: Item) {
     return (
-      state.name !== item.name || state.description !== item.description || state.rarity !== item.rarity || !equal(state.data, item.data)
+      state.name !== item.name ||
+      state.description !== item.description ||
+      state.utility !== item.utility ||
+      state.rarity !== item.rarity ||
+      !equal(state.data, item.data)
     )
   }
 
@@ -498,8 +512,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isConnected, error, isCampaignEnabled, isVrmOptOutEnabled } = this.props
-    const { name, description, rarity, data, isDirty, hasItem } = this.state
+    const { selectedItemId, address, isWearableUtilityEnabled, isConnected, error, isCampaignEnabled, isVrmOptOutEnabled } = this.props
+    const { name, description, utility, rarity, data, isDirty, hasItem } = this.state
     const rarities = Rarity.getRarities()
     const playModes = getEmotePlayModes()
 
@@ -552,22 +566,34 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       {item ? (
                         <>
                           <Input
-                            itemId={item.id}
                             label={t('global.name')}
                             value={name}
                             disabled={!canEditItemMetadata}
                             maxLength={ITEM_NAME_MAX_LENGTH}
                             onChange={this.handleChangeName}
                           />
-                          <Input
-                            itemId={item.id}
-                            label={t('global.description')}
-                            value={description}
-                            disabled={!canEditItemMetadata}
+                          <TextAreaField
                             maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                             onChange={this.handleChangeDescription}
+                            label={t('global.description')}
+                            placeholder={t('item_editor.right_panel.description_placeholder')}
+                            disabled={!canEditItemMetadata}
+                            value={description}
+                            rows="2"
+                            cols="12"
                           />
-
+                          {isWearableUtilityEnabled ? (
+                            <TextAreaField
+                              maxLength={ITEM_UTILITY_MAX_LENGTH}
+                              onChange={this.handleChangeUtility}
+                              label={t('global.utility')}
+                              placeholder={t('item_editor.right_panel.utility_placeholder')}
+                              disabled={!canEditItemMetadata}
+                              value={utility}
+                              rows="2"
+                              cols="12"
+                            />
+                          ) : null}
                           <Select<HideableWearableCategory | EmoteCategory>
                             itemId={item.id}
                             label={t('global.category')}

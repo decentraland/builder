@@ -35,6 +35,12 @@
   height: 256px;
 }
 
+.ItemDetailPage .item-data .attribute-row {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
 .ItemDetailPage .item-data .subtitle {
   color: var(--secondary-text);
   font-size: 13px;

@@ -6,6 +6,7 @@ export type Props = {
   item: Item
   src?: string
   hasBadge?: boolean
+  hasUtilityBadge?: boolean
   hasRarityBadge?: boolean
   badgeSize?: BadgeProps['size']
   hasRarityBackground?: boolean

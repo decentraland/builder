@@ -75,6 +75,7 @@ export type RemoteItem = {
   content_hash: string | null
   created_at: Date
   updated_at: Date
+  utility: string | null
   local_content_hash: string | null
   catalyst_content_hash: string | null
 }
@@ -348,6 +349,7 @@ function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'>
     is_published: false,
     is_approved: false,
     in_catalyst: item.inCatalyst || false,
+    utility: item.utility || null,
     type: item.type,
     data: item.data,
     metrics: item.metrics,
@@ -382,6 +384,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   }
 
   if (remoteItem.collection_id) item.collectionId = remoteItem.collection_id
+  if (remoteItem.utility) item.utility = remoteItem.utility
   if (remoteItem.blockchain_item_id) item.tokenId = remoteItem.blockchain_item_id
   if (remoteItem.price) item.price = remoteItem.price
   if (remoteItem.urn) item.urn = remoteItem.urn

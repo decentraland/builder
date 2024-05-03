@@ -53,3 +53,11 @@ export const getIsVrmOptOutEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsWearableUtilityEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.WEARABLE_UTILITY)
+  } catch (e) {
+    return false
+  }
+}

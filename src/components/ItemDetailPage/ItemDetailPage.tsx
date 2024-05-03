@@ -127,7 +127,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
   }
 
   renderPage(item: Item, collection: Collection | null) {
-    const { onNavigate } = this.props
+    const { onNavigate, isWearableUtilityEnabled } = this.props
     const data = item.data
     const isLocked = collection && isCollectionLocked(collection)
     const hasActions = !isLocked
@@ -144,7 +144,7 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
 
           <div className="item-data">
             <div className="item-data-left-panel">
-              <ItemImage item={item} hasBadge hasRarityBadge />
+              <ItemImage item={item} hasBadge hasRarityBadge hasUtilityBadge />
               <div>
                 <Button primary onClick={this.handleOpenThumbnailDialog}>
                   <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png" />
@@ -291,23 +291,33 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                     ) : null}
                   </div>
                 </div>
-                {item.description && (
-                  <>
-                    <div className="subtitle">{t('global.description')}</div>
-                    <div className="data">{item.description}</div>
-                  </>
-                )}
-                {item.data.tags.length ? (
-                  <>
-                    <div className="subtitle">{t('item_detail_page.tags.title')}</div>
-                    <div className="data tags-container">
-                      {item.data.tags.map(tag => (
-                        <span className="tag" key={tag}>
-                          {tag}
-                        </span>
-                      ))}
+                <div className="attribute-row">
+                  {item.description && (
+                    <div className="attribute-column">
+                      <div className="subtitle">{t('global.description')}</div>
+                      <div className="data">{item.description}</div>
                     </div>
-                  </>
+                  )}
+                  {item.utility && isWearableUtilityEnabled && (
+                    <div className="attribute-column">
+                      <div className="subtitle">{t('global.utility')}</div>
+                      <div className="data">{item.utility}</div>
+                    </div>
+                  )}
+                </div>
+                {item.data.tags.length ? (
+                  <div className="attribute-row">
+                    <div className="attribute-column">
+                      <div className="subtitle">{t('item_detail_page.tags.title')}</div>
+                      <div className="data tags-container">
+                        {item.data.tags.map(tag => (
+                          <span className="tag" key={tag}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 ) : null}
               </div>
 
