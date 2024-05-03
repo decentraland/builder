@@ -1,5 +1,5 @@
 .MultiSelect.ui.dropdown.inline {
-  border: 1px solid var(--gray);
+  border: 1px solid var(--text-area-border);
   border-radius: 6px;
   display: flex;
   align-items: center;

@@ -868,7 +868,8 @@
     "estate_plural": "Estates",
     "role": "Rol",
     "none": "Ninguno",
-    "emote": "Animación"
+    "emote": "Animación",
+    "utility": "Utilidad"
   },
   "roles": {
     "1": "Dueño",
@@ -1978,6 +1979,8 @@
       "request_for_changes": "Solicitud de cambios",
       "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro",
       "required_permissions": "Permisos",
+      "description_placeholder": "¿Qué hace a tu Item especial?",
+      "utility_placeholder": "Describe la funcionalida de tu Item",
       "copyright": {
         "title": "Permiso de exportación de VRM",
         "vrm_export": "Permitir la exportación de VRM",

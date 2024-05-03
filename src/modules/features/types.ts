@@ -5,5 +5,6 @@ export enum FeatureName {
   CREATE_SCENE_ONLY_SDK7 = 'create-scene-only-sdk7',
   ENS_ADDRESS = 'ens-address',
   PUBLISH_COLLECTIONS_WERT = 'publish-collections-wert',
-  VRM_OPTOUT = 'vrm-optout'
+  VRM_OPTOUT = 'vrm-optout',
+  WEARABLE_UTILITY = 'wearable-utility'
 }

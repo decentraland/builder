@@ -869,7 +869,8 @@
     "estate_plural": "Estates",
     "role": "Role",
     "none": "None",
-    "emote": "Emote"
+    "emote": "Emote",
+    "utility": "Utility"
   },
   "roles": {
     "1": "Owner",
@@ -1959,6 +1960,8 @@
       "request_for_changes": "Request for changes",
       "request_for_changes_explanation": "If you want to make changes to {name} please ask a committee member for authorization in the forum",
       "required_permissions": "Permissions",
+      "description_placeholder": "What makes your Item special?",
+      "utility_placeholder": "Describe your Item functionality",
       "copyright": {
         "title": "VRM Export Permission",
         "vrm_export": "Allow VRM Export",

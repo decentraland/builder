@@ -19,6 +19,7 @@ export type Props = {
   collection: Collection | null
   status: SyncStatus | null
   isLoading: boolean
+  isWearableUtilityEnabled: boolean
   onNavigate: (path: string, locationState?: LocationStateProps) => void
   onOpenModal: typeof openModal
   onDelete: typeof deleteItemRequest
@@ -26,6 +27,9 @@ export type Props = {
   hasAccess: boolean
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'itemId' | 'item' | 'collection' | 'status' | 'isLoading' | 'hasAccess'>
+export type MapStateProps = Pick<
+  Props,
+  'wallet' | 'itemId' | 'item' | 'collection' | 'status' | 'isLoading' | 'hasAccess' | 'isWearableUtilityEnabled'
+>
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onNavigate' | 'onDelete' | 'onOpenModal'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | CallHistoryMethodAction | DeleteItemRequestAction | OpenModalAction>

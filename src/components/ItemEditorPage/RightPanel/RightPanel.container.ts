@@ -8,7 +8,7 @@ import { isOwner } from 'modules/item/utils'
 import { getSelectedItemId } from 'modules/location/selectors'
 import { getCollection, hasViewAndEditRights } from 'modules/collection/selectors'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
-import { getIsCampaignEnabled, getIsVrmOptOutEnabled } from 'modules/features/selectors'
+import { getIsCampaignEnabled, getIsVrmOptOutEnabled, getIsWearableUtilityEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './RightPanel.types'
 import RightPanel from './RightPanel'
 
@@ -35,7 +35,8 @@ const mapState = (state: RootState): MapStateProps => {
     isDownloading: isDownloading(state),
     isCommitteeMember: isWalletCommitteeMember(state),
     isCampaignEnabled: getIsCampaignEnabled(state),
-    isVrmOptOutEnabled: getIsVrmOptOutEnabled(state)
+    isVrmOptOutEnabled: getIsVrmOptOutEnabled(state),
+    isWearableUtilityEnabled: getIsWearableUtilityEnabled(state)
   }
 }
 
