@@ -664,24 +664,6 @@ export class BuilderAPI extends BaseAPI {
     return items.map(fromPoolGroup)
   }
 
-  // TODO: remove this after removing the SDK7_TEMPLATES feature flag
-  async fetchTemplates() {
-    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/templates', {
-      retry: retryParams,
-      params: { sort_by: 'created_at', sort_order: 'asc' }
-    })
-    return items.map(fromRemoteProject).sort((template1, template2) => {
-      if (template1.templateStatus === TemplateStatus.COMING_SOON) {
-        return 1
-      }
-
-      if (template2.templateStatus === TemplateStatus.COMING_SOON) {
-        return -1
-      }
-      return 0
-    })
-  }
-
   async saveProject(project: Project, scene: Scene) {
     const manifest = createManifest(toRemoteProject(project), scene)
     await this.request('put', `/projects/${project.id}/manifest`, { params: { manifest } })
