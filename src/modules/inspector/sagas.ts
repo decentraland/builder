@@ -291,7 +291,12 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
     const { path } = params
 
     const scene: SceneSDK7 = yield getScene()
-    const paths = [...Object.keys(scene.mappings), 'assets/scene/main.composite']
+    const paths = [...Object.keys(scene.mappings)]
+
+    // add main.composite if missing
+    if (!paths.includes('assets/scene/main.composite')) {
+      paths.push('assets/scene/main.composite')
+    }
 
     const project: Project = yield select(getCurrentProject)
     if (project.thumbnail) {
