@@ -38,8 +38,12 @@
 .ItemDetailPage .item-data .attribute-row {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 30px;
   margin-top: 10px;
+}
+
+.ItemDetailPage .item-data .attribute-column {
+  flex: 1 50%;
 }
 
 .ItemDetailPage .item-data .attribute-column .data {
