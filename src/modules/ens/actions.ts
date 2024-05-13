@@ -139,3 +139,15 @@ export type ClearENSErrorsAction = ReturnType<typeof clearENSErrors>
 // Legacy claim name and name allowance actions left here to avoid breaking the activity feed
 export const ALLOW_CLAIM_MANA_SUCCESS = '[Success] Allow Claim MANA'
 export const CLAIM_NAME_TRANSACTION_SUBMITTED = '[Submitted] Claim Name'
+
+export const FETCH_CONTRIBUTABLE_NAMES_REQUEST = '[Request] Fetch Contributable Names'
+export const FETCH_CONTRIBUTABLE_NAMES_SUCCESS = '[Success] Fetch Contributable Names'
+export const FETCH_CONTRIBUTABLE_NAMES_FAILURE = '[Failure] Fetch Contributable Names'
+
+export const fetchContributableNamesRequest = () => action(FETCH_CONTRIBUTABLE_NAMES_REQUEST)
+export const fetchContributableNamesSuccess = (names: ENS[]) => action(FETCH_CONTRIBUTABLE_NAMES_SUCCESS, { names })
+export const fetchContributableNamesFailure = (error: ENSError) => action(FETCH_CONTRIBUTABLE_NAMES_FAILURE, { error })
+
+export type FetchContributableNamesRequestAction = ReturnType<typeof fetchContributableNamesRequest>
+export type FetchContributableNamesSuccessAction = ReturnType<typeof fetchContributableNamesSuccess>
+export type FetchContributableNamesFailureAction = ReturnType<typeof fetchContributableNamesFailure>

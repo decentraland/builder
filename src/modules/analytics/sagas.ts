@@ -76,7 +76,7 @@ export function* analyticsSaga() {
   yield all([baseAnalyticsSaga(), builderAnalyticsSaga()])
 }
 
-export const track = (event: string, params: any) => getAnalytics().track(event, params) as void
+export const track = (event: string, params: any) => getAnalytics().track(event, params)
 
 function handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
   const { items } = action.payload

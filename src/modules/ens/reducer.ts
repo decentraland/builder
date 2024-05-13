@@ -51,7 +51,13 @@ import {
   SetENSAddressSuccessAction,
   setENSAddressSuccess,
   CLEAR_ENS_ERRORS,
-  ClearENSErrorsAction
+  ClearENSErrorsAction,
+  FETCH_CONTRIBUTABLE_NAMES_SUCCESS,
+  FetchContributableNamesFailureAction,
+  FetchContributableNamesRequestAction,
+  FetchContributableNamesSuccessAction,
+  FETCH_CONTRIBUTABLE_NAMES_REQUEST,
+  FETCH_CONTRIBUTABLE_NAMES_FAILURE
 } from './actions'
 import { ENS, ENSError } from './types'
 import { isExternalName } from './utils'
@@ -59,15 +65,19 @@ import { isExternalName } from './utils'
 export type ENSState = {
   data: Record<string, ENS>
   externalNames: Record<string, ENS>
+  contributableNames: Record<string, ENS>
   loading: LoadingState
   error: ENSError | null
+  contributableNamesError: ENSError | null
 }
 
 export const INITIAL_STATE: ENSState = {
   data: {},
   externalNames: {},
+  contributableNames: {},
   loading: [],
-  error: null
+  error: null,
+  contributableNamesError: null
 }
 
 export type ENSReducerAction =
@@ -97,6 +107,9 @@ export type ENSReducerAction =
   | SetENSAddressSuccessAction
   | SetENSAddressFailureAction
   | ClearENSErrorsAction
+  | FetchContributableNamesFailureAction
+  | FetchContributableNamesRequestAction
+  | FetchContributableNamesSuccessAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
@@ -109,7 +122,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_CONTENT_SUCCESS:
     case SET_ENS_RESOLVER_SUCCESS:
     case FETCH_EXTERNAL_NAMES_REQUEST:
-    case SET_ENS_ADDRESS_REQUEST: {
+    case SET_ENS_ADDRESS_REQUEST:
+    case FETCH_CONTRIBUTABLE_NAMES_REQUEST: {
       return {
         ...state,
         error: null,
@@ -209,6 +223,22 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
+    case FETCH_CONTRIBUTABLE_NAMES_SUCCESS: {
+      const { names } = action.payload
+      const contributableNamesByDomain = names.reduce((obj, ens) => {
+        obj[ens.subdomain] = ens
+        return obj
+      }, {} as Record<string, ENS>)
+
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        contributableNames: {
+          ...state.contributableNames,
+          ...contributableNamesByDomain
+        }
+      }
+    }
     case RECLAIM_NAME_FAILURE:
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
@@ -221,6 +251,13 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         ...state,
         loading: loadingReducer(state.loading, action),
         error: { ...action.payload.error }
+      }
+    }
+    case FETCH_CONTRIBUTABLE_NAMES_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        contributableNamesError: { ...action.payload.error }
       }
     }
     case CLEAR_ENS_ERRORS: {

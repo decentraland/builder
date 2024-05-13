@@ -2,28 +2,13 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { formatNumber } from 'decentraland-dapps/dist/lib/utils'
-import {
-  Button,
-  Table,
-  Row,
-  Column,
-  Header,
-  Section,
-  Container,
-  Pagination,
-  Dropdown,
-  Empty,
-  Icon as DCLIcon,
-  Popup
-} from 'decentraland-ui'
+import { Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty } from 'decentraland-ui'
 import { config } from 'config'
-import { isDevelopment } from 'lib/environment'
 import { WorldsWalletStats } from 'lib/api/worlds'
 import { ENS } from 'modules/ens/types'
 import { isExternalName } from 'modules/ens/utils'
 import { track } from 'modules/analytics/sagas'
 import { locations } from 'routing/locations'
-import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
@@ -31,13 +16,19 @@ import { canOpenWorldsForENSOwnersAnnouncementModal } from 'components/Modals/Wo
 import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
+import WorldContributorTab from './WorldContributorTab'
 import { TabType, useCurrentlySelectedTab } from './hooks'
-import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus } from './utils'
+import {
+  DCLWorldsStatus,
+  fromBytesToMegabytes,
+  getDCLWorldsStatus,
+  renderWorldUrl,
+  isWorldDeployed,
+  renderPublishSceneButton
+} from './utils'
 import './WorldListPage.css'
 
 const PAGE_ACTION_EVENT = 'Worlds List Page Action'
-const EXPLORER_URL = config.get('EXPLORER_URL', '')
-const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL')
 const PAGE_SIZE = 12
@@ -51,36 +42,24 @@ const WorldListPage: React.FC<Props> = props => {
     isLoading,
     projects,
     worldsWalletStats,
+    isConnected,
+    isWorldContributorEnabled,
     onNavigate,
     onOpenYourStorageModal,
     onOpenWorldsForENSOwnersAnnouncementModal,
     onUnpublishWorld,
-    onOpenPermissionsModal
+    onOpenPermissionsModal,
+    onFetchContributableNames
   } = props
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
   const { tab } = useCurrentlySelectedTab()
 
-  const isWorldDeployed = useCallback(
-    (ens: ENS) => {
-      if (ens.worldStatus?.healthy) {
-        return !!deploymentsByWorlds[ens.subdomain]
-      }
-
-      return false
-    },
-    [deploymentsByWorlds]
-  )
-
-  const getExplorerUrl = useCallback(
-    (world: string) => {
-      if (isDevelopment) {
-        return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
-      }
-      return `${EXPLORER_URL}/world/${world}`
-    },
-    [isDevelopment]
-  )
+  useEffect(() => {
+    if (isConnected && isWorldContributorEnabled) {
+      onFetchContributableNames()
+    }
+  }, [isConnected, isWorldContributorEnabled])
 
   const handleClaimENS = useCallback(() => {
     if (tab === TabType.DCL) {
@@ -148,31 +127,9 @@ const WorldListPage: React.FC<Props> = props => {
       .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   }, [ensList, externalNames, page, sortBy, tab])
 
-  const renderWorldUrl = useCallback(
-    (ens: ENS) => {
-      const url = getExplorerUrl(ens.subdomain)
-      return isWorldDeployed(ens) ? (
-        <div className="world-url">
-          <span>{url}</span>
-          <div className="right">
-            <CopyToClipboard role="button" text={url} showPopup={true}>
-              <DCLIcon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
-            </CopyToClipboard>
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              <DCLIcon name="external alternate" />
-            </a>
-          </div>
-        </div>
-      ) : (
-        <span className="empty-url">{t('worlds_list_page.table.empty_url')}</span>
-      )
-    },
-    [getExplorerUrl, isWorldDeployed]
-  )
-
   const renderWorldStatus = useCallback(
     (ens: ENS) => {
-      let status = isWorldDeployed(ens) ? 'active' : 'inactive'
+      let status = isWorldDeployed(deploymentsByWorlds, ens) ? 'active' : 'inactive'
 
       if (status === 'active' && worldsWalletStats && !isExternalName(ens.subdomain)) {
         const worldsStatus = getDCLWorldsStatus(worldsWalletStats)
@@ -193,46 +150,11 @@ const WorldListPage: React.FC<Props> = props => {
     [getDCLWorldsStatus, isExternalName, isWorldDeployed]
   )
 
-  const renderPublishSceneButton = useCallback(
-    (ens: ENS) => {
-      const deployment = deploymentsByWorlds[ens.subdomain]
-      return isWorldDeployed(ens) ? (
-        <div className="publish-scene">
-          <Popup content={deployment?.name} on="hover" trigger={<span>{deployment?.name}</span>} />
-          {projects.find(project => project.id === deployment?.projectId) ? (
-            <Button inverted size="small" onClick={() => handleEditScene(ens)}>
-              {t('worlds_list_page.table.edit_scene')}
-            </Button>
-          ) : (
-            <Popup
-              content={t('worlds_list_page.table.scene_published_outside_builder')}
-              on="hover"
-              position="top center"
-              trigger={
-                <Button inverted size="small" onClick={() => handleUnpublishScene(ens)}>
-                  {t('worlds_list_page.table.unpublish_scene')}
-                </Button>
-              }
-            />
-          )}
-        </div>
-      ) : (
-        <div className="publish-scene">
-          <span>-</span>
-          <Button primary size="small" onClick={handlePublishScene}>
-            {t('worlds_list_page.table.publish_scene')}
-          </Button>
-        </div>
-      )
-    },
-    [deploymentsByWorlds, projects, isWorldDeployed, handleEditScene, handlePublishScene, handleUnpublishScene]
-  )
-
   const renderWorldSize = useCallback(
     (ens: ENS, stats?: WorldsWalletStats) => {
       const names = tab === TabType.DCL ? stats?.dclNames : stats?.ensNames
 
-      if (!isWorldDeployed(ens) || !names) {
+      if (!isWorldDeployed(deploymentsByWorlds, ens) || !names) {
         return '-'
       }
 
@@ -241,7 +163,7 @@ const WorldListPage: React.FC<Props> = props => {
 
       return formatNumber(fromBytesToMegabytes(Number(bytes))) + suffix
     },
-    [tab, isWorldDeployed]
+    [tab]
   )
 
   const handleOpenPermissionsModal = useCallback((_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, worldName: string) => {
@@ -302,8 +224,17 @@ const WorldListPage: React.FC<Props> = props => {
                   return (
                     <Table.Row className="TableRow" key={index}>
                       <Table.Cell width={2}>{ens.name}</Table.Cell>
-                      <Table.Cell width={2}>{renderWorldUrl(ens)}</Table.Cell>
-                      <Table.Cell width={1}>{renderPublishSceneButton(ens)}</Table.Cell>
+                      <Table.Cell width={2}>{renderWorldUrl(deploymentsByWorlds, ens)}</Table.Cell>
+                      <Table.Cell width={1}>
+                        {renderPublishSceneButton({
+                          deploymentsByWorlds,
+                          ens,
+                          projects,
+                          onEditScene: handleEditScene,
+                          onPublishScene: handlePublishScene,
+                          onUnpublishScene: handleUnpublishScene
+                        })}
+                      </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldSize(ens, worldsWalletStats)}
                       </Table.Cell>
@@ -452,7 +383,9 @@ const WorldListPage: React.FC<Props> = props => {
       <Container>
         <h1>{t('worlds_list_page.title')}</h1>
         <NameTabs />
-        {tab === TabType.DCL ? renderDCLNamesView() : renderENSNamesView()}
+        {tab === TabType.DCL && renderDCLNamesView()}
+        {tab === TabType.ENS && renderENSNamesView()}
+        {tab === TabType.CONTRIBUTOR && isWorldContributorEnabled && <WorldContributorTab />}
       </Container>
     </LoggedInDetailPage>
   )

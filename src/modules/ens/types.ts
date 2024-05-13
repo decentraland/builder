@@ -22,6 +22,8 @@ export type ENS = {
   worldStatus?: WorldStatus | null
 
   ensAddressRecord?: string
+  userPermissions?: string[]
+  size?: number
 }
 
 export type ENSError = {
@@ -42,4 +44,11 @@ export type WorldStatus = {
     urn: string
     entityId: string
   }
+}
+
+export type ContributableDomain = {
+  name: string
+  user_permissions: string[]
+  owner: string
+  size: number
 }

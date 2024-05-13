@@ -6,5 +6,6 @@ export enum FeatureName {
   ENS_ADDRESS = 'ens-address',
   PUBLISH_COLLECTIONS_WERT = 'publish-collections-wert',
   VRM_OPTOUT = 'vrm-optout',
-  WEARABLE_UTILITY = 'wearable-utility'
+  WEARABLE_UTILITY = 'wearable-utility',
+  WORLD_CONTRIBUTOR = 'world-contributor'
 }

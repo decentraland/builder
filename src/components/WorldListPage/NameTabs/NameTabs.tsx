@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './NameTabs.types'
 import { TAB_QUERY_PARAM_KEY, TabType, useCurrentlySelectedTab } from '../hooks'
 
-const NameTabs = ({ onNavigate }: Props) => {
+const NameTabs = ({ isWorldContributorEnabled, onNavigate }: Props) => {
   const { tab, pathname, urlSearchParams } = useCurrentlySelectedTab()
 
   const navigateToTab = (tab: TabType) => {
@@ -13,7 +13,7 @@ const NameTabs = ({ onNavigate }: Props) => {
     onNavigate(`${pathname}?${urlSearchParamsCopy.toString()}`)
   }
 
-  if (!tab) {
+  if (!tab || (tab === TabType.CONTRIBUTOR && !isWorldContributorEnabled)) {
     navigateToTab(TabType.DCL)
     return null
   }
@@ -26,6 +26,11 @@ const NameTabs = ({ onNavigate }: Props) => {
       <Tabs.Tab active={tab === TabType.ENS} onClick={() => navigateToTab(TabType.ENS)}>
         {t('worlds_list_page.name_tabs.ens_names')}
       </Tabs.Tab>
+      {isWorldContributorEnabled && (
+        <Tabs.Tab active={tab === TabType.CONTRIBUTOR} onClick={() => navigateToTab(TabType.CONTRIBUTOR)}>
+          {t('worlds_list_page.name_tabs.contributor_names')}
+        </Tabs.Tab>
+      )}
     </Tabs>
   )
 }

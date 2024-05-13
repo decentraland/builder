@@ -1,5 +1,6 @@
 import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 import { config } from 'config'
+import { ContributableDomain } from 'modules/ens/types'
 import { Authorization } from './auth'
 
 export const WORLDS_CONTENT_SERVER = config.get('WORLDS_CONTENT_SERVER', '')
@@ -156,5 +157,25 @@ export class WorldsAPI extends BaseAPI {
       headers
     })
     return result.status === 204
+  }
+
+  public fetchContributableDomains = async () => {
+    if (!this.authorization) {
+      throw new Error('Unauthorized')
+    }
+
+    const path = '/world/contribute'
+    const headers = this.authorization.createAuthHeaders('get', path, {})
+    const result = await fetch(this.url + path, {
+      method: 'GET',
+      headers
+    })
+
+    if (result.ok) {
+      const json: { domains: ContributableDomain[] } = await result.json()
+      return json.domains
+    } else {
+      throw new Error('Error while fetching contributable domains')
+    }
   }
 }

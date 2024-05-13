@@ -21,6 +21,8 @@ import { getDomainFromName } from './utils'
 export const getState = (state: RootState) => state.ens
 export const getData = (state: RootState) => getState(state).data
 export const getExternalNames = (state: RootState) => getState(state).externalNames
+export const getContributableNames = (state: RootState) => getState(state).contributableNames
+export const getContributableNamesError = (state: RootState) => getState(state).contributableNamesError
 export const getError = (state: RootState) => getState(state).error
 export const getLoading = (state: RootState) => getState(state).loading
 
@@ -32,6 +34,10 @@ export const getENSByWallet = createSelector<RootState, ENS[], string | undefine
 
 export const getExternalNamesList = createSelector(getExternalNames, externalNames => {
   return Object.values(externalNames)
+})
+
+export const getContributableNamesList = createSelector(getContributableNames, contributableNames => {
+  return Object.values(contributableNames)
 })
 
 export const getExternalNamesForConnectedWallet = createSelector(getExternalNames, getAddress, (externalNames, address = '') => {
