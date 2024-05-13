@@ -58,9 +58,8 @@ import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout, updateScene } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene, setGizmo } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
-import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
+import { BuilderAPI } from 'lib/api/builder'
 import {
   SAVE_PROJECT_SUCCESS,
   saveProjectRequest,
@@ -80,7 +79,6 @@ import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { didUpdateLayout, getImageAsDataUrl, getTemplate, getTemplates } from './utils'
 import { createFiles, createSDK7Files } from './export'
-import { getIsSDK7TemplatesEnabled } from 'modules/features/selectors'
 
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -174,19 +172,13 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleDuplicateProjectRequest(action: DuplicateProjectRequestAction) {
     const { project, type, shouldRedirect } = action.payload
-    const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
     const ethAddress: string = yield select(getAddress)
     const scene: Scene = yield getSceneByProjectId(project.id, type)
 
     let thumbnail: string = project.thumbnail
 
     try {
-      // TODO: remove this when the SDK7_TEMPLATES feature flag is removed
-      if (!isSDK7TemplatesEnabled && project.isTemplate) {
-        thumbnail = yield call(getImageAsDataUrl, `${BUILDER_SERVER_URL}/projects/${project.id}/media/thumbnail.png`)
-      } else if (thumbnail && isRemoteURL(thumbnail)) {
-        thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
-      }
+      thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
 
       const newSceneId = uuidv4()
       const newScene: Scene = scene.sdk6
@@ -362,8 +354,7 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleLoadProjectSceneRequest(action: LoadProjectSceneRequestAction) {
     const { project, type } = action.payload
     try {
-      const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
-      if (isSDK7TemplatesEnabled && type === PreviewType.TEMPLATE) {
+      if (type === PreviewType.TEMPLATE) {
         const template: Manifest = yield call(getTemplate, project.id)
         yield put(loadProjectSceneSuccess(template.scene))
       } else {
@@ -383,8 +374,7 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleLoadManifestRequest(action: LoadManifestRequestAction) {
     const { id, type } = action.payload
     try {
-      const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
-      if (isSDK7TemplatesEnabled && type === PreviewType.TEMPLATE) {
+      if (type === PreviewType.TEMPLATE) {
         const manifest: Manifest = yield call(getTemplate, id)
         yield put(loadManifestSuccess(manifest))
       } else {
@@ -398,10 +388,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleLoadTemplatesRequest() {
     try {
-      const isSDK7TemplatesEnabled: boolean = yield select(getIsSDK7TemplatesEnabled)
-      const projects: Project[] = isSDK7TemplatesEnabled
-        ? ((yield call(getTemplates)) as Manifest[]).map(template => template.project)
-        : yield call([builder, 'fetchTemplates'])
+      const projects: Project[] = ((yield call(getTemplates)) as Manifest[]).map(template => template.project)
       const record: ModelById<Project> = {}
 
       for (const project of projects) {

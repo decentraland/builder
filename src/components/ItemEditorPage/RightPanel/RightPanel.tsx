@@ -590,6 +590,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               placeholder={t('item_editor.right_panel.utility_placeholder')}
                               disabled={!canEditItemMetadata}
                               value={utility}
+                              tooltip={{ content: t('item_editor.right_panel.utility_tooltip') }}
                               rows="2"
                               cols="12"
                             />
