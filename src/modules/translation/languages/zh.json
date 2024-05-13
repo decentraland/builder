@@ -1976,6 +1976,7 @@
       "required_permissions": "权限",
       "description_placeholder": "是什么让您的物品与众不同？",
       "utility_placeholder": "描述您的物品功能",
+      "utility_tooltip": "描述可穿戴设备在现实世界中的用途。 例如：伤害增加5%",
       "copyright": {
         "title": "VRM出口许可",
         "vrm_export": "允许VRM导出",

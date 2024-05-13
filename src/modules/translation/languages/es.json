@@ -1993,6 +1993,7 @@
       "required_permissions": "Permisos",
       "description_placeholder": "¿Qué hace a tu Item especial?",
       "utility_placeholder": "Describe la funcionalida de tu Item",
+      "utility_tooltip": "Describe la funcionalidad dentro del mundo del Wearable. Ej: Incrementa el daño en 5%",
       "copyright": {
         "title": "Permiso de exportación de VRM",
         "vrm_export": "Permitir la exportación de VRM",

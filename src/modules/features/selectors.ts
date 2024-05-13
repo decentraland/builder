@@ -22,14 +22,6 @@ export const getIsCampaignEnabled = (state: RootState) => {
   }
 }
 
-export const getIsSDK7TemplatesEnabled = (state: RootState) => {
-  try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SDK7_TEMPLATES)
-  } catch (e) {
-    return false
-  }
-}
-
 export const getIsCreateSceneOnlySDK7Enabled = (state: RootState) => {
   try {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CREATE_SCENE_ONLY_SDK7)
