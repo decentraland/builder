@@ -164,7 +164,7 @@ export class WorldsAPI extends BaseAPI {
       throw new Error('Unauthorized')
     }
 
-    const path = '/world/contribute'
+    const path = '/wallet/contribute'
     const headers = this.authorization.createAuthHeaders('get', path, {})
     const result = await fetch(this.url + path, {
       method: 'GET',

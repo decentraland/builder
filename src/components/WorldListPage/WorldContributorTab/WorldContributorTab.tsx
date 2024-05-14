@@ -1,12 +1,13 @@
 import { t } from 'decentraland-dapps/dist/modules/translation'
 import { Loader, Message, Table, Empty, Button } from 'decentraland-ui'
+import { formatNumber } from 'decentraland-dapps/dist/lib'
 import { useCallback } from 'react'
 import { config } from 'config'
 import { locations } from 'routing/locations'
 import Profile from 'components/Profile'
 import { ENS } from 'modules/ens/types'
+import { fromBytesToMegabytes, renderPublishSceneButton, renderWorldUrl } from '../utils'
 import { Props } from './WorldContributorTab.types'
-import { renderPublishSceneButton, renderWorldUrl } from '../utils'
 
 export default function WorldContributorTab({ items, deploymentsByWorlds, projects, loading, error, onNavigate, onUnpublishWorld }: Props) {
   const handlePublishScene = useCallback(() => {
@@ -75,7 +76,7 @@ export default function WorldContributorTab({ items, deploymentsByWorlds, projec
           return (
             <Table.Row className="TableRow" key={index}>
               <Table.Cell width={1}>{ens.name}</Table.Cell>
-              <Table.Cell width={1}>{<Profile address={ens.nftOwnerAddress} />}</Table.Cell>
+              <Table.Cell width={1}>{<Profile address={ens.nftOwnerAddress || ''} />}</Table.Cell>
               <Table.Cell width={2}>{renderWorldUrl(deploymentsByWorlds, ens)}</Table.Cell>
               <Table.Cell width={1}>
                 {renderPublishSceneButton({
@@ -87,7 +88,7 @@ export default function WorldContributorTab({ items, deploymentsByWorlds, projec
                   onUnpublishScene: canUserDeploy ? handleUnpublishScene : undefined
                 })}
               </Table.Cell>
-              <Table.Cell width={1}>{ens.size || '-'}</Table.Cell>
+              <Table.Cell width={1}>{formatNumber(fromBytesToMegabytes(Number(ens.size) || 0))}</Table.Cell>
               <Table.Cell width={1}>{userPermissions}</Table.Cell>
             </Table.Row>
           )

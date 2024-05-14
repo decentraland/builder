@@ -509,11 +509,23 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const bannedNamesSet = new Set(bannedNames.map(x => x.toLowerCase()))
 
       names = names.filter(({ name }) => name.split('.').every(nameSegment => !bannedNamesSet.has(nameSegment)))
+      const ensDomains: string[] = []
+      const nameDomains: string[] = []
+      names.forEach(({ name }) => {
+        if (name.includes('.dcl.eth')) {
+          nameDomains.push(name.replace('.dcl.eth', ''))
+        } else {
+          ensDomains.push(name)
+        }
+      })
+      const ownerByNameDomain: Record<string, string> = yield call([marketplace, 'fetchENSOwnerByDomain'], nameDomains)
+      const ownerByEnsDomain: Record<string, string> = yield call([ensApi, 'fetchExternalENSOwners'], ensDomains)
 
-      const enss: ENS[] = names.map(({ name, user_permissions, owner, size }) => {
+      const enss: ENS[] = names.map(({ name, user_permissions, size }) => {
+        const nameDomain = name.replace('.dcl.eth', '')
         return {
           subdomain: name,
-          nftOwnerAddress: owner,
+          nftOwnerAddress: name.includes('dcl.eth') ? ownerByNameDomain[nameDomain] : ownerByEnsDomain[name],
           content: '',
           ensOwnerAddress: '',
           name,
