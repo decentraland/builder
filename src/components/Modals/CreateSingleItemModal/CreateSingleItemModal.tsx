@@ -356,8 +356,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       const removesDefaultHiding = category === WearableCategory.UPPER_BODY ? [BodyPartCategory.HANDS] : []
       data = {
         ...pristineItem.data,
-        replaces: pristineItem.data.replaces ?? [],
-        hides: pristineItem.data.hides ?? [],
         removesDefaultHiding,
         category: category as WearableCategory,
         requiredPermissions: requiredPermissions || []
