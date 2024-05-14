@@ -757,7 +757,8 @@
     },
     "name_tabs": {
       "dcl_names": "Decentraland 名称",
-      "ens_names": "ENS 域名"
+      "ens_names": "ENS 域名",
+      "contributor_names": "贡献者"
     },
     "worlds_storage": {
       "used": "已使用空间",

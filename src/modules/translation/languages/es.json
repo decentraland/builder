@@ -755,7 +755,8 @@
     },
     "name_tabs": {
       "dcl_names": "NAMEs de Decentraland",
-      "ens_names": "Dominios ENS"
+      "ens_names": "Dominios ENS",
+      "contributor_names": "Contribuyente"
     },
     "worlds_storage": {
       "used": "Espacio utilizado",
