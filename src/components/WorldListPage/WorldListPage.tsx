@@ -17,15 +17,10 @@ import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
 import WorldContributorTab from './WorldContributorTab'
+import WorldUrl from './WorldUrl'
+import PublishSceneButton from './PublishSceneButton'
 import { TabType, useCurrentlySelectedTab } from './hooks'
-import {
-  DCLWorldsStatus,
-  fromBytesToMegabytes,
-  getDCLWorldsStatus,
-  renderWorldUrl,
-  isWorldDeployed,
-  renderPublishSceneButton
-} from './utils'
+import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus, isWorldDeployed } from './utils'
 import './WorldListPage.css'
 
 const PAGE_ACTION_EVENT = 'Worlds List Page Action'
@@ -224,16 +219,16 @@ const WorldListPage: React.FC<Props> = props => {
                   return (
                     <Table.Row className="TableRow" key={index}>
                       <Table.Cell width={2}>{ens.name}</Table.Cell>
-                      <Table.Cell width={2}>{renderWorldUrl(deploymentsByWorlds, ens)}</Table.Cell>
+                      <Table.Cell width={2}>{<WorldUrl deploymentsByWorlds={deploymentsByWorlds} ens={ens} />}</Table.Cell>
                       <Table.Cell width={1}>
-                        {renderPublishSceneButton({
-                          deploymentsByWorlds,
-                          ens,
-                          projects,
-                          onEditScene: handleEditScene,
-                          onPublishScene: handlePublishScene,
-                          onUnpublishScene: handleUnpublishScene
-                        })}
+                        <PublishSceneButton
+                          deploymentsByWorlds={deploymentsByWorlds}
+                          ens={ens}
+                          projects={projects}
+                          onEditScene={handleEditScene}
+                          onPublishScene={handlePublishScene}
+                          onUnpublishScene={handleUnpublishScene}
+                        />
                       </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         {renderWorldSize(ens, worldsWalletStats)}
@@ -265,19 +260,7 @@ const WorldListPage: React.FC<Props> = props => {
         </Container>
       </>
     )
-  }, [
-    tab,
-    ensList,
-    externalNames,
-    handleClaimENS,
-    paginate,
-    renderPublishSceneButton,
-    renderSortDropdown,
-    renderWorldUrl,
-    renderWorldSize,
-    renderWorldStatus,
-    setPage
-  ])
+  }, [tab, ensList, externalNames, handleClaimENS, paginate, renderSortDropdown, renderWorldSize, renderWorldStatus, setPage])
 
   const renderEmptyPage = useCallback(() => {
     return (

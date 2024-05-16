@@ -3,6 +3,9 @@ import {
   FETCH_EXTERNAL_NAMES_REQUEST,
   SET_ENS_ADDRESS_SUCCESS,
   clearENSErrors,
+  fetchContributableNamesFailure,
+  fetchContributableNamesRequest,
+  fetchContributableNamesSuccess,
   fetchExternalNamesFailure,
   fetchExternalNamesRequest,
   fetchExternalNamesSuccess,
@@ -198,5 +201,89 @@ describe('when handling the CLEAR_ENS_ERRORS action', () => {
       clearENSErrors()
     )
     expect(newState.error).toEqual(null)
+  })
+})
+
+describe('when handling fetch contributable names actions', () => {
+  describe('when handling fetch contributable names request action', () => {
+    it('should reset contributable names error', () => {
+      const stateWithError = {
+        ...state,
+        contributableNamesError: { message: 'an error' }
+      }
+      expect(ensReducer(stateWithError, fetchContributableNamesRequest())).toEqual(
+        expect.objectContaining({
+          contributableNamesError: null
+        })
+      )
+    })
+
+    it('should set contributable names action as loading', () => {
+      const stateWithoutLoading = {
+        ...state,
+        loading: []
+      }
+      const action = fetchContributableNamesRequest()
+      expect(ensReducer(stateWithoutLoading, fetchContributableNamesRequest())).toEqual(
+        expect.objectContaining({
+          loading: [action]
+        })
+      )
+    })
+  })
+
+  describe('when handling fetch contributable names success action', () => {
+    let ens: ENS
+    beforeEach(() => {
+      state = {
+        ...state,
+        loading: [fetchContributableNamesRequest()]
+      }
+
+      ens = { name: 'test.dcl.eth', subdomain: 'test.dcl.eth' } as ENS
+    })
+
+    it('should add contributable names to the state', () => {
+      expect(ensReducer(state, fetchContributableNamesSuccess([ens]))).toEqual(
+        expect.objectContaining({
+          contributableNames: { 'test.dcl.eth': ens }
+        })
+      )
+    })
+
+    it('should add contributable names to the state', () => {
+      expect(ensReducer(state, fetchContributableNamesSuccess([ens]))).toEqual(
+        expect.objectContaining({
+          loading: []
+        })
+      )
+    })
+  })
+
+  describe('when handling fetch contributable names failure action', () => {
+    let error: ENSError
+    beforeEach(() => {
+      error = { message: 'Message' }
+      state = {
+        ...state,
+        loading: [fetchContributableNamesRequest()]
+      }
+    })
+
+    it('should add the error to the state', () => {
+      expect(ensReducer(state, fetchContributableNamesFailure(error))).toEqual(
+        expect.objectContaining({
+          contributableNamesError: error
+        })
+      )
+    })
+
+    it('should reset loading', () => {
+      expect(ensReducer(state, fetchContributableNamesFailure(error))).toEqual(
+        expect.objectContaining({
+          loading: []
+        })
+      )
+    })
   })
 })

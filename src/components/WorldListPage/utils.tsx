@@ -1,12 +1,8 @@
 import { WorldsWalletStats } from 'lib/api/worlds'
-import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
-import { Button, Icon as DCLIcon, Popup } from 'decentraland-ui'
 import { ENS } from 'modules/ens/types'
-import { t } from 'decentraland-dapps/dist/modules/translation'
 import { Deployment } from 'modules/deployment/types'
 import { isDevelopment } from 'lib/environment'
 import { config } from 'config'
-import { Project } from 'modules/project/types'
 
 export const fromBytesToMegabytes = (bytes: number) => {
   return bytes / 1024 / 1024
@@ -73,73 +69,4 @@ export const getExplorerUrl = (world: string) => {
     return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
   }
   return `${EXPLORER_URL}/world/${world}`
-}
-
-export const renderWorldUrl = (deploymentsByWorlds: Record<string, Deployment>, ens: ENS) => {
-  const url = getExplorerUrl(ens.subdomain)
-  return isWorldDeployed(deploymentsByWorlds, ens) ? (
-    <div className="world-url">
-      <span>{url}</span>
-      <div className="right">
-        <CopyToClipboard role="button" text={url} showPopup={true}>
-          <DCLIcon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
-        </CopyToClipboard>
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          <DCLIcon name="external alternate" />
-        </a>
-      </div>
-    </div>
-  ) : (
-    <span className="empty-url">{t('worlds_list_page.table.empty_url')}</span>
-  )
-}
-
-export const renderPublishSceneButton = ({
-  deploymentsByWorlds,
-  ens,
-  projects,
-  onEditScene,
-  onUnpublishScene,
-  onPublishScene
-}: {
-  deploymentsByWorlds: Record<string, Deployment>
-  ens: ENS
-  projects: Project[]
-  onEditScene?: (ens: ENS) => void
-  onUnpublishScene?: (ens: ENS) => void
-  onPublishScene?: () => void
-}) => {
-  const deployment = deploymentsByWorlds[ens.subdomain]
-  return isWorldDeployed(deploymentsByWorlds, ens) ? (
-    <div className="publish-scene">
-      <Popup content={deployment?.name} on="hover" trigger={<span>{deployment?.name}</span>} />
-      {projects.find(project => project.id === deployment?.projectId)
-        ? onEditScene && (
-            <Button inverted size="small" onClick={() => onEditScene(ens)}>
-              {t('worlds_list_page.table.edit_scene')}
-            </Button>
-          )
-        : onUnpublishScene && (
-            <Popup
-              content={t('worlds_list_page.table.scene_published_outside_builder')}
-              on="hover"
-              position="top center"
-              trigger={
-                <Button inverted size="small" onClick={() => onUnpublishScene(ens)}>
-                  {t('worlds_list_page.table.unpublish_scene')}
-                </Button>
-              }
-            />
-          )}
-    </div>
-  ) : (
-    <div className="publish-scene">
-      <span>-</span>
-      {onPublishScene && (
-        <Button primary size="small" onClick={onPublishScene}>
-          {t('worlds_list_page.table.publish_scene')}
-        </Button>
-      )}
-    </div>
-  )
 }

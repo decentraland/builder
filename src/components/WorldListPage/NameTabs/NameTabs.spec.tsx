@@ -163,7 +163,8 @@ describe('when isWorldContributorEnabled is false', () => {
 
     onNavigate = jest.fn()
   })
-  it('should not show contributor tab', () => {
+
+  it('should not show the contributor tab', () => {
     render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled={false} />)
     expect(screen.getByText(dclTabText)).toBeInTheDocument()
     expect(screen.getByText(ensTabText)).toBeInTheDocument()

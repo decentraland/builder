@@ -6,8 +6,10 @@ import { config } from 'config'
 import { locations } from 'routing/locations'
 import Profile from 'components/Profile'
 import { ENS } from 'modules/ens/types'
-import { fromBytesToMegabytes, renderPublishSceneButton, renderWorldUrl } from '../utils'
+import { fromBytesToMegabytes } from '../utils'
 import { Props } from './WorldContributorTab.types'
+import WorldUrl from '../WorldUrl'
+import PublishSceneButton from '../PublishSceneButton'
 
 export default function WorldContributorTab({ items, deploymentsByWorlds, projects, loading, error, onNavigate, onUnpublishWorld }: Props) {
   const handlePublishScene = useCallback(() => {
@@ -77,16 +79,16 @@ export default function WorldContributorTab({ items, deploymentsByWorlds, projec
             <Table.Row className="TableRow" key={index}>
               <Table.Cell width={1}>{ens.name}</Table.Cell>
               <Table.Cell width={1}>{<Profile address={ens.nftOwnerAddress || ''} />}</Table.Cell>
-              <Table.Cell width={2}>{renderWorldUrl(deploymentsByWorlds, ens)}</Table.Cell>
+              <Table.Cell width={2}>{<WorldUrl deploymentsByWorlds={deploymentsByWorlds} ens={ens} />}</Table.Cell>
               <Table.Cell width={1}>
-                {renderPublishSceneButton({
-                  deploymentsByWorlds,
-                  ens,
-                  projects,
-                  onEditScene: canUserDeploy ? handleEditScene : undefined,
-                  onPublishScene: canUserDeploy ? handlePublishScene : undefined,
-                  onUnpublishScene: canUserDeploy ? handleUnpublishScene : undefined
-                })}
+                <PublishSceneButton
+                  deploymentsByWorlds={deploymentsByWorlds}
+                  ens={ens}
+                  projects={projects}
+                  onEditScene={canUserDeploy ? handleEditScene : undefined}
+                  onPublishScene={canUserDeploy ? handlePublishScene : undefined}
+                  onUnpublishScene={canUserDeploy ? handleUnpublishScene : undefined}
+                />
               </Table.Cell>
               <Table.Cell width={1}>{formatNumber(fromBytesToMegabytes(Number(ens.size) || 0))}</Table.Cell>
               <Table.Cell width={1}>{userPermissions}</Table.Cell>

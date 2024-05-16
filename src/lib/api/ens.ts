@@ -79,6 +79,10 @@ export class ENSApi {
   }
 
   fetchExternalENSOwners = async (domains: string[]): Promise<Record<string, string>> => {
+    if (!domains) {
+      return {}
+    }
+
     const { data } = await ensGraphClient.query<OwnerByENSQueryResult>({
       query: getOwnerByENSQuery(),
       variables: { domains }

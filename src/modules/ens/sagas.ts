@@ -503,7 +503,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
 
   function* handleFetchContributableNamesRequest() {
     try {
-      let names: ContributableDomain[] = yield call([ensApi, worldsAPIContent.fetchContributableDomains])
+      let names: ContributableDomain[] = yield call([worldsAPIContent, 'fetchContributableDomains'])
 
       const bannedNames: string[] = yield call([lists, 'fetchBannedNames'])
       const bannedNamesSet = new Set(bannedNames.map(x => x.toLowerCase()))
@@ -518,8 +518,11 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           ensDomains.push(name)
         }
       })
-      const ownerByNameDomain: Record<string, string> = yield call([marketplace, 'fetchENSOwnerByDomain'], nameDomains)
-      const ownerByEnsDomain: Record<string, string> = yield call([ensApi, 'fetchExternalENSOwners'], ensDomains)
+
+      const [ownerByNameDomain, ownerByEnsDomain]: [Record<string, string>, Record<string, string>] = yield all([
+        call([marketplace, 'fetchENSOwnerByDomain'], nameDomains),
+        call([ensApi, 'fetchExternalENSOwners'], ensDomains)
+      ])
 
       const enss: ENS[] = names.map(({ name, user_permissions, size }) => {
         const nameDomain = name.replace('.dcl.eth', '')
@@ -537,9 +540,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       })
 
       const ensWithWorldStatus: ENS[] = yield call(addWorldStatusToEachENS, enss)
-
       yield put(fetchWorldDeploymentsRequest(ensWithWorldStatus.filter(ens => ens.worldStatus).map(ens => ens.subdomain)))
-
       yield put(fetchContributableNamesSuccess(ensWithWorldStatus))
     } catch (error) {
       const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }

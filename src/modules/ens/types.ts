@@ -23,7 +23,7 @@ export type ENS = {
 
   ensAddressRecord?: string
   userPermissions?: string[]
-  size?: number
+  size?: string
 }
 
 export type ENSError = {
@@ -50,5 +50,5 @@ export type ContributableDomain = {
   name: string
   user_permissions: string[]
   owner: string
-  size: number
+  size: string
 }

@@ -122,11 +122,17 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_CONTENT_SUCCESS:
     case SET_ENS_RESOLVER_SUCCESS:
     case FETCH_EXTERNAL_NAMES_REQUEST:
-    case SET_ENS_ADDRESS_REQUEST:
-    case FETCH_CONTRIBUTABLE_NAMES_REQUEST: {
+    case SET_ENS_ADDRESS_REQUEST: {
       return {
         ...state,
         error: null,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case FETCH_CONTRIBUTABLE_NAMES_REQUEST: {
+      return {
+        ...state,
+        contributableNamesError: null,
         loading: loadingReducer(state.loading, action)
       }
     }
