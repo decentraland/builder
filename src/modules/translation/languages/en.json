@@ -1286,7 +1286,7 @@
     "size_subtitle": "Set the parcels size of your new scene",
     "sdk_title": "Experience the new Decentraland Web Editor",
     "sdk_subtitle": "Harness the power of SDK 7 without any code.",
-    "sdk_description": "Enhance your scene-building process with our improved visual editor. All features from the previous Scene Builder are included, while the addition of <b>Smart Items</b> is scheduled for an upcoming update.",
+    "sdk_description": "Enhance your scene-building process with our improved visual editor. All features from the previous Scene Builder are included.",
     "sdk_image_alt": "SDK 7",
     "name_label": "Name",
     "description_label": "Description",
