@@ -23,7 +23,8 @@ export const FETCH_ENS_WORLD_STATUS_SUCCESS = '[Success] Fetch ENS World Status'
 export const FETCH_ENS_WORLD_STATUS_FAILURE = '[Failure] Fetch ENS World Status'
 
 export const fetchENSWorldStatusRequest = (subdomain: string) => action(FETCH_ENS_WORLD_STATUS_REQUEST, { subdomain })
-export const fetchENSWorldStatusSuccess = (ens: ENS) => action(FETCH_ENS_WORLD_STATUS_SUCCESS, { ens })
+export const fetchENSWorldStatusSuccess = (ens: ENS, isContributableName = false) =>
+  action(FETCH_ENS_WORLD_STATUS_SUCCESS, { ens, isContributableName })
 export const fetchENSWorldStatusFailure = (error: ENSError) => action(FETCH_ENS_WORLD_STATUS_FAILURE, { error })
 
 export type FetchENSWorldStatusRequestAction = ReturnType<typeof fetchENSWorldStatusRequest>

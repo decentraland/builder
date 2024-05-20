@@ -65,7 +65,7 @@ import {
   fetchContributableNamesSuccess,
   fetchContributableNamesFailure
 } from './actions'
-import { getENSBySubdomain, getExternalNames } from './selectors'
+import { getContributableNamesList, getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, ContributableDomain } from './types'
 import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
 
@@ -200,7 +200,12 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     try {
       let ens: ENS
 
-      if (!isExternalName(subdomain)) {
+      const contributableNames: ENS[] = yield select(getContributableNamesList)
+      const contributableName = contributableNames.find(ens => ens.subdomain === subdomain)
+
+      if (contributableName) {
+        ens = contributableName
+      } else if (!isExternalName(subdomain)) {
         ens = yield select(getENSBySubdomain, subdomain)
       } else {
         const externalNames: ReturnType<typeof getExternalNames> = yield select(getExternalNames)
@@ -233,10 +238,13 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       }
 
       yield put(
-        fetchENSWorldStatusSuccess({
-          ...ens,
-          worldStatus
-        })
+        fetchENSWorldStatusSuccess(
+          {
+            ...ens,
+            worldStatus
+          },
+          !!contributableName
+        )
       )
     } catch (error) {
       const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }

@@ -261,6 +261,7 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     }
     case FETCH_DEPLOYMENTS_SUCCESS:
     case FETCH_WORLD_DEPLOYMENTS_SUCCESS: {
+      console.log('PAYLOAD', action.payload)
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

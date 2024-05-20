@@ -5,7 +5,7 @@ import { getCurrentProject, getUserProjects } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { LandTile } from 'modules/land/types'
-import { getENSList, getExternalNamesList } from 'modules/ens/selectors'
+import { getContributableNamesList, getENSList, getExternalNamesList } from 'modules/ens/selectors'
 import { ENS, WorldStatus } from 'modules/ens/types'
 import { idToCoords, coordsToId, emptyColorByRole } from 'modules/land/utils'
 import { DeploymentState } from './reducer'
@@ -119,15 +119,18 @@ export const getEmptyTiles = createSelector<RootState, Record<string, Deployment
   }
 )
 
-export const getDeploymentsByWorlds = createSelector<RootState, DeploymentState['data'], ENS[], ENS[], Record<string, Deployment>>(
+export const getDeploymentsByWorlds = createSelector<RootState, DeploymentState['data'], ENS[], ENS[], ENS[], Record<string, Deployment>>(
   getData,
   getENSList,
   getExternalNamesList,
-  (deployments, ensList, externalNamesList) => {
+  getContributableNamesList,
+  (deployments, ensList, externalNamesList, contributableNamesList) => {
+    console.log({ deployments })
     const out: Record<string, Deployment> = {}
     const dclNameWorlds = ensList.filter(ens => !!ens.worldStatus)
     const externalNameWorlds = externalNamesList.filter(ens => !!ens.worldStatus)
-    const worlds = [...dclNameWorlds, ...externalNameWorlds]
+    const contributableNamesWorlds = contributableNamesList.filter(ens => !!ens.worldStatus)
+    const worlds = [...dclNameWorlds, ...externalNameWorlds, ...contributableNamesWorlds]
 
     for (const world of worlds) {
       out[world.subdomain] = deployments[(world.worldStatus as WorldStatus).scene.entityId]

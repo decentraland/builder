@@ -3,7 +3,12 @@ import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { fetchContributableNamesRequest } from 'modules/ens/actions'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getContributableNamesList, getENSByWallet, getExternalNamesForConnectedWallet } from 'modules/ens/selectors'
+import {
+  getContributableNamesList,
+  getENSByWallet,
+  getExternalNamesForConnectedWallet,
+  isLoading as isLoadingENS
+} from 'modules/ens/selectors'
 import { deployToWorldRequest } from 'modules/deployment/actions'
 import { getCurrentMetrics, getCurrentScene } from 'modules/scene/selectors'
 import { recordMediaRequest } from 'modules/media/actions'
@@ -15,6 +20,7 @@ import DeployToWorld from './DeployToWorld'
 import { getIsWorldContributorEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
+  // console.log("MEI", getData(state))
   return {
     ensList: getENSByWallet(state),
     externalNames: getExternalNamesForConnectedWallet(state),
@@ -25,7 +31,7 @@ const mapState = (state: RootState): MapStateProps => {
     deployments: getDeploymentsByWorlds(state),
     deploymentProgress: getUploadProgress(state),
     error: getError(state),
-    isLoading: isLoading(state),
+    isLoading: isLoading(state) || isLoadingENS(state),
     isWorldContributorEnabled: getIsWorldContributorEnabled(state)
   }
 }
