@@ -18,8 +18,8 @@ function renderWorldUrl(props: Partial<Props>) {
   return render(<WorldUrl ens={ens} deploymentsByWorlds={{}} {...props} />)
 }
 
-describe('when world has a scene deployed', () => {
-  it('should show world url', () => {
+describe('when the world has a scene deployed', () => {
+  it('should show the world url', () => {
     deploymentsByWorlds = {
       [ens.subdomain]: {
         projectId: 'projectId'
@@ -30,8 +30,8 @@ describe('when world has a scene deployed', () => {
   })
 })
 
-describe('when world has no scene deployed', () => {
-  it('should show world url', () => {
+describe('when the world has no scene deployed', () => {
+  it('should show the world url', () => {
     deploymentsByWorlds = {}
     const screen = renderWorldUrl({ deploymentsByWorlds })
     expect(screen.getByText(t('worlds_list_page.table.empty_url'))).toBeInTheDocument()

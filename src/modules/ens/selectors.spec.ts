@@ -218,7 +218,7 @@ describe('when using getContributableNames selector', () => {
   })
 })
 
-describe('when using getContributableNamesError selector', () => {
+describe('when using the getContributableNamesError selector', () => {
   let contributableNamesError: ENSState['contributableNamesError']
   describe('when there was an error laoding the contributable names', () => {
     beforeEach(() => {
@@ -232,7 +232,7 @@ describe('when using getContributableNamesError selector', () => {
       }
     })
 
-    it('should return a record of contributable names', () => {
+    it('should return a record of the contributable names', () => {
       expect(getContributableNamesError(state)).toEqual(contributableNamesError)
     })
   })
@@ -249,7 +249,7 @@ describe('when using getContributableNamesError selector', () => {
       }
     })
 
-    it('should return a record of contributable names', () => {
+    it('should return a record of the contributable names', () => {
       expect(getContributableNamesError(state)).toEqual(contributableNamesError)
     })
   })
