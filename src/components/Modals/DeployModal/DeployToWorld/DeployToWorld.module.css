@@ -226,3 +226,17 @@
   background-repeat: no-repeat;
   background-image: url('../../../../images/scene-error.svg');
 }
+
+.contributableName {
+  display: flex;
+  gap: 8px;
+}
+
+.contributableNameOwner {
+  font-size: 12px;
+  color: #9b9b9b;
+}
+
+.contributableNameOwner :global(.avatar .name) {
+  font-weight: bold;
+}

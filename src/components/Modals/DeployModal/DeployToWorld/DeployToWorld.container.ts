@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
 import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
+import { fetchContributableNamesRequest } from 'modules/ens/actions'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getENSByWallet, getExternalNamesForConnectedWallet } from 'modules/ens/selectors'
+import { getContributableNamesList, getENSByWallet, getExternalNamesForConnectedWallet } from 'modules/ens/selectors'
 import { deployToWorldRequest } from 'modules/deployment/actions'
 import { getCurrentMetrics, getCurrentScene } from 'modules/scene/selectors'
 import { recordMediaRequest } from 'modules/media/actions'
@@ -11,18 +12,21 @@ import { Project } from 'modules/project/types'
 import { MapDispatch, MapDispatchProps, MapStateProps } from './DeployToWorld.types'
 
 import DeployToWorld from './DeployToWorld'
+import { getIsWorldContributorEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
     ensList: getENSByWallet(state),
     externalNames: getExternalNamesForConnectedWallet(state),
+    contributableNames: getContributableNamesList(state),
     project: getCurrentProject(state) as Project,
     scene: getCurrentScene(state),
     metrics: getCurrentMetrics(state),
     deployments: getDeploymentsByWorlds(state),
     deploymentProgress: getUploadProgress(state),
     error: getError(state),
-    isLoading: isLoading(state)
+    isLoading: isLoading(state),
+    isWorldContributorEnabled: getIsWorldContributorEnabled(state)
   }
 }
 
@@ -32,7 +36,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   },
   onRecord: () => dispatch(recordMediaRequest()),
   onNavigate: path => dispatch(push(path)),
-  onReplace: (path, locationState) => dispatch(replace(path, locationState))
+  onReplace: (path, locationState) => dispatch(replace(path, locationState)),
+  onFetchContributableNames: () => dispatch(fetchContributableNamesRequest())
 })
 
 export default connect(mapState, mapDispatch)(DeployToWorld)

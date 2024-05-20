@@ -18,6 +18,8 @@ import dclImage from './images/dcl.svg'
 import ensImage from './images/ens.svg'
 import styles from './DeployToWorld.module.css'
 import { ModelMetrics } from 'modules/models/types'
+import { ENS } from 'modules/ens/types'
+import Profile from 'components/Profile'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
@@ -36,11 +38,14 @@ export default function DeployToWorld({
   isLoading,
   error,
   claimedName,
+  contributableNames,
+  isWorldContributorEnabled,
   onPublish,
   onRecord,
   onNavigate,
   onClose,
-  onBack
+  onBack,
+  onFetchContributableNames
 }: Props) {
   const analytics = getAnalytics()
 
@@ -87,6 +92,10 @@ export default function DeployToWorld({
       analytics.track('Publish to World - Minted Name', { name: claimedName })
     }
   }, [claimedName, analytics])
+
+  useEffect(() => {
+    onFetchContributableNames()
+  }, [onFetchContributableNames])
 
   const handlePublish = useCallback(() => {
     if (world) {
@@ -178,21 +187,46 @@ export default function DeployToWorld({
   )
 
   const worldOptions = useMemo(() => {
-    const names = nameType === NameType.DCL ? ensList : externalNames
-    const options: DropdownItemProps[] = names.map(ens => ({ text: ens.name, value: ens.subdomain }))
+    let availableNames: ENS[]
+    let availableContributableNames: ENS[]
+
+    if (nameType === NameType.DCL) {
+      availableNames = ensList
+      availableContributableNames = contributableNames.filter(ens => ens.subdomain.includes('.dcl.eth'))
+    } else {
+      availableNames = externalNames
+      availableContributableNames = contributableNames.filter(ens => !ens.subdomain.includes('.dcl.eth'))
+    }
+
+    const options: DropdownItemProps[] = [
+      ...availableNames.map(ens => ({ text: ens.name, value: ens.subdomain })),
+      ...(isWorldContributorEnabled
+        ? availableContributableNames.map(ens => ({
+            text: (
+              <span className={styles.contributableName}>
+                {ens.name}
+                <span className={styles.contributableNameOwner}>
+                  owned by <Profile address={ens.nftOwnerAddress} />
+                </span>
+              </span>
+            ),
+            value: ens.subdomain
+          }))
+        : [])
+    ]
 
     options.push({
       text: (
         <span>
           <DCLIcon name="add" />
-          {nameType === NameType.DCL ? t('deployment_modal.deploy_world.claim_name') : t('deployment_modal.deploy_world.claim_name_ens')}
+          {nameType !== NameType.ENS ? t('deployment_modal.deploy_world.claim_name') : t('deployment_modal.deploy_world.claim_name_ens')}
         </span>
       ),
       value: CLAIM_NAME_OPTION
     })
 
     return options
-  }, [nameType, ensList, externalNames])
+  }, [nameType, ensList, externalNames, contributableNames])
 
   const getShareInTwitterUrl = () => {
     const url = encodeURIComponent(getExplorerUrl)
