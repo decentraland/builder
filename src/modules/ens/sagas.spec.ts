@@ -32,7 +32,7 @@ import {
 } from './actions'
 import { ensSaga } from './sagas'
 import { ContributableDomain, ENS, ENSError, ENSOrigin, WorldStatus } from './types'
-import { getENSBySubdomain, getExternalNames } from './selectors'
+import { getContributableNamesList, getENSBySubdomain, getExternalNames } from './selectors'
 import { addWorldStatusToEachENS } from './utils'
 import { Authorization } from 'lib/api/auth'
 import { marketplace } from 'lib/api/marketplace'
@@ -170,6 +170,7 @@ describe('when handling the fetch ens world status request', () => {
           await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
             .provide([
               [select(getENSBySubdomain, subdomain), getENSBySubdomainResult],
+              [select(getContributableNamesList), []],
               [call([worldsAPIContent, 'fetchWorld'], subdomain), fetchWorldsResult]
             ])
             .put(
@@ -210,6 +211,7 @@ describe('when handling the fetch ens world status request', () => {
           await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
             .provide([
               [select(getExternalNames), getExternalNamesResult],
+              [select(getContributableNamesList), []],
               [call([worldsAPIContent, 'fetchWorld'], subdomain), fetchWorldsResult]
             ])
             .put(
@@ -240,6 +242,7 @@ describe('when handling the fetch ens world status request', () => {
           await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
             .provide([
               [select(getExternalNames), getExternalNamesResult],
+              [select(getContributableNamesList), []],
               [call([worldsAPIContent, 'fetchWorld'], subdomain), fetchWorldsResult]
             ])
             .put(
