@@ -53,3 +53,11 @@ export const getIsWearableUtilityEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsWorldContributorEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.WORLD_CONTRIBUTOR)
+  } catch (e) {
+    return false
+  }
+}

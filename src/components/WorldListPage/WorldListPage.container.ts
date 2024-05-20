@@ -1,8 +1,11 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { isConnected } from 'decentraland-dapps/dist/modules/wallet'
 import { RootState } from 'modules/common/types'
-import { FETCH_ENS_LIST_REQUEST, FETCH_EXTERNAL_NAMES_REQUEST } from 'modules/ens/actions'
+import { getIsWorldContributorEnabled } from 'modules/features/selectors'
+import { FETCH_ENS_LIST_REQUEST, FETCH_EXTERNAL_NAMES_REQUEST, fetchContributableNamesRequest } from 'modules/ens/actions'
 import {
   getENSByWallet,
   getError as getENSError,
@@ -18,7 +21,6 @@ import { getProjects } from 'modules/ui/dashboard/selectors'
 import { getConnectedWalletStats, getLoading as getLoadingWorlds, getWorldsPermissions } from 'modules/worlds/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './WorldListPage.types'
 import WorldListPage from './WorldListPage'
-import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   ensList: getENSByWallet(state),
@@ -35,7 +37,9 @@ const mapState = (state: RootState): MapStateProps => ({
     isLoadingType(getLoadingENS(state), FETCH_EXTERNAL_NAMES_REQUEST) ||
     isLoggingIn(state),
   isLoggedIn: isLoggedIn(state),
-  worldsWalletStats: getConnectedWalletStats(state)
+  worldsWalletStats: getConnectedWalletStats(state),
+  isConnected: isConnected(state),
+  isWorldContributorEnabled: getIsWorldContributorEnabled(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
@@ -44,7 +48,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenPermissionsModal: (name, isCollaboratorsTabShown) =>
     dispatch(openModal('WorldPermissionsModal', { worldName: name, isCollaboratorsTabShown })),
   onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
-  onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId))
+  onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId)),
+  onFetchContributableNames: () => dispatch(fetchContributableNamesRequest())
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)

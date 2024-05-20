@@ -1,9 +1,17 @@
 import { RootState } from 'modules/common/types'
 import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/reducer'
 import { Transaction, TransactionStatus } from 'decentraland-dapps/dist/modules/transaction/types'
-import { getExternalNames, getExternalNamesForConnectedWallet, getExternalNamesForWallet, isWaitingTxSetAddress } from './selectors'
+import {
+  getContributableNames,
+  getContributableNamesError,
+  getExternalNames,
+  getExternalNamesForConnectedWallet,
+  getExternalNamesForWallet,
+  isWaitingTxSetAddress
+} from './selectors'
 import { ENSState } from './reducer'
 import { SET_ENS_ADDRESS_SUCCESS, SET_ENS_CONTENT_SUCCESS } from './actions'
+import { ENS } from './types'
 
 let state: RootState
 let wallet1: string
@@ -181,6 +189,68 @@ describe('when using isWaitingTxSetAddress selector', () => {
       it('should return false', () => {
         expect(isWaitingTxSetAddress(state)).toEqual(false)
       })
+    })
+  })
+})
+
+describe('when using getContributableNames selector', () => {
+  let contributableNames: ENSState['contributableNames']
+  beforeEach(() => {
+    contributableNames = {
+      'test.dcl.eth': {
+        name: 'test.dcl.eth'
+      } as ENS,
+      'test2.eth': {
+        name: 'test2.eth'
+      } as ENS
+    }
+    state = {
+      ...state,
+      ens: {
+        ...state.ens,
+        contributableNames
+      }
+    }
+  })
+
+  it('should return a record of contributable names', () => {
+    expect(getContributableNames(state)).toEqual(contributableNames)
+  })
+})
+
+describe('when using the getContributableNamesError selector', () => {
+  let contributableNamesError: ENSState['contributableNamesError']
+  describe('when there was an error laoding the contributable names', () => {
+    beforeEach(() => {
+      contributableNamesError = { message: 'Test error' }
+      state = {
+        ...state,
+        ens: {
+          ...state.ens,
+          contributableNamesError
+        }
+      }
+    })
+
+    it('should return a record of the contributable names', () => {
+      expect(getContributableNamesError(state)).toEqual(contributableNamesError)
+    })
+  })
+
+  describe('when the contributable names were loaded successfully', () => {
+    beforeEach(() => {
+      contributableNamesError = null
+      state = {
+        ...state,
+        ens: {
+          ...state.ens,
+          contributableNamesError
+        }
+      }
+    })
+
+    it('should return a record of the contributable names', () => {
+      expect(getContributableNamesError(state)).toEqual(contributableNamesError)
     })
   })
 })

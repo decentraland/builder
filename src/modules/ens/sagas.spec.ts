@@ -17,6 +17,9 @@ import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { ENSApi } from 'lib/api/ens'
 import { getWallet } from 'modules/wallet/utils'
 import {
+  fetchContributableNamesFailure,
+  fetchContributableNamesRequest,
+  fetchContributableNamesSuccess,
   fetchENSWorldStatusFailure,
   fetchENSWorldStatusRequest,
   fetchENSWorldStatusSuccess,
@@ -28,10 +31,11 @@ import {
   setENSAddressSuccess
 } from './actions'
 import { ensSaga } from './sagas'
-import { ENS, ENSError, ENSOrigin, WorldStatus } from './types'
+import { ContributableDomain, ENS, ENSError, ENSOrigin, WorldStatus } from './types'
 import { getENSBySubdomain, getExternalNames } from './selectors'
 import { addWorldStatusToEachENS } from './utils'
 import { Authorization } from 'lib/api/auth'
+import { marketplace } from 'lib/api/marketplace'
 
 jest.mock('@dcl/builder-client')
 
@@ -304,5 +308,113 @@ describe('when handling the set ens address request', () => {
       .put(setENSAddressFailure(ens, address, { message: error.message, code: error.code, origin: ENSOrigin.ADDRESS }))
       .dispatch(setENSAddressRequest(ens, address))
       .silentRun()
+  })
+})
+
+describe('when handling the fetching of contributable names', () => {
+  describe('when fetchContributableDomains throws an error', () => {
+    let ensError: ENSError
+    let error: Error
+
+    beforeEach(() => {
+      error = new Error('Some Error')
+      ensError = { message: error.message }
+    })
+
+    it('should dispatch an error action with the error', async () => {
+      await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+        .provide([[call([worldsAPIContent, 'fetchContributableDomains']), throwError(error)]])
+        .put(fetchContributableNamesFailure(ensError))
+        .dispatch(fetchContributableNamesRequest())
+        .silentRun()
+    })
+  })
+
+  describe('when fetchContributableDomains returns a list of contributable names', () => {
+    let contributableName: ContributableDomain
+    let names: ENS[]
+    let namesWithWorldStatus: ENS[]
+
+    beforeEach(() => {
+      contributableName = { name: 'test.dcl.eth', size: '120', owner: '0x123', user_permissions: ['deployment'] }
+      names = [
+        {
+          name: contributableName.name,
+          subdomain: contributableName.name,
+          nftOwnerAddress: contributableName.owner,
+          content: '',
+          ensOwnerAddress: '',
+          resolver: '',
+          tokenId: '',
+          userPermissions: contributableName.user_permissions,
+          size: contributableName.size
+        }
+      ]
+
+      namesWithWorldStatus = [{ ...names[0], worldStatus: { healthy: true, scene: { urn: 'urn', entityId: 'id' } } }]
+    })
+
+    describe('and there are no banned names', () => {
+      it('should dispatch a success action with the contributable names', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          .provide([
+            [call([worldsAPIContent, 'fetchContributableDomains']), [contributableName]],
+            [call([lists, 'fetchBannedNames']), []],
+            [call([marketplace, 'fetchENSOwnerByDomain'], ['test']), { test: '0x123' }],
+            [call([ensApi, 'fetchExternalENSOwners'], []), {}],
+            [call(addWorldStatusToEachENS, names), namesWithWorldStatus]
+          ])
+          .put(fetchWorldDeploymentsRequest(['test.dcl.eth']))
+          .put(fetchContributableNamesSuccess(namesWithWorldStatus))
+          .dispatch(fetchContributableNamesRequest())
+          .silentRun()
+      })
+    })
+
+    describe('and fetching the names owners throws an error', () => {
+      let ensError: ENSError
+      let error: Error
+
+      beforeEach(() => {
+        error = new Error('Some Error')
+        ensError = { message: error.message }
+      })
+
+      it('should dispatch an error action with the error', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          .provide([
+            [call([worldsAPIContent, 'fetchContributableDomains']), [contributableName]],
+            [call([lists, 'fetchBannedNames']), []],
+            [call([marketplace, 'fetchENSOwnerByDomain'], ['test']), throwError(error)],
+            [call([ensApi, 'fetchExternalENSOwners'], []), {}]
+          ])
+          .put(fetchContributableNamesFailure(ensError))
+          .dispatch(fetchContributableNamesRequest())
+          .silentRun()
+      })
+    })
+
+    describe('and fetching the external ens owners throws an error', () => {
+      let ensError: ENSError
+      let error: Error
+
+      beforeEach(() => {
+        error = new Error('Some Error')
+        ensError = { message: error.message }
+      })
+
+      it('should dispatch an error action with the error', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          .provide([
+            [call([worldsAPIContent, 'fetchContributableDomains']), [contributableName]],
+            [call([lists, 'fetchBannedNames']), []],
+            [call([marketplace, 'fetchENSOwnerByDomain'], ['test']), { test: '0x123' }],
+            [call([ensApi, 'fetchExternalENSOwners'], []), throwError(error)]
+          ])
+          .put(fetchContributableNamesFailure(ensError))
+          .dispatch(fetchContributableNamesRequest())
+          .silentRun()
+      })
+    })
   })
 })

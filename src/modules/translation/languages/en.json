@@ -715,9 +715,11 @@
   },
   "worlds_list_page": {
     "title": "Worlds",
+    "error_title": "An error occur while loading worlds",
     "table": {
       "name": "NAME",
       "url": "URL",
+      "owner": "Owner",
       "published_scene": "Published Scene",
       "publish_scene": "Publish Scene",
       "unpublish_scene": "Unpublish Scene",
@@ -730,7 +732,17 @@
       "actions": "Actions",
       "empty_url": "To activate this world you need to publish a scene",
       "size": "Size Mb",
-      "scene_published_outside_builder": "The scene project may have been deleted or published using the SDK."
+      "scene_published_outside_builder": "The scene project may have been deleted or published using the SDK.",
+      "user_permissions": {
+        "deployment": "Deploy",
+        "streaming": "Stream"
+      },
+      "permissions": "Permissions"
+    },
+    "empty_contributor_list": {
+      "title": "Nothing Here Yet",
+      "description": "Currently, you don't have collaborator permissions to any world. You can get your own free world when you own a NAME.",
+      "cta": "Claim Name"
     },
     "empty_list": {
       "title": "Get a free World when you own a NAME",
@@ -742,7 +754,8 @@
     },
     "name_tabs": {
       "dcl_names": "Decentraland NAMEs",
-      "ens_names": "ENS Domains"
+      "ens_names": "ENS Domains",
+      "contributor_names": "Contributor"
     },
     "worlds_storage": {
       "used": "Space Used",

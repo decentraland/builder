@@ -4,7 +4,8 @@ export const TAB_QUERY_PARAM_KEY = 'tab'
 
 export enum TabType {
   DCL = 'dcl',
-  ENS = 'ens'
+  ENS = 'ens',
+  CONTRIBUTOR = 'contributor'
 }
 
 export type UseCurrentlySelectedTabResult = {
@@ -29,6 +30,9 @@ export const useCurrentlySelectedTab = (): UseCurrentlySelectedTabResult => {
       break
     case 'ens':
       result.tab = TabType.ENS
+      break
+    case 'contributor':
+      result.tab = TabType.CONTRIBUTOR
       break
   }
 

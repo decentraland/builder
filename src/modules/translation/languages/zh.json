@@ -718,9 +718,11 @@
     "error": "出了问题，请重试。"
   },
   "worlds_list_page": {
+    "error_title": "加载世界时发生错误",
     "table": {
       "name": "姓名",
       "url": "url",
+      "owner": "所有者",
       "published_scene": "出版的场景",
       "publish_scene": "发布场景",
       "unpublish_scene": "取消发布场景",
@@ -733,7 +735,17 @@
       "actions": "动作",
       "empty_url": "要激活这个世界，您需要发布一个场景",
       "size": "重量 Mb",
-      "scene_published_outside_builder": "场景项目可能已被删除或使用 SDK 发布。"
+      "scene_published_outside_builder": "场景项目可能已被删除或使用 SDK 发布。",
+      "user_permissions": {
+        "deployment": "部署",
+        "streaming": "溪流"
+      },
+      "permissions": "权限"
+    },
+    "empty_contributor_list": {
+      "title": "这里什么都没有",
+      "description": "目前，您没有任何世界的合作许可。当您拥有一个名字时，您可以获得自己的自由世界。",
+      "cta": "索赔名称"
     },
     "empty_list": {
       "title": "当您拥有一个名字时获得一个自由的世界",
@@ -745,7 +757,8 @@
     },
     "name_tabs": {
       "dcl_names": "Decentraland 名称",
-      "ens_names": "ENS 域名"
+      "ens_names": "ENS 域名",
+      "contributor_names": "贡献者"
     },
     "worlds_storage": {
       "used": "已使用空间",

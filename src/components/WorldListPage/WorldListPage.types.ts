@@ -21,12 +21,15 @@ export type Props = {
   worldsPermissions: Record<string, WorldPermissions>
   isLoading: boolean
   worldsWalletStats?: WorldsWalletStats
+  isConnected: boolean
+  isWorldContributorEnabled: boolean
   onNavigate: (path: string) => void
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
   onOpenPermissionsModal: (worldName: string, isCollaboratorsTabShown?: boolean) => void
   onOpenWorldsForENSOwnersAnnouncementModal: () => void
   getProfiles: (worldName: string) => void
   onUnpublishWorld: typeof clearDeploymentRequest
+  onFetchContributableNames: () => void
 }
 
 export type State = {
@@ -45,9 +48,16 @@ export type MapStateProps = Pick<
   | 'isLoggedIn'
   | 'worldsWalletStats'
   | 'worldsPermissions'
+  | 'isConnected'
+  | 'isWorldContributorEnabled'
 >
 export type MapDispatchProps = Pick<
   Props,
-  'onNavigate' | 'onOpenYourStorageModal' | 'onOpenPermissionsModal' | 'onOpenWorldsForENSOwnersAnnouncementModal' | 'onUnpublishWorld'
+  | 'onNavigate'
+  | 'onOpenYourStorageModal'
+  | 'onOpenPermissionsModal'
+  | 'onOpenWorldsForENSOwnersAnnouncementModal'
+  | 'onUnpublishWorld'
+  | 'onFetchContributableNames'
 >
 export type MapDispatch = Dispatch

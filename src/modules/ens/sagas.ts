@@ -60,10 +60,13 @@ import {
   SetENSAddressRequestAction,
   setENSAddressSuccess,
   setENSAddressFailure,
-  SET_ENS_ADDRESS_REQUEST
+  SET_ENS_ADDRESS_REQUEST,
+  FETCH_CONTRIBUTABLE_NAMES_REQUEST,
+  fetchContributableNamesSuccess,
+  fetchContributableNamesFailure
 } from './actions'
 import { getENSBySubdomain, getExternalNames } from './selectors'
-import { ENS, ENSOrigin, ENSError } from './types'
+import { ENS, ENSOrigin, ENSError, ContributableDomain } from './types'
 import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPIContent: WorldsAPI) {
@@ -77,6 +80,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   yield takeEvery(FETCH_EXTERNAL_NAMES_REQUEST, handleFetchExternalNamesRequest)
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeEvery(SET_ENS_ADDRESS_REQUEST, handleSetENSAddressRequest)
+  yield takeEvery(FETCH_CONTRIBUTABLE_NAMES_REQUEST, handleFetchContributableNamesRequest)
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSListRequest())
@@ -494,6 +498,53 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     } catch (error) {
       const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(fetchExternalNamesFailure(owner, ensError))
+    }
+  }
+
+  function* handleFetchContributableNamesRequest() {
+    try {
+      let names: ContributableDomain[] = yield call([worldsAPIContent, 'fetchContributableDomains'])
+
+      const bannedNames: string[] = yield call([lists, 'fetchBannedNames'])
+      const bannedNamesSet = new Set(bannedNames.map(x => x.toLowerCase()))
+
+      names = names.filter(({ name }) => name.split('.').every(nameSegment => !bannedNamesSet.has(nameSegment)))
+      const ensDomains: string[] = []
+      const nameDomains: string[] = []
+      names.forEach(({ name }) => {
+        if (name.includes('.dcl.eth')) {
+          nameDomains.push(name.replace('.dcl.eth', ''))
+        } else {
+          ensDomains.push(name)
+        }
+      })
+
+      const [ownerByNameDomain, ownerByEnsDomain]: [Record<string, string>, Record<string, string>] = yield all([
+        call([marketplace, 'fetchENSOwnerByDomain'], nameDomains),
+        call([ensApi, 'fetchExternalENSOwners'], ensDomains)
+      ])
+
+      const enss: ENS[] = names.map(({ name, user_permissions, size }) => {
+        const nameDomain = name.replace('.dcl.eth', '')
+        return {
+          subdomain: name,
+          nftOwnerAddress: name.includes('dcl.eth') ? ownerByNameDomain[nameDomain] : ownerByEnsDomain[name],
+          content: '',
+          ensOwnerAddress: '',
+          name,
+          resolver: '',
+          tokenId: '',
+          userPermissions: user_permissions,
+          size
+        }
+      })
+
+      const ensWithWorldStatus: ENS[] = yield call(addWorldStatusToEachENS, enss)
+      yield put(fetchWorldDeploymentsRequest(ensWithWorldStatus.filter(ens => ens.worldStatus).map(ens => ens.subdomain)))
+      yield put(fetchContributableNamesSuccess(ensWithWorldStatus))
+    } catch (error) {
+      const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
+      yield put(fetchContributableNamesFailure(ensError))
     }
   }
 

@@ -716,9 +716,11 @@
     "error": "Algo salió mal. Por favor, vuelva a intentarlo."
   },
   "worlds_list_page": {
+    "error_title": "Se produjo un error al cargar los mundos",
     "table": {
       "name": "NOMBRE",
       "url": "URL",
+      "owner": "Dueño",
       "published_scene": "Escena Publicada",
       "publish_scene": "Publicar Escena",
       "unpublish_scene": "Despublicar Escene",
@@ -731,7 +733,17 @@
       "actions": "Acciones",
       "empty_url": "Para activar este mundo, necesitas publicar una escena",
       "size": "Peso Mb",
-      "scene_published_outside_builder": "Es posible que esta escena se haya eliminado o fuera publicada mediante el SDK."
+      "scene_published_outside_builder": "Es posible que esta escena se haya eliminado o fuera publicada mediante el SDK.",
+      "user_permissions": {
+        "deployment": "Publicar",
+        "streaming": "Transmitir"
+      },
+      "permissions": "Permisos"
+    },
+    "empty_contributor_list": {
+      "title": "Nada aquí todavía",
+      "description": "Actualmente, no tiene permisos de colaborador para ningún mundo. Puedes obtener tu propio mundo gratis cuando tienes un NAME.",
+      "cta": "Reclamar un nuevo NAME"
     },
     "empty_list": {
       "title": "Obtenga un mundo gratis cuando tenga un NAME",
@@ -743,7 +755,8 @@
     },
     "name_tabs": {
       "dcl_names": "NAMEs de Decentraland",
-      "ens_names": "Dominios ENS"
+      "ens_names": "Dominios ENS",
+      "contributor_names": "Contribuyente"
     },
     "worlds_storage": {
       "used": "Espacio utilizado",

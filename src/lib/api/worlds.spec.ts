@@ -128,3 +128,29 @@ describe('when fetching the world permissions for a wallet', () => {
     })
   })
 })
+
+describe('when fetching contributable names for a wallet', () => {
+  beforeEach(() => {
+    worldsApi = new MockWorldsAPI(new AuthMock())
+  })
+
+  describe('when there is an error fetching the names', () => {
+    beforeEach(() => {
+      global.fetch = () => Promise.resolve({ ok: false } as Response)
+    })
+
+    it('should throw an error', async () => {
+      await expect(worldsApi.fetchContributableDomains()).rejects.toThrow('Error while fetching contributable domains')
+    })
+  })
+
+  describe('when the names could be fetched successfully', () => {
+    beforeEach(() => {
+      global.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({ domains: [] }) } as Response)
+    })
+
+    it('should return domains value', async () => {
+      await expect(worldsApi.fetchContributableDomains()).resolves.toEqual([])
+    })
+  })
+})
