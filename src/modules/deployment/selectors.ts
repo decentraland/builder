@@ -125,7 +125,6 @@ export const getDeploymentsByWorlds = createSelector<RootState, DeploymentState[
   getExternalNamesList,
   getContributableNamesList,
   (deployments, ensList, externalNamesList, contributableNamesList) => {
-    console.log({ deployments })
     const out: Record<string, Deployment> = {}
     const dclNameWorlds = ensList.filter(ens => !!ens.worldStatus)
     const externalNameWorlds = externalNamesList.filter(ens => !!ens.worldStatus)

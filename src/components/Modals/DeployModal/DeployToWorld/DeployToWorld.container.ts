@@ -20,7 +20,6 @@ import DeployToWorld from './DeployToWorld'
 import { getIsWorldContributorEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
-  // console.log("MEI", getData(state))
   return {
     ensList: getENSByWallet(state),
     externalNames: getExternalNamesForConnectedWallet(state),
