@@ -3,8 +3,9 @@ import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { fetchContributableNamesRequest } from 'modules/ens/actions'
 import { getCurrentProject } from 'modules/project/selectors'
+import { getIsWorldContributorEnabled } from 'modules/features/selectors'
 import {
-  getContributableNamesList,
+  getNamesListWithDeploymentPermissions,
   getENSByWallet,
   getExternalNamesForConnectedWallet,
   isLoading as isLoadingENS
@@ -17,13 +18,12 @@ import { Project } from 'modules/project/types'
 import { MapDispatch, MapDispatchProps, MapStateProps } from './DeployToWorld.types'
 
 import DeployToWorld from './DeployToWorld'
-import { getIsWorldContributorEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
     ensList: getENSByWallet(state),
     externalNames: getExternalNamesForConnectedWallet(state),
-    contributableNames: getContributableNamesList(state),
+    contributableNames: getNamesListWithDeploymentPermissions(state),
     project: getCurrentProject(state) as Project,
     scene: getCurrentScene(state),
     metrics: getCurrentMetrics(state),

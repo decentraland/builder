@@ -41,6 +41,10 @@ export const getContributableNamesList = createSelector(getContributableNames, c
   return Object.values(contributableNames)
 })
 
+export const getNamesListWithDeploymentPermissions = createSelector(getContributableNamesList, contributableNames =>
+  contributableNames.filter(({ userPermissions }) => userPermissions?.includes('deployment'))
+)
+
 export const getExternalNamesForConnectedWallet = createSelector(getExternalNames, getAddress, (externalNames, address = '') => {
   return Object.values(externalNames).filter(externalName => isEqual(externalName.nftOwnerAddress, address))
 })
