@@ -1279,7 +1279,7 @@
     "size_subtitle": "设置新场景的大小",
     "sdk_title": "体验新的分散编辑",
     "sdk_subtitle": "在没有任何代码的情况下利用SDK 7的功率。",
-    "sdk_description": "通过改进的视觉编辑器来增强场景构建过程。包括上一个场景构建器中的所有功能，而添加<b>智能项目的添加</b>是为即将进行更新的。",
+    "sdk_description": "通过改进的视觉编辑器来增强场景构建过程。包括上一个场景构建器中的所有功能。",
     "sdk_image_alt": "SDK 7",
     "name_label": "名称",
     "description_label": "描述",
