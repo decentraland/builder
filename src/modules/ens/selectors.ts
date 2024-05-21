@@ -42,7 +42,7 @@ export const getContributableNamesList = createSelector(getContributableNames, c
 })
 
 export const getNamesListWithDeploymentPermissions = createSelector(getContributableNamesList, contributableNames =>
-  contributableNames.filter(({ userPermissions }) => userPermissions?.includes('deployment'))
+  contributableNames.filter(({ userPermissions }) => !!userPermissions?.includes('deployment'))
 )
 
 export const getExternalNamesForConnectedWallet = createSelector(getExternalNames, getAddress, (externalNames, address = '') => {

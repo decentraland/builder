@@ -94,8 +94,10 @@ export default function DeployToWorld({
   }, [claimedName, analytics])
 
   useEffect(() => {
-    onFetchContributableNames()
-  }, [onFetchContributableNames])
+    if (isWorldContributorEnabled) {
+      onFetchContributableNames()
+    }
+  }, [onFetchContributableNames, isWorldContributorEnabled])
 
   const handlePublish = useCallback(() => {
     if (world) {

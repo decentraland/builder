@@ -7,6 +7,8 @@ import {
   getExternalNames,
   getExternalNamesForConnectedWallet,
   getExternalNamesForWallet,
+  getNamesListWithDeploymentPermissions,
+  isLoading,
   isWaitingTxSetAddress
 } from './selectors'
 import { ENSState } from './reducer'
@@ -251,6 +253,97 @@ describe('when using the getContributableNamesError selector', () => {
 
     it('should return a record of the contributable names', () => {
       expect(getContributableNamesError(state)).toEqual(contributableNamesError)
+    })
+  })
+})
+
+describe('when using the getNamesListWithDeploymentPermissions selector', () => {
+  describe('and there are no contributable names available', () => {
+    beforeEach(() => {
+      state = {
+        ...state,
+        ens: {
+          ...state.ens,
+          contributableNames: {}
+        }
+      }
+    })
+    it('should return an empty list', () => {
+      expect(getNamesListWithDeploymentPermissions(state)).toEqual([])
+    })
+  })
+
+  describe('and the contributable names only have streaming permissions', () => {
+    beforeEach(() => {
+      state = {
+        ...state,
+        ens: {
+          ...state.ens,
+          contributableNames: {
+            'test.dcl.eth': {
+              subdomain: 'test.dcl.eth',
+              userPermissions: ['streaming']
+            } as ENS
+          }
+        }
+      }
+    })
+    it('should return an empty list', () => {
+      expect(getNamesListWithDeploymentPermissions(state)).toEqual([])
+    })
+  })
+
+  describe('and one contributable name has deployment permissions', () => {
+    beforeEach(() => {
+      state = {
+        ...state,
+        ens: {
+          ...state.ens,
+          contributableNames: {
+            'test.dcl.eth': {
+              subdomain: 'test.dcl.eth',
+              userPermissions: ['deployment']
+            } as ENS
+          }
+        }
+      }
+    })
+    it('should return a list with the contributable name', () => {
+      expect(getNamesListWithDeploymentPermissions(state)).toEqual([expect.objectContaining({ subdomain: 'test.dcl.eth' })])
+    })
+  })
+})
+
+describe('when using the isLoading selector', () => {
+  describe('and there is an action loading', () => {
+    beforeEach(() => {
+      state = {
+        ...state,
+        ens: {
+          ...state.ens,
+          loading: [{ type: 'AN Action' }]
+        }
+      }
+    })
+
+    it('should return true', () => {
+      expect(isLoading(state)).toBe(true)
+    })
+  })
+
+  describe('and there are no actions loading', () => {
+    beforeEach(() => {
+      state = {
+        ...state,
+        ens: {
+          ...state.ens,
+          loading: []
+        }
+      }
+    })
+
+    it('should return false', () => {
+      expect(isLoading(state)).toBe(false)
     })
   })
 })
