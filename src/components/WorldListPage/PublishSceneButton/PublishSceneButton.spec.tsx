@@ -53,12 +53,12 @@ describe('when the world has a scene deployed', () => {
       projects = [{ id: '1' } as Project]
     })
 
-    it('should show edit scene button', () => {
+    it('should show the edit scene button', () => {
       const screen = renderPublishSceneButton({ projects, deploymentsByWorlds })
       expect(screen.getByRole('button', { name: t('worlds_list_page.table.edit_scene') })).toBeInTheDocument()
     })
 
-    describe('when editScene button is clicked', () => {
+    describe('when the editScene button is clicked', () => {
       it('should trigger onEditScene callback action', () => {
         const onEditScene = jest.fn()
         const screen = renderPublishSceneButton({ onEditScene, projects, deploymentsByWorlds })
@@ -74,12 +74,12 @@ describe('when the world has a scene deployed', () => {
       projects = []
     })
 
-    it('should show unpublish scene button', () => {
+    it('should show the unpublish scene button', () => {
       const screen = renderPublishSceneButton({ projects, deploymentsByWorlds })
       expect(screen.getByRole('button', { name: t('worlds_list_page.table.unpublish_scene') })).toBeInTheDocument()
     })
 
-    describe('when unpublish button is clicked', () => {
+    describe('when the unpublish button is clicked', () => {
       it('should trigger onUnpublish callback action', () => {
         const onUnpublishScene = jest.fn()
         const screen = renderPublishSceneButton({ onUnpublishScene, projects, deploymentsByWorlds })
@@ -92,12 +92,12 @@ describe('when the world has a scene deployed', () => {
 })
 
 describe('when the world has no scene deployed', () => {
-  it('should show publish scene button', () => {
+  it('should show the publish scene button', () => {
     const screen = renderPublishSceneButton({})
     expect(screen.getByRole('button', { name: t('worlds_list_page.table.publish_scene') })).toBeInTheDocument()
   })
 
-  describe('when publish button is clicked', () => {
+  describe('when the publish button is clicked', () => {
     it('should trigger onPublish callback action', () => {
       const onPublishScene = jest.fn()
       const screen = renderPublishSceneButton({ onPublishScene })

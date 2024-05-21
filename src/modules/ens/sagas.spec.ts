@@ -373,5 +373,51 @@ describe('when handling the fetching of contributable names', () => {
           .silentRun()
       })
     })
+
+    describe('and fetching the names owners throws an error', () => {
+      let ensError: ENSError
+      let error: Error
+
+      beforeEach(() => {
+        error = new Error('Some Error')
+        ensError = { message: error.message }
+      })
+
+      it('should dispatch an error action with the error', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          .provide([
+            [call([worldsAPIContent, 'fetchContributableDomains']), [contributableName]],
+            [call([lists, 'fetchBannedNames']), []],
+            [call([marketplace, 'fetchENSOwnerByDomain'], ['test']), throwError(error)],
+            [call([ensApi, 'fetchExternalENSOwners'], []), {}]
+          ])
+          .put(fetchContributableNamesFailure(ensError))
+          .dispatch(fetchContributableNamesRequest())
+          .silentRun()
+      })
+    })
+
+    describe('and fetching the external ens owners throws an error', () => {
+      let ensError: ENSError
+      let error: Error
+
+      beforeEach(() => {
+        error = new Error('Some Error')
+        ensError = { message: error.message }
+      })
+
+      it('should dispatch an error action with the error', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          .provide([
+            [call([worldsAPIContent, 'fetchContributableDomains']), [contributableName]],
+            [call([lists, 'fetchBannedNames']), []],
+            [call([marketplace, 'fetchENSOwnerByDomain'], ['test']), { test: '0x123' }],
+            [call([ensApi, 'fetchExternalENSOwners'], []), throwError(error)]
+          ])
+          .put(fetchContributableNamesFailure(ensError))
+          .dispatch(fetchContributableNamesRequest())
+          .silentRun()
+      })
+    })
   })
 })

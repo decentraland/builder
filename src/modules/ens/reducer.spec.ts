@@ -206,7 +206,7 @@ describe('when handling the CLEAR_ENS_ERRORS action', () => {
 
 describe('when handling fetch contributable names actions', () => {
   describe('when handling fetch contributable names request action', () => {
-    it('should reset contributable names error', () => {
+    it('should reset the contributable names error', () => {
       const stateWithError = {
         ...state,
         contributableNamesError: { message: 'an error' }
@@ -218,7 +218,7 @@ describe('when handling fetch contributable names actions', () => {
       )
     })
 
-    it('should set contributable names action as loading', () => {
+    it('should set the contributable names action as loading', () => {
       const stateWithoutLoading = {
         ...state,
         loading: []
@@ -243,7 +243,7 @@ describe('when handling fetch contributable names actions', () => {
       ens = { name: 'test.dcl.eth', subdomain: 'test.dcl.eth' } as ENS
     })
 
-    it('should add contributable names to the state', () => {
+    it('should add the contributable names to the state', () => {
       expect(ensReducer(state, fetchContributableNamesSuccess([ens]))).toEqual(
         expect.objectContaining({
           contributableNames: { 'test.dcl.eth': ens }
@@ -251,7 +251,7 @@ describe('when handling fetch contributable names actions', () => {
       )
     })
 
-    it('should add contributable names to the state', () => {
+    it('should remove the loading action from the state', () => {
       expect(ensReducer(state, fetchContributableNamesSuccess([ens]))).toEqual(
         expect.objectContaining({
           loading: []
