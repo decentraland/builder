@@ -546,7 +546,7 @@
     "learn_more": "Learn more",
     "options": {
       "world": {
-        "title": "My World",
+        "title": "Worlds",
         "description": "Not findable in Genesis City map.<br></br>Up to 100 users can join concurrently.",
         "action": "Publish to world"
       },
