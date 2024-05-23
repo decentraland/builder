@@ -207,9 +207,11 @@ export default function DeployToWorld({
             text: (
               <span className={styles.contributableName}>
                 {ens.name}
-                <span className={styles.contributableNameOwner}>
-                  owned by <Profile address={ens.nftOwnerAddress} />
-                </span>
+                {ens.nftOwnerAddress && (
+                  <span className={styles.contributableNameOwner}>
+                    owned by <Profile address={ens.nftOwnerAddress} />
+                  </span>
+                )}
               </span>
             ),
             value: ens.subdomain
