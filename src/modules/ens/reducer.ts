@@ -168,11 +168,20 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       }
     }
     case FETCH_ENS_WORLD_STATUS_SUCCESS: {
-      const { ens } = action.payload
+      const { ens, isContributableName } = action.payload
 
-      let update: Pick<ENSState, 'data'> | Pick<ENSState, 'externalNames'>
+      let update: Pick<ENSState, 'data'> | Pick<ENSState, 'externalNames'> | Pick<ENSState, 'contributableNames'>
 
-      if (isExternalName(ens.subdomain)) {
+      if (isContributableName) {
+        update = {
+          contributableNames: {
+            ...state.contributableNames,
+            [ens.subdomain]: {
+              ...ens
+            }
+          }
+        }
+      } else if (isExternalName(ens.subdomain)) {
         update = {
           externalNames: {
             ...state.externalNames,

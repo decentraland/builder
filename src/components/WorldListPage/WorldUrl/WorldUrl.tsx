@@ -1,10 +1,10 @@
 import { Icon } from 'decentraland-ui'
+import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { getExplorerUrl, isWorldDeployed } from '../utils'
 import { Props } from './WorldUrl.types'
 import styles from './WorldUrl.module.css'
-import classNames from 'classnames'
 
 export default function WorldUrl({ ens, deploymentsByWorlds }: Props) {
   const url = getExplorerUrl(ens.subdomain)

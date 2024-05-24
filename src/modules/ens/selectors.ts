@@ -25,6 +25,7 @@ export const getContributableNames = (state: RootState) => getState(state).contr
 export const getContributableNamesError = (state: RootState) => getState(state).contributableNamesError
 export const getError = (state: RootState) => getState(state).error
 export const getLoading = (state: RootState) => getState(state).loading
+export const isLoading = (state: RootState) => getLoading(state).length > 0
 
 export const getENSList = createSelector<RootState, ENSState['data'], ENS[]>(getData, ensData => Object.values(ensData))
 
@@ -39,6 +40,10 @@ export const getExternalNamesList = createSelector(getExternalNames, externalNam
 export const getContributableNamesList = createSelector(getContributableNames, contributableNames => {
   return Object.values(contributableNames)
 })
+
+export const getNamesListWithDeploymentPermissions = createSelector(getContributableNamesList, contributableNames =>
+  contributableNames.filter(({ userPermissions }) => !!userPermissions?.includes('deployment'))
+)
 
 export const getExternalNamesForConnectedWallet = createSelector(getExternalNames, getAddress, (externalNames, address = '') => {
   return Object.values(externalNames).filter(externalName => isEqual(externalName.nftOwnerAddress, address))
