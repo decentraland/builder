@@ -261,7 +261,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             itemData.category === WearableCategory.UPPER_BODY || itemData.hides?.includes(WearableCategory.UPPER_BODY)
               ? [BodyPartCategory.HANDS]
               : [],
-          blockVrmExport: itemData.blockVrmExport ?? false
+          ...('blockVrmExport' in itemData ? { blockVrmExport: itemData.blockVrmExport } : {})
         }
       }
       const itemContents = {
