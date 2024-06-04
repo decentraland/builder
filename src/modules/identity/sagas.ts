@@ -16,7 +16,7 @@ import {
   ENABLE_WALLET_FAILURE,
   EnableWalletSuccessAction,
   EnableWalletFailureAction,
-  disconnectWallet,
+  disconnectWalletRequest,
   CHANGE_ACCOUNT,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
@@ -164,7 +164,7 @@ function* handleLogin(action: LoginRequestAction) {
 function* handleLogout(_action: LogoutAction) {
   const address: string | undefined = yield select(getAddress)
   if (address) {
-    yield put(disconnectWallet())
+    yield put(disconnectWalletRequest())
     yield put(destroyIdentity(address))
     yield call(localStorageClearIdentity, address)
   }
