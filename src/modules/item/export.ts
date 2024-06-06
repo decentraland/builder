@@ -78,15 +78,19 @@ export async function calculateModelFinalSize(
   const newHashes = await computeHashes(newContents)
   const newContentHasModel = Object.keys(newContents).some(key => key.endsWith('.glb'))
   const filesToDownload: Record<string, string> = {}
-  for (const fileName in oldContents) {
-    const isModel = fileName.endsWith('.glb')
-    const isVideo = fileName.endsWith('.mp4') // do not take into account the video size for the smart wearables
-    const isNotPartOfNewContent = !newContents[fileName]
-    const fileHasDifferentHash = oldContents[fileName] !== newHashes[fileName]
-    // download the old file if it's not part of the new content or if it has a different hash from the actual
-    // and it's not a model or if it's a model and the new content doesn't have a model and it's not a video
-    if ((isNotPartOfNewContent || fileHasDifferentHash) && (!newContentHasModel || (newContentHasModel && !isModel)) && !isVideo) {
-      filesToDownload[fileName] = oldContents[fileName]
+  // If the file to calculate the size is a smart wearable, we don't need to download the old files
+  const isSmartWearable = Object.keys(newContents).some(path => path.endsWith('.js'))
+  if (!isSmartWearable) {
+    for (const fileName in oldContents) {
+      const isModel = fileName.endsWith('.glb')
+      const isVideo = fileName.endsWith('.mp4') // do not take into account the video size for the smart wearables
+      const isNotPartOfNewContent = !newContents[fileName]
+      const fileHasDifferentHash = oldContents[fileName] !== newHashes[fileName]
+      // download the old file if it's not part of the new content or if it has a different hash from the actual
+      // and it's not a model or if it's a model and the new content doesn't have a model and it's not a video
+      if ((isNotPartOfNewContent || fileHasDifferentHash) && (!newContentHasModel || (newContentHasModel && !isModel)) && !isVideo) {
+        filesToDownload[fileName] = oldContents[fileName]
+      }
     }
   }
 

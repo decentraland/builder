@@ -33,6 +33,12 @@ export class ItemSkinTooBigError extends Error {
   }
 }
 
+export class ItemSmartWearableTooBigError extends Error {
+  constructor() {
+    super(t('create_single_item_modal.error.smart_wearable_too_big.message'))
+  }
+}
+
 export class ItemEmoteTooBigError extends Error {
   constructor() {
     super(

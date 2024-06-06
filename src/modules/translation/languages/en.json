@@ -288,6 +288,10 @@
         "title": "The file is too large and can't be uploaded",
         "message": "The max file size is 2MB for Emotes."
       },
+      "smart_wearable_too_big": {
+        "title": "The file is too large and can't be uploaded",
+        "message": "All files within the Smart Wearable .zip file must be under 3MB."
+      },
       "unknown_required_permissions": {
         "title": "Smart Wearable {count, plural, one {Permission} other {Permissions}} {wrong_configurations} {count, plural, one {doesn't} other {don't}} exist. Please correct the 'scene.json'.",
         "message": "For more information, check the Docs to {learn_more}."
