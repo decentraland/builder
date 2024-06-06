@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -19,7 +18,6 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: (path, locationState) => dispatch(push(path, locationState)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onDeleteItem: item => dispatch(deleteItemRequest(item)),
   onSetItems: items => dispatch(setItems(items))

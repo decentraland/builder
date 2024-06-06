@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
 import { FetchCollectionsParams } from 'lib/api/builder'
@@ -28,10 +27,8 @@ export type Props = {
   authorizations: Authorization[]
   isLoading: boolean
   isLoadingAvailableSlots: boolean
-  onNavigate: (path: string) => void
   onOpenModal: typeof openModal
   onFetchAvailableSlots: typeof fetchThirdPartyAvailableSlotsRequest
-  onPageChange: (collectionId: string, page: number) => void
 }
 
 export type State = {
@@ -56,11 +53,7 @@ export type MapStateProps = Pick<
   | 'items'
   | 'paginatedData'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onFetchAvailableSlots' | 'onPageChange'>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchAvailableSlots'>
 export type MapDispatch = Dispatch<
-  | CallHistoryMethodAction
-  | OpenModalAction
-  | FetchItemCurationsRequestAction
-  | FetchThirdPartyAvailableSlotsRequestAction
-  | FetchCollectionItemsRequestAction
+  OpenModalAction | FetchItemCurationsRequestAction | FetchThirdPartyAvailableSlotsRequestAction | FetchCollectionItemsRequestAction
 >
