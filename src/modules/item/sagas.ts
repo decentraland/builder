@@ -23,7 +23,8 @@ import {
   MAX_THUMBNAIL_FILE_SIZE,
   MAX_WEARABLE_FILE_SIZE,
   MAX_SKIN_FILE_SIZE,
-  MAX_EMOTE_FILE_SIZE
+  MAX_EMOTE_FILE_SIZE,
+  MAX_SMART_WEARABLE_FILE_SIZE
 } from '@dcl/builder-client'
 import {
   FetchItemsRequestAction,
@@ -146,10 +147,11 @@ import {
   ItemEmoteTooBigError,
   ItemSkinTooBigError,
   ItemWearableTooBigError,
+  ItemSmartWearableTooBigError,
   ThumbnailFileTooBigError,
   VideoFileTooBigError
 } from './errors'
-import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_VIDEO_FILE_SIZE } from './utils'
+import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_VIDEO_FILE_SIZE, isSmart } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
 
@@ -428,6 +430,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
         const isEmote = item.type === ItemType.EMOTE
         const isSkin = !isEmote && item.data.category === WearableCategory.SKIN
+        const isSmartWearable = isSmart(item)
 
         if (isEmote && finalModelSize > MAX_EMOTE_FILE_SIZE) {
           throw new ItemEmoteTooBigError()
@@ -437,7 +440,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           throw new ItemSkinTooBigError()
         }
 
-        if (!isSkin && !isEmote && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
+        if (isSmartWearable && finalModelSize + finalThumbnailSize > MAX_SMART_WEARABLE_FILE_SIZE) {
+          throw new ItemSmartWearableTooBigError()
+        }
+
+        if (!isSkin && !isSmartWearable && !isEmote && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
           throw new ItemWearableTooBigError()
         }
       }

@@ -80,7 +80,8 @@ import {
   MAX_EMOTE_FILE_SIZE,
   MAX_SKIN_FILE_SIZE,
   MAX_THUMBNAIL_FILE_SIZE,
-  MAX_WEARABLE_FILE_SIZE
+  MAX_WEARABLE_FILE_SIZE,
+  MAX_SMART_WEARABLE_FILE_SIZE
 } from '@dcl/builder-client/dist/files/constants'
 
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
@@ -945,6 +946,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
     const isSkin = category === WearableCategory.SKIN
     const isEmote = type === ItemType.EMOTE
+    const isSmartWearable = isSmart({ type, contents: this.state.contents })
     const isRequirementMet = required.every(prop => prop !== undefined)
 
     if (isRequirementMet && isEmote && modelSize && modelSize > MAX_EMOTE_FILE_SIZE) {
@@ -967,7 +969,17 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return false
     }
 
-    if (isRequirementMet && !isSkin && modelSize && modelSize > MAX_WEARABLE_FILE_SIZE) {
+    if (isRequirementMet && !isSkin && isSmartWearable && modelSize && modelSize > MAX_SMART_WEARABLE_FILE_SIZE) {
+      this.setState({
+        error: t('create_single_item_modal.error.item_too_big', {
+          size: `${toMB(MAX_SMART_WEARABLE_FILE_SIZE)}MB`,
+          type: `smart wearable`
+        })
+      })
+      return false
+    }
+
+    if (isRequirementMet && !isSkin && !isSmartWearable && modelSize && modelSize > MAX_WEARABLE_FILE_SIZE) {
       this.setState({
         error: t('create_single_item_modal.error.item_too_big', {
           size: `${toMB(MAX_WEARABLE_FILE_SIZE)}MB`,

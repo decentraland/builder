@@ -283,6 +283,10 @@
         "title": "文件太大，无法上传",
         "message": "表情的最大文件大小为 2MB。"
       },
+      "smart_wearable_too_big": {
+        "title": "文件太大，无法上传",
+        "message": "智能可穿戴设备 .zip 文件中的未压缩文件的总文件大小必须低于 3MB。"
+      },
       "unknown_required_permissions": {
         "title": "智能穿戴设备{count,plural,一个{权限}其他{权限}}{wrong_configurations}{count,plural,一个{不}其他{不}}存在。请更正' 场景.json'。",
         "message": "有关更多信息，请查看文档 {learn_more}。"
