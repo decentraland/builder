@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { deleteCollectionRequest, DeleteCollectionRequestAction } from 'modules/collection/actions'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -16,12 +15,9 @@ export type Props = {
   onOpenModal: typeof openModal
   onPostToForum: typeof createCollectionForumPostRequest
   onDelete: typeof deleteCollectionRequest
-  onNavigate: (path: string) => void
 }
 
 export type OwnProps = Pick<Props, 'collection'>
 export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'name' | 'isForumPostLoading'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onPostToForum' | 'onDelete'>
-export type MapDispatch = Dispatch<
-  CallHistoryMethodAction | OpenModalAction | CreateCollectionForumPostRequestAction | DeleteCollectionRequestAction
->
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPostToForum' | 'onDelete'>
+export type MapDispatch = Dispatch<OpenModalAction | CreateCollectionForumPostRequestAction | DeleteCollectionRequestAction>
