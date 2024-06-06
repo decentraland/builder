@@ -11,8 +11,7 @@ export type Props = {
   avatar: Avatar | null
   onOpenModal: typeof openModal
   onFetchENS: typeof fetchENSRequest
-  onNavigate: (path: string) => void
 }
 
 export type MapStateProps = Pick<Props, 'ens' | 'isLoading' | 'alias' | 'avatar' | 'name'>
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onNavigate' | 'onFetchENS'>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchENS'>

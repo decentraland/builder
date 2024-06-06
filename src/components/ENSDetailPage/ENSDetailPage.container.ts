@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { push } from 'connected-react-router'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getENSBySubdomain, getLoading } from 'modules/ens/selectors'
 import { RootState } from 'modules/common/types'
@@ -24,8 +23,7 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onFetchENS: (name: string) => dispatch(fetchENSRequest(name)),
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onNavigate: path => dispatch(push(path))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
 export default connect(mapState, mapDispatch)(ENSDetailPage)

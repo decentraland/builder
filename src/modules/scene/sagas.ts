@@ -1,5 +1,6 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, call, delay, take, race } from 'redux-saga/effects'
+import { History } from 'history'
+import { takeLatest, put, select, call, delay, take, race, getContext } from 'redux-saga/effects'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import {
   ADD_ITEM,
@@ -71,7 +72,6 @@ import {
   duplicateProjectRequest
 } from 'modules/project/actions'
 import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
-import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { PreviewType } from 'modules/editor/types'
 import { BuilderAPI } from 'lib/api/builder'
@@ -729,6 +729,7 @@ export function* sceneSaga(builderApi: BuilderAPI) {
 
   function* handleMigrateToSDK7Request(action: MigrateToSDK7RequestAction) {
     const { project, shouldSaveCopy } = action.payload
+    const history: History = yield getContext('history')
 
     const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
     const scene = scenes[project.sceneId]
@@ -769,7 +770,7 @@ export function* sceneSaga(builderApi: BuilderAPI) {
 
       yield call([builderApi, 'uploadCrdt'], crdt, project.id)
       yield put(updateScene(newSDK7Scene))
-      yield put(push(locations.inspector(project.id)))
+      history.push(locations.inspector(project.id))
       yield put(migrateToSDK7Success())
     } catch (error) {
       put(migrateToSDK7Failure(isErrorWithMessage(error) ? error.message : 'Unknown error'))

@@ -10,11 +10,10 @@ export type Props = {
   deploymentsByWorlds: Record<string, Deployment>
   loading: boolean
   error: ENSError | null
-  onNavigate: (path: string) => void
   onUnpublishWorld: typeof clearDeploymentRequest
 }
 
 export type MapStateProp = Pick<Props, 'items' | 'deploymentsByWorlds' | 'projects' | 'loading' | 'error'>
 
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onUnpublishWorld'>
+export type MapDispatchProps = Pick<Props, 'onUnpublishWorld'>
 export type MapDispatch = Dispatch

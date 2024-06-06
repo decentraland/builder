@@ -1,11 +1,10 @@
 import uuidv4 from 'uuid/v4'
-import { getLocation, push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { ethers } from 'ethers'
 import { Entity, Rarity, EntityType } from '@dcl/schemas'
-import { call, select, take, race, delay } from 'redux-saga/effects'
+import { call, select, take, race, delay, getContext } from 'redux-saga/effects'
 import {
   BuilderClient,
   MAX_EMOTE_FILE_SIZE,
@@ -110,6 +109,7 @@ const builderAPI = {
 let builderClient: BuilderClient
 
 let dateNowSpy: jest.SpyInstance
+let pushMock: jest.Mock
 const updatedAt = Date.now()
 const mockAddress = '0x6D7227d6F36FC997D53B4646132b3B55D751cc7c'
 
@@ -120,6 +120,7 @@ beforeEach(() => {
     getContentSize: jest.fn()
   } as unknown as BuilderClient
   contents = { path: blob }
+  pushMock = jest.fn()
 })
 
 afterEach(() => {
@@ -317,9 +318,7 @@ describe('when handling the save item request action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
-            [select(getOpenModals), { EditItemURNModal: true }],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
@@ -355,7 +354,7 @@ describe('when handling the save item request action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
@@ -386,7 +385,7 @@ describe('when handling the save item request action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
@@ -416,7 +415,7 @@ describe('when handling the save item request action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [
               select(getItem, item.id),
@@ -450,7 +449,7 @@ describe('when handling the save item request action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
@@ -475,7 +474,7 @@ describe('when handling the save item request action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
@@ -498,7 +497,7 @@ describe('when handling the save item request action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
@@ -531,7 +530,7 @@ describe('when handling the save item request action', () => {
                 'anItemContent.glb': { hash: 'newHash', content: blob }
               }
             ],
-            [select(getLocation), { pathname: 'notTPdetailPage' }],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), item],
             [select(getAddress), mockAddress],
@@ -567,7 +566,7 @@ describe('when handling the save item success action', () => {
       it('should put a fetch collection items success action to fetch the same page again', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
-            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
+            [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData],
             [select(getAddress), mockAddress]
@@ -586,14 +585,16 @@ describe('when handling the save item success action', () => {
         const newPageNumber = Math.ceil((paginationData.total + paginationData.ids.length) / paginationData.limit)
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
-            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
+            [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData],
             [select(getAddress), mockAddress]
           ])
-          .put(push(locations.thirdPartyCollectionDetail(item.collectionId, { page: newPageNumber })))
           .dispatch(saveItemSuccess(item, contents))
           .run({ silenceTimeout: true })
+          .then(() => {
+            expect(pushMock).toHaveBeenCalledWith(locations.thirdPartyCollectionDetail(item.collectionId, { page: newPageNumber }))
+          })
       })
     })
   })
@@ -604,7 +605,7 @@ describe('when handling the save item success action', () => {
         it('should close the modal CreateSingleItemModal', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
+              [getContext('history'), { push: pushMock, location: { pathname: locations.collectionDetail(collection.id) } }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
               [select(getAddress), mockAddress]
             ])
@@ -622,17 +623,20 @@ describe('when handling the save item success action', () => {
         it('should put a location change to the item editor', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.collectionDetail(collection.id) }],
+              [getContext('history'), { push: pushMock, location: { pathname: locations.collectionDetail(collection.id) } }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
               [select(getAddress), mockAddress]
             ])
-            .put(
-              push(locations.itemEditor({ collectionId: collection.id, itemId: item.id, newItem: item.name }), {
-                fromParam: FromParam.COLLECTIONS
-              })
-            )
             .dispatch(saveItemSuccess(item, {}))
             .run({ silenceTimeout: true })
+            .then(() => {
+              expect(pushMock).toHaveBeenCalledWith(
+                locations.itemEditor({ collectionId: collection.id, itemId: item.id, newItem: item.name }),
+                {
+                  fromParam: FromParam.COLLECTIONS
+                }
+              )
+            })
         })
       })
     })
@@ -649,7 +653,7 @@ describe('when handling the save item success action', () => {
         it('should close the modal CreateSingleItemModal', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.itemEditor() }],
+              [getContext('history'), { push: pushMock, location: { pathname: locations.itemEditor() } }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
               [select(getAddress), mockAddress],
               [select(getPaginationData, item.collectionId!), { ...paginationData }]
@@ -670,7 +674,7 @@ describe('when handling the save item success action', () => {
           it('should close the modal CreateSingleItemModal', () => {
             return expectSaga(itemSaga, builderAPI, builderClient)
               .provide([
-                [select(getLocation), { pathname: locations.itemEditor() }],
+                [getContext('history'), { push: pushMock, location: { pathname: locations.itemEditor() } }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
                 [select(getAddress), mockAddress],
                 [select(getPaginationData, item.collectionId!), { ...paginationData }]
@@ -686,7 +690,7 @@ describe('when handling the save item success action', () => {
           it('should close the modal CreateSingleItemModal', () => {
             return expectSaga(itemSaga, builderAPI, builderClient)
               .provide([
-                [select(getLocation), { pathname: locations.itemEditor() }],
+                [getContext('history'), { push: pushMock, location: { pathname: locations.itemEditor() } }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
                 [select(getAddress), mockAddress],
                 [select(getPaginationData, item.collectionId!), { ...paginationData }]
@@ -1135,7 +1139,7 @@ describe('when handling the save multiple items requests action', () => {
     it('should dispatch the update progress action for each uploaded item and the success action with the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
-          [select(getLocation), { pathname: 'notTPDetailPage' }],
+          [getContext('history'), { push: pushMock, location: { pathname: 'notTPDetailPage' } }],
           [select(getOpenModals), { EditItemURNModal: true }]
         ])
         .put(updateProgressSaveMultipleItems(33))
@@ -1162,7 +1166,10 @@ describe('when handling the save multiple items requests action', () => {
         it('should request the same page of items if the user is in the TP detail page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
+              [
+                getContext('history'),
+                { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) } }
+              ],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
@@ -1181,13 +1188,18 @@ describe('when handling the save multiple items requests action', () => {
           const newPageNumber = Math.ceil((paginationData.total + items.length) / paginationData.limit)
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
+              [
+                getContext('history'),
+                { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) } }
+              ],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
-            .put(push(locations.thirdPartyCollectionDetail(items[0].collectionId, { page: newPageNumber })))
             .dispatch(saveMultipleItemsSuccess(items, savedFiles, []))
             .run({ silenceTimeout: true })
+            .then(() => {
+              expect(pushMock).toHaveBeenCalledWith(locations.thirdPartyCollectionDetail(items[0].collectionId, { page: newPageNumber }))
+            })
         })
       })
     })
@@ -1202,7 +1214,7 @@ describe('when handling the save multiple items requests action', () => {
     it('should dispatch the update progress action for the non-failing item upload and the success action with the items that failed, the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
-          [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
+          [getContext('history'), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
           [select(getPaginationData, items[0].collectionId!), paginationData]
         ])
         .put(updateProgressSaveMultipleItems(100))
@@ -1235,7 +1247,7 @@ describe('when handling the save multiple items requests action', () => {
     it('should dispatch the update progress action for the first non-cancelled upsert and the cancelling action with the upserted items and the name of the files of the upserted items', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
-          [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
+          [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) } }],
           [select(getPaginationData, items[0].collectionId!), paginationData]
         ])
         .put(
@@ -1266,7 +1278,10 @@ describe('when handling the save multiple items requests action', () => {
         it('should request the same page of items if the user is in the TP detail page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
+              [
+                getContext('history'),
+                { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) } }
+              ],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
@@ -1294,11 +1309,13 @@ describe('when handling the save multiple items requests action', () => {
           )
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
+              [
+                getContext('history'),
+                { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) } }
+              ],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
-            .put(push(locations.thirdPartyCollectionDetail(items[0].collectionId, { page: newPageNumber })))
             .dispatch(
               saveMultipleItemsCancelled(
                 Array(SAVE_AND_EDIT_FILES_BATCH_SIZE).fill(items[0]),
@@ -1308,6 +1325,9 @@ describe('when handling the save multiple items requests action', () => {
               )
             )
             .run({ silenceTimeout: true })
+            .then(() => {
+              expect(pushMock).toHaveBeenCalledWith(locations.thirdPartyCollectionDetail(items[0].collectionId, { page: newPageNumber }))
+            })
         })
       })
     })
@@ -1322,7 +1342,7 @@ describe('when handling the save multiple items requests action', () => {
         it('should request the same page of items if the user is in the TP detail page', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
+              [getContext('history'), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, items[0].collectionId!), paginationData]
             ])
@@ -1521,7 +1541,7 @@ describe('when handling the delete item success action', () => {
         return expectSaga(itemSaga, builderAPI, builderClient)
           .provide([
             [select(getAddress), mockAddress],
-            [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
+            [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData]
           ])
@@ -1541,13 +1561,17 @@ describe('when handling the delete item success action', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
               [select(getAddress), mockAddress],
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
+              [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
             ])
-            .put(push(locations.thirdPartyCollectionDetail(item.collectionId, { page: paginationData.currentPage - 1 })))
             .dispatch(deleteItemSuccess(item))
             .run({ silenceTimeout: true })
+            .then(() => {
+              expect(pushMock).toHaveBeenCalledWith(
+                locations.thirdPartyCollectionDetail(item.collectionId, { page: paginationData.currentPage - 1 })
+              )
+            })
         })
       })
 
@@ -1560,7 +1584,7 @@ describe('when handling the delete item success action', () => {
           return expectSaga(itemSaga, builderAPI, builderClient)
             .provide([
               [select(getAddress), mockAddress],
-              [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
+              [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
               [select(getOpenModals), { EditItemURNModal: true }],
               [select(getPaginationData, item.collectionId!), paginationData]
             ])
@@ -1580,7 +1604,7 @@ describe('when handling the delete item success action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getAddress), mockAddress],
-          [select(getLocation), { pathname: locations.collections() }],
+          [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
           [select(getOpenModals), { EditItemURNModal: true }],
           [select(getPaginationData, mockAddress), paginationData]
         ])
@@ -1600,7 +1624,7 @@ describe('when handling the save item curation success action', () => {
   it('should put a fetch item curation request action if the item is a TP one', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
-        [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
+        [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
         [select(getOpenModals), { EditItemURNModal: true }],
         [select(getPaginationData, item.collectionId!), {}],
         [select(getAddress), mockAddress]
@@ -1618,7 +1642,7 @@ describe('when handling the save item curation success action', () => {
   it('should not put a fetch item curation request action if the item is a standard one', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
-        [select(getLocation), { pathname: locations.thirdPartyCollectionDetail(item.collectionId) }],
+        [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
         [select(getOpenModals), { EditItemURNModal: true }],
         [select(getPaginationData, item.collectionId!), {}],
         [select(getAddress), mockAddress]
@@ -1631,14 +1655,16 @@ describe('when handling the save item curation success action', () => {
   it('should not put a location change to the item detail if the CreateSingleItemModal was opened and the location was not /collections', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
-        [select(getLocation), { pathname: locations.collectionDetail('id') }],
+        [getContext('history'), { push: pushMock, location: { pathname: locations.collectionDetail('id') } }],
         [select(getOpenModals), { CreateSingleItemModal: true }],
         [select(getAddress), mockAddress],
         [select(getPaginationData, mockAddress), { currentPage: 1, limit: 10 }]
       ])
-      .not.put(push(locations.itemDetail(item.id)))
       .dispatch(saveItemSuccess(item, {}))
       .run({ silenceTimeout: true })
+      .then(() => {
+        expect(pushMock).not.toHaveBeenCalledWith(locations.itemDetail(item.id))
+      })
   })
 })
 
@@ -1699,7 +1725,7 @@ describe('when handling the setCollection action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getAddress), mockAddress],
-          [select(getLocation), { pathname: locations.collections() }],
+          [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
           [select(getOpenModals), { AddExistingItemModal: true }],
           [select(getItem, item.id), item],
           [select(getCollection, collection.id), collection],
@@ -1835,7 +1861,7 @@ describe('when handling the setItemCollection action', () => {
     return expectSaga(itemSaga, builderAPI, builderClient)
       .provide([
         [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
-        [select(getLocation), { pathname: 'collections' }],
+        [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
         [select(getCollection, collection.id), collection],
         [select(getItem, item.id), item],
         [select(getAddress), mockAddress],

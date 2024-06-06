@@ -1,4 +1,5 @@
 import { t } from 'decentraland-dapps/dist/modules/translation'
+import { useHistory } from 'react-router-dom'
 import { Loader, Message, Table, Empty, Button } from 'decentraland-ui'
 import { formatNumber } from 'decentraland-dapps/dist/lib'
 import { useCallback } from 'react'
@@ -11,17 +12,18 @@ import { Props } from './WorldContributorTab.types'
 import WorldUrl from '../WorldUrl'
 import PublishSceneButton from '../PublishSceneButton'
 
-export default function WorldContributorTab({ items, deploymentsByWorlds, projects, loading, error, onNavigate, onUnpublishWorld }: Props) {
+export default function WorldContributorTab({ items, deploymentsByWorlds, projects, loading, error, onUnpublishWorld }: Props) {
+  const history = useHistory()
   const handlePublishScene = useCallback(() => {
-    onNavigate(locations.scenes())
-  }, [onNavigate])
+    history.push(locations.scenes())
+  }, [history])
 
   const handleEditScene = useCallback(
     (ens: ENS) => {
       const { projectId } = deploymentsByWorlds[ens.subdomain]
-      onNavigate(locations.sceneDetail(projectId as string))
+      history.push(locations.sceneDetail(projectId as string))
     },
-    [deploymentsByWorlds, locations, onNavigate]
+    [deploymentsByWorlds, locations, history]
   )
 
   const handleUnpublishScene = useCallback(

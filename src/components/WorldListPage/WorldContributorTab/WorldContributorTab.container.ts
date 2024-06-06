@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading'
 import { getContributableNamesList, getLoading as getLoadingENS, getContributableNamesError } from 'modules/ens/selectors'
 import { RootState } from 'modules/common/types'
@@ -21,7 +20,6 @@ const mapState = (state: RootState): MapStateProp => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId))
 })
 

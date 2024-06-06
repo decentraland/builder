@@ -1,16 +1,18 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './NameTabs.types'
 import { TAB_QUERY_PARAM_KEY, TabType, useCurrentlySelectedTab } from '../hooks'
 
-const NameTabs = ({ isWorldContributorEnabled, onNavigate }: Props) => {
+const NameTabs = ({ isWorldContributorEnabled }: Props) => {
   const { tab, pathname, urlSearchParams } = useCurrentlySelectedTab()
+  const history = useHistory()
 
   const navigateToTab = (tab: TabType) => {
     const urlSearchParamsCopy = new URLSearchParams(urlSearchParams)
     urlSearchParamsCopy.set(TAB_QUERY_PARAM_KEY, tab)
-    onNavigate(`${pathname}?${urlSearchParamsCopy.toString()}`)
+    history.push(`${pathname}?${urlSearchParamsCopy.toString()}`)
   }
 
   if (!tab || (tab === TabType.CONTRIBUTOR && !isWorldContributorEnabled)) {

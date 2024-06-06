@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { isConnected } from 'decentraland-dapps/dist/modules/wallet'
@@ -43,7 +42,6 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onOpenYourStorageModal: metadata => dispatch(openModal('WorldsYourStorageModal', metadata)),
   onOpenPermissionsModal: (name, isCollaboratorsTabShown) =>
     dispatch(openModal('WorldPermissionsModal', { worldName: name, isCollaboratorsTabShown })),

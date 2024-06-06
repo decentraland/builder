@@ -1,4 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { formatNumber } from 'decentraland-dapps/dist/lib/utils'
@@ -39,7 +40,6 @@ const WorldListPage: React.FC<Props> = props => {
     worldsWalletStats,
     isConnected,
     isWorldContributorEnabled,
-    onNavigate,
     onOpenYourStorageModal,
     onOpenWorldsForENSOwnersAnnouncementModal,
     onUnpublishWorld,
@@ -49,6 +49,7 @@ const WorldListPage: React.FC<Props> = props => {
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
   const { tab } = useCurrentlySelectedTab()
+  const history = useHistory()
 
   useEffect(() => {
     if (isConnected && isWorldContributorEnabled) {
@@ -67,15 +68,15 @@ const WorldListPage: React.FC<Props> = props => {
   }, [tab])
 
   const handlePublishScene = useCallback(() => {
-    onNavigate(locations.scenes())
-  }, [locations, onNavigate])
+    history.push(locations.scenes())
+  }, [locations, history])
 
   const handleEditScene = useCallback(
     (ens: ENS) => {
       const { projectId } = deploymentsByWorlds[ens.subdomain]
-      onNavigate(locations.sceneDetail(projectId as string))
+      history.push(locations.sceneDetail(projectId as string))
     },
-    [deploymentsByWorlds, locations, onNavigate]
+    [deploymentsByWorlds, locations, history]
   )
 
   const handleUnpublishScene = useCallback(

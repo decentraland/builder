@@ -1,10 +1,9 @@
 import { ethers } from 'ethers'
-import { retry, race, take, call, put, select, delay } from 'redux-saga/effects'
+import { retry, race, take, call, put, select, delay, getContext } from 'redux-saga/effects'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient } from '@dcl/builder-client'
-import { push } from 'connected-react-router'
 import { ChainId, Network, WearableCategory, WearableRepresentation, Entity, EntityType } from '@dcl/schemas'
 import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -1256,15 +1255,19 @@ describe('when saving a collection', () => {
     })
 
     it('should redirect to the detail page after creating the collection', () => {
+      const pushMock = jest.fn()
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
         .provide([
+          [getContext('history'), { push: pushMock }],
           [select(getOpenModals), { CreateThirdPartyCollectionModal: true }],
           [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
         ])
-        .put(push(locations.thirdPartyCollectionDetail(thirdPartyCollection.id)))
         .dispatch(saveCollectionRequest(thirdPartyCollection))
         .dispatch(closeModal('CreateThirdPartyCollectionModal'))
         .run({ silenceTimeout: true })
+        .then(() => {
+          expect(pushMock).toHaveBeenCalledWith(locations.thirdPartyCollectionDetail(thirdPartyCollection.id))
+        })
     })
 
     it('should save the collection without data', () => {

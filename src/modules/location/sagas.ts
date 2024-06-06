@@ -1,5 +1,6 @@
-import { all, takeLatest, put, select, take, race } from 'redux-saga/effects'
-import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
+import { all, takeLatest, put, select, take, race, getContext } from 'redux-saga/effects'
+import { History } from 'history'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { locations } from 'routing/locations'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
@@ -24,30 +25,30 @@ export function* locationSaga() {
 }
 
 function* handleLoginSuccess(_action: LoginSuccessAction) {
-  const location: ReturnType<typeof getLocation> = yield select(getLocation)
-  const { pathname, search } = location
+  const history: History = yield getContext('history')
+  const { pathname, search } = history.location
 
   if (pathname === locations.signIn()) {
     const redirectTo = new URLSearchParams(search).get('redirectTo')
     if (redirectTo) {
-      yield put(push(decodeURIComponent(redirectTo)))
+      history.push(decodeURIComponent(redirectTo))
     } else {
-      yield put(push(locations.root()))
+      history.push(locations.root())
     }
   }
 }
 
 function* handleSetENSContentSuccess(action: SetENSContentSuccessAction) {
+  const history: History = yield getContext('history')
   const { land } = action.payload
   if (!land) {
-    yield put(replace(locations.activity()))
+    history.replace(locations.activity())
   }
 }
 
 export function* handleLocationChange() {
-  const {
-    query: { redirectTo }
-  } = yield select(getLocation)
+  const history: History = yield getContext('history')
+  const redirectTo = new URLSearchParams(history.location.search).get('redirectTo')
 
   if (redirectTo) {
     yield put(redirectToRequest(redirectTo))
@@ -56,6 +57,7 @@ export function* handleLocationChange() {
 
 export function* handleRedirectToRequest(action: RedirectToRequestAction) {
   const { redirectTo: encodedRedirectTo } = action.payload
+  const history: History = yield getContext('history')
 
   function* fail(error: string): any {
     yield put(redirectToFailure(encodedRedirectTo, error))
@@ -80,8 +82,8 @@ export function* handleRedirectToRequest(action: RedirectToRequestAction) {
           const collection = collectionsByContractAddress[contractAddress]
 
           if (collection) {
-            yield put(push(locations.collectionDetail(collection.id)))
             yield put(redirectToSuccess(encodedRedirectTo))
+            history.push(locations.collectionDetail(collection.id))
           } else {
             yield
             yield fail(`Collection with contract address ${contractAddress} not found`)

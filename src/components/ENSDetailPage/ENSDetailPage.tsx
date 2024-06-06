@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import classNames from 'classnames'
 import { config } from 'config'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { Button, Icon as DCLIcon, InfoTooltip } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { shorten } from 'lib/address'
@@ -16,7 +16,8 @@ import { Props } from './ENSDetailPage.types'
 import styles from './ENSDetailPage.module.css'
 
 export default function ENSDetailPage(props: Props) {
-  const { ens, isLoading, alias, avatar, name, onNavigate, onOpenModal, onFetchENS } = props
+  const { ens, isLoading, alias, avatar, name, onOpenModal, onFetchENS } = props
+  const history = useHistory()
   const imgUrl = useMemo<string>(
     () => (ens ? `${config.get('MARKETPLACE_API')}/ens/generate?ens=${ens.name}&width=330&height=330` : ''),
     [ens]
@@ -39,8 +40,8 @@ export default function ENSDetailPage(props: Props) {
   }, [onOpenModal, ens?.name])
 
   const handleAssignENS = useCallback(() => {
-    onNavigate(locations.ensSelectLand(ens?.subdomain))
-  }, [onNavigate, ens?.subdomain])
+    history.push(locations.ensSelectLand(ens?.subdomain))
+  }, [history, ens?.subdomain])
 
   const handleReclaim = useCallback(() => {
     onOpenModal('ReclaimNameModal', { ens })

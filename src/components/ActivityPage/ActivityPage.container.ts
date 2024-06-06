@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { clearTransactions } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
@@ -15,8 +14,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onClearHistory: address => dispatch(clearTransactions(address)),
-  onNavigate: path => dispatch(push(path))
+  onClearHistory: address => dispatch(clearTransactions(address))
 })
 
 export default connect(mapState, mapDispatch)(ActivityPage)

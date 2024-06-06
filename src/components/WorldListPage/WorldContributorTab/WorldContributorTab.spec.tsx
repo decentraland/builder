@@ -14,7 +14,6 @@ export function renderWorldContributorTab(props: Partial<Props>) {
       deploymentsByWorlds={{}}
       error={null}
       loading={false}
-      onNavigate={jest.fn()}
       onUnpublishWorld={jest.fn()}
       projects={[]}
       {...props}
