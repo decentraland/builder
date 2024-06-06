@@ -7,7 +7,9 @@ import { TAB_QUERY_PARAM_KEY, TabType, UseCurrentlySelectedTabResult, useCurrent
 
 jest.mock('decentraland-ui/dist/components/Media/Media')
 jest.mock('../hooks')
-jest.mock('react-router-dom')
+jest.mock('react-router-dom', () => ({
+  useHistory: jest.fn()
+}))
 
 const mockUseCurrentlySelectedTab = useCurrentlySelectedTab as jest.Mock
 const mockMobile = Mobile as jest.Mock
