@@ -1,6 +1,6 @@
 import { race, select, take } from '@redux-saga/core/effects'
-import { getLocation, push } from 'connected-react-router'
 import { expectSaga } from 'redux-saga-test-plan'
+import { getContext } from 'redux-saga/effects'
 import {
   fetchCollectionsFailure,
   fetchCollectionsSuccess,
@@ -15,10 +15,10 @@ import { handleLocationChange, handleRedirectToRequest } from './sagas'
 describe('when handling location change', () => {
   describe('when redirectTo is present in the query', () => {
     it('should put a redirect to request action', () => {
-      const redirectTo = 'redirect to'
+      const redirectTo = 'redirectTo'
 
       return expectSaga(handleLocationChange)
-        .provide([[select(getLocation), { query: { redirectTo } }]])
+        .provide([[getContext('history'), { location: { search: `?redirectTo=${redirectTo}` } }]])
         .put(redirectToRequest(redirectTo))
         .silentRun()
     })
@@ -85,6 +85,7 @@ describe('when handling redirect', () => {
       describe('when the collection exists in the store', () => {
         it('should put redirect to success and push collection detail location', () => {
           const collectionId = 'some id'
+          const pushMock = jest.fn()
 
           return expectSaga(handleRedirectToRequest, redirectToRequest(encoded))
             .provide([
@@ -92,11 +93,14 @@ describe('when handling redirect', () => {
                 race({ success: take(FETCH_COLLECTIONS_SUCCESS), failure: take(FETCH_COLLECTIONS_FAILURE) }),
                 { success: fetchCollectionsSuccess([]) }
               ],
-              [select(getCollectionsByContractAddress), { [contractAddress]: { id: collectionId } }]
+              [select(getCollectionsByContractAddress), { [contractAddress]: { id: collectionId } }],
+              [getContext('history'), { push: pushMock }]
             ])
             .put(redirectToSuccess(encoded))
-            .put(push(locations.collectionDetail(collectionId)))
             .silentRun()
+            .then(() => {
+              expect(pushMock).toHaveBeenCalledWith(locations.collectionDetail(collectionId))
+            })
         })
       })
     })

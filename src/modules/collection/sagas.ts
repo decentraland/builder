@@ -1,8 +1,8 @@
 import PQueue from 'p-queue'
+import { History } from 'history'
 import equal from 'fast-deep-equal'
 import { Contract, providers, constants, ethers } from 'ethers'
-import { push, replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest, race, retry, delay, getContext } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
 import { v4 as uuid } from 'uuid'
 import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
@@ -245,12 +245,13 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
   function* handleSaveCollectionSuccess(action: SaveCollectionSuccessAction) {
     const openModals: ModalState = yield select(getOpenModals)
+    const history: History = yield getContext('history')
 
     if (openModals['CreateCollectionModal'] || openModals['CreateThirdPartyCollectionModal']) {
       // Redirect to the newly created collection detail
       const { collection } = action.payload
       const detailPageLocation = isTPCollection(collection) ? locations.thirdPartyCollectionDetail : locations.collectionDetail
-      yield put(push(detailPageLocation(collection.id)))
+      history.push(detailPageLocation(collection.id))
     }
 
     // Close corresponding modals
@@ -327,13 +328,15 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
   function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
     const { collection } = action.payload
+    const history: History = yield getContext('history')
+
     try {
       yield call(() => legacyBuilderClient.deleteCollection(collection.id))
       yield put(deleteCollectionSuccess(collection))
 
       const collectionIdInUriParam: string = yield select(getCollectionId)
       if (collectionIdInUriParam === collection.id) {
-        yield put(replace(locations.collections()))
+        history.replace(locations.collections())
       }
     } catch (error) {
       yield put(deleteCollectionFailure(collection, isErrorWithMessage(error) ? error.message : 'Unknown error'))
@@ -614,6 +617,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
   function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestAction) {
     const { collection, accessList } = action.payload
+    const history: History = yield getContext('history')
+
     try {
       const maticChainId = getChainIdByNetwork(Network.MATIC)
 
@@ -637,7 +642,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const txHash: string = yield call(sendTransaction, contract, collection => collection.setMinters(addresses, values))
 
       yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), maticChainId, txHash))
-      yield put(replace(locations.activity()))
+      history.replace(locations.activity())
     } catch (error) {
       yield put(setCollectionMintersFailure(collection, accessList, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
@@ -645,6 +650,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
   function* handleSetCollectionManagersRequest(action: SetCollectionManagersRequestAction) {
     const { collection, accessList } = action.payload
+    const history: History = yield getContext('history')
     try {
       const maticChainId = getChainIdByNetwork(Network.MATIC)
 
@@ -668,7 +674,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const txHash: string = yield call(sendTransaction, contract, collection => collection.setManagers(addresses, values))
 
       yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), maticChainId, txHash))
-      yield put(replace(locations.activity()))
+      history.replace(locations.activity())
     } catch (error) {
       yield put(setCollectionManagersFailure(collection, accessList, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
@@ -676,6 +682,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
   function* handleMintCollectionItemsRequest(action: MintCollectionItemsRequestAction) {
     const { collection, mints } = action.payload
+    const history: History = yield getContext('history')
     try {
       const maticChainId = getChainIdByNetwork(Network.MATIC)
 
@@ -695,7 +702,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       yield put(mintCollectionItemsSuccess(collection, mints, maticChainId, txHash))
       yield put(closeModal('MintItemsModal'))
-      yield put(replace(locations.activity()))
+      history.replace(locations.activity())
     } catch (error) {
       yield put(mintCollectionItemsFailure(collection, mints, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }

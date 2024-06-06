@@ -1,6 +1,6 @@
-import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
+import { takeLatest, put, select, call, delay, getContext } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { getLocation, replace } from 'connected-react-router'
+import { History } from 'history'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ProviderType } from '@dcl/schemas'
 import { localStorageClearIdentity, localStorageGetIdentity, localStorageStoreIdentity } from '@dcl/single-sign-on-client'
@@ -187,6 +187,7 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
 function* handleChangeAccount(action: ChangeAccountAction) {
   const { wallet } = action.payload
   const { address, providerType } = wallet
+  const history: History = yield getContext('history')
 
   const identity = localStorageGetIdentity(address)
 
@@ -199,11 +200,11 @@ function* handleChangeAccount(action: ChangeAccountAction) {
 
   yield put(clearAssetPacks())
 
-  const location: ReturnType<typeof getLocation> = yield select(getLocation)
+  const location = history.location
 
   const isEditor = location.pathname.includes('editor')
 
   if (isEditor) {
-    yield put(replace(locations.root()))
+    history.replace(locations.root())
   }
 }

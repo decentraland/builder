@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import * as router from 'react-router'
 import { render, screen } from '@testing-library/react'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import NameTabs from './NameTabs'
@@ -6,6 +7,7 @@ import { TAB_QUERY_PARAM_KEY, TabType, UseCurrentlySelectedTabResult, useCurrent
 
 jest.mock('decentraland-ui/dist/components/Media/Media')
 jest.mock('../hooks')
+jest.mock('react-router')
 
 const mockUseCurrentlySelectedTab = useCurrentlySelectedTab as jest.Mock
 const mockMobile = Mobile as jest.Mock
@@ -17,7 +19,7 @@ const contributorTabText = 'Contributor'
 
 describe('when rendering the name tabs component', () => {
   let useCurrentlySelectedTabResult: UseCurrentlySelectedTabResult
-  let onNavigate: jest.Mock
+  let pushMock: jest.Mock
 
   beforeEach(() => {
     useCurrentlySelectedTabResult = {
@@ -28,7 +30,8 @@ describe('when rendering the name tabs component', () => {
 
     mockUseCurrentlySelectedTab.mockReturnValueOnce(useCurrentlySelectedTabResult)
 
-    onNavigate = jest.fn()
+    pushMock = jest.fn()
+    jest.spyOn(router, 'useHistory').mockReturnValue({ push: pushMock } as any)
   })
 
   describe('when the tab param is returned as undefined by the currently selected tab hook', () => {
@@ -37,8 +40,8 @@ describe('when rendering the name tabs component', () => {
     })
 
     it('should call the on navigate prop with the pathname, url search params and an added tab query param with dcl as value', () => {
-      render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled />)
-      expect(onNavigate).toHaveBeenCalledWith(
+      render(<NameTabs isWorldContributorEnabled />)
+      expect(pushMock).toHaveBeenCalledWith(
         `${useCurrentlySelectedTabResult.pathname}?${useCurrentlySelectedTabResult.urlSearchParams.toString()}&${TAB_QUERY_PARAM_KEY}=${
           TabType.DCL
         }`
@@ -55,7 +58,7 @@ describe('when rendering the name tabs component', () => {
     })
 
     it('should render both the ens, dcl and contributor tabs name tabs', () => {
-      render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled />)
+      render(<NameTabs isWorldContributorEnabled />)
 
       expect(screen.getByText(dclTabText)).toBeInTheDocument()
       expect(screen.getByText(ensTabText)).toBeInTheDocument()
@@ -68,7 +71,7 @@ describe('when rendering the name tabs component', () => {
       })
 
       it('should add the active css class to the ens tab', () => {
-        render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled />)
+        render(<NameTabs isWorldContributorEnabled />)
 
         expect(screen.getByText(ensTabText)).toHaveClass('active')
         expect(screen.getByText(contributorTabText)).not.toHaveClass('active')
@@ -82,7 +85,7 @@ describe('when rendering the name tabs component', () => {
       })
 
       it('should add the active css class to the dcl tab', () => {
-        render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled />)
+        render(<NameTabs isWorldContributorEnabled />)
 
         expect(screen.getByText(ensTabText)).not.toHaveClass('active')
         expect(screen.getByText(contributorTabText)).not.toHaveClass('active')
@@ -96,7 +99,7 @@ describe('when rendering the name tabs component', () => {
       })
 
       it('should add the active css class to the contributor tab', () => {
-        render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled />)
+        render(<NameTabs isWorldContributorEnabled />)
 
         expect(screen.getByText(ensTabText)).not.toHaveClass('active')
         expect(screen.getByText(contributorTabText)).toHaveClass('active')
@@ -106,11 +109,11 @@ describe('when rendering the name tabs component', () => {
 
     describe('when the dcl tab is clicked', () => {
       it('should call the on navigate prop with the current pathname + the tab query param with dcl as value', () => {
-        render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled />)
+        render(<NameTabs isWorldContributorEnabled />)
 
         screen.getByText(dclTabText).click()
 
-        expect(onNavigate).toHaveBeenCalledWith(
+        expect(pushMock).toHaveBeenCalledWith(
           `${useCurrentlySelectedTabResult.pathname}?${useCurrentlySelectedTabResult.urlSearchParams.toString()}&${TAB_QUERY_PARAM_KEY}=${
             TabType.DCL
           }`
@@ -120,11 +123,11 @@ describe('when rendering the name tabs component', () => {
 
     describe('when the ens tab is clicked', () => {
       it('should call the on navigate prop with the current pathname + the tab query param with ens as value', () => {
-        render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled />)
+        render(<NameTabs isWorldContributorEnabled />)
 
         screen.getByText(ensTabText).click()
 
-        expect(onNavigate).toHaveBeenCalledWith(
+        expect(pushMock).toHaveBeenCalledWith(
           `${useCurrentlySelectedTabResult.pathname}?${useCurrentlySelectedTabResult.urlSearchParams.toString()}&${TAB_QUERY_PARAM_KEY}=${
             TabType.ENS
           }`
@@ -134,11 +137,11 @@ describe('when rendering the name tabs component', () => {
 
     describe('when the contributor tab is clicked', () => {
       it('should call the on navigate prop with the current pathname + the tab query param with contributor as value', () => {
-        render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled />)
+        render(<NameTabs isWorldContributorEnabled />)
 
         screen.getByText(contributorTabText).click()
 
-        expect(onNavigate).toHaveBeenCalledWith(
+        expect(pushMock).toHaveBeenCalledWith(
           `${useCurrentlySelectedTabResult.pathname}?${useCurrentlySelectedTabResult.urlSearchParams.toString()}&${TAB_QUERY_PARAM_KEY}=${
             TabType.CONTRIBUTOR
           }`
@@ -150,7 +153,6 @@ describe('when rendering the name tabs component', () => {
 
 describe('when isWorldContributorEnabled is false', () => {
   let useCurrentlySelectedTabResult: UseCurrentlySelectedTabResult
-  let onNavigate: jest.Mock
 
   beforeEach(() => {
     useCurrentlySelectedTabResult = {
@@ -160,12 +162,10 @@ describe('when isWorldContributorEnabled is false', () => {
     } as UseCurrentlySelectedTabResult
 
     mockUseCurrentlySelectedTab.mockReturnValueOnce(useCurrentlySelectedTabResult)
-
-    onNavigate = jest.fn()
   })
 
   it('should not show the contributor tab', () => {
-    render(<NameTabs onNavigate={onNavigate} isWorldContributorEnabled={false} />)
+    render(<NameTabs isWorldContributorEnabled={false} />)
     expect(screen.getByText(dclTabText)).toBeInTheDocument()
     expect(screen.getByText(ensTabText)).toBeInTheDocument()
     expect(screen.queryByText(contributorTabText)).not.toBeInTheDocument()

@@ -1,7 +1,8 @@
 import PQueue from 'p-queue'
+import { History } from 'history'
 import { Contract, providers } from 'ethers'
-import { getLocation, LOCATION_CHANGE, push, replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled } from 'redux-saga/effects'
+import { LOCATION_CHANGE } from 'connected-react-router'
+import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
 import { ChainId, Network, Entity, EntityType, WearableCategory } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -449,30 +450,32 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* fetchNewCollectionItemsPaginated(collectionId: string, newItemsAmount = 1) {
+    const history: History = yield getContext('history')
     const paginationData: ItemPaginationData = yield select(getPaginationData, collectionId)
     const { currentPage, limit, total } = paginationData || {}
     const newItemPage = Math.ceil((total + newItemsAmount) / limit) // optimistic computation, in case the save is successful
     if (newItemPage !== currentPage) {
-      yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: newItemPage })))
+      history.push(locations.thirdPartyCollectionDetail(collectionId, { page: newItemPage }))
     } else {
       yield put(fetchCollectionItemsRequest(collectionId, { page: currentPage, limit }))
     }
   }
 
   function* handleSaveMultipleItemsSuccess(action: SaveMultipleItemsSuccessAction) {
+    const history: History = yield getContext('history')
     const { items } = action.payload
     const collectionId = items.length > 0 ? items[0].collectionId : null
-    const location: ReturnType<typeof getLocation> = yield select(getLocation)
 
-    if (collectionId && location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+    if (collectionId && history.location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
       yield call(fetchNewCollectionItemsPaginated, collectionId, items.length)
     }
   }
 
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
+    const history: History = yield getContext('history')
+    const location = history.location
     const address: string = yield select(getAddress)
     const openModals: ModalState = yield select(getOpenModals)
-    const location: ReturnType<typeof getLocation> = yield select(getLocation)
     const { item } = action.payload
     const collectionId = item.collectionId!
     const ItemModals = ['EditItemURNModal', 'EditPriceAndBeneficiaryModal', 'AddExistingItemModal']
@@ -482,7 +485,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
         // Redirect to the item editor
         yield put(setItems([item]))
-        yield put(push(locations.itemEditor({ collectionId, itemId: item.id, newItem: item.name }), { fromParam: FromParam.COLLECTIONS }))
+        history.push(locations.itemEditor({ collectionId, itemId: item.id, newItem: item.name }), { fromParam: FromParam.COLLECTIONS })
       } else {
         // When creating a Wearable/Emote in the itemEditor, reload the left panel to show the new item created
         if (location.pathname === locations.itemEditor()) {
@@ -557,12 +560,13 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleDeleteItemRequest(action: DeleteItemRequestAction) {
     const { item } = action.payload
+    const history: History = yield getContext('history')
     try {
       yield call(() => legacyBuilder.deleteItem(item.id))
       yield put(deleteItemSuccess(item))
       const itemIdInUriParam: string = yield select(getItemId)
       if (itemIdInUriParam === item.id) {
-        yield put(replace(locations.collections()))
+        history.replace(locations.collections())
       }
       yield put(closeModal('DeleteItemModal'))
       yield put(showToast(getSuccessfulDeletedItemToast(item), 'bottom center'))
@@ -573,8 +577,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* handleDeleteItemSuccess(action: DeleteItemSuccessAction) {
     const { item } = action.payload
+    const history: History = yield getContext('history')
     const collectionId = item.collectionId!
-    const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    const location = history.location
     const isTPCollectionPage = location.pathname === locations.thirdPartyCollectionDetail(collectionId)
     const isCollectionsPage = location.pathname === locations.collections()
     if (isTPCollectionPage || isCollectionsPage) {
@@ -584,7 +589,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const { currentPage, limit, ids } = paginationData
       const shouldGoToPreviousPage = currentPage > 1 && ids.length === 1 && ids[0] === item.id
       if (isTPCollectionPage && shouldGoToPreviousPage) {
-        yield put(push(locations.thirdPartyCollectionDetail(collectionId, { page: currentPage - 1 })))
+        history.push(locations.thirdPartyCollectionDetail(collectionId, { page: currentPage - 1 }))
       } else {
         const fetchFn = isTPCollectionPage ? fetchCollectionItemsRequest : fetchItemsRequest
         yield put(fetchFn(paginationIndex, { page: currentPage, limit }))
@@ -622,7 +627,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       payload: { id: toastId }
     }: RenderToastAction = yield take(RENDER_TOAST)
     yield put(fetchItemsRequest(address))
-    const location: ReturnType<typeof getLocation> = yield take(LOCATION_CHANGE)
+    const location: Location = yield take(LOCATION_CHANGE)
     if (location.pathname !== locations.collectionDetail(item.collectionId)) {
       yield put(hideToast(toastId))
     }

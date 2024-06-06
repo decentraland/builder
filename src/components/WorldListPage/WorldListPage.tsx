@@ -22,6 +22,7 @@ import PublishSceneButton from './PublishSceneButton'
 import { TabType, useCurrentlySelectedTab } from './hooks'
 import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus, isWorldDeployed } from './utils'
 import './WorldListPage.css'
+import { useHistory } from 'react-router'
 
 const PAGE_ACTION_EVENT = 'Worlds List Page Action'
 const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
@@ -39,7 +40,6 @@ const WorldListPage: React.FC<Props> = props => {
     worldsWalletStats,
     isConnected,
     isWorldContributorEnabled,
-    onNavigate,
     onOpenYourStorageModal,
     onOpenWorldsForENSOwnersAnnouncementModal,
     onUnpublishWorld,
@@ -49,6 +49,7 @@ const WorldListPage: React.FC<Props> = props => {
   const [sortBy, setSortBy] = useState(SortBy.ASC)
   const [page, setPage] = useState(1)
   const { tab } = useCurrentlySelectedTab()
+  const history = useHistory()
 
   useEffect(() => {
     if (isConnected && isWorldContributorEnabled) {
@@ -67,15 +68,15 @@ const WorldListPage: React.FC<Props> = props => {
   }, [tab])
 
   const handlePublishScene = useCallback(() => {
-    onNavigate(locations.scenes())
-  }, [locations, onNavigate])
+    history.push(locations.scenes())
+  }, [locations, history])
 
   const handleEditScene = useCallback(
     (ens: ENS) => {
       const { projectId } = deploymentsByWorlds[ens.subdomain]
-      onNavigate(locations.sceneDetail(projectId as string))
+      history.push(locations.sceneDetail(projectId as string))
     },
-    [deploymentsByWorlds, locations, onNavigate]
+    [deploymentsByWorlds, locations, history]
   )
 
   const handleUnpublishScene = useCallback(

@@ -1,6 +1,6 @@
-import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, all, getContext } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { push } from 'connected-react-router'
+import { History } from 'history'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,
@@ -72,6 +72,7 @@ export function* landSaga() {
 
 function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
   const { address, isApproved, type } = action.payload
+  const history: History = yield getContext('history')
   try {
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
@@ -91,7 +92,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
         break
       }
     }
-    yield put(push(locations.activity()))
+    history.push(locations.activity())
   } catch (error) {
     yield put(setUpdateManagerFailure(address, type, isApproved, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -99,6 +100,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
 
 function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
   const { land } = action.payload
+  const history: History = yield getContext('history')
 
   try {
     if (land.type !== LandType.ESTATE) {
@@ -113,7 +115,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     const transaction: ethers.ContractTransaction = yield call(() => estateRegistry.transferManyLands(land.id, tokenIds, from))
     yield put(dissolveEstateSuccess(land, wallet.chainId, transaction.hash))
     yield put(closeModal('DissolveModal'))
-    yield put(push(locations.activity()))
+    history.push(locations.activity())
   } catch (error) {
     yield put(dissolveEstateFailure(land, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -121,6 +123,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
 
 function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
   const { name, description, coords } = action.payload
+  const history: History = yield getContext('history')
   try {
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
@@ -132,7 +135,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
 
     yield put(createEstateSuccess(name, description, coords, wallet.chainId, transaction.hash))
     yield put(closeModal('EstateEditorModal'))
-    yield put(push(locations.activity()))
+    history.push(locations.activity())
   } catch (error) {
     yield put(createEstateFailure(name, description, coords, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -140,6 +143,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
 
 function* handleEditEstateRequest(action: EditEstateRequestAction) {
   const { land, toAdd, toRemove } = action.payload
+  const history: History = yield getContext('history')
   try {
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
@@ -159,7 +163,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
       yield put(editEstateSuccess(land, toRemove, 'remove', wallet.chainId, transaction.hash))
     }
     yield put(closeModal('EstateEditorModal'))
-    yield put(push(locations.activity()))
+    history.push(locations.activity())
   } catch (error) {
     yield put(editEstateFailure(land, toAdd, toRemove, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -167,6 +171,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
 
 function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
   const { land, address } = action.payload
+  const history: History = yield getContext('history')
 
   try {
     const wallet: Wallet = yield getWallet()
@@ -204,7 +209,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type as unknown as string}`)
     }
-    yield put(push(locations.activity()))
+    history.push(locations.activity())
   } catch (error) {
     yield put(setOperatorFailure(land, address, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -212,6 +217,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
 
 function* handleEditLandRequest(action: EditLandRequestAction) {
   const { land, name, description } = action.payload
+  const history: History = yield getContext('history')
 
   const metadata = buildMetadata(name, description)
 
@@ -235,7 +241,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type as unknown as string}`)
     }
-    yield put(push(locations.activity()))
+    history.push(locations.activity())
   } catch (error) {
     yield put(editLandFailure(land, name, description, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -243,6 +249,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
 
 function* handleTransferLandRequest(action: TransferLandRequestAction) {
   const { land, address } = action.payload
+  const history: History = yield getContext('history')
 
   try {
     const wallet: Wallet = yield getWallet()
@@ -267,7 +274,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type as unknown as string}`)
     }
-    yield put(push(locations.activity()))
+    history.push(locations.activity())
   } catch (error) {
     yield put(transferLandFailure(land, address, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }

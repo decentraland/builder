@@ -1,8 +1,8 @@
 import uuidv4 from 'uuid/v4'
+import { History } from 'history'
 import { Composite } from '@dcl/ecs'
-import { push } from 'connected-react-router'
 import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
-import { takeLatest, put, select, take, call, all, race, delay, takeEvery } from 'redux-saga/effects'
+import { takeLatest, put, select, take, call, all, race, delay, takeEvery, getContext } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
@@ -174,6 +174,7 @@ export function* projectSaga(builder: BuilderAPI) {
     const { project, type, shouldRedirect } = action.payload
     const ethAddress: string = yield select(getAddress)
     const scene: Scene = yield getSceneByProjectId(project.id, type)
+    const history: History = yield getContext('history')
 
     let thumbnail: string = project.thumbnail
 
@@ -203,9 +204,9 @@ export function* projectSaga(builder: BuilderAPI) {
 
       if (project.isTemplate) {
         yield take(SAVE_PROJECT_SUCCESS)
-        yield put(push(scene.sdk6 ? locations.sceneEditor(newProject.id) : locations.inspector(newProject.id)))
+        history.push(scene.sdk6 ? locations.sceneEditor(newProject.id) : locations.inspector(newProject.id))
       } else if (shouldRedirect) {
-        yield put(push(locations.scenes()))
+        history.push(locations.scenes())
       }
 
       yield put(duplicateProjectSuccess(newProject, type))
@@ -407,6 +408,7 @@ export function* projectSaga(builder: BuilderAPI) {
   }
 
   function* handleDeleteProject(_action: DeleteProjectAction) {
-    yield put(push(locations.scenes()))
+    const history: History = yield getContext('history')
+    history.push(locations.scenes())
   }
 }

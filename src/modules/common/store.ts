@@ -68,7 +68,7 @@ const history = createBrowserHistory({ basename })
 const rootReducer = createRootReducer(history)
 
 const historyMiddleware = routerMiddleware(history)
-const sagasMiddleware = createSagasMiddleware()
+const sagasMiddleware = createSagasMiddleware({ context: { history } })
 const loggerMiddleware = isTestEnv
   ? null
   : createLogger({

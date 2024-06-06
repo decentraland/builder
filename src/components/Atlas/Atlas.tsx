@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
+import { useHistory } from 'react-router'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
 import { coordsToId, isCoords, idToCoords, getCenter, selectionBorderColorByRole } from 'modules/land/utils'
@@ -25,7 +26,6 @@ const Atlas: React.FC<Props> = props => {
     hasPopup,
     className,
     hasLink,
-    onNavigate,
     onLocateLand
   } = props
 
@@ -37,6 +37,7 @@ const Atlas: React.FC<Props> = props => {
   const [y, setY] = useState(0)
   const [zoom, setZoom] = useState<number>(props.zoom || 1)
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const history = useHistory()
 
   let isEstate = false
   if (landId) {
@@ -147,10 +148,10 @@ const Atlas: React.FC<Props> = props => {
       if (id in landTiles && !selection.has(id)) {
         const { land } = landTiles[id]
         setShowPopup(false)
-        onNavigate(locations.landDetail(land.id))
+        history.push(locations.landDetail(land.id))
       }
     },
-    [landTiles, selection, onNavigate, hasLink]
+    [landTiles, selection, history, hasLink]
   )
 
   const handleLocateLand = useCallback(() => {

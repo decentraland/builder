@@ -1,5 +1,6 @@
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import userEvent from '@testing-library/user-event'
+import * as router from 'react-router-dom'
 import { shorten } from 'lib/address'
 import { ENS } from 'modules/ens/types'
 import { renderWithProviders } from 'specs/utils'
@@ -7,6 +8,11 @@ import ENSDetailPage from './ENSDetailPage'
 import { Props } from './ENSDetailPage.types'
 
 jest.mock('components/LoggedInDetailPage', () => ({ children }: any) => <div>{children}</div>)
+jest.mock('react-router-dom', () => ({
+  useHistory: jest.fn(() => ({ push: jest.fn() })),
+  Link: ({ to, children }: { to: string; children: React.ReactNode }) => <a href={to}>{children}</a>
+}))
+
 function renderENSDetailPage(props: Partial<Props>) {
   return renderWithProviders(
     <ENSDetailPage
@@ -17,7 +23,6 @@ function renderENSDetailPage(props: Partial<Props>) {
       isLoading={false}
       onOpenModal={jest.fn()}
       onFetchENS={jest.fn()}
-      onNavigate={jest.fn()}
       {...props}
     />
   )
@@ -164,11 +169,15 @@ describe('when ens is defined', () => {
   })
 
   describe('and the ens does not have a linked land', () => {
+    let pushMock: jest.Mock
+
     beforeEach(() => {
       ens = {
         ...ensSample,
         landId: ''
       }
+      pushMock = jest.fn()
+      jest.spyOn(router, 'useHistory').mockReturnValue({ push: pushMock } as any)
     })
 
     it('should show add address button', () => {
@@ -177,11 +186,10 @@ describe('when ens is defined', () => {
     })
 
     it('should open redirect to ens page when button is clicked', () => {
-      const onNavigateMock = jest.fn()
-      const screen = renderENSDetailPage({ ens, onNavigate: onNavigateMock })
+      const screen = renderENSDetailPage({ ens })
       const assignLandButton = screen.getByRole('button', { name: t('ens_list_page.button.assign_to_land') })
       userEvent.click(assignLandButton)
-      expect(onNavigateMock).toHaveBeenCalledWith('/name/test/set-land')
+      expect(pushMock).toHaveBeenCalledWith('/name/test/set-land')
     })
   })
 

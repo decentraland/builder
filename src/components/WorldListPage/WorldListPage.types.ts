@@ -23,7 +23,6 @@ export type Props = {
   worldsWalletStats?: WorldsWalletStats
   isConnected: boolean
   isWorldContributorEnabled: boolean
-  onNavigate: (path: string) => void
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
   onOpenPermissionsModal: (worldName: string, isCollaboratorsTabShown?: boolean) => void
   onOpenWorldsForENSOwnersAnnouncementModal: () => void
@@ -53,7 +52,6 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<
   Props,
-  | 'onNavigate'
   | 'onOpenYourStorageModal'
   | 'onOpenPermissionsModal'
   | 'onOpenWorldsForENSOwnersAnnouncementModal'
