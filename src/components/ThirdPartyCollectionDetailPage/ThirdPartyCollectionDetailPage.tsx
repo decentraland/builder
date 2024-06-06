@@ -158,8 +158,8 @@ export default function ThirdPartyCollectionDetailPage({
   }, [])
 
   const hasAccess = useMemo(() => {
-    return collection && thirdParty && isUserManagerOfThirdParty(wallet.address, thirdParty)
-  }, [collection, thirdParty, wallet.address])
+    return collection && thirdParty && wallet && isUserManagerOfThirdParty(wallet.address, thirdParty)
+  }, [collection, thirdParty, wallet])
 
   const handleSelectAllItems = useCallback(
     (onFetchAllCollectionItems: typeof fetchCollectionItemsRequest) => {
@@ -357,7 +357,7 @@ export default function ThirdPartyCollectionDetailPage({
         </>
       )
     },
-    []
+    [collection, selectedItems, totalItems, page, handleSearchChange, handleSelectItemChange, areAllSelected, handleClearSelection, filters]
   )
 
   const shouldRender = hasAccess && collection
