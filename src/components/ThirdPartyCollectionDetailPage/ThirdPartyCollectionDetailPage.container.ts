@@ -1,9 +1,8 @@
 import { connect } from 'react-redux'
-import { getLocation, push } from 'connected-react-router'
+import { getLocation } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/authorization/selectors'
-import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getCollection, getLoading as getLoadingCollection } from 'modules/collection/selectors'
@@ -44,10 +43,8 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId)),
-  onPageChange: (collectionId: string, page: number) => dispatch(push(locations.thirdPartyCollectionDetail(collectionId, { page })))
+  onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId))
 })
 
 export default connect(mapState, mapDispatch)(CollectionDetailPage)

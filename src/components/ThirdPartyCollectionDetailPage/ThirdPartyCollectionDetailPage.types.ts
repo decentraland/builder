@@ -29,7 +29,6 @@ export type Props = {
   isLoadingAvailableSlots: boolean
   onOpenModal: typeof openModal
   onFetchAvailableSlots: typeof fetchThirdPartyAvailableSlotsRequest
-  onPageChange: (collectionId: string, page: number) => void
 }
 
 export type State = {
@@ -54,7 +53,7 @@ export type MapStateProps = Pick<
   | 'items'
   | 'paginatedData'
 >
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchAvailableSlots' | 'onPageChange'>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchAvailableSlots'>
 export type MapDispatch = Dispatch<
   OpenModalAction | FetchItemCurationsRequestAction | FetchThirdPartyAvailableSlotsRequestAction | FetchCollectionItemsRequestAction
 >

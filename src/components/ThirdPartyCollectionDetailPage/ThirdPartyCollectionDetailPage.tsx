@@ -53,7 +53,6 @@ export default function ThirdPartyCollectionDetailPage({
   isLoading,
   onOpenModal,
   onFetchAvailableSlots,
-  onPageChange,
   isLoadingAvailableSlots
 }: Props) {
   const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>({})
@@ -107,9 +106,9 @@ export default function ThirdPartyCollectionDetailPage({
   const handlePageChange = useCallback(
     (_event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
       setPage(+data.activePage!)
-      onPageChange(collection!.id, +data.activePage!)
+      history.push(locations.thirdPartyCollectionDetail(collection!.id, { page: +data.activePage! }))
     },
-    [collection, onPageChange]
+    [collection, history]
   )
 
   const handleSearchChange = useCallback((searchText: string) => {
