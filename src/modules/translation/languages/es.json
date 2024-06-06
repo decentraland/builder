@@ -288,6 +288,10 @@
         "title": "El item es demasiado grande para cargarlo",
         "message": "El tamaño máximo de archivo es de 2MB para Emotes."
       },
+      "smart_wearable_too_big": {
+        "title": "El archivo es demasiado grande para cargarlo",
+        "message": "Todos los archivos dentro del archivo Smart Wearable .zip deben pesar menos de 3MB."
+      },
       "unknown_required_permissions": {
         "title": "{count, plural, one {El permiso} other {Los permisos}} {wrong_configurations} de la vestimenta interactiva no {count, plural, one {existe} other {existen}}. Por favor, corrija el archivo 'scene.json'.",
         "message": "Para obtener {learn_more}, consulte la documentación."
