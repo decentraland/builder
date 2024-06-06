@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './NameTabs.types'

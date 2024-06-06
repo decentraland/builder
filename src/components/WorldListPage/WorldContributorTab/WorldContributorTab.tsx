@@ -1,5 +1,5 @@
 import { t } from 'decentraland-dapps/dist/modules/translation'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { Loader, Message, Table, Empty, Button } from 'decentraland-ui'
 import { formatNumber } from 'decentraland-dapps/dist/lib'
 import { useCallback } from 'react'

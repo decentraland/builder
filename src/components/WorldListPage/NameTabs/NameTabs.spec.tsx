@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import * as router from 'react-router'
+import * as router from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import NameTabs from './NameTabs'
@@ -7,7 +7,7 @@ import { TAB_QUERY_PARAM_KEY, TabType, UseCurrentlySelectedTabResult, useCurrent
 
 jest.mock('decentraland-ui/dist/components/Media/Media')
 jest.mock('../hooks')
-jest.mock('react-router')
+jest.mock('react-router-dom')
 
 const mockUseCurrentlySelectedTab = useCurrentlySelectedTab as jest.Mock
 const mockMobile = Mobile as jest.Mock

@@ -1,4 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { formatNumber } from 'decentraland-dapps/dist/lib/utils'
@@ -22,7 +23,6 @@ import PublishSceneButton from './PublishSceneButton'
 import { TabType, useCurrentlySelectedTab } from './hooks'
 import { DCLWorldsStatus, fromBytesToMegabytes, getDCLWorldsStatus, isWorldDeployed } from './utils'
 import './WorldListPage.css'
-import { useHistory } from 'react-router'
 
 const PAGE_ACTION_EVENT = 'Worlds List Page Action'
 const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')

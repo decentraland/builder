@@ -1,7 +1,7 @@
 import * as React from 'react'
+import { useHistory } from 'react-router-dom'
 import { Back as BackComponent } from 'decentraland-ui'
 import { Props } from './Back.types'
-import { useHistory } from 'react-router'
 
 export default class Back extends React.PureComponent<Props> {
   render() {

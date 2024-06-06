@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
 import { coordsToId, isCoords, idToCoords, getCenter, selectionBorderColorByRole } from 'modules/land/utils'
