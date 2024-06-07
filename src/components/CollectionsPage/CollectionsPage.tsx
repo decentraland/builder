@@ -188,13 +188,13 @@ export default function CollectionsPage(props: Props) {
 
   const fetchCollections = useCallback(() => {
     onFetchCollections(address, { page, limit: PAGE_SIZE, sort })
-  }, [onFetchCollections])
+  }, [onFetchCollections, page, address, sort])
 
   const fetchItems = useCallback(() => {
     if (address) {
       onFetchOrphanItems(address, { page, limit: PAGE_SIZE })
     }
-  }, [onFetchOrphanItems, address])
+  }, [onFetchOrphanItems, address, page])
 
   const handlePageChange = useCallback(
     (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
