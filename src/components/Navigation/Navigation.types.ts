@@ -1,6 +1,3 @@
-import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
-
 export enum NavigationTab {
   OVERVIEW = 'overview',
   SCENES = 'scenes',
@@ -16,9 +13,6 @@ export type Props = {
   activeTab?: NavigationTab
   isFullscreen?: boolean
   isCommitteeMember: boolean
-  onNavigate: (path: string) => void
 }
 
 export type MapStateProps = Pick<Props, 'isCommitteeMember'>
-export type MapDispatchProps = Pick<Props, 'onNavigate'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction>

@@ -1,3 +1,3 @@
-import ItemRow from './ItemRow.container'
+import ItemRow from './ItemRow'
 
 export default ItemRow

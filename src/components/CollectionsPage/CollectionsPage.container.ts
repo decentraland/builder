@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
@@ -44,7 +43,6 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onSetView: view => dispatch(setCollectionPageView(view)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onFetchOrphanItems: (address, params) => dispatch(fetchItemsRequest(address, params)),

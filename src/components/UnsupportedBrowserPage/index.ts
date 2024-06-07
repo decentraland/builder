@@ -1,3 +1,3 @@
-import UnsupportedBrowserPage from './UnsupportedBrowserPage.container'
+import UnsupportedBrowserPage from './UnsupportedBrowserPage'
 
 export default UnsupportedBrowserPage

@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { getTemplateId } from 'modules/location/selectors'
@@ -24,7 +23,6 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onLoadTemplateScene: (project: Project) => dispatch(loadProjectSceneRequest(project, PreviewType.TEMPLATE))
 })

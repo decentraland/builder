@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { goBack } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getCurrentLimits, getCurrentMetrics, getEntitiesOutOfBoundaries } from 'modules/scene/selectors'
@@ -18,7 +17,6 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onBack: () => dispatch(goBack()),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
