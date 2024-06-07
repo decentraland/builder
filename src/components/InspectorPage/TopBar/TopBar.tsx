@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { useHistory } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Popup } from 'decentraland-ui'
 import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
@@ -14,7 +15,9 @@ import styles from './TopBar.module.css'
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 
-export default function TopBar({ currentProject, metrics, limits, areEntitiesOutOfBoundaries, isUploading, onBack, onOpenModal }: Props) {
+export default function TopBar({ currentProject, metrics, limits, areEntitiesOutOfBoundaries, isUploading, onOpenModal }: Props) {
+  const history = useHistory()
+
   const handleDownload = useCallback(() => {
     onOpenModal('ExportModal', { project: currentProject })
   }, [currentProject, onOpenModal])
@@ -65,10 +68,14 @@ export default function TopBar({ currentProject, metrics, limits, areEntitiesOut
     return null
   }, [areEntitiesOutOfBoundaries, someMetricExceedsLimit])
 
+  const handleBack = useCallback(() => {
+    history.goBack()
+  }, [history])
+
   return (
     <div className={styles.container}>
       <div className={styles.nameContainer}>
-        <Button basic aria-label={t('inspector.top_bar.back')} onClick={onBack}>
+        <Button basic aria-label={t('inspector.top_bar.back')} onClick={handleBack}>
           <Icon name="chevron left" />
         </Button>
         {currentProject && (

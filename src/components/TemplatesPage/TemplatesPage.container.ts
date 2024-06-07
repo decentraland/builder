@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getTemplates } from 'modules/project/selectors'
 import { loadTemplatesRequest } from 'modules/project/actions'
@@ -11,8 +10,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onLoadTemplates: () => dispatch(loadTemplatesRequest()),
-  onNavigate: (path: string) => dispatch(push(path))
+  onLoadTemplates: () => dispatch(loadTemplatesRequest())
 })
 
 export default connect(mapState, mapDispatch)(TemplatesPage)

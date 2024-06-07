@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { RootState } from 'modules/common/types'
@@ -13,7 +12,6 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 

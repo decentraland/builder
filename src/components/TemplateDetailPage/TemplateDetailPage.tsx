@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Page, Center, Loader, Section, Row, Column, Header, Button, Logo, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -12,8 +13,8 @@ import './TemplateDetailPage.css'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 const TemplateDetailPage: React.FC<Props> = props => {
-  const { template, isLoading, scene, onOpenModal, onNavigate, onLoadTemplateScene } = props
-
+  const { template, isLoading, scene, onOpenModal, onLoadTemplateScene } = props
+  const history = useHistory()
   const analytics = getAnalytics()
 
   const eventInfo = useMemo(
@@ -49,8 +50,8 @@ const TemplateDetailPage: React.FC<Props> = props => {
   }, [analytics, template, eventInfo, onOpenModal])
 
   const handleBackClick = useCallback(() => {
-    onNavigate(locations.templates())
-  }, [onNavigate])
+    history.push(locations.templates())
+  }, [history])
 
   const handleSelectTemplateClick = useCallback(() => {
     if (template) {

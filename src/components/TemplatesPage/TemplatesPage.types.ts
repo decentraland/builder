@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project } from 'modules/project/types'
 import { loadTemplatesRequest, LoadTemplatesRequestAction } from 'modules/project/actions'
@@ -7,10 +6,9 @@ import { loadTemplatesRequest, LoadTemplatesRequestAction } from 'modules/projec
 export type Props = {
   templates: ModelById<Project>
   onLoadTemplates: typeof loadTemplatesRequest
-  onNavigate: (path: string) => void
 }
 
 export type MapStateProps = Pick<Props, 'templates'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onLoadTemplates'>
+export type MapDispatchProps = Pick<Props, 'onLoadTemplates'>
 
-export type MapDispatch = Dispatch<CallHistoryMethodAction | LoadTemplatesRequestAction>
+export type MapDispatch = Dispatch<LoadTemplatesRequestAction>

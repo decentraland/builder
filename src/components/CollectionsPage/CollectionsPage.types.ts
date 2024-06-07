@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { setCollectionPageView, SetCollectionPageViewAction } from 'modules/ui/collection/actions'
 import { CollectionPageView } from 'modules/ui/collection/types'
@@ -28,7 +27,6 @@ export type Props = {
   isLoadingOrphanItem: boolean
   isCampaignEnabled: boolean
   hasUserOrphanItems: boolean | undefined
-  onNavigate: (path: string) => void
   onSetView: typeof setCollectionPageView
   onOpenModal: typeof openModal
   onFetchOrphanItems: typeof fetchItemsRequest
@@ -51,15 +49,7 @@ export type MapStateProps = Pick<
   | 'isCampaignEnabled'
   | 'hasUserOrphanItems'
 >
-export type MapDispatchProps = Pick<
-  Props,
-  'onNavigate' | 'onSetView' | 'onOpenModal' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem'
->
+export type MapDispatchProps = Pick<Props, 'onSetView' | 'onOpenModal' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem'>
 export type MapDispatch = Dispatch<
-  | CallHistoryMethodAction
-  | SetCollectionPageViewAction
-  | OpenModalAction
-  | FetchItemsRequestAction
-  | FetchCollectionsRequestAction
-  | FetchOrphanItemRequestAction
+  SetCollectionPageViewAction | OpenModalAction | FetchItemsRequestAction | FetchCollectionsRequestAction | FetchOrphanItemRequestAction
 >

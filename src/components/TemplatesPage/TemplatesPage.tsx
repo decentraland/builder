@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Button, Page, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -13,16 +14,17 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { Props } from './TemplatesPage.types'
 import styles from './TemplatesPage.module.css'
 
-export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTemplates }) => {
+export const TemplatesPage: React.FC<Props> = ({ templates, onLoadTemplates }) => {
   const analytics = getAnalytics()
+  const history = useHistory()
 
   useEffect(() => {
     onLoadTemplates()
   }, [onLoadTemplates])
 
   const handleBackClick = useCallback(() => {
-    onNavigate(locations.scenes())
-  }, [onNavigate])
+    history.push(locations.scenes())
+  }, [history])
 
   const handleGoToTemplate = useCallback(
     (template: Project) => {
@@ -31,9 +33,9 @@ export const TemplatesPage: React.FC<Props> = ({ templates, onNavigate, onLoadTe
         name: template.title,
         description: template.description
       })
-      onNavigate(locations.templateDetail(template.id))
+      history.push(locations.templateDetail(template.id))
     },
-    [analytics, onNavigate]
+    [analytics, history]
   )
 
   return (
