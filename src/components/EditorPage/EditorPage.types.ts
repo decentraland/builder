@@ -26,8 +26,6 @@ export type Props = {
   isLoggedIn: boolean
   isScreenshotReady: boolean
   numItems: number
-  isFromClaimName: boolean
-  claimedName?: string
   onOpenModal: typeof openModal
   onCloseEditor: typeof closeEditor
   onZoomIn: typeof zoomIn
@@ -52,8 +50,6 @@ export type MapStateProps = Pick<
   | 'isScreenshotReady'
   | 'currentProject'
   | 'numItems'
-  | 'isFromClaimName'
-  | 'claimedName'
 >
 export type MapDispatchProps = Pick<
   Props,

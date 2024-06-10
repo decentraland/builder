@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { getName } from 'modules/profile/selectors'
@@ -12,7 +11,6 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: (path, locationState) => dispatch(push(path, locationState)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onDelete: collection => dispatch(deleteCollectionRequest(collection))
 })

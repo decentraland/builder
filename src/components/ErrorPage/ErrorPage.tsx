@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useCallback, useEffect } from 'react'
 import { Button, Page } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -11,51 +11,47 @@ import './ErrorPage.css'
 
 const widget = IntercomWidget.getInstance()
 
-export default class ErrorPage extends React.PureComponent<Props> {
-  analytics = getAnalytics()
+export default function ErrorPage(props: Props) {
+  const { stackTrace } = props
+  const analytics = getAnalytics()
 
-  componentDidMount() {
+  useEffect(() => {
     document.body.classList.add('error-body')
-    this.analytics.track('Error page', {})
-  }
+    analytics.track('Error page', {})
+    return () => {
+      document.body.classList.remove('error-body')
+    }
+  }, [])
 
-  componentWillUnmount() {
-    document.body.classList.remove('error-body')
-  }
-
-  handleOnClick = () => {
-    const { stackTrace } = this.props
+  const handleOnClick = useCallback(() => {
     const lines = stackTrace.split('\n')
     widget.showNewMessage(`Hey! I just ran into this error using the Builder:\n${lines[0] + lines[1]}`)
-  }
+  }, [])
 
-  handleSelectText = (el: React.MouseEvent<HTMLTextAreaElement>) => {
+  const handleSelectText = useCallback((el: React.MouseEvent<HTMLTextAreaElement>) => {
     el.currentTarget.focus()
     el.currentTarget.select()
-  }
+  }, [])
 
-  render() {
-    const { stackTrace } = this.props
-    return (
-      <>
-        <Navbar />
-        <Page isFullscreen>
-          <div className="ErrorPage">
-            <h1 className="title">{t('error_page.title')}</h1>
-            <p className="subtitle">{t('error_page.subtitle')}</p>
+  return (
+    <>
+      <Navbar />
+      <Page isFullscreen>
+        <div className="ErrorPage">
+          <h1 className="title">{t('error_page.title')}</h1>
+          <p className="subtitle">{t('error_page.subtitle')}</p>
 
-            <textarea className="trace" cols={70} rows={10} value={stackTrace} onClick={this.handleSelectText} readOnly />
+          <textarea className="trace" cols={70} rows={10} value={stackTrace} onClick={handleSelectText} readOnly />
 
-            <Button className="back" onClick={this.handleOnClick} primary>
-              {t('error_page.support')}
-            </Button>
-            <span className="suggestion">
-              {t('error_page.or')} <a href=".">{t('error_page.reload')}</a>
-            </span>
-          </div>
-        </Page>
-        <Footer isFullscreen />
-      </>
-    )
-  }
+          <Button className="back" onClick={handleOnClick} primary>
+            {t('error_page.support')}
+          </Button>
+          <span className="suggestion">
+            {t('error_page.or')} <a href=".">{t('error_page.reload')}</a>
+          </span>
+        </div>
+      </Page>
+      <Footer isFullscreen />
+    </>
+  )
 }

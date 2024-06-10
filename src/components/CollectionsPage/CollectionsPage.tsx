@@ -66,12 +66,6 @@ export default function CollectionsPage(props: Props) {
   const history = useHistory()
 
   useEffect(() => {
-    if (!localStorage.getItem(LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT)) {
-      onOpenModal('EmotesV2AnnouncementModal')
-    }
-  }, [])
-
-  useEffect(() => {
     if (address) {
       onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort })
       if (hasUserOrphanItems === undefined) {

@@ -1,7 +1,5 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { isFetching } from 'modules/project/selectors'
@@ -25,7 +23,6 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onPageChange: options => dispatch(push(locations.scenes(options))),
   onLoadFromScenePool: filters => dispatch(loadPoolsRequest(filters))
 })
 
