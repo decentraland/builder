@@ -1,4 +1,5 @@
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet'
 import userEvent from '@testing-library/user-event'
 import * as router from 'react-router-dom'
 import { shorten } from 'lib/address'
@@ -23,6 +24,7 @@ function renderENSDetailPage(props: Partial<Props>) {
       isLoading={false}
       onOpenModal={jest.fn()}
       onFetchENS={jest.fn()}
+      wallet={{ address: '0xtest1' } as Wallet}
       {...props}
     />
   )
