@@ -9,7 +9,6 @@ import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isSavingCurrentProject } from 'modules/sync/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './SDK6TopBar.types'
 import SDK6TopBar from './SDK6TopBar'
-import { hasHistory } from 'modules/location/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   gizmo: getGizmo(state),
@@ -20,8 +19,7 @@ const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
   isUploading: isSavingCurrentProject(state),
   isSidebarOpen: isSidebarOpen(state),
-  enabledTools: getEnabledTools(state),
-  hasHistory: hasHistory(state)
+  enabledTools: getEnabledTools(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import classNames from 'classnames'
 import { Button, Card, Container, Page } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
@@ -20,19 +21,23 @@ const localStorage = getLocalStorage()
 const cards = [NavigationTab.COLLECTIONS, NavigationTab.SCENES, NavigationTab.LAND, NavigationTab.NAMES]
 
 export const HomePage: React.FC<Props> = props => {
-  const { isLoggingIn, isLoggedIn, hasRouterHistory, onNavigate } = props
+  const { isLoggingIn, isLoggedIn } = props
+  const history = useHistory()
 
   useEffect(() => {
     const lastVisitedSection = localStorage.getItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY) ?? ''
-    if (isLoggedIn && !hasRouterHistory && lastVisitedSection !== locations.root()) {
-      onNavigate(lastVisitedSection)
+    if (isLoggedIn && !history.length && lastVisitedSection !== locations.root()) {
+      history.push(lastVisitedSection)
     }
-  }, [isLoggedIn, hasRouterHistory, onNavigate])
+  }, [isLoggedIn, history])
 
-  const handleOnNavigate = (path: string) => {
-    localStorage.setItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY, path)
-    onNavigate(path)
-  }
+  const handleOnNavigate = useCallback(
+    (path: string) => {
+      localStorage.setItem(LOCALSTORAGE_LAST_VISITED_SECTION_KEY, path)
+      history.push(path)
+    },
+    [history]
+  )
 
   const handleOnClickCardCTA = (tab: NavigationTab) => {
     switch (tab) {

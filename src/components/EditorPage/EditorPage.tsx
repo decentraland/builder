@@ -1,5 +1,7 @@
-import * as React from 'react'
+import { useEffect, useCallback, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Grid } from 'decentraland-ui'
+import { ClaimNameLocationStateProps, FromParam } from 'modules/location/types'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import experiments, { EXPERIMENT_TUTORIAL_OPEN } from 'experiments'
 
@@ -15,7 +17,7 @@ import Tools from './Tools'
 import Metrics from './Metrics'
 import ItemDragLayer from './ItemDragLayer'
 import { ToolName } from './Tools/Tools.types'
-import { Props, State } from './EditorPage.types'
+import { Props } from './EditorPage.types'
 
 import './EditorPage.css'
 
@@ -25,15 +27,38 @@ const TOAST_ITEMS_THRESHOLD = 5 // local storage toast will show when a user has
 
 const localStorage = getLocalStorage()
 
-export default class EditorPage extends React.PureComponent<Props, State> {
-  state = {
-    isIncentiveBannerOpen: false,
-    isDeployModalOpened: false
-  }
+export default function EditorPage(props: Props) {
+  const [isIncentiveBannerOpen] = useState(false)
+  const [isDeployModalOpened, setIsDeployModalOpened] = useState(false)
+  const location = useLocation()
+  const isFromClaimName = (location.state as ClaimNameLocationStateProps)?.fromParam === FromParam.CLAIM_NAME
+  const claimedName = isFromClaimName ? (location.state as ClaimNameLocationStateProps).claimedName : undefined
+  const {
+    currentProject,
+    isReady,
+    isLoading,
+    isPreviewing,
+    isScreenshotReady,
+    onOpenModal,
+    onTakeScreenshot,
+    isSidebarOpen,
+    onCloseEditor,
+    isLoggedIn,
+    numItems,
+    isFetching,
+    onZoomIn,
+    onZoomOut,
+    onResetCamera
+  } = props
 
-  componentWillMount() {
-    const { currentProject, onOpenModal } = this.props
+  const handleMouseWheel = useCallback((e: Event) => {
+    if ((e as WheelEvent)['ctrlKey']) {
+      e.preventDefault()
+      e.stopImmediatePropagation()
+    }
+  }, [])
 
+  useEffect(() => {
     if (currentProject && !localStorage.getItem(LOCALSTORAGE_TUTORIAL_KEY)) {
       const showTutorial = experiments.getCurrentValueFor(EXPERIMENT_TUTORIAL_OPEN, true)
       if (showTutorial) {
@@ -43,29 +68,37 @@ export default class EditorPage extends React.PureComponent<Props, State> {
 
     document.body.scrollTop = 0
     document.body.classList.add('lock-scroll')
-    document.body.addEventListener('mousewheel', this.handleMouseWheel)
-  }
+    document.body.addEventListener('mousewheel', handleMouseWheel)
+    return () => {
+      onCloseEditor()
+      document.body.classList.remove('lock-scroll')
+      document.body.removeEventListener('mousewheel', handleMouseWheel)
+    }
+  }, [])
 
-  componentWillUnmount() {
-    this.props.onCloseEditor()
-    document.body.classList.remove('lock-scroll')
-    document.body.removeEventListener('mousewheel', this.handleMouseWheel)
-  }
+  const handleToolClick = useCallback(
+    (toolName: ToolName) => {
+      switch (toolName) {
+        case 'shortcuts':
+          onOpenModal('ShortcutsModal')
+          break
+        case 'zoom-out':
+          onZoomOut()
+          break
+        case 'zoom-in':
+          onZoomIn()
+          break
+        case 'reset-camera':
+          onResetCamera()
+          break
+        default:
+          break
+      }
+    },
+    [onOpenModal, onZoomOut, onZoomIn, onResetCamera]
+  )
 
-  componentDidUpdate(): void {
-    const {
-      currentProject,
-      claimedName,
-      isFromClaimName,
-      isReady,
-      isLoading,
-      isPreviewing,
-      isScreenshotReady,
-      onOpenModal,
-      onTakeScreenshot
-    } = this.props
-    const { isDeployModalOpened } = this.state
-
+  useEffect(() => {
     // When it fails to take the screenshot, try again
     if (!(isLoading || isPreviewing) && isScreenshotReady && currentProject && !currentProject.thumbnail) {
       onTakeScreenshot()
@@ -82,85 +115,59 @@ export default class EditorPage extends React.PureComponent<Props, State> {
         projectId: currentProject.id,
         claimedName
       } as DeployToWorldModalMetadata)
-      this.setState({ isDeployModalOpened: true })
+      setIsDeployModalOpened(true)
     }
+  }, [
+    currentProject,
+    claimedName,
+    isFromClaimName,
+    isReady,
+    isLoading,
+    isPreviewing,
+    isScreenshotReady,
+    onOpenModal,
+    onTakeScreenshot,
+    isDeployModalOpened
+  ])
+
+  const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
+  const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
+  let wrapperClasses = 'wrapper'
+
+  if (isPreviewing) {
+    wrapperClasses += ' fullscreen'
+  }
+  if (isIncentiveBannerOpen && !isPreviewing) {
+    wrapperClasses += ' with-banner'
+  }
+  if (isFetching) {
+    return <LoadingPage />
+  }
+  if (!currentProject) {
+    return <NotFoundPage />
   }
 
-  handleMouseWheel = (e: Event) => {
-    if ((e as WheelEvent)['ctrlKey']) {
-      e.preventDefault()
-      e.stopImmediatePropagation()
-    }
-  }
+  const showLocalStorageToast = !isLoggedIn && numItems >= TOAST_ITEMS_THRESHOLD
 
-  handleToolClick = (toolName: ToolName) => {
-    switch (toolName) {
-      case 'shortcuts':
-        this.props.onOpenModal('ShortcutsModal')
-        break
-      case 'zoom-out':
-        this.props.onZoomOut()
-        break
-      case 'zoom-in':
-        this.props.onZoomIn()
-        break
-      case 'reset-camera':
-        this.props.onResetCamera()
-        break
-      default:
-        break
-    }
-  }
-
-  handleBannerShow = () => {
-    this.setState({ isIncentiveBannerOpen: true })
-  }
-  handleBannerClose = () => {
-    this.setState({ isIncentiveBannerOpen: false })
-  }
-
-  render() {
-    const { isIncentiveBannerOpen } = this.state
-    const { currentProject, isPreviewing, isSidebarOpen, isLoading, isFetching, isLoggedIn, numItems } = this.props
-    const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
-    const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
-    let wrapperClasses = 'wrapper'
-
-    if (isPreviewing) {
-      wrapperClasses += ' fullscreen'
-    }
-    if (isIncentiveBannerOpen && !isPreviewing) {
-      wrapperClasses += ' with-banner'
-    }
-    if (isFetching) {
-      return <LoadingPage />
-    }
-    if (!currentProject) {
-      return <NotFoundPage />
-    }
-
-    const showLocalStorageToast = !isLoggedIn && numItems >= TOAST_ITEMS_THRESHOLD
-
-    return (
-      <div className="EditorPage">
-        {isPreviewing ? null : <SDK6TopBar />}
-        <Grid className={gridClasses}>
-          <Grid.Row className={wrapperClasses}>
-            <ViewPort />
-            {isLoading || isPreviewing ? null : (
-              <div className={toolbarClasses}>
-                <>
-                  <Metrics />
-                  <Tools isSidebarOpen={isSidebarOpen} onClick={this.handleToolClick} />
-                  <ItemDragLayer />
-                  <LocalStorageToast isVisible={showLocalStorageToast} />
-                </>
-              </div>
-            )}
-            {isPreviewing || !isSidebarOpen ? null : <SideBar />}
-          </Grid.Row>
-        </Grid>
-      </div>
-    )
-  }
+  return (
+    <div className="EditorPage">
+      {isPreviewing ? null : <SDK6TopBar />}
+      <Grid className={gridClasses}>
+        <Grid.Row className={wrapperClasses}>
+          <ViewPort />
+          {isLoading || isPreviewing ? null : (
+            <div className={toolbarClasses}>
+              <>
+                <Metrics />
+                <Tools isSidebarOpen={isSidebarOpen} onClick={handleToolClick} />
+                <ItemDragLayer />
+                <LocalStorageToast isVisible={showLocalStorageToast} />
+              </>
+            </div>
+          )}
+          {isPreviewing || !isSidebarOpen ? null : <SideBar />}
+        </Grid.Row>
+      </Grid>
+    </div>
+  )
 }

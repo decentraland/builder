@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Button, Page } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -7,11 +8,11 @@ import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 
-import { Props } from './NotFoundPage.types'
 import './NotFoundPage.css'
 
-export default function NotFoundPage(props: Props) {
+export default function NotFoundPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const history = useHistory()
 
   useEffect(() => {
     const analytics = getAnalytics()
@@ -21,7 +22,7 @@ export default function NotFoundPage(props: Props) {
   }, [])
 
   function handleClick() {
-    props.onNavigate(locations.root())
+    history.push(locations.root())
   }
 
   if (isLoading) {

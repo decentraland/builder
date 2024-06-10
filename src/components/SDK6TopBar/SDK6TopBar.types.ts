@@ -31,7 +31,6 @@ export type Props = {
   onDuplicate: typeof duplicateItem
   onDelete: typeof deleteItem
   onOpenModal: typeof openModal
-  hasHistory: boolean
 }
 
 export type MapStateProps = Pick<
@@ -45,7 +44,6 @@ export type MapStateProps = Pick<
   | 'isSidebarOpen'
   | 'selectedEntityIds'
   | 'enabledTools'
-  | 'hasHistory'
 >
 
 export type MapDispatchProps = Pick<

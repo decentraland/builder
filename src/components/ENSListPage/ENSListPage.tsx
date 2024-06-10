@@ -1,10 +1,9 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useCallback } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import { config } from 'config'
 import { Popup, Button, Dropdown, Icon as DCLIcon } from 'decentraland-ui'
 import { TableContainer, TableContent } from 'decentraland-ui/dist/components/v2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { DataTableType } from 'decentraland-ui/dist/components/v2/Table/TableContent/TableContent.types'
 import { shorten } from 'lib/address'
 import { locations } from 'routing/locations'
 import { isCoords } from 'modules/land/utils'
@@ -16,46 +15,46 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ethereumImg from '../../icons/ethereum.svg'
 import namesImg from '../../images/empty-names.svg'
-import { Props, State, SortBy } from './ENSListPage.types'
+import { Props, SortBy } from './ENSListPage.types'
 import './ENSListPage.css'
 
 const PAGE_SIZE = 12
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const MARKETPLACE_API = config.get('MARKETPLACE_API', '')
 const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
-export default class ENSListPage extends React.PureComponent<Props, State> {
-  state: State = {
-    sortBy: SortBy.ASC,
-    page: 1
-  }
 
-  handleNavigateToLand = () => this.props.onNavigate(locations.land())
+export default function ENSListPage(props: Props) {
+  const { ensList, alias, hasProfileCreated, avatar, isLoading, error, onOpenModal } = props
+  const [sortBy, setSortBy] = React.useState(SortBy.ASC)
+  const [page, setPage] = React.useState(1)
+  const history = useHistory()
 
-  handleAssignENS = (ens: ENS) => {
-    this.props.onNavigate(locations.ensSelectLand(ens.subdomain))
-  }
+  const handleAssignENS = useCallback((ens: ENS) => history.push(locations.ensSelectLand(ens.subdomain)), [history])
 
-  handleUseAsAlias = (name: string) => {
-    this.handleOpenModal(name)
-  }
+  const handleOpenModal = useCallback(
+    (newName: string) => {
+      onOpenModal('UseAsAliasModal', { newName })
+    },
+    [onOpenModal]
+  )
 
-  handleAssignENSAddress = (ens: ENS) => {
-    const { onOpenModal } = this.props
-    onOpenModal('EnsMapAddressModal', { ens })
-  }
+  const handleUseAsAlias = useCallback((name: string) => handleOpenModal(name), [])
 
-  handleOpenModal = (newName: string) => {
-    const { onOpenModal } = this.props
-    onOpenModal('UseAsAliasModal', { newName })
-  }
+  const handleAssignENSAddress = useCallback(
+    (ens: ENS) => {
+      onOpenModal('EnsMapAddressModal', { ens })
+    },
+    [onOpenModal]
+  )
 
-  handleReclaim = (ens: ENS) => {
-    const { onOpenModal } = this.props
-    onOpenModal('ReclaimNameModal', { ens })
-  }
+  const handleReclaim = useCallback(
+    (ens: ENS) => {
+      onOpenModal('ReclaimNameModal', { ens })
+    },
+    [onOpenModal]
+  )
 
-  renderSortDropdown = () => {
-    const { sortBy } = this.state
+  const renderSortDropdown = () => {
     return (
       <Dropdown
         direction="left"
@@ -64,15 +63,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
           { value: SortBy.ASC, text: t('global.order.name_asc') },
           { value: SortBy.DESC, text: t('global.order.name_desc') }
         ]}
-        onChange={(_event, { value }) => this.setState({ sortBy: value as SortBy })}
+        onChange={(_event, { value }) => setSortBy(value as SortBy)}
       />
     )
   }
 
-  paginate = () => {
-    const { ensList } = this.props
-    const { page, sortBy } = this.state
-
+  const paginate = useCallback(() => {
     return ensList
       .sort((a: ENS, b: ENS) => {
         switch (sortBy) {
@@ -88,192 +84,172 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         }
       })
       .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  }
+  }, [ensList, sortBy, page])
 
-  isAlias(ens: ENS): boolean {
-    const { alias } = this.props
-    const { name } = ens
-    return alias ? name === alias : false
-  }
+  const isAlias = useCallback(
+    (ens: ENS) => {
+      return alias ? ens.name == alias : false
+    },
+    [alias]
+  )
 
-  getAssignedToMessage(ens: ENS) {
-    if (this.isAlias(ens)) {
-      return t('global.avatar')
-    }
-    const { landId } = ens
-    if (!landId) {
-      return ''
-    }
-    return (
-      <Link to={locations.landDetail(landId)}>
-        {isCoords(landId) ? t('ens_list_page.assigned_to_land', { landId }) : t('ens_list_page.assigned_to_estate', { landId })}
-      </Link>
-    )
-  }
+  const renderLandLinkInfo = useCallback(
+    (ens: ENS) => {
+      if (ens.ensOwnerAddress !== ens.nftOwnerAddress) {
+        return (
+          <Button compact className="ens-list-btn" onClick={handleReclaim.bind(null, ens)}>
+            <DCLIcon name="arrow alternate circle down outline" className="ens-list-reclaim-icon" />
+            {t('ens_list_page.button.reclaim_land')}
+          </Button>
+        )
+      }
 
-  renderUseAsAliasButton(ens: ENS, hasProfileCreated: boolean) {
-    return (
-      <div className="popup-button">
-        <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.name)} disabled={!hasProfileCreated}>
-          {t('ens_list_page.button.use_as_alias')}
-        </Button>
-      </div>
-    )
-  }
-
-  renderLandLinkInfo(ens: ENS) {
-    if (ens.ensOwnerAddress !== ens.nftOwnerAddress) {
-      return (
-        <Button compact className="ens-list-btn" onClick={this.handleReclaim.bind(null, ens)}>
-          <DCLIcon name="arrow alternate circle down outline" className="ens-list-reclaim-icon" />
-          {t('ens_list_page.button.reclaim_land')}
-        </Button>
-      )
-    }
-
-    if (!ens.landId) {
-      return (
-        <Button compact className="ens-list-btn" onClick={this.handleAssignENS.bind(null, ens)}>
-          <Icon name="pin" />
-          {t('ens_list_page.button.assign_to_land')}
-        </Button>
-      )
-    }
-    if (isCoords(ens.landId)) {
-      return (
-        <div className="ens-list-land">
-          <span className="ens-list-land-coord">
+      if (!ens.landId) {
+        return (
+          <Button compact className="ens-list-btn" onClick={handleAssignENS.bind(null, ens)}>
             <Icon name="pin" />
-            {ens.landId}
-          </span>
-          <Button
-            compact
-            className="ens-list-land-redirect"
-            target="_blank"
-            href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`}
-            rel="noopener noreferrer"
-          >
-            <Icon name="right-round-arrow" className="ens-list-land-redirect-icon" />
+            {t('ens_list_page.button.assign_to_land')}
           </Button>
-        </div>
-      )
-    } else {
-      return (
-        <div className="ens-list-land">
-          <span className="ens-list-land-coord">
-            <Icon name="pin" />
-            {`Estate (${ens.landId})`}
-          </span>
-          <Button
-            compact
-            className="ens-list-land-redirect"
-            target="_blank"
-            href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`}
-            rel="noopener noreferrer"
-          >
-            <Icon name="right-round-arrow" className="ens-list-land-redirect-icon" />
-          </Button>
-        </div>
-      )
-    }
-  }
-
-  renderAddressInfo(ens: ENS) {
-    if (ens.ensOwnerAddress !== ens.nftOwnerAddress) {
-      return (
-        <Button compact className="ens-list-btn" onClick={this.handleReclaim.bind(null, ens)}>
-          <DCLIcon name="arrow alternate circle down outline" className="ens-list-reclaim-icon" />
-          {t('ens_list_page.button.reclaim_address')}
-        </Button>
-      )
-    }
-
-    if (ens.ensAddressRecord) {
-      return (
-        <span className="ens-list-address">
-          <img className="ens-list-address-icon" src={ethereumImg} alt="Ethereum" />
-          {shorten(ens.ensAddressRecord)}
-          <CopyToClipboard role="button" text={ens.ensAddressRecord} showPopup={true} className="copy-to-clipboard">
-            <DCLIcon aria-label="copy address" aria-hidden="false" name="clone outline" />
-          </CopyToClipboard>
-        </span>
-      )
-    }
-    return (
-      <Button compact className="ens-list-btn" onClick={this.handleAssignENSAddress.bind(null, ens)}>
-        <img src={addRounded} alt={t('ens_list_page.button.link_to_address')} className="ens-list-add-icon" />
-        {t('ens_list_page.button.link_to_address')}
-      </Button>
-    )
-  }
-
-  formatToTable(ensList: ENS[]): DataTableType[] {
-    return ensList.map(ens => ({
-      name: (
-        <div className="ens-list-name">
-          <img
-            className="ens-list-name-icon"
-            alt={ens.subdomain}
-            src={`${MARKETPLACE_API}/ens/generate?ens=${ens.name}&width=330&height=330&onlyLogo=true`}
-          />
-          <span className="ens-list-subdomain">
-            <span>{ens.name}</span>.dcl.eth
-          </span>
-          <CopyToClipboard role="button" text={ens.subdomain} showPopup={true} className="copy-to-clipboard">
-            <DCLIcon aria-label="copy subdomain" aria-hidden="false" name="clone outline" />
-          </CopyToClipboard>
-          {ens.ensOwnerAddress !== ens.nftOwnerAddress ? (
-            <span className="ens-list-unclaimed-badge">{t('ens_list_page.unclaimed')}</span>
-          ) : null}
-        </div>
-      ),
-      alias: this.isAlias(ens) ? (
-        <span className="ens-list-avatar">
-          {this.props.avatar ? (
-            <img className="ens-list-avatar-img" src={this.props.avatar.avatar.snapshots.face256} alt={this.props.avatar.realName} />
-          ) : (
-            <Icon name="profile" />
-          )}
-          <span className="ens-list-avatar-name">{ens.name}</span>
-          {t('ens_list_page.table.you')}
-        </span>
-      ) : (
-        <Button
-          compact
-          className="ens-list-btn"
-          onClick={this.handleUseAsAlias.bind(null, ens.name)}
-          disabled={!this.props.hasProfileCreated}
-        >
-          <img src={addRounded} alt={t('ens_list_page.button.add_to_avatar')} className="ens-list-add-icon" />
-          {t('ens_list_page.button.add_to_avatar')}
-        </Button>
-      ),
-      address: this.renderAddressInfo(ens),
-      land: this.renderLandLinkInfo(ens),
-      actions: (
-        <div className="ens-list-actions">
-          <Button
-            secondary
-            compact
-            className="ens-list-transfer-btn"
-            target="_blank"
-            href={`${MARKETPLACE_WEB_URL}/contracts/${REGISTRAR_CONTRACT_ADDRESS}/tokens/${ens.tokenId}/transfer`}
-          >
-            <DCLIcon name="exchange" />
-            {t('ens_list_page.transfer')}
-          </Button>
-          <Link to={locations.ensDetail(ens.name)}>
-            <Button primary compact className="ens-list-edit-btn">
-              <DCLIcon name="pencil alternate" />
-              {t('ens_list_page.edit')}
+        )
+      }
+      if (isCoords(ens.landId)) {
+        return (
+          <div className="ens-list-land">
+            <span className="ens-list-land-coord">
+              <Icon name="pin" />
+              {ens.landId}
+            </span>
+            <Button
+              compact
+              className="ens-list-land-redirect"
+              target="_blank"
+              href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`}
+              rel="noopener noreferrer"
+            >
+              <Icon name="right-round-arrow" className="ens-list-land-redirect-icon" />
             </Button>
-          </Link>
-        </div>
-      )
-    }))
-  }
+          </div>
+        )
+      } else {
+        return (
+          <div className="ens-list-land">
+            <span className="ens-list-land-coord">
+              <Icon name="pin" />
+              {`Estate (${ens.landId})`}
+            </span>
+            <Button
+              compact
+              className="ens-list-land-redirect"
+              target="_blank"
+              href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`}
+              rel="noopener noreferrer"
+            >
+              <Icon name="right-round-arrow" className="ens-list-land-redirect-icon" />
+            </Button>
+          </div>
+        )
+      }
+    },
+    [handleAssignENS, handleReclaim]
+  )
 
-  renderEmptyEnsList() {
+  const renderAddressInfo = useCallback(
+    (ens: ENS) => {
+      if (ens.ensOwnerAddress !== ens.nftOwnerAddress) {
+        return (
+          <Button compact className="ens-list-btn" onClick={handleReclaim.bind(null, ens)}>
+            <DCLIcon name="arrow alternate circle down outline" className="ens-list-reclaim-icon" />
+            {t('ens_list_page.button.reclaim_address')}
+          </Button>
+        )
+      }
+
+      if (ens.ensAddressRecord) {
+        return (
+          <span className="ens-list-address">
+            <img className="ens-list-address-icon" src={ethereumImg} alt="Ethereum" />
+            {shorten(ens.ensAddressRecord)}
+            <CopyToClipboard role="button" text={ens.ensAddressRecord} showPopup={true} className="copy-to-clipboard">
+              <DCLIcon aria-label="copy address" aria-hidden="false" name="clone outline" />
+            </CopyToClipboard>
+          </span>
+        )
+      }
+      return (
+        <Button compact className="ens-list-btn" onClick={handleAssignENSAddress.bind(null, ens)}>
+          <img src={addRounded} alt={t('ens_list_page.button.link_to_address')} className="ens-list-add-icon" />
+          {t('ens_list_page.button.link_to_address')}
+        </Button>
+      )
+    },
+    [handleAssignENSAddress, handleReclaim]
+  )
+
+  const formatToTable = useCallback(
+    (ensList: ENS[]) => {
+      return ensList.map(ens => ({
+        name: (
+          <div className="ens-list-name">
+            <img
+              className="ens-list-name-icon"
+              alt={ens.subdomain}
+              src={`${MARKETPLACE_API}/ens/generate?ens=${ens.name}&width=330&height=330&onlyLogo=true`}
+            />
+            <span className="ens-list-subdomain">
+              <span>{ens.name}</span>.dcl.eth
+            </span>
+            <CopyToClipboard role="button" text={ens.subdomain} showPopup={true} className="copy-to-clipboard">
+              <DCLIcon aria-label="copy subdomain" aria-hidden="false" name="clone outline" />
+            </CopyToClipboard>
+            {ens.ensOwnerAddress !== ens.nftOwnerAddress ? (
+              <span className="ens-list-unclaimed-badge">{t('ens_list_page.unclaimed')}</span>
+            ) : null}
+          </div>
+        ),
+        alias: isAlias(ens) ? (
+          <span className="ens-list-avatar">
+            {avatar ? (
+              <img className="ens-list-avatar-img" src={avatar.avatar.snapshots.face256} alt={avatar.realName} />
+            ) : (
+              <Icon name="profile" />
+            )}
+            <span className="ens-list-avatar-name">{ens.name}</span>
+            {t('ens_list_page.table.you')}
+          </span>
+        ) : (
+          <Button compact className="ens-list-btn" onClick={handleUseAsAlias.bind(null, ens.name)} disabled={!hasProfileCreated}>
+            <img src={addRounded} alt={t('ens_list_page.button.add_to_avatar')} className="ens-list-add-icon" />
+            {t('ens_list_page.button.add_to_avatar')}
+          </Button>
+        ),
+        address: renderAddressInfo(ens),
+        land: renderLandLinkInfo(ens),
+        actions: (
+          <div className="ens-list-actions">
+            <Button
+              secondary
+              compact
+              className="ens-list-transfer-btn"
+              target="_blank"
+              href={`${MARKETPLACE_WEB_URL}/contracts/${REGISTRAR_CONTRACT_ADDRESS}/tokens/${ens.tokenId}/transfer`}
+            >
+              <DCLIcon name="exchange" />
+              {t('ens_list_page.transfer')}
+            </Button>
+            <Link to={locations.ensDetail(ens.name)}>
+              <Button primary compact className="ens-list-edit-btn">
+                <DCLIcon name="pencil alternate" />
+                {t('ens_list_page.edit')}
+              </Button>
+            </Link>
+          </div>
+        )
+      }))
+    },
+    [hasProfileCreated, isAlias, renderLandLinkInfo, renderAddressInfo, handleUseAsAlias]
+  )
+
+  const renderEmptyEnsList = useCallback(() => {
     return (
       <div className="ens-list-page-empty">
         <div className="ens-list-page-empty-image">
@@ -288,15 +264,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         </div>
       </div>
     )
-  }
+  }, [])
 
-  renderEnsList() {
-    const { ensList } = this.props
-    const { page } = this.state
-
+  const renderEnsList = useCallback(() => {
     const total = ensList.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
-    const paginatedItems = this.paginate()
+    const paginatedItems = paginate()
 
     return (
       <div className="ens-page-content">
@@ -308,7 +281,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
           <div className="ens-page-actions">
             {ensList.length > 1 ? (
               <div>
-                {t('ens_list_page.sort_by')} {this.renderSortDropdown()}
+                {t('ens_list_page.sort_by')} {renderSortDropdown()}
               </div>
             ) : null}
             <Button compact href={`${MARKETPLACE_WEB_URL}/names/claim`} target="_blank" primary>
@@ -319,12 +292,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         <TableContainer
           children={
             <TableContent
-              data={this.formatToTable(paginatedItems)}
-              isLoading={this.props.isLoading}
+              data={formatToTable(paginatedItems)}
+              isLoading={isLoading}
               activePage={page}
-              setPage={page => this.setState({ page })}
+              setPage={page => setPage(page)}
               totalPages={totalPages}
-              empty={() => this.renderEmptyEnsList()}
+              empty={renderEmptyEnsList}
               total={PAGE_SIZE}
               hasHeaders
               customHeaders={{
@@ -355,20 +328,17 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         />
       </div>
     )
-  }
+  }, [ensList, page, isLoading, renderSortDropdown, renderEmptyEnsList, formatToTable])
 
-  render() {
-    const { isLoading, error } = this.props
-    return (
-      <LoggedInDetailPage
-        className="ENSListPage view"
-        error={error}
-        activeTab={NavigationTab.NAMES}
-        isLoading={isLoading}
-        isPageFullscreen={true}
-      >
-        {this.renderEnsList()}
-      </LoggedInDetailPage>
-    )
-  }
+  return (
+    <LoggedInDetailPage
+      className="ENSListPage view"
+      error={error}
+      activeTab={NavigationTab.NAMES}
+      isLoading={isLoading}
+      isPageFullscreen={true}
+    >
+      {renderEnsList()}
+    </LoggedInDetailPage>
+  )
 }

@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -16,8 +17,9 @@ const imgSrc = {
   template: `${PUBLIC_URL}/images/template-preview-img.webp`
 }
 
-export default function SceneCreationSelector({ onOpenModal, onNavigate }: Props) {
+export default function SceneCreationSelector({ onOpenModal }: Props) {
   const analytics = getAnalytics()
+  const history = useHistory()
   const handleOpenCreateFromScratchModal = useCallback(() => {
     analytics.track('Create scene from scratch')
     onOpenModal('CustomLayoutModal')
@@ -25,8 +27,8 @@ export default function SceneCreationSelector({ onOpenModal, onNavigate }: Props
 
   const handleCreateFromTemplate = useCallback(() => {
     analytics.track('Create scene from template')
-    onNavigate(locations.templates())
-  }, [analytics, onNavigate])
+    history.push(locations.templates())
+  }, [analytics, history])
 
   return (
     <div className={styles.container}>

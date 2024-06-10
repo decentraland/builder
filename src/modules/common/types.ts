@@ -22,7 +22,6 @@ import { ENSState } from 'modules/ens/reducer'
 import { IdentityState } from 'modules/identity/reducer'
 import { ItemState } from 'modules/item/reducer'
 import { LandState } from 'modules/land/reducer'
-import { LocationState } from 'modules/location/reducer'
 import { MediaState } from 'modules/media/reducer'
 import { PoolGroupState } from 'modules/poolGroup/reducer'
 import { PoolState } from 'modules/pool/reducer'
@@ -56,7 +55,6 @@ export type RootState = {
   identity: IdentityState
   item: ItemState
   land: LandState
-  location: LocationState
   media: MediaState
   modal: ModalState
   pool: PoolState

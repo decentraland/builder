@@ -25,7 +25,6 @@ export default function SDK6TopBar(props: Props) {
     isPreviewing,
     isSidebarOpen,
     isLoading,
-    hasHistory,
     currentProject,
     currentPoolGroup,
     selectedEntityIds,
@@ -69,12 +68,12 @@ export default function SDK6TopBar(props: Props) {
   }, [isLoading, onOpenModal])
 
   const handleGoBack = useCallback(() => {
-    if (hasHistory) {
+    if (history.length) {
       history.goBack()
     } else {
       history.push(currentProject ? locations.sceneDetail(currentProject.id) : locations.root())
     }
-  }, [history, currentProject, hasHistory])
+  }, [history, currentProject])
 
   const handleExport = useCallback(() => {
     onOpenModal('ExportModal', { project: currentProject })

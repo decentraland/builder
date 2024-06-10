@@ -1,7 +1,8 @@
-import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback } from 'react'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { Dropdown, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { FromParam, LocationStateProps } from 'modules/location/types'
 import { locations } from 'routing/locations'
 import { isEqual } from 'lib/address'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -9,59 +10,51 @@ import CollectionStatus from 'components/CollectionStatus'
 import { Props } from './Header.types'
 import './Header.css'
 
-export default class Header extends React.PureComponent<Props> {
-  handleHome = () => {
-    const { onNavigate } = this.props
-    onNavigate(locations.collections())
-  }
+const Header = ({ collection, address, hasUserOrphanItems, isLoggedIn, isReviewing, onOpenModal, onDeleteCollection }: Props) => {
+  const location = useLocation()
+  const history = useHistory()
+  const isFromCollections = (location.state as LocationStateProps)?.fromParam === FromParam.COLLECTIONS
+  const isFromTPCollections = (location.state as LocationStateProps)?.fromParam === FromParam.TP_COLLECTIONS
 
-  handleBack = () => {
-    const { collection, isFromCollections, isFromTPCollections, onNavigate } = this.props
+  const handleHome = useCallback(() => {
+    history.push(locations.collections())
+  }, [history])
+
+  const handleBack = useCallback(() => {
     // If the user came from a collection details page, go back to the same page
     if (collection && (isFromCollections || isFromTPCollections)) {
       const location = isFromCollections ? locations.collectionDetail : locations.thirdPartyCollectionDetail
-      onNavigate(location(collection.id))
+      history.push(location(collection.id))
     } else {
-      onNavigate(locations.itemEditor())
+      history.push(locations.itemEditor())
     }
-  }
+  }, [isFromCollections, isFromTPCollections, history, collection])
 
-  handleNewItem = () => {
-    const { onOpenModal } = this.props
-    onOpenModal('CreateSingleItemModal', { changeItemFile: false })
-  }
-
-  handleNewCollection = () => {
-    const { onOpenModal } = this.props
+  const handleNewCollection = useCallback(() => {
     onOpenModal('CreateCollectionModal')
-  }
+  }, [onOpenModal])
 
-  handleAddNewItem = () => {
-    const { collection, onOpenModal } = this.props
+  const handleAddNewItem = useCallback(() => {
     collection && onOpenModal('CreateSingleItemModal', { collectionId: collection.id })
-  }
+  }, [collection, onOpenModal])
 
-  handleAddExistingItem = () => {
-    const { collection, onOpenModal } = this.props
+  const handleAddExistingItem = useCallback(() => {
     collection && onOpenModal('AddExistingItemModal', { collectionId: collection.id })
-  }
+  }, [collection, onOpenModal])
 
-  handleEditName = () => {
-    const { collection, onOpenModal } = this.props
+  const handleEditName = useCallback(() => {
     collection && onOpenModal('EditCollectionNameModal', { collection })
-  }
+  }, [collection, onOpenModal])
 
-  handleDelete = () => {
-    const { collection, onDeleteCollection } = this.props
+  const handleDelete = useCallback(() => {
     collection && onDeleteCollection(collection)
-  }
+  }, [collection, onDeleteCollection])
 
-  renderSelectedCollection() {
-    const { collection, address = '', hasUserOrphanItems, isFromCollections, isFromTPCollections } = this.props
-    const isOwner = collection && isEqual(collection.owner, address)
+  const renderSelectedCollection = useCallback(() => {
+    const isOwner = collection && isEqual(collection.owner, address || '')
     return collection ? (
       <>
-        <div className={`block ${isFromCollections || isFromTPCollections ? 'close' : 'back'}`} onClick={this.handleBack} />
+        <div className={`block ${isFromCollections || isFromTPCollections ? 'close' : 'back'}`} onClick={handleBack} />
         <div className="title">
           <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
           <CollectionStatus collection={collection} />
@@ -69,31 +62,30 @@ export default class Header extends React.PureComponent<Props> {
         {isOwner && !collection.isPublished ? (
           <Dropdown trigger={<div className="block actions" />} inline direction="left">
             <Dropdown.Menu>
-              <Dropdown.Item onClick={this.handleEditName}>{t('item_editor.left_panel.actions.edit_name')}</Dropdown.Item>
-              <Dropdown.Item onClick={this.handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
+              <Dropdown.Item onClick={handleEditName}>{t('item_editor.left_panel.actions.edit_name')}</Dropdown.Item>
+              <Dropdown.Item onClick={handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
               {hasUserOrphanItems && (
-                <Dropdown.Item onClick={this.handleAddExistingItem}>{t('item_editor.left_panel.actions.add_existing_item')}</Dropdown.Item>
+                <Dropdown.Item onClick={handleAddExistingItem}>{t('item_editor.left_panel.actions.add_existing_item')}</Dropdown.Item>
               )}
-              <ConfirmDelete name={collection.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
+              <ConfirmDelete name={collection.name} onDelete={handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
             </Dropdown.Menu>
           </Dropdown>
         ) : null}
       </>
     ) : null
-  }
+  }, [collection, address, hasUserOrphanItems, isFromCollections, isFromTPCollections])
 
-  renderHeader() {
-    const { hasUserOrphanItems, isLoggedIn } = this.props
+  const renderHeader = useCallback(() => {
     return (
       <>
-        <div className="block close" onClick={this.handleHome} />
+        <div className="block close" onClick={handleHome} />
         <div className="title">
           {hasUserOrphanItems ? t('item_editor.left_panel.title') : t('item_editor.left_panel.title_alternative')}
         </div>
         {isLoggedIn ? (
           <Dropdown trigger={<div className="block add" />} inline direction="left">
             <Dropdown.Menu>
-              <Dropdown.Item onClick={this.handleNewCollection}>{t('item_editor.left_panel.actions.new_collection')}</Dropdown.Item>
+              <Dropdown.Item onClick={handleNewCollection}>{t('item_editor.left_panel.actions.new_collection')}</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         ) : (
@@ -101,14 +93,13 @@ export default class Header extends React.PureComponent<Props> {
         )}
       </>
     )
-  }
+  }, [hasUserOrphanItems, isLoggedIn])
 
-  render() {
-    const { isReviewing, collection } = this.props
-    return isReviewing ? null : (
-      <Row grow={false} shrink={false} className="Header">
-        {collection ? this.renderSelectedCollection() : this.renderHeader()}
-      </Row>
-    )
-  }
+  return isReviewing ? null : (
+    <Row grow={false} shrink={false} className="Header">
+      {collection ? renderSelectedCollection() : renderHeader()}
+    </Row>
+  )
 }
+
+export default Header

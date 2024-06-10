@@ -26,7 +26,6 @@ import { entityReducer as entity } from 'modules/entity/reducer'
 import { identityReducer as identity } from 'modules/identity/reducer'
 import { itemReducer as item } from 'modules/item/reducer'
 import { landReducer as land } from 'modules/land/reducer'
-import { locationReducer as location } from 'modules/location/reducer'
 import { mediaReducer as media } from 'modules/media/reducer'
 import { poolGroupReducer as poolGroup } from 'modules/poolGroup/reducer'
 import { poolReducer as pool } from 'modules/pool/reducer'
@@ -57,7 +56,6 @@ export function createRootReducer(history: History) {
       identity,
       item,
       land,
-      location,
       media,
       modal,
       pool,

@@ -1,3 +1,3 @@
-import ErrorPage from './ErrorPage.container'
+import ErrorPage from './ErrorPage'
 
 export default ErrorPage

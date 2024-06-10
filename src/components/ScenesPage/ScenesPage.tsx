@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Container,
@@ -30,7 +30,8 @@ import { Props, DefaultProps } from './ScenesPage.types'
 import './ScenesPage.css'
 
 const ScenesPage: React.FC<Props> = props => {
-  const { page, poolList, projects, sortBy, totalPages, isFetching, isLoggingIn, onLoadFromScenePool, onOpenModal, onPageChange } = props
+  const { page, poolList, projects, sortBy, totalPages, isFetching, isLoggingIn, onLoadFromScenePool, onOpenModal } = props
+  const history = useHistory()
 
   useEffect(() => {
     onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
@@ -111,13 +112,15 @@ const ScenesPage: React.FC<Props> = props => {
 
   const paginate = useCallback(
     (options: PaginationOptions = {}) => {
-      onPageChange({
-        page,
-        sortBy,
-        ...options
-      })
+      history.push(
+        locations.scenes({
+          page,
+          sortBy,
+          ...options
+        })
+      )
     },
-    [page, sortBy, onPageChange]
+    [page, sortBy, history]
   )
 
   const handleDropdownChange = useCallback(
