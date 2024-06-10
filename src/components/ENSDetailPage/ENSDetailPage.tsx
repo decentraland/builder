@@ -16,7 +16,7 @@ import { Props } from './ENSDetailPage.types'
 import styles from './ENSDetailPage.module.css'
 
 export default function ENSDetailPage(props: Props) {
-  const { ens, isLoading, alias, avatar, name, onOpenModal, onFetchENS } = props
+  const { ens, isLoading, alias, avatar, name, wallet, onOpenModal, onFetchENS } = props
   const history = useHistory()
   const imgUrl = useMemo<string>(
     () => (ens ? `${config.get('MARKETPLACE_API')}/ens/generate?ens=${ens.name}&width=330&height=330` : ''),
@@ -26,10 +26,10 @@ export default function ENSDetailPage(props: Props) {
   const shouldReclaim = ens?.ensOwnerAddress !== ens?.nftOwnerAddress
 
   useEffect(() => {
-    if (name) {
+    if (name && wallet) {
       onFetchENS(name)
     }
-  }, [name, onFetchENS])
+  }, [name, wallet, onFetchENS])
 
   const handleAssignENSAddress = useCallback(() => {
     onOpenModal('EnsMapAddressModal', { ens })
