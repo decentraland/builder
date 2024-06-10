@@ -83,7 +83,6 @@ export const getSelectedItemId = (state: RootState) => {
 }
 export const getSelectedCollectionId = (state: RootState) => new URLSearchParams(getSearch(state)).get('collection')
 export const isReviewing = (state: RootState) => !!new URLSearchParams(getSearch(state)).get('reviewing')
-export const getState = (state: RootState) => state.location
 
 export const ensNameMatchSelector = createMatchSelector<
   RootState,
