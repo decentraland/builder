@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import classNames from 'classnames'
+import { useHistory, useLocation } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
 import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table, Label, SemanticSIZES } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
@@ -30,7 +31,6 @@ import { Props } from './CollectionDetailPage.types'
 import CollectionItem from './CollectionItem'
 
 import './CollectionDetailPage.css'
-import { useHistory, useLocation } from 'react-router'
 
 export default function CollectionDetailPage({
   collection,
