@@ -60,7 +60,7 @@ export default function DeployToWorld({
   const currenWorldLabel = world && ensList.find(ens => ens.subdomain === world)?.name
 
   useEffect(() => {
-    if (ensList.length === 0 && externalNames.length === 0) {
+    if (ensList.length === 0 && externalNames.length === 0 && contributableNames.length === 0) {
       setView(DeployToWorldView.EMPTY)
       analytics.track('Publish to World step', { step: DeployToWorldView.EMPTY })
     } else if (!currentDeployment.current) {
@@ -68,7 +68,7 @@ export default function DeployToWorld({
       analytics.track('Publish to World step', { step: DeployToWorldView.FORM })
       onRecord()
     }
-  }, [ensList, externalNames, onRecord, analytics])
+  }, [ensList, externalNames, contributableNames, onRecord, analytics])
 
   useEffect(() => {
     if (view === DeployToWorldView.FORM && loading && error) {
