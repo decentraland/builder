@@ -1,4 +1,3 @@
-import { RouterState } from 'connected-react-router'
 import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
 import { ItemState } from 'modules/item/reducer'
@@ -9,16 +8,17 @@ import { INITIAL_STATE } from './reducer'
 import { getFetchingBaseWearablesError, getSelectedBaseWearablesByBodyShape, isLoadingBaseWearables, getVisibleItems } from './selectors'
 
 let state: RootState
-const routerState: RouterState = {
-  action: 'PUSH',
-  location: {
-    query: {},
-    pathname: '',
-    state: '',
-    hash: '',
-    search: ''
+const originalLocation = window.location
+
+beforeAll(() => {
+  window.location = {
+    ...originalLocation
   }
-}
+})
+
+afterAll(() => {
+  window.location = originalLocation
+})
 
 beforeEach(() => {
   state = {
@@ -151,7 +151,6 @@ describe('when getting the visible items', () => {
   beforeEach(() => {
     state = {
       ...state,
-      router: routerState,
       item: {
         data: {
           someId: { id: 'someId' } as Item,
@@ -171,7 +170,6 @@ describe('when getting the visible items', () => {
     beforeEach(() => {
       state = {
         ...state,
-        router: routerState,
         item: {
           data: {
             someId: { id: 'someId' } as Item
@@ -189,15 +187,9 @@ describe('when getting the visible items', () => {
   })
   describe('when the curator is reviewing a collection', () => {
     beforeEach(() => {
+      window.location.search = '?reviewing=true&collection=aCollection'
       state = {
         ...state,
-        router: {
-          ...routerState,
-          location: {
-            ...routerState.location,
-            search: '?reviewing=true&collection=aCollection'
-          }
-        },
         item: {
           data: {
             someId: { id: 'someId', collectionId: 'aCollection' } as Item,
