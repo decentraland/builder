@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
-
+import { withRouter } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { LOAD_MANIFEST_REQUEST, createProjectFromTemplate } from 'modules/project/actions'
@@ -23,7 +22,7 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onCreateProject: (name, description, template, sdk) =>
+  onCreateProject: (name, description, template, sdk, history) =>
     dispatch(
       createProjectFromTemplate(template, {
         title: name,
@@ -31,10 +30,10 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
         sdk,
         onSuccess: (project: Project) => {
           const redirectTo = sdk === SDKVersion.SDK6 ? locations.sceneEditor(project.id) : locations.inspector(project.id)
-          dispatch(push(redirectTo))
+          history.push(redirectTo)
         }
       })
     )
 })
 
-export default connect(mapState, mapDispatch)(CustomLayoutModal)
+export default connect(mapState, mapDispatch)(withRouter(CustomLayoutModal))

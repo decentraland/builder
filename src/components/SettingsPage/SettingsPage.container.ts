@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/common/types'
@@ -14,7 +13,6 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onSetUpdateManager: (address, type, isApproved) => dispatch(setUpdateManagerRequest(address, type, isApproved))
 })
 
