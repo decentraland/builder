@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+import { Location } from 'history'
 
 export const REDIRECT_TO_REQUEST = '[Request] Redirect request'
 export const REDIRECT_TO_SUCCESS = '[Success] Redirect success'
@@ -11,3 +12,7 @@ export const redirectToFailure = (redirectTo: string, error: string) => action(R
 export type RedirectToRequestAction = ReturnType<typeof redirectToRequest>
 export type RedirectToSuccessAction = ReturnType<typeof redirectToSuccess>
 export type RedirectToFailureAction = ReturnType<typeof redirectToFailure>
+
+export const ROUTER_LOCATION_CHANGE = 'Router Location Change'
+export const routerLocationChange = (location: Location<unknown>) => action(ROUTER_LOCATION_CHANGE, { location })
+export type RouterLocationChangeAction = ReturnType<typeof routerLocationChange>

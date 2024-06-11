@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { fetchContributableNamesRequest } from 'modules/ens/actions'
 import { getCurrentProject } from 'modules/project/selectors'
@@ -40,8 +39,6 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
     return dispatch(deployToWorldRequest(projectId, name))
   },
   onRecord: () => dispatch(recordMediaRequest()),
-  onNavigate: path => dispatch(push(path)),
-  onReplace: (path, locationState) => dispatch(replace(path, locationState)),
   onFetchContributableNames: () => dispatch(fetchContributableNamesRequest())
 })
 

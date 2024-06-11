@@ -40,3 +40,16 @@ if (!globalThis.fetch) {
 }
 
 setCurrentLocale('en', mergeTranslations(flatten(dappsEn), flatten(locales.en)))
+
+Object.defineProperty(window, 'location', {
+  writable: true,
+  value: {
+    ...window.location,
+    assign: jest.fn(),
+    reload: jest.fn(),
+    replace: jest.fn(),
+    href: 'http://test.com/',
+    pathname: '/',
+    search: ''
+  }
+})

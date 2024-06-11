@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 import { deployToWorldRequest, DeployToWorldRequestAction } from 'modules/deployment/actions'
 import { recordMediaRequest, RecordMediaRequestAction } from 'modules/media/actions'
@@ -9,7 +8,6 @@ import { Project } from 'modules/project/types'
 import { ModelMetrics } from 'modules/models/types'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { Deployment } from 'modules/deployment/types'
-import { DeployToWorldLocationStateProps } from 'modules/location/types'
 import { DeployModalMetadata } from '../DeployModal.types'
 import { Scene } from 'modules/scene/types'
 
@@ -31,8 +29,6 @@ export type Props = {
   onBack: () => void
   onPublish: typeof deployToWorldRequest
   onRecord: typeof recordMediaRequest
-  onNavigate: (path: string) => void
-  onReplace: (path: string, locationState?: DeployToWorldLocationStateProps) => void
   onFetchContributableNames: () => void
 }
 
@@ -50,13 +46,9 @@ export type MapStateProps = Pick<
   | 'contributableNames'
   | 'isWorldContributorEnabled'
 >
-export type MapDispatchProps = Pick<Props, 'onPublish' | 'onNavigate' | 'onRecord' | 'onReplace' | 'onFetchContributableNames'>
+export type MapDispatchProps = Pick<Props, 'onPublish' | 'onRecord' | 'onFetchContributableNames'>
 export type MapDispatch = Dispatch<
-  | DeployToWorldRequestAction
-  | CallHistoryMethodAction
-  | RecordMediaRequestAction
-  | FetchExternalNamesRequestAction
-  | FetchContributableNamesRequestAction
+  DeployToWorldRequestAction | RecordMediaRequestAction | FetchExternalNamesRequestAction | FetchContributableNamesRequestAction
 >
 
 export enum DeployToWorldView {

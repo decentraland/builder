@@ -9,6 +9,4 @@ const mapState = (state: RootState): MapStateProps => ({
   inMaintenance: getIsMaintenanceEnabled(state)
 })
 
-const mapDispatch = (_: any) => ({})
-
-export default withRouter(connect(mapState, mapDispatch)(Routes))
+export default withRouter(connect(mapState)(Routes))

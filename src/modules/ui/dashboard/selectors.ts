@@ -1,6 +1,4 @@
 import { createSelector } from 'reselect'
-import { Location } from 'history'
-import { getLocation } from 'connected-react-router'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { RootState } from 'modules/common/types'
 import { getUserProjects } from 'modules/project/selectors'
@@ -23,40 +21,33 @@ export const getTotalPages = createSelector<RootState, DataByKey<Project>, numbe
   Math.max(Math.ceil(Object.keys(projects).length / PAGE_SIZE), 1)
 )
 
-export const getPage = createSelector<RootState, Location, number, number>(
-  state => getLocation<RootState>(state),
-  getTotalPages,
-  (location, totalPages) => {
-    const params = new URLSearchParams(location.search)
-    let page = parseInt(params.get('page')!, 10)
-    if (!page || page < 1) {
-      page = 1
-    }
-    if (page > totalPages) {
-      page = totalPages
-    }
-    return page
+export const getPage = createSelector<RootState, number, number>(getTotalPages, totalPages => {
+  const params = new URLSearchParams(window.location.search)
+  let page = parseInt(params.get('page')!, 10)
+  if (!page || page < 1) {
+    page = 1
   }
-)
+  if (page > totalPages) {
+    page = totalPages
+  }
+  return page
+})
 
-export const getSortBy = createSelector<RootState, Location, SortBy>(
-  state => getLocation<RootState>(state),
-  location => {
-    const params = new URLSearchParams(location.search)
-    let sortBy: SortBy = SortBy.NEWEST
-    for (const upperCaseType of Object.keys(SortBy)) {
-      let paramType = params.get('sort_by')
-      if (paramType) {
-        paramType = paramType.toLowerCase()
-        const type = upperCaseType.toLowerCase()
-        if (paramType === type) {
-          sortBy = type as SortBy
-        }
+export const getSortBy = () => {
+  const params = new URLSearchParams(window.location.search)
+  let sortBy: SortBy = SortBy.NEWEST
+  for (const upperCaseType of Object.keys(SortBy)) {
+    let paramType = params.get('sort_by')
+    if (paramType) {
+      paramType = paramType.toLowerCase()
+      const type = upperCaseType.toLowerCase()
+      if (paramType === type) {
+        sortBy = type as SortBy
       }
     }
-    return sortBy
   }
-)
+  return sortBy
+}
 
 export const getProjects = createSelector<RootState, number, SortBy, DataByKey<Project>, Project[]>(
   getPage,

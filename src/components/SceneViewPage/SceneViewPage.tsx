@@ -4,6 +4,7 @@ import { Loader, Page, Responsive, Container, Button, Icon as IconUI } from 'dec
 import Profile from 'decentraland-dapps/dist/containers/Profile'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { PreviewType } from 'modules/editor/types'
+import { locations } from 'routing/locations'
 import Chip from 'components/Chip'
 import Footer from 'components/Footer'
 import Icon from 'components/Icon'
@@ -154,8 +155,13 @@ export default class SceneViewPage extends React.PureComponent<Props> {
     )
   }
 
+  handleBack = () => {
+    const { history } = this.props
+    history.push(locations.poolSearch())
+  }
+
   render() {
-    const { isFetching, isPreviewing, isReady, onBack } = this.props
+    const { isFetching, isPreviewing, isReady } = this.props
 
     if (isFetching) {
       return this.renderLoading()
@@ -175,7 +181,7 @@ export default class SceneViewPage extends React.PureComponent<Props> {
           <>
             <Navbar />
             <Container className="back-container">
-              <Back absolute onClick={onBack}></Back>
+              <Back absolute onClick={this.handleBack}></Back>
               <Button secondary onClick={this.handleExportProject.bind(this)} loading={!currentProject} disabled={!currentProject}>
                 <IconUI name="download" />
                 {t('scene_detail_page.download_scene')}

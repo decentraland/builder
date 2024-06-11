@@ -97,7 +97,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   handleNavigateHome = () => {
-    this.props.onNavigateHome()
+    this.props.history.push(locations.root())
     this.props.onClose()
   }
 

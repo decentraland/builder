@@ -9,10 +9,14 @@ import ENSDetailPage from './ENSDetailPage'
 import { Props } from './ENSDetailPage.types'
 
 jest.mock('components/LoggedInDetailPage', () => ({ children }: any) => <div>{children}</div>)
-jest.mock('react-router-dom', () => ({
-  useHistory: jest.fn(() => ({ push: jest.fn() })),
-  Link: ({ to, children }: { to: string; children: React.ReactNode }) => <a href={to}>{children}</a>
-}))
+jest.mock('react-router-dom', () => {
+  const module = jest.requireActual('react-router-dom')
+  return {
+    ...module,
+    useHistory: jest.fn(() => ({ push: jest.fn() })),
+    Link: ({ to, children }: { to: string; children: React.ReactNode }) => <a href={to}>{children}</a>
+  } as unknown
+})
 
 function renderENSDetailPage(props: Partial<Props>) {
   return renderWithProviders(

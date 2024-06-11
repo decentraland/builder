@@ -1,5 +1,5 @@
-import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { RootState } from 'modules/common/types'
 import { fetchENSRequest } from 'modules/ens/actions'
 import { getENSList } from 'modules/ens/selectors'
@@ -11,8 +11,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onFetchENS: (name, land) => dispatch(fetchENSRequest(name, land)),
-  onNavigate: path => dispatch(push(path))
+  onFetchENS: (name, land) => dispatch(fetchENSRequest(name, land))
 })
 
-export default connect(mapState, mapDispatch)(LandSelectENSPage)
+export default connect(mapState, mapDispatch)(withRouter(LandSelectENSPage))

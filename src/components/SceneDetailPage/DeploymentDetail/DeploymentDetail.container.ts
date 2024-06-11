@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
+import { withRouter } from 'react-router-dom'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getLandTiles } from 'modules/land/selectors'
@@ -11,8 +11,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
-export default connect(mapState, mapDispatch)(DeploymentDetail)
+export default connect(mapState, mapDispatch)(withRouter(DeploymentDetail))

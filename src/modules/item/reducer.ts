@@ -1,7 +1,7 @@
-import { LocationChangeAction, LOCATION_CHANGE } from 'connected-react-router'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { Mint } from 'modules/collection/types'
+import { ROUTER_LOCATION_CHANGE, RouterLocationChangeAction } from 'modules/location/actions'
 import {
   PUBLISH_COLLECTION_SUCCESS,
   MINT_COLLECTION_ITEMS_SUCCESS,
@@ -140,7 +140,7 @@ export const INITIAL_STATE: ItemState = {
 }
 
 type ItemReducerAction =
-  | LocationChangeAction
+  | RouterLocationChangeAction
   | FetchItemsRequestAction
   | FetchItemsSuccessAction
   | FetchItemsFailureAction
@@ -195,7 +195,7 @@ type ItemReducerAction =
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
     case CLOSE_MODAL:
-    case LOCATION_CHANGE: {
+    case ROUTER_LOCATION_CHANGE: {
       return {
         ...state,
         error: null

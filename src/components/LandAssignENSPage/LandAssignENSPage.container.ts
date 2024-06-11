@@ -1,4 +1,3 @@
-import { push, goBack } from 'connected-react-router'
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
@@ -23,6 +22,7 @@ import {
 } from 'modules/ens/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './LandAssignENSPage.types'
 import LandAssignENSPage from './LandAssignENSPage'
+import { withRouter } from 'react-router'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { landId, subdomain } = ownProps.match.params
@@ -47,9 +47,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetENSResolver: ens => dispatch(setENSResolverRequest(ens)),
   onSetENSContent: (ens, land) => dispatch(setENSContentRequest(ens, land)),
-  onReclaimName: ens => dispatch(reclaimNameRequest(ens)),
-  onBack: () => dispatch(goBack()),
-  onNavigate: path => dispatch(push(path))
+  onReclaimName: ens => dispatch(reclaimNameRequest(ens))
 })
 
-export default connect(mapState, mapDispatch)(LandAssignENSPage)
+export default connect(mapState, mapDispatch)(withRouter(LandAssignENSPage))

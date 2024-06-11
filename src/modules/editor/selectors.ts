@@ -123,6 +123,7 @@ export const getVisibleItems = createSelector<RootState, string | null, boolean,
     itemIds
       .map(id => itemData[id])
       .filter(item => {
+        console.log({ item, selectedCollectionId, reviewing, itemIds, itemData })
         if (!item) {
           return false
         }

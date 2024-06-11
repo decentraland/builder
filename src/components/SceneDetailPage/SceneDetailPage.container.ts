@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
@@ -17,7 +16,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './SceneDetailPage.
 import SceneDetailPage from './SceneDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const projectId = getProjectId(state)
+  const projectId = getProjectId()
   const projects = getProjects(state)
   const project = projectId && projectId in projects ? projects[projectId] : null
   const deploymentsByProjectId = getDeploymentsByProjectId(state)
@@ -37,7 +36,6 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onDelete: project => dispatch(deleteProject(project)),
   onDuplicate: project => dispatch(duplicateProjectRequest(project)),

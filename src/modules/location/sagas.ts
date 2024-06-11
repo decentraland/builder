@@ -1,6 +1,5 @@
 import { all, takeLatest, put, select, take, race, getContext } from 'redux-saga/effects'
 import { History } from 'history'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { locations } from 'routing/locations'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
@@ -12,14 +11,21 @@ import {
   FETCH_COLLECTIONS_SUCCESS
 } from 'modules/collection/actions'
 import { getCollectionsByContractAddress } from 'modules/collection/selectors'
-import { redirectToFailure, redirectToRequest, RedirectToRequestAction, redirectToSuccess, REDIRECT_TO_REQUEST } from './actions'
+import {
+  redirectToFailure,
+  redirectToRequest,
+  RedirectToRequestAction,
+  redirectToSuccess,
+  REDIRECT_TO_REQUEST,
+  ROUTER_LOCATION_CHANGE
+} from './actions'
 import { RedirectTo, RedirectToTypes } from './types'
 
 export function* locationSaga() {
   yield all([
     takeLatest(LOGIN_SUCCESS, handleLoginSuccess),
     takeLatest(SET_ENS_CONTENT_SUCCESS, handleSetENSContentSuccess),
-    takeLatest(LOCATION_CHANGE, handleLocationChange),
+    takeLatest(ROUTER_LOCATION_CHANGE, handleLocationChange),
     takeLatest(REDIRECT_TO_REQUEST, handleRedirectToRequest)
   ])
 }
