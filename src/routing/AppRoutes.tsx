@@ -1,5 +1,6 @@
-import React from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { Loader, Responsive } from 'decentraland-ui'
 import { usePageTracking } from 'decentraland-dapps/dist/hooks/usePageTracking'
 
@@ -7,6 +8,7 @@ import { locations } from 'routing/locations'
 import LoadingPage from 'components/LoadingPage'
 import MobilePage from 'components/MobilePage'
 import { ProtectedRoute } from 'modules/ProtectedRoute'
+import { routerLocationChange } from 'modules/location/actions'
 
 const ScenesPage = React.lazy(() => import('components/ScenesPage'))
 const HomePage = React.lazy(() => import('components/HomePage'))
@@ -41,6 +43,13 @@ const TemplateDetailPage = React.lazy(() => import('components/TemplateDetailPag
 
 export function AppRoutes() {
   usePageTracking()
+  const location = useLocation()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(routerLocationChange(location))
+  }, [location])
+
   return (
     <React.Suspense fallback={<Loader size="huge" active />}>
       <Responsive maxWidth={1024} as={React.Fragment}>
