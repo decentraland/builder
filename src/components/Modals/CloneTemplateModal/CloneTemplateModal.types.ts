@@ -1,6 +1,5 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { CallHistoryMethodAction } from 'connected-react-router'
 
 import { DuplicateProjectRequestAction, duplicateProjectRequest } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
@@ -18,4 +17,4 @@ export type CloneTemplateModalMetadata = {
 
 export type MapStateProps = Pick<Props, 'error' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onDuplicate'>
-export type MapDispatch = Dispatch<DuplicateProjectRequestAction | CallHistoryMethodAction>
+export type MapDispatch = Dispatch<DuplicateProjectRequestAction>

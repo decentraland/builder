@@ -10,7 +10,7 @@ import { Props } from './LandAssignENSPage.types'
 
 export default class LandAssignENSPage extends React.PureComponent<Props> {
   handleGoBack = () => {
-    this.props.onBack()
+    this.props.history.goBack()
   }
 
   render() {
@@ -21,10 +21,10 @@ export default class LandAssignENSPage extends React.PureComponent<Props> {
       isWaitingTxSetContent,
       isWaitingTxReclaim,
       isWaitingTxSetResolver,
+      history,
       onSetENSResolver,
       onSetENSContent,
-      onReclaimName,
-      onNavigate
+      onReclaimName
     } = this.props
 
     return (
@@ -52,7 +52,7 @@ export default class LandAssignENSPage extends React.PureComponent<Props> {
                 onSetENSResolver={onSetENSResolver}
                 onReclaimName={onReclaimName}
                 onBack={this.handleGoBack}
-                onNavigate={onNavigate}
+                onNavigate={(path: string) => history.push(path)}
               />
             </LandAction>
           )

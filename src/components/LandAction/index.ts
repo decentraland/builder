@@ -1,2 +1,2 @@
-import LandAction from './LandAction.container'
+import LandAction from './LandAction'
 export default LandAction

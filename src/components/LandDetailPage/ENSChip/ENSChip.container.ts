@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
+import { withRouter } from 'react-router-dom'
 import { RootState } from 'modules/common/types'
 import { isLoadingContentBySubdomain, isPendingContentBySubdomain } from 'modules/ens/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ENSChip.types'
+import { MapStateProps, OwnProps } from './ENSChip.types'
 import ENSChip from './ENSChip'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
@@ -12,8 +12,4 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   }
 }
 
-const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path))
-})
-
-export default connect(mapState, mapDispatch)(ENSChip)
+export default connect(mapState)(withRouter(ENSChip))
