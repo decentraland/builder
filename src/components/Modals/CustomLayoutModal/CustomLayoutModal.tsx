@@ -53,9 +53,9 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   }
 
   handleSubmit = (sdk: SDKVersion) => {
-    const { onCreateProject, onClose } = this.props
+    const { history, onCreateProject, onClose } = this.props
     const { name, description, rows, cols } = this.state
-    onCreateProject(name, description, fromLayout(rows, cols), sdk)
+    onCreateProject(name, description, fromLayout(rows, cols), sdk, history)
     onClose()
   }
 

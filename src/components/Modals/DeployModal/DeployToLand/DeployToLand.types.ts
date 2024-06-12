@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
-import { CallHistoryMethodAction } from 'connected-react-router'
+import { RouteComponentProps } from 'react-router-dom'
 import { Coordinate, Rotation, DeploymentStatus, Deployment } from 'modules/deployment/types'
 import { DeployToLandRequestAction, deployToLandRequest } from 'modules/deployment/actions'
 import { RecordMediaRequestAction, recordMediaRequest } from 'modules/media/actions'
@@ -42,8 +42,7 @@ export type Props = {
   onDeployToPool: () => void
   onDeployToWorld: () => void
   onBack: () => void
-  onNavigateHome: () => void
-}
+} & RouteComponentProps
 
 export type State = {
   placement: {
@@ -79,8 +78,8 @@ export type MapStateProps = Pick<
   | 'landTiles'
   | 'ensList'
 >
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onDeploy' | 'onRecord' | 'onNavigateHome'>
-export type MapDispatch = Dispatch<OpenModalAction | DeployToLandRequestAction | RecordMediaRequestAction | CallHistoryMethodAction>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onDeploy' | 'onRecord'>
+export type MapDispatch = Dispatch<OpenModalAction | DeployToLandRequestAction | RecordMediaRequestAction>
 
 export enum DeployToLandView {
   NONE = 'NONE',

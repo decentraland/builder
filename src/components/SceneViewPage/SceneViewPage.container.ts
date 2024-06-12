@@ -1,7 +1,5 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
-
-import { locations } from 'routing/locations'
+import { withRouter } from 'react-router'
 import { RootState } from 'modules/common/types'
 import { likePoolRequest } from 'modules/pool/actions'
 import { loadProjectSceneRequest, loadPublicProjectRequest } from 'modules/project/actions'
@@ -37,8 +35,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onLoadProject: (id: string, type: PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PUBLIC) =>
     dispatch(loadPublicProjectRequest(id, type)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onBack: () => dispatch(push(locations.poolSearch())),
   onLoadProjectScene: (project: Project, type: PreviewType.PUBLIC | PreviewType.POOL) => dispatch(loadProjectSceneRequest(project, type))
 })
 
-export default connect(mapState, mapDispatch)(SceneViewPage)
+export default connect(mapState, mapDispatch)(withRouter(SceneViewPage))

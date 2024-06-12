@@ -65,7 +65,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
   }
 
   render() {
-    const { project, deployment, landTiles, onNavigate, onOpenModal } = this.props
+    const { project, deployment, landTiles, history, onOpenModal } = this.props
     const landId = deployment.base in landTiles ? landTiles[deployment.base].land.id : null
     const locationText = deployment.world ? deployment.world : deployment.base
     const status = getStatus(project, deployment)
@@ -77,7 +77,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
     return (
       <div
         className={classNames('DeploymentDetail', { clickable: landId })}
-        onClick={() => landId && onNavigate(locations.landDetail(landId))}
+        onClick={() => landId && history.push(locations.landDetail(landId))}
       >
         {this.renderThumbnail()}
         <Stats label={t('scene_detail_page.status')}>{statusText}</Stats>
