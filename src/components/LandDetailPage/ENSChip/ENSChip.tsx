@@ -7,9 +7,9 @@ import './ENSChip.css'
 
 export default class ENSChip extends React.PureComponent<Props> {
   handleOnClick = () => {
-    const { isLoading, onNavigate } = this.props
+    const { isLoading, history } = this.props
     if (isLoading) {
-      onNavigate(locations.activity())
+      history.push(locations.activity())
     }
   }
 

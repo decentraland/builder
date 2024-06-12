@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
+import { withRouter } from 'react-router-dom'
 import { getError as getWalletError, isConnecting, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   isLoading,
@@ -20,7 +20,6 @@ import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getENSByWallet } from 'modules/ens/selectors'
 import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
-import { locations } from 'routing/locations'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './DeployToLand.types'
 import DeployToLand from './DeployToLand'
 
@@ -50,8 +49,7 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onRecord: () => dispatch(recordMediaRequest()),
-  onDeploy: (projectId, placement, overrideDeploymentId) => dispatch(deployToLandRequest(projectId, placement, overrideDeploymentId)),
-  onNavigateHome: () => dispatch(push(locations.root()))
+  onDeploy: (projectId, placement, overrideDeploymentId) => dispatch(deployToLandRequest(projectId, placement, overrideDeploymentId))
 })
 
-export default connect(mapState, mapDispatch)(DeployToLand)
+export default connect(mapState, mapDispatch)(withRouter(DeployToLand))

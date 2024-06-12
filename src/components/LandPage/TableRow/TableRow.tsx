@@ -22,11 +22,11 @@ const sortLandPoolLast = (a: string, b: string) => {
 
 export default class TableRow extends React.PureComponent<Props> {
   render() {
-    const { land, deployments, rental, onNavigate } = this.props
+    const { land, deployments, rental, history } = this.props
     const { x, y } = getCoords(land)
 
     return (
-      <Table.Row className="TableRow" onClick={() => onNavigate(locations.landDetail(land.id))}>
+      <Table.Row className="TableRow" onClick={() => history.push(locations.landDetail(land.id))}>
         <Table.Cell>
           <Row>
             <Column width={67} grow={false} shrink={false}>

@@ -10,8 +10,8 @@ import { Props } from './LandSelectENSPage.types'
 
 export default class LandSelectENSPage extends React.PureComponent<Props> {
   handleUpdateSubdomain = (land: Land, selectedSubdomain: string) => {
-    const { onNavigate } = this.props
-    onNavigate(locations.landAssignENS(land.id, selectedSubdomain))
+    const { history } = this.props
+    history.push(locations.landAssignENS(land.id, selectedSubdomain))
   }
 
   render() {

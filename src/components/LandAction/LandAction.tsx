@@ -5,14 +5,15 @@ import Back from 'components/Back'
 import { locations } from 'routing/locations'
 import { Props } from './LandAction.types'
 import './LandAction.css'
+import { withRouter } from 'react-router'
 
-export default class LandAction extends React.PureComponent<Props> {
+class LandAction extends React.PureComponent<Props> {
   render() {
-    const { land, title, subtitle, children, onNavigate } = this.props
+    const { land, title, subtitle, children, history } = this.props
     return (
       <div className="LandAction">
         <Row height={48}>
-          <Back absolute onClick={() => onNavigate(locations.landDetail(land.id))} />
+          <Back absolute onClick={() => history.push(locations.landDetail(land.id))} />
         </Row>
         <Row className="main">
           <Narrow>
@@ -36,3 +37,5 @@ export default class LandAction extends React.PureComponent<Props> {
     )
   }
 }
+
+export default withRouter(LandAction)

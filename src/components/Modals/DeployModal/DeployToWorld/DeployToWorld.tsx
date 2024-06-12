@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
+import { useHistory } from 'react-router-dom'
 import { Button, Field, Icon as DCLIcon, SelectField, Checkbox, Row, Popup, List, DropdownItemProps } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -42,7 +43,6 @@ export default function DeployToWorld({
   isWorldContributorEnabled,
   onPublish,
   onRecord,
-  onNavigate,
   onClose,
   onBack,
   onFetchContributableNames
@@ -56,11 +56,12 @@ export default function DeployToWorld({
   const [confirmWorldReplaceContent, setConfirmWorldReplaceContent] = useState<boolean>(false)
   // Ref used to store current world deployment status and validate if the user is trying to deploy the same world
   const currentDeployment = useRef<Deployment | undefined>()
+  const history = useHistory()
 
   const currenWorldLabel = world && ensList.find(ens => ens.subdomain === world)?.name
 
   useEffect(() => {
-    if (ensList.length === 0 && externalNames.length === 0) {
+    if (ensList.length === 0 && externalNames.length === 0 && contributableNames.length === 0) {
       setView(DeployToWorldView.EMPTY)
       analytics.track('Publish to World step', { step: DeployToWorldView.EMPTY })
     } else if (!currentDeployment.current) {
@@ -68,7 +69,7 @@ export default function DeployToWorld({
       analytics.track('Publish to World step', { step: DeployToWorldView.FORM })
       onRecord()
     }
-  }, [ensList, externalNames, onRecord, analytics])
+  }, [ensList, externalNames, contributableNames, onRecord, analytics])
 
   useEffect(() => {
     if (view === DeployToWorldView.FORM && loading && error) {
@@ -108,13 +109,13 @@ export default function DeployToWorld({
 
   const handleClose = useCallback(() => {
     if (view === DeployToWorldView.SUCCESS) {
-      onNavigate(locations.sceneDetail(project.id))
+      history.push(locations.sceneDetail(project.id))
     }
     if (isLoading) {
       return
     }
     onClose()
-  }, [view, project, isLoading, onClose, onNavigate])
+  }, [view, project, isLoading, onClose, history])
 
   const handleClaimName = useCallback(() => {
     if (nameType === NameType.DCL) {

@@ -1,6 +1,5 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction, goBack } from 'connected-react-router'
-import { match } from 'react-router'
+import { RouteComponentProps, match } from 'react-router'
 import {
   setENSContentRequest,
   setENSResolverRequest,
@@ -26,16 +25,12 @@ export type Props = {
   onSetENSResolver: typeof setENSResolverRequest
   onSetENSContent: typeof setENSContentRequest
   onReclaimName: typeof reclaimNameRequest
-  onBack: typeof goBack
-  onNavigate: (path: string) => void
-}
+} & RouteComponentProps
 
 export type MapStateProps = Pick<
   Props,
   'ens' | 'isLoading' | 'error' | 'isWaitingTxSetContent' | 'isWaitingTxSetResolver' | 'isWaitingTxReclaim'
 >
-export type MapDispatchProps = Pick<Props, 'onSetENSResolver' | 'onSetENSContent' | 'onReclaimName' | 'onBack' | 'onNavigate'>
-export type MapDispatch = Dispatch<
-  CallHistoryMethodAction | SetENSResolverRequestAction | SetENSContentRequestAction | ReclaimNameRequestAction
->
+export type MapDispatchProps = Pick<Props, 'onSetENSResolver' | 'onSetENSContent' | 'onReclaimName'>
+export type MapDispatch = Dispatch<SetENSResolverRequestAction | SetENSContentRequestAction | ReclaimNameRequestAction>
 export type OwnProps = Pick<Props, 'match'>
