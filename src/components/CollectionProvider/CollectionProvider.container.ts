@@ -15,7 +15,7 @@ import { getCuration } from 'modules/curations/collectionCuration/selectors'
 import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const id = ownProps.id || getCollectionId(state)
+  const id = ownProps.id || getCollectionId()
   const collection = id ? getCollection(state, id) : null
   const items = collection ? getCollectionItems(state, collection.id) : []
   const paginatedItems = collection ? getPaginatedCollectionItems(state, collection.id, ownProps.itemsPageSize || DEFAULT_PAGE_SIZE) : []

@@ -1,5 +1,5 @@
 import { locations } from 'routing/locations'
-import { createMatchSelector, getSearch } from 'connected-react-router'
+import { matchPath } from 'react-router-dom'
 import { RootState } from 'modules/common/types'
 import { getCollection } from 'modules/collection/selectors'
 import { getPaginatedCollectionItems } from 'modules/item/selectors'
@@ -7,91 +7,81 @@ import { getFirstWearableOrItem } from 'modules/item/utils'
 import { getCollectionType } from 'modules/collection/utils'
 import { CollectionType } from 'modules/collection/types'
 
-const landIdMatchSelector = createMatchSelector<
-  RootState,
-  {
-    landId: string
-  }
->(locations.landDetail())
-
-export const getLandId = (state: RootState) => {
-  const result = landIdMatchSelector(state)
-  return result ? result.params.landId : null
+export function matchAppRoute<T extends Record<string, string>>(path: string, route: string) {
+  return matchPath<T>(path, { path: route, strict: true, exact: true })
 }
 
-const projectIdMatchSelector = createMatchSelector<
-  RootState,
-  {
-    projectId: string
-  }
->(locations.sceneDetail())
-
-export const getProjectId = (state: RootState) => {
-  const result = projectIdMatchSelector(state)
-  return result ? result.params.projectId : null
+function landIdMatchParams() {
+  return matchAppRoute<{ landId: string }>(window.location.pathname, locations.landDetail())?.params
 }
 
-const templateIdMatchSelector = createMatchSelector<
-  RootState,
-  {
-    templateId: string
-  }
->(locations.templateDetail())
-
-export const getTemplateId = (state: RootState) => {
-  const result = templateIdMatchSelector(state)
-  return result ? result.params.templateId : null
+export const getLandId = () => {
+  const result = landIdMatchParams()
+  return result ? result.landId : null
 }
 
-const itemIdMatchSelector = createMatchSelector<
-  RootState,
-  {
-    itemId: string
-  }
->(locations.itemDetail())
-
-export const getItemId = (state: RootState) => {
-  const result = itemIdMatchSelector(state)
-  return result ? result.params.itemId : null
+function projectIdMatchParams() {
+  return matchAppRoute<{ projectId: string }>(window.location.pathname, locations.sceneDetail())?.params
 }
 
-const collectionIdMatchSelector = createMatchSelector<
-  RootState,
-  {
-    collectionId: string
-  }
->([locations.collectionDetail(), locations.thirdPartyCollectionDetail()])
+export const getProjectId = () => {
+  const result = projectIdMatchParams()
+  return result ? result.projectId : null
+}
 
-export const getCollectionId = (state: RootState) => {
-  const result = collectionIdMatchSelector(state)
-  return result ? result.params.collectionId : null
+function templateIdMatchParams() {
+  return matchAppRoute<{ templateId: string }>(window.location.pathname, locations.templateDetail())?.params
+}
+
+export const getTemplateId = () => {
+  const result = templateIdMatchParams()
+  return result ? result.templateId : null
+}
+
+function itemIdMatchParams() {
+  return matchAppRoute<{ itemId: string }>(window.location.pathname, locations.itemDetail())?.params
+}
+
+export const getItemId = () => {
+  const result = itemIdMatchParams()
+  return result ? result.itemId : null
+}
+
+function collectionIdMatchParams() {
+  return matchAppRoute<{ collectionId: string }>(window.location.pathname, locations.collectionDetail())?.params
+}
+
+function thirdPartyCollectionIdMatchParams() {
+  return matchAppRoute<{ collectionId: string }>(window.location.pathname, locations.thirdPartyCollectionDetail())?.params
+}
+
+export const getCollectionId = () => {
+  const result = collectionIdMatchParams() || thirdPartyCollectionIdMatchParams()
+  return result ? result.collectionId : null
 }
 
 export const getSelectedItemId = (state: RootState) => {
-  const selectedItemId = new URLSearchParams(getSearch(state)).get('item')
+  const selectedItemId = new URLSearchParams(window.location.search).get('item')
   if (selectedItemId) return selectedItemId
 
-  const collectionId = getSelectedCollectionId(state)
+  const collectionId = getSelectedCollectionId()
   if (!collectionId) return null
 
   const collection = getCollection(state, collectionId)
 
-  const isReviewingTPCollection = collection ? getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing(state) : false
+  const isReviewingTPCollection = collection ? getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing() : false
   const allItems = getPaginatedCollectionItems(state, collectionId)
   const items = isReviewingTPCollection ? allItems.filter(item => item.isPublished) : allItems
   return getFirstWearableOrItem(items)?.id ?? null
 }
-export const getSelectedCollectionId = (state: RootState) => new URLSearchParams(getSearch(state)).get('collection')
-export const isReviewing = (state: RootState) => !!new URLSearchParams(getSearch(state)).get('reviewing')
+export const getSelectedCollectionId = () => new URLSearchParams(window.location.search).get('collection')
+export const isReviewing = () => !!new URLSearchParams(window.location.search).get('reviewing')
 
-export const ensNameMatchSelector = createMatchSelector<
-  RootState,
-  {
-    name: string
-  }
->(locations.ensDetail())
+function ensNameMatchParams() {
+  return matchAppRoute<{ name: string }>(window.location.pathname, locations.ensDetail())?.params
+}
 
-export const getENSName = (state: RootState) => {
-  const result = ensNameMatchSelector(state)
-  return result ? result.params.name : null
+export const getENSName = () => {
+  const result = ensNameMatchParams()
+  return result ? result.name : null
 }

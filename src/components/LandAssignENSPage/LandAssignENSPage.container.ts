@@ -23,6 +23,7 @@ import {
 } from 'modules/ens/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './LandAssignENSPage.types'
 import LandAssignENSPage from './LandAssignENSPage'
+import { withRouter } from 'react-router'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { landId, subdomain } = ownProps.match.params

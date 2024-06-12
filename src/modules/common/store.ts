@@ -1,5 +1,4 @@
 import { createStore, compose, applyMiddleware } from 'redux'
-import { routerMiddleware } from 'connected-react-router'
 import createSagasMiddleware from 'redux-saga'
 import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
@@ -65,9 +64,8 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 const basename = /^decentraland.(zone|org|today)$/.test(window.location.host) ? '/builder' : undefined
 
 const history = createBrowserHistory({ basename })
-const rootReducer = createRootReducer(history)
+const rootReducer = createRootReducer()
 
-const historyMiddleware = routerMiddleware(history)
 const sagasMiddleware = createSagasMiddleware({ context: { history } })
 const loggerMiddleware = isTestEnv
   ? null
@@ -142,14 +140,9 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
 const transactionMiddleware = createTransactionMiddleware()
 const analyticsMiddleware = isTestEnv ? null : createAnalyticsMiddleware(config.get('SEGMENT_API_KEY'))
 
-const middlewares = [
-  historyMiddleware,
-  sagasMiddleware,
-  loggerMiddleware,
-  storageMiddleware,
-  analyticsMiddleware,
-  transactionMiddleware
-].filter(mdw => mdw !== null)
+const middlewares = [sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware, transactionMiddleware].filter(
+  mdw => mdw !== null
+)
 
 const middleware = applyMiddleware(...middlewares)
 
@@ -193,7 +186,7 @@ window.onbeforeunload = function () {
 store.dispatch(fetchTilesRequest())
 
 function initTestStore(preloadedState = {}) {
-  const testEnhancer = composeEnhancers(applyMiddleware(historyMiddleware, sagasMiddleware, storageMiddleware, transactionMiddleware))
+  const testEnhancer = composeEnhancers(applyMiddleware(sagasMiddleware, storageMiddleware, transactionMiddleware))
   return createStore(rootReducer, preloadedState, testEnhancer)
 }
 export { store, history, initTestStore }

@@ -12,7 +12,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ItemPr
 import ItemProvider from './ItemProvider'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const id = ownProps.id || getItemId(state)
+  const id = ownProps.id || getItemId()
   const items = getItems(state)
   const collections = getCollections(state)
 

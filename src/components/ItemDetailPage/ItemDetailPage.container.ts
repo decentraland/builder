@@ -12,7 +12,7 @@ import ItemDetailPage from './ItemDetailPage'
 import { getIsWearableUtilityEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
-  const itemId = getItemId(state)
+  const itemId = getItemId()
   const item = itemId ? getItem(state, itemId) : null
   const wallet = getWallet(state)!
   const collection = item && item.collectionId ? getCollection(state, item.collectionId) : null

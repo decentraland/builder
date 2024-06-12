@@ -1,7 +1,6 @@
 import PQueue from 'p-queue'
 import { History } from 'history'
 import { Contract, providers } from 'ethers'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
 import { ChainId, Network, Entity, EntityType, WearableCategory } from '@dcl/schemas'
@@ -121,6 +120,7 @@ import { getCollection, getCollections } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { FromParam } from 'modules/location/types'
 import { Collection } from 'modules/collection/types'
+import { ROUTER_LOCATION_CHANGE } from 'modules/location/actions'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
@@ -634,7 +634,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       payload: { id: toastId }
     }: RenderToastAction = yield take(RENDER_TOAST)
     yield put(fetchItemsRequest(address))
-    const location: Location = yield take(LOCATION_CHANGE)
+    const location: Location = yield take(ROUTER_LOCATION_CHANGE)
     if (location.pathname !== locations.collectionDetail(item.collectionId)) {
       yield put(hideToast(toastId))
     }
