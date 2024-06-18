@@ -847,7 +847,7 @@ const _abi = [
     name: "ABIChanged",
     type: "event",
   },
-];
+] as const;
 
 export class ENSResolver__factory {
   static readonly abi = _abi;

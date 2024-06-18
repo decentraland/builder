@@ -1271,7 +1271,7 @@ const _abi = [
     name: "Migrated",
     type: "event",
   },
-];
+] as const;
 
 export class EstateRegistry__factory {
   static readonly abi = _abi;

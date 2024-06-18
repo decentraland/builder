@@ -5,6 +5,7 @@ export { DCLController__factory } from "./DCLController__factory";
 export { DCLRegistrar__factory } from "./DCLRegistrar__factory";
 export { ENS__factory } from "./ENS__factory";
 export { ENSResolver__factory } from "./ENSResolver__factory";
+export { ERC165__factory } from "./ERC165__factory";
 export { ERC20__factory } from "./ERC20__factory";
 export { ERC721CollectionV2__factory } from "./ERC721CollectionV2__factory";
 export { EstateRegistry__factory } from "./EstateRegistry__factory";

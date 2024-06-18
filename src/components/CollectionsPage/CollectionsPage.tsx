@@ -79,7 +79,8 @@ export default function CollectionsPage(props: Props) {
   }, [onOpenModal])
 
   const handleNewThirdPartyCollection = useCallback(() => {
-    onOpenModal('CreateThirdPartyCollectionModal')
+    // onOpenModal('CreateThirdPartyCollectionModal')
+    onOpenModal('CreateLinkedWearablesCollectionModal')
   }, [onOpenModal])
 
   const handleSearchChange = (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
