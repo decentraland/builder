@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { getLocation } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/authorization/selectors'
@@ -18,12 +17,13 @@ import { getCollectionType } from 'modules/collection/utils'
 import { CollectionType } from 'modules/collection/types'
 
 const mapState = (state: RootState): MapStateProps => {
-  const collectionId = getCollectionId(state) || ''
+  const collectionId = getCollectionId() || ''
   const collection = getCollection(state, collectionId)
   const totalItems = getPaginationData(state, collectionId)?.total || null
   const items = collection ? getCollectionItems(state, collection.id) : []
   const paginatedData = (collection && getPaginationData(state, collection.id)) || null
-  const currentPage = Number(getLocation(state).query.page ?? 1)
+  const queryParams = new URLSearchParams(window.location.search)
+  const currentPage = Number(queryParams.get('page') ?? 1)
   return {
     items,
     totalItems,
