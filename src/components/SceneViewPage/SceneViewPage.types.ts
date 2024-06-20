@@ -1,6 +1,5 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
-import { match } from 'react-router'
+import { match, RouteComponentProps } from 'react-router'
 import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 
 import { Project } from 'modules/project/types'
@@ -30,9 +29,8 @@ export type Props = {
   onPreview: () => ReturnType<typeof togglePreview>
   onLikePool: typeof likePoolRequest
   onOpenModal: typeof openModal
-  onBack: () => void
   onLoadProjectScene: (project: Project, type: PreviewType.POOL | PreviewType.PUBLIC) => void
-}
+} & RouteComponentProps
 
 export type MapStateProps = Pick<
   Props,
@@ -40,7 +38,7 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<
   Props,
-  'onLoadProject' | 'onPreview' | 'onLikePool' | 'onOpenModal' | 'onCloseEditor' | 'onBack' | 'onLoadProjectScene'
+  'onLoadProject' | 'onPreview' | 'onLikePool' | 'onOpenModal' | 'onCloseEditor' | 'onLoadProjectScene'
 >
 export type MapDispatch = Dispatch<
   | LoadPublicProjectRequestAction
@@ -48,6 +46,5 @@ export type MapDispatch = Dispatch<
   | LikePoolRequestAction
   | OpenModalAction
   | CloseEditorAction
-  | CallHistoryMethodAction
   | LoadProjectSceneRequestAction
 >
