@@ -23,7 +23,7 @@ export const getTotalPages = createSelector<RootState, DataByKey<Project>, numbe
 
 export const getPage = createSelector<RootState, number, number>(getTotalPages, totalPages => {
   const params = new URLSearchParams(window.location.search)
-  let page = parseInt(params.get('page')!, 10)
+  let page = parseInt(params.get('page') ?? '0', 10)
   if (!page || page < 1) {
     page = 1
   }
