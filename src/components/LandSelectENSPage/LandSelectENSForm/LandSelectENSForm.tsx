@@ -49,7 +49,7 @@ export default class LandSelectENSForm extends React.PureComponent<Props, State>
               <Link className="cancel" to={locations.landDetail(land.id)}>
                 <Button>{t('global.cancel')}</Button>
               </Link>
-              <Link to={`${MARKETPLACE_WEB_URL}/names/mints`}>
+              <Link to={`${MARKETPLACE_WEB_URL}/names/claim`}>
                 <Button primary>{t('land_select_ens_page.claim_new_name')}</Button>
               </Link>
             </Row>
@@ -76,7 +76,7 @@ export default class LandSelectENSForm extends React.PureComponent<Props, State>
                   <T
                     id="land_select_ens_page.click_to_claim_new_name"
                     values={{
-                      click_here: <Link to={`${MARKETPLACE_WEB_URL}/names/mints`}>{t('global.click_here')}</Link>
+                      click_here: <Link to={`${MARKETPLACE_WEB_URL}/names/claim`}>{t('global.click_here')}</Link>
                     }}
                   />
                 )}
