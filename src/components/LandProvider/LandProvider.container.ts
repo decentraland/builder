@@ -11,7 +11,7 @@ import { MapStateProps, OwnProps } from './LandProvider.types'
 import LandProvider from './LandProvider'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const id = ownProps.id || getLandId()
+  const id = ownProps.id || getLandId(state)
   const lands = getLands(state)
   const land = lands.find(land => land.id === id) || null
 

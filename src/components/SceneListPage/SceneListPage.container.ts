@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router'
+import { getLocation, push } from 'connected-react-router'
+import { locations } from 'routing/locations'
 
 import {
   getPoolList,
@@ -22,21 +23,25 @@ import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneListPage.ty
 import SceneListPage from './SceneListPage'
 
 const mapState = (state: RootState): MapStateProps => ({
+  location: getLocation(state),
   pools: getPoolList(state),
   poolGroups: getAllPoolGroups(state),
   total: getTotal(state),
   totalPages: getTotalPages(state),
-  page: getPage(),
-  sortBy: getSortBy(),
-  sortOrder: getSortOrder(),
-  group: getSearchGroup(),
-  ethAddress: getSearchEthAddress(),
+  page: getPage(state),
+  sortBy: getSortBy(state),
+  sortOrder: getSortOrder(state),
+  group: getSearchGroup(state),
+  ethAddress: getSearchEthAddress(state),
   isLoggedIn: isLoggedIn(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onLoadPools: (filters: PoolsRequestFilters) => dispatch(loadPoolsRequest(filters))
+  onLoadPools: (filters: PoolsRequestFilters) => dispatch(loadPoolsRequest(filters)),
+  onPageChange: (filters: PoolsRequestFilters) => dispatch(push(locations.poolSearch(filters))),
+  onNavigateToScenes: () => dispatch(push(locations.scenes())),
+  onNavegateToViewPool: (poolId: string) => dispatch(push(locations.poolView(poolId)))
 })
 
-export default connect(mapState, mapDispatch)(withRouter(SceneListPage))
+export default connect(mapState, mapDispatch)(SceneListPage)

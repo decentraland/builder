@@ -22,8 +22,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   handleBack = () => {
-    const { history } = this.props
-    history.push(locations.curation())
+    this.props.onNavigate(locations.curation())
   }
 
   handleConfirmApprovalModal = (collection: Collection, curation: CollectionCuration | null) => {

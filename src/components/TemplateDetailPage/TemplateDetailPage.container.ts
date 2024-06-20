@@ -12,7 +12,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './TemplateDetailPa
 import TemplateDetailPage from './TemplateDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const templateId = getTemplateId()
+  const templateId = getTemplateId(state)
   const template = templateId && getTemplates(state)[templateId]
   const scene = template ? getScenes(state)[template.sceneId] : null
   return {

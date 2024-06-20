@@ -20,7 +20,6 @@ import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import Back from 'components/Back'
 import { PoolsRequestFilters, SortBy } from 'modules/pool/types'
-import { locations } from 'routing/locations'
 
 import { Props, filterAttributes } from './SceneListPage.types'
 import PoolCard from './PoolCard'
@@ -50,8 +49,8 @@ export default class SceneListPage extends React.PureComponent<Props> {
   }
 
   handleChangeFilters(filters: PoolsRequestFilters) {
-    const { history, onLoadPools } = this.props
-    history.push(locations.poolSearch(filters))
+    const { onPageChange, onLoadPools } = this.props
+    onPageChange(filters)
     onLoadPools(filters)
   }
 
@@ -97,13 +96,8 @@ export default class SceneListPage extends React.PureComponent<Props> {
     }
   }
 
-  handleNavigateToScenes = () => {
-    const { history } = this.props
-    history.push(locations.scenes())
-  }
-
   render() {
-    const { pools, total, totalPages, isLoggedIn } = this.props
+    const { pools, total, totalPages, isLoggedIn, onNavigateToScenes } = this.props
     const filters = this.getFilters()
 
     const paginationProps: Record<string, any> = {
@@ -126,7 +120,7 @@ export default class SceneListPage extends React.PureComponent<Props> {
             <Container>
               <Section className="navigation">
                 <Row>
-                  <Back absolute onClick={this.handleNavigateToScenes}></Back>
+                  <Back absolute onClick={onNavigateToScenes}></Back>
                   <Narrow>
                     <Row>
                       <Column>

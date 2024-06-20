@@ -15,7 +15,7 @@ const mapState = (state: RootState): MapStateProps => ({
   isLoggingIn: isLoggingIn(state) || isConnecting(state),
   isFetching: isFetching(state),
   page: getPage(state),
-  sortBy: getSortBy(),
+  sortBy: getSortBy(state),
   totalPages: getTotalPages(state),
   didCreate: didCreate(state),
   poolList: getPoolList(state)

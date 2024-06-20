@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getLocation } from 'connected-react-router'
 
 import * as routing from 'routing/utils'
 import { RootState } from 'modules/common/types'
@@ -64,31 +65,46 @@ export const isFetching = createSelector(
     isLoadingType(projectLoading, LOAD_POOLS_REQUEST)
 )
 
-export const getSearchGroup = () => {
-  const params = new URLSearchParams(window.location.search)
-  return routing.getValue(params.get('group')) as string | undefined
-}
+export const getSearchGroup = createSelector(
+  (state: RootState) => getLocation(state),
+  location => {
+    const params = new URLSearchParams(location.search)
+    return routing.getValue(params.get('group')) as string | undefined
+  }
+)
 
-export const getSearchEthAddress = () => {
-  const params = new URLSearchParams(location.search)
-  return routing.getValue(params.get('eth_address')) as string | undefined
-}
+export const getSearchEthAddress = createSelector(
+  (state: RootState) => getLocation(state),
+  location => {
+    const params = new URLSearchParams(location.search)
+    return routing.getValue(params.get('eth_address')) as string | undefined
+  }
+)
 
-export const getPage = () => {
-  const params = new URLSearchParams(location.search)
-  return routing.getPage(params.get('page'), 1)
-}
+export const getPage = createSelector(
+  (state: RootState) => getLocation(state),
+  location => {
+    const params = new URLSearchParams(location.search)
+    return routing.getPage(params.get('page'), 1)
+  }
+)
 
-export const getSortBy = () => {
-  const params = new URLSearchParams(location.search)
-  return routing.getSortBy(
-    params.get('sort_by'),
-    [SortBy.NEWEST, SortBy.LIKES, SortBy.NAME, SortBy.SIZE, SortBy.ITEMS, SortBy.SMART_ITEMS],
-    SortBy.NEWEST
-  )
-}
+export const getSortBy = createSelector(
+  (state: RootState) => getLocation(state),
+  location => {
+    const params = new URLSearchParams(location.search)
+    return routing.getSortBy(
+      params.get('sort_by'),
+      [SortBy.NEWEST, SortBy.LIKES, SortBy.NAME, SortBy.SIZE, SortBy.ITEMS, SortBy.SMART_ITEMS],
+      SortBy.NEWEST
+    )
+  }
+)
 
-export const getSortOrder = () => {
-  const params = new URLSearchParams(location.search)
-  return routing.getSortOrder(params.get('sort_order'), 'desc')
-}
+export const getSortOrder = createSelector(
+  (state: RootState) => getLocation(state),
+  location => {
+    const params = new URLSearchParams(location.search)
+    return routing.getSortOrder(params.get('sort_order'), 'desc')
+  }
+)

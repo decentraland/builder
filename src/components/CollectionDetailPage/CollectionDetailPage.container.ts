@@ -12,7 +12,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionDetail
 import CollectionDetailPage from './CollectionDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const collectionId = getCollectionId() || ''
+  const collectionId = getCollectionId(state) || ''
   const collection = getCollection(state, collectionId)
   const statusByCollectionId = getStatusByCollectionId(state)
 
