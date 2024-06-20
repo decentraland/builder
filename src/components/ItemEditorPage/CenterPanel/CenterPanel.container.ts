@@ -37,7 +37,7 @@ import CenterPanel from './CenterPanel'
 const mapState = (state: RootState): MapStateProps => {
   const address = getAddress(state)
   let collection: Collection | undefined
-  const collectionId = getSelectedCollectionId()
+  const collectionId = getSelectedCollectionId(state)
   // Emotes created by the user
   let emotes = getEmotes(state)
   if (collectionId) {

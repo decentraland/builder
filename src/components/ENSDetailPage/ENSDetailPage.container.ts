@@ -12,7 +12,7 @@ import { MapStateProps, MapDispatchProps } from './ENSDetailPage.types'
 import ENSDetailPage from './ENSDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const name = getENSName()
+  const name = getENSName(state)
   return {
     name,
     ens: name ? getENSBySubdomain(state, `${name}.dcl.eth`) : null,

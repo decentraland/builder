@@ -14,7 +14,7 @@ import Header from './Header'
 
 const mapState = (state: RootState): MapStateProps => {
   let collection: Collection | undefined
-  const collectionId = getSelectedCollectionId()
+  const collectionId = getSelectedCollectionId(state)
   if (collectionId) {
     const collections = getCollections(state)
     collection = collections.find(collection => collection.id === collectionId)
@@ -23,7 +23,7 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     address,
     isLoggedIn: isLoggedIn(state),
-    isReviewing: isReviewing(),
+    isReviewing: isReviewing(state),
     collection,
     hasEditRights: collection !== undefined && address !== undefined && hasViewAndEditRights(state, address, collection),
     hasUserOrphanItems: hasUserOrphanItems(state)

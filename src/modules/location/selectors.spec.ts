@@ -7,34 +7,36 @@ import { getCollectionId, getSelectedItemId, getTemplateId, getENSName } from '.
 
 jest.mock('decentraland-dapps/dist/modules/wallet/selectors')
 
-const originalLocation = window.location
-
-beforeAll(() => {
-  window.location = {
-    ...originalLocation
-  }
-})
-
-afterAll(() => {
-  window.location = originalLocation
-})
-
 describe('when getting the collection id from the current url', () => {
   describe('when the collection is standard', () => {
     it('should return the collection id section of the url', () => {
       const collectionId = 'some-standard-collection-id'
-      window.location.pathname = locations.collectionDetail(collectionId)
+      const mockState = {
+        router: {
+          action: 'POP',
+          location: {
+            pathname: locations.collectionDetail(collectionId)
+          }
+        }
+      } as unknown
 
-      expect(getCollectionId()).toEqual(collectionId)
+      expect(getCollectionId(mockState as RootState)).toEqual(collectionId)
     })
   })
 
   describe('when the collection is third party', () => {
     it('should return the collection id section of the url', () => {
       const collectionId = 'some-thirdparty-collection-id'
-      window.location.pathname = locations.thirdPartyCollectionDetail(collectionId)
+      const mockState = {
+        router: {
+          action: 'POP',
+          location: {
+            pathname: locations.thirdPartyCollectionDetail(collectionId)
+          }
+        }
+      } as unknown
 
-      expect(getCollectionId()).toEqual(collectionId)
+      expect(getCollectionId(mockState as RootState)).toEqual(collectionId)
     })
   })
 })
@@ -42,35 +44,52 @@ describe('when getting the collection id from the current url', () => {
 describe('when getting the template id from the current url', () => {
   it('should return the template id section of the url', () => {
     const templateId = 'some-template-id'
-    window.location.pathname = locations.templateDetail(templateId)
+    const mockState = {
+      router: {
+        action: 'POP',
+        location: {
+          pathname: locations.templateDetail(templateId)
+        }
+      }
+    } as unknown
 
-    expect(getTemplateId()).toEqual(templateId)
+    expect(getTemplateId(mockState as RootState)).toEqual(templateId)
   })
 })
 
 describe('when getting the selected item id using the current url', () => {
   describe('and the url contains the item id', () => {
-    let itemId: string
-    beforeEach(() => {
-      itemId = 'some-item-id'
-      window.location.pathname = locations.itemEditor({ itemId })
-      window.location.search = `?item=${itemId}`
-    })
+    const itemId = 'some-item-id'
+    const mockState = {
+      router: {
+        action: 'POP',
+        location: {
+          pathname: locations.itemEditor({ itemId }),
+          search: {
+            item: itemId
+          }
+        }
+      }
+    } as unknown as RootState
 
     it('should return the item id of the url', () => {
-      expect(getSelectedItemId({} as unknown as RootState)).toEqual(itemId)
+      expect(getSelectedItemId(mockState)).toEqual(itemId)
     })
   })
 
   describe('and the url does not contain the item id', () => {
     describe('and the collection id is not in the url either', () => {
-      beforeEach(() => {
-        window.location.pathname = locations.itemEditor({})
-        window.location.search = ''
-      })
+      const mockState = {
+        router: {
+          action: 'POP',
+          location: {
+            pathname: locations.itemEditor({})
+          }
+        }
+      } as unknown as RootState
+
       it('should return null', () => {
-        console.log(window.location.pathname)
-        expect(getSelectedItemId({} as unknown as RootState)).toEqual(null)
+        expect(getSelectedItemId(mockState)).toEqual(null)
       })
     })
 
@@ -93,14 +112,22 @@ describe('when getting the selected item id using the current url', () => {
           collectionId
         } as Item
 
-        window.location.pathname = locations.itemEditor({ collectionId, isReviewing: 'true' })
-        window.location.search = `?collection=${collectionId}&reviewing=true`
         mockState = {
           collection: {
             data: {}
           },
           item: {
             data: {}
+          },
+          router: {
+            action: 'POP',
+            location: {
+              pathname: locations.itemEditor({ collectionId, isReviewing: 'true' }),
+              search: {
+                collection: collectionId,
+                reviewing: 'true'
+              }
+            }
           }
         } as unknown as RootState
         ;(getData as jest.MockedFunction<typeof getData>).mockReturnValueOnce({ address: 'some-address' } as Wallet)
@@ -301,8 +328,15 @@ describe('when getting the selected item id using the current url', () => {
 describe('when getting the name from the current url', () => {
   it('should return the name section of the url', () => {
     const name = 'test'
-    window.location.pathname = locations.ensDetail(name)
+    const mockState = {
+      router: {
+        action: 'POP',
+        location: {
+          pathname: locations.ensDetail(name)
+        }
+      }
+    } as unknown
 
-    expect(getENSName()).toEqual(name)
+    expect(getENSName(mockState as RootState)).toEqual(name)
   })
 })

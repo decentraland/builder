@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getLandId } from 'modules/location/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -10,7 +10,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './LandDetailPage.t
 import LandDetailPage from './LandDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const landId = getLandId() || ''
+  const landId = getLandId(state) || ''
   return {
     ensList: getENSForLand(state, landId),
     parcelsAvailableToBuildEstates: getParcelsAvailableToBuildEstates(state),
@@ -21,7 +21,9 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onNavigate: path => dispatch(push(path)),
+  onReplace: path => dispatch(replace(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
-export default connect(mapState, mapDispatch)(withRouter(LandDetailPage))
+export default connect(mapState, mapDispatch)(LandDetailPage)
