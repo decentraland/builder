@@ -14,18 +14,19 @@ import {
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { getSigner } from 'decentraland-dapps/dist/lib'
 import { Props } from './CreateLinkedWearablesCollectionModal.types'
-import { Signer } from 'ethers'
+import { providers } from 'ethers'
 import { buildThirdPartyURN, decodeURN } from 'lib/urn'
 import uuid from 'uuid'
 import { ERC165__factory } from 'contracts/factories'
 import { isValid } from 'lib/address'
+import { Network } from '@dcl/schemas'
 
 export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) => {
   const { name, thirdParties, onClose, isCreatingCollection, error, ownerAddress, onSubmit } = props
   const [collectionName, setCollectionName] = useState('')
-  const [contractAddress, setContractAddress] = useState('')
+  const [contractAddress, setContractAddress] = useState<string>()
+  const [contractNetwork, setContractNetwork] = useState<Network>(Network.ETHEREUM)
   const [contractValidationError, setContractValidationError] = useState<string>()
   const [isCheckingContract, setIsCheckingContract] = useState(false)
   const [thirdPartyId, setThirdPartyId] = useState('')
@@ -51,16 +52,19 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
   )
 
   const validateContractAddress = useCallback(
-    debounce(async (contractAddress: string) => {
+    debounce(async (contractAddress: string, network: Network) => {
       if (!isValid(contractAddress)) {
         setContractValidationError('Invalid contract address')
         return
       }
       setIsCheckingContract(true)
       setContractValidationError(undefined)
-      console.log('Launching debounced function', contractAddress)
-      const signer: Signer = await getSigner()
-      const erc165Contract = ERC165__factory.connect(contractAddress, signer)
+      console.log('Launching debounced function', contractAddress, network)
+      const rpcProviderUrl = network === Network.MATIC ? 'https://rpc.decentraland.org/polygon' : 'https://rpc.decentraland.org/mainnet'
+      console.log('RPC provider URL', rpcProviderUrl)
+      const jsonRpcProvider = new providers.JsonRpcProvider(rpcProviderUrl)
+      const erc165Contract = ERC165__factory.connect(contractAddress, jsonRpcProvider)
+
       const Erc721InterfaceId = '0x01ffc9a7'
       const Erc1155InterfaceId = '0xd9b67a26'
       try {
@@ -70,7 +74,9 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
         ])
         console.log('Supports interface', supportsInterfaces)
         if (!supportsInterfaces.some(supportsInterface => supportsInterface)) {
-          setContractValidationError('The contract is not based on the ERC721 or ERC1155 standard')
+          setContractValidationError(
+            'The contract is not based on the ERC721 or the ERC1155 standard. Please, check if the network or the contract address is correct.'
+          )
         }
       } catch (error) {
         setContractValidationError('There was an error checking the contract. Please try again later.')
@@ -86,9 +92,16 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
     (_: SyntheticEvent, data: InputOnChangeData) => {
       console.log('Handling contract address change')
       setContractAddress(data.value)
-      return validateContractAddress(data.value)
+      return validateContractAddress(data.value, contractNetwork)
     },
-    [validateContractAddress, setContractAddress]
+    [validateContractAddress, setContractAddress, contractNetwork]
+  )
+
+  const handleNetworkChange = useCallback(
+    (_: SyntheticEvent, data: DropdownProps) => {
+      setContractNetwork(data.value as Network)
+    },
+    [setContractNetwork]
   )
 
   const handleSubmit = useCallback(() => {
@@ -118,6 +131,13 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
 
   const isNotSubmittable = Boolean(!collectionName || isCreatingCollection || isCheckingContract || contractValidationError)
   const isLoading = isCreatingCollection || isCheckingContract
+  const networkOptions = useMemo(
+    () => [
+      { value: Network.ETHEREUM, text: 'Ethereum' },
+      { value: Network.MATIC, text: 'Polygon' }
+    ],
+    []
+  )
 
   return (
     <Modal name={name} onClose={onClose} size="tiny">
@@ -143,6 +163,13 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
             maxLength={TP_COLLECTION_NAME_MAX_LENGTH}
             onChange={handleNameChange}
             disabled={isLoading}
+          />
+          <SelectField
+            label={'Network'}
+            options={networkOptions}
+            onChange={handleNetworkChange}
+            disabled={isLoading}
+            value={contractNetwork}
           />
           <Field
             label="Linked Contract Address"
