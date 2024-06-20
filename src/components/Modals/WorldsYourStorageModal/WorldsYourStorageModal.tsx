@@ -131,7 +131,7 @@ export default class WorldsYourStorageModal extends React.PureComponent<Props, S
             <div>
               <Button
                 as="a"
-                to={`${MARKETPLACE_WEB_URL}/names/mints`}
+                to={`${MARKETPLACE_WEB_URL}/names/claim`}
                 primary
                 target="_blank"
                 rel="noopener noreferrer"
