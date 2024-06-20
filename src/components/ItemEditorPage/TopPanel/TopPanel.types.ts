@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { ChainId } from '@dcl/schemas'
+import { RouteComponentProps } from 'react-router-dom'
 import {
   initiateApprovalFlow,
   InitiateApprovalFlowAction,
@@ -36,12 +36,11 @@ export type Props = {
   isCommitteeMember: boolean
   hasCollectionMissingEntities: boolean
   selectedCollectionId: string | null
-  onNavigate: (path: string) => void
   onInitiateApprovalFlow: typeof initiateApprovalFlow
   onInitiateTPApprovalFlow: typeof initiateTPApprovalFlow
   onSetAssignee: typeof setCollectionCurationAssigneeRequest
   onDeployMissingEntities: typeof deployMissingEntitiesRequest
-}
+} & RouteComponentProps
 
 export type State = {
   currentVeredict?: boolean
@@ -77,11 +76,10 @@ export type MapStateProps = Pick<
 
 export type MapDispatchProps = Pick<
   Props,
-  'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow' | 'onSetAssignee' | 'onDeployMissingEntities'
+  'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow' | 'onSetAssignee' | 'onDeployMissingEntities'
 >
 
 export type MapDispatch = Dispatch<
-  | CallHistoryMethodAction
   | InitiateApprovalFlowAction
   | InitiateTPApprovalFlowAction
   | SetCollectionCurationAssigneeRequestAction

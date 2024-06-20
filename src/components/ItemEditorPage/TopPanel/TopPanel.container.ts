@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import { getAddress, getChainId, getLoading, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
+import { withRouter } from 'react-router-dom'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 import { setCollectionCurationAssigneeRequest } from 'modules/curations/collectionCuration/actions'
@@ -57,11 +57,10 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onSetAssignee: (collectionId, assignee, curation) => dispatch(setCollectionCurationAssigneeRequest(collectionId, assignee, curation)),
   onInitiateTPApprovalFlow: collection => dispatch(initiateTPApprovalFlow(collection)),
   onInitiateApprovalFlow: collection => dispatch(initiateApprovalFlow(collection)),
   onDeployMissingEntities: collection => dispatch(deployMissingEntitiesRequest(collection))
 })
 
-export default connect(mapState, mapDispatch)(TopPanel)
+export default connect(mapState, mapDispatch)(withRouter(TopPanel))

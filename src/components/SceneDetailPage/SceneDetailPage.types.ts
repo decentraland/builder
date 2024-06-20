@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -19,7 +18,6 @@ export type Props = {
   isLoading: boolean
   isLoadingDeployments: boolean
   scene: Scene | null
-  onNavigate: (path: string) => void
   onOpenModal: typeof openModal
   onDelete: typeof deleteProject
   onDuplicate: typeof duplicateProjectRequest
@@ -27,7 +25,5 @@ export type Props = {
 }
 
 export type MapStateProps = Pick<Props, 'project' | 'deployments' | 'isLoading' | 'isLoadingDeployments' | 'scene'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onDelete' | 'onDuplicate' | 'onOpenModal' | 'onLoadProjectScene'>
-export type MapDispatch = Dispatch<
-  CallHistoryMethodAction | DeleteProjectAction | DuplicateProjectRequestAction | OpenModalAction | LoadProjectSceneRequestAction
->
+export type MapDispatchProps = Pick<Props, 'onDelete' | 'onDuplicate' | 'onOpenModal' | 'onLoadProjectScene'>
+export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectRequestAction | OpenModalAction | LoadProjectSceneRequestAction>

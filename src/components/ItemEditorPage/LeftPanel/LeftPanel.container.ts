@@ -21,7 +21,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './LeftPanel.types'
 import LeftPanel from './LeftPanel'
 
 const mapState = (state: RootState): MapStateProps => {
-  const selectedCollectionId = getSelectedCollectionId(state)
+  const selectedCollectionId = getSelectedCollectionId()
   const address = getAddress(state)
   const itemsPaginationData = selectedCollectionId
     ? getPaginationData(state, selectedCollectionId)
@@ -49,7 +49,7 @@ const mapState = (state: RootState): MapStateProps => {
     visibleItems: getVisibleItems(state),
     bodyShape: getBodyShape(state),
     wearableController: getWearablePreviewController(state),
-    isReviewing: isReviewing(state),
+    isReviewing: isReviewing(),
     isLoading: isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) || isLoadingType(getLoading(state), FETCH_ORPHAN_ITEM_REQUEST),
     isPlayingEmote: isPlayingEmote(state),
     hasUserOrphanItems: hasUserOrphanItems(state)
