@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, FC, SyntheticEvent } from 'react'
+// import slug from 'slug'
 import { Collection, TP_COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
-import { debounce } from 'lib/debounce'
 import {
   ModalNavigation,
   Button,
@@ -10,30 +10,52 @@ import {
   ModalActions,
   SelectField,
   InputOnChangeData,
-  DropdownProps
+  DropdownProps,
+  Dropdown
 } from 'decentraland-ui'
+import uuid from 'uuid'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+// import { LinkedContract, ThirdPartyVersion } from 'modules/thirdParty/types'
+import { ThirdPartyVersion } from 'modules/thirdParty/types'
+import { buildThirdPartyURN, buildThirdPartyV2URN, decodeURN } from 'lib/urn'
 import { Props } from './CreateLinkedWearablesCollectionModal.types'
-import { providers } from 'ethers'
-import { buildThirdPartyURN, decodeURN } from 'lib/urn'
-import uuid from 'uuid'
-import { ERC165__factory } from 'contracts/factories'
-import { isValid } from 'lib/address'
-import { Network } from '@dcl/schemas'
+import ethereumSvg from '../../../icons/ethereum.svg'
+import { getThirdPartyVersion } from 'modules/thirdParty/utils'
+
+// const noLinkedContractsOptions = [{ text: 'No linked contracts', value: undefined }]
 
 export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) => {
   const { name, thirdParties, onClose, isCreatingCollection, error, ownerAddress, onSubmit } = props
   const [collectionName, setCollectionName] = useState('')
-  const [contractAddress, setContractAddress] = useState<string>()
-  const [contractNetwork, setContractNetwork] = useState<Network>(Network.ETHEREUM)
-  const [contractValidationError, setContractValidationError] = useState<string>()
-  const [isCheckingContract, setIsCheckingContract] = useState(false)
-  const [thirdPartyId, setThirdPartyId] = useState('')
+  const [linkedContractIndex, setLinkedContractIndex] = useState<number>()
+  // const [urnSuffix, setUrnSuffix] = useState('')
+  // const [contractAddress, setContractAddress] = useState<string>()
+  // const [contractNetwork, setContractNetwork] = useState<Network>(Network.ETHEREUM)
+  // const [contractValidationError, setContractValidationError] = useState<string>()
+  // const [isCheckingContract, setIsCheckingContract] = useState(false)
+  const [thirdPartyId, setThirdPartyId] = useState(thirdParties[0].id)
 
   const selectedThirdParty = useMemo(() => {
     return thirdParties.find(thirdParty => thirdParty.id === thirdPartyId) || thirdParties[0]
   }, [thirdParties, thirdPartyId])
+  const selectedThirdPartyVersion = useMemo(
+    () => (selectedThirdParty ? getThirdPartyVersion(selectedThirdParty) : undefined),
+    [selectedThirdParty]
+  )
+  const selectedLinkedContract = useMemo(
+    () => (linkedContractIndex && selectedThirdParty ? selectedThirdParty.contracts[linkedContractIndex] : undefined),
+    [selectedThirdParty]
+  )
+  const linkedCollectionOptions = useMemo(
+    () =>
+      selectedThirdParty?.contracts.map((contract, index) => ({
+        text: contract.address,
+        value: index,
+        image: { avatar: false, src: ethereumSvg }
+      })),
+    [selectedThirdParty]
+  )
 
   const handleNameChange = useCallback(
     (_: SyntheticEvent, data: InputOnChangeData) => {
@@ -45,99 +67,68 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
   const handleThirdPartyChange = useCallback(
     (_: React.SyntheticEvent, data: DropdownProps) => {
       if (data.value) {
+        setLinkedContractIndex(undefined)
         setThirdPartyId(data.value.toString())
       }
     },
     [setThirdPartyId]
   )
 
-  const validateContractAddress = useCallback(
-    debounce(async (contractAddress: string, network: Network) => {
-      if (!isValid(contractAddress)) {
-        setContractValidationError('Invalid contract address')
-        return
-      }
-      setIsCheckingContract(true)
-      setContractValidationError(undefined)
-      console.log('Launching debounced function', contractAddress, network)
-      const rpcProviderUrl = network === Network.MATIC ? 'https://rpc.decentraland.org/polygon' : 'https://rpc.decentraland.org/mainnet'
-      console.log('RPC provider URL', rpcProviderUrl)
-      const jsonRpcProvider = new providers.JsonRpcProvider(rpcProviderUrl)
-      const erc165Contract = ERC165__factory.connect(contractAddress, jsonRpcProvider)
-
-      const Erc721InterfaceId = '0x01ffc9a7'
-      const Erc1155InterfaceId = '0xd9b67a26'
-      try {
-        const supportsInterfaces = await Promise.all([
-          erc165Contract.supportsInterface(Erc721InterfaceId),
-          erc165Contract.supportsInterface(Erc1155InterfaceId)
-        ])
-        console.log('Supports interface', supportsInterfaces)
-        if (!supportsInterfaces.some(supportsInterface => supportsInterface)) {
-          setContractValidationError(
-            'The contract is not based on the ERC721 or the ERC1155 standard. Please, check if the network or the contract address is correct.'
-          )
-        }
-      } catch (error) {
-        setContractValidationError('There was an error checking the contract. Please try again later.')
-        console.error(error)
-      } finally {
-        setIsCheckingContract(false)
-      }
-    }, 400),
-    []
+  const handleLinkedContractChange = useCallback(
+    (_: SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => setLinkedContractIndex(data.value as number),
+    [selectedThirdParty]
   )
 
-  const handleContractAddressChange = useCallback(
-    (_: SyntheticEvent, data: InputOnChangeData) => {
-      console.log('Handling contract address change')
-      setContractAddress(data.value)
-      return validateContractAddress(data.value, contractNetwork)
-    },
-    [validateContractAddress, setContractAddress, contractNetwork]
-  )
-
-  const handleNetworkChange = useCallback(
-    (_: SyntheticEvent, data: DropdownProps) => {
-      setContractNetwork(data.value as Network)
-    },
-    [setContractNetwork]
-  )
+  // const handleUrnSuffixChange = useCallback((_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+  //   // this.setState({ urnSuffix: slug(data.value), isTypedUrnSuffix: !!data.value })
+  // }, [])
 
   const handleSubmit = useCallback(() => {
-    // const { address, onSubmit } = this.props
-    // const { collectionName, urnSuffix } = this.state
+    if (getThirdPartyVersion(selectedThirdParty) === ThirdPartyVersion.V2) {
+      if (collectionName && selectedLinkedContract && ownerAddress) {
+        const now = Date.now()
+        const decodedURN = decodeURN(selectedThirdParty.id)
 
-    if (collectionName && contractAddress && ownerAddress) {
-      const now = Date.now()
-      const decodedURN = decodeURN(selectedThirdParty.id)
-
-      const collection: Collection = {
-        id: uuid.v4(),
-        name: collectionName,
-        owner: ownerAddress,
-        urn: buildThirdPartyURN(decodedURN.suffix, contractAddress),
-        isPublished: false,
-        isApproved: false,
-        minters: [],
-        managers: [],
-        createdAt: now,
-        updatedAt: now
+        const collection: Collection = {
+          id: uuid.v4(),
+          name: collectionName,
+          owner: ownerAddress,
+          urn: buildThirdPartyV2URN(decodedURN.suffix, selectedThirdParty.contracts[0].network, selectedThirdParty.contracts[0].address),
+          isPublished: false,
+          isApproved: false,
+          minters: [],
+          managers: [],
+          createdAt: now,
+          updatedAt: now
+        }
+        onSubmit(collection)
       }
-      onSubmit(collection)
-    }
-    // this.analytics.track('Create TP Collection', { collectionId: collection.id })
-  }, [onSubmit, collectionName, contractAddress, selectedThirdParty.id, ownerAddress])
+    } else {
+      if (collectionName && ownerAddress) {
+        const now = Date.now()
+        const decodedURN = decodeURN(selectedThirdParty.id)
 
-  const isNotSubmittable = Boolean(!collectionName || isCreatingCollection || isCheckingContract || contractValidationError)
-  const isLoading = isCreatingCollection || isCheckingContract
-  const networkOptions = useMemo(
-    () => [
-      { value: Network.ETHEREUM, text: 'Ethereum' },
-      { value: Network.MATIC, text: 'Polygon' }
-    ],
-    []
-  )
+        const collection: Collection = {
+          id: uuid.v4(),
+          name: collectionName,
+          owner: ownerAddress,
+          urn: buildThirdPartyURN(decodedURN.suffix, 'collectionId'),
+          isPublished: false,
+          isApproved: false,
+          minters: [],
+          managers: [],
+          createdAt: now,
+          updatedAt: now
+        }
+        onSubmit(collection)
+      }
+    }
+
+    // this.analytics.track('Create TP Collection', { collectionId: collection.id })
+  }, [onSubmit, collectionName, selectedThirdPartyVersion, selectedThirdParty, selectedLinkedContract, ownerAddress])
+
+  const isNotSubmittable = Boolean(!collectionName || isCreatingCollection)
+  const isLoading = isCreatingCollection
 
   return (
     <Modal name={name} onClose={onClose} size="tiny">
@@ -164,7 +155,37 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
             onChange={handleNameChange}
             disabled={isLoading}
           />
-          <SelectField
+          {selectedThirdPartyVersion === ThirdPartyVersion.V2 ? (
+            <>
+              <Dropdown
+                options={linkedCollectionOptions}
+                disabled={linkedCollectionOptions.length === 0}
+                value={0}
+                onChange={handleLinkedContractChange}
+              />
+              {/* <SelectField
+                label="Linked contract"
+                disabled={selectedThirdParty.contracts.length === 0}
+                value={linkedContractIndex}
+                options={linkedCollectionOptions}
+                // value={selectedThirdParty.contracts.length === 0 ? undefined : selectedLinkedContract}
+                // options={selectedThirdParty.contracts.length === 0 ? noLinkedContractsOptions : linkedCollectionOptions}
+                onChange={handleLinkedContractChange}
+              /> */}
+              {selectedThirdParty.contracts.length === 0 && <span>There's no collection available :S</span>}
+            </>
+          ) : (
+            <span>Some value here</span>
+            // <Field
+            //   label={t('create_third_party_collection_modal.urn_suffix_field.label')}
+            //   placeholder="0x..."
+            //   message={t('create_third_party_collection_modal.urn_suffix_field.message')}
+            //   value={urnSuffix}
+            //   onChange={handleUrnSuffixChange}
+            // />
+          )}
+
+          {/* <SelectField
             label={'Network'}
             options={networkOptions}
             onChange={handleNetworkChange}
@@ -181,7 +202,7 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
             onChange={handleContractAddressChange}
             disabled={isLoading}
             error={!!contractValidationError}
-          />
+          /> */}
           {error ? <small className="danger-text">{error}</small> : null}
         </ModalContent>
         <ModalActions>

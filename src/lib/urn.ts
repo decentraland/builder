@@ -19,6 +19,7 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
  *       base-avatars|
  *       collections-v2|
  *       collections-thirdparty|
+ *       collections-linked-wearables|
  *       entity
  *     ):
  *     (?<suffix>
@@ -28,19 +29,27 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
  *          (?<thirdPartyName>[^:|\\s]+)
  *          (:(?<thirdPartyCollectionId>[^:|\\s]+))?
  *          (:(?<thirdPartyTokenId>[^:|\\s]+))?
- *       )
+ *       )|
+ *       ((?<=collections-linked-wearables:)
+ *          (?<thirdPartyLinkedCollectionName>[^:|\\s]+)
+ *          (:?<linkedCollectionNetwork>mainnet|sepolia|matic|amoy)
+ *          (:?<linkedCollectionContractAddress>0x[a-fA-F0-9]{40})?
+ *          (:(?<linkedCollectionTokenId>[^:|\\s]+))?)
  *       ((?<=entity:)(?<entityId>[^:|\\s]+)?\\?=\\&baseUrl=(?<baseUrl>https:[^=\\s]+)?)
  *     )
  *   )
  */
 const baseMatcher = 'urn:decentraland'
 const protocolMatcher = '(?<protocol>mainnet|goerli|sepolia|matic|mumbai|amoy|off-chain)'
-const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty|entity)'
+const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty|collections-linked-wearables|entity)'
 
 const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
 const collectionsSuffixMatcher = '((?<=collections-v2:)(?<collectionAddress>0x[a-fA-F0-9]{40}))(:(?<tokenId>[^:|\\s]+))?'
-const thirdPartySuffixMatcher =
-  '((?<=collections-thirdparty:)(?<thirdPartyName>[^:|\\s]+)(:(?<thirdPartyCollectionId>[^:|\\s]+))?(:(?<thirdPartyTokenId>[^:|\\s]+))?)'
+const thirdPartySuffixMatcher = '((?<=collections-thirdparty:)(?<thirdPartyName>[^:|\\s]+)(:(?<thirdPartyCollectionId>[^:|\\s]+))?)'
+const thirdPartyV2SuffixMatcher =
+  '((?<=collections-linked-wearables:)(?<thirdPartyLinkedCollectionName>[^:|\\s]+)(:(?<linkedCollectionNetwork>mainnet|sepolia|matic|amoy):(?<linkedCollectionContractAddress>0x[a-fA-F0-9]{40}))?)'
+const thirdPartyMatchers = `(:?${thirdPartySuffixMatcher}|${thirdPartyV2SuffixMatcher})(:(?<thirdPartyTokenId>[^:|\\s]+))?`
+
 const entitySuffixMatcher = '((?<=entity:)(?<entityId>[^\\?|\\s]+)(\\?=\\&baseUrl=(?<baseUrl>[^\\?|\\s]+))?)'
 
 export enum URNProtocol {
@@ -52,10 +61,17 @@ export enum URNProtocol {
   AMOY = 'amoy',
   OFF_CHAIN = 'off-chain'
 }
+export enum LinkedContractProtocol {
+  MAINNET = 'mainnet',
+  SEPOLIA = 'sepolia',
+  MATIC = 'matic',
+  AMOY = 'amoy'
+}
 export enum URNType {
   BASE_AVATARS = 'base-avatars',
   COLLECTIONS_V2 = 'collections-v2',
   COLLECTIONS_THIRDPARTY = 'collections-thirdparty',
+  COLLECTIONS_THIRDPARTY_V2 = 'collections-linked-wearables',
   ENTITY = 'entity'
 }
 export type URN = string
@@ -72,20 +88,44 @@ type CollectionThirdPartyURN = {
   thirdPartyCollectionId?: string
   thirdPartyTokenId?: string
 }
+type CollectionThirdPartyV2URN = {
+  type: URNType.COLLECTIONS_THIRDPARTY_V2
+  thirdPartyLinkedCollectionName: string
+  linkedCollectionNetwork: LinkedContractProtocol
+  linkedCollectionContractAddress: string
+  thirdPartyTokenId?: string
+}
 type EntityURN = { type: URNType.ENTITY; entityId: string; baseUrl?: string }
 export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
   (T extends URNType.BASE_AVATARS
     ? BaseAvatarURN
     : T extends URNType.COLLECTIONS_V2
     ? CollectionsV2URN
+    : T extends URNType.COLLECTIONS_THIRDPARTY_V2
+    ? CollectionThirdPartyV2URN
     : T extends URNType.COLLECTIONS_THIRDPARTY
     ? CollectionThirdPartyURN
     : T extends URNType.ENTITY
     ? EntityURN
-    : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN | EntityURN)
+    : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN | CollectionThirdPartyV2URN | EntityURN)
 
 export function buildThirdPartyURN(thirdPartyName: string, collectionId: string, tokenId?: string) {
   let urn = `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-thirdparty:${thirdPartyName}:${collectionId}`
+  if (tokenId) {
+    urn += `:${tokenId}`
+  }
+  return urn
+}
+
+export function buildThirdPartyV2URN(
+  thirdPartyName: string,
+  thirdPartyLinkedContractNetwork: LinkedContractProtocol,
+  thirdPartyLinkedContractAddress: string,
+  tokenId?: string
+) {
+  let urn = `urn:decentraland:${getNetworkURNProtocol(
+    Network.MATIC
+  )}:collections-linked-wearables:${thirdPartyName}:${thirdPartyLinkedContractNetwork}:${thirdPartyLinkedContractAddress}`
   if (tokenId) {
     urn += `:${tokenId}`
   }
@@ -111,12 +151,16 @@ export function extractThirdPartyId(urn: URN): string {
 
 export function extractThirdPartyTokenId(urn: URN) {
   const decodedURN = decodeURN(urn)
-  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
-    throw new Error(`Tried to build a third party token for a non third party URN "${urn}"`)
+
+  if (decodedURN.type === URNType.COLLECTIONS_THIRDPARTY) {
+    const { thirdPartyCollectionId, thirdPartyTokenId } = decodedURN
+    return `${thirdPartyCollectionId ?? ''}:${thirdPartyTokenId ?? ''}`
+  } else if (decodedURN.type === URNType.COLLECTIONS_THIRDPARTY_V2) {
+    const { linkedCollectionNetwork, linkedCollectionContractAddress, thirdPartyTokenId } = decodedURN
+    return `${linkedCollectionNetwork}:${linkedCollectionContractAddress}:${thirdPartyTokenId ?? ''}`
   }
 
-  const { thirdPartyCollectionId, thirdPartyTokenId } = decodedURN
-  return `${thirdPartyCollectionId ?? ''}:${thirdPartyTokenId ?? ''}`
+  throw new Error(`Tried to build a third party token for a non third party URN "${urn}"`)
 }
 
 // TODO: This logic is repeated in collection/util's `getCollectionType`, but being used only for items (item.urn).
@@ -127,7 +171,7 @@ export function isThirdParty(urn?: string) {
   }
 
   const decodedURN = decodeURN(urn)
-  return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
+  return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY || decodedURN.type === URNType.COLLECTIONS_THIRDPARTY_V2
 }
 
 export function extractEntityId(urn: URN): string {
@@ -141,7 +185,7 @@ export function extractEntityId(urn: URN): string {
 
 export function decodeURN(urn: URN): DecodedURN {
   const urnRegExp = new RegExp(
-    `${baseMatcher}:(${protocolMatcher}:)?${typeMatcher}:(?<suffix>${baseAvatarsSuffixMatcher}|${collectionsSuffixMatcher}|${thirdPartySuffixMatcher}|${entitySuffixMatcher})`
+    `${baseMatcher}:(${protocolMatcher}:)?${typeMatcher}:(?<suffix>${baseAvatarsSuffixMatcher}|${collectionsSuffixMatcher}|${thirdPartyMatchers}|${entitySuffixMatcher})`
   )
   const matches = urnRegExp.exec(urn)
 
