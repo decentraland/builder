@@ -60,7 +60,7 @@ const WorldListPage: React.FC<Props> = props => {
   const handleClaimENS = useCallback(() => {
     if (tab === TabType.DCL) {
       track(PAGE_ACTION_EVENT, { action: 'Click Claim NAME' })
-      window.open(`${MARKETPLACE_WEB_URL}/names/mint`, '_blank', 'noopener,noreferrer')
+      window.open(`${MARKETPLACE_WEB_URL}/names/claim`, '_blank', 'noopener,noreferrer')
     } else {
       track(PAGE_ACTION_EVENT, { action: 'Click Claim ENS Domain' })
       window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer')

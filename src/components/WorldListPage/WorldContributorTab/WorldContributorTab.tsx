@@ -52,7 +52,7 @@ export default function WorldContributorTab({ items, deploymentsByWorlds, projec
         <div className="empty-description">
           {t('worlds_list_page.empty_contributor_list.description', { b: (text: string) => <b>{text}</b> })}
         </div>
-        <Button as="a" href={`${config.get('MARKETPLACE_WEB_URL')}/names/mint`} target="_blank" className="empty-action" primary>
+        <Button as="a" href={`${config.get('MARKETPLACE_WEB_URL')}/names/claim`} target="_blank" className="empty-action" primary>
           {t('worlds_list_page.empty_list.cta')}
         </Button>
       </Empty>
