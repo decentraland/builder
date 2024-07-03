@@ -221,7 +221,7 @@
     },
     "name_field": {
       "label": "姓名",
-      "message": "名称最多可以是 {maxLength} 个字符"
+      "message": "集合名称不能包含“:”字符"
     },
     "urn_suffix_field": {
       "label": "Id",

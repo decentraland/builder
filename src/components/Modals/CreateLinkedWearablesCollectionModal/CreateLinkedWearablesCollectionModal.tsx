@@ -58,6 +58,7 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
       })),
     [selectedThirdParty, imgSrcByNetwork]
   )
+  const isCollectionNameInvalid = useMemo(() => collectionName.includes(':'), [collectionName])
 
   const handleNameChange = useCallback(
     (_: SyntheticEvent, data: InputOnChangeData) => {
@@ -129,6 +130,7 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
   const isSubmittable =
     collectionName &&
     ownerAddress &&
+    !isCollectionNameInvalid &&
     ((selectedThirdPartyVersion === ThirdPartyVersion.V2 && linkedContract) ||
       (selectedThirdPartyVersion === ThirdPartyVersion.V1 && collectionId)) &&
     !isCreatingCollection
@@ -170,6 +172,8 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
             value={collectionName}
             maxLength={TP_COLLECTION_NAME_MAX_LENGTH}
             onChange={handleNameChange}
+            error={isCollectionNameInvalid}
+            message={isCollectionNameInvalid ? t('create_linked_wearable_collection_modal.name_field.message') : ''}
             disabled={isLoading}
           />
           {selectedThirdPartyVersion === ThirdPartyVersion.V1 && (

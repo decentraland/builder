@@ -211,7 +211,8 @@
       "message": "No tienes contratos disponibles. Ponte en contacto con un DAO committee para agregar uno."
     },
     "name_field": {
-      "label": "Nombre"
+      "label": "Nombre",
+      "message": "El nombre de la colección no puede contener el caracter ':'."
     },
     "collection_id_field": {
       "label": "Id",

@@ -208,7 +208,8 @@
       "message": "No contracts available. Ask the DAO committee to to add one."
     },
     "name_field": {
-      "label": "Name"
+      "label": "Name",
+      "message": "The collection name can't contain the ':' character."
     },
     "collection_id_field": {
       "label": "Id",
