@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { Item } from 'modules/item/types'
+import { Item, ItemType } from 'modules/item/types'
 import {
   saveItemRequest,
   SaveItemRequestAction,
@@ -9,7 +9,7 @@ import {
 } from 'modules/item/actions'
 
 export type Props = ModalProps & {
-  item: Item
+  item: Item<ItemType.WEARABLE | ItemType.EMOTE>
   error: string | null
   isLoading: boolean
   metadata: EditPriceAndBeneficiaryModalMetadata

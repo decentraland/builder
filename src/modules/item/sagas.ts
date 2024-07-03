@@ -131,17 +131,7 @@ import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import {
-  Item,
-  BlockchainRarity,
-  CatalystItem,
-  BodyShapeType,
-  IMAGE_PATH,
-  THUMBNAIL_PATH,
-  WearableData,
-  ItemType,
-  VIDEO_PATH
-} from './types'
+import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import {
   ItemEmoteTooBigError,
@@ -151,7 +141,17 @@ import {
   ThumbnailFileTooBigError,
   VideoFileTooBigError
 } from './errors'
-import { buildZipContents, getMetadata, groupsOf, isValidText, generateCatalystImage, MAX_VIDEO_FILE_SIZE, isSmart } from './utils'
+import {
+  buildZipContents,
+  getMetadata,
+  groupsOf,
+  isValidText,
+  generateCatalystImage,
+  MAX_VIDEO_FILE_SIZE,
+  isSmart,
+  isWearable,
+  isEmote
+} from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
 
@@ -362,10 +362,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
       const rarityChanged = oldItem && oldItem.rarity !== item.rarity
       const shouldValidateCategoryChanged =
-        !!oldItem &&
-        oldItem.type === ItemType.WEARABLE &&
-        oldItem.data.category !== item.data.category &&
-        oldItem.data.category === WearableCategory.SKIN
+        !!oldItem && isWearable(oldItem) && oldItem.data.category !== item.data.category && oldItem.data.category === WearableCategory.SKIN
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
@@ -428,11 +425,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         }
 
-        const isEmote = item.type === ItemType.EMOTE
-        const isSkin = !isEmote && item.data.category === WearableCategory.SKIN
+        const isEmoteItem = isEmote(item)
+        const isSkin = !isEmoteItem && item.data.category === WearableCategory.SKIN
         const isSmartWearable = isSmart(item)
 
-        if (isEmote && finalModelSize > MAX_EMOTE_FILE_SIZE) {
+        if (isEmoteItem && finalModelSize > MAX_EMOTE_FILE_SIZE) {
           throw new ItemEmoteTooBigError()
         }
 
@@ -444,7 +441,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           throw new ItemSmartWearableTooBigError()
         }
 
-        if (!isSkin && !isSmartWearable && !isEmote && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
+        if (!isSkin && !isSmartWearable && !isEmoteItem && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
           throw new ItemWearableTooBigError()
         }
       }
@@ -489,7 +486,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     if (ItemModals.some(modal => openModals[modal])) {
       yield put(closeAllModals())
     } else if (openModals['CreateSingleItemModal']) {
-      if (location.pathname === locations.collectionDetail(collectionId) && item.type === ItemType.EMOTE) {
+      if (location.pathname === locations.collectionDetail(collectionId) && isEmote(item)) {
         // Redirect to the item editor
         yield put(setItems([item]))
         history.push(locations.itemEditor({ collectionId, itemId: item.id, newItem: item.name }), { fromParam: FromParam.COLLECTIONS })

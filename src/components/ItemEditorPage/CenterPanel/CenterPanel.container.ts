@@ -29,7 +29,7 @@ import {
 } from 'modules/editor/selectors'
 import { fetchCollectionItemsRequest, fetchItemsRequest } from 'modules/item/actions'
 import { getEmotes, getItem, hasUserOrphanItems } from 'modules/item/selectors'
-import { ItemType } from 'modules/item/types'
+import { isEmote } from 'modules/item/utils'
 import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CenterPanel.types'
 import CenterPanel from './CenterPanel'
@@ -53,7 +53,7 @@ const mapState = (state: RootState): MapStateProps => {
   const selectedBaseWearablesByBodyShape = getSelectedBaseWearablesByBodyShape(state)
   const visibleItems = getVisibleItems(state)
   const emote = getEmote(state)
-  const isPLayingIdleEmote = !visibleItems.some(item => item.type === ItemType.EMOTE) && emote === PreviewEmote.IDLE
+  const isPLayingIdleEmote = !visibleItems.some(isEmote) && emote === PreviewEmote.IDLE
   /* The library react-dropzone doesn't work as expected when an Iframe is present in the current view.
      This way, we're getting when the CreateSingleItemModal is open to disable the drag and drop events in the Iframe
      and the library react-dropzone works as expected in the CreateSingleItemModal.

@@ -22,7 +22,7 @@ import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 
 import Info from 'components/Info'
 import { isValid } from 'lib/address'
-import { Item } from 'modules/item/types'
+import { Item, ItemType } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
 
@@ -80,13 +80,13 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     if (item.isPublished) {
       onSetPriceAndBeneficiary(item.id, priceInWei, beneficiary)
     } else {
-      const newItem: Item = {
+      const newItem: Item<ItemType.WEARABLE | ItemType.EMOTE> = {
         ...item,
         price: priceInWei,
         beneficiary
       }
       // Send itemSortedContents if this modal was opened from CreateSingleItem modal.
-      onSave(newItem, itemSortedContents ?? {})
+      onSave(newItem as Item, itemSortedContents ?? {})
     }
   }
 

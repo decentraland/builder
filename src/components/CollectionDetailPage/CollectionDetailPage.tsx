@@ -16,7 +16,7 @@ import {
   isOwner
 } from 'modules/collection/utils'
 import { CollectionType } from 'modules/collection/types'
-import { isSmart } from 'modules/item/utils'
+import { isEmote, isSmart, isWearable } from 'modules/item/utils'
 import { Item, ItemType, SyncStatus, VIDEO_PATH } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -239,16 +239,14 @@ export default function CollectionDetailPage({
       const canMint = canMintCollectionItems(collection, wallet.address)
       const isLocked = isCollectionLocked(collection)
       const isOnSale = isCollectionOnSale(collection, wallet)
-      const hasEmotes = items.some(item => item.type === ItemType.EMOTE)
-      const hasWearables = items.some(item => item.type === ItemType.WEARABLE)
-      const isEmoteMissingPrice = hasEmotes ? items.some(item => item.type === ItemType.EMOTE && !item.price) : false
-      const isWearableMissingPrice = hasWearables ? items.some(item => item.type === ItemType.WEARABLE && !item.price) : false
+      const hasEmotes = items.some(isEmote)
+      const hasWearables = items.some(isWearable)
+      const isEmoteMissingPrice = hasEmotes ? items.some(item => isEmote(item) && !item.price) : false
+      const isWearableMissingPrice = hasWearables ? items.some(item => isWearable(item) && !item.price) : false
       const isSmartWearableMissingVideo = hasWearables && items.some(item => isSmart(item) && !(VIDEO_PATH in item.contents))
       const hasOnlyEmotes = hasEmotes && !hasWearables
       const hasOnlyWearables = hasWearables && !hasEmotes
-      const filteredItems = items.filter(item =>
-        hasOnlyWearables ? item.type === ItemType.WEARABLE : hasOnlyEmotes ? item.type === ItemType.EMOTE : item.type === tab
-      )
+      const filteredItems = items.filter(item => (hasOnlyWearables ? isWearable(item) : hasOnlyEmotes ? isEmote(item) : item.type === tab))
       const showShowTabs = hasEmotes && hasWearables
 
       return (

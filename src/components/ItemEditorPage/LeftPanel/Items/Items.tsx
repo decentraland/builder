@@ -16,7 +16,7 @@ import {
 } from 'decentraland-ui'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { Item, ItemType } from 'modules/item/types'
-import { hasBodyShape } from 'modules/item/utils'
+import { hasBodyShape, isEmote, isWearable } from 'modules/item/utils'
 import { TP_TRESHOLD_TO_REVIEW } from 'modules/collection/constants'
 import { LEFT_PANEL_PAGE_SIZE } from '../../constants'
 import Collapsable from 'components/Collapsable'
@@ -77,7 +77,7 @@ export default class Items extends React.PureComponent<Props, State> {
 
     let newVisibleItemIds = visibleItems.filter(_item => _item.id !== item.id)
 
-    if (item.type === ItemType.EMOTE) {
+    if (isEmote(item)) {
       if (this.isVisible(item)) {
         if (isPlayingEmote) {
           wearableController?.emote.pause() as void
@@ -165,8 +165,8 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   renderSidebarCategory = (items: Item[]) => {
-    const wearableItems = items.filter(item => item.type === ItemType.WEARABLE)
-    const emoteItems = items.filter(item => item.type === ItemType.EMOTE)
+    const wearableItems = items.filter(isWearable)
+    const emoteItems = items.filter(isEmote)
 
     if (wearableItems.length === 0 || emoteItems.length === 0) {
       return items.map(this.renderSidebarItem)

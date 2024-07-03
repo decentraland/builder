@@ -1,6 +1,14 @@
 import * as React from 'react'
 import uuid from 'uuid'
+import { ethers } from 'ethers'
 import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Rarity, PreviewProjection, WearableCategory } from '@dcl/schemas'
+import {
+  MAX_EMOTE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_THUMBNAIL_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE,
+  MAX_SMART_WEARABLE_FILE_SIZE
+} from '@dcl/builder-client/dist/files/constants'
 import {
   ModalNavigation,
   Row,
@@ -46,16 +54,29 @@ import {
   getEmoteCategories,
   getEmotePlayModes,
   getBodyShapeTypeFromContents,
-  isSmart
+  isSmart,
+  isWearable
 } from 'modules/item/utils'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { getExtension, toMB } from 'lib/file'
-import { buildThirdPartyURN, DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
+import {
+  buildThirdPartyURN,
+  buildThirdPartyV2URN,
+  DecodedURN,
+  decodeURN,
+  isThirdParty,
+  isThirdPartyCollectionDecodedUrn,
+  isThirdPartyV2CollectionDecodedUrn
+} from 'lib/urn'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import ItemVideo from 'components/ItemVideo'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import ItemProperties from 'components/ItemProperties'
+import { calculateFileSize, calculateModelFinalSize } from 'modules/item/export'
+import { MAX_THUMBNAIL_SIZE } from 'modules/assetPack/utils'
+import { Authorization } from 'lib/api/auth'
+import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import ImportStep from './ImportStep/ImportStep'
 import EditThumbnailStep from './EditThumbnailStep/EditThumbnailStep'
@@ -72,18 +93,6 @@ import {
   ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
-import { calculateFileSize, calculateModelFinalSize } from 'modules/item/export'
-import { MAX_THUMBNAIL_SIZE } from 'modules/assetPack/utils'
-import { Authorization } from 'lib/api/auth'
-import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
-import {
-  MAX_EMOTE_FILE_SIZE,
-  MAX_SKIN_FILE_SIZE,
-  MAX_THUMBNAIL_FILE_SIZE,
-  MAX_WEARABLE_FILE_SIZE,
-  MAX_SMART_WEARABLE_FILE_SIZE
-} from '@dcl/builder-client/dist/files/constants'
-
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
@@ -223,7 +232,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { address, collection } = this.props
+    const { address, collection, onSave } = this.props
     const {
       id,
       name,
@@ -244,12 +253,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     // If it's a third party item, we need to automatically create an URN for it by generating a random uuid different from the id
     const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
     let urn: string | undefined
-    if (
-      decodedCollectionUrn &&
-      decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
-      decodedCollectionUrn.thirdPartyCollectionId
-    ) {
+    if (decodedCollectionUrn && isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
       urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+    } else if (decodedCollectionUrn && isThirdPartyV2CollectionDecodedUrn(decodedCollectionUrn)) {
+      urn = buildThirdPartyV2URN(
+        decodedCollectionUrn.thirdPartyLinkedCollectionName,
+        decodedCollectionUrn.linkedCollectionNetwork,
+        decodedCollectionUrn.linkedCollectionContractAddress,
+        uuid.v4()
+      )
     }
 
     // create item to save
@@ -278,7 +290,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     const contents = await computeHashes(sortedContents.all)
 
-    const item = {
+    const item: Item<ItemType.WEARABLE | ItemType.EMOTE> = {
       id,
       name,
       urn,
@@ -303,8 +315,15 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       updatedAt: +new Date()
     }
 
+    // If it's a Third Party Item, don't prompt the user with the SET PRICE view
+    if ((hasScreenshotTaken || type !== ItemType.EMOTE) && belongsToAThirdPartyCollection) {
+      item.price = '0'
+      item.beneficiary = ethers.constants.AddressZero
+      return onSave(item as Item, sortedContents.all)
+    }
+
     this.setState({
-      item: { ...(item as Item) },
+      item,
       itemSortedContents: sortedContents.all,
       view: hasScreenshotTaken || type !== ItemType.EMOTE ? CreateItemView.SET_PRICE : CreateItemView.THUMBNAIL,
       fromView: CreateItemView.THUMBNAIL
@@ -315,36 +334,38 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const { onSave } = this.props
     const { bodyShape, item: editedItem, requiredPermissions } = this.state as StateData
     const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
-    const removesDefaultHiding =
-      editedItem.data.category === WearableCategory.UPPER_BODY || editedItem.data.hides.includes(WearableCategory.UPPER_BODY)
-        ? [BodyPartCategory.HANDS]
-        : []
-    const item = {
-      ...editedItem,
-      data: {
-        ...editedItem.data,
-        representations: [
-          ...editedItem.data.representations,
-          // add new representation
-          ...representations
-        ],
-        replaces: [...editedItem.data.replaces],
-        hides: [...editedItem.data.hides],
-        removesDefaultHiding: removesDefaultHiding,
-        tags: [...editedItem.data.tags],
-        requiredPermissions: requiredPermissions || [],
-        blockVrmExport: editedItem.data.blockVrmExport
-      },
-      contents: {
-        ...editedItem.contents,
-        ...hashedContents
-      },
-      updatedAt: +new Date()
-    }
+    if (isWearable(editedItem)) {
+      const removesDefaultHiding =
+        editedItem.data.category === WearableCategory.UPPER_BODY || editedItem.data.hides.includes(WearableCategory.UPPER_BODY)
+          ? [BodyPartCategory.HANDS]
+          : []
+      const item = {
+        ...editedItem,
+        data: {
+          ...editedItem.data,
+          representations: [
+            ...editedItem.data.representations,
+            // add new representation
+            ...representations
+          ],
+          replaces: [...editedItem.data.replaces],
+          hides: [...editedItem.data.hides],
+          removesDefaultHiding: removesDefaultHiding,
+          tags: [...editedItem.data.tags],
+          requiredPermissions: requiredPermissions || [],
+          blockVrmExport: editedItem.data.blockVrmExport
+        },
+        contents: {
+          ...editedItem.contents,
+          ...hashedContents
+        },
+        updatedAt: +new Date()
+      }
 
-    // Do not change the thumbnail when adding a new representation
-    delete sortedContents.all[THUMBNAIL_PATH]
-    onSave(item, sortedContents.all)
+      // Do not change the thumbnail when adding a new representation
+      delete sortedContents.all[THUMBNAIL_PATH]
+      onSave(item, sortedContents.all)
+    }
   }
 
   modifyItem = async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
@@ -416,7 +437,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     if (id && this.isValid()) {
       const { thumbnail, contents, bodyShape, type, model, isRepresentation, item: editedItem, video } = this.state as StateData
-
       if (this.state.view === CreateItemView.DETAILS) {
         try {
           const blob = dataURLToBlob(thumbnail)
@@ -454,7 +474,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           this.setState({ error: isErrorWithMessage(error) ? error.message : 'Unknown error' })
         }
       } else if (this.state.view === CreateItemView.SET_PRICE && !!this.state.item && !!this.state.itemSortedContents) {
-        onSave(this.state.item, this.state.itemSortedContents)
+        onSave(this.state.item as Item, this.state.itemSortedContents)
       }
     }
   }
@@ -926,7 +946,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     let required: (string | Metrics | Item | undefined)[]
     if (isRepresentation) {
-      required = [item]
+      required = [item as Item]
     } else if (belongsToAThirdPartyCollection) {
       required = [name, thumbnail, metrics, bodyShape, category]
     } else if (type === ItemType.EMOTE) {
@@ -1050,7 +1070,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                           : t('create_single_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
                       </Header>
                       <ItemDropdown
-                        value={item}
+                        value={item as Item<ItemType.WEARABLE>}
                         filter={this.filterItemsByBodyShape}
                         onChange={this.handleItemChange}
                         isDisabled={isAddingRepresentation}
@@ -1180,8 +1200,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderDetailsView() {
-    const { onClose, metadata, error, isLoading } = this.props
+    const { onClose, metadata, error, isLoading, collection } = this.props
     const { isRepresentation, error: stateError, type, contents, isLoading: isStateLoading } = this.state
+    const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const isDisabled = this.isDisabled()
     const title = this.renderModalTitle()
 
@@ -1202,7 +1223,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 ) : null}
                 <Column align="right">
                   <Button primary disabled={isDisabled} loading={isLoading || isStateLoading}>
-                    {(metadata && metadata.changeItemFile) || isRepresentation ? t('global.save') : t('global.next')}
+                    {(metadata && metadata.changeItemFile) || isRepresentation || belongsToAThirdPartyCollection
+                      ? t('global.save')
+                      : t('global.next')}
                   </Button>
                 </Column>
               </Row>

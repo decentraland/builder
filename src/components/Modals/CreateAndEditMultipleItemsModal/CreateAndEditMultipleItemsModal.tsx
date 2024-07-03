@@ -23,7 +23,16 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { getExtension, toMB } from 'lib/file'
-import { buildThirdPartyURN, DecodedURN, decodeURN, URNType } from 'lib/urn'
+import {
+  buildThirdPartyURN,
+  buildThirdPartyV2URN,
+  decodedCollectionsUrnAreEqual,
+  DecodedURN,
+  decodeURN,
+  isThirdPartyCollectionDecodedUrn,
+  isThirdPartyV2CollectionDecodedUrn,
+  URNType
+} from 'lib/urn'
 import { convertImageIntoWearableThumbnail, dataURLToBlob, getImageType } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
 import { MultipleItemsSaveState } from 'modules/ui/createMultipleItems/reducer'
@@ -165,33 +174,41 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
 
       // Generate or set the correct URN for the items taking into consideration the selected collection
       const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
+      // Check if the collection is a third party collection
       if (
         decodedCollectionUrn &&
-        decodedCollectionUrn.type === URNType.COLLECTIONS_THIRDPARTY &&
-        decodedCollectionUrn.thirdPartyCollectionId
+        (isThirdPartyCollectionDecodedUrn(decodedCollectionUrn) || isThirdPartyV2CollectionDecodedUrn(decodedCollectionUrn))
       ) {
         const decodedUrn: DecodedURN<any> | null = loadedFile.wearable.id ? decodeURN(loadedFile.wearable.id) : null
-        if (loadedFile.wearable.id && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY) {
-          const { thirdPartyName, thirdPartyCollectionId } = decodedUrn
+        const thirdPartyTokenId =
+          loadedFile.wearable.id &&
+          decodedUrn &&
+          (decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY || decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY_V2)
+            ? decodedUrn.thirdPartyTokenId ?? null
+            : null
 
-          if (
-            (thirdPartyCollectionId && thirdPartyCollectionId !== decodedCollectionUrn.thirdPartyCollectionId) ||
-            (thirdPartyName && thirdPartyName !== decodedCollectionUrn.thirdPartyName)
-          ) {
-            throw new Error(t('create_and_edit_multiple_items_modal.invalid_urn'))
-          }
-          if (decodedUrn.thirdPartyTokenId) {
-            itemFactory.withUrn(
-              buildThirdPartyURN(
-                decodedCollectionUrn.thirdPartyName,
-                decodedCollectionUrn.thirdPartyCollectionId,
-                decodedUrn.thirdPartyTokenId
-              )
+        // Check if the decoded collections match a the collection level
+        if (decodedUrn && !decodedCollectionsUrnAreEqual(decodedCollectionUrn, decodedUrn)) {
+          throw new Error(t('create_and_edit_multiple_items_modal.invalid_urn'))
+        }
+
+        // Build the third party item URN in accordance ot the collection URN
+        if (isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
+          itemFactory.withUrn(
+            buildThirdPartyURN(
+              decodedCollectionUrn.thirdPartyName,
+              decodedCollectionUrn.thirdPartyCollectionId,
+              thirdPartyTokenId ?? uuid.v4()
             )
-          }
+          )
         } else {
           itemFactory.withUrn(
-            buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
+            buildThirdPartyV2URN(
+              decodedCollectionUrn.thirdPartyLinkedCollectionName,
+              decodedCollectionUrn.linkedCollectionNetwork,
+              decodedCollectionUrn.linkedCollectionAddress,
+              thirdPartyTokenId ?? uuid.v4()
+            )
           )
         }
       }
