@@ -48,7 +48,9 @@ export default function CollectionItem({ item, status, selected, onSelect, onOpe
     }
 
     const decodedURN = decodeURN(item.urn)
-    return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY ? decodedURN.thirdPartyTokenId : ''
+    return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY || decodedURN.type === URNType.COLLECTIONS_THIRDPARTY_V2
+      ? decodedURN.thirdPartyTokenId
+      : ''
   }, [item])
 
   const statusIcon = useMemo(() => {

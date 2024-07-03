@@ -7,5 +7,6 @@ export enum FeatureName {
   PUBLISH_COLLECTIONS_WERT = 'publish-collections-wert',
   VRM_OPTOUT = 'vrm-optout',
   WEARABLE_UTILITY = 'wearable-utility',
-  WORLD_CONTRIBUTOR = 'world-contributor'
+  WORLD_CONTRIBUTOR = 'world-contributor',
+  LINKED_WEARABLES_V2 = 'linked-wearables-v2'
 }

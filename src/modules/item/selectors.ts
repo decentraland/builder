@@ -18,8 +18,8 @@ import { isEqual } from 'lib/address'
 import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
 import { DOWNLOAD_ITEM_REQUEST } from './actions'
 import { ItemState } from './reducer'
-import { Item, SyncStatus, BlockchainRarity, CatalystItem, ItemType, VIDEO_PATH } from './types'
-import { areSynced, canSeeItem, isOwner, isSmart } from './utils'
+import { Item, SyncStatus, BlockchainRarity, CatalystItem, VIDEO_PATH } from './types'
+import { areSynced, canSeeItem, isEmote, isOwner, isSmart, isWearable } from './utils'
 import { getSearch } from 'connected-react-router'
 
 export const getState = (state: RootState) => state.item
@@ -84,11 +84,9 @@ export const getRarities = (state: RootState): BlockchainRarity[] => {
   return getState(state).rarities
 }
 
-export const getWearables = createSelector<RootState, Item[], Item[]>(getItems, items =>
-  items.filter(item => item.type === ItemType.WEARABLE)
-)
+export const getWearables = createSelector<RootState, Item[], Item[]>(getItems, items => items.filter(isWearable))
 
-export const getEmotes = createSelector<RootState, Item[], Item[]>(getItems, items => items.filter(item => item.type === ItemType.EMOTE))
+export const getEmotes = createSelector<RootState, Item[], Item[]>(getItems, items => items.filter(isEmote))
 
 export const getItemsByURN = createSelector<RootState, Item[], Record<string, Collection>, Record<string, Item>>(
   state => getItems(state),

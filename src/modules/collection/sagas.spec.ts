@@ -1259,29 +1259,29 @@ describe('when saving a collection', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
         .provide([
           [getContext('history'), { push: pushMock }],
-          [select(getOpenModals), { CreateThirdPartyCollectionModal: true }],
+          [select(getOpenModals), { CreateThirdPartyCollectionModal: true, CreateLinkedWearablesCollectionModal: true }],
           [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
         ])
         .dispatch(saveCollectionRequest(thirdPartyCollection))
-        .dispatch(closeModal('CreateThirdPartyCollectionModal'))
         .run({ silenceTimeout: true })
         .then(() => {
           expect(pushMock).toHaveBeenCalledWith(locations.thirdPartyCollectionDetail(thirdPartyCollection.id))
         })
     })
 
-    it('should save the collection without data', () => {
+    it('should save the collection and close all related modals', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
         .provide([
           [select(getOpenModals), {}],
           [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
         ])
         .put(saveCollectionSuccess({ ...thirdPartyCollection, contractAddress: remoteCollection.contractAddress }))
+        .put(closeModal('CreateCollectionModal'))
+        .put(closeModal('CreateThirdPartyCollectionModal'))
+        .put(closeModal('CreateLinkedWearablesCollectionModal'))
+        .put(closeModal('EditCollectionURNModal'))
+        .put(closeModal('EditCollectionNameModal'))
         .dispatch(saveCollectionRequest(thirdPartyCollection))
-        .dispatch(closeModal('CreateCollectionModal'))
-        .dispatch(closeModal('CreateThirdPartyCollectionModal'))
-        .dispatch(closeModal('EditCollectionURNModal'))
-        .dispatch(closeModal('EditCollectionNameModal'))
         .run({ silenceTimeout: true })
     })
   })

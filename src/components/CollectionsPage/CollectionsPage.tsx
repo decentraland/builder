@@ -50,6 +50,7 @@ export default function CollectionsPage(props: Props) {
     isLoadingItems,
     isLoadingCollections,
     isLoadingOrphanItem,
+    isLinkedWearablesV2Enabled,
     isThirdPartyManager,
     onFetchCollections,
     onFetchOrphanItem,
@@ -79,8 +80,11 @@ export default function CollectionsPage(props: Props) {
   }, [onOpenModal])
 
   const handleNewThirdPartyCollection = useCallback(() => {
-    // onOpenModal('CreateThirdPartyCollectionModal')
-    onOpenModal('CreateLinkedWearablesCollectionModal')
+    if (isLinkedWearablesV2Enabled) {
+      onOpenModal('CreateLinkedWearablesCollectionModal')
+    } else {
+      onOpenModal('CreateThirdPartyCollectionModal')
+    }
   }, [onOpenModal])
 
   const handleSearchChange = (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {

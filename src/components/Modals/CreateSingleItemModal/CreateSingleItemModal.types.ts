@@ -40,7 +40,7 @@ export type StateData = {
   metrics: Metrics
   contents: Record<string, Blob>
   isRepresentation: boolean
-  item: Item
+  item: Item<ItemType.EMOTE | ItemType.WEARABLE>
   collectionId: string
   isLoading: boolean
   error: string

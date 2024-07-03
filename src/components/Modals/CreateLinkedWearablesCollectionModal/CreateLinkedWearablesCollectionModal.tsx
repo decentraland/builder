@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, FC, SyntheticEvent } from 'react'
-// import slug from 'slug'
+import slug from 'slug'
 import { Collection, TP_COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import {
   ModalNavigation,
@@ -10,203 +10,183 @@ import {
   ModalActions,
   SelectField,
   InputOnChangeData,
-  DropdownProps,
-  Dropdown
+  DropdownProps
 } from 'decentraland-ui'
 import uuid from 'uuid'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-// import { LinkedContract, ThirdPartyVersion } from 'modules/thirdParty/types'
-import { ThirdPartyVersion } from 'modules/thirdParty/types'
-import { buildThirdPartyURN, buildThirdPartyV2URN, decodeURN } from 'lib/urn'
-import { Props } from './CreateLinkedWearablesCollectionModal.types'
-import ethereumSvg from '../../../icons/ethereum.svg'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics'
+import { LinkedContract, ThirdPartyVersion } from 'modules/thirdParty/types'
+import { LinkedContractProtocol, buildThirdPartyURN, buildThirdPartyV2URN, decodeURN } from 'lib/urn'
 import { getThirdPartyVersion } from 'modules/thirdParty/utils'
+import ethereumSvg from '../../../icons/ethereum.svg'
+import polygonSvg from '../../../icons/polygon.svg'
+import { Props } from './CreateLinkedWearablesCollectionModal.types'
+import styles from './CreateLinkedWearablesCollectionModal.module.css'
 
-// const noLinkedContractsOptions = [{ text: 'No linked contracts', value: undefined }]
+const imgSrcByNetwork = {
+  [LinkedContractProtocol.MAINNET]: ethereumSvg,
+  [LinkedContractProtocol.MATIC]: polygonSvg,
+  [LinkedContractProtocol.SEPOLIA]: ethereumSvg,
+  [LinkedContractProtocol.AMOY]: polygonSvg
+}
 
 export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) => {
   const { name, thirdParties, onClose, isCreatingCollection, error, ownerAddress, onSubmit } = props
   const [collectionName, setCollectionName] = useState('')
-  const [linkedContractIndex, setLinkedContractIndex] = useState<number>()
-  // const [urnSuffix, setUrnSuffix] = useState('')
-  // const [contractAddress, setContractAddress] = useState<string>()
-  // const [contractNetwork, setContractNetwork] = useState<Network>(Network.ETHEREUM)
-  // const [contractValidationError, setContractValidationError] = useState<string>()
-  // const [isCheckingContract, setIsCheckingContract] = useState(false)
+  // const [linkedContractIndex, setLinkedContractIndex] = useState<number>()
+  const [linkedContract, setLinkedContract] = useState<LinkedContract>()
+  const [hasCollectionIdBeenTyped, setHasCollectionIdBeenTyped] = useState(false)
+  const [collectionId, setCollectionId] = useState('')
   const [thirdPartyId, setThirdPartyId] = useState(thirdParties[0].id)
+  const analytics = getAnalytics()
 
   const selectedThirdParty = useMemo(() => {
     return thirdParties.find(thirdParty => thirdParty.id === thirdPartyId) || thirdParties[0]
   }, [thirdParties, thirdPartyId])
   const selectedThirdPartyVersion = useMemo(
     () => (selectedThirdParty ? getThirdPartyVersion(selectedThirdParty) : undefined),
-    [selectedThirdParty]
+    [selectedThirdParty, getThirdPartyVersion]
   )
-  const selectedLinkedContract = useMemo(
-    () => (linkedContractIndex && selectedThirdParty ? selectedThirdParty.contracts[linkedContractIndex] : undefined),
-    [selectedThirdParty]
-  )
-  const linkedCollectionOptions = useMemo(
+  const thirdPartyOptions = useMemo(() => thirdParties.map(thirdParty => ({ value: thirdParty.id, text: thirdParty.name })), [thirdParties])
+  const linkedContractsOptions = useMemo(
     () =>
       selectedThirdParty?.contracts.map((contract, index) => ({
-        text: contract.address,
         value: index,
-        image: { avatar: false, src: ethereumSvg }
+        key: index,
+        image: imgSrcByNetwork[contract.network],
+        text: contract.address
       })),
-    [selectedThirdParty]
+    [selectedThirdParty, imgSrcByNetwork]
   )
 
   const handleNameChange = useCallback(
     (_: SyntheticEvent, data: InputOnChangeData) => {
       setCollectionName(data.value)
+      setCollectionId(hasCollectionIdBeenTyped ? collectionId : slug(data.value))
     },
-    [setCollectionName]
+    [setCollectionName, hasCollectionIdBeenTyped, collectionId]
   )
-
   const handleThirdPartyChange = useCallback(
     (_: React.SyntheticEvent, data: DropdownProps) => {
       if (data.value) {
-        setLinkedContractIndex(undefined)
+        setLinkedContract(undefined)
         setThirdPartyId(data.value.toString())
       }
     },
-    [setThirdPartyId]
+    [setThirdPartyId, setLinkedContract]
   )
-
   const handleLinkedContractChange = useCallback(
-    (_: SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => setLinkedContractIndex(data.value as number),
-    [selectedThirdParty]
+    (_: SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
+      // setLinkedContractIndex(data.value as number)
+      setLinkedContract(selectedThirdParty.contracts[data.value as number])
+    },
+    [selectedThirdParty, setLinkedContract]
   )
-
-  // const handleUrnSuffixChange = useCallback((_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-  //   // this.setState({ urnSuffix: slug(data.value), isTypedUrnSuffix: !!data.value })
-  // }, [])
+  const handleCollectionIdChange = useCallback(
+    (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+      setCollectionId(data.value)
+      setHasCollectionIdBeenTyped(!!data.value)
+    },
+    [setCollectionId, setHasCollectionIdBeenTyped]
+  )
 
   const handleSubmit = useCallback(() => {
-    if (getThirdPartyVersion(selectedThirdParty) === ThirdPartyVersion.V2) {
-      if (collectionName && selectedLinkedContract && ownerAddress) {
-        const now = Date.now()
-        const decodedURN = decodeURN(selectedThirdParty.id)
-
-        const collection: Collection = {
-          id: uuid.v4(),
-          name: collectionName,
-          owner: ownerAddress,
-          urn: buildThirdPartyV2URN(decodedURN.suffix, selectedThirdParty.contracts[0].network, selectedThirdParty.contracts[0].address),
-          isPublished: false,
-          isApproved: false,
-          minters: [],
-          managers: [],
-          createdAt: now,
-          updatedAt: now
-        }
-        onSubmit(collection)
+    if (
+      collectionName &&
+      ownerAddress &&
+      ((selectedThirdPartyVersion === ThirdPartyVersion.V2 && linkedContract) ||
+        (selectedThirdPartyVersion === ThirdPartyVersion.V1 && collectionId))
+    ) {
+      const now = Date.now()
+      const decodedURN = decodeURN(selectedThirdParty.id)
+      const urn =
+        selectedThirdPartyVersion === ThirdPartyVersion.V1
+          ? buildThirdPartyURN(decodedURN.suffix, collectionId)
+          : buildThirdPartyV2URN(decodedURN.suffix, linkedContract!.network, linkedContract!.address)
+      const collection: Collection = {
+        id: uuid.v4(),
+        name: collectionName,
+        owner: ownerAddress,
+        urn,
+        isPublished: false,
+        isApproved: false,
+        minters: [],
+        managers: [],
+        createdAt: now,
+        updatedAt: now
       }
-    } else {
-      if (collectionName && ownerAddress) {
-        const now = Date.now()
-        const decodedURN = decodeURN(selectedThirdParty.id)
-
-        const collection: Collection = {
-          id: uuid.v4(),
-          name: collectionName,
-          owner: ownerAddress,
-          urn: buildThirdPartyURN(decodedURN.suffix, 'collectionId'),
-          isPublished: false,
-          isApproved: false,
-          minters: [],
-          managers: [],
-          createdAt: now,
-          updatedAt: now
-        }
-        onSubmit(collection)
-      }
+      onSubmit(collection)
+      analytics.track('Create TP Collection', {
+        collectionId: collection.id,
+        version: selectedThirdPartyVersion,
+        thirdPartyId: selectedThirdParty.id,
+        linkedContract: linkedContract?.address,
+        linkedContractNetwork: linkedContract?.network,
+        collectionName
+      })
     }
+  }, [onSubmit, collectionId, collectionName, selectedThirdPartyVersion, selectedThirdParty, linkedContract, ownerAddress, analytics])
 
-    // this.analytics.track('Create TP Collection', { collectionId: collection.id })
-  }, [onSubmit, collectionName, selectedThirdPartyVersion, selectedThirdParty, selectedLinkedContract, ownerAddress])
-
-  const isNotSubmittable = Boolean(!collectionName || isCreatingCollection)
+  const isSubmittable =
+    collectionName &&
+    ownerAddress &&
+    ((selectedThirdPartyVersion === ThirdPartyVersion.V2 && linkedContract) ||
+      (selectedThirdPartyVersion === ThirdPartyVersion.V1 && collectionId)) &&
+    !isCreatingCollection
   const isLoading = isCreatingCollection
 
   return (
-    <Modal name={name} onClose={onClose} size="tiny">
+    <Modal name={name} onClose={onClose} size="small">
       <ModalNavigation
-        title={t('create_third_party_collection_modal.title')}
-        subtitle={t('create_third_party_collection_modal.subtitle')}
+        title={t('create_linked_wearable_collection_modal.title')}
+        subtitle={t('create_linked_wearable_collection_modal.subtitle')}
         onClose={onClose}
       />
-      <Form onSubmit={handleSubmit} disabled={isNotSubmittable}>
+      <Form onSubmit={handleSubmit} disabled={!isSubmittable}>
         <ModalContent>
           <SelectField
-            label={t('create_third_party_collection_modal.third_party.label')}
-            options={thirdParties.map(thirdParty => ({ value: thirdParty.id, text: thirdParty.name }))}
+            label={t('create_linked_wearable_collection_modal.third_party_field.label')}
+            options={thirdPartyOptions}
             onChange={handleThirdPartyChange}
             disabled={isLoading}
             value={selectedThirdParty.id}
           />
+          {selectedThirdPartyVersion === ThirdPartyVersion.V2 && (
+            <SelectField
+              label={t('create_linked_wearable_collection_modal.linked_contract_field.label')}
+              className={styles.linkedContractSelect}
+              disabled={linkedContractsOptions.length === 0}
+              value={linkedContract ? selectedThirdParty.contracts.indexOf(linkedContract) : undefined}
+              options={linkedContractsOptions}
+              search={false}
+              onChange={handleLinkedContractChange}
+              message={
+                linkedContractsOptions.length === 0 ? t('create_linked_wearable_collection_modal.linked_contract_field.message') : ''
+              }
+            />
+          )}
           <Field
-            label={t('create_third_party_collection_modal.name_field.label')}
+            label={t('create_linked_wearable_collection_modal.name_field.label')}
             placeholder="aName"
-            message={t('create_third_party_collection_modal.name_field.message', { maxLength: TP_COLLECTION_NAME_MAX_LENGTH })}
             value={collectionName}
             maxLength={TP_COLLECTION_NAME_MAX_LENGTH}
             onChange={handleNameChange}
             disabled={isLoading}
           />
-          {selectedThirdPartyVersion === ThirdPartyVersion.V2 ? (
-            <>
-              <Dropdown
-                options={linkedCollectionOptions}
-                disabled={linkedCollectionOptions.length === 0}
-                value={0}
-                onChange={handleLinkedContractChange}
-              />
-              {/* <SelectField
-                label="Linked contract"
-                disabled={selectedThirdParty.contracts.length === 0}
-                value={linkedContractIndex}
-                options={linkedCollectionOptions}
-                // value={selectedThirdParty.contracts.length === 0 ? undefined : selectedLinkedContract}
-                // options={selectedThirdParty.contracts.length === 0 ? noLinkedContractsOptions : linkedCollectionOptions}
-                onChange={handleLinkedContractChange}
-              /> */}
-              {selectedThirdParty.contracts.length === 0 && <span>There's no collection available :S</span>}
-            </>
-          ) : (
-            <span>Some value here</span>
-            // <Field
-            //   label={t('create_third_party_collection_modal.urn_suffix_field.label')}
-            //   placeholder="0x..."
-            //   message={t('create_third_party_collection_modal.urn_suffix_field.message')}
-            //   value={urnSuffix}
-            //   onChange={handleUrnSuffixChange}
-            // />
+          {selectedThirdPartyVersion === ThirdPartyVersion.V1 && (
+            <Field
+              label={t('create_linked_wearable_collection_modal.collection_id_field.label')}
+              placeholder="0x..."
+              message={t('create_linked_wearable_collection_modal.collection_id_field.message')}
+              value={collectionId}
+              onChange={handleCollectionIdChange}
+            />
           )}
-
-          {/* <SelectField
-            label={'Network'}
-            options={networkOptions}
-            onChange={handleNetworkChange}
-            disabled={isLoading}
-            value={contractNetwork}
-          />
-          <Field
-            label="Linked Contract Address"
-            placeholder="0x..."
-            message={contractValidationError}
-            type="address"
-            value={contractAddress}
-            maxLength={TP_COLLECTION_NAME_MAX_LENGTH}
-            onChange={handleContractAddressChange}
-            disabled={isLoading}
-            error={!!contractValidationError}
-          /> */}
           {error ? <small className="danger-text">{error}</small> : null}
         </ModalContent>
         <ModalActions>
-          <Button primary disabled={isNotSubmittable} loading={isLoading}>
+          <Button primary disabled={!isSubmittable} loading={isLoading}>
             {t('global.create')}
           </Button>
         </ModalActions>

@@ -142,11 +142,15 @@ export function buildDefaultCatalystCollectionURN() {
 
 export function extractThirdPartyId(urn: URN): string {
   const decodedURN = decodeURN(urn)
-  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY && decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY_V2) {
     throw new Error('URN is not a third party URN')
   }
 
-  return `urn:decentraland:${decodedURN.protocol}:collections-thirdparty:${decodedURN.thirdPartyName}`
+  if (decodedURN.type === URNType.COLLECTIONS_THIRDPARTY) {
+    return `urn:decentraland:${decodedURN.protocol}:collections-thirdparty:${decodedURN.thirdPartyName}`
+  } else {
+    return `urn:decentraland:${decodedURN.protocol}:collections-linked-wearables:${decodedURN.thirdPartyLinkedCollectionName}`
+  }
 }
 
 export function extractThirdPartyTokenId(urn: URN) {
@@ -225,3 +229,47 @@ export function extractTokenId(urn: URN): string {
 
   return `${collectionAddress}:${tokenId ?? ''}`
 }
+
+export const decodedCollectionsUrnAreEqual = (urnA: DecodedURN, urnB: DecodedURN) => {
+  if (urnA.type !== urnB.type) {
+    return false
+  }
+
+  switch (urnA.type) {
+    case URNType.COLLECTIONS_V2:
+      return (
+        urnA.collectionAddress === (urnB as DecodedURN<URNType.COLLECTIONS_V2>).collectionAddress &&
+        urnA.tokenId === (urnB as DecodedURN<URNType.COLLECTIONS_V2>).tokenId
+      )
+    case URNType.COLLECTIONS_THIRDPARTY:
+      return (
+        urnA.thirdPartyName === (urnB as DecodedURN<URNType.COLLECTIONS_THIRDPARTY>).thirdPartyName &&
+        urnA.thirdPartyCollectionId === (urnB as DecodedURN<URNType.COLLECTIONS_THIRDPARTY>).thirdPartyCollectionId &&
+        urnA.thirdPartyTokenId === (urnB as DecodedURN<URNType.COLLECTIONS_THIRDPARTY>).thirdPartyTokenId
+      )
+    case URNType.COLLECTIONS_THIRDPARTY_V2:
+      return (
+        urnA.thirdPartyLinkedCollectionName === (urnB as DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2>).thirdPartyLinkedCollectionName &&
+        urnA.linkedCollectionNetwork === (urnB as DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2>).linkedCollectionNetwork &&
+        urnA.linkedCollectionContractAddress === (urnB as DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2>).linkedCollectionContractAddress &&
+        urnA.thirdPartyTokenId === (urnB as DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2>).thirdPartyTokenId
+      )
+  }
+}
+
+export const isThirdPartyCollectionDecodedUrn = (
+  urn: DecodedURN
+): urn is DecodedURN<URNType.COLLECTIONS_THIRDPARTY> & { thirdPartyName: string; thirdPartyCollectionId: string } =>
+  urn.type === URNType.COLLECTIONS_THIRDPARTY && !!urn.thirdPartyName && !!urn.thirdPartyCollectionId
+
+export const isThirdPartyV2CollectionDecodedUrn = (
+  urn: DecodedURN
+): urn is DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2> & {
+  thirdPartyLinkedCollectionName: string
+  linkedCollectionNetwork: string
+  linkedCollectionAddress: string
+} =>
+  urn.type === URNType.COLLECTIONS_THIRDPARTY_V2 &&
+  !!urn.thirdPartyLinkedCollectionName &&
+  !!urn.linkedCollectionNetwork &&
+  !!urn.linkedCollectionContractAddress
