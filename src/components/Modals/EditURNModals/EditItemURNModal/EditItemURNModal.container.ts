@@ -19,8 +19,10 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProps => ({
   onSave: (urn: string) => dispatch(saveItemRequest({ ...ownProps.metadata.item, urn }, {})),
-  onBuildURN: (decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY>, tokenId: string) =>
-    buildThirdPartyURN(decodedURN.thirdPartyName, decodedURN.thirdPartyCollectionId!, tokenId)
+  onBuildURN: (decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY> | DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2>, tokenId: string) =>
+    decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
+      ? buildThirdPartyURN(decodedURN.thirdPartyName, decodedURN.thirdPartyCollectionId!, tokenId)
+      : buildThirdPartyURN(decodedURN.thirdPartyLinkedCollectionName, decodedURN.linkedCollectionContractAddress, tokenId)
 })
 
 export default connect(mapState, mapDispatch)(EditURNModal)

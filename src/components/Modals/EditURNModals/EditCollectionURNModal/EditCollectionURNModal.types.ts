@@ -11,7 +11,10 @@ export type Props = ModalProps & {
   metadata: EditURNModalMetadata
   error: string | null
   onSave: (urn: string) => ReturnType<typeof saveCollectionRequest>
-  onBuildURN: (decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY>, collectionId: string) => string
+  onBuildURN: (
+    decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY> | DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2>,
+    collectionId: string
+  ) => string
 }
 
 export type EditURNModalMetadata = {

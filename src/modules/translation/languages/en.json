@@ -197,6 +197,24 @@
     "message": "The name can be {maxLength} characters max",
     "error_name_already_in_use": "Name already in use. Try a different one"
   },
+  "create_linked_wearable_collection_modal": {
+    "title": "New Linked Wearables Collection",
+    "subtitle": "Special Wearables linked to NFTs.",
+    "third_party_field": {
+      "label": "Third Party"
+    },
+    "linked_contract_field": {
+      "label": "Smart Contract Address",
+      "message": "No contracts available. Ask the DAO committee to to add one."
+    },
+    "name_field": {
+      "label": "Name"
+    },
+    "collection_id_field": {
+      "label": "Id",
+      "message": "We recommend including the collection contract address as part of the id. Only letters, numbers and dashes (-) are allowed"
+    }
+  },
   "create_third_party_collection_modal": {
     "title": "New Linked Wearables Collection",
     "subtitle": "Enter a descriptive name for your new collection",

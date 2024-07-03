@@ -11,7 +11,8 @@ import {
   isSmart,
   getFirstWearableOrItem,
   formatExtensions,
-  hasVideo
+  hasVideo,
+  isEmote
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -346,6 +347,82 @@ describe('when getting if the item has a video', () => {
       it('should return true', () => {
         expect(hasVideo(item, 'the-video')).toBe(true)
       })
+    })
+  })
+})
+
+describe('when checking if an item is of a wearable type', () => {
+  let item: Item<ItemType.EMOTE | ItemType.WEARABLE>
+
+  beforeEach(() => {
+    item = {
+      type: ItemType.WEARABLE,
+      name: 'first-name',
+      contents: {}
+    } as Item<ItemType.EMOTE | ItemType.WEARABLE>
+  })
+
+  describe('and the item is of a wearable type', () => {
+    beforeEach(() => {
+      item = {
+        ...item,
+        type: ItemType.WEARABLE
+      }
+    })
+
+    it('should return true', () => {
+      expect(isEmote(item)).toBe(false)
+    })
+  })
+
+  describe('and the item is of a emote type', () => {
+    beforeEach(() => {
+      item = {
+        ...item,
+        type: ItemType.EMOTE
+      }
+    })
+
+    it('should return false', () => {
+      expect(isEmote(item)).toBe(true)
+    })
+  })
+})
+
+describe('when checking if an item is of emote type', () => {
+  let item: Item<ItemType.EMOTE | ItemType.WEARABLE>
+
+  beforeEach(() => {
+    item = {
+      type: ItemType.EMOTE,
+      name: 'first-name',
+      contents: {}
+    } as Item<ItemType.EMOTE | ItemType.WEARABLE>
+  })
+
+  describe('and the item is of a emote type', () => {
+    beforeEach(() => {
+      item = {
+        ...item,
+        type: ItemType.EMOTE
+      }
+    })
+
+    it('should return true', () => {
+      expect(isEmote(item)).toBe(true)
+    })
+  })
+
+  describe('and the item is of a wearable type', () => {
+    beforeEach(() => {
+      item = {
+        ...item,
+        type: ItemType.WEARABLE
+      }
+    })
+
+    it('should return false', () => {
+      expect(isEmote(item)).toBe(false)
     })
   })
 })

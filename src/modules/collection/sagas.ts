@@ -106,14 +106,14 @@ import {
   FetchRaritiesFailureAction,
   FetchRaritiesSuccessAction
 } from 'modules/item/actions'
-import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
+import { areSynced, isEmote, isValidText, isWearable, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData, ItemType } from 'modules/item/types'
+import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
 import {
   getEntityByItemId,
@@ -247,7 +247,11 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const openModals: ModalState = yield select(getOpenModals)
     const history: History = yield getContext('history')
 
-    if (openModals['CreateCollectionModal'] || openModals['CreateThirdPartyCollectionModal']) {
+    if (
+      openModals['CreateCollectionModal'] ||
+      openModals['CreateThirdPartyCollectionModal'] ||
+      openModals['CreateLinkedWearablesCollectionModal']
+    ) {
       // Redirect to the newly created collection detail
       const { collection } = action.payload
       const detailPageLocation = isTPCollection(collection) ? locations.thirdPartyCollectionDetail : locations.collectionDetail
@@ -258,6 +262,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('CreateThirdPartyCollectionModal'))
     yield put(closeModal('EditCollectionURNModal'))
+    yield put(closeModal('CreateLinkedWearablesCollectionModal'))
     yield put(closeModal('EditCollectionNameModal'))
   }
 
@@ -347,8 +352,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const { items, email, subscribeToNewsletter, paymentMethod } = action.payload
 
     if (subscribeToNewsletter) {
-      const collectionHasEmotes = items.some(item => item.type === ItemType.EMOTE)
-      const collectionHasWearables = items.some(item => item.type === ItemType.WEARABLE)
+      const collectionHasEmotes = items.some(isEmote)
+      const collectionHasWearables = items.some(isWearable)
       yield put(
         subscribeToNewsletterRequest(
           email,
