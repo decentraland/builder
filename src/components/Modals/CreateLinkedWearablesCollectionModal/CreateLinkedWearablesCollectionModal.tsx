@@ -34,7 +34,6 @@ const imgSrcByNetwork = {
 export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) => {
   const { name, thirdParties, onClose, isCreatingCollection, error, ownerAddress, onSubmit } = props
   const [collectionName, setCollectionName] = useState('')
-  // const [linkedContractIndex, setLinkedContractIndex] = useState<number>()
   const [linkedContract, setLinkedContract] = useState<LinkedContract>()
   const [hasCollectionIdBeenTyped, setHasCollectionIdBeenTyped] = useState(false)
   const [collectionId, setCollectionId] = useState('')
@@ -78,7 +77,6 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
   )
   const handleLinkedContractChange = useCallback(
     (_: SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
-      // setLinkedContractIndex(data.value as number)
       setLinkedContract(selectedThirdParty.contracts[data.value as number])
     },
     [selectedThirdParty, setLinkedContract]
