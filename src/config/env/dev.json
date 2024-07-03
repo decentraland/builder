@@ -5,7 +5,7 @@
   "EMAIL_SERVER_URL": "https://subscription.decentraland.org/subscribe",
   "PEER_URL": "https://peer.decentraland.zone",
   "ERC721_COLLECTION_BASE_URI": "https://peer.decentraland.zone/lambdas/collections/standard/erc721/",
-  "BUILDER_SERVER_URL": "http://127.0.0.1:5001/v1",
+  "BUILDER_SERVER_URL": "https://builder-api.decentraland.zone/v1",
   "MARKETPLACE_URL": "https://api.decentraland.zone/v1",
   "MARKETPLACE_API": "https://marketplace-api.decentraland.zone/v1",
   "MARKETPLACE_WEB_URL": "https://decentraland.zone/marketplace",
