@@ -240,7 +240,7 @@ export function getMetadata(item: Item) {
   }
 }
 
-export function toItemObject(items: Item[]) {
+export function toItemObject(items: Item<ItemType.EMOTE | ItemType.WEARABLE>[]) {
   return items.reduce((obj, item) => {
     const { collection, ...itemWithoutCollection } = item as Item & { collection?: Collection }
     obj[item.id] = itemWithoutCollection
@@ -602,7 +602,7 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity)
 }
 
 export function areSynced(item: Item, entity: Entity) {
-  return item.type === ItemType.WEARABLE ? isWearableSynced(item, entity) : isEmoteSynced(item, entity)
+  return isWearable(item) ? isWearableSynced(item, entity) : isEmoteSynced(item, entity)
 }
 
 export function isAllowedToPushChanges(item: Item, status: SyncStatus, itemCuration: ItemCuration | undefined) {
@@ -689,7 +689,7 @@ export const loadVideo = (src: File | string): Promise<HTMLVideoElement> => {
 }
 
 export const getFirstWearableOrItem = (items: Item[]): Item | undefined => {
-  return items.length > 0 ? items.find(item => item.type === ItemType.WEARABLE) ?? items[0] : undefined
+  return items.length > 0 ? items.find(isWearable) ?? items[0] : undefined
 }
 
 export const formatExtensions = (extensions: string[]): string => {
@@ -708,3 +708,7 @@ export const formatExtensions = (extensions: string[]): string => {
 
   return formattedExtensions.join(', ')
 }
+
+export const isWearable = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): item is Item<ItemType.WEARABLE> =>
+  item.type === ItemType.WEARABLE
+export const isEmote = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): item is Item<ItemType.EMOTE> => item.type === ItemType.EMOTE

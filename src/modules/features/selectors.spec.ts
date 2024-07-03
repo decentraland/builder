@@ -3,6 +3,7 @@ import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
 import {
   getIsCreateSceneOnlySDK7Enabled,
+  getIsLinkedWearablesV2Enabled,
   getIsMaintenanceEnabled,
   getIsPublishCollectionsWertEnabled,
   getIsVrmOptOutEnabled,
@@ -65,7 +66,8 @@ const ffSelectors = [
   { selector: getIsPublishCollectionsWertEnabled, app: ApplicationName.BUILDER, feature: FeatureName.PUBLISH_COLLECTIONS_WERT },
   { selector: getIsVrmOptOutEnabled, app: ApplicationName.BUILDER, feature: FeatureName.VRM_OPTOUT },
   { selector: getIsWearableUtilityEnabled, app: ApplicationName.DAPPS, feature: FeatureName.WEARABLE_UTILITY },
-  { selector: getIsWorldContributorEnabled, app: ApplicationName.BUILDER, feature: FeatureName.WORLD_CONTRIBUTOR }
+  { selector: getIsWorldContributorEnabled, app: ApplicationName.BUILDER, feature: FeatureName.WORLD_CONTRIBUTOR },
+  { selector: getIsLinkedWearablesV2Enabled, app: ApplicationName.BUILDER, feature: FeatureName.LINKED_WEARABLES_V2 }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

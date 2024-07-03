@@ -44,6 +44,7 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_REQUEST is called', (
       name: 'a third party',
       description: 'some desc',
       managers: ['0x1', '0x2'],
+      contracts: [],
       maxItems: '0',
       totalItems: '0'
     }
@@ -73,6 +74,7 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQU
       name: 'a third party',
       description: 'some desc',
       managers: ['0x1', '0x2'],
+      contracts: [],
       maxItems: '0',
       totalItems: '0'
     }
@@ -99,6 +101,7 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', (
       name: 'a third party',
       description: 'some desc',
       managers: ['0x1', '0x2'],
+      contracts: [],
       maxItems: '0',
       totalItems: '0'
     }
@@ -181,6 +184,7 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_FAILURE is called', (
       name: 'a third party',
       description: 'some desc',
       managers: ['0x1', '0x2'],
+      contracts: [],
       maxItems: '0',
       totalItems: '0'
     }
@@ -206,6 +210,7 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAIL
       name: 'a third party',
       description: 'some desc',
       managers: ['0x1', '0x2'],
+      contracts: [],
       maxItems: '0',
       totalItems: '0'
     }

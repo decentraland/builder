@@ -195,6 +195,24 @@
     "message": "名称最多可以是 {maxLength} 个字符",
     "error_name_already_in_use": "使用中的名称。 尝试其他"
   },
+  "create_linked_wearable_collection_modal": {
+    "title": "新的链接可穿戴设备集合",
+    "subtitle": "与 NFT 挂钩的特殊可穿戴设备",
+    "third_party_field": {
+      "label": "第三方提供商"
+    },
+    "linked_contract_field": {
+      "label": "智能合约地址",
+      "message": "没有可用的合约。请 DAO 委员会添加一份。"
+    },
+    "name_field": {
+      "label": "姓名"
+    },
+    "collection_id_field": {
+      "label": "Id",
+      "message": "我们建议将收款合约地址作为 id 的一部分。只允许使用字母、数字和破折号 (-)"
+    }
+  },
   "create_third_party_collection_modal": {
     "title": "新的链接可穿戴设备系列",
     "subtitle": "为您的新集合输入一个描述性名称",
@@ -203,7 +221,7 @@
     },
     "name_field": {
       "label": "姓名",
-      "message": "名称最多可以是 {maxLength} 个字符"
+      "message": "集合名称不能包含“:”字符"
     },
     "urn_suffix_field": {
       "label": "Id",

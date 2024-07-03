@@ -32,6 +32,7 @@ describe('when an action of type FETCH_THIRD_PARTIES_SUCCESS is called', () => {
       name: 'a third party',
       description: 'some desc',
       managers: ['0x1', '0x2'],
+      contracts: [],
       maxItems: '0',
       totalItems: '0'
     }

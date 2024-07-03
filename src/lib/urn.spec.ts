@@ -11,7 +11,13 @@ import {
   isThirdParty,
   extractEntityId,
   extractCollectionAddress,
-  extractTokenId
+  extractTokenId,
+  buildThirdPartyV2URN,
+  LinkedContractProtocol,
+  DecodedURN,
+  isThirdPartyV2CollectionDecodedUrn,
+  isThirdPartyCollectionDecodedUrn,
+  decodedCollectionsUrnAreEqual
 } from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
@@ -71,6 +77,42 @@ describe('when building the third party URN', () => {
   })
 })
 
+describe('when building the third party v2 URN', () => {
+  const thirdPartyName = 'some-tp-name'
+  const linkedNetwork = LinkedContractProtocol.AMOY
+  const linkedAddress = '0x123123'
+
+  beforeEach(() => {
+    ;(getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
+  })
+
+  it('should return a valid third party collection urn', () => {
+    expect(buildThirdPartyV2URN(thirdPartyName, linkedNetwork, linkedAddress)).toBe(
+      `urn:decentraland:matic:collections-linked-wearables:${thirdPartyName}:${linkedNetwork}:${linkedAddress}`
+    )
+  })
+
+  it('should get the chain id for the matic network', () => {
+    buildThirdPartyV2URN(thirdPartyName, linkedNetwork, linkedAddress)
+    expect(getChainIdByNetwork).toHaveBeenCalledWith(Network.MATIC)
+  })
+
+  describe('when supplying a token id', () => {
+    const tokenId = 'a-wonderful-token-id'
+
+    it('should return a valid third party item urn', () => {
+      expect(buildThirdPartyV2URN(thirdPartyName, linkedNetwork, linkedAddress, tokenId)).toBe(
+        `urn:decentraland:matic:collections-linked-wearables:${thirdPartyName}:${linkedNetwork}:${linkedAddress}:${tokenId}`
+      )
+    })
+
+    it('should get the chain id for the matic network', () => {
+      buildThirdPartyV2URN(thirdPartyName, linkedNetwork, linkedAddress, tokenId)
+      expect(getChainIdByNetwork).toHaveBeenCalledWith(Network.MATIC)
+    })
+  })
+})
+
 describe('when decoding an URN', () => {
   describe('when the urn is empty', () => {
     it('should return false', () => {
@@ -120,7 +162,7 @@ describe('when decoding an URN', () => {
     })
   })
 
-  describe('when a valid third party', () => {
+  describe('when a valid third party v1 URN is used', () => {
     const thirdPartyRecordURN = 'urn:decentraland:matic:collections-thirdparty:crypto-motors'
 
     describe('when third party record urn is used', () => {
@@ -163,6 +205,52 @@ describe('when decoding an URN', () => {
     })
   })
 
+  describe('when a valid third party v2 URN is used', () => {
+    const thirdPartyRecordURN = 'urn:decentraland:matic:collections-linked-wearables:crypto-motors'
+
+    describe('when third party record urn is used', () => {
+      it('should decode and return each group', () => {
+        expect(decodeURN(thirdPartyRecordURN)).toEqual({
+          type: URNType.COLLECTIONS_THIRDPARTY_V2,
+          protocol: URNProtocol.MATIC,
+          suffix: 'crypto-motors',
+          thirdPartyLinkedCollectionName: 'crypto-motors',
+          linkedCollectionNetwork: undefined,
+          linkedCollectionContractAddress: undefined,
+          thirdPartyTokenId: undefined
+        })
+      })
+    })
+
+    describe('when third party collection urn is used', () => {
+      it('should decode and return each group', () => {
+        expect(decodeURN(thirdPartyRecordURN + ':amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c')).toEqual({
+          type: URNType.COLLECTIONS_THIRDPARTY_V2,
+          protocol: URNProtocol.MATIC,
+          suffix: 'crypto-motors:amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c',
+          thirdPartyLinkedCollectionName: 'crypto-motors',
+          linkedCollectionNetwork: 'amoy',
+          linkedCollectionContractAddress: '0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c',
+          thirdPartyTokenId: undefined
+        })
+      })
+    })
+
+    describe('when a third party item urn is used', () => {
+      it('should decode and return each group', () => {
+        expect(decodeURN(thirdPartyRecordURN + ':amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c:better-token-id')).toEqual({
+          type: URNType.COLLECTIONS_THIRDPARTY_V2,
+          protocol: URNProtocol.MATIC,
+          suffix: 'crypto-motors:amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c:better-token-id',
+          thirdPartyLinkedCollectionName: 'crypto-motors',
+          linkedCollectionNetwork: 'amoy',
+          linkedCollectionContractAddress: '0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c',
+          thirdPartyTokenId: 'better-token-id'
+        })
+      })
+    })
+  })
+
   describe('when a valid entity urn is used', () => {
     describe('and the URN is an entity with a baseUrl', () => {
       it('should decode and return each group', () => {
@@ -187,7 +275,7 @@ describe('when decoding an URN', () => {
   })
 })
 
-describe('when extracting the third party item token id from an URN', () => {
+describe('when extracting the third party item token id from a third party v1 URN', () => {
   describe('when the URN is not a valid third party URN', () => {
     it("should throw an error signaling that the URN doesn't belong to a third party", () => {
       expect(() =>
@@ -198,11 +286,33 @@ describe('when extracting the third party item token id from an URN', () => {
     })
   })
 
-  describe('when the URN is a valid third party URN', () => {
+  describe('when the URN is a valid third party v1 URN', () => {
     it('should extract the collection and token ids', () => {
       expect(extractThirdPartyTokenId('urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id:token-id')).toBe(
         'collection-id:token-id'
       )
+    })
+  })
+})
+
+describe('when extracting the third party item token id from a third party v2 URN', () => {
+  describe('when the URN is not a valid third party URN', () => {
+    it("should throw an error signaling that the URN doesn't belong to a third party", () => {
+      expect(() =>
+        extractThirdPartyTokenId('urn:decentraland:matic:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+      ).toThrowError(
+        'Tried to build a third party token for a non third party URN "urn:decentraland:matic:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8"'
+      )
+    })
+  })
+
+  describe('when the URN is a valid third party v2 URN', () => {
+    it('should extract the collection and token ids', () => {
+      expect(
+        extractThirdPartyTokenId(
+          'urn:decentraland:matic:collections-linked-wearables:crypto-motors:amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c:better-token-id'
+        )
+      ).toBe('amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c:better-token-id')
     })
   })
 })
@@ -303,6 +413,156 @@ describe('when extracting the token id from an URN', () => {
     it('should extract the collection address and token id', () => {
       const urn = 'urn:decentraland:goerli:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8:tokenId'
       expect(extractTokenId(urn)).toBe('0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8:tokenId')
+    })
+  })
+})
+
+describe('when checking if a decoded URN belongs to a third party one', () => {
+  describe('and the decoded URN does not belong to a third party', () => {
+    let decodedUrn: DecodedURN
+
+    beforeEach(() => {
+      decodedUrn = decodeURN('urn:decentraland:goerli:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+    })
+
+    it('should return false', () => {
+      expect(isThirdPartyCollectionDecodedUrn(decodedUrn)).toBe(false)
+    })
+  })
+
+  describe('and the decoded URN belongs to a third party', () => {
+    let decodedUrn: DecodedURN
+
+    beforeEach(() => {
+      decodedUrn = decodeURN('urn:decentraland:mumbai:collections-thirdparty:thirdparty2:collection-id')
+    })
+
+    it('should return true', () => {
+      expect(isThirdPartyCollectionDecodedUrn(decodedUrn)).toBe(true)
+    })
+  })
+})
+
+describe('when checking if a decoded URN belongs to a third party v2 one', () => {
+  describe('and the decoded URN does not belong to a third party v2', () => {
+    let decodedUrn: DecodedURN
+
+    beforeEach(() => {
+      decodedUrn = decodeURN('urn:decentraland:goerli:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+    })
+
+    it('should return false', () => {
+      expect(isThirdPartyV2CollectionDecodedUrn(decodedUrn)).toBe(false)
+    })
+  })
+
+  describe('and the decoded URN belongs to a third party v2', () => {
+    let decodedUrn: DecodedURN
+
+    beforeEach(() => {
+      decodedUrn = decodeURN(
+        'urn:decentraland:matic:collections-linked-wearables:crypto-motors:amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c:better-token-id'
+      )
+    })
+
+    it('should return true', () => {
+      expect(isThirdPartyV2CollectionDecodedUrn(decodedUrn)).toBe(true)
+    })
+  })
+})
+
+describe('when checking if two decoded collection URNs are equal', () => {
+  let fistDecodedUrn: DecodedURN
+  let secondDecodedUrn: DecodedURN
+
+  describe('and the URNs are of collections v2', () => {
+    describe('and the URNs are different', () => {
+      beforeEach(() => {
+        fistDecodedUrn = decodeURN('urn:decentraland:amoy:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+        secondDecodedUrn = decodeURN('urn:decentraland:amoy:collections-v2:0x16a2040b2b1eeca12344f4e2b11260ae2ee2edc2')
+      })
+
+      it('should return false', () => {
+        expect(decodedCollectionsUrnAreEqual(fistDecodedUrn, secondDecodedUrn)).toBe(false)
+      })
+    })
+
+    describe('and the URNs are equal', () => {
+      beforeEach(() => {
+        fistDecodedUrn = decodeURN('urn:decentraland:amoy:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+        secondDecodedUrn = decodeURN('urn:decentraland:amoy:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+      })
+
+      it('should return true', () => {
+        expect(decodedCollectionsUrnAreEqual(fistDecodedUrn, secondDecodedUrn)).toBe(true)
+      })
+    })
+  })
+
+  describe('and the URNs are of third party v1 collections', () => {
+    describe('and the URNs are different', () => {
+      beforeEach(() => {
+        fistDecodedUrn = decodeURN('urn:decentraland:amoy:collections-thirdparty:thirdparty2:collection-id')
+        secondDecodedUrn = decodeURN('urn:decentraland:amoy:collections-thirdparty:thirdparty2:another-collection-id')
+      })
+
+      it('should return false', () => {
+        expect(decodedCollectionsUrnAreEqual(fistDecodedUrn, secondDecodedUrn)).toBe(false)
+      })
+    })
+
+    describe('and the URNs are equal', () => {
+      beforeEach(() => {
+        fistDecodedUrn = decodeURN('urn:decentraland:amoy:collections-thirdparty:thirdparty2:collection-id')
+        secondDecodedUrn = decodeURN('urn:decentraland:amoy:collections-thirdparty:thirdparty2:collection-id')
+      })
+
+      it('should return true', () => {
+        expect(decodedCollectionsUrnAreEqual(fistDecodedUrn, secondDecodedUrn)).toBe(true)
+      })
+    })
+  })
+
+  describe('and the URNs are of third party v2 collections', () => {
+    describe('and the URNs are different', () => {
+      beforeEach(() => {
+        fistDecodedUrn = decodeURN(
+          'urn:decentraland:matic:collections-linked-wearables:crypto-motors:amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c'
+        )
+        secondDecodedUrn = decodeURN(
+          'urn:decentraland:matic:collections-linked-wearables:crypto-motors:amoy:0x21c28f5a2ab14f11d4fd08425cf0ea5c2367215c'
+        )
+      })
+
+      it('should return false', () => {
+        expect(decodedCollectionsUrnAreEqual(fistDecodedUrn, secondDecodedUrn)).toBe(false)
+      })
+    })
+
+    describe('and the URNs are equal', () => {
+      beforeEach(() => {
+        fistDecodedUrn = decodeURN(
+          'urn:decentraland:matic:collections-linked-wearables:crypto-motors:amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c'
+        )
+        secondDecodedUrn = decodeURN(
+          'urn:decentraland:matic:collections-linked-wearables:crypto-motors:amoy:0x74c78f5a4ab22f01d5fd08455cf0ff5c3367535c'
+        )
+      })
+
+      it('should return true', () => {
+        expect(decodedCollectionsUrnAreEqual(fistDecodedUrn, secondDecodedUrn)).toBe(true)
+      })
+    })
+  })
+
+  describe('and the URNs are of different types', () => {
+    beforeEach(() => {
+      fistDecodedUrn = decodeURN('urn:decentraland:amoy:collections-v2:0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8')
+      secondDecodedUrn = decodeURN('urn:decentraland:amoy:collections-thirdparty:thirdparty2:collection-id')
+    })
+
+    it('should return false', () => {
+      expect(decodedCollectionsUrnAreEqual(fistDecodedUrn, secondDecodedUrn)).toBe(false)
     })
   })
 })

@@ -200,6 +200,25 @@
     "message": "El nombre puede tener un máximo de {maxLength} caracteres",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
   },
+  "create_linked_wearable_collection_modal": {
+    "title": "Nueva colección de Wearables vinculados",
+    "subtitle": "Wearables especiales vinculados a NFTs.",
+    "third_party_field": {
+      "label": "Proveedor"
+    },
+    "linked_contract_field": {
+      "label": "Dirección del smart contract",
+      "message": "No tienes contratos disponibles. Ponte en contacto con un DAO committee para agregar uno."
+    },
+    "name_field": {
+      "label": "Nombre",
+      "message": "El nombre de la colección no puede contener el caracter ':'."
+    },
+    "collection_id_field": {
+      "label": "Id",
+      "message": "Recomendamos incluir la dirección del contrato de la colección como parte del id. Solo puede usar letras, números y guiones (-)"
+    }
+  },
   "create_third_party_collection_modal": {
     "title": "Nueva colleción externa",
     "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",

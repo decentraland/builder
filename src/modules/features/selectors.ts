@@ -61,3 +61,11 @@ export const getIsWorldContributorEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsLinkedWearablesV2Enabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.LINKED_WEARABLES_V2)
+  } catch (e) {
+    return false
+  }
+}

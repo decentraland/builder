@@ -25,6 +25,7 @@ describe('Third Party selectors', () => {
       description: 'some desc',
       maxItems: '0',
       totalItems: '0',
+      contracts: [],
       managers: [address, '0xa']
     }
     thirdParty2 = {
@@ -33,6 +34,7 @@ describe('Third Party selectors', () => {
       description: 'some desc',
       maxItems: '0',
       totalItems: '0',
+      contracts: [],
       managers: [address, '0xb']
     }
     thirdParty3 = {
@@ -41,6 +43,7 @@ describe('Third Party selectors', () => {
       description: 'some desc',
       maxItems: '0',
       totalItems: '0',
+      contracts: [],
       managers: ['0xc']
     }
     baseState = {
