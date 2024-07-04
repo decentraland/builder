@@ -4,7 +4,7 @@ import { Grid, Dropdown, Icon, Button, Checkbox, CheckboxProps, Popup } from 'de
 import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
-import { decodeURN, URNType } from 'lib/urn'
+import { decodeURN, isThirdPartyCollectionDecodedUrn, isThirdPartyV2CollectionDecodedUrn } from 'lib/urn'
 import ItemStatus from 'components/ItemStatus'
 import { SyncStatus } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
@@ -47,8 +47,14 @@ export default function CollectionItem({ item, status, selected, onSelect, onOpe
       return ''
     }
 
-    const decodedURN = decodeURN(item.urn)
-    return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY ? decodedURN.thirdPartyTokenId : ''
+    try {
+      const decodedURN = decodeURN(item.urn)
+      return isThirdPartyCollectionDecodedUrn(decodedURN) || isThirdPartyV2CollectionDecodedUrn(decodedURN)
+        ? decodedURN.thirdPartyTokenId ?? ''
+        : ''
+    } catch (error) {
+      return ''
+    }
   }, [item])
 
   const statusIcon = useMemo(() => {

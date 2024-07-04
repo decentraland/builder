@@ -6,7 +6,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Network } from '@dcl/schemas'
 import { locations } from 'routing/locations'
 import { Collection } from 'modules/collection/types'
-import { getMaxSupply, getMissingBodyShapeType, isFree, resizeImage, getThumbnailURL, isSmart } from 'modules/item/utils'
+import { getMaxSupply, getMissingBodyShapeType, isFree, resizeImage, getThumbnailURL, isSmart, isWearable } from 'modules/item/utils'
 import { getCollectionType, isLocked as isCollectionLocked } from 'modules/collection/utils'
 import { dataURLToBlob } from 'modules/media/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -347,7 +347,7 @@ export default function ItemDetailPage(props: Props) {
                   </div>
                 </div>
 
-                {item.type === ItemType.WEARABLE && !isSmart(item) ? (
+                {isWearable(item) && !isSmart(item) ? (
                   <div className="card">
                     <div className="title-card-container">
                       <div className="title">{t('item_detail_page.representations.title')}</div>

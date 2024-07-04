@@ -9,9 +9,9 @@ import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
-import { isComplete, isFree, canManageItem, getMaxSupply, isSmart } from 'modules/item/utils'
+import { isComplete, isFree, canManageItem, getMaxSupply, isSmart, isEmote } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
-import { isEmoteData, ItemType, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
+import { isEmoteData, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
 import ItemStatus from 'components/ItemStatus'
 import ItemBadge from 'components/ItemBadge'
@@ -176,7 +176,7 @@ export default function CollectionItem({ onOpenModal, onSetItems, item, collecti
         {item.rarity && data.category ? <RarityBadge size="medium" rarity={item.rarity} withTooltip /> : null}
       </Table.Cell>
       <Table.Cell className={styles.column}>{data.category ? <div>{t(`${item.type}.category.${data.category}`)}</div> : null}</Table.Cell>
-      {item.type === ItemType.EMOTE && isEmoteData(data) ? (
+      {isEmote(item) && isEmoteData(data) ? (
         <Table.Cell className={styles.column}>
           {data.category ? <div>{t(`emote.play_mode.${data.loop ? 'loop' : 'simple'}.text`)}</div> : null}
         </Table.Cell>

@@ -20,6 +20,7 @@ import { isDevelopment } from 'lib/environment'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { isTPCollection } from 'modules/collection/utils'
 import { ItemType } from 'modules/item/types'
+import { isEmote } from 'modules/item/utils'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import BuilderIcon from 'components/Icon'
@@ -272,7 +273,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       wearableController
     } = this.props
     const { isShowingAvatarAttributes, showSceneBoundaries, isLoading } = this.state
-    const isRenderingAnEmote = visibleItems.some(item => item.type === ItemType.EMOTE) && selectedItem?.type === ItemType.EMOTE
+    const isRenderingAnEmote = visibleItems.some(isEmote) && selectedItem?.type === ItemType.EMOTE
     const zoom = emote === PreviewEmote.JUMP ? 1 : undefined
 
     return (

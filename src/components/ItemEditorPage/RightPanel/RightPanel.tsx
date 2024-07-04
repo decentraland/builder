@@ -16,7 +16,8 @@ import {
   getHideableBodyPartCategories,
   getHideableWearableCategories,
   isSmart,
-  hasVideo
+  hasVideo,
+  isWearable
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -83,7 +84,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   setItem(item: Item) {
     const data = item.data
 
-    if (item.type === ItemType.WEARABLE && data.replaces?.length) {
+    if (isWearable(item) && data.replaces?.length) {
       // Move all items that are in replaces array to hides array
       data.hides = data.hides.concat(data.replaces)
       data.replaces = []
@@ -525,7 +526,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
-              const categories = item ? (item.type === ItemType.WEARABLE ? getWearableCategories(item.contents) : getEmoteCategories()) : []
+              const categories = item ? (isWearable(item) ? getWearableCategories(item.contents) : getEmoteCategories()) : []
 
               return isLoading ? (
                 <Loader size="massive" active />

@@ -8,7 +8,7 @@ import { getContentsStorageUrl } from 'lib/api/builder'
 import { capitalize } from 'lib/text'
 import { Color4 } from 'lib/colors'
 import { Vector3 } from 'modules/models/types'
-import { getSkinHiddenCategories } from 'modules/item/utils'
+import { getSkinHiddenCategories, isEmote } from 'modules/item/utils'
 import { EntityDefinition, ComponentDefinition, ComponentType, SceneSDK6 } from 'modules/scene/types'
 import { injectScript } from 'routing/utils'
 import { base64ArrayBuffer } from './base64'
@@ -342,7 +342,7 @@ export function toEmote(item: Item<ItemType.EMOTE>): EmoteDefinition {
  * @param item - an Item
  */
 export function toBase64(item: Item | Item<ItemType.EMOTE>): string {
-  const wearable = item.type === ItemType.EMOTE ? toEmote(item as Item<ItemType.EMOTE>) : toWearable(item as Item)
+  const wearable = isEmote(item) ? toEmote(item) : toWearable(item)
   const stringified = JSON.stringify(wearable)
   const sanitized = stringified.replace(/[^\x20-\x7F]/g, '')
   return btoa(sanitized)
