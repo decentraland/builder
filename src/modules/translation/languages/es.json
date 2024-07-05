@@ -200,6 +200,22 @@
     "message": "El nombre puede tener un máximo de {maxLength} caracteres",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
   },
+  "create_collection_selector_modal": {
+    "title": "Nueva Colección",
+    "subtitle": "Selecciona el tipo de collección que quieras crear",
+    "collection": {
+      "title": "Colecciones",
+      "subtitle": "Colecciones clásicas de Wearables que pueden ser vendidas en el Marketplace"
+    },
+    "linked_collection": {
+      "title": "Colecciones Vinculadas",
+      "subtitle": "Wearables sepeciales, vinculados a NFTs"
+    },
+    "actions": {
+      "create": "Crear Colección",
+      "learn_more": "Más información"
+    }
+  },
   "create_linked_wearable_collection_modal": {
     "title": "Nueva colección de Wearables vinculados",
     "subtitle": "Wearables especiales vinculados a NFTs.",

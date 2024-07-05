@@ -195,6 +195,22 @@
     "message": "名称最多可以是 {maxLength} 个字符",
     "error_name_already_in_use": "使用中的名称。 尝试其他"
   },
+  "create_collection_selector_modal": {
+    "title": "新的收藏",
+    "subtitle": "选择要创建的收藏类型",
+    "collection": {
+      "title": "经典收藏",
+      "subtitle": "可在 Marketplace 上出售的经典 Decentraland 可穿戴设备"
+    },
+    "linked_collection": {
+      "title": "链接集合",
+      "subtitle": "与 NFT 相关的特殊 Decentraland 可穿戴设备"
+    },
+    "actions": {
+      "create": "创建收藏",
+      "learn_more": "学到更多"
+    }
+  },
   "create_linked_wearable_collection_modal": {
     "title": "新的链接可穿戴设备集合",
     "subtitle": "与 NFT 挂钩的特殊可穿戴设备",

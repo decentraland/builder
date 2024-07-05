@@ -8,6 +8,7 @@
   "BUILDER_SERVER_URL": "https://builder-api.decentraland.today/v1",
   "MARKETPLACE_URL": "https://api.decentraland.org/v1",
   "MARKETPLACE_API": "https://marketplace-api.decentraland.org/v1",
+  "DOCS_URL": "https://docs.decentraland.org",
   "MARKETPLACE_WEB_URL": "https://decentraland.today/marketplace",
   "LAND_MANAGER_GRAPH_URL": "https://subgraph.decentraland.org/land-manager",
   "MARKETPLACE_GRAPH_URL": "https://subgraph.decentraland.org/marketplace",

@@ -6,7 +6,7 @@ import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
-import { DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST } from './actions'
+import { DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, FETCH_THIRD_PARTIES_REQUEST, FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST } from './actions'
 import { getThirdPartyForCollection, getThirdPartyForItem, isUserManagerOfThirdParty } from './utils'
 
 export const getState = (state: RootState) => state.thirdParty
@@ -32,6 +32,8 @@ export const getCollectionThirdParty = (state: RootState, collection: Collection
   getThirdPartyForCollection(getData(state), collection) ?? null
 
 export const getItemThirdParty = (state: RootState, item: Item): ThirdParty | null => getThirdPartyForItem(getData(state), item) ?? null
+
+export const isLoadingThirdParties = (state: RootState): boolean => isLoadingType(getLoading(state), FETCH_THIRD_PARTIES_REQUEST)
 
 export const isFetchingAvailableSlots = (state: RootState): boolean =>
   isLoadingType(getLoading(state), FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST)

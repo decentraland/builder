@@ -8,6 +8,7 @@
   "BUILDER_SERVER_URL": "https://builder-api.decentraland.zone/v1",
   "MARKETPLACE_URL": "https://api.decentraland.zone/v1",
   "MARKETPLACE_API": "https://marketplace-api.decentraland.zone/v1",
+  "DOCS_URL": "https://docs.decentraland.org",
   "MARKETPLACE_WEB_URL": "https://decentraland.zone/marketplace",
   "LAND_MANAGER_GRAPH_URL": "https://api.studio.thegraph.com/query/49472/land-manager-sepolia/version/latest",
   "MARKETPLACE_GRAPH_URL": "https://api.studio.thegraph.com/query/49472/marketplace-sepolia/version/latest",
