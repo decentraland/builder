@@ -32,7 +32,7 @@ const imgSrcByNetwork = {
 }
 
 export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) => {
-  const { name, thirdParties, onClose, isCreatingCollection, error, ownerAddress, onSubmit } = props
+  const { name, thirdParties, onClose, isCreatingCollection, error, ownerAddress, onSubmit, onBack } = props
   const [collectionName, setCollectionName] = useState('')
   const [linkedContract, setLinkedContract] = useState<LinkedContract>()
   const [hasCollectionIdBeenTyped, setHasCollectionIdBeenTyped] = useState(false)
@@ -137,11 +137,12 @@ export const CreateLinkedWearablesCollectionModal: FC<Props> = (props: Props) =>
   const isLoading = isCreatingCollection
 
   return (
-    <Modal name={name} onClose={onClose} size="small">
+    <Modal name={name} onClose={isLoading ? undefined : onClose} size="small">
       <ModalNavigation
         title={t('create_linked_wearable_collection_modal.title')}
         subtitle={t('create_linked_wearable_collection_modal.subtitle')}
-        onClose={onClose}
+        onClose={isLoading ? undefined : onClose}
+        onBack={isLoading ? undefined : onBack}
       />
       <Form onSubmit={handleSubmit} disabled={!isSubmittable}>
         <ModalContent>

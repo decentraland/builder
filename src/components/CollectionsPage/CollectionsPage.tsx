@@ -75,17 +75,17 @@ export default function CollectionsPage(props: Props) {
     }
   }, [address, sort])
 
-  const handleNewCollection = useCallback(() => {
-    onOpenModal('CreateCollectionModal')
-  }, [onOpenModal])
-
   const handleNewThirdPartyCollection = useCallback(() => {
+    onOpenModal('CreateLinkedWearablesCollectionModal')
+  }, [onOpenModal, isLinkedWearablesV2Enabled])
+
+  const handleNewCollection = useCallback(() => {
     if (isLinkedWearablesV2Enabled) {
-      onOpenModal('CreateLinkedWearablesCollectionModal')
+      onOpenModal('CreateCollectionSelectorModal')
     } else {
-      onOpenModal('CreateThirdPartyCollectionModal')
+      onOpenModal('CreateCollectionModal')
     }
-  }, [onOpenModal])
+  }, [onOpenModal, isLinkedWearablesV2Enabled])
 
   const handleSearchChange = (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     setSearch(data.value)
@@ -221,7 +221,7 @@ export default function CollectionsPage(props: Props) {
           isClearable
         />
         <Row className="actions" grow={false}>
-          {isThirdPartyManager && (
+          {isThirdPartyManager && !isLinkedWearablesV2Enabled && (
             <Button className="action-button" size="small" basic onClick={handleNewThirdPartyCollection}>
               {t('collections_page.new_third_party_collection')}
             </Button>
@@ -231,12 +231,12 @@ export default function CollectionsPage(props: Props) {
             {t('item_editor.open')}
           </Button>
           <Button className="action-button" size="small" primary onClick={handleNewCollection}>
-            {t('collections_page.new_collection')}
+            <UIIcon name="plus square" /> {t('collections_page.new_collection')}
           </Button>
         </Row>
       </div>
     )
-  }, [search, isThirdPartyManager, handleSearchChange, handleNewThirdPartyCollection, handleOpenEditor, handleNewCollection])
+  }, [search, isThirdPartyManager, handleSearchChange, handleOpenEditor, handleNewCollection])
 
   const renderViewActions = useCallback(() => {
     return (

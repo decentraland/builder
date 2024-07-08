@@ -1,12 +1,13 @@
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST } from './actions'
+import { DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, fetchThirdPartiesRequest } from './actions'
 import {
   isThirdPartyManager,
   getWalletThirdParties,
   getCollectionThirdParty,
   getItemThirdParty,
-  isDeployingBatchedThirdPartyItems
+  isDeployingBatchedThirdPartyItems,
+  isLoadingThirdParties
 } from './selectors'
 import { ThirdParty } from './types'
 
@@ -249,6 +250,42 @@ describe('Third Party selectors', () => {
 
       it('should return false', () => {
         expect(isDeployingBatchedThirdPartyItems(state)).toBe(false)
+      })
+    })
+  })
+
+  describe('when getting if the third parties are being loaded', () => {
+    let state: RootState
+
+    describe('and the third parties are being loaded', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [fetchThirdPartiesRequest()]
+          }
+        }
+      })
+
+      it('should return true', () => {
+        expect(isLoadingThirdParties(state)).toBe(true)
+      })
+    })
+
+    describe('and the third parties are not being loaded', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: []
+          }
+        }
+      })
+
+      it('should return false', () => {
+        expect(isLoadingThirdParties(state)).toBe(false)
       })
     })
   })

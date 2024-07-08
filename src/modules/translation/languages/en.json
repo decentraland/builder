@@ -197,6 +197,22 @@
     "message": "The name can be {maxLength} characters max",
     "error_name_already_in_use": "Name already in use. Try a different one"
   },
+  "create_collection_selector_modal": {
+    "title": "New Collection",
+    "subtitle": "Select the type of collection you want to create",
+    "collection": {
+      "title": "Collections",
+      "subtitle": "Classic Decentraland Wearables that can be sold on the Marketplace"
+    },
+    "linked_collection": {
+      "title": "Linked Collections",
+      "subtitle": "Special Wearables linked to NFTs"
+    },
+    "actions": {
+      "create": "Create Collection",
+      "learn_more": "Learn More"
+    }
+  },
   "create_linked_wearable_collection_modal": {
     "title": "New Linked Wearables Collection",
     "subtitle": "Special Wearables linked to NFTs.",
