@@ -1005,7 +1005,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const isSmartWearable = isSmart({ type, contents: this.state.contents })
     const isRequirementMet = required.every(prop => prop !== undefined)
 
-    if (belongsToAThirdPartyV2Collection && !this.isMappingValid(mapping)) {
+    if ((belongsToAThirdPartyV2Collection && !mapping) || (belongsToAThirdPartyV2Collection && mapping && !this.isMappingValid(mapping))) {
       return false
     }
 

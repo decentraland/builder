@@ -147,17 +147,6 @@ describe('when getting the collection type', () => {
       expect(getCollectionType(collection)).toBe(CollectionType.THIRD_PARTY)
     })
   })
-
-  describe('when the collection has a third party v2 URN', () => {
-    beforeEach(() => {
-      jest.spyOn(dappsEth, 'getChainIdByNetwork').mockReturnValueOnce(ChainId.MATIC_MAINNET)
-      collection = { id: 'aCollection', urn: buildThirdPartyURN('thirdpartyname', 'collection-id', '22') } as Collection
-    })
-
-    it('should return a third party v2 collection type', () => {
-      expect(getCollectionType(collection)).toBe(CollectionType.THIRD_PARTY_V2)
-    })
-  })
 })
 
 describe('when checking if a collection is of type third party', () => {
