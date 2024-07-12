@@ -37,6 +37,7 @@ export const locations = {
       case CollectionType.STANDARD:
         return injectParams(`/collections/${collectionId}`, { tab: 'tab' }, options)
       case CollectionType.THIRD_PARTY:
+      case CollectionType.THIRD_PARTY_V2:
         return injectParams(locations.thirdPartyCollectionDetail(collectionId), { tab: 'tab' }, options)
       default:
         throw new Error(`Invalid collection type ${type as unknown as string}`)

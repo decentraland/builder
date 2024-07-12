@@ -11,11 +11,10 @@ import { FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
+import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
+import { isThirdPartyCollection } from 'modules/collection/utils'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
-import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
-import { getCollectionType } from 'modules/collection/utils'
-import { CollectionType } from 'modules/collection/types'
 
 const mapState = (state: RootState): MapStateProps => {
   const collectionId = getCollectionId(state) || ''
@@ -31,8 +30,7 @@ const mapState = (state: RootState): MapStateProps => {
     paginatedData,
     wallet: getWallet(state)!,
     collection,
-    thirdParty:
-      collection && getCollectionType(collection) === CollectionType.THIRD_PARTY ? getCollectionThirdParty(state, collection) : null,
+    thirdParty: collection && isThirdPartyCollection(collection) ? getCollectionThirdParty(state, collection) : null,
     authorizations: getAuthorizations(state),
     isLoading:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||

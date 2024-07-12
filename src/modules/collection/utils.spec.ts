@@ -121,7 +121,7 @@ describe('when getting the collection type', () => {
       collection = { id: 'aCollection', urn: BodyShape.FEMALE.toString() } as Collection
     })
 
-    it('should return false', () => {
+    it('should return a standard collection type', () => {
       expect(getCollectionType(collection)).toBe(CollectionType.STANDARD)
     })
   })
@@ -132,7 +132,7 @@ describe('when getting the collection type', () => {
       collection = { id: 'aCollection', urn: buildCatalystItemURN('0xc6d2000a7a1ddca92941f4e2b41360fe4ee2abd8', '22') } as Collection
     })
 
-    it('should return false', () => {
+    it('should return a standard collection type', () => {
       expect(getCollectionType(collection)).toBe(CollectionType.STANDARD)
     })
   })
@@ -143,8 +143,19 @@ describe('when getting the collection type', () => {
       collection = { id: 'aCollection', urn: buildThirdPartyURN('thirdpartyname', 'collection-id', '22') } as Collection
     })
 
-    it('should return true', () => {
+    it('should return a third party collection type', () => {
       expect(getCollectionType(collection)).toBe(CollectionType.THIRD_PARTY)
+    })
+  })
+
+  describe('when the collection has a third party v2 URN', () => {
+    beforeEach(() => {
+      jest.spyOn(dappsEth, 'getChainIdByNetwork').mockReturnValueOnce(ChainId.MATIC_MAINNET)
+      collection = { id: 'aCollection', urn: buildThirdPartyURN('thirdpartyname', 'collection-id', '22') } as Collection
+    })
+
+    it('should return a third party v2 collection type', () => {
+      expect(getCollectionType(collection)).toBe(CollectionType.THIRD_PARTY_V2)
     })
   })
 })

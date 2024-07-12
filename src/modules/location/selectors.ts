@@ -4,8 +4,7 @@ import { RootState } from 'modules/common/types'
 import { getCollection } from 'modules/collection/selectors'
 import { getPaginatedCollectionItems } from 'modules/item/selectors'
 import { getFirstWearableOrItem } from 'modules/item/utils'
-import { getCollectionType } from 'modules/collection/utils'
-import { CollectionType } from 'modules/collection/types'
+import { isThirdPartyCollection } from 'modules/collection/utils'
 
 const landIdMatchSelector = createMatchSelector<
   RootState,
@@ -76,7 +75,7 @@ export const getSelectedItemId = (state: RootState) => {
 
   const collection = getCollection(state, collectionId)
 
-  const isReviewingTPCollection = collection ? getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing(state) : false
+  const isReviewingTPCollection = collection ? isThirdPartyCollection(collection) && isReviewing(state) : false
   const allItems = getPaginatedCollectionItems(state, collectionId)
   const items = isReviewingTPCollection ? allItems.filter(item => item.isPublished) : allItems
   return getFirstWearableOrItem(items)?.id ?? null

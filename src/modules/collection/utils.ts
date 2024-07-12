@@ -79,13 +79,19 @@ export function getCollectionBaseURI() {
   return config.get('ERC721_COLLECTION_BASE_URI', '')
 }
 
+export function isThirdPartyCollection(collection: Collection) {
+  const collectionType = getCollectionType(collection)
+  return collectionType === CollectionType.THIRD_PARTY || collectionType === CollectionType.THIRD_PARTY_V2
+}
+
 export function getCollectionType(collection: Collection): CollectionType {
   const { type } = decodeURN(collection.urn)
 
   switch (type) {
     case URNType.COLLECTIONS_THIRDPARTY:
-    case URNType.COLLECTIONS_THIRDPARTY_V2:
       return CollectionType.THIRD_PARTY
+    case URNType.COLLECTIONS_THIRDPARTY_V2:
+      return CollectionType.THIRD_PARTY_V2
     case URNType.COLLECTIONS_V2:
     case URNType.BASE_AVATARS:
       return CollectionType.STANDARD

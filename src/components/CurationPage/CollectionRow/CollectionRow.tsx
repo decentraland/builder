@@ -5,9 +5,8 @@ import { Icon, Table } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { getCollectionCurationState } from 'modules/curations/collectionCuration/utils'
-import { getCollectionType } from 'modules/collection/utils'
+import { isThirdPartyCollection } from 'modules/collection/utils'
 import { CurationStatus } from 'modules/curations/types'
-import { CollectionType } from 'modules/collection/types'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import { AssignModalOperationType } from 'components/Modals/EditCurationAssigneeModal/EditCurationAssigneeModal.types'
@@ -92,14 +91,10 @@ export default function CollectionRow(props: Props) {
         </div>
       </Table.Cell>
       <Table.Cell width={2}>
-        <div>
-          {getCollectionType(collection) === CollectionType.THIRD_PARTY
-            ? t('collection_row.type_third_party')
-            : t('collection_row.type_standard')}
-        </div>
+        <div>{isThirdPartyCollection(collection) ? t('collection_row.type_third_party') : t('collection_row.type_standard')}</div>
       </Table.Cell>
       <Table.Cell width={2}>
-        <div>{getCollectionType(collection) === CollectionType.THIRD_PARTY ? '-' : <Profile textOnly address={collection.owner} />}</div>
+        <div>{isThirdPartyCollection(collection) ? '-' : <Profile textOnly address={collection.owner} />}</div>
       </Table.Cell>
       <Table.Cell width={3}>
         <div title={format(createdAtDate, 'd MMMM yyyy HH:mm')}>

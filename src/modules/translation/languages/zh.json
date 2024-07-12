@@ -268,6 +268,22 @@
     "mana_not_allowed": "您需要授权足够的MANA才能申请新名称",
     "not_enough_mana": "您没有足够的MANA来申请新名称"
   },
+  "mapping_editor": {
+    "mapping_types": {
+      "single": "单身的",
+      "multiple": "多",
+      "any": "任何",
+      "range": "音域"
+    },
+    "mapping_type_label": "NFTs 代币链接类型",
+    "mapping_value_label": "已链接至",
+    "mapping_value_any": "任何代币 ID",
+    "mapping_value_from_label": "从",
+    "mapping_value_to_label": "至",
+    "mapping_value_multiple_info": "以逗号分隔的令牌 ID",
+    "mapping_value_multiple_amount_info": "{count} 个链接令牌 {count, plural, one {ID} other {IDs}}",
+    "mapping_type_info": "将此可穿戴物品链接到一个或多个令牌 ID"
+  },
   "create_single_item_modal": {
     "title": "新物品",
     "thumbnail_step_title": "编辑缩略图",
@@ -1686,7 +1702,8 @@
   "collection": {
     "type": {
       "standard": "采集",
-      "third_party": "链接的可穿戴设备系列"
+      "third_party": "链接的可穿戴设备系列",
+      "third_party_v2": "链接的可穿戴设备系列"
     }
   },
   "item": {
