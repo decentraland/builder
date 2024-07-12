@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Loader, Tabs } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Collection, CollectionType } from 'modules/collection/types'
+import { Collection } from 'modules/collection/types'
 import { CurationStatus } from 'modules/curations/types'
-import { getCollectionType } from 'modules/collection/utils'
+import { isThirdPartyCollection } from 'modules/collection/utils'
 import { Item, ItemType } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
@@ -125,9 +125,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
   getItems(collection: Collection | null, collectionItems: Item[]) {
     const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
-      return getCollectionType(collection) === CollectionType.THIRD_PARTY && isReviewing
-        ? collectionItems.filter(item => item.isPublished)
-        : collectionItems
+      return isThirdPartyCollection(collection) && isReviewing ? collectionItems.filter(item => item.isPublished) : collectionItems
     }
     return orphanItems
   }

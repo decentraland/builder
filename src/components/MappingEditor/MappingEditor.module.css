@@ -1,0 +1,17 @@
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.mappings {
+  display: flex;
+  flex-direction: column;
+}
+
+.main :global(.ui.dropdown > .text > img) {
+  margin-top: 3px;
+}
+
+.mappingType :global(.ui.dropdown .menu > .item > img) {
+  margin-top: 0px;
+}

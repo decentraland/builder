@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosError } from 'axios'
-import { Entity, Rarity } from '@dcl/schemas'
+import { Entity, Mapping, Rarity } from '@dcl/schemas'
 import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { config } from 'config'
@@ -76,6 +76,7 @@ export type RemoteItem = {
   created_at: Date
   updated_at: Date
   utility: string | null
+  mappings: Mapping[] | null
   local_content_hash: string | null
   catalyst_content_hash: string | null
 }
@@ -331,8 +332,10 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
   }
 }
 
-function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'> {
-  const remoteItem: Omit<RemoteItem, 'created_at' | 'updated_at'> = {
+function toRemoteItem(
+  item: Item
+): Omit<RemoteItem, 'created_at' | 'updated_at' | 'in_catalyst' | 'local_content_hash' | 'catalyst_content_hash'> {
+  return {
     id: item.id,
     name: item.name,
     description: item.description || '',
@@ -348,18 +351,14 @@ function toRemoteItem(item: Item): Omit<RemoteItem, 'created_at' | 'updated_at'>
     total_supply: item.totalSupply === undefined ? null : item.totalSupply,
     is_published: false,
     is_approved: false,
-    in_catalyst: item.inCatalyst || false,
     utility: item.utility || null,
+    mappings: item.mappings || null,
     type: item.type,
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
-    content_hash: item.blockchainContentHash,
-    local_content_hash: item.currentContentHash,
-    catalyst_content_hash: item.catalystContentHash
+    content_hash: item.blockchainContentHash
   }
-
-  return remoteItem
 }
 
 function fromRemoteItem(remoteItem: RemoteItem) {
@@ -379,6 +378,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
     blockchainContentHash: remoteItem.content_hash,
     catalystContentHash: remoteItem.catalyst_content_hash,
     metrics: remoteItem.metrics,
+    mappings: remoteItem.mappings,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)
   }
@@ -397,8 +397,8 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   return item
 }
 
-function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'created_at' | 'updated_at'> {
-  const remoteCollection: Omit<RemoteCollection, 'created_at' | 'updated_at'> = {
+function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'created_at' | 'updated_at' | 'lock'> {
+  return {
     id: collection.id,
     name: collection.name,
     eth_address: collection.owner,
@@ -410,11 +410,8 @@ function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'cre
     minters: collection.minters,
     managers: collection.managers,
     forum_link: collection.forumLink || null,
-    lock: collection.lock ? new Date(collection.lock) : null,
     reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null
   }
-
-  return remoteCollection
 }
 
 function fromRemoteCollection(remoteCollection: RemoteCollection) {

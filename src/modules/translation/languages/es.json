@@ -274,6 +274,22 @@
     "mana_not_allowed": "Debes autorizar suficiente MANA para reclamar un nuevo nombre",
     "not_enough_mana": "No tienes suficiente MANA para reclamar un nuevo nombre"
   },
+  "mapping_editor": {
+    "mapping_types": {
+      "single": "Único",
+      "multiple": "Múltiple",
+      "any": "Cualquiera",
+      "range": "Rango"
+    },
+    "mapping_type_label": "Tipo de vinculación con tokens NFT",
+    "mapping_value_label": "Vinculado a",
+    "mapping_value_any": "Todos los token IDs",
+    "mapping_value_from_label": "Desde",
+    "mapping_value_to_label": "Hasta",
+    "mapping_value_multiple_info": "IDs de tokens separados por coma",
+    "mapping_value_multiple_amount_info": "{count} {count, plural, one {ID} other {IDs}} de tokens vinculados",
+    "mapping_type_info": "Vincula éste Wearable a uno o múltiples IDs de token"
+  },
   "create_single_item_modal": {
     "title": "Nuevo item",
     "thumbnail_step_title": "Editar el thumbnail",
@@ -1707,7 +1723,8 @@
   "collection": {
     "type": {
       "standard": "Colección",
-      "third_party": "Colección Externa"
+      "third_party": "Colección Externa",
+      "third_party_v2": "Colección Externa"
     }
   },
   "item": {

@@ -1,7 +1,17 @@
 import * as React from 'react'
 import uuid from 'uuid'
 import { ethers } from 'ethers'
-import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Rarity, PreviewProjection, WearableCategory } from '@dcl/schemas'
+import {
+  BodyPartCategory,
+  BodyShape,
+  EmoteCategory,
+  EmoteDataADR74,
+  Rarity,
+  PreviewProjection,
+  WearableCategory,
+  Mapping,
+  MappingType
+} from '@dcl/schemas'
 import {
   MAX_EMOTE_FILE_SIZE,
   MAX_SKIN_FILE_SIZE,
@@ -66,7 +76,8 @@ import {
   decodeURN,
   isThirdParty,
   isThirdPartyCollectionDecodedUrn,
-  isThirdPartyV2CollectionDecodedUrn
+  isThirdPartyV2CollectionDecodedUrn,
+  URNType
 } from 'lib/urn'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
@@ -76,6 +87,7 @@ import ItemProperties from 'components/ItemProperties'
 import { calculateFileSize, calculateModelFinalSize } from 'modules/item/export'
 import { MAX_THUMBNAIL_SIZE } from 'modules/assetPack/utils'
 import { Authorization } from 'lib/api/auth'
+import { MappingEditor } from 'components/MappingEditor/MappingEditor'
 import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import ImportStep from './ImportStep/ImportStep'
@@ -128,6 +140,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       state.category = item.data.category
       state.rarity = item.rarity
       state.isRepresentation = false
+      state.mapping = item.mappings && item.mappings.length > 0 ? item.mappings[0] : { type: MappingType.ANY }
 
       if (addRepresentation) {
         const missingBodyShape = getMissingBodyShapeType(item)
@@ -246,7 +259,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       hasScreenshotTaken,
       requiredPermissions,
       tags,
-      blockVrmExport
+      blockVrmExport,
+      mapping
     } = this.state as StateData
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
@@ -311,6 +325,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       owner: address!,
       metrics,
       contents,
+      mappings: belongsToAThirdPartyCollection ? [mapping] : null,
       createdAt: +new Date(),
       updatedAt: +new Date()
     }
@@ -522,6 +537,21 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       isLoading: false,
       view: CreateItemView.DETAILS
     })
+  }
+
+  isMappingValid = (mapping: Mapping) => {
+    switch (mapping.type) {
+      case MappingType.SINGLE:
+        return !!mapping.id
+      case MappingType.MULTIPLE:
+        return mapping.ids.length > 0
+      case MappingType.RANGE:
+        return !!mapping.from && !!mapping.to && BigInt(mapping.from) <= BigInt(mapping.to)
+    }
+  }
+
+  handleMappingChange = (mapping: Mapping) => {
+    this.setState({ mapping })
   }
 
   handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
@@ -848,8 +878,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   renderFields() {
     const { collection } = this.props
     const { name, category, rarity, contents, item, type, isLoading } = this.state
+    const { mapping } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
+    const belongsToAThirdPartyV2Collection = collection?.urn && isThirdParty(collection.urn, URNType.COLLECTIONS_THIRDPARTY_V2)
     const rarities = Rarity.getRarities()
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
 
@@ -905,6 +937,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           options={categories.map(value => ({ value, text: t(`${type!}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
+        {belongsToAThirdPartyV2Collection ? (
+          <MappingEditor onChange={this.handleMappingChange} mapping={mapping ?? { type: MappingType.ANY }} />
+        ) : null}
       </>
     )
   }
@@ -936,9 +971,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   isValid(): boolean {
-    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize } = this.state
+    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize, mapping } = this.state
     const { collection } = this.props
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
+    const belongsToAThirdPartyV2Collection = collection?.urn && isThirdParty(collection.urn, URNType.COLLECTIONS_THIRDPARTY_V2)
 
     if (this.state.error) {
       this.setState({ error: undefined })
@@ -968,6 +1004,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const isEmote = type === ItemType.EMOTE
     const isSmartWearable = isSmart({ type, contents: this.state.contents })
     const isRequirementMet = required.every(prop => prop !== undefined)
+
+    if ((belongsToAThirdPartyV2Collection && !mapping) || (belongsToAThirdPartyV2Collection && mapping && !this.isMappingValid(mapping))) {
+      return false
+    }
 
     if (isRequirementMet && isEmote && modelSize && modelSize > MAX_EMOTE_FILE_SIZE) {
       this.setState({
@@ -1020,7 +1060,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     return (
       <>
-        <Column className="preview" width={192} grow={false}>
+        <div className="preview">
           <div className="thumbnail-container">
             <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} alt={title} />
             {isRepresentation ? null : (
@@ -1031,7 +1071,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
             )}
           </div>
           {this.renderMetrics()}
-        </Column>
+        </div>
         <Column className="data" grow={true}>
           {isAddingRepresentation ? null : (
             <Section>

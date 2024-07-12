@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { IPreviewController, Rarity } from '@dcl/schemas'
+import { IPreviewController, Mapping, Rarity } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
@@ -52,6 +52,7 @@ export type StateData = {
   requiredPermissions?: string[]
   tags?: string[]
   modelSize?: number
+  mapping: Mapping
   blockVrmExport?: boolean
 }
 export type State = {

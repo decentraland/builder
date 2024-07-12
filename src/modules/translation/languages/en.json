@@ -272,6 +272,22 @@
     "mana_not_allowed": "You need to authorize enough MANA to claim a new name",
     "not_enough_mana": "You don't have enough MANA to claim a new name"
   },
+  "mapping_editor": {
+    "mapping_types": {
+      "single": "Single",
+      "multiple": "Multiple",
+      "any": "Any",
+      "range": "Range"
+    },
+    "mapping_type_label": "NFTs token link type",
+    "mapping_value_label": "Linked to",
+    "mapping_value_any": "Any token ID",
+    "mapping_value_from_label": "From",
+    "mapping_value_to_label": "To",
+    "mapping_value_multiple_info": "Token IDs separated by a comma",
+    "mapping_value_multiple_amount_info": "{count} linked token {count, plural, one {ID} other {IDs}}",
+    "mapping_type_info": "Links this Wearable to one or multiple token IDs"
+  },
   "create_single_item_modal": {
     "title": "New Item",
     "thumbnail_step_title": "Edit Thumbnail",
@@ -1697,7 +1713,8 @@
   "collection": {
     "type": {
       "standard": "Collection",
-      "third_party": "Linked Wearables Collection"
+      "third_party": "Linked Wearables Collection",
+      "third_party_v2": "Linked Wearables Collection"
     }
   },
   "item": {

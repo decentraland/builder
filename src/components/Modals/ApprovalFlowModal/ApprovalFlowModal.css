@@ -81,4 +81,5 @@
 
 .ui.modal.ApprovalFlowModal .error-container .urn {
   font-size: 12px;
+  word-break: break-all;
 }

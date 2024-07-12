@@ -1,5 +1,5 @@
 import { BuiltItem, Content } from '@dcl/builder-client'
-import { BodyShape, EmoteDataADR74, Wearable, WearableCategory, Rarity, HideableWearableCategory } from '@dcl/schemas'
+import { BodyShape, EmoteDataADR74, Wearable, WearableCategory, Rarity, HideableWearableCategory, Mapping } from '@dcl/schemas'
 import { AnimationMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
 
@@ -112,6 +112,7 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
   catalystContentHash: string | null
   data: T extends ItemType.WEARABLE ? WearableData : EmoteDataADR74
   metrics: T extends ItemType.WEARABLE ? ModelMetrics : AnimationMetrics
+  mappings: Mapping[] | null
 }
 
 export const isEmoteItemType = (item: Item | Item<ItemType.EMOTE>): item is Item<ItemType.EMOTE> =>

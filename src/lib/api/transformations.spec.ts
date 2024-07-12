@@ -54,7 +54,8 @@ describe('when converting a RemoteItem into an Item', () => {
       is_approved: true,
       in_catalyst: true,
       created_at: now,
-      updated_at: now
+      updated_at: now,
+      mappings: null
     }
 
     item = {
@@ -98,7 +99,8 @@ describe('when converting a RemoteItem into an Item', () => {
       isApproved: true,
       inCatalyst: true,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
+      mappings: null
     }
   })
 

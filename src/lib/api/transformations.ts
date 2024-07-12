@@ -19,7 +19,8 @@ export function fromRemoteItem(remoteItem: RemoteItem): Item {
     catalystContentHash: remoteItem.catalyst_content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
-    updatedAt: +new Date(remoteItem.created_at)
+    updatedAt: +new Date(remoteItem.created_at),
+    mappings: remoteItem.mappings
   }
 
   if (remoteItem.collection_id) item.collectionId = remoteItem.collection_id
