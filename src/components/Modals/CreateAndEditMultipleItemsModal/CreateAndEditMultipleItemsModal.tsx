@@ -24,6 +24,7 @@ import { config } from 'config'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { getExtension, toMB } from 'lib/file'
 import {
+  getDefaultThirdPartyItemUrnSuffix,
   buildThirdPartyURN,
   buildThirdPartyV2URN,
   decodedCollectionsUrnAreEqual,
@@ -207,7 +208,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
               decodedCollectionUrn.thirdPartyLinkedCollectionName,
               decodedCollectionUrn.linkedCollectionNetwork,
               decodedCollectionUrn.linkedCollectionAddress,
-              thirdPartyTokenId ?? uuid.v4()
+              getDefaultThirdPartyItemUrnSuffix(loadedFile.wearable.name)
             )
           )
         }
