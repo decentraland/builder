@@ -1,4 +1,5 @@
 import { getURNProtocol, Network } from '@dcl/schemas'
+import slug from 'slug'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
 /**
@@ -277,3 +278,8 @@ export const isThirdPartyV2CollectionDecodedUrn = (
   !!urn.thirdPartyLinkedCollectionName &&
   !!urn.linkedCollectionNetwork &&
   !!urn.linkedCollectionContractAddress
+
+export const getDefaultThirdPartyItemUrnSuffix = (itemName: string) => {
+  const randHex = Array.from({ length: 4 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
+  return `${slug(itemName.length > 0 ? itemName : 'default')}-${randHex}`
+}

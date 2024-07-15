@@ -17,7 +17,8 @@ import {
   DecodedURN,
   isThirdPartyV2CollectionDecodedUrn,
   isThirdPartyCollectionDecodedUrn,
-  decodedCollectionsUrnAreEqual
+  decodedCollectionsUrnAreEqual,
+  getDefaultThirdPartyItemUrnSuffix
 } from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
@@ -563,6 +564,20 @@ describe('when checking if two decoded collection URNs are equal', () => {
 
     it('should return false', () => {
       expect(decodedCollectionsUrnAreEqual(fistDecodedUrn, secondDecodedUrn)).toBe(false)
+    })
+  })
+})
+
+describe('when getting a default third party item URN suffix', () => {
+  describe('and the item name is empty', () => {
+    it('should return a string with the "default" word plus 4 random hex characters', () => {
+      expect(getDefaultThirdPartyItemUrnSuffix('')).toMatch(/^default-[0-9a-f]{4}$/)
+    })
+  })
+
+  describe('and the item name is not empty', () => {
+    it('should return a string with the sluggled item name plus 4 random hex characters', () => {
+      expect(getDefaultThirdPartyItemUrnSuffix('a wonderful item: name')).toMatch(/^a-wonderful-item-name-[0-9a-f]{4}$/)
     })
   })
 })

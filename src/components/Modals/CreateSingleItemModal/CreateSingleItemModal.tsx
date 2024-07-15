@@ -70,6 +70,7 @@ import {
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { getExtension, toMB } from 'lib/file'
 import {
+  getDefaultThirdPartyItemUrnSuffix,
   buildThirdPartyURN,
   buildThirdPartyV2URN,
   DecodedURN,
@@ -274,7 +275,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         decodedCollectionUrn.thirdPartyLinkedCollectionName,
         decodedCollectionUrn.linkedCollectionNetwork,
         decodedCollectionUrn.linkedCollectionContractAddress,
-        uuid.v4()
+        getDefaultThirdPartyItemUrnSuffix(name)
       )
     }
 
